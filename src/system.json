@@ -134,10 +134,10 @@
   ],
   "packs": [
     {
-      "name": "rqid-macros-en",
-      "label": "Rqid Macros | en",
+      "name": "rqg-macros-en",
+      "label": "RQG Macros | en",
       "system": "rqg",
-      "path": "assets/packs/rqid-macros-en.db",
+      "path": "assets/packs/rqg-macros-en.db",
       "type": "Macro"
     },
     {

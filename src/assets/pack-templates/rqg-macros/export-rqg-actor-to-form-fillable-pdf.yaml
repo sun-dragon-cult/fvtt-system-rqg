@@ -1,0 +1,1298 @@
+name: Export RQG Actor to Form-Fillable PDF
+type: script
+author: w2zGrrO8YNPw14xr
+img: systems/rqg/assets/images/ui/skills.svg
+scope: global
+command: |-
+  const selectedActorIds = canvas.tokens.controlled.map((c) => c.actor._id);
+
+  if (!selectedActorIds || selectedActorIds.length === 0) {
+    await SelectActorsToExportDialog();
+  } else {
+    await ExportOptionsDialog(selectedActorIds);
+  }
+
+  async function SelectActorsToExportDialog() {
+    const actorSelectOptions = game.actors.map(
+      (a) => `<option value="${a._id}">${a.name}</option>`
+    );
+
+    const maxSelectSize = 30;
+
+    let selectSize = maxSelectSize;
+
+    if (actorSelectOptions.length > 30) {
+      selectSize = maxSelectSize;
+    }
+
+    new Dialog(
+      {
+        title: "Export RQG Actor to Form-Fillable PDF",
+        content: `<form>
+      <p>
+        This macro exports selected RQG Actors to a XML files suitable for importing into
+        the <a href="https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/downloads/rqg-sheet-import-foundry.pdf">Modified RuneQuest Glorantha Form Fillable Character Sheet</a>.  This is a modified version of the PDF from Chaosium and has been modified and re-distributed with permission.
+      </p>
+      <p>Select the Actors you would like to export to XML for PDF.</p>
+      <p>You can skip this dialog by selecting actors on the current scene.</p>
+      <div>
+        <div>
+          <p>Select Actors to Export to PDF</p>
+          <select
+            name="actors-to-export"
+            id="actors-to-export"
+            multiple
+            style="width: 100%"
+            size="${selectSize}"
+          >
+            ${actorSelectOptions.join("\n")}
+          </select>
+        </div>
+      </div>
+    </form>
+
+    `,
+
+        buttons: {
+          exportSelected: {
+            label: "Export Selected Actors to PDF",
+            callback: (html) => actorsSelected(html),
+            icon: `<i class="fas fa-check"></i>`,
+          },
+        },
+        default: "exportSelected",
+      },
+      { width: 600 }
+    ).render(true);
+  }
+
+  async function actorsSelected(html) {
+    const selectedActorIds = $("#actors-to-export").val();
+    await ExportOptionsDialog(selectedActorIds);
+  }
+
+  async function ExportOptionsDialog(ids) {
+    console.log(ids);
+
+    new Dialog({
+      title: "Export Options for RQG Actor to Form-Fillable PDF",
+      content: `
+            <p>
+              This macro exports selected RQG Actors to a XML files suitable for importing into
+              the <a href="https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/downloads/rqg-sheet-import-foundry.pdf">Modified RuneQuest Glorantha Form Fillable Character Sheet</a>.  This is a modified version of the PDF from Chaosium and has been modified and re-distributed with permission.
+            </p>
+            <h3>Options</h3>
+          <div style="display: grid; grid-template-columns: 1.5fr 0.5fr; grid-gap: 10px;">
+
+              <label>Foundry UI Warning for Missing RQID</label>
+              <input type="checkbox" id="uiWarnOnMissingRqid" />
+
+              <label>Omit Honor from Numbered Passions</label>
+              <input type="checkbox" id="omitHonorFromNumberedPassions" checked />
+
+              <label>Spirit Magic Comma List Line Length</label>
+              <input type="number" id="spiritMagicCommaListLineLength" value="65"  />
+
+              <label>Rune Magic Comma List Line Length</label>
+              <input type="number" id="runeMagicCommaListLineLength" value="65"  />
+
+              <label>Omit Common Rune Magic</label>
+              <input type="checkbox" id="omitCommonRuneMagic" />
+
+              <label>Show Total Strike Rank for Weapons</label>
+              <input type="checkbox" id="weaponShowTotalStrikeRank" checked />
+
+              <label>Shield Identifier</label>
+              <input type="text" id="shieldIdentifier" value="Shield" />
+
+          </div>
+
+          <h3>Options helpful when editing the PDF:</h3>
+          <div style="display: grid; grid-template-columns: 1.5fr 0.5fr; grid-gap: 10px;">
+            <label>Tick All Experience Check Boxes</label>
+            <input type="checkbox" id="tickAllBoxes" />
+          </div>
+          <input type="hidden" id="actors-to-export-ids" value="${ids}" />
+        `,
+      buttons: {
+        optionsChosen: {
+          label: "Use Selected Options",
+          callback: (html) => ExportActorsOptionsCallback(html),
+          icon: `<i class="fas fa-check"></i>`,
+        },
+      },
+      default: "optionsChosen",
+    }).render(true);
+  }
+
+  async function ExportActorsOptionsCallback(html) {
+    const ids = $("#actors-to-export-ids").val().split(",");
+
+    const exportOptions = {
+      uiWarnOnMissingRqid: $("#uiWarnOnMissingRqid").is(":checked"),
+      omitHonorFromNumberedPassions: $("#omitHonorFromNumberedPassions").is(
+        ":checked"
+      ),
+      spiritMagicCommaListLineLength: $("#spiritMagicCommaListLineLength").val(),
+      runeMagicCommaListLineLength: $("#runeMagicCommaListLineLength").val(),
+      omitCommonRuneMagic: $("#omitCommonRuneMagic").is(":checked"),
+      weaponShowTotalStrikeRank: $("#weaponShowTotalStrikeRank").is(":checked"),
+      shieldIdentifier: $("#shieldIdentifier").val(),
+      tickAllBoxes: $("#tickAllBoxes").is(":checked"),
+    };
+
+    console.log(exportOptions);
+
+    for (const id of ids) {
+      await ExportActorToPdf(id, exportOptions);
+    }
+  }
+
+  async function ExportActorToPdf(id, options) {
+    let result = `<?xml version="1.0" encoding="UTF-8"?>
+  <fields xmlns:xfdf="http://ns.adobe.com/xfdf-transition/">
+  `;
+    const exportActor = await game.actors.get(id);
+
+    if (!exportActor) {
+      return;
+    }
+
+    console.log(`Exporting "${exportActor.name}" with options`, options);
+
+    let fieldmapping = mapCharacteristics([], exportActor, options);
+
+    fieldmapping = mapAttributes(fieldmapping, exportActor, options);
+
+    fieldmapping = mapBackground(fieldmapping, exportActor, options);
+
+    fieldmapping = mapSkillCategoryModifiers(fieldmapping, exportActor, options);
+
+    fieldmapping = mapHitLocations(fieldmapping, exportActor, options);
+
+    fieldmapping = mapRunes(fieldmapping, exportActor, options);
+
+    fieldmapping = mapSkills(fieldmapping, exportActor, options);
+
+    fieldmapping = mapSkillsNumbered(fieldmapping, exportActor, options);
+
+    fieldmapping = mapPassions(fieldmapping, exportActor, options);
+
+    fieldmapping = mapPassionsNumbered(fieldmapping, exportActor, options);
+
+    fieldmapping = mapCults(fieldmapping, exportActor, options);
+
+    fieldmapping = mapCultsNumbered(fieldmapping, exportActor, options);
+
+    fieldmapping = mapSpiritMagicSpellsCommaList(
+      fieldmapping,
+      exportActor,
+      options
+    );
+
+    fieldmapping = mapRuneMagicSpellsCommaList(
+      fieldmapping,
+      exportActor,
+      options
+    );
+
+    fieldmapping = mapWeapons(fieldmapping, exportActor, options);
+
+    fieldmapping = mapGear(fieldmapping, exportActor, options);
+
+    fieldmapping.sort((a, b) => {
+      if (a.pdf < b.pdf) {
+        return -1;
+      }
+      if (a.pdf > b.pdf) {
+        return 1;
+      }
+      return 0;
+    });
+
+    for (map of fieldmapping) {
+      const elementName = `${map.pdf.replaceAll(" ", "").replace(/^i./gm, "")}`;
+      result += `<${elementName}>${map.rqg}</${elementName}>\r\n`;
+      map.element = map.pdf.replace(" ", "");
+    }
+
+    result += "</fields>";
+    navigator.clipboard.writeText(result);
+
+    var outBlob = new Blob([result], { type: "text/xml" });
+    var a = document.createElement("a");
+    const filesafeDate = new Date(Date.now())
+      .toISOString()
+      .replaceAll(":", "-")
+      .replaceAll(".", "-");
+    a.download = `rqg-export_${exportActor.name}_${filesafeDate}.xml`;
+    a.href = window.URL.createObjectURL(outBlob);
+    a.click();
+  }
+
+  function numberSkills(
+    fieldmapping,
+    actorSkills,
+    rqid,
+    removeUnnumbered,
+    tickAllBoxes
+  ) {
+    if (removeUnnumbered) {
+      fieldmapping = fieldmapping.filter((m) => !m.pdf.startsWith(rqid));
+    }
+    const skills = actorSkills.filter((i) =>
+      i.flags?.rqg?.documentRqidFlags?.id?.startsWith(rqid)
+    );
+    skills.sort((a, b) => {
+      if (
+        a.system.chance > b.system.chance ||
+        (a.system.specialization !== "..." && b.system.specialization === "...")
+      ) {
+        return -1;
+      }
+      if (
+        a.system.chance < b.system.chance ||
+        (a.system.specialization === "..." && b.system.specialization !== "...")
+      ) {
+        return 1;
+      }
+      return 0;
+    });
+
+    let skillNum = 1;
+    for (skill of skills) {
+      fieldmapping.push({
+        pdf: rqid + "_" + String(skillNum).padStart(2, "0") + ".chance",
+        rqg: skill.system.chance,
+      });
+      if (skill.system.canGetExperience) {
+        fieldmapping.push({
+          pdf: rqid + "_" + String(skillNum).padStart(2, "0") + ".hasExperience",
+          rqg: yesOff(skill.system.hasExperience, tickAllBoxes),
+        });
+      }
+      if (skill.system.specialization) {
+        fieldmapping.push({
+          pdf: rqid + "_" + String(skillNum).padStart(2, "0") + ".specialization",
+          rqg: skill.system.specialization,
+        });
+      }
+      skillNum++;
+    }
+
+    return fieldmapping;
+  }
+
+  function yesOff(value, tickAllBoxes) {
+    if (tickAllBoxes || value) {
+      return "Yes";
+    } else {
+      return "Off";
+    }
+  }
+
+  function formatHp(hitLocation) {
+    if (hitLocation) {
+      return `${hitLocation.system.hitPoints.value}/${hitLocation.system.hitPoints.max}`;
+    } else {
+      return "";
+    }
+  }
+
+  function itemByRqid(actor, rqid) {
+    let item = actor.items.find((i) => i.flags.rqg.documentRqidFlags.id === rqid);
+    return item;
+  }
+
+  function formatCommaList(list, lineLength, prefix = "") {
+    const result = [prefix];
+    for (item of list) {
+      let currentLine = result[result.length - 1];
+      if (
+        parseInt(item.length || 0) + parseInt(currentLine?.length || 0) >
+        lineLength
+      ) {
+        currentLine = "";
+        result.push(prefix);
+      }
+      result[result.length - 1] = currentLine + item + ", ";
+    }
+    return result;
+  }
+
+  function mapCharacteristics(fieldmapping, exportActor, options) {
+    const characteristics = [
+      { pdf: "Name", rqg: exportActor.name },
+      { pdf: "foundry-actor-id", rqg: exportActor.id },
+      {
+        pdf: "characteristics.charisma",
+        rqg: exportActor.system.characteristics.charisma.value,
+      },
+      {
+        pdf: "characteristics.constitution",
+        rqg: exportActor.system.characteristics.constitution.value,
+      },
+      {
+        pdf: "characteristics.dexterity",
+        rqg: exportActor.system.characteristics.dexterity.value,
+      },
+      {
+        pdf: "characteristics.intelligence",
+        rqg: exportActor.system.characteristics.intelligence.value,
+      },
+      {
+        pdf: "characteristics.power",
+        rqg: exportActor.system.characteristics.power.value,
+      },
+      {
+        pdf: "characteristics.power-hasExperience",
+        rqg: yesOff(
+          exportActor.system.characteristics.power.hasExperience,
+          options.tickAllBoxes
+        ),
+      },
+      {
+        pdf: "characteristics.size",
+        rqg: exportActor.system.characteristics.size.value,
+      },
+      {
+        pdf: "characteristics.strength",
+        rqg: exportActor.system.characteristics.strength.value,
+      },
+    ];
+    fieldmapping = fieldmapping.concat(characteristics);
+    return fieldmapping;
+  }
+
+  function mapAttributes(fieldmapping, exportActor, options) {
+    const attributes = [
+      {
+        pdf: "attributes.damageBonus",
+        rqg: exportActor.system.attributes.damageBonus,
+      },
+      {
+        pdf: "attributes.dexStrikeRank",
+        rqg: exportActor.system.attributes.dexStrikeRank,
+      },
+      {
+        pdf: "attributes.encumbrance.equipped",
+        rqg: exportActor.system.attributes.encumbrance.equipped,
+      },
+      {
+        pdf: "attributes.encumbrance.max",
+        rqg: exportActor.system.attributes.encumbrance.max,
+      },
+      {
+        pdf: "attributes.encumbrance.travel",
+        rqg: exportActor.system.attributes.encumbrance.travel,
+      },
+      {
+        pdf: "attributes.healingRate",
+        rqg: exportActor.system.attributes.healingRate,
+      },
+      { pdf: "attributes.health", rqg: exportActor.system.attributes.health },
+      {
+        pdf: "attributes.hitPoints.max",
+        rqg: exportActor.system.attributes.hitPoints.max,
+      },
+      {
+        pdf: "attributes.hitPoints.value",
+        rqg: exportActor.system.attributes.hitPoints.value,
+      },
+      {
+        pdf: "attributes.magicPoints.max",
+        rqg: exportActor.system.attributes.magicPoints.max,
+      },
+      {
+        pdf: "attributes.magicPoints.value",
+        rqg: exportActor.system.attributes.magicPoints.value,
+      },
+      {
+        pdf: "attributes.sizStrikeRank",
+        rqg: exportActor.system.attributes.sizStrikeRank,
+      },
+      {
+        pdf: "attributes.spiritCombatDamage",
+        rqg: exportActor.system.attributes.spiritCombatDamage,
+      },
+    ];
+    fieldmapping = fieldmapping.concat(attributes);
+    return fieldmapping;
+  }
+
+  function mapBackground(fieldmapping, exportActor, options) {
+    const backgrounds = [
+      {
+        pdf: "background.birthyear",
+        rqg: exportActor.system.background.birthyear,
+      },
+      { pdf: "background.age", rqg: exportActor.system.background.age },
+      {
+        pdf: "background.occupation",
+        rqg: exportActor.system.background.occupation,
+      },
+      { pdf: "background.ransom", rqg: exportActor.system.background.ransom },
+      { pdf: "background.gender", rqg: exportActor.system.background.gender },
+      { pdf: "background.homeland", rqg: exportActor.system.background.homeland },
+      {
+        pdf: "background.reputation",
+        rqg: exportActor.system.background.reputation,
+      },
+      {
+        pdf: "background.standardofliving",
+        rqg: exportActor.system.background.standardOfLiving,
+      },
+      {
+        pdf: "background.baseincome",
+        rqg: exportActor.system.background.baseIncome,
+      },
+      { pdf: "background.tribe", rqg: exportActor.system.background.tribe },
+      { pdf: "background.clan", rqg: exportActor.system.background.clan },
+      { pdf: "background.campaign", rqg: "Not Mapped" },
+      { pdf: "background.player", rqg: "Not Mapped" },
+    ];
+    fieldmapping = fieldmapping.concat(backgrounds);
+    return fieldmapping;
+  }
+
+  function mapSkillCategoryModifiers(fieldmapping, exportActor, options) {
+    const mods = [];
+    for (const property in exportActor.system.skillCategoryModifiers) {
+      const mod = exportActor.system.skillCategoryModifiers[property];
+      mods.push({
+        pdf: `skillCategoryModifier.${property}`,
+        rqg: (mod < 0 ? "" : "+") + mod,
+      });
+    }
+    fieldmapping = fieldmapping.concat(mods);
+    return fieldmapping;
+  }
+
+  function ensureRqid(item, itemType, options) {
+    let rqid = "";
+    if (item.flags?.rqg?.documentRqidFlags?.id) {
+      rqid = item.flags.rqg.documentRqidFlags.id;
+    } else {
+      rqid = game.system.api.rqid.getDefaultRqid(item);
+      const msg = `${itemType}} named "${item.name}" with id "${item.id}" did not have an rqid.  Using the default rqid of "${rqid}".  Consider designating the rqid for this passion.`;
+      console.warn(msg);
+      if (options.uiWarnOnMissingRqid) {
+        ui.notifications.warn(msg);
+      }
+    }
+    return rqid;
+  }
+
+  function mapHitLocations(fieldmapping, exportActor, options) {
+    const mappedHitLocations = [];
+    const hitLocations = exportActor.items.filter(
+      (i) => i.type === "hitLocation"
+    );
+    for (hitLoc of hitLocations) {
+      const rqid = ensureRqid(hitLoc, "HitLocation", options);
+      mappedHitLocations.push({
+        pdf: rqid + ".armorPoints",
+        rqg: hitLoc.system.armorPoints,
+      });
+      mappedHitLocations.push({
+        pdf: rqid + ".hitPoints",
+        rqg: formatHp(hitLoc),
+      });
+    }
+    fieldmapping = fieldmapping.concat(mappedHitLocations);
+    return fieldmapping;
+  }
+
+  function mapRunes(fieldmapping, exportActor, options) {
+    const mappedRunes = [];
+    const runes = exportActor.items.filter((i) => i.type === "rune");
+    for (rune of runes) {
+      const rqid = ensureRqid(rune, "Rune", options);
+
+      mappedRunes.push({
+        pdf: rqid + ".chance",
+        rqg: rune.system.chance,
+      });
+      mappedRunes.push({
+        pdf: rqid + ".hasExperience",
+        rqg: yesOff(rune.system.hasExperience, options.tickAllBoxes),
+      });
+    }
+    fieldmapping = fieldmapping.concat(mappedRunes);
+    return fieldmapping;
+  }
+
+  function mapSkills(fieldmapping, exportActor, options) {
+    const mappedSkills = [];
+    const skills = exportActor.items.filter((i) => i.type === "skill");
+
+    for (skill of skills) {
+      const rqid = ensureRqid(skill, "Skill", options);
+
+      mappedSkills.push({
+        pdf: rqid + ".chance",
+        rqg: skill.system.chance,
+      });
+      if (skill.system.canGetExperience) {
+        mappedSkills.push({
+          pdf: rqid + ".hasExperience",
+          rqg: yesOff(skill.system.hasExperience, options.tickAllBoxes),
+        });
+      }
+      if (skill.system.specialization) {
+        mappedSkills.push({
+          pdf: rqid + ".specialization",
+          rqg: skill.system.specialization,
+        });
+      }
+    }
+    fieldmapping = fieldmapping.concat(mappedSkills);
+    return fieldmapping;
+  }
+
+  function mapSkillsNumbered(fieldmapping, exportActor, options) {
+    const skills = exportActor.items.filter((i) => i.type === "skill");
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.craft",
+      true,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.cult-lore",
+      true,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.customs",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.homeland-lore",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.insight",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.speak-language",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.play-instrument",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.read-write",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.worship",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.1h-axes",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.1h-daggers",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.1h-hammers",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.1h-maces",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.1h-spears",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.1h-swords",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.2h-axes",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.2h-hammers",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.2h-mace",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.2h-spears",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.2h-swords",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.crossbows",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.fists",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.javelins",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.shields",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.thrown-axe",
+      false,
+      options.tickAllBoxes
+    );
+
+    fieldmapping = numberSkills(
+      fieldmapping,
+      skills,
+      "i.skill.thrown-dagger",
+      false,
+      options.tickAllBoxes
+    );
+
+    return fieldmapping;
+  }
+
+  function mapPassions(fieldmapping, exportActor, options) {
+    const passions = exportActor.items.filter((i) => i.type === "passion");
+
+    let mappedPassions = [];
+
+    for (passion of passions) {
+      let rqid = ensureRqid(passion, "Passion", options);
+
+      mappedPassions.push({ pdf: rqid + ".chance", rqg: passion.system.chance });
+      mappedPassions.push({
+        pdf: rqid + ".hasExperience",
+        rqg: yesOff(passion.system.hasExperience),
+      });
+      mappedPassions.push({
+        pdf: rqid + ".passion",
+        rqg: passion.system.passion,
+      });
+      mappedPassions.push({
+        pdf: rqid + ".subject",
+        rqg: passion.system.subject,
+      });
+    }
+
+    fieldmapping = fieldmapping.concat(mappedPassions);
+    return fieldmapping;
+  }
+
+  function mapPassionsNumbered(fieldmapping, exportActor, options) {
+    const passions = exportActor.items.filter((i) => i.type === "passion");
+    passions.sort((a, b) => {
+      if (a.system.chance > b.system.chance) {
+        return -1;
+      }
+      if (a.system.chance < b.system.chance) {
+        return 1;
+      }
+      return 0;
+    });
+
+    let passionNum = 1;
+
+    let mappedPassions = [];
+
+    for (passion of passions) {
+      let rqid = undefined;
+
+      if (passion.flags?.rqg?.documentRqidFlags?.id) {
+        rqid = passion.flags.rqg.documentRqidFlags.id;
+      } else {
+        rqid = game.system.api.rqid.getDefaultRqid(passion);
+      }
+
+      if (options.omitHonorFromNumberedPassions && rqid === "i.passion.honor") {
+        continue;
+      }
+
+      mappedPassions.push({
+        pdf: "i.passion_" + String(passionNum).padStart(2, "0") + ".chance",
+        rqg: passion.system.chance,
+      });
+      mappedPassions.push({
+        pdf:
+          "i.passion_" + String(passionNum).padStart(2, "0") + ".hasExperience",
+        rqg: yesOff(passion.system.hasExperience, options.tickAllBoxes),
+      });
+      mappedPassions.push({
+        pdf: "i.passion_" + String(passionNum).padStart(2, "0") + ".passion",
+        rqg: passion.system.passion,
+      });
+      mappedPassions.push({
+        pdf: "i.passion_" + String(passionNum).padStart(2, "0") + ".subject",
+        rqg: passion.system.subject,
+      });
+      passionNum++;
+    }
+
+    fieldmapping = fieldmapping.concat(mappedPassions);
+    return fieldmapping;
+  }
+
+  function mapCults(fieldmapping, exportActor, options) {
+    const cults = exportActor.items.filter((i) => i.type === "cult");
+
+    const mappedCults = [];
+
+    for (cult of cults) {
+      const rqid = ensureRqid(cult, "Cult", options);
+      mappedCults.push({
+        pdf: rqid + ".cultName",
+        rqg: cult.name,
+      });
+      mappedCults.push({
+        pdf: rqid + ".rank",
+        rqg: cult.system.rank,
+      });
+      mappedCults.push({
+        pdf: rqid + ".runePoints.value",
+        rqg: cult.system.runePoints.value,
+      });
+      mappedCults.push({
+        pdf: rqid + ".subCults",
+        rqg: cult.system.subCults,
+      });
+    }
+
+    fieldmapping = fieldmapping.concat(mappedCults);
+    return fieldmapping;
+  }
+
+  function mapCultsNumbered(fieldmapping, exportActor, options) {
+    const mappedCults = [];
+    const cults = exportActor.items.filter((i) => i.type === "cult");
+    let cultNum = 1;
+    for (cult of cults) {
+      mappedCults.push({
+        pdf: "i.cult_" + String(cultNum).padStart(2, "0") + ".cultName",
+        rqg: cult.name,
+      });
+      mappedCults.push({
+        pdf: "i.cult_" + String(cultNum).padStart(2, "0") + ".rank",
+        rqg: cult.system.rank,
+      });
+      mappedCults.push({
+        pdf: "i.cult_" + String(cultNum).padStart(2, "0") + ".runePoints.value",
+        rqg: cult.system.runePoints.value,
+      });
+      mappedCults.push({
+        pdf: "i.cult_" + String(cultNum).padStart(2, "0") + ".subCults",
+        rqg: cult.system.subCults,
+      });
+      cultNum++;
+    }
+    fieldmapping = fieldmapping.concat(mappedCults);
+    return fieldmapping;
+  }
+
+  function mapSpiritMagicSpellsCommaList(fieldmapping, exportActor, options) {
+    const spiritMagicCommaListLines = [];
+
+    const spiritMagicSpells = exportActor.items.filter(
+      (i) => i.type === "spiritMagic"
+    );
+    spiritMagicSpells.sort((a, b) => {
+      // Ascending by name
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+    let spellStrings = [];
+    let spiritMagicPointsSum = 0;
+    for (spell of spiritMagicSpells) {
+      spellStrings.push(`${spell.name} ${spell.system.points}`);
+      spiritMagicPointsSum += spell.system.points;
+    }
+
+    fieldmapping.push({
+      pdf: "spirit-magic-comma-list-full-string",
+      rqg: spellStrings.join(", "),
+    });
+
+    const spiritSpellCommaListLines = formatCommaList(
+      spellStrings,
+      options.spiritMagicCommaListLineLength
+    );
+    let lineNum = 1;
+    for (line of spiritSpellCommaListLines) {
+      spiritMagicCommaListLines.push({
+        pdf: "spirit-magic-comma-list-line-" + String(lineNum).padStart(2, "0"),
+        rqg: line,
+      });
+      lineNum++;
+    }
+
+    const lastLine =
+      spiritMagicCommaListLines[spiritMagicCommaListLines.length - 1].rqg;
+    spiritMagicCommaListLines[spiritMagicCommaListLines.length - 1].rqg =
+      lastLine.slice(0, -2);
+
+    spiritMagicCommaListLines.push({
+      pdf: "spirit-magic-free-cha-limit",
+      rqg:
+        exportActor.system.characteristics.charisma.value - spiritMagicPointsSum,
+    });
+
+    fieldmapping = fieldmapping.concat(spiritMagicCommaListLines);
+    return fieldmapping;
+  }
+
+  function mapRuneMagicSpellsCommaList(fieldmapping, exportActor, options) {
+    const commonRuneMagic = [
+      "i.rune-magic.command-cult-spirit",
+      "i.rune-magic.dismiss-magic",
+      "i.rune-magic.divination",
+      "i.rune-magic.extension",
+      "i.rune-magic.find-enemy",
+      "i.rune-magic.heal-wound",
+      "i.rune-magic.multispell",
+      "i.rune-magic.sanctify",
+      "i.rune-magic.soul-sight",
+      "i.rune-magic.spirit-block",
+      "i.rune-magic.summon-cult-spirit",
+      "i.rune-magic.warding",
+    ];
+
+    const runeMagicSpells = exportActor.items.filter(
+      (i) => i.type === "runeMagic"
+    );
+    runeMagicSpells.sort((a, b) => {
+      // Ascending by name
+      if (a.name < b.name) {
+        return -1;
+      }
+      if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+    let cultStrings = {};
+    for (spell of runeMagicSpells) {
+      if (!cultStrings[spell.system.cultId]) {
+        cultStrings[spell.system.cultId] = [];
+      }
+
+      const spellStrings = cultStrings[spell.system.cultId];
+
+      if (
+        options.omitCommonRuneMagic ||
+        !commonRuneMagic.includes(spell.flags?.rqg?.documentRqidFlags?.id)
+      ) {
+        spellStrings.push(
+          `${spell.name} ${spell.system.points} ${spell.system.chance}%`
+        );
+      } else if (
+        !options.omitCommonRuneMagic &&
+        commonRuneMagic.includes(spell.flags.rqg.documentRqidFlags.id)
+      ) {
+        if (!cultStrings["Common"]) {
+          cultStrings["Common"] = [];
+        }
+        cultStrings["Common"].push(
+          `${spell.name} ${spell.system.points} ${spell.system.chance}%`
+        );
+      }
+    }
+
+    let runeSpellCommaListLines = [];
+
+    let fullRuneMagicString = "";
+
+    for (cultId in cultStrings) {
+      if (cultId !== "Common") {
+        const cultName = exportActor.items.find((i) => i.id === cultId)?.name;
+        fullRuneMagicString += `${cultName}: ${cultStrings[cultId].join(", ")}`;
+        runeSpellCommaListLines = runeSpellCommaListLines.concat(
+          formatCommaList(
+            cultStrings[cultId],
+            options.runeMagicCommaListLineLength,
+            cultName + ": "
+          )
+        );
+        fullRuneMagicString += "\r\n";
+      }
+    }
+
+    if (cultStrings["Common"]) {
+      fullRuneMagicString += `Common: ${cultStrings["Common"].join(", ")}`;
+    }
+    const runeMagicCommaListLines = [];
+
+    let lineNum = 1;
+    for (line of runeSpellCommaListLines) {
+      runeMagicCommaListLines.push({
+        pdf: "rune-magic-comma-list-line-" + String(lineNum).padStart(2, "0"),
+        rqg: line,
+      });
+      lineNum++;
+    }
+
+    fieldmapping = fieldmapping.concat(runeMagicCommaListLines);
+    fieldmapping.push({
+      pdf: "rune-magic-comma-list-full-string",
+      rqg: fullRuneMagicString,
+    });
+    return fieldmapping;
+  }
+
+  function mapWeapons(fieldmapping, exportActor, options) {
+    const weapons = exportActor.items.filter((i) => i.type == "weapon");
+
+    const shortUsages = {
+      missile: "M",
+      offHand: "Off",
+      oneHand: "1H",
+      twoHand: "2H",
+    };
+
+    const rateOfFire = {
+      0: "S/MR",
+      1: "1/MR",
+      2: "1/2MR",
+      3: "1/3MR",
+      4: "1/4MR",
+      5: "1/5MR",
+    };
+
+    let actorMeleeStrikeRank =
+      parseInt(exportActor.system.attributes.dexStrikeRank) +
+      parseInt(exportActor.system.attributes.sizStrikeRank);
+
+    const meleeWeapons = [];
+    const missileWeapons = [];
+
+    for (weapon of weapons) {
+      for (usageName in weapon.system.usage) {
+        const usageSkillId = weapon.system.usage[usageName].skillId;
+        const usage = weapon.system.usage[usageName];
+
+        if (usageSkillId) {
+          let weaponSkill = exportActor.items.find((i) => i.id === usageSkillId);
+
+          let weaponPrefix = "";
+
+          let weaponMapping = { skill: {}, usage: {}, hitPoints: {} };
+
+          weaponMapping.name = `${weapon.name} (${shortUsages[usageName]})`;
+          weaponMapping.skill.chance = weaponSkill.system.chance;
+          weaponMapping.usage.damage = usage.damage;
+          weaponMapping.encumbrance = weapon.system.encumbrance;
+          weaponMapping.hitPoints.value = weapon.system.hitPoints.value;
+          weaponMapping.skill.hasExperience = yesOff(
+            weaponSkill.system.hasExperience,
+            options.tickAllBoxes
+          );
+
+          if (usageName === "missile") {
+            weaponMapping.range = weapon.system.range;
+            weaponMapping.rate = rateOfFire[weapon.system.rate];
+            missileWeapons.push(weaponMapping);
+          } else {
+            let sr = parseInt(usage.strikeRank);
+            if (options.weaponShowTotalStrikeRank) {
+              sr += actorMeleeStrikeRank;
+            }
+
+            weaponMapping.usage.strikeRank = sr;
+            meleeWeapons.push(weaponMapping);
+          }
+        }
+      }
+    }
+
+    missileWeapons.sort((a, b) => {
+      // Descending by skill
+      if (a.skill.chance > b.skill.chance) {
+        return -1;
+      }
+      if (a.skill.chance < b.skill.chance) {
+        return 1;
+      }
+      return 0;
+    });
+
+    meleeWeapons.sort((a, b) => {
+      // Descending by skill
+      if (a.skill.chance > b.skill.chance) {
+        return -1;
+      }
+      if (a.skill.chance < b.skill.chance) {
+        return 1;
+      }
+      return 0;
+    });
+
+    let missileWeaponLineNum = 1;
+    for (missileWeapon of missileWeapons) {
+      weaponPrefix =
+        "weapon-missile_" + String(missileWeaponLineNum).padStart(2, "0");
+      missileWeaponLineNum++;
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".name",
+        rqg: missileWeapon.name,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".skill.chance",
+        rqg: missileWeapon.skill.chance,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".usage.damage",
+        rqg: missileWeapon.usage.damage,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".encumbrance",
+        rqg: missileWeapon.encumbrance,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".hitPoints.value",
+        rqg: missileWeapon.hitPoints.value,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".range",
+        rqg: missileWeapon.range,
+      });
+      fieldmapping.push({
+        pdf: weaponPrefix + ".rate",
+        rqg: missileWeapon.rate,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".skill.hasExperience",
+        rqg: yesOff(missileWeapon.skill.hasExperience, options.tickAllBoxes),
+      });
+    }
+
+    let meleeWeaponLineNum = 1;
+    for (meleeWeapon of meleeWeapons) {
+      weaponPrefix =
+        "weapon-melee_" + String(meleeWeaponLineNum).padStart(2, "0");
+      meleeWeaponLineNum++;
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".name",
+        rqg: meleeWeapon.name,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".skill.chance",
+        rqg: meleeWeapon.skill.chance,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".usage.damage",
+        rqg: meleeWeapon.usage.damage,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".encumbrance",
+        rqg: meleeWeapon.encumbrance,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".hitPoints.value",
+        rqg: meleeWeapon.hitPoints.value,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".usage.strikeRank",
+        rqg: meleeWeapon.usage.strikeRank,
+      });
+
+      fieldmapping.push({
+        pdf: weaponPrefix + ".skill.hasExperience",
+        rqg: yesOff(meleeWeapon.skill.hasExperience, options.tickAllBoxes),
+      });
+    }
+
+    return fieldmapping;
+  }
+
+  function mapGear(fieldmapping, exportActor, options) {
+    const armors = exportActor.items
+      .filter((i) => i.type === "armor")
+      .map((i) => i.name);
+
+    const weapons = exportActor.items
+      .filter((i) => i.type === "weapon" && !i.system.isNatural)
+      .map((i) => i.name);
+
+    const gear = exportActor.items
+      .filter((i) => i.type === "gear" && i.system.physicalItemType != "currency")
+      .map((i) => i.name);
+
+    let gearFullString = [
+      "Armor: " + armors.join(", "),
+      "Weapons: " + weapons.join(", "),
+      "Gear: " + gear.join(", "),
+    ];
+
+    fieldmapping.push({
+      pdf: "gear-full-string",
+      rqg: gearFullString.join("\r\n"),
+    });
+
+    const shield = exportActor.items.find(
+      (i) =>
+        i.type === "weapon" &&
+        i.name.includes(options.shieldIdentifier) &&
+        i.system.equippedStatus === "equipped"
+    );
+
+    if (shield) {
+      const shieldSkill = exportActor.items.find(
+        (i) => i.id === shield.system.usage.oneHand.skillId
+      );
+      if (shieldSkill) {
+        fieldmapping.push({
+          pdf: "shield-equipped-skill.chance",
+          rqg: shieldSkill.system.chance,
+        });
+      }
+      fieldmapping.push({
+        pdf: "shield-equipped-hitpoints-value",
+        rqg: shield.system.hitPoints.value,
+      });
+      fieldmapping.push({
+        pdf: "shield-equipped-damage",
+        rqg: shield.system.usage.oneHand.damage,
+      });
+    }
+
+    let currencies = exportActor.items.filter(
+      (i) => i.type === "gear" && i.system.physicalItemType === "currency"
+    );
+
+    for (currency of currencies) {
+      fieldmapping.push({
+        pdf: "gear-currency-" + currency.name,
+        rqg: currency.system.quantity,
+      });
+    }
+    return fieldmapping;
+  }
+flags:
