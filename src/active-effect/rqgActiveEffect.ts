@@ -1,7 +1,7 @@
 import { formatListByWorldLanguage, localize, logMisconfiguration } from "../system/util";
-import { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
-import { RqgActor } from "../actors/rqgActor";
 import { Rqid } from "../system/api/rqidApi";
+import type { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
+import type { RqgActor } from "../actors/rqgActor";
 
 export class RqgActiveEffect extends ActiveEffect {
   static init() {
@@ -102,7 +102,8 @@ export class RqgActiveEffect extends ActiveEffect {
       foundry.utils.setProperty(item, path, update);
     } catch (e) {
       const msg = `Active Effect on item [${item.name}] in actor [${actor.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
-      ui.notifications?.warn(msg);
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
       console.warn("RQG |", msg, change, e);
     }
   }

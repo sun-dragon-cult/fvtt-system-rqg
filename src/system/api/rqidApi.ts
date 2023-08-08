@@ -2,7 +2,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { systemId } from "../config";
 import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 // TODO Look into enhancing typing of rqid strings like this
 export type RqidString =
@@ -69,8 +69,9 @@ export class Rqid {
         rqid: rqid,
         lang: lang,
       });
-      ui.notifications?.warn(msg);
-      console.log("RQG |", msg);
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
+      console.warn("RQG |", msg);
     }
     return undefined;
   }
@@ -365,7 +366,8 @@ export class Rqid {
         lang: lang,
         priority: candidateDocuments[0]?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
       });
-      ui.notifications?.error(msg);
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       // TODO Or should this be handled in the compendium browser eventually?
       console.warn(msg + "  Duplicate items: ", candidateDocuments);
@@ -460,7 +462,8 @@ export class Rqid {
         lang: lang,
         priority: result[0].indexData.flags.rqg.documentRqidFlags.priority ?? "---",
       });
-      ui.notifications?.error(msg);
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       console.warn(msg + "  Duplicate items: ", result);
     }
@@ -502,8 +505,9 @@ export class Rqid {
               rqid: rqidRegex,
               lang: lang,
             });
-            ui.notifications?.error(msg);
-            console.log("RQG |", msg, index);
+            // @ts-expect-error console
+            ui.notifications?.error(msg, { console: false });
+            console.error("RQG |", msg, index);
             throw new RqgError(msg, index, indexInstances);
           }
           candidateDocuments.push(document);

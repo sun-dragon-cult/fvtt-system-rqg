@@ -54,8 +54,9 @@ export class nameGeneration {
     }
 
     const msg = localize("RQG.Notification.Warn.NameGenRqidNotSupported", { rqid: rqid });
+    // @ts-expect-error console
+    ui.notifications?.warn(msg, { console: false });
     console.warn(msg);
-    ui.notifications?.warn(msg);
 
     return undefined;
   }
@@ -74,8 +75,9 @@ export class nameGeneration {
 
     if (!nameBase) {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", { rqid: rqid });
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
-      ui.notifications?.warn(msg);
       return undefined;
     }
 
@@ -102,8 +104,9 @@ export class nameGeneration {
     }
     if (warn) {
       // Only warn once because the try catch above could fail numerous times
+      // @ts-expect-error console
+      ui.notifications?.warn(nameBaseNotLongEnoughMsg, { console: false });
       console.warn(nameBaseNotLongEnoughMsg);
-      ui.notifications?.warn(nameBaseNotLongEnoughMsg);
     }
     return result;
   }
@@ -182,8 +185,9 @@ export class nameGeneration {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", {
         rqid: rqid,
       });
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
-      ui.notifications?.warn(msg);
       return undefined;
     }
 

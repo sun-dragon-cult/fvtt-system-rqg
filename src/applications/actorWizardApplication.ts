@@ -1,4 +1,3 @@
-import { RqgActor } from "../actors/rqgActor";
 import { RqgActorSheet } from "../actors/rqgActorSheet";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "../system/config";
@@ -11,11 +10,12 @@ import {
 } from "../system/util";
 import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { IAbility } from "../data-model/shared/ability";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { Rqid } from "../system/api/rqidApi";
+import type { IAbility } from "../data-model/shared/ability";
+import type { RqgActor } from "../actors/rqgActor";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -47,8 +47,9 @@ export class ActorWizard extends FormApplication {
     } else {
       this.species.selectedSpeciesTemplate = undefined;
       const msg = `The Actor named ${this.actor.name} has a \n[rqg.actorWizardFlags.selectedSpeciesId]\n flag with a value that is not an RqgActor.`;
+      // @ts-expect-error console
+      ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
-      ui.notifications?.warn(msg);
     }
 
     const savedChoices = this.actor.getFlag(systemId, actorWizardFlags)?.wizardChoices;

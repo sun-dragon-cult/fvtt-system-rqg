@@ -1,9 +1,9 @@
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemUpdate } from "../applyMigrations";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
-import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { UsageType } from "../../../data-model/item-data/weaponData";
+import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 
 const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
@@ -79,7 +79,8 @@ async function getSkillRqidLink(
         }] has a linked skill item for ${usageType} use that does not have a rqid. Old link was [${
           (itemData.system as any).usage[usageType].skillOrigin
         }]`;
-    ui.notifications?.warn(msg);
+    // @ts-expect-error console
+    ui.notifications?.warn(msg, { console: false });
     console.warn("RQG |", msg);
   }
   return currentRqid

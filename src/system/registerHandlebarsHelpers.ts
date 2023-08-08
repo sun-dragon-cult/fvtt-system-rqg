@@ -2,9 +2,9 @@ import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { getAvailableRunes, getGame, localize, localizeItemType } from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import type { RqgItem } from "../items/rqgItem";
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
+import type { RqgItem } from "../items/rqgItem";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -84,7 +84,8 @@ export const registerHandlebarsHelpers = function () {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
         runeName: runeName,
       });
-      ui.notifications?.error(msg);
+      // @ts-expect-error console
+      ui.notifications?.error(msg, { console: false });
       console.error("RQG |", msg);
       return "";
     }
@@ -173,7 +174,8 @@ function applyFnToItemFromHandlebarsArgs(
 
   if (!uuid) {
     const msg = `Handlebars helper called with an empty uuid`;
-    ui.notifications?.error(msg);
+    // @ts-expect-error console
+    ui.notifications?.error(msg, { console: false });
     // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, arguments);
     return "🐛";

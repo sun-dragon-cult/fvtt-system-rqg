@@ -51,7 +51,8 @@ export async function migrateWorld(): Promise<void> {
   await migrateWorldDialog(systemVersion);
   ui.notifications?.info(
     localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
-    { permanent: true },
+    // @ts-expect-error console
+    { permanent: true, console: false },
   );
   console.log(`RQG | Starting world migration to version ${systemVersion}`);
 
@@ -61,9 +62,8 @@ export async function migrateWorld(): Promise<void> {
 
   ui.notifications?.info(
     localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
-    {
-      permanent: true,
-    },
+    // @ts-expect-error console
+    { permanent: true, console: false },
   );
   console.log(`RQG | Finished world migration`);
 }

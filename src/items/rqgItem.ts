@@ -10,12 +10,12 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { activateChatTab, getGame, hasOwnProperty, localize, RqgError } from "../system/util";
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { ResultEnum, ResultMessage } from "../data-model/shared/ability";
+import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
 export class RqgItem extends Item {
   public static init() {
@@ -223,8 +223,9 @@ export class RqgItem extends Item {
         itemName: this.name,
         itemId: this.id,
       });
-      console.log(msg);
-      ui.notifications?.error(msg);
+      // @ts-expect-error console
+      ui.notifications?.error(msg, { console: false });
+      console.error(msg);
     }
   }
 
