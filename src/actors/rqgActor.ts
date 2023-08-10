@@ -133,10 +133,10 @@ export class RqgActor extends Actor {
     con: number | undefined,
     carryingFactor: number | undefined,
   ): number {
-    if (!str || !con) {
+    if (!str) {
       return 0;
     }
-    return Math.round(Math.min(str, (str + con) / 2) * (carryingFactor ?? 1));
+    return Math.round(Math.min(str, (str + (con ?? 0)) / 2) * (carryingFactor ?? 1));
   }
 
   private calcTravelEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
