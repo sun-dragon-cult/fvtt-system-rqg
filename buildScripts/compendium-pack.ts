@@ -168,7 +168,9 @@ export class CompendiumPack {
   }
 
   private isDocumentSource(maybeDocSource: unknown): maybeDocSource is CompendiumSource {
-    if (!isObject(maybeDocSource)) return false;
+    if (!isObject(maybeDocSource)) {
+      return false;
+    }
     const checks = Object.entries({
       name: (data: { name?: unknown }) => typeof data.name === "string",
       flags: (data: unknown) => typeof data === "object" && data !== null && "flags" in data,
@@ -245,7 +247,7 @@ function replaceLinkedDocs(
   const rqidRegex = new RegExp(`^\\s*id:\\s+${escapeRegex(rqid)}$`, "m");
 
   for (const entry of packEntries) {
-    if (entry.match(rqidRegex)) {
+    if (rqidRegex.test(entry)) {
       // Add two spaces to every line to indent it properly
       let cleanEntry = entry.replace(/\r/, "").replace(/\n/gm, "\n  ");
 

@@ -61,10 +61,10 @@ export const registerRqgSystemSettings = function () {
     scope: "world",
     config: true,
     type: String,
-    // @ts-expect-error choices
+    // @ts-expect-error choices, requiresReload
     choices: CONFIG.supportedLanguages,
     default: "en",
-    onChange: () => setTimeout(() => window.location.reload(), 200),
+    requiresReload: true,
   });
 
   getGame().settings.register(systemId, "showOnlyWorldLanguagePacks", {
@@ -74,7 +74,8 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: Boolean,
     default: true,
-    onChange: () => setTimeout(() => window.location.reload(), 200),
+    // @ts-expect-error requiresReload
+    requiresReload: true,
   });
 
   getGame().settings.register(systemId, "showEnglishLanguagePacksAlso", {
@@ -84,7 +85,8 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: Boolean,
     default: false,
-    onChange: () => setTimeout(() => window.location.reload(), 200),
+    // @ts-expect-error requiresReload
+    requiresReload: true,
   });
 
   getGame().settings.register(systemId, "fumbleRollTable", {
