@@ -12,15 +12,13 @@
   </tr>
   </thead>
   {{#each effects}}
-  <tr data-actor-effect-edit data-effect-uuid="{{uuid}}">
-    <td><img class="effect-img" src="{{img}}"></td>
-    <td>{{name}}<br>
-      <i>@ {{parent.name}}</i>
-    </td>
-    <td>{{yes-no disabled}}</td>
-    <td>{{duration.startTime}}</td>
-    <td>{{duration.seconds}}</td>
-    <td>
+  <tr data-effect-uuid="{{uuid}}">
+    <td data-actor-effect-edit><img class="effect-img" src="{{img}}"></td>
+    <td>{{name}}<br>{{toAnchor parent.uuid}}</td>
+    <td data-actor-effect-edit>{{yes-no disabled}}</td>
+    <td data-actor-effect-edit>{{duration.startTime}}</td>
+    <td data-actor-effect-edit>{{duration.seconds}}</td>
+    <td data-actor-effect-edit>
       <table>
       {{#each changes}}
         <tbody>

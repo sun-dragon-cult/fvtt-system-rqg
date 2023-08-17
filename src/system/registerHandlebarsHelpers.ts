@@ -1,9 +1,16 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
-import { getAvailableRunes, getGame, localize, localizeItemType, toCamelCase } from "./util";
+import {
+  formatListByUserLanguage,
+  getAvailableRunes,
+  getGame,
+  localize,
+  localizeItemType,
+  toCamelCase,
+} from "./util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
+import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import type { RqgItem } from "../items/rqgItem";
 
 export const registerHandlebarsHelpers = function () {
@@ -58,21 +65,31 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("skillname", (...args) => {
-    return applyFnToItemFromHandlebarsArgs(args, (item) => {
-      const specialization = item.system.specialization ? ` (${item.system.specialization})` : "";
-      return `${item.system.skillName}${specialization}`;
+    return applyFnToDocumentFromHandlebarsArgs(args, (item) => {
+      const specialization = item?.system.specialization ? ` (${item.system.specialization})` : "";
+      return `${item?.system.skillName}${specialization}`;
     });
   });
 
   Handlebars.registerHelper("skillchance", (...args) =>
-    applyFnToItemFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---")),
+    applyFnToDocumentFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---")),
   );
 
   Handlebars.registerHelper("experiencedclass", (...args) =>
-    applyFnToItemFromHandlebarsArgs(args, (item) =>
-      item && item.system.hasExperience ? "experienced" : "",
+    applyFnToDocumentFromHandlebarsArgs(args, (item) =>
+      item?.system.hasExperience ? "experienced" : "",
     ),
   );
+
+  Handlebars.registerHelper("toAnchor", (...args) => {
+    const documentLink = applyFnToDocumentFromHandlebarsArgs<Document<any, any>>(
+      args,
+      // @ts-expect-error toAnchor
+      (document) => (document ? document.toAnchor({ classes: ["content-link"] }).outerHTML : "🐛"),
+      ["Item", "Actor"],
+    );
+    return new Handlebars.SafeString(documentLink ?? "🐛");
+  });
 
   Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
     if (!runeName) {
@@ -161,14 +178,17 @@ export const registerHandlebarsHelpers = function () {
 };
 
 /**
- * Find the referenced embedded item and apply a function with that item as parameter.
+ * Find the referenced embedded document T (defaults to item) and apply a function with that document as parameter.
  * Takes either an uuid directly to an embedded item: `{{helpername itemUuid}}`
- * or an uuid to an actor and an id to an embedded item on that actor: `{{helpername actorUuid embeddedItemId}}`
+ * or an uuid to an actor and an id to an embedded item on that actor: `{{helpername actorUuid embeddedItemId}}`.
+ * The expectedDocumentNames is a guard against unexpected returns, and should be a list if documentNames that is
+ * expected to be returned.
  */
-function applyFnToItemFromHandlebarsArgs(
+function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgItem>(
   handlebarsArgs: any[],
-  fn: (item: RqgItem) => string,
-): string {
+  fn: (document: T | undefined) => string,
+  expectedDocumentNames: string[] = ["Item"],
+): string | undefined {
   const uuid = handlebarsArgs?.[0];
   const embeddedItemId = typeof handlebarsArgs?.[1] === "string" ? handlebarsArgs[1] : undefined;
 
@@ -201,23 +221,25 @@ function applyFnToItemFromHandlebarsArgs(
       ? (itemActorOrToken as TokenDocument).actor
       : itemActorOrToken;
 
-  const item =
+  const document =
     embeddedItemId && itemOrActor?.documentName === "Actor"
       ? itemOrActor.getEmbeddedDocument("Item", embeddedItemId)
       : itemOrActor;
 
-  if (embeddedItemId && item?.documentName !== "Item") {
+  if (embeddedItemId && document?.documentName !== "Item") {
     const msg = `Handlebars helper couldn't find embedded item in ${itemOrActor?.name}`;
     // eslint-disable-next-line prefer-rest-params
-    console.error("RQG | ", msg, item, arguments);
+    console.error("RQG | ", msg, document, arguments);
     return "🐛";
   }
 
-  if (item?.documentName !== "Item") {
-    const msg = `Handlebars helper expected item but got ${item?.documentName} called ${item?.name}`;
+  if (!expectedDocumentNames.includes(document?.documentName ?? "")) {
+    const msg = `Handlebars helper expected ${formatListByUserLanguage(
+      expectedDocumentNames,
+    )} but got ${document?.documentName} called ${document?.name}`;
     // eslint-disable-next-line prefer-rest-params
-    console.error("RQG | ", msg, item, arguments);
+    console.error("RQG | ", msg, document, arguments);
     return "🐛";
   }
-  return fn(item as RqgItem);
+  return fn((document as T) ?? undefined);
 }
