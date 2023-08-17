@@ -34,6 +34,14 @@
   "secondaryTokenAttribute": "attributes.magicPoints.value",
   "gridDistance": 1.5,
   "gridUnits": "m",
+  "relationships": {
+    "recommends": [
+      {
+        "id": "drag-ruler",
+        "type": "module"
+      }
+    ]
+  },
   "packFolders": [
     {
       "name": "RuneQuest Glorantha | en",

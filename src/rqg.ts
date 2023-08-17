@@ -23,6 +23,7 @@ import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 import { RqgSettings } from "./foundryUi/RqgSettings";
 import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
 import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
+import { dragRulerModuleIntegrationInit } from "./external-module-integrations/drag-ruler";
 
 Hooks.once("init", async () => {
   console.log(
@@ -86,6 +87,8 @@ Hooks.once("init", async () => {
   RqgJournalEntry.init();
   TextEditorHooks.init();
   RqgSettings.init();
+
+  dragRulerModuleIntegrationInit();
 
   // @ts-expect-error unregisterSheet
   RollTables.unregisterSheet("core", RollTableConfig);

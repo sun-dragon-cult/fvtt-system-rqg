@@ -1207,6 +1207,21 @@
     "UI": {
       "SortItems": "Sort items alphabetically",
       "MultipleCults": "Character has more cults,<br> see Rune Magic Tab"
+    },
+    "Integrations": {
+      "DragRuler": {
+        "Speeds": {
+          "Attack": "attack",
+          "Walk": "walk",
+          "Sprint": "sprint"
+        },
+        "Settings": {
+          "SprintMultiplier": {
+            "Name": "Sprint Speed Multiplier",
+            "Hint": "This is for the optional rule that allows sprinting longer than MOV in certain situations. For example a MOV 8 character with a speed multiplier of 3 would be able to sprint 8 MOV * 3m * 3 multiplier = 72m. Set it to 0 to disable it."
+          }
+        }
+      }
     }
   }
 }
