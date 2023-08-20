@@ -26,7 +26,7 @@ export class RqgActor extends Actor {
 
     Actors.unregisterSheet("core", ActorSheet);
     Actors.registerSheet(systemId, RqgActorSheet as any, {
-      label: "Character Sheet",
+      label: "RQG.SheetName.Actor.Character",
       types: [ActorTypeEnum.Character],
       makeDefault: true,
     });

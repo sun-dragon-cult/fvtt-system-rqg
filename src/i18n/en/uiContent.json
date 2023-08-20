@@ -16,6 +16,9 @@
       "spiritMagic": "Spirit Magic Spell",
       "weapon": "Weapon",
       "Reputation": "Reputation"
+    },
+    "Actor": {
+      "character": "Character"
     }
   },
   "RQG": {
@@ -1207,6 +1210,26 @@
     "UI": {
       "SortItems": "Sort items alphabetically",
       "MultipleCults": "Character has more cults,<br> see Rune Magic Tab"
+    },
+    "SheetName": {
+      "Actor": {
+        "Character": "Character Sheet"
+      },
+      "Item": {
+        "Armor": "Armor Item Sheet",
+        "Cult": "Cult Item Sheet",
+        "Gear": "Gear Item Sheet",
+        "HitLocation": "Hit Location Item Sheet",
+        "Homeland": "Homeland Item Sheet",
+        "Occupation": "Occupation Item Sheet",
+        "Passion": "Passion Item Sheet",
+        "Rune": "Rune Item Sheet",
+        "RuneMagicSpell": "Rune Magic Item Sheet",
+        "Skill": "Skill Item Sheet",
+        "SpiritMagicSpell": "Spirit Magic Item Sheet",
+        "Weapon": "Weapon Item Sheet"
+      },
+      "RollTable":"Rollable Table Sheet"
     },
     "Integrations": {
       "DragRuler": {

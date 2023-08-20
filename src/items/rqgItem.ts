@@ -24,62 +24,62 @@ export class RqgItem extends Item {
     Items.unregisterSheet("core", ItemSheet);
 
     Items.registerSheet(systemId, PassionSheet as any, {
-      label: "GM Passion Item Sheet",
+      label: "RQG.SheetName.Item.Passion",
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
     });
     Items.registerSheet(systemId, RuneSheet as any, {
-      label: "GM Rune Item Sheet",
+      label: "RQG.SheetName.Item.Rune",
       types: [ItemTypeEnum.Rune],
       makeDefault: true,
     });
     Items.registerSheet(systemId, SkillSheet as any, {
-      label: "GM Skill Item Sheet",
+      label: "RQG.SheetName.Item.Skill",
       types: [ItemTypeEnum.Skill],
       makeDefault: true,
     });
     Items.registerSheet(systemId, HitLocationSheet as any, {
-      label: "GM Hit Location Item Sheet",
+      label: "RQG.SheetName.Item.HitLocation",
       types: [ItemTypeEnum.HitLocation],
       makeDefault: true,
     });
     Items.registerSheet(systemId, HomelandSheet as any, {
-      label: "GM Homeland Item Sheet",
+      label: "RQG.SheetName.Item.Homeland",
       types: [ItemTypeEnum.Homeland],
       makeDefault: true,
     });
     Items.registerSheet(systemId, OccupationSheet as any, {
-      label: "GM Occupation Item Sheet",
+      label: "RQG.SheetName.Item.Occupation",
       types: [ItemTypeEnum.Occupation],
       makeDefault: true,
     });
     Items.registerSheet(systemId, GearSheet as any, {
-      label: "GM Gear Item Sheet",
+      label: "RQG.SheetName.Item.Gear",
       types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
     Items.registerSheet(systemId, ArmorSheet as any, {
-      label: "GM Armor Item Sheet",
+      label: "RQG.SheetName.Item.Armor",
       types: [ItemTypeEnum.Armor],
       makeDefault: true,
     });
     Items.registerSheet(systemId, WeaponSheet as any, {
-      label: "GM Weapon Item Sheet",
+      label: "RQG.SheetName.Item.Weapon",
       types: [ItemTypeEnum.Weapon],
       makeDefault: true,
     });
     Items.registerSheet(systemId, SpiritMagicSheet as any, {
-      label: "GM Spirit Magic Item Sheet",
+      label: "RQG.SheetName.Item.SpiritMagicSpell",
       types: [ItemTypeEnum.SpiritMagic],
       makeDefault: true,
     });
     Items.registerSheet(systemId, CultSheet as any, {
-      label: "GM Cult Item Sheet",
+      label: "RQG.SheetName.Item.Cult",
       types: [ItemTypeEnum.Cult],
       makeDefault: true,
     });
     Items.registerSheet(systemId, RuneMagicSheet as any, {
-      label: "GM Rune Magic Item Sheet",
+      label: "RQG.SheetName.Item.RuneMagicSpell",
       types: [ItemTypeEnum.RuneMagic],
       makeDefault: true,
     });

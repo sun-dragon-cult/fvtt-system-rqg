@@ -94,7 +94,7 @@ Hooks.once("init", async () => {
   RollTables.unregisterSheet("core", RollTableConfig);
   // @ts-expect-error registerSheet
   RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
-    // label: localize("TABLE.SheetTitle"),
+    label: "RQG.SheetName.RollTable",
     makeDefault: true,
   });
 
