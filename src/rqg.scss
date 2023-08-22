@@ -241,9 +241,13 @@ body {
   }
 
   .topheaderline {
-    .charname {
-      display: inline;
+    .extended-char-name, .charname {
+      display: block;
       justify-content: space-around;
+      font-family: "Norse", "Signika", "Palatino Linotype", serif;
+      border: none;
+      font-variant: normal;
+      width: 100%;
     }
 
     .rune img {

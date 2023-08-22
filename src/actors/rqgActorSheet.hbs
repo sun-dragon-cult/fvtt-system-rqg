@@ -5,7 +5,19 @@
     <img class="profile-img {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{img}}" data-edit="img" data-tooltip="{{name}}">
     <div>
       <div class="topheaderline">
-        <h1 class="charname"><input name="name" type="text" value="{{name}}"></h1>
+
+        <div>
+          <div>
+            <input class="charname" name="name" type="text" value="{{name}}">
+          </div>
+          <div>
+            <input class="extended-char-name" name="system.extendedName" type="text" value="{{system.extendedName}}">       
+          </div>
+        </div>
+
+  
+
+
         <div>
           <div class="flex-row-end gap1rem">
             {{#if characterElementRunes}}

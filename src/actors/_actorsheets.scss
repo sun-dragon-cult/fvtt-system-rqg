@@ -190,6 +190,13 @@
       font-weight: bold;
     }
 
+    input[name="system.extendedName"] {
+      background-color: transparent;
+      border: none;
+      font-size: 25px;
+      font-weight: bold;
+    }
+
     .wounded {
       color: var(--rqg-highlight);
     }
