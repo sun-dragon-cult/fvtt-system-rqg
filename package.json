@@ -16,7 +16,7 @@
     "analyze": "run-p compile:noemit lint",
     "test": "jest",
     "test:coverage": "jest --coverage --collectCoverageFrom=./src/**",
-    "clean:dist": "rimraf dist src/assets/packs/*.db",
+    "clean:dist": "rimraf --glob dist src/assets/packs/*.db",
     "clean:deps": "rimraf node_modules",
     "clean": "run-p clean:dist clean:deps",
     "prepare": "husky install"
