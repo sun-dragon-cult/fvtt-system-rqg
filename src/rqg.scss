@@ -241,10 +241,11 @@ body {
   }
 
   .topheaderline {
+    margin-left: 1em;
+
     .extended-char-name, .charname {
       display: block;
       justify-content: space-around;
-      font-family: "Norse", "Signika", "Palatino Linotype", serif;
       border: none;
       font-variant: normal;
       width: 100%;
@@ -253,6 +254,10 @@ body {
     .rune img {
       height: 30px;
     }
+  }
+
+  .characteristics {
+    margin-left: 1em;
   }
 
   .tab.gear {
