@@ -3,7 +3,7 @@ type: script
 scope: global
 author: NzPJchIbtW76hYeY
 img: icons/commodities/treasure/doll-mummy.webp
-flags:
+flags: { }
 command: |-
   /*** Set standardised rqid on all hit locations ***
   This macro will list RQG hit location names and let you match them to the location names from the system settings by drag-n-drop.

@@ -3,6 +3,7 @@ type: script
 author: w2zGrrO8YNPw14xr
 img: icons/tools/navigation/map-marked-red.webp
 scope: global
+flags: { }
 command: |-
   const logPrefix = "RQG | Migrate Descr. Link |";
 
@@ -158,4 +159,3 @@ command: |-
   }
 
   game.system.api.migrate([useRqidDescriptionLinks], []);
-flags:
