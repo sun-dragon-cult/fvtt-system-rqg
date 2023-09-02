@@ -3,6 +3,7 @@ type: script
 author: w2zGrrO8YNPw14xr
 img: icons/commodities/treasure/medal-ribbon-silver-purple.webp
 scope: global
+flags: { }
 command: |-
   async function assignRqidToJEs() {
     console.info("--- Assigning rqid to world journal entries ---");
@@ -86,4 +87,3 @@ command: |-
   }
 
   assignRqidToJEs();
-flags:

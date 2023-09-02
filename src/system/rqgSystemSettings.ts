@@ -67,28 +67,6 @@ export const registerRqgSystemSettings = function () {
     requiresReload: true,
   });
 
-  getGame().settings.register(systemId, "showOnlyWorldLanguagePacks", {
-    name: "RQG.Settings.ShowOnlyWorldLanguagePacks.settingName",
-    hint: "RQG.Settings.ShowOnlyWorldLanguagePacks.settingHint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: true,
-    // @ts-expect-error requiresReload
-    requiresReload: true,
-  });
-
-  getGame().settings.register(systemId, "showEnglishLanguagePacksAlso", {
-    name: "RQG.Settings.ShowEnglishLanguagePacksAlso.settingName",
-    hint: "RQG.Settings.ShowEnglishLanguagePacksAlso.settingHint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-    // @ts-expect-error requiresReload
-    requiresReload: true,
-  });
-
   getGame().settings.register(systemId, "fumbleRollTable", {
     name: "RQG.Settings.FumbleRollTable.settingName",
     hint: "RQG.Settings.FumbleRollTable.settingHint",

@@ -15,7 +15,6 @@ import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
 import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
-import { RqgCompendiumDirectory } from "./foundryUi/rqgCompendiumDirectory";
 import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
@@ -83,7 +82,6 @@ Hooks.once("init", async () => {
   RqgItem.init();
   RqgPause.init();
   RqgHotbar.init();
-  RqgCompendiumDirectory.init();
   RqgJournalEntry.init();
   TextEditorHooks.init();
   RqgSettings.init();

@@ -1,48 +1,58 @@
+import chalk from "chalk";
 import * as path from "path";
 import * as fs from "fs";
-import { CompendiumPack, PackError, PackMetadata } from "./compendium-pack";
+import { cwd } from "process";
+import { CompendiumPack, PackMetadata } from "./compendium-pack";
+import { tryOrThrow } from "./utils";
+import { PackError } from "./packError";
+import { existsSync, promises } from "fs";
 
-export const i18nDir = "src/i18n";
-export const translationsFileNames: string[] = ["uiContent", "rqgCompendiumContent"];
-export const outDir = path.resolve(process.cwd(), "src/assets/packs");
-export const packsMetadata = JSON.parse(fs.readFileSync(path.resolve("./src/system.json"), "utf-8"))
-  .packs as PackMetadata[];
-export const packTemplateDir = "./src/assets/pack-templates";
-const targetLanguages = fs.readdirSync(i18nDir).filter((file) => {
-  return fs.statSync(path.join(i18nDir, file)).isDirectory();
-});
+export const config = {
+  i18nDir: path.resolve(cwd(), "src", "i18n"),
+  translationsFileNames: ["uiContent"], // filenames except .json Will be part of the translation key
+  distDir: path.resolve(cwd(), "dist"),
+  packTemplateDir: path.resolve(cwd(), "src", "assets", "pack-templates"),
+  packageManifest: path.resolve(cwd(), "src", "system.json"),
+} as const;
 
-const templatePacksDataPath = path.resolve(path.resolve(packTemplateDir));
+export const getPackOutDir = (): string => path.join(config.distDir, "packs");
+
+const moduleManifest = JSON.parse(fs.readFileSync(config.packageManifest, "utf-8"));
+export const packsMetadata = moduleManifest.packs as PackMetadata[];
+
+if (existsSync(getPackOutDir())) {
+  await promises.rm(getPackOutDir(), { recursive: true, force: true });
+}
+
 const templatePackDirPaths = fs
-  .readdirSync(templatePacksDataPath)
-  .map((dirName) => path.resolve(path.resolve(templatePacksDataPath, dirName)));
+  .readdirSync(config.packTemplateDir)
+  .map((dirName) => path.resolve(config.packTemplateDir, dirName));
 
 // Loads all template packs into memory
 const templatePacks = templatePackDirPaths.map((dirPath) => CompendiumPack.loadYAML(dirPath));
 
 const translatedPacks: CompendiumPack[] = [];
+const lang = "en"; // only build English packs
 templatePacks.forEach((pack) => {
-  targetLanguages.forEach((lang) => {
-    try {
-      translatedPacks.push(pack.translate(lang));
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${error.message}`);
-      }
-    }
-  });
+  tryOrThrow(
+    () => translatedPacks.push(pack.translate(lang)),
+    (e: any) => {
+      throw new PackError(`Error translating pack ${pack.name} to ${lang}: \n\n${e}`);
+    },
+  );
 });
 
-const entityCounts = translatedPacks.map((pack) => pack.save());
-const total = entityCounts.reduce((runningTotal, entityCount) => runningTotal + entityCount, 0);
+let total = 0;
+for (const pack of translatedPacks) {
+  total += await pack.save();
+}
 
-if (entityCounts.length > 0) {
-  const languageCount = targetLanguages.length;
-  console.log(
-    `Created ${entityCounts.length} packs with ${
-      total / languageCount
-    } documents per language in ${languageCount} languages.`,
-  );
-} else {
+if (translatedPacks.length === 0) {
   throw new PackError("No data available to build packs.");
 }
+
+console.log(
+  chalk.green(
+    `Created ${chalk.bold(translatedPacks.length)} packs with ${chalk.bold(total)} documents.`,
+  ),
+);
