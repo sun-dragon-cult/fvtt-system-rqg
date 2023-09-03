@@ -2,23 +2,19 @@
   <div class="mainbackground"></div>
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <img class="profile-img {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{img}}" data-edit="img" data-tooltip="{{name}}">
-    <div>
-      <div class="topheaderline">
 
-        <div>
-          <div>
-            <input class="charname" name="name" type="text" value="{{name}}">
-          </div>
-          <div>
-            <input class="extended-char-name" name="system.extendedName" type="text" value="{{system.extendedName}}">       
-          </div>
+      <div class="first-row">
+
+        <div class="header-portrait">
+          <img class="profile-img {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}" src="{{img}}" data-edit="img" data-tooltip="{{name}}">
         </div>
 
-        <div>
-          <div class="flex-row-end gap1rem">
+
+        <div class="header-name-container">
+
+          <div class="header-runes">
             {{#if characterElementRunes}}
-              <div class="flex-row gap01rem">
+              <div class="header-rune-group">
                 {{#each characterElementRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}">
                     <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
@@ -27,7 +23,7 @@
               </div>
             {{/if}}
             {{#if characterPowerRunes}}
-              <div class="flex-row gap01rem">
+              <div class="header-rune-group">
                 {{#each characterPowerRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}">
                     <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
@@ -36,7 +32,7 @@
               </div>
             {{/if}}
             {{#if characterFormRunes}}
-              <div class="flex-row gap01rem">
+              <div class="header-rune-group">
                 {{#each characterFormRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}">
                     <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
@@ -44,9 +40,10 @@
                 {{/each}}
               </div>
             {{/if}}
-          </div>
+          </div>       
+
           {{#if mainCult.id}}
-            <div class="cult contextmenu item" data-item-id="{{mainCult.id}}"{{#if mainCult.descriptionRqid}} data-rqid-link="{{mainCult.descriptionRqid}}"{{/if}}>
+            <div class="header-cult contextmenu item" data-item-id="{{mainCult.id}}"{{#if mainCult.descriptionRqid}} data-rqid-link="{{mainCult.descriptionRqid}}"{{/if}}>
               {{mainCult.name}}
               {{#if mainCult.hasMultipleCults}}
                 <i class="fa fa-plus-circle small-size" aria-hidden="true" data-tooltip="{{localize "RQG.UI.MultipleCults"}}"></i>
@@ -54,8 +51,17 @@
               <span class="x-small-size">{{mainCult.rank}}</span>
             </div>
           {{/if}}
-        </div>
+
+          <input class="header-character-name" name="name" type="text" value="{{name}}">
+
+          <input class="header-extended-name" name="system.extendedName" type="text" value="{{system.extendedName}}">       
+
+        </div>             
       </div>
+ 
+
+
+    {{!-- <div class="header-attributes"> --}}
       <div class="characteristics">
         {{#each system.characteristics as | characteristic key |}}
           <div data-characteristic="{{key}}" class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
@@ -109,7 +115,7 @@
                     {{localize "RQG.Actor.Attributes.MoveCarried" carriedMove=system.attributes.move.travel carriedEnc=system.attributes.encumbrance.travel}}
                     {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}<br>{{localize "RQG.Actor.Attributes.OverWeight"}}{{/if}}
                     <br><br>
-                    {{localize "RQG.Actor.Attributes.MaxEnc" maxEnc=system.attributes.encumbrance.max}}</div>">
+                    {{localize "RQG.Actor.Attributes.MaxEnc" maxEnc=system.attributes.encumbrance.max}}">
 
           <legend>{{localize
             (concat "RQG.Actor.Attributes.MoveMode." system.attributes.move.currentLocomotion)}}</legend>
@@ -147,18 +153,18 @@
                 size="2"></div>
             </div>
 
-              <div>
-                <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
+            <div>
+              <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
 
-                <div class="text-center"><input
-                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
-                                 '.carryingFactor'}}"
-                  value="{{carryingFactor}}"
-                  type="number"
-                  min="0"
-                  max="99"
-                  size="2"></div>
-              </div>
+              <div class="text-center"><input
+                name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
+                                '.carryingFactor'}}"
+                value="{{carryingFactor}}"
+                type="number"
+                min="0"
+                max="99"
+                size="2"></div>
+            </div>
             {{/with}}
 
           {{else}}
@@ -188,8 +194,9 @@
             {{/if}}
           </div>
         {{/if}}
-      </div>
-    </div>
+      </div>      
+    {{!-- </div> --}}
+
   </header>
 
   <div class="navbackground"></div>
