@@ -124,11 +124,6 @@ body {
     justify-content: flex-start;
   }
 
-  .flex-row-end {
-    display: flex;
-    justify-content: flex-end;
-  }
-
   .flex-column {
     display: flex;
     flex-direction: column;
@@ -238,26 +233,6 @@ body {
 
   .p-0 {
     padding: 0;
-  }
-
-  .topheaderline {
-    margin-left: 1em;
-
-    .extended-char-name, .charname {
-      display: block;
-      justify-content: space-around;
-      border: none;
-      font-variant: normal;
-      width: 100%;
-    }
-
-    .rune img {
-      height: 30px;
-    }
-  }
-
-  .characteristics {
-    margin-left: 1em;
   }
 
   .tab.gear {

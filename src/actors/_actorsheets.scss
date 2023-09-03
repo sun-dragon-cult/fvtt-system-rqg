@@ -1,6 +1,6 @@
 .rqg.character {
   .profile-img {
-    height: 117px;
+    height: 148px;
     transform: rotate(5deg);
     box-shadow: var(--rqg-box-shadow-profile-img);
     border-radius: 10px;
@@ -25,7 +25,10 @@
   }
 
   form {
-    &.dead, &.unconscious, &.shock, &.wounded {
+    &.dead,
+    &.unconscious,
+    &.shock,
+    &.wounded {
       background-color: #901010b0;
     }
   }
@@ -48,13 +51,93 @@
       padding: 8px 4%;
       align-items: start;
       height: fit-content;
+      display: block;
 
-      .cult {
-        max-width: 20rem;
-        line-height: 1rem;
-        text-align: end;
-        margin-bottom: 5px;
-        font-size: var(--font-size-16);
+      .first-row {
+        display: flex;
+
+        .header-portrait {
+          width: 200px;
+        }
+
+        .header-name-container {
+          width: 100%;
+          margin: 0em 1em 1em 1em;
+
+          .header-runes {
+            display: flex;
+            justify-content: space-around;
+
+            .header-rune-group {
+              display: flex;
+            }
+          }
+
+          .header-cult {
+            color: #8e6724;
+            text-align: center;
+          }
+
+          .header-character-name {
+            background: transparent;
+            font-family: "Signika", sans-serif;
+            font-weight: bold;
+            font-size: 3em;
+            border: none;
+            height: 1em;
+            width: 100%;
+            display: block;
+          }
+
+          .header-extended-name {
+            background: transparent;
+            font-family: "Signika", sans-serif;
+            font-size: 1.5em;
+            border: none;
+            height: 1em;
+            width: 100%;
+            display: block;
+            color: #8e6724;
+          }
+        }
+      }
+
+      .characteristics {
+        gap: 1em;
+      }
+
+      .thirdline {
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 8px;
+
+        .norse {
+          font-weight: bold;
+        }
+
+        .mov-enc {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0 5px 2px;
+          margin: -12px 0 0;
+          background-color: var(--rqg-color-enc-bg);
+          border: none;
+
+          legend {
+            background-color: var(--rqg-color-enc-legend);
+            padding: 0 15px;
+            margin: 0 auto -4px;
+            border-radius: 50%;
+          }
+
+          .player-mov {
+            font-size: 20px;
+          }
+        }
       }
     }
 
@@ -83,8 +166,9 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow: 0 0 3px black,
-          -2px -2px 3px black;
+          text-shadow:
+            0 0 3px black,
+            -2px -2px 3px black;
           color: white;
           font-weight: bold;
         }
@@ -120,8 +204,9 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow: 0 0 3px black,
-          -2px -2px 3px black;
+          text-shadow:
+            0 0 3px black,
+            -2px -2px 3px black;
           color: white;
           font-weight: bold;
           top: 0;
@@ -241,40 +326,6 @@
     border: none;
   }
 
-  .thirdline {
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-
-    .norse {
-      font-weight: bold;
-    }
-
-    .mov-enc {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0 5px 2px;
-      margin: -12px 0 0;
-      background-color: var(--rqg-color-enc-bg);
-      border: none;
-
-      legend {
-        background-color: var(--rqg-color-enc-legend);
-        padding: 0 15px;
-        margin: 0 auto -4px;
-        border-radius: 50%;
-      }
-
-      .player-mov {
-        font-size: 20px;
-      }
-    }
-  }
-
   input {
     width: initial;
   }
@@ -310,14 +361,18 @@
   .wounded {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+        brightness(99%) contrast(105%);
     }
   }
 
-  .shock, .unconscious, .dead {
+  .shock,
+  .unconscious,
+  .dead {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+        brightness(99%) contrast(105%) blur(1.5px);
     }
   }
 
@@ -378,10 +433,10 @@
 
         img {
           height: 5rem;
-          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+            brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
         }
       }
-
     }
 
     .stats {
@@ -394,7 +449,8 @@
       max-width: 7rem;
       background-color: #ffffffb3;
 
-      &.useless, &.severed {
+      &.useless,
+      &.severed {
         background-color: #afafaf;
       }
 
@@ -435,14 +491,13 @@
 
       &.left-leg {
         top: 16rem;
-        right: 0
+        right: 0;
       }
 
       &.right-leg {
         top: 16rem;
-        left: 0
+        left: 0;
       }
-
     }
   }
 
