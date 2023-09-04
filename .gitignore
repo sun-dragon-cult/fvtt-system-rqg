@@ -6,8 +6,5 @@ dist/
 node_modules/
 coverage/
 
-src/assets/packs/*
-!src/assets/packs/.gitignore
-
 package-lock.json
 yarn-error.log

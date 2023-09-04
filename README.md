@@ -10,7 +10,15 @@
 ## Installing
 
 Paste this into Foundry VTT Install System -> Manifest URL
-https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json
+https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json 
+
+You will also need the wiki content module that can be installed with
+https://github.com/sun-dragon-cult/fvtt-module-wiki-rqg/releases/latest/download/en-module.json
+
+In addition there are some recommended modules that are not necessary, but adds functionality if they are installed:
+- [Drag Ruler](https://foundryvtt.com/packages/drag-ruler) that has an integration to color code token movement limits.
+- [Times Up](https://foundryvtt.com/packages/times-up) that will auto expire token effects like protection spells after 10 combat rounds.
+
 
 ## Usage
 
@@ -27,6 +35,10 @@ This assumes that you previously have compiled the compendium packs with `yarn b
 These commands builds the pack db files to `src/assets/packs/` from the yaml file sources under `src/assets/compendiums/`
 
 If you like to remove the system from foundry then remove the file system softlink.
+
+### Development in Windows
+The build scripts make use of [Husky](https://typicode.github.io/husky/) which means that you need to use the 
+Git Bash shell that is supplied by the nodejs windows install when you run the yarn commands to build the system.
 
 ### Conventional Commit message standard
 
