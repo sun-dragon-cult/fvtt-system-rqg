@@ -1,15 +1,5 @@
 .rqg.character {
-  .profile-img {
-    height: 148px;
-    transform: rotate(5deg);
-    box-shadow: var(--rqg-box-shadow-profile-img);
-    border-radius: 10px;
 
-    &.unset {
-      height: 20px;
-      flex: 0 0 20px;
-    }
-  }
 
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
@@ -48,7 +38,7 @@
 
     .sheet-header {
       grid-area: header;
-      padding: 8px 4%;
+      padding: 8px 4% 0px 4%;
       align-items: start;
       height: fit-content;
       display: block;
@@ -57,12 +47,24 @@
         display: flex;
 
         .header-portrait {
-          width: 200px;
+          width: 150px;
+          text-align: center;
+          .profile-img {
+            height: 100px;
+            transform: rotate(5deg);
+            box-shadow: var(--rqg-box-shadow-profile-img);
+            border-radius: 10px;
+
+            &.unset {
+              height: 20px;
+              flex: 0 0 20px;
+            }
+          }
         }
 
         .header-name-container {
           width: 100%;
-          margin: 0em 1em 1em 1em;
+          margin: 0em 1em 0em 1em;
 
           .header-runes {
             display: flex;
@@ -70,6 +72,12 @@
 
             .header-rune-group {
               display: flex;
+              gap: 2em;
+              .rune {
+                .rune {
+                  height: 32px;
+                }
+              }
             }
           }
 
@@ -111,7 +119,6 @@
         gap: 1rem;
         justify-content: space-between;
         align-items: center;
-        margin-top: 8px;
 
         .norse {
           font-weight: bold;
@@ -243,7 +250,7 @@
 
     .sheet-body {
       grid-area: main;
-      padding: 8px 4%;
+      padding: 0.25rem 4% 8px 4%;
     }
   }
 
@@ -512,6 +519,7 @@
   .tab.skills {
     .specialization.warning {
       padding: 0.3rem;
+      margin-top: 0.5rem;
       margin-bottom: 0.5rem;
       line-height: 1.5rem;
     }
