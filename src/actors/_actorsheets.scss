@@ -1,6 +1,5 @@
 .rqg.character {
 
-
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
     background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
@@ -15,10 +14,10 @@
   }
 
   form {
-    &.dead,
-    &.unconscious,
-    &.shock,
-    &.wounded {
+    container-type: inline-size; // make it possible to use container relative units
+    container-name: sheet-container;
+
+    &.dead, &.unconscious, &.shock, &.wounded {
       background-color: #901010b0;
     }
   }
@@ -38,19 +37,23 @@
 
     .sheet-header {
       grid-area: header;
-      padding: 8px 4% 0px 4%;
+      padding: 8px 4%;
       align-items: start;
       height: fit-content;
-      display: block;
 
-      .first-row {
-        display: flex;
+      .header-grid {
+        display: grid;
+        grid-template-columns: [profile-start full-start ] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
+        grid-column-gap: 0;
+        grid-row-gap: 0;
 
-        .header-portrait {
-          width: 150px;
-          text-align: center;
-          .profile-img {
-            height: 100px;
+        .profile {
+          grid-row: 1 / 3;
+          grid-column: profile-start / profile-end;
+          margin-right: 5px;
+
+          img {
+            height: 125px;
             transform: rotate(5deg);
             box-shadow: var(--rqg-box-shadow-profile-img);
             border-radius: 10px;
@@ -60,91 +63,109 @@
               flex: 0 0 20px;
             }
           }
+
+
         }
 
-        .header-name-container {
-          width: 100%;
-          margin: 0em 1em 0em 1em;
+        .name-runes-cults {
+          grid-row: 1;
+          grid-column: name-rune-start / name-rune-end;
 
-          .header-runes {
-            display: flex;
-            justify-content: space-around;
+          .charname {
+            background-color: transparent;
+            font-weight: bold;
+            width: 100%;
 
-            .header-rune-group {
-              display: flex;
-              gap: 2em;
-              .rune {
-                .rune {
-                  height: 32px;
-                }
+            input[name="name"] {
+              font-size: 35px;
+              border: none;
+
+              &:hover {
+                outline: 1px solid var(--color-border-light-2);
+              }
+            }
+
+            input[name="system.extendedName"] {
+              font-size: 20px;
+              font-style: italic;
+              border: none;
+              color: var(--color-text-dark-secondary);
+
+              &:hover {
+                outline: 1px solid var(--color-border-light-2);
               }
             }
           }
 
-          .header-cult {
-            color: #8e6724;
-            text-align: center;
-          }
-
-          .header-character-name {
-            background: transparent;
-            font-family: "Signika", sans-serif;
-            font-weight: bold;
-            font-size: 3em;
-            border: none;
-            height: 1em;
-            width: 100%;
-            display: block;
-          }
-
-          .header-extended-name {
-            background: transparent;
-            font-family: "Signika", sans-serif;
-            font-size: 1.5em;
-            border: none;
-            height: 1em;
-            width: 100%;
-            display: block;
-            color: #8e6724;
+          .rune {
+            height: 30px;
           }
         }
-      }
 
-      .characteristics {
-        gap: 1em;
-      }
+        .characteristics {
+          grid-row: 2;
+          grid-column: name-rune-start / name-rune-end;
 
-      .thirdline {
-        display: flex;
-        gap: 1rem;
-        justify-content: space-between;
-        align-items: center;
-
-        .norse {
-          font-weight: bold;
+          margin-top: 5px;
         }
 
-        .mov-enc {
+        .bottom-line {
+          grid-row: 3;
+          grid-column: full-start / full-end;
+
           display: flex;
+          gap: 1rem;
           justify-content: space-between;
           align-items: center;
-          gap: 0.75rem;
-          padding: 0 5px 2px;
-          margin: -12px 0 0;
-          background-color: var(--rqg-color-enc-bg);
-          border: none;
+          margin-top: 8px;
 
-          legend {
-            background-color: var(--rqg-color-enc-legend);
-            padding: 0 15px;
-            margin: 0 auto -4px;
-            border-radius: 50%;
+          .norse {
+            font-weight: bold;
           }
 
-          .player-mov {
-            font-size: 20px;
+          .mov-enc {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 5px 2px;
+            margin: -12px 0 0;
+            background-color: var(--rqg-color-enc-bg);
+            border: none;
+
+            legend {
+              background-color: var(--rqg-color-enc-legend);
+              padding: 0 15px;
+              margin: 0 auto -4px;
+              border-radius: 50%;
+            }
+
+            .player-mov {
+              font-size: 20px;
+            }
           }
         }
+
+
+        // Make the header more compact if the sheet is narrow
+        @container sheet-container (max-width: 560px) {
+          .profile, .hero-points-container {
+            display: none;
+          }
+
+          .name-runes-cults, .characteristics {
+            grid-column: full-start / full-end;
+          }
+
+        }
+      }
+
+      .cult {
+        max-width: 20rem;
+        line-height: 1rem;
+        text-align: end;
+        margin-bottom: 5px;
+        font-size: var(--font-size-16);
       }
     }
 
@@ -250,7 +271,7 @@
 
     .sheet-body {
       grid-area: main;
-      padding: 0.25rem 4% 8px 4%;
+      padding: 8px 4%;
     }
   }
 
@@ -275,19 +296,6 @@
       margin-left: 40px;
     }
 
-    input[name="name"] {
-      background-color: transparent;
-      border: none;
-      font-size: 35px;
-      font-weight: bold;
-    }
-
-    input[name="system.extendedName"] {
-      background-color: transparent;
-      border: none;
-      font-size: 25px;
-      font-weight: bold;
-    }
 
     .wounded {
       color: var(--rqg-highlight);
@@ -303,18 +311,18 @@
     }
 
     .value {
-      font-size: 23px;
+      font-size: min(26px, 2.5cqw);
     }
 
     label {
-      font-size: 23px;
+      font-size: min(28px, 3cqw);
       font-weight: bold;
     }
 
     input {
       border: none;
       background-color: transparent;
-      font-size: 25px;
+      font-size: min(28px, 3cqw);
       width: 100%;
 
       &:focus {
@@ -368,18 +376,14 @@
   .wounded {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-        brightness(99%) contrast(105%);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
     }
   }
 
-  .shock,
-  .unconscious,
-  .dead {
+  .shock, .unconscious, .dead {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-        brightness(99%) contrast(105%) blur(1.5px);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
     }
   }
 
@@ -444,6 +448,7 @@
             brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
         }
       }
+
     }
 
     .stats {
@@ -456,8 +461,7 @@
       max-width: 7rem;
       background-color: #ffffffb3;
 
-      &.useless,
-      &.severed {
+      &.useless, &.severed {
         background-color: #afafaf;
       }
 
@@ -498,14 +502,51 @@
 
       &.left-leg {
         top: 16rem;
-        right: 0;
+        right: 0
       }
 
       &.right-leg {
         top: 16rem;
-        left: 0;
+        left: 0
+      }
+
+    }
+  }
+
+  .tab.combat {
+
+    .sr-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.1rem;
+      margin-bottom: 0.4rem;
+
+      button {
+        min-width: 1.5rem;
+        padding: 0;
+        border-style: outset;
+        background-color: #e1c794; // TODO fix color
+      }
+
+      .active {
+        border-style: inset;
+        background-color: var(--color-border-highlight); // TODO fix color
+      }
+
+      .dex {
+        display: flex;
+        padding: 5px;
+        background-color: var(--rqg-color-dex-sr-bg); // TODO use same color on DEX SR number
+      }
+
+      .siz {
+        display: flex;
+        padding: 5px;
+        background-color: var(--rqg-color-siz-sr-bg); // TODO use same color on SIZ SR number
       }
     }
+
   }
 
   .tab.runemagic {
@@ -519,7 +560,6 @@
   .tab.skills {
     .specialization.warning {
       padding: 0.3rem;
-      margin-top: 0.5rem;
       margin-bottom: 0.5rem;
       line-height: 1.5rem;
     }

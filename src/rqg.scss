@@ -124,6 +124,11 @@ body {
     justify-content: flex-start;
   }
 
+  .flex-row-end {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .flex-column {
     display: flex;
     flex-direction: column;
