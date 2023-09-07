@@ -1,4 +1,30 @@
 <h2>Combat</h2>
+
+{{#if isInCombat}}
+  <div class="sr-buttons">
+    <div class="mr-5">{{localize "RQG.Actor.Combat.SR"}}</div>
+    {{#if dexSR}}
+      <div class="dex">
+        {{#each dexSR}}
+          <button data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR }}class="active"{{/ifIn}}>{{this}}</button>
+        {{/each}}
+      </div>
+    {{/if}}
+    {{#if sizSR}}
+      <div class="siz">
+        {{#each sizSR}}
+          <button data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR }}class="active"{{/ifIn}}>{{this}}</button>
+        {{/each}}
+      </div>
+    {{/if}}
+    {{#each otherSR}}
+      <button data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR }}class="active"{{/ifIn}}>{{this}}</button>
+    {{/each}}
+    <i class="ml-5 fa-solid fa-circle-info"
+       data-tooltip="<div class='sr-help'>{{localize "RQG.Actor.Combat.SRTooltip"}}</div>"></i>
+  </div>
+{{/if}}
+
 <div class="flex-row flex-align-center">
   <label data-damage-roll="{{system.attributes.damageBonus}}">{{localize "RQG.Actor.Combat.DamageBonus"}} {{system.attributes.damageBonus}}</label>
 </div>

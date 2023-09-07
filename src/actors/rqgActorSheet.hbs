@@ -68,10 +68,10 @@
         {{#if baseStrikeRank includeZero=true}}
           <div>
             <div class="norse text-center">{{localize "RQG.Actor.Attributes.StrikeRank"}} <span class="large-font">{{baseStrikeRank}}</span></div>
-            <div class="flex-row">
-              {{#if system.attributes.dexStrikeRank includeZero=true}}<span class="norse text-center">{{localize
+            <div class="flex-row gap0">
+              {{#if system.attributes.dexStrikeRank includeZero=true}}<span class="norse text-center dex-sr">{{localize
                 "RQG.Actor.Attributes.DexterityAbbr"}} {{system.attributes.dexStrikeRank}}</span>{{/if}}
-              {{#if system.attributes.sizStrikeRank includeZero=true}}<span class="norse text-center">{{localize
+              {{#if system.attributes.sizStrikeRank includeZero=true}}<span class="norse text-center siz-sr">{{localize
                 "RQG.Actor.Attributes.SizeAbbr"}} {{system.attributes.sizStrikeRank}}</span>{{/if}}
             </div>
           </div>

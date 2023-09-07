@@ -1,3 +1,10 @@
+#tooltip {
+  .sr-help {
+    line-height: 1.7rem;
+    text-align: left;
+  }
+}
+
 .rqg.character {
   .profile-img {
     height: 117px;
@@ -245,6 +252,16 @@
       font-weight: bold;
     }
 
+    .siz-sr {
+      padding: 6px 6px 2px;
+      background-color: var(--rqg-color-siz-sr-bg);
+    }
+
+    .dex-sr {
+      padding: 6px 6px 2px;
+      background-color: var(--rqg-color-dex-sr-bg);
+    }
+
     .mov-enc {
       display: flex;
       justify-content: space-between;
@@ -437,6 +454,43 @@
       }
 
     }
+  }
+
+  .tab.combat {
+
+    .sr-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.1rem;
+      margin-bottom: 0.4rem;
+
+      button {
+        min-width: 1.5rem;
+        padding: 0;
+        border-style: outset;
+        background-color: #e1c794; // TODO fix color
+      }
+
+      .active {
+        border-style: inset;
+        background-color: var(--color-border-highlight); // TODO fix color
+      }
+
+      .dex {
+        display: flex;
+        padding: 5px;
+        background-color: var(--rqg-color-dex-sr-bg); // TODO use same color on DEX SR number
+      }
+
+      .siz {
+        display: flex;
+        padding: 5px;
+        background-color: var(--rqg-color-siz-sr-bg); // TODO use same color on SIZ SR number
+      }
+    }
+
+
   }
 
   .tab.runemagic {

@@ -127,3 +127,8 @@ Hooks.once("ready", async () => {
   // Make sure the cache of available runes is preloaded
   await cacheAvailableRunes();
 });
+
+Hooks.on("renderTokenHUD", (tokenHud: TokenHUD) => {
+  // Make sure the SR buttons are visible in the actorSheet when the token is added to a combat
+  tokenHud.object?.document.actor?.sheet?.render(); // TODO only render if inCombat is changed?
+});

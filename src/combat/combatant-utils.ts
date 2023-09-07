@@ -1,5 +1,5 @@
-export function getCombatantsSharingToken(combatant: Combatant): any {
-  if (combatant.actor == null || combatant.parent == null) {
+export function getCombatantsSharingToken(combatant: Combatant | undefined): any[] {
+  if (combatant?.actor == null || combatant.parent == null) {
     return [];
   }
 

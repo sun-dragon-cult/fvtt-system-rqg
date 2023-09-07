@@ -594,7 +594,10 @@ function formatListByLanguage(
 /**
  * Generate an array of numbers using syntax like `[...range(3,6)]` to get `[3, 4, 5, 6]`
  */
-export function* range(start: number, end: number): Generator<number> {
+export function* range(start: number | undefined, end: number | undefined): Generator<number> {
+  if (start == null || end == null || start > end) {
+    return;
+  }
   yield start;
   if (start === end) {
     return;

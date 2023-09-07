@@ -60,6 +60,7 @@ import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-t
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import type { RqgToken } from "../combat/rqgToken";
+import { getCombatantsSharingToken } from "../combat/combatant-utils";
 
 interface UiSections {
   health: boolean;
@@ -122,6 +123,11 @@ interface CharacterSheetData {
   locomotionModes: { [a: string]: string };
 
   currencyTotals: any;
+  isInCombat: boolean;
+  dexSR: number[];
+  sizSR: number[];
+  otherSR: number[];
+  activeInSR: number[]; // Store the SR (initiative) where this actor should have a combatant
 
   characteristicRanks: any;
   bodyType: string;
@@ -138,6 +144,8 @@ export class RqgActorSheet extends ActorSheet<
   ActorSheet.Options,
   CharacterSheetData | ActorSheet.Data
 > {
+  // What SRs are this actor doing things in. Not persisted data, controlling active combat.
+  private activeInSR: Set<number> = new Set<number>();
   get title(): string {
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
@@ -181,6 +189,13 @@ export class RqgActorSheet extends ActorSheet<
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
+    this.activeInSR = new Set(
+      // @ts-expect-error token.combatant
+      getCombatantsSharingToken(this.token?.combatant)
+        .map((c) => c.initiative)
+        .filter(isTruthy),
+    );
+    console.log("*** activeInSR:", this.activeInSR);
 
     return {
       id: this.document.id ?? "",
@@ -231,6 +246,26 @@ export class RqgActorSheet extends ActorSheet<
       },
 
       currencyTotals: this.calcCurrencyTotals(),
+      // @ts-expect-error inCombat
+      isInCombat: this.actor.inCombat,
+      dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
+      sizSR: [
+        ...range(
+          (this.actor.system.attributes.dexStrikeRank ?? 0) + 1,
+          (this.actor.system.attributes.sizStrikeRank ?? 0) +
+            (this.actor.system.attributes.dexStrikeRank ?? 0),
+        ),
+      ],
+
+      otherSR: [
+        ...range(
+          (this.actor.system.attributes.dexStrikeRank ?? 0) +
+            (this.actor.system.attributes.sizStrikeRank ?? 0) +
+            1,
+          12,
+        ),
+      ],
+      activeInSR: [...this.activeInSR],
 
       characteristicRanks: await this.rankCharacteristics(),
       bodyType: this.getBodyType(),
@@ -1138,6 +1173,16 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
+    htmlElement?.querySelectorAll<HTMLElement>("[data-toggle-sr]").forEach((el: HTMLElement) => {
+      const sr = Number(getRequiredDomDataset(el, "toggle-sr"));
+
+      el.addEventListener("click", () => {
+        this.activeInSR.has(sr) ? this.activeInSR.delete(sr) : this.activeInSR.add(sr);
+        this.updateActiveCombatWithSR(this.activeInSR);
+        this.render();
+      });
+    });
+
     // Edit Item (open the item sheet)
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -1300,6 +1345,60 @@ export class RqgActorSheet extends ActorSheet<
         (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
+  }
+
+  private async updateActiveCombatWithSR(activeInSR: Set<number>) {
+    const combat = getGame().combat;
+    if (!combat) {
+      console.error("Should not be run if there are no combats!!!"); // TODO fix text & handling
+      return;
+    }
+
+    // Create new combatants
+
+    // @ts-expect-error token.combatant
+    const currentCombatants: Combatant[] = getCombatantsSharingToken(this.token.combatant);
+
+    if (activeInSR.size < currentCombatants.length) {
+      if (activeInSR.size === 0) {
+        // Don't remove the last combatant, set clear the SR
+        await currentCombatants[0].update({ initiative: null });
+        return;
+      }
+
+      const numberToRemove = currentCombatants.length - this.activeInSR.size;
+
+      // TODO simplify this mess
+      for (const combatant of currentCombatants) {
+        const index = currentCombatants.indexOf(combatant);
+        if (index < numberToRemove) {
+          await combatant.delete();
+        }
+      }
+    } else if (activeInSR.size > currentCombatants.length) {
+      const numberToCreate = activeInSR.size - currentCombatants.length;
+
+      const newCombatants = [...range(0, numberToCreate)]
+        .map(() => ({
+          // @ts-expect-error tokenId
+          tokenId: currentCombatants[0].tokenId,
+          // @ts-expect-error sceneId
+          sceneId: currentCombatants[0].sceneId,
+          // @ts-expect-error actorId
+          actorId: currentCombatants[0].actorId,
+        }))
+        .filter(isTruthy);
+      await combat.createEmbeddedDocuments("Combatant", newCombatants);
+    }
+
+    // Now we should have the correct number of combatants - set their SR
+    // @ts-expect-error token.combatant
+    const updatedCombatants: Combatant[] = getCombatantsSharingToken(this.token.combatant);
+    let i = 0;
+    for (const sr of activeInSR) {
+      await updatedCombatants[i].update({ initiative: sr });
+      i++;
+    }
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
