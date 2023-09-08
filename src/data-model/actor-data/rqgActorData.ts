@@ -12,6 +12,7 @@ export interface CharacterDataSourceData {
   background: Background;
   allies: string; // Editor text with links to allies and general notes
   // --- Derived / Convenience Data Below ---
+  extendedName: string;
   attributes: Attributes; // Most are derived // TODO Split / move data?
 }
 
@@ -38,5 +39,6 @@ export const defaultCharacterData: CharacterDataSourceData = {
   characteristics: defaultCharacteristics,
   background: defaultBackground,
   allies: "",
+  extendedName: "",
   attributes: defaultAttributes, // Needs to be persisted?
 };
