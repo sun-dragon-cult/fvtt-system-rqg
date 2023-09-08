@@ -792,8 +792,12 @@ export class RqgActorSheet extends ActorSheet<
 
     // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
     const hpTmp = this.actor.system.attributes.hitPoints.value;
+    const mpTmp = this.actor.system.attributes.magicPoints.value;
 
     this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
+    this.actor.system.attributes.magicPoints.value =
+      formData["system.attributes.magicPoints.value"];
+
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
       // @ts-expect-error this.token should be TokenDocument, but is typed as Token
@@ -825,6 +829,7 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
+    this.actor.system.attributes.magicPoints.value = mpTmp;
     if (this.token) {
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       const tokenHealthBefore = this.token?.actor?.system.attributes.health;
