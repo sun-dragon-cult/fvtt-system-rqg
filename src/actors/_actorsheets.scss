@@ -1,15 +1,4 @@
 .rqg.character {
-  .profile-img {
-    height: 117px;
-    transform: rotate(5deg);
-    box-shadow: var(--rqg-box-shadow-profile-img);
-    border-radius: 10px;
-
-    &.unset {
-      height: 20px;
-      flex: 0 0 20px;
-    }
-  }
 
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
@@ -25,6 +14,9 @@
   }
 
   form {
+    container-type: inline-size; // make it possible to use container relative units
+    container-name: sheet-container;
+
     &.dead, &.unconscious, &.shock, &.wounded {
       background-color: #901010b0;
     }
@@ -48,6 +40,125 @@
       padding: 8px 4%;
       align-items: start;
       height: fit-content;
+
+      .header-grid {
+        display: grid;
+        grid-template-columns: [profile-start full-start ] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
+        grid-column-gap: 0;
+        grid-row-gap: 0;
+
+        .profile {
+          grid-row: 1 / 3;
+          grid-column: profile-start / profile-end;
+          margin-right: 5px;
+
+          img {
+            height: 125px;
+            transform: rotate(5deg);
+            box-shadow: var(--rqg-box-shadow-profile-img);
+            border-radius: 10px;
+
+            &.unset {
+              height: 20px;
+              flex: 0 0 20px;
+            }
+          }
+
+
+        }
+
+        .name-runes-cults {
+          grid-row: 1;
+          grid-column: name-rune-start / name-rune-end;
+
+          .charname {
+            background-color: transparent;
+            font-weight: bold;
+            width: 100%;
+
+            input[name="name"] {
+              font-size: 35px;
+              border: none;
+
+              &:hover {
+                outline: 1px solid var(--color-border-light-2);
+              }
+            }
+
+            input[name="system.extendedName"] {
+              font-size: 20px;
+              font-style: italic;
+              border: none;
+              color: var(--color-text-dark-secondary);
+
+              &:hover {
+                outline: 1px solid var(--color-border-light-2);
+              }
+            }
+          }
+
+          .rune {
+            height: 30px;
+          }
+        }
+
+        .characteristics {
+          grid-row: 2;
+          grid-column: name-rune-start / name-rune-end;
+
+          margin-top: 5px;
+        }
+
+        .bottom-line {
+          grid-row: 3;
+          grid-column: full-start / full-end;
+
+          display: flex;
+          gap: 1rem;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: 8px;
+
+          .norse {
+            font-weight: bold;
+          }
+
+          .mov-enc {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0 5px 2px;
+            margin: -12px 0 0;
+            background-color: var(--rqg-color-enc-bg);
+            border: none;
+
+            legend {
+              background-color: var(--rqg-color-enc-legend);
+              padding: 0 15px;
+              margin: 0 auto -4px;
+              border-radius: 50%;
+            }
+
+            .player-mov {
+              font-size: 20px;
+            }
+          }
+        }
+
+
+        // Make the header more compact if the sheet is narrow
+        @container sheet-container (max-width: 560px) {
+          .profile, .hero-points-container {
+            display: none;
+          }
+
+          .name-runes-cults, .characteristics {
+            grid-column: full-start / full-end;
+          }
+
+        }
+      }
 
       .cult {
         max-width: 20rem;
@@ -83,8 +194,9 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow: 0 0 3px black,
-          -2px -2px 3px black;
+          text-shadow:
+            0 0 3px black,
+            -2px -2px 3px black;
           color: white;
           font-weight: bold;
         }
@@ -120,8 +232,9 @@
         font-variant-caps: normal;
 
         &.active {
-          text-shadow: 0 0 3px black,
-          -2px -2px 3px black;
+          text-shadow:
+            0 0 3px black,
+            -2px -2px 3px black;
           color: white;
           font-weight: bold;
           top: 0;
@@ -183,12 +296,6 @@
       margin-left: 40px;
     }
 
-    input[name="name"] {
-      background-color: transparent;
-      border: none;
-      font-size: 35px;
-      font-weight: bold;
-    }
 
     .wounded {
       color: var(--rqg-highlight);
@@ -204,18 +311,18 @@
     }
 
     .value {
-      font-size: 23px;
+      font-size: min(26px, 2.5cqw);
     }
 
     label {
-      font-size: 23px;
+      font-size: min(28px, 3cqw);
       font-weight: bold;
     }
 
     input {
       border: none;
       background-color: transparent;
-      font-size: 25px;
+      font-size: min(28px, 3cqw);
       width: 100%;
 
       &:focus {
@@ -232,40 +339,6 @@
 
   img {
     border: none;
-  }
-
-  .thirdline {
-    display: flex;
-    gap: 1rem;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 8px;
-
-    .norse {
-      font-weight: bold;
-    }
-
-    .mov-enc {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0 5px 2px;
-      margin: -12px 0 0;
-      background-color: var(--rqg-color-enc-bg);
-      border: none;
-
-      legend {
-        background-color: var(--rqg-color-enc-legend);
-        padding: 0 15px;
-        margin: 0 auto -4px;
-        border-radius: 50%;
-      }
-
-      .player-mov {
-        font-size: 20px;
-      }
-    }
   }
 
   input {
@@ -371,7 +444,8 @@
 
         img {
           height: 5rem;
-          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+            brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
         }
       }
 
