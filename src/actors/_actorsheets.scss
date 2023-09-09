@@ -126,6 +126,16 @@
           align-items: center;
           margin-top: 8px;
 
+          .siz-sr {
+            padding: 6px 6px 2px;
+            background-color: var(--rqg-color-siz-sr-bg);
+          }
+
+          .dex-sr {
+            padding: 6px 6px 2px;
+            background-color: var(--rqg-color-dex-sr-bg);
+          }
+
           .norse {
             font-weight: bold;
           }
@@ -302,7 +312,6 @@
     .mp {
       margin-left: 40px;
     }
-
 
     .wounded {
       color: var(--rqg-highlight);
@@ -530,7 +539,7 @@
       margin-bottom: 0.4rem;
 
       button {
-        min-width: 1.5rem;
+        width: 1.7rem;
         padding: 0;
         border-style: outset;
         background-color: #e1c794; // TODO fix color

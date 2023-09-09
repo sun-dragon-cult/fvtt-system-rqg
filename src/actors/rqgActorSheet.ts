@@ -193,7 +193,7 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-expect-error token.combatant
       getCombatantsSharingToken(this.token?.combatant)
         .map((c) => c.initiative)
-        .filter(isTruthy),
+        .filter(isTruthy), // TODO remove everything outside of 1-12 instead? Or should that be further down together with duplicate removal
     );
     console.log("*** activeInSR:", this.activeInSR);
 
@@ -1176,9 +1176,9 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-toggle-sr]").forEach((el: HTMLElement) => {
       const sr = Number(getRequiredDomDataset(el, "toggle-sr"));
 
-      el.addEventListener("click", () => {
+      el.addEventListener("click", async () => {
         this.activeInSR.has(sr) ? this.activeInSR.delete(sr) : this.activeInSR.add(sr);
-        this.updateActiveCombatWithSR(this.activeInSR);
+        await this.updateActiveCombatWithSR(this.activeInSR);
         this.render();
       });
     });
@@ -1367,18 +1367,12 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       const numberToRemove = currentCombatants.length - this.activeInSR.size;
-
-      // TODO simplify this mess
-      for (const combatant of currentCombatants) {
-        const index = currentCombatants.indexOf(combatant);
-        if (index < numberToRemove) {
-          await combatant.delete();
-        }
-      }
+      const idsToDelete = currentCombatants.slice(0, numberToRemove).map((c) => c.id ?? "");
+      await combat.deleteEmbeddedDocuments("Combatant", idsToDelete);
     } else if (activeInSR.size > currentCombatants.length) {
       const numberToCreate = activeInSR.size - currentCombatants.length;
 
-      const newCombatants = [...range(0, numberToCreate)]
+      const newCombatants = [...range(1, numberToCreate)]
         .map(() => ({
           // @ts-expect-error tokenId
           tokenId: currentCombatants[0].tokenId,
@@ -1386,6 +1380,7 @@ export class RqgActorSheet extends ActorSheet<
           sceneId: currentCombatants[0].sceneId,
           // @ts-expect-error actorId
           actorId: currentCombatants[0].actorId,
+          initiative: null,
         }))
         .filter(isTruthy);
       await combat.createEmbeddedDocuments("Combatant", newCombatants);
@@ -1393,12 +1388,11 @@ export class RqgActorSheet extends ActorSheet<
 
     // Now we should have the correct number of combatants - set their SR
     // @ts-expect-error token.combatant
-    const updatedCombatants: Combatant[] = getCombatantsSharingToken(this.token.combatant);
-    let i = 0;
-    for (const sr of activeInSR) {
-      await updatedCombatants[i].update({ initiative: sr });
-      i++;
-    }
+    const updates: any[] = getCombatantsSharingToken(this.token.combatant).map((c, index) => ({
+      _id: c.id,
+      initiative: [...activeInSR][index], // get the SR in sequence
+    }));
+    await Combatant.updateDocuments(updates, { parent: combat });
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
