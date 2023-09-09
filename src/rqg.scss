@@ -38,6 +38,11 @@ body {
   display: none !important;
 }
 
+.combat-sidebar .combat-tracker-header div.encounter-controls .encounter-title {
+  margin-left: calc(3*var(--control-width)); // Offset "Round 1" to account for removed buttons
+
+}
+
 .norse {
   font-family: "Norse", "Signika", "Palatino Linotype", serif;
   font-variant: small-caps;
