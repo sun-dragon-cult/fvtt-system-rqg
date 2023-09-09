@@ -21,6 +21,9 @@
       "character": "Character"
     }
   },
+  "COMBAT": {
+    "InitiativeReset": "Reset SR"
+  },
   "RQG": {
     "ActorCreation": {
       "AdventurerCreationWizardTitle": "Adventurer Creation Wizard",
