@@ -198,7 +198,8 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-expect-error token.combatant
       getCombatantsSharingToken(this.token?.combatant)
         .map((c) => c.initiative)
-        .filter(isTruthy), // TODO remove everything outside of 1-12 instead? Or should that be further down together with duplicate removal
+        .filter(isTruthy)
+        .filter((sr: number) => sr >= 1 && sr <= 12),
     );
 
     return {
@@ -1183,7 +1184,6 @@ export class RqgActorSheet extends ActorSheet<
       el.addEventListener("click", async () => {
         this.activeInSR.has(sr) ? this.activeInSR.delete(sr) : this.activeInSR.add(sr);
         await this.updateActiveCombatWithSR(this.activeInSR);
-        this.render();
       });
     });
 
@@ -1354,25 +1354,24 @@ export class RqgActorSheet extends ActorSheet<
   private async updateActiveCombatWithSR(activeInSR: Set<number>) {
     const combat = getGame().combat;
     if (!combat) {
-      console.error("Should not be run if there are no combats!!!"); // TODO fix text & handling
-      return;
+      throw new RqgError(
+        "Programming error: updateActiveCombatWithSR should not be run if there are no combats.",
+      );
     }
 
     // @ts-expect-error token.combatant
-    const currentCombatants: Combatant[] = getCombatantsSharingToken(this.token.combatant);
+    const currentCombatants = getCombatantsSharingToken(this.token?.combatant);
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
     if (combatantIdsToDelete.length > 0) {
       if (getGameUser().isGM) {
-        // Don't await, it can be done in parallel with creation
-        combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
+        await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
       } else {
         socketSend("deleteCombatant", {
           combatId: combat.id,
           idsToDelete: combatantIdsToDelete,
         });
-        this.render();
       }
     }
     if (activeInSR.size === 0) {
