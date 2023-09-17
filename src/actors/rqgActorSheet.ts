@@ -1138,43 +1138,13 @@ export class RqgActorSheet extends ActorSheet<
         });
       });
 
-    // Set Token SR in Combat Tracker
+    // Set comma separated Token SRs in Combat Tracker
     htmlElement?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
-      const sr = getRequiredDomDataset(el, "set-sr");
-      let token = this.token as TokenDocument | null;
-      if (!token && this.actor.prototypeToken?.actorLink) {
-        const activeTokens = this.actor.getActiveTokens();
-        token = activeTokens ? activeTokens[0] : null; // TODO Just picks the first token found
-      }
-
-      function setTokenCombatSr() {
-        getGame().combats?.forEach(async (combat) => {
-          const combatant = token && token.id ? combat.getCombatantByToken(token.id) : undefined;
-          combatant &&
-            (await combat.updateEmbeddedDocuments("Combatant", [
-              {
-                _id: combatant.id,
-                initiative: sr,
-              },
-            ]));
-        });
-      }
-
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
-          // Ignore double clicks by doing the same as on single click
-          setTokenCombatSr();
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1 && token) {
-              setTokenCombatSr();
-            }
-            clickCount = 0;
-          }, CONFIG.RQG.dblClickTimeout);
-        }
+      const srValue = getRequiredDomDataset(el, "set-sr");
+      const srToAdd = srValue.split(",").map((v) => Number(v.trim()));
+      el.addEventListener("click", async () => {
+        this.activeInSR = new Set(srToAdd);
+        await this.updateActiveCombatWithSR(this.activeInSR);
       });
     });
 
