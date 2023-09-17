@@ -60,7 +60,12 @@ import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-t
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import type { RqgToken } from "../combat/rqgToken";
-import { getCombatantsSharingToken } from "../combat/combatant-utils";
+import {
+  getCombatantIdsToDelete,
+  getCombatantsSharingToken,
+  getSrWithoutCombatants,
+} from "../combat/combatant-utils";
+import { socketSend } from "../sockets/RqgSocket";
 
 interface UiSections {
   health: boolean;
@@ -164,7 +169,7 @@ export class RqgActorSheet extends ActorSheet<
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: "systems/rqg/actors/rqgActorSheet.hbs",
-      width: 850,
+      width: 900,
       height: 700,
       tabs: [
         {
@@ -195,7 +200,6 @@ export class RqgActorSheet extends ActorSheet<
         .map((c) => c.initiative)
         .filter(isTruthy), // TODO remove everything outside of 1-12 instead? Or should that be further down together with duplicate removal
     );
-    console.log("*** activeInSR:", this.activeInSR);
 
     return {
       id: this.document.id ?? "",
@@ -1354,45 +1358,44 @@ export class RqgActorSheet extends ActorSheet<
       return;
     }
 
-    // Create new combatants
-
     // @ts-expect-error token.combatant
     const currentCombatants: Combatant[] = getCombatantsSharingToken(this.token.combatant);
 
-    if (activeInSR.size < currentCombatants.length) {
-      if (activeInSR.size === 0) {
-        // Don't remove the last combatant, set clear the SR
-        await currentCombatants[0].update({ initiative: null });
-        return;
+    // Delete combatants that don't match activeInSR
+    const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
+    if (combatantIdsToDelete.length > 0) {
+      if (getGameUser().isGM) {
+        // Don't await, it can be done in parallel with creation
+        combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
+      } else {
+        socketSend("deleteCombatant", {
+          combatId: combat.id,
+          idsToDelete: combatantIdsToDelete,
+        });
+        this.render();
       }
-
-      const numberToRemove = currentCombatants.length - this.activeInSR.size;
-      const idsToDelete = currentCombatants.slice(0, numberToRemove).map((c) => c.id ?? "");
-      await combat.deleteEmbeddedDocuments("Combatant", idsToDelete);
-    } else if (activeInSR.size > currentCombatants.length) {
-      const numberToCreate = activeInSR.size - currentCombatants.length;
-
-      const newCombatants = [...range(1, numberToCreate)]
-        .map(() => ({
-          // @ts-expect-error tokenId
-          tokenId: currentCombatants[0].tokenId,
-          // @ts-expect-error sceneId
-          sceneId: currentCombatants[0].sceneId,
-          // @ts-expect-error actorId
-          actorId: currentCombatants[0].actorId,
-          initiative: null,
-        }))
-        .filter(isTruthy);
-      await combat.createEmbeddedDocuments("Combatant", newCombatants);
+    }
+    if (activeInSR.size === 0) {
+      await currentCombatants[0].update({ initiative: null });
     }
 
-    // Now we should have the correct number of combatants - set their SR
-    // @ts-expect-error token.combatant
-    const updates: any[] = getCombatantsSharingToken(this.token.combatant).map((c, index) => ({
-      _id: c.id,
-      initiative: [...activeInSR][index], // get the SR in sequence
-    }));
-    await Combatant.updateDocuments(updates, { parent: combat });
+    // Create new Combatants for missing SR
+    const srWithoutCombatants = getSrWithoutCombatants(currentCombatants, activeInSR);
+
+    const newCombatants = srWithoutCombatants
+      .map((sr) => ({
+        // @ts-expect-error tokenId
+        tokenId: currentCombatants[0].tokenId,
+        // @ts-expect-error sceneId
+        sceneId: currentCombatants[0].sceneId,
+        // @ts-expect-error actorId
+        actorId: currentCombatants[0].actorId,
+        initiative: sr,
+      }))
+      .filter(isTruthy);
+    if (newCombatants.length > 0) {
+      await combat.createEmbeddedDocuments("Combatant", newCombatants);
+    }
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {

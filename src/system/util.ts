@@ -97,6 +97,15 @@ export function getGameUsers(): Users {
   return users;
 }
 
+export function getSocket(): io.Socket {
+  if (!getGame().socket) {
+    const msg = `socket is not initialized yet! ( Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;
+    ui.notifications?.error(msg);
+    throw new RqgError(msg);
+  }
+  return getGame().socket!;
+}
+
 export function getHitLocations(): string[] {
   return (getGame().settings.get(systemId, "hitLocations") as typeof hitLocationNamesObject)
     .hitLocationItemNames;
