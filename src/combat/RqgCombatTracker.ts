@@ -1,5 +1,5 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import { getGame, getRequiredDomDataset, localize } from "../system/util";
+import { getGame, getGameUser, getRequiredDomDataset, localize } from "../system/util";
 
 export class RqgCombatTracker extends CombatTracker {
   static init() {
@@ -70,7 +70,10 @@ export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any)
   if (currentCombat) {
     // Rerender actorSheets to update the SR display there
     getGame()
-      .scenes?.active?.tokens.filter((t) => t.isOwner)
+      .scenes?.active?.tokens.filter((t) =>
+        // @ts-expect-errors DOCUMENT_OWNERSHIP_LEVELS
+        t.testUserPermission(getGameUser(), CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED),
+      )
       .forEach((t) => t.actor?.sheet?.render());
 
     html.find("[data-control=rollAll]").remove();

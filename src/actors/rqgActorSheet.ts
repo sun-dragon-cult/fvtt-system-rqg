@@ -194,9 +194,13 @@ export class RqgActorSheet extends ActorSheet<
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
+
+    // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
+    // @ts-expect-error actorId
+    const actorCombatant = getGame().combat?.combatants.find((c) => c.actorId === this.actor.id);
+
     this.activeInSR = new Set(
-      // @ts-expect-error token.combatant
-      getCombatantsSharingToken(this.token?.combatant)
+      getCombatantsSharingToken(actorCombatant)
         .map((c) => c.initiative)
         .filter(isTruthy)
         .filter((sr: number) => sr >= 1 && sr <= 12),
@@ -1328,9 +1332,10 @@ export class RqgActorSheet extends ActorSheet<
         "Programming error: updateActiveCombatWithSR should not be run if there are no combats.",
       );
     }
-
-    // @ts-expect-error token.combatant
-    const currentCombatants = getCombatantsSharingToken(this.token?.combatant);
+    // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
+    // @ts-expect-error actorId
+    const actorCombatant = combat.combatants.find((c) => c.actorId === this.actor.id);
+    const currentCombatants = getCombatantsSharingToken(actorCombatant);
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
