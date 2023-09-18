@@ -1,5 +1,5 @@
 import { systemId } from "../system/config";
-import { getGame, getGameUser, getSocket, RqgError } from "../system/util";
+import { getGame, getGameUser, getGameUsers, getSocket, RqgError } from "../system/util";
 
 type SocketAction = "deleteCombatant";
 
@@ -51,7 +51,7 @@ function handleSocketMsg(request: SocketRequest, userId: string): void {
 
   switch (request.action) {
     case "deleteCombatant": {
-      if (!getGameUser().isGM) {
+      if (!isResponsibleGM()) {
         return;
       }
       const combat = getGame().combats?.get(request.payload?.combatId);
@@ -92,4 +92,16 @@ function handleSocketMsg(request: SocketRequest, userId: string): void {
       throw new RqgError(msg, request, userId);
     }
   }
+}
+
+function isResponsibleGM() {
+  if (!getGameUser().isGM) {
+    return false;
+  }
+  const connectedGMs = getGameUsers().filter(isActiveGM);
+  return !connectedGMs.some((other) => other.id < (getGameUser().id ?? " "));
+}
+
+function isActiveGM(user: User) {
+  return user.active && user.isGM;
 }
