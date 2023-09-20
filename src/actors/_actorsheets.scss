@@ -542,24 +542,24 @@
         width: 1.7rem;
         padding: 0;
         border-style: outset;
-        background-color: #e1c794; // TODO fix color
+        background-color: #e1c794;
       }
 
       .active {
         border-style: inset;
-        background-color: var(--color-border-highlight); // TODO fix color
+        background-color: var(--color-border-highlight);
       }
 
       .dex {
         display: flex;
         padding: 5px;
-        background-color: var(--rqg-color-dex-sr-bg); // TODO use same color on DEX SR number
+        background-color: var(--rqg-color-dex-sr-bg);
       }
 
       .siz {
         display: flex;
         padding: 5px;
-        background-color: var(--rqg-color-siz-sr-bg); // TODO use same color on SIZ SR number
+        background-color: var(--rqg-color-siz-sr-bg);
       }
     }
 
