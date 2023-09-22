@@ -1,3 +1,10 @@
+#tooltip {
+  .sr-help {
+    line-height: 1.7rem;
+    text-align: left;
+  }
+}
+
 .rqg.character {
 
   .mainbackground {
@@ -118,6 +125,16 @@
           justify-content: space-between;
           align-items: center;
           margin-top: 8px;
+
+          .siz-sr {
+            padding: 6px 6px 2px;
+            background-color: var(--rqg-color-siz-sr-bg);
+          }
+
+          .dex-sr {
+            padding: 6px 6px 2px;
+            background-color: var(--rqg-color-dex-sr-bg);
+          }
 
           .norse {
             font-weight: bold;
@@ -295,7 +312,6 @@
     .mp {
       margin-left: 40px;
     }
-
 
     .wounded {
       color: var(--rqg-highlight);
@@ -511,6 +527,43 @@
       }
 
     }
+  }
+
+  .tab.combat {
+
+    .sr-buttons {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.1rem;
+      margin-bottom: 0.4rem;
+
+      button {
+        width: 1.7rem;
+        padding: 0;
+        border-style: outset;
+        background-color: #e1c794;
+      }
+
+      .active {
+        border-style: inset;
+        background-color: var(--color-border-highlight);
+      }
+
+      .dex {
+        display: flex;
+        padding: 5px;
+        background-color: var(--rqg-color-dex-sr-bg);
+      }
+
+      .siz {
+        display: flex;
+        padding: 5px;
+        background-color: var(--rqg-color-siz-sr-bg);
+      }
+    }
+
+
   }
 
   .tab.runemagic {
