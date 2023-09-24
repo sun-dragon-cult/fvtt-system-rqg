@@ -122,6 +122,20 @@ export const registerHandlebarsHelpers = function () {
     return CONFIG.RQG.equippedIcons[equippedStatus];
   });
 
+  Handlebars.registerHelper("missileRate", (rate: number | undefined): string => {
+    if (rate == null) {
+      return "";
+    }
+    switch (rate) {
+      case 0:
+        return localize("RQG.Game.SrMeleeRoundAbbr");
+      case 1:
+        return `1/${localize("RQG.Game.MeleeRoundAbbr")}`;
+      default:
+        return `1/${rate}${localize("RQG.Game.MeleeRoundAbbr")}`;
+    }
+  });
+
   Handlebars.registerHelper("gearViewIcon", (view: string): string => {
     return CONFIG.RQG.gearViewIcons[view as keyof typeof CONFIG.RQG.gearViewIcons];
   });
@@ -151,6 +165,12 @@ export const registerHandlebarsHelpers = function () {
     return nums.reduce((acc, n) => acc - (n ?? 0), first);
   });
 
+  Handlebars.registerHelper("max", (...nums) => {
+    nums.pop();
+    const numbers = nums.map((n) => Number(n));
+    return Math.max(...numbers);
+  });
+
   Handlebars.registerHelper("toLowerCase", function (value) {
     if (value) {
       return new Handlebars.SafeString(value.toLowerCase());
@@ -158,6 +178,11 @@ export const registerHandlebarsHelpers = function () {
       return "";
     }
   });
+
+  Handlebars.registerHelper("ifIn", (elem, list, options) =>
+    // @ts-expect-error this is any
+    list.includes(elem) ? options.fn(this) : options.inverse(this),
+  );
 
   Handlebars.registerHelper("rqidLinkTooltip", function (rqid: string) {
     const documentName = Rqid.getDocumentName(rqid);

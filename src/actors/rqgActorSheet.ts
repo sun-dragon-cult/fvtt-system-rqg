@@ -60,6 +60,12 @@ import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-t
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import type { RqgToken } from "../combat/rqgToken";
+import {
+  getCombatantIdsToDelete,
+  getCombatantsSharingToken,
+  getSrWithoutCombatants,
+} from "../combat/combatant-utils";
+import { socketSend } from "../sockets/RqgSocket";
 
 interface UiSections {
   health: boolean;
@@ -106,9 +112,11 @@ interface CharacterSheetData {
   characterPowerRunes: RuneDataSource[];
   characterFormRunes: RuneDataSource[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
-  loadedMissileSr: string[];
+  loadedMissileSrDisplay: string[];
+  loadedMissileSr: string;
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
-  unloadedMissileSr: string[];
+  unloadedMissileSrDisplay: string[];
+  unloadedMissileSr: string;
   /** physical items reorganised as a tree of items containing items */
   itemLocationTree: LocationItemNodeData;
   /** list of pow-crystals */
@@ -122,6 +130,11 @@ interface CharacterSheetData {
   locomotionModes: { [a: string]: string };
 
   currencyTotals: any;
+  isInCombat: boolean;
+  dexSR: number[];
+  sizSR: number[];
+  otherSR: number[];
+  activeInSR: number[]; // Store the SR (initiative) where this actor should have a combatant
 
   characteristicRanks: any;
   bodyType: string;
@@ -138,6 +151,8 @@ export class RqgActorSheet extends ActorSheet<
   ActorSheet.Options,
   CharacterSheetData | ActorSheet.Data
 > {
+  // What SRs are this actor doing things in. Not persisted data, controlling active combat.
+  private activeInSR: Set<number> = new Set<number>();
   get title(): string {
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
@@ -156,7 +171,7 @@ export class RqgActorSheet extends ActorSheet<
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: "systems/rqg/actors/rqgActorSheet.hbs",
-      width: 850,
+      width: 900,
       height: 700,
       tabs: [
         {
@@ -182,6 +197,17 @@ export class RqgActorSheet extends ActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
+    // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
+    // @ts-expect-error actorId
+    const actorCombatant = getGame().combat?.combatants.find((c) => c.actorId === this.actor.id);
+
+    this.activeInSR = new Set(
+      getCombatantsSharingToken(actorCombatant)
+        .map((c) => c.initiative)
+        .filter(isTruthy)
+        .filter((sr: number) => sr >= 1 && sr <= 12),
+    );
+
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -205,8 +231,10 @@ export class RqgActorSheet extends ActorSheet<
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
-      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
-      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      loadedMissileSrDisplay: this.getLoadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
+      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank),
+      unloadedMissileSrDisplay: this.getUnloadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank),
       itemLocationTree: itemTree.toSheetData(),
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
@@ -231,6 +259,26 @@ export class RqgActorSheet extends ActorSheet<
       },
 
       currencyTotals: this.calcCurrencyTotals(),
+      // @ts-expect-error inCombat
+      isInCombat: this.actor.inCombat,
+      dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
+      sizSR: [
+        ...range(
+          (this.actor.system.attributes.dexStrikeRank ?? 0) + 1,
+          (this.actor.system.attributes.sizStrikeRank ?? 0) +
+            (this.actor.system.attributes.dexStrikeRank ?? 0),
+        ),
+      ],
+
+      otherSR: [
+        ...range(
+          (this.actor.system.attributes.dexStrikeRank ?? 0) +
+            (this.actor.system.attributes.sizStrikeRank ?? 0) +
+            1,
+          12,
+        ),
+      ],
+      activeInSR: [...this.activeInSR],
 
       characteristicRanks: await this.rankCharacteristics(),
       bodyType: this.getBodyType(),
@@ -388,7 +436,7 @@ export class RqgActorSheet extends ActorSheet<
     );
   }
 
-  private getLoadedMissileSr(dexSr: number | undefined): string[] {
+  private getLoadedMissileSrDisplay(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
       ["1", reloadIcon, "6", reloadIcon, "11"],
@@ -398,10 +446,15 @@ export class RqgActorSheet extends ActorSheet<
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    return dexSr ? loadedMissileSr[dexSr] : [];
+    return dexSr != null ? loadedMissileSr[dexSr] : [];
   }
 
-  private getUnloadedMissileSr(dexSr: number | undefined): string[] {
+  private getLoadedMissileSr(dexSr: number | undefined): string {
+    const loadedMissileSr = ["1,6,11", "1,7", "2,9", "3,11", "4", "5"];
+    return dexSr != null ? loadedMissileSr[dexSr] : "";
+  }
+
+  private getUnloadedMissileSrDisplay(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const unloadedMissileSr = [
       [reloadIcon, "5", reloadIcon, "10"],
@@ -411,7 +464,12 @@ export class RqgActorSheet extends ActorSheet<
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    return dexSr ? unloadedMissileSr[dexSr] : [];
+    return dexSr != null ? unloadedMissileSr[dexSr] : [];
+  }
+
+  private getUnloadedMissileSr(dexSr: number | undefined): string {
+    const unloadedMissileSr = ["5,10", "6,12", "7", "8", "9", "10"];
+    return dexSr != null ? unloadedMissileSr[dexSr] : "";
   }
 
   private getBaseStrikeRank(
@@ -1103,43 +1161,22 @@ export class RqgActorSheet extends ActorSheet<
         });
       });
 
-    // Set Token SR in Combat Tracker
+    // Set comma separated Token SRs in Combat Tracker
     htmlElement?.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el: HTMLElement) => {
-      const sr = getRequiredDomDataset(el, "set-sr");
-      let token = this.token as TokenDocument | null;
-      if (!token && this.actor.prototypeToken?.actorLink) {
-        const activeTokens = this.actor.getActiveTokens();
-        token = activeTokens ? activeTokens[0] : null; // TODO Just picks the first token found
-      }
+      const srValue = getRequiredDomDataset(el, "set-sr");
+      const srToAdd = srValue.split(",").map((v) => Number(v.trim()));
+      el.addEventListener("click", async () => {
+        this.activeInSR = new Set(srToAdd);
+        await this.updateActiveCombatWithSR(this.activeInSR);
+      });
+    });
 
-      function setTokenCombatSr() {
-        getGame().combats?.forEach(async (combat) => {
-          const combatant = token && token.id ? combat.getCombatantByToken(token.id) : undefined;
-          combatant &&
-            (await combat.updateEmbeddedDocuments("Combatant", [
-              {
-                _id: combatant.id,
-                initiative: sr,
-              },
-            ]));
-        });
-      }
+    htmlElement?.querySelectorAll<HTMLElement>("[data-toggle-sr]").forEach((el: HTMLElement) => {
+      const sr = Number(getRequiredDomDataset(el, "toggle-sr"));
 
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
-          // Ignore double clicks by doing the same as on single click
-          setTokenCombatSr();
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1 && token) {
-              setTokenCombatSr();
-            }
-            clickCount = 0;
-          }, CONFIG.RQG.dblClickTimeout);
-        }
+      el.addEventListener("click", async () => {
+        this.activeInSR.has(sr) ? this.activeInSR.delete(sr) : this.activeInSR.add(sr);
+        await this.updateActiveCombatWithSR(this.activeInSR);
       });
     });
 
@@ -1305,6 +1342,53 @@ export class RqgActorSheet extends ActorSheet<
         (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
+  }
+
+  private async updateActiveCombatWithSR(activeInSR: Set<number>) {
+    const combat = getGame().combat;
+    if (!combat) {
+      throw new RqgError(
+        "Programming error: updateActiveCombatWithSR should not be run if there are no combats.",
+      );
+    }
+    // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
+    // @ts-expect-error actorId
+    const actorCombatant = combat.combatants.find((c) => c.actorId === this.actor.id);
+    const currentCombatants = getCombatantsSharingToken(actorCombatant);
+
+    // Delete combatants that don't match activeInSR
+    const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
+    if (combatantIdsToDelete.length > 0) {
+      if (getGameUser().isGM) {
+        await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
+      } else {
+        socketSend("deleteCombatant", {
+          combatId: combat.id,
+          idsToDelete: combatantIdsToDelete,
+        });
+      }
+    }
+    if (activeInSR.size === 0) {
+      await currentCombatants[0].update({ initiative: null });
+    }
+
+    // Create new Combatants for missing SR
+    const srWithoutCombatants = getSrWithoutCombatants(currentCombatants, activeInSR);
+
+    const newCombatants = srWithoutCombatants
+      .map((sr) => ({
+        // @ts-expect-error tokenId
+        tokenId: currentCombatants[0].tokenId,
+        // @ts-expect-error sceneId
+        sceneId: currentCombatants[0].sceneId,
+        // @ts-expect-error actorId
+        actorId: currentCombatants[0].actorId,
+        initiative: sr,
+      }))
+      .filter(isTruthy);
+    if (newCombatants.length > 0) {
+      await combat.createEmbeddedDocuments("Combatant", newCombatants);
+    }
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {

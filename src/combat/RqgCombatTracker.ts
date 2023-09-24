@@ -1,5 +1,5 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import { getRequiredDomDataset, localize } from "../system/util";
+import { getGame, getGameUser, getRequiredDomDataset, localize } from "../system/util";
 
 export class RqgCombatTracker extends CombatTracker {
   static init() {
@@ -48,11 +48,15 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
         icon: '<i class="fas fa-trash fa-fw"></i>',
-        callback: (li: JQuery) => {
+        callback: async (li: JQuery) => {
           const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
           if (combatant) {
-            getCombatantsSharingToken(combatant).forEach((c: any) => c.delete());
-            return true;
+            const combatantIds = getCombatantsSharingToken(combatant).map((c: any) => c.id);
+            if (combatantIds.length > 1) {
+              const indexToKeep = combatantIds.indexOf(combatant.id);
+              combatantIds.splice(indexToKeep, 1); // Keep the selected combatant
+              await combatant.parent?.deleteEmbeddedDocuments("Combatant", combatantIds);
+            }
           }
         },
       },
@@ -64,6 +68,17 @@ export class RqgCombatTracker extends CombatTracker {
 export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any): void {
   const currentCombat = data.combats[data.currentIndex - 1] as Combat | undefined;
   if (currentCombat) {
+    // Rerender actorSheets to update the SR display there
+    getGame()
+      .scenes?.active?.tokens.filter((t) =>
+        // @ts-expect-errors DOCUMENT_OWNERSHIP_LEVELS
+        t.testUserPermission(getGameUser(), CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED),
+      )
+      .forEach((t) => t.actor?.sheet?.render());
+
+    html.find("[data-control=rollAll]").remove();
+    html.find("[data-control=rollNPC]").remove();
+
     html.find(".combatant").each(async (i: number, el: HTMLElement) => {
       const combId = getRequiredDomDataset(el, "combatant-id");
       const combatant = currentCombat.combatants.find((c: Combatant) => c.id === combId);

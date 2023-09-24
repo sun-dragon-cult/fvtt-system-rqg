@@ -175,14 +175,16 @@
         <div class="head1"><button class="sort" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
         <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
         <div class="head3">{{localize "RQG.Actor.Gear.Skill"}}</div>
-        <div class="head4"><span class="text-center">{{localize "RQG.Actor.Gear.Damage"}}</span></div>
-        <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumStrength"}}</span></div>
-        <div class="head6"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumDexterity"}}</span></div>
-        <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.HitPointsAbbr"}}</span></div>
-        <div class="head8"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
-        <div class="head9"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
-        <div class="head10"></div>
-        <div class="head11">{{localize "RQG.Actor.Gear.Location"}}</div>
+        <div class="head4"><span class="text-center">{{localize "RQG.Actor.Gear.Range"}}</span></div>
+        <div class="head5"><span class="text-center">{{localize "RQG.Actor.Gear.Rate"}}</span></div>
+        <div class="head6"><span class="text-center">{{localize "RQG.Actor.Gear.Damage"}}</span></div>
+        <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumStrength"}}</span></div>
+        <div class="head8"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumDexterity"}}</span></div>
+        <div class="head9"><span class="text-right">{{localize "RQG.Actor.Gear.HitPointsAbbr"}}</span></div>
+        <div class="head10"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+        <div class="head11"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+        <div class="head12"></div>
+        <div class="head13">{{localize "RQG.Actor.Gear.Location"}}</div>
 
         {{#each embeddedItems.weapon}}
           {{#unless system.isNatural}}
@@ -205,6 +207,36 @@
                   </div>
                 {{/if}}
               {{/each}}
+            </div>
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+              <span class="text-center">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <div class="usagecell">
+                      {{#if (eq @key "missile")}}
+                        {{../system.range}}
+                      {{else}}
+                        &nbsp;
+                      {{/if}}
+                    </div>
+                  {{/if}}
+                {{/each}}
+              </span>
+            </div>
+            <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+              <span class="text-center">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <div class="usagecell">
+                      {{#if (eq @key "missile")}}
+                        {{missileRate ../system.rate}}
+                      {{else}}
+                        &nbsp;
+                      {{/if}}
+                    </div>
+                  {{/if}}
+                {{/each}}
+              </span>
             </div>
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
               <span class="text-center">
