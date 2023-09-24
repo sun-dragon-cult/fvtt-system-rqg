@@ -86,6 +86,10 @@
             input[name="name"] {
               font-size: 35px;
               border: none;
+              height: 39px;
+              padding-top: 0;
+              padding-bottom: 0;
+              margin-top: -8px;
 
               &:hover {
                 outline: 1px solid var(--color-border-light-2);
