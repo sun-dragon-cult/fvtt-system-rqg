@@ -35,13 +35,14 @@
   <div class="head3">{{localize "RQG.Actor.Combat.HP"}}</div>
   <div class="head4 text-right">{{localize "RQG.Actor.Combat.Chance"}}</div>
   <div class="head5">{{localize "RQG.Actor.Combat.Damage"}}</div>
-  <div class="head6">{{localize "RQG.Actor.Combat.SR"}}</div>
+  <div class="head6 text-right">{{localize "RQG.Actor.Combat.SR"}}</div>
 
   {{#each embeddedItems.weapon}}
     {{#if (eq system.equippedStatus "equipped")}}
       {{#unless system.isNatural}}
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item"><img class="item" src="{{img}}"></div>
-        <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">{{name}}
+        <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">
+          <div>{{name}}
             {{#if system.isProjectileWeapon}}
               ({{#if system.ammoNotSelected}}
                 <span class="invalid" data-tooltip="{{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedTip"}}">
@@ -57,6 +58,13 @@
             {{else if system.isProjectile}}
               [{{system.quantity}}]
             {{/if}}
+            {{#if system.range}}
+              {{#if system.rate includeZero=true}}
+                <div class="rate-range">{{localize "RQG.Actor.Combat.Range"}} {{system.range}} {{localize "RQG.Actor.Combat.Rate"}} {{missileRate system.rate}}</div>
+              {{/if}}
+            {{/if}}
+
+          </div>
         </div>
         <div data-item-id="{{id}}" class="combat contextmenu item">
           {{#if system.hitPointLocation}}
@@ -71,7 +79,7 @@
             {{#each system.usage}}
               {{#if skillId}}
                 <div  class="combat contextmenu usage
-                      {{#if (eq @key "missile")}}missile{{/if}} {{#if unusable}}warning{{/if}}
+                      {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}} {{#if unusable}}warning{{/if}}
                        {{#if (eq ../system.defaultUsage @key)}}default-usage{{/if}}"
                       {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                       data-skill-id="{{skillId}}">
@@ -86,7 +94,7 @@
           <span class="flex-column">
             {{#each system.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
+                <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
                       data-skill-id="{{skillId}}"
                       >{{damage}}&nbsp;</span>
               {{/if}}
@@ -94,24 +102,24 @@
           </span>
         </div>
         <div class="item">
-          <span class="flex-column">
+          <span class="flex-column text-right">
             {{#each system.usage}}
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
                   {{#if ../system.rate}}
-                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../system.rate)}}{{../system.rate}}{{/unless}}MR</div>
+                    <div class="usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}">
+                      <button class="sr" data-set-sr="{{max 1 @root.system.attributes.dexStrikeRank}}">{{max 1 @root.system.attributes.dexStrikeRank}}</button>
+                    </div>
                   {{else}}
                     <div class="flex-column">
-                      <div>
-                        {{#each @root.unloadedMissileSr}}
-                          {{{this}}}
-                        {{/each}}
-                      </div>
-                      <div><i>
-                        {{#each @root.loadedMissileSr}}
-                          {{{this}}}
-                        {{/each}}
-                      </i></div>
+                      <button class="sr" data-set-sr="{{@root.unloadedMissileSr}}">
+                        {{#each @root.unloadedMissileSrDisplay}}
+                          {{{this}}}{{/each}}
+                      </button>
+                      <button class="sr" data-set-sr="{{@root.loadedMissileSr}}">
+                        {{#each @root.loadedMissileSrDisplay}}
+                          {{{this}}}{{/each}}
+                      </button>
                     </div>
                   {{/if}}
                 {{else}}
@@ -140,7 +148,7 @@
           <span class="flex-column text-right">
             {{#each system.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
+                <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
                       {{skillchance @root.uuid skillId}}%
                 </span>
@@ -152,7 +160,7 @@
           <span class="flex-column">
             {{#each system.usage}}
               {{#if skillId}}
-                <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}}"
+                <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../id}}"
                       data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
                       {{damage}}&nbsp;
@@ -167,7 +175,7 @@
               {{#if skillId}}
                 {{#if (eq @key "missile")}}
                   {{#if ../system.rate}}
-                    <div class="text-right usage {{#if (eq @key "missile")}}missile{{/if}}">1/{{#unless (eq 1 ../system.rate)}}{{../system.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
+                    <div class="text-right usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}">1/{{#unless (eq 1 ../system.rate)}}{{../system.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
                   {{else}}
                     <div class="flex-column">
                       <div>

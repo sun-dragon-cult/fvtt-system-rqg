@@ -68,12 +68,12 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       equippedStatuses: [...equippedStatuses],
       ownedProjectiles: this.getOwnedProjectiles(),
       rateOfFire: {
-        "S/MR": 0,
-        "1/MR": 1,
-        "1/2MR": 2,
-        "1/3MR": 3,
-        "1/4MR": 4,
-        "1/5MR": 5,
+        [localize("RQG.Game.SrMeleeRoundAbbr")]: 0,
+        [`1/${localize("RQG.Game.MeleeRoundAbbr")}`]: 1,
+        [`1/2${localize("RQG.Game.MeleeRoundAbbr")}`]: 2,
+        [`1/3${localize("RQG.Game.MeleeRoundAbbr")}`]: 3,
+        [`1/4${localize("RQG.Game.MeleeRoundAbbr")}`]: 4,
+        [`1/5${localize("RQG.Game.MeleeRoundAbbr")}`]: 5,
       },
     };
   }

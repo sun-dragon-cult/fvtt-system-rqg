@@ -249,6 +249,10 @@ body {
     margin-right: 5px;
   }
 
+  .mr-0 {
+    margin-right: 0;
+  }
+
   .p-0 {
     padding: 0;
   }
@@ -406,6 +410,16 @@ body {
       grid-column: 11/12;
     }
 
+    .head12 {
+      grid-row: 1;
+      grid-column: 12/13;
+    }
+
+    .head13 {
+      grid-row: 1;
+      grid-column: 13/14;
+    }
+
     .head1-4 {
       grid-row: 1;
       grid-column: 1 / span 4;
@@ -506,20 +520,22 @@ body {
     }
 
     &.weapon {
-      grid-template-columns: [col-start] 30px auto auto repeat(8, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto auto repeat(10, max-content) [col-end];
 
-      // Alternating row background for 11 columns
-      > *:nth-child(22n + 24),
-      > *:nth-child(22n + 25),
-      > *:nth-child(22n + 26),
-      > *:nth-child(22n + 27),
-      > *:nth-child(22n + 28),
-      > *:nth-child(22n + 29),
-      > *:nth-child(22n + 30),
-      > *:nth-child(22n + 31),
-      > *:nth-child(22n + 32),
-      > *:nth-child(22n + 33),
-      > *:nth-child(22n + 34) {
+      // Alternating row background for 13 columns
+      > *:nth-child(26n + 28),
+      > *:nth-child(26n + 29),
+      > *:nth-child(26n + 30),
+      > *:nth-child(26n + 31),
+      > *:nth-child(26n + 32),
+      > *:nth-child(26n + 33),
+      > *:nth-child(26n + 34),
+      > *:nth-child(26n + 35),
+      > *:nth-child(26n + 36),
+      > *:nth-child(26n + 37),
+      > *:nth-child(26n + 38),
+      > *:nth-child(26n + 39),
+      > *:nth-child(26n + 40) {
         background: var(--rqg-table-alternate-background);
       }
     }

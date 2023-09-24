@@ -441,8 +441,8 @@
 
     .humanoid {
       position: relative;
-      width: 22rem;
-      height: 22rem;
+      width: 21rem;
+      height: 21rem;
 
       &::before {
         content: url(assets/images/runes/man.svg);
@@ -530,6 +530,10 @@
   }
 
   .tab.combat {
+
+    .rate-range {
+      color: var(--color-text-dark-secondary);
+    }
 
     .sr-buttons {
       display: flex;

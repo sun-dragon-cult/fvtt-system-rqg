@@ -221,6 +221,8 @@
         "HP": "HP",
         "Chance": "Chance",
         "Damage": "Damage",
+        "Range": "Range:",
+        "Rate": "Rate:",
         "SR": "SR",
         "SRTooltip": "<h3>Strike Rank Modifiers</h3><ul><li>Augmenting +0</li><li>Prepare new spell or different weapon +5</li><li>Reload missile +5</li><li>Getting up from prone position +5</li><li>Surprised by foe within 3 m / yards +3</li><li>Surprised by foe within 4-9 m / yards +1</li><li>Movement: each 3 m / yards +1</li><li>Magic points used after first (which is free) +1</li></ul>",
         "Dodge": "Dodge",
@@ -252,6 +254,8 @@
         "ExtendedAbbr": "Ext",
         "Skill": "Skill",
         "Damage": "Damage",
+        "Range": "Range",
+        "Rate": "Rate",
         "MinimumStrength": "STR",
         "MinimumDexterity": "DEX",
         "HitPointsAbbr": "HP",
@@ -1058,6 +1062,7 @@
     },
     "Game": {
       "MeleeRoundAbbr": "MR",
+      "SrMeleeRoundAbbr": "S/MR",
       "ResultEnum": {
         "0": "Hyper Critical",
         "1": "Special Critical",

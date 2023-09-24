@@ -106,7 +106,7 @@ export const RQG_CONFIG = {
     byLocation: "systems/rqg/assets/images/gear-views/by-location.svg",
   },
 
-  missileWeaponReloadIcon: "<i class='x-small-size fas fa-redo-alt'></i>",
+  missileWeaponReloadIcon: "<i class='mr-0 x-small-size fas fa-redo-alt'></i>",
 
   dblClickTimeout: 250, // Timeout for differentiating between single & double clicks
 

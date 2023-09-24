@@ -112,9 +112,11 @@ interface CharacterSheetData {
   characterPowerRunes: RuneDataSource[];
   characterFormRunes: RuneDataSource[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
-  loadedMissileSr: string[];
+  loadedMissileSrDisplay: string[];
+  loadedMissileSr: string;
   /** (html) Precalculated missile weapon SRs if not loaded at start of round */
-  unloadedMissileSr: string[];
+  unloadedMissileSrDisplay: string[];
+  unloadedMissileSr: string;
   /** physical items reorganised as a tree of items containing items */
   itemLocationTree: LocationItemNodeData;
   /** list of pow-crystals */
@@ -229,8 +231,10 @@ export class RqgActorSheet extends ActorSheet<
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
       characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
       characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
-      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
-      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      loadedMissileSrDisplay: this.getLoadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
+      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank),
+      unloadedMissileSrDisplay: this.getUnloadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank),
       itemLocationTree: itemTree.toSheetData(),
       powCrystals: this.getPowCrystals(),
       spiritMagicPointSum: spiritMagicPointSum,
@@ -432,7 +436,7 @@ export class RqgActorSheet extends ActorSheet<
     );
   }
 
-  private getLoadedMissileSr(dexSr: number | undefined): string[] {
+  private getLoadedMissileSrDisplay(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const loadedMissileSr = [
       ["1", reloadIcon, "6", reloadIcon, "11"],
@@ -442,10 +446,15 @@ export class RqgActorSheet extends ActorSheet<
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    return dexSr ? loadedMissileSr[dexSr] : [];
+    return dexSr != null ? loadedMissileSr[dexSr] : [];
   }
 
-  private getUnloadedMissileSr(dexSr: number | undefined): string[] {
+  private getLoadedMissileSr(dexSr: number | undefined): string {
+    const loadedMissileSr = ["1,6,11", "1,7", "2,9", "3,11", "4", "5"];
+    return dexSr != null ? loadedMissileSr[dexSr] : "";
+  }
+
+  private getUnloadedMissileSrDisplay(dexSr: number | undefined): string[] {
     const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
     const unloadedMissileSr = [
       [reloadIcon, "5", reloadIcon, "10"],
@@ -455,7 +464,12 @@ export class RqgActorSheet extends ActorSheet<
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    return dexSr ? unloadedMissileSr[dexSr] : [];
+    return dexSr != null ? unloadedMissileSr[dexSr] : [];
+  }
+
+  private getUnloadedMissileSr(dexSr: number | undefined): string {
+    const unloadedMissileSr = ["5,10", "6,12", "7", "8", "9", "10"];
+    return dexSr != null ? unloadedMissileSr[dexSr] : "";
   }
 
   private getBaseStrikeRank(
