@@ -914,6 +914,14 @@ export class RqgActorSheet extends ActorSheet<
       elem.addEventListener("dragleave", this._onDragLeave);
     });
 
+    // This is a hack to prevent activating button click listeners when typing return in input boxes
+    // This invisible button at the start of the form will catch the event and do nothing.
+    htmlElement.querySelectorAll<HTMLElement>("[data-return-sink]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        (document.activeElement as HTMLElement)?.blur();
+      });
+    });
+
     new ContextMenu(
       html,
       ".characteristic.contextmenu",
