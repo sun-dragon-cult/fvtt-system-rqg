@@ -90,7 +90,8 @@ body {
 }
 
 .rqg img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
-.app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"] { // make them black in all sheets (like journals)
+.app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
+.app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {  // Make them black in the default item icon setting
   filter: invert(0.9);
 }
 
