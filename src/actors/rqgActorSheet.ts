@@ -197,9 +197,9 @@ export class RqgActorSheet extends ActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
-    // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
-    // @ts-expect-error actorId
-    const actorCombatant = getGame().combat?.combatants.find((c) => c.actorId === this.actor.id);
+    // This will just give a random combatant connected to the actor if there are multiple
+    // @ts-expect-error getCombatantByActor
+    const actorCombatant = getGame().combat.getCombatantByActor(this.actor);
 
     this.activeInSR = new Set(
       getCombatantsSharingToken(actorCombatant)
@@ -259,8 +259,10 @@ export class RqgActorSheet extends ActorSheet<
       },
 
       currencyTotals: this.calcCurrencyTotals(),
+      // Disable the SR buttons for unlinked actors since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
       // @ts-expect-error inCombat
-      isInCombat: this.actor.inCombat,
+      isInCombat: this.actor.inCombat && this.actor.prototypeToken.actorLink,
+
       dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
       sizSR: [
         ...range(
