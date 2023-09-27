@@ -9,7 +9,7 @@ import { RQG_CONFIG, systemId } from "./system/config";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import { cacheAvailableRunes, getGame } from "./system/util";
+import { cacheAvailableRunes, getGame, getGameUser, localize } from "./system/util";
 import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
@@ -128,4 +128,16 @@ Hooks.once("ready", async () => {
   await migrateWorld();
   // Make sure the cache of available runes is preloaded
   await cacheAvailableRunes();
+
+  // Verify that at least one wiki module is activated
+  if (
+    getGameUser().isGM &&
+    ![...getGame().modules.entries()].some(
+      ([name, mod]) => /wiki-[a-z]{2}-rqg/.test(name) && mod.active,
+    )
+  ) {
+    ui.notifications?.error(localize("RQG.RQGSystem.Error.NoWikiModule"), {
+      permanent: true,
+    });
+  }
 });
