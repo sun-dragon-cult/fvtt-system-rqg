@@ -1,5 +1,35 @@
 # Changelog
 
+## [3.1.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.0.0...v3.1.0) (2023-09-27)
+
+
+### Features
+
+* add an extended actor name field ([fb039eb](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fb039ebccad39c91a6610b4566bac1522bf78792))
+* add integration to drag ruler module if installed ([60d952f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/60d952f1173ed2396ef7c9b5373ac6ad81d47a91)), closes [#618](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/618)
+* add sr buttons to combat panel ([#624](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/624)) ([563c810](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/563c8101ee992b553986b4c5be2925fb9f77f9ee)), closes [#620](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/620)
+* add translations for sheet names (items, actor & rollTable) ([67e710f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/67e710f6aadd7124e36d70dde3a1a182e000199f))
+* clicking missile weapon SRs should populate the Combat Tracker ([51d1003](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/51d100396ad4de17f3e27c6c2602e510b88dddaf)), closes [#510](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/510)
+* improve AE tab by showing a link to the item an AE originates from ([351c214](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/351c2144e15df034b2ee26ec6b028421019a522c)), closes [#617](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/617)
+* move system compendiums to a separate module ([1586337](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1586337133ec425fab4a85fb07dd50eb1bf5eceb)), closes [#597](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/597)
+* remove "Roll All" & "Roll NPCs" combat tracker buttons ([a3596d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a3596d80df9b2f2ea4d6d3d4b47260f8f7234ca4))
+* remove system compendiums ([2baa66d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2baa66d6cf3fb1964bdd391a493e844496df3c5f)), closes [#597](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/597)
+* reset initiative button should remove duplicated combatants ([a3596d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a3596d80df9b2f2ea4d6d3d4b47260f8f7234ca4)), closes [#509](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/509)
+* suggest times-up module as a recommended relationship ([b12bb97](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b12bb9780e5543e3970b736e5f3a108a0bb31597))
+* unconcious at zero hit points ([4ca2054](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4ca205483d1dd5dc7692af38f97a0b0ce4fa6b04)), closes [#414](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/414)
+* warn if no wiki module is installed and activated ([0e3f666](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/0e3f6666dcdc820846bd9cd9e7ef9e0648057e2d))
+
+
+### Bug Fixes
+
+* actor names with descendants are clipped ([8be5068](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/8be50682bf496d07d879cfd826615a5ab22f7a20))
+* actorSheet input field ENC Factor shows error for decimal numbers ([bfdfc93](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/bfdfc93f023a13e287ffe6a48e28dc3594ff0db2))
+* combatant context menu "Remove Duplicates" removes all connected combatants ([a3596d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a3596d80df9b2f2ea4d6d3d4b47260f8f7234ca4))
+* disable actorSheet SR-buttons for unlinked actors since they do not work for them ([20fddd5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/20fddd54ffadf85695f74f584d2e85867e1970d4))
+* empty or 0 CON gives wrong Max ENC ([e9e482e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e9e482e39ee698fb90b007aad97d151349cfd196)), closes [#610](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/610)
+* make default item settings icons black ([b4d0800](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b4d08005f43d84982fe529e85e4b730537d604aa))
+* typing return in any actorSheet input box toggles first SR button ([e5565b5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e5565b583b75f32f21b3be9d7e83acc00bf25c73))
+
 ## [3.0.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v2.2.6...v3.0.0) (2023-08-08)
 
 
