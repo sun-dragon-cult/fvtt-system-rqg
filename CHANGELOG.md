@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.1.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.1.0...v3.1.1) (2023-09-29)
+
+
+### Bug Fixes
+
+* impossible to open character sheet ([6682149](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6682149cceff79e8bab1bd958145ce89b321f1f4)), closes [#627](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/627)
+* incorrect translation key on weaponSheet ([bcbe2f0](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/bcbe2f00356eb5d408e94d6387dc37f5d7dbfe7f))
+
 ## [3.1.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.0.0...v3.1.0) (2023-09-27)
 
 
