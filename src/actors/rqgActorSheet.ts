@@ -199,7 +199,7 @@ export class RqgActorSheet extends ActorSheet<
 
     // This will just give a random combatant connected to the actor if there are multiple
     // @ts-expect-error getCombatantByActor
-    const actorCombatant = getGame().combat.getCombatantByActor(this.actor);
+    const actorCombatant = getGame().combat?.getCombatantByActor(this.actor);
 
     this.activeInSR = new Set(
       getCombatantsSharingToken(actorCombatant)
