@@ -668,7 +668,7 @@ export class RqgActorSheet extends ActorSheet<
     itemTypes[ItemTypeEnum.HitLocation] = itemTypes[ItemTypeEnum.HitLocation].map(
       (hitLocation: any) => {
         hitLocation.system.woundsString = hitLocation.system.wounds.join("+");
-        hitLocation.rqidName = hitLocation.flags?.rqg?.documentRqidFlags?.id.split(".")[2] ?? "";
+        hitLocation.rqidName = hitLocation.flags?.rqg?.documentRqidFlags?.id?.split(".")[2] ?? "";
         return hitLocation;
       },
     );
