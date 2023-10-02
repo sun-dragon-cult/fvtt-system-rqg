@@ -52,6 +52,7 @@ export interface WeaponDataSourceData extends IPhysicalItem {
   rate: number;
   /** meters at full chance, up to range*1.5 = 1/2 chance, up to range*2 1/4 chance */
   range: number;
+
   /** Can this weapon be used as a projectile - arrows for example */
   isProjectile: boolean;
   /** No damage bonus & uses projectiles */

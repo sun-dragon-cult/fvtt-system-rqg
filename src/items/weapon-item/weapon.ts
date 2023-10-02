@@ -20,7 +20,12 @@ import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { DamageRollTypeEnum, WeaponChatHandler } from "../../chat/weaponChatHandler";
 import { WeaponChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ResultEnum } from "../../data-model/shared/ability";
-import { CombatManeuver, DamageType, UsageType } from "../../data-model/item-data/weaponData";
+import {
+  CombatManeuver,
+  DamageType,
+  Usage,
+  UsageType,
+} from "../../data-model/item-data/weaponData";
 import { RqgChatMessage } from "src/chat/RqgChatMessage";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { DeepPartial } from "snowpack";
@@ -36,6 +41,9 @@ export class Weapon extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
+
+  // Extract the `+db` or `+db/2` part of the damage string
+  static damageBonusRegex = /\+[^+\-*/]*db(?<half>[^+\-*/]*\/[^+\-*/]*2)?/;
 
   static async toChat(weapon: RqgItem): Promise<void> {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
@@ -317,25 +325,16 @@ export class Weapon extends AbstractEmbeddedItem {
       localize("RQG.Dialog.weaponChat.NoCombatManeuverInDamageRollError"),
     );
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
-    let damageBonusFormula: string =
-      weaponItem.actor?.system.attributes.damageBonus !== "0"
-        ? `${weaponItem.actor?.system.attributes.damageBonus}`
-        : "";
 
-    const weaponUsage = weaponItem.system.usage[usageType];
+    const weaponUsage: Usage = weaponItem.system.usage[usageType];
     const weaponDamageTag = localize("RQG.Dialog.weaponChat.WeaponDamageTag");
-    const weaponDamage = hasOwnProperty(weaponUsage, "damage")
-      ? Roll.parse(`(${weaponUsage.damage})[${weaponDamageTag}]`, {})
-      : [];
+    const weaponHasDamage = hasOwnProperty(weaponUsage, "damage");
 
-    if (usageType === "missile") {
-      if (weaponItem.system.isThrownWeapon) {
-        damageBonusFormula =
-          "ceil(" + (weaponItem.actor?.system.attributes.damageBonus || 0) + "/2)";
-      } else {
-        damageBonusFormula = "";
-      }
-    }
+    const damageBonus = Weapon.getDamageBonusPart(weaponItem, weaponUsage); // Get the calculated +db from the damage
+    const weaponDamageString = weaponUsage.damage.replace(Weapon.damageBonusRegex, ""); // Remove the +db
+    const weaponDamage = weaponHasDamage
+      ? Roll.parse(`(${weaponDamageString})[${weaponDamageTag}]`, {})
+      : [];
 
     const damageRollTerms =
       hasOwnProperty(weaponUsage, "damage") && weaponUsage.damage ? weaponDamage : []; // Don't add 0 damage rollTerm
@@ -350,9 +349,13 @@ export class Weapon extends AbstractEmbeddedItem {
 
     if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
       if (["slash", "impale"].includes(damageType)) {
-        damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponUsage.damage));
+        damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponDamageString));
       } else if (damageType === "crush") {
-        damageRollTerms.push(...(await Weapon.crushSpecialDamage(damageBonusFormula)));
+        damageRollTerms.push(
+          ...(await Weapon.crushSpecialDamage(
+            Weapon.getDamageBonusString(weaponItem, weaponUsage),
+          )),
+        );
       } else if (damageType === "parry") {
         // Parry will use crush if existing or slash/impale if not, will work unless some weapon has both crush & slash
         // No weapon in the core rulebook has that though
@@ -361,9 +364,13 @@ export class Weapon extends AbstractEmbeddedItem {
           weaponUsage.combatManeuvers,
         );
         if (usedParryingDamageType === "crush") {
-          damageRollTerms.push(...(await Weapon.crushSpecialDamage(damageBonusFormula)));
+          damageRollTerms.push(
+            ...(await Weapon.crushSpecialDamage(
+              Weapon.getDamageBonusString(weaponItem, weaponUsage),
+            )),
+          );
         } else if (["slash", "impale"].includes(usedParryingDamageType)) {
-          damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponUsage.damage));
+          damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponDamageString));
         } else {
           logMisconfiguration(
             localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError", {
@@ -374,10 +381,8 @@ export class Weapon extends AbstractEmbeddedItem {
         }
       }
     }
-    if (damageBonusFormula.length) {
-      const damageBonusDamageTag = localize("RQG.Dialog.weaponChat.DamageBonusDamageTag");
-      damageRollTerms.push(...Roll.parse(`+ ${damageBonusFormula}[${damageBonusDamageTag}]`, {}));
-    }
+    damageRollTerms.push(...damageBonus);
+
     const maximise = damageRollType === DamageRollTypeEnum.MaxSpecial;
     const roll = Roll.fromTerms(damageRollTerms);
     await roll.evaluate({
@@ -497,5 +502,38 @@ export class Weapon extends AbstractEmbeddedItem {
     return weaponItem.actor?.getBestEmbeddedDocumentByRqid(
       weaponItem.system.usage[usage]?.skillRqidLink?.rqid,
     );
+  }
+
+  private static getDamageBonusPart(weaponItem: RqgItem, usage: Usage): RollTerm[] {
+    const damageBonusFormula = Weapon.getDamageBonusString(weaponItem, usage);
+
+    if (damageBonusFormula.length === 0) {
+      return [];
+    }
+
+    const damageBonusDamageTag = localize("RQG.Dialog.weaponChat.DamageBonusDamageTag");
+    return Roll.parse(`+${damageBonusFormula}[${damageBonusDamageTag}]`, {});
+  }
+
+  private static getDamageBonusString(weaponItem: RqgItem, usage: Usage): string {
+    const dbMatch = usage.damage.match(Weapon.damageBonusRegex);
+
+    const hasDamageBonus = !!dbMatch;
+    if (!hasDamageBonus) {
+      return "";
+    }
+
+    const actorDb = weaponItem.actor?.system.attributes.damageBonus || "0";
+    const halfDb = !!dbMatch?.groups?.half;
+
+    if (weaponItem.actor?.system.attributes.damageBonus === "0") {
+      return "";
+    }
+
+    if (halfDb) {
+      return `ceil(${actorDb}/2)`;
+    } else {
+      return actorDb;
+    }
   }
 }
