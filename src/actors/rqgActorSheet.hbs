@@ -103,14 +103,16 @@
         {{/if}}
 
         <div>
-          <label class="flex-row flex-align-center">
-            <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
-            <span class="nowrap">
-              <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
-                     value="{{system.attributes.magicPoints.value}}" size="2"
-              > / {{system.attributes.magicPoints.max}}
-            </span>
-          </label>
+          {{#if system.attributes.magicPoints.max}}
+            <label class="flex-row flex-align-center">
+              <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
+              <span class="nowrap">
+                <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
+                       value="{{system.attributes.magicPoints.value}}" size="2"
+                > / {{system.attributes.magicPoints.max}}
+              </span>
+            </label>
+          {{/if}}
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}
             <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
           {{#if isGM}}

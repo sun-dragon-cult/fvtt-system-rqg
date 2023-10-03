@@ -245,6 +245,7 @@ export class DamageCalculations {
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
     const maxHitPoints = actor.system.attributes.hitPoints.max;
 
+    const hasMaxMagicPoints = !!actor.system.attributes.magicPoints.max;
     const currentMagicPoints = actor.system.attributes.magicPoints.value ?? 0;
 
     if (maxHitPoints == null) {
@@ -260,7 +261,7 @@ export class DamageCalculations {
 
     if (totalHitPoints <= 0) {
       return "dead";
-    } else if (totalHitPoints <= 2 || currentMagicPoints <= 0) {
+    } else if (totalHitPoints <= 2 || (hasMaxMagicPoints && currentMagicPoints <= 0)) {
       return "unconscious";
     } else {
       return actor.items.reduce((acc: ActorHealthState, item: RqgItem) => {
