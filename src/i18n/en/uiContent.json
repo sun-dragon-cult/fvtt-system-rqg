@@ -620,6 +620,7 @@
         "DamageBonusDamageTag": "damage bonus",
         "CrushSpecialDamageTag": "crushing special",
         "ImpaleSpecialDamageTag": "impale special",
+        "SlashSpecialDamageTag": "slash special",
         "FumbleTableMissingWarn": "The fumble table \"{fumbleTableName}\" is missing.",
         "PluralResults": "{numberOfResults} results",
         "SingularResult": "a result",

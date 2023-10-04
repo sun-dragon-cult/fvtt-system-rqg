@@ -349,7 +349,7 @@ export class Weapon extends AbstractEmbeddedItem {
 
     if ([DamageRollTypeEnum.Special, DamageRollTypeEnum.MaxSpecial].includes(damageRollType)) {
       if (["slash", "impale"].includes(damageType)) {
-        damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponDamageString));
+        damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponDamageString, damageType));
       } else if (damageType === "crush") {
         damageRollTerms.push(
           ...(await Weapon.crushSpecialDamage(
@@ -370,7 +370,12 @@ export class Weapon extends AbstractEmbeddedItem {
             )),
           );
         } else if (["slash", "impale"].includes(usedParryingDamageType)) {
-          damageRollTerms.push(...Weapon.slashImpaleSpecialDamage(weaponDamageString));
+          damageRollTerms.push(
+            ...Weapon.slashImpaleSpecialDamage(
+              weaponDamageString,
+              usedParryingDamageType as DamageType,
+            ),
+          );
         } else {
           logMisconfiguration(
             localize("RQG.Dialog.weaponChat.WeaponDoesNotHaveCombatManeuverError", {
@@ -492,9 +497,12 @@ export class Weapon extends AbstractEmbeddedItem {
     return [];
   }
 
-  private static slashImpaleSpecialDamage(weaponDamage: string): any[] {
-    const impaleSpecialDamageTag = localize("RQG.Dialog.weaponChat.ImpaleSpecialDamageTag");
-    return Roll.parse(`+ (${weaponDamage})[${impaleSpecialDamageTag}]`, {});
+  private static slashImpaleSpecialDamage(weaponDamage: string, damageType: DamageType): any[] {
+    const specialDamageTag =
+      damageType === "impale"
+        ? localize("RQG.Dialog.weaponChat.ImpaleSpecialDamageTag")
+        : localize("RQG.Dialog.weaponChat.SlashSpecialDamageTag");
+    return Roll.parse(`+ (${weaponDamage})[${specialDamageTag}]`, {});
   }
 
   public static getUsedSkillItem(weaponItem: RqgItem, usage: UsageType): RqgItem | undefined {
