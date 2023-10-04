@@ -16,6 +16,7 @@ import { migrateSubCults } from "./migrations-item/migrateSubCults";
 import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
+import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponItemDamageBonus";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -94,6 +95,7 @@ export async function applyDefaultWorldMigrations(
     renameLearnedToGainedChance,
     migrateSubCults,
     migrateWeaponSkillLinks,
+    migrateWeaponItemDamageBonus,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

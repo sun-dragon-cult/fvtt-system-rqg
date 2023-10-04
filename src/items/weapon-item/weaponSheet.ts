@@ -111,6 +111,18 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
     this.copyOneHandData2offHand(formData);
 
+    // Make sure only at most one of thrown / projectile & ranged weapon is selected
+    if ((event.currentTarget as HTMLInputElement)?.name === "system.isThrownWeapon") {
+      formData["system.isProjectileWeapon"] = false;
+      formData["system.isRangedWeapon"] = false;
+    } else if ((event.currentTarget as HTMLInputElement)?.name === "system.isProjectileWeapon") {
+      formData["system.isThrownWeapon"] = false;
+      formData["system.isRangedWeapon"] = false;
+    } else if ((event.currentTarget as HTMLInputElement)?.name === "system.isRangedWeapon") {
+      formData["system.isThrownWeapon"] = false;
+      formData["system.isProjectileWeapon"] = false;
+    }
+
     formData["system.rate"] = Number(formData["system.rate"]);
 
     formData["system.physicalItemType"] =
