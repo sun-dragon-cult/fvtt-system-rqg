@@ -14,6 +14,7 @@ export interface CharacterDataSourceData {
   // --- Derived / Convenience Data Below ---
   extendedName: string;
   attributes: Attributes; // Most are derived // TODO Split / move data?
+  creationMode: boolean;
 }
 
 // --- Derived Data ---
@@ -41,4 +42,5 @@ export const defaultCharacterData: CharacterDataSourceData = {
   allies: "",
   extendedName: "",
   attributes: defaultAttributes, // Needs to be persisted?
+  creationMode: true,
 };
