@@ -3,7 +3,7 @@
     <div class="small-size">{{localize "RQG.Actor.Sorcery.FreeINT"}} {{freeInt}}</div>
     <div class="grid skill">
     {{#each embeddedItems.skill.magic}}
-    {{#if system.runes}}
+    {{#if system.runeRqidLinks}}
     {{>"systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs"
       skill=this
       wizard=../../wizard

@@ -9,7 +9,7 @@
     </h2>
     <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
       {{#each this}}
-        {{#unless system.runes}} {{!-- filter out sorcery skills --}}
+        {{#unless system.runeRqidLinks}} {{!-- filter out sorcery skills --}}
           {{>"systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs"
             skill=this
             wizard=../../wizard

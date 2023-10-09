@@ -433,7 +433,7 @@ export class RqgActorSheet extends ActorSheet<
         (i: RqgItem) =>
           i.type === ItemTypeEnum.Skill &&
           i.system.category === SkillCategoryEnum.Magic &&
-          !!i.system.runes.length,
+          !!i.system.runeRqidLinks?.length,
       ).length
     );
   }

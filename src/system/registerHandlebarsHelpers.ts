@@ -91,25 +91,6 @@ export const registerHandlebarsHelpers = function () {
     return new Handlebars.SafeString(documentLink ?? "🐛");
   });
 
-  // TODO deprecated -> use rqidImgSrc
-  Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
-    if (!runeName) {
-      return;
-    }
-    const availableRunes = getAvailableRunes();
-    const rune = availableRunes.find((r) => r.name === runeName);
-    if (!rune) {
-      const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
-        runeName: runeName,
-      });
-      // @ts-expect-error console
-      ui.notifications?.error(msg, { console: false });
-      console.error("RQG |", msg);
-      return "";
-    }
-    return rune.img;
-  });
-
   Handlebars.registerHelper("rqidImgSrc", (rqid: string): string | undefined => {
     if (!rqid) {
       return;

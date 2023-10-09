@@ -57,7 +57,10 @@ export async function migrateRuneLinksToRqid(itemData: ItemData): Promise<ItemUp
   }
 
   if (itemData.type === ItemTypeEnum.Skill) {
-    // TODO ...
+    mergeObject(
+      updateData,
+      getNameArrayToRqidLinksUpdateData(itemData, "runes", "runeRqidLinks", availableRunes),
+    );
   }
 
   return updateData;

@@ -38,7 +38,6 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     if (!system.skillName) {
       system.skillName = system.name;
     }
-    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     return {
       id: this.document.id ?? "",
@@ -65,10 +64,6 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       formData["system.gainedChance"] = 0;
     }
 
-    let runes = formData["system.runes"];
-    runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter((r: any) => r); // Remove empty
-    formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 }

@@ -25,7 +25,7 @@ export interface SkillDataSourceData extends IAbility {
   baseChance: number;
   gainedChance: number;
   /** For Sorcery Magic */
-  runes: string[];
+  runeRqidLinks: RqidLink[];
 }
 
 // --- Derived Data ---
@@ -55,5 +55,5 @@ export const defaultSkillData: SkillDataSourceData = {
   gainedChance: 0,
   canGetExperience: true,
   hasExperience: false,
-  runes: [],
+  runeRqidLinks: [],
 };
