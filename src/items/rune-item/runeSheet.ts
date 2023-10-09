@@ -50,12 +50,6 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     formData["name"] = `${formData["system.rune"]} (${formData["system.runeType"]})`;
-
-    let minorRunes = formData["system.minorRunes"];
-    minorRunes = Array.isArray(minorRunes) ? minorRunes : [minorRunes];
-    minorRunes = [...new Set(minorRunes.filter((r: any) => r))]; // Remove empty & duplicates
-    formData["system.minorRunes"] = duplicate(minorRunes);
-
     formData["system.chance"] = Number(formData["system.chance"]);
     return super._updateObject(event, formData);
   }

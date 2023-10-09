@@ -381,11 +381,13 @@ let availableRunes: AvailableRuneCache[] = [];
  * Get the cached data about the runes that are available in the world.
  * @see {@link cacheAvailableRunes}
  */
-export function getAvailableRunes(): AvailableRuneCache[] {
+export function getAvailableRunes(silent: boolean = false): AvailableRuneCache[] {
   if (availableRunes.length > 0) {
     return availableRunes;
   }
-  ui.notifications?.warn("compendiums not indexed yet, try again!");
+  if (!silent) {
+    ui.notifications?.warn("compendiums not indexed yet, try again!");
+  }
   cacheAvailableRunes();
   return [];
 }

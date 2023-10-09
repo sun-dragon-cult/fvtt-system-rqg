@@ -57,8 +57,10 @@ export class Rune extends AbstractEmbeddedItem {
       if (!chanceResult) {
         return;
       }
-      if (rune.system.opposingRune) {
-        const opposingRune = actor.items.getName(rune.system.opposingRune);
+      if (rune.system.opposingRuneRqidLink?.rqid) {
+        const opposingRune = actor.getBestEmbeddedDocumentByRqid(
+          rune.system.opposingRuneRqidLink.rqid,
+        );
         const chance = chanceResult["system.chance"] || chanceResult.system.chance;
         if (opposingRune && chance) {
           // While editing a rune it's possible to have incomplete data, ignore in that case.

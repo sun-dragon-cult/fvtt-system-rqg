@@ -73,16 +73,17 @@
           >
 
           <label for="opposing-rune-{{id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
-          <div class="img-name-grid">
-            <img class="rune" src="{{runeImg system.opposingRune}}" data-tooltip="{{system.opposingRune}}" />
-            <input
-              id="opposing-rune-{{id}}"
-              name="system.opposingRune"
-              value="{{system.opposingRune}}"
-              type="text"
-              list="allRunes"
-            >
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+            rqidLink=system.opposingRuneRqidLink
+            dropzoneData="opposingRuneRqidLink"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="opposingRuneRqidLink"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOpposingRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOpposingRune"
+          }}
+
+
 
           <label for="is-mastered-{{id}}">{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label>
           <input
@@ -93,20 +94,16 @@
           >
 
           <label for="minor-runes-{{id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
-          <div class="img-name-grid bordered">
-            {{#each system.minorRunes}}
-              <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
-              <input type="text" name="system.minorRunes" value="{{this}}">
-            {{/each}}
-            <input
-              id="minor-runes-{{id}}"
-              name="system.minorRunes"
-              type="text"
-              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" {{!-- TODO RuneMagic translation --}}
-              list="allRunes"
-              style="grid-column: 1 / span 2;"
-            >
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+            rqidLinkArray=system.minorRuneRqidLinks
+            dropzoneData="minorRuneRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="minorRuneRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectMinorRune"
+          }}
+
+
         </div>
       </div>
     </section>

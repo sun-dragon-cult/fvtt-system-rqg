@@ -14,8 +14,8 @@
       <header {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
         <h2 class="cult contextmenu">
           {{system.deity}}
-          {{#each system.runes}}
-            <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
+          {{#each system.runeRqidLinks}}
+            <img class="rune" src="{{rqidImgSrc this.rqid}}" data-tooltip="{{this.name}}">
           {{/each}}
         </h2>
         <div class="flex-row gap1rem cult contextmenu">
@@ -77,8 +77,8 @@
                   <img class="common" src="systems/rqg/assets/images/items/cult.svg"
                        data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
                 {{/if}}
-                {{#each system.runes}}
-                  <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
+                {{#each system.runeRqidLinks}}
+                  <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
                 {{/each}}
               </div>
               <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"

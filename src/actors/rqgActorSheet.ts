@@ -534,7 +534,7 @@ export class RqgActorSheet extends ActorSheet<
         if (
           i.type === ItemTypeEnum.Rune &&
           i.system.runeType === RuneTypeEnum.Form &&
-          (!i.system.opposingRune || i.system.chance > 50)
+          (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
         ) {
           acc.push({
             id: i.id,

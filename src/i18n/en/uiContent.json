@@ -678,7 +678,6 @@
         "Deity": "Deity",
         "CultName": "Cult Name",
         "CultTagline": "Cult Tagline",
-        "AddNewRunePlaceholder": "Add new rune",
         "Runes": "Runes",
         "HolyDays": "Holy Days",
         "RunePoints": "Rune Points",
@@ -885,7 +884,6 @@
         "OneUseQ": "One Use?",
         "GrantedByCult": "Granted by Cult",
         "Runes": "Runes",
-        "AddNewRunePlaceholder": "Add new rune",
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",
           "btnAddRuneMagic": "Add Rune Magic",
@@ -1159,10 +1157,6 @@
       "SpecialCrit": {
         "settingName": "Special & Hyper Critical results",
         "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
-      },
-      "MagicRuneName": {
-        "settingName": "Magic (condition) Rune name",
-        "settingHint": "If a Rune Magic Spell has this rune it is considered \"Common\", and an adventurer can cast it using any of the cult runes associated with the rune point(s) they spend."
       },
       "WorldMigrationVersion": {
         "settingName": "World Migration Version",

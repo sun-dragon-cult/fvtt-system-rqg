@@ -17,10 +17,10 @@ export interface RuneDataSourceData extends IAbility {
   rune: string;
   runeType: RuneTypeEnum;
   chance: number;
-  /** For Power Runes (+ Form: Man & Beast) ex: "Beast (form)" */
-  opposingRune: string;
-  /** For Sorcery - Elemental Runes & Techniques ex ["Air (elemental)", "Fire (elemental)"] */
-  minorRunes: string[];
+  /** For Power Runes */
+  opposingRuneRqidLink: RqidLink | undefined;
+  /** For Sorcery - Elemental Runes & Techniques */
+  minorRuneRqidLinks: RqidLink[];
   /** For Sorcery */
   isMastered: boolean;
 }
@@ -45,7 +45,7 @@ export const defaultRuneData: RuneDataSourceData = {
   canGetExperience: true,
   hasExperience: false,
   runeType: RuneTypeEnum.Form,
-  opposingRune: "",
-  minorRunes: [],
+  opposingRuneRqidLink: undefined,
+  minorRuneRqidLinks: [],
   isMastered: false,
 };
