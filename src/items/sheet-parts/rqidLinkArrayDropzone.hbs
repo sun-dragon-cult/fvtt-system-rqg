@@ -1,7 +1,8 @@
 <div class="drop-target item-sheet-rqid-link"
      data-dropzone="{{dropzoneData}}"
      data-dropzone-document-types="{{dropDocumentTypes}}"
-     data-dropzone-document-names="{{dropDocumentNames}}">
+     data-dropzone-document-names="{{dropDocumentNames}}"
+     {{#if allowDuplicates}}data-allow-duplicates="true"{{/if}}>
   <div style="display: flex; flex-wrap: wrap;">
     {{#each rqidLinkArray}}
       {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
