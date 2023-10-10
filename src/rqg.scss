@@ -947,7 +947,7 @@ body {
 }
 
 // Almost a copy if Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
-.rqid-content-link {
+.rqid-content-link[data-rqid-link] { // Silly construct to raise specificity
   background: #ddd;
   padding: 1px 4px;
   border: 1px solid var(--color-border-dark-tertiary);
@@ -961,11 +961,15 @@ body {
   }
 
   img {
+    margin-right: 0.25em;
     border: none;
     height: 0.8rem;
     position: relative;
     top: 0.15rem;
-    filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
+
+    &[src*="systems/rqg/assets/images"][src$=".svg"] {
+      filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
+    }
   }
 }
 
