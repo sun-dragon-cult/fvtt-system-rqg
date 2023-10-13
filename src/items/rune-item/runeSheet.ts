@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { getAvailableRunes, getGameUser, AvailableRuneCache, localize } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -8,7 +8,8 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface RuneSheetData {
   allRunes: AvailableRuneCache[];
-  runeTypes: RuneTypeEnum[];
+  runeTypes: string[];
+  rqid: string;
 }
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
@@ -45,7 +46,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       system: system,
       isEmbedded: this.document.isEmbedded,
       allRunes: getAvailableRunes(),
-      runeTypes: Object.values(RuneTypeEnum),
+      runeTypes: Object.values(RuneTypeEnum).map((rt) => localize("RQG.Item.Rune.RuneType." + rt)),
     };
   }
 

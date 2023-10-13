@@ -493,7 +493,8 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Element &&
+          i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
+            RuneTypeEnum.Element &&
           !!i.system.chance
         ) {
           acc.push({
@@ -513,7 +514,8 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Power &&
+          i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
+            RuneTypeEnum.Power &&
           i.system.chance > 50
         ) {
           acc.push({
@@ -533,7 +535,8 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Form &&
+          i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
+            RuneTypeEnum.Form &&
           (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
         ) {
           acc.push({
@@ -626,32 +629,38 @@ export class RqgActorSheet extends ActorSheet<
     );
     itemTypes[ItemTypeEnum.Skill] = skills;
 
+    // Prepare the object to hold the runes per runeType
+    const resultObject = {
+      [RuneTypeEnum.Element]: {},
+      [RuneTypeEnum.Power]: {},
+      [RuneTypeEnum.Form]: {},
+      [RuneTypeEnum.Condition]: {},
+      [RuneTypeEnum.Technique]: {},
+    };
+
+    const leftOvers: string[] = [];
+
     // Separate runes into types (elemental, power, form, technique)
-    const runes: any = {};
-    Object.values(RuneTypeEnum).forEach((type: string) => {
-      runes[type] = itemTypes[ItemTypeEnum.Rune].filter((r: any) => type === r.system.runeType);
-    });
-    itemTypes[ItemTypeEnum.Rune] = runes;
+    itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune].reduce((acc: any, rune: any) => {
+      const runeRqidName = rune.flags?.rqg?.documentRqidFlags?.id
+        ?.split(".")
+        .pop()
+        .split("-")
+        .shift();
+      const runeType = rune?.flags?.rqg?.documentRqidFlags?.id?.split("-").pop();
+      if (Object.values(RuneTypeEnum).includes(runeType)) {
+        acc[runeType][runeRqidName] = rune;
+      } else {
+        leftOvers.push(rune.name);
+      }
+      return acc;
+    }, resultObject);
 
-    // Organise powerRunes as { fertility: RqgItem, death: RqgItem, ... }
-    itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
-      ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce((acc: any, item: Item) => {
-        assertItemType(item.type, ItemTypeEnum.Rune);
-        // @ts-expect-error system
-        acc[item.system.rune] = item;
-        return acc;
-      }, []),
-    };
-
-    // Organise formRunes as { man: RqgItem, beast: RqgItem, ... }
-    itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
-      ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce((acc: any, item: Item) => {
-        assertItemType(item.type, ItemTypeEnum.Rune);
-        // @ts-expect-error system
-        acc[item.system.rune] = item;
-        return acc;
-      }, []),
-    };
+    if (leftOvers.length) {
+      const msg = `You have runes without correct rqids [${leftOvers}]`;
+      ui.notifications?.warn(msg);
+      console.warn("RQG | " + msg);
+    }
 
     // Sort the hit locations
     if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
@@ -806,7 +815,9 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             i.type === ItemTypeEnum.Rune &&
-            (i.system.isMastered || i.system.runeType === RuneTypeEnum.Technique),
+            (i.system.isMastered ||
+              i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
+                RuneTypeEnum.Technique),
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||

@@ -17,9 +17,7 @@
             <select id="rune-type-{{id}}" name="system.runeType">
               {{#select system.runeType}}
                 {{#each runeTypes}}
-                  <option value="{{this}}">{{localize
-                    (concat "RQG.Item.Rune.RuneType." this)
-                  }}</option>
+                  <option value="{{this}}">{{this}}</option>
                 {{/each}}
               {{/select}}
             </select>

@@ -15,7 +15,8 @@ export interface RuneDataSourceData extends IAbility {
   descriptionRqidLink: RqidLink | undefined;
   /** The name of the rune, Moon for example */
   rune: string;
-  runeType: RuneTypeEnum;
+  /** Translated name of the runeType */
+  runeType: string;
   chance: number;
   /** For Power Runes */
   opposingRuneRqidLink: RqidLink | undefined;
