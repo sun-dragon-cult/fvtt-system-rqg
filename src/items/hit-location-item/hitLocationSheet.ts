@@ -28,6 +28,7 @@ interface HitLocationSheetData {
   allHitLocations: string[];
   hitLocationTypes: string[];
   hitLocationHealthStatuses: string[];
+  rqid: string;
 }
 
 export class HitLocationSheet extends RqgItemSheet<
@@ -59,6 +60,7 @@ export class HitLocationSheet extends RqgItemSheet<
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
+      rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,

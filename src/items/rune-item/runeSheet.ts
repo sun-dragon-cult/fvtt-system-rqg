@@ -38,6 +38,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
+      rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,
