@@ -99,7 +99,7 @@ export const registerHandlebarsHelpers = function () {
     const rune = availableRunes.find((r) => r.rqid === rqid);
     if (!rune) {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
-        runeName: rqid,
+        rqid: rqid,
       });
       // @ts-expect-error console
       ui.notifications?.error(msg, { console: false });

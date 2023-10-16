@@ -776,7 +776,7 @@
         "RuneLinks": "Rune Links"
       },
       "Notification": {
-        "CantFindRuneInAvailableRunesError": "Can't find rune \"{runeName}\" in any compendium",
+        "CantFindRuneInAvailableRunesError": "Can't find rune \"{rqid}\" in any compendium",
         "ItemWasNotHitLocationError": "Called hitLocation#onActorPrepareEmbeddedEntities on an item that wasn't a hitLocation",
         "HitLocationDoesNotHaveActorError": "Hit Location item didn't have an actor",
         "ActorDoesNotHaveMaxHpError": "Actor doesn't have max hitPoints",
