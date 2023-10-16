@@ -1,4 +1,4 @@
-{{#if embeddedItems.rune.condition}}
+{{#unless (isEmptyObject embeddedItems.rune.condition)}}
   <div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} item-list">
     <h2 class="fullrow">{{localize "RQG.Actor.Rune.Condition"}}</h2>
     {{#each embeddedItems.rune.condition}}
@@ -9,4 +9,4 @@
         checkedProperty=../checkedProperty}}
     {{/each}}
   </div>
-{{/if}}
+{{/unless}}

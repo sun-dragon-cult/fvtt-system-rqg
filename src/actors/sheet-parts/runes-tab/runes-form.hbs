@@ -1,34 +1,36 @@
-<div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
-  <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
+{{#unless (isEmptyObject embeddedItems.rune.form)}}
+  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
+    <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
-  {{#with embeddedItems.rune.form.man}}
-    {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
-      rune=this
-      wizard=../wizard
-      forChoice=../forChoice
-      checkedProperty=../checkedProperty}}
-  {{/with}}
-  <i class="fas fa-arrows-alt-h"></i>
-  {{#with embeddedItems.rune.form.beast}}
-    {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
-      rune=this
-      wizard=../wizard
-      forChoice=../forChoice
-      checkedProperty=../checkedProperty}}
-  {{/with}}
+    {{#with embeddedItems.rune.form.man}}
+      {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+        rune=this
+        wizard=../wizard
+        forChoice=../forChoice
+        checkedProperty=../checkedProperty}}
+    {{/with}}
+    <i class="fas fa-arrows-alt-h"></i>
+    {{#with embeddedItems.rune.form.beast}}
+      {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+        rune=this
+        wizard=../wizard
+        forChoice=../forChoice
+        checkedProperty=../checkedProperty}}
+    {{/with}}
 
-  {{#each embeddedItems.rune.form}}
-    {{#unless (eq @key "man")}}
-      {{#unless (eq @key "beast")}}
-        {{#with this}}
-          {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
-            rune=this
-            wizard=../wizard
-            forChoice=../forChoice
-            checkedProperty=../checkedProperty}}
+    {{#each embeddedItems.rune.form}}
+      {{#unless (eq @key "man")}}
+        {{#unless (eq @key "beast")}}
+          {{#with this}}
+            {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+              rune=this
+              wizard=../wizard
+              forChoice=../forChoice
+              checkedProperty=../checkedProperty}}
 
-        {{/with}}
+          {{/with}}
+        {{/unless}}
       {{/unless}}
-    {{/unless}}
-  {{/each}}
-</div>
+    {{/each}}
+  </div>
+{{/unless}}

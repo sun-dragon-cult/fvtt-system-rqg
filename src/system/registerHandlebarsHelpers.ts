@@ -179,6 +179,10 @@ export const registerHandlebarsHelpers = function () {
     }
   });
 
+  Handlebars.registerHelper("isEmptyObject", function (value) {
+    return isEmpty(value);
+  });
+
   Handlebars.registerHelper("ifIn", (elem, list, options) =>
     // @ts-expect-error this is any
     list.includes(elem) ? options.fn(this) : options.inverse(this),

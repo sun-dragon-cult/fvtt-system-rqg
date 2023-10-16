@@ -76,6 +76,7 @@
             type="checkbox"
           >
 
+          {{#if (or (eq system.runeType.type "power") (eq system.runeType.type "form"))}}
           <label for="opposing-rune-{{id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
             rqidLink=system.opposingRuneRqidLink
@@ -86,7 +87,7 @@
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
           }}
-
+          {{/if}}
 
 
           <label for="is-mastered-{{id}}">{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label>
@@ -97,6 +98,7 @@
             type="checkbox"
           >
 
+          {{#if (or (eq system.runeType.type "element") (eq system.runeType.type "technique"))}}
           <label for="minor-runes-{{id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
             rqidLinkArray=system.minorRuneRqidLinks
@@ -106,7 +108,7 @@
             showDeleteFromPropertyName="minorRuneRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
           }}
-
+          {{/if}}
 
         </div>
       </div>
