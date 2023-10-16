@@ -144,6 +144,7 @@ interface CharacterSheetData {
   actorWizardFeatureFlag: boolean;
   itemLoopMessage: string | undefined;
   enrichedUnspecifiedSkill: string | undefined;
+  enrichedIncorrectRunes: string | undefined;
 }
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
@@ -153,6 +154,7 @@ export class RqgActorSheet extends ActorSheet<
 > {
   // What SRs are this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
+  private incorrectRunes: RqgItem[] = [];
   get title(): string {
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
@@ -192,6 +194,7 @@ export class RqgActorSheet extends ActorSheet<
   /* -------------------------------------------- */
 
   async getData(): Promise<CharacterSheetData & ActorSheetData> {
+    this.incorrectRunes = [];
     const system = duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
@@ -220,7 +223,7 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
 
-      embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
+      embeddedItems: await this.organizeEmbeddedItems(this.actor),
 
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
         CONFIG.RQG.skillRqid.spiritCombat,
@@ -291,6 +294,7 @@ export class RqgActorSheet extends ActorSheet<
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
       itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
+      enrichedIncorrectRunes: await this.getIncorrectRunesText(),
     };
   }
 
@@ -433,7 +437,7 @@ export class RqgActorSheet extends ActorSheet<
         (i: RqgItem) =>
           i.type === ItemTypeEnum.Skill &&
           i.system.category === SkillCategoryEnum.Magic &&
-          !!i.system.runes.length,
+          !!i.system.runeRqidLinks?.length,
       ).length
     );
   }
@@ -493,7 +497,7 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Element &&
+          i.system.runeType.type === RuneTypeEnum.Element &&
           !!i.system.chance
         ) {
           acc.push({
@@ -513,7 +517,7 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Power &&
+          i.system.runeType.type === RuneTypeEnum.Power &&
           i.system.chance > 50
         ) {
           acc.push({
@@ -533,8 +537,8 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.system.runeType === RuneTypeEnum.Form &&
-          (!i.system.opposingRune || i.system.chance > 50)
+          i.system.runeType.type === RuneTypeEnum.Form &&
+          (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
         ) {
           acc.push({
             id: i.id,
@@ -590,7 +594,7 @@ export class RqgActorSheet extends ActorSheet<
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
    * TODO Fix the typing
    */
-  public static async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
+  public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
     actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
@@ -626,32 +630,30 @@ export class RqgActorSheet extends ActorSheet<
     );
     itemTypes[ItemTypeEnum.Skill] = skills;
 
+    // Prepare the object to hold the runes per runeType
+    const resultObject = {
+      [RuneTypeEnum.Element]: {},
+      [RuneTypeEnum.Power]: {},
+      [RuneTypeEnum.Form]: {},
+      [RuneTypeEnum.Condition]: {},
+      [RuneTypeEnum.Technique]: {},
+    };
+
     // Separate runes into types (elemental, power, form, technique)
-    const runes: any = {};
-    Object.values(RuneTypeEnum).forEach((type: string) => {
-      runes[type] = itemTypes[ItemTypeEnum.Rune].filter((r: any) => type === r.system.runeType);
-    });
-    itemTypes[ItemTypeEnum.Rune] = runes;
-
-    // Organise powerRunes as { fertility: RqgItem, death: RqgItem, ... }
-    itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power] = {
-      ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Power].reduce((acc: any, item: Item) => {
-        assertItemType(item.type, ItemTypeEnum.Rune);
-        // @ts-expect-error system
-        acc[item.system.rune] = item;
-        return acc;
-      }, []),
-    };
-
-    // Organise formRunes as { man: RqgItem, beast: RqgItem, ... }
-    itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form] = {
-      ...itemTypes[ItemTypeEnum.Rune][RuneTypeEnum.Form].reduce((acc: any, item: Item) => {
-        assertItemType(item.type, ItemTypeEnum.Rune);
-        // @ts-expect-error system
-        acc[item.system.rune] = item;
-        return acc;
-      }, []),
-    };
+    itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune].reduce((acc: any, rune: any) => {
+      const runeRqidName = rune.flags?.rqg?.documentRqidFlags?.id
+        ?.split(".")
+        .pop()
+        .split("-")
+        .shift();
+      const runeType = rune?.system.runeType.type;
+      if (Object.values(RuneTypeEnum).includes(runeType)) {
+        acc[runeType][runeRqidName] = rune;
+      } else {
+        this.incorrectRunes.push(rune);
+      }
+      return acc;
+    }, resultObject);
 
     // Sort the hit locations
     if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
@@ -806,7 +808,7 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             i.type === ItemTypeEnum.Rune &&
-            (i.system.isMastered || i.system.runeType === RuneTypeEnum.Technique),
+            (i.system.isMastered || i.system.runeType.type === RuneTypeEnum.Technique),
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -833,6 +835,17 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
+        // @ts-expect-error async
+        async: true,
+      });
+    }
+  }
+  private async getIncorrectRunesText(): Promise<string | undefined> {
+    if (this.incorrectRunes.length) {
+      // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
+      const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
+      const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
       return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
         // @ts-expect-error async
         async: true,

@@ -81,7 +81,7 @@ export interface CultDataSourceData {
   holyDays: string;
   gifts: string;
   geases: string;
-  runes: string[];
+  runeRqidLinks: RqidLink[];
   commonRuneMagicRqidLinks: RqidLink[]; // List of runeMagic spells that should be embedded together with the cult
   // prohibitedCultSpiritMagic: string[]; // TODO Link to system wide id...
   // cultRuneMagic: string[]; // TODO #153 +++ Link to system wide id...
@@ -116,5 +116,5 @@ export const defaultCultData: CultDataSourceData = {
   holyDays: "",
   gifts: "",
   geases: "",
-  runes: [],
+  runeRqidLinks: [],
 };

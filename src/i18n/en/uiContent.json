@@ -306,6 +306,8 @@
         "ImportPassionCheckboxTitle": "Import Passion: \"{passionName}\""
       },
       "Rune": {
+        "IncorrectRuneWarning": "Rune type is not one of element, power, form, condition or technique. Please update it.",
+        "TypeDontMatchTranslationTip": "Name of rune type does not match current translation in system. Not an error, just inconsistent translations.<br>Reselecting the type will reset it to the system standard.",
         "Condition": "Condition",
         "Elemental": "Elemental",
         "Form": "Form",
@@ -678,7 +680,6 @@
         "Deity": "Deity",
         "CultName": "Cult Name",
         "CultTagline": "Cult Tagline",
-        "AddNewRunePlaceholder": "Add new rune",
         "Runes": "Runes",
         "HolyDays": "Holy Days",
         "RunePoints": "Rune Points",
@@ -885,7 +886,6 @@
         "OneUseQ": "One Use?",
         "GrantedByCult": "Granted by Cult",
         "Runes": "Runes",
-        "AddNewRunePlaceholder": "Add new rune",
         "runeMagicCultDialog": {
           "title": "Which cult provides this Rune Magic?",
           "btnAddRuneMagic": "Add Rune Magic",
@@ -1111,6 +1111,7 @@
       "DocsInWorld": "{count} documents in the world",
       "DocsInCompendiums": "{count} documents in the compendiums",
       "DuplicateWarning": "Warning: Multiple rqids with same priority!",
+      "CouldNotFindRune": "Could not find cached rune with rqid {rqid}",
       "Error": {
         "NoWikiModule": "Please enable the required wiki module <a href='https://github.com/sun-dragon-cult/fvtt-system-rqg/wiki/Installing'>See installing instructions</a>",
         "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
@@ -1158,10 +1159,6 @@
       "SpecialCrit": {
         "settingName": "Special & Hyper Critical results",
         "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
-      },
-      "MagicRuneName": {
-        "settingName": "Magic (condition) Rune name",
-        "settingHint": "If a Rune Magic Spell has this rune it is considered \"Common\", and an adventurer can cast it using any of the cult runes associated with the rune point(s) they spend."
       },
       "WorldMigrationVersion": {
         "settingName": "World Migration Version",

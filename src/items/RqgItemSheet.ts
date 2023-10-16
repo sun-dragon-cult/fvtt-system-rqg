@@ -221,10 +221,11 @@ export class RqgItemSheet<
       droppedDocument: droppedItem,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
+      allowDuplicates,
     } = await extractDropInfo<RqgItem>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedItem)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedItem);
+      await updateRqidLink(this.item, targetPropertyName, droppedItem, allowDuplicates);
       return [this.item];
     }
     return false;

@@ -66,19 +66,15 @@
           </div>
 
           <label for="runes-{{id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
-          <div class="img-name-grid bordered">
-            {{#each system.runes}}
-              <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
-              <input type="text" name="system.runes" value="{{this}}">
-            {{/each}}
-            <input
-              id="runes-{{id}}"
-              placeholder="{{localize 'RQG.Item.Cult.AddNewRunePlaceholder'}}"
-              name="system.runes"
-              type="text"
-              list="allRunes"
-              style="grid-column: 1 / span 2;">
-          </div>
+          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+            rqidLinkArray=system.runeRqidLinks
+            dropzoneData="runeRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            allowDuplicates="true"
+            showDeleteFromPropertyName="runeRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+          }}
 
           <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
           {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"

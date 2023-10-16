@@ -7,7 +7,6 @@ import { moveRuneIcons } from "./migrations-item/moveRuneIcon";
 import { renameSkillIcons } from "./migrations-item/renameSkillIcons";
 import { systemId } from "../config";
 import { renameDragonewt } from "./migrations-item/renameDragonewt";
-import { renameFireSky } from "./migrations-item/renameFireSky";
 import { trimCategoryFromSkillNames } from "./migrations-item/trimCategoryFromSkillNames";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
 import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGainedChance";
@@ -16,7 +15,9 @@ import { migrateSubCults } from "./migrations-item/migrateSubCults";
 import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
+import { migrateRuneLinksToRqid } from "./migrations-item/migrateRuneLinksToRqid";
 import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponItemDamageBonus";
+import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -89,13 +90,14 @@ export async function applyDefaultWorldMigrations(
     moveRuneIcons,
     renameSkillIcons,
     renameDragonewt,
-    renameFireSky,
     trimCategoryFromSkillNames,
     tagSkillNameSkillsWithRqid,
     renameLearnedToGainedChance,
     migrateSubCults,
     migrateWeaponSkillLinks,
+    migrateRuneLinksToRqid,
     migrateWeaponItemDamageBonus,
+    migrateRuneItemType,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

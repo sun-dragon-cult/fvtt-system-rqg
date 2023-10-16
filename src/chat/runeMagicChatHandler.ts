@@ -87,7 +87,6 @@ export class RuneMagicChatHandler {
     const templateData = {
       ...flags,
       eligibleRunes: eligibleRunes,
-      spellRunes: runeMagicItem.system.runes,
       isOneUse: runeMagicItem.system.isOneUse,
       descriptionLink: runeMagicItem.system.descriptionRqidLink,
       ritualOrMeditationOptions: ritualOrMeditationOptions,

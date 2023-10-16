@@ -66,6 +66,9 @@
       {{!-- Hit Location Definition Tab --}}
       <div class="tab" data-group="primary" data-tab="hit-location-definition">
         <div class="key-value-grid">
+          <label><i class="fas fa-fingerprint"></i> Rqid</label>
+          <div>{{rqid}}</div>
+
           <label for="act-as-{{id}}">{{localize "RQG.Item.HitLocation.ActAs"}}</label>
           <select id="act-as-{{id}}" name="system.hitLocationType">
             {{#select system.hitLocationType}}

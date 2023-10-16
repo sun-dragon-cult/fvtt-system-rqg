@@ -36,8 +36,6 @@ export class RuneMagicSheet extends RqgItemSheet<
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
 
-    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
-
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -64,10 +62,6 @@ export class RuneMagicSheet extends RqgItemSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    let runes = formData["system.runes"];
-    runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter((r: string) => r); // Remove empty
-    formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 }

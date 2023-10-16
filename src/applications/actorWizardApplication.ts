@@ -287,7 +287,9 @@ export class ActorWizard extends FormApplication {
       actor: this.actor,
       species: this.species,
       speciesTemplateItems: this.species.selectedSpeciesTemplate
-        ? await RqgActorSheet.organizeEmbeddedItems(this.species.selectedSpeciesTemplate)
+        ? await new RqgActorSheet(this.actor).organizeEmbeddedItems(
+            this.species.selectedSpeciesTemplate,
+          )
         : undefined,
       homeland: this.homeland,
       choices: this.choices,

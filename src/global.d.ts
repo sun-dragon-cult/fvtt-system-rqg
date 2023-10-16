@@ -52,7 +52,6 @@ declare global {
       "rqg.worldMigrationVersion": string;
       "rqg.hitLocations": object;
       "rqg.sortHitLocationsLowToHigh": boolean;
-      "rqg.magicRuneName": string;
       "rqg.defaultItemIconSettings": IconSettingsData;
       "rqg.actor-wizard-feature-flag": boolean;
     }

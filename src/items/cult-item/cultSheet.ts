@@ -42,8 +42,6 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
 
-    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
-
     // To improve UX of creating a new item, set deity to name if empty
     if (!system.deity) {
       system.deity = this.document.name;
@@ -73,11 +71,6 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    let runes = formData["system.runes"];
-    runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter(isTruthy); // Remove empty
-    formData["system.runes"] = duplicate(runes);
-
     const formCultName = formData["system.joinedCults.cultName"];
     const formTagLine = formData["system.joinedCults.tagline"];
     const formrank = formData["system.joinedCults.rank"];

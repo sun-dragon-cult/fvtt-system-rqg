@@ -1,7 +1,7 @@
 <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
   <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
-  {{#with embeddedItems.rune.form.Man}}
+  {{#with embeddedItems.rune.form.man}}
     {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
       rune=this
       wizard=../wizard
@@ -9,7 +9,7 @@
       checkedProperty=../checkedProperty}}
   {{/with}}
   <i class="fas fa-arrows-alt-h"></i>
-  {{#with embeddedItems.rune.form.Beast}}
+  {{#with embeddedItems.rune.form.beast}}
     {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
       rune=this
       wizard=../wizard
@@ -18,8 +18,8 @@
   {{/with}}
 
   {{#each embeddedItems.rune.form}}
-    {{#unless (eq @key "Man")}}
-      {{#unless (eq @key "Beast")}}
+    {{#unless (eq @key "man")}}
+      {{#unless (eq @key "beast")}}
         {{#with this}}
           {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
             rune=this

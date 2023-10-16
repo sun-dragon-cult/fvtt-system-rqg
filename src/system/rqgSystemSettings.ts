@@ -6,6 +6,18 @@ import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 
 export const registerRqgSystemSettings = function () {
+  getGame().settings.register(systemId, "worldLanguage", {
+    name: "RQG.Settings.WorldLanguage.settingName",
+    hint: "RQG.Settings.WorldLanguage.settingHint",
+    scope: "world",
+    config: true,
+    type: String,
+    // @ts-expect-error choices, requiresReload
+    choices: CONFIG.supportedLanguages,
+    default: "en",
+    requiresReload: true,
+  });
+
   getGame().settings.registerMenu(systemId, "hitLocations", {
     name: "RQG.Settings.HitLocations.settingName",
     label: "RQG.Settings.HitLocations.settingLabel",
@@ -55,18 +67,6 @@ export const registerRqgSystemSettings = function () {
     default: defaultItemIconsObject,
   });
 
-  getGame().settings.register(systemId, "worldLanguage", {
-    name: "RQG.Settings.WorldLanguage.settingName",
-    hint: "RQG.Settings.WorldLanguage.settingHint",
-    scope: "world",
-    config: true,
-    type: String,
-    // @ts-expect-error choices, requiresReload
-    choices: CONFIG.supportedLanguages,
-    default: "en",
-    requiresReload: true,
-  });
-
   getGame().settings.register(systemId, "fumbleRollTable", {
     name: "RQG.Settings.FumbleRollTable.settingName",
     hint: "RQG.Settings.FumbleRollTable.settingHint",
@@ -83,15 +83,6 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: Boolean,
     default: false,
-  });
-
-  getGame().settings.register(systemId, "magicRuneName", {
-    name: "RQG.Settings.MagicRuneName.settingName",
-    hint: "RQG.Settings.MagicRuneName.settingHint",
-    scope: "world",
-    config: true,
-    type: String,
-    default: "Magic (condition)",
   });
 
   getGame().settings.register(systemId, "worldMigrationVersion", {
