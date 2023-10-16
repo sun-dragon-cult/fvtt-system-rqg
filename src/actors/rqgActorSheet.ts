@@ -144,6 +144,7 @@ interface CharacterSheetData {
   actorWizardFeatureFlag: boolean;
   itemLoopMessage: string | undefined;
   enrichedUnspecifiedSkill: string | undefined;
+  enrichedIncorrectRunes: string | undefined;
 }
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
@@ -153,6 +154,7 @@ export class RqgActorSheet extends ActorSheet<
 > {
   // What SRs are this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
+  private incorrectRunes: RqgItem[] = [];
   get title(): string {
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
@@ -192,6 +194,7 @@ export class RqgActorSheet extends ActorSheet<
   /* -------------------------------------------- */
 
   async getData(): Promise<CharacterSheetData & ActorSheetData> {
+    this.incorrectRunes = [];
     const system = duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
@@ -220,7 +223,7 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
 
-      embeddedItems: await RqgActorSheet.organizeEmbeddedItems(this.actor),
+      embeddedItems: await this.organizeEmbeddedItems(this.actor),
 
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
         CONFIG.RQG.skillRqid.spiritCombat,
@@ -291,6 +294,7 @@ export class RqgActorSheet extends ActorSheet<
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
       itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
+      enrichedIncorrectRunes: await this.getIncorrectRunesText(),
     };
   }
 
@@ -493,8 +497,7 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
-            RuneTypeEnum.Element &&
+          i.system.runeType.type === RuneTypeEnum.Element &&
           !!i.system.chance
         ) {
           acc.push({
@@ -514,8 +517,7 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
-            RuneTypeEnum.Power &&
+          i.system.runeType.type === RuneTypeEnum.Power &&
           i.system.chance > 50
         ) {
           acc.push({
@@ -535,8 +537,7 @@ export class RqgActorSheet extends ActorSheet<
       .reduce((acc: any[], i: RqgItem) => {
         if (
           i.type === ItemTypeEnum.Rune &&
-          i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
-            RuneTypeEnum.Form &&
+          i.system.runeType.type === RuneTypeEnum.Form &&
           (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
         ) {
           acc.push({
@@ -593,7 +594,7 @@ export class RqgActorSheet extends ActorSheet<
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
    * TODO Fix the typing
    */
-  public static async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
+  public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
     const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
     actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
@@ -638,8 +639,6 @@ export class RqgActorSheet extends ActorSheet<
       [RuneTypeEnum.Technique]: {},
     };
 
-    const leftOvers: string[] = [];
-
     // Separate runes into types (elemental, power, form, technique)
     itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune].reduce((acc: any, rune: any) => {
       const runeRqidName = rune.flags?.rqg?.documentRqidFlags?.id
@@ -647,20 +646,14 @@ export class RqgActorSheet extends ActorSheet<
         .pop()
         .split("-")
         .shift();
-      const runeType = rune?.flags?.rqg?.documentRqidFlags?.id?.split("-").pop();
+      const runeType = rune?.system.runeType.type;
       if (Object.values(RuneTypeEnum).includes(runeType)) {
         acc[runeType][runeRqidName] = rune;
       } else {
-        leftOvers.push(rune.name);
+        this.incorrectRunes.push(rune);
       }
       return acc;
     }, resultObject);
-
-    if (leftOvers.length) {
-      const msg = `You have runes without correct rqids [${leftOvers}]`;
-      ui.notifications?.warn(msg);
-      console.warn("RQG | " + msg);
-    }
 
     // Sort the hit locations
     if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
@@ -815,9 +808,7 @@ export class RqgActorSheet extends ActorSheet<
         this.actor.items.some(
           (i: RqgItem) =>
             i.type === ItemTypeEnum.Rune &&
-            (i.system.isMastered ||
-              i.flags?.rqg?.documentRqidFlags?.id?.split(".").pop()?.split("-").shift() ===
-                RuneTypeEnum.Technique),
+            (i.system.isMastered || i.system.runeType.type === RuneTypeEnum.Technique),
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -844,6 +835,17 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
+        // @ts-expect-error async
+        async: true,
+      });
+    }
+  }
+  private async getIncorrectRunesText(): Promise<string | undefined> {
+    if (this.incorrectRunes.length) {
+      // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
+      const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
+      const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
       return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
         // @ts-expect-error async
         async: true,

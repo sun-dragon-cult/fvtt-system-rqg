@@ -17,6 +17,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
 import { migrateRuneLinksToRqid } from "./migrations-item/migrateRuneLinksToRqid";
 import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponItemDamageBonus";
+import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -96,6 +97,7 @@ export async function applyDefaultWorldMigrations(
     migrateWeaponSkillLinks,
     migrateRuneLinksToRqid,
     migrateWeaponItemDamageBonus,
+    migrateRuneItemType,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

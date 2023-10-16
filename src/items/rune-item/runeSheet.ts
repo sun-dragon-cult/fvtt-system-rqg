@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneTypeEnum } from "../../data-model/item-data/runeData";
+import { RuneType, RuneTypeEnum } from "../../data-model/item-data/runeData";
 import { getAvailableRunes, getGameUser, AvailableRuneCache, localize } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
@@ -8,7 +8,7 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface RuneSheetData {
   allRunes: AvailableRuneCache[];
-  runeTypes: string[];
+  runeTypes: RuneType[];
   rqid: string;
 }
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
@@ -46,12 +46,21 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       system: system,
       isEmbedded: this.document.isEmbedded,
       allRunes: getAvailableRunes(),
-      runeTypes: Object.values(RuneTypeEnum).map((rt) => localize("RQG.Item.Rune.RuneType." + rt)),
+      runeTypes: Object.values(RuneTypeEnum).map((rt) => ({
+        type: rt,
+        name: localize(`RQG.Item.Rune.RuneType.${rt}`),
+      })),
     };
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    formData["name"] = `${formData["system.rune"]} (${formData["system.runeType"]})`;
+    const runeType = formData["system.runeType.type"];
+    const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
+    formData["name"] = `${formData["system.rune"]} (${translatedRuneType})`;
+    // Only update runeType if it is changed
+    if ((event.currentTarget as HTMLSelectElement)?.name === "system.runeType.type") {
+      formData["system.runeType.name"] = translatedRuneType;
+    }
     formData["system.chance"] = Number(formData["system.chance"]);
     return super._updateObject(event, formData);
   }

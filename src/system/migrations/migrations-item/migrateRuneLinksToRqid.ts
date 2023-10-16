@@ -9,8 +9,12 @@ import {
   isTruthy,
 } from "../../util";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
+import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 
-export async function migrateRuneLinksToRqid(itemData: ItemData): Promise<ItemUpdate> {
+export async function migrateRuneLinksToRqid(
+  itemData: ItemData,
+  owningActorData?: ActorData,
+): Promise<ItemUpdate> {
   const updateData = {};
 
   let availableRunes = getAvailableRunes(true);
@@ -25,11 +29,18 @@ export async function migrateRuneLinksToRqid(itemData: ItemData): Promise<ItemUp
 
     // @ts-expect-error opposingRune
     const oldOpposingRuneName = itemData.system.opposingRune;
-    const rqidLink = getRqidLinkFromName(oldOpposingRuneName, availableRunes);
-    if (rqidLink) {
-      mergeObject(updateData, {
-        system: { opposingRuneRqidLink: rqidLink },
-      });
+    if (oldOpposingRuneName) {
+      const rqidLink = getRqidLinkFromName(oldOpposingRuneName, availableRunes);
+      if (rqidLink) {
+        mergeObject(updateData, {
+          system: { opposingRuneRqidLink: rqidLink },
+        });
+      } else {
+        console.warn(
+          `No name match for name link to ${oldOpposingRuneName} in ${itemData.name} with rqid ${itemData?.flags?.rqg?.documentRqidFlags?.id} when migrating opposingRune in rune item owned by ${owningActorData?.name}.`,
+          itemData,
+        );
+      }
     }
 
     mergeObject(
@@ -82,7 +93,14 @@ function getNameArrayToRqidLinksUpdateData(
 
   const runeRqidLinks: RqidLink[] = oldRuneNameArray
     .map((runeName: string) => {
-      return getRqidLinkFromName(runeName, availableRunes);
+      const rqidLink = getRqidLinkFromName(runeName, availableRunes);
+      if (!rqidLink) {
+        console.warn(
+          `No name match for name link to ${runeName} in ${itemData.name} with rqid ${itemData?.flags?.rqg?.documentRqidFlags?.id} when migrating ${oldPropName} in ${itemData.type}.`,
+          itemData,
+        );
+      }
+      return rqidLink;
     })
     .filter(isTruthy);
   return { system: { [newPropName]: runeRqidLinks, [`-=${oldPropName}`]: null } };
@@ -91,7 +109,9 @@ function getNameArrayToRqidLinksUpdateData(
 function getRqidLinkFromName(runeName: string, availableRunes: AvailableRuneCache[]) {
   const runeCache = availableRunes.find((r) => r.name === runeName);
   if (!runeCache) {
-    ui.notifications?.warn("Didn't find rune name when migrating runes");
+    ui.notifications?.warn(
+      `Didn't find rune name [${runeName}] among cached runes when migrating runes`,
+    );
     return undefined;
   }
   return new RqidLink(runeCache.rqid, runeCache.name);
