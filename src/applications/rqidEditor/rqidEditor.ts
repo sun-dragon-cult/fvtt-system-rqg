@@ -109,10 +109,18 @@ d.compendium?.metadata?.packageName}`,
     appData.uuid = this.document.uuid;
     appData.flags = {
       rqg: {
-        // @ts-expect-error flags
-        documentRqidFlags: this.document?.flags?.rqg?.documentRqidFlags,
+        documentRqidFlags: {
+          // @ts-expect-error flags
+          lang: this.document?.flags?.rqg?.documentRqidFlags?.lang ?? "en",
+          // @ts-expect-error flags
+          priority: this.document?.flags?.rqg?.documentRqidFlags?.priority ?? 0,
+        },
       },
     };
+    const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
+    appData.rqidPrefix = `${documentIdPart}.${documentType}.`;
+    // @ts-expect-error flags
+    appData.rqidNamePart = this.document?.flags?.rqg?.documentRqidFlags?.id?.split(".").pop();
 
     return appData;
   }
@@ -132,17 +140,23 @@ d.compendium?.metadata?.packageName}`,
       el.addEventListener("click", async () => {
         const document = await fromUuid(uuid);
         if (!document) {
-          const msg = "Couldn't find document from uuid"; // TODO fix translation
+          const msg = "Couldn't find document from uuid";
           console.warn("RQG | ", msg);
           return;
         }
-        const rqid = Rqid.getDefaultRqid(document);
-        const updateData: any = { flags: { rqg: { documentRqidFlags: { id: rqid } } } };
-        if (document.isEmbedded) {
-          updateData._id = document.id;
-          await document.parent.updateEmbeddedDocuments(document.documentName, [updateData]);
-        }
-        await document.update(updateData);
+
+        const updateData = {
+          flags: {
+            rqg: {
+              documentRqidFlags: {
+                id: Rqid.getDefaultRqid(document),
+                lang: document.getFlag("rqg", "documentRqidFlags.lang") ?? "en",
+                priority: document.getFlag("rqg", "documentRqidFlags.priority") ?? 0,
+              },
+            },
+          },
+        };
+        await this.document.update(flattenObject(updateData));
         this.render();
       });
     });
@@ -159,6 +173,15 @@ d.compendium?.metadata?.packageName}`,
   }
 
   async _updateObject(event: Event, formData: any): Promise<void> {
+    const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
+    formData["flags.rqg.documentRqidFlags.id"] = formData["rqidNamePart"]
+      ? `${documentIdPart}.${documentType}.${formData["rqidNamePart"]}`
+      : undefined;
+    delete formData["rqidNamePart"];
+
+    formData["flags.rqg.documentRqidFlags.priority"] =
+      Number(formData["flags.rqg.documentRqidFlags.priority"]) || 0;
+
     await this.document.update(formData);
     this.render();
   }
