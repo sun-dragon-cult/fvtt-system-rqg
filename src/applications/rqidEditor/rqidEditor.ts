@@ -61,8 +61,7 @@ export class RqidEditor extends FormApplication {
           // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
           link: link,
-          // @ts-expect-error folder
-          folder: d.folder?.name,
+          folder: this.getPath(d),
         });
       }
 
@@ -107,6 +106,7 @@ d.compendium?.metadata?.packageName}`,
     appData.parentId = this.document?.parent?.id ?? "";
     // @ts-expect-error uuid
     appData.uuid = this.document.uuid;
+    appData.folder = this.getPath(this.document);
     appData.flags = {
       rqg: {
         documentRqidFlags: {
@@ -184,5 +184,15 @@ d.compendium?.metadata?.packageName}`,
 
     await this.document.update(formData);
     this.render();
+  }
+
+  getPath(document: any): string {
+    let path = "";
+    let folder = document?.folder;
+    while (folder) {
+      path = "/" + folder.name + path;
+      folder = folder.folder;
+    }
+    return document?.parent || document?.compendium ? "" : path || "/";
   }
 }

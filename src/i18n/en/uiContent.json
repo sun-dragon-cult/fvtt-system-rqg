@@ -1101,6 +1101,7 @@
       "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
       "rqidPriority": "Rqid Priority",
       "rqidLang": "Language",
+      "Folder": "Folder",
       "FoundryId": "Foundry ID",
       "FoundryUuid": "Foundry UUID",
       "ParentFoundryId": "Parent Foundry ID",
