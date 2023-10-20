@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.2.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.1.1...v3.2.0) (2023-10-20)
+
+
+### Features
+
+* add flag to allow duplicate RqidLinks ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f))
+* hide Opposing / Minor rune settings depending on runeType on Rune Item Sheet ([b614cfd](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b614cfd49d3c38f13adc816c61927115960c5db1)), closes [#269](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/269)
+* improve rqid editor ([1b53e1d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1b53e1d514259095bf489a9079cdfbc732dd592e)), closes [#457](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/457)
+* make damage bonus part of weapon damage string ([45f4f04](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/45f4f04b7d695cc4307be34c78cbdd6af017d7e5)), closes [#106](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/106)
+* make rune item runeType translatable ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f))
+* make runes translatable by using rqid for linking ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f)), closes [#270](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/270)
+* show actual rune icon on rqidLinks ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f))
+* show folder of document in rqid editor ([d62fa92](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d62fa927f5f28239a3fc2974086dbdfb432e1150)), closes [#642](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/642)
+
+
+### Bug Fixes
+
+* actor without POW / MP is shown as unconscious and also show MP input field ([f34eecd](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f34eecdf1db91a9c39368d8cacf1b20da081451b)), closes [#631](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/631)
+* combat panel SR button is not right aligned for natural weapons ([c43e605](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c43e6057e4e456fc2bb6eb40a73fe14db7db7e33))
+* name of special damage in chat damage roll is impale even for slash damage ([02945a6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/02945a6fa4dd71d0a1cc1fc82a8ee0e59ae2feb9)), closes [#629](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/629)
+* npe if hit location lacks rqid flag "id" when dragged to actorSheet ([ef30808](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ef3080885fc8f5c40578d660433c971fb511ca3e))
+
 ## [3.1.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.1.0...v3.1.1) (2023-09-29)
 
 
