@@ -211,6 +211,8 @@ export class RqgActorSheet extends ActorSheet<
         .filter((sr: number) => sr >= 1 && sr <= 12),
     );
 
+    const embeddedItems = await this.organizeEmbeddedItems(this.actor);
+
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -223,7 +225,7 @@ export class RqgActorSheet extends ActorSheet<
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
 
-      embeddedItems: await this.organizeEmbeddedItems(this.actor),
+      embeddedItems: embeddedItems,
 
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
         CONFIG.RQG.skillRqid.spiritCombat,
@@ -294,7 +296,7 @@ export class RqgActorSheet extends ActorSheet<
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
       itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
-      enrichedIncorrectRunes: await this.getIncorrectRunesText(),
+      enrichedIncorrectRunes: await this.getIncorrectRunesText(embeddedItems?.rune),
     };
   }
 
@@ -841,7 +843,37 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
   }
-  private async getIncorrectRunesText(): Promise<string | undefined> {
+  private async getIncorrectRunesText(embeddedRunes: any): Promise<string | undefined> {
+    const validRuneIds = [
+      ...Object.values(embeddedRunes.element).map((r: any) => r.id),
+      Object.values(embeddedRunes.form).map((r: any) => r.id),
+      Object.values(embeddedRunes.condition).map((r: any) => r.id),
+      Object.values(embeddedRunes.technique).map((r: any) => r.id),
+      Object.values(embeddedRunes.power)
+        .filter((r: any) => {
+          const runeRqidName = r?.flags?.rqg?.documentRqidFlags?.id
+            ?.split(".")
+            .pop()
+            .split("-")
+            .shift();
+          return [
+            "fertility",
+            "death",
+            "harmony",
+            "disorder",
+            "truth",
+            "illusion",
+            "stasis",
+            "movement",
+          ].includes(runeRqidName);
+        })
+        .map((r: any) => r.id),
+    ].flat(Infinity);
+    const extraRunes = this.actor.items.filter(
+      (i) => i.type === ItemTypeEnum.Rune && !validRuneIds.includes(i.id),
+    );
+    embeddedRunes.invalid = extraRunes;
+
     if (this.incorrectRunes.length) {
       // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
