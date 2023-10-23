@@ -42,6 +42,7 @@ export class Rqid {
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendium packs.
    * If lang parameter is not supplied the language selected for the world will be used.
+   * If no document is found with the specified lang, then "en" will be used as a fallback.
    */
   public static async fromRqid(
     rqid: string | undefined,
@@ -62,6 +63,10 @@ export class Rqid {
     const packItem = await Rqid.documentFromPacks(rqid, lang);
     if (packItem) {
       return packItem;
+    }
+
+    if (lang?.toLowerCase() !== CONFIG.RQG.fallbackLanguage) {
+      return Rqid.fromRqid(rqid, CONFIG.RQG.fallbackLanguage, silent);
     }
 
     if (!silent) {

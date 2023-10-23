@@ -29,6 +29,8 @@ export const RQG_CONFIG = {
     ],
   },
 
+  fallbackLanguage: "en",
+
   // Default Combat Maneuvers for weapon items
   combatManeuvers: new Map([
     [
