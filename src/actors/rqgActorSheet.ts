@@ -505,6 +505,7 @@ export class RqgActorSheet extends ActorSheet<
           acc.push({
             id: i.id,
             img: i.img,
+            rune: i.system.rune,
             chance: i.system.chance,
             descriptionRqid: i.system.descriptionRqidLink?.rqid,
           });
@@ -525,6 +526,7 @@ export class RqgActorSheet extends ActorSheet<
           acc.push({
             id: i.id,
             img: i.img,
+            rune: i.system.rune,
             chance: i.system.chance,
             descriptionRqid: i.system.descriptionRqidLink?.rqid,
           });
@@ -545,6 +547,7 @@ export class RqgActorSheet extends ActorSheet<
           acc.push({
             id: i.id,
             img: i.img,
+            rune: i.system.rune,
             chance: i.system.chance,
             descriptionRqid: i.system.descriptionRqidLink?.rqid,
           });
