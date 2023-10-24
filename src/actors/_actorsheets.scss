@@ -272,7 +272,7 @@
     }
 
     nav.gear-tabs {
-      flex: none;
+      margin-bottom: 10px;
 
       img {
         height: 15px;
@@ -280,12 +280,18 @@
 
       .item {
         flex: min-content;
-        padding-left: 5px;
-        padding-right: 5px;
+        margin: 0;
+        border: 1px solid black;
+        border-radius: 10px 10px 0 0;
+        padding: 5px;
+        background: var(--color-border-dark-5);
+        mix-blend-mode: hard-light;
 
         &.active,
         &:hover {
-          box-shadow: 0 0 10px red;
+          background: initial;
+          border-bottom: 0;
+          margin-bottom: 1px;
         }
       }
     }
