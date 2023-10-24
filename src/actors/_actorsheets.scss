@@ -587,6 +587,10 @@
       //noinspection CssInvalidPropertyValue
       width: -moz-available;
       border: none;
+
+      &:hover {
+        outline: 1px solid var(--color-border-light-2);
+      }
     }
   }
 
