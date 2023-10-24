@@ -580,6 +580,16 @@
 
   }
 
+  .tab.spiritmagic .spirit-magic{
+    input {
+      //noinspection CssInvalidPropertyValue
+      width: -webkit-fill-available;
+      //noinspection CssInvalidPropertyValue
+      width: -moz-available;
+      border: none;
+    }
+  }
+
   .tab.runemagic {
     .common {
       height: 20px;
