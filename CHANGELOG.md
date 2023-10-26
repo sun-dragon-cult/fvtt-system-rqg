@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.2.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.2.0...v3.2.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* "Get Items Like This" is missing from the rqid editor ([2210d03](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2210d03f103a006d68f43e877fc240cd774be959)), closes [#646](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/646)
+* affordance of view gear by itemtype / location tabs is low ([6fa3b69](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6fa3b69fb927a5db29eb12c3eaa03f79e85bf905)), closes [#177](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/177)
+* column "Focus" on spirit magic tab should be editable ([825a05d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/825a05dd6b925efc0a23f8ed8c323fac7715e4ca))
+* column "Focus" should not send to chat, but should get hover outline ([28a9157](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/28a915719bd6151ec614ddbffffc7bf8d7967053))
+* embedded runes may be hidden ([def4f23](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/def4f235e31d00a2f1835f16b48914662ed869bd)), closes [#644](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/644)
+* fallback to english when searching for a rqid in another language ([af663e3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/af663e381f0eab0c5235edede141e51185854073)), closes [#643](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/643)
+* firefox fails to load scenes since token effect svgs needs height & width for display on canvas ([2059786](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2059786afb390aef822594bdb63f870079e4d8d2))
+* show rune name & chance on character runes in header ([b4fa98a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b4fa98ae9edd5353fcb37f6e62b4c70c6eaffca1))
+
 ## [3.2.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.1.1...v3.2.0) (2023-10-20)
 
 
