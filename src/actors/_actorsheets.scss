@@ -455,7 +455,8 @@
       height: 21rem;
 
       &::before {
-        content: url(assets/images/runes/man.svg);
+        content: "";
+        background: center/contain no-repeat url(assets/images/runes/man.svg);
         width: inherit;
         height: inherit;
         position: absolute;
