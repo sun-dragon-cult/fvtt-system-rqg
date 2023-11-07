@@ -64,6 +64,18 @@ export const RQG_CONFIG = {
       },
     ],
     [
+      "HeadButt",
+      {
+        defaultDamageType: "crush",
+      },
+    ],
+    [
+      "Hit",
+      {
+        defaultDamageType: "crush",
+      },
+    ],
+    [
       "Parry",
       {
         defaultDamageType: "parry",
