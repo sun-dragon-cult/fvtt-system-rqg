@@ -164,19 +164,20 @@
           <div>
             <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
             {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
-              <div class="text-center"><input
+              <input class="text-center"
                 name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
                 value="{{value}}"
                 type="number"
                 min="0"
                 max="99"
-                size="2"></div>
+                size="2">
             </div>
 
               <div>
                 <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
 
-                <div class="text-center"><input
+                <input
+                  class="text-center"
                   name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
                                  '.carryingFactor'}}"
                   value="{{carryingFactor}}"
@@ -184,7 +185,7 @@
                   step="0.1"
                   min="0"
                   max="99"
-                  size="2"></div>
+                  size="2">
               </div>
             {{/with}}
 
@@ -210,8 +211,8 @@
           <div class="hero-points-container">
             <div class="norse">{{localize "RQG.Actor.Attributes.HeroPoints"}}</div>
             {{#if isGM}}
-              <div class="text-center"><input type="number" min="0" max="99" name="system.attributes.heroPoints"
-                                              value="{{system.attributes.heroPoints}}" size="2"></div>
+              <input class="text-center" type="number" min="0" max="99" name="system.attributes.heroPoints"
+                                              value="{{system.attributes.heroPoints}}" size="2">
             {{else}}
               <div class="text-center">{{system.attributes.heroPoints}}</div>
             {{/if}}

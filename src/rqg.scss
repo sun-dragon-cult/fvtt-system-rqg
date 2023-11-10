@@ -222,6 +222,7 @@ body {
 
   input[type="number"] {
     width: auto;
+    text-align: right;
   }
 
   input[type="checkbox"] {
@@ -864,7 +865,7 @@ body {
 .rqg.sheet {
   input {
     width: inherit;
-    background-color: #ffffff10;
+    background-color: #ffffff2b;
   }
 }
 
@@ -1037,7 +1038,6 @@ body {
     background-color: #ffffff10;
 
     &[type="number"] {
-      text-align: right;
       width: 75px;
     }
 

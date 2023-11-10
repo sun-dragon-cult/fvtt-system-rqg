@@ -126,7 +126,7 @@ interface CharacterSheetData {
   baseStrikeRank: number | undefined;
   enrichedAllies: string;
   enrichedBiography: string;
-
+  ownedProjectiles: RqgItem[];
   locomotionModes: { [a: string]: string };
 
   currencyTotals: any;
@@ -257,6 +257,7 @@ export class RqgActorSheet extends ActorSheet<
       homelands: Object.values(HomeLandEnum),
       locations: itemTree.getPhysicalItemLocations(),
       healthStatuses: [...actorHealthStatuses],
+      ownedProjectiles: this.getEquippedProjectiles(),
       locomotionModes: {
         [LocomotionEnum.Walk]: "Walk",
         [LocomotionEnum.Swim]: "Swim",
@@ -763,7 +764,6 @@ export class RqgActorSheet extends ActorSheet<
         }
       }
 
-      weapon.system.ammoNotSelected = !weapon.system.projectileId;
       const projectile = actor.items.find((i) => i.id === weapon.system.projectileId);
       if (projectile) {
         weapon.system.projectileQuantity = projectile.system.quantity;
@@ -1447,6 +1447,19 @@ export class RqgActorSheet extends ActorSheet<
     if (newCombatants.length > 0) {
       await combat.createEmbeddedDocuments("Combatant", newCombatants);
     }
+  }
+
+  private getEquippedProjectiles(): any[] {
+    return [
+      [{ _id: "", name: "---" }],
+      ...this.actor.getEmbeddedCollection("Item").filter(
+        // @ts-expect-error type & system
+        (i: RqgItem) =>
+          i.type === ItemTypeEnum.Weapon &&
+          i.system.isProjectile &&
+          i.system.equippedStatus === "equipped",
+      ),
+    ];
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
