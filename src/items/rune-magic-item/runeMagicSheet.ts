@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { getAvailableRunes, getGameUser, AvailableItemCache } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
@@ -9,7 +9,7 @@ interface RuneMagicSheetData {
   ranges: SpellRangeEnum[];
   durations: SpellDurationEnum[];
   actorCults: any[];
-  allRunes: AvailableRuneCache[];
+  allRunes: AvailableItemCache[];
 }
 
 export class RuneMagicSheet extends RqgItemSheet<

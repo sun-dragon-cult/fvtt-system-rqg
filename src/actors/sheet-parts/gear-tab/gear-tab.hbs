@@ -315,11 +315,10 @@
           <div data-item-id="{{id}}" class="gear contextmenu item">
             <span class="text-right">{{system.absorbs}}</span>
           </div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">[
-            {{#each system.hitLocations}}
-              {{this}},
+          <div data-item-id="{{id}}" class="gear contextmenu item small-size flex-wrap">
+            {{#each system.hitLocationRqidLinks}}
+              <span>{{name}}{{#unless @last}},&nbsp;{{/unless}}</span>
             {{/each}}
-            ]
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
             <span class="text-right">{{system.moveQuietlyPenalty}}</span>

@@ -3,7 +3,7 @@ import { CultRankEnum } from "../../data-model/item-data/cultData";
 import {
   getAvailableRunes,
   getGameUser,
-  AvailableRuneCache,
+  AvailableItemCache,
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
@@ -14,7 +14,7 @@ import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface CultSheetData {
-  allRunes: AvailableRuneCache[];
+  allRunes: AvailableItemCache[];
   ranksEnum: CultRankEnum[];
   enrichedGifts: string;
   enrichedGeases: string;

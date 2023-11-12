@@ -7,9 +7,10 @@ import { RqgActor } from "../../actors/rqgActor";
 import {
   activateChatTab,
   assertItemType,
+  AvailableItemCache,
+  getAvailableHitLocations,
   getGame,
   getGameUser,
-  getHitLocations,
   localize,
   requireValue,
   RqgError,
@@ -25,7 +26,7 @@ import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface HitLocationSheetData {
-  allHitLocations: string[];
+  allHitLocations: AvailableItemCache[];
   hitLocationTypes: string[];
   hitLocationHealthStatuses: string[];
   rqid: string;
@@ -67,7 +68,7 @@ export class HitLocationSheet extends RqgItemSheet<
       isEmbedded: this.document.isEmbedded,
       system: system,
 
-      allHitLocations: getHitLocations(),
+      allHitLocations: getAvailableHitLocations(),
       hitLocationTypes: Object.values(HitLocationTypesEnum),
       hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
     };

@@ -752,7 +752,8 @@
           "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
           "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
           "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",
-          "NoActorOnTokenWarn": "No Actor on Token"
+          "NoActorOnTokenWarn": "No Actor on Token",
+          "RqidNeededWarn": "No Rqid assigned. A Rqid is needed to make the hit location work for armor protection etc."
         }
       },
       "HitLocationType": {
@@ -857,7 +858,8 @@
           "DropToConnectSkill": "Drop a Skill Item on this field to connect.",
           "DropToReplaceSkill": "Drop a Skill Item on this field to replace.",
           "DropToConnectOccupation": "Drop an Occupation Item on this field to connect.",
-          "DropToReplaceOccupation": "Drop an Occupation Item on this field to replace."
+          "DropToReplaceOccupation": "Drop an Occupation Item on this field to replace.",
+          "DropToConnectHitLocation": "Drop a Hit Location Item on this field to connect."
         }
       },
       "Rune": {
@@ -875,6 +877,9 @@
           "form": "Form",
           "condition": "Condition",
           "technique": "Technique"
+        },
+        "Notification": {
+          "RqidNeededWarn": "No Rqid assigned. A Rqid is needed to make the rune available for cults, rune magic etc."
         }
       },
       "RuneMagic": {
@@ -1134,13 +1139,6 @@
       }
     },
     "Settings": {
-      "HitLocations": {
-        "dialogTitle": "Hit Location Name Settings",
-        "settingName": "Hit Location Names",
-        "settingLabel": "Configure Available Hit Location Names",
-        "settingHint": "The hit location names are used in dropdowns for armor coverage and when naming a new hit location.",
-        "addLocationPlaceholder": "Add another hitlocation"
-      },
       "SortHitLocationsLowToHigh": {
         "settingName": "Sort Hitlocations Low to High",
         "settingHint": "Activating this setting sorts the character hitlocation in the same way as stat blocks are sorted with the lowest die number first. The setting can be toggled in the actor sheet Health table."

@@ -42,16 +42,21 @@
         <div class="key-value-grid">
           <label for="hitlocations-{{id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
 
-          <div class="img-name-grid bordered">
-            {{#each system.hitLocations}}
+          <div>
+            <select data-add-hit-location>
+              {{selectOptions allHitLocationOptions selected="empty"}}
+            </select><br>
 
-              <span><input class="maxcontentwidth" name="system.hitLocations" type="text" value="{{this}}"></span>
-            {{/each}}
-            <input type="text" id="hitlocations-{{id}}" name="system.hitLocations"
-                   list="allHitLocations"
-                   placeholder="{{localize "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder"}}"
-            style="grid-column: 1 / span 2;">
-          </div>
+            {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+            rqidLinkArray=system.hitLocationRqidLinks
+            dropzoneData="hitLocationRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="hitLocation"
+            showDeleteFromPropertyName="hitLocationRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHitLocation"
+          }}
+
+        </div>
 
           <label for="absorbs-{{id}}">{{localize "RQG.Item.Armor.Absorbs"}}</label>
           <input type="number" id="absorbs-{{id}}" name="system.absorbs" min="0" max="99" value="{{system.absorbs}}">
@@ -93,11 +98,6 @@
     </section>
   </main>
 
-  <datalist id="allHitLocations">
-    {{#each allHitLocations}}
-      <option value="{{this}}">{{this}}</option>
-    {{/each}}
-  </datalist>
   <datalist id="armorTypeNames">
     {{#each armorTypeNames}}
       <option value="{{this}}">{{this}}</option>

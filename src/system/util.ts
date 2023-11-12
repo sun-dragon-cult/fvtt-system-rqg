@@ -1,7 +1,6 @@
 import type { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import type { ChatMessageType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
 
@@ -104,11 +103,6 @@ export function getSocket(): io.Socket {
     throw new RqgError(msg);
   }
   return getGame().socket!;
-}
-
-export function getHitLocations(): string[] {
-  return (getGame().settings.get(systemId, "hitLocations") as typeof hitLocationNamesObject)
-    .hitLocationItemNames;
 }
 
 /**
@@ -369,19 +363,32 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   return rqgActor as unknown as T;
 }
 
-export type AvailableRuneCache = {
+let availableHitLocations: AvailableItemCache[] = [];
+
+export function getAvailableHitLocations(silent: boolean = false): AvailableItemCache[] {
+  if (availableHitLocations.length > 0) {
+    return availableHitLocations;
+  }
+  if (!silent) {
+    ui.notifications?.warn("compendiums not indexed yet, try again!");
+  }
+  cacheAvailableHitLocations();
+  return [];
+}
+
+export type AvailableItemCache = {
   name: string;
   img: string;
   rqid: string;
 };
 
-let availableRunes: AvailableRuneCache[] = [];
+let availableRunes: AvailableItemCache[] = [];
 
 /**
  * Get the cached data about the runes that are available in the world.
  * @see {@link cacheAvailableRunes}
  */
-export function getAvailableRunes(silent: boolean = false): AvailableRuneCache[] {
+export function getAvailableRunes(silent: boolean = false): AvailableItemCache[] {
   if (availableRunes.length > 0) {
     return availableRunes;
   }
@@ -392,57 +399,70 @@ export function getAvailableRunes(silent: boolean = false): AvailableRuneCache[]
   return [];
 }
 
-/**
- * Go through all compendiums and make a list of all the unique runes in them
- * using rqid to find the runes and storing name, img & rqid for each.
- */
-export async function cacheAvailableRunes(): Promise<AvailableRuneCache[]> {
+export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
   if (availableRunes.length > 0) {
     return availableRunes;
   }
-  const compendiumRuneIndexData = (
+  availableRunes = await getItemsToCache("i.rune.");
+  return availableRunes;
+}
+
+export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
+  if (availableHitLocations.length > 0) {
+    return availableHitLocations;
+  }
+  availableHitLocations = await getItemsToCache("i.hit-location.");
+  return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Go through all compendiums and make a list of all the unique item that match the rqidStart
+ * in them to find the items and storing name, img & rqid for each in the supplied cache.
+ */
+export async function getItemsToCache(rqidStart: string): Promise<AvailableItemCache[]> {
+  const compendiumItemIndexData = (
     await Promise.all(
       getGame().packs.map(async (pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
         // @ts-expect-error indexed
         if (!pack.indexed) {
           await pack.getIndex();
         }
-        return getRuneIndexData(pack);
+        return getIndexData(rqidStart, pack);
       }),
     )
   ).flat();
 
   // Only keep one of each rqid, the one with the highest priority
-  const highestPriorityRunesData: any = compendiumRuneIndexData.reduce(
-    (acc: AvailableRuneCache[], runeIndexData: any) => {
-      const toReplaceRune = acc.findIndex(
+  const highestPriorityItemData: any = compendiumItemIndexData.reduce(
+    (acc: AvailableItemCache[], itemIndexData: any) => {
+      const toReplaceItem = acc.findIndex(
         (r: any) =>
-          r.rqid === runeIndexData.rqid && Number(r.priority) <= Number(runeIndexData.priority),
+          r.rqid === itemIndexData.rqid && Number(r.priority) <= Number(itemIndexData.priority),
       );
-      if (toReplaceRune >= 0) {
-        acc.splice(toReplaceRune, 1, runeIndexData);
-      } else if (!acc.some((r) => r.rqid === runeIndexData.rqid)) {
-        acc.push(runeIndexData);
+      if (toReplaceItem >= 0) {
+        acc.splice(toReplaceItem, 1, itemIndexData);
+      } else if (!acc.some((r) => r.rqid === itemIndexData.rqid)) {
+        acc.push(itemIndexData);
       }
       return acc;
     },
     [],
   );
 
-  availableRunes = highestPriorityRunesData.map((r: any) => ({
+  return highestPriorityItemData.map((r: any) => ({
     name: r.name,
     img: r.img,
     rqid: r.rqid,
   }));
-  return availableRunes;
 }
 
-function getRuneIndexData(
+function getIndexData(
+  rqidStart: string,
   pack: CompendiumCollection<CompendiumCollection.Metadata>,
-): AvailableRuneCache[] {
-  return pack.index.reduce((acc: AvailableRuneCache[], indexData) => {
+): AvailableItemCache[] {
+  return pack.index.reduce((acc: AvailableItemCache[], indexData) => {
     // @ts-expect-error flags
-    if (indexData?.flags?.rqg?.documentRqidFlags?.id?.startsWith("i.rune.")) {
+    if (indexData?.flags?.rqg?.documentRqidFlags?.id?.startsWith(rqidStart)) {
       acc.push({
         // @ts-expect-error name
         name: indexData.name ?? "",

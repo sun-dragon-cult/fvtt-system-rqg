@@ -3,7 +3,7 @@ import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/fo
 import { ItemUpdate } from "../applyMigrations";
 import {
   assertItemType,
-  AvailableRuneCache,
+  AvailableItemCache,
   cacheAvailableRunes,
   getAvailableRunes,
   isTruthy,
@@ -84,7 +84,7 @@ function getNameArrayToRqidLinksUpdateData(
   itemData: any,
   oldPropName: string,
   newPropName: string,
-  availableRunes: AvailableRuneCache[],
+  availableRunes: AvailableItemCache[],
 ): object {
   const oldRuneNameArray = itemData.system[oldPropName];
   if (!oldRuneNameArray?.length) {
@@ -106,7 +106,7 @@ function getNameArrayToRqidLinksUpdateData(
   return { system: { [newPropName]: runeRqidLinks, [`-=${oldPropName}`]: null } };
 }
 
-function getRqidLinkFromName(runeName: string, availableRunes: AvailableRuneCache[]) {
+function getRqidLinkFromName(runeName: string, availableRunes: AvailableItemCache[]) {
   const runeCache = availableRunes.find((r) => r.name === runeName);
   if (!runeCache) {
     ui.notifications?.warn(

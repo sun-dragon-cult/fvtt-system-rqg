@@ -70,7 +70,6 @@ export const loadHandlebarsTemplates = async function () {
 
     // Dialogs & Settings
     "systems/rqg/applications/improveAbilityDialog.hbs",
-    "systems/rqg/applications/hitLocationSettings.hbs",
     "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
 
     // Interface

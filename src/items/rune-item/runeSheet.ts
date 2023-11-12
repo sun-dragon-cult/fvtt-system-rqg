@@ -1,13 +1,13 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneType, RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getAvailableRunes, getGameUser, AvailableRuneCache, localize } from "../../system/util";
+import { getAvailableRunes, getGameUser, AvailableItemCache, localize } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 
 interface RuneSheetData {
-  allRunes: AvailableRuneCache[];
+  allRunes: AvailableItemCache[];
   runeTypes: RuneType[];
   rqid: string;
 }

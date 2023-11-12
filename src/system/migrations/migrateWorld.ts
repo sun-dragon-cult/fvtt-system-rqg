@@ -18,6 +18,7 @@ import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchE
 import { migrateRuneLinksToRqid } from "./migrations-item/migrateRuneLinksToRqid";
 import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponItemDamageBonus";
 import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
+import { migrateArmorCoverage } from "./migrations-item/migrateArmorCoverage";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -98,6 +99,7 @@ export async function applyDefaultWorldMigrations(
     migrateRuneLinksToRqid,
     migrateWeaponItemDamageBonus,
     migrateRuneItemType,
+    migrateArmorCoverage,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

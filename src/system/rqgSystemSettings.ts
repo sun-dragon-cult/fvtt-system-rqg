@@ -1,7 +1,6 @@
 import { getGame } from "./util";
 import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { DefaultItemIconSettings } from "../applications/defaultItemIconSettings";
-import { HitLocationSettings } from "../applications/hitLocationSettings";
 import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 
@@ -16,15 +15,6 @@ export const registerRqgSystemSettings = function () {
     choices: CONFIG.supportedLanguages,
     default: "en",
     requiresReload: true,
-  });
-
-  getGame().settings.registerMenu(systemId, "hitLocations", {
-    name: "RQG.Settings.HitLocations.settingName",
-    label: "RQG.Settings.HitLocations.settingLabel",
-    hint: "RQG.Settings.HitLocations.settingHint",
-    icon: "fas fa-child",
-    type: HitLocationSettings,
-    restricted: true,
   });
 
   getGame().settings.register(systemId, "hitLocations", {

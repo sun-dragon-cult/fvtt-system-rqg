@@ -184,6 +184,10 @@ body {
     width: 100%;
   }
 
+  .fullheight {
+    height: 100%;
+  }
+
   .warning {
     outline: 2px dashed var(--rqg-color-enc-warning);
     background-color: var(--rqg-color-enc-warning);
