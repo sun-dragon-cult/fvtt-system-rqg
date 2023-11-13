@@ -19,6 +19,7 @@ import { migrateRuneLinksToRqid } from "./migrations-item/migrateRuneLinksToRqid
 import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponItemDamageBonus";
 import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
 import { migrateArmorCoverage } from "./migrations-item/migrateArmorCoverage";
+import { migrateHitLocationConnectedTo } from "./migrations-item/migrateHitLocationConnectedTo";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -100,6 +101,7 @@ export async function applyDefaultWorldMigrations(
     migrateWeaponItemDamageBonus,
     migrateRuneItemType,
     migrateArmorCoverage,
+    migrateHitLocationConnectedTo,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 
