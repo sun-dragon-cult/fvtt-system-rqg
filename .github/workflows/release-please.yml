@@ -2,7 +2,7 @@ name: Create PR or Build Release
 on:
   push:
     branches:
-      - master
+      - main
 permissions: {}
 jobs:
   changes:
