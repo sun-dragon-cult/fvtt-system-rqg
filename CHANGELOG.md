@@ -1,5 +1,15 @@
 # Changelog
 
+## [3.3.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.2.1...v3.3.0) (2023-11-14)
+
+
+### Features
+
+* add headbutt & hit as combat maneuvers ([32aff9d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/32aff9da82ba82091efc24ac7f14e8e48dba523f))
+* change the hitLocation "connectedTo" to use rqid instead ([668dd85](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/668dd85b6a1e298a8f64081e1d667768ae790c2c)), closes [#449](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/449)
+* improve UX of embedding missile weapon & projectiles ([3c00cf7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3c00cf75eb16d15e80ca7a22462e783e1618117f))
+* use rqid for armor coverage and remove hit locations setting ([4f55ef1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4f55ef159cf21b721f61ae4306517dafed0c1e71))
+
 ## [3.2.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.2.0...v3.2.1) (2023-10-26)
 
 
