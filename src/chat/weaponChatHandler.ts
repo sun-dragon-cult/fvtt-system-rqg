@@ -21,6 +21,7 @@ import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { Weapon } from "../items/weapon-item/weapon";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export enum DamageRollTypeEnum {
   Normal = "normal",
@@ -80,7 +81,7 @@ export class WeaponChatHandler {
       usageOptions: usageOptions,
       hideUsageOptions: Object.keys(usageOptions).length === 1,
     };
-    const html = await renderTemplate("systems/rqg/chat/weaponChatHandler.hbs", templateData);
+    const html = await renderTemplate(templatePaths.chatWeaponHandler, templateData);
 
     return {
       flavor: "Skill:" + skillItem.system.skillName + specialization, // TODO Translate (or rethink)

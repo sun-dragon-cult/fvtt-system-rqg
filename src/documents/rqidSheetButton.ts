@@ -2,6 +2,7 @@ import { getGame, getGameUser } from "../system/util";
 import { RqidEditor } from "../applications/rqidEditor/rqidEditor";
 import { systemId } from "../system/config";
 import { DocumentRqidFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 /**
  * Create an ID link button in the document sheet header which displays the document ID and copies to clipboard
@@ -15,7 +16,7 @@ export async function addRqidLinkToSheetHtml(
   const rqidLink = document.createElement("a");
   rqidLink.classList.add("title-rqid-link");
   rqidLink.setAttribute("alt", "Edit / Copy document rqid");
-  rqidLink.dataset.tooltip = await renderTemplate("systems/rqg/documents/rqid-tooltip.hbs", {
+  rqidLink.dataset.tooltip = await renderTemplate(templatePaths.rqidTooltip, {
     rqid: rqid,
   });
   rqidLink.dataset.tooltipDirection = "UP";

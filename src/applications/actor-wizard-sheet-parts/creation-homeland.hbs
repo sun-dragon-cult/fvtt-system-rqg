@@ -16,7 +16,7 @@
   <label>{{localize "RQG.ActorCreation.Step1.HomelandDescription"}}:</label>
   <div>
     {{#if homeland.selectedHomeland.system.homelandJournalRqidLink}}
-    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+    {{> rqidLink
       rqidLink=homeland.selectedHomeland.system.homelandJournalRqidLink
     }}
     {{/if}}
@@ -25,7 +25,7 @@
   <label>{{localize "RQG.ActorCreation.Step1.RegionDescription"}}:</label>
   <div>
     {{#if homeland.selectedHomeland.system.regionJournalRqidLink}}
-    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+    {{> rqidLink
       rqidLink=homeland.selectedHomeland.system.regionJournalRqidLink
     }}
     {{/if}}
@@ -85,7 +85,7 @@
 
         <div class="tab cultures" data-group="homeland-item-selection" data-tab="cultures">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCulture"}}</h2>
-            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+            {{> rqidLinkSelector
               rqidLinkArray=homeland.selectedHomeland.system.cultureJournalRqidLinks
               checkedProperty="homelandCultureChosen"
               forChoice="homelandCultures"
@@ -95,7 +95,7 @@
 
         <div class="tab tribes" data-group="homeland-item-selection" data-tab="tribes">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandTribe"}}</h2>
-            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+            {{> rqidLinkSelector
               rqidLinkArray=homeland.selectedHomeland.system.tribeJournalRqidLinks
               checkedProperty="homelandTribeChosen"
               forChoice="homelandTribes"
@@ -105,7 +105,7 @@
 
         <div class="tab clans" data-group="homeland-item-selection" data-tab="clans">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandClan"}}</h2>
-            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+            {{> rqidLinkSelector
               rqidLinkArray=homeland.selectedHomeland.system.clanJournalRqidLinks
               checkedProperty="homelandClanChosen"
               forChoice="homelandClans"
@@ -115,7 +115,7 @@
 
         <div class="tab cults" data-group="homeland-item-selection" data-tab="cults">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandCult"}}</h2>
-            {{> "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs"
+            {{> rqidLinkSelector
               rqidLinkArray=homeland.selectedHomeland.system.cultRqidLinks
               checkedProperty="homelandCultChosen"
               forChoice="homelandCult"
@@ -125,7 +125,7 @@
 
         <div class="tab skills" data-group="homeland-item-selection" data-tab="skills">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandSkills"}}</h2>
-            {{> "systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs"
+            {{> actorSkillsTab
               embeddedItems=homeland.selectedHomeland.embeddedItems
               wizard="true"
               forChoice="homeland"
@@ -138,7 +138,7 @@
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandRunes"}}</h2>
             {{#each homeland.selectedHomeland.runes}}
             <div class="rune-selector">
-              {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+              {{> actorRuneGrid
                 rune=this
                 wizard=true
                 checkedProperty="homelandPresent"
@@ -149,7 +149,7 @@
 
         <div class="tab passions" data-group="homeland-item-selection" data-tab="passions">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step1.SelectHomelandPassions"}}</h2>
-            {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
+            {{> actorPassionsTab
               embeddedItems=homeland.selectedHomeland.embeddedItems
               wizard="true"
               checkedProperty="homelandPresent"

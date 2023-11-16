@@ -47,7 +47,7 @@
               {{selectOptions allHitLocationOptions selected="empty"}}
             </select><br>
 
-            {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+            {{> rqidLinkArrayDropzone
             rqidLinkArray=system.hitLocationRqidLinks
             dropzoneData="hitLocationRqidLinks"
             dropDocumentNames="Item"
@@ -68,7 +68,7 @@
           <label for="fits-size-{{id}}">{{localize "RQG.Item.Armor.FitsSIZ"}}</label>
           <input type="number" id="fits-size-{{id}}" name="system.size" min="1" max="99" value="{{system.size}}">
 
-          {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"}}
+          {{> itemCommonPhysical}}
         </div>
       </div>
 
@@ -93,7 +93,7 @@
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+        {{> itemActiveEffects}}
       </div>
     </section>
   </main>

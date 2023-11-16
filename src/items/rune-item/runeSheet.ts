@@ -5,6 +5,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneSheetData {
   allRunes: AvailableItemCache[];
@@ -15,7 +16,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
-      template: "systems/rqg/items/rune-item/runeSheet.hbs",
+      template: templatePaths.itemRuneSheet,
       width: 450,
       height: 500,
       tabs: [

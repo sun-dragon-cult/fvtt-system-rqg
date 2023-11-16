@@ -1,4 +1,5 @@
 import Options = Application.Options;
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class RqgPause extends Pause {
   public static init() {
@@ -7,7 +8,7 @@ export class RqgPause extends Pause {
 
   static get defaultOptions(): Options {
     return mergeObject(super.defaultOptions, {
-      template: "systems/rqg/foundryUi/rqgPause.hbs",
+      template: templatePaths.rqgPause,
     });
   }
 

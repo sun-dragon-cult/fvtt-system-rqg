@@ -1,15 +1,15 @@
 {{#if enrichedIncorrectRunes}}<div class="warning">{{{enrichedIncorrectRunes}}}</div>{{/if}}
 <div class="flex-row flex-wrap">
-  {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs" }}
-  {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-power.hbs" }}
-  {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-form.hbs" }}
-  {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-condition.hbs" }}
+  {{> actorRuneElements }}
+  {{> actorRunePower }}
+  {{> actorRuneForm }}
+  {{> actorRuneCondition }}
 
   {{#unless (isEmptyObject embeddedItems.rune.invalid)}}
     <div class="grid rune item-list">
       <h2 class="fullrow">🐛 Extra / Duplicate Runes</h2>
       {{#each embeddedItems.rune.invalid}}
-        {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+        {{> actorRuneGrid
           rune=this
           wizard=../wizard
           forChoice=../forChoice

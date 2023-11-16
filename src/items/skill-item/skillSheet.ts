@@ -6,6 +6,7 @@ import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
   skillCategories: SkillCategoryEnum[];
@@ -16,7 +17,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
-      template: "systems/rqg/items/skill-item/skillSheet.hbs",
+      template: templatePaths.itemSkillSheet,
       width: 450,
       height: 500,
       tabs: [

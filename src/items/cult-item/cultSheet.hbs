@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+      {{> rqidLinkDropzone
         rqidLink=system.descriptionRqidLink
         dropzoneData="descriptionRqidLink"
         dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -66,7 +66,7 @@
           </div>
 
           <label for="runes-{{id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.runeRqidLinks
             dropzoneData="runeRqidLinks"
             dropDocumentNames="Item"
@@ -77,7 +77,7 @@
           }}
 
           <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.commonRuneMagicRqidLinks
             dropzoneData="commonRuneMagicRqidLinks"
             dropDocumentNames="Item"

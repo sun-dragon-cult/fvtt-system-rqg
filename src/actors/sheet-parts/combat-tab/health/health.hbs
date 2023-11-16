@@ -31,9 +31,9 @@
 
     {{#if embeddedItems.hitLocation}}
       {{#if (eq bodyType "humanoid")}}
-        {{> "systems/rqg/actors/sheet-parts/combat-tab/health/humanoid-hit-locations.hbs" }}<br>
+        {{> actorHumanoidHitLocations }}<br>
       {{else}}
-        {{> "systems/rqg/actors/sheet-parts/combat-tab/health/default-hit-locations.hbs" }}<br>
+        {{> actorDefaultHitlocations }}<br>
       {{/if}}
     {{else}}
       <p class="warning">{{localize "RQG.Actor.Health.NoHitLocations"}}</p>

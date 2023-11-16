@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+      {{> rqidLinkDropzone
         rqidLink=system.descriptionRqidLink
         dropzoneData="descriptionRqidLink"
         dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -78,7 +78,7 @@
 
           {{#if (or (eq system.runeType.type "power") (eq system.runeType.type "form"))}}
           <label for="opposing-rune-{{id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+          {{> rqidLinkDropzone
             rqidLink=system.opposingRuneRqidLink
             dropzoneData="opposingRuneRqidLink"
             dropDocumentNames="Item"
@@ -100,7 +100,7 @@
 
           {{#if (or (eq system.runeType.type "element") (eq system.runeType.type "technique"))}}
           <label for="minor-runes-{{id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.minorRuneRqidLinks
             dropzoneData="minorRuneRqidLinks"
             dropDocumentNames="Item"

@@ -2,6 +2,7 @@ import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/fo
 import { systemId } from "../../system/config";
 import { escapeRegex, getRequiredDomDataset } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export class RqidEditor extends FormApplication {
   private document: Document<any, any>;
@@ -14,7 +15,7 @@ export class RqidEditor extends FormApplication {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-editor"],
       popOut: true,
-      template: `systems/rqg/applications/rqidEditor/rqidEditor.hbs`,
+      template: templatePaths.dialogRqidEditor,
       width: 650,
       left: 35,
       top: 15,

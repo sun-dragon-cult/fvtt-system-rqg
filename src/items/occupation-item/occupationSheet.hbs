@@ -25,7 +25,7 @@
       </div>
 
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+      {{> rqidLinkDropzone
         rqidLink=system.occupationRqidLink
         dropzoneData="occupationRqidLink"
         dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -82,7 +82,7 @@
                        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
                                          name=this.skillRqidLink.name}}"></i>
 
-                    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                    {{> rqidLink
                       rqidLink=this.skillRqidLink
                     }}
                     <div>
@@ -133,7 +133,7 @@
                  value="{{system.baseIncomeNotes}}">
 
           <label>{{localize "RQG.Item.Occupation.CultLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.cultRqidLinks
             dropzoneData="cultRqidLinks"
             dropDocumentNames="Item"
@@ -150,7 +150,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.startingEquipmentRqidLinks
             dropzoneData="startingEquipmentRqidLinks"
             dropDocumentNames="Item"

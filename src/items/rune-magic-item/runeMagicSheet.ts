@@ -4,6 +4,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneMagicSheetData {
   ranges: SpellRangeEnum[];
@@ -19,7 +20,7 @@ export class RuneMagicSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
-      template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
+      template: templatePaths.itemRuneMagicSheet,
       width: 450,
       height: 500,
       tabs: [

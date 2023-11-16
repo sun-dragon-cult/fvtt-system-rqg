@@ -16,6 +16,7 @@ import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { RqidLink } from "../../data-model/shared/rqidLink";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface ArmorSheetData {
   allHitLocationOptions: AvailableItemCache[];
@@ -30,7 +31,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
-      template: "systems/rqg/items/armor-item/armorSheet.hbs",
+      template: templatePaths.itemArmorSheet,
       width: 500,
       height: 600,
       tabs: [

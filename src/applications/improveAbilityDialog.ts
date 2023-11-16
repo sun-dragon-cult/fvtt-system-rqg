@@ -9,6 +9,7 @@ import {
   localize,
   localizeItemType,
 } from "../system/util";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 //**Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
@@ -84,12 +85,9 @@ export async function showImproveAbilityDialog(
     callback: () => null,
   };
 
-  const content: string = await renderTemplate(
-    "systems/rqg/applications/improveAbilityDialog.hbs",
-    {
-      adapter: adapter,
-    },
-  );
+  const content: string = await renderTemplate(templatePaths.dialogImproveAbility, {
+    adapter: adapter,
+  });
   const title = localize("RQG.Dialog.improveAbilityDialog.title", {
     name: adapter.name,
     typeLocName: adapter.typeLocName,

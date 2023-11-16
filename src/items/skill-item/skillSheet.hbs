@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+      {{> rqidLinkDropzone
         rqidLink=system.descriptionRqidLink
         dropzoneData="descriptionRqidLink"
         dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -114,7 +114,7 @@
           >
 
           <label for="runes-{{id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.runeRqidLinks
             dropzoneData="runeRqidLinks"
             dropDocumentNames="Item"

@@ -12,6 +12,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import type { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
   allRunes: AvailableItemCache[];
@@ -25,7 +26,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
-      template: "systems/rqg/items/cult-item/cultSheet.hbs",
+      template: templatePaths.itemCultSheet,
       width: 450,
       height: 500,
       tabs: [

@@ -1,10 +1,11 @@
 import { getGame, localize } from "../system/util";
 import { systemId } from "../system/config";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export async function migrateWorldDialog(systemVersion: string): Promise<void> {
   return await new Promise((resolve) => {
     const title = localize("RQG.Migration.Dialog.windowTitle");
-    renderTemplate("systems/rqg/applications/migrateWorldDialog.hbs", {
+    renderTemplate(templatePaths.dialogMigrateWorld, {
       worldVersion: getGame().settings.get(systemId, "worldMigrationVersion"),
       systemVersion: systemVersion,
     }).then((contentHtml) => {

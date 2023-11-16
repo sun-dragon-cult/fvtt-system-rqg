@@ -1,6 +1,6 @@
 <div class="humanoid">
   {{#each embeddedItems.hitLocation}}
-    {{> "systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs"}}<br>
+    {{> actorHitLocationStats}}<br>
   {{/each}}
   <div class="actor-state">
     {{#if (eq system.attributes.health "shock")}}<img src="systems/rqg/assets/images/token-effects/shock.svg">{{/if}}

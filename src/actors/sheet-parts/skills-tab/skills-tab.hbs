@@ -10,7 +10,7 @@
     <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
       {{#each this}}
         {{#unless system.runeRqidLinks}} {{!-- filter out sorcery skills --}}
-          {{>"systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs"
+          {{> actorSkillsGrid
             skill=this
             wizard=../../wizard
             forChoice=../../forChoice

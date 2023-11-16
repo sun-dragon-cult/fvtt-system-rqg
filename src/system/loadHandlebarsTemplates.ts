@@ -1,80 +1,114 @@
+/**
+ * Paths not used as handlebars partials
+ */
+export const templatePaths = {
+  // Actor sheets
+  rqgActorSheet: "systems/rqg/actors/rqgActorSheet.hbs",
+
+  // Item Sheets
+  itemArmorSheet: "systems/rqg/items/armor-item/armorSheet.hbs",
+  itemCultSheet: "systems/rqg/items/cult-item/cultSheet.hbs",
+  itemGearSheet: "systems/rqg/items/gear-item/gearSheet.hbs",
+  itemHitLocationSheet: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
+  itemHomelandSheet: "systems/rqg/items/homeland-item/homelandSheet.hbs",
+  itemOccupationSheet: "systems/rqg/items/occupation-item/occupationSheet.hbs",
+  itemPassionSheet: "systems/rqg/items/passion-item/passionSheet.hbs",
+  itemRuneSheet: "systems/rqg/items/rune-item/runeSheet.hbs",
+  itemRuneMagicSheet: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
+  itemWeaponSheet: "systems/rqg/items/weapon-item/weaponSheet.hbs",
+  itemSkillSheet: "systems/rqg/items/skill-item/skillSheet.hbs",
+  itemSpiritMagicSheet: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
+
+  // Chat
+  chatCharacteristicHandler: "systems/rqg/chat/characteristicChatHandler.hbs",
+  chatItemHandler: "systems/rqg/chat/itemChatHandler.hbs",
+  chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
+  reputationChatHandler: "systems/rqg/chat/reputationChatHandler.hbs",
+  chatSpiritMagicHandler: "systems/rqg/chat/spiritMagicChatHandler.hbs",
+  runeMagicChatHandler: "systems/rqg/chat/runeMagicChatHandler.hbs",
+
+  rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
+
+  // Actor Wizard
+  actorWizardApplication: "systems/rqg/applications/actorWizardApplication.hbs",
+
+  // Applications & Dialogs
+  dialogRuneMagicCult: "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
+  dialogImproveAbility: "systems/rqg/applications/improveAbilityDialog.hbs",
+  dialogMigrateWorld: "systems/rqg/applications/migrateWorldDialog.hbs",
+  dialogRqidEditor: "systems/rqg/applications/rqidEditor/rqidEditor.hbs",
+  rqidBatchEditor: "systems/rqg/applications/rqid-batch-editor/rqidBatchEditor.hbs",
+  confirmCopyIntangibleItem: "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
+  confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
+  hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
+  hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
+
+  // Settings
+  defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
+
+  // Interface
+  rqgPause: "systems/rqg/foundryUi/rqgPause.hbs",
+} as const;
+
 export const loadHandlebarsTemplates = async function () {
-  const templatePaths = [
-    "systems/rqg/actors/rqgActorSheet.hbs",
+  /**
+   * Paths used with handlebars partials: {{> key}}
+   */
+  const partialPaths = {
     // ActorSheet tabs
-    "systems/rqg/actors/sheet-parts/combat-tab/combat-tab.hbs",
-    "systems/rqg/actors/sheet-parts/combat-tab/health/health.hbs",
-    "systems/rqg/actors/sheet-parts/combat-tab/health/humanoid-hit-locations.hbs",
-    "systems/rqg/actors/sheet-parts/combat-tab/health/default-hit-locations.hbs",
-    "systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs",
-    "systems/rqg/actors/sheet-parts/combat-tab/combat.hbs",
-    "systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs",
+    actorCombatTab: "systems/rqg/actors/sheet-parts/combat-tab/combat-tab.hbs",
+    actorHealth: "systems/rqg/actors/sheet-parts/combat-tab/health/health.hbs",
+    actorHumanoidHitLocations:
+      "systems/rqg/actors/sheet-parts/combat-tab/health/humanoid-hit-locations.hbs",
+    actorDefaultHitlocations:
+      "systems/rqg/actors/sheet-parts/combat-tab/health/default-hit-locations.hbs",
+    actorHitLocationStats:
+      "systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs",
+    actorCombat: "systems/rqg/actors/sheet-parts/combat-tab/combat.hbs",
+    actorSpiritCombat: "systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs",
 
-    "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
-    "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",
-    "systems/rqg/actors/sheet-parts/runes-tab/runes-power.hbs",
-    "systems/rqg/actors/sheet-parts/runes-tab/runes-form.hbs",
-    "systems/rqg/actors/sheet-parts/runes-tab/runes-condition.hbs",
-    "systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs",
+    actorRuneTab: "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
+    actorRuneElements: "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",
+    actorRunePower: "systems/rqg/actors/sheet-parts/runes-tab/runes-power.hbs",
+    actorRuneForm: "systems/rqg/actors/sheet-parts/runes-tab/runes-form.hbs",
+    actorRuneCondition: "systems/rqg/actors/sheet-parts/runes-tab/runes-condition.hbs",
+    actorRuneGrid: "systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs",
 
-    "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs",
+    actorSpiritMagicTab: "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs",
 
-    "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs",
+    actorRuneMagicTab: "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs",
 
-    "systems/rqg/actors/sheet-parts/sorcery-tab.hbs",
+    actorSorceryTab: "systems/rqg/actors/sheet-parts/sorcery-tab.hbs",
 
-    "systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs",
-    "systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs",
+    actorSkillsTab: "systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs",
+    actorSkillsGrid: "systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs",
 
-    "systems/rqg/actors/sheet-parts/gear-tab/gear-tab.hbs",
-    "systems/rqg/actors/sheet-parts/gear-tab/physical-item-location.hbs",
+    actorGearTab: "systems/rqg/actors/sheet-parts/gear-tab/gear-tab.hbs",
+    actorGearPhysicalItemLocation:
+      "systems/rqg/actors/sheet-parts/gear-tab/physical-item-location.hbs",
 
-    "systems/rqg/actors/sheet-parts/passions-tab.hbs",
+    actorPassionsTab: "systems/rqg/actors/sheet-parts/passions-tab.hbs",
 
-    "systems/rqg/actors/sheet-parts/background-tab.hbs",
+    actorBackgroundTab: "systems/rqg/actors/sheet-parts/background-tab.hbs",
 
-    "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs",
-
-    // RqidLink parts
-    "systems/rqg/items/sheet-parts/rqidLink.hbs",
-    "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs",
-    "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs",
-    "systems/rqg/items/sheet-parts/rqidLinkSelector.hbs",
-    "systems/rqg/documents/rqid-tooltip.hbs",
+    actorActiveEffectsTab: "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs",
 
     // Actor Wizard Sheet Parts
-    "systems/rqg/applications/actor-wizard-sheet-parts/creation-species.hbs",
-    "systems/rqg/applications/actor-wizard-sheet-parts/creation-homeland.hbs",
-
-    // Item sheets
-    "systems/rqg/items/passion-item/passionSheet.hbs",
-    "systems/rqg/items/skill-item/skillSheet.hbs",
-    "systems/rqg/items/rune-item/runeSheet.hbs",
-    "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
-    "systems/rqg/items/gear-item/gearSheet.hbs",
-    "systems/rqg/items/armor-item/armorSheet.hbs",
-    "systems/rqg/items/weapon-item/weaponSheet.hbs",
-    "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
-    "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
-    "systems/rqg/items/cult-item/cultSheet.hbs",
+    wizardCreationSpecies: "systems/rqg/applications/actor-wizard-sheet-parts/creation-species.hbs",
+    wizardCreationHomeland:
+      "systems/rqg/applications/actor-wizard-sheet-parts/creation-homeland.hbs",
 
     // Item sheet parts
-    "systems/rqg/items/sheet-parts/itemActiveEffects.hbs",
-    "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
+    itemActiveEffects: "systems/rqg/items/sheet-parts/itemActiveEffects.hbs",
+    itemCommonPhysical: "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
 
-    // Chat Messages
-    "systems/rqg/chat/characteristicChatHandler.hbs",
-    "systems/rqg/chat/itemChatHandler.hbs",
-    "systems/rqg/chat/spiritMagicChatHandler.hbs",
-    "systems/rqg/chat/weaponChatHandler.hbs",
+    // RqidLink partials
+    rqidLink: "systems/rqg/sheet-partials/rqidLink.hbs",
+    rqidLinkDropzone: "systems/rqg/sheet-partials/rqidLinkDropzone.hbs",
+    rqidLinkArrayDropzone: "systems/rqg/sheet-partials/rqidLinkArrayDropzone.hbs",
+    rqidLinkSelector: "systems/rqg/sheet-partials/rqidLinkSelector.hbs",
+  } as const;
 
-    // Dialogs & Settings
-    "systems/rqg/applications/improveAbilityDialog.hbs",
-    "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
-
-    // Interface
-    "systems/rqg/foundryUi/rqgPause.hbs",
-  ];
-
-  return loadTemplates(templatePaths);
+  // @ts-expect-error object
+  return loadTemplates(partialPaths);
 };

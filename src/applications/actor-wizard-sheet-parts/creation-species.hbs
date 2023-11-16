@@ -15,7 +15,7 @@
   <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
   <div>
     {{#if species.selectedSpeciesTemplate.system.background.speciesRqidLink}}
-      {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+      {{> rqidLink
         rqidLink=species.selectedSpeciesTemplate.system.background.speciesRqidLink
       }}
     {{/if}}
@@ -94,7 +94,7 @@
 
         <div class="tab skills" data-group="species-item-selection" data-tab="skills">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesSkills"}}</h2>
-          {{> "systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs"
+          {{> actorSkillsTab
             embeddedItems=speciesTemplateItems
             wizard="true"
             checkedProperty="speciesPresent"
@@ -104,25 +104,25 @@
         <div class="tab runes" data-group="species-item-selection" data-tab="runes">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesRunes"}}</h2>
           <div class="flex-row flex-wrap">
-            {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs"
+            {{> actorRuneElements
               embeddedItems=speciesTemplateItems
               wizard="true"
               forChoice="species"
               checkedProperty="speciesPresent"
             }}
-            {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-power.hbs"
+            {{> actorRunePower
               embeddedItems=speciesTemplateItems
               wizard="true"
               forChoice="species"
               checkedProperty="speciesPresent"
             }}
-            {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-form.hbs"
+            {{> actorRuneForm
               embeddedItems=speciesTemplateItems
               wizard="true"
               forChoice="species"
               checkedProperty="speciesPresent"
             }}
-            {{>"systems/rqg/actors/sheet-parts/runes-tab/runes-condition.hbs"
+            {{> actorRuneCondition
               embeddedItems=speciesTemplateItems
               wizard="true"
               forChoice="species"
@@ -133,7 +133,7 @@
         </div>
         <div class="tab passions" data-group="species-item-selection" data-tab="passions">
           <h2 class="norse">{{localize "RQG.ActorCreation.Step0.SelectSpeciesPassions"}}</h2>
-          {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs"
+          {{> actorPassionsTab
             embeddedItems=speciesTemplateItems
             wizard="true"
             checkedProperty="speciesPresent"

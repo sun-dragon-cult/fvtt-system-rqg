@@ -39,7 +39,7 @@
           <input id="quantity-{{id}}" name="system.quantity" type="number" min="0" max="9999999" value="{{system.quantity}}">
           {{/unless}}
 
-          {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"}}
+          {{> itemCommonPhysical}}
         </div>
       </div>
 
@@ -64,7 +64,7 @@
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+        {{> itemActiveEffects}}
       </div>
     </section>
 

@@ -3,7 +3,7 @@
     <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
     {{#with embeddedItems.rune.form.man}}
-      {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+      {{> actorRuneGrid
         rune=this
         wizard=../wizard
         forChoice=../forChoice
@@ -11,7 +11,7 @@
     {{/with}}
     <i class="fas fa-arrows-alt-h"></i>
     {{#with embeddedItems.rune.form.beast}}
-      {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+      {{> actorRuneGrid
         rune=this
         wizard=../wizard
         forChoice=../forChoice
@@ -22,7 +22,7 @@
       {{#unless (eq @key "man")}}
         {{#unless (eq @key "beast")}}
           {{#with this}}
-            {{>"systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs"
+            {{> actorRuneGrid
               rune=this
               wizard=../wizard
               forChoice=../forChoice

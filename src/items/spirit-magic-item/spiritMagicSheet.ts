@@ -9,6 +9,7 @@ import {
 import { systemId } from "../../system/config";
 import { RqgItem } from "../rqgItem";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SpiritMagicSheetData {
   ranges: SpellRangeEnum[];
@@ -23,7 +24,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
-      template: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
+      template: templatePaths.itemSpiritMagicSheet,
       width: 450,
       height: 500,
       tabs: [

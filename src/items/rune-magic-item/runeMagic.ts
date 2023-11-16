@@ -17,6 +17,7 @@ import { ResultEnum, ResultMessage } from "../../data-model/shared/ability";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
 import { RqidLink } from "../../data-model/shared/rqidLink";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -237,14 +238,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeMagicName: string,
     actorName: string,
   ): Promise<string> {
-    const htmlContent = await renderTemplate(
-      "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
-      {
-        actorCults: actorCults,
-        runeMagicName: runeMagicName,
-        actorName: actorName,
-      },
-    );
+    const htmlContent = await renderTemplate(templatePaths.dialogRuneMagicCult, {
+      actorCults: actorCults,
+      runeMagicName: runeMagicName,
+      actorName: actorName,
+    });
     return await new Promise((resolve, reject) => {
       const dialog = new Dialog({
         title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),

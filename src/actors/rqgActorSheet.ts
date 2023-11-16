@@ -66,6 +66,7 @@ import {
   getSrWithoutCombatants,
 } from "../combat/combatant-utils";
 import { socketSend } from "../sockets/RqgSocket";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 interface UiSections {
   health: boolean;
@@ -172,7 +173,7 @@ export class RqgActorSheet extends ActorSheet<
   static get defaultOptions(): ActorSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
-      template: "systems/rqg/actors/rqgActorSheet.hbs",
+      template: templatePaths.rqgActorSheet,
       width: 900,
       height: 700,
       tabs: [
@@ -1692,12 +1693,9 @@ export class RqgActorSheet extends ActorSheet<
       sourceActor: sourceActor,
       targetActor: this.actor,
     };
-    const content: string = await renderTemplate(
-      "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
-      {
-        adapter: adapter,
-      },
-    );
+    const content: string = await renderTemplate(templatePaths.confirmCopyIntangibleItem, {
+      adapter: adapter,
+    });
 
     const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
       itemName: incomingItemDataSource.name,
@@ -1740,12 +1738,9 @@ export class RqgActorSheet extends ActorSheet<
       showQuantity: incomingItemDataSource.system.quantity > 1,
     };
 
-    const content: string = await renderTemplate(
-      "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
-      {
-        adapter: adapter,
-      },
-    );
+    const content: string = await renderTemplate(templatePaths.confirmTransferPhysicalItem, {
+      adapter: adapter,
+    });
 
     const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
       itemName: incomingItemDataSource.name,
