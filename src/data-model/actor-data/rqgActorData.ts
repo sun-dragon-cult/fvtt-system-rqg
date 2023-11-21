@@ -11,10 +11,10 @@ export interface CharacterDataSourceData {
   characteristics: Characteristics;
   background: Background;
   allies: string; // Editor text with links to allies and general notes
-  // --- Derived / Convenience Data Below ---
-  extendedName: string;
-  attributes: Attributes; // Most are derived // TODO Split / move data?
   editMode: boolean;
+  extendedName: string;
+  // --- Derived / Convenience Data Below ---
+  attributes: Attributes; // Most are derived // TODO Split / move data?
 }
 
 // --- Derived Data ---
