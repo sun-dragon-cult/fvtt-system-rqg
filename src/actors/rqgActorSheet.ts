@@ -208,9 +208,7 @@ export class RqgActorSheet extends ActorSheet<
         .filter((sr: number) => sr >= 1 && sr <= 12),
     );
 
-    console.log("getData EDIT MODE: ", this.actor.system.editMode);
-
-    this._getHeaderButtons;
+    //const embeddedItems = await RqgActorSheet.organizeEmbeddedItems(this.actor);
 
     return {
       id: this.document.id ?? "",
@@ -1814,61 +1812,8 @@ export class RqgActorSheet extends ActorSheet<
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
     await addRqidLinkToSheetHtml(html, this);
-    // await this.addEditModeToSheetHtml(html);
     return html;
   }
-
-  // /**
-  //  * Create an Edit Mode link button in the document sheet header which allows the user to toggle the editMode
-  //  */
-  // private async addEditModeToSheetHtml(html: JQuery<JQuery.Node>) {
-  //   const title = html.find(".window-title");
-  //   const editModeLink = document.createElement("a");
-  //   editModeLink.classList.add("title-edit-mode");
-
-  //   const user = getGameUser();
-  //   this.setEditModeLinkAppearance(editModeLink, this.actor.system.editMode, user);
-
-  //   if (user.isGM || user.isTrusted) {
-  //     editModeLink.addEventListener("click", (event) => {
-  //       event.preventDefault();
-  //       const newMode = !this.actor.system.editMode;
-  //       this.actor.update({ system: { editMode: newMode } });
-
-  //       const link = event.currentTarget as HTMLAnchorElement;
-
-  //       this.setEditModeLinkAppearance(link, this.actor.system.editMode, user);
-  //     });
-  //   }
-
-  //   title.append(editModeLink);
-  // }
-
-  // private async setEditModeLinkAppearance(link: HTMLAnchorElement, editMode: boolean, user: User) {
-  //   link.id = `edit-mode-${this.actor.id}`;
-  //   if (user.isGM || user.isTrusted) {
-  //     if (editMode) {
-  //       link.innerHTML = '<i class="fas fa-masks-theater"></i>';
-  //       link.setAttribute("alt", "Switch to Play Mode");
-  //       link.dataset.tooltip = `<div class="text-left">Switch to Play Mode</div>`;
-  //     } else {
-  //       link.innerHTML = '<i class="fas fa-user-edit"></i>';
-  //       link.setAttribute("alt", "Switch to Edit Mode");
-  //       link.dataset.tooltip = `<div class="text-left">Switch to Edit Mode</div>`;
-  //     }
-  //   } else {
-  //     if (editMode) {
-  //       link.innerHTML = '<i class="fas fa-masks-theater"></i>';
-  //       link.setAttribute("alt", "Ask your GM to switch you to Play Mode");
-  //       link.dataset.tooltip = `<div class="text-left">Ask your GM to switch you to Play Mode</div>`;
-  //     } else {
-  //       link.innerHTML = '<i class="fas fa-user-edit"></i>';
-  //       link.setAttribute("alt", "Ask your GM to switch you to Edit Mode");
-  //       link.dataset.tooltip = `<div class="text-left">Ask your GM to switch you to Edit Mode</div>`;
-  //     }
-  //   }
-  //   link.dataset.tooltipDirection = "UP";
-  // }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
     const headerButtons = super._getHeaderButtons();
@@ -1911,13 +1856,15 @@ export class RqgActorSheet extends ActorSheet<
     this.actor.update({ system: { editMode: newMode } });
     console.log("HEADER BUTTONS", this._getHeaderButtons());
 
-    const link = event.target as HTMLAnchorElement;
+    let link = event.target as HTMLElement | null;
 
-    console.log("EVENT TARGET LINK", link);
+    if (!(link instanceof HTMLAnchorElement)) {
+      link = event.target.parentNode;
+    }
 
-    if (newMode) {
+    if (newMode && link) {
       link.innerHTML = '<i class="fas fa-masks-theater"></i>SWITCH TO PLAY MODE';
-    } else {
+    } else if (link) {
       link.innerHTML = '<i class="fas fa-user-edit"></i>SWITCH TO EDIT MODE';
     }
   }
