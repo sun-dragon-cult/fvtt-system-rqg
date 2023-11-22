@@ -231,6 +231,10 @@
         "SetSRInCombatTracker": "Set SR in combat tracker",
         "ProjectileWeaponAmmoNotSelectedAlert": "no ammo"
       },
+      "EditMode": {
+        "SwitchToEditMode": "Edit",
+        "SwitchToPlayMode": "Play"
+      },
       "Gear": {
         "ViewByItemType": "View by Item Type",
         "ViewByLocation": "View by Location",

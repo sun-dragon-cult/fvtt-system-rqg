@@ -1888,14 +1888,14 @@ export class RqgActorSheet extends ActorSheet<
     if (this.actor.system.editMode) {
       headerButtons.splice(0, 0, {
         class: "title-edit-mode",
-        label: "SWITCH TO PLAY MODE",
+        label: localize("RQG.Actor.EditMode.SwitchToPlayMode"),
         icon: "fas fa-masks-theater",
         onclick: (event) => this._toggleEditMode(event),
       });
     } else {
       headerButtons.splice(0, 0, {
         class: "title-edit-mode",
-        label: "SWITCH TO EDIT MODE",
+        label: localize("RQG.Actor.EditMode.SwitchToEditMode"),
         icon: "fas fa-user-edit",
         onclick: (event) => this._toggleEditMode(event),
       });
@@ -1917,9 +1917,13 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     if (newMode && link) {
-      link.innerHTML = '<i class="fas fa-masks-theater"></i>SWITCH TO PLAY MODE';
+      link.innerHTML = `<i class="fas fa-masks-theater"></i>${localize(
+        "RQG.Actor.EditMode.SwitchToPlayMode",
+      )}`;
     } else if (link) {
-      link.innerHTML = '<i class="fas fa-user-edit"></i>SWITCH TO EDIT MODE';
+      link.innerHTML = `<i class="fas fa-user-edit"></i>${localize(
+        "RQG.Actor.EditMode.SwitchToEditMode",
+      )}`;
     }
   }
 
