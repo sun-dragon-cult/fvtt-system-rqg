@@ -3,7 +3,7 @@ import { CultRankEnum } from "../../data-model/item-data/cultData";
 import {
   getAvailableRunes,
   getGameUser,
-  AvailableRuneCache,
+  AvailableItemCache,
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
@@ -12,9 +12,10 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import type { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
-  allRunes: AvailableRuneCache[];
+  allRunes: AvailableItemCache[];
   ranksEnum: CultRankEnum[];
   enrichedGifts: string;
   enrichedGeases: string;
@@ -25,7 +26,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
-      template: "systems/rqg/items/cult-item/cultSheet.hbs",
+      template: templatePaths.itemCultSheet,
       width: 450,
       height: 500,
       tabs: [
@@ -41,8 +42,6 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   async getData(): Promise<CultSheetData & ItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
-
-    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     // To improve UX of creating a new item, set deity to name if empty
     if (!system.deity) {
@@ -73,11 +72,6 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    let runes = formData["system.runes"];
-    runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter(isTruthy); // Remove empty
-    formData["system.runes"] = duplicate(runes);
-
     const formCultName = formData["system.joinedCults.cultName"];
     const formTagLine = formData["system.joinedCults.tagline"];
     const formrank = formData["system.joinedCults.rank"];

@@ -15,6 +15,7 @@ import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class SpiritMagicChatHandler {
   /**
@@ -44,7 +45,7 @@ export class SpiritMagicChatHandler {
         name: spiritMagicItem?.name,
       }),
     };
-    const html = await renderTemplate("systems/rqg/chat/spiritMagicChatHandler.hbs", templateData);
+    const html = await renderTemplate(templatePaths.chatSpiritMagicHandler, templateData);
 
     return {
       user: getGame().user?.id,

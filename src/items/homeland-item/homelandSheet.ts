@@ -3,6 +3,7 @@ import { getGameUser } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface HomelandSheetData {
   enrichedWizardInstructions: string;
@@ -15,7 +16,7 @@ export class HomelandSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
-      template: "systems/rqg/items/homeland-item/homelandSheet.hbs",
+      template: templatePaths.itemHomelandSheet,
       width: 500,
       height: 650,
       tabs: [

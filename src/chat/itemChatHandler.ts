@@ -18,6 +18,7 @@ import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqgItem } from "../items/rqgItem";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { RqgChatMessage } from "./RqgChatMessage";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class ItemChatHandler {
   /**
@@ -50,7 +51,7 @@ export class ItemChatHandler {
       chatHeading: localizeItemType(item?.type) + ": " + item?.name,
     };
 
-    const html = await renderTemplate("systems/rqg/chat/itemChatHandler.hbs", templateData);
+    const html = await renderTemplate(templatePaths.chatItemHandler, templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {

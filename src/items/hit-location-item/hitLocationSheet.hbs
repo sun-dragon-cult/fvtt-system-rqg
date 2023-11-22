@@ -4,15 +4,7 @@
     {{#if isGM}}
       <div class="label-above">
         <label for="name-{{id}}">{{localize "RQG.Item.HitLocation.Name"}}</label>
-        <select
-          id="name-{{id}}"
-          name="name">
-          {{#select name}}
-            {{#each allHitLocations}}
-              <option value="{{this}}">{{this}}</option>
-            {{/each}}
-          {{/select}}
-        </select>
+        <input type="text" name="name" value="{{name}}" id="name-{{id}}" list="allHitLocations">
       </div>
 
     {{else}}
@@ -66,6 +58,9 @@
       {{!-- Hit Location Definition Tab --}}
       <div class="tab" data-group="primary" data-tab="hit-location-definition">
         <div class="key-value-grid">
+          <label {{#unless rqid}}class="warning" data-tooltip="{{localize 'RQG.Item.HitLocation.Notification.RqidNeededWarn'}}"{{/unless}}><i class="fas fa-fingerprint"></i> Rqid</label>
+          <div class="fullwidth fullheight {{#unless rqid}}warning{{/unless}}" {{#unless rqid}}data-tooltip="{{localize 'RQG.Item.HitLocation.Notification.RqidNeededWarn'}}"{{/unless}}>{{rqid}}</div>
+
           <label for="act-as-{{id}}">{{localize "RQG.Item.HitLocation.ActAs"}}</label>
           <select id="act-as-{{id}}" name="system.hitLocationType">
             {{#select system.hitLocationType}}
@@ -80,7 +75,7 @@
           <select id="connected-to-{{id}}" name="system.connectedTo">
             {{#select system.connectedTo}}
               {{#each allHitLocations}}
-                <option value="{{this}}">{{this}}</option>
+                <option value="{{rqid}}">{{name}}</option>
               {{/each}}
             {{/select}}
           </select>
@@ -126,3 +121,9 @@
     </section>
   </main>
 </form>
+
+<datalist id="allHitLocations">
+  {{#each allHitLocations}}
+    <option value="{{name}}">{{name}}</option>
+  {{/each}}
+</datalist>

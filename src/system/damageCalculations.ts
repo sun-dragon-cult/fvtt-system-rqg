@@ -10,6 +10,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { assertItemType, RqgError } from "./util";
 import { RqgItem } from "../items/rqgItem";
 import { RqgActor } from "../actors/rqgActor";
+import { systemId } from "./config";
 
 export interface DamageEffects {
   hitLocationUpdates: DeepPartial<HitLocationDataProperties>;
@@ -198,7 +199,8 @@ export class DamageCalculations {
     ) {
       const attachedLimbs = actor.items.filter(
         (i: RqgItem) =>
-          i.type === ItemTypeEnum.HitLocation && i.system.connectedTo === hitLocation.name,
+          i.type === ItemTypeEnum.HitLocation &&
+          i.system.connectedTo === hitLocation.flags?.[systemId]?.documentRqidFlags?.id,
       );
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {

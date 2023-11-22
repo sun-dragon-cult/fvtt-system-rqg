@@ -3,6 +3,7 @@ import Options = FormApplication.Options;
 import { systemId } from "../system/config";
 import { defaultItemIconsObject } from "../system/settings/defaultItemIcons";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export interface IconSettingsData {
   [ItemTypeEnum.Armor]: string;
@@ -32,7 +33,7 @@ export class DefaultItemIconSettings extends FormApplication<
     return mergeObject(super.defaultOptions, {
       id: "default-icons-settings-dialog",
       title: localize("RQG.Settings.DefaultItemIcons.dialogTitle"),
-      template: "./systems/rqg/applications/defaultItemIconSettings.hbs",
+      template: templatePaths.defaultItemIconSettings,
       classes: ["form", "default-icons"],
       width: 500,
       closeOnSubmit: false,

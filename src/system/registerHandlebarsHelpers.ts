@@ -91,15 +91,15 @@ export const registerHandlebarsHelpers = function () {
     return new Handlebars.SafeString(documentLink ?? "🐛");
   });
 
-  Handlebars.registerHelper("runeImg", (runeName: string): string | undefined => {
-    if (!runeName) {
+  Handlebars.registerHelper("rqidImgSrc", (rqid: string): string | undefined => {
+    if (!rqid) {
       return;
     }
     const availableRunes = getAvailableRunes();
-    const rune = availableRunes.find((r) => r.name === runeName);
+    const rune = availableRunes.find((r) => r.rqid === rqid);
     if (!rune) {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
-        runeName: runeName,
+        rqid: rqid,
       });
       // @ts-expect-error console
       ui.notifications?.error(msg, { console: false });
@@ -177,6 +177,10 @@ export const registerHandlebarsHelpers = function () {
     } else {
       return "";
     }
+  });
+
+  Handlebars.registerHelper("isEmptyObject", function (value) {
+    return isEmpty(value);
   });
 
   Handlebars.registerHelper("ifIn", (elem, list, options) =>

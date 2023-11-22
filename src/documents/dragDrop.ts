@@ -126,6 +126,7 @@ export async function updateRqidLink(
   targetDocument: Document<any, any>,
   targetPropertyName: string | undefined,
   droppedDocument: Document<any, any>,
+  allowDuplicates: boolean = false, // need a version that allows duplicates for cult runes, Orlanth have 2 air for example
 ): Promise<void> {
   const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
@@ -138,7 +139,7 @@ export async function updateRqidLink(
   const targetProperty = getProperty(targetDocument?.system, targetPropertyName ?? "");
 
   // TODO Should really check if this.item has a property like targetPropertyName,
-  // but !hasOwnProperty(this.item.system, targetPropertyName) won't work if the default value is undefined.
+  //  but !hasOwnProperty(this.item.system, targetPropertyName) won't work if the default value is undefined.
   if (!targetPropertyName) {
     console.error(
       `RQG | Programming error – empty targetPropertyName (data-dropzone)`,
@@ -149,10 +150,9 @@ export async function updateRqidLink(
   }
 
   const newLink = new RqidLink(fullDocumentRqid, droppedDocument.name ?? "");
-
   if (Array.isArray(targetProperty)) {
     const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
-    if (!targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
+    if (allowDuplicates || !targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
       targetPropertyRqidLinkArray.push(newLink);
       targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
       if (targetDocument.isEmbedded) {
@@ -197,6 +197,7 @@ export async function extractDropInfo<T extends Document<any, any>>(
   droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
   dropZoneData: string | undefined;
   isAllowedToDrop: boolean;
+  allowDuplicates: boolean;
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
   const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
@@ -207,10 +208,12 @@ export async function extractDropInfo<T extends Document<any, any>>(
     droppedDocument,
     allowedDropDocumentTypes,
   );
+  const allowDuplicates = !!getDomDataset(event, "allow-duplicates");
   return {
     droppedDocument: droppedDocument,
     dropZoneData: dropZoneData,
     isAllowedToDrop: droppedDocument && isAllowedDropDocumentType,
+    allowDuplicates: allowDuplicates,
   };
 }
 

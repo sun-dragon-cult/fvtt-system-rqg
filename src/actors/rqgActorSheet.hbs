@@ -22,7 +22,7 @@
               {{#if characterElementRunes}}
                 <div class="flex-row gap01rem">
                   {{#each characterElementRunes}}
-                    <div class="rune contextmenu item" data-item-id="{{id}}">
+                    <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
                       <img class="rune" src="{{img}}"{{#if descriptionRqid}}
                            data-rqid-link="{{descriptionRqid}}"{{/if}}>
                     </div>
@@ -32,7 +32,7 @@
               {{#if characterPowerRunes}}
                 <div class="flex-row gap01rem">
                   {{#each characterPowerRunes}}
-                    <div class="rune contextmenu item" data-item-id="{{id}}">
+                    <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
                       <img class="rune" src="{{img}}"{{#if descriptionRqid}}
                            data-rqid-link="{{descriptionRqid}}"{{/if}}>
                     </div>
@@ -42,7 +42,7 @@
               {{#if characterFormRunes}}
                 <div class="flex-row gap01rem">
                   {{#each characterFormRunes}}
-                    <div class="rune contextmenu item" data-item-id="{{id}}">
+                    <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
                       <img class="rune" src="{{img}}"{{#if descriptionRqid}}
                            data-rqid-link="{{descriptionRqid}}"{{/if}}>
                     </div>
@@ -164,19 +164,20 @@
           <div>
             <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
             {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
-              <div class="text-center"><input
+              <input class="text-center"
                 name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
                 value="{{value}}"
                 type="number"
                 min="0"
                 max="99"
-                size="2"></div>
+                size="2">
             </div>
 
               <div>
                 <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
 
-                <div class="text-center"><input
+                <input
+                  class="text-center"
                   name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
                                  '.carryingFactor'}}"
                   value="{{carryingFactor}}"
@@ -184,7 +185,7 @@
                   step="0.1"
                   min="0"
                   max="99"
-                  size="2"></div>
+                  size="2">
               </div>
             {{/with}}
 
@@ -210,8 +211,8 @@
           <div class="hero-points-container">
             <div class="norse">{{localize "RQG.Actor.Attributes.HeroPoints"}}</div>
             {{#if isGM}}
-              <div class="text-center"><input type="number" min="0" max="99" name="system.attributes.heroPoints"
-                                              value="{{system.attributes.heroPoints}}" size="2"></div>
+              <input class="text-center" type="number" min="0" max="99" name="system.attributes.heroPoints"
+                                              value="{{system.attributes.heroPoints}}" size="2">
             {{else}}
               <div class="text-center">{{system.attributes.heroPoints}}</div>
             {{/if}}
@@ -238,60 +239,60 @@
 
   <section class="sheet-body">
     <div class="tab combat" data-group="primary" data-tab="combat">
-      {{> "systems/rqg/actors/sheet-parts/combat-tab/combat-tab.hbs" }}
+      {{> actorCombatTab }}
     </div>
 
     {{#if showUiSection.runes}}
       <div class="tab runes" data-group="primary" data-tab="runes">
-        {{> "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs" }}
+        {{> actorRuneTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.spiritMagic}}
       <div class="tab spiritmagic" data-group="primary" data-tab="spiritmagic">
-        {{> "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs" }}
+        {{> actorSpiritMagicTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.runeMagic}}
       <div class="tab runemagic" data-group="primary" data-tab="runemagic">
-        {{> "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs" }}
+        {{> actorRuneMagicTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.sorcery}}
       <div class="tab sorcery" data-group="primary" data-tab="sorcery">
-        {{> "systems/rqg/actors/sheet-parts/sorcery-tab.hbs" }}
+        {{> actorSorceryTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.skills}}
       <div class="tab skills" data-group="primary" data-tab="skills">
-        {{> "systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs" }}
+        {{> actorSkillsTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.gear}}
       <div class="tab gear" data-group="primary" data-tab="gear">
-        {{> "systems/rqg/actors/sheet-parts/gear-tab/gear-tab.hbs" }}
+        {{> actorGearTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.passions}}
       <div class="tab passions" data-group="primary" data-tab="passions">
-        {{> "systems/rqg/actors/sheet-parts/passions-tab.hbs" }}
+        {{> actorPassionsTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.background}}
       <div class="tab background" data-group="primary" data-tab="background">
-        {{> "systems/rqg/actors/sheet-parts/background-tab.hbs" }}
+        {{> actorBackgroundTab }}
       </div>
     {{/if}}
 
     {{#if showUiSection.activeEffects}}
       <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
-        {{> "systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs" }}
+        {{> actorActiveEffectsTab }}
       </div>
     {{/if}}
   </section>

@@ -1,5 +1,6 @@
 import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
+import { RqidLink } from "../shared/rqidLink";
 
 export const armorTypeTranslationKeys = [
   "RQG.Item.Armor.ArmorType.Hood",
@@ -39,8 +40,8 @@ export const materialTranslationKeys = [
 export interface ArmorDataSourceData extends IPhysicalItem {
   /** Must match character size (TODO check not implemented yet) */
   size: number;
-  /** Array of protected hitLocation names */
-  hitLocations: string[];
+  /** Links to the hit location rqids the armor covers */
+  hitLocationRqidLinks: RqidLink[];
   namePrefix: string;
   armorType: string;
   material: string;
@@ -68,7 +69,7 @@ export const defaultArmorData: ArmorDataSourceData = {
   price: defaultPriceData,
   encumbrance: 1,
   equippedStatus: "carried",
-  hitLocations: [],
+  hitLocationRqidLinks: [],
   namePrefix: "",
   armorType: "",
   material: "",

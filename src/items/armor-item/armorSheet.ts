@@ -5,13 +5,21 @@ import {
 } from "../../data-model/item-data/armorData";
 import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser, getHitLocations, localize } from "../../system/util";
+import {
+  AvailableItemCache,
+  convertFormValueToString,
+  getAvailableHitLocations,
+  getGameUser,
+  localize,
+} from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { RqidLink } from "../../data-model/shared/rqidLink";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface ArmorSheetData {
-  allHitLocations: string[];
+  allHitLocationOptions: AvailableItemCache[];
   equippedStatuses: string[];
   armorTypeNames: string[];
   materialNames: string[];
@@ -23,7 +31,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
-      template: "systems/rqg/items/armor-item/armorSheet.hbs",
+      template: templatePaths.itemArmorSheet,
       width: 500,
       height: 600,
       tabs: [
@@ -50,7 +58,13 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       isGM: getGameUser().isGM,
       system: system,
       effects: this.document.effects,
-      allHitLocations: getHitLocations(),
+      allHitLocationOptions:
+        [
+          { rqid: "empty", name: localize("RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder") },
+          ...(getAvailableHitLocations() ?? []),
+        ].reduce((acc: any, l: any) => {
+          return { ...acc, [l.rqid]: l.name };
+        }, {}) ?? {},
       equippedStatuses: [...equippedStatuses],
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
@@ -61,14 +75,28 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
     };
   }
 
+  activateListeners(html: JQuery): void {
+    super.activateListeners(html);
+    html.find("[data-add-hit-location]").change(this.onAddHitLocation.bind(this));
+  }
+
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    let hitLocations = formData["system.hitLocations"];
-    hitLocations = Array.isArray(hitLocations) ? hitLocations : [hitLocations];
-    hitLocations = [...new Set(hitLocations.filter((r: any) => r))]; // Remove empty & duplicates
     formData[
       "name"
     ] = `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
-    formData["system.hitLocations"] = duplicate(hitLocations);
     return super._updateObject(event, formData);
+  }
+
+  async onAddHitLocation(event: any): Promise<void> {
+    const newRqid = convertFormValueToString(event.currentTarget?.value);
+
+    if (!this.document.system.hitLocationRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
+      const newName =
+        getAvailableHitLocations().find((l) => l.rqid === event.currentTarget.value)?.name ?? "";
+      const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+      const updatedLinks = [...this.document.system.hitLocationRqidLinks, newHitLocationRqidLink];
+      await this.document.update({ "system.hitLocationRqidLinks": updatedLinks });
+    }
+    this.render();
   }
 }

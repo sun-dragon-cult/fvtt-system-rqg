@@ -1,22 +1,23 @@
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { getAvailableRunes, getGameUser, AvailableItemCache } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
   skillCategories: SkillCategoryEnum[];
-  allRunes: AvailableRuneCache[];
+  allRunes: AvailableItemCache[];
 }
 
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
-      template: "systems/rqg/items/skill-item/skillSheet.hbs",
+      template: templatePaths.itemSkillSheet,
       width: 450,
       height: 500,
       tabs: [
@@ -38,7 +39,6 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     if (!system.skillName) {
       system.skillName = system.name;
     }
-    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     return {
       id: this.document.id ?? "",
@@ -65,10 +65,6 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       formData["system.gainedChance"] = 0;
     }
 
-    let runes = formData["system.runes"];
-    runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter((r: any) => r); // Remove empty
-    formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 }

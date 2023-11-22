@@ -15,6 +15,7 @@ import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { RqgActor } from "../../actors/rqgActor";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "../../items/rqgItem";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface ItemChange {
   itemId: string;
@@ -75,7 +76,7 @@ export class RqidBatchEditor extends FormApplication<
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-batch-editor"],
       popOut: true,
-      template: `systems/rqg/applications/rqid-batch-editor/rqidBatchEditor.hbs`,
+      template: templatePaths.rqidBatchEditor,
       width: 1000,
       id: "rqid-batch-editor-application",
       title: "RQG.Dialog.BatchRqidEditor.Title",

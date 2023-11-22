@@ -16,6 +16,7 @@ import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDoc
 import { Rqid } from "../system/api/rqidApi";
 import type { IAbility } from "../data-model/shared/ability";
 import type { RqgActor } from "../actors/rqgActor";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class ActorWizard extends FormApplication {
   actor: RqgActor;
@@ -69,7 +70,7 @@ export class ActorWizard extends FormApplication {
     return mergeObject(FormApplication.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       popOut: true,
-      template: "systems/rqg/applications/actorWizardApplication.hbs",
+      template: templatePaths.actorWizardApplication,
       id: "actor-wizard-application",
       title: localize("RQG.ActorCreation.AdventurerCreationWizardTitle"),
       width: 850,
@@ -287,7 +288,9 @@ export class ActorWizard extends FormApplication {
       actor: this.actor,
       species: this.species,
       speciesTemplateItems: this.species.selectedSpeciesTemplate
-        ? await RqgActorSheet.organizeEmbeddedItems(this.species.selectedSpeciesTemplate)
+        ? await new RqgActorSheet(this.actor).organizeEmbeddedItems(
+            this.species.selectedSpeciesTemplate,
+          )
         : undefined,
       homeland: this.homeland,
       choices: this.choices,

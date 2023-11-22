@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { systemId } from "../config";
-import { getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
+import { getAvailableRunes, getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
@@ -42,6 +42,7 @@ export class Rqid {
    * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
    * found return the highest priority Document matching the supplied rqid and lang from the installed Compendium packs.
    * If lang parameter is not supplied the language selected for the world will be used.
+   * If no document is found with the specified lang, then "en" will be used as a fallback.
    */
   public static async fromRqid(
     rqid: string | undefined,
@@ -62,6 +63,10 @@ export class Rqid {
     const packItem = await Rqid.documentFromPacks(rqid, lang);
     if (packItem) {
       return packItem;
+    }
+
+    if (lang?.toLowerCase() !== CONFIG.RQG.fallbackLanguage) {
+      return Rqid.fromRqid(rqid, CONFIG.RQG.fallbackLanguage, silent);
     }
 
     if (!silent) {
@@ -535,6 +540,20 @@ export class Rqid {
     // Use RQG default item type images for item documents
     if (rqidDocumentString === "i") {
       const itemType = Rqid.getDocumentType(rqid);
+
+      // Special handling for rune items to display the actual rune instead of the default item image
+      if (itemType === ItemTypeEnum.Rune) {
+        const rune = getAvailableRunes().find((r) => r.rqid === rqid);
+        if (!rune) {
+          const msg = localize("RQG.RQGSystem.CouldNotFindRune", { rqid: rqid });
+          // @ts-expect-error console
+          ui.notifications?.warn(msg, { console: false });
+          console.warn(`RQG | ${msg}`);
+        } else {
+          return `<img src="${rune.img}"/>`;
+        }
+      }
+
       const iconSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
       const defaultItemIcon = itemType && iconSettings[itemType];
       if (defaultItemIcon) {

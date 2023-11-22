@@ -35,7 +35,7 @@
   <div class="head3">{{localize "RQG.Actor.Combat.HP"}}</div>
   <div class="head4 text-right">{{localize "RQG.Actor.Combat.Chance"}}</div>
   <div class="head5">{{localize "RQG.Actor.Combat.Damage"}}</div>
-  <div class="head6 text-right">{{localize "RQG.Actor.Combat.SR"}}</div>
+  <div class="head6 text-right mr-5">{{localize "RQG.Actor.Combat.SR"}}</div>
 
   {{#each embeddedItems.weapon}}
     {{#if (eq system.equippedStatus "equipped")}}
@@ -44,26 +44,29 @@
         <div data-item-id="{{id}}" data-weapon-roll class="combat contextmenu item">
           <div>{{name}}
             {{#if system.isProjectileWeapon}}
-              ({{#if system.ammoNotSelected}}
-                <span class="invalid" data-tooltip="{{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedTip"}}">
-                  {{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert"}}
-                </span>
-              {{else}}
-                <span data-tooltip="{{system.projectileName}}">
-                  {{system.projectileQuantity}}
-                </span>
-              {{/if}})
+              <br>
+              <select class="projectile{{#unless system.projectileId}} invalid{{/unless}}" data-item-edit-value="system.projectileId">
+                {{#select system.projectileId}}
+                  {{#each @root.ownedProjectiles}}
+                    <option value="{{id}}">{{name}}
+                      {{#if name}}
+                        ({{system.quantity}})
+                      {{else}}
+                        {{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert"}}
+                      {{/if}}
+                    </option>
+                  {{/each}}
+                {{/select}}
+              </select>
             {{else if system.isThrownWeapon}}
-              [{{system.quantity}}]
+              (<input class="quantity" type="number" min="0" max="99" data-item-edit-value="system.quantity" value="{{system.quantity}}">)
             {{else if system.isProjectile}}
-              [{{system.quantity}}]
+              (<input class="quantity" type="number" min="0" max="99" data-item-edit-value="system.quantity" value="{{system.quantity}}">)
             {{/if}}
-            {{#if system.range}}
-              {{#if system.rate includeZero=true}}
-                <div class="rate-range">{{localize "RQG.Actor.Combat.Range"}} {{system.range}} {{localize "RQG.Actor.Combat.Rate"}} {{missileRate system.rate}}</div>
-              {{/if}}
-            {{/if}}
-
+            {{#if system.range}}{{#if system.rate includeZero=true}}
+              <br>
+              <div class="rate-range">{{localize "RQG.Actor.Combat.Range"}} {{system.range}} {{localize "RQG.Actor.Combat.Rate"}} {{missileRate system.rate}}</div>
+            {{/if}}{{/if}}
           </div>
         </div>
         <div data-item-id="{{id}}" class="combat contextmenu item">

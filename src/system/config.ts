@@ -12,6 +12,11 @@ export const RQG_CONFIG = {
     spiritCombat: "i.skill.spirit-combat",
   },
 
+  // Rune items that need special handling
+  runeRqid: {
+    magic: "i.rune.magic-condition",
+  },
+
   bodytypes: {
     humanoid: [
       "i.hit-location.head",
@@ -23,6 +28,8 @@ export const RQG_CONFIG = {
       "i.hit-location.right-leg",
     ],
   },
+
+  fallbackLanguage: "en",
 
   // Default Combat Maneuvers for weapon items
   combatManeuvers: new Map([
@@ -52,6 +59,18 @@ export const RQG_CONFIG = {
     ],
     [
       "Bash",
+      {
+        defaultDamageType: "crush",
+      },
+    ],
+    [
+      "HeadButt",
+      {
+        defaultDamageType: "crush",
+      },
+    ],
+    [
+      "Hit",
       {
         defaultDamageType: "crush",
       },

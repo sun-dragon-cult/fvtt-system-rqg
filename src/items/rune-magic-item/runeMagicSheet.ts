@@ -1,15 +1,16 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getAvailableRunes, getGameUser, AvailableRuneCache } from "../../system/util";
+import { getAvailableRunes, getGameUser, AvailableItemCache } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneMagicSheetData {
   ranges: SpellRangeEnum[];
   durations: SpellDurationEnum[];
   actorCults: any[];
-  allRunes: AvailableRuneCache[];
+  allRunes: AvailableItemCache[];
 }
 
 export class RuneMagicSheet extends RqgItemSheet<
@@ -19,7 +20,7 @@ export class RuneMagicSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
-      template: "systems/rqg/items/rune-magic-item/runeMagicSheet.hbs",
+      template: templatePaths.itemRuneMagicSheet,
       width: 450,
       height: 500,
       tabs: [
@@ -35,8 +36,6 @@ export class RuneMagicSheet extends RqgItemSheet<
   getData(): RuneMagicSheetData & EffectsItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
-
-    system.runes = Array.isArray(system.runes) ? system.runes : [system.runes];
 
     return {
       id: this.document.id ?? "",
@@ -64,10 +63,6 @@ export class RuneMagicSheet extends RqgItemSheet<
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
-    let runes = formData["system.runes"];
-    runes = Array.isArray(runes) ? runes : [runes];
-    runes = runes.filter((r: string) => r); // Remove empty
-    formData["system.runes"] = duplicate(runes);
     return super._updateObject(event, formData);
   }
 }

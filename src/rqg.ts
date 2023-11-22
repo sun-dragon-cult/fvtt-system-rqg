@@ -9,7 +9,13 @@ import { RQG_CONFIG, systemId } from "./system/config";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import { cacheAvailableRunes, getGame, getGameUser, localize } from "./system/util";
+import {
+  cacheAvailableHitLocations,
+  cacheAvailableRunes,
+  getGame,
+  getGameUser,
+  localize,
+} from "./system/util";
 import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
@@ -128,6 +134,9 @@ Hooks.once("ready", async () => {
   await migrateWorld();
   // Make sure the cache of available runes is preloaded
   await cacheAvailableRunes();
+
+  // Make sure the cache of available hit locations is preloaded
+  await cacheAvailableHitLocations();
 
   // Verify that at least one wiki module is activated
   if (

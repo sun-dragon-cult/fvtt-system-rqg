@@ -10,6 +10,7 @@ import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
@@ -26,7 +27,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
-      template: "systems/rqg/items/weapon-item/weaponSheet.hbs",
+      template: templatePaths.itemWeaponSheet,
       width: 960,
       height: 800,
       tabs: [

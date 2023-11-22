@@ -62,7 +62,7 @@
             type="checkbox"
           >
 
-          {{> "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs"}}
+          {{> itemCommonPhysical}}
         </div>
       </div>
 
@@ -81,7 +81,7 @@
                 <div class="flex-row-start flex-align-center">
                   <label class="mp">{{localize "TYPES.Item.skill"}}</label>
 
-                  {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+                  {{> rqidLink
                     rqidLink=skillRqidLink
                     showDeleteFromPropertyName=(concat "usage." @key ".skillRqidLink")
                     showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
@@ -227,7 +227,7 @@
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+        {{> itemActiveEffects}}
       </div>
     </section>
 

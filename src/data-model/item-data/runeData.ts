@@ -11,16 +11,27 @@ export enum RuneTypeEnum {
   Technique = "technique",
 }
 
+export type RuneType = {
+  type: RuneTypeEnum;
+  /** Translated name of the runeType */
+  name: string;
+};
+
+export const defaultRuneType = {
+  type: RuneTypeEnum.Form,
+  name: RuneTypeEnum.Form,
+};
+
 export interface RuneDataSourceData extends IAbility {
   descriptionRqidLink: RqidLink | undefined;
   /** The name of the rune, Moon for example */
   rune: string;
-  runeType: RuneTypeEnum;
+  runeType: RuneType;
   chance: number;
-  /** For Power Runes (+ Form: Man & Beast) ex: "Beast (form)" */
-  opposingRune: string;
-  /** For Sorcery - Elemental Runes & Techniques ex ["Air (elemental)", "Fire (elemental)"] */
-  minorRunes: string[];
+  /** For Power Runes */
+  opposingRuneRqidLink: RqidLink | undefined;
+  /** For Sorcery - Elemental Runes & Techniques */
+  minorRuneRqidLinks: RqidLink[];
   /** For Sorcery */
   isMastered: boolean;
 }
@@ -44,8 +55,8 @@ export const defaultRuneData: RuneDataSourceData = {
   chance: 0,
   canGetExperience: true,
   hasExperience: false,
-  runeType: RuneTypeEnum.Form,
-  opposingRune: "",
-  minorRunes: [],
+  runeType: defaultRuneType,
+  opposingRuneRqidLink: undefined,
+  minorRuneRqidLinks: [],
   isMastered: false,
 };

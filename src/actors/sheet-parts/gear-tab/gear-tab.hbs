@@ -23,7 +23,7 @@
       </div>
       <ul class="location virtual item-list">
         {{#each itemLocationTree.contains}}
-          {{> "systems/rqg/actors/sheet-parts/gear-tab/physical-item-location.hbs"}}
+          {{> actorGearPhysicalItemLocation}}
         {{/each}}
       </ul>
     </article>
@@ -89,9 +89,9 @@
               <div data-item-id="{{id}}" class="gear contextmenu item"
                    data-tooltip="{{system.price.conversion}}">{{name}}</div>
               <div data-item-id="{{id}}" class="gear contextmenu item">
-                <span class="text-right"><input type="number" min="0" max="999999"
+                <input type="number" min="0" max="999999"
                                                 data-item-edit-value="system.quantity"
-                                                value="{{system.quantity}}"></span>
+                                                value="{{system.quantity}}">
               </div>
               <div data-item-id="{{id}}" class="gear contextmenu item">
                 <span class="text-right">{{#if system.price.estimated}}
@@ -139,10 +139,10 @@
                 <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">
-                <span class="text-right"><input type="number" min="0" max="999999"
+                <input type="number" min="0" max="999999"
                                           data-item-edit-value="system.quantity"
                                           value="{{system.quantity}}"
-                ></span>
+                >
                 </div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">
                 <span class="text-right">{{#if system.price.estimated}}
@@ -315,11 +315,10 @@
           <div data-item-id="{{id}}" class="gear contextmenu item">
             <span class="text-right">{{system.absorbs}}</span>
           </div>
-          <div data-item-id="{{id}}" class="gear contextmenu item">[
-            {{#each system.hitLocations}}
-              {{this}},
+          <div data-item-id="{{id}}" class="gear contextmenu item small-size flex-wrap">
+            {{#each system.hitLocationRqidLinks}}
+              <span>{{name}}{{#unless @last}},&nbsp;{{/unless}}</span>
             {{/each}}
-            ]
           </div>
           <div data-item-id="{{id}}" class="gear contextmenu item">
             <span class="text-right">{{system.moveQuietlyPenalty}}</span>

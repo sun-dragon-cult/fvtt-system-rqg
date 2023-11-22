@@ -2,8 +2,10 @@
   <div class="key-value-grid">
     <label for="rqid-editor">{{localize "RQG.RQGSystem.rqid"}}</label>
     <div class="input-button">
-      <input type="text" id="rqid-editor" name="flags.rqg.documentRqidFlags.id" value="{{flags.rqg.documentRqidFlags.id}}" />
-      <a data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}" data-generate-default-rqid><i class="fas fa-wand-magic-sparkles"></i></a>
+      <span>{{rqidPrefix}}</span>
+      <input type="text" id="rqid-editor" name="rqidNamePart" value="{{rqidNamePart}}" />
+      <a data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}" data-generate-default-rqid><i
+        class="fas fa-wand-magic-sparkles"></i></a>
     </div>
 
     <label for="rqidLang-editor">{{localize "RQG.RQGSystem.rqidLang"}}</label>
@@ -28,93 +30,102 @@
 
   <fieldset class="key-value-grid">
     <legend>Info</legend>
-    {{#if flags.rqg.documentRqidFlags.id}}
-    <label>{{localize "RQG.RQGSystem.OtherDocumentsHeader"}}</label>
-    <div class="fullwidth">
-      <details>
-        <summary>{{localize 'RQG.RQGSystem.DocsInWorld' count=worldDuplicates}}{{#if warnDuplicateWorldPriority}} <span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
-        <table>
-          <tr>
-            <td><b>Priority</b></td>
-            <td><b>Link</b></td>
-            <td><b>Folder</b></td>
-          </tr>
-
-          {{#each worldDocumentInfo}}
+    {{#if rqidNamePart}}
+      <label>{{localize "RQG.RQGSystem.OtherDocumentsHeader"}}</label>
+      <div class="fullwidth">
+        <details>
+          <summary>{{localize 'RQG.RQGSystem.DocsInWorld' count=worldDuplicates}}{{#if warnDuplicateWorldPriority}}
+            <span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize
+              "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
+          <table>
             <tr>
-              <td>{{priority}}</td>
-              <td>{{{link}}}</td>
-              <td>{{folder}}</td>
+              <td><b>Priority</b></td>
+              <td><b>Link</b></td>
+              <td><b>Folder</b></td>
             </tr>
-          {{/each}}
-        </table>
-      </details>
 
-      <details>
-        <summary>{{localize 'RQG.RQGSystem.DocsInCompendiums' count=compendiumDuplicates}}{{#if warnDuplicateCompendiumPriority}} <span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
-        <table>
-          <tr>
-            <td><b>Priority</b></td>
-            <td><b>Link</b></td>
-            <td><b>Compendium</b></td>
-          </tr>
+            {{#each worldDocumentInfo}}
+              <tr>
+                <td>{{priority}}</td>
+                <td>{{{link}}}</td>
+                <td>{{folder}}</td>
+              </tr>
+            {{/each}}
+          </table>
+        </details>
 
-          {{#each compendiumDocumentInfo}}
+        <details>
+          <summary>{{localize 'RQG.RQGSystem.DocsInCompendiums' count=compendiumDuplicates}}{{#if
+            warnDuplicateCompendiumPriority}}<span class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize
+            "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}</summary>
+          <table>
             <tr>
-              <td>{{priority}}</td>
-              <td>{{{link}}}</td>
-              <td>{{{compendium}}}</td>
+              <td><b>Priority</b></td>
+              <td><b>Link</b></td>
+              <td><b>Compendium</b></td>
             </tr>
-          {{/each}}
-        </table>
-      </details>
-    </div>
+
+            {{#each compendiumDocumentInfo}}
+              <tr>
+                <td>{{priority}}</td>
+                <td>{{{link}}}</td>
+                <td>{{{compendium}}}</td>
+              </tr>
+            {{/each}}
+          </table>
+        </details>
+      </div>
     {{/if}}
 
-  <label>{{localize "RQG.RQGSystem.FoundryId"}}</label>
-  <div class="input-button">
-    <input type="text" value="{{id}}" readonly>
-    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
-      <i class="fas fa-copy"></i>
-    </a>
-  </div>
+    {{#if folder}}
+      <label>{{localize "RQG.RQGSystem.Folder"}}</label>
+      <div>{{folder}}</div>
+    {{/if}}
 
-  {{#if parentId}}
-    <label>{{localize "RQG.RQGSystem.ParentFoundryId"}}</label>
+    <label>{{localize "RQG.RQGSystem.FoundryId"}}</label>
     <div class="input-button">
-      <input type="text" value="{{parentId}}" readonly>
+      <input type="text" value="{{id}}" readonly>
       <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
         <i class="fas fa-copy"></i>
       </a>
     </div>
-  {{/if}}
 
-  <label>{{localize "RQG.RQGSystem.FoundryUuid"}}</label>
-  <div class="input-button">
-    <input type="text" value="{{uuid}}" readonly>
-    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
-      <i class="fas fa-copy"></i>
-    </a>
-  </div>
+    {{#if parentId}}
+      <label>{{localize "RQG.RQGSystem.ParentFoundryId"}}</label>
+      <div class="input-button">
+        <input type="text" value="{{parentId}}" readonly>
+        <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+          <i class="fas fa-copy"></i>
+        </a>
+      </div>
+    {{/if}}
 
-  <label>{{localize "RQG.RQGSystem.GetThisDocument"}}</label>
-  <div class="input-button">
-    <input type="text" value='await fromUuid("{{uuid}}")' readonly>
-    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
-      <i class="fas fa-copy"></i>
-    </a>
-  </div>
+    <label>{{localize "RQG.RQGSystem.FoundryUuid"}}</label>
+    <div class="input-button">
+      <input type="text" value="{{uuid}}" readonly>
+      <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+        <i class="fas fa-copy"></i>
+      </a>
+    </div>
 
-  {{#if flags.rqg.documentRqidFlags.id}}
-  <label>{{localize "RQG.RQGSystem.GetDocumentLikeThis"}}</label>
-  <div class="input-button">
-    <input type="text"
-      value='await game.system.api.rqid.fromRqid("{{flags.rqg.documentRqidFlags.id}}","{{flags.rqg.documentRqidFlags.lang}}")'
-      readonly>
-    <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
-      <i class="fas fa-copy"></i>
-    </a>
-  </div>
-  {{/if}}
-</fieldset>
+    <label>{{localize "RQG.RQGSystem.GetThisDocument"}}</label>
+    <div class="input-button">
+      <input type="text" value='await fromUuid("{{uuid}}")' readonly>
+      <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+        <i class="fas fa-copy"></i>
+      </a>
+    </div>
+
+    {{#if rqidNamePart}}
+      <label>{{localize "RQG.RQGSystem.GetDocumentLikeThis"}}</label>
+      <div class="input-button">
+        <input type="text"
+               value='await game.system.api.rqid.fromRqid("{{flags.rqg.documentRqidFlags.id}}","{{flags.rqg.documentRqidFlags.lang}}")'
+               readonly>
+        <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
+          <i class="fas fa-copy"></i>
+        </a>
+      </div>
+    {{/if}}
+  </fieldset>
 </form>

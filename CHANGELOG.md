@@ -1,5 +1,56 @@
 # Changelog
 
+## [3.3.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.2.1...v3.3.0) (2023-11-17)
+
+
+### Features
+
+* add headbutt & hit as combat maneuvers ([32aff9d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/32aff9da82ba82091efc24ac7f14e8e48dba523f))
+* change the hitLocation "connectedTo" to use rqid instead ([668dd85](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/668dd85b6a1e298a8f64081e1d667768ae790c2c)), closes [#449](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/449)
+* improve UX of embedding missile weapon & projectiles ([3c00cf7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3c00cf75eb16d15e80ca7a22462e783e1618117f))
+* use rqid for armor coverage and remove hit locations setting ([4f55ef1](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4f55ef159cf21b721f61ae4306517dafed0c1e71))
+
+
+### Bug Fixes
+
+* spirit Combat panel should not be visible without spirit combat skill ([1e37542](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1e3754247b0c7a745fbc90bc5c633bb68bd5cc96)), closes [#658](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/658)
+
+## [3.2.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.2.0...v3.2.1) (2023-10-26)
+
+
+### Bug Fixes
+
+* "Get Items Like This" is missing from the rqid editor ([2210d03](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2210d03f103a006d68f43e877fc240cd774be959)), closes [#646](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/646)
+* affordance of view gear by itemtype / location tabs is low ([6fa3b69](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6fa3b69fb927a5db29eb12c3eaa03f79e85bf905)), closes [#177](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/177)
+* column "Focus" on spirit magic tab should be editable ([825a05d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/825a05dd6b925efc0a23f8ed8c323fac7715e4ca))
+* column "Focus" should not send to chat, but should get hover outline ([28a9157](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/28a915719bd6151ec614ddbffffc7bf8d7967053))
+* embedded runes may be hidden ([def4f23](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/def4f235e31d00a2f1835f16b48914662ed869bd)), closes [#644](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/644)
+* fallback to english when searching for a rqid in another language ([af663e3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/af663e381f0eab0c5235edede141e51185854073)), closes [#643](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/643)
+* firefox fails to load scenes since token effect svgs needs height & width for display on canvas ([2059786](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/2059786afb390aef822594bdb63f870079e4d8d2))
+* show rune name & chance on character runes in header ([b4fa98a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b4fa98ae9edd5353fcb37f6e62b4c70c6eaffca1))
+
+## [3.2.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.1.1...v3.2.0) (2023-10-20)
+
+
+### Features
+
+* add flag to allow duplicate RqidLinks ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f))
+* hide Opposing / Minor rune settings depending on runeType on Rune Item Sheet ([b614cfd](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/b614cfd49d3c38f13adc816c61927115960c5db1)), closes [#269](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/269)
+* improve rqid editor ([1b53e1d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/1b53e1d514259095bf489a9079cdfbc732dd592e)), closes [#457](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/457)
+* make damage bonus part of weapon damage string ([45f4f04](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/45f4f04b7d695cc4307be34c78cbdd6af017d7e5)), closes [#106](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/106)
+* make rune item runeType translatable ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f))
+* make runes translatable by using rqid for linking ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f)), closes [#270](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/270)
+* show actual rune icon on rqidLinks ([ca9c7d8](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ca9c7d835497e7f926cb92e1f6256b7ba76ead9f))
+* show folder of document in rqid editor ([d62fa92](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d62fa927f5f28239a3fc2974086dbdfb432e1150)), closes [#642](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/642)
+
+
+### Bug Fixes
+
+* actor without POW / MP is shown as unconscious and also show MP input field ([f34eecd](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f34eecdf1db91a9c39368d8cacf1b20da081451b)), closes [#631](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/631)
+* combat panel SR button is not right aligned for natural weapons ([c43e605](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c43e6057e4e456fc2bb6eb40a73fe14db7db7e33))
+* name of special damage in chat damage roll is impale even for slash damage ([02945a6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/02945a6fa4dd71d0a1cc1fc82a8ee0e59ae2feb9)), closes [#629](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/629)
+* npe if hit location lacks rqid flag "id" when dragged to actorSheet ([ef30808](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ef3080885fc8f5c40578d660433c971fb511ca3e))
+
 ## [3.1.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.1.0...v3.1.1) (2023-09-29)
 
 

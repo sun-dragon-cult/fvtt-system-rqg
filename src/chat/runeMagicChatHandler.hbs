@@ -13,7 +13,7 @@
 
     </div>
 
-    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+    {{> rqidLink
         rqidLink=descriptionLink
     }}
 
@@ -28,7 +28,7 @@
               <input data-handle-change type="radio" id="select-rune-{{this._id}}" name="selectedRuneId" value="{{this.id}}" {{#if (eq
               this.id ../formData.selectedRuneId)}}checked{{/if}}>
 
-              <span data-tooltip="{{this.name}}"><img class="rune" src="{{runeImg this.name}}"> {{this.system.rune}}</span>
+              <span data-tooltip="{{this.name}}"><img class="rune" src="{{rqidImgSrc this?.flags.rqg?.documentRqidFlags?.id}}"> {{this.system.rune}}</span>
 
               <span {{#if this.system.hasExperience}}class="experienced" data-tooltip="{{localize "RQG.Dialog.runeMagicChat.RuneHasExperienceTitle"}}"{{/if}}>
                 {{this.system.chance}}%

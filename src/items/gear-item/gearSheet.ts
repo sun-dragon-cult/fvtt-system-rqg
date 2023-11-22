@@ -4,6 +4,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface GearSheetData {
   enrichedDescription: string;
@@ -16,7 +17,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Gear],
-      template: "systems/rqg/items/gear-item/gearSheet.hbs",
+      template: templatePaths.itemGearSheet,
       width: 450,
       height: 500,
       tabs: [

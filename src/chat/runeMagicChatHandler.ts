@@ -21,6 +21,7 @@ import { ChatSpeakerData } from "@league-of-foundry-developers/foundry-vtt-types
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { RuneMagic } from "../items/rune-magic-item/runeMagic";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class RuneMagicChatHandler {
   /**
@@ -87,7 +88,6 @@ export class RuneMagicChatHandler {
     const templateData = {
       ...flags,
       eligibleRunes: eligibleRunes,
-      spellRunes: runeMagicItem.system.runes,
       isOneUse: runeMagicItem.system.isOneUse,
       descriptionLink: runeMagicItem.system.descriptionRqidLink,
       ritualOrMeditationOptions: ritualOrMeditationOptions,
@@ -98,7 +98,7 @@ export class RuneMagicChatHandler {
       }),
     };
 
-    const html = await renderTemplate("systems/rqg/chat/runeMagicChatHandler.hbs", templateData);
+    const html = await renderTemplate(templatePaths.runeMagicChatHandler, templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token }) as ChatSpeakerData;
 
     return {

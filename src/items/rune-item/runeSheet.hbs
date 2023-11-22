@@ -12,23 +12,25 @@
 
         <div class="label-above parens">
           <label for="rune-type-{{id}}">{{localize "RQG.Item.Rune.Type"}}</label>
-          <div>
+          <div class="nowrap">
             (
-            <select id="rune-type-{{id}}" name="system.runeType">
-              {{#select system.runeType}}
+            <select id="rune-type-{{id}}" name="system.runeType.type">
+              {{#select system.runeType.type}}
                 {{#each runeTypes}}
-                  <option value="{{this}}">{{localize
-                    (concat "RQG.Item.Rune.RuneType." this)
-                  }}</option>
+                  <option value="{{type}}">{{name}}</option>
                 {{/each}}
               {{/select}}
             </select>
+            {{! Show the actual runeTypeName if it does not match the system translation }}
+            {{#unless  (eq system.runeType.name (localize (concat "RQG.Item.Rune.RuneType." system.runeType.type)))}}
+              <span data-tooltip="{{localize "RQG.Actor.Rune.TypeDontMatchTranslationTip"}}">⚠ {{system.runeType.name}}</span>
+            {{/unless}}
             )
           </div>
         </div>
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+      {{> rqidLinkDropzone
         rqidLink=system.descriptionRqidLink
         dropzoneData="descriptionRqidLink"
         dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -50,6 +52,8 @@
       <div class="tab" data-group="primary" data-tab="rune">
 
         <div class="key-value-grid">
+          <label {{#unless rqid}}class="warning" data-tooltip="{{localize 'RQG.Item.Rune.Notification.RqidNeededWarn'}}"{{/unless}}><i class="fas fa-fingerprint"></i> Rqid</label>
+          <div class="fullwidth fullheight {{#unless rqid}}warning{{/unless}}" {{#unless rqid}}data-tooltip="{{localize 'RQG.Item.Rune.Notification.RqidNeededWarn'}}"{{/unless}}>{{rqid}}</div>
 
           <label for="chance-{{id}}">{{localize "RQG.Item.Rune.PercentageChance"}}</label>
           <div>
@@ -72,17 +76,19 @@
             type="checkbox"
           >
 
+          {{#if (or (eq system.runeType.type "power") (eq system.runeType.type "form"))}}
           <label for="opposing-rune-{{id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
-          <div class="img-name-grid">
-            <img class="rune" src="{{runeImg system.opposingRune}}" data-tooltip="{{system.opposingRune}}" />
-            <input
-              id="opposing-rune-{{id}}"
-              name="system.opposingRune"
-              value="{{system.opposingRune}}"
-              type="text"
-              list="allRunes"
-            >
-          </div>
+          {{> rqidLinkDropzone
+            rqidLink=system.opposingRuneRqidLink
+            dropzoneData="opposingRuneRqidLink"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="opposingRuneRqidLink"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+          }}
+          {{/if}}
+
 
           <label for="is-mastered-{{id}}">{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label>
           <input
@@ -92,21 +98,18 @@
             type="checkbox"
           >
 
+          {{#if (or (eq system.runeType.type "element") (eq system.runeType.type "technique"))}}
           <label for="minor-runes-{{id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
-          <div class="img-name-grid bordered">
-            {{#each system.minorRunes}}
-              <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
-              <input type="text" name="system.minorRunes" value="{{this}}">
-            {{/each}}
-            <input
-              id="minor-runes-{{id}}"
-              name="system.minorRunes"
-              type="text"
-              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}" {{!-- TODO RuneMagic translation --}}
-              list="allRunes"
-              style="grid-column: 1 / span 2;"
-            >
-          </div>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.minorRuneRqidLinks
+            dropzoneData="minorRuneRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="minorRuneRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+          }}
+          {{/if}}
+
         </div>
       </div>
     </section>

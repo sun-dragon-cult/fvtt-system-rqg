@@ -3,6 +3,7 @@ import { convertFormValueToString, localize } from "../system/util";
 import { systemId } from "../system/config";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { CultRankEnum } from "../data-model/item-data/cultData";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 //**Shows a dialog for improving a Characteristic */
 export async function showImproveCharacteristicDialog(
@@ -74,12 +75,9 @@ export async function showImproveCharacteristicDialog(
     callback: () => null,
   };
 
-  const content: string = await renderTemplate(
-    "systems/rqg/applications/improveAbilityDialog.hbs",
-    {
-      adapter: adapter,
-    },
-  );
+  const content: string = await renderTemplate(templatePaths.dialogImproveAbility, {
+    adapter: adapter,
+  });
   const title = localize("RQG.Dialog.improveAbilityDialog.titleChar", {
     name: adapter.name,
     typeLocName: adapter.typeLocName,

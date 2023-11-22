@@ -1,0 +1,30 @@
+{{!-- Partial {{> rqidLinkDropzone
+
+Wrapper around a rqidLink to add dropzone event targets
+dropzoneData: string - ex "descriptionRqidLink"
+dropDocumentNames: string - comma separated list of documents, ex. "JournalEntry, JournalEntryPage"
+dropDocumentTypes: string - comma separated list of document types, ex: "rune,skill"
+
+Nested: {{> rqidLink
+    rqidLink
+    showDeleteFromPropertyName
+    showInfoCircleConnect
+    showInfoCircleReplace
+    showBonus
+    editBonusPropertyName
+
+--}}
+
+<div class="drop-target item-sheet-rqid-link"
+     data-dropzone="{{dropzoneData}}"
+     data-dropzone-document-names="{{dropDocumentNames}}"
+     data-dropzone-document-types="{{dropDocumentTypes}}">
+  {{> rqidLink
+    rqidLink=rqidLink
+    showDeleteFromPropertyName=showDeleteFromPropertyName
+    showInfoCircleConnect=showInfoCircleConnect
+    showInfoCircleReplace=showInfoCircleReplace
+    showBonus=showBonus
+    editBonusPropertyName=editBonusPropertyName
+  }}
+</div>

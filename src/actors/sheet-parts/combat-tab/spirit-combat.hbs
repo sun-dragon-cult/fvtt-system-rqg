@@ -1,4 +1,4 @@
-{{#if (or spiritCombatSkillData (ne system.attributes.spiritCombatDamage "0") )}}
+{{#if (and spiritCombatSkillData (ne system.attributes.spiritCombatDamage "0") )}}
   <div>
     <h2>{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
     {{#if (ne system.attributes.spiritCombatDamage "0")}}

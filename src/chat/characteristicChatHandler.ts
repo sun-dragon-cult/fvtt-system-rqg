@@ -22,6 +22,7 @@ import {
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export type CharacteristicData = {
   name: string;
@@ -143,10 +144,7 @@ export class CharacteristicChatHandler {
       }),
     };
 
-    const html = await renderTemplate(
-      "systems/rqg/chat/characteristicChatHandler.hbs",
-      templateData,
-    );
+    const html = await renderTemplate(templatePaths.chatCharacteristicHandler, templateData);
     return {
       user: getGame().user?.id,
       speaker: ChatMessage.getSpeaker({ actor: actor, token: token }),

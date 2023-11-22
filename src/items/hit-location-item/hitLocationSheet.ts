@@ -7,9 +7,10 @@ import { RqgActor } from "../../actors/rqgActor";
 import {
   activateChatTab,
   assertItemType,
+  AvailableItemCache,
+  getAvailableHitLocations,
   getGame,
   getGameUser,
-  getHitLocations,
   localize,
   requireValue,
   RqgError,
@@ -23,11 +24,13 @@ import { RqgItem } from "../rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface HitLocationSheetData {
-  allHitLocations: string[];
+  allHitLocations: AvailableItemCache[];
   hitLocationTypes: string[];
   hitLocationHealthStatuses: string[];
+  rqid: string;
 }
 
 export class HitLocationSheet extends RqgItemSheet<
@@ -37,7 +40,7 @@ export class HitLocationSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
-      template: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
+      template: templatePaths.itemHitLocationSheet,
       width: 450,
       height: 500,
       tabs: [
@@ -59,13 +62,14 @@ export class HitLocationSheet extends RqgItemSheet<
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
+      rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: getGameUser().isGM,
       isEmbedded: this.document.isEmbedded,
       system: system,
 
-      allHitLocations: getHitLocations(),
+      allHitLocations: getAvailableHitLocations(),
       hitLocationTypes: Object.values(HitLocationTypesEnum),
       hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
     };
@@ -86,10 +90,7 @@ export class HitLocationSheet extends RqgItemSheet<
       throw new RqgError(msg);
     }
 
-    const dialogContentHtml = await renderTemplate(
-      "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
-      {},
-    );
+    const dialogContentHtml = await renderTemplate(templatePaths.hitLocationAddWound, {});
     new Dialog(
       {
         title: localize("RQG.Item.HitLocation.AddWound.Title", {
@@ -191,10 +192,10 @@ export class HitLocationSheet extends RqgItemSheet<
     const hitLocation = actor.items.get(hitLocationItemId);
     assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
-    const dialogContentHtml = await renderTemplate(
-      "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-      { hitLocationName: hitLocation.name, wounds: hitLocation.system.wounds },
-    );
+    const dialogContentHtml = await renderTemplate(templatePaths.hitLocationHealWound, {
+      hitLocationName: hitLocation.name,
+      wounds: hitLocation.system.wounds,
+    });
 
     new Dialog(
       {

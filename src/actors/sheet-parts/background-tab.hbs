@@ -63,7 +63,7 @@
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+        {{> rqidLinkDropzone
             rqidLink=system.background.speciesRqidLink
             dropzoneData="background.speciesRqidLink"
             dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -161,7 +161,6 @@
             id="reputation-{{id}}"
             name="system.background.reputation"
             value="{{system.background.reputation}}"
-            class="text-right"
             type="number"
             min="0"
             max="999"
@@ -209,7 +208,7 @@
 
       {{#if actorWizardFeatureFlag}}
         <label></label>
-        {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+        {{> rqidLink
             rqidLink=system.background.currentOccupationRqidLink
             showDeleteFromPropertyName="background.currentOccupationRqidLink"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
@@ -271,7 +270,7 @@
       <div class="key-value-grid">
 
         <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+        {{> rqidLinkDropzone
           rqidLink=system.background.homelandJournalRqidLink
           dropzoneData="background.homelandJournalRqidLink"
           dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -281,7 +280,7 @@
         }}
 
         <label>{{localize "RQG.Actor.Background.Region"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+        {{> rqidLinkDropzone
           rqidLink=system.background.regionJournalRqidLink
           dropzoneData="background.regionJournalRqidLink"
           dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -291,7 +290,7 @@
         }}
 
         <label>{{localize "RQG.Actor.Background.Cultures"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+        {{> rqidLinkArrayDropzone
           rqidLinkArray=system.background.cultureJournalRqidLinks
           dropzoneData="background.cultureJournalRqidLinks"
           dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -301,7 +300,7 @@
         }}
 
         <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+        {{> rqidLinkArrayDropzone
           rqidLinkArray=system.background.tribeJournalRqidLinks
           dropzoneData="background.tribeJournalRqidLinks"
           dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -311,7 +310,7 @@
         }}
 
         <label>{{localize "RQG.Actor.Background.Clans"}}</label>
-        {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+        {{> rqidLinkArrayDropzone
           rqidLinkArray=system.background.clanJournalRqidLinks
           dropzoneData="background.clanJournalRqidLinks"
           dropDocumentNames="JournalEntry, JournalEntryPage"

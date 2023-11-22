@@ -4,6 +4,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface PassionSheetData {
   enrichedDescription: string;
@@ -32,7 +33,7 @@ export class PassionSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Passion],
-      template: "systems/rqg/items/passion-item/passionSheet.hbs",
+      template: templatePaths.itemPassionSheet,
       width: 450,
       height: 500,
       tabs: [

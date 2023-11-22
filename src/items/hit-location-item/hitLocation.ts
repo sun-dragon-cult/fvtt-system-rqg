@@ -2,6 +2,7 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { localize, RqgError } from "../../system/util";
+import { RqidLink } from "../../data-model/shared/rqidLink";
 
 export class HitLocation extends AbstractEmbeddedItem {
   // public static init() {
@@ -30,7 +31,9 @@ export class HitLocation extends AbstractEmbeddedItem {
       if (
         armorItem.type === ItemTypeEnum.Armor &&
         armorItem.system.equippedStatus === "equipped" &&
-        armorItem.system.hitLocations.includes(item.name)
+        armorItem.system.hitLocationRqidLinks.some(
+          (l: RqidLink) => l.rqid === item.flags?.rqg?.documentRqidFlags?.id,
+        )
       ) {
         sum += armorItem.system.absorbs;
       }

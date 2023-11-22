@@ -14,7 +14,7 @@
                  name="system.homeland"
                  value="{{system.homeland}}">
           <div class="drop-target">
-            {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+            {{> rqidLink
               rqidLink=system.homelandJournalRqidLink
               showDeleteFromPropertyName="homelandJournalRqidLink"
               showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
@@ -31,7 +31,7 @@
             ( <input type="text" id="region-{{id}}" name="system.region" value="{{system.region}}"> )
           </div>
           <div class="drop-target">
-            {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+            {{> rqidLink
               rqidLink=system.regionJournalRqidLink
               showDeleteFromPropertyName="regionJournalRqidLink"
               dropzoneData="regionJournalRqidLink"
@@ -59,7 +59,7 @@
         <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.cultureJournalRqidLinks
             dropzoneData="cultureJournalRqidLinks"
             dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -68,7 +68,7 @@
           }}
 
           <label>{{localize "RQG.Item.Homeland.TribeJournalEntries"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.tribeJournalRqidLinks
             dropzoneData="tribeJournalRqidLinks"
             dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -77,7 +77,7 @@
           }}
 
           <label>{{localize "RQG.Item.Homeland.ClanJournalEntries"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.clanJournalRqidLinks
             dropzoneData="clanJournalRqidLinks"
             dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -86,7 +86,7 @@
           }}
 
           <label>{{localize "RQG.Item.Homeland.CultLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.cultRqidLinks
             dropzoneData="cultRqidLinks"
             dropDocumentNames="Item"
@@ -96,7 +96,7 @@
           }}
 
           <label>{{localize "RQG.Item.Homeland.SkillLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.skillRqidLinks
             dropzoneData="skillRqidLinks"
             dropDocumentNames="Item"
@@ -108,7 +108,7 @@
           }}
 
           <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.runeRqidLinks
             dropzoneData="runeRqidLinks"
             dropDocumentNames="Item"
@@ -118,7 +118,7 @@
           }}
 
           <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
-          {{> "systems/rqg/items/sheet-parts/rqidLinkArrayDropzone.hbs"
+          {{> rqidLinkArrayDropzone
             rqidLinkArray=system.passionRqidLinks
             dropzoneData="passionRqidLinks"
             dropDocumentNames="Item"

@@ -24,7 +24,7 @@
 
       </div>
 
-      {{> "systems/rqg/items/sheet-parts/rqidLinkDropzone.hbs"
+      {{> rqidLinkDropzone
         rqidLink=system.descriptionRqidLink
         dropzoneData="descriptionRqidLink"
         dropDocumentNames="JournalEntry, JournalEntryPage"
@@ -94,24 +94,20 @@
           {{/if}}
 
           <label for="runes-{{id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
-          <div class="img-name-grid bordered">
-            {{#each system.runes}}
-              <img class="rune" src="{{runeImg this}}" data-tooltip="{{this}}">
-              <input type="text" name="system.runes" value="{{this}}">
-            {{/each}}
-            <input
-              type="text"
-              id="runes-{{id}}"
-              name="system.runes" list="allRunes"
-              placeholder="{{localize "RQG.Item.RuneMagic.AddNewRunePlaceholder"}}"
-              style="grid-column: 1 / span 2;">
-          </div>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.runeRqidLinks
+            dropzoneData="runeRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="runeRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+          }}
         </div>
       </div>
 
       {{!-- Active Effects Tab --}}
       <div class="tab" data-group="primary" data-tab="active-effects">
-        {{> "systems/rqg/items/sheet-parts/itemActiveEffects.hbs"}}
+        {{> itemActiveEffects}}
 
       </div>
     </section>

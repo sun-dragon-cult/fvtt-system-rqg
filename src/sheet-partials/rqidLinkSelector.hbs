@@ -1,3 +1,22 @@
+{{!-- Partial {{> rqidLinkSelector
+
+rqidLinkArray: RqidLink[]
+
+  this: RqidLink {
+    rqid,
+    name,
+    choice ???
+   }
+
+  rqidLinkArray=homeland.selectedHomeland.system.cultureJournalRqidLinks
+  checkedProperty="homelandCultureChosen"
+  forChoice="homelandCultures"
+  title="RQG.ActorCreation.Step1.ImportCultureTitle"
+
+  showBonus -> rqidLink
+  editBonusPropertyName -> rqidLink
+--}}
+
 {{#each rqidLinkArray}}
     <div class="rqid-link-selector">
         <input type="checkbox"
@@ -9,7 +28,7 @@
             {{/if}}
             data-tooltip="{{localize ../title name=this.name}}"
             />
-    {{> "systems/rqg/items/sheet-parts/rqidLink.hbs"
+    {{> rqidLink
         rqidLink=this
         showBonus=../showBonus
         editBonusPropertyName=../editBonusPropertyName

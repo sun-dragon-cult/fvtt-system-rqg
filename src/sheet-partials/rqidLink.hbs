@@ -1,3 +1,15 @@
+{{!-- Partial Id: {{> rqidLink
+
+Parameters:
+
+rqidLink: RqidLink {rqid, documentType, name, bonus}
+showDeleteFromPropertyName: string - added to data-delete-from-property DOMdata Handle deleting RqidLinks from RqidLink Array Properties
+showInfoCircleConnect: string - translation key for tooltip content if not linked
+showInfoCircleReplace: string - translation key for tooltip content if linked
+showBonus: boolean
+editBonusPropertyName: string - example "skillRqidLinks"
+--}}
+
 {{#if rqidLink.rqid}}
   <div class="rqidlink">
     <a

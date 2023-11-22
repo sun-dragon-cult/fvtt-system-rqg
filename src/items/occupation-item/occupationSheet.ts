@@ -12,6 +12,7 @@ import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface OccupationSheetData {
   homelandsJoined: string;
@@ -26,7 +27,7 @@ export class OccupationSheet extends RqgItemSheet<
   static get defaultOptions(): ItemSheet.Options {
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Occupation],
-      template: "systems/rqg/items/occupation-item/occupationSheet.hbs",
+      template: templatePaths.itemOccupationSheet,
       width: 500,
       height: 650,
       tabs: [

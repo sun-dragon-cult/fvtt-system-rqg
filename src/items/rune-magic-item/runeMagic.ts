@@ -2,14 +2,22 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
-import { assertActorType, assertItemType, getGame, localize, RqgError } from "../../system/util";
+import {
+  assertActorType,
+  assertItemType,
+  getGame,
+  isTruthy,
+  localize,
+  RqgError,
+} from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { systemId } from "../../system/config";
 import { RuneMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RuneMagicChatHandler } from "../../chat/runeMagicChatHandler";
 import { ResultEnum, ResultMessage } from "../../data-model/shared/ability";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
+import { RqidLink } from "../../data-model/shared/rqidLink";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -152,8 +160,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
       if (runeMagicCult && runeMagicCult.type === ItemTypeEnum.Cult) {
         item.system.chance = RuneMagic.calcRuneMagicChance(
           actor.items.toObject(),
-          runeMagicCult.system.runes,
-          item.system.runes,
+          runeMagicCult.system.runeRqidLinks,
+          item.system.runeRqidLinks,
         );
       }
     }
@@ -162,21 +170,23 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
   private static calcRuneMagicChance(
     actorItems: ItemDataSource[],
-    cultRuneNames: string[],
-    runeMagicRuneNames: string[],
+    cultRuneRqidLinks: RqidLink[],
+    runeMagicRuneRqidLinks: RqidLink[],
   ): number {
-    const runeChances = actorItems
-      .filter(
-        (i) =>
-          i.type === ItemTypeEnum.Rune &&
-          (runeMagicRuneNames.includes(i.name ?? "") ||
-            (runeMagicRuneNames.includes(
-              getGame().settings.get(systemId, "magicRuneName") as string,
-            ) &&
-              cultRuneNames.includes(i.name ?? ""))),
-      )
-      // @ts-expect-error r is a runeItem TODO rewrite as reduce
-      .map((r: RqgItem) => r.system.chance);
+    const runeMagicRqids = runeMagicRuneRqidLinks.map((r) => r.rqid);
+    const cultRqids = cultRuneRqidLinks.map((r) => r.rqid);
+    const runeChances = actorItems.reduce((acc: number[], item) => {
+      if (
+        item.type === ItemTypeEnum.Rune &&
+        (runeMagicRqids.includes(item.flags.rqg?.documentRqidFlags?.id ?? "") ||
+          (runeMagicRqids.includes(CONFIG.RQG.runeRqid.magic) &&
+            cultRqids.includes(item.flags.rqg?.documentRqidFlags?.id ?? "")))
+      ) {
+        acc.push(item.system.chance);
+      }
+      return acc;
+    }, []);
+
     return Math.max(...runeChances);
   }
 
@@ -228,14 +238,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeMagicName: string,
     actorName: string,
   ): Promise<string> {
-    const htmlContent = await renderTemplate(
-      "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
-      {
-        actorCults: actorCults,
-        runeMagicName: runeMagicName,
-        actorName: actorName,
-      },
-    );
+    const htmlContent = await renderTemplate(templatePaths.dialogRuneMagicCult, {
+      actorCults: actorCults,
+      runeMagicName: runeMagicName,
+      actorName: actorName,
+    });
     return await new Promise((resolve, reject) => {
       const dialog = new Dialog({
         title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),
@@ -291,27 +298,24 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId);
     assertItemType(cult?.type, ItemTypeEnum.Cult);
 
-    // Get the name of the "magic" rune.
-    const magicRuneName = getGame().settings.get(systemId, "magicRuneName");
-
-    let usableRuneNames: string[];
-    if (runeMagicItem.system.runes.includes(magicRuneName)) {
+    let usableRuneRqids: string[];
+    const runeMagicRuneRqids = [
+      ...new Set(runeMagicItem.system.runeRqidLinks.map((r: RqidLink) => r.rqid).filter(isTruthy)),
+    ] as string[];
+    if (runeMagicRuneRqids.includes(CONFIG.RQG.runeRqid.magic)) {
       // Actor can use any of the cult's runes to cast
       // And some cults have the same rune more than once, so de-dupe them
-      // @ts-expect-error system
-      usableRuneNames = [...new Set(cult.system.runes)];
+      usableRuneRqids = [...new Set(cult.system.runeRqidLinks.map((r: RqidLink) => r.rqid))].filter(
+        isTruthy,
+      ) as string[];
     } else {
       // Actor can use any of the Rune Magic Spell's runes to cast
-      // @ts-expect-error system
-      usableRuneNames = [...new Set(runeMagicItem.system.runes)];
+      usableRuneRqids = runeMagicRuneRqids;
     }
-
-    const runesForCasting: RqgItem[] = [];
     // Get the actor's versions of the runes, which will have their "chance"
-    usableRuneNames.forEach((runeName: string) => {
-      const actorRune = runeMagicItem.actor?.items.getName(runeName);
-      actorRune && runesForCasting.push(actorRune);
-    });
+    const runesForCasting = usableRuneRqids
+      .map((runeRqid) => runeMagicItem.actor?.getBestEmbeddedDocumentByRqid(runeRqid))
+      .filter(isTruthy);
 
     return runesForCasting;
   }

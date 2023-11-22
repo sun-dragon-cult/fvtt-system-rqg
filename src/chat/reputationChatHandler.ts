@@ -19,6 +19,7 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class ReputationChatHandler {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
@@ -78,7 +79,7 @@ export class ReputationChatHandler {
       chance: reputationValue + modifier,
       chatHeading: localize("RQG.Dialog.reputationChat.Reputation"),
     };
-    const html = await renderTemplate("systems/rqg/chat/reputationChatHandler.hbs", templateData);
+    const html = await renderTemplate(templatePaths.reputationChatHandler, templateData);
     const speaker = ChatMessage.getSpeaker({ actor: actor, token: token });
 
     return {
