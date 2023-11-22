@@ -1866,6 +1866,18 @@ export class RqgActorSheet extends ActorSheet<
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
     await addRqidLinkToSheetHtml(html, this);
+
+    const link = html.find(".title-edit-mode")[0];
+    let editModeTooltip = "";
+    if (this.actor.system.editMode) {
+      editModeTooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
+    } else {
+      editModeTooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
+    }
+
+    link.dataset.tooltip = editModeTooltip;
+    link.dataset.tooltipDirection = "UP";
+
     return html;
   }
 
@@ -1888,14 +1900,14 @@ export class RqgActorSheet extends ActorSheet<
     if (this.actor.system.editMode) {
       headerButtons.splice(0, 0, {
         class: "title-edit-mode",
-        label: localize("RQG.Actor.EditMode.SwitchToPlayMode"),
+        label: localize("RQG.Actor.EditMode.EditMode"),
         icon: "fas fa-masks-theater",
         onclick: (event) => this._toggleEditMode(event),
       });
     } else {
       headerButtons.splice(0, 0, {
         class: "title-edit-mode",
-        label: localize("RQG.Actor.EditMode.SwitchToEditMode"),
+        label: localize("RQG.Actor.EditMode.PlayMode"),
         icon: "fas fa-user-edit",
         onclick: (event) => this._toggleEditMode(event),
       });
@@ -1905,10 +1917,8 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   _toggleEditMode(event: any) {
-    console.log("EVENT", event);
     const newMode = !this.actor.system.editMode;
     this.actor.update({ system: { editMode: newMode } });
-    console.log("HEADER BUTTONS", this._getHeaderButtons());
 
     let link = event.target as HTMLElement | null;
 
@@ -1918,12 +1928,12 @@ export class RqgActorSheet extends ActorSheet<
 
     if (newMode && link) {
       link.innerHTML = `<i class="fas fa-masks-theater"></i>${localize(
-        "RQG.Actor.EditMode.SwitchToPlayMode",
+        "RQG.Actor.EditMode.EditMode",
       )}`;
+      link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
     } else if (link) {
-      link.innerHTML = `<i class="fas fa-user-edit"></i>${localize(
-        "RQG.Actor.EditMode.SwitchToEditMode",
-      )}`;
+      link.innerHTML = `<i class="fas fa-user-edit"></i>${localize("RQG.Actor.EditMode.PlayMode")}`;
+      link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
     }
   }
 

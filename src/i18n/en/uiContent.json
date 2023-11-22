@@ -232,8 +232,10 @@
         "ProjectileWeaponAmmoNotSelectedAlert": "no ammo"
       },
       "EditMode": {
-        "SwitchToEditMode": "Edit",
-        "SwitchToPlayMode": "Play"
+        "EditMode": "Editing",
+        "PlayMode": "Playing",
+        "SwitchToEditMode": "Switch to Edit Mode",
+        "SwitchToPlayMode": "Switch to Play Mode"
       },
       "Gear": {
         "ViewByItemType": "View by Item Type",
