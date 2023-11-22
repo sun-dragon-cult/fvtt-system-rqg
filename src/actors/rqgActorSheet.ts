@@ -208,6 +208,10 @@ export class RqgActorSheet extends ActorSheet<
         .filter((sr: number) => sr >= 1 && sr <= 12),
     );
 
+    console.log("getData EDIT MODE: ", this.actor.system.editMode);
+
+    this._getHeaderButtons;
+
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -1810,8 +1814,61 @@ export class RqgActorSheet extends ActorSheet<
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
     await addRqidLinkToSheetHtml(html, this);
+    // await this.addEditModeToSheetHtml(html);
     return html;
   }
+
+  // /**
+  //  * Create an Edit Mode link button in the document sheet header which allows the user to toggle the editMode
+  //  */
+  // private async addEditModeToSheetHtml(html: JQuery<JQuery.Node>) {
+  //   const title = html.find(".window-title");
+  //   const editModeLink = document.createElement("a");
+  //   editModeLink.classList.add("title-edit-mode");
+
+  //   const user = getGameUser();
+  //   this.setEditModeLinkAppearance(editModeLink, this.actor.system.editMode, user);
+
+  //   if (user.isGM || user.isTrusted) {
+  //     editModeLink.addEventListener("click", (event) => {
+  //       event.preventDefault();
+  //       const newMode = !this.actor.system.editMode;
+  //       this.actor.update({ system: { editMode: newMode } });
+
+  //       const link = event.currentTarget as HTMLAnchorElement;
+
+  //       this.setEditModeLinkAppearance(link, this.actor.system.editMode, user);
+  //     });
+  //   }
+
+  //   title.append(editModeLink);
+  // }
+
+  // private async setEditModeLinkAppearance(link: HTMLAnchorElement, editMode: boolean, user: User) {
+  //   link.id = `edit-mode-${this.actor.id}`;
+  //   if (user.isGM || user.isTrusted) {
+  //     if (editMode) {
+  //       link.innerHTML = '<i class="fas fa-masks-theater"></i>';
+  //       link.setAttribute("alt", "Switch to Play Mode");
+  //       link.dataset.tooltip = `<div class="text-left">Switch to Play Mode</div>`;
+  //     } else {
+  //       link.innerHTML = '<i class="fas fa-user-edit"></i>';
+  //       link.setAttribute("alt", "Switch to Edit Mode");
+  //       link.dataset.tooltip = `<div class="text-left">Switch to Edit Mode</div>`;
+  //     }
+  //   } else {
+  //     if (editMode) {
+  //       link.innerHTML = '<i class="fas fa-masks-theater"></i>';
+  //       link.setAttribute("alt", "Ask your GM to switch you to Play Mode");
+  //       link.dataset.tooltip = `<div class="text-left">Ask your GM to switch you to Play Mode</div>`;
+  //     } else {
+  //       link.innerHTML = '<i class="fas fa-user-edit"></i>';
+  //       link.setAttribute("alt", "Ask your GM to switch you to Edit Mode");
+  //       link.dataset.tooltip = `<div class="text-left">Ask your GM to switch you to Edit Mode</div>`;
+  //     }
+  //   }
+  //   link.dataset.tooltipDirection = "UP";
+  // }
 
   protected _getHeaderButtons(): Application.HeaderButton[] {
     const headerButtons = super._getHeaderButtons();
@@ -1829,7 +1886,40 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
 
+    if (this.actor.system.editMode) {
+      headerButtons.splice(0, 0, {
+        class: "title-edit-mode",
+        label: "SWITCH TO PLAY MODE",
+        icon: "fas fa-masks-theater",
+        onclick: (event) => this._toggleEditMode(event),
+      });
+    } else {
+      headerButtons.splice(0, 0, {
+        class: "title-edit-mode",
+        label: "SWITCH TO EDIT MODE",
+        icon: "fas fa-user-edit",
+        onclick: (event) => this._toggleEditMode(event),
+      });
+    }
+
     return headerButtons;
+  }
+
+  _toggleEditMode(event: any) {
+    console.log("EVENT", event);
+    const newMode = !this.actor.system.editMode;
+    this.actor.update({ system: { editMode: newMode } });
+    console.log("HEADER BUTTONS", this._getHeaderButtons());
+
+    const link = event.target as HTMLAnchorElement;
+
+    console.log("EVENT TARGET LINK", link);
+
+    if (newMode) {
+      link.innerHTML = '<i class="fas fa-masks-theater"></i>SWITCH TO PLAY MODE';
+    } else {
+      link.innerHTML = '<i class="fas fa-user-edit"></i>SWITCH TO EDIT MODE';
+    }
   }
 
   _openActorWizard() {
