@@ -120,7 +120,7 @@
       <label>{{localize "RQG.RQGSystem.GetDocumentLikeThis"}}</label>
       <div class="input-button">
         <input type="text"
-               value='await game.system.api.rqid.fromRqid("{{flags.rqg.documentRqidFlags.id}}","{{flags.rqg.documentRqidFlags.lang}}")'
+               value='await game.system.api.rqid.fromRqid("{{rqidPrefix}}{{rqidNamePart}}","{{flags.rqg.documentRqidFlags.lang}}")'
                readonly>
         <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
           <i class="fas fa-copy"></i>
