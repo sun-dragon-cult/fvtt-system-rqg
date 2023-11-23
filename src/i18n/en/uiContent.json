@@ -1156,6 +1156,11 @@
         "settingName": "Fumble Roll Table",
         "settingHint": "The name of the Fumble roll table - will be used in combat"
       },
+      "ShowHeropoints": {
+        "settingName": "Show Hero Points",
+        "settingHint": "Show an input field to track the optional rule of hero points."
+
+      },
       "SpecialCrit": {
         "settingName": "Special & Hyper Critical results",
         "settingHint": "*** Alpha version - not fully implemented *** Adds the possibility to roll a special critical (skill/100) and hyper critical (skill/500)"
