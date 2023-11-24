@@ -1868,6 +1868,20 @@ export class RqgActorSheet extends ActorSheet<
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
     await addRqidLinkToSheetHtml(html, this);
+
+    const editModeLink = html.find(".title-edit-mode")[0];
+    if (editModeLink) {
+      let editModeTooltip = "";
+      if (this.actor.system.editMode) {
+        editModeTooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
+      } else {
+        editModeTooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
+      }
+
+      editModeLink.dataset.tooltip = editModeTooltip;
+      editModeLink.dataset.tooltipDirection = "UP";
+    }
+
     return html;
   }
 
@@ -1887,7 +1901,46 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
 
+    const user = getGameUser();
+
+    if (user.isGM || user.isTrusted) {
+      if (this.actor.system.editMode) {
+        headerButtons.splice(0, 0, {
+          class: "title-edit-mode",
+          label: "",
+          icon: "fas fa-masks-theater",
+          onclick: (event) => this._toggleEditMode(event),
+        });
+      } else {
+        headerButtons.splice(0, 0, {
+          class: "title-edit-mode",
+          label: "",
+          icon: "fas fa-user-edit",
+          onclick: (event) => this._toggleEditMode(event),
+        });
+      }
+    }
+
     return headerButtons;
+  }
+
+  _toggleEditMode(event: any) {
+    const newMode = !this.actor.system.editMode;
+    this.actor.update({ system: { editMode: newMode } });
+
+    let link = event.target as HTMLElement | null;
+
+    if (!(link instanceof HTMLAnchorElement)) {
+      link = event.target.parentNode;
+    }
+
+    if (newMode && link) {
+      link.innerHTML = `<i class="fas fa-masks-theater"></i>`;
+      link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
+    } else if (link) {
+      link.innerHTML = `<i class="fas fa-user-edit"></i>`;
+      link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
+    }
   }
 
   _openActorWizard() {

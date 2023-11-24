@@ -12,6 +12,10 @@
     background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
   }
 
+  .editMode {
+    filter: sepia(0.8);
+  }
+
   .dead {
     filter: grayscale(0.8);
   }
