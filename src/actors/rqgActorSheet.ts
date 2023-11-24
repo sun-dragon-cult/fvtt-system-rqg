@@ -1867,16 +1867,18 @@ export class RqgActorSheet extends ActorSheet<
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
     await addRqidLinkToSheetHtml(html, this);
 
-    const link = html.find(".title-edit-mode")[0];
-    let editModeTooltip = "";
-    if (this.actor.system.editMode) {
-      editModeTooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
-    } else {
-      editModeTooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
-    }
+    const editModeLink = html.find(".title-edit-mode")[0];
+    if (editModeLink) {
+      let editModeTooltip = "";
+      if (this.actor.system.editMode) {
+        editModeTooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
+      } else {
+        editModeTooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
+      }
 
-    link.dataset.tooltip = editModeTooltip;
-    link.dataset.tooltipDirection = "UP";
+      editModeLink.dataset.tooltip = editModeTooltip;
+      editModeLink.dataset.tooltipDirection = "UP";
+    }
 
     return html;
   }
@@ -1897,20 +1899,24 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
 
-    if (this.actor.system.editMode) {
-      headerButtons.splice(0, 0, {
-        class: "title-edit-mode",
-        label: "",
-        icon: "fas fa-masks-theater",
-        onclick: (event) => this._toggleEditMode(event),
-      });
-    } else {
-      headerButtons.splice(0, 0, {
-        class: "title-edit-mode",
-        label: "",
-        icon: "fas fa-user-edit",
-        onclick: (event) => this._toggleEditMode(event),
-      });
+    const user = getGameUser();
+
+    if (user.isGM || user.isTrusted) {
+      if (this.actor.system.editMode) {
+        headerButtons.splice(0, 0, {
+          class: "title-edit-mode",
+          label: "",
+          icon: "fas fa-masks-theater",
+          onclick: (event) => this._toggleEditMode(event),
+        });
+      } else {
+        headerButtons.splice(0, 0, {
+          class: "title-edit-mode",
+          label: "",
+          icon: "fas fa-user-edit",
+          onclick: (event) => this._toggleEditMode(event),
+        });
+      }
     }
 
     return headerButtons;
