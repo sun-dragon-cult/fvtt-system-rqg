@@ -141,6 +141,7 @@ interface CharacterSheetData {
   bodyType: string;
   hitLocationDiceRangeError: string;
 
+  showHeropoints: boolean;
   showUiSection: UiSections;
   actorWizardFeatureFlag: boolean;
   itemLoopMessage: string | undefined;
@@ -294,6 +295,7 @@ export class RqgActorSheet extends ActorSheet<
       hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
 
       // UI toggles
+      showHeropoints: getGame().settings.get(systemId, "showHeropoints"),
       showUiSection: this.getUiSectionVisibility(),
       actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
       itemLoopMessage: itemTree.loopMessage,

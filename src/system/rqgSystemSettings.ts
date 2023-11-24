@@ -66,6 +66,15 @@ export const registerRqgSystemSettings = function () {
     default: "Fumble",
   });
 
+  getGame().settings.register(systemId, "showHeropoints", {
+    name: "RQG.Settings.ShowHeropoints.settingName",
+    hint: "RQG.Settings.ShowHeropoints.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+
   getGame().settings.register(systemId, "specialCrit", {
     name: "RQG.Settings.SpecialCrit.settingName",
     hint: "RQG.Settings.SpecialCrit.settingHint",

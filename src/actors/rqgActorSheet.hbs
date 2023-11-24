@@ -207,7 +207,7 @@
             </div>
           </div>
         </fieldset>
-        {{#if isPC}}
+        {{#if showHeropoints}}{{#if isPC}}
           <div class="hero-points-container">
             <div class="norse">{{localize "RQG.Actor.Attributes.HeroPoints"}}</div>
             {{#if isGM}}
@@ -217,7 +217,7 @@
               <div class="text-center">{{system.attributes.heroPoints}}</div>
             {{/if}}
           </div>
-        {{/if}}
+        {{/if}}{{/if}}
 
       </div>
     </div>
