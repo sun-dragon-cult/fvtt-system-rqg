@@ -4,6 +4,7 @@
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <div class="header-grid">
+
       <div class="profile">
         <img class="profile-img
         {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}"
@@ -73,15 +74,21 @@
                class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
             <label class="resource-label norse characteristic contextmenu" data-characteristic-roll
                    data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
-            {{#if @root.isGM}}
-              <input type="number" name="system.characteristics.{{key}}.value"
-                     min="0" max="99"
-                     value="{{characteristic.value}}"
-                     class="{{lookup ../characteristicRanks key}}">
-              <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}">
+            {{#edit-mode @root.system.editMode "gm trusted"}}
+              <input type="number" name="system.characteristics.{{key}}.value" class="value characteristic contextmenu"
+                min="0" max="99"
+                value="{{characteristic.value}}">
+              <input type="text" name="system.characteristics.{{key}}.formula"
+                class="characteristic contextmenu {{lookup ../../characteristicRanks key}}"
+                value="{{characteristic.formula}}">
             {{else}}
               <div class="value characteristic contextmenu" data-characteristic-roll>{{characteristic.value}}</div>
-            {{/if}}
+              {{#if @root.isGM}}
+              <input type="text" name="system.characteristics.{{key}}.formula" disabled
+                class="characteristic contextmenu {{lookup ../../../characteristicRanks key}}"
+                value="{{characteristic.formula}}">
+              {{/if}}
+            {{/edit-mode}}
           </div>
         {{/each}}
       </div>

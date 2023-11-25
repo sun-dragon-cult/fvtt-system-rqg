@@ -3,6 +3,7 @@ import {
   formatListByUserLanguage,
   getAvailableRunes,
   getGame,
+  getGameUser,
   localize,
   localizeItemType,
   toCamelCase,
@@ -203,6 +204,32 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("rqidLinkIcon", function (rqid: string) {
     return Rqid.getRqidIcon(rqid) || "";
+  });
+
+  Handlebars.registerHelper("edit-mode", function (editMode, forUserTypes, options) {
+    if (!editMode) {
+      return options.inverse();
+    }
+
+    if (forUserTypes.toLowerCase().includes("all")) {
+      return options.fn();
+    }
+
+    const user = getGameUser();
+
+    if (user.isGM && forUserTypes.toLowerCase().includes("gm")) {
+      return options.fn();
+    }
+
+    if (user.isTrusted && forUserTypes.toLowerCase().includes("trusted")) {
+      return options.fn();
+    }
+
+    if (forUserTypes.toLowerCase().includes("player")) {
+      return options.fn();
+    }
+
+    return options.inverse();
   });
 };
 
