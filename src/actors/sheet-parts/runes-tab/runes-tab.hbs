@@ -6,14 +6,15 @@
   {{> actorRuneCondition }}
 
   {{#unless (isEmptyObject embeddedItems.rune.invalid)}}
-    <div class="grid rune item-list">
+    <div class="grid rune {{#if system.editMode}}rune-edit-mode{{/if}} item-list">
       <h2 class="fullrow">🐛 Extra / Duplicate Runes</h2>
       {{#each embeddedItems.rune.invalid}}
         {{> actorRuneGrid
           rune=this
           wizard=../wizard
           forChoice=../forChoice
-          checkedProperty=../checkedProperty}}
+          checkedProperty=../checkedProperty
+          editMode=../system.editMode}}
       {{/each}}
     </div>
   {{/unless}}

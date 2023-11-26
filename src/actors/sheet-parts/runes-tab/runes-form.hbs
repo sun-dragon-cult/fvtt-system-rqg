@@ -1,5 +1,5 @@
 {{#unless (isEmptyObject embeddedItems.rune.form)}}
-  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
+  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} {{#if system.editMode}}opposed-rune-edit-mode{{/if}} item-list">
     <h2 class="fullrow">{{localize "RQG.Actor.Rune.Form"}}</h2>
 
     {{#with embeddedItems.rune.form.man}}
@@ -7,7 +7,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
     <i class="fas fa-arrows-alt-h"></i>
     {{#with embeddedItems.rune.form.beast}}
@@ -15,7 +16,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
 
     {{#each embeddedItems.rune.form}}
@@ -26,7 +28,8 @@
               rune=this
               wizard=../wizard
               forChoice=../forChoice
-              checkedProperty=../checkedProperty}}
+              checkedProperty=../checkedProperty
+              editMode=../system.editMode}}
 
           {{/with}}
         {{/unless}}

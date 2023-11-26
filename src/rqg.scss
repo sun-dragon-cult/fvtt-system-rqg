@@ -670,12 +670,20 @@ body {
       grid-template-columns: [col-start] max-content max-content auto max-content [col-end];
     }
 
+    &.rune-edit-mode {
+      grid-template-columns: [col-start] max-content max-content 50px max-content [col-end];
+    }
+
     &.opposed-rune {
       grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
     }
 
     &.opposed-rune-select {
       grid-template-columns: [col-start] max-content max-content auto max-content min-content max-content max-content auto max-content [col-end];
+    }
+
+    &.opposed-rune-edit-mode {
+      grid-template-columns: [col-start] max-content max-content 50px max-content min-content max-content max-content 50px max-content [col-end];
     }
   }
 

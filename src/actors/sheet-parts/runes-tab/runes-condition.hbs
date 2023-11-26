@@ -1,12 +1,13 @@
 {{#unless (isEmptyObject embeddedItems.rune.condition)}}
-  <div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} item-list">
+  <div class="grid {{#if wizard}}rune-select{{else}}rune{{/if}} {{#if system.editMode}}rune-edit-mode{{/if}} item-list">
     <h2 class="fullrow">{{localize "RQG.Actor.Rune.Condition"}}</h2>
     {{#each embeddedItems.rune.condition}}
       {{> actorRuneGrid
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/each}}
   </div>
 {{/unless}}
