@@ -184,38 +184,38 @@
             {{/if}}
           </div>
 
-          {{#if isGM}}
-          <div>
-            <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
-            {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
-              <input class="text-center"
-                name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
-                value="{{value}}"
+          {{#edit-mode system.editMode "gm"}}
+            {{#with (lookup ../system.attributes.move ../system.attributes.move.currentLocomotion) }}
+            <div>
+              <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
+                <input class="text-center"
+                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
+                  value="{{value}}"
+                  type="number"
+                  min="0"
+                  max="99"
+                  size="2">
+            </div>
+
+            <div>
+              <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
+
+              <input
+                class="text-center"
+                name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
+                                '.carryingFactor'}}"
+                value="{{carryingFactor}}"
                 type="number"
+                step="0.1"
                 min="0"
                 max="99"
                 size="2">
             </div>
-
-              <div>
-                <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
-
-                <input
-                  class="text-center"
-                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
-                                 '.carryingFactor'}}"
-                  value="{{carryingFactor}}"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="99"
-                  size="2">
-              </div>
             {{/with}}
 
           {{else}}
             <div class="norse player-mov">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
-          {{/if}}
+          {{/edit-mode}}
 
           <div>
             <div{{#if
