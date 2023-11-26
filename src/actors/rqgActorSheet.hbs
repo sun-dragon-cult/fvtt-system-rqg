@@ -131,10 +131,18 @@
           {{/if}}
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}
             <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
-          {{#if isGM}}
-            <label><input type="checkbox" name="system.attributes.isCreature" {{checked
-              system.attributes.isCreature}}>{{localize "RQG.Actor.Attributes.CreatureQ"}}</label>
-          {{/if}}
+          {{#edit-mode system.editMode "gm"}}
+            <label data-tooltip="{{localize "RQG.Actor.Attributes.CreatureExplanation"}}">
+              <input type="checkbox" name="system.attributes.isCreature" {{checked ../system.attributes.isCreature}}>
+              {{localize "RQG.Actor.Attributes.CreatureQ"}}
+            </label>
+          {{else}}
+            {{#if ../system.attributes.isCreature}}
+              <span data-tooltip="{{localize "RQG.Actor.Attributes.CreatureExplanation"}}">
+                {{localize "RQG.Actor.Attributes.Creature"}}                
+              </span>
+            {{/if}}
+          {{/edit-mode}}
         </div>
 
         <fieldset class="mov-enc"

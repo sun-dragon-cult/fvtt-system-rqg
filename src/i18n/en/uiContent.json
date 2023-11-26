@@ -88,6 +88,8 @@
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
         "CreatureQ": "Creature?",
+        "Creature": "This is a Creature",
+        "CreatureExplanation": "Creatures have zero for all skill category modifiers",
         "MovementAbbr": "MOV",
         "EncumbranceAbbr": "ENC",
         "EncumbranceFactor": "ENC Factor",
