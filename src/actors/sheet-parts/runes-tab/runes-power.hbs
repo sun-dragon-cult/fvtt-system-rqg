@@ -1,5 +1,5 @@
 {{#unless (isEmptyObject embeddedItems.rune.power)}}
-  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} {{#if system.editMode}}opposed-rune-edit-mode{{/if}} item-list">
+  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} {{#edit-mode system.editMode "all"}}opposed-rune-edit-mode{{/edit-mode}} item-list">
     <h2 class="fullrow">{{localize 'RQG.Actor.Rune.Power'}}</h2>
 
     {{#with embeddedItems.rune.power.fertility}}
