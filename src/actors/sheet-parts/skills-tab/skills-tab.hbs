@@ -7,7 +7,17 @@
         ({{#with @root.system.skillCategoryModifiers}}{{lookup this @key}}{{/with}})
       {{/unless}}
     </h2>
-    <div class="grid {{#if ../wizard}}skill-select{{else}}skill{{/if}} item-list">
+    <div class="grid 
+                {{#edit-mode ../system.editMode "all"}}
+                  skill-edit-mode
+                {{else}}
+                  {{#if ../../wizard}}
+                    skill-select
+                  {{else}}
+                    skill
+                  {{/if}}                
+                {{/edit-mode}} 
+                item-list">
       {{#each this}}
         {{#unless system.runeRqidLinks}} {{!-- filter out sorcery skills --}}
           {{> actorSkillsGrid
@@ -15,7 +25,8 @@
             wizard=../../wizard
             forChoice=../../forChoice
             checkedProperty=../../checkedProperty
-            asBonus=../../asBonus}}
+            asBonus=../../asBonus
+            editMode=../../system.editMode}}
         {{/unless}}
       {{/each}}
     </div>

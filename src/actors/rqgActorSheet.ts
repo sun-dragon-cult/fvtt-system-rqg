@@ -1408,9 +1408,20 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-grid-edit]").forEach((el) => {
       el.addEventListener("change", async (event) => {
         const updateId = getRequiredDomDataset($(el), "item-id");
-        const newChance = (event.target as HTMLInputElement).value;
+        const newChance = parseInt((event.target as HTMLInputElement).value);
         await this.actor.updateEmbeddedDocuments("Item", [
           { _id: updateId, system: { chance: newChance } },
+        ]);
+      });
+    });
+
+    // handle in-grid editing of skills
+    htmlElement?.querySelectorAll<HTMLElement>("[data-skill-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset($(el), "item-id");
+        const newGainedChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { gainedChance: newGainedChance } },
         ]);
       });
     });
