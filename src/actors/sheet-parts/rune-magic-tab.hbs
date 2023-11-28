@@ -126,6 +126,10 @@
             {{/if}}
           {{/each}}
         </div>
+      {{else}}
+        <div class="warning p-5 flex-row">
+          <div class="text-center">{{localize "RQG.Actor.RuneMagic.RunesNotVisibleForLaymembersWarning"}}</div>
+        </div>
       {{/if}}
     </section>
   {{/each}}
