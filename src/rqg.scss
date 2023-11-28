@@ -651,6 +651,12 @@ body {
         grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
       }
 
+      .grid.passion-edit-mode {
+        display: grid;
+        grid-template-columns: [col-start] 45px [description-start] auto 50px min-content [description-end col-end];
+        grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+      }
+
       .grid.passion-select {
         display: grid;
         grid-template-columns: [col-start] 75px [description-start] auto min-content [description-end col-end];

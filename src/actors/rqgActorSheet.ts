@@ -1425,6 +1425,17 @@ export class RqgActorSheet extends ActorSheet<
         ]);
       });
     });
+
+    // handle in-grid editing of passions
+    htmlElement?.querySelectorAll<HTMLElement>("[data-passion-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset($(el), "item-id");
+        const newChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { chance: newChance } },
+        ]);
+      });
+    });
   }
 
   private async updateActiveCombatWithSR(activeInSR: Set<number>) {
