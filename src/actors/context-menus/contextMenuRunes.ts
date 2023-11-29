@@ -13,6 +13,10 @@ export const contextMenuRunes = {
     '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/fertility.svg"></div>',
   SetAllCharacteristicsToAverage:
     '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/stasis.svg"></div>',
+  ShowCharacteristicRatings:
+    '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/fate.svg"></div>',
+  HideCharacteristicRatings:
+    '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/fate.svg" style="filter: invert(42%);"></div>',
   Edit: '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/movement_change.svg"></div>',
   Delete:
     '<div class="context-icon"><img class="context-icon-img" src="systems/rqg/assets/images/runes/death.svg"></div>',

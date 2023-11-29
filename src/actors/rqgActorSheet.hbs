@@ -71,9 +71,13 @@
       <div class="characteristics">
         {{#each system.characteristics as | characteristic key |}}
           <div data-characteristic="{{key}}"
-               class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
-            <label class="resource-label norse characteristic contextmenu" data-characteristic-roll
-                   data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
+               class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}  
+                          {{#if @root.system.showCharacteristicRatings}}
+                            {{lookup @root.characteristicRanks key}}
+                          {{/if}}">
+            <label class="resource-label norse characteristic contextmenu"
+                data-characteristic-roll
+                data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
 
             <!--Characteristic Value-->
             {{#edit-mode @root.system.editMode "all"}}
@@ -86,11 +90,7 @@
 
             <!--Characteristic Dice Expression Formula-->
             <input type="text" name="system.characteristics.{{key}}.formula"
-              class="characteristic contextmenu 
-                {{#if @root.isGM}}
-                  {{lookup ../characteristicRanks key}}
-                {{/if}}
-                "
+              class="characteristic contextmenu"
               value="{{characteristic.formula}}"
                 {{#edit-mode @root.system.editMode "gm trusted"}}
                 {{else}}

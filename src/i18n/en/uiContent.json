@@ -399,6 +399,8 @@
       "AllCharacteristicsInitialized": "All Characteristics Initialized for {actorName}",
       "SetAllCharacteristicsToAverage": "Set All Characteristics to Average",
       "AllCharacteristicsSetToAverage": "All Characteristics set to Average for {actorName}",
+      "ShowCharacteristicRatings": "Show Characteristic Ratings",
+      "HideCharacteristicRatings": "Hide Characteristic Ratings",
       "InitializeResultChat": "Initialize {char}",
       "OverwriteCharacteristicDialogTitle": "Overwrite {characteristicName} on {actorName}?",
       "OverwriteCharacteristicDialog": "Do you want to overwrite the current value of {characteristicName}? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories that depend upon {characteristicName}.",

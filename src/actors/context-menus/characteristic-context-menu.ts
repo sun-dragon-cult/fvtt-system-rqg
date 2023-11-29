@@ -155,6 +155,22 @@ export const characteristicMenuOptions = (
       }
     },
   },
+  {
+    name: localize("RQG.ContextMenu.ShowCharacteristicRatings"),
+    icon: contextMenuRunes.ShowCharacteristicRatings,
+    condition: (): boolean => !actor.system.showCharacteristicRatings,
+    callback: async () => {
+      await actor.update({ system: { showCharacteristicRatings: true } });
+    },
+  },
+  {
+    name: localize("RQG.ContextMenu.HideCharacteristicRatings"),
+    icon: contextMenuRunes.HideCharacteristicRatings,
+    condition: (): boolean => actor.system.showCharacteristicRatings,
+    callback: async () => {
+      await actor.update({ system: { showCharacteristicRatings: false } });
+    },
+  },
 ];
 
 async function getCharacteristicUpdate(
