@@ -1096,6 +1096,17 @@ body {
 
     i.fa-info-circle {
       padding: 0 0 0 7px;
+      margin: 0.5rem;
+    }
+
+    .rqid-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    select {
+      margin: 0.5rem;
     }
   }
 

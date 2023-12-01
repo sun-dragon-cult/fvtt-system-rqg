@@ -680,6 +680,7 @@
       },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",
+        "AddCultRunePlaceholder": "Add Cult Rune",
         "Name": "Name",
         "Deity": "Deity",
         "CultName": "Cult Name",
@@ -767,6 +768,7 @@
         "abdomen": "Abdomen"
       },
       "Homeland": {
+        "AddHomelandRunePlaceholder": "Add Homeland Rune",
         "Homeland": "Homeland",
         "Region": "Region or City",
         "CultureJournalEntries": "Culture Journal Entries",
@@ -867,6 +869,8 @@
         }
       },
       "Rune": {
+        "AddMinorRunePlaceholder": "Add Minor Rune",
+        "SetOpposingRunePlaceholder": "Set Opposing Rune",
         "Name": "Name",
         "Rune": "Rune",
         "Type": "Type",
@@ -887,6 +891,7 @@
         }
       },
       "RuneMagic": {
+        "AddRuneMagicRunePlaceholder": "Add Rune Magic Rune",
         "Name": "Name",
         "Points": "Points",
         "Range": "Range",
@@ -926,6 +931,7 @@
         "WizardInstructions": "Wizard Instructions"
       },
       "Skill": {
+        "AddSorceryRunePlaceholder": "Add Sorcery Rune",
         "Name": "Name",
         "SkillName": "Skill Name",
         "Specialization": "Specialization",
