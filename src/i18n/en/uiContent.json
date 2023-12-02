@@ -399,8 +399,6 @@
       "AllCharacteristicsInitialized": "All Characteristics Initialized for {actorName}",
       "SetAllCharacteristicsToAverage": "Set All Characteristics to Average",
       "AllCharacteristicsSetToAverage": "All Characteristics set to Average for {actorName}",
-      "ShowCharacteristicRatings": "Show Characteristic Ratings",
-      "HideCharacteristicRatings": "Hide Characteristic Ratings",
       "InitializeResultChat": "Initialize {char}",
       "OverwriteCharacteristicDialogTitle": "Overwrite {characteristicName} on {actorName}?",
       "OverwriteCharacteristicDialog": "Do you want to overwrite the current value of {characteristicName}? This will cause a recalculation of any derived attributes like Hit Points, Magic Points, Strike Ranks, and skill Categories that depend upon {characteristicName}.",
@@ -1176,6 +1174,10 @@
       "WorldMigrationVersion": {
         "settingName": "World Migration Version",
         "settingHint": "The RQG system version this world has been migrated to."
+      },
+      "SchowCharacteristicRatings": {
+        "settingName": "Show Characteristic Ratings",
+        "settingHint": "Show a colored rating bar below characteristics which rates the value as compared to the dice expression formula for the characteristic.  Red is lower than average and green is higher than average.  This can help GMs see an NPC's strengths and weaknesses at a glance."
       }
     },
     "TokenEffects": {

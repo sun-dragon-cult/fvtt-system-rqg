@@ -12,7 +12,6 @@ export interface CharacterDataSourceData {
   background: Background;
   allies: string; // Editor text with links to allies and general notes
   editMode: boolean;
-  showCharacteristicRatings: boolean;
   extendedName: string;
   // --- Derived / Convenience Data Below ---
   attributes: Attributes; // Most are derived // TODO Split / move data?
@@ -44,5 +43,4 @@ export const defaultCharacterData: CharacterDataSourceData = {
   extendedName: "",
   attributes: defaultAttributes, // Needs to be persisted?
   editMode: true,
-  showCharacteristicRatings: true,
 };

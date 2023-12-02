@@ -223,6 +223,8 @@ export class RqgActorSheet extends ActorSheet<
       isEditable: this.isEditable,
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
+      showCharacteristicRatings:
+        (getGame().settings.get(systemId, "showCharacteristicRatings") as boolean) || false,
       system: system,
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],

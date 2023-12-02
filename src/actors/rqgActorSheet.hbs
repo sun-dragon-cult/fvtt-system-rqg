@@ -72,7 +72,7 @@
         {{#each system.characteristics as | characteristic key |}}
           <div data-characteristic="{{key}}"
                class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}  
-                          {{#if @root.system.showCharacteristicRatings}}
+                          {{#if @root.showCharacteristicRatings}}
                             {{lookup @root.characteristicRanks key}}
                           {{/if}}">
             <label class="resource-label norse characteristic contextmenu"
