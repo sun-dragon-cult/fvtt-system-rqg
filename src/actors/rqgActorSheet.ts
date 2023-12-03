@@ -1406,7 +1406,6 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-
     // handle in-grid editing of runes
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-grid-edit]").forEach((el) => {
       el.addEventListener("change", async (event) => {
@@ -1437,6 +1436,8 @@ export class RqgActorSheet extends ActorSheet<
         await this.actor.updateEmbeddedDocuments("Item", [
           { _id: updateId, system: { chance: newChance } },
         ]);
+      });
+    });
 
     // Add Gear buttons
     htmlElement?.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
