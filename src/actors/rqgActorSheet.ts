@@ -224,7 +224,7 @@ export class RqgActorSheet extends ActorSheet<
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
       showCharacteristicRatings:
-        (getGame().settings.get(systemId, "showCharacteristicRatings") as boolean) || false,
+        getGame().settings.get(systemId, "showCharacteristicRatings") || false,
       system: system,
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
