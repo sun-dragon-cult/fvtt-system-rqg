@@ -1,5 +1,5 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
 import { RqgItem } from "./rqgItem";
 import {
@@ -43,6 +43,52 @@ export class RqgItemSheet<
       elem.addEventListener("dragenter", this._onDragEnter);
       elem.addEventListener("dragleave", this._onDragLeave);
     });
+
+    // Handle adding rqidLink via dropdown to an array of links
+    html[0]
+      .querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]")
+      .forEach((elem: HTMLElement) => {
+        const targetProperty = getDomDataset(elem, "dropzone");
+
+        if (targetProperty) {
+          elem.addEventListener("change", async (event) => {
+            const selectElem = event.currentTarget as HTMLSelectElement;
+            const allowDuplicates = getDomDataset(elem, "allow-duplicates");
+            const newRqid = selectElem?.value;
+            if (
+              allowDuplicates ||
+              !this.document.system[targetProperty].some((l: RqidLink) => l.rqid === newRqid)
+            ) {
+              const newName = selectElem?.selectedOptions[0]?.innerText;
+              const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+              const updatedLinks = [
+                ...this.document.system[targetProperty],
+                newHitLocationRqidLink,
+              ];
+              await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
+            }
+          });
+        }
+      });
+
+    // Handle setting a single rqidLink via dropdown
+    html[0]
+      .querySelectorAll<HTMLElement>("[data-replace-rqid-link]")
+      .forEach((elem: HTMLElement) => {
+        const targetProperty = getDomDataset(elem, "dropzone");
+
+        if (targetProperty) {
+          elem.addEventListener("change", async (event) => {
+            const selectElem = event.currentTarget as HTMLSelectElement;
+            const newRqid = selectElem?.value;
+            if (this.document.system[targetProperty].rqid !== newRqid) {
+              const newName = selectElem?.selectedOptions[0]?.innerText;
+              const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+              await this.document.update({ [`system.${targetProperty}`]: newHitLocationRqidLink });
+            }
+          });
+        }
+      });
 
     // Edit Item Active Effect
     $(this.form!)

@@ -1,11 +1,12 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser } from "../../system/util";
+import { AvailableItemCache, getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface HomelandSheetData {
+  allRuneOptions: AvailableItemCache[];
   enrichedWizardInstructions: string;
 }
 
@@ -46,6 +47,7 @@ export class HomelandSheet extends RqgItemSheet<
         // @ts-expect-error async
         async: true,
       }),
+      allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
     };
   }
 

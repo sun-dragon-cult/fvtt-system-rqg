@@ -162,6 +162,15 @@ export class Weapon extends AbstractEmbeddedItem {
     userId: string,
   ): Promise<any> {
     assertItemType(child.type, ItemTypeEnum.Weapon);
+
+    const actorHasRightArm = !!actor.getBestEmbeddedDocumentByRqid("i.hit-location.right-arm");
+
+    if (!child.system.isNatural && !actorHasRightArm) {
+      // To be able to use a physical weapon you need an arm.
+      // This prevents donkeys to get sword skills just because they carry swords.
+      return {};
+    }
+
     const succeeded = await Promise.all([
       Weapon.embedLinkedSkill(child.system.usage.oneHand.skillRqidLink.rqid, actor),
       Weapon.embedLinkedSkill(child.system.usage.offHand.skillRqidLink.rqid, actor),

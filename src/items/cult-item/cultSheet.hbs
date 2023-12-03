@@ -74,6 +74,7 @@
             allowDuplicates="true"
             showDeleteFromPropertyName="runeRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            dropdownOptions=allRuneOptions
           }}
 
           <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
@@ -166,9 +167,4 @@
       </div>
     </section>
   </main>
-  <datalist id="allRunes">
-    {{#each allRunes}}
-      <option value="{{name}}">{{name}}</option>
-    {{/each}}
-  </datalist>
 </form>

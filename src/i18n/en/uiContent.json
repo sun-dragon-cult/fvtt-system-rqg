@@ -238,16 +238,20 @@
         "SwitchToPlayMode": "Switch to Play Mode"
       },
       "Gear": {
+        "AddNewGearUniqueTip": "Add New Gear",
+        "AddNewGearCurrencyTip": "Add New Currency",
+        "AddNewGearConsumablesTip": "Add New Consumable",
         "ViewByItemType": "View by Item Type",
         "ViewByLocation": "View by Location",
         "Gear": "Gear",
+        "NewGear": "New Gear",
         "Armor": "Armor",
         "Consumables": "Consumables",
         "Currency": "Currency",
         "WeaponsAndShields": "Weapons & Shields",
         "CurrencyConversionTipOver1": "One {name} is worth {value} Lunars.",
         "CurrencyConversionTipLunar": "Lunars are the standard basis of currency.",
-        "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}s.",
+        "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}.",
         "Name": "Name",
         "EncumbranceAbbr": "ENC",
         "MaxEnc": "Max ENC",
@@ -320,6 +324,7 @@
       },
       "RuneMagic": {
         "EmbeddingRuneMagicWithoutCultWarning": "{characterName} has to join a cult before learning the {spellName} rune magic spell",
+        "RunesNotVisibleForLaymembersWarning": "You need to become an initiate in the cult to use rune magic.",
         "EditRuneMagicSpellTitle": "Edit Rune Magic Spell",
         "DeleteRuneMagicSpellTitle": "Delete Rune Magic Spell",
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
@@ -681,6 +686,7 @@
       },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",
+        "AddCultRunePlaceholder": "Add Cult Rune",
         "Name": "Name",
         "Deity": "Deity",
         "CultName": "Cult Name",
@@ -768,6 +774,7 @@
         "abdomen": "Abdomen"
       },
       "Homeland": {
+        "AddHomelandRunePlaceholder": "Add Homeland Rune",
         "Homeland": "Homeland",
         "Region": "Region or City",
         "CultureJournalEntries": "Culture Journal Entries",
@@ -868,6 +875,8 @@
         }
       },
       "Rune": {
+        "AddMinorRunePlaceholder": "Add Minor Rune",
+        "SetOpposingRunePlaceholder": "Set Opposing Rune",
         "Name": "Name",
         "Rune": "Rune",
         "Type": "Type",
@@ -888,6 +897,7 @@
         }
       },
       "RuneMagic": {
+        "AddRuneMagicRunePlaceholder": "Add Rune Magic Rune",
         "Name": "Name",
         "Points": "Points",
         "Range": "Range",
@@ -927,6 +937,7 @@
         "WizardInstructions": "Wizard Instructions"
       },
       "Skill": {
+        "AddSorceryRunePlaceholder": "Add Sorcery Rune",
         "Name": "Name",
         "SkillName": "Skill Name",
         "Specialization": "Specialization",

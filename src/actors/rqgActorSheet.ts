@@ -1397,14 +1397,15 @@ export class RqgActorSheet extends ActorSheet<
         const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
         const passion = {
           name: newPassionName,
-          type: "passion",
-          img: defaultItemIconSettings["passion"],
+          type: ItemTypeEnum.Passion,
+          img: defaultItemIconSettings[ItemTypeEnum.Passion],
           system: { passion: newPassionName },
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
         (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
+
 
     // handle in-grid editing of runes
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-grid-edit]").forEach((el) => {
@@ -1436,6 +1437,23 @@ export class RqgActorSheet extends ActorSheet<
         await this.actor.updateEmbeddedDocuments("Item", [
           { _id: updateId, system: { chance: newChance } },
         ]);
+
+    // Add Gear buttons
+    htmlElement?.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
+      const physicalItemType = getRequiredDomDataset(el, "gear-add");
+      el.addEventListener("click", async () => {
+        const defaultItemIconSettings: any = getGame().settings.get(
+          systemId,
+          "defaultItemIconSettings",
+        );
+        const newGear = {
+          name: localize("RQG.Actor.Gear.NewGear"),
+          type: ItemTypeEnum.Gear,
+          img: defaultItemIconSettings[ItemTypeEnum.Gear],
+          system: { physicalItemType: physicalItemType },
+        };
+        const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
+        (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
   }

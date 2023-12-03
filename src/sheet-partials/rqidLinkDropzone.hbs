@@ -4,6 +4,7 @@ Wrapper around a rqidLink to add dropzone event targets
 dropzoneData: string - ex "descriptionRqidLink"
 dropDocumentNames: string - comma separated list of documents, ex. "JournalEntry, JournalEntryPage"
 dropDocumentTypes: string - comma separated list of document types, ex: "rune,skill"
+dropdownOptions: {rqid: string, name: string}[]
 
 Nested: {{> rqidLink
     rqidLink
@@ -12,7 +13,6 @@ Nested: {{> rqidLink
     showInfoCircleReplace
     showBonus
     editBonusPropertyName
-
 --}}
 
 <div class="drop-target item-sheet-rqid-link"
@@ -27,4 +27,9 @@ Nested: {{> rqidLink
     showBonus=showBonus
     editBonusPropertyName=editBonusPropertyName
   }}
+  {{#if dropdownOptions }}
+    <select data-replace-rqid-link>
+      {{selectOptions dropdownOptions selected="empty"}}
+    </select><br>
+  {{/if}}
 </div>
