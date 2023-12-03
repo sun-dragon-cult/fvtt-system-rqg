@@ -1,7 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
-  getDomDatasetAmongSiblings,
+  getDomDataset,
   getGame,
   getRequiredDomDataset,
   localize,
@@ -17,11 +17,11 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
     condition: (el: JQuery) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
+      const rqid = getDomDataset(el, "rqid-link");
       return !!rqid;
     },
     callback: async (el: JQuery) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
+      const rqid = getDomDataset(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
       }
@@ -52,7 +52,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!getGame().user?.isGM || actor.system.editMode,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

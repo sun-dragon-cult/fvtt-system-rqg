@@ -83,7 +83,7 @@ export const runeMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Rune),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!getGame().user?.isGM || actor.system.editMode,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);

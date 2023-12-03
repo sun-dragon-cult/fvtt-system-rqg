@@ -1,5 +1,5 @@
 {{#unless (isEmptyObject embeddedItems.rune.power)}}
-  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} item-list">
+  <div class="grid {{#if wizard}}opposed-rune-select{{else}}opposed-rune{{/if}} {{#edit-mode system.editMode "all"}}opposed-rune-edit-mode{{/edit-mode}} item-list">
     <h2 class="fullrow">{{localize 'RQG.Actor.Rune.Power'}}</h2>
 
     {{#with embeddedItems.rune.power.fertility}}
@@ -7,7 +7,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
     <i class="fas fa-arrows-alt-h"></i>
     {{#with embeddedItems.rune.power.death}}
@@ -15,7 +16,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
 
     {{#with embeddedItems.rune.power.harmony}}
@@ -23,7 +25,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
     <i class="fas fa-arrows-alt-h"></i>
     {{#with embeddedItems.rune.power.disorder}}
@@ -31,7 +34,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
 
     {{#with embeddedItems.rune.power.truth}}
@@ -39,7 +43,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
     <i class="fas fa-arrows-alt-h"></i>
     {{#with embeddedItems.rune.power.illusion}}
@@ -47,7 +52,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
 
     {{#with embeddedItems.rune.power.stasis}}
@@ -55,7 +61,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
     <i class="fas fa-arrows-alt-h"></i>
     {{#with embeddedItems.rune.power.movement}}
@@ -63,7 +70,8 @@
         rune=this
         wizard=../wizard
         forChoice=../forChoice
-        checkedProperty=../checkedProperty}}
+        checkedProperty=../checkedProperty
+        editMode=../system.editMode}}
     {{/with}}
   </div>
 {{/unless}}

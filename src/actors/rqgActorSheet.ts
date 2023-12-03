@@ -223,6 +223,8 @@ export class RqgActorSheet extends ActorSheet<
       isEditable: this.isEditable,
       isGM: getGameUser().isGM,
       isPC: this.actor.hasPlayerOwner,
+      showCharacteristicRatings:
+        getGame().settings.get(systemId, "showCharacteristicRatings") || false,
       system: system,
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
@@ -1401,6 +1403,39 @@ export class RqgActorSheet extends ActorSheet<
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
         (createdItems[0] as RqgItem)?.sheet?.render(true);
+      });
+    });
+
+    // handle in-grid editing of runes
+    htmlElement?.querySelectorAll<HTMLElement>("[data-rune-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset($(el), "item-id");
+        const newChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { chance: newChance } },
+        ]);
+      });
+    });
+
+    // handle in-grid editing of skills
+    htmlElement?.querySelectorAll<HTMLElement>("[data-skill-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset($(el), "item-id");
+        const newGainedChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { gainedChance: newGainedChance } },
+        ]);
+      });
+    });
+
+    // handle in-grid editing of passions
+    htmlElement?.querySelectorAll<HTMLElement>("[data-passion-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset($(el), "item-id");
+        const newChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { chance: newChance } },
+        ]);
       });
     });
 

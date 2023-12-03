@@ -101,4 +101,13 @@ export const registerRqgSystemSettings = function () {
     type: Boolean,
     default: false,
   });
+
+  getGame().settings.register(systemId, "showCharacteristicRatings", {
+    name: "RQG.Settings.ShowCharacteristicRatings.settingName",
+    hint: "RQG.Settings.ShowCharacteristicRatings.settingHint",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false,
+  });
 };

@@ -23,6 +23,15 @@
       {{/unless}}>
       {{rune.system.rune}}
 </div>
+{{#edit-mode editMode "all"}}
+  <div class="rune contextmenu item">
+    <input type="number"
+          data-rune-grid-edit
+          width="50px"
+          data-item-id="{{../rune.id}}"
+          value="{{../rune.system.chance}}">%
+  </div>
+{{/edit-mode}}
 {{#if sorcery}}
   <div></div>
 {{else}}

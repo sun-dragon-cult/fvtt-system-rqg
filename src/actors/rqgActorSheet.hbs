@@ -4,6 +4,7 @@
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <div class="header-grid">
+
       <div class="profile">
         <img class="profile-img
         {{#if (eq img "icons/svg/mystery-man.svg")}}unset{{/if}}"
@@ -70,18 +71,33 @@
       <div class="characteristics">
         {{#each system.characteristics as | characteristic key |}}
           <div data-characteristic="{{key}}"
-               class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}">
-            <label class="resource-label norse characteristic contextmenu" data-characteristic-roll
-                   data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
-            {{#if @root.isGM}}
-              <input type="number" name="system.characteristics.{{key}}.value"
-                     min="0" max="99"
-                     value="{{characteristic.value}}"
-                     class="{{lookup ../characteristicRanks key}}">
-              <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}">
+               class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}  
+                          {{#if @root.showCharacteristicRatings}}
+                            {{lookup @root.characteristicRanks key}}
+                          {{/if}}">
+            <label class="resource-label norse characteristic contextmenu"
+                data-characteristic-roll
+                data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
+
+            <!--Characteristic Value-->
+            {{#edit-mode @root.system.editMode "all"}}
+              <input type="number" name="system.characteristics.{{key}}.value" class="value characteristic contextmenu"
+                min="0" max="99"
+                value="{{characteristic.value}}">
             {{else}}
               <div class="value characteristic contextmenu" data-characteristic-roll>{{characteristic.value}}</div>
-            {{/if}}
+            {{/edit-mode}}
+
+            <!--Characteristic Dice Expression Formula-->
+            <input type="text" name="system.characteristics.{{key}}.formula"
+              class="characteristic contextmenu"
+              value="{{characteristic.formula}}"
+                {{#edit-mode @root.system.editMode "gm trusted"}}
+                {{else}}
+                  disabled
+                {{/edit-mode}}
+              >
+
           </div>
         {{/each}}
       </div>
@@ -115,10 +131,18 @@
           {{/if}}
           <i class="norse flex-row flex-align-center">{{#each powCrystals}}
             <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
-          {{#if isGM}}
-            <label><input type="checkbox" name="system.attributes.isCreature" {{checked
-              system.attributes.isCreature}}>{{localize "RQG.Actor.Attributes.CreatureQ"}}</label>
-          {{/if}}
+          {{#edit-mode system.editMode "gm"}}
+            <label data-tooltip="{{localize "RQG.Actor.Attributes.CreatureExplanation"}}">
+              <input type="checkbox" name="system.attributes.isCreature" {{checked ../system.attributes.isCreature}}>
+              {{localize "RQG.Actor.Attributes.CreatureQ"}}
+            </label>
+          {{else}}
+            {{#if ../system.attributes.isCreature}}
+              <span data-tooltip="{{localize "RQG.Actor.Attributes.CreatureExplanation"}}">
+                {{localize "RQG.Actor.Attributes.Creature"}}                
+              </span>
+            {{/if}}
+          {{/edit-mode}}
         </div>
 
         <fieldset class="mov-enc"
@@ -160,38 +184,38 @@
             {{/if}}
           </div>
 
-          {{#if isGM}}
-          <div>
-            <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
-            {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion) }}
-              <input class="text-center"
-                name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
-                value="{{value}}"
+          {{#edit-mode system.editMode "gm"}}
+            {{#with (lookup ../system.attributes.move ../system.attributes.move.currentLocomotion) }}
+            <div>
+              <div class="norse">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
+                <input class="text-center"
+                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
+                  value="{{value}}"
+                  type="number"
+                  min="0"
+                  max="99"
+                  size="2">
+            </div>
+
+            <div>
+              <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
+
+              <input
+                class="text-center"
+                name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
+                                '.carryingFactor'}}"
+                value="{{carryingFactor}}"
                 type="number"
+                step="0.1"
                 min="0"
                 max="99"
                 size="2">
             </div>
-
-              <div>
-                <div class="norse">{{localize "RQG.Actor.Attributes.EncumbranceFactor"}}</div>
-
-                <input
-                  class="text-center"
-                  name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion
-                                 '.carryingFactor'}}"
-                  value="{{carryingFactor}}"
-                  type="number"
-                  step="0.1"
-                  min="0"
-                  max="99"
-                  size="2">
-              </div>
             {{/with}}
 
           {{else}}
             <div class="norse player-mov">{{localize "RQG.Actor.Attributes.MovementAbbr"}}<br></div>
-          {{/if}}
+          {{/edit-mode}}
 
           <div>
             <div{{#if

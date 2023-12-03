@@ -3,7 +3,6 @@ import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
   getDomDataset,
-  getGame,
   localize,
   localizeCharacteristic,
   requireValue,
@@ -99,15 +98,15 @@ export const characteristicMenuOptions = (
     name: localize("RQG.ContextMenu.InitializeCharacteristic"),
     icon: contextMenuRunes.InitializeCharacteristics,
     condition: (el: JQuery): boolean => {
-      if (!getGame().user?.isGM) {
-        return false;
-      } else {
+      if (actor.system.editMode) {
         const { value: char } = getCharacteristic(actor, el);
         if (char.formula != null && Roll.validate(char.formula)) {
           return true;
         } else {
           return false;
         }
+      } else {
+        return false;
       }
     },
     callback: async (el: JQuery) => {
@@ -131,7 +130,7 @@ export const characteristicMenuOptions = (
   {
     name: localize("RQG.ContextMenu.InitializeAllCharacteristics"),
     icon: contextMenuRunes.InitializeAllCharacteristics,
-    condition: (): boolean => !!getGame().user?.isGM,
+    condition: (): boolean => actor.system.editMode,
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
@@ -145,7 +144,7 @@ export const characteristicMenuOptions = (
   {
     name: localize("RQG.ContextMenu.SetAllCharacteristicsToAverage"),
     icon: contextMenuRunes.SetAllCharacteristicsToAverage,
-    condition: (): boolean => !!getGame().user?.isGM,
+    condition: (): boolean => actor.system.editMode,
     callback: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {

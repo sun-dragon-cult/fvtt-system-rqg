@@ -27,6 +27,16 @@
     <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
   {{/each}}
 </div>
+{{#edit-mode editMode "all"}}
+  <div>
+    <input type="number"
+          data-skill-grid-edit
+          width="50px"
+          data-item-id="{{../skill.id}}"
+          value="{{../skill.system.gainedChance}}">%
+  </div>  
+{{/edit-mode}}
+
 <div data-item-id="{{skill.id}}"
      class="skill contextmenu item {{experiencedclass skill.uuid}}"
      data-item-roll

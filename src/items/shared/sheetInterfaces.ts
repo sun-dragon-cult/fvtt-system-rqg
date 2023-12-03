@@ -15,6 +15,7 @@ export interface DocumentSheetData {
 
 export interface ActorSheetData extends DocumentSheetData {
   isPC: boolean;
+  showCharacteristicRatings: boolean;
   /** Add `document.effects` here */
   effects: unknown;
 }

@@ -55,6 +55,7 @@ declare global {
       "rqg.defaultItemIconSettings": IconSettingsData;
       "rqg.actor-wizard-feature-flag": boolean;
       "rqg.showHeropoints": boolean;
+      "rqg.showCharacteristicRatings": boolean;
     }
   }
 }

@@ -88,6 +88,8 @@
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
         "CreatureQ": "Creature?",
+        "Creature": "This is a Creature",
+        "CreatureExplanation": "Creatures have zero for all skill category modifiers",
         "MovementAbbr": "MOV",
         "EncumbranceAbbr": "ENC",
         "EncumbranceFactor": "ENC Factor",
@@ -1183,6 +1185,10 @@
       "WorldMigrationVersion": {
         "settingName": "World Migration Version",
         "settingHint": "The RQG system version this world has been migrated to."
+      },
+      "ShowCharacteristicRatings": {
+        "settingName": "Show Characteristic Ratings",
+        "settingHint": "Show a colored rating bar below characteristics which rates the value as compared to the dice expression formula for the characteristic.  Red is lower than average and green is higher than average.  This can help you to judge an actor's strengths and weaknesses at a glance."
       }
     },
     "TokenEffects": {

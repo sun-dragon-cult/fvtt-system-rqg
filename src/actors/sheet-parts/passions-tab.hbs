@@ -8,7 +8,18 @@
 
 <div class="grid passions item-list">
   {{#each embeddedItems.passion}}
-  <div class="grid {{#if ../wizard}}passion-select{{else}}passion{{/if}} item">
+  <div class="grid 
+  
+          {{#edit-mode @root/system.editMode "all"}}
+            passion-edit-mode 
+          {{else}}
+            {{#if ../wizard}}
+              passion-select
+            {{else}}
+              passion
+            {{/if}}
+          {{/edit-mode}}
+          item">
     <div data-item-id="{{id}}" data-item-roll class="passion contextmenu img item"
       data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
       {{#if ../wizard}}
@@ -27,6 +38,17 @@
       data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
       {{name}}
     </div>
+    {{#edit-mode @root/system.editMode "all"}}
+      <div class="passion
+                  contextmenu
+                  item"
+                  width="50px">
+        <input type="number"
+          data-passion-grid-edit
+          data-item-id="{{../id}}"
+          value="{{../system.chance}}">%
+      </div>
+    {{/edit-mode}}
     <div data-item-id="{{id}}" data-item-roll
       class="passion contextmenu item {{experiencedclass uuid}}"
       data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
