@@ -297,12 +297,12 @@ export class RqgItem extends Item {
   }
 
   // Validate that embedded items are unique (name + type),
-  // except for runeMagic where duplicates are allowed, at least
-  // when the cultId is different. That is not implemented though
+  // except for runeMagic & physical items where duplicates are allowed
   private static isDuplicateItem(document: any): boolean {
     return document.parent.items.some(
       (i: RqgItem) =>
         document.type !== ItemTypeEnum.RuneMagic &&
+        document.system.physicalItemType === undefined &&
         i.name === document.name &&
         i.type === document.type,
     );
