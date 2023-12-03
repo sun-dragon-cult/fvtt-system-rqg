@@ -103,8 +103,8 @@ export const registerRqgSystemSettings = function () {
   });
 
   getGame().settings.register(systemId, "showCharacteristicRatings", {
-    name: "RQG.Settings.SchowCharacteristicRatings.settingName",
-    hint: "RQG.Settings.SchowCharacteristicRatings.settingHint",
+    name: "RQG.Settings.ShowCharacteristicRatings.settingName",
+    hint: "RQG.Settings.ShowCharacteristicRatings.settingHint",
     scope: "client",
     config: true,
     type: Boolean,
