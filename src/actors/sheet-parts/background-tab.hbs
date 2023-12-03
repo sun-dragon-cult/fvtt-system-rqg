@@ -149,7 +149,7 @@
     <legend>{{localize "RQG.Actor.Background.Circumstance"}}</legend>
 
     <div class="key-value-grid">
-      {{#if isGM}}
+      {{#edit-mode @root/system.editMode "all"}}
         <div data-reputation-roll style="display: flex; gap: 0.5em; justify-content:right;">
           <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
           <label for="reputation-{{id}}">
@@ -160,21 +160,21 @@
           <input
             id="reputation-{{id}}"
             name="system.background.reputation"
-            value="{{system.background.reputation}}"
+            value="{{../system.background.reputation}}"
             type="number"
             min="0"
             max="999"
           />%
         </div>
-      {{else if system.background.reputation}}
+      {{else}}
         <div data-reputation-roll style="display: flex; gap: 0.5em; justify-content:right;">
           <img src="{{defaultItemIconSrc 'Reputation'}}" class="item" />
           <label>{{localize "RQG.Actor.Background.Reputation"}}</label>
         </div>
-        <div>
-          {{system.background.reputation}}%
+        <div data-reputation-roll>
+          {{../system.background.reputation}}%
         </div>
-      {{/if}}
+      {{/edit-mode}}
 
       {{#if isGM}}
         <label for="standard-of-living-{{id}}">{{localize "RQG.Actor.Background.StandardOfLiving"}}</label>
