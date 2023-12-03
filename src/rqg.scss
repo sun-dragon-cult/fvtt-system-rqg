@@ -267,6 +267,10 @@ body {
     padding: 0;
   }
 
+  .p-5 {
+    padding: 5px;
+  }
+
   .tab.gear {
     article {
       margin-bottom: 0.7rem;
@@ -727,7 +731,9 @@ body {
   [data-weapon-roll],
   [data-reputation-roll],
   [data-rune-magic-roll],
-  [data-spirit-magic-roll] {
+  [data-spirit-magic-roll],
+  [data-gear-add],
+  [data-passion-add] {
     &:hover {
       box-shadow:
         12px 12px 16px 0 rgba(0, 0, 0, 0.25),
@@ -1118,6 +1124,17 @@ body {
 
     i.fa-info-circle {
       padding: 0 0 0 7px;
+      margin: 0.5rem;
+    }
+
+    .rqid-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    select {
+      margin: 0.5rem;
     }
   }
 

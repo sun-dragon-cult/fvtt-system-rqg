@@ -324,13 +324,9 @@
   {{/if}}
 </div>
 
-{{#if isGM}}
-  {{editor
-    enrichedBiography
-    target="system.background.biography"
-    button=true
-    editable=isEditable
-  }}
-{{else if system.background.biography}}
-  {{{enrichedBiography}}}
-{{/if}}
+{{editor
+  enrichedBiography
+  target="system.background.biography"
+  button=true
+  editable=isEditable
+}}

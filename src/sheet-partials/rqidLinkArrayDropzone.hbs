@@ -7,6 +7,8 @@ dropDocumentTypes: string - comma separated list of document types, ex: "rune,sk
 
 allowDuplicates: boolean - allow multiple copies of the same document
 rqidLinkArray: RqidLink[]
+dropdownOptions: {rqid: string, name: string}[]
+
 
 Nested: {{> rqidLink
     rqidLink
@@ -15,7 +17,6 @@ Nested: {{> rqidLink
     showInfoCircleReplace
     showBonus
     editBonusPropertyName
-
 --}}
 
 <div class="drop-target item-sheet-rqid-link"
@@ -23,7 +24,7 @@ Nested: {{> rqidLink
      data-dropzone-document-names="{{dropDocumentNames}}"
      data-dropzone-document-types="{{dropDocumentTypes}}"
      {{#if allowDuplicates}}data-allow-duplicates="true"{{/if}}>
-  <div style="display: flex; flex-wrap: wrap;">
+  <div class="rqid-area">
     {{#each rqidLinkArray}}
       {{> rqidLink
         rqidLink=this
@@ -37,5 +38,10 @@ Nested: {{> rqidLink
         showInfoCircleConnect=showInfoCircleConnect
       }}
     {{/unless}}
+    {{#if dropdownOptions }}
+      <select data-add-to-rqid-array-link>
+        {{selectOptions dropdownOptions selected="empty"}}
+      </select><br>
+    {{/if}}
   </div>
 </div>

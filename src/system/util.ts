@@ -456,6 +456,36 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
   }));
 }
 
+export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+  const emptyOption: AvailableItemCache = {
+    rqid: "empty",
+    name: localize(emptyPlaceholderKey),
+    img: "",
+  };
+  return getSelectOptions(emptyOption, getAvailableRunes);
+}
+
+export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+  const emptyOption: AvailableItemCache = {
+    rqid: "empty",
+    name: localize(emptyPlaceholderKey),
+    img: "",
+  };
+  return getSelectOptions(emptyOption, getAvailableHitLocations);
+}
+
+function getSelectOptions(
+  emptyOption: AvailableItemCache,
+  getItemFn: () => AvailableItemCache[],
+): AvailableItemCache[] {
+  const sortedOptions = (getItemFn() ?? []).sort((a, b) => a.name.localeCompare(b.name));
+  const options: AvailableItemCache[] =
+    [emptyOption, ...sortedOptions].reduce((acc: any, i: any) => {
+      return { ...acc, [i.rqid]: i.name };
+    }, {}) ?? {};
+  return options;
+}
+
 function getIndexData(
   rqidStart: string,
   pack: CompendiumCollection<CompendiumCollection.Metadata>,

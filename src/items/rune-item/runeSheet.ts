@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneType, RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getAvailableRunes, getGameUser, AvailableItemCache, localize } from "../../system/util";
+import { getGameUser, AvailableItemCache, localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -8,7 +8,8 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneSheetData {
-  allRunes: AvailableItemCache[];
+  opposingRuneOptions: AvailableItemCache[];
+  minorRuneOptions: AvailableItemCache[];
   runeTypes: RuneType[];
   rqid: string;
 }
@@ -46,7 +47,8 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       isGM: getGameUser().isGM,
       system: system,
       isEmbedded: this.document.isEmbedded,
-      allRunes: getAvailableRunes(),
+      opposingRuneOptions: getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder"),
+      minorRuneOptions: getSelectRuneOptions("RQG.Item.Rune.AddMinorRunePlaceholder"),
       runeTypes: Object.values(RuneTypeEnum).map((rt) => ({
         type: rt,
         name: localize(`RQG.Item.Rune.RuneType.${rt}`),

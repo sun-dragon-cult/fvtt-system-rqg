@@ -43,17 +43,14 @@
           <label for="hitlocations-{{id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
 
           <div>
-            <select data-add-hit-location>
-              {{selectOptions allHitLocationOptions selected="empty"}}
-            </select><br>
-
             {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.hitLocationRqidLinks
-            dropzoneData="hitLocationRqidLinks"
-            dropDocumentNames="Item"
-            dropDocumentTypes="hitLocation"
-            showDeleteFromPropertyName="hitLocationRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHitLocation"
+              rqidLinkArray=system.hitLocationRqidLinks
+              dropzoneData="hitLocationRqidLinks"
+              dropDocumentNames="Item"
+              dropDocumentTypes="hitLocation"
+              showDeleteFromPropertyName="hitLocationRqidLinks"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHitLocation"
+              dropdownOptions=allHitLocationOptions
           }}
 
         </div>

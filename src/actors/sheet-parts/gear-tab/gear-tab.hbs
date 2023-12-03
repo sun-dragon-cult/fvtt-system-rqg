@@ -34,7 +34,10 @@
     <div class="gear-wrapper flex-row">
       {{!-- Gear --}}
       <article class="flex-1">
-        <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
+        <h2 class="flex-row">
+          <span>{{localize "RQG.Actor.Gear.Gear"}}</span>
+          <a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearUniqueTip'}}" data-gear-add="unique"><i class="fas fa-plus"></i></a>
+        </h2>
         <div class="grid gear item-list">
           <div class="headings"></div>
           <div class="head1"><button class="sort" data-sort-items="gear" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
@@ -74,7 +77,10 @@
       {{!-- Currency --}}
       <div class="flex-1">
         <article>
-          <h2>{{localize "RQG.Actor.Gear.Currency"}}</h2>
+          <h2 class="flex-row">
+            <span>{{localize "RQG.Actor.Gear.Currency"}}</span>
+            <a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearCurrencyTip'}}" data-gear-add="currency"><i class="fas fa-plus"></i></a>
+          </h2>
           <div class="grid gear item-list">
             <div class="headings"></div>
             <div class="head1"></div>
@@ -124,7 +130,10 @@
 
         {{!--Consumables--}}
         <article>
-          <h2>{{localize "RQG.Actor.Gear.Consumables"}}</h2>
+          <h2 class="flex-row">
+            <span>{{localize "RQG.Actor.Gear.Consumables"}}</span>
+            <a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearConsumablesTip'}}" data-gear-add="consumable"><i class="fas fa-plus"></i></a>
+          </h2>
           <div class="grid gear item-list">
             <div class="headings"></div>
             <div class="head1"></div>

@@ -1,7 +1,7 @@
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getAvailableRunes, getGameUser, AvailableItemCache } from "../../system/util";
+import { getGameUser, AvailableItemCache, getSelectRuneOptions } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
@@ -10,7 +10,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
   skillCategories: SkillCategoryEnum[];
-  allRunes: AvailableItemCache[];
+  allRuneOptions: AvailableItemCache[];
 }
 
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
@@ -51,7 +51,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       isEmbedded: this.document.isEmbedded,
 
       skillCategories: Object.values(SkillCategoryEnum),
-      allRunes: getAvailableRunes(),
+      allRuneOptions: getSelectRuneOptions("RQG.Item.Skill.AddSorceryRunePlaceholder"),
     };
   }
 

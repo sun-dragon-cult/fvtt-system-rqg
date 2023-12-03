@@ -10,6 +10,7 @@ import {
   convertFormValueToString,
   getAvailableHitLocations,
   getGameUser,
+  getSelectHitLocationOptions,
   localize,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
@@ -58,13 +59,9 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       isGM: getGameUser().isGM,
       system: system,
       effects: this.document.effects,
-      allHitLocationOptions:
-        [
-          { rqid: "empty", name: localize("RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder") },
-          ...(getAvailableHitLocations() ?? []),
-        ].reduce((acc: any, l: any) => {
-          return { ...acc, [l.rqid]: l.name };
-        }, {}) ?? {},
+      allHitLocationOptions: getSelectHitLocationOptions(
+        "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder",
+      ),
       equippedStatuses: [...equippedStatuses],
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
