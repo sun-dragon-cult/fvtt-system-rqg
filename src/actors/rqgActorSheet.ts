@@ -11,7 +11,11 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { cultMenuOptions } from "./context-menus/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
-import { EquippedStatus, equippedStatuses } from "../data-model/item-data/IPhysicalItem";
+import {
+  EquippedStatus,
+  equippedStatuses,
+  PhysicalItemType,
+} from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
 import {
@@ -157,6 +161,7 @@ export class RqgActorSheet extends ActorSheet<
   // What SRs are this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
+
   get title(): string {
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
@@ -851,6 +856,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
   }
+
   private async getIncorrectRunesText(embeddedRunes: any): Promise<string | undefined> {
     const validRuneIds = [
       ...Object.values(embeddedRunes.element).map((r: any) => r.id),
@@ -1447,8 +1453,19 @@ export class RqgActorSheet extends ActorSheet<
           systemId,
           "defaultItemIconSettings",
         );
+
+        const physicalItemType2ItemName = new Map<PhysicalItemType, string>([
+          ["unique", "RQG.Actor.Gear.NewGear"],
+          ["currency", "RQG.Actor.Gear.NewCurrency"],
+          ["consumable", "RQG.Actor.Gear.NewConsumable"],
+        ]);
+
+        const name = localize(
+          physicalItemType2ItemName.get(physicalItemType) ?? "RQG.Actor.Gear.NewGear",
+        );
+
         const newGear = {
-          name: localize("RQG.Actor.Gear.NewGear"),
+          name: name,
           type: ItemTypeEnum.Gear,
           img: defaultItemIconSettings[ItemTypeEnum.Gear],
           system: { physicalItemType: physicalItemType },
