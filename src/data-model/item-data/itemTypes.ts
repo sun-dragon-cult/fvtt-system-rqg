@@ -27,9 +27,12 @@ import {
   OccupationDataProperties as OccupationDataProperties,
   OccupationDataSource,
 } from "./occupationData";
+import { Background } from "../../items/background-item/background";
+import { BackgroundDataProperties, BackgroundDataSource } from "./backgroundData";
 
 export enum ItemTypeEnum {
   Armor = "armor",
+  Background = "background",
   Cult = "cult",
   Gear = "gear",
   HitLocation = "hitLocation",
@@ -50,6 +53,7 @@ export enum ItemTypeEnum {
  */
 export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = new Map([
   [ItemTypeEnum.Armor, Armor],
+  [ItemTypeEnum.Background, Background],
   [ItemTypeEnum.Cult, Cult],
   [ItemTypeEnum.Gear, Gear],
   [ItemTypeEnum.HitLocation, HitLocation],
@@ -63,6 +67,7 @@ export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = ne
 
 export type RqgItemDataSource =
   | ArmorDataSource
+  | BackgroundDataSource
   | CultDataSource
   | GearDataSource
   | HitLocationDataSource
@@ -77,6 +82,7 @@ export type RqgItemDataSource =
 
 export type RqgItemDataProperties =
   | ArmorDataProperties
+  | BackgroundDataProperties
   | CultDataProperties
   | GearDataProperties
   | HitLocationDataProperties

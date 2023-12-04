@@ -1,0 +1,216 @@
+<form autocomplete="off">
+  <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
+
+    <div class="flex-column gap03rem">
+
+      <div class="property-line">
+        <div class="label-above">
+          <label for="background-{{id}}">{{localize "RQG.Item.Background.BackgroundType"}}</label>
+          <input
+            id="background-{{id}}"
+            name="system.background"
+            value="{{system.background}}"
+            type="text"
+          >
+        </div>
+
+        <div class="label-above">
+          <label for="region-{{id}}">{{localize "RQG.Item.Background.Specialization"}}</label>
+          <div>
+            ( <input type="text" id="region-{{id}}" name="system.specialization"
+                     value="{{system.specialization}}"> )
+          </div>
+        </div>
+      </div>
+
+
+      {{> rqidLinkDropzone
+        rqidLink=system.backgroundRqidLink
+        dropzoneData="backgroundRqidLink"
+        dropDocumentNames="JournalEntry, JournalEntryPage"
+        showDeleteFromPropertyName="backgroundRqidLink"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+        showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+      }}
+    </div>
+
+  </header>
+
+  <main>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="item-sheet-nav-tabs" data-group="primary">
+      <a class="item" data-tab="background">{{localize "RQG.Item.SheetTab.Background"}}</a>
+    </nav>
+
+    <section class="sheet-body">
+      {{!-- Background Tab --}}
+      <div class="tab" data-group="primary" data-tab="background">
+        {{json system}}
+
+       
+        <div class="key-value-grid">
+
+          <label>{{localize "RQG.Item.Background.Modifiers"}} <i
+            id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i><i
+            id="btn-add-background-modifiers-{{id}}" class="fas fa-plus"></label>
+          <div class="drop-target"
+               data-dropzone="backgroundModifiers"
+               data-dropzone-document-types="skill">
+            <div id="background-modifier-display-{{id}}" style="display: block;">
+              {{{backgroundModifiersJoined}}}
+            </div>
+            <div
+                 style="display: none;"
+                 id="background-modifier-edit-{{id}}">
+              <div style="display: flex; flex-wrap: wrap;">
+                {{#each system.backgroundModifiers}}
+                  <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
+                    <i class="fas fa-times icon"
+                       data-delete-background-modifier-rqid="{{this.rqid}}"
+                       data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.rqid
+                                         name=this.name}}"></i>
+
+                    {{> rqidLink
+                      rqidLink=this.bonusToSkillRqidLink
+                    }}
+                    <div>
+                      <input
+                        type="number"
+                        min="-100"
+                        max="100"
+                        id="bonus-{{@index}}"
+                        data-skill-rqid="{{this.bonusToSkillRqidLink.rqid}}"
+                        data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifier'}}"
+                        value="{{this.bonus}}">%
+                    </div>
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="income-skill-{{@index}}"
+                        data-skill-rqid="{{this.bonusToSkillRqidLink.rqid}}"
+                        data-tooltip="{{localize 'RQG.Item.Background.IncomeSkillQ'}}"
+                        {{checked this.incomeSkill}}>
+                      <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Background.IncomeSkillQ'}}</label>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+          
+{{!-- 
+          <label>{{localize "RQG.Item.Background.Homelands"}}</label>
+          <div class="drop-target"
+               data-dropzone="homelandRqidLinks"
+               data-dropzone-document-types="homeland">
+            <div style="display: flex; flex-wrap: wrap;">
+              {{#if homelandsJoined}}
+                {{homelandsJoined}}
+              {{else}}
+                {{localize "RQG.Item.Background.AllHomelands"}}
+              {{/if}}
+            </div>
+          </div>
+
+          <label>{{localize "RQG.Item.Background.BackgroundalSkillLinks"}} <i
+            id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i></label>
+          <div class="drop-target"
+               data-dropzone="backgroundalSkillRqidLinks"
+               data-dropzone-document-types="skill">
+            <div id="background-modifier-display-{{id}}" style="display: block;">
+              {{{skillsJoined}}}
+            </div>
+            <div
+                 style="display: none;"
+                 id="background-modifier-edit-{{id}}">
+              <div style="display: flex; flex-wrap: wrap;">
+                {{#each system.backgroundalSkills}}
+                  <div class="backgroundalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
+                    <i class="fas fa-times icon"
+                       data-delete-background-modifier-rqid="{{this.skillRqidLink.rqid}}"
+                       data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
+                                         name=this.skillRqidLink.name}}"></i>
+
+                    {{> rqidLink
+                      rqidLink=this.skillRqidLink
+                    }}
+                    <div>
+                      <input
+                        type="number"
+                        min="-100"
+                        max="100"
+                        id="bonus-{{@index}}"
+                        data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                        data-tooltip="{{localize 'RQG.Item.Background.BackgroundalSkillBonus'}}"
+                        value="{{this.bonus}}">%
+                    </div>
+                    <div>
+                      <input
+                        type="checkbox"
+                        id="income-skill-{{@index}}"
+                        data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                        data-tooltip="{{localize 'RQG.Item.Background.IncomeSkillQ'}}"
+                        {{checked this.incomeSkill}}>
+                      <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Background.IncomeSkillQ'}}</label>
+                    </div>
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          </div>
+
+
+          <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Background.StandardOfLiving"}}</label>
+          <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
+            {{#select system.standardOfLiving}}
+              {{#each standardsOfLiving}}
+                <option value="{{this}}">{{localize (concat "RQG.Item.Background.StandardOfLivingEnum." this)}}</option>
+              {{/each}}
+            {{/select}}
+          </select>
+
+          <label for="base-income-{{id}}">{{localize "RQG.Item.Background.BaseIncome"}}</label>
+          <div>
+            <input type="number" id="base-income-{{id}}" name="system.baseIncome" min="0"
+                   value="{{system.baseIncome}}">
+            &nbsp;
+            {{localize "RQG.Item.Gear.LunarsAbbr"}}
+          </div>
+
+          <label for="base-income-notes-{{id}}">{{localize "RQG.Item.Background.BaseIncomeNotes"}}</label>
+          <input type="text" id="base-income-notes-{{id}}" name="system.baseIncomeNotes"
+                 value="{{system.baseIncomeNotes}}">
+
+          <label>{{localize "RQG.Item.Background.CultLinks"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.cultRqidLinks
+            dropzoneData="cultRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="cult"
+            showDeleteFromPropertyName="cultRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+          }}
+
+          <label for="ransom-{{id}}">{{localize "RQG.Item.Background.Ransom"}}</label>
+          <div>
+            <input type="number" id="ransom-{{id}}" name="data.ransom" min="0" value="{{system.ransom}}">
+            &nbsp;
+            {{localize "RQG.Item.Gear.LunarsAbbr"}}
+          </div>
+
+          <label>{{localize "RQG.Item.Background.StartingEquipmentLinks"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.startingEquipmentRqidLinks
+            dropzoneData="startingEquipmentRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="armor,gear,weapon"
+            showDeleteFromPropertyName="startingEquipmentRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+          }}--}}
+        </div> 
+      </div>
+    </section>
+  </main>
+</form>

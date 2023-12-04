@@ -2,6 +2,7 @@
   "TYPES": {
     "Item": {
       "armor": "Armor",
+      "background": "Background",
       "cult": "Cult",
       "gear": "Gear",
       "hitLocation": "Hit Location",
@@ -1243,6 +1244,7 @@
       },
       "Item": {
         "Armor": "Armor Item Sheet",
+        "Background": "Background",
         "Cult": "Cult Item Sheet",
         "Gear": "Gear Item Sheet",
         "HitLocation": "Hit Location Item Sheet",

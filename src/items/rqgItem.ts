@@ -16,6 +16,7 @@ import { systemId } from "../system/config";
 import { ResultEnum, ResultMessage } from "../data-model/shared/ability";
 import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { BackgroundSheet } from "./background-item/backgroundSheet";
 
 export class RqgItem extends Item {
   public static init() {
@@ -51,6 +52,11 @@ export class RqgItem extends Item {
     Items.registerSheet(systemId, OccupationSheet as any, {
       label: "RQG.SheetName.Item.Occupation",
       types: [ItemTypeEnum.Occupation],
+      makeDefault: true,
+    });
+    Items.registerSheet(systemId, BackgroundSheet as any, {
+      label: "RQG.SheetName.Item.Background",
+      types: [ItemTypeEnum.Background],
       makeDefault: true,
     });
     Items.registerSheet(systemId, GearSheet as any, {
