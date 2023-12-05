@@ -1,8 +1,8 @@
-![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/wakeand/fvtt-system-rqg/releases/latest/download/system.json)
-[![GitHub Release](https://img.shields.io/github/release/wakeand/fvtt-system-rqg)]()
-[![Issues](https://img.shields.io/github/issues-raw/wakeand/fvtt-system-rqg?maxAge=25000)](https://github.com/wakeand/fvtt-system-rqg/issues)
-![Latest Release Download Count](https://img.shields.io/github/downloads/wakeand/fvtt-system-rqg/latest/rqg.zip)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/wakeand/fvtt-module-reverseinitiativeorder/blob/master/LICENSE)
+![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json)
+[![GitHub Release](https://img.shields.io/github/release/sun-dragon-cult/fvtt-system-rqg)]()
+[![Issues](https://img.shields.io/github/issues-raw/sun-dragon-cult/fvtt-system-rqg?maxAge=25000)](https://github.com/wakeand/fvtt-system-rqg/issues)
+![Latest Release Download Count](https://img.shields.io/github/downloads/sun-dragon-cult/fvtt-system-rqg/latest/rqg.zip)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/LICENSE)
 [![Tests](https://github.com/sun-dragon-cult/fvtt-system-rqg/actions/workflows/test.yml/badge.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/actions/workflows/test.yml)
 
 # RuneQuest Glorantha system for Foundry Virtual Table Top
