@@ -52,9 +52,10 @@
        
         <div class="key-value-grid">
 
-          <label>{{localize "RQG.Item.Background.Modifiers"}} <i
-            id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i><i
-            id="btn-add-background-modifiers-{{id}}" class="fas fa-plus"></label>
+          <label>{{localize "RQG.Item.Background.Modifiers"}}
+            <i id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i>
+            <i id="btn-add-background-modifiers-{{id}}" class="fas fa-plus"></i>
+          </label>
           <div class="drop-target"
                data-dropzone="backgroundModifiers"
                data-dropzone-document-types="skill">
@@ -99,6 +100,15 @@
               </div>
             </div>
           </div>
+        </div> 
+
+      </div>
+    </section>
+  </main>
+</form>
+
+
+
           
 {{!-- 
           <label>{{localize "RQG.Item.Background.Homelands"}}</label>
@@ -115,7 +125,7 @@
           </div>
 
           <label>{{localize "RQG.Item.Background.BackgroundalSkillLinks"}} <i
-            id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i></label>
+            id="bnt-edit-background-modifiers-{{id}}" class="fas fa-edit"></i></label>
           <div class="drop-target"
                data-dropzone="backgroundalSkillRqidLinks"
                data-dropzone-document-types="skill">
@@ -209,8 +219,3 @@
             showDeleteFromPropertyName="startingEquipmentRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
           }}--}}
-        </div> 
-      </div>
-    </section>
-  </main>
-</form>

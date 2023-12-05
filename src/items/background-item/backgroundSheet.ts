@@ -3,7 +3,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
-import { getGameUser } from "../../system/util";
+import { assertHtmlElement, getGameUser } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 
 export interface BackgroundSheetData {
@@ -68,7 +68,46 @@ export class BackgroundSheet extends RqgItemSheet<
   public activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
+    const form = this.form as HTMLFormElement;
+
+    form
+      .querySelector("#btn-edit-background-modifiers-" + this.item.id)
+      ?.addEventListener("click", () => {
+        this.toggleBackgroundModifierEdit(false);
+      });
+
     // Do Background Specific Stuff Here
+  }
+
+  private toggleBackgroundModifierEdit(forceEdit = false) {
+    const form = this.form as HTMLFormElement;
+    const displayBackgroundModifiers = form.querySelector(
+      "#background-modifier-display-" + this.item.id,
+    );
+    assertHtmlElement(displayBackgroundModifiers);
+    const editBackgroundModifiers = form.querySelector("#background-modifier-edit-" + this.item.id);
+    assertHtmlElement(editBackgroundModifiers);
+    const btnEdit = form.querySelector("#btn-edit-background-modifiers-" + this.item.id);
+    assertHtmlElement(btnEdit);
+    if (!displayBackgroundModifiers || !editBackgroundModifiers || !btnEdit) {
+      console.error(
+        "RQG | Didn't find HtmlElements in toggleBackgroundModifierEdit",
+        form,
+        displayBackgroundModifiers,
+        editBackgroundModifiers,
+        btnEdit,
+      );
+      return;
+    }
+    if (displayBackgroundModifiers?.style.display === "block" || forceEdit) {
+      displayBackgroundModifiers.style.display = "none";
+      editBackgroundModifiers.style.display = "block";
+      btnEdit.style.color = "gray";
+    } else {
+      displayBackgroundModifiers.style.display = "block";
+      editBackgroundModifiers.style.display = "none";
+      btnEdit.style.color = "black";
+    }
   }
 
   async _onDropItem(
