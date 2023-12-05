@@ -26,7 +26,14 @@ export async function showImproveCharacteristicDialog(
   const cultStandingBonus = actor.items.some(
     (i) =>
       i.type === ItemTypeEnum.Cult &&
-      [CultRankEnum.GodTalker, CultRankEnum.RunePriest].includes(i.system.rank),
+      i.system.joinedCults.some((c: any) =>
+        [
+          CultRankEnum.GodTalker,
+          CultRankEnum.RunePriest,
+          CultRankEnum.ChiefPriest,
+          CultRankEnum.HighPriest,
+        ].includes(c.rank),
+      ),
   )
     ? 20
     : 0;
