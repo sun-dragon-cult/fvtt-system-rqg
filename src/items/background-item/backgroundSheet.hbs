@@ -47,7 +47,7 @@
     <section class="sheet-body">
       {{!-- Background Tab --}}
       <div class="tab" data-group="primary" data-tab="background">
-        {{json system}}
+        {{!-- {{json system}} --}}
 
        
         <div class="key-value-grid">
@@ -67,35 +67,65 @@
                  id="background-modifier-edit-{{id}}">
               <div style="display: flex; flex-wrap: wrap;">
                 {{#each system.backgroundModifiers}}
-                  <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-                    <i class="fas fa-times icon"
-                       data-delete-background-modifier-rqid="{{this.rqid}}"
-                       data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.rqid
-                                         name=this.name}}"></i>
+                  {{#if (eq this.modifierType "skill")}}
+                    <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
+                      {{json this}}
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="background-modifier-enabled-{{@index}}"
+                          {{!-- data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}" --}}
+                          data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}"
+                          {{checked this.enabled}}>
+                        <label for="background-modifier-enabled-{{@index}}">{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}</label>
+                      </div>
+                      <i class="fas fa-times icon"
+                        data-delete-background-modifier-rqid="{{this.modifiedSkillRqidLink.rqid}}"
+                        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.modifiedSkillRqidLink.rqid
+                                          name=this.name}}"></i>
 
-                    {{> rqidLink
-                      rqidLink=this.bonusToSkillRqidLink
-                    }}
-                    <div>
-                      <input
-                        type="number"
-                        min="-100"
-                        max="100"
-                        id="bonus-{{@index}}"
-                        data-skill-rqid="{{this.bonusToSkillRqidLink.rqid}}"
-                        data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifier'}}"
-                        value="{{this.bonus}}">%
+                      {{> rqidLink
+                        rqidLink=this.modifiedSkillRqidLink
+                      }}
+                      <div>
+                        <input
+                          type="number"
+                          min="-100"
+                          max="100"
+                          id="bonus-{{@index}}"
+                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
+                          data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifier'}}"
+                          value="{{this.bonus}}">%
+                      </div>
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="income-skill-{{@index}}"
+                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
+                          data-tooltip="{{localize 'RQG.Item.Background.IncomeSkillQ'}}"
+                          {{checked this.incomeSkill}}>
+                        <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Background.IncomeSkillQ'}}</label>
+                      </div>
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="cult-starting-skill-{{@index}}"
+                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
+                          data-tooltip="{{localize 'RQG.Item.Background.CultStartingSkillQ'}}"
+                          {{checked this.cultStartingSkill}}>
+                        <label for="cult-starting-skill-{{@index}}">{{localize 'RQG.Item.Background.CultStartingSkillQ'}}</label>
+                      </div>
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="cult-skill-{{@index}}"
+                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
+                          data-tooltip="{{localize 'RQG.Item.Background.CultSkillQ'}}"
+                          {{checked this.cultSkill}}>
+                        <label for="cult-skill-{{@index}}">{{localize 'RQG.Item.Background.CultSkillQ'}}</label>
+                      </div>
                     </div>
-                    <div>
-                      <input
-                        type="checkbox"
-                        id="income-skill-{{@index}}"
-                        data-skill-rqid="{{this.bonusToSkillRqidLink.rqid}}"
-                        data-tooltip="{{localize 'RQG.Item.Background.IncomeSkillQ'}}"
-                        {{checked this.incomeSkill}}>
-                      <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Background.IncomeSkillQ'}}</label>
-                    </div>
-                  </div>
+                  {{/if}}
                 {{/each}}
               </div>
             </div>
