@@ -100,6 +100,28 @@
               </div>
             </div>
           </div>
+
+          <label>{{localize "RQG.Item.Background.SuggestedCults"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedCultRqidLinks
+            dropzoneData="suggestedCultRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedCultRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+          }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedOccupations"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedOccupationRqidLinks
+            dropzoneData="suggestedOccupationRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedOccupationRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+          }}
+            
+          </div>
         </div> 
 
       </div>

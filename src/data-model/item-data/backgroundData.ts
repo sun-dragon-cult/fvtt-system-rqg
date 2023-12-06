@@ -66,7 +66,7 @@ export interface BackgroundDataSourceData {
   backgroundRqidLink: RqidLink | undefined;
   type: BackgroundTypeEnum;
   suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
-  suggestedOccuptationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
+  suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
   backgroundModifiers: BackgroundModifier[];
 }
 
@@ -88,6 +88,6 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   backgroundRqidLink: undefined,
   type: BackgroundTypeEnum.None,
   suggestedCultRqidLinks: [],
-  suggestedOccuptationRqidLinks: [],
+  suggestedOccupationRqidLinks: [],
   backgroundModifiers: [],
 };
