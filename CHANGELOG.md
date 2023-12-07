@@ -1,5 +1,28 @@
 # Changelog
 
+## [3.4.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.3.0...v3.4.0) (2023-12-07)
+
+
+### Features
+
+* add creationMode property to RqgActorData ([#639](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/639)) ([43d0ed5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/43d0ed53c14b7ca0ada1e7dd15e8095c5084116d))
+* apply edit mode to sheet ([#667](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/667)) ([d6361c9](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/d6361c983b9838f1ce53b046f67ee67fe7318976))
+* background tab biography field should be player editable ([fedb9b3](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fedb9b3733afef5d78e6b462601dfd308fb63747)), closes [#670](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/670)
+* edit mode button using _getHeaderButtons ([#663](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/663)) ([3e6be1d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/3e6be1d1cbc83e7c143e0c81641e37b82f17dfd9))
+* find a way to drag a weapon to an actor without adding the weapon skill ([52a1175](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/52a1175ef8775dfdf4aff84f6b401aea9b235510)), closes [#450](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/450)
+* let players (and GM) add gear directly from actorSheet ([7154350](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/71543509f2460efb8191fab84ab60ead390818cd)), closes [#671](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/671)
+* loosen duplicate embedded item name check ([a399a0f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a399a0f7e9edff55fd8107edc2f3faf966481d44)), closes [#672](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/672)
+* name new gear as gear, currency or consumable ([ee1a434](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/ee1a43418de2482815194152617e9c6eb5350048)), closes [#671](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/671)
+* provide an option to hide Hero Points ([eabfc02](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/eabfc02b40cb75b1614b664a2e5d3e8466a1ae91)), closes [#661](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/661)
+* refactor add hitlocation dropdown into RqidLink area & add in all places ([a9deca7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/a9deca7c0cc9a49b21087203c4fcc55fb05cff5c)), closes [#656](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/656)
+* show an explanation in the Rune Magic list why nothing is shown as lay member ([67b62ac](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/67b62acadd3972c1ef12d87b7bfdb5b3d62621c1)), closes [#668](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/668)
+
+
+### Bug Fixes
+
+* priests don't get the 20% bonus to their POW gain roll ([99908b0](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/99908b0304c20b4ae82f5660c85dfe105d04d753)), closes [#649](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/649)
+* rqid editor "Get Document Like This" is not filled in properly ([6f4bb24](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6f4bb241e8d58108fc8930d777972d622ee32833)), closes [#665](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/665)
+
 ## [3.3.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.2.1...v3.3.0) (2023-11-17)
 
 
