@@ -25,6 +25,7 @@ import {
   getDocumentTypes,
   getGame,
   getGameUser,
+  getHTMLElement,
   getRequiredDomDataset,
   hasOwnProperty,
   isTruthy,
@@ -1979,14 +1980,14 @@ export class RqgActorSheet extends ActorSheet<
         headerButtons.splice(0, 0, {
           class: "title-edit-mode",
           label: "",
-          icon: "fas fa-masks-theater",
+          icon: "edit-mode-icon",
           onclick: (event) => this._toggleEditMode(event),
         });
       } else {
         headerButtons.splice(0, 0, {
           class: "title-edit-mode",
           label: "",
-          icon: "fas fa-user-edit",
+          icon: "play-mode-icon",
           onclick: (event) => this._toggleEditMode(event),
         });
       }
@@ -1997,21 +1998,20 @@ export class RqgActorSheet extends ActorSheet<
 
   _toggleEditMode(event: any) {
     const newMode = !this.actor.system.editMode;
-    this.actor.update({ system: { editMode: newMode } });
-
-    let link = event.target as HTMLElement | null;
-
-    if (!(link instanceof HTMLAnchorElement)) {
-      link = event.target.parentNode;
+    const link = getHTMLElement(event)?.closest("a");
+    if (!link) {
+      ui.notifications?.warn("No link element found when toggling editMode"); // Should never happen
+      return;
     }
 
-    if (newMode && link) {
-      link.innerHTML = `<i class="fas fa-masks-theater"></i>`;
+    if (newMode) {
+      link.innerHTML = `<i class="edit-mode-icon"></i>`;
       link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
-    } else if (link) {
-      link.innerHTML = `<i class="fas fa-user-edit"></i>`;
+    } else {
+      link.innerHTML = `<i class="play-mode-icon"></i>`;
       link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
     }
+    this.actor.update({ system: { editMode: newMode } });
   }
 
   _openActorWizard() {
