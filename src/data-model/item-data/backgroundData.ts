@@ -35,38 +35,15 @@ export enum StandardOfLivingEnum {
   PettyKing = "petty-king",
 }
 
-// This will be for bonuses to Skills, Runes, and Passions
-export interface BackgroundModifier {
-  enabled: boolean;
-  modifierType: string;
-  // bonusToCharacteristic: string | undefined = undefined; // Should this be an enum? Is there one?  If there's a value it should reference the characteristic to which the bonus applies
-
-  // scar: Scar | undefined; // When the owning Background is added to the Actor, prompt to accept and customize this scar
-  // familyHistoryEntry: FamilyHistoryEntry | undefined;
-}
-
-export class SkillBackgroundModifier implements BackgroundModifier {
-  enabled: boolean = false;
-  modifierType: string = "skill";
-  modifiedSkillRqidLink: RqidLink | undefined = undefined;
-  bonus: number = 0;
-  incomeSkill: boolean = false;
-  cultStartingSkill: boolean = false;
-  cultSkill: boolean = false;
-  backgroundProvidesTraining: boolean = false;
-}
-
 export interface BackgroundDataSourceData {
   background: string;
   backgroundRqidLink: RqidLink | undefined;
   type: BackgroundTypeEnum;
-  suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
-  suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
-  backgroundModifiers: BackgroundModifier[]; // might want to change this to skillModifiers?
-
+  backgroundSkillRqidLinks: RqidLink[];
   backgroundRuneRqidLinks: RqidLink[];
   backgroundPassionRqidLinks: RqidLink[];
-
+  suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
+  suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
   income: number;
   ransom: number;
   standardOfLiving: StandardOfLivingEnum | undefined;
@@ -91,7 +68,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   type: BackgroundTypeEnum.None,
   suggestedCultRqidLinks: [],
   suggestedOccupationRqidLinks: [],
-  backgroundModifiers: [],
+  backgroundSkillRqidLinks: [],
   backgroundRuneRqidLinks: [],
   backgroundPassionRqidLinks: [],
   income: 0,

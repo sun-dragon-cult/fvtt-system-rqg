@@ -52,85 +52,20 @@
        
         <div class="key-value-grid">
 
-          <label>{{localize "RQG.Item.Background.Skills"}}
-            <i id="btn-edit-skill-background-modifiers-{{id}}" class="fas fa-edit"></i>
-            <i id="btn-add-background-modifiers-{{id}}" class="fas fa-plus"></i>
-          </label>
-          <div class="drop-target"
-               data-dropzone="backgroundModifiers"
-               data-dropzone-document-types="skill">
-            <div id="background-modifier-display-{{id}}" style="display: block;">
-              {{{backgroundSkillModifiersJoined}}}
-            </div>
-            <div
-                 style="display: none;"
-                 id="background-modifier-edit-{{id}}">
-              <div style="display: flex; flex-wrap: wrap;">
-                {{#each system.backgroundModifiers}}
-                  {{#if (eq this.modifierType "skill")}}
-                    <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-                      {{!-- {{json this}} --}}
-                      <i class="fas fa-times icon"
-                        data-delete-background-modifier-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.modifiedSkillRqidLink.rqid
-                                          name=this.name}}"></i>
+          <label>{{localize "RQG.Item.Background.Skills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.backgroundSkillRqidLinks
+            dropzoneData="backgroundSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="backgroundSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+            dropdownOptions=allSkillOptions
+            showBonus=true
+            editBonusPropertyName="backgroundSkillRqidLinks"
+          }}
 
-                      {{> rqidLink
-                        rqidLink=this.modifiedSkillRqidLink
-                      }}
-                      <div>
-                        <input
-                          type="number"
-                          {{!-- min="-100"
-                          max="100" --}} 
-                          id="skill-bonus-{{@index}}"
-                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                          data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifier'}}"
-                          value="{{this.bonus}}">%
-                      </div>
-                      <div>
-                        <input
-                          type="checkbox"
-                          id="background-modifier-enabled-{{@index}}"
-                          {{!-- data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}" --}}
-                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                          data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}"
-                          {{checked this.enabled}}>
-                        <label for="background-modifier-enabled-{{@index}}">{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}</label>
-                      </div>
-                      <div>
-                        <input
-                          type="checkbox"
-                          id="income-skill-{{@index}}"
-                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                          data-tooltip="{{localize 'RQG.Item.Background.IncomeSkillQ'}}"
-                          {{checked this.incomeSkill}}>
-                        <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Background.IncomeSkillQ'}}</label>
-                      </div>
-                      <div>
-                        <input
-                          type="checkbox"
-                          id="cult-starting-skill-{{@index}}"
-                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                          data-tooltip="{{localize 'RQG.Item.Background.CultStartingSkillQ'}}"
-                          {{checked this.cultStartingSkill}}>
-                        <label for="cult-starting-skill-{{@index}}">{{localize 'RQG.Item.Background.CultStartingSkillQ'}}</label>
-                      </div>
-                      <div>
-                        <input
-                          type="checkbox"
-                          id="cult-skill-{{@index}}"
-                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                          data-tooltip="{{localize 'RQG.Item.Background.CultSkillQ'}}"
-                          {{checked this.cultSkill}}>
-                        <label for="cult-skill-{{@index}}">{{localize 'RQG.Item.Background.CultSkillQ'}}</label>
-                      </div>
-                    </div>
-                  {{/if}}
-                {{/each}}
-              </div>
-            </div>
-          </div>
 
           <label>{{localize "RQG.Item.Background.Runes"}}</label>
           {{> rqidLinkArrayDropzone
@@ -188,116 +123,3 @@
     </section>
   </main>
 </form>
-
-
-
-          
-{{!-- 
-          <label>{{localize "RQG.Item.Background.Homelands"}}</label>
-          <div class="drop-target"
-               data-dropzone="homelandRqidLinks"
-               data-dropzone-document-types="homeland">
-            <div style="display: flex; flex-wrap: wrap;">
-              {{#if homelandsJoined}}
-                {{homelandsJoined}}
-              {{else}}
-                {{localize "RQG.Item.Background.AllHomelands"}}
-              {{/if}}
-            </div>
-          </div>
-
-          <label>{{localize "RQG.Item.Background.BackgroundalSkillLinks"}} <i
-            id="bnt-edit-background-modifiers-{{id}}" class="fas fa-edit"></i></label>
-          <div class="drop-target"
-               data-dropzone="backgroundalSkillRqidLinks"
-               data-dropzone-document-types="skill">
-            <div id="background-modifier-display-{{id}}" style="display: block;">
-              {{{skillsJoined}}}
-            </div>
-            <div
-                 style="display: none;"
-                 id="background-modifier-edit-{{id}}">
-              <div style="display: flex; flex-wrap: wrap;">
-                {{#each system.backgroundalSkills}}
-                  <div class="backgroundalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-                    <i class="fas fa-times icon"
-                       data-delete-background-modifier-rqid="{{this.skillRqidLink.rqid}}"
-                       data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
-                                         name=this.skillRqidLink.name}}"></i>
-
-                    {{> rqidLink
-                      rqidLink=this.skillRqidLink
-                    }}
-                    <div>
-                      <input
-                        type="number"
-                        min="-100"
-                        max="100"
-                        id="bonus-{{@index}}"
-                        data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                        data-tooltip="{{localize 'RQG.Item.Background.BackgroundalSkillBonus'}}"
-                        value="{{this.bonus}}">%
-                    </div>
-                    <div>
-                      <input
-                        type="checkbox"
-                        id="income-skill-{{@index}}"
-                        data-skill-rqid="{{this.skillRqidLink.rqid}}"
-                        data-tooltip="{{localize 'RQG.Item.Background.IncomeSkillQ'}}"
-                        {{checked this.incomeSkill}}>
-                      <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Background.IncomeSkillQ'}}</label>
-                    </div>
-                  </div>
-                {{/each}}
-              </div>
-            </div>
-          </div>
-
-
-          <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Background.StandardOfLiving"}}</label>
-          <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
-            {{#select system.standardOfLiving}}
-              {{#each standardsOfLiving}}
-                <option value="{{this}}">{{localize (concat "RQG.Item.Background.StandardOfLivingEnum." this)}}</option>
-              {{/each}}
-            {{/select}}
-          </select>
-
-          <label for="base-income-{{id}}">{{localize "RQG.Item.Background.BaseIncome"}}</label>
-          <div>
-            <input type="number" id="base-income-{{id}}" name="system.baseIncome" min="0"
-                   value="{{system.baseIncome}}">
-            &nbsp;
-            {{localize "RQG.Item.Gear.LunarsAbbr"}}
-          </div>
-
-          <label for="base-income-notes-{{id}}">{{localize "RQG.Item.Background.BaseIncomeNotes"}}</label>
-          <input type="text" id="base-income-notes-{{id}}" name="system.baseIncomeNotes"
-                 value="{{system.baseIncomeNotes}}">
-
-          <label>{{localize "RQG.Item.Background.CultLinks"}}</label>
-          {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.cultRqidLinks
-            dropzoneData="cultRqidLinks"
-            dropDocumentNames="Item"
-            dropDocumentTypes="cult"
-            showDeleteFromPropertyName="cultRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
-          }}
-
-          <label for="ransom-{{id}}">{{localize "RQG.Item.Background.Ransom"}}</label>
-          <div>
-            <input type="number" id="ransom-{{id}}" name="data.ransom" min="0" value="{{system.ransom}}">
-            &nbsp;
-            {{localize "RQG.Item.Gear.LunarsAbbr"}}
-          </div>
-
-          <label>{{localize "RQG.Item.Background.StartingEquipmentLinks"}}</label>
-          {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.startingEquipmentRqidLinks
-            dropzoneData="startingEquipmentRqidLinks"
-            dropDocumentNames="Item"
-            dropDocumentTypes="armor,gear,weapon"
-            showDeleteFromPropertyName="startingEquipmentRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
-          }}--}}

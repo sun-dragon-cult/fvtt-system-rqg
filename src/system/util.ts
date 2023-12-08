@@ -382,6 +382,23 @@ export type AvailableItemCache = {
   rqid: string;
 };
 
+let availableSkills: AvailableItemCache[] = [];
+
+/**
+ * Get the cached data about the runes that are available in the world.
+ * @see {@link cacheAvailableSkills}
+ */
+export function getAvailableSkills(silent: boolean = false): AvailableItemCache[] {
+  if (availableSkills.length > 0) {
+    return availableSkills;
+  }
+  if (!silent) {
+    ui.notifications?.warn("compendiums not indexed yet, try again!");
+  }
+  cacheAvailableSkills();
+  return [];
+}
+
 let availableRunes: AvailableItemCache[] = [];
 
 /**
@@ -414,6 +431,14 @@ export function getAvailablePassions(silent: boolean = false): AvailableItemCach
   }
   cacheAvailablePassions();
   return [];
+}
+
+export async function cacheAvailableSkills(): Promise<AvailableItemCache[]> {
+  if (availableSkills.length > 0) {
+    return availableSkills;
+  }
+  availableSkills = await getItemsToCache("i.skill.");
+  return availableSkills;
 }
 
 export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
@@ -479,6 +504,15 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
     img: r.img,
     rqid: r.rqid,
   }));
+}
+
+export function getSelectSkillOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+  const emptyOption: AvailableItemCache = {
+    rqid: "empty",
+    name: localize(emptyPlaceholderKey),
+    img: "",
+  };
+  return getSelectOptions(emptyOption, getAvailableSkills);
 }
 
 export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
