@@ -46,6 +46,7 @@ export interface BackgroundDataSourceData {
   passionBonusRqidLinks: RqidLink[];
   suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
   suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
+  homelandRqidLinks: RqidLink[];
   income: number;
   ransom: number;
   standardOfLiving: StandardOfLivingEnum | undefined;
@@ -75,6 +76,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   cultSkillRqidLinks: [],
   runeBonusRqidLinks: [],
   passionBonusRqidLinks: [],
+  homelandRqidLinks: [],
   income: 0,
   ransom: 0,
   standardOfLiving: undefined,

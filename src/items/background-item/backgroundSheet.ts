@@ -20,6 +20,7 @@ export interface BackgroundSheetData {
   allPassionOptions: AvailableItemCache[];
   allCultOptions: AvailableItemCache[];
   allOccupationOptions: AvailableItemCache[];
+  allHomelandOptions: AvailableItemCache[];
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -82,6 +83,10 @@ export class BackgroundSheet extends RqgItemSheet<
       allOccupationOptions: getSelectItemOptions(
         RqidTypeStart.Occupation,
         "RQG.Item.Background.AddSuggestedOccupationPlaceholder",
+      ),
+      allHomelandOptions: getSelectItemOptions(
+        RqidTypeStart.Homeland,
+        "RQG.Item.Background.AddHomelandPlaceholder",
       ),
     };
   }

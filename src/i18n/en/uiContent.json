@@ -697,13 +697,16 @@
         "PassionBonuses": "Passion Bonuses",
         "SuggestedCults": "Suggested Cults",
         "SuggestedOccupations": "Suggested Occupations",
+        "Homelands": "Homelands",
         "AddSkillBonusPlaceholder": "Add a Skill Bonus",
         "AddIncomeSkillPlaceholder": "Add an Income Skill",
         "AddCultSkillPlaceholder": "Add a Cult Skill",
         "AddRunePlaceholder": "Add a Rune",
         "AddPassionPlaceholder": "Add a Passion",
         "AddSuggestedCultPlaceholder": "Add a Passion",
-        "AddSuggestedOccupationPlaceholder": "Add a Suggested Occupation"
+        "AddSuggestedOccupationPlaceholder": "Add a Suggested Occupation",
+        "AddHomelandPlaceholder": "Add a Homeland",
+        "AllHomelands": "All Homelands"
       },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",

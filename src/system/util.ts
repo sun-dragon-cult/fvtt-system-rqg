@@ -427,58 +427,6 @@ export async function getItemsToCache(rqidStart: RqidTypeStart): Promise<Availab
     )
   ).flat();
 
-  // export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
-  //   if (availableRunes.length > 0) {
-  //     return availableRunes;
-  //   }
-  //   availableRunes = await getItemsToCache("i.rune.");
-  //   return availableRunes;
-  // }
-
-  // export async function cacheAvailablePassions(): Promise<AvailableItemCache[]> {
-  //   if (availablePassions.length > 0) {
-  //     return availablePassions;
-  //   }
-  //   availablePassions = await getItemsToCache("i.passion.");
-  //   return availablePassions;
-  // }
-
-  // export async function cacheAvailableCults(): Promise<AvailableItemCache[]> {
-  //   if (availableCults.length > 0) {
-  //     return availableCults;
-  //   }
-  //   availableCults = await getItemsToCache("i.background.cult-");
-  //   return availableCults;
-  // }
-
-  // export async function cacheAvailableOccupations(): Promise<AvailableItemCache[]> {
-  //   if (availableOccupations.length > 0) {
-  //     return availableOccupations;
-  //   }
-  //   availableOccupations = await getItemsToCache("i.background.occupation-");
-  //   return availableOccupations;
-  // }
-
-  // export async function cacheAvailableHomelands(): Promise<AvailableItemCache[]> {
-  //   if (availableHomelands.length > 0) {
-  //     return availableHomelands;
-  //   }
-  //   availableHomelands = await getItemsToCache("i.background.homeland-");
-  //   return availableHomelands;
-  // }
-
-  // export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
-  //   if (availableHitLocations.length > 0) {
-  //     return availableHitLocations;
-  //   }
-  //   availableHitLocations = await getItemsToCache("i.hit-location.");
-  //   return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
-  // }4
-
-  // export async function cacheAvailableItems(rqidTypeStart: RqidTypeStart): Promise<AvailableItemCache[]> {
-
-  // }
-
   // Only keep one of each rqid, the one with the highest priority
   const highestPriorityItemData: any = compendiumItemIndexData.reduce(
     (acc: AvailableItemCache[], itemIndexData: any) => {
@@ -502,60 +450,6 @@ export async function getItemsToCache(rqidStart: RqidTypeStart): Promise<Availab
     rqid: r.rqid,
   }));
 }
-
-// export function getSelectSkillOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-//   const emptyOption: AvailableItemCache = {
-//     rqid: "empty",
-//     name: localize(emptyPlaceholderKey),
-//     img: "",
-//   };
-//   return getSelectOptions(emptyOption, getAvailableSkills);
-// }
-
-// export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-//   const emptyOption: AvailableItemCache = {
-//     rqid: "empty",
-//     name: localize(emptyPlaceholderKey),
-//     img: "",
-//   };
-//   return getSelectOptions(emptyOption, getAvailableRunes);
-// }
-
-// export function getSelectPassionOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-//   const emptyOption: AvailableItemCache = {
-//     rqid: "empty",
-//     name: localize(emptyPlaceholderKey),
-//     img: "",
-//   };
-//   return getSelectOptions(emptyOption, getAvailablePassions);
-// }
-
-// export function getSelectCultOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-//   const emptyOption: AvailableItemCache = {
-//     rqid: "empty",
-//     name: localize(emptyPlaceholderKey),
-//     img: "",
-//   };
-//   return getSelectOptions(emptyOption, getAvailableCults);
-// }
-
-// export function getSelectOccupationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-//   const emptyOption: AvailableItemCache = {
-//     rqid: "empty",
-//     name: localize(emptyPlaceholderKey),
-//     img: "",
-//   };
-//   return getSelectOptions(emptyOption, getAvailableOccupations);
-// }
-
-// export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-//   const emptyOption: AvailableItemCache = {
-//     rqid: "empty",
-//     name: localize(emptyPlaceholderKey),
-//     img: "",
-//   };
-//   return getSelectOptions(emptyOption, getAvailableHitLocations);
-// }
 
 export function getSelectItemOptions(
   rqidTypeStart: RqidTypeStart,

@@ -154,6 +154,18 @@
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
             dropdownOptions=allOccupationOptions
           }}
+
+          <label>{{localize "RQG.Item.Background.Homelands"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.homelandRqidLinks
+            dropzoneData="homelandRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="homelandRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+            dropdownOptions=allHomelandOptions
+            emptyText="RQG.Item.Background.AllHomelands"
+          }}
             
           </div>
         </div> 
