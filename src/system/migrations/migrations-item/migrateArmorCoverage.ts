@@ -4,19 +4,20 @@ import { ItemUpdate } from "../applyMigrations";
 import {
   assertItemType,
   AvailableItemCache,
-  cacheAvailableHitLocations,
-  getAvailableHitLocations,
+  cacheAvailableItems,
+  getAvailableItems,
   isTruthy,
+  RqidTypeStart,
 } from "../../util";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
 
 export async function migrateArmorCoverage(itemData: ItemData): Promise<ItemUpdate> {
   const updateData = {};
 
-  let availableHitLocations = getAvailableHitLocations(true);
+  let availableHitLocations = getAvailableItems(RqidTypeStart.HitLocation, true);
   if (!availableHitLocations.length) {
-    await cacheAvailableHitLocations();
-    availableHitLocations = getAvailableHitLocations();
+    await cacheAvailableItems(RqidTypeStart.HitLocation);
+    availableHitLocations = getAvailableItems(RqidTypeStart.HitLocation);
   }
 
   // Migrate Armor item

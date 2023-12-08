@@ -9,13 +9,7 @@ import { RQG_CONFIG, systemId } from "./system/config";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import {
-  cacheAvailableHitLocations,
-  cacheAvailableRunes,
-  getGame,
-  getGameUser,
-  localize,
-} from "./system/util";
+import { RqidTypeStart, cacheAvailableItems, getGame, getGameUser, localize } from "./system/util";
 import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
@@ -132,11 +126,16 @@ Hooks.once("init", async () => {
 
 Hooks.once("ready", async () => {
   await migrateWorld();
-  // Make sure the cache of available runes is preloaded
-  await cacheAvailableRunes();
 
-  // Make sure the cache of available hit locations is preloaded
-  await cacheAvailableHitLocations();
+  // TODO: iterate through RqidTypeStart
+  // TODO: optimize caching (can we do it in a single pass through the compendium packs?)
+  await cacheAvailableItems(RqidTypeStart.HitLocation);
+  await cacheAvailableItems(RqidTypeStart.Skill);
+  await cacheAvailableItems(RqidTypeStart.Rune);
+  await cacheAvailableItems(RqidTypeStart.Passion);
+  await cacheAvailableItems(RqidTypeStart.Cult);
+  await cacheAvailableItems(RqidTypeStart.Occupation);
+  await cacheAvailableItems(RqidTypeStart.Homeland);
 
   // Verify that at least one wiki module is activated
   if (

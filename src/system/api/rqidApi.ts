@@ -1,6 +1,14 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { systemId } from "../config";
-import { getAvailableRunes, getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
+import {
+  getAvailableItems,
+  getGame,
+  localize,
+  RqgError,
+  RqidTypeStart,
+  toKebabCase,
+  trimChars,
+} from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
@@ -543,7 +551,7 @@ export class Rqid {
 
       // Special handling for rune items to display the actual rune instead of the default item image
       if (itemType === ItemTypeEnum.Rune) {
-        const rune = getAvailableRunes().find((r) => r.rqid === rqid);
+        const rune = getAvailableItems(RqidTypeStart.Rune).find((r) => r.rqid === rqid);
         if (!rune) {
           const msg = localize("RQG.RQGSystem.CouldNotFindRune", { rqid: rqid });
           // @ts-expect-error console

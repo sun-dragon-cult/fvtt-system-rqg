@@ -7,10 +7,11 @@ import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   AvailableItemCache,
+  RqidTypeStart,
   convertFormValueToString,
-  getAvailableHitLocations,
+  getAvailableItems,
   getGameUser,
-  getSelectHitLocationOptions,
+  getSelectItemOptions,
   localize,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
@@ -59,7 +60,8 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       isGM: getGameUser().isGM,
       system: system,
       effects: this.document.effects,
-      allHitLocationOptions: getSelectHitLocationOptions(
+      allHitLocationOptions: getSelectItemOptions(
+        RqidTypeStart.HitLocation,
         "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder",
       ),
       equippedStatuses: [...equippedStatuses],
@@ -89,7 +91,9 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
 
     if (!this.document.system.hitLocationRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
       const newName =
-        getAvailableHitLocations().find((l) => l.rqid === event.currentTarget.value)?.name ?? "";
+        getAvailableItems(RqidTypeStart.HitLocation).find(
+          (l) => l.rqid === event.currentTarget.value,
+        )?.name ?? "";
       const newHitLocationRqidLink = new RqidLink(newRqid, newName);
       const updatedLinks = [...this.document.system.hitLocationRqidLinks, newHitLocationRqidLink];
       await this.document.update({ "system.hitLocationRqidLinks": updatedLinks });

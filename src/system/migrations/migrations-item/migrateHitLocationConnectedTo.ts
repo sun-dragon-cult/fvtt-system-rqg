@@ -2,7 +2,7 @@ import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
 import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemUpdate } from "../applyMigrations";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { cacheAvailableHitLocations, getAvailableHitLocations } from "../../util";
+import { RqidTypeStart, cacheAvailableItems, getAvailableItems } from "../../util";
 
 // Migrate HitLocation connectedTo from name of hit location to rqid
 export async function migrateHitLocationConnectedTo(
@@ -33,10 +33,10 @@ export async function migrateHitLocationConnectedTo(
 
     if (!updateData?.system?.connectedTo) {
       // Then try with cached hit locations
-      let availableHitLocations = getAvailableHitLocations(true);
+      let availableHitLocations = getAvailableItems(RqidTypeStart.HitLocation, true);
       if (!availableHitLocations.length) {
-        await cacheAvailableHitLocations();
-        availableHitLocations = getAvailableHitLocations();
+        await cacheAvailableItems(RqidTypeStart.HitLocation);
+        availableHitLocations = getAvailableItems(RqidTypeStart.HitLocation);
       }
       const matchingHitLocationName = availableHitLocations.find(
         (hl) => hl.name === itemData.system.connectedTo,

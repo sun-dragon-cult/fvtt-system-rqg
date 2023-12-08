@@ -363,17 +363,14 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   return rqgActor as unknown as T;
 }
 
-let availableHitLocations: AvailableItemCache[] = [];
-
-export function getAvailableHitLocations(silent: boolean = false): AvailableItemCache[] {
-  if (availableHitLocations.length > 0) {
-    return availableHitLocations;
-  }
-  if (!silent) {
-    ui.notifications?.warn("compendiums not indexed yet, try again!");
-  }
-  cacheAvailableHitLocations();
-  return [];
+export enum RqidTypeStart {
+  HitLocation = "i.hit-location.",
+  Skill = "i.skill.",
+  Rune = "i.rune.",
+  Passion = "i.passion.",
+  Cult = "i.background.cult-",
+  Occupation = "i.background.occupation-",
+  Homeland = "i.background.homeland-",
 }
 
 export type AvailableItemCache = {
@@ -382,144 +379,42 @@ export type AvailableItemCache = {
   rqid: string;
 };
 
-let availableSkills: AvailableItemCache[] = [];
+const availableItemsCacheMap: Map<RqidTypeStart, AvailableItemCache[]> = new Map<
+  RqidTypeStart,
+  AvailableItemCache[]
+>();
 
-/**
- * Get the cached data about the runes that are available in the world.
- * @see {@link cacheAvailableSkills}
- */
-export function getAvailableSkills(silent: boolean = false): AvailableItemCache[] {
-  if (availableSkills.length > 0) {
-    return availableSkills;
+export function getAvailableItems(
+  rqidTypeStart: RqidTypeStart,
+  silent: boolean = false,
+): AvailableItemCache[] {
+  const cache = availableItemsCacheMap.get(rqidTypeStart) || [];
+  if (cache.length > 0) {
+    return cache;
   }
   if (!silent) {
     ui.notifications?.warn("compendiums not indexed yet, try again!");
   }
-  cacheAvailableSkills();
+  cacheAvailableItems(rqidTypeStart);
   return [];
 }
 
-let availableRunes: AvailableItemCache[] = [];
-
-/**
- * Get the cached data about the runes that are available in the world.
- * @see {@link cacheAvailableRunes}
- */
-export function getAvailableRunes(silent: boolean = false): AvailableItemCache[] {
-  if (availableRunes.length > 0) {
-    return availableRunes;
+export async function cacheAvailableItems(
+  rqidTypeStart: RqidTypeStart,
+): Promise<AvailableItemCache[]> {
+  const cache = availableItemsCacheMap.get(rqidTypeStart) || [];
+  if (cache.length > 0) {
+    return cache;
   }
-  if (!silent) {
-    ui.notifications?.warn("compendiums not indexed yet, try again!");
-  }
-  cacheAvailableRunes();
-  return [];
-}
-
-let availablePassions: AvailableItemCache[] = [];
-
-/**
- * Get the cached data about the runes that are available in the world.
- * @see {@link cacheAvailablePassions}
- */
-export function getAvailablePassions(silent: boolean = false): AvailableItemCache[] {
-  if (availablePassions.length > 0) {
-    return availablePassions;
-  }
-  if (!silent) {
-    ui.notifications?.warn("compendiums not indexed yet, try again!");
-  }
-  cacheAvailablePassions();
-  return [];
-}
-
-let availableCults: AvailableItemCache[] = [];
-
-/**
- * Get the cached data about the runes that are available in the world.
- * @see {@link cacheAvailableCults}
- */
-export function getAvailableCults(silent: boolean = false): AvailableItemCache[] {
-  if (availableCults.length > 0) {
-    return availableCults;
-  }
-  if (!silent) {
-    ui.notifications?.warn("compendiums not indexed yet, try again!");
-  }
-  cacheAvailableCults();
-  return [];
-}
-
-let availableOccupations: AvailableItemCache[] = [];
-
-/**
- * Get the cached data about the runes that are available in the world.
- * @see {@link cacheAvailableOccupations}
- */
-export function getAvailableOccupations(silent: boolean = false): AvailableItemCache[] {
-  if (availableOccupations.length > 0) {
-    return availableOccupations;
-  }
-  if (!silent) {
-    ui.notifications?.warn("compendiums not indexed yet, try again!");
-  }
-  cacheAvailableOccupations();
-  return [];
-}
-
-export async function cacheAvailableSkills(): Promise<AvailableItemCache[]> {
-  if (availableSkills.length > 0) {
-    return availableSkills;
-  }
-  availableSkills = await getItemsToCache("i.skill.");
-  return availableSkills;
-}
-
-export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
-  if (availableRunes.length > 0) {
-    return availableRunes;
-  }
-  availableRunes = await getItemsToCache("i.rune.");
-  return availableRunes;
-}
-
-export async function cacheAvailablePassions(): Promise<AvailableItemCache[]> {
-  if (availablePassions.length > 0) {
-    return availablePassions;
-  }
-  availablePassions = await getItemsToCache("i.passion.");
-  return availablePassions;
-}
-
-export async function cacheAvailableCults(): Promise<AvailableItemCache[]> {
-  if (availableCults.length > 0) {
-    return availableCults;
-  }
-  availableCults = await getItemsToCache("i.background.cult-");
-  return availableCults;
-}
-
-export async function cacheAvailableOccupations(): Promise<AvailableItemCache[]> {
-  if (availableOccupations.length > 0) {
-    return availableOccupations;
-  }
-  availableOccupations = await getItemsToCache("i.background.occupation-");
-  return availableOccupations;
-}
-
-export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
-  if (availableHitLocations.length > 0) {
-    return availableHitLocations;
-  }
-  availableHitLocations = await getItemsToCache("i.hit-location.");
-  return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
+  availableItemsCacheMap.set(rqidTypeStart, await getItemsToCache(rqidTypeStart));
+  return availableItemsCacheMap.get(rqidTypeStart) || [];
 }
 
 /**
  * Go through all compendiums and make a list of all the unique item that match the rqidStart
  * in them to find the items and storing name, img & rqid for each in the supplied cache.
  */
-export async function getItemsToCache(rqidStart: string): Promise<AvailableItemCache[]> {
+export async function getItemsToCache(rqidStart: RqidTypeStart): Promise<AvailableItemCache[]> {
   const compendiumItemIndexData = (
     await Promise.all(
       getGame().packs.map(async (pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
@@ -531,6 +426,58 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
       }),
     )
   ).flat();
+
+  // export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
+  //   if (availableRunes.length > 0) {
+  //     return availableRunes;
+  //   }
+  //   availableRunes = await getItemsToCache("i.rune.");
+  //   return availableRunes;
+  // }
+
+  // export async function cacheAvailablePassions(): Promise<AvailableItemCache[]> {
+  //   if (availablePassions.length > 0) {
+  //     return availablePassions;
+  //   }
+  //   availablePassions = await getItemsToCache("i.passion.");
+  //   return availablePassions;
+  // }
+
+  // export async function cacheAvailableCults(): Promise<AvailableItemCache[]> {
+  //   if (availableCults.length > 0) {
+  //     return availableCults;
+  //   }
+  //   availableCults = await getItemsToCache("i.background.cult-");
+  //   return availableCults;
+  // }
+
+  // export async function cacheAvailableOccupations(): Promise<AvailableItemCache[]> {
+  //   if (availableOccupations.length > 0) {
+  //     return availableOccupations;
+  //   }
+  //   availableOccupations = await getItemsToCache("i.background.occupation-");
+  //   return availableOccupations;
+  // }
+
+  // export async function cacheAvailableHomelands(): Promise<AvailableItemCache[]> {
+  //   if (availableHomelands.length > 0) {
+  //     return availableHomelands;
+  //   }
+  //   availableHomelands = await getItemsToCache("i.background.homeland-");
+  //   return availableHomelands;
+  // }
+
+  // export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
+  //   if (availableHitLocations.length > 0) {
+  //     return availableHitLocations;
+  //   }
+  //   availableHitLocations = await getItemsToCache("i.hit-location.");
+  //   return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
+  // }4
+
+  // export async function cacheAvailableItems(rqidTypeStart: RqidTypeStart): Promise<AvailableItemCache[]> {
+
+  // }
 
   // Only keep one of each rqid, the one with the highest priority
   const highestPriorityItemData: any = compendiumItemIndexData.reduce(
@@ -556,65 +503,79 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
   }));
 }
 
-export function getSelectSkillOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-  };
-  return getSelectOptions(emptyOption, getAvailableSkills);
-}
+// export function getSelectSkillOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+//   const emptyOption: AvailableItemCache = {
+//     rqid: "empty",
+//     name: localize(emptyPlaceholderKey),
+//     img: "",
+//   };
+//   return getSelectOptions(emptyOption, getAvailableSkills);
+// }
 
-export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-  };
-  return getSelectOptions(emptyOption, getAvailableRunes);
-}
+// export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+//   const emptyOption: AvailableItemCache = {
+//     rqid: "empty",
+//     name: localize(emptyPlaceholderKey),
+//     img: "",
+//   };
+//   return getSelectOptions(emptyOption, getAvailableRunes);
+// }
 
-export function getSelectPassionOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-  };
-  return getSelectOptions(emptyOption, getAvailablePassions);
-}
+// export function getSelectPassionOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+//   const emptyOption: AvailableItemCache = {
+//     rqid: "empty",
+//     name: localize(emptyPlaceholderKey),
+//     img: "",
+//   };
+//   return getSelectOptions(emptyOption, getAvailablePassions);
+// }
 
-export function getSelectCultOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-  };
-  return getSelectOptions(emptyOption, getAvailableCults);
-}
+// export function getSelectCultOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+//   const emptyOption: AvailableItemCache = {
+//     rqid: "empty",
+//     name: localize(emptyPlaceholderKey),
+//     img: "",
+//   };
+//   return getSelectOptions(emptyOption, getAvailableCults);
+// }
 
-export function getSelectOccupationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-  };
-  return getSelectOptions(emptyOption, getAvailableOccupations);
-}
+// export function getSelectOccupationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+//   const emptyOption: AvailableItemCache = {
+//     rqid: "empty",
+//     name: localize(emptyPlaceholderKey),
+//     img: "",
+//   };
+//   return getSelectOptions(emptyOption, getAvailableOccupations);
+// }
 
-export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+// export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+//   const emptyOption: AvailableItemCache = {
+//     rqid: "empty",
+//     name: localize(emptyPlaceholderKey),
+//     img: "",
+//   };
+//   return getSelectOptions(emptyOption, getAvailableHitLocations);
+// }
+
+export function getSelectItemOptions(
+  rqidTypeStart: RqidTypeStart,
+  emptyPlaceholderKey: string,
+): AvailableItemCache[] {
   const emptyOption: AvailableItemCache = {
     rqid: "empty",
     name: localize(emptyPlaceholderKey),
     img: "",
   };
-  return getSelectOptions(emptyOption, getAvailableHitLocations);
+  return getSelectOptions(emptyOption, rqidTypeStart);
 }
 
 function getSelectOptions(
   emptyOption: AvailableItemCache,
-  getItemFn: () => AvailableItemCache[],
+  rqidTypeStart: RqidTypeStart,
 ): AvailableItemCache[] {
-  const sortedOptions = (getItemFn() ?? []).sort((a, b) => a.name.localeCompare(b.name));
+  const sortedOptions = (getAvailableItems(rqidTypeStart) ?? []).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
   const options: AvailableItemCache[] =
     [emptyOption, ...sortedOptions].reduce((acc: any, i: any) => {
       return { ...acc, [i.rqid]: i.name };
@@ -623,7 +584,7 @@ function getSelectOptions(
 }
 
 function getIndexData(
-  rqidStart: string,
+  rqidStart: RqidTypeStart,
   pack: CompendiumCollection<CompendiumCollection.Metadata>,
 ): AvailableItemCache[] {
   return pack.index.reduce((acc: AvailableItemCache[], indexData) => {

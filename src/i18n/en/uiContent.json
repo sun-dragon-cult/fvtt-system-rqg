@@ -695,11 +695,13 @@
         "PassionBonuses": "Passion Bonuses",
         "SuggestedCults": "Suggested Cults",
         "SuggestedOccupations": "Suggested Occupations",
-        "AddSkillPlaceholder": "Add a Skill",
+        "AddSkillBonusPlaceholder": "Add a Skill Bonus",
+        "AddIncomeSkillPlaceholder": "Add an Income Skill",
+        "AddCultSkillPlaceholder": "Add a Cult Skill",
         "AddRunePlaceholder": "Add a Rune",
         "AddPassionPlaceholder": "Add a Passion",
         "AddSuggestedCultPlaceholder": "Add a Passion",
-        "AddSuggestedOccupationPlaceholder": "Add a Passion"
+        "AddSuggestedOccupationPlaceholder": "Add a Suggested Occupation"
       },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",

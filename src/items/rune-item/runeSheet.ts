@@ -1,6 +1,12 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneType, RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getGameUser, AvailableItemCache, localize, getSelectRuneOptions } from "../../system/util";
+import {
+  getGameUser,
+  AvailableItemCache,
+  localize,
+  getSelectItemOptions,
+  RqidTypeStart,
+} from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -47,8 +53,14 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       isGM: getGameUser().isGM,
       system: system,
       isEmbedded: this.document.isEmbedded,
-      opposingRuneOptions: getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder"),
-      minorRuneOptions: getSelectRuneOptions("RQG.Item.Rune.AddMinorRunePlaceholder"),
+      opposingRuneOptions: getSelectItemOptions(
+        RqidTypeStart.Rune,
+        "RQG.Item.Rune.SetOpposingRunePlaceholder",
+      ),
+      minorRuneOptions: getSelectItemOptions(
+        RqidTypeStart.Rune,
+        "RQG.Item.Rune.AddMinorRunePlaceholder",
+      ),
       runeTypes: Object.values(RuneTypeEnum).map((rt) => ({
         type: rt,
         name: localize(`RQG.Item.Rune.RuneType.${rt}`),

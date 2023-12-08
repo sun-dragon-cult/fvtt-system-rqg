@@ -1,7 +1,8 @@
 import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import {
+  RqidTypeStart,
   formatListByUserLanguage,
-  getAvailableRunes,
+  getAvailableItems,
   getGame,
   getGameUser,
   localize,
@@ -96,7 +97,7 @@ export const registerHandlebarsHelpers = function () {
     if (!rqid) {
       return;
     }
-    const availableRunes = getAvailableRunes();
+    const availableRunes = getAvailableItems(RqidTypeStart.Rune);
     const rune = availableRunes.find((r) => r.rqid === rqid);
     if (!rune) {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {

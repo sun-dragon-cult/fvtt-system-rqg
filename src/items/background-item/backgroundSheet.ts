@@ -7,16 +7,15 @@ import {
   assertHtmlElement,
   getGameUser,
   AvailableItemCache,
-  getSelectSkillOptions,
-  getSelectRuneOptions,
-  getSelectPassionOptions,
-  getSelectCultOptions,
-  getSelectOccupationOptions,
+  getSelectItemOptions,
+  RqidTypeStart,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 
 export interface BackgroundSheetData {
-  allSkillOptions: AvailableItemCache[];
+  skillBonusOptions: AvailableItemCache[];
+  incomeSkillOptions: AvailableItemCache[];
+  cultSkillOptions: AvailableItemCache[];
   allRuneOptions: AvailableItemCache[];
   allPassionOptions: AvailableItemCache[];
   allCultOptions: AvailableItemCache[];
@@ -56,11 +55,32 @@ export class BackgroundSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isGM: getGameUser().isGM,
       system: system,
-      allSkillOptions: getSelectSkillOptions("RQG.Item.Background.AddSkillPlaceholder"),
-      allRuneOptions: getSelectRuneOptions("RQG.Item.Background.AddRunePlaceholder"),
-      allPassionOptions: getSelectPassionOptions("RQG.Item.Background.AddPassionPlaceholder"),
-      allCultOptions: getSelectCultOptions("RQG.Item.Background.AddSuggestedCultPlaceholder"),
-      allOccupationOptions: getSelectOccupationOptions(
+      skillBonusOptions: getSelectItemOptions(
+        RqidTypeStart.Skill,
+        "RQG.Item.Background.AddSkillBonusPlaceholder",
+      ),
+      incomeSkillOptions: getSelectItemOptions(
+        RqidTypeStart.Skill,
+        "RQG.Item.Background.AddIncomeSkillPlaceholder",
+      ),
+      cultSkillOptions: getSelectItemOptions(
+        RqidTypeStart.Skill,
+        "RQG.Item.Background.AddCultSkillPlaceholder",
+      ),
+      allRuneOptions: getSelectItemOptions(
+        RqidTypeStart.Rune,
+        "RQG.Item.Background.AddRunePlaceholder",
+      ),
+      allPassionOptions: getSelectItemOptions(
+        RqidTypeStart.Passion,
+        "RQG.Item.Background.AddPassionPlaceholder",
+      ),
+      allCultOptions: getSelectItemOptions(
+        RqidTypeStart.Cult,
+        "RQG.Item.Background.AddSuggestedCultPlaceholder",
+      ),
+      allOccupationOptions: getSelectItemOptions(
+        RqidTypeStart.Occupation,
         "RQG.Item.Background.AddSuggestedOccupationPlaceholder",
       ),
     };

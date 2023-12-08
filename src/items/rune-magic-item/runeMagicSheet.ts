@@ -1,5 +1,10 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser, AvailableItemCache, getSelectRuneOptions } from "../../system/util";
+import {
+  getGameUser,
+  AvailableItemCache,
+  getSelectItemOptions,
+  RqidTypeStart,
+} from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
@@ -51,7 +56,10 @@ export class RuneMagicSheet extends RqgItemSheet<
       ranges: Object.values(SpellRangeEnum),
       durations: Object.values(SpellDurationEnum),
       actorCults: this.getActorCults(),
-      allRuneOptions: getSelectRuneOptions("RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder"),
+      allRuneOptions: getSelectItemOptions(
+        RqidTypeStart.Rune,
+        "RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder",
+      ),
     };
   }
 

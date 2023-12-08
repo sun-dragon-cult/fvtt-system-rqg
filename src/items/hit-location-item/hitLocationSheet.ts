@@ -8,12 +8,13 @@ import {
   activateChatTab,
   assertItemType,
   AvailableItemCache,
-  getAvailableHitLocations,
+  getAvailableItems,
   getGame,
   getGameUser,
   localize,
   requireValue,
   RqgError,
+  RqidTypeStart,
   usersIdsThatOwnActor,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
@@ -69,7 +70,7 @@ export class HitLocationSheet extends RqgItemSheet<
       isEmbedded: this.document.isEmbedded,
       system: system,
 
-      allHitLocations: getAvailableHitLocations(),
+      allHitLocations: getAvailableItems(RqidTypeStart.HitLocation),
       hitLocationTypes: Object.values(HitLocationTypesEnum),
       hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
     };

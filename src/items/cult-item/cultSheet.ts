@@ -6,7 +6,8 @@ import {
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
-  getSelectRuneOptions,
+  getSelectItemOptions,
+  RqidTypeStart,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import type { RqgItem } from "../rqgItem";
@@ -67,7 +68,10 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       enrichedHolyDays: await TextEditor.enrichHTML(system.holyDays, { async: true }),
       // journalEntryName: system.descriptionRqidLink.name,
       ranksEnum: Object.values(CultRankEnum),
-      allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),
+      allRuneOptions: getSelectItemOptions(
+        RqidTypeStart.Rune,
+        "RQG.Item.Cult.AddCultRunePlaceholder",
+      ),
     };
   }
 
