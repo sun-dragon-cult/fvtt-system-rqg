@@ -39,9 +39,11 @@ export interface BackgroundDataSourceData {
   background: string;
   backgroundRqidLink: RqidLink | undefined;
   type: BackgroundTypeEnum;
-  backgroundSkillRqidLinks: RqidLink[];
-  backgroundRuneRqidLinks: RqidLink[];
-  backgroundPassionRqidLinks: RqidLink[];
+  skillBonusRqidLinks: RqidLink[];
+  incomeSkillRqidLinks: RqidLink[];
+  cultSkillRqidLinks: RqidLink[];
+  runeBonusRqidLinks: RqidLink[];
+  passionBonusRqidLinks: RqidLink[];
   suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
   suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
   income: number;
@@ -68,9 +70,11 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   type: BackgroundTypeEnum.None,
   suggestedCultRqidLinks: [],
   suggestedOccupationRqidLinks: [],
-  backgroundSkillRqidLinks: [],
-  backgroundRuneRqidLinks: [],
-  backgroundPassionRqidLinks: [],
+  skillBonusRqidLinks: [],
+  incomeSkillRqidLinks: [],
+  cultSkillRqidLinks: [],
+  runeBonusRqidLinks: [],
+  passionBonusRqidLinks: [],
   income: 0,
   ransom: 0,
   standardOfLiving: undefined,

@@ -688,17 +688,18 @@
       "Background": {
         "BackgroundType": "Background Type",
         "Specialization": "Specific Background",
-        "Skills": "Skills",
-        "DisabledSkill": "Skill Disabled (not chosen)",
-        "BackgroundModifierEnabledQ": "Enabled?",
-        "IncomeSkill": "Income Skill",
-        "IncomeSkillQ": "Income Skill?",
-        "CultStartingSkill": "Cult Starting Skill",
-        "CultStartingSkillQ": "Cult Starting Skill?",
-        "CultSkill": "Cult Skill",
-        "CultSkillQ": "Cult Skill?",
+        "SkillBonuses": "Skill Bonuses",
+        "IncomeSkills": "Income Skills",
+        "CultSkills": "Cult Skills",
+        "RuneBonuses": "Rune Bonuses",
+        "PassionBonuses": "Passion Bonuses",
         "SuggestedCults": "Suggested Cults",
-        "SuggestedOccupations": "Suggested Occupations"
+        "SuggestedOccupations": "Suggested Occupations",
+        "AddSkillPlaceholder": "Add a Skill",
+        "AddRunePlaceholder": "Add a Rune",
+        "AddPassionPlaceholder": "Add a Passion",
+        "AddSuggestedCultPlaceholder": "Add a Passion",
+        "AddSuggestedOccupationPlaceholder": "Add a Passion"
       },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",

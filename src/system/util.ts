@@ -433,6 +433,40 @@ export function getAvailablePassions(silent: boolean = false): AvailableItemCach
   return [];
 }
 
+let availableCults: AvailableItemCache[] = [];
+
+/**
+ * Get the cached data about the runes that are available in the world.
+ * @see {@link cacheAvailableCults}
+ */
+export function getAvailableCults(silent: boolean = false): AvailableItemCache[] {
+  if (availableCults.length > 0) {
+    return availableCults;
+  }
+  if (!silent) {
+    ui.notifications?.warn("compendiums not indexed yet, try again!");
+  }
+  cacheAvailableCults();
+  return [];
+}
+
+let availableOccupations: AvailableItemCache[] = [];
+
+/**
+ * Get the cached data about the runes that are available in the world.
+ * @see {@link cacheAvailableOccupations}
+ */
+export function getAvailableOccupations(silent: boolean = false): AvailableItemCache[] {
+  if (availableOccupations.length > 0) {
+    return availableOccupations;
+  }
+  if (!silent) {
+    ui.notifications?.warn("compendiums not indexed yet, try again!");
+  }
+  cacheAvailableOccupations();
+  return [];
+}
+
 export async function cacheAvailableSkills(): Promise<AvailableItemCache[]> {
   if (availableSkills.length > 0) {
     return availableSkills;
@@ -455,6 +489,22 @@ export async function cacheAvailablePassions(): Promise<AvailableItemCache[]> {
   }
   availablePassions = await getItemsToCache("i.passion.");
   return availablePassions;
+}
+
+export async function cacheAvailableCults(): Promise<AvailableItemCache[]> {
+  if (availableCults.length > 0) {
+    return availableCults;
+  }
+  availableCults = await getItemsToCache("i.background.cult-");
+  return availableCults;
+}
+
+export async function cacheAvailableOccupations(): Promise<AvailableItemCache[]> {
+  if (availableOccupations.length > 0) {
+    return availableOccupations;
+  }
+  availableOccupations = await getItemsToCache("i.background.occupation-");
+  return availableOccupations;
 }
 
 export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
@@ -531,6 +581,24 @@ export function getSelectPassionOptions(emptyPlaceholderKey: string): AvailableI
     img: "",
   };
   return getSelectOptions(emptyOption, getAvailablePassions);
+}
+
+export function getSelectCultOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+  const emptyOption: AvailableItemCache = {
+    rqid: "empty",
+    name: localize(emptyPlaceholderKey),
+    img: "",
+  };
+  return getSelectOptions(emptyOption, getAvailableCults);
+}
+
+export function getSelectOccupationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+  const emptyOption: AvailableItemCache = {
+    rqid: "empty",
+    name: localize(emptyPlaceholderKey),
+    img: "",
+  };
+  return getSelectOptions(emptyOption, getAvailableOccupations);
 }
 
 export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {

@@ -52,47 +52,73 @@
        
         <div class="key-value-grid">
 
-          <label>{{localize "RQG.Item.Background.Skills"}}</label>
+          <label>{{localize "RQG.Item.Background.SkillBonuses"}}</label>
           {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.backgroundSkillRqidLinks
-            dropzoneData="backgroundSkillRqidLinks"
+            rqidLinkArray=system.skillBonusRqidLinks
+            dropzoneData="skillBonusRqidLinks"
             dropDocumentNames="Item"
             dropDocumentTypes="rune"
-            showDeleteFromPropertyName="backgroundSkillRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+            showDeleteFromPropertyName="skillBonusRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
             dropdownOptions=allSkillOptions
             showBonus=true
-            editBonusPropertyName="backgroundSkillRqidLinks"
+            editBonusPropertyName="skillBonusRqidLinks"
+          }}
+
+          <label>{{localize "RQG.Item.Background.IncomeSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.incomeSkillRqidLinks
+            dropzoneData="incomeSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="incomeSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=allSkillOptions
+            editBonusPropertyName="incomeSkillRqidLinks"
+          }}
+
+          <label>{{localize "RQG.Item.Background.CultSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.cultSkillRqidLinks
+            dropzoneData="cultSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="cultSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=allSkillOptions
+            editBonusPropertyName="cultSkillRqidLinks"
           }}
 
 
-          <label>{{localize "RQG.Item.Background.Runes"}}</label>
+          <label>{{localize "RQG.Item.Background.RuneBonuses"}}</label>
           {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.backgroundRuneRqidLinks
-            dropzoneData="backgroundRuneRqidLinks"
+            rqidLinkArray=system.runeBonusRqidLinks
+            dropzoneData="runeBonusRqidLinks"
             dropDocumentNames="Item"
             dropDocumentTypes="rune"
-            showDeleteFromPropertyName="backgroundRuneRqidLinks"
+            showDeleteFromPropertyName="runeBonusRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
             dropdownOptions=allRuneOptions
             showBonus=true
-            editBonusPropertyName="backgroundRuneRqidLinks"
+            editBonusPropertyName="runeBonusRqidLinks"
           }}
 
-          <label>{{localize "RQG.Item.Background.Passions"}}</label>
+          <label>{{localize "RQG.Item.Background.PassionBonuses"}}</label>
           {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.backgroundPassionRqidLinks
-            dropzoneData="backgroundPassionRqidLinks"
+            rqidLinkArray=system.passionBonusRqidLinks
+            dropzoneData="passionBonusRqidLinks"
             dropDocumentNames="Item"
             dropDocumentTypes="passion"
-            showDeleteFromPropertyName="backgroundPassionRqidLinks"
+            showDeleteFromPropertyName="passionBonusRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
             dropdownOptions=allPassionOptions
             showBonus=true
-            editBonusPropertyName="backgroundPassionRqidLinks"
+            editBonusPropertyName="passionBonusRqidLinks"
           }}
 
           
@@ -104,6 +130,7 @@
             dropDocumentTypes="background"
             showDeleteFromPropertyName="suggestedCultRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+            dropdownOptions=allCultOptions
           }}
 
           <label>{{localize "RQG.Item.Background.SuggestedOccupations"}}</label>
@@ -114,6 +141,7 @@
             dropDocumentTypes="background"
             showDeleteFromPropertyName="suggestedOccupationRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+            dropdownOptions=allOccupationOptions
           }}
             
           </div>

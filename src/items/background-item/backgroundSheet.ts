@@ -6,10 +6,12 @@ import { DocumentSheetData } from "../shared/sheetInterfaces";
 import {
   assertHtmlElement,
   getGameUser,
-  getSelectRuneOptions,
   AvailableItemCache,
-  getSelectPassionOptions,
   getSelectSkillOptions,
+  getSelectRuneOptions,
+  getSelectPassionOptions,
+  getSelectCultOptions,
+  getSelectOccupationOptions,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 
@@ -17,6 +19,8 @@ export interface BackgroundSheetData {
   allSkillOptions: AvailableItemCache[];
   allRuneOptions: AvailableItemCache[];
   allPassionOptions: AvailableItemCache[];
+  allCultOptions: AvailableItemCache[];
+  allOccupationOptions: AvailableItemCache[];
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -27,8 +31,8 @@ export class BackgroundSheet extends RqgItemSheet<
     return mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: templatePaths.itemBackgroundSheet,
-      width: 650,
-      height: 500,
+      width: 850,
+      height: 700,
       tabs: [
         {
           navSelector: ".item-sheet-nav-tabs",
@@ -52,9 +56,13 @@ export class BackgroundSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isGM: getGameUser().isGM,
       system: system,
-      allSkillOptions: getSelectSkillOptions("RQG.Item.Background.AddRunePlaceholder"),
+      allSkillOptions: getSelectSkillOptions("RQG.Item.Background.AddSkillPlaceholder"),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Background.AddRunePlaceholder"),
       allPassionOptions: getSelectPassionOptions("RQG.Item.Background.AddPassionPlaceholder"),
+      allCultOptions: getSelectCultOptions("RQG.Item.Background.AddSuggestedCultPlaceholder"),
+      allOccupationOptions: getSelectOccupationOptions(
+        "RQG.Item.Background.AddSuggestedOccupationPlaceholder",
+      ),
     };
   }
 
