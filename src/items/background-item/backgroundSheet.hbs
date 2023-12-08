@@ -52,7 +52,7 @@
        
         <div class="key-value-grid">
 
-          <label>{{localize "RQG.Item.Background.Modifiers"}}
+          <label>{{localize "RQG.Item.Background.Skills"}}
             <i id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i>
             <i id="btn-add-background-modifiers-{{id}}" class="fas fa-plus"></i>
           </label>
@@ -60,7 +60,7 @@
                data-dropzone="backgroundModifiers"
                data-dropzone-document-types="skill">
             <div id="background-modifier-display-{{id}}" style="display: block;">
-              {{{backgroundModifiersJoined}}}
+              {{{backgroundSkillModifiersJoined}}}
             </div>
             <div
                  style="display: none;"
@@ -69,12 +69,13 @@
                 {{#each system.backgroundModifiers}}
                   {{#if (eq this.modifierType "skill")}}
                     <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
-                      {{json this}}
+                      {{!-- {{json this}} --}}
                       <div>
                         <input
                           type="checkbox"
                           id="background-modifier-enabled-{{@index}}"
                           {{!-- data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}" --}}
+                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
                           data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}"
                           {{checked this.enabled}}>
                         <label for="background-modifier-enabled-{{@index}}">{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}</label>
@@ -90,9 +91,9 @@
                       <div>
                         <input
                           type="number"
-                          min="-100"
-                          max="100"
-                          id="bonus-{{@index}}"
+                          {{!-- min="-100"
+                          max="100" --}} 
+                          id="skill-bonus-{{@index}}"
                           data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
                           data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifier'}}"
                           value="{{this.bonus}}">%

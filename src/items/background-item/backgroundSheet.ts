@@ -3,15 +3,19 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
-import { assertHtmlElement, getGameUser } from "../../system/util";
+import { assertHtmlElement, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { SkillBackgroundModifier } from "../../data-model/item-data/backgroundData";
+import {
+  BackgroundDataSourceData,
+  BackgroundModifier,
+  SkillBackgroundModifier,
+} from "../../data-model/item-data/backgroundData";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 
 export interface BackgroundSheetData {
-  backgroundModifiersJoined: string;
+  backgroundSkillModifiersJoined: string;
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -48,15 +52,34 @@ export class BackgroundSheet extends RqgItemSheet<
       isGM: getGameUser().isGM,
       system: system,
 
-      backgroundModifiersJoined: system.backgroundModifiers
-        .map((modifier: any) => {
-          console.log("MAP to join modifier bonuses into a string", modifier);
-          const bonus = modifier.bonus || 0;
-          const bonusValueText = `${bonus >= 0 ? "+" : "-"}${bonus}%`;
-          if (modifier.incomeSkill) {
-            return `<span class="incomeSkillText">${modifier.rqid?.name} ${bonusValueText}</span>`;
-          } else {
-            return `<span>${modifier.name} ${bonusValueText}</span>`;
+      backgroundSkillModifiersJoined: system.backgroundModifiers
+        .map((modifier: BackgroundModifier) => {
+          if (modifier.modifierType === "skill") {
+            const skillMod = modifier as SkillBackgroundModifier;
+            const bonus = skillMod.bonus || 0;
+            const bonusValueText = `${bonus >= 0 ? "+" : "-"}${bonus}%`;
+            const spanClasses = [];
+            const spanTooltips = [];
+            if (!skillMod.enabled) {
+              spanClasses.push("disabled-skill-text");
+              spanTooltips.push(localize("RQG.Item.Background.DisabledSkill"));
+            }
+            if (skillMod.incomeSkill) {
+              spanClasses.push("income-skill-text");
+              spanTooltips.push(localize("RQG.Item.Background.IncomeSkill"));
+            }
+            if (skillMod.cultStartingSkill) {
+              spanClasses.push("cult-starting-skill-text");
+              spanTooltips.push(localize("RQG.Item.Background.CultStartingSkill"));
+            }
+            if (skillMod.cultStartingSkill) {
+              spanClasses.push("cult-skill-text");
+              spanTooltips.push(localize("RQG.Item.Background.CultSkill"));
+            }
+
+            return `<span class="${spanClasses.join(" ")}" data-tooltip="${spanTooltips.join(
+              "<br>",
+            )}">${skillMod.modifiedSkillRqidLink?.name} ${bonusValueText}</span>`;
           }
         })
         .join(", "),
@@ -67,6 +90,7 @@ export class BackgroundSheet extends RqgItemSheet<
     // Do Background Specific Stuff here
     console.log("BACKGROUND super._updateObject(event, formData)", event, formData);
 
+    // Combine the background and the specialization to name the Background Item
     const specializationFormatted = formData["system.specialization"]
       ? ` (${formData["system.specialization"]})`
       : "";
@@ -76,7 +100,59 @@ export class BackgroundSheet extends RqgItemSheet<
       formData["name"] = newName;
     }
 
+    // Background Skills
+    this.backgroundModifierUpdate("background-modifier-enabled-", "skill", "enabled", event);
+    this.backgroundModifierUpdate("skill-bonus-", "skill", "bonus", event);
+    this.backgroundModifierUpdate("income-skill-", "skill", "incomeSkill", event);
+    this.backgroundModifierUpdate("cult-starting-skill-", "skill", "cultStartingSkill", event);
+    this.backgroundModifierUpdate("cult-skill-", "skill", "cultSkill", event);
+
     return super._updateObject(event, formData);
+  }
+
+  private backgroundModifierUpdate(
+    idStartsWith: string,
+    expectedModifierType: string,
+    updatePropertyName: string,
+    event: Event,
+  ) {
+    //@ts-expect-error id can be null
+    if (event?.currentTarget?.id?.startsWith(idStartsWith)) {
+      //@ts-expect-error dataset
+      const targetRqid = event.currentTarget.dataset.skillRqid;
+      if (targetRqid) {
+        const backgroundModifiers = (this.item.system as BackgroundDataSourceData)
+          .backgroundModifiers;
+        for (const backgroundModifier of backgroundModifiers) {
+          if (backgroundModifier.modifierType === expectedModifierType) {
+            const skillBackgroundModifier = backgroundModifier as SkillBackgroundModifier;
+            const targetInput = event.currentTarget as HTMLInputElement;
+            if (skillBackgroundModifier.modifiedSkillRqidLink?.rqid === targetRqid) {
+              if (targetInput.type === "number") {
+                //@ts-expect-error updatePropertyName
+                skillBackgroundModifier[updatePropertyName] = parseInt(targetInput.value);
+              }
+              if (targetInput.type === "checkbox") {
+                //@ts-expect-error updatePropertyName
+                skillBackgroundModifier[updatePropertyName] = !!targetInput.checked;
+              }
+            }
+          }
+        }
+        if (this.item.isEmbedded) {
+          this.item.actor?.updateEmbeddedDocuments("Item", [
+            {
+              _id: this.item.id,
+              "system.backgroundModifiers": backgroundModifiers,
+            },
+          ]);
+        } else {
+          this.item.update({
+            "system.backgroundModifiers": backgroundModifiers,
+          });
+        }
+      }
+    }
   }
 
   public activateListeners(html: JQuery): void {
@@ -146,14 +222,13 @@ export class BackgroundSheet extends RqgItemSheet<
         const skillMod = new SkillBackgroundModifier();
         skillMod.modifiedSkillRqidLink = new RqidLink(droppedRqid?.id, droppedItem.name || "");
 
-        skillMod.enabled = true;
+        skillMod.enabled = true; // I think the user expects the new SkillBackgroundModifier to be enabled
 
-        //test
-        skillMod.bonus = 10;
-        skillMod.incomeSkill = true;
-        skillMod.backgroundProvidesTraining = true;
-        skillMod.cultSkill = true;
-        skillMod.cultStartingSkill = true;
+        skillMod.bonus = 0;
+        skillMod.incomeSkill = false;
+        skillMod.backgroundProvidesTraining = false;
+        skillMod.cultSkill = false;
+        skillMod.cultStartingSkill = false;
 
         const modifiers = this.item.system.backgroundModifiers;
 

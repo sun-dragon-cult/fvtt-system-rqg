@@ -685,6 +685,21 @@
           "Iron": "Iron"
         }
       },
+      "Background": {
+        "BackgroundType": "Background Type",
+        "Specialization": "Specific Background",
+        "Skills": "Skills",
+        "DisabledSkill": "Skill Disabled (not chosen)",
+        "BackgroundModifierEnabledQ": "Enabled?",
+        "IncomeSkill": "Income Skill",
+        "IncomeSkillQ": "Income Skill?",
+        "CultStartingSkill": "Cult Starting Skill",
+        "CultStartingSkillQ": "Cult Starting Skill?",
+        "CultSkill": "Cult Skill",
+        "CultSkillQ": "Cult Skill?",
+        "SuggestedCults": "Suggested Cults",
+        "SuggestedOccupations": "Suggested Occupations"
+      },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",
         "AddCultRunePlaceholder": "Add Cult Rune",
@@ -917,6 +932,7 @@
       "SheetTab": {
         "ActiveEffects": "Active Effects",
         "Armor": "Armor",
+        "Background": "Background",
         "Cults": "Cults",
         "Deity": "Deity",
         "Description": "Description",

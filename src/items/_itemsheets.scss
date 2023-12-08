@@ -136,7 +136,11 @@
     background-image: linear-gradient(to bottom right, #bcc6cc, #eee, #bcc6cc);
   }
 
-  .incomeSkillText {
+  .disabled-skill-text {
+    text-decoration: line-through;
+  }
+
+  .income-skill-text {
     font-weight: bold;
     font-style: italic;
   }

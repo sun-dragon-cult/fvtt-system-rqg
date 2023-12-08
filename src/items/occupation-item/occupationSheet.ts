@@ -59,7 +59,7 @@ export class OccupationSheet extends RqgItemSheet<
         .map((skill: any) => {
           const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
           if (skill.incomeSkill) {
-            return `<span class="incomeSkillText">${skill.skillRqidLink?.name} ${bonus}</span>`;
+            return `<span class="income-skill-text">${skill.skillRqidLink?.name} ${bonus}</span>`;
           } else {
             return `<span>${skill.skillRqidLink?.name} ${bonus}</span>`;
           }
@@ -96,8 +96,8 @@ export class OccupationSheet extends RqgItemSheet<
       }
     }
 
-    //@ts-expect-error name
-    if (event?.currentTarget?.id.startsWith("income-skill-")) {
+    //@ts-expect-error id not member of currentTarget
+    if (event?.currentTarget?.id?.startsWith("income-skill-")) {
       //@ts-expect-error dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
