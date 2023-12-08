@@ -53,7 +53,7 @@
         <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Background.Skills"}}
-            <i id="btn-edit-background-modifiers-{{id}}" class="fas fa-edit"></i>
+            <i id="btn-edit-skill-background-modifiers-{{id}}" class="fas fa-edit"></i>
             <i id="btn-add-background-modifiers-{{id}}" class="fas fa-plus"></i>
           </label>
           <div class="drop-target"
@@ -70,20 +70,10 @@
                   {{#if (eq this.modifierType "skill")}}
                     <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
                       {{!-- {{json this}} --}}
-                      <div>
-                        <input
-                          type="checkbox"
-                          id="background-modifier-enabled-{{@index}}"
-                          {{!-- data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}" --}}
-                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
-                          data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}"
-                          {{checked this.enabled}}>
-                        <label for="background-modifier-enabled-{{@index}}">{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}</label>
-                      </div>
                       <i class="fas fa-times icon"
                         data-delete-background-modifier-rqid="{{this.modifiedSkillRqidLink.rqid}}"
                         data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.modifiedSkillRqidLink.rqid
-                                          name=this.name}}"></i>
+                                          name=this.modifiedSkillRqidLink.name}}"></i>
 
                       {{> rqidLink
                         rqidLink=this.modifiedSkillRqidLink
@@ -97,6 +87,16 @@
                           data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
                           data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifier'}}"
                           value="{{this.bonus}}">%
+                      </div>
+                      <div>
+                        <input
+                          type="checkbox"
+                          id="background-modifier-enabled-{{@index}}"
+                          {{!-- data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}" --}}
+                          data-skill-rqid="{{this.modifiedSkillRqidLink.rqid}}"
+                          data-tooltip="{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}"
+                          {{checked this.enabled}}>
+                        <label for="background-modifier-enabled-{{@index}}">{{localize 'RQG.Item.Background.BackgroundModifierEnabledQ'}}</label>
                       </div>
                       <div>
                         <input

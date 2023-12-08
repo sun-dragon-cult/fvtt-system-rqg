@@ -3,7 +3,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
-import { assertHtmlElement, getGameUser, localize } from "../../system/util";
+import { assertHtmlElement, getDomDataset, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
@@ -161,12 +161,35 @@ export class BackgroundSheet extends RqgItemSheet<
     const form = this.form as HTMLFormElement;
 
     form
-      .querySelector("#btn-edit-background-modifiers-" + this.item.id)
+      .querySelector("#btn-edit-skill-background-modifiers-" + this.item.id)
       ?.addEventListener("click", () => {
         this.toggleBackgroundModifierEdit(false);
       });
 
-    // Do Background Specific Stuff Here
+    $(this.form!)
+      .find("[data-delete-background-modifier-rqid]")
+      .each((i: number, el: HTMLElement) => {
+        el.addEventListener("click", async (ev: MouseEvent) => {
+          const rqidToDelete = getDomDataset(ev, "delete-background-modifier-rqid");
+          const thisBackground = this.item.system as BackgroundDataSourceData;
+          const backgroundSkills = thisBackground.backgroundModifiers.filter(function (mod) {
+            return (mod as SkillBackgroundModifier).modifiedSkillRqidLink?.rqid !== rqidToDelete;
+          });
+
+          if (this.item.isEmbedded) {
+            this.item.actor?.updateEmbeddedDocuments("Item", [
+              {
+                _id: this.item.id,
+                "system.backgroundModifiers": backgroundSkills,
+              },
+            ]);
+          } else {
+            this.item.update({
+              "system.backgroundModifiers": backgroundSkills,
+            });
+          }
+        });
+      });
   }
 
   private toggleBackgroundModifierEdit(forceEdit = false) {
@@ -177,7 +200,7 @@ export class BackgroundSheet extends RqgItemSheet<
     assertHtmlElement(displayBackgroundModifiers);
     const editBackgroundModifiers = form.querySelector("#background-modifier-edit-" + this.item.id);
     assertHtmlElement(editBackgroundModifiers);
-    const btnEdit = form.querySelector("#btn-edit-background-modifiers-" + this.item.id);
+    const btnEdit = form.querySelector("#btn-edit-skill-background-modifiers-" + this.item.id);
     assertHtmlElement(btnEdit);
     if (!displayBackgroundModifiers || !editBackgroundModifiers || !btnEdit) {
       console.error(
