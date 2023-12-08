@@ -16,9 +16,9 @@
         </div>
 
         <div class="label-above">
-          <label for="region-{{id}}">{{localize "RQG.Item.Background.Specialization"}}</label>
+          <label for="specialization-{{id}}">{{localize "RQG.Item.Background.Specialization"}}</label>
           <div>
-            ( <input type="text" id="region-{{id}}" name="system.specialization"
+            ( <input type="text" id="specialization-{{id}}" name="system.specialization"
                      value="{{system.specialization}}"> )
           </div>
         </div>
@@ -78,6 +78,17 @@
             dropdownOptions=incomeSkillOptions
             editBonusPropertyName="incomeSkillRqidLinks"
           }}
+
+          <label>{{localize "RQG.Item.Background.Income"}}</label>
+          <div>
+            <input type="number" id="income-{{id}}" name="system.income"
+                                value="{{system.income}}">L
+          </div>
+          <label>{{localize "RQG.Item.Background.Ransom"}}</label>
+          <div>
+            <input type="number" id="ransom-{{id}}" name="system.ransom"
+                                value="{{system.ransom}}">L
+          </div>
 
           <label>{{localize "RQG.Item.Background.CultSkills"}}</label>
           {{> rqidLinkArrayDropzone
