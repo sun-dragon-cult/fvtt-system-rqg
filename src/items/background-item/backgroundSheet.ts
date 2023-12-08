@@ -10,6 +10,7 @@ import {
   localize,
   getSelectRuneOptions,
   AvailableItemCache,
+  getSelectPassionOptions,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
@@ -24,6 +25,7 @@ import { RqidLink } from "../../data-model/shared/rqidLink";
 export interface BackgroundSheetData {
   backgroundSkillModifiersJoined: string;
   allRuneOptions: AvailableItemCache[];
+  allPassionOptions: AvailableItemCache[];
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -59,7 +61,8 @@ export class BackgroundSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isGM: getGameUser().isGM,
       system: system,
-      allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
+      allRuneOptions: getSelectRuneOptions("RQG.Item.Background.AddRunePlaceholder"),
+      allPassionOptions: getSelectPassionOptions("RQG.Item.Background.AddPassionPlaceholder"),
 
       backgroundSkillModifiersJoined: system.backgroundModifiers
         .map((modifier: BackgroundModifier) => {

@@ -65,6 +65,7 @@ export interface BackgroundDataSourceData {
   backgroundModifiers: BackgroundModifier[]; // might want to change this to skillModifiers?
 
   backgroundRuneRqidLinks: RqidLink[];
+  backgroundPassionRqidLinks: RqidLink[];
 
   income: number;
   ransom: number;
@@ -92,6 +93,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   suggestedOccupationRqidLinks: [],
   backgroundModifiers: [],
   backgroundRuneRqidLinks: [],
+  backgroundPassionRqidLinks: [],
   income: 0,
   ransom: 0,
   standardOfLiving: undefined,

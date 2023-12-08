@@ -399,12 +399,37 @@ export function getAvailableRunes(silent: boolean = false): AvailableItemCache[]
   return [];
 }
 
+let availablePassions: AvailableItemCache[] = [];
+
+/**
+ * Get the cached data about the runes that are available in the world.
+ * @see {@link cacheAvailablePassions}
+ */
+export function getAvailablePassions(silent: boolean = false): AvailableItemCache[] {
+  if (availablePassions.length > 0) {
+    return availablePassions;
+  }
+  if (!silent) {
+    ui.notifications?.warn("compendiums not indexed yet, try again!");
+  }
+  cacheAvailablePassions();
+  return [];
+}
+
 export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
   if (availableRunes.length > 0) {
     return availableRunes;
   }
   availableRunes = await getItemsToCache("i.rune.");
   return availableRunes;
+}
+
+export async function cacheAvailablePassions(): Promise<AvailableItemCache[]> {
+  if (availablePassions.length > 0) {
+    return availablePassions;
+  }
+  availablePassions = await getItemsToCache("i.passion.");
+  return availablePassions;
 }
 
 export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
@@ -463,6 +488,15 @@ export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItem
     img: "",
   };
   return getSelectOptions(emptyOption, getAvailableRunes);
+}
+
+export function getSelectPassionOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+  const emptyOption: AvailableItemCache = {
+    rqid: "empty",
+    name: localize(emptyPlaceholderKey),
+    img: "",
+  };
+  return getSelectOptions(emptyOption, getAvailablePassions);
 }
 
 export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {

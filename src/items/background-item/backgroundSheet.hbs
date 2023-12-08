@@ -146,6 +146,20 @@
             editBonusPropertyName="backgroundRuneRqidLinks"
           }}
 
+          <label>{{localize "RQG.Item.Background.Passions"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.backgroundPassionRqidLinks
+            dropzoneData="backgroundPassionRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="passion"
+            showDeleteFromPropertyName="backgroundPassionRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+            dropdownOptions=allPassionOptions
+            showBonus=true
+            editBonusPropertyName="backgroundPassionRqidLinks"
+          }}
+
           
           <label>{{localize "RQG.Item.Background.SuggestedCults"}}</label>
           {{> rqidLinkArrayDropzone
