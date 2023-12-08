@@ -62,7 +62,9 @@ export interface BackgroundDataSourceData {
   type: BackgroundTypeEnum;
   suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
   suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
-  backgroundModifiers: BackgroundModifier[];
+  backgroundModifiers: BackgroundModifier[]; // might want to change this to skillModifiers?
+
+  backgroundRuneRqidLinks: RqidLink[];
 
   income: number;
   ransom: number;
@@ -89,6 +91,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   suggestedCultRqidLinks: [],
   suggestedOccupationRqidLinks: [],
   backgroundModifiers: [],
+  backgroundRuneRqidLinks: [],
   income: 0,
   ransom: 0,
   standardOfLiving: undefined,

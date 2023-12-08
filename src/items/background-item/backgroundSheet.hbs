@@ -73,7 +73,7 @@
                       <i class="fas fa-times icon"
                         data-delete-background-modifier-rqid="{{this.modifiedSkillRqidLink.rqid}}"
                         data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.modifiedSkillRqidLink.rqid
-                                          name=this.modifiedSkillRqidLink.name}}"></i>
+                                          name=this.name}}"></i>
 
                       {{> rqidLink
                         rqidLink=this.modifiedSkillRqidLink
@@ -132,6 +132,21 @@
             </div>
           </div>
 
+          <label>{{localize "RQG.Item.Background.Runes"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.backgroundRuneRqidLinks
+            dropzoneData="backgroundRuneRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="backgroundRuneRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+            dropdownOptions=allRuneOptions
+            showBonus=true
+            editBonusPropertyName="backgroundRuneRqidLinks"
+          }}
+
+          
           <label>{{localize "RQG.Item.Background.SuggestedCults"}}</label>
           {{> rqidLinkArrayDropzone
             rqidLinkArray=system.suggestedCultRqidLinks

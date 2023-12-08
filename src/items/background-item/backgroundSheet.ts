@@ -3,7 +3,14 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { DocumentSheetData } from "../shared/sheetInterfaces";
-import { assertHtmlElement, getDomDataset, getGameUser, localize } from "../../system/util";
+import {
+  assertHtmlElement,
+  getDomDataset,
+  getGameUser,
+  localize,
+  getSelectRuneOptions,
+  AvailableItemCache,
+} from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
@@ -16,6 +23,7 @@ import { RqidLink } from "../../data-model/shared/rqidLink";
 
 export interface BackgroundSheetData {
   backgroundSkillModifiersJoined: string;
+  allRuneOptions: AvailableItemCache[];
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -51,6 +59,7 @@ export class BackgroundSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isGM: getGameUser().isGM,
       system: system,
+      allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
 
       backgroundSkillModifiersJoined: system.backgroundModifiers
         .map((modifier: BackgroundModifier) => {
