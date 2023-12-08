@@ -136,6 +136,8 @@ Hooks.once("ready", async () => {
   await cacheAvailableItems(RqidTypeStart.Cult);
   await cacheAvailableItems(RqidTypeStart.Occupation);
   await cacheAvailableItems(RqidTypeStart.Homeland);
+  await cacheAvailableItems(RqidTypeStart.Tribe);
+  await cacheAvailableItems(RqidTypeStart.Clan);
 
   // Verify that at least one wiki module is activated
   if (

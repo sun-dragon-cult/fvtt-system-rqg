@@ -21,6 +21,8 @@ export interface BackgroundSheetData {
   allCultOptions: AvailableItemCache[];
   allOccupationOptions: AvailableItemCache[];
   allHomelandOptions: AvailableItemCache[];
+  allTribeOptions: AvailableItemCache[];
+  allClanOptions: AvailableItemCache[];
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -86,7 +88,15 @@ export class BackgroundSheet extends RqgItemSheet<
       ),
       allHomelandOptions: getSelectItemOptions(
         RqidTypeStart.Homeland,
-        "RQG.Item.Background.AddHomelandPlaceholder",
+        "RQG.Item.Background.AddSuggestedHomelandPlaceholder",
+      ),
+      allTribeOptions: getSelectItemOptions(
+        RqidTypeStart.Tribe,
+        "RQG.Item.Background.AddSuggestedTribePlaceholder",
+      ),
+      allClanOptions: getSelectItemOptions(
+        RqidTypeStart.Clan,
+        "RQG.Item.Background.AddSuggestedClanPlaceholder",
       ),
     };
   }

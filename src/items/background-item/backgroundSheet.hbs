@@ -117,16 +117,38 @@
       <div class="tab" data-group="primary" data-tab="homeland">
         <div class="key-value-grid">
 
-          <label>{{localize "RQG.Item.Background.Homelands"}}</label>
+          <label>{{localize "RQG.Item.Background.SuggestedHomelands"}}</label>
           {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.homelandRqidLinks
-            dropzoneData="homelandRqidLinks"
+            rqidLinkArray=system.suggestedHomelandRqidLinks
+            dropzoneData="suggestedHomelandRqidLinks"
             dropDocumentNames="Item"
             dropDocumentTypes="background"
-            showDeleteFromPropertyName="homelandRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+            showDeleteFromPropertyName="suggestedHomelandRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHomeland"
             dropdownOptions=allHomelandOptions
             emptyText="RQG.Item.Background.AllHomelands"
+          }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedTribes"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedTribeRqidLinks
+            dropzoneData="suggestedTribeRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedTribeRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectTribe"
+            dropdownOptions=allTribeOptions
+          }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedClans"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedClanRqidLinks
+            dropzoneData="suggestedClanRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedClanRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectClan"
+            dropdownOptions=allClanOptions
           }}
 
         </div>

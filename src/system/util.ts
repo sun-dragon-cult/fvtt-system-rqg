@@ -371,6 +371,8 @@ export enum RqidTypeStart {
   Cult = "i.background.cult-",
   Occupation = "i.background.occupation-",
   Homeland = "i.background.homeland-",
+  Tribe = "i.background.tribe-",
+  Clan = "i.background.clan-",
 }
 
 export type AvailableItemCache = {
