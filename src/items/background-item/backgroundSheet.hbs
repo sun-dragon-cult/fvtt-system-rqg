@@ -41,14 +41,21 @@
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
-      <a class="item" data-tab="background">{{localize "RQG.Item.SheetTab.Background"}}</a>
+      <a class="item" data-tab="summary">{{localize "RQG.Item.SheetTab.Summary"}}</a>
+      <a class="item" data-tab="skills">{{localize "RQG.Item.SheetTab.Skills"}}</a>
+      <a class="item" data-tab="homeland">{{localize "RQG.Item.SheetTab.Homeland"}}</a>
+      <a class="item" data-tab="runes-and-cults">{{localize "RQG.Item.SheetTab.RunesAndCults"}}</a>
+      <a class="item" data-tab="passions-and-history">{{localize "RQG.Item.SheetTab.PassionsAndHistory"}}</a>
     </nav>
 
     <section class="sheet-body">
-      {{!-- Background Tab --}}
-      <div class="tab" data-group="primary" data-tab="background">
-        {{!-- {{json system}} --}}
+      {{!-- Skills Tab --}}
+      <div class="tab" data-group="primary" data-tab="summary">
+        Summary
+      </div>
 
+      {{!-- Skills Tab --}}
+      <div class="tab" data-group="primary" data-tab="skills">
        
         <div class="key-value-grid">
 
@@ -90,19 +97,44 @@
                                 value="{{system.ransom}}">L
           </div>
 
-          <label>{{localize "RQG.Item.Background.CultSkills"}}</label>
+          <label>{{localize "RQG.Item.Background.SuggestedOccupations"}}</label>
           {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.cultSkillRqidLinks
-            dropzoneData="cultSkillRqidLinks"
+            rqidLinkArray=system.suggestedOccupationRqidLinks
+            dropzoneData="suggestedOccupationRqidLinks"
             dropDocumentNames="Item"
-            dropDocumentTypes="rune"
-            showDeleteFromPropertyName="cultSkillRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
-            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
-            dropdownOptions=cultSkillOptions
-            editBonusPropertyName="cultSkillRqidLinks"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedOccupationRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+            dropdownOptions=allOccupationOptions
+          }}
+            
+          </div>
+        </div> 
+
+      </div>
+
+      {{!-- Homeland Tab --}}
+      <div class="tab" data-group="primary" data-tab="homeland">
+        <div class="key-value-grid">
+
+          <label>{{localize "RQG.Item.Background.Homelands"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.homelandRqidLinks
+            dropzoneData="homelandRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="homelandRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+            dropdownOptions=allHomelandOptions
+            emptyText="RQG.Item.Background.AllHomelands"
           }}
 
+        </div>
+      </div>
+
+      {{!-- Runes and Cults Tab --}}
+      <div class="tab" data-group="primary" data-tab="runes-and-cults">
+        <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Background.RuneBonuses"}}</label>
           {{> rqidLinkArrayDropzone
@@ -118,6 +150,37 @@
             editBonusPropertyName="runeBonusRqidLinks"
           }}
 
+          <label>{{localize "RQG.Item.Background.CultSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.cultSkillRqidLinks
+            dropzoneData="cultSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="cultSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=cultSkillOptions
+            editBonusPropertyName="cultSkillRqidLinks"
+          }}
+          
+          <label>{{localize "RQG.Item.Background.SuggestedCults"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedCultRqidLinks
+            dropzoneData="suggestedCultRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedCultRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+            dropdownOptions=allCultOptions
+          }}
+
+        </div>
+      </div>
+
+      {{!-- Passions and History Tab --}}
+      <div class="tab" data-group="primary" data-tab="passions-and-history">
+        <div class="key-value-grid">
+
           <label>{{localize "RQG.Item.Background.PassionBonuses"}}</label>
           {{> rqidLinkArrayDropzone
             rqidLinkArray=system.passionBonusRqidLinks
@@ -132,45 +195,8 @@
             editBonusPropertyName="passionBonusRqidLinks"
           }}
 
-          
-          <label>{{localize "RQG.Item.Background.SuggestedCults"}}</label>
-          {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.suggestedCultRqidLinks
-            dropzoneData="suggestedCultRqidLinks"
-            dropDocumentNames="Item"
-            dropDocumentTypes="background"
-            showDeleteFromPropertyName="suggestedCultRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
-            dropdownOptions=allCultOptions
-          }}
-
-          <label>{{localize "RQG.Item.Background.SuggestedOccupations"}}</label>
-          {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.suggestedOccupationRqidLinks
-            dropzoneData="suggestedOccupationRqidLinks"
-            dropDocumentNames="Item"
-            dropDocumentTypes="background"
-            showDeleteFromPropertyName="suggestedOccupationRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
-            dropdownOptions=allOccupationOptions
-          }}
-
-          <label>{{localize "RQG.Item.Background.Homelands"}}</label>
-          {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.homelandRqidLinks
-            dropzoneData="homelandRqidLinks"
-            dropDocumentNames="Item"
-            dropDocumentTypes="background"
-            showDeleteFromPropertyName="homelandRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
-            dropdownOptions=allHomelandOptions
-            emptyText="RQG.Item.Background.AllHomelands"
-          }}
-            
-          </div>
-        </div> 
-
+        </div>
       </div>
-    </section>
+    </section>  
   </main>
 </form>
