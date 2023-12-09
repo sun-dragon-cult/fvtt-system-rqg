@@ -141,6 +141,13 @@ export class BackgroundSheet extends RqgItemSheet<
       formData["name"] = newName;
     }
 
+    const diceExpression = formData["system.scars"];
+    if (!Roll.validate(diceExpression)) {
+      ui.notifications?.error(`Dice Expression not valid "${diceExpression}"`);
+      formData["system.scars"] = this.item.system.scars;
+      (event.currentTarget as HTMLInputElement).value = this.item.system.scars;
+    }
+
     return super._updateObject(event, formData);
   }
 

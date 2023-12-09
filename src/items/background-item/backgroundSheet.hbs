@@ -276,7 +276,7 @@
         </div>
       </div>
 
-      {{!-- Runes and Cults Tab --}}
+      {{!-- Runes, Cults, Magic Tab --}}
       <div class="tab" data-group="primary" data-tab="runes-cults-magic">
         <div class="key-value-grid">
 
@@ -340,6 +340,12 @@
             dropdownOptions=allSpiritMagicOptions
           }}
 
+          <label>{{localize "RQG.Item.Background.SpiritCombatDamageBonus"}}</label>
+          <div>
+            +<input type="number" id="spirit-combat-damage-bonus-{{id}}" name="system.spiritCombatDamageBonus"
+                                value="{{system.spiritCombatDamageBonus}}">
+          </div>      
+
         </div>
       </div>
 
@@ -363,8 +369,14 @@
 
           <label>{{localize "RQG.Item.Background.ReputationBonus"}}</label>
           <div>
-            <input type="number" id="reputation-bonus-{{id}}" name="system.reputationBonus"
+            +<input type="number" id="reputation-bonus-{{id}}" name="system.reputationBonus"
                                 value="{{system.reputationBonus}}">%
+          </div>
+
+          <label>{{localize "RQG.Item.Background.Scars"}}</label>
+          <div style="display: flex;">
+            +<input type="text" id="scars-{{id}}" name="system.scars"
+                                value="{{system.scars}}">
           </div>          
 
         </div>

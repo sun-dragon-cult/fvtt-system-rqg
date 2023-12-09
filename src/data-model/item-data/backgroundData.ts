@@ -62,6 +62,7 @@ export interface BackgroundDataSourceData {
   runeBonusRqidLinks: RqidLink[];
   runeMagicRqidLinks: RqidLink[];
   spiritMagicRqidLinks: RqidLink[];
+  spiritCombatDamageBonus: number;
   passionBonusRqidLinks: RqidLink[];
   suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
   suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
@@ -72,6 +73,7 @@ export interface BackgroundDataSourceData {
   income: number;
   ransom: number;
   reputationBonus: number;
+  scars: string;
 }
 
 // --- Derived Data ---
@@ -106,6 +108,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   runeBonusRqidLinks: [],
   runeMagicRqidLinks: [],
   spiritMagicRqidLinks: [],
+  spiritCombatDamageBonus: 0,
   passionBonusRqidLinks: [],
   suggestedHomelandRqidLinks: [],
   suggestedTribeRqidLinks: [],
@@ -114,4 +117,5 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   ransom: 0,
   standardOfLiving: undefined,
   reputationBonus: 0,
+  scars: "",
 };
