@@ -18,6 +18,8 @@ export interface BackgroundSheetData {
   incomeSkillOptions: AvailableItemCache[];
   cultSkillOptions: AvailableItemCache[];
   allRuneOptions: AvailableItemCache[];
+  allRuneMagicOptions: AvailableItemCache[];
+  allSpiritMagicOptions: AvailableItemCache[];
   allPassionOptions: AvailableItemCache[];
   allCultOptions: AvailableItemCache[];
   allOccupationOptions: AvailableItemCache[];
@@ -75,6 +77,14 @@ export class BackgroundSheet extends RqgItemSheet<
       allRuneOptions: getSelectItemOptions(
         RqidTypeStart.Rune,
         "RQG.Item.Background.AddRunePlaceholder",
+      ),
+      allRuneMagicOptions: getSelectItemOptions(
+        RqidTypeStart.RuneMagic,
+        "RQG.Item.Background.AddRuneMagicPlaceholder",
+      ),
+      allSpiritMagicOptions: getSelectItemOptions(
+        RqidTypeStart.SpiritMagic,
+        "RQG.Item.Background.AddSpiritMagicPlaceholder",
       ),
       allPassionOptions: getSelectItemOptions(
         RqidTypeStart.Passion,

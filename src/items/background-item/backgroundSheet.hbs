@@ -208,6 +208,28 @@
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
             dropdownOptions=allCultOptions
           }}
+          
+          <label>{{localize "RQG.Item.Background.AvailableRuneMagic"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.runeMagicRqidLinks
+            dropzoneData="runeMagicRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune-magic"
+            showDeleteFromPropertyName="runeMagicRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRuneMagic"
+            dropdownOptions=allRuneMagicOptions
+          }}
+          
+          <label>{{localize "RQG.Item.Background.AvailableSpiritMagic"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.spiritMagicRqidLinks
+            dropzoneData="spiritMagicRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="spirit-magic"
+            showDeleteFromPropertyName="spiritMagicRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSpiritMagic"
+            dropdownOptions=allSpiritMagicOptions
+          }}
 
         </div>
       </div>

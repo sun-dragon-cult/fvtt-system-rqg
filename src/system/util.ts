@@ -367,6 +367,8 @@ export enum RqidTypeStart {
   HitLocation = "i.hit-location.",
   Skill = "i.skill.",
   Rune = "i.rune.",
+  RuneMagic = "i.rune-magic.",
+  SpiritMagic = "i.spirit-magic.",
   Passion = "i.passion.",
   Cult = "i.background.cult-",
   Occupation = "i.background.occupation-",

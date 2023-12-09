@@ -132,6 +132,8 @@ Hooks.once("ready", async () => {
   await cacheAvailableItems(RqidTypeStart.HitLocation);
   await cacheAvailableItems(RqidTypeStart.Skill);
   await cacheAvailableItems(RqidTypeStart.Rune);
+  await cacheAvailableItems(RqidTypeStart.RuneMagic);
+  await cacheAvailableItems(RqidTypeStart.SpiritMagic);
   await cacheAvailableItems(RqidTypeStart.Passion);
   await cacheAvailableItems(RqidTypeStart.Cult);
   await cacheAvailableItems(RqidTypeStart.Occupation);

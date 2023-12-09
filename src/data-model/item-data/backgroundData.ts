@@ -43,6 +43,8 @@ export interface BackgroundDataSourceData {
   incomeSkillRqidLinks: RqidLink[];
   cultSkillRqidLinks: RqidLink[];
   runeBonusRqidLinks: RqidLink[];
+  runeMagicRqidLinks: RqidLink[];
+  spiritMagicRqidLinks: RqidLink[];
   passionBonusRqidLinks: RqidLink[];
   suggestedCultRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "cult", that will be used as the "available and suggested cults"
   suggestedOccupationRqidLinks: RqidLink[]; // rqid links to other Backgrounds of type "occupation", that will be used as the "available and suggested occupations"
@@ -77,6 +79,8 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   incomeSkillRqidLinks: [],
   cultSkillRqidLinks: [],
   runeBonusRqidLinks: [],
+  runeMagicRqidLinks: [],
+  spiritMagicRqidLinks: [],
   passionBonusRqidLinks: [],
   suggestedHomelandRqidLinks: [],
   suggestedTribeRqidLinks: [],
