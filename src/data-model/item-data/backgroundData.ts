@@ -54,6 +54,7 @@ export interface BackgroundDataSourceData {
   standardOfLiving: StandardOfLivingEnum | undefined;
   income: number;
   ransom: number;
+  reputationBonus: number;
 }
 
 // --- Derived Data ---
@@ -88,4 +89,5 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   income: 0,
   ransom: 0,
   standardOfLiving: undefined,
+  reputationBonus: 0,
 };
