@@ -49,9 +49,9 @@ export interface BackgroundDataSourceData {
   suggestedHomelandRqidLinks: RqidLink[];
   suggestedTribeRqidLinks: RqidLink[];
   suggestedClanRqidLinks: RqidLink[];
+  standardOfLiving: StandardOfLivingEnum | undefined;
   income: number;
   ransom: number;
-  standardOfLiving: StandardOfLivingEnum | undefined;
 }
 
 // --- Derived Data ---

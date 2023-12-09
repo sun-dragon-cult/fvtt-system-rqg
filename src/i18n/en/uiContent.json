@@ -710,7 +710,16 @@
         "AddSuggestedHomelandPlaceholder": "Add a Suggested Homeland",
         "AddSuggestedTribePlaceholder": "Add a Suggested Tribe",
         "AddSuggestedClanPlaceholder": "Add a Suggested Clan",
-        "AllHomelands": "All Homelands"
+        "AllHomelands": "All Homelands",
+        "StandardOfLiving":"Standard Of Living",
+        "StandardOfLivingEnum": {
+          "none": "Does not provide Standard of Living",
+          "destitute": "Destitute",
+          "poor": "Poor",
+          "free": "Free",
+          "noble": "Noble",
+          "petty-king": "Petty King"
+        }
       },
       "Cult": {
         "AddNewSubCult": "Add new Sub Cult",

@@ -86,6 +86,19 @@
             editBonusPropertyName="incomeSkillRqidLinks"
           }}
 
+          <label>{{localize "RQG.Item.Background.StandardOfLiving"}}</label>
+          <div>
+            <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
+              {{#select system.standardOfLiving}}
+                {{#each standardOfLiving}}
+                  <option value="{{this}}">{{localize
+                      (concat "RQG.Item.Background.StandardOfLivingEnum." this)
+                    }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+
           <label>{{localize "RQG.Item.Background.Income"}}</label>
           <div>
             <input type="number" id="income-{{id}}" name="system.income"

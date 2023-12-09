@@ -11,6 +11,7 @@ import {
   RqidTypeStart,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
+import { StandardOfLivingEnum } from "../../data-model/item-data/backgroundData";
 
 export interface BackgroundSheetData {
   skillBonusOptions: AvailableItemCache[];
@@ -23,6 +24,7 @@ export interface BackgroundSheetData {
   allHomelandOptions: AvailableItemCache[];
   allTribeOptions: AvailableItemCache[];
   allClanOptions: AvailableItemCache[];
+  standardOfLiving: string[];
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -98,6 +100,7 @@ export class BackgroundSheet extends RqgItemSheet<
         RqidTypeStart.Clan,
         "RQG.Item.Background.AddSuggestedClanPlaceholder",
       ),
+      standardOfLiving: Object.values(StandardOfLivingEnum),
     };
   }
 
