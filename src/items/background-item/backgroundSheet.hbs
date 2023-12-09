@@ -50,7 +50,7 @@
     </nav>
 
     <section class="sheet-body">
-      {{!-- Skills Tab --}}
+      {{!-- Summary Tab --}}
       <div class="tab" data-group="primary" data-tab="summary">
 
         <div class="key-value-grid">
@@ -70,6 +70,9 @@
               button=true
               editable=isEditable
             }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedHomelands"}}</label>
+          <span>{{summary.homelands}}</span>
 
         </div>
 

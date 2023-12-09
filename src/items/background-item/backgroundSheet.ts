@@ -9,9 +9,25 @@ import {
   AvailableItemCache,
   getSelectItemOptions,
   RqidTypeStart,
+  localize,
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
-import { StandardOfLivingEnum } from "../../data-model/item-data/backgroundData";
+import {
+  BackgroundDataSourceData,
+  StandardOfLivingEnum,
+} from "../../data-model/item-data/backgroundData";
+
+export class BackgroundSummary {
+  homelands: string = "";
+  characteristics: string = "";
+  skills: string = "";
+  standardOfLiving: string = "";
+  income: string = "";
+  cults: string = "";
+  passions: string = "";
+  ransom: string = "";
+  equipment: string = "";
+}
 
 export interface BackgroundSheetData {
   skillBonusOptions: AvailableItemCache[];
@@ -28,6 +44,7 @@ export interface BackgroundSheetData {
   allTribeOptions: AvailableItemCache[];
   allClanOptions: AvailableItemCache[];
   standardOfLiving: string[];
+  summary: BackgroundSummary;
 }
 
 export class BackgroundSheet extends RqgItemSheet<
@@ -124,7 +141,33 @@ export class BackgroundSheet extends RqgItemSheet<
         // @ts-expect-error async
         async: true,
       }),
+
+      summary: this.getBackgroundSummary(),
     };
+  }
+
+  private getBackgroundSummary(): BackgroundSummary {
+    const result = new BackgroundSummary();
+
+    const background = this.item.system as BackgroundDataSourceData;
+
+    if (background.suggestedHomelandRqidLinks?.length > 0) {
+      result.homelands = background.suggestedHomelandRqidLinks
+        .map((h) => {
+          const parensRegex = /\(([^)]+)\)/;
+          const matches = parensRegex.exec(h.name);
+          if (matches && matches[1]) {
+            return matches[1];
+          } else {
+            return h.name;
+          }
+        })
+        .join(", ");
+    } else {
+      result.homelands = localize("RQG.Item.Background.AllHomelands");
+    }
+
+    return result;
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {
