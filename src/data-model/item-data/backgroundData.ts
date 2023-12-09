@@ -45,6 +45,7 @@ export interface BackgroundDataSourceData {
   anyCulturalWeaponSkillBonus: number;
   meleeCulturalWeaponSkillBonus: number;
   missileCulturalWeaponSkillBonus: number;
+  culturalWeaponSkillRqidLinks: RqidLink[];
   incomeSkillRqidLinks: RqidLink[];
   cultSkillRqidLinks: RqidLink[];
   runeBonusRqidLinks: RqidLink[];
@@ -87,6 +88,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   anyCulturalWeaponSkillBonus: 0,
   meleeCulturalWeaponSkillBonus: 0,
   missileCulturalWeaponSkillBonus: 0,
+  culturalWeaponSkillRqidLinks: [],
   incomeSkillRqidLinks: [],
   cultSkillRqidLinks: [],
   runeBonusRqidLinks: [],

@@ -17,6 +17,7 @@ export interface BackgroundSheetData {
   skillBonusOptions: AvailableItemCache[];
   incomeSkillOptions: AvailableItemCache[];
   cultSkillOptions: AvailableItemCache[];
+  culturalWeaponSkillOptions: AvailableItemCache[];
   allRuneOptions: AvailableItemCache[];
   allRuneMagicOptions: AvailableItemCache[];
   allSpiritMagicOptions: AvailableItemCache[];
@@ -69,6 +70,10 @@ export class BackgroundSheet extends RqgItemSheet<
       incomeSkillOptions: getSelectItemOptions(
         RqidTypeStart.Skill,
         "RQG.Item.Background.AddIncomeSkillPlaceholder",
+      ),
+      culturalWeaponSkillOptions: getSelectItemOptions(
+        RqidTypeStart.Skill,
+        "RQG.Item.Background.AddCulturalWeaponSkillPlaceholder",
       ),
       cultSkillOptions: getSelectItemOptions(
         RqidTypeStart.Skill,

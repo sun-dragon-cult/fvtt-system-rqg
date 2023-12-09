@@ -44,7 +44,7 @@
       <a class="item" data-tab="summary">{{localize "RQG.Item.SheetTab.Summary"}}</a>
       <a class="item" data-tab="skills">{{localize "RQG.Item.SheetTab.Skills"}}</a>
       <a class="item" data-tab="homeland">{{localize "RQG.Item.SheetTab.Homeland"}}</a>
-      <a class="item" data-tab="runes-and-cults">{{localize "RQG.Item.SheetTab.RunesAndCults"}}</a>
+      <a class="item" data-tab="runes-cults-magic">{{localize "RQG.Item.SheetTab.RunesCultsMagic"}}</a>
       <a class="item" data-tab="passions-and-history">{{localize "RQG.Item.SheetTab.PassionsAndHistory"}}</a>
     </nav>
 
@@ -84,7 +84,7 @@
             rqidLinkArray=system.skillBonusRqidLinks
             dropzoneData="skillBonusRqidLinks"
             dropDocumentNames="Item"
-            dropDocumentTypes="rune"
+            dropDocumentTypes="skill"
             showDeleteFromPropertyName="skillBonusRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
@@ -120,7 +120,7 @@
             rqidLinkArray=system.incomeSkillRqidLinks
             dropzoneData="incomeSkillRqidLinks"
             dropDocumentNames="Item"
-            dropDocumentTypes="rune"
+            dropDocumentTypes="skill"
             showDeleteFromPropertyName="incomeSkillRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
@@ -206,11 +206,24 @@
             dropdownOptions=allClanOptions
           }}
 
+          <label>{{localize "RQG.Item.Background.CulturalWeaponSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.culturalWeaponSkillRqidLinks
+            dropzoneData="culturalWeaponSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="skill"
+            showDeleteFromPropertyName="culturalWeaponSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=culturalWeaponSkillOptions
+            editBonusPropertyName="culturalWeaponSkillRqidLinks"
+          }}
+
         </div>
       </div>
 
       {{!-- Runes and Cults Tab --}}
-      <div class="tab" data-group="primary" data-tab="runes-and-cults">
+      <div class="tab" data-group="primary" data-tab="runes-cults-magic">
         <div class="key-value-grid">
 
           <label>{{localize "RQG.Item.Background.RuneBonuses"}}</label>
@@ -232,7 +245,7 @@
             rqidLinkArray=system.cultSkillRqidLinks
             dropzoneData="cultSkillRqidLinks"
             dropDocumentNames="Item"
-            dropDocumentTypes="rune"
+            dropDocumentTypes="skill"
             showDeleteFromPropertyName="cultSkillRqidLinks"
             showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
             showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
