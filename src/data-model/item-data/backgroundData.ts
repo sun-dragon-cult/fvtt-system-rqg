@@ -11,6 +11,16 @@ export enum BackgroundTypeEnum {
   None = "none", // not yet assigned?
 }
 
+export class CharacteristicBonuses {
+  strength: number = 0;
+  constitution: number = 0;
+  size: number = 0;
+  dexterity: number = 0;
+  intelligence: number = 0;
+  power: number = 0;
+  charisma: number = 0;
+}
+
 export class Scar {
   hitLocationRqidLink: RqidLink | undefined = undefined;
   description: string = "";
@@ -41,6 +51,7 @@ export interface BackgroundDataSourceData {
   type: BackgroundTypeEnum;
   instructions: string;
   miscellaneousBonuses: string;
+  characteristicBonuses: CharacteristicBonuses;
   skillBonusRqidLinks: RqidLink[];
   anyCulturalWeaponSkillBonus: number;
   meleeCulturalWeaponSkillBonus: number;
@@ -82,6 +93,7 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   type: BackgroundTypeEnum.None,
   instructions: "",
   miscellaneousBonuses: "",
+  characteristicBonuses: new CharacteristicBonuses(),
   suggestedCultRqidLinks: [],
   suggestedOccupationRqidLinks: [],
   skillBonusRqidLinks: [],

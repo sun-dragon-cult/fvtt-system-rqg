@@ -42,6 +42,7 @@
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="summary">{{localize "RQG.Item.SheetTab.Summary"}}</a>
+      <a class="item" data-tab="characteristics">{{localize "RQG.Item.SheetTab.Characteristics"}}</a>
       <a class="item" data-tab="skills">{{localize "RQG.Item.SheetTab.Skills"}}</a>
       <a class="item" data-tab="homeland">{{localize "RQG.Item.SheetTab.Homeland"}}</a>
       <a class="item" data-tab="runes-cults-magic">{{localize "RQG.Item.SheetTab.RunesCultsMagic"}}</a>
@@ -70,6 +71,59 @@
               editable=isEditable
             }}
 
+        </div>
+
+      </div>
+
+      {{!-- Characteristics Tab --}}
+      <div class="tab" data-group="primary" data-tab="characteristics">
+
+        <div class="key-value-grid">
+          <label>{{localize "RQG.Item.Background.CharacteristicBonuses"}}</label>
+          <div style="display: flex; justify-content: space-evenly; width: 100%;">
+            <div>
+              {{localize "RQG.Actor.Characteristics.strength"}}</br>
+              +<input type="number" id="strength-bonus-{{id}}" name="system.characteristicBonuses.strength"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.strength}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.constitution"}}</br>
+              +<input type="number" id="constitution-bonus-{{id}}" name="system.characteristicBonuses.constitution"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.constitution}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.size"}}</br>
+              +<input type="number" id="size-bonus-{{id}}" name="system.characteristicBonuses.size"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.size}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.dexterity"}}</br>
+              +<input type="number" id="dexterity-bonus-{{id}}" name="system.characteristicBonuses.dexterity"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.dexterity}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.intelligence"}}</br>
+              +<input type="number" id="intelligence-bonus-{{id}}" name="system.characteristicBonuses.intelligence"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.intelligence}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.power"}}</br>
+              +<input type="number" id="power-bonus-{{id}}" name="system.characteristicBonuses.power"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.power}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.charisma"}}</br>
+              +<input type="number" id="charisma-bonus-{{id}}" name="system.characteristicBonuses.charisma"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.charisma}}">
+            </div>
+          </div>
         </div>
 
       </div>
