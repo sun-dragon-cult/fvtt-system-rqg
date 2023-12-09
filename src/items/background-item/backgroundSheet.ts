@@ -167,6 +167,19 @@ export class BackgroundSheet extends RqgItemSheet<
       result.homelands = localize("RQG.Item.Background.AllHomelands");
     }
 
+    if (background.skillBonusRqidLinks?.length > 0) {
+      result.skills = background.skillBonusRqidLinks
+        .map((s) => {
+          const formattedBonus = `${(s.bonus || 0) >= 0 ? "+" : "-"}${s.bonus || 0}%`;
+          if (background.incomeSkillRqidLinks.map((i) => i.rqid).includes(s.rqid)) {
+            return `<span class="income-skill-text">${s.name} ${formattedBonus}</span>`;
+          } else {
+            return `<span>${s.name} ${formattedBonus}</span>`;
+          }
+        })
+        .join(", ");
+    }
+
     return result;
   }
 

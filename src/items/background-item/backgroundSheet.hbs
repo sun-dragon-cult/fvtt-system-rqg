@@ -74,6 +74,11 @@
           <label>{{localize "RQG.Item.Background.SuggestedHomelands"}}</label>
           <span>{{summary.homelands}}</span>
 
+          {{#if summary.skills}}
+          <label>{{localize "RQG.Item.Background.SkillBonuses"}}</label>
+          <span>{{{summary.skills}}}</span>
+          {{/if}}
+
         </div>
 
       </div>
