@@ -688,7 +688,13 @@
       "Background": {
         "BackgroundType": "Background Type",
         "Specialization": "Specific Background",
+        "Instructions": "Instructions",
+        "MiscellaneousBonuses": "Miscellaneous Bonuses",
         "SkillBonuses": "Skill Bonuses",
+        "CulturalWeaponBonuses": "Cultural Weapon Skill Bonuses",
+        "AnyCulturalWeaponSkillBonus": "Any Type",
+        "MeleeCulturalWeaponSkillBonus": "Melee",
+        "MissileCulturalWeaponSkillBonus": "Missile",
         "IncomeSkills": "Income Skills",
         "Income": "Income",
         "Ransom": "Ransom",

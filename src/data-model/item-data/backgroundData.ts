@@ -39,7 +39,12 @@ export interface BackgroundDataSourceData {
   background: string;
   backgroundRqidLink: RqidLink | undefined;
   type: BackgroundTypeEnum;
+  instructions: string;
+  miscellaneousBonuses: string;
   skillBonusRqidLinks: RqidLink[];
+  anyCulturalWeaponSkillBonus: number;
+  meleeCulturalWeaponSkillBonus: number;
+  missileCulturalWeaponSkillBonus: number;
   incomeSkillRqidLinks: RqidLink[];
   cultSkillRqidLinks: RqidLink[];
   runeBonusRqidLinks: RqidLink[];
@@ -74,9 +79,14 @@ export const defaultBackgroundData: BackgroundDataSourceData = {
   background: "",
   backgroundRqidLink: undefined,
   type: BackgroundTypeEnum.None,
+  instructions: "",
+  miscellaneousBonuses: "",
   suggestedCultRqidLinks: [],
   suggestedOccupationRqidLinks: [],
   skillBonusRqidLinks: [],
+  anyCulturalWeaponSkillBonus: 0,
+  meleeCulturalWeaponSkillBonus: 0,
+  missileCulturalWeaponSkillBonus: 0,
   incomeSkillRqidLinks: [],
   cultSkillRqidLinks: [],
   runeBonusRqidLinks: [],

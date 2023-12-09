@@ -51,7 +51,27 @@
     <section class="sheet-body">
       {{!-- Skills Tab --}}
       <div class="tab" data-group="primary" data-tab="summary">
-        Summary
+
+        <div class="key-value-grid">
+                    
+          <label>{{localize "RQG.Item.Background.Instructions"}}</label>
+            {{editor
+              enrichedInstructions
+              target="system.instructions"
+              button=true
+              editable=isEditable
+            }}
+
+          <label>{{localize "RQG.Item.Background.MiscellaneousBonuses"}}</label>
+            {{editor
+              enrichedMiscellaneousBonuses
+              target="system.miscellaneousBonuses"
+              button=true
+              editable=isEditable
+            }}
+
+        </div>
+
       </div>
 
       {{!-- Skills Tab --}}
@@ -72,6 +92,28 @@
             showBonus=true
             editBonusPropertyName="skillBonusRqidLinks"
           }}
+
+          <label>{{localize "RQG.Item.Background.CulturalWeaponBonuses"}}</label>
+          <div style="display: flex; justify-content: space-evenly; width: 100%;">
+            <div>
+              {{localize "RQG.Item.Background.AnyCulturalWeaponSkillBonus"}}
+              +<input type="number" id="any-cultural-weapon-{{id}}" name="system.anyCulturalWeaponSkillBonus"
+                    style="width: 25px;"
+                    value="{{system.anyCulturalWeaponSkillBonus}}">%
+            </div>
+            <div>
+              {{localize "RQG.Item.Background.MeleeCulturalWeaponSkillBonus"}}
+              +<input type="number" id="melee-cultural-weapon-{{id}}" name="system.meleeCulturalWeaponSkillBonus"
+                    style="width: 25px;"
+                    value="{{system.meleeCulturalWeaponSkillBonus}}">%
+            </div>
+            <div>
+              {{localize "RQG.Item.Background.MissileCulturalWeaponSkillBonus"}}
+              +<input type="number" id="missile-cultural-weapon-{{id}}" name="system.missileCulturalWeaponSkillBonus"
+                    style="width: 25px;"
+                    value="{{system.missileCulturalWeaponSkillBonus}}">%
+            </div>
+          </div>
 
           <label>{{localize "RQG.Item.Background.IncomeSkills"}}</label>
           {{> rqidLinkArrayDropzone

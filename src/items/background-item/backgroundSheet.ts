@@ -49,7 +49,7 @@ export class BackgroundSheet extends RqgItemSheet<
     });
   }
 
-  getData(): BackgroundSheetData & DocumentSheetData {
+  async getData(): Promise<BackgroundSheetData & DocumentSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = duplicate(this.document._source.system);
     console.log("Background getData returning system:", system);
@@ -111,6 +111,14 @@ export class BackgroundSheet extends RqgItemSheet<
         "RQG.Item.Background.AddSuggestedClanPlaceholder",
       ),
       standardOfLiving: Object.values(StandardOfLivingEnum),
+
+      // @ts-expect-error async
+      enrichedInstructions: await TextEditor.enrichHTML(system.instructions, { async: true }),
+
+      enrichedMiscellaneousBonuses: await TextEditor.enrichHTML(system.miscellaneousBonuses, {
+        // @ts-expect-error async
+        async: true,
+      }),
     };
   }
 
