@@ -670,20 +670,21 @@
           "Greaves": "Greaves"
         },
         "ArmorMaterial": {
+          "SoftLeather": "Soft Leather",
           "Leather": "Leather",
           "HeavyLeather": "Heavy Leather",
           "StuddedLeather": "Studded Leather",
-          "BronzePlate": "Bronze Plate",
-          "BronzeSegmentedPlate": "Segmented Bronze Plate",
-          "DiskPlate": "Disk Plate",
-          "LightScale": "Light Scale",
-          "HeavyScale": "Heavy Scale",
           "Cuirboilli": "Cuirboilli",
-          "RingMail": "Ring Mail",
-          "TurtleShell": "Turtle Shell",
-          "Quilted": "Quilted",
           "Linen": "Linen",
-          "Iron": "Iron"
+          "Quilted": "Quilted",
+          "BronzeRingMail": "Bronze Ring Mail",
+          "TurtleShell": "Turtle Shell",
+          "LightBronzeScale": "Light Bronze Scale",
+          "HeavyBronzeScale": "Heavy Bronze Scale",
+          "SegmentedBronzePlate": "Segmented Bronze Plate",
+          "BronzeDiskPlate": "Bronze Disk Plate",
+          "BronzePlate": "Bronze Plate",
+          "IronPlate": "Iron Plate"
         }
       },
       "Cult": {

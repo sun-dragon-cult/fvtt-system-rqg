@@ -21,20 +21,21 @@ export const armorTypeTranslationKeys = [
 ];
 
 export const materialTranslationKeys = [
+  "RQG.Item.Armor.ArmorMaterial.SoftLeather",
   "RQG.Item.Armor.ArmorMaterial.Leather",
   "RQG.Item.Armor.ArmorMaterial.HeavyLeather",
   "RQG.Item.Armor.ArmorMaterial.StuddedLeather",
-  "RQG.Item.Armor.ArmorMaterial.BronzePlate",
-  "RQG.Item.Armor.ArmorMaterial.DiskPlate",
-  "RQG.Item.Armor.ArmorMaterial.BronzeSegmentedPlate",
-  "RQG.Item.Armor.ArmorMaterial.LightScale",
-  "RQG.Item.Armor.ArmorMaterial.HeavyScale",
   "RQG.Item.Armor.ArmorMaterial.Cuirboilli",
-  "RQG.Item.Armor.ArmorMaterial.RingMail",
-  "RQG.Item.Armor.ArmorMaterial.TurtleShell",
-  "RQG.Item.Armor.ArmorMaterial.Quilted",
   "RQG.Item.Armor.ArmorMaterial.Linen",
-  "RQG.Item.Armor.ArmorMaterial.Iron",
+  "RQG.Item.Armor.ArmorMaterial.Quilted",
+  "RQG.Item.Armor.ArmorMaterial.BronzeRingMail",
+  "RQG.Item.Armor.ArmorMaterial.TurtleShell",
+  "RQG.Item.Armor.ArmorMaterial.LightBronzeScale",
+  "RQG.Item.Armor.ArmorMaterial.HeavyBronzeScale",
+  "RQG.Item.Armor.ArmorMaterial.SegmentedBronzePlate",
+  "RQG.Item.Armor.ArmorMaterial.BronzeDiskPlate",
+  "RQG.Item.Armor.ArmorMaterial.BronzePlate",
+  "RQG.Item.Armor.ArmorMaterial.IronPlate",
 ];
 
 export interface ArmorDataSourceData extends IPhysicalItem {
