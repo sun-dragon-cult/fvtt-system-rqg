@@ -363,17 +363,18 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   return rqgActor as unknown as T;
 }
 
-let availableHitLocations: AvailableItemCache[] = [];
-
-export function getAvailableHitLocations(silent: boolean = false): AvailableItemCache[] {
-  if (availableHitLocations.length > 0) {
-    return availableHitLocations;
-  }
-  if (!silent) {
-    ui.notifications?.warn("compendiums not indexed yet, try again!");
-  }
-  cacheAvailableHitLocations();
-  return [];
+export enum RqidTypeStart {
+  HitLocation = "i.hit-location.",
+  Skill = "i.skill.",
+  Rune = "i.rune.",
+  RuneMagic = "i.rune-magic.",
+  SpiritMagic = "i.spirit-magic.",
+  Passion = "i.passion.",
+  Cult = "i.background.cult-",
+  Occupation = "i.background.occupation-",
+  Homeland = "i.background.homeland-",
+  Tribe = "i.background.tribe-",
+  Clan = "i.background.clan-",
 }
 
 export type AvailableItemCache = {
@@ -382,44 +383,42 @@ export type AvailableItemCache = {
   rqid: string;
 };
 
-let availableRunes: AvailableItemCache[] = [];
+const availableItemsCacheMap: Map<RqidTypeStart, AvailableItemCache[]> = new Map<
+  RqidTypeStart,
+  AvailableItemCache[]
+>();
 
-/**
- * Get the cached data about the runes that are available in the world.
- * @see {@link cacheAvailableRunes}
- */
-export function getAvailableRunes(silent: boolean = false): AvailableItemCache[] {
-  if (availableRunes.length > 0) {
-    return availableRunes;
+export function getAvailableItems(
+  rqidTypeStart: RqidTypeStart,
+  silent: boolean = false,
+): AvailableItemCache[] {
+  const cache = availableItemsCacheMap.get(rqidTypeStart) || [];
+  if (cache.length > 0) {
+    return cache;
   }
   if (!silent) {
     ui.notifications?.warn("compendiums not indexed yet, try again!");
   }
-  cacheAvailableRunes();
+  cacheAvailableItems(rqidTypeStart);
   return [];
 }
 
-export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
-  if (availableRunes.length > 0) {
-    return availableRunes;
+export async function cacheAvailableItems(
+  rqidTypeStart: RqidTypeStart,
+): Promise<AvailableItemCache[]> {
+  const cache = availableItemsCacheMap.get(rqidTypeStart) || [];
+  if (cache.length > 0) {
+    return cache;
   }
-  availableRunes = await getItemsToCache("i.rune.");
-  return availableRunes;
-}
-
-export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
-  if (availableHitLocations.length > 0) {
-    return availableHitLocations;
-  }
-  availableHitLocations = await getItemsToCache("i.hit-location.");
-  return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
+  availableItemsCacheMap.set(rqidTypeStart, await getItemsToCache(rqidTypeStart));
+  return availableItemsCacheMap.get(rqidTypeStart) || [];
 }
 
 /**
  * Go through all compendiums and make a list of all the unique item that match the rqidStart
  * in them to find the items and storing name, img & rqid for each in the supplied cache.
  */
-export async function getItemsToCache(rqidStart: string): Promise<AvailableItemCache[]> {
+export async function getItemsToCache(rqidStart: RqidTypeStart): Promise<AvailableItemCache[]> {
   const compendiumItemIndexData = (
     await Promise.all(
       getGame().packs.map(async (pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
@@ -456,29 +455,25 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
   }));
 }
 
-export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
+export function getSelectItemOptions(
+  rqidTypeStart: RqidTypeStart,
+  emptyPlaceholderKey: string,
+): AvailableItemCache[] {
   const emptyOption: AvailableItemCache = {
     rqid: "empty",
     name: localize(emptyPlaceholderKey),
     img: "",
   };
-  return getSelectOptions(emptyOption, getAvailableRunes);
-}
-
-export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-  };
-  return getSelectOptions(emptyOption, getAvailableHitLocations);
+  return getSelectOptions(emptyOption, rqidTypeStart);
 }
 
 function getSelectOptions(
   emptyOption: AvailableItemCache,
-  getItemFn: () => AvailableItemCache[],
+  rqidTypeStart: RqidTypeStart,
 ): AvailableItemCache[] {
-  const sortedOptions = (getItemFn() ?? []).sort((a, b) => a.name.localeCompare(b.name));
+  const sortedOptions = (getAvailableItems(rqidTypeStart) ?? []).sort((a, b) =>
+    a.name.localeCompare(b.name),
+  );
   const options: AvailableItemCache[] =
     [emptyOption, ...sortedOptions].reduce((acc: any, i: any) => {
       return { ...acc, [i.rqid]: i.name };
@@ -487,7 +482,7 @@ function getSelectOptions(
 }
 
 function getIndexData(
-  rqidStart: string,
+  rqidStart: RqidTypeStart,
   pack: CompendiumCollection<CompendiumCollection.Metadata>,
 ): AvailableItemCache[] {
   return pack.index.reduce((acc: AvailableItemCache[], indexData) => {

@@ -12,6 +12,7 @@ import { defaultHitLocationData } from "./data-model/item-data/hitLocationData";
 import { defaultWeaponData } from "./data-model/item-data/weaponData";
 import { defaultHomelandData } from "./data-model/item-data/homelandData";
 import { defaultOccupationData } from "./data-model/item-data/occupationData";
+import { defaultBackgroundData } from "./data-model/item-data/backgroundData";
 
 // Instantiated Actor types
 export const Actors = {
@@ -20,6 +21,7 @@ export const Actors = {
 
 export const Items = {
   [ItemTypeEnum.Armor]: defaultArmorData,
+  [ItemTypeEnum.Background]: defaultBackgroundData,
   [ItemTypeEnum.Cult]: defaultCultData,
   [ItemTypeEnum.Gear]: defaultGearData,
   [ItemTypeEnum.HitLocation]: defaultHitLocationData,

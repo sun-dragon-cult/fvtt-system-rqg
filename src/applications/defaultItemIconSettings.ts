@@ -7,6 +7,7 @@ import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export interface IconSettingsData {
   [ItemTypeEnum.Armor]: string;
+  [ItemTypeEnum.Background]: string;
   [ItemTypeEnum.Cult]: string;
   [ItemTypeEnum.Gear]: string;
   [ItemTypeEnum.HitLocation]: string;

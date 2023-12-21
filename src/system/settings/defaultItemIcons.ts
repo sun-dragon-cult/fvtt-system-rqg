@@ -3,6 +3,7 @@ import { IconSettingsData } from "../../applications/defaultItemIconSettings";
 
 export const defaultItemIconsObject: IconSettingsData = {
   [ItemTypeEnum.Armor]: "systems/rqg/assets/images/items/armor.svg",
+  [ItemTypeEnum.Background]: "systems/rqg/assets/images/items/background.svg",
   [ItemTypeEnum.Cult]: "systems/rqg/assets/images/items/cult.svg",
   [ItemTypeEnum.Gear]: "systems/rqg/assets/images/items/gear.svg",
   [ItemTypeEnum.HitLocation]: "systems/rqg/assets/images/items/hit-location.svg",

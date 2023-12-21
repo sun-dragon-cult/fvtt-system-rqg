@@ -56,6 +56,9 @@ editBonusPropertyName: string - example "skillRqidLinks"
 {{else}}
 
   {{#if showInfoCircleConnect}}
+    {{#if emptyText}}
+      <span style="padding: 7px">{{localize emptyText}}</span>
+    {{/if}}
     <i
       class="fas fa-info-circle icon"
       data-tooltip="{{localize showInfoCircleConnect}}"

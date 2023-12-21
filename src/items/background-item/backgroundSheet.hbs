@@ -1,0 +1,394 @@
+<form autocomplete="off">
+  <header class="item-sheet-header">
+    <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
+
+    <div class="flex-column gap03rem">
+
+      <div class="property-line">
+        <div class="label-above">
+          <label for="background-{{id}}">{{localize "RQG.Item.Background.BackgroundType"}}</label>
+          <input
+            id="background-{{id}}"
+            name="system.background"
+            value="{{system.background}}"
+            type="text"
+          >
+        </div>
+
+        <div class="label-above">
+          <label for="specialization-{{id}}">{{localize "RQG.Item.Background.Specialization"}}</label>
+          <div>
+            ( <input type="text" id="specialization-{{id}}" name="system.specialization"
+                     value="{{system.specialization}}"> )
+          </div>
+        </div>
+      </div>
+
+
+      {{> rqidLinkDropzone
+        rqidLink=system.backgroundRqidLink
+        dropzoneData="backgroundRqidLink"
+        dropDocumentNames="JournalEntry, JournalEntryPage"
+        showDeleteFromPropertyName="backgroundRqidLink"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+        showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+      }}
+    </div>
+
+  </header>
+
+  <main>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="item-sheet-nav-tabs" data-group="primary">
+      <a class="item" data-tab="summary">{{localize "RQG.Item.SheetTab.Summary"}}</a>
+      <a class="item" data-tab="characteristics">{{localize "RQG.Item.SheetTab.Characteristics"}}</a>
+      <a class="item" data-tab="skills">{{localize "RQG.Item.SheetTab.Skills"}}</a>
+      <a class="item" data-tab="homeland">{{localize "RQG.Item.SheetTab.Homeland"}}</a>
+      <a class="item" data-tab="runes-cults-magic">{{localize "RQG.Item.SheetTab.RunesCultsMagic"}}</a>
+      <a class="item" data-tab="passions-and-history">{{localize "RQG.Item.SheetTab.PassionsAndHistory"}}</a>
+    </nav>
+
+    <section class="sheet-body">
+      {{!-- Summary Tab --}}
+      <div class="tab" data-group="primary" data-tab="summary">
+
+        <div class="key-value-grid">
+                    
+          <label>{{localize "RQG.Item.Background.Instructions"}}</label>
+            {{editor
+              enrichedInstructions
+              target="system.instructions"
+              button=true
+              editable=isEditable
+            }}
+
+          <label>{{localize "RQG.Item.Background.MiscellaneousBonuses"}}</label>
+            {{editor
+              enrichedMiscellaneousBonuses
+              target="system.miscellaneousBonuses"
+              button=true
+              editable=isEditable
+            }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedHomelands"}}</label>
+          <span>{{summary.homelands}}</span>
+
+          {{#if summary.skills}}
+          <label>{{localize "RQG.Item.Background.SkillBonuses"}}</label>
+          <span>{{{summary.skills}}}</span>
+          {{/if}}
+
+        </div>
+
+      </div>
+
+      {{!-- Characteristics Tab --}}
+      <div class="tab" data-group="primary" data-tab="characteristics">
+
+        <div class="key-value-grid">
+          <label>{{localize "RQG.Item.Background.CharacteristicBonuses"}}</label>
+          <div style="display: flex; justify-content: space-evenly; width: 100%;">
+            <div>
+              {{localize "RQG.Actor.Characteristics.strength"}}</br>
+              +<input type="number" id="strength-bonus-{{id}}" name="system.characteristicBonuses.strength"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.strength}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.constitution"}}</br>
+              +<input type="number" id="constitution-bonus-{{id}}" name="system.characteristicBonuses.constitution"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.constitution}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.size"}}</br>
+              +<input type="number" id="size-bonus-{{id}}" name="system.characteristicBonuses.size"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.size}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.dexterity"}}</br>
+              +<input type="number" id="dexterity-bonus-{{id}}" name="system.characteristicBonuses.dexterity"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.dexterity}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.intelligence"}}</br>
+              +<input type="number" id="intelligence-bonus-{{id}}" name="system.characteristicBonuses.intelligence"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.intelligence}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.power"}}</br>
+              +<input type="number" id="power-bonus-{{id}}" name="system.characteristicBonuses.power"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.power}}">
+            </div>
+            <div>
+              {{localize "RQG.Actor.Characteristics.charisma"}}</br>
+              +<input type="number" id="charisma-bonus-{{id}}" name="system.characteristicBonuses.charisma"
+                    style="width: 25px;"
+                    value="{{system.characteristicBonuses.charisma}}">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {{!-- Skills Tab --}}
+      <div class="tab" data-group="primary" data-tab="skills">
+       
+        <div class="key-value-grid">
+
+          <label>{{localize "RQG.Item.Background.SkillBonuses"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.skillBonusRqidLinks
+            dropzoneData="skillBonusRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="skill"
+            showDeleteFromPropertyName="skillBonusRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=skillBonusOptions
+            showBonus=true
+            editBonusPropertyName="skillBonusRqidLinks"
+          }}
+
+          <label>{{localize "RQG.Item.Background.CulturalWeaponBonuses"}}</label>
+          <div style="display: flex; justify-content: space-evenly; width: 100%;">
+            <div>
+              {{localize "RQG.Item.Background.AnyCulturalWeaponSkillBonus"}}
+              +<input type="number" id="any-cultural-weapon-{{id}}" name="system.anyCulturalWeaponSkillBonus"
+                    style="width: 25px;"
+                    value="{{system.anyCulturalWeaponSkillBonus}}">%
+            </div>
+            <div>
+              {{localize "RQG.Item.Background.MeleeCulturalWeaponSkillBonus"}}
+              +<input type="number" id="melee-cultural-weapon-{{id}}" name="system.meleeCulturalWeaponSkillBonus"
+                    style="width: 25px;"
+                    value="{{system.meleeCulturalWeaponSkillBonus}}">%
+            </div>
+            <div>
+              {{localize "RQG.Item.Background.MissileCulturalWeaponSkillBonus"}}
+              +<input type="number" id="missile-cultural-weapon-{{id}}" name="system.missileCulturalWeaponSkillBonus"
+                    style="width: 25px;"
+                    value="{{system.missileCulturalWeaponSkillBonus}}">%
+            </div>
+          </div>
+
+          <label>{{localize "RQG.Item.Background.IncomeSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.incomeSkillRqidLinks
+            dropzoneData="incomeSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="skill"
+            showDeleteFromPropertyName="incomeSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=incomeSkillOptions
+            editBonusPropertyName="incomeSkillRqidLinks"
+          }}
+
+          <label>{{localize "RQG.Item.Background.StandardOfLiving"}}</label>
+          <div>
+            <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
+              {{#select system.standardOfLiving}}
+                {{#each standardOfLiving}}
+                  <option value="{{this}}">{{localize
+                      (concat "RQG.Item.Background.StandardOfLivingEnum." this)
+                    }}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+          </div>
+
+          <label>{{localize "RQG.Item.Background.Income"}}</label>
+          <div>
+            <input type="number" id="income-{{id}}" name="system.income"
+                                value="{{system.income}}">L
+          </div>
+          <label>{{localize "RQG.Item.Background.Ransom"}}</label>
+          <div>
+            <input type="number" id="ransom-{{id}}" name="system.ransom"
+                                value="{{system.ransom}}">L
+          </div>
+
+          <label>{{localize "RQG.Item.Background.SuggestedOccupations"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedOccupationRqidLinks
+            dropzoneData="suggestedOccupationRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedOccupationRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+            dropdownOptions=allOccupationOptions
+          }}
+            
+          </div>
+        </div> 
+
+      </div>
+
+      {{!-- Homeland Tab --}}
+      <div class="tab" data-group="primary" data-tab="homeland">
+        <div class="key-value-grid">
+
+          <label>{{localize "RQG.Item.Background.SuggestedHomelands"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedHomelandRqidLinks
+            dropzoneData="suggestedHomelandRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedHomelandRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHomeland"
+            dropdownOptions=allHomelandOptions
+            emptyText="RQG.Item.Background.AllHomelands"
+          }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedTribes"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedTribeRqidLinks
+            dropzoneData="suggestedTribeRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedTribeRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectTribe"
+            dropdownOptions=allTribeOptions
+          }}
+
+          <label>{{localize "RQG.Item.Background.SuggestedClans"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedClanRqidLinks
+            dropzoneData="suggestedClanRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedClanRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectClan"
+            dropdownOptions=allClanOptions
+          }}
+
+          <label>{{localize "RQG.Item.Background.CulturalWeaponSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.culturalWeaponSkillRqidLinks
+            dropzoneData="culturalWeaponSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="skill"
+            showDeleteFromPropertyName="culturalWeaponSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=culturalWeaponSkillOptions
+            editBonusPropertyName="culturalWeaponSkillRqidLinks"
+          }}
+
+        </div>
+      </div>
+
+      {{!-- Runes, Cults, Magic Tab --}}
+      <div class="tab" data-group="primary" data-tab="runes-cults-magic">
+        <div class="key-value-grid">
+
+          <label>{{localize "RQG.Item.Background.RuneBonuses"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.runeBonusRqidLinks
+            dropzoneData="runeBonusRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune"
+            showDeleteFromPropertyName="runeBonusRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+            dropdownOptions=allRuneOptions
+            showBonus=true
+            editBonusPropertyName="runeBonusRqidLinks"
+          }}
+
+          <label>{{localize "RQG.Item.Background.CultSkills"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.cultSkillRqidLinks
+            dropzoneData="cultSkillRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="skill"
+            showDeleteFromPropertyName="cultSkillRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            dropdownOptions=cultSkillOptions
+            editBonusPropertyName="cultSkillRqidLinks"
+          }}
+          
+          <label>{{localize "RQG.Item.Background.SuggestedCults"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.suggestedCultRqidLinks
+            dropzoneData="suggestedCultRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="background"
+            showDeleteFromPropertyName="suggestedCultRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+            dropdownOptions=allCultOptions
+          }}
+          
+          <label>{{localize "RQG.Item.Background.AvailableRuneMagic"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.runeMagicRqidLinks
+            dropzoneData="runeMagicRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="rune-magic"
+            showDeleteFromPropertyName="runeMagicRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRuneMagic"
+            dropdownOptions=allRuneMagicOptions
+          }}
+          
+          <label>{{localize "RQG.Item.Background.AvailableSpiritMagic"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.spiritMagicRqidLinks
+            dropzoneData="spiritMagicRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="spirit-magic"
+            showDeleteFromPropertyName="spiritMagicRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSpiritMagic"
+            dropdownOptions=allSpiritMagicOptions
+          }}
+
+          <label>{{localize "RQG.Item.Background.SpiritCombatDamageBonus"}}</label>
+          <div>
+            +<input type="number" id="spirit-combat-damage-bonus-{{id}}" name="system.spiritCombatDamageBonus"
+                                value="{{system.spiritCombatDamageBonus}}">
+          </div>      
+
+        </div>
+      </div>
+
+      {{!-- Passions and History Tab --}}
+      <div class="tab" data-group="primary" data-tab="passions-and-history">
+        <div class="key-value-grid">
+
+          <label>{{localize "RQG.Item.Background.PassionBonuses"}}</label>
+          {{> rqidLinkArrayDropzone
+            rqidLinkArray=system.passionBonusRqidLinks
+            dropzoneData="passionBonusRqidLinks"
+            dropDocumentNames="Item"
+            dropDocumentTypes="passion"
+            showDeleteFromPropertyName="passionBonusRqidLinks"
+            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+            dropdownOptions=allPassionOptions
+            showBonus=true
+            editBonusPropertyName="passionBonusRqidLinks"
+          }}
+
+          <label>{{localize "RQG.Item.Background.ReputationBonus"}}</label>
+          <div>
+            +<input type="number" id="reputation-bonus-{{id}}" name="system.reputationBonus"
+                                value="{{system.reputationBonus}}">%
+          </div>
+
+          <label>{{localize "RQG.Item.Background.Scars"}}</label>
+          <div style="display: flex;">
+            +<input type="text" id="scars-{{id}}" name="system.scars"
+                                value="{{system.scars}}">
+          </div>          
+
+        </div>
+      </div>
+    </section>  
+  </main>
+</form>

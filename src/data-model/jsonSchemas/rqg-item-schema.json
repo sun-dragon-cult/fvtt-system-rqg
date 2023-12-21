@@ -12,6 +12,7 @@
       "type": "string",
       "enum": [
         "armor",
+        "background",
         "cult",
         "gear",
         "hitLocation",
@@ -187,7 +188,7 @@
   "$defs": {
     "rqidDef": {
       "type": "string",
-      "pattern": "^a\\.character\\.[a-z\\d-]+$|^i\\.(armor|cult|gear|hit-location|homeland|occupation|passion|rune|rune-magic|skill|spirit-magic|weapon)\\.[a-z\\d-]+$|^je\\.\\.[a-z\\d-]+$|^rt\\.\\.[a-z\\d-]+$",
+      "pattern": "^a\\.character\\.[a-z\\d-]+$|^i\\.(armor|background|cult|gear|hit-location|homeland|occupation|passion|rune|rune-magic|skill|spirit-magic|weapon)\\.[a-z\\d-]+$|^je\\.\\.[a-z\\d-]+$|^rt\\.\\.[a-z\\d-]+$",
       "description": "A valid rqid"
     },
 

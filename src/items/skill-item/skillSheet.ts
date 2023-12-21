@@ -1,7 +1,12 @@
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser, AvailableItemCache, getSelectRuneOptions } from "../../system/util";
+import {
+  getGameUser,
+  AvailableItemCache,
+  getSelectItemOptions,
+  RqidTypeStart,
+} from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
@@ -51,7 +56,10 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       isEmbedded: this.document.isEmbedded,
 
       skillCategories: Object.values(SkillCategoryEnum),
-      allRuneOptions: getSelectRuneOptions("RQG.Item.Skill.AddSorceryRunePlaceholder"),
+      allRuneOptions: getSelectItemOptions(
+        RqidTypeStart.Rune,
+        "RQG.Item.Skill.AddSorceryRunePlaceholder",
+      ),
     };
   }
 

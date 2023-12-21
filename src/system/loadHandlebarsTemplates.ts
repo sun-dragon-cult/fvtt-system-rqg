@@ -7,6 +7,7 @@ export const templatePaths = {
 
   // Item Sheets
   itemArmorSheet: "systems/rqg/items/armor-item/armorSheet.hbs",
+  itemBackgroundSheet: "systems/rqg/items/background-item/backgroundSheet.hbs",
   itemCultSheet: "systems/rqg/items/cult-item/cultSheet.hbs",
   itemGearSheet: "systems/rqg/items/gear-item/gearSheet.hbs",
   itemHitLocationSheet: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",

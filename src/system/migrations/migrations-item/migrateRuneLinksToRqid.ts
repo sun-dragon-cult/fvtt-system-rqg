@@ -4,9 +4,10 @@ import { ItemUpdate } from "../applyMigrations";
 import {
   assertItemType,
   AvailableItemCache,
-  cacheAvailableRunes,
-  getAvailableRunes,
+  cacheAvailableItems,
+  getAvailableItems,
   isTruthy,
+  RqidTypeStart,
 } from "../../util";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
 import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
@@ -17,10 +18,10 @@ export async function migrateRuneLinksToRqid(
 ): Promise<ItemUpdate> {
   const updateData = {};
 
-  let availableRunes = getAvailableRunes(true);
+  let availableRunes = getAvailableItems(RqidTypeStart.Rune, true);
   if (!availableRunes.length) {
-    await cacheAvailableRunes();
-    availableRunes = getAvailableRunes();
+    await cacheAvailableItems(RqidTypeStart.Rune);
+    availableRunes = getAvailableItems(RqidTypeStart.Rune);
   }
 
   // Migrate Rune item
