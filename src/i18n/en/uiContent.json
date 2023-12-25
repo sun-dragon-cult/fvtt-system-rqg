@@ -889,11 +889,11 @@
         "MinorRunes": "Minor Runes",
         "MasteredSorceryQ": "Mastered (Sorcery)?",
         "RuneType": {
-          "element": "Element",
-          "power": "Power",
-          "form": "Form",
-          "condition": "Condition",
-          "technique": "Technique"
+          "element": "element",
+          "power": "power",
+          "form": "form",
+          "condition": "condition",
+          "technique": "technique"
         },
         "Notification": {
           "RqidNeededWarn": "No Rqid assigned. A Rqid is needed to make the rune available for cults, rune magic etc."
