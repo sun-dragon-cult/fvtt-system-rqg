@@ -20,6 +20,7 @@ import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponIte
 import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
 import { migrateArmorCoverage } from "./migrations-item/migrateArmorCoverage";
 import { migrateHitLocationConnectedTo } from "./migrations-item/migrateHitLocationConnectedTo";
+import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabelRuneMagicCommandCultSpiritRqid";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -102,6 +103,7 @@ export async function applyDefaultWorldMigrations(
     migrateRuneItemType,
     migrateArmorCoverage,
     migrateHitLocationConnectedTo,
+    relabelRuneMagicCommandCultSpiritRqid,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
 

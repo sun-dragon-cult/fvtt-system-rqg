@@ -14,8 +14,8 @@ export enum CultRankEnum {
 
 const defaultCommonRuneMagic: RqidLink[] = [
   {
-    rqid: "i.rune-magic.command-cult-spirit-elemental",
-    name: "Command Cult Spirit (Elemental)",
+    rqid: "i.rune-magic.command-cult-spirit",
+    name: "Command Cult Spirit",
   },
   {
     rqid: "i.rune-magic.dismiss-magic",
