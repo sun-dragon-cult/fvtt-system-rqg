@@ -1,25 +1,13 @@
 import { getGame, getGameUser, localize } from "../util";
 import { migrateActorDummy } from "./migrations-actor/migrateActorDummy";
 import { ActorMigration, applyMigrations, ItemMigration } from "./applyMigrations";
-import { changeRuneExperienceFieldName } from "./migrations-item/changeRuneExperienceFieldName";
-import { renameRuneMagicDurationSpecial } from "./migrations-item/renameRuneMagicDurationSpecial";
-import { moveRuneIcons } from "./migrations-item/moveRuneIcon";
-import { renameSkillIcons } from "./migrations-item/renameSkillIcons";
 import { systemId } from "../config";
-import { renameDragonewt } from "./migrations-item/renameDragonewt";
-import { trimCategoryFromSkillNames } from "./migrations-item/trimCategoryFromSkillNames";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
-import { renameLearnedToGainedChance } from "./migrations-item/renameLearnedToGainedChance";
 import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
-import { migrateSubCults } from "./migrations-item/migrateSubCults";
 import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
-import { migrateRuneLinksToRqid } from "./migrations-item/migrateRuneLinksToRqid";
-import { migrateWeaponItemDamageBonus } from "./migrations-item/migrateWeaponItemDamageBonus";
 import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
-import { migrateArmorCoverage } from "./migrations-item/migrateArmorCoverage";
-import { migrateHitLocationConnectedTo } from "./migrations-item/migrateHitLocationConnectedTo";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabelRuneMagicCommandCultSpiritRqid";
 
 /**
@@ -88,21 +76,9 @@ export async function applyDefaultWorldMigrations(
     return;
   }
   const worldItemMigrations: ItemMigration[] = itemMigrations ?? [
-    changeRuneExperienceFieldName,
-    renameRuneMagicDurationSpecial,
-    moveRuneIcons,
-    renameSkillIcons,
-    renameDragonewt,
-    trimCategoryFromSkillNames,
     tagSkillNameSkillsWithRqid,
-    renameLearnedToGainedChance,
-    migrateSubCults,
     migrateWeaponSkillLinks,
-    migrateRuneLinksToRqid,
-    migrateWeaponItemDamageBonus,
     migrateRuneItemType,
-    migrateArmorCoverage,
-    migrateHitLocationConnectedTo,
     relabelRuneMagicCommandCultSpiritRqid,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
