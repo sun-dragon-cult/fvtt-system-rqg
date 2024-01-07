@@ -1140,7 +1140,6 @@
       "DuplicateWarning": "Warning: Multiple rqids with same priority!",
       "CouldNotFindRune": "Could not find cached rune with rqid {rqid}",
       "Error": {
-        "NoWikiModule": "Please enable the required wiki module <a href='https://sun-dragon-cult.github.io/rqg-system/getting-started'>See installing instructions</a>",
         "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
         "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in compendium packs) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
         "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",

@@ -57,7 +57,7 @@
       "name": "RuneQuest Glorantha System",
       "sorting": "m",
       "color": "#176341",
-      "packs": [],
+      "packs": ["documentation"],
       "folders": [
         {
           "name": "Macros",
@@ -71,6 +71,17 @@
     }
   ],
   "packs": [
+    {
+      "name": "documentation",
+      "label": "Documentation",
+      "system": "rqg",
+      "path": "packs/documentation",
+      "ownership": {
+        "PLAYER": "NONE",
+        "ASSISTANT": "OWNER"
+      },
+      "type": "JournalEntry"
+    },
     {
       "name": "rqid-macros",
       "label": "Rqid Macros",

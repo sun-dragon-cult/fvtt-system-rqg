@@ -14,7 +14,6 @@ import {
   cacheAvailableRunes,
   getGame,
   getGameUser,
-  localize,
 } from "./system/util";
 import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
@@ -145,8 +144,6 @@ Hooks.once("ready", async () => {
       ([name, mod]) => /wiki-[a-z]{2}-rqg/.test(name) && mod.active,
     )
   ) {
-    ui.notifications?.error(localize("RQG.RQGSystem.Error.NoWikiModule"), {
-      permanent: true,
-    });
+    await Rqid.renderRqidDocument("je..quick-start");
   }
 });

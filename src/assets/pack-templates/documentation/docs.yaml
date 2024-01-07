@@ -1,0 +1,51 @@
+name: System Documentation
+pages:
+  - sort: 0
+    name: Quick Start
+    type: text
+    title:
+      show: true
+      level: 1
+    text:
+      format: 1
+      content: >
+        <p>
+          This is an implementation of the RuneQuest Glorantha (RQG) game for Foundry VTT.
+        </p>
+        <p>
+          In addition to this system you need to install the <a href="https://sun-dragon-cult.github.io/wiki"
+          title="External link to documentation about the foundry RQG wiki">wiki-module</a>
+          that contains the items needed for this system to work like runes &amp; hit-locations, as well as nice to have
+          things like a bestiary, and ready made weapons etc.
+        </p>
+        <p>
+          To learn more about this system please visit the documentation web at
+          <a href="https://sun-dragon-cult.github.io/">RuneQuest Glorantha for Foundry VTT</a> or if you prefer to view
+          the same page in a journal, go to @UUID[.YC2s81b1ka4bIffA]{Embedded Documentation Web Site}
+        </p>
+  - sort: 100000
+    name: Embedded Documentation Web Site
+    type: text
+    _id: YC2s81b1ka4bIffA
+    title:
+      show: false
+      level: 1
+    text:
+      format: 1
+      content: >
+        <div style="height:600px;resize:vertical;overflow:hidden">
+          <iframe width="100%" height="100%" src="https://sun-dragon-cult.github.io/"
+          sandbox="allow-scripts allow-forms"></iframe>
+        </div>
+        <p style="text-align:center; font-family:Amiri">
+          You can also find this page at <a href="https://sun-dragon-cult.github.io/">sun-dragon-cult.github.io</a>
+        </p>
+        <p style="text-align:center; font-family:Amiri">
+          Please note that you can resize the frame above individually.
+        </p>
+flags:
+  rqg:
+    documentRqidFlags:
+      id: je..quick-start
+      lang: en
+      priority: 0
