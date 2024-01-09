@@ -1,5 +1,19 @@
 # Changelog
 
+## [3.4.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.0...v3.4.1) (2024-01-09)
+
+
+### Bug Fixes
+
+* "Command Cult Spirit (Elemental)" should be "Command Cult Spirit" ([71cacd7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/71cacd79fc74003816a944674446a4156166eae5)), closes [#682](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/682)
+* "Command Cult Spirit" description link should also be migrated ([c8e1911](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c8e191155be58d3567f0096ccd9bd03c1b58ddaa)), closes [#682](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/682)
+* foundry v12 deprecations ([e7e04d5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/e7e04d5a11fc327f89c480cbadc642528f7ac036)), closes [#686](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/686)
+* go through armor materials ([f1f82f7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/f1f82f72da0519db12d1d306c01ce27b12fd6dbb)), closes [#679](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/679)
+* remove old migrations & macros ([633ab5a](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/633ab5a18676ca22d29b0cb39a4dc60fc7fb424e)), closes [#685](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/685)
+* rune type is in Capitals in system but lowercase in wiki ([fbf1af5](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/fbf1af5e8826384b2e2cfeee3cb2717753af7aab)), closes [#680](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/680)
+* update documentation ([4628a7f](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4628a7f72fdc0ed02c0b9d3f3a098e967065c524)), closes [#62](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/62)
+* update the wiki installation documentation link ([eeeb14e](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/eeeb14edf6d3540de2d440633f992b5ce676507c))
+
 ## [3.4.0](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.3.0...v3.4.0) (2023-12-07)
 
 
