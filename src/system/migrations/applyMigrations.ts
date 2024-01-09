@@ -58,7 +58,8 @@ async function migrateWorldActors(
         itemMigrations,
         actorMigrations,
       );
-      if (!isEmpty(updates)) {
+      // @ts-expect-error isEmpty
+      if (!foundry.utils.isEmpty(updates)) {
         console.log(`RQG | Migrating Actor document ${actor.name}`, updates);
         await actor.update(updates, { enforceTypes: false });
       }
@@ -91,7 +92,8 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
   for (const item of itemArray) {
     try {
       const updateData = await getItemMigrationUpdates((item as any).toObject(), itemMigrations);
-      if (!isEmpty(updateData)) {
+      // @ts-expect-error isEmpty
+      if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Item document ${item.name}`, updateData);
         await item.update(updateData, { enforceTypes: false });
         progress += step;
@@ -127,7 +129,8 @@ async function migrateWorldScenes(
   for (const scene of scenes) {
     try {
       const updateData = await getSceneMigrationUpdates(scene, itemMigrations, actorMigrations);
-      if (!isEmpty(updateData)) {
+      // @ts-expect-error isEmpty
+      if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Scene document ${scene.name}`, updateData);
         await scene.update(updateData, { enforceTypes: false });
 
@@ -232,7 +235,8 @@ async function migrateCompendium(
       }
 
       // Save the entry, if data was changed
-      if (isEmpty(updateData)) {
+      // @ts-expect-error isEmpty
+      if (foundry.utils.isEmpty(updateData)) {
         continue;
       }
       console.log(
@@ -261,8 +265,10 @@ async function getActorMigrationUpdates(
   let updateData: ActorUpdate = {};
   actorMigrations.forEach(
     (fn: (actorData: ActorData) => ActorUpdate) =>
-      // @ts-expect-error performDeletions
-      (updateData = mergeObject(updateData, fn(actorData), { performDeletions: false })),
+      (updateData = foundry.utils.mergeObject(updateData, fn(actorData), {
+        // @ts-expect-error performDeletions
+        performDeletions: false,
+      })),
   );
 
   // Migrate Owned Items
@@ -273,9 +279,10 @@ async function getActorMigrationUpdates(
         const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData); // item is already `item.toObject()`
 
         // Update the Owned Item
-        if (!isEmpty(itemUpdate)) {
+        // @ts-expect-error isEmpty
+        if (!foundry.utils.isEmpty(itemUpdate)) {
           hasItemUpdates = true;
-          return mergeObject(item, itemUpdate, {
+          return foundry.utils.mergeObject(item, itemUpdate, {
             performDeletions: false,
             enforceTypes: false,
             inplace: false,
@@ -301,7 +308,7 @@ async function getItemMigrationUpdates(
 ): Promise<ItemUpdate> {
   let updateData: ItemUpdate = {};
   for (const fn of itemMigrations) {
-    updateData = mergeObject(updateData, await fn(itemData, owningActorData), {
+    updateData = foundry.utils.mergeObject(updateData, await fn(itemData, owningActorData), {
       // @ts-expect-error performDeletions
       performDeletions: false,
     });
@@ -325,7 +332,7 @@ async function getSceneMigrationUpdates(
         t.actorId = null;
         t.actorData = {};
       } else if (!t.actorLink) {
-        const actorData = duplicate(t.actorData);
+        const actorData = foundry.utils.duplicate(t.actorData);
         actorData.type = token.actor?.type;
         const update = await getActorMigrationUpdates(
           actorData as any,
@@ -343,7 +350,7 @@ async function getSceneMigrationUpdates(
             const update: any = updates.get(original._id);
             if (update) {
               // @ts-expect-error performDeletions
-              mergeObject(original, update, { performDeletions: false });
+              foundry.utils.mergeObject(original, update, { performDeletions: false });
             }
           });
 
@@ -352,7 +359,7 @@ async function getSceneMigrationUpdates(
 
         // TODO implement AE Delete for scene Actors as well?
         // @ts-expect-error performDeletions
-        mergeObject(t.actorData, update, { performDeletions: false });
+        foundry.utils.mergeObject(t.actorData, update, { performDeletions: false });
       }
       return t;
     }),

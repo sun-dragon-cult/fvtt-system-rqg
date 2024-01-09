@@ -73,7 +73,7 @@ export class RqidBatchEditor extends FormApplication<
   public reject: (value: PromiseLike<void> | void) => void = () => {};
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-batch-editor"],
       popOut: true,
       template: templatePaths.rqidBatchEditor,
@@ -240,7 +240,8 @@ export class RqidBatchEditor extends FormApplication<
 
     RqidBatchEditor.updateProgress(progress, changesCount, "Update World Items");
     const worldItemUpdates = RqidBatchEditor.getItemUpdates(worldItemChanges, itemNames2Rqid);
-    if (!isEmpty(worldItemUpdates)) {
+    // @ts-expect-error isEmpty
+    if (!foundry.utils.isEmpty(worldItemUpdates)) {
       await Item.updateDocuments(worldItemUpdates);
     }
     RqidBatchEditor.updateProgress(++progress, changesCount, "Update World Items");
@@ -263,7 +264,8 @@ export class RqidBatchEditor extends FormApplication<
           itemNames2Rqid,
         );
 
-        if (!isEmpty(embeddedItemUpdates)) {
+        // @ts-expect-error isEmpty
+        if (!foundry.utils.isEmpty(embeddedItemUpdates)) {
           const pack = getGame().packs.get(packId)!;
           const wasLocked = pack.locked;
           await pack.configure({ locked: false });
@@ -294,7 +296,8 @@ export class RqidBatchEditor extends FormApplication<
     for (const [packId, itemChanges] of packItemChanges) {
       const itemUpdates = RqidBatchEditor.getItemUpdates(itemChanges, itemNames2Rqid);
 
-      if (!isEmpty(itemUpdates)) {
+      // @ts-expect-error isEmpty
+      if (!foundry.utils.isEmpty(itemUpdates)) {
         const pack = getGame().packs.get(packId)!;
         const wasLocked = pack.locked;
         await pack.configure({ locked: false });
@@ -387,7 +390,8 @@ export class RqidBatchEditor extends FormApplication<
         itemNames2Rqid,
       );
 
-      if (!isEmpty(embeddedItemUpdates)) {
+      // @ts-expect-error isEmpty
+      if (!foundry.utils.isEmpty(embeddedItemUpdates)) {
         await Item.updateDocuments(embeddedItemUpdates, {
           parent: getGame().actors?.get(actorId),
         });
@@ -483,7 +487,8 @@ export class RqidBatchEditor extends FormApplication<
       }
       if (
         prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
-        !isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
+        // @ts-expect-error isEmpty
+        !foundry.utils.isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
       ) {
         existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
       } else {
@@ -704,7 +709,8 @@ export class RqidBatchEditor extends FormApplication<
           documentRqidFlags: packIndexData?.flags?.rqg?.documentRqidFlags ?? {},
         });
 
-        if (!isEmpty(currentChanges)) {
+        // @ts-expect-error isEmpty
+        if (!foundry.utils.isEmpty(currentChanges)) {
           // @ts-expect-error metadata.id
           packItemChangesMap.set(pack.metadata.id, currentChanges);
         }
@@ -748,11 +754,13 @@ export class RqidBatchEditor extends FormApplication<
           });
         }
       }
-      if (!isEmpty(embeddedItemChanges)) {
+      // @ts-expect-error isEmpty
+      if (!foundry.utils.isEmpty(embeddedItemChanges)) {
         actorItemChanges.set(actor.id ?? "", embeddedItemChanges);
       }
     }
-    if ([...actorItemChanges.values()].some((changes) => !isEmpty(changes))) {
+    // @ts-expect-error isEmpty
+    if ([...actorItemChanges.values()].some((changes) => !foundry.utils.isEmpty(changes))) {
       // @ts-expect-error metadata.id
       packActorChangesMap.set(pack.metadata.id, actorItemChanges);
     }
@@ -790,7 +798,8 @@ export class RqidBatchEditor extends FormApplication<
         itemNamesWithoutRqid,
         existingRqids,
       } = await RqidBatchEditor.findItemsWithMissingRqids(itemType, prefixRegex);
-      if (isEmpty(itemNamesWithoutRqid)) {
+      // @ts-expect-error isEmpty
+      if (foundry.utils.isEmpty(itemNamesWithoutRqid)) {
         continue;
       }
 

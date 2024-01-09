@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 // eslint-disable-file no-undef
-global.mergeObject = jest.fn((...args) => mockMergeObject(...args));
+global.foundry = {
+  utils: { mergeObject: jest.fn((...args) => mockMergeObject(...args)) },
+};
+
 global.getType = jest.fn((...args) => mockGetType(...args));
 global.getProperty = jest.fn((...args) => mockGetProperty(...args));
 
@@ -297,7 +300,11 @@ function _mergeInsert(original, k, v, { insertKeys, insertValues, performDeletio
 
   // Recursively create simple objects
   if (v?.constructor === Object) {
-    original[k] = mergeObject({}, v, { insertKeys: true, inplace: true, performDeletions });
+    original[k] = foundry.utils.mergeObject({}, v, {
+      insertKeys: true,
+      inplace: true,
+      performDeletions,
+    });
     return;
   }
 

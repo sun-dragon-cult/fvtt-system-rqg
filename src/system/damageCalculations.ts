@@ -115,7 +115,7 @@ export class DamageCalculations {
       hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
         hitLocationHealthStatuses.indexOf("wounded")
     ) {
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "wounded", actorHealthImpact: "wounded" },
       } as any);
     }
@@ -125,30 +125,33 @@ export class DamageCalculations {
         hitLocationHealthStatuses.indexOf("useless")
     ) {
       damageEffects.notification = `${speakerName}'s ${hitLocation.name} is useless and cannot hold anything / support standing. ${speakerName} can still fight with whatever limbs are still functional.`;
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "useless" },
       } as any);
     }
     if (fullDamage >= hpMax * 2) {
       damageEffects.notification = `${speakerName} is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.`;
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "useless", actorHealthImpact: "shock" },
       } as any);
     }
     if (fullDamage >= hpMax * 3) {
       damageEffects.notification = `${speakerName}'s ${hitLocation.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. ${speakerName} is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible.`;
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "severed" },
       } as any);
     }
     const currentLimbDamage = hpMax - hpValue;
     const limbWound = Math.min(hpMax * 2 - currentLimbDamage, damage);
     const wounds = hitLocation.system.wounds.concat([limbWound]);
-    mergeObject(damageEffects.hitLocationUpdates, {
+    foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
       system: { wounds: wounds },
     } as any);
     if (applyDamageToTotalHp) {
-      mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actor));
+      foundry.utils.mergeObject(
+        damageEffects.actorUpdates,
+        this.applyDamageToActorTotalHp(damage, actor),
+      );
     }
     return damageEffects;
   }
@@ -182,7 +185,7 @@ export class DamageCalculations {
     const totalDamage = hpMax - hpValue + damage;
 
     if (totalDamage > 0) {
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: {
           actorHealthImpact: "wounded",
           hitLocationHealthState: "wounded",
@@ -215,31 +218,34 @@ export class DamageCalculations {
 
     if (totalDamage >= hpMax * 3) {
       damageEffects.notification = `${speakerName} dies instantly.`;
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { actorHealthImpact: "dead" },
       } as any);
     } else if (totalDamage >= hpMax * 2) {
       damageEffects.notification = `${speakerName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
-      mergeObject(damageEffects.hitLocationUpdates, {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { actorHealthImpact: "unconscious" },
       } as any);
     } else if (totalDamage >= hpMax) {
       if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Head) {
-        mergeObject(damageEffects.hitLocationUpdates, {
+        foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
           system: { actorHealthImpact: "unconscious" },
         } as any);
 
         damageEffects.notification = `${speakerName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
       } else if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Chest) {
         damageEffects.notification = `${speakerName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.`;
-        mergeObject(damageEffects.hitLocationUpdates, {
+        foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
           system: { actorHealthImpact: "shock" },
         } as any);
       }
     }
 
     if (applyDamageToTotalHp) {
-      mergeObject(damageEffects.actorUpdates, this.applyDamageToActorTotalHp(damage, actor));
+      foundry.utils.mergeObject(
+        damageEffects.actorUpdates,
+        this.applyDamageToActorTotalHp(damage, actor),
+      );
     }
     return damageEffects;
   }

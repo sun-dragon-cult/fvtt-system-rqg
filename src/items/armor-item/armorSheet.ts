@@ -30,7 +30,7 @@ interface ArmorSheetData {
 
 export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
       template: templatePaths.itemArmorSheet,
       width: 500,
@@ -47,7 +47,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
 
   async getData(): Promise<ArmorSheetData & EffectsItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
       id: this.document.id ?? "",

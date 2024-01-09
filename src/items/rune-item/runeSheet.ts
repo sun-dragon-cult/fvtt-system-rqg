@@ -15,7 +15,7 @@ interface RuneSheetData {
 }
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
       template: templatePaths.itemRuneSheet,
       width: 450,
@@ -32,7 +32,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
 
   getData(): RuneSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
 
     if (!system.rune) {
       system.rune = this.document.name;

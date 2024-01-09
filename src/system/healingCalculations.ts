@@ -68,7 +68,7 @@ export class HealingCalculations {
       }
     }
 
-    mergeObject(healingEffects.hitLocationUpdates, {
+    foundry.utils.mergeObject(healingEffects.hitLocationUpdates, {
       system: {
         wounds: wounds,
         actorHealthImpact: actorHealthImpact,
@@ -80,7 +80,7 @@ export class HealingCalculations {
     const actorMaxHp = actor.system.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
 
     const totalHpAfter = Math.min(actorTotalHp + healPoints, actorMaxHp);
-    mergeObject(healingEffects.actorUpdates, {
+    foundry.utils.mergeObject(healingEffects.actorUpdates, {
       system: { attributes: { hitPoints: { value: totalHpAfter } } },
     });
 

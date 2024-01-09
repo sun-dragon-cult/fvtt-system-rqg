@@ -38,7 +38,7 @@ export class HitLocationSheet extends RqgItemSheet<
   HitLocationSheetData | ItemSheet.Data
 > {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: templatePaths.itemHitLocationSheet,
       width: 450,
@@ -55,7 +55,7 @@ export class HitLocationSheet extends RqgItemSheet<
 
   getData(): HitLocationSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
     system.hitPoints = this.document.system.hitPoints; // Use the actor derived values
     system.armorPoints = this.document.system.armorPoints; // Use the actor derived value
 

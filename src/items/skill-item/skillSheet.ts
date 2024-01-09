@@ -15,7 +15,7 @@ interface SkillSheetData {
 
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
       template: templatePaths.itemSkillSheet,
       width: 450,
@@ -32,7 +32,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
 
   getData(): SkillSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
     system.categoryMod = this.document.system.categoryMod; // Use the actor derived value
     system.chance = this.document.system.chance; // Use the actor derived value
 

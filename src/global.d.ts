@@ -67,11 +67,6 @@ declare global {
 }
 
 declare global {
-  // foundry.utils
-  function isEmpty(v: any): boolean;
-}
-
-declare global {
   interface TokenDocument {
     delta: any;
   }

@@ -18,7 +18,7 @@ export class RuneMagicSheet extends RqgItemSheet<
   RuneMagicSheetData | ItemSheet.Data
 > {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
       template: templatePaths.itemRuneMagicSheet,
       width: 450,
@@ -35,7 +35,7 @@ export class RuneMagicSheet extends RqgItemSheet<
 
   getData(): RuneMagicSheetData & EffectsItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
       id: this.document.id ?? "",

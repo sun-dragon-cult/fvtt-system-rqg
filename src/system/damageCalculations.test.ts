@@ -702,8 +702,8 @@ export function applyTestDamage(
     actor,
     "Pelle Plutt",
   );
-  mergeObject(hitLocation, damageEffects.hitLocationUpdates);
-  mergeObject(actor, damageEffects.actorUpdates);
+  foundry.utils.mergeObject(hitLocation, damageEffects.hitLocationUpdates);
+  foundry.utils.mergeObject(actor, damageEffects.actorUpdates);
   actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
   hitLocation.system.hitPoints.value =
     hitLocation.system.hitPoints.max! -

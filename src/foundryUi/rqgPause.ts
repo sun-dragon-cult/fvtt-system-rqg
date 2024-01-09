@@ -7,7 +7,7 @@ export class RqgPause extends Pause {
   }
 
   static get defaultOptions(): Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       template: templatePaths.rqgPause,
     });
   }

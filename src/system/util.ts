@@ -272,8 +272,8 @@ export function usersIdsThatOwnActor(actor: RqgActor | null): string[] {
   if (actor) {
     return getGameUsers()
       .filter((user: User) =>
-        // @ts-expect-error DOCUMENT_PERMISSION_LEVELS
-        actor.testUserPermission(user, CONST.DOCUMENT_PERMISSION_LEVELS.OWNER),
+        // @ts-expect-error DOCUMENT_OWNERSHIP_LEVELS
+        actor.testUserPermission(user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER),
       )
       .map((user) => user.id);
   }

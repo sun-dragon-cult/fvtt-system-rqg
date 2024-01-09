@@ -24,7 +24,7 @@ interface CultSheetData {
 
 export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: templatePaths.itemCultSheet,
       width: 450,
@@ -41,7 +41,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
 
   async getData(): Promise<CultSheetData & ItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
 
     // To improve UX of creating a new item, set deity to name if empty
     if (!system.deity) {

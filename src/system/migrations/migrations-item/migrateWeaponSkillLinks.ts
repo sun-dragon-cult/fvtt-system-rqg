@@ -56,7 +56,7 @@ async function getSkillRqidLink(
   if (
     itemData.type !== ItemTypeEnum.Weapon ||
     // @ts-expect-error skillOrigin
-    (isEmpty(itemData.system.usage[usageType].skillOrigin) &&
+    (foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin) &&
       itemData.system.usage[usageType].skillRqidLink?.name !== notFoundString)
   ) {
     return;

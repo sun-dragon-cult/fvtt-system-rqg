@@ -19,7 +19,7 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
     itemData?.flags?.rqg?.documentRqidFlags?.id === oldRqid
   ) {
     if (itemData.name === oldEnglishName) {
-      mergeObject(updateData, { name: newEnglishName });
+      foundry.utils.mergeObject(updateData, { name: newEnglishName });
     }
 
     const descriptionName =
@@ -28,7 +28,7 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
         ? newEnglishName
         : itemData?.system?.descriptionRqidLink?.name;
 
-    mergeObject(updateData, {
+    foundry.utils.mergeObject(updateData, {
       system: {
         descriptionRqidLink: {
           rqid: newCommandCultSpiritDescriptionRqid,
@@ -57,7 +57,7 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
       const index = itemData.system.commonRuneMagicRqidLinks.indexOf(commandCultSpiritLink);
       itemData.system.commonRuneMagicRqidLinks.splice(index, 1, newCommandCultSpiritLink);
 
-      mergeObject(updateData, {
+      foundry.utils.mergeObject(updateData, {
         system: { commonRuneMagicRqidLinks: itemData.system.commonRuneMagicRqidLinks },
       });
     }

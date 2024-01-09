@@ -67,7 +67,7 @@ export class ActorWizard extends FormApplication {
   }
 
   static get defaultOptions(): FormApplication.Options {
-    return mergeObject(FormApplication.defaultOptions, {
+    return foundry.utils.mergeObject(FormApplication.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       popOut: true,
       template: templatePaths.actorWizardApplication,

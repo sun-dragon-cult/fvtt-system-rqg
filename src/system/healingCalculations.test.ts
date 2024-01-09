@@ -264,8 +264,8 @@ export function applyTestHealing(
     hitLocation,
     actor,
   );
-  mergeObject(hitLocation, healingEffects.hitLocationUpdates);
-  mergeObject(actor, healingEffects.actorUpdates);
+  foundry.utils.mergeObject(hitLocation, healingEffects.hitLocationUpdates);
+  foundry.utils.mergeObject(actor, healingEffects.actorUpdates);
   actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
   hitLocation.system.hitPoints.value =
     hitLocation.system.hitPoints.max! -

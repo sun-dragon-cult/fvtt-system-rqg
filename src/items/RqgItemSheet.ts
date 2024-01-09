@@ -17,7 +17,7 @@ export class RqgItemSheet<
   Data extends object = ItemSheet.Data<Options>,
 > extends ItemSheet<Options, Data> {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,
       height: 800,
       dragDrop: [

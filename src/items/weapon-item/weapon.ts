@@ -48,7 +48,8 @@ export class Weapon extends AbstractEmbeddedItem {
   static async toChat(weapon: RqgItem): Promise<void> {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const usage = Weapon.getDefaultUsage(weapon);
-    if (isEmpty(usage)) {
+    // @ts-expect-error isEmpty
+    if (foundry.utils.isEmpty(usage)) {
       return; // There is no way to use this weapon - it could be arrows for example
     }
     const flags: WeaponChatFlags = {
@@ -223,7 +224,8 @@ export class Weapon extends AbstractEmbeddedItem {
   static getDefaultUsage(weapon: RqgItem): UsageType {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const defaultUsage = weapon.system.defaultUsage;
-    if (!isEmpty(defaultUsage)) {
+    // @ts-expect-error isEmpty
+    if (!foundry.utils.isEmpty(defaultUsage)) {
       return defaultUsage;
     }
     const options = WeaponChatHandler.getUsageTypeOptions(weapon);

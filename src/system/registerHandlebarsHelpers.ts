@@ -181,7 +181,8 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("isEmptyObject", function (value) {
-    return isEmpty(value);
+    // @ts-expect-error isEmpty
+    return foundry.utils.isEmpty(value);
   });
 
   Handlebars.registerHelper("ifIn", (elem, list, options) =>

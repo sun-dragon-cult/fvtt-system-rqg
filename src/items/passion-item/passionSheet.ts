@@ -31,7 +31,7 @@ export class PassionSheet extends RqgItemSheet<
   ]);
 
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Passion],
       template: templatePaths.itemPassionSheet,
       width: 450,
@@ -48,7 +48,7 @@ export class PassionSheet extends RqgItemSheet<
 
   async getData(): Promise<PassionSheetData & ItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
       id: this.document.id ?? "",

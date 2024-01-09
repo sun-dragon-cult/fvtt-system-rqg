@@ -217,7 +217,7 @@ export async function initializeAllCharacteristics(actor: RqgActor): Promise<voi
       update = await getCharacteristicUpdate(characteristic, char.formula);
     }
 
-    mergeObject(updateData, update);
+    foundry.utils.mergeObject(updateData, update);
   }
   await actor.update(updateData);
   await initializeCurrentDerivedAttributes(actor);
@@ -278,7 +278,7 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
       characteristic,
       averages[char.formula || "cannot average"]?.toString(),
     );
-    mergeObject(updateData, update);
+    foundry.utils.mergeObject(updateData, update);
   }
   await actor.update(updateData);
   await initializeCurrentDerivedAttributes(actor);

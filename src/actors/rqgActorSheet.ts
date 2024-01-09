@@ -178,7 +178,7 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   static get defaultOptions(): ActorSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: templatePaths.rqgActorSheet,
       width: 900,
@@ -203,7 +203,7 @@ export class RqgActorSheet extends ActorSheet<
 
   async getData(): Promise<CharacterSheetData & ActorSheetData> {
     this.incorrectRunes = [];
-    const system = duplicate(this.document.system);
+    const system = foundry.utils.duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
@@ -748,7 +748,8 @@ export class RqgActorSheet extends ActorSheet<
       const actorDex = actor.system.characteristics.dexterity.value ?? 0;
       for (const key in usages) {
         const usage = usages[key];
-        if (!isEmpty(usage?.skillRqidLink?.rqid)) {
+        // @ts-expect-error isEmpty
+        if (!foundry.utils.isEmpty(usage?.skillRqidLink?.rqid)) {
           usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
           usage.unusable = false;
           usage.underMinSTR = false;

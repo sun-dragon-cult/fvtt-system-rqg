@@ -12,7 +12,7 @@ export class RqidEditor extends FormApplication {
   }
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-editor"],
       popOut: true,
       template: templatePaths.dialogRqidEditor,

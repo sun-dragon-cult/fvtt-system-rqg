@@ -25,7 +25,7 @@ interface WeaponSheetData {
 
 export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
   static get defaultOptions(): ItemSheet.Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
       template: templatePaths.itemWeaponSheet,
       width: 960,
@@ -42,7 +42,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
 
   async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
-    const system = duplicate(this.document._source.system);
+    const system = foundry.utils.duplicate(this.document._source.system);
 
     if (isNaN(Number(system.quantity))) {
       system.quantity = 1;
@@ -195,7 +195,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       return acc;
     }, []);
 
-    return duplicate(usageCombatManeuvers);
+    return foundry.utils.duplicate(usageCombatManeuvers);
   }
 
   /**

@@ -30,7 +30,7 @@ export class DefaultItemIconSettings extends FormApplication<
   }
 
   static get defaultOptions(): Options {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "default-icons-settings-dialog",
       title: localize("RQG.Settings.DefaultItemIcons.dialogTitle"),
       template: templatePaths.defaultItemIconSettings,
