@@ -1610,8 +1610,10 @@ export class RqgActorSheet extends ActorSheet<
     // @ts-expect-error getDragEventData
     const data = TextEditor.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
-
-    if (!isAllowedDocumentNames(data.type, allowedDropDocumentNames)) {
+    if (
+      data.type !== "Compendium" &&
+      !isAllowedDocumentNames(data.type, allowedDropDocumentNames)
+    ) {
       return false;
     }
 
@@ -1644,6 +1646,8 @@ export class RqgActorSheet extends ActorSheet<
         return this._onDropJournalEntryPage(event, data);
       case "Folder":
         return this._onDropFolder(event, data);
+      case "Compendium":
+        return this._onDropCompendium(event, data);
       default:
         // This will warn about not supported Document Name
         isAllowedDocumentNames(data.type, [
@@ -1738,6 +1742,26 @@ export class RqgActorSheet extends ActorSheet<
       return [droppedJournal];
     }
     return false;
+  }
+
+  async _onDropCompendium(event: DragEvent, data: any): Promise<RqgItem[]> {
+    if (!this.actor.isOwner) {
+      return [];
+    }
+    const compendiumId = data.id;
+    const pack = getGame().packs.get(compendiumId);
+    const packIndex = await pack?.getIndex();
+    if (!packIndex) {
+      return [];
+    }
+    const documents = await Promise.all(
+      packIndex.map(async (di) => {
+        // @ts-expect-error uuid
+        const doc = await fromUuid(di.uuid);
+        return doc?.toObject();
+      }),
+    );
+    return this._onDropItemCreate(documents.filter(isTruthy));
   }
 
   async _onDropJournalEntryPage(
@@ -1944,15 +1968,10 @@ export class RqgActorSheet extends ActorSheet<
 
     const editModeLink = html.find(".title-edit-mode")[0];
     if (editModeLink) {
-      let editModeTooltip = "";
-      if (this.actor.system.editMode) {
-        editModeTooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
-      } else {
-        editModeTooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
-      }
-
-      editModeLink.dataset.tooltip = editModeTooltip;
       editModeLink.dataset.tooltipDirection = "UP";
+      editModeLink.dataset.tooltip = this.actor.system.editMode
+        ? localize("RQG.Actor.EditMode.SwitchToPlayMode")
+        : localize("RQG.Actor.EditMode.SwitchToEditMode");
     }
 
     return html;
