@@ -13,7 +13,7 @@ export const registerRqgSystemSettings = function () {
     type: String,
     // @ts-expect-error choices, requiresReload
     choices: CONFIG.supportedLanguages,
-    default: "en",
+    default: CONFIG.RQG.fallbackLanguage,
     requiresReload: true,
   });
 

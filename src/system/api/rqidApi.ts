@@ -97,7 +97,7 @@ export class Rqid {
   public static async fromRqidRegexAll(
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string, // like "i", "a", "je"
-    lang: string = "en",
+    lang: string = CONFIG.RQG.fallbackLanguage,
     scope: "match" | "all" | "world" | "packs" = "match",
   ): Promise<Document<any, any>[]> {
     if (!rqidRegex) {
@@ -140,7 +140,7 @@ export class Rqid {
   public static async fromRqidRegexBest(
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string, // like "i", "a", "je"
-    lang: string = "en",
+    lang: string = CONFIG.RQG.fallbackLanguage,
   ): Promise<Document<any, any>[]> {
     const matchingDocuments = await this.fromRqidRegexAll(
       rqidRegex,
@@ -178,7 +178,7 @@ export class Rqid {
    */
   public static async fromRqidCount(
     rqid: string | undefined,
-    lang: string = "en",
+    lang: string = CONFIG.RQG.fallbackLanguage,
     scope: "all" | "world" | "packs" = "all",
   ): Promise<number> {
     if (!rqid) {
@@ -297,7 +297,7 @@ export class Rqid {
   public static async setRqid(
     document: Document<any, any>,
     newRqid: string,
-    lang: string = "en",
+    lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
   ): Promise<any> {
     const rqid = {
@@ -318,7 +318,7 @@ export class Rqid {
    */
   public static async setDefaultRqid(
     document: Document<any, any>,
-    lang: string = "en",
+    lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
   ): Promise<any> {
     const newRqid = this.getDefaultRqid(document);

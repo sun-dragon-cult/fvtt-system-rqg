@@ -11,7 +11,7 @@ export async function tagSkillNameSkillsWithRqid(itemData: ItemData): Promise<It
         rqg: {
           documentRqidFlags: {
             id: itemData?.flags?.rqg?.documentRqidFlags?.id || name2Rqid.get(itemData.name),
-            lang: itemData?.flags?.rqg?.documentRqidFlags?.lang || "en",
+            lang: itemData?.flags?.rqg?.documentRqidFlags?.lang || CONFIG.RQG.fallbackLanguage,
             priority: itemData?.flags?.rqg?.documentRqidFlags?.priority || 0,
           },
         },

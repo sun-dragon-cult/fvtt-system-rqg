@@ -380,6 +380,8 @@ export type AvailableItemCache = {
   name: string;
   img: string;
   rqid: string;
+  priority: string;
+  lang: string;
 };
 
 let availableRunes: AvailableItemCache[] = [];
@@ -432,16 +434,39 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
     )
   ).flat();
 
-  // Only keep one of each rqid, the one with the highest priority
-  const highestPriorityItemData: any = compendiumItemIndexData.reduce(
+  const worldLanguage =
+    (getGame().settings.get(systemId, "worldLanguage") as string) ?? CONFIG.RQG.fallbackLanguage;
+
+  // Only keep one of each rqid, the one with the highest priority, taking account of world & fallback language
+  const highestPriorityItemData = compendiumItemIndexData.reduce(
     (acc: AvailableItemCache[], itemIndexData: any) => {
-      const toReplaceItem = acc.findIndex(
-        (r: any) =>
-          r.rqid === itemIndexData.rqid && Number(r.priority) <= Number(itemIndexData.priority),
-      );
-      if (toReplaceItem >= 0) {
-        acc.splice(toReplaceItem, 1, itemIndexData);
-      } else if (!acc.some((r) => r.rqid === itemIndexData.rqid)) {
+      const toReplaceItemIndex = acc.findIndex((maybeReplace: AvailableItemCache) => {
+        if (maybeReplace.rqid !== itemIndexData.rqid) {
+          return false;
+        }
+        const isWorldLanguage = itemIndexData.lang === worldLanguage;
+        const previousIsWorldLanguage = maybeReplace.lang === worldLanguage;
+        const isFallbackLanguage = itemIndexData.lang === CONFIG.RQG.fallbackLanguage;
+        const previousIsFallbackLanguage = maybeReplace.lang === CONFIG.RQG.fallbackLanguage;
+
+        if (!previousIsWorldLanguage && isWorldLanguage) {
+          return true; // World language items beat other items no matter priority
+        }
+        if (previousIsWorldLanguage && !isWorldLanguage) {
+          return false; // Don't overwrite world language items with others
+        }
+        if (previousIsFallbackLanguage && !(isFallbackLanguage || isWorldLanguage)) {
+          return false; // Keep fallbackLanguage (english) if "other" language
+        }
+        if (!(previousIsWorldLanguage || previousIsFallbackLanguage) && isFallbackLanguage) {
+          return true; // Overwrite "other" language with fallback language
+        }
+        return Number(maybeReplace.priority) < Number(itemIndexData.priority);
+      });
+
+      if (toReplaceItemIndex >= 0) {
+        acc.splice(toReplaceItemIndex, 1, itemIndexData);
+      } else if (!acc.some((maybeReplace) => maybeReplace.rqid === itemIndexData.rqid)) {
         acc.push(itemIndexData);
       }
       return acc;
@@ -453,6 +478,8 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
     name: r.name,
     img: r.img,
     rqid: r.rqid,
+    priority: r.priority,
+    lang: r.lang,
   }));
 }
 
@@ -461,6 +488,8 @@ export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItem
     rqid: "empty",
     name: localize(emptyPlaceholderKey),
     img: "",
+    priority: "",
+    lang: "",
   };
   return getSelectOptions(emptyOption, getAvailableRunes);
 }
@@ -470,6 +499,8 @@ export function getSelectHitLocationOptions(emptyPlaceholderKey: string): Availa
     rqid: "empty",
     name: localize(emptyPlaceholderKey),
     img: "",
+    priority: "",
+    lang: "",
   };
   return getSelectOptions(emptyOption, getAvailableHitLocations);
 }
@@ -502,6 +533,8 @@ function getIndexData(
         rqid: indexData?.flags?.rqg?.documentRqidFlags?.id ?? "",
         // @ts-expect-error flags
         priority: indexData?.flags?.rqg?.documentRqidFlags?.priority ?? "",
+        // @ts-expect-error flags
+        lang: indexData?.flags?.rqg?.documentRqidFlags?.lang ?? "",
       });
     }
     return acc;
@@ -623,7 +656,8 @@ export function formatListByWorldLanguage(
   list: string[],
   concatType: ListFormatType = "conjunction",
 ): string {
-  const worldLanguage = (getGame().settings.get(systemId, "worldLanguage") as string) ?? "en";
+  const worldLanguage =
+    (getGame().settings.get(systemId, "worldLanguage") as string) ?? CONFIG.RQG.fallbackLanguage;
   return formatListByLanguage(worldLanguage, list, concatType);
 }
 
@@ -636,7 +670,8 @@ export function formatListByUserLanguage(
   list: string[],
   concatType: ListFormatType = "conjunction",
 ): string {
-  const userLanguage = (getGame().settings.get("core", "language") as string) ?? "en";
+  const userLanguage =
+    (getGame().settings.get("core", "language") as string) ?? CONFIG.RQG.fallbackLanguage;
   return formatListByLanguage(userLanguage, list, concatType);
 }
 

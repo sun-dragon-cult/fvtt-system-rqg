@@ -624,7 +624,11 @@ export class RqidBatchEditor extends FormApplication<
     // Handle item names with multiple different Rqids
     if ([...itemNamesWithoutRqid.values()].some((v) => !v)) {
       // Fill existingRqids with Rqid from items
-      const items: any = await Rqid.fromRqidRegexBest(prefixRegex, "i", "en");
+      const items: any = await Rqid.fromRqidRegexBest(
+        prefixRegex,
+        "i",
+        CONFIG.RQG.fallbackLanguage,
+      );
 
       const namesToDeleteFromExistingRqids: Set<string> = new Set();
       items.forEach((item: any) => {

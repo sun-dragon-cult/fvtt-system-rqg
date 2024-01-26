@@ -112,7 +112,7 @@ d.compendium?.metadata?.packageName}`,
       rqg: {
         documentRqidFlags: {
           // @ts-expect-error flags
-          lang: this.document?.flags?.rqg?.documentRqidFlags?.lang ?? "en",
+          lang: this.document?.flags?.rqg?.documentRqidFlags?.lang ?? CONFIG.RQG.fallbackLanguage,
           // @ts-expect-error flags
           priority: this.document?.flags?.rqg?.documentRqidFlags?.priority ?? 0,
         },
@@ -151,7 +151,8 @@ d.compendium?.metadata?.packageName}`,
             rqg: {
               documentRqidFlags: {
                 id: Rqid.getDefaultRqid(document),
-                lang: document.getFlag("rqg", "documentRqidFlags.lang") ?? "en",
+                lang:
+                  document.getFlag("rqg", "documentRqidFlags.lang") ?? CONFIG.RQG.fallbackLanguage,
                 priority: document.getFlag("rqg", "documentRqidFlags.priority") ?? 0,
               },
             },
