@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.4.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.1...v3.4.2) (2024-01-28)
+
+
+### Bug Fixes
+
+* filling in skills lags really badly ([53301ad](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/53301ad26dd1b4b071fbd9281349d17cc5939736)), closes [#688](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/688)
+* make it possible to drag a compendium pack to an actor ([4ad1927](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/4ad19275159b83a1ebee7e88d1979800bf2aaf8a)), closes [#691](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/691)
+* mixed languages for runes / hitlocation dropdowns ([7f6f303](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7f6f303ef7ffc98d96e8faedf237c96037e25063)), closes [#689](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/689)
+
 ## [3.4.1](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.0...v3.4.1) (2024-01-09)
 
 
