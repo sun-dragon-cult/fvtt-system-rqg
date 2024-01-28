@@ -732,11 +732,12 @@ export class RqgActorSheet extends ActorSheet<
     // Add extra info for Rune Magic Spells
     itemTypes[ItemTypeEnum.RuneMagic].forEach((runeMagic: RqgItem) => {
       const spellCult: RqgItem | undefined = actor.items.get(runeMagic.system.cultId);
-      const cultCommonRuneMagicIds: string[] =
-        spellCult?.system.commonRuneMagicRqidLinks
-          .flatMap((l: RqidLink) => actor.getEmbeddedDocumentsByRqid(l.rqid).map((d) => d?.id))
-          .filter(isTruthy) ?? [];
-      runeMagic.system.isCommon = cultCommonRuneMagicIds.includes(runeMagic?.id ?? "");
+      const cultCommonRuneMagicRqids =
+        spellCult?.system.commonRuneMagicRqidLinks.map((r: RqidLink) => r.rqid) ?? [];
+
+      runeMagic.system.isCommon = cultCommonRuneMagicRqids.includes(
+        runeMagic?.flags?.rqg?.documentRqidFlags?.id ?? "",
+      );
     });
 
     // Add weapon data
