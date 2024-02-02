@@ -1,5 +1,5 @@
 import { ReputationChatHandler } from "./reputationChatHandler";
-import { CharacteristicChatHandler } from "./characteristicChatHandler";
+import { CharacteristicChatHandler } from "./characteristicChatHandler/characteristicChatHandler";
 import {
   assertHtmlElement,
   getGame,

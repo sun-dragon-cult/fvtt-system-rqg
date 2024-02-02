@@ -1,4 +1,4 @@
-import { CharacteristicChatHandler } from "../../chat/characteristicChatHandler";
+import { CharacteristicChatHandler } from "../../chat/characteristicChatHandler/characteristicChatHandler";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
@@ -100,11 +100,7 @@ export const characteristicMenuOptions = (
     condition: (el: JQuery): boolean => {
       if (actor.system.editMode) {
         const { value: char } = getCharacteristic(actor, el);
-        if (char.formula != null && Roll.validate(char.formula)) {
-          return true;
-        } else {
-          return false;
-        }
+        return char.formula != null && Roll.validate(char.formula);
       } else {
         return false;
       }

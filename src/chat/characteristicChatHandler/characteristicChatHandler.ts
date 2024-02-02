@@ -1,6 +1,5 @@
-import { Ability, ResultEnum } from "../data-model/shared/ability";
-import { Characteristic } from "../data-model/actor-data/characteristics";
-import { RqgActor } from "../actors/rqgActor";
+import { Ability, ResultEnum } from "../../data-model/shared/ability";
+import { RqgActor } from "../../actors/rqgActor";
 import {
   activateChatTab,
   assertChatMessageFlagType,
@@ -14,20 +13,16 @@ import {
   localize,
   localizeCharacteristic,
   usersIdsThatOwnActor,
-} from "../system/util";
+} from "../../system/util";
 import {
   CharacteristicChatFlags,
   RqgChatMessageFlags,
-} from "../data-model/shared/rqgDocumentFlags";
-import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import { RqgChatMessage } from "./RqgChatMessage";
-import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import { templatePaths } from "../system/loadHandlebarsTemplates";
-
-export type CharacteristicData = {
-  name: string;
-  data: Characteristic;
-};
+} from "../../data-model/shared/rqgDocumentFlags";
+import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import { RqgChatMessage } from "../RqgChatMessage";
+import type { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { CharacteristicData } from "./characteristicChatHandler.types";
 
 export class CharacteristicChatHandler {
   public static async show(

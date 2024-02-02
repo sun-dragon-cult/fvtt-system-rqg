@@ -1,9 +1,9 @@
 import { ResultEnum } from "./ability";
-import { CharacteristicData } from "../../chat/characteristicChatHandler";
-import { ChatMessageType } from "../../chat/RqgChatMessage";
+import type { CharacteristicData } from "../../chat/characteristicChatHandler/characteristicChatHandler.types";
+import type { ChatMessageType } from "../../chat/RqgChatMessage";
 
-export const documentRqidFlags = "documentRqidFlags";
-export const actorWizardFlags = "actorWizardFlags";
+export const documentRqidFlags = "documentRqidFlags" as const;
+export const actorWizardFlags = "actorWizardFlags" as const;
 
 export interface RqgItemFlags {
   [documentRqidFlags]: DocumentRqidFlags;

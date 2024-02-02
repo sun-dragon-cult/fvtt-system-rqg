@@ -17,7 +17,7 @@ import {
   PhysicalItemType,
 } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
-import { CharacteristicChatHandler } from "../chat/characteristicChatHandler";
+import { CharacteristicChatHandler } from "../chat/characteristicChatHandler/characteristicChatHandler";
 import {
   assertHtmlElement,
   assertItemType,
@@ -59,7 +59,6 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
-import { LocationItemNodeData } from "../items/shared/locationItemNode";
 import { CultRankEnum } from "../data-model/item-data/cultData";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "./rqgActor";
@@ -72,94 +71,14 @@ import {
 } from "../combat/combatant-utils";
 import { socketSend } from "../sockets/RqgSocket";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-
-interface UiSections {
-  health: boolean;
-  combat: boolean;
-  runes: boolean;
-  spiritMagic: boolean;
-  runeMagic: boolean;
-  sorcery: boolean;
-  skills: boolean;
-  gear: boolean;
-  passions: boolean;
-  background: boolean;
-  activeEffects: boolean;
-}
-
-interface MainCult {
-  name: string;
-  id: string;
-  rank: string;
-  descriptionRqid: string;
-  hasMultipleCults: boolean;
-}
-
-interface CharacterSheetData {
-  uuid: string;
-  /** reorganized for presentation TODO type it better */
-  embeddedItems: any;
-
-  /** Find this skill to show on spirit combat part */
-  spiritCombatSkillData: any;
-  /** Find this skill to show on combat part */
-  dodgeSkillData: RqgItem | undefined;
-
-  // Lists for dropdown values
-  occupations: `${OccupationEnum}`[];
-  homelands: `${HomeLandEnum}`[];
-  locations: string[];
-  healthStatuses: typeof actorHealthStatuses;
-
-  // Other data needed for the sheet
-  mainCult: MainCult;
-  /** Array of element runes with > 0% chance */
-  characterElementRunes: RuneDataSource[];
-  characterPowerRunes: RuneDataSource[];
-  characterFormRunes: RuneDataSource[];
-  /** (html) Precalculated missile weapon SRs if loaded at start of round */
-  loadedMissileSrDisplay: string[];
-  loadedMissileSr: string;
-  /** (html) Precalculated missile weapon SRs if not loaded at start of round */
-  unloadedMissileSrDisplay: string[];
-  unloadedMissileSr: string;
-  /** physical items reorganised as a tree of items containing items */
-  itemLocationTree: LocationItemNodeData;
-  /** list of pow-crystals */
-  powCrystals: { name: string; size: number }[];
-  spiritMagicPointSum: number;
-  freeInt: number;
-  baseStrikeRank: number | undefined;
-  enrichedAllies: string;
-  enrichedBiography: string;
-  ownedProjectiles: RqgItem[];
-  locomotionModes: { [a: string]: string };
-
-  currencyTotals: any;
-  isInCombat: boolean;
-  dexSR: number[];
-  sizSR: number[];
-  otherSR: number[];
-  activeInSR: number[]; // Store the SR (initiative) where this actor should have a combatant
-
-  characteristicRanks: any;
-  bodyType: string;
-  hitLocationDiceRangeError: string;
-
-  showHeropoints: boolean;
-  showUiSection: UiSections;
-  actorWizardFeatureFlag: boolean;
-  itemLoopMessage: string | undefined;
-  enrichedUnspecifiedSkill: string | undefined;
-  enrichedIncorrectRunes: string | undefined;
-}
+import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
   ActorSheet.Options,
   CharacterSheetData | ActorSheet.Data
 > {
-  // What SRs are this actor doing things in. Not persisted data, controlling active combat.
+  // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
 

@@ -20,7 +20,8 @@ export const templatePaths = {
   itemSpiritMagicSheet: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
 
   // Chat
-  chatCharacteristicHandler: "systems/rqg/chat/characteristicChatHandler.hbs",
+  chatCharacteristicHandler:
+    "systems/rqg/chat/characteristicChatHandler/characteristicChatHandler.hbs",
   chatItemHandler: "systems/rqg/chat/itemChatHandler.hbs",
   chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
   reputationChatHandler: "systems/rqg/chat/reputationChatHandler.hbs",

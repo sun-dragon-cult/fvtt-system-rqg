@@ -109,7 +109,6 @@ Hooks.once("init", async () => {
 
   // Define the system.api
   (getGame().system as any).api = {
-    // installModules: installModules,
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
     /**

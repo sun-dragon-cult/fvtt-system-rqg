@@ -16,53 +16,13 @@ import type { RqgActor } from "../../actors/rqgActor";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "../../items/rqgItem";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-
-interface ItemChange {
-  itemId: string;
-  name: string;
-  documentRqidFlags: DocumentRqidFlags;
-}
-
-interface ExistingRqids {
-  name: string;
-  rqid: string;
-  optionText: string;
-}
-
-interface ItemNameWithoutRqid {
-  name: string;
-  rqid: string;
-  selectedRqid: string;
-  selectedRqidSuffix: string;
-}
-
-interface RqidBatchEditorData {
-  summary: string;
-  itemType: string;
-  idPrefix: string;
-  existingRqids: ExistingRqids[];
-  itemNamesWithoutRqid: ItemNameWithoutRqid[];
-}
-
-interface RqidBatchEditorOptions extends FormApplication.Options {
-  itemType: ItemTypeEnum;
-  idPrefix: string;
-  prefixRegex: RegExp;
-  existingRqids: Map<string, string>;
-}
-
-interface Changes {
-  itemName2Rqid: Map<string, string | undefined>;
-  // actorId -> ItemUpdate[]
-  actorChangesMap: Map<string, ItemChange[]>;
-  // sceneId -> tokenId -> ItemUpdate[]
-  sceneChangesMap: Map<string, Map<string, ItemChange[]>>;
-  worldItemChanges: ItemChange[];
-  // packId -> ItemUpdate[]
-  packItemChangesMap: Map<string, ItemChange[]>;
-  // packId -> actorId -> ItemUpdate[]
-  packActorChangesMap: Map<string, Map<string, ItemChange[]>>;
-}
+import type {
+  Changes,
+  ItemChange,
+  ItemNameWithoutRqid,
+  RqidBatchEditorData,
+  RqidBatchEditorOptions,
+} from "./rqidBatchEditor.types";
 
 export class RqidBatchEditor extends FormApplication<
   RqidBatchEditorOptions,
@@ -723,7 +683,7 @@ export class RqidBatchEditor extends FormApplication<
   }
 
   /**
-   * Note that packActorChangesMap adn itemNamesWithoutRqid parameters will get modified.
+   * Note that packActorChangesMap and itemNamesWithoutRqid parameters will get modified.
    */
   private static async collectActorPackEmbeddedItemRqids(
     pack: CompendiumCollection<CompendiumCollection.Metadata>,
