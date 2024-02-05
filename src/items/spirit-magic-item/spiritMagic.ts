@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SpiritMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { SpiritMagicChatHandler } from "../../chat/spiritMagicChatHandler";
 import { RqgItem } from "../rqgItem";
-import { ResultEnum } from "../../data-model/shared/ability";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class SpiritMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -37,7 +37,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
   static async abilityRoll(
     spiritMagicItem: RqgItem,
     options: { level: number; boost: number },
-  ): Promise<ResultEnum | undefined> {
+  ): Promise<AbilitySuccessLevelEnum | undefined> {
     const validationError = SpiritMagic.validateRollData(
       spiritMagicItem,
       options.level,

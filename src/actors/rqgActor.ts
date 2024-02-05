@@ -6,7 +6,6 @@ import { DamageCalculations } from "../system/damageCalculations";
 import { getGame, hasOwnProperty, localize } from "../system/util";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { systemId } from "../system/config";
-import { ResultEnum } from "../data-model/shared/ability";
 import { Rqid } from "../system/api/rqidApi";
 import type { AnyDocumentData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
@@ -19,6 +18,7 @@ import type {
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect";
 import type { RqgItem } from "../items/rqgItem";
+import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class RqgActor extends Actor {
   static init() {
@@ -267,8 +267,8 @@ export class RqgActor extends Actor {
     return { str, con, siz, dex, int, pow, cha };
   }
 
-  public async drawMagicPoints(amount: number, result: ResultEnum): Promise<void> {
-    if (result <= ResultEnum.Success) {
+  public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
+    if (result <= AbilitySuccessLevelEnum.Success) {
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
       await this.update({ "system.attributes.magicPoints.value": newMp });
       ui.notifications?.info(

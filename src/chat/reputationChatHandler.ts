@@ -1,5 +1,4 @@
 import { RqgActor } from "../actors/rqgActor";
-import { Ability } from "../data-model/shared/ability";
 import {
   activateChatTab,
   assertActorType,
@@ -20,6 +19,7 @@ import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry
 import { RqgChatMessage } from "./RqgChatMessage";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 
 export class ReputationChatHandler {
   public static async show(actor: RqgActor, token: TokenDocument | null): Promise<void> {
@@ -60,9 +60,17 @@ export class ReputationChatHandler {
     modifier: number,
     speaker: ChatSpeakerDataProperties,
   ): Promise<void> {
-    const flavor = localize("RQG.Dialog.reputationChat.CheckReputationFlavor");
-
-    await Ability.roll(flavor, reputationValue, modifier, speaker);
+    const reputationRoll = new AbilityRoll({
+      naturalSkill: reputationValue,
+      modifiers: [{ description: "Other Modifier", value: modifier }],
+      abilityName: localize("RQG.Dialog.reputationChat.CheckReputationFlavor"),
+      abilityImg: "systems/rqg/assets/images/other/reputation.svg", // TODO use setting instead
+    });
+    await reputationRoll.evaluate();
+    await reputationRoll.toMessage({
+      flavor: reputationRoll.flavor,
+      speaker: speaker,
+    });
     activateChatTab();
   }
 

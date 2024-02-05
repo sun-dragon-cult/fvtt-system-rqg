@@ -13,11 +13,11 @@ import {
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { RuneMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RuneMagicChatHandler } from "../../chat/runeMagicChatHandler";
-import { ResultEnum, ResultMessage } from "../../data-model/shared/ability";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -62,7 +62,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       otherModifiers: number;
       selectedRuneId?: string;
     },
-  ): Promise<ResultEnum | undefined> {
+  ): Promise<AbilitySuccessLevelEnum | undefined> {
     assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
     const runeMagicCultId = runeMagicItem?.system.cultId;
     const cult = runeMagicItem.actor?.items.get(runeMagicCultId);
@@ -84,38 +84,34 @@ export class RuneMagic extends AbstractEmbeddedItem {
       return;
     }
 
-    const resultMessages: ResultMessage[] = [
-      {
-        result: ResultEnum.Critical,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
+    const resultMessages: Map<AbilitySuccessLevelEnum, string> = new Map([
+      [
+        AbilitySuccessLevelEnum.Critical,
+        localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
           magicPointBoost: options.magicPointBoost,
         }),
-      },
-      {
-        result: ResultEnum.Special,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
-          runePointCost: options.runePointCost,
+      ],
+      [
+        AbilitySuccessLevelEnum.Special,
+        localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
           magicPointBoost: options.magicPointBoost,
         }),
-      },
-      {
-        result: ResultEnum.Success,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
-          runePointCost: options.runePointCost,
+      ],
+      [
+        AbilitySuccessLevelEnum.Success,
+        localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
           magicPointBoost: options.magicPointBoost,
         }),
-      },
-      {
-        result: ResultEnum.Failure,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageFailure"),
-      },
-      {
-        result: ResultEnum.Fumble,
-        html: localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
-          runePointCost: options.runePointCost,
+      ],
+      [AbilitySuccessLevelEnum.Failure, localize("RQG.Dialog.runeMagicChat.resultMessageFailure")],
+
+      [
+        AbilitySuccessLevelEnum.Fumble,
+        localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
+          magicPointBoost: options.magicPointBoost,
         }),
-      },
-    ];
+      ],
+    ]);
 
     const speaker = ChatMessage.getSpeaker({ actor: runeMagicItem.actor ?? undefined });
     const result = await runeMagicItem._roll(
@@ -332,7 +328,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   }
 
   private static async handleRollResult(
-    result: ResultEnum,
+    result: AbilitySuccessLevelEnum,
     runePointCost: number,
     magicPointsUsed: number,
     runeItem: RqgItem,
@@ -345,9 +341,9 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const isOneUse = runeMagicItem.system.isOneUse;
 
     switch (result) {
-      case ResultEnum.Critical:
-      case ResultEnum.SpecialCritical:
-      case ResultEnum.HyperCritical:
+      case AbilitySuccessLevelEnum.Critical:
+      case AbilitySuccessLevelEnum.SpecialCritical:
+      case AbilitySuccessLevelEnum.HyperCritical:
         // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
         await RuneMagic.SpendRuneAndMagicPoints(
           0,
@@ -359,8 +355,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
         await runeItem.awardExperience();
         break;
 
-      case ResultEnum.Success:
-      case ResultEnum.Special:
+      case AbilitySuccessLevelEnum.Success:
+      case AbilitySuccessLevelEnum.Special:
         // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
         await RuneMagic.SpendRuneAndMagicPoints(
           runePointCost,
@@ -372,7 +368,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         await runeItem.awardExperience();
         break;
 
-      case ResultEnum.Failure: {
+      case AbilitySuccessLevelEnum.Failure: {
         // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
         await RuneMagic.SpendRuneAndMagicPoints(
@@ -385,7 +381,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         break;
       }
 
-      case ResultEnum.Fumble: {
+      case AbilitySuccessLevelEnum.Fumble: {
         // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
         await RuneMagic.SpendRuneAndMagicPoints(

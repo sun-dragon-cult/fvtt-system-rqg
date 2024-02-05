@@ -19,7 +19,6 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { DamageRollTypeEnum, WeaponChatHandler } from "../../chat/weaponChatHandler";
 import { WeaponChatFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { ResultEnum } from "../../data-model/shared/ability";
 import {
   CombatManeuver,
   DamageType,
@@ -33,6 +32,7 @@ import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/
 import { systemId } from "../../system/config";
 import { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { Rqid } from "../../system/api/rqidApi";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class Weapon extends AbstractEmbeddedItem {
   // public static init() {
@@ -83,7 +83,7 @@ export class Weapon extends AbstractEmbeddedItem {
       usageType: UsageType;
       chatMessage: RqgChatMessage;
     },
-  ): Promise<ResultEnum | undefined> {
+  ): Promise<AbilitySuccessLevelEnum | undefined> {
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     requireValue(weaponItem.actor, "Called weapon abilityRoll with a not embedded weapon item");
     const speaker = ChatMessage.getSpeaker({ actor: weaponItem.actor ?? undefined });

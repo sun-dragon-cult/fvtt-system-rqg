@@ -1,4 +1,4 @@
-import { Ability, ResultEnum } from "../../data-model/shared/ability";
+import { Ability } from "../../data-model/shared/ability";
 import { RqgActor } from "../../actors/rqgActor";
 import {
   activateChatTab,
@@ -23,6 +23,7 @@ import { RqgChatMessage } from "../RqgChatMessage";
 import type { ChatMessageDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type { CharacteristicData } from "./characteristicChatHandler.types";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class CharacteristicChatHandler {
   public static async show(
@@ -102,10 +103,10 @@ export class CharacteristicChatHandler {
   public static async checkExperience(
     actor: RqgActor,
     characteristicName: string,
-    result: ResultEnum,
+    result: AbilitySuccessLevelEnum,
   ): Promise<void> {
     if (
-      result <= ResultEnum.Success &&
+      result <= AbilitySuccessLevelEnum.Success &&
       characteristicName === "power" &&
       !actor.system.characteristics.power.hasExperience
     ) {

@@ -5,7 +5,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { assertItemType, formatModifier, localize } from "../../system/util";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
-import { ResultEnum } from "../../data-model/shared/ability";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class Rune extends AbstractEmbeddedItem {
   // public static init() {
@@ -34,7 +34,7 @@ export class Rune extends AbstractEmbeddedItem {
   static async abilityRoll(
     runeItem: RqgItem,
     options: { modifier: number },
-  ): Promise<ResultEnum | undefined> {
+  ): Promise<AbilitySuccessLevelEnum | undefined> {
     const chance: number = Number((runeItem?.system as any).chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: runeItem.name });
     if (options.modifier && options.modifier !== 0) {

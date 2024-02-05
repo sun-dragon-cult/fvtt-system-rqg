@@ -1,7 +1,7 @@
 import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import type { ResultEnum } from "../data-model/shared/ability";
 import type { RqgActor } from "../actors/rqgActor";
 import type { RqgItem } from "./rqgItem";
+import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateDescendantDocuments etc. is called.
@@ -19,8 +19,12 @@ export abstract class AbstractEmbeddedItem {
   /**
    * Do a roll immediately with specified options.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static async abilityRoll(item: RqgItem, options: object): Promise<ResultEnum | undefined> {
+  static async abilityRoll(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    item: RqgItem,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options: object,
+  ): Promise<AbilitySuccessLevelEnum | undefined> {
     return;
   }
 

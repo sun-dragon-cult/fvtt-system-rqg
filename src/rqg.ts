@@ -29,6 +29,7 @@ import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEdito
 import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
 import { dragRulerModuleIntegrationInit } from "./external-module-integrations/drag-ruler";
 import { initSockets } from "./sockets/RqgSocket";
+import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
 
 Hooks.once("init", async () => {
   console.log(
@@ -77,6 +78,8 @@ Hooks.once("init", async () => {
       { urls: ["systems/rqg/assets/fonts/NorseBold-2Kge.otf"], weight: "bold" },
     ],
   };
+
+  CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll];
 
   Rqid.init();
   RqgChatMessage.init();

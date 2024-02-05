@@ -1,6 +1,6 @@
-import { ResultEnum } from "./ability";
-import type { CharacteristicData } from "../../chat/characteristicChatHandler/characteristicChatHandler.types";
-import type { ChatMessageType } from "../../chat/RqgChatMessage";
+import { CharacteristicData } from "../../chat/characteristicChatHandler/characteristicChatHandler.types";
+import { ChatMessageType } from "../../chat/RqgChatMessage";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export const documentRqidFlags = "documentRqidFlags" as const;
 export const actorWizardFlags = "actorWizardFlags" as const;
@@ -125,7 +125,7 @@ export interface WeaponChatFlags extends BaseRqgChatFlags {
   type: "weaponChat";
   chat: CommonRqgChatFlags & {
     weaponUuid: string;
-    result: ResultEnum | undefined;
+    result: AbilitySuccessLevelEnum | undefined;
     specialDamageTypeText: string | undefined;
   };
   formData: {

@@ -3,8 +3,8 @@ import { RqgItem } from "../rqgItem";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { assertItemType, formatModifier, localize } from "../../system/util";
-import { ResultEnum } from "../../data-model/shared/ability";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class Passion extends AbstractEmbeddedItem {
   // public static init() {
@@ -30,7 +30,10 @@ export class Passion extends AbstractEmbeddedItem {
     await ChatMessage.create(await ItemChatHandler.renderContent(flags));
   }
 
-  public static async abilityRoll(passion: RqgItem, options: any): Promise<ResultEnum> {
+  public static async abilityRoll(
+    passion: RqgItem,
+    options: any,
+  ): Promise<AbilitySuccessLevelEnum> {
     assertItemType(passion?.type, ItemTypeEnum.Passion);
     const chance: number = Number(passion.system.chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: passion.name });

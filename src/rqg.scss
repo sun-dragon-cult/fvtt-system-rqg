@@ -902,6 +902,29 @@ body {
   }
 }
 
+.chat-message {
+  .rqg.flavor {
+    position: relative;
+    width: 100%;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+
+    img {
+      position: absolute;
+      top: -1rem;
+      height: 8rem;
+      border: none;
+      mix-blend-mode: overlay;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      width: 100%;
+      filter: invert(0.9) drop-shadow(0px 4px 4px black)
+    }
+  }
+}
+
 .rqg.sheet {
   input {
     width: inherit;

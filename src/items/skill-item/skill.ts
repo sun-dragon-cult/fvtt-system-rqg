@@ -6,8 +6,8 @@ import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
 import { documentRqidFlags, ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
-import { ResultEnum } from "../../data-model/shared/ability";
 import { systemId } from "../../system/config";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -33,7 +33,7 @@ export class Skill extends AbstractEmbeddedItem {
     await ChatMessage.create(await ItemChatHandler.renderContent(flags));
   }
 
-  public static async abilityRoll(skill: RqgItem, options: any): Promise<ResultEnum> {
+  public static async abilityRoll(skill: RqgItem, options: any): Promise<AbilitySuccessLevelEnum> {
     assertItemType(skill?.type, ItemTypeEnum.Skill);
     const chance: number = Number(skill.system.chance) || 0;
     let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: skill.name });

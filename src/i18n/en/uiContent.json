@@ -1090,7 +1090,7 @@
     "Game": {
       "MeleeRoundAbbr": "MR",
       "SrMeleeRoundAbbr": "S/MR",
-      "ResultEnum": {
+      "AbilityResultEnum": {
         "0": "Hyper Critical",
         "1": "Special Critical",
         "2": "Critical",
