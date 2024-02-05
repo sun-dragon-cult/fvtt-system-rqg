@@ -51,7 +51,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
     const result = await spiritMagicItem._roll(
       localize("RQG.Dialog.spiritMagicChat.Cast", { spellName: spiritMagicItem.name }),
       (spiritMagicItem.actor?.system.characteristics.power.value ?? 0) * 5,
-      0,
+      [],
       ChatMessage.getSpeaker({ actor: spiritMagicItem.actor ?? undefined }),
     );
     await spiritMagicItem.actor?.drawMagicPoints(mpCost, result);

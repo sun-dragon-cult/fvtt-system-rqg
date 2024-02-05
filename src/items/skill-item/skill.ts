@@ -43,7 +43,12 @@ export class Skill extends AbstractEmbeddedItem {
       });
     }
     const speaker = ChatMessage.getSpeaker({ actor: skill.actor ?? undefined });
-    const result = await skill._roll(flavor, chance, options.modifier, speaker);
+    const result = await skill._roll(
+      flavor,
+      chance,
+      [{ description: "Other Modifiers", value: options.modifier }],
+      speaker,
+    );
     await skill.checkExperience(result);
     return result;
   }

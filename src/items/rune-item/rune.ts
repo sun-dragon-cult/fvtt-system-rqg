@@ -43,7 +43,12 @@ export class Rune extends AbstractEmbeddedItem {
       });
     }
     const speaker = ChatMessage.getSpeaker({ actor: runeItem.actor ?? undefined });
-    const result = await runeItem._roll(flavor, chance, options.modifier, speaker);
+    const result = await runeItem._roll(
+      flavor,
+      chance,
+      [{ description: "Other Modifiers", value: options.modifier }],
+      speaker,
+    );
     await runeItem.checkExperience(result);
     return result;
   }

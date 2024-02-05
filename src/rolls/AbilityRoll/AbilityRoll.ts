@@ -11,7 +11,7 @@ export class AbilityRoll extends Roll {
     const o = this.options as AbilityRollOptions;
 
     const modificationsSum =
-      o.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
+      o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
     this._targetChance = Math.max(0, o.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work
   }
 

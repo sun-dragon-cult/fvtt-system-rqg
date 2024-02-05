@@ -95,12 +95,14 @@ export class RuneMagic extends AbstractEmbeddedItem {
         AbilitySuccessLevelEnum.Special,
         localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
           magicPointBoost: options.magicPointBoost,
+          runePointCost: options.runePointCost,
         }),
       ],
       [
         AbilitySuccessLevelEnum.Success,
         localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
           magicPointBoost: options.magicPointBoost,
+          runePointCost: options.runePointCost,
         }),
       ],
       [AbilitySuccessLevelEnum.Failure, localize("RQG.Dialog.runeMagicChat.resultMessageFailure")],
@@ -109,6 +111,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
         AbilitySuccessLevelEnum.Fumble,
         localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
           magicPointBoost: options.magicPointBoost,
+          runePointCost: options.runePointCost,
         }),
       ],
     ]);
@@ -117,7 +120,11 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const result = await runeMagicItem._roll(
       localize("RQG.Dialog.runeMagicChat.Cast", { spellName: runeMagicItem.name }),
       Number(runeItem.system.chance),
-      options.ritualOrMeditation + options.skillAugmentation + options.otherModifiers,
+      [
+        { description: "Rituals or Meditation", value: options.ritualOrMeditation },
+        { description: "Augmentation", value: options.skillAugmentation },
+        { description: "Other Modifiers", value: options.otherModifiers },
+      ],
       speaker,
       resultMessages,
     );

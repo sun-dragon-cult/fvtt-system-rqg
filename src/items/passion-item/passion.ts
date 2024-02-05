@@ -43,7 +43,12 @@ export class Passion extends AbstractEmbeddedItem {
       });
     }
     const speaker = ChatMessage.getSpeaker({ actor: passion.actor ?? undefined });
-    const result = await passion._roll(flavor, chance, options.modifier, speaker);
+    const result = await passion._roll(
+      flavor,
+      chance,
+      [{ description: "Other Modifiers", value: options.modifier }],
+      speaker,
+    );
     await passion.checkExperience(result);
     return result;
   }

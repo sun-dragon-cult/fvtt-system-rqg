@@ -316,7 +316,7 @@ export class Weapon extends AbstractEmbeddedItem {
     flags.chat.result = await skillItem._roll(
       skillItem.name + " " + Weapon.getDamageTypeString(damageType, [combatManeuver]),
       chance,
-      otherModifiers,
+      [{ description: "Other Modifiers", value: otherModifiers }],
       speaker,
     );
     await skillItem?.checkExperience(flags.chat.result);

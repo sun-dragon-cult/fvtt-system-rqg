@@ -17,6 +17,7 @@ import type { DocumentModificationOptions } from "@league-of-foundry-developers/
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import { Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
 
 export class RqgItem extends Item {
   public static init() {
@@ -149,16 +150,15 @@ export class RqgItem extends Item {
   async _roll(
     flavor: string,
     chance: number,
-    chanceMod: number, // TODO supply full EffectModifier so it's possible to show "Broadsword (Bladesharp +10%, Darkness -70%) Fumble"
+    modifiers: Modifier[],
     speaker: ChatSpeakerDataProperties,
     resultMessages: Map<AbilitySuccessLevelEnum, string> = new Map(),
   ): Promise<AbilitySuccessLevelEnum> {
     chance = chance || 0; // Handle NaN
-    chanceMod = chanceMod || 0;
     const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
     const abilityRoll = new AbilityRoll({
       naturalSkill: chance,
-      modifiers: [{ description: "Other Modifiers", value: chanceMod }],
+      modifiers: modifiers,
       abilityName: this.name ?? undefined,
       abilityType: this.type,
       abilityImg: this.img ?? undefined,
