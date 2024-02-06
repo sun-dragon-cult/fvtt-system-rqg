@@ -312,12 +312,23 @@ export class Weapon extends AbstractEmbeddedItem {
     assertItemType(skillItem?.type, ItemTypeEnum.Skill);
 
     const chance: number = Number(skillItem.system.chance) || 0;
+    const damageTypeString = Weapon.getDamageTypeString(damageType, [combatManeuver]);
+    // TODO this is a temporary workaround to display slash / impale etc before there is a proper AttackRoll
+    const resultMessages = new Map([
+      [AbilitySuccessLevelEnum.HyperCritical, damageTypeString],
+      [AbilitySuccessLevelEnum.SpecialCritical, damageTypeString],
+      [AbilitySuccessLevelEnum.Critical, damageTypeString],
+      [AbilitySuccessLevelEnum.Special, damageTypeString],
+      [AbilitySuccessLevelEnum.Success, damageTypeString],
+      [AbilitySuccessLevelEnum.Failure, damageTypeString],
+      [AbilitySuccessLevelEnum.Fumble, damageTypeString],
+    ]);
 
     flags.chat.result = await skillItem._roll(
-      skillItem.name + " " + Weapon.getDamageTypeString(damageType, [combatManeuver]),
       chance,
       [{ description: "Other Modifiers", value: otherModifiers }],
       speaker,
+      resultMessages,
     );
     await skillItem?.checkExperience(flags.chat.result);
     const data = await WeaponChatHandler.renderContent(flags);

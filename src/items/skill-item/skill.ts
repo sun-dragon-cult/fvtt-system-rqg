@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType, formatModifier, localize, RqgError } from "../../system/util";
+import { assertItemType, localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
 import { documentRqidFlags, ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
@@ -36,15 +36,8 @@ export class Skill extends AbstractEmbeddedItem {
   public static async abilityRoll(skill: RqgItem, options: any): Promise<AbilitySuccessLevelEnum> {
     assertItemType(skill?.type, ItemTypeEnum.Skill);
     const chance: number = Number(skill.system.chance) || 0;
-    let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: skill.name });
-    if (options.modifier && options.modifier !== 0) {
-      flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
-        modifier: formatModifier(options.modifier),
-      });
-    }
     const speaker = ChatMessage.getSpeaker({ actor: skill.actor ?? undefined });
     const result = await skill._roll(
-      flavor,
       chance,
       [{ description: "Other Modifiers", value: options.modifier }],
       speaker,

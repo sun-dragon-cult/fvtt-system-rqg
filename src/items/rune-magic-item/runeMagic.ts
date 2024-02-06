@@ -118,7 +118,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
     const speaker = ChatMessage.getSpeaker({ actor: runeMagicItem.actor ?? undefined });
     const result = await runeMagicItem._roll(
-      localize("RQG.Dialog.runeMagicChat.Cast", { spellName: runeMagicItem.name }),
       Number(runeItem.system.chance),
       [
         { description: "Rituals or Meditation", value: options.ritualOrMeditation },

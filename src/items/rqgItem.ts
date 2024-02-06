@@ -148,7 +148,6 @@ export class RqgItem extends Item {
    * Common code to do a roll to chat.
    */
   async _roll(
-    flavor: string,
     chance: number,
     modifiers: Modifier[],
     speaker: ChatSpeakerDataProperties,

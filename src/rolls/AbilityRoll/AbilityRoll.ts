@@ -1,6 +1,6 @@
 import type { AbilityRollOptions } from "./AbilityRoll.types";
 import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
-import { localize } from "../../system/util";
+import { localize, localizeItemType } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 
 export class AbilityRoll extends Roll {
@@ -54,8 +54,8 @@ export class AbilityRoll extends Roll {
   <img src="icons/dice/d10black.svg" style="mix-blend-mode:soft-light;top:-0.5rem;right:-6rem;height:4rem;pointer-events:none;">
   <img src="${o.abilityImg ?? ""}">
 </div>
-<span>${o.abilityName ?? ""}</span>
-<span>${o.abilityType ?? ""}</span><br>
+<span class="large-font">${o.abilityName ?? ""}</span>
+<span>${o.abilityType ? localizeItemType(o.abilityType) : ""}</span><br>
 <b class="large-font">Target ${this._targetChance}%</b>
 <span>⇐ ${this.modifiersTextLong}</span>
 

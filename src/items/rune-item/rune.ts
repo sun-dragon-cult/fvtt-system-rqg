@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType, formatModifier, localize } from "../../system/util";
+import { assertItemType } from "../../system/util";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
@@ -36,15 +36,8 @@ export class Rune extends AbstractEmbeddedItem {
     options: { modifier: number },
   ): Promise<AbilitySuccessLevelEnum | undefined> {
     const chance: number = Number((runeItem?.system as any).chance) || 0;
-    let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: runeItem.name });
-    if (options.modifier && options.modifier !== 0) {
-      flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
-        modifier: formatModifier(options.modifier),
-      });
-    }
     const speaker = ChatMessage.getSpeaker({ actor: runeItem.actor ?? undefined });
     const result = await runeItem._roll(
-      flavor,
       chance,
       [{ description: "Other Modifiers", value: options.modifier }],
       speaker,

@@ -63,7 +63,7 @@ export class ReputationChatHandler {
     const reputationRoll = new AbilityRoll({
       naturalSkill: reputationValue,
       modifiers: [{ description: "Other Modifier", value: modifier }],
-      abilityName: localize("RQG.Dialog.reputationChat.CheckReputationFlavor"),
+      abilityName: localize("RQG.Dialog.reputationChat.Reputation"),
       abilityImg: "systems/rqg/assets/images/other/reputation.svg", // TODO use setting instead
     });
     await reputationRoll.evaluate();

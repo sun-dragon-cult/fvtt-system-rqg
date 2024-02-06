@@ -478,11 +478,9 @@
         "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
       },
       "itemChat": {
-        "RollFlavor": "{name} Check",
         "RollFlavorModifier": "<br/>With {modifier} other modifiers"
       },
       "reputationChat": {
-        "CheckReputationFlavor": "Check Reputation",
         "Reputation": "Reputation"
       },
       "spiritMagicChat": {
@@ -490,7 +488,6 @@
         "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
         "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
         "ChatFlavor": "Spirit Magic: {name}",
-        "Cast": "Cast {spellName}",
         "Level": "Level",
         "Boost": "Boost"
       },
@@ -602,8 +599,7 @@
         "SpentOneUseRunePoints": "{actorName} spent {runePoints} One Use Rune Points from the {cultName} cult!",
         "validationNotEnoughRunePoints": "Not enough rune points left!",
         "validationNotEnoughMagicPoints": "Not enough magic points left to boost that much!",
-        "runeMagicResultFlavor": "Rune Magic: {name}",
-        "Cast": "Cast {spellName}"
+        "runeMagicResultFlavor": "Rune Magic: {name}"
       },
       "requestSkillSpecialization": {
         "title": "Decide skill specialization",

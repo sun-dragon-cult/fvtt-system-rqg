@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemChatHandler } from "../../chat/itemChatHandler";
-import { assertItemType, formatModifier, localize } from "../../system/util";
+import { assertItemType } from "../../system/util";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
@@ -36,15 +36,8 @@ export class Passion extends AbstractEmbeddedItem {
   ): Promise<AbilitySuccessLevelEnum> {
     assertItemType(passion?.type, ItemTypeEnum.Passion);
     const chance: number = Number(passion.system.chance) || 0;
-    let flavor = localize("RQG.Dialog.itemChat.RollFlavor", { name: passion.name });
-    if (options.modifier && options.modifier !== 0) {
-      flavor += localize("RQG.Dialog.itemChat.RollFlavorModifier", {
-        modifier: formatModifier(options.modifier),
-      });
-    }
     const speaker = ChatMessage.getSpeaker({ actor: passion.actor ?? undefined });
     const result = await passion._roll(
-      flavor,
       chance,
       [{ description: "Other Modifiers", value: options.modifier }],
       speaker,
