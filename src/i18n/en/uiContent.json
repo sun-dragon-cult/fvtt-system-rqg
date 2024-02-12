@@ -15,7 +15,7 @@
       "sorceryMagic": "Sorcery Magic Spell",
       "spiritMagic": "Spirit Magic Spell",
       "weapon": "Weapon",
-      "Reputation": "Reputation"
+      "reputation": "Reputation"
     },
     "Actor": {
       "character": "Character"
@@ -438,6 +438,11 @@
       }
     },
     "Dialog": {
+      "AbilityRoll": {
+        "Augment": "Augment",
+        "Meditate": "Meditate",
+        "OtherModifier": "Other Modifier"
+      },
       "BatchRqidEditor": {
         "Title": "Batch set System ID (Rqid)",
         "ExistingRqidsHeader": "Existing Rqids",
@@ -758,6 +763,7 @@
           "severed": "Severed"
         },
         "Notification": {
+          "CantFindItem": "Couldn't find an item during location changes",
           "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
           "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
           "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
@@ -1040,6 +1046,12 @@
         }
       }
     },
+    "Roll": {
+      "AbilityRoll": {
+        "Augment": "augment",
+        "Meditate": "meditate"
+      }
+    },
     "Hotbar": {
       "MacroName": {
         "ToChat": "Use {name}",
@@ -1095,10 +1107,10 @@
         "5": "Failure",
         "6": "Fumble"
       },
-      "RollChat": "Roll via Chat (click)",
-      "RollQuick": "Quick Roll (dbl click)",
-      "RollCharacteristicQuick": "Quick Roll *5 (dbl click)",
-      "RollTitle": "Roll via Chat (click), Quick Roll (dbl click)",
+      "RollChat": "Roll (click)",
+      "RollQuick": "Direct Roll (dbl click)",
+      "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",
+      "RollTitle": "Roll via Dialog (click), Direct Roll (dbl click)",
       "WeaponUsage": {
         "oneHand": "1H",
         "offHand": "offH",

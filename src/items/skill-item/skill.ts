@@ -1,13 +1,11 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType, localize, RqgError } from "../../system/util";
+import { localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { SkillDataPropertiesData } from "../../data-model/item-data/skillData";
-import { documentRqidFlags, ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { ItemChatHandler } from "../../chat/itemChatHandler";
+import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { systemId } from "../../system/config";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class Skill extends AbstractEmbeddedItem {
   // public static init() {
@@ -16,35 +14,6 @@ export class Skill extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
-
-  static async toChat(skill: RqgItem): Promise<void> {
-    const flags: ItemChatFlags = {
-      type: "itemChat",
-      chat: {
-        actorUuid: skill.actor!.uuid,
-        tokenUuid: skill.actor!.token?.uuid,
-        chatImage: skill.img ?? "",
-        itemUuid: skill.uuid,
-      },
-      formData: {
-        modifier: "",
-      },
-    };
-    await ChatMessage.create(await ItemChatHandler.renderContent(flags));
-  }
-
-  public static async abilityRoll(skill: RqgItem, options: any): Promise<AbilitySuccessLevelEnum> {
-    assertItemType(skill?.type, ItemTypeEnum.Skill);
-    const chance: number = Number(skill.system.chance) || 0;
-    const speaker = ChatMessage.getSpeaker({ actor: skill.actor ?? undefined });
-    const result = await skill._roll(
-      chance,
-      [{ description: "Other Modifiers", value: options.modifier }],
-      speaker,
-    );
-    await skill.checkExperience(result);
-    return result;
-  }
 
   public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     if (skillItem.type !== ItemTypeEnum.Skill) {

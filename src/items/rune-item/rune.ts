@@ -3,9 +3,6 @@ import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { assertItemType } from "../../system/util";
-import { ItemChatFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { ItemChatHandler } from "../../chat/itemChatHandler";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class Rune extends AbstractEmbeddedItem {
   // public static init() {
@@ -14,37 +11,6 @@ export class Rune extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
-
-  static async toChat(rune: RqgItem): Promise<void> {
-    const flags: ItemChatFlags = {
-      type: "itemChat",
-      chat: {
-        actorUuid: rune.actor!.uuid,
-        tokenUuid: rune.actor!.token?.uuid,
-        chatImage: rune.img ?? "",
-        itemUuid: rune.uuid,
-      },
-      formData: {
-        modifier: "",
-      },
-    };
-    await ChatMessage.create(await ItemChatHandler.renderContent(flags));
-  }
-
-  static async abilityRoll(
-    runeItem: RqgItem,
-    options: { modifier: number },
-  ): Promise<AbilitySuccessLevelEnum | undefined> {
-    const chance: number = Number((runeItem?.system as any).chance) || 0;
-    const speaker = ChatMessage.getSpeaker({ actor: runeItem.actor ?? undefined });
-    const result = await runeItem._roll(
-      chance,
-      [{ description: "Other Modifiers", value: options.modifier }],
-      speaker,
-    );
-    await runeItem.checkExperience(result);
-    return result;
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {

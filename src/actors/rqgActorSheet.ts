@@ -40,7 +40,6 @@ import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ReputationChatHandler } from "../chat/reputationChatHandler";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -72,6 +71,9 @@ import {
 import { socketSend } from "../sockets/RqgSocket";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
+import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
+import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -976,28 +978,45 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll actor Reputation
+    const defaultItemIconSettings: any = getGame().settings.get(
+      systemId,
+      "defaultItemIconSettings",
+    );
+
+    const reputationItem: PartialAbilityItem = {
+      name: "Reputation",
+      img: defaultItemIconSettings.reputation,
+      system: {
+        chance: this.actor.system.background.reputation ?? 0,
+      },
+    } as const;
+
     htmlElement?.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-          const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-          await ReputationChatHandler.roll(
-            this.actor.system.background.reputation ?? 0,
-            0,
-            speaker,
-          );
+          const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
+          const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
+
+          const reputationRoll = new AbilityRoll({
+            naturalSkill: reputationItem.system.chance,
+            modifiers: [],
+            abilityName: reputationItem.name ?? undefined,
+            abilityImg: reputationItem.img ?? undefined,
+            useSpecialCriticals: useSpecialCriticals,
+          });
+          await reputationRoll.evaluate();
+          await reputationRoll.toMessage({
+            flavor: reputationRoll.flavor,
+            speaker: speaker,
+          });
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await ReputationChatHandler.show(
-                this.actor,
-                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-                this.token,
-              );
+              await new AbilityRollDialog(reputationItem).render(true);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1030,12 +1049,12 @@ export class RqgActorSheet extends ActorSheet<
 
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRoll();
+          await item.abilityRoll(true);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.toChat();
+              item.abilityRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1055,19 +1074,22 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
-            await runeMagicItem.toChat();
+            // TODO use future RuneMagicRoll
+            // await runeMagicItem.toChat();
           } else {
-            await runeMagicItem.abilityRoll({
-              runePointCost: 1,
-              magicPointBoost: 0,
-            });
+            // TODO use future RuneMagicRoll
+            // await runeMagicItem.abilityRoll({
+            //   runePointCost: 1,
+            //   magicPointBoost: 0,
+            // });
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await runeMagicItem.toChat();
+              // TODO use future RuneMagicRoll
+              // await runeMagicItem.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1095,16 +1117,19 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.system.isVariable && item.system.points > 1) {
-            await item.toChat();
+            // TODO use future SpiritMagicRoll
+            // await item.toChat();
           } else {
-            await item.abilityRoll({ level: item.system.points, boost: 0 });
+            // TODO use future SpiritMagicRoll
+            // await item.abilityRoll({ level: item.system.points, boost: 0 });
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.toChat();
+              // TODO use future SpiritMagicRoll
+              // await item.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1123,12 +1148,14 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          await weapon.toChat();
+          // TODO use future AttackRoll
+          // await weapon.toChat();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await weapon.toChat();
+              // TODO use future AttackRoll
+              // await weapon.toChat();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

@@ -42,16 +42,17 @@ export class WeaponChatHandler {
       | undefined;
     assertItemType(weaponItem?.type, ItemTypeEnum.Weapon);
 
-    const { otherModifiers, actionName, actionValue, usageType } =
-      await WeaponChatHandler.getFormDataFromFlags(flags);
-
-    await weaponItem?.abilityRoll({
-      actionName,
-      actionValue,
-      otherModifiers,
-      usageType,
-      chatMessage,
-    });
+    // TODO don't roll from chat,. roll from dialog
+    // const { otherModifiers, actionName, actionValue, usageType } =
+    //   await WeaponChatHandler.getFormDataFromFlags(flags);
+    //
+    // await weaponItem?.abilityRoll({
+    //   actionName,
+    //   actionValue,
+    //   otherModifiers,
+    //   usageType,
+    //   chatMessage,
+    // });
   }
 
   public static async renderContent(

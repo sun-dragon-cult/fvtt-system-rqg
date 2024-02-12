@@ -591,7 +591,7 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   return result;
 }
 
-export function localizeItemType(itemType: ItemTypeEnum): string {
+export function localizeItemType(itemType: ItemTypeEnum | "reputation"): string {
   return localize("TYPES.Item." + itemType);
 }
 

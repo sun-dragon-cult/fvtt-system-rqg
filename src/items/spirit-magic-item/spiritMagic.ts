@@ -14,6 +14,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
   //   });
   // }
 
+  // TODO remove and use future SpiritMagicRoll
   static async toChat(spiritMagic: RqgItem): Promise<void> {
     assertItemType(spiritMagic.type, ItemTypeEnum.SpiritMagic);
 
@@ -34,6 +35,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
     await ChatMessage.create(await SpiritMagicChatHandler.renderContent(flags));
   }
 
+  // TODO create SpiritMagicRoll
   static async abilityRoll(
     spiritMagicItem: RqgItem,
     options: { level: number; boost: number },

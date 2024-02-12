@@ -1,7 +1,6 @@
 import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import type { RqgActor } from "../actors/rqgActor";
 import type { RqgItem } from "./rqgItem";
-import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateDescendantDocuments etc. is called.
@@ -9,24 +8,6 @@ import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 export abstract class AbstractEmbeddedItem {
   // TODO ***
   // public static init() {}
-
-  /**
-   * Send this item to a chat message to select option before doing a roll against it.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static async toChat(item: RqgItem): Promise<void> {}
-
-  /**
-   * Do a roll immediately with specified options.
-   */
-  static async abilityRoll(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    item: RqgItem,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options: object,
-  ): Promise<AbilitySuccessLevelEnum | undefined> {
-    return;
-  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static preEmbedItem(actor: RqgActor, item: ItemData, options: object[], userId: string): void {}

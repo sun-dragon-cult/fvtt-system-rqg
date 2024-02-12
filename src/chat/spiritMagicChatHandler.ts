@@ -25,10 +25,12 @@ export class SpiritMagicChatHandler {
   public static async rollFromChat(chatMessage: RqgChatMessage): Promise<void> {
     const flags = chatMessage.flags.rqg;
     assertChatMessageFlagType(flags?.type, "spiritMagicChat");
-    const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as RqgItem;
-    const { level, boost } = await SpiritMagicChatHandler.getFormDataFromFlags(flags);
 
-    await spiritMagicItem.abilityRoll({ level, boost });
+    // TODO don't roll from chat, roll from dialog
+    // const spiritMagicItem = (await getRequiredDocumentFromUuid(flags.chat.itemUuid)) as RqgItem;
+    // const { level, boost } = await SpiritMagicChatHandler.getFormDataFromFlags(flags);
+    //
+    // await spiritMagicItem.abilityRoll({ level, boost });
   }
 
   public static async renderContent(

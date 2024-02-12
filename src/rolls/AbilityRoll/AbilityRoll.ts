@@ -1,6 +1,6 @@
 import type { AbilityRollOptions } from "./AbilityRoll.types";
 import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
-import { localize, localizeItemType } from "../../system/util";
+import { activateChatTab, localize, localizeItemType } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 
 export class AbilityRoll extends Roll {
@@ -24,27 +24,23 @@ export class AbilityRoll extends Roll {
   }
 
   get modifiersTextLong(): string {
+    const modifiers = (this.options as AbilityRollOptions).modifiers ?? [];
     return (
-      `${(this.options as AbilityRollOptions).naturalSkill}<sub><i>base</i></sub> ` +
-      (this.options as AbilityRollOptions).modifiers?.reduce(
+      `<b>${(this.options as AbilityRollOptions).naturalSkill}</b><sub><i>base</i></sub> ` +
+      modifiers.reduce(
         (acc, mod) =>
-          mod.value
-            ? `${acc} ${mod.value.signedString()}<sub><i>${mod.description}</i></sub>`
+          mod?.value
+            ? `${acc} <b>${mod.value.signedString()}</b><sub><i>${mod.description}</i></sub>`
             : acc,
         "",
       )
     );
   }
 
-  // get modifiersText(): string {
-  //   return (
-  //     "" +
-  //     (this.options as AbilityRollOptions).naturalSkill +
-  //     ((this.options as AbilityRollOptions)?.modifiers
-  //       ?.map((mod) => mod.value.signedString())
-  //       .join(" ") ?? "")
-  //   );
-  // }
+  toMessage(...props: any): Promise<any> {
+    activateChatTab();
+    return super.toMessage(...props);
+  }
 
   get flavor(): string {
     const o = this.options as AbilityRollOptions;

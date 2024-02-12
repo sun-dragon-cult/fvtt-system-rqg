@@ -1,0 +1,23 @@
+{{log "** AbilityRollDialog" this}}
+<form
+  data-ability-name="{{abilityName}}"
+  data-ability-type="{{abilityType}}"
+  data-ability-img="{{abilityImg}}"
+  data-ability-chance="{{abilityChance}}">
+  <h1>{{abilityName}}</h1>
+  <label>
+    {{localize "RQG.Dialog.AbilityRoll.Augment"}}
+  </label>
+  <div class="flex-column">
+    {{radioBoxes "augmentModifier" augmentOptions checked=object.augmentModifier localize=true}}
+  </div>
+  <label>
+    {{localize "RQG.Dialog.AbilityRoll.Meditate"}}
+  </label>
+  <div class="flex-column">
+    {{radioBoxes "meditateModifier" meditateOptions checked=object.meditateModifier localize=true}}
+  </div>
+  <input type="number" value="{{object.otherModifier}}" name="otherModifier">
+  <input type="text" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+  <button data-ability-roll>Roll it for me ({{totalChance}}%)</button>
+</form>

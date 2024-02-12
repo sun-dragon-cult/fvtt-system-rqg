@@ -78,23 +78,6 @@ export interface CharacteristicChatFlags extends BaseRqgChatFlags {
   };
 }
 
-export interface ItemChatFlags extends BaseRqgChatFlags {
-  type: "itemChat";
-  chat: CommonRqgChatFlags & {
-    itemUuid: string;
-  };
-  formData: {
-    modifier: FormDataEntryValue;
-  };
-}
-
-export interface ReputationChatFlags extends BaseRqgChatFlags {
-  type: "reputationChat";
-  chat: CommonRqgChatFlags & object;
-  formData: {
-    modifier: FormDataEntryValue;
-  };
-}
 export interface RuneMagicChatFlags extends BaseRqgChatFlags {
   type: "runeMagicChat";
   chat: CommonRqgChatFlags & {
@@ -139,8 +122,6 @@ export interface WeaponChatFlags extends BaseRqgChatFlags {
 
 export type RqgChatMessageFlags =
   | CharacteristicChatFlags
-  | ItemChatFlags
-  | ReputationChatFlags
   | RuneMagicChatFlags
   | SpiritMagicChatFlags
   | WeaponChatFlags;

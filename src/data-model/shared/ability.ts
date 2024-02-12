@@ -1,5 +1,5 @@
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import { activateChatTab, getGame, localize } from "../../system/util";
+import { getGame, localize } from "../../system/util";
 import { systemId } from "../../system/config";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
@@ -47,7 +47,6 @@ export class Ability {
       speaker: speaker,
       type: CONST.CHAT_MESSAGE_TYPES.ROLL,
     });
-    activateChatTab();
     return result;
   }
 

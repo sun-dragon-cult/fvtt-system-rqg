@@ -27,6 +27,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   //   });
   // }
 
+  // TODO remove and use future RuneMagicRoll instead
   static async toChat(runeMagic: RqgItem): Promise<void> {
     const eligibleRunes = RuneMagic.getEligibleRunes(runeMagic);
     const defaultRuneId = RuneMagic.getStrongestRune(eligibleRunes)?.id;
@@ -52,6 +53,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     await ChatMessage.create(await RuneMagicChatHandler.renderContent(flags));
   }
 
+  // TODO create RuneMagicRoll
   static async abilityRoll(
     runeMagicItem: RqgItem,
     options: {
@@ -84,49 +86,51 @@ export class RuneMagic extends AbstractEmbeddedItem {
       return;
     }
 
-    const resultMessages: Map<AbilitySuccessLevelEnum, string> = new Map([
-      [
-        AbilitySuccessLevelEnum.Critical,
-        localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
-          magicPointBoost: options.magicPointBoost,
-        }),
-      ],
-      [
-        AbilitySuccessLevelEnum.Special,
-        localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
-          magicPointBoost: options.magicPointBoost,
-          runePointCost: options.runePointCost,
-        }),
-      ],
-      [
-        AbilitySuccessLevelEnum.Success,
-        localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
-          magicPointBoost: options.magicPointBoost,
-          runePointCost: options.runePointCost,
-        }),
-      ],
-      [AbilitySuccessLevelEnum.Failure, localize("RQG.Dialog.runeMagicChat.resultMessageFailure")],
+    // const resultMessages: Map<AbilitySuccessLevelEnum, string> = new Map([
+    //   [
+    //     AbilitySuccessLevelEnum.Critical,
+    //     localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
+    //       magicPointBoost: options.magicPointBoost,
+    //     }),
+    //   ],
+    //   [
+    //     AbilitySuccessLevelEnum.Special,
+    //     localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
+    //       magicPointBoost: options.magicPointBoost,
+    //       runePointCost: options.runePointCost,
+    //     }),
+    //   ],
+    //   [
+    //     AbilitySuccessLevelEnum.Success,
+    //     localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
+    //       magicPointBoost: options.magicPointBoost,
+    //       runePointCost: options.runePointCost,
+    //     }),
+    //   ],
+    //   [AbilitySuccessLevelEnum.Failure, localize("RQG.Dialog.runeMagicChat.resultMessageFailure")],
+    //
+    //   [
+    //     AbilitySuccessLevelEnum.Fumble,
+    //     localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
+    //       magicPointBoost: options.magicPointBoost,
+    //       runePointCost: options.runePointCost,
+    //     }),
+    //   ],
+    // ]);
 
-      [
-        AbilitySuccessLevelEnum.Fumble,
-        localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
-          magicPointBoost: options.magicPointBoost,
-          runePointCost: options.runePointCost,
-        }),
-      ],
-    ]);
-
-    const speaker = ChatMessage.getSpeaker({ actor: runeMagicItem.actor ?? undefined });
-    const result = await runeMagicItem._roll(
-      Number(runeItem.system.chance),
-      [
-        { description: "Rituals or Meditation", value: options.ritualOrMeditation },
-        { description: "Augmentation", value: options.skillAugmentation },
-        { description: "Other Modifiers", value: options.otherModifiers },
-      ],
-      speaker,
-      resultMessages,
-    );
+    // const speaker = ChatMessage.getSpeaker({ actor: runeMagicItem.actor ?? undefined });
+    // TODO use future RuneMagicRoll
+    const result = AbilitySuccessLevelEnum.Success;
+    //   await runeMagicItem._roll(
+    //   Number(runeItem.system.chance),
+    //   [
+    //     { description: "Rituals or Meditation", value: options.ritualOrMeditation },
+    //     { description: "Augmentation", value: options.skillAugmentation },
+    //     { description: "Other Modifiers", value: options.otherModifiers },
+    //   ],
+    //   speaker,
+    //   resultMessages,
+    // );
 
     await RuneMagic.handleRollResult(
       result,

@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 /**
  * The kind of macros that can be created by dropping a document onto the Hotbar.
  */
-type MacroAction = "toChat" | "rollTable" | "toggleSheet";
+type MacroAction = "toChat" | "abilityRoll" | "rollTable" | "toggleSheet";
 
 export class RqgHotbar extends Hotbar {
   static init() {
@@ -16,6 +16,11 @@ export class RqgHotbar extends Hotbar {
    */
   static macroActions = new Map<MacroAction, (doc: any) => string>([
     ["toChat", (doc) => `(await fromUuid("${doc.uuid}")).toChat()`],
+    [
+      "abilityRoll",
+      (doc) => `await new AbilityRollDialog(await fromUuid("${doc.uuid}")).render(true)`,
+    ],
+
     ["rollTable", (doc) => `(await fromUuid("${doc.uuid}")).draw()`],
     ["toggleSheet", (doc) => `Hotbar.toggleDocumentSheet("${doc.uuid}")`],
   ]);
@@ -54,6 +59,19 @@ export class RqgHotbar extends Hotbar {
         ItemTypeEnum.SpiritMagic,
         ItemTypeEnum.Weapon,
       ].includes(doc.type)
+    ) {
+      const actorName = doc?.parent?.prototypeToken?.name;
+      const translationKey = actorName
+        ? "RQG.Hotbar.MacroName.ToChatEmbedded"
+        : "RQG.Hotbar.MacroName.ToChat";
+      const name = localize(translationKey, { name: doc.name, actor: actorName });
+      return { command: RqgHotbar.macroActions.get("toChat")?.(doc), name: name };
+    }
+
+    // Items that can show an AbilityRollDialog
+    if (
+      doc.documentName === "Item" &&
+      [ItemTypeEnum.Passion, ItemTypeEnum.Rune, ItemTypeEnum.Skill].includes(doc.type)
     ) {
       const actorName = doc?.parent?.prototypeToken?.name;
       const translationKey = actorName

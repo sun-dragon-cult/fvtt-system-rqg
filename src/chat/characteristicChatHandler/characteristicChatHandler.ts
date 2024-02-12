@@ -1,7 +1,6 @@
 import { Ability } from "../../data-model/shared/ability";
 import { RqgActor } from "../../actors/rqgActor";
 import {
-  activateChatTab,
   assertChatMessageFlagType,
   assertHtmlElement,
   cleanIntegerString,
@@ -46,7 +45,6 @@ export class CharacteristicChatHandler {
     };
 
     await ChatMessage.create(await CharacteristicChatHandler.renderContent(flags));
-    activateChatTab();
   }
 
   /**

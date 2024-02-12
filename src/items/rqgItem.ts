@@ -9,7 +9,7 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import { activateChatTab, getGame, hasOwnProperty, localize, RqgError } from "../system/util";
+import { getGame, hasOwnProperty, localize, RqgError } from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
@@ -17,7 +17,8 @@ import type { DocumentModificationOptions } from "@league-of-foundry-developers/
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
+import { AbilityRollOptions, Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
+import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
 
 export class RqgItem extends Item {
   public static init() {
@@ -124,24 +125,43 @@ export class RqgItem extends Item {
   declare system: any; // v10 type workaround
   declare flags: FlagConfig["Item"]; // type workaround
 
-  public async toChat(): Promise<void> {
+  public async abilityRoll(
+    immediateRoll: boolean = false,
+    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
+  ): Promise<void> {
     if (!this.isEmbedded) {
       const msg = "Item is not embedded";
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
-    activateChatTab();
-    await ResponsibleItemClass.get(this.type)?.toChat(this);
-  }
+    if (!immediateRoll) {
+      await new AbilityRollDialog(this).render(true);
+      return;
+    }
 
-  public async abilityRoll(options: object = {}): Promise<AbilitySuccessLevelEnum | undefined> {
-    if (!this.isEmbedded) {
-      const msg = "Item is not embedded";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
+    const chance: number = Number(this.system.chance) || 0; // Handle NaN
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
+
+    const abilityRoll = new AbilityRoll({
+      naturalSkill: chance,
+      modifiers: options?.modifiers,
+      abilityName: this.name ?? undefined,
+      abilityType: this.type,
+      abilityImg: this.img ?? undefined,
+      useSpecialCriticals: useSpecialCriticals,
+      resultMessages: options?.resultMessages,
+    });
+    await abilityRoll.evaluate();
+    await abilityRoll.toMessage({
+      flavor: abilityRoll.flavor,
+      speaker: speaker,
+    });
+
+    if (!abilityRoll.successLevel) {
+      throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
-    activateChatTab();
-    return ResponsibleItemClass.get(this.type)?.abilityRoll(this, options);
+    await this.checkExperience(abilityRoll.successLevel);
   }
 
   /**
@@ -169,7 +189,6 @@ export class RqgItem extends Item {
       flavor: abilityRoll.flavor,
       speaker: speaker,
     });
-
     if (!abilityRoll.successLevel) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }

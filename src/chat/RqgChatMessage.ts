@@ -1,4 +1,3 @@
-import { ReputationChatHandler } from "./reputationChatHandler";
 import { CharacteristicChatHandler } from "./characteristicChatHandler/characteristicChatHandler";
 import {
   assertHtmlElement,
@@ -9,7 +8,6 @@ import {
   requireValue,
 } from "../system/util";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { ItemChatHandler } from "./itemChatHandler";
 import { SpiritMagicChatHandler } from "./spiritMagicChatHandler";
 import { RuneMagicChatHandler } from "./runeMagicChatHandler";
 import { WeaponChatHandler } from "./weaponChatHandler";
@@ -20,11 +18,9 @@ export type ChatMessageType = keyof typeof chatHandlerMap;
 
 const chatHandlerMap = {
   characteristicChat: CharacteristicChatHandler,
-  itemChat: ItemChatHandler,
   spiritMagicChat: SpiritMagicChatHandler,
   runeMagicChat: RuneMagicChatHandler,
   weaponChat: WeaponChatHandler,
-  reputationChat: ReputationChatHandler,
 };
 
 export class RqgChatMessage extends ChatMessage {
@@ -134,8 +130,9 @@ export class RqgChatMessage extends ChatMessage {
   public async doRoll(): Promise<void> {
     const flags = this.flags.rqg;
     requireValue(flags, "No rqg flags found on chat message");
-    const chatMessageType = flags.type;
-    await chatHandlerMap[chatMessageType].rollFromChat(this);
+    // TODO don't roll from chat, roll from dialog
+    // const chatMessageType = flags.type;
+    // await chatHandlerMap[chatMessageType].rollFromChat(this);
   }
 
   private static getChatMessageInfo(event: Event): {

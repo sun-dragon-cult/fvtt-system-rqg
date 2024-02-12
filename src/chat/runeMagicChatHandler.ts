@@ -35,23 +35,25 @@ export class RuneMagicChatHandler {
       flags.chat.itemUuid,
     );
     requireValue(runeMagicItem, "Couldn't find item on item chat message");
-    const {
-      runePointCost,
-      magicPointBoost,
-      ritualOrMeditation,
-      skillAugmentation,
-      otherModifiers,
-      selectedRuneId,
-    } = await RuneMagicChatHandler.getFormDataFromFlags(flags);
 
-    await runeMagicItem.abilityRoll({
-      runePointCost,
-      magicPointBoost,
-      ritualOrMeditation,
-      skillAugmentation,
-      otherModifiers,
-      selectedRuneId,
-    });
+    // TODO don't roll from chat, roll from dialog
+    // const {
+    //   runePointCost,
+    //   magicPointBoost,
+    //   ritualOrMeditation,
+    //   skillAugmentation,
+    //   otherModifiers,
+    //   selectedRuneId,
+    // } = await RuneMagicChatHandler.getFormDataFromFlags(flags);
+
+    // await runeMagicItem.abilityRoll({
+    //   runePointCost,
+    //   magicPointBoost,
+    //   ritualOrMeditation,
+    //   skillAugmentation,
+    //   otherModifiers,
+    //   selectedRuneId,
+    // });
   }
 
   public static async renderContent(

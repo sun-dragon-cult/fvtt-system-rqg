@@ -43,6 +43,7 @@ export const templatePaths = {
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
+  abilityRoll: "systems/rqg/applications/abilityRollDialog/abilityRollDialog.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",

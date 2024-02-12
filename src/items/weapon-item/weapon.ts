@@ -45,6 +45,7 @@ export class Weapon extends AbstractEmbeddedItem {
   // Extract the `+db` or `+db/2` part of the damage string
   static damageBonusRegex = /\+[^+\-*/]*db(?<half>[^+\-*/]*\/[^+\-*/]*2)?/;
 
+  // TODO Remove and use future AttackRoll etc
   static async toChat(weapon: RqgItem): Promise<void> {
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     const usage = Weapon.getDefaultUsage(weapon);
@@ -74,6 +75,7 @@ export class Weapon extends AbstractEmbeddedItem {
     await ChatMessage.create(await WeaponChatHandler.renderContent(flags));
   }
   // All rolls in one for now, differentiate with actionName
+  // TODO create attackRoll - and use an AbilityRoll for Parry?
   static async abilityRoll(
     weaponItem: RqgItem,
     options: {
