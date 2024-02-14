@@ -8,6 +8,7 @@ import {
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import { localize, RqgError } from "../../system/util";
+import type { RqgActor } from "../../actors/rqgActor";
 
 export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplication<
   FormApplication.Options,
@@ -50,7 +51,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "ability-roll-dialog"],
       popOut: true,
-      template: templatePaths.abilityRoll,
+      template: templatePaths.abilityRollDialog,
       width: 400,
       left: 35,
       top: 15,
@@ -105,14 +106,13 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
           abilityName: this.abilityItem.name ?? undefined,
           abilityType: this.abilityItem.type ?? undefined,
           abilityImg: this.abilityItem.img ?? undefined,
+          speaker: ChatMessage.getSpeaker({
+            actor: this.abilityItem.parent as RqgActor | undefined,
+          }),
           // resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // TODO Idea - add fields in IAbility to specify text specific for an ability
         };
 
-        const roll = new AbilityRoll(options);
-        await roll.evaluate();
-        await roll.toMessage({
-          flavor: roll.flavor,
-        });
+        const roll = await AbilityRoll.rollAndShow(options);
         if (!roll.successLevel) {
           throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
         }

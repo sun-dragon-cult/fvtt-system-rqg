@@ -1,5 +1,5 @@
 import { registerRqgSystemSettings } from "./system/rqgSystemSettings.js";
-import { loadHandlebarsTemplates } from "./system/loadHandlebarsTemplates.js";
+import { loadHandlebarsTemplates, templatePaths } from "./system/loadHandlebarsTemplates.js";
 import { RqgActor } from "./actors/rqgActor.js";
 import { RqgItem } from "./items/rqgItem";
 import { registerHandlebarsHelpers } from "./system/registerHandlebarsHelpers";
@@ -80,6 +80,7 @@ Hooks.once("init", async () => {
   };
 
   CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll];
+  CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
   Rqid.init();
   RqgChatMessage.init();

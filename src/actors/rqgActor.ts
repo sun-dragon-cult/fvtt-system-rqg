@@ -267,6 +267,7 @@ export class RqgActor extends Actor {
     return { str, con, siz, dex, int, pow, cha };
   }
 
+  // TODO should use result: SpiritMagicSuccessLevelEnum
   public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
     if (result <= AbilitySuccessLevelEnum.Success) {
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;

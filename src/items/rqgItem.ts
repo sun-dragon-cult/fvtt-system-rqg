@@ -143,7 +143,7 @@ export class RqgItem extends Item {
     const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
     const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
 
-    const abilityRoll = new AbilityRoll({
+    const abilityRoll = await AbilityRoll.rollAndShow({
       naturalSkill: chance,
       modifiers: options?.modifiers,
       abilityName: this.name ?? undefined,
@@ -151,13 +151,8 @@ export class RqgItem extends Item {
       abilityImg: this.img ?? undefined,
       useSpecialCriticals: useSpecialCriticals,
       resultMessages: options?.resultMessages,
-    });
-    await abilityRoll.evaluate();
-    await abilityRoll.toMessage({
-      flavor: abilityRoll.flavor,
       speaker: speaker,
     });
-
     if (!abilityRoll.successLevel) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
@@ -175,7 +170,7 @@ export class RqgItem extends Item {
   ): Promise<AbilitySuccessLevelEnum> {
     chance = chance || 0; // Handle NaN
     const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
-    const abilityRoll = new AbilityRoll({
+    const abilityRoll = await AbilityRoll.rollAndShow({
       naturalSkill: chance,
       modifiers: modifiers,
       abilityName: this.name ?? undefined,
@@ -183,10 +178,6 @@ export class RqgItem extends Item {
       abilityImg: this.img ?? undefined,
       useSpecialCriticals: useSpecialCriticals,
       resultMessages: resultMessages,
-    });
-    await abilityRoll.evaluate();
-    await abilityRoll.toMessage({
-      flavor: abilityRoll.flavor,
       speaker: speaker,
     });
     if (!abilityRoll.successLevel) {

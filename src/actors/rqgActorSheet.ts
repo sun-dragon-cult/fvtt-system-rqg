@@ -1000,16 +1000,12 @@ export class RqgActorSheet extends ActorSheet<
           const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
           const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
 
-          const reputationRoll = new AbilityRoll({
+          AbilityRoll.rollAndShow({
             naturalSkill: reputationItem.system.chance,
             modifiers: [],
             abilityName: reputationItem.name ?? undefined,
             abilityImg: reputationItem.img ?? undefined,
             useSpecialCriticals: useSpecialCriticals,
-          });
-          await reputationRoll.evaluate();
-          await reputationRoll.toMessage({
-            flavor: reputationRoll.flavor,
             speaker: speaker,
           });
           clickCount = 0;
@@ -1054,7 +1050,7 @@ export class RqgActorSheet extends ActorSheet<
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              item.abilityRoll();
+              await item.abilityRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

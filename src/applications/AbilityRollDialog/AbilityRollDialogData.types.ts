@@ -1,11 +1,13 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
+import type { RqgActor } from "../../actors/rqgActor";
 
 export type PartialAbilityItem = {
   name: string | null;
   type?: ItemTypeEnum;
   img: string | null;
   system: { chance: number };
+  parent?: RqgActor | null;
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
 };
 

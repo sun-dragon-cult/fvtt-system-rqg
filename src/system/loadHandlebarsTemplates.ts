@@ -19,7 +19,12 @@ export const templatePaths = {
   itemSkillSheet: "systems/rqg/items/skill-item/skillSheet.hbs",
   itemSpiritMagicSheet: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
 
+  // Dice & Rolls
+  abilityRollTooltip: "systems/rqg/rolls/AbilityRoll/abilityRollTooltip.hbs",
+  abilityRoll: "systems/rqg/rolls/AbilityRoll/abilityRoll.hbs",
+
   // Chat
+  chatMessage: "systems/rqg/chat/chat-message.hbs",
   chatCharacteristicHandler:
     "systems/rqg/chat/characteristicChatHandler/characteristicChatHandler.hbs",
   chatItemHandler: "systems/rqg/chat/itemChatHandler.hbs",
@@ -43,7 +48,7 @@ export const templatePaths = {
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-  abilityRoll: "systems/rqg/applications/abilityRollDialog/abilityRollDialog.hbs",
+  abilityRollDialog: "systems/rqg/applications/abilityRollDialog/abilityRollDialog.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
