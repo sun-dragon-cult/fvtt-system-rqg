@@ -200,18 +200,18 @@
         "Characteristic": "Characteristic",
         "format": "{name} ({abbr})",
         "strength": "STR",
-        "constitution": "CON",
-        "size": "SIZ",
-        "dexterity": "DEX",
-        "intelligence": "INT",
-        "power": "POW",
-        "charisma": "CHA",
         "strength-full": "Strength",
+        "constitution": "CON",
         "constitution-full": "Constitution",
+        "size": "SIZ",
         "size-full": "Size",
+        "dexterity": "DEX",
         "dexterity-full": "Dexterity",
+        "intelligence": "INT",
         "intelligence-full": "Intelligence",
+        "power": "POW",
         "power-full": "Power",
+        "charisma": "CHA",
         "charisma-full": "Charisma"
       },
       "Combat": {
@@ -443,6 +443,12 @@
         "Meditate": "Meditate",
         "OtherModifier": "Other Modifier"
       },
+      "CharacteristicRoll": {
+        "Difficulty": "Difficulty",
+        "Augment": "Augment",
+        "Meditate": "Meditate",
+        "OtherModifier": "Other Modifier"
+      },
       "BatchRqidEditor": {
         "Title": "Batch set System ID (Rqid)",
         "ExistingRqidsHeader": "Existing Rqids",
@@ -463,11 +469,6 @@
         "RollFormat": "Roll ({chance}%)",
         "CantFindChatMessageError": "CantFindChatMessageError"
       },
-      "characteristicChat": {
-        "ChatFlavor": "Characteristic: {name} ({value})",
-        "RollFlavor": "{difficulty} {name} Check",
-        "RollFlavorModifier": "<br/>With {modifier} other modifiers"
-      },
       "confirmCopyIntangibleItem": {
         "title": "Really give {itemName} to {targetActor}?",
         "header": "Really give {itemName} to {targetActor}?",
@@ -481,12 +482,6 @@
         "ReallyGiveItemSingle": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory.",
         "ReallyGiveItemQuantity": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory, or {sourceActor}'s inventory quantity will be reduced.",
         "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
-      },
-      "itemChat": {
-        "RollFlavorModifier": "<br/>With {modifier} other modifiers"
-      },
-      "reputationChat": {
-        "Reputation": "Reputation"
       },
       "spiritMagicChat": {
         "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
@@ -1051,6 +1046,11 @@
         "Base": "base",
         "Augment": "augment",
         "Meditate": "meditate"
+      },
+      "CharacteristicRoll": {
+        "Augment": "augment",
+        "Meditate": "meditate",
+        "Other": "other"
       }
     },
     "Hotbar": {
@@ -1122,13 +1122,14 @@
         "twoHand-full": "Two-handed",
         "missile-full": "Missile"
       },
-      "RollDifficulty": {
-        "0": "Nearly Impossible (*0.5)",
-        "1": "Very Hard (*1)",
-        "2": "Hard (*2)",
-        "3": "Moderate (*3)",
-        "4": "Easy (*4)",
-        "5": "Simple Action (*5)"
+      "RollDifficultyLevel": {
+        "0": "nearly impossible",
+        "1": "very hard",
+        "2": "hard",
+        "3": "moderate",
+        "4": "easy",
+        "5": "simple action",
+        "6": "very simple action"
       }
     },
     "RQGSystem": {

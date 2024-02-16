@@ -1,4 +1,3 @@
-import { CharacteristicChatHandler } from "./characteristicChatHandler/characteristicChatHandler";
 import {
   assertHtmlElement,
   getGame,
@@ -17,7 +16,6 @@ import { systemId } from "../system/config";
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
 const chatHandlerMap = {
-  characteristicChat: CharacteristicChatHandler,
   spiritMagicChat: SpiritMagicChatHandler,
   runeMagicChat: RuneMagicChatHandler,
   weaponChat: WeaponChatHandler,

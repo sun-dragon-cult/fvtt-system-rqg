@@ -22,14 +22,12 @@ export const templatePaths = {
   // Dice & Rolls
   abilityRollTooltip: "systems/rqg/rolls/AbilityRoll/abilityRollTooltip.hbs",
   abilityRoll: "systems/rqg/rolls/AbilityRoll/abilityRoll.hbs",
+  characteristicRollTooltip: "systems/rqg/rolls/CharacteristicRoll/characteristicRollTooltip.hbs",
+  characteristicRoll: "systems/rqg/rolls/CharacteristicRoll/characteristicRoll.hbs",
 
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
-  chatCharacteristicHandler:
-    "systems/rqg/chat/characteristicChatHandler/characteristicChatHandler.hbs",
-  chatItemHandler: "systems/rqg/chat/itemChatHandler.hbs",
   chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
-  reputationChatHandler: "systems/rqg/chat/reputationChatHandler.hbs",
   chatSpiritMagicHandler: "systems/rqg/chat/spiritMagicChatHandler.hbs",
   runeMagicChatHandler: "systems/rqg/chat/runeMagicChatHandler.hbs",
 
@@ -49,6 +47,8 @@ export const templatePaths = {
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
   abilityRollDialog: "systems/rqg/applications/abilityRollDialog/abilityRollDialog.hbs",
+  characteristicRollDialog:
+    "systems/rqg/applications/characteristicRollDialog/characteristicRollDialog.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",

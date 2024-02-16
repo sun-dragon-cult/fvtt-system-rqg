@@ -1,4 +1,3 @@
-import { CharacteristicData } from "../../chat/characteristicChatHandler/characteristicChatHandler.types";
 import { ChatMessageType } from "../../chat/RqgChatMessage";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
@@ -67,17 +66,6 @@ export type CommonRqgChatFlags = {
   chatImage: string | undefined;
 };
 
-export interface CharacteristicChatFlags extends BaseRqgChatFlags {
-  type: "characteristicChat";
-  chat: CommonRqgChatFlags & {
-    characteristic: CharacteristicData;
-  };
-  formData: {
-    difficulty: FormDataEntryValue;
-    modifier: FormDataEntryValue;
-  };
-}
-
 export interface RuneMagicChatFlags extends BaseRqgChatFlags {
   type: "runeMagicChat";
   chat: CommonRqgChatFlags & {
@@ -120,8 +108,4 @@ export interface WeaponChatFlags extends BaseRqgChatFlags {
   };
 }
 
-export type RqgChatMessageFlags =
-  | CharacteristicChatFlags
-  | RuneMagicChatFlags
-  | SpiritMagicChatFlags
-  | WeaponChatFlags;
+export type RqgChatMessageFlags = RuneMagicChatFlags | SpiritMagicChatFlags | WeaponChatFlags;

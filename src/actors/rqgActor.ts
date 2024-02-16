@@ -3,7 +3,7 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
-import { getGame, hasOwnProperty, localize } from "../system/util";
+import { getGame, hasOwnProperty, localize, localizeCharacteristic } from "../system/util";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
@@ -126,6 +126,26 @@ export class RqgActor extends Actor {
     attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
+  }
+
+  // Currently only marks POW experience
+  public async checkExperience(
+    characteristicName: string,
+    result: AbilitySuccessLevelEnum | undefined,
+  ): Promise<void> {
+    if (
+      result != null &&
+      result <= AbilitySuccessLevelEnum.Success &&
+      characteristicName === "power" &&
+      !this.system.characteristics.power.hasExperience
+    ) {
+      await this.update({ "system.characteristics.power.hasExperience": true });
+      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+        actorName: this.name,
+        itemName: localizeCharacteristic("power"),
+      });
+      ui.notifications?.info(msg);
+    }
   }
 
   private calcMaxEncumbrance(

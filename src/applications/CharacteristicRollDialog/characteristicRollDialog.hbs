@@ -1,0 +1,29 @@
+{{log "** CharacteristicRollDialog" this}}
+<form
+  data-characteristic-name="{{characteristicName}}"
+  data-characteristic-value="{{characteristicValue}}">
+  <h1>{{characteristicName}}</h1>
+
+  <label>
+    {{localize "RQG.Dialog.CharacteristicRoll.Difficulty"}}
+  </label>
+  <select name="difficulty">
+    {{selectOptions difficultyOptions selected=object.difficulty localize=true}}
+  </select><br>
+
+  <label>
+    {{localize "RQG.Dialog.CharacteristicRoll.Augment"}}
+  </label>
+  <div class="flex-column">
+    {{radioBoxes "augmentModifier" augmentOptions checked=object.augmentModifier localize=true}}
+  </div>
+  <label>
+    {{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}
+  </label>
+  <div class="flex-column">
+    {{radioBoxes "meditateModifier" meditateOptions checked=object.meditateModifier localize=true}}
+  </div>
+  <input type="number" value="{{object.otherModifier}}" name="otherModifier">
+  <input type="text" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+  <button data-characteristic-roll>Roll it for me ({{totalChance}}%)</button>
+</form>

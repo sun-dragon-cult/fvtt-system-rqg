@@ -56,7 +56,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
       left: 35,
       top: 15,
       id: "ability-roll-dialog",
-      title: "Ability Roll Dialog",
+      title: "Ability Roll Dialog", // TODO translate
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,

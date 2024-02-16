@@ -30,6 +30,7 @@ import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
 import { dragRulerModuleIntegrationInit } from "./external-module-integrations/drag-ruler";
 import { initSockets } from "./sockets/RqgSocket";
 import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
+import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRoll";
 
 Hooks.once("init", async () => {
   console.log(
@@ -79,7 +80,7 @@ Hooks.once("init", async () => {
     ],
   };
 
-  CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll];
+  CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll, CharacteristicRoll];
   CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
   Rqid.init();

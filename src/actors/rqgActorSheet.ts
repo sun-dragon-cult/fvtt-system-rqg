@@ -17,7 +17,6 @@ import {
   PhysicalItemType,
 } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
-import { CharacteristicChatHandler } from "../chat/characteristicChatHandler/characteristicChatHandler";
 import {
   assertHtmlElement,
   assertItemType,
@@ -74,6 +73,8 @@ import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
 import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
+import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -933,7 +934,9 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
       const closestDataCharacteristic = el.closest("[data-characteristic]");
       assertHtmlElement(closestDataCharacteristic);
-      const characteristicName = closestDataCharacteristic?.dataset.characteristic;
+      const characteristicName = closestDataCharacteristic?.dataset.characteristic as
+        | keyof typeof actorCharacteristics
+        | undefined;
 
       let clickCount = 0;
       const actorCharacteristics = this.actor.system.characteristics;
@@ -946,30 +949,21 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await CharacteristicChatHandler.roll(
-            characteristicName,
-            actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
-            5,
-            0,
-            this.actor,
-            // @ts-expect-error this.token should be TokenDocument, but is typed as Token
-            ChatMessage.getSpeaker({ actor: this.actor, token: this.token }),
-          );
+          const characteristicRoll = await CharacteristicRoll.rollAndShow({
+            characteristicValue: actorCharacteristics[characteristicName].value ?? 0,
+            characteristicName: characteristicName,
+            difficulty: 5,
+            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
+          });
+          await this.actor.checkExperience(characteristicName, characteristicRoll.successLevel);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await CharacteristicChatHandler.show(
-                {
-                  name: characteristicName,
-                  data: actorCharacteristics[
-                    characteristicName as keyof typeof actorCharacteristics
-                  ],
-                },
-                this.actor,
-                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-                this.token,
-              );
+              await new CharacteristicRollDialog(this.actor, {
+                characteristicValue: actorCharacteristics[characteristicName].value ?? 0,
+                characteristicName: characteristicName,
+              }).render(true);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

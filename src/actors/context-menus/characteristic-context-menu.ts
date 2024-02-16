@@ -1,4 +1,3 @@
-import { CharacteristicChatHandler } from "../../chat/characteristicChatHandler/characteristicChatHandler";
 import { RqgActor } from "../rqgActor";
 import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
@@ -11,6 +10,8 @@ import {
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
+import { CharacteristicRollDialog } from "../../applications/CharacteristicRollDialog/characteristicRollDialog";
+import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
@@ -22,14 +23,10 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicChatHandler.show(
-        {
-          name: characteristicName,
-          data: characteristic,
-        },
-        actor,
-        token,
-      );
+      await new CharacteristicRollDialog(actor, {
+        characteristicName: characteristicName,
+        characteristicValue: characteristic.value ?? 0,
+      }).render(true);
     },
   },
   {
@@ -38,14 +35,12 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await CharacteristicChatHandler.roll(
-        characteristicName,
-        characteristic.value,
-        5,
-        0,
-        actor,
-        ChatMessage.getSpeaker({ actor: actor, token: token }),
-      );
+      const roll = await CharacteristicRoll.rollAndShow({
+        characteristicName: characteristicName,
+        characteristicValue: characteristic.value ?? 0,
+        difficulty: 5,
+      });
+      await actor.checkExperience(characteristicName, roll.successLevel);
     },
   },
   {
@@ -180,9 +175,9 @@ export async function initializeCharacteristic(
 
   const char = actor.system.characteristics[characteristic as keyof Characteristics];
 
-  let formula = char.formula;
+  let formula = char?.formula;
 
-  if (char == null || char.formula == null || char.formula === "" || !Roll.validate(char.formula)) {
+  if (formula == null || !Roll.validate(formula)) {
     formula = undefined;
   }
 
