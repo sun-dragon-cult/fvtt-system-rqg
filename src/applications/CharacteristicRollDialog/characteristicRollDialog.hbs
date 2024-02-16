@@ -3,27 +3,24 @@
   data-characteristic-name="{{characteristicName}}"
   data-characteristic-value="{{characteristicValue}}">
   <h1>{{characteristicName}}</h1>
+  <div class="key-value-grid">
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Difficulty"}}</label>
+    <select name="difficulty">
+      {{selectOptions difficultyOptions selected=object.difficulty localize=false}}
+    </select>
 
-  <label>
-    {{localize "RQG.Dialog.CharacteristicRoll.Difficulty"}}
-  </label>
-  <select name="difficulty">
-    {{selectOptions difficultyOptions selected=object.difficulty localize=true}}
-  </select><br>
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
+    <select name="augmentModifier">
+      {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+    </select>
 
-  <label>
-    {{localize "RQG.Dialog.CharacteristicRoll.Augment"}}
-  </label>
-  <div class="flex-column">
-    {{radioBoxes "augmentModifier" augmentOptions checked=object.augmentModifier localize=true}}
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}</label>
+    <select name="meditateModifier">
+      {{selectOptions meditateOptions selected=object.meditateModifier localize=true}}
+    </select>
+
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+    <input type="number" value="{{object.otherModifier}}" name="otherModifier">
   </div>
-  <label>
-    {{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}
-  </label>
-  <div class="flex-column">
-    {{radioBoxes "meditateModifier" meditateOptions checked=object.meditateModifier localize=true}}
-  </div>
-  <input type="number" value="{{object.otherModifier}}" name="otherModifier">
-  <input type="text" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
-  <button data-characteristic-roll>Roll it for me ({{totalChance}}%)</button>
+  <button data-characteristic-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=totalChance}}</button>
 </form>

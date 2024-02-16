@@ -467,7 +467,23 @@
         "btnConfirm": "Confirm",
         "OtherModifiers": "Other Modifiers",
         "RollFormat": "Roll ({chance}%)",
-        "CantFindChatMessageError": "CantFindChatMessageError"
+        "CantFindChatMessageError": "CantFindChatMessageError",
+        "AugmentOptions": {
+          "None": "None",
+          "CriticalSuccess": "Critical Success +50%",
+          "SpecialSuccess": "Special Success +30%",
+          "Success": "Success +20%",
+          "Failure": "Failure -20%",
+          "Fumble": "Fumble -50%"
+        },
+        "MeditateOptions": {
+          "None": "None",
+          "1mr": "1 MR +5%",
+          "2mr": "2 MR +10%",
+          "5mr": "5 MR (1 min) +15%",
+          "25mr": "25 MR (5 min) +20%",
+          "50mr": "50 MR (10 min) +50%"
+        }
       },
       "confirmCopyIntangibleItem": {
         "title": "Really give {itemName} to {targetActor}?",

@@ -16,21 +16,21 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
   AbilityRollDialogObjectData
 > {
   private augmentOptions = {
-    "0": "None",
-    "50": "Critical Success +50%",
-    "30": "Special Success +30% ",
-    "20": "Success +20%",
-    "-20": "Failure -20%",
-    "-50": "Fumble -50%",
+    "0": "RQG.Dialog.Common.AugmentOptions.None",
+    "50": "RQG.Dialog.Common.AugmentOptions.CriticalSuccess",
+    "30": "RQG.Dialog.Common.AugmentOptions.SpecialSuccess",
+    "20": "RQG.Dialog.Common.AugmentOptions.Success",
+    "-20": "RQG.Dialog.Common.AugmentOptions.Failure",
+    "-50": "RQG.Dialog.Common.AugmentOptions.Fumble",
   };
 
   private meditateOptions = {
-    "0": "None",
-    "5": "1 MR +5%",
-    "10": "2 MR +10% ",
-    "15": "5 MR (1 min) +15%",
-    "20": "25 MR (5 min) +20%",
-    "25": "50 MR (1 min) +50%",
+    "0": "RQG.Dialog.Common.MeditateOptions.None",
+    "5": "RQG.Dialog.Common.MeditateOptions.1mr",
+    "10": "RQG.Dialog.Common.MeditateOptions.2mr",
+    "15": "RQG.Dialog.Common.MeditateOptions.5mr",
+    "20": "RQG.Dialog.Common.MeditateOptions.25mr",
+    "25": "RQG.Dialog.Common.MeditateOptions.50mr",
   };
 
   private abilityItem: T;
