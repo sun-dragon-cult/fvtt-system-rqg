@@ -20,7 +20,9 @@
     </select>
 
     <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
-    <input type="number" value="{{object.otherModifier}}" name="otherModifier">
+    <div>
+      <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+    </div>
   </div>
   <button data-characteristic-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=totalChance}}</button>
 </form>

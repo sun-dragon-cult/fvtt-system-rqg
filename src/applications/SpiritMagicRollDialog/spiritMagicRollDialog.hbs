@@ -7,12 +7,18 @@
     <label>
       {{localize "RQG.Dialog.SpiritMagicRoll.LevelUsed"}}
     </label>
-    <input type="number" name="levelUsed" value={{object.levelUsed}}>
+    <div>
+      <input type="number" name="levelUsed" value={{object.levelUsed}}>
+      {{localize "RQG.Actor.Attributes.MagicPoints"}}
+    </div>
 
     <label>
       {{localize "RQG.Dialog.SpiritMagicRoll.Boost"}}
     </label>
-    <input type="number" name="boost" value={{object.boost}}>
+    <div>
+      <input type="number" name="boost" value={{object.boost}}>
+      {{localize "RQG.Actor.Attributes.MagicPoints"}}
+    </div>
 
     <label>
       {{localize "RQG.Dialog.SpiritMagicRoll.Augment"}}
@@ -29,7 +35,9 @@
     </select>
 
     <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
-    <input type="number" value="{{object.otherModifier}}" name="otherModifier">
+    <div>
+      <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+    </div>
   </div>
   <button data-spirit-magic-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=totalChance}}</button>
 </form>

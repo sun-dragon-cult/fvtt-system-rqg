@@ -451,7 +451,7 @@
       },
       "SpiritMagicRoll": {
         "LevelUsed": "Level",
-        "Boost": "Magic Point Boost",
+        "Boost": "Boost",
         "Augment": "Augment",
         "Meditate": "Meditate",
         "OtherModifier": "Other Modifier",
