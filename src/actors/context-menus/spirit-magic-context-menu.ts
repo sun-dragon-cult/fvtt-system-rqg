@@ -23,8 +23,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
-      // TODO use future SpiritMagicRoll
-      // await item?.toChat();
+      await item.spiritMagicRoll();
     },
   },
   {
@@ -41,11 +40,9 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
       if (item.system.isVariable && item.system.points > 1) {
-        // TODO use future SpiritMagicRoll
-        // await item.toChat();
+        await item?.spiritMagicRoll();
       } else {
-        // TODO use future SpiritMagicRoll
-        // await item?.abilityRoll({ level: item.system.points, boost: 0 });
+        await item?.spiritMagicRoll(true);
       }
     },
   },

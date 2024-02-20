@@ -293,7 +293,7 @@ export class RqgActor extends Actor {
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
       await this.update({ "system.attributes.magicPoints.value": newMp });
       ui.notifications?.info(
-        localize("RQG.Dialog.spiritMagicChat.SuccessfullyCastInfo", { amount: amount }),
+        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount }),
       );
     }
   }

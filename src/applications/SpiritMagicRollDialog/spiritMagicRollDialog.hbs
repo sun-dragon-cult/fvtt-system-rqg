@@ -1,0 +1,35 @@
+<form
+  data-spirit-magic-name="{{spellName}}"
+  data-spirit-magic-img="{{spellImg}}"
+  data-spirit-magic-powX5="{{powX5}}">
+  <h1>{{spellName}}</h1>
+  <div class="key-value-grid">
+    <label>
+      {{localize "RQG.Dialog.SpiritMagicRoll.LevelUsed"}}
+    </label>
+    <input type="number" name="levelUsed" value={{object.levelUsed}}>
+
+    <label>
+      {{localize "RQG.Dialog.SpiritMagicRoll.Boost"}}
+    </label>
+    <input type="number" name="boost" value={{object.boost}}>
+
+    <label>
+      {{localize "RQG.Dialog.SpiritMagicRoll.Augment"}}
+    </label>
+    <select name="augmentModifier">
+      {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.SpiritMagicRoll.Meditate"}}
+    </label>
+    <select name="meditateModifier">
+      {{selectOptions meditateOptions selected=object.meditateModifier localize=true}}
+    </select>
+
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+    <input type="number" value="{{object.otherModifier}}" name="otherModifier">
+  </div>
+  <button data-spirit-magic-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=totalChance}}</button>
+</form>

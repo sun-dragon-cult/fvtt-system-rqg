@@ -449,6 +449,16 @@
         "Meditate": "Meditate",
         "OtherModifier": "Other Modifier"
       },
+      "SpiritMagicRoll": {
+        "LevelUsed": "Level",
+        "Boost": "Magic Point Boost",
+        "Augment": "Augment",
+        "Meditate": "Meditate",
+        "OtherModifier": "Other Modifier",
+        "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
+        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
+        "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points."
+      },
       "BatchRqidEditor": {
         "Title": "Batch set System ID (Rqid)",
         "ExistingRqidsHeader": "Existing Rqids",
@@ -498,14 +508,6 @@
         "ReallyGiveItemSingle": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory.",
         "ReallyGiveItemQuantity": "Really give {itemName} to {targetActor}?  It will be removed from {sourceActor}'s inventory, or {sourceActor}'s inventory quantity will be reduced.",
         "GiveHowMany": "Give how many {itemName} to {targetActor}?  {sourceActor}'s inventory of this item will be reduced by the amount chosen, or the item will be deleted if you choose to give the maximum amount of {maxQty}."
-      },
-      "spiritMagicChat": {
-        "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
-        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
-        "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points.",
-        "ChatFlavor": "Spirit Magic: {name}",
-        "Level": "Level",
-        "Boost": "Boost"
       },
       "confirmItemDeleteDialog": {
         "title": "Delete {itemType}: {itemName}",
@@ -1067,6 +1069,12 @@
         "Augment": "augment",
         "Meditate": "meditate",
         "Other": "other"
+      },
+      "SpiritMagicRoll": {
+        "Augment": "augment",
+        "Meditate": "meditate",
+        "Base": "POW*5",
+        "MagicPointCost": "Used {cost} magic points"
       }
     },
     "Hotbar": {

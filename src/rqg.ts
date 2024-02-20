@@ -31,6 +31,7 @@ import { dragRulerModuleIntegrationInit } from "./external-module-integrations/d
 import { initSockets } from "./sockets/RqgSocket";
 import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
 import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRoll";
+import { SpiritMagicRoll } from "./rolls/SpiritMagicRoll/SpiritMagicRoll";
 
 Hooks.once("init", async () => {
   console.log(
@@ -80,7 +81,7 @@ Hooks.once("init", async () => {
     ],
   };
 
-  CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll, CharacteristicRoll];
+  CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll, CharacteristicRoll, SpiritMagicRoll];
   CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
   Rqid.init();

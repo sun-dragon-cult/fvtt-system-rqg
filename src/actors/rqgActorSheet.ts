@@ -1107,19 +1107,16 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.system.isVariable && item.system.points > 1) {
-            // TODO use future SpiritMagicRoll
-            // await item.toChat();
+            await item.spiritMagicRoll();
           } else {
-            // TODO use future SpiritMagicRoll
-            // await item.abilityRoll({ level: item.system.points, boost: 0 });
+            await item.spiritMagicRoll(true);
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // TODO use future SpiritMagicRoll
-              // await item.toChat();
+              await item.spiritMagicRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

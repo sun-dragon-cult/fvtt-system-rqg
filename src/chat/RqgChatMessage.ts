@@ -7,7 +7,6 @@ import {
   requireValue,
 } from "../system/util";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { SpiritMagicChatHandler } from "./spiritMagicChatHandler";
 import { RuneMagicChatHandler } from "./runeMagicChatHandler";
 import { WeaponChatHandler } from "./weaponChatHandler";
 import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -16,7 +15,6 @@ import { systemId } from "../system/config";
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
 const chatHandlerMap = {
-  spiritMagicChat: SpiritMagicChatHandler,
   runeMagicChat: RuneMagicChatHandler,
   weaponChat: WeaponChatHandler,
 };

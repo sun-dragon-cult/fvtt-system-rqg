@@ -106,8 +106,8 @@ export class Weapon extends AbstractEmbeddedItem {
           options.usageType,
           combatManeuver,
           options.chatMessage,
-          options.otherModifiers,
-          speaker,
+          // options.otherModifiers,
+          // speaker,
         );
         return;
       }
@@ -240,8 +240,8 @@ export class Weapon extends AbstractEmbeddedItem {
     usage: UsageType,
     combatManeuver: CombatManeuver,
     chatMessage: RqgChatMessage,
-    otherModifiers: number,
-    speaker: ChatSpeakerDataProperties,
+    // otherModifiers: number,
+    // speaker: ChatSpeakerDataProperties,
   ): Promise<void> {
     assertItemType(weaponItem.type, ItemTypeEnum.Weapon);
     requireValue(chatMessage, "No chat message provided for combarManeuverRoll");
@@ -313,25 +313,25 @@ export class Weapon extends AbstractEmbeddedItem {
     const skillItem = Weapon.getUsedSkillItem(weaponItem, usage);
     assertItemType(skillItem?.type, ItemTypeEnum.Skill);
 
-    const chance: number = Number(skillItem.system.chance) || 0;
-    const damageTypeString = Weapon.getDamageTypeString(damageType, [combatManeuver]);
+    // const chance: number = Number(skillItem.system.chance) || 0;
+    // const damageTypeString = Weapon.getDamageTypeString(damageType, [combatManeuver]);
     // TODO this is a temporary workaround to display slash / impale etc before there is a proper AttackRoll
-    const resultMessages = new Map([
-      [AbilitySuccessLevelEnum.HyperCritical, damageTypeString],
-      [AbilitySuccessLevelEnum.SpecialCritical, damageTypeString],
-      [AbilitySuccessLevelEnum.Critical, damageTypeString],
-      [AbilitySuccessLevelEnum.Special, damageTypeString],
-      [AbilitySuccessLevelEnum.Success, damageTypeString],
-      [AbilitySuccessLevelEnum.Failure, damageTypeString],
-      [AbilitySuccessLevelEnum.Fumble, damageTypeString],
-    ]);
+    // const resultMessages = new Map([
+    //   [AbilitySuccessLevelEnum.HyperCritical, damageTypeString],
+    //   [AbilitySuccessLevelEnum.SpecialCritical, damageTypeString],
+    //   [AbilitySuccessLevelEnum.Critical, damageTypeString],
+    //   [AbilitySuccessLevelEnum.Special, damageTypeString],
+    //   [AbilitySuccessLevelEnum.Success, damageTypeString],
+    //   [AbilitySuccessLevelEnum.Failure, damageTypeString],
+    //   [AbilitySuccessLevelEnum.Fumble, damageTypeString],
+    // ]);
 
-    flags.chat.result = await skillItem._roll(
-      chance,
-      [{ description: "Other Modifiers", value: otherModifiers }],
-      speaker,
-      resultMessages,
-    );
+    // flags.chat.result = await skillItem._roll(
+    //   chance,
+    //   [{ description: "Other Modifiers", value: otherModifiers }],
+    //   speaker,
+    //   resultMessages,
+    // );
     await skillItem?.checkExperience(flags.chat.result);
     const data = await WeaponChatHandler.renderContent(flags);
     await chatMessage.update(data);

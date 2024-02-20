@@ -2,6 +2,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import type { RqgActor } from "../../actors/rqgActor";
 
+/** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {
   name: string | null;
   type?: ItemTypeEnum;

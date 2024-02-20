@@ -24,11 +24,12 @@ export const templatePaths = {
   abilityRoll: "systems/rqg/rolls/AbilityRoll/abilityRoll.hbs",
   characteristicRollTooltip: "systems/rqg/rolls/CharacteristicRoll/characteristicRollTooltip.hbs",
   characteristicRoll: "systems/rqg/rolls/CharacteristicRoll/characteristicRoll.hbs",
+  spiritMagicRollTooltip: "systems/rqg/rolls/SpiritMagicRoll/spiritMagicRollTooltip.hbs",
+  spiritMagicRoll: "systems/rqg/rolls/SpiritMagicRoll/spiritMagicRoll.hbs",
 
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
   chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
-  chatSpiritMagicHandler: "systems/rqg/chat/spiritMagicChatHandler.hbs",
   runeMagicChatHandler: "systems/rqg/chat/runeMagicChatHandler.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
@@ -49,6 +50,7 @@ export const templatePaths = {
   abilityRollDialog: "systems/rqg/applications/abilityRollDialog/abilityRollDialog.hbs",
   characteristicRollDialog:
     "systems/rqg/applications/characteristicRollDialog/characteristicRollDialog.hbs",
+  spiritMagicRollDialog: "systems/rqg/applications/spiritMagicRollDialog/spiritMagicRollDialog.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",

@@ -14,11 +14,13 @@ import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
 import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { AbilityRollOptions, Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
+import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
+import { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
+import { SpiritMagicRoll } from "../rolls/SpiritMagicRoll/SpiritMagicRoll";
+import { SpiritMagicRollDialog } from "../applications/SpiritMagicRollDialog/spiritMagicRollDialog";
 
 export class RqgItem extends Item {
   public static init() {
@@ -159,32 +161,39 @@ export class RqgItem extends Item {
     await this.checkExperience(abilityRoll.successLevel);
   }
 
-  /**
-   * Common code to do a roll to chat.
-   */
-  async _roll(
-    chance: number,
-    modifiers: Modifier[],
-    speaker: ChatSpeakerDataProperties,
-    resultMessages: Map<AbilitySuccessLevelEnum, string> = new Map(),
-  ): Promise<AbilitySuccessLevelEnum> {
-    chance = chance || 0; // Handle NaN
-    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
-    const abilityRoll = await AbilityRoll.rollAndShow({
-      naturalSkill: chance,
-      modifiers: modifiers,
-      abilityName: this.name ?? undefined,
-      abilityType: this.type,
-      abilityImg: this.img ?? undefined,
-      useSpecialCriticals: useSpecialCriticals,
-      resultMessages: resultMessages,
-      speaker: speaker,
-    });
-    if (!abilityRoll.successLevel) {
-      throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+  public async spiritMagicRoll(
+    immediateRoll: boolean = false,
+    options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.system.points },
+  ): Promise<void> {
+    if (!this.isEmbedded) {
+      const msg = "Item is not embedded";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this);
+    }
+    if (!immediateRoll) {
+      await new SpiritMagicRollDialog(this).render(true);
+      return;
     }
 
-    return abilityRoll.successLevel;
+    const powX5: number = (Number(this.parent?.system.characteristics.power.value) || 0) * 5; // Handle NaN
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
+
+    const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
+      powX5: powX5,
+      levelUsed: options.levelUsed ?? this.system.points,
+      magicPointBoost: options.magicPointBoost ?? 0,
+      modifiers: options?.modifiers,
+      spellName: this.name ?? undefined,
+      spellImg: this.img ?? undefined,
+      useSpecialCriticals: useSpecialCriticals,
+      speaker: speaker,
+    });
+    if (!spiritMagicRoll.successLevel) {
+      throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+    }
+    const mpCost = options.levelUsed + (options.magicPointBoost ?? 0);
+    await this.actor?.drawMagicPoints(mpCost, spiritMagicRoll.successLevel);
   }
 
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
