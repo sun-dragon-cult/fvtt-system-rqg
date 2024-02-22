@@ -133,7 +133,6 @@ export class SpiritMagicRollDialog extends FormApplication<
 
   async _updateObject(event: Event, formData: SpiritMagicRollDialogObjectData): Promise<void> {
     this.object = formData;
-    console.log("formdata:", formData);
     this.render(true);
   }
 

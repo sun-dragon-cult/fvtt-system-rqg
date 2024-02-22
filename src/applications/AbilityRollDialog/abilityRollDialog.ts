@@ -125,7 +125,6 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
 
   async _updateObject(event: Event, formData: AbilityRollDialogObjectData): Promise<void> {
     this.object = formData;
-    console.log("formdata:", formData);
     this.render(true);
   }
 }

@@ -137,7 +137,6 @@ export class CharacteristicRollDialog extends FormApplication<
 
   async _updateObject(event: Event, formData: CharacteristicRollDialogObjectData): Promise<void> {
     this.object = formData;
-    console.log("formdata:", formData);
     this.render(true);
   }
 }
