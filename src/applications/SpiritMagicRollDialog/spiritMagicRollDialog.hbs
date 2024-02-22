@@ -5,7 +5,7 @@
       {{localize "RQG.Dialog.SpiritMagicRoll.LevelUsed"}}
     </label>
     <div>
-      <input type="number" name="levelUsed" value={{object.levelUsed}}>
+      <input type="number" {{#unless isVariable}}readonly{{/unless}} name="levelUsed" value={{object.levelUsed}}>
       {{localize "RQG.Actor.Attributes.MagicPoints"}}
     </div>
 

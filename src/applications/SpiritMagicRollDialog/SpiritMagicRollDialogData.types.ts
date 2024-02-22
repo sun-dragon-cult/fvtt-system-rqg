@@ -2,6 +2,7 @@ export type SpiritMagicRollDialogHandlebarsData = {
   spellName: string | null;
   spellImg: string | null;
   powX5: number;
+  isVariable: boolean;
 
   object: SpiritMagicRollDialogObjectData;
   options: FormApplication.Options;

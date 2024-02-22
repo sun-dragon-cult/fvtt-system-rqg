@@ -76,6 +76,7 @@ export class SpiritMagicRollDialog extends FormApplication<
     return {
       spellName: this.spellItem.name,
       powX5: this.powX5,
+      isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       spellImg: this.spellItem.img,
       object: this.object,
       options: this.options,

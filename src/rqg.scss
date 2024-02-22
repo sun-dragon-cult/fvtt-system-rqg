@@ -251,6 +251,11 @@ body {
     font-family: var(--font-primary);
   }
 
+  input:read-only {
+      border: none;
+      color: var(--color-text-dark-secondary);
+  }
+
   .ml-5 {
     margin-left: 5px;
   }
