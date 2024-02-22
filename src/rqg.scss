@@ -929,24 +929,47 @@ body {
       font-size: 14px;
     }
 
-    &.success-level-0, .success-level-1,.success-level-2,  { // Crit and better
-      background-color: green;
+    &.success-level-0, &.success-level-1, &.success-level-2  { // Crit and better
+      background-color: #6FD042CC;
+      border: 4px outset #ffcf00;
+      border-radius: 14px;
+      box-shadow: inset 3px 5px 12px 3px #ffd800cc;
     }
 
     &.success-level-3 { // Special Success
-      background-color: lightgreen;
+      background-color: #6FD042CC;
+      border: 4px groove #ffcf00;
+      border-radius: 10px;
     }
 
     &.success-level-4 { // Success
-      background-color: greenyellow;
+      background-color: #6FD042CC;
     }
 
     &.success-level-5 { // Fail
-      background-color: lightsalmon;
+      background-color: #CECBC5CC;
     }
 
     &.success-level-6 { // Fumble
-      background-color: orangered;
+      background-color: #E23333CC;
+      box-shadow: inset 0 0 3px 0 black;
+      clip-path: polygon(
+          0% 17%,
+          7% 17%,
+          4% 0%,
+
+          97% 0%,
+          93% 17%,
+          100% 17%,
+
+          100% 83%,
+          93% 83%,
+          96% 100%,
+
+          4% 100%,
+          7% 83%,
+          0% 83%
+      );
     }
   }
 
