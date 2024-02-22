@@ -84,7 +84,7 @@ export class SpiritMagicRoll extends Roll {
     const itemType = localizeItemType(ItemTypeEnum.SpiritMagic);
     return `
 <div class="rqg flavor">${flavorImg}</div>
-<span class="ability-name">${spellName}</span>
+<span class="roll-action">${spellName}</span>
 <span>${itemType}</span><br>`;
   }
 }

@@ -77,7 +77,7 @@ export class CharacteristicRoll extends Roll {
     const o = this.options as CharacteristicRollOptions;
     const characteristicName = localize(`RQG.Actor.Characteristics.${o.characteristicName}-full`);
     const characteristicTranslation = localize("RQG.Actor.Characteristics.Characteristic");
-    return `<span class="ability-name">${characteristicName}</span>
+    return `<span class="roll-action">${characteristicName}</span>
             <span>${characteristicTranslation}</span><br>`;
   }
 

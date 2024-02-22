@@ -72,7 +72,7 @@ export class AbilityRoll extends Roll {
     const itemType = o.abilityType ? localizeItemType(o.abilityType) : "";
     return `
 <div class="rqg flavor">${flavorImg}</div>
-<span class="ability-name">${o.abilityName ?? ""}</span>
+<span class="roll-action">${o.abilityName ?? ""}</span>
 <span>${itemType}</span><br>
 <div>${resultMsgHtml}</div>`;
   }
