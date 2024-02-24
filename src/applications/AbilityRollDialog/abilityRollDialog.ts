@@ -7,7 +7,7 @@ import {
 } from "./AbilityRollDialogData.types";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { localize, RqgError } from "../../system/util";
+import { localize, RqgError, toKebabCase, trimChars } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 
 export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplication<
@@ -47,6 +47,10 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
     this.object = formData;
   }
 
+  get id() {
+    return `${this.constructor.name}-${trimChars(toKebabCase(this.abilityItem.name ?? ""), "-")}`;
+  }
+
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "ability-roll-dialog"],
@@ -55,7 +59,6 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
       width: 400,
       left: 35,
       top: 15,
-      id: "ability-roll-dialog",
       title: "Ability Roll Dialog", // TODO translate
       closeOnSubmit: false,
       submitOnClose: true,

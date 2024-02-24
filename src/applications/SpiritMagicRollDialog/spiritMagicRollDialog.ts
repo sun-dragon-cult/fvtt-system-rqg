@@ -4,7 +4,7 @@ import {
   SpiritMagicRollDialogHandlebarsData,
   SpiritMagicRollDialogObjectData,
 } from "./SpiritMagicRollDialogData.types";
-import { assertItemType, localize } from "../../system/util";
+import { assertItemType, localize, toKebabCase, trimChars } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import type { RqgItem } from "../../items/rqgItem";
@@ -55,6 +55,10 @@ export class SpiritMagicRollDialog extends FormApplication<
     this.object = formData;
   }
 
+  get id() {
+    return `${this.constructor.name}-${trimChars(toKebabCase(this.spellItem.name ?? ""), "-")}`;
+  }
+
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "spirit-magic-roll-dialog"],
@@ -63,7 +67,6 @@ export class SpiritMagicRollDialog extends FormApplication<
       width: 400,
       left: 35,
       top: 15,
-      id: "spirit-magic-roll-dialog",
       title: "Spirit Magic Spell Roll Dialog", // TODO translate
       closeOnSubmit: false,
       submitOnClose: true,

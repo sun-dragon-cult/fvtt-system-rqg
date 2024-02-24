@@ -57,6 +57,11 @@ export class CharacteristicRollDialog extends FormApplication<
     this.object = formData;
   }
 
+  get id() {
+    // @ts-expect-error characteristicName
+    return `${this.constructor.name}-${this.options.characteristicName}`;
+  }
+
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "characteristic-roll-dialog"],
@@ -65,7 +70,6 @@ export class CharacteristicRollDialog extends FormApplication<
       width: 400,
       left: 35,
       top: 15,
-      id: "characteristic-roll-dialog",
       title: "Characteristic Roll Dialog", // TODO translate
       closeOnSubmit: false,
       submitOnClose: true,
