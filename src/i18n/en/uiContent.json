@@ -439,17 +439,20 @@
     },
     "Dialog": {
       "AbilityRoll": {
+        "Title": "Ability Check",
         "Augment": "Augment",
         "Meditate": "Meditate",
         "OtherModifier": "Other Modifier"
       },
       "CharacteristicRoll": {
+        "Title": "Characteristic Check",
         "Difficulty": "Difficulty",
         "Augment": "Augment",
         "Meditate": "Meditate",
         "OtherModifier": "Other Modifier"
       },
       "SpiritMagicRoll": {
+        "Title": "Cast Spirit Magic",
         "LevelUsed": "Level",
         "Boost": "Boost",
         "Augment": "Augment",

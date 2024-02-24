@@ -67,7 +67,7 @@ export class SpiritMagicRollDialog extends FormApplication<
       width: 400,
       left: 35,
       top: 15,
-      title: "Spirit Magic Spell Roll Dialog", // TODO translate
+      title: "RQG.Dialog.SpiritMagicRoll.Title",
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,

@@ -70,7 +70,7 @@ export class CharacteristicRollDialog extends FormApplication<
       width: 400,
       left: 35,
       top: 15,
-      title: "Characteristic Roll Dialog", // TODO translate
+      title: "RQG.Dialog.CharacteristicRoll.Title",
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,

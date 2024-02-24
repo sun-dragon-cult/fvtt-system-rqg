@@ -59,7 +59,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
       width: 400,
       left: 35,
       top: 15,
-      title: "Ability Roll Dialog", // TODO translate
+      title: "RQG.Dialog.AbilityRoll.Title",
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,
