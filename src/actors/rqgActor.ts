@@ -3,7 +3,13 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
-import { getGame, hasOwnProperty, localize, localizeCharacteristic } from "../system/util";
+import {
+  getGame,
+  hasOwnProperty,
+  localize,
+  localizeCharacteristic,
+  RqgError,
+} from "../system/util";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
@@ -19,6 +25,10 @@ import type {
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect";
 import type { RqgItem } from "../items/rqgItem";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
+import { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
+import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
+import { Characteristic } from "../data-model/actor-data/characteristics";
+import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
 
 export class RqgActor extends Actor {
   static init() {
@@ -35,6 +45,60 @@ export class RqgActor extends Actor {
   declare prototypeToken: PrototypeTokenData; // v10 type workaround
   declare statuses: Set<string>; // v11 type workaround
   declare appliedEffects: RqgActiveEffect[]; // v11 type workaround
+
+  /**
+   * Only handles embedded Items
+   */
+  public getEmbeddedDocumentsByRqid(rqid: string | undefined): RqgItem[] {
+    if (!rqid) {
+      return [];
+    }
+    return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
+  }
+
+  public getBestEmbeddedDocumentByRqid(rqid: string): RqgItem | undefined {
+    return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
+  }
+
+  /**
+   * Do a characteristic roll and handle possible POW experience check afterward.
+   */
+  public async characteristicRoll(
+    immediateRoll: boolean = false,
+    options: Omit<CharacteristicRollOptions, "characteristicValue">,
+  ): Promise<void> {
+    const actorCharacteristics: any = this.system.characteristics;
+    const rollCharacteristic = actorCharacteristics[options.characteristicName] as
+      | Characteristic
+      | undefined;
+
+    if (!rollCharacteristic) {
+      throw new RqgError(
+        `Tried to roll characteristic with unknown characteristic name [${options.characteristicName}]`,
+      );
+    }
+
+    const optionsWithDefaults = foundry.utils.mergeObject(
+      options,
+      {
+        characteristicValue: rollCharacteristic.value ?? 0,
+        difficulty: 5,
+        speaker: ChatMessage.getSpeaker({ actor: this }),
+      },
+      { overwrite: false },
+    ) as CharacteristicRollOptions;
+
+    if (!immediateRoll) {
+      await new CharacteristicRollDialog(this, optionsWithDefaults).render(true);
+      return;
+    }
+
+    const characteristicRoll = await CharacteristicRoll.rollAndShow(optionsWithDefaults);
+    await this.checkExperience(
+      optionsWithDefaults.characteristicName,
+      characteristicRoll.successLevel,
+    );
+  }
 
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
@@ -296,19 +360,5 @@ export class RqgActor extends Actor {
         localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount }),
       );
     }
-  }
-
-  /**
-   * Only handles embedded Items
-   */
-  public getEmbeddedDocumentsByRqid(rqid: string | undefined): RqgItem[] {
-    if (!rqid) {
-      return [];
-    }
-    return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
-  }
-
-  public getBestEmbeddedDocumentByRqid(rqid: string): RqgItem | undefined {
-    return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 }

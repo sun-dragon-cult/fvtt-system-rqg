@@ -10,8 +10,6 @@ import {
 import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { CharacteristicRollDialog } from "../../applications/CharacteristicRollDialog/characteristicRollDialog";
-import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
@@ -22,11 +20,8 @@ export const characteristicMenuOptions = (
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
-      const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      await new CharacteristicRollDialog(actor, {
-        characteristicName: characteristicName,
-        characteristicValue: characteristic.value ?? 0,
-      }).render(true);
+      const { name: characteristicName } = getCharacteristic(actor, el);
+      await actor.characteristicRoll(false, { characteristicName: characteristicName });
     },
   },
   {
@@ -34,13 +29,8 @@ export const characteristicMenuOptions = (
     icon: contextMenuRunes.RollQuick,
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
-      const { name: characteristicName, value: characteristic } = getCharacteristic(actor, el);
-      const roll = await CharacteristicRoll.rollAndShow({
-        characteristicName: characteristicName,
-        characteristicValue: characteristic.value ?? 0,
-        difficulty: 5,
-      });
-      await actor.checkExperience(characteristicName, roll.successLevel);
+      const { name: characteristicName } = getCharacteristic(actor, el);
+      await actor.characteristicRoll(true, { characteristicName: characteristicName });
     },
   },
   {

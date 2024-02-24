@@ -5,8 +5,8 @@ export type Modifier = { description: string; value: number };
 
 export type CharacteristicRollOptions = Partial<EvaluationOptions> & {
   characteristicValue: number;
+  characteristicName: string; // Characteristic name TODO type better
   difficulty?: number; // to multiply with characteristicValue
-  characteristicName?: string; // Characteristic name TODO type better
   modifiers?: Modifier[];
   useSpecialCriticals?: boolean;
   speaker?: ChatSpeakerDataProperties;

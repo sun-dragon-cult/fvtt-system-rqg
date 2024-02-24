@@ -73,8 +73,6 @@ import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
 import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
-import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -949,21 +947,17 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          const characteristicRoll = await CharacteristicRoll.rollAndShow({
-            characteristicValue: actorCharacteristics[characteristicName].value ?? 0,
+          await this.actor.characteristicRoll(true, {
             characteristicName: characteristicName,
-            difficulty: 5,
-            speaker: ChatMessage.getSpeaker({ actor: this.actor }),
           });
-          await this.actor.checkExperience(characteristicName, characteristicRoll.successLevel);
+
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await new CharacteristicRollDialog(this.actor, {
-                characteristicValue: actorCharacteristics[characteristicName].value ?? 0,
+              await this.actor.characteristicRoll(false, {
                 characteristicName: characteristicName,
-              }).render(true);
+              });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

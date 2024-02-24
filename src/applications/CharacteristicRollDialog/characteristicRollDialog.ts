@@ -89,7 +89,7 @@ export class CharacteristicRollDialog extends FormApplication<
       meditateOptions: this.meditateOptions,
       difficultyOptions: this.difficultyOptions,
       totalChance:
-        Number(characteristicValue) * Number(this.object.difficulty ?? 5) +
+        Number(characteristicValue) * this.getDifficulty(this.object.difficulty) +
         Number(this.object.augmentModifier ?? 0) +
         Number(this.object.meditateModifier ?? 0) +
         Number(this.object.otherModifier ?? 0),
@@ -104,7 +104,7 @@ export class CharacteristicRollDialog extends FormApplication<
         const options: CharacteristicRollOptions = {
           characteristicValue: o.characteristicValue,
           characteristicName: o.characteristicName,
-          difficulty: this.object.difficulty,
+          difficulty: this.getDifficulty(this.object.difficulty),
           modifiers: [
             {
               value: Number(this.object.augmentModifier),
@@ -138,5 +138,11 @@ export class CharacteristicRollDialog extends FormApplication<
   async _updateObject(event: Event, formData: CharacteristicRollDialogObjectData): Promise<void> {
     this.object = formData;
     this.render(true);
+  }
+
+  private getDifficulty(difficulty: number | string | undefined): number {
+    const diff = Number(difficulty);
+    const d = isNaN(diff) ? 5 : diff; // default to 5
+    return d === 0 ? 0.5 : d; // half chance is represented by 0 in the select options
   }
 }

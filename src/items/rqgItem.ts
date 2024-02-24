@@ -127,6 +127,9 @@ export class RqgItem extends Item {
   declare system: any; // v10 type workaround
   declare flags: FlagConfig["Item"]; // type workaround
 
+  /**
+   * Do an abilityRoll and handle checking experience afterward.
+   */
   public async abilityRoll(
     immediateRoll: boolean = false,
     options: Omit<AbilityRollOptions, "naturalSkill"> = {},
@@ -161,6 +164,9 @@ export class RqgItem extends Item {
     await this.checkExperience(abilityRoll.successLevel);
   }
 
+  /**
+   * Do a spiritMagicRoll and possibly draw magic points afterward
+   */
   public async spiritMagicRoll(
     immediateRoll: boolean = false,
     options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.system.points },
