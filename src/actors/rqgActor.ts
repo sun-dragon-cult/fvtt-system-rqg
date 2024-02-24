@@ -29,6 +29,10 @@ import { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/Character
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
 import { Characteristic } from "../data-model/actor-data/characteristics";
 import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
+import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
+import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
+import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
 
 export class RqgActor extends Actor {
   static init() {
@@ -98,6 +102,60 @@ export class RqgActor extends Actor {
       optionsWithDefaults.characteristicName,
       characteristicRoll.successLevel,
     );
+  }
+
+  /**
+   * Do a reputation (ability) Roll
+   */
+  public async reputationRoll(
+    immediateRoll: boolean = false,
+    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
+  ): Promise<void> {
+    const defaultItemIconSettings: any = getGame().settings.get(
+      systemId,
+      "defaultItemIconSettings",
+    );
+    const reputationItem: PartialAbilityItem = {
+      name: "Reputation",
+      img: defaultItemIconSettings.reputation,
+      system: {
+        chance: this.system.background.reputation ?? 0,
+      },
+    } as const;
+
+    if (!immediateRoll) {
+      await new AbilityRollDialog(reputationItem).render(true);
+      return;
+    }
+
+    const speaker = ChatMessage.getSpeaker({ actor: this });
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
+
+    const combinedOptions = foundry.utils.mergeObject(
+      options,
+      {
+        naturalSkill: reputationItem.system.chance,
+        modifiers: [],
+        abilityName: reputationItem.name ?? undefined,
+        abilityImg: reputationItem.img ?? undefined,
+        useSpecialCriticals: useSpecialCriticals,
+        speaker: speaker,
+      },
+      { overwrite: false },
+    );
+
+    await AbilityRoll.rollAndShow(combinedOptions);
+  }
+
+  // TODO should use result: SpiritMagicSuccessLevelEnum
+  public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
+    if (result <= AbilitySuccessLevelEnum.Success) {
+      const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
+      await this.update({ "system.attributes.magicPoints.value": newMp });
+      ui.notifications?.info(
+        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount }),
+      );
+    }
   }
 
   /**
@@ -349,16 +407,5 @@ export class RqgActor extends Actor {
     const pow = characteristics.power.value;
     const cha = characteristics.charisma.value;
     return { str, con, siz, dex, int, pow, cha };
-  }
-
-  // TODO should use result: SpiritMagicSuccessLevelEnum
-  public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
-    if (result <= AbilitySuccessLevelEnum.Success) {
-      const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
-      await this.update({ "system.attributes.magicPoints.value": newMp });
-      ui.notifications?.info(
-        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount }),
-      );
-    }
   }
 }

@@ -70,9 +70,6 @@ import {
 import { socketSend } from "../sockets/RqgSocket";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
-import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
-import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
-import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -966,41 +963,18 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Roll actor Reputation
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
-
-    const reputationItem: PartialAbilityItem = {
-      name: "Reputation",
-      img: defaultItemIconSettings.reputation,
-      system: {
-        chance: this.actor.system.background.reputation ?? 0,
-      },
-    } as const;
-
     htmlElement?.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
-          const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
-
-          AbilityRoll.rollAndShow({
-            naturalSkill: reputationItem.system.chance,
-            modifiers: [],
-            abilityName: reputationItem.name ?? undefined,
-            abilityImg: reputationItem.img ?? undefined,
-            useSpecialCriticals: useSpecialCriticals,
-            speaker: speaker,
-          });
+          await this.actor.reputationRoll(true);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await new AbilityRollDialog(reputationItem).render(true);
+              await this.actor.reputationRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
