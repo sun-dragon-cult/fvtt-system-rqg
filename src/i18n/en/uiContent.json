@@ -458,8 +458,6 @@
         "Augment": "Augment",
         "Meditate": "Meditate",
         "OtherModifier": "Other Modifier",
-        "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
-        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell.",
         "SuccessfullyCastInfo": "Successfully cast a spirit magic spell, using {amount} magic points."
       },
       "RuneMagicRoll": {
@@ -998,7 +996,9 @@
         "SpellFocus": "Spell Focus",
         "MatrixIndicator": "(held in matrix)",
         "MatrixQ": "Held in Matrix?",
-        "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]"
+        "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]",
+        "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
+        "NotEnoughMagicPoints": "Not enough magic points left to cast this spell."
       },
       "Weapon": {
         "Name": "Name",

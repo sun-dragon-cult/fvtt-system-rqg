@@ -4,11 +4,11 @@ import {
   SpiritMagicRollDialogHandlebarsData,
   SpiritMagicRollDialogObjectData,
 } from "./SpiritMagicRollDialogData.types";
-import { assertItemType, localize, toKebabCase, trimChars } from "../../system/util";
+import { localize, toKebabCase, trimChars } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import type { RqgItem } from "../../items/rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
 
 export class SpiritMagicRollDialog extends FormApplication<
   FormApplication.Options,
@@ -122,7 +122,11 @@ export class SpiritMagicRollDialog extends FormApplication<
             actor: this.spellItem.parent as RqgActor | undefined,
           }),
         };
-        const validationError = this.validateRollData();
+        const validationError = SpiritMagic.hasEnoughToCastSpell(
+          this.object.levelUsed,
+          this.object.boost,
+          this.spellItem,
+        );
         if (validationError) {
           ui.notifications?.warn(validationError);
           return;
@@ -138,20 +142,5 @@ export class SpiritMagicRollDialog extends FormApplication<
   async _updateObject(event: Event, formData: SpiritMagicRollDialogObjectData): Promise<void> {
     this.object = formData;
     this.render(true);
-  }
-
-  public validateRollData(): string | undefined {
-    assertItemType(this.spellItem.type, ItemTypeEnum.SpiritMagic);
-    if (this.object.levelUsed == null || this.object.levelUsed > this.spellItem.system.points) {
-      return localize("RQG.Dialog.SpiritMagicRoll.CantCastSpellAboveLearnedLevel");
-    } else if (
-      this.object.boost == null ||
-      this.object.levelUsed + this.object.boost >
-        (this.spellItem.actor?.system.attributes.magicPoints.value || 0)
-    ) {
-      return localize("RQG.Dialog.SpiritMagicRoll.NotEnoughMagicPoints");
-    } else {
-      return;
-    }
   }
 }
