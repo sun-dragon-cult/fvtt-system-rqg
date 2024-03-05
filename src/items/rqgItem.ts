@@ -132,20 +132,22 @@ export class RqgItem extends Item {
   declare flags: FlagConfig["Item"]; // type workaround
 
   /**
+   * Open a dialog for an AbilityRoll
+   */
+  public async abilityRoll(options: Partial<AbilityRollOptions> = {}): Promise<void> {
+    await new AbilityRollDialog(this, options).render(true);
+  }
+
+  /**
    * Do an abilityRoll and handle checking experience afterward.
    */
-  public async abilityRoll(
-    immediateRoll: boolean = false,
+  public async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill"> = {},
   ): Promise<void> {
     if (!this.isEmbedded) {
       const msg = "Item is not embedded";
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
-    }
-    if (!immediateRoll) {
-      await new AbilityRollDialog(this).render(true);
-      return;
     }
 
     const chance: number = Number(this.system.chance) || 0; // Handle NaN
@@ -171,7 +173,7 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for a SpiritMagicRoll
    */
-  public async spiritMagicRoll(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+  public async spiritMagicRoll(options: Partial<SpiritMagicRollOptions> = {}): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.SpiritMagic);
     await new SpiritMagicRollDialog(this, options).render(true);
   }

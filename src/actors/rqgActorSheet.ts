@@ -1007,7 +1007,7 @@ export class RqgActorSheet extends ActorSheet<
 
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRoll(true);
+          await item.abilityRollImmediate();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {

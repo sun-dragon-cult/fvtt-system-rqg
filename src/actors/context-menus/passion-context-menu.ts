@@ -41,7 +41,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await item?.abilityRoll(true);
+      await item?.abilityRollImmediate();
     },
   },
   {

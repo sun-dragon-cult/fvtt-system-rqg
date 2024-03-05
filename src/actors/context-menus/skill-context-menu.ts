@@ -61,7 +61,7 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await item?.abilityRoll(true);
+      await item?.abilityRollImmediate();
     },
   },
   {

@@ -33,7 +33,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
     "25": "RQG.Dialog.Common.MeditateOptions.50mr",
   };
 
-  private abilityItem: T;
+  private abilityItem: T; // A fake reduced RqgItem to make reputation rolls work
   constructor(abilityItem: T, options: Omit<AbilityRollOptions, "naturalSkill"> = {}) {
     const formData: AbilityRollDialogObjectData = {
       augmentModifier: "0",
@@ -115,6 +115,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
           // resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // TODO Idea - add fields in IAbility to specify text specific for an ability
         };
 
+        // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
         const roll = await AbilityRoll.rollAndShow(options);
         if (!roll.successLevel) {
           throw new RqgError("Evaluated AbilityRoll didn't give successLevel");

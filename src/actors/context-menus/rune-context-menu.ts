@@ -36,7 +36,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.Rune);
-      await item?.abilityRoll(true);
+      await item?.abilityRollImmediate();
     },
   },
   {
