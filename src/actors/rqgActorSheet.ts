@@ -1071,7 +1071,7 @@ export class RqgActorSheet extends ActorSheet<
           if (item.system.isVariable && item.system.points > 1) {
             await item.spiritMagicRoll();
           } else {
-            await item.spiritMagicRoll(true);
+            await item.spiritMagicRollImmediate();
           }
 
           clickCount = 0;

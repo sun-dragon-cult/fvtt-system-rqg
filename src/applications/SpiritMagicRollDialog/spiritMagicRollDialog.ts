@@ -132,7 +132,7 @@ export class SpiritMagicRollDialog extends FormApplication<
           return;
         }
 
-        await this.spellItem.spiritMagicRoll(true, options);
+        await this.spellItem.spiritMagicRollImmediate(options);
       });
     });
 

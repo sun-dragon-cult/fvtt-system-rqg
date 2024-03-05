@@ -169,20 +169,23 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Do a spiritMagicRoll and possibly draw magic points afterward
+   * Open a dialog for a SpiritMagicRoll
    */
-  public async spiritMagicRoll(
-    immediateRoll: boolean = false,
+  public async spiritMagicRoll(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+    assertItemType(this.type, ItemTypeEnum.SpiritMagic);
+    await new SpiritMagicRollDialog(this, options).render(true);
+  }
+
+  /**
+   * Do a SpiritMagicRoll and possibly draw magic points afterward
+   */
+  public async spiritMagicRollImmediate(
     options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.system.points },
   ): Promise<void> {
     if (!this.isEmbedded) {
       const msg = "Item is not embedded";
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
-    }
-    if (!immediateRoll) {
-      await new SpiritMagicRollDialog(this).render(true);
-      return;
     }
 
     const powX5: number = (Number(this.parent?.system.characteristics.power.value) || 0) * 5; // Handle NaN

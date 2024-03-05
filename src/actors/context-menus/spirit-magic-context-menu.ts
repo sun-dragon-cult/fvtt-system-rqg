@@ -42,7 +42,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       if (item.system.isVariable && item.system.points > 1) {
         await item?.spiritMagicRoll();
       } else {
-        await item?.spiritMagicRoll(true);
+        await item?.spiritMagicRollImmediate();
       }
     },
   },
