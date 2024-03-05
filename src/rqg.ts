@@ -32,6 +32,7 @@ import { initSockets } from "./sockets/RqgSocket";
 import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
 import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRoll";
 import { SpiritMagicRoll } from "./rolls/SpiritMagicRoll/SpiritMagicRoll";
+import { RuneMagicRoll } from "./rolls/RuneMagicRoll/RuneMagicRoll";
 
 Hooks.once("init", async () => {
   console.log(
@@ -81,7 +82,13 @@ Hooks.once("init", async () => {
     ],
   };
 
-  CONFIG.Dice.rolls = [...CONFIG.Dice.rolls, AbilityRoll, CharacteristicRoll, SpiritMagicRoll];
+  CONFIG.Dice.rolls = [
+    ...CONFIG.Dice.rolls,
+    AbilityRoll,
+    CharacteristicRoll,
+    SpiritMagicRoll,
+    RuneMagicRoll,
+  ];
   CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
   Rqid.init();

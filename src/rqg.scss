@@ -10,6 +10,12 @@ body {
   background: url("assets/images/ui/sacred-time.webp") no-repeat;
 }
 
+// adding attribute readonly to the input excludes it from the form application?
+input.readonly {
+  border: none;
+  pointer-events: none;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -920,7 +926,7 @@ body {
   }
 
   .roll-action {
-    font-size: var(--font-size-20);
+    font-size: var(--font-size-18);
     font-weight: bold;
     color: var(--color-text-dark-primary);
   }
@@ -931,7 +937,7 @@ body {
     mix-blend-mode: multiply;
 
     .target {
-      font-size: 14px;
+      font-size: var(--font-size-14);
     }
 
     &.success-level-0, &.success-level-1, &.success-level-2  { // Crit and better

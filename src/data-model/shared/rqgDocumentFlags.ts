@@ -66,21 +66,6 @@ export type CommonRqgChatFlags = {
   chatImage: string | undefined;
 };
 
-export interface RuneMagicChatFlags extends BaseRqgChatFlags {
-  type: "runeMagicChat";
-  chat: CommonRqgChatFlags & {
-    itemUuid: string;
-  };
-  formData: {
-    runePointCost: FormDataEntryValue;
-    magicPointBoost: FormDataEntryValue;
-    ritualOrMeditation: FormDataEntryValue;
-    skillAugmentation: FormDataEntryValue;
-    otherModifiers: FormDataEntryValue;
-    selectedRuneId: FormDataEntryValue;
-  };
-}
-
 export interface WeaponChatFlags extends BaseRqgChatFlags {
   type: "weaponChat";
   chat: CommonRqgChatFlags & {
@@ -97,4 +82,4 @@ export interface WeaponChatFlags extends BaseRqgChatFlags {
   };
 }
 
-export type RqgChatMessageFlags = RuneMagicChatFlags | WeaponChatFlags;
+export type RqgChatMessageFlags = WeaponChatFlags;

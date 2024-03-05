@@ -9,7 +9,7 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import { getGame, hasOwnProperty, localize, RqgError } from "../system/util";
+import { assertItemType, getGame, hasOwnProperty, localize, RqgError } from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
@@ -21,6 +21,10 @@ import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRoll
 import { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { SpiritMagicRoll } from "../rolls/SpiritMagicRoll/SpiritMagicRoll";
 import { SpiritMagicRollDialog } from "../applications/SpiritMagicRollDialog/spiritMagicRollDialog";
+import { RuneMagicRollDialog } from "../applications/RuneMagicRollDialog/runeMagicRollDialog";
+import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
+import { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
+import { RuneMagic } from "./rune-magic-item/runeMagic";
 
 export class RqgItem extends Item {
   public static init() {
@@ -202,6 +206,74 @@ export class RqgItem extends Item {
     await this.actor?.drawMagicPoints(mpCost, spiritMagicRoll.successLevel);
   }
 
+  /**
+   * Open a dialog for a RuneMagicRoll
+   */
+  public async runeMagicRoll(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+    assertItemType(this.type, ItemTypeEnum.RuneMagic);
+    await new RuneMagicRollDialog(this, options).render(true);
+  }
+
+  /**
+   * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
+   */
+  public async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+    assertItemType(this.type, ItemTypeEnum.RuneMagic);
+    if (!this.isEmbedded) {
+      const msg = "Rune Magic item is not embedded";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this);
+    }
+
+    const cult = this.parent?.items.find((i) => i.id === this.system.cultId);
+    if (!cult) {
+      const msg = "Rune Magic item isn't connected to a cult";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, this);
+    }
+
+    const validationError = RuneMagic.hasEnoughToCastSpell(
+      cult,
+      options.levelUsed,
+      options.magicPointBoost,
+    );
+    if (validationError) {
+      ui.notifications?.warn(validationError);
+      return;
+    }
+
+    const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
+    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
+    const usedRune = options.usedRune
+      ? options.usedRune
+      : RuneMagic.getStrongestRune(RuneMagic.getEligibleRunes(this));
+    if (!usedRune) {
+      const msg = "Could not find a rune to use for rune magic";
+      ui.notifications?.warn(msg);
+      return;
+    }
+
+    const runeMagicRoll = await RuneMagicRoll.rollAndShow({
+      usedRune: usedRune,
+      runeMagicItem: this,
+      levelUsed: options.levelUsed ?? this.system.points,
+      magicPointBoost: options.magicPointBoost ?? 0,
+      modifiers: options?.modifiers ?? [],
+      useSpecialCriticals: useSpecialCriticals,
+      speaker: speaker,
+    });
+    if (!runeMagicRoll.successLevel) {
+      throw new RqgError("Evaluated RuneMagicRoll didn't give successLevel");
+    }
+    const mpCost = options.magicPointBoost ?? 0;
+    const rpCost = options.levelUsed ?? this.system.points;
+    await RuneMagic.handleRollResult(runeMagicRoll.successLevel, rpCost, mpCost, usedRune, this);
+  }
+
+  /**
+   * Give an experience check to this item if the result is a success or greater
+   * and the item can get experience.
+   */
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
     if (
       result &&

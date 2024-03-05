@@ -7,7 +7,6 @@ import {
   requireValue,
 } from "../system/util";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { RuneMagicChatHandler } from "./runeMagicChatHandler";
 import { WeaponChatHandler } from "./weaponChatHandler";
 import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
 import { systemId } from "../system/config";
@@ -15,14 +14,12 @@ import { systemId } from "../system/config";
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
 const chatHandlerMap = {
-  runeMagicChat: RuneMagicChatHandler,
   weaponChat: WeaponChatHandler,
 };
 
 export class RqgChatMessage extends ChatMessage {
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
-    // CONFIG.ChatMessage.template = "systems/rqg/chat/chat-message.hbs"; // TODO redefine the base chat message
 
     Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
       RqgChatMessage.addChatListeners(html[0]);

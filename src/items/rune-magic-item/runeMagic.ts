@@ -11,13 +11,13 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { RuneMagicChatFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { RuneMagicChatHandler } from "../../chat/runeMagicChatHandler";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
+
+type RpAndMpCost = { mp: number; rp: number; exp: boolean };
 
 export class RuneMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -26,122 +26,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
   //     makeDefault: true,
   //   });
   // }
-
-  // TODO remove and use future RuneMagicRoll instead
-  static async toChat(runeMagic: RqgItem): Promise<void> {
-    const eligibleRunes = RuneMagic.getEligibleRunes(runeMagic);
-    const defaultRuneId = RuneMagic.getStrongestRune(eligibleRunes)?.id;
-    assertItemType(runeMagic.type, ItemTypeEnum.RuneMagic);
-    const flags: RuneMagicChatFlags = {
-      type: "runeMagicChat",
-      chat: {
-        actorUuid: runeMagic.actor!.uuid,
-        tokenUuid: runeMagic.actor!.token?.uuid,
-        chatImage: runeMagic.img ?? "",
-        itemUuid: runeMagic.uuid,
-      },
-      formData: {
-        runePointCost: runeMagic.system.points.toString(),
-        magicPointBoost: "",
-        ritualOrMeditation: "0",
-        skillAugmentation: "0",
-        otherModifiers: "",
-        selectedRuneId: defaultRuneId ?? "",
-      },
-    };
-
-    await ChatMessage.create(await RuneMagicChatHandler.renderContent(flags));
-  }
-
-  // TODO create RuneMagicRoll
-  static async abilityRoll(
-    runeMagicItem: RqgItem,
-    options: {
-      runePointCost: number;
-      magicPointBoost: number;
-      ritualOrMeditation: number;
-      skillAugmentation: number;
-      otherModifiers: number;
-      selectedRuneId?: string;
-    },
-  ): Promise<AbilitySuccessLevelEnum | undefined> {
-    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
-    const runeMagicCultId = runeMagicItem?.system.cultId;
-    const cult = runeMagicItem.actor?.items.get(runeMagicCultId);
-    assertItemType(cult?.type, ItemTypeEnum.Cult);
-    if (!options.selectedRuneId) {
-      const eligibleRunes = RuneMagic.getEligibleRunes(runeMagicItem);
-      options.selectedRuneId = RuneMagic.getStrongestRune(eligibleRunes)?.id ?? "";
-    }
-    const runeItem = runeMagicItem.actor?.items.get(options.selectedRuneId);
-    assertItemType(runeItem?.type, ItemTypeEnum.Rune);
-
-    const validationError = RuneMagic.validateData(
-      cult,
-      options.runePointCost,
-      options.magicPointBoost,
-    );
-    if (validationError) {
-      ui.notifications?.warn(validationError);
-      return;
-    }
-
-    // const resultMessages: Map<AbilitySuccessLevelEnum, string> = new Map([
-    //   [
-    //     AbilitySuccessLevelEnum.Critical,
-    //     localize("RQG.Dialog.runeMagicChat.resultMessageCritical", {
-    //       magicPointBoost: options.magicPointBoost,
-    //     }),
-    //   ],
-    //   [
-    //     AbilitySuccessLevelEnum.Special,
-    //     localize("RQG.Dialog.runeMagicChat.resultMessageSpecial", {
-    //       magicPointBoost: options.magicPointBoost,
-    //       runePointCost: options.runePointCost,
-    //     }),
-    //   ],
-    //   [
-    //     AbilitySuccessLevelEnum.Success,
-    //     localize("RQG.Dialog.runeMagicChat.resultMessageSuccess", {
-    //       magicPointBoost: options.magicPointBoost,
-    //       runePointCost: options.runePointCost,
-    //     }),
-    //   ],
-    //   [AbilitySuccessLevelEnum.Failure, localize("RQG.Dialog.runeMagicChat.resultMessageFailure")],
-    //
-    //   [
-    //     AbilitySuccessLevelEnum.Fumble,
-    //     localize("RQG.Dialog.runeMagicChat.resultMessageFumble", {
-    //       magicPointBoost: options.magicPointBoost,
-    //       runePointCost: options.runePointCost,
-    //     }),
-    //   ],
-    // ]);
-
-    // const speaker = ChatMessage.getSpeaker({ actor: runeMagicItem.actor ?? undefined });
-    // TODO use future RuneMagicRoll
-    const result = AbilitySuccessLevelEnum.Success;
-    //   await runeMagicItem._roll(
-    //   Number(runeItem.system.chance),
-    //   [
-    //     { description: "Rituals or Meditation", value: options.ritualOrMeditation },
-    //     { description: "Augmentation", value: options.skillAugmentation },
-    //     { description: "Other Modifiers", value: options.otherModifiers },
-    //   ],
-    //   speaker,
-    //   resultMessages,
-    // );
-
-    await RuneMagic.handleRollResult(
-      result,
-      options.runePointCost,
-      options.magicPointBoost,
-      runeItem,
-      runeMagicItem,
-    );
-
-    return result;
-  }
 
   static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.type !== ItemTypeEnum.RuneMagic || !item.actor) {
@@ -276,21 +160,25 @@ export class RuneMagic extends AbstractEmbeddedItem {
     });
   }
 
-  public static validateData(
+  /**
+   * Check that the actor has enough magic and rune points to cast the spell.
+   * Return an error message if not allowed to cast.
+   */
+  public static hasEnoughToCastSpell(
     cultItem: RqgItem,
     runePointCost: number | undefined,
     magicPointsBoost: number | undefined,
-  ): string {
+  ): string | undefined {
     assertItemType(cultItem?.type, ItemTypeEnum.Cult);
     if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
-      return getGame().i18n.format("RQG.Dialog.runeMagicChat.validationNotEnoughRunePoints");
+      return getGame().i18n.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     } else if (
       magicPointsBoost == null ||
       magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
     ) {
-      return localize("RQG.Dialog.runeMagicChat.validationNotEnoughMagicPoints");
+      return localize("RQG.Item.RuneMagic.RuneMagic.validationNotEnoughMagicPoints");
     } else {
-      return "";
+      return undefined;
     }
   }
 
@@ -326,18 +214,18 @@ export class RuneMagic extends AbstractEmbeddedItem {
     return runesForCasting;
   }
 
-  static getStrongestRune(runeMagicItems: RqgItem[]): RqgItem | undefined {
-    if (runeMagicItems.length === 0) {
+  static getStrongestRune(runeItems: RqgItem[]): RqgItem | undefined {
+    if (runeItems.length === 0) {
       return undefined;
     }
-    return runeMagicItems.reduce((strongest: RqgItem, current: RqgItem) => {
+    return runeItems.reduce((strongest: RqgItem, current: RqgItem) => {
       const strongestRuneChance = (strongest.system as RuneDataPropertiesData).chance ?? 0;
       const currentRuneChance = (current.system as RuneDataPropertiesData).chance ?? 0;
       return strongestRuneChance > currentRuneChance ? strongest : current;
     });
   }
 
-  private static async handleRollResult(
+  public static async handleRollResult(
     result: AbilitySuccessLevelEnum,
     runePointCost: number,
     magicPointsUsed: number,
@@ -350,58 +238,73 @@ export class RuneMagic extends AbstractEmbeddedItem {
     assertItemType(cult?.type, ItemTypeEnum.Cult);
     const isOneUse = runeMagicItem.system.isOneUse;
 
+    const costs = RuneMagic.calcRuneAndMagicPointCost(result, runePointCost, magicPointsUsed);
+
+    await RuneMagic.spendRuneAndMagicPoints(
+      costs.rp,
+      costs.mp,
+      runeMagicItem.actor ?? undefined,
+      cult,
+      isOneUse,
+    );
+    if (costs.exp) {
+      await runeItem.awardExperience();
+    }
+
+    if (costs.mp > 0 || costs.rp > 0) {
+      ui.notifications?.info(
+        localize("RQG.Item.RuneMagic.CastingCostInfo", {
+          actorName: runeMagicItem.parent?.name,
+          runePointAmount: costs.rp,
+          magicPointAmount: costs.mp,
+        }),
+      );
+    }
+  }
+
+  public static calcRuneAndMagicPointCost(
+    result: AbilitySuccessLevelEnum,
+    runePointCost: number,
+    magicPointsUsed: number,
+  ): RpAndMpCost {
     switch (result) {
       case AbilitySuccessLevelEnum.Critical:
       case AbilitySuccessLevelEnum.SpecialCritical:
       case AbilitySuccessLevelEnum.HyperCritical:
         // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
-        await RuneMagic.SpendRuneAndMagicPoints(
-          0,
-          magicPointsUsed,
-          runeMagicItem.actor ?? undefined,
-          cult,
-          isOneUse,
-        );
-        await runeItem.awardExperience();
-        break;
+        return {
+          mp: magicPointsUsed,
+          rp: 0,
+          exp: true,
+        };
 
       case AbilitySuccessLevelEnum.Success:
       case AbilitySuccessLevelEnum.Special:
         // spell takes effect, Rune Points spent, Rune gets xp check, boosting Magic Points spent
-        await RuneMagic.SpendRuneAndMagicPoints(
-          runePointCost,
-          magicPointsUsed,
-          runeMagicItem.actor ?? undefined,
-          cult,
-          isOneUse,
-        );
-        await runeItem.awardExperience();
-        break;
+        return {
+          mp: magicPointsUsed,
+          rp: runePointCost,
+          exp: true,
+        };
 
       case AbilitySuccessLevelEnum.Failure: {
         // spell fails, no Rune Point Loss, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
-        await RuneMagic.SpendRuneAndMagicPoints(
-          0,
-          boosted,
-          runeMagicItem.actor ?? undefined,
-          cult,
-          isOneUse,
-        );
-        break;
+        return {
+          mp: boosted,
+          rp: 0,
+          exp: false,
+        };
       }
 
       case AbilitySuccessLevelEnum.Fumble: {
         // spell fails, lose Rune Points, if Magic Point boosted, lose 1 Magic Point if boosted
         const boosted = magicPointsUsed >= 1 ? 1 : 0;
-        await RuneMagic.SpendRuneAndMagicPoints(
-          runePointCost,
-          boosted,
-          runeMagicItem.actor ?? undefined,
-          cult,
-          isOneUse,
-        );
-        break;
+        return {
+          mp: boosted,
+          rp: runePointCost,
+          exp: false,
+        };
       }
 
       default: {
@@ -412,7 +315,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     }
   }
 
-  private static async SpendRuneAndMagicPoints(
+  private static async spendRuneAndMagicPoints(
     runePoints: number,
     magicPoints: number,
     actor: RqgActor | undefined,
@@ -430,7 +333,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       newRunePointMaxTotal -= runePoints;
       if (newRunePointMaxTotal < (cult.system.runePoints.max || 0)) {
         ui.notifications?.info(
-          localize("RQG.Dialog.runeMagicChat.SpentOneUseRunePoints", {
+          localize("RQG.Item.RuneMagic.SpentOneUseRunePoints", {
             actorName: actor?.name,
             runePoints: runePoints,
             cultName: cult.name,

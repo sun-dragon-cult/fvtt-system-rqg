@@ -1032,22 +1032,16 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
-            // TODO use future RuneMagicRoll
-            // await runeMagicItem.toChat();
+            await runeMagicItem?.runeMagicRoll();
           } else {
-            // TODO use future RuneMagicRoll
-            // await runeMagicItem.abilityRoll({
-            //   runePointCost: 1,
-            //   magicPointBoost: 0,
-            // });
+            await runeMagicItem?.runeMagicRollImmediate();
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // TODO use future RuneMagicRoll
-              // await runeMagicItem.toChat();
+              await runeMagicItem?.runeMagicRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
