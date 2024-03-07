@@ -111,29 +111,21 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Do a reputation (ability) Roll
-   */
+   * Open an ability roll dialog for reputation   */
   public async reputationRoll(
-    immediateRoll: boolean = false,
     options: Omit<AbilityRollOptions, "naturalSkill"> = {},
   ): Promise<void> {
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
-    const reputationItem: PartialAbilityItem = {
-      name: "Reputation",
-      img: defaultItemIconSettings.reputation,
-      system: {
-        chance: this.system.background.reputation ?? 0,
-      },
-    } as const;
+    const reputationItem = this.createReputationFakeItem();
+    await new AbilityRollDialog(reputationItem, options).render(true);
+  }
 
-    if (!immediateRoll) {
-      await new AbilityRollDialog(reputationItem).render(true);
-      return;
-    }
-
+  /**
+   * Do a reputation (ability) Roll
+   */
+  public async reputationRollImmediate(
+    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
+  ): Promise<void> {
+    const reputationItem = this.createReputationFakeItem();
     const speaker = ChatMessage.getSpeaker({ actor: this });
     const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
 
@@ -151,6 +143,20 @@ export class RqgActor extends Actor {
     );
 
     await AbilityRoll.rollAndShow(combinedOptions);
+  }
+
+  private createReputationFakeItem(): PartialAbilityItem {
+    const defaultItemIconSettings: any = getGame().settings.get(
+      systemId,
+      "defaultItemIconSettings",
+    );
+    return {
+      name: "Reputation",
+      img: defaultItemIconSettings.reputation,
+      system: {
+        chance: this.system.background.reputation ?? 0,
+      },
+    } as const;
   }
 
   // TODO should use result: SpiritMagicSuccessLevelEnum

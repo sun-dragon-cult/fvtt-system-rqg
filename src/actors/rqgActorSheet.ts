@@ -965,7 +965,7 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await this.actor.reputationRoll(true);
+          await this.actor.reputationRollImmediate();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
