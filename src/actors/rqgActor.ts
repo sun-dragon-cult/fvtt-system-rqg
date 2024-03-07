@@ -1,4 +1,5 @@
 import { RqgCalculations } from "../system/rqgCalculations";
+import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
@@ -15,7 +16,6 @@ import { systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
 import type { AnyDocumentData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
-import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
 import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import type {
@@ -27,7 +27,7 @@ import type { RqgItem } from "../items/rqgItem";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
-import { Characteristic } from "../data-model/actor-data/characteristics";
+import { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
 import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
 import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
@@ -64,15 +64,31 @@ export class RqgActor extends Actor {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 
+  public async characteristicRoll(
+    characteristicName: keyof Characteristics,
+    options: Partial<CharacteristicRollOptions> = {},
+  ): Promise<void> {
+    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options);
+    await new CharacteristicRollDialog(this, rollOptions).render(true);
+  }
   /**
    * Do a characteristic roll and handle possible POW experience check afterward.
    */
-  public async characteristicRoll(
-    immediateRoll: boolean = false,
-    options: Omit<CharacteristicRollOptions, "characteristicValue">,
+  public async characteristicRollImmediate(
+    characteristicName: keyof Characteristics,
+    options: Omit<CharacteristicRollOptions, "characteristicValue" | "characteristicName"> = {},
   ): Promise<void> {
+    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options);
+    const characteristicRoll = await CharacteristicRoll.rollAndShow(rollOptions);
+    await this.checkExperience(rollOptions.characteristicName, characteristicRoll.successLevel);
+  }
+
+  private getCharacteristicRollDefaults(
+    characteristicName: keyof Characteristics,
+    options: Partial<CharacteristicRollOptions>,
+  ): CharacteristicRollOptions {
     const actorCharacteristics: any = this.system.characteristics;
-    const rollCharacteristic = actorCharacteristics[options.characteristicName] as
+    const rollCharacteristic = actorCharacteristics[characteristicName] as
       | Characteristic
       | undefined;
 
@@ -82,26 +98,16 @@ export class RqgActor extends Actor {
       );
     }
 
-    const optionsWithDefaults = foundry.utils.mergeObject(
+    return foundry.utils.mergeObject(
       options,
       {
+        characteristicName: characteristicName,
         characteristicValue: rollCharacteristic.value ?? 0,
         difficulty: 5,
         speaker: ChatMessage.getSpeaker({ actor: this }),
       },
       { overwrite: false },
     ) as CharacteristicRollOptions;
-
-    if (!immediateRoll) {
-      await new CharacteristicRollDialog(this, optionsWithDefaults).render(true);
-      return;
-    }
-
-    const characteristicRoll = await CharacteristicRoll.rollAndShow(optionsWithDefaults);
-    await this.checkExperience(
-      optionsWithDefaults.characteristicName,
-      characteristicRoll.successLevel,
-    );
   }
 
   /**

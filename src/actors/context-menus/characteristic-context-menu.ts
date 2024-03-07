@@ -21,7 +21,7 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
-      await actor.characteristicRoll(false, { characteristicName: characteristicName });
+      await actor.characteristicRoll(characteristicName);
     },
   },
   {
@@ -30,7 +30,7 @@ export const characteristicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery): Promise<void> => {
       const { name: characteristicName } = getCharacteristic(actor, el);
-      await actor.characteristicRoll(true, { characteristicName: characteristicName });
+      await actor.characteristicRollImmediate(characteristicName);
     },
   },
   {
@@ -265,12 +265,15 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
   await initializeCurrentDerivedAttributes(actor);
 }
 
-function getCharacteristic(actor: RqgActor, el: JQuery): { name: string; value: Characteristic } {
+function getCharacteristic(
+  actor: RqgActor,
+  el: JQuery,
+): { name: keyof Characteristics; value: Characteristic } {
   const characteristicName = getDomDataset(el, "characteristic");
   const actorCharacteristics: Characteristics = actor.system.characteristics;
   if (characteristicName && characteristicName in actorCharacteristics) {
     return {
-      name: characteristicName,
+      name: characteristicName as keyof Characteristics,
       value: actorCharacteristics[characteristicName as keyof typeof actorCharacteristics],
     };
   } else {

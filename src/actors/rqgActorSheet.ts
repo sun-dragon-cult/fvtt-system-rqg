@@ -944,17 +944,13 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await this.actor.characteristicRoll(true, {
-            characteristicName: characteristicName,
-          });
+          await this.actor.characteristicRollImmediate(characteristicName);
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await this.actor.characteristicRoll(false, {
-                characteristicName: characteristicName,
-              });
+              await this.actor.characteristicRoll(characteristicName);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
