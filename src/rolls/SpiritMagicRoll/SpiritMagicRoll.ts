@@ -82,9 +82,10 @@ export class SpiritMagicRoll extends Roll {
     const spellName = o.spellName;
     const flavorImg = o.spellImg ? `<img src="${o.spellImg}">` : "";
     const itemType = localizeItemType(ItemTypeEnum.SpiritMagic);
+    const level = o.levelUsed;
     return `
 <div class="rqg flavor">${flavorImg}</div>
-<span class="roll-action">${spellName}</span>
+<span class="roll-action">${spellName} <span class="roll-level">${level}</span></span>
 <span>${itemType}</span><br>`;
   }
 }

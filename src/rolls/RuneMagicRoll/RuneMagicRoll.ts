@@ -97,9 +97,10 @@ export class RuneMagicRoll extends Roll {
     const spellName = o.runeMagicItem.name;
     const flavorImg = o.runeMagicItem.img ? `<img src="${o.runeMagicItem.img}">` : "";
     const itemType = localizeItemType(ItemTypeEnum.RuneMagic);
+    const level = o.levelUsed;
     return `
 <div class="rqg flavor">${flavorImg}</div>
-<span class="roll-action">${spellName}</span>
+<span class="roll-action">${spellName} <span class="roll-level">${level}</span></span>
 <span>${itemType}</span><br>`;
   }
 }

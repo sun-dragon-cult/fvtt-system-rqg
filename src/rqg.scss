@@ -931,6 +931,10 @@ input.readonly {
     color: var(--color-text-dark-primary);
   }
 
+  .roll-level {
+    font-size: var(--font-size-16);
+  }
+
   .dice-total {
     display: flex;
     justify-content: space-around;
