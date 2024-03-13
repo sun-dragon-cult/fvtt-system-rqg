@@ -1,5 +1,8 @@
 <form>
-  <h1>{{spell.name}}</h1>
+  <header class="roll-header">
+    <h1>{{spell.name}}</h1>
+    <div class="sub-header">{{spell.spellSignature}}</div>
+  </header>
   <div class="key-value-grid">
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}

@@ -1,5 +1,6 @@
 export type SpiritMagicRollDialogHandlebarsData = {
   spellName: string | null;
+  spellSignature: string;
   spellImg: string | null;
   powX5: number;
   isVariable: boolean;

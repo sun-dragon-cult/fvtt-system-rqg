@@ -78,6 +78,7 @@ export class SpiritMagicRollDialog extends FormApplication<
   async getData(): Promise<SpiritMagicRollDialogHandlebarsData> {
     return {
       spellName: this.spellItem.name,
+      spellSignature: this.spellItem.spellSignature,
       powX5: this.powX5,
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       spellImg: this.spellItem.img,

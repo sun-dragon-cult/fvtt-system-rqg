@@ -25,6 +25,7 @@ import { RuneMagicRollDialog } from "../applications/RuneMagicRollDialog/runeMag
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
+import { SpellRangeEnum } from "../data-model/item-data/spell";
 
 export class RqgItem extends Item {
   public static init() {
@@ -312,6 +313,72 @@ export class RqgItem extends Item {
       ui.notifications?.error(msg, { console: false });
       console.error(msg);
     }
+  }
+
+  /**
+   * Used for Rune & Spirit Magic items to construct a descriptions close to what as
+   * is used in the books. The "1+" syntax for stackable rune magic is used
+   */
+  get spellSignature(): string {
+    if (!hasOwnProperty(this.system, "points")) {
+      console.error("RQG | Tried to get spellSignature on a non spell item");
+      return "";
+    }
+
+    const descriptionParts = [];
+
+    const stackableRuneMagic = this.system.isStackable ? "+" : "";
+    const variableSpiritMagic = this.system.isVariable
+      ? " " + localize("RQG.Item.SpiritMagic.Variable")
+      : "";
+    const pointsTranslated = localize("RQG.Item.RuneMagic.Points");
+    descriptionParts.push(
+      `${this.system.points}${stackableRuneMagic} ${pointsTranslated}${variableSpiritMagic}`,
+    );
+
+    if (this.system.isRitual) {
+      descriptionParts.push(localize("RQG.Item.Spell.Ritual"));
+    }
+
+    if (this.system.isEnchantment) {
+      descriptionParts.push(localize("RQG.Item.Spell.Enchantment"));
+    }
+
+    if (this.system.castingRange) {
+      const rangeValueTranslation = localize(
+        "RQG.Item.Spell.RangeEnum." + this.system.castingRange,
+      );
+      const rangeTranslation = localize("RQG.Item.SpiritMagic.Range");
+      const translation =
+        this.system.castingRange === SpellRangeEnum.Special
+          ? `${rangeTranslation} (${rangeValueTranslation.toLowerCase()})`
+          : rangeValueTranslation;
+      descriptionParts.push(translation);
+    }
+
+    if (this.system.duration) {
+      const durationValueTranslation = localize(
+        "RQG.Item.Spell.DurationEnum." + this.system.duration,
+      );
+      const durationTranslation = localize("RQG.Item.SpiritMagic.Duration");
+      const translation =
+        this.system.duration === SpellRangeEnum.Special
+          ? `${durationTranslation} (${durationValueTranslation.toLowerCase()})`
+          : durationValueTranslation;
+      descriptionParts.push(translation);
+    }
+
+    if (this.system.concentration && this.type === ItemTypeEnum.SpiritMagic) {
+      descriptionParts.push(
+        localize("RQG.Item.Spell.ConcentrationEnum." + this.system.concentration),
+      );
+    }
+
+    if (this.system.isOneUse && this.type === ItemTypeEnum.RuneMagic) {
+      descriptionParts.push(localize("RQG.Item.RuneMagic.OneUse"));
+    }
+
+    return descriptionParts.join(", ");
   }
 
   protected _onCreate(

@@ -906,8 +906,8 @@
         "Points": "Points",
         "Range": "Range",
         "Duration": "Duration",
-        "StackableQ": "Stackable?",
-        "OneUseQ": "One Use?",
+        "Stackable": "Stackable",
+        "OneUse": "One Use",
         "GrantedByCult": "Granted by Cult",
         "Runes": "Runes",
         "CastingCostInfo": "{actorName} used {runePointAmount} rune points, and {magicPointAmount} magic points by casting a rune magic spell.",
@@ -963,8 +963,8 @@
         "SkillCategory": {}
       },
       "Spell": {
-        "RitualQ": "Ritual?",
-        "EnchantmentQ": "Enchantment?",
+        "Ritual": "Ritual",
+        "Enchantment": "Enchantment",
         "DurationEnum": {
           "": "None",
           "instant": "Instant",
@@ -989,13 +989,13 @@
       "SpiritMagic": {
         "Name": "Name",
         "Points": "Points",
-        "VariableQ": "Variable?",
+        "Variable": "Variable",
         "Range": "Range",
         "Duration": "Duration",
         "Concentration": "Concentration",
         "SpellFocus": "Spell Focus",
         "MatrixIndicator": "(held in matrix)",
-        "MatrixQ": "Held in Matrix?",
+        "MatrixQ": "Held in Matrix",
         "LinkedToCompendium": "Linked to compendium [{compendium}] Journal Entry [{journalName}]",
         "CantCastSpellAboveLearnedLevel": "Can't cast spell above learned level.",
         "NotEnoughMagicPoints": "Not enough magic points left to cast this spell."

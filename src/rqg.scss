@@ -1252,3 +1252,21 @@ input.readonly {
     width: 100%;
   }
 }
+
+.rune-magic-roll-dialog,
+.spirit-magic-roll-dialog,
+.ability-roll-dialog,
+.characteristic-roll-dialog {
+  header.roll-header {
+    margin: -8px -8px 8px;
+    padding: 7px;
+    box-shadow: 0px -3px 11px 0px;
+    background-color: var(--color-text-light-highlight);
+    text-align: center;
+
+    .sub-header {
+      font-style: italic;
+      margin-top: -2px;
+    }
+  }
+}
