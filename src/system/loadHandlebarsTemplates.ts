@@ -50,9 +50,9 @@ export const templatePaths = {
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
   abilityRollDialog: "systems/rqg/applications/abilityRollDialog/abilityRollDialog.hbs",
   characteristicRollDialog:
-    "systems/rqg/applications/characteristicRollDialog/characteristicRollDialog.hbs",
-  spiritMagicRollDialog: "systems/rqg/applications/spiritMagicRollDialog/spiritMagicRollDialog.hbs",
-  runeMagicRollDialog: "systems/rqg/applications/runeMagicRollDialog/runeMagicRollDialog.hbs",
+    "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialog.hbs",
+  spiritMagicRollDialog: "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialog.hbs",
+  runeMagicRollDialog: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialog.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
