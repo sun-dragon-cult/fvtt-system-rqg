@@ -560,13 +560,15 @@ export class RqgError implements Error {
   }
 }
 
-export function getDocumentTypes(): {
-  [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
-} {
+export function getItemDocumentTypes(): string[] {
   // @ts-expect-error documentTypes
-  return getGame().system.documentTypes as {
-    [Key in foundry.CONST.EntityType | "Setting" | "FogExploration"]: string[];
-  };
+  const documentTypes = getGame().system.documentTypes.Item as any[];
+  if (Array.isArray(documentTypes)) {
+    // v11 format TODO remove when requiring v12
+    return documentTypes;
+  }
+  // v12 version format
+  return Object.keys(documentTypes);
 }
 
 export function moveCursorToEnd(el: HTMLInputElement) {
