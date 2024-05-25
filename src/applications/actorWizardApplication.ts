@@ -4,7 +4,7 @@ import { systemId } from "../system/config";
 import {
   assertHtmlElement,
   assertItemType,
-  getDocumentTypes,
+  getItemDocumentTypes,
   getGame,
   localize,
 } from "../system/util";
@@ -244,7 +244,7 @@ export class ActorWizard extends FormApplication {
     }
 
     // Create an object similar to the one from ActorSheet organizeEmbeddedItems
-    const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
+    const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
     const skills: any = {};
     Object.values(SkillCategoryEnum).forEach((cat: string) => {
       skills[cat] = homelandSkills.filter((s: any) => cat === s.system.category);

@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.3](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.2...v3.4.3) (2024-05-25)
+
+
+### Bug Fixes
+
+* make RQG Foundry v12 compatible ([aff2b13](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/aff2b13efea8f49bb96f28d3111eada955aa7510)), closes [#706](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/706)
+
 ## [3.4.2](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.1...v3.4.2) (2024-01-28)
 
 
