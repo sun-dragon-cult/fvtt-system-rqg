@@ -438,6 +438,19 @@
       }
     },
     "Dialog": {
+      "Attack": {
+        "Title": "Attack",
+        "WeaponUsage": "Usage",
+        "OtherModifier": "Other Modifier"
+      },
+      "Defence": {
+        "Title": "Defend",
+        "DefendingActor": "Defending Actor",
+        "Defence": "Defence",
+        "ParryingWeaponUuid": "Parrying Weapon",
+        "ParryingWeaponUsage": "Usage",
+        "OtherModifier": "Other Modifier"
+      },
       "AbilityRoll": {
         "Title": "Ability Check",
         "Augment": "Augment",
@@ -491,8 +504,8 @@
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
         "OtherModifiers": "Other Modifiers",
-        "RollFormat": "Roll ({chance}%)",
         "CantFindChatMessageError": "CantFindChatMessageError",
+        "TargetChance": "Target Chance",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",
@@ -1131,6 +1144,7 @@
         "5": "Failure",
         "6": "Fumble"
       },
+      "Roll": "Roll",
       "RollChat": "Roll (click)",
       "RollQuick": "Direct Roll (dbl click)",
       "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",

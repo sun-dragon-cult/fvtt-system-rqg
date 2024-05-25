@@ -73,7 +73,7 @@ export class CharacteristicRollDialog extends FormApplication<
 
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: [systemId, "form", "characteristic-roll-dialog"],
+      classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
       popOut: true,
       template: templatePaths.characteristicRollDialog,
       width: 400,

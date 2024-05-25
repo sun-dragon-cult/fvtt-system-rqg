@@ -1,5 +1,7 @@
 import { ChatMessageType } from "../../chat/RqgChatMessage";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
+import { AttackState } from "../../chat/RqgChatMessage.types";
+import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
+import { UsageType } from "../item-data/weaponData";
 
 export const documentRqidFlags = "documentRqidFlags" as const;
 export const actorWizardFlags = "actorWizardFlags" as const;
@@ -52,34 +54,67 @@ export type BaseRqgChatFlags = {
   type: ChatMessageType;
   /** Data that needs to be persisted. Should include {@link CommonRqgChatFlags} */
   chat: object;
-  /** Data from inputs in the form only */
-  formData: object;
+  // /** Data from inputs in the form only */
+  // formData: object;
 };
 
-// Flags common to all chatmessages
-export type CommonRqgChatFlags = {
-  /** The actor that is speaking / acting */
-  actorUuid: string;
-  /** The token that is speaking / acting */
-  tokenUuid: string | undefined;
-  /** An image url to represent what the chat message is about (often an item.img) */
-  chatImage: string | undefined;
-};
+// // Flags common to all chatmessages
+// export type CommonRqgChatFlags = {
+//   /** The actor that is speaking / acting */
+//   actorUuid: string;
+//   /** The token that is speaking / acting */
+//   tokenUuid: string | undefined;
+//   /** An image url to represent what the chat message is about (often an item.img) */
+//   chatImage: string | undefined;
+// };
 
-export interface WeaponChatFlags extends BaseRqgChatFlags {
-  type: "weaponChat";
-  chat: CommonRqgChatFlags & {
-    weaponUuid: string;
-    result: AbilitySuccessLevelEnum | undefined;
-    specialDamageTypeText: string | undefined;
-  };
-  formData: {
-    otherModifiers: FormDataEntryValue;
-    usage: FormDataEntryValue;
-    combatManeuverName: FormDataEntryValue;
-    actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
-    actionValue: string; // the clicked buttons value (like "slash" or "special")
+// export interface WeaponChatFlags extends BaseRqgChatFlags {
+//   type: "weaponChat";
+//   chat: CommonRqgChatFlags & {
+//     weaponUuid: string;
+//     result: AbilitySuccessLevelEnum | undefined;
+//     specialDamageTypeText: string | undefined;
+//   };
+//   formData: {
+//     otherModifiers: FormDataEntryValue;
+//     usage: FormDataEntryValue;
+//     combatManeuverName: FormDataEntryValue;
+//     actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
+//     actionValue: string; // the clicked buttons value (like "slash" or "special")
+//   };
+// }
+
+export interface AttackChatFlags extends BaseRqgChatFlags {
+  type: "attackChat";
+  // chat: CommonRqgChatFlags & {
+  chat: {
+    attackState: AttackState;
+    actorDamagedApplied: false;
+    weaponDamageApplied: false;
+
+    attackingActorUuid: string;
+    defendingActorUuid?: string;
+
+    attackWeaponUuid: string;
+    attackWeaponUsage: UsageType;
+    defenceWeaponUuid?: string;
+    defenceWeaponUsage?: UsageType;
+
+    outcomeDescription: string;
+    attackRoll: AbilityRoll;
+    defendRoll?: AbilityRoll;
+    damageRoll?: Roll;
+    hitLocationRoll?: Roll;
+
+    damagedActorUuid: string;
+    damagedWeaponUuid: string;
+    // result: AbilitySuccessLevelEnum | undefined;
+    // specialDamageTypeText: string | undefined;
+    // otherModifiers: FormDataEntryValue;
+    // combatManeuverName: FormDataEntryValue;
+    // actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
+    // actionValue: string; // the clicked buttons value (like "slash" or "special")
   };
 }
 
-export type RqgChatMessageFlags = WeaponChatFlags;
+export type RqgChatMessageFlags = AttackChatFlags;

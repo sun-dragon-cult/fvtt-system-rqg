@@ -61,7 +61,7 @@ export class SpiritMagicRollDialog extends FormApplication<
 
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: [systemId, "form", "spirit-magic-roll-dialog"],
+      classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
       popOut: true,
       template: templatePaths.spiritMagicRollDialog,
       width: 400,

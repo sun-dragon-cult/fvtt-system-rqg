@@ -262,6 +262,10 @@ input.readonly {
       color: var(--color-text-dark-secondary);
   }
 
+  .mb-1-5rem {
+    margin-bottom: 1.5rem;
+  }
+
   .ml-5 {
     margin-left: 5px;
   }
@@ -1253,12 +1257,12 @@ input.readonly {
   }
 }
 
-.rune-magic-roll-dialog,
-.spirit-magic-roll-dialog,
-.ability-roll-dialog,
-.characteristic-roll-dialog {
-  header.roll-header {
-    margin: -8px -8px 8px;
+
+
+.rqg.form.roll-dialog {
+
+  .roll-header {
+    margin: -8px -8px 1.5rem;
     padding: 7px;
     box-shadow: 0px -3px 11px 0px;
     background-color: var(--color-text-light-highlight);
@@ -1269,4 +1273,16 @@ input.readonly {
       margin-top: -2px;
     }
   }
+
+  .target-box {
+    flex: none;
+    text-align: center;
+    border: inset;
+    padding: 4px;
+  }
+
+  button {
+    background-color: var(--color-text-light-highlight);
+  }
 }
+

@@ -26,6 +26,8 @@ import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "../data-model/item-data/spell";
+import { AttackDialog } from "../applications/AttackFlow/attackDialog";
+import { AttackChatOptions } from "../chat/RqgChatMessage.types";
 
 export class RqgItem extends Item {
   public static init() {
@@ -274,6 +276,14 @@ export class RqgItem extends Item {
     const mpCost = options.magicPointBoost ?? 0;
     const rpCost = options.levelUsed ?? this.system.points;
     await RuneMagic.handleRollResult(runeMagicRoll.successLevel, rpCost, mpCost, usedRune, this);
+  }
+
+  /**
+   * Open an attackDialog to initiate an attack sequence
+   */
+  public async attack(options: Partial<AttackChatOptions> = {}): Promise<void> {
+    assertItemType(this.type, ItemTypeEnum.Weapon);
+    await new AttackDialog(this, options).render(true);
   }
 
   /**

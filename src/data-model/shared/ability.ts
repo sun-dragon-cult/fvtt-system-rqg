@@ -45,7 +45,8 @@ export class Ability {
     await r.toMessage({
       flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
       speaker: speaker,
-      type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+      // @ts-expect-error CHAT_MESSAGE_STYLES
+      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
     return result;
   }

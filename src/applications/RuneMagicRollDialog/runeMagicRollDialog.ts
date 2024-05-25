@@ -82,7 +82,7 @@ export class RuneMagicRollDialog extends FormApplication<
 
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: [systemId, "form", "rune-magic-roll-dialog"],
+      classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
       popOut: true,
       template: templatePaths.runeMagicRollDialog,
       width: 400,

@@ -3,7 +3,7 @@
     <h1>{{abilityName}}</h1>
     <div class="sub-header">{{abilityChance}}%</div>
   </header>
-  <div class="key-value-grid">
+  <div class="key-value-grid p-0 mb-1-5rem">
     <label>
       {{localize "RQG.Dialog.AbilityRoll.Augment"}}
     </label>
@@ -23,5 +23,12 @@
       <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
     </div>
   </div>
-  <button data-ability-roll>{{localize "RQG.Dialog.Common.RollFormat" chance=totalChance}}</button>
+
+  <div class="flexrow flex-wrap gap03rem">
+    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+      <i class="fa-solid fa-bullseye"></i><br>
+      {{totalChance}}%
+    </div>
+    <button data-ability-roll>{{localize "RQG.Game.Roll"}}</button>
+  </div>
 </form>

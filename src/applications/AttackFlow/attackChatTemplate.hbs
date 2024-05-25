@@ -1,0 +1,24 @@
+{{log "attackChatTemplate" this}}
+<div data-attack-weapon-uuid="{{attackWeaponUuid}}"
+     data-defence-weapon-uuid="{{defenceWeaponUuid}}">
+  {{#if (eq attackState 'Attacked')}}
+    <div class="flexrow">
+      <button data-defence="parry">Parry</button>
+      <button data-defence="dodge">Dodge</button>
+      <button data-defence="ignore">Ignore</button>
+    </div>
+  {{else if (eq attackState 'Defended')}}
+    {{outcomeDescription}}
+    <button data-damage-hitlocation>Roll some damage & hitlocation</button>
+
+  {{else if (eq attackState 'DamageRolled')}}
+    {{outcomeDescription}}
+    <div class="flexrow">
+      {{#unless actorDamagedApplied}}
+        <button data-wounded-actor-uuid="{{damagedActorUuid}}">Apply damage to actor</button>{{/unless}}
+      {{#unless weaponDamageApplied}}
+        <button data-damaged-weapon-uuid="{{damagedWeaponUuid}}">Apply damage to weapon</button>{{/unless}}
+    </div>
+  {{/if}}
+</div>
+

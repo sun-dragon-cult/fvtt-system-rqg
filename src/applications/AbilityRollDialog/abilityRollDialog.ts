@@ -53,7 +53,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
 
   static get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: [systemId, "form", "ability-roll-dialog"],
+      classes: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
       popOut: true,
       template: templatePaths.abilityRollDialog,
       width: 400,

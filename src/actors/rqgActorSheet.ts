@@ -21,7 +21,7 @@ import {
   assertHtmlElement,
   assertItemType,
   formatListByWorldLanguage,
-  getDocumentTypes,
+  getItemDocumentTypes,
   getGame,
   getGameUser,
   getHTMLElement,
@@ -529,7 +529,7 @@ export class RqgActorSheet extends ActorSheet<
    * TODO Fix the typing
    */
   public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
-    const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
+    const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
     actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
     });
@@ -863,7 +863,8 @@ export class RqgActorSheet extends ActorSheet<
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
-          type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
+          // @ts-expect-error CHAT_MESSAGE_STYLES
+          type: CONST.CHAT_MESSAGE_STYLES.WHISPER,
         });
     }
 
@@ -1093,14 +1094,12 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          // TODO use future AttackRoll
-          // await weapon.toChat();
+          await weapon.attack();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              // TODO use future AttackRoll
-              // await weapon.toChat();
+              weapon.attack();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1259,7 +1258,8 @@ export class RqgActorSheet extends ActorSheet<
         await r.evaluate({ async: true });
         await r.toMessage({
           speaker: ChatMessage.getSpeaker(),
-          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+          // @ts-expect-error CHAT_MESSAGE_STYLES
+          type: CONST.CHAT_MESSAGE_STYLES.ROLL,
           flavor: `damage`,
         });
       });

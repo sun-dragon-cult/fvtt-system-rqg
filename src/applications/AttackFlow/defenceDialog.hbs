@@ -1,0 +1,65 @@
+{{log "***defenceDialog" this}}
+<form>
+  <header class="roll-header">
+    <h1>{{defenceName}}</h1>
+    <div class="sub-header">{{defenceChance}}%</div>
+  </header>
+  <div class="key-value-grid">
+
+    <label>
+      {{localize "RQG.Dialog.Defence.DefendingActor"}}
+    </label>
+    <select name="defendingActorUuid">
+      {{selectOptions defendingActorOptions selected=object.defendingActorUuid localize=true}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.Defence.Defence"}}
+    </label>
+    <select name="defence">
+      {{selectOptions defenceOptions selected=object.defence localize=true}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.Defence.ParryingWeaponUuid"}}
+    </label>
+    <select name="parryingWeaponUuid">
+      {{selectOptions parryingWeaponOptions selected=object.parryingWeaponUuid localize=true}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.Defence.ParryingWeaponUsage"}}
+    </label>
+    <select name="parryingWeaponUsage">
+      {{selectOptions parryingWeaponUsageOptions selected=object.parryingWeaponUsage localize=true}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.AbilityRoll.Augment"}}
+    </label>
+    <select name="augmentModifier">
+      {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.AbilityRoll.Meditate"}}
+    </label>
+    <select name="meditateModifier">
+      {{selectOptions meditateOptions selected=object.meditateModifier localize=true}}
+    </select>
+
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}"
+           name="otherModifierDescription">
+    <div>
+      <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+    </div>
+  </div>
+  <div class="flexrow flex-wrap gap03rem">
+    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+      <i class="fa-solid fa-bullseye"></i><br>
+      {{totalChance}}%
+    </div>
+<!--    TODO show parry / dodge or Ignore-->
+    <button data-defend>{{localize "RQG.Game.TODO.Parry.or.Dodge.or.Ignore"}}</button>
+  </div>
+</form>

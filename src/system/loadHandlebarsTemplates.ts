@@ -32,6 +32,7 @@ export const templatePaths = {
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
   chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
+  attackChatMessage: "systems/rqg/applications/AttackFlow/attackChatTemplate.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 
@@ -53,6 +54,8 @@ export const templatePaths = {
     "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialog.hbs",
   spiritMagicRollDialog: "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialog.hbs",
   runeMagicRollDialog: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialog.hbs",
+  attackDialog: "systems/rqg/applications/AttackFlow/attackDialog.hbs",
+  defenceDialog: "systems/rqg/applications/AttackFlow/defenceDialog.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
