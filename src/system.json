@@ -6,7 +6,7 @@
   "version": "3.4.2",
   "compatibility": {
     "minimum": 11,
-    "verified": 11
+    "verified": 12
   },
   "license": "UNLICENSED",
   "background": "systems/rqg/assets/images/ui/sacred-time.webp",

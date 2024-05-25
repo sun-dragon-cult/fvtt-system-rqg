@@ -22,10 +22,10 @@ import {
   assertHtmlElement,
   assertItemType,
   formatListByWorldLanguage,
-  getDocumentTypes,
   getGame,
   getGameUser,
   getHTMLElement,
+  getItemDocumentTypes,
   getRequiredDomDataset,
   hasOwnProperty,
   isTruthy,
@@ -531,7 +531,7 @@ export class RqgActorSheet extends ActorSheet<
    * TODO Fix the typing
    */
   public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
-    const itemTypes: any = Object.fromEntries(getDocumentTypes().Item.map((t: string) => [t, []]));
+    const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
     actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
     });
