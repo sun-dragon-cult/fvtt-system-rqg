@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.4](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.3...v3.4.4) (2024-05-26)
+
+
+### Bug Fixes
+
+* cannot roll damage or hit location in Version 12 ([bb3cb1c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/bb3cb1ca247bcc03a591a95cd728244511116d01)), closes [#709](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/709)
+
 ## [3.4.3](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.2...v3.4.3) (2024-05-25)
 
 
