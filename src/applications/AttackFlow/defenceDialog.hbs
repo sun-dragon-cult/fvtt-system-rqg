@@ -2,7 +2,7 @@
 <form>
   <header class="roll-header">
     <h1>{{defenceName}}</h1>
-    <div class="sub-header">{{defenceChance}}%</div>
+    {{#unless (eq object.defence "ignore")}}<div class="sub-header">{{defenceChance}}%</div>{{/unless}}
   </header>
   <div class="key-value-grid">
 
