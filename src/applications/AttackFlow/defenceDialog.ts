@@ -113,10 +113,15 @@ export class DefenceDialog extends FormApplication<
     const parrySkillUuid =
       parryingWeapon?.system.usage[this.object.parryingWeaponUsage ?? "oneHand"]?.skillRqidLink
         ?.rqid; // TODO hardcoded oneHand fallback usage
-    const defenceChance =
-      defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillUuid)?.system.chance; // TODO should be the dodge chance if dodge or nothing? if ignore
+
+    const { defenceName, defenceChance } = this.getDefenceNameAndChance(
+      this.object.defence,
+      defendingActor,
+      parrySkillUuid,
+    );
+
     return {
-      defenceName: parryingWeapon?.name ?? null,
+      defenceName: defenceName,
       defenceChance: defenceChance,
       // abilityType: this.attackingWeaponItem.type,
       // abilityImg: parryingWeapon?.img ?? null, // TODO use it?
@@ -224,6 +229,26 @@ export class DefenceDialog extends FormApplication<
       this.attackChatMessage?.render(true);
       // TODO update the chat message to reflect the current defender
     }
+  }
+
+  private getDefenceNameAndChance(
+    defence: string | undefined,
+    defendingActor: RqgActor | null,
+    parrySkillUuid: string,
+  ): { defenceName: string; defenceChance: number } {
+    if (defence === "parry") {
+      const parryWeapon = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillUuid);
+      return {
+        defenceName: parryWeapon?.name ?? "",
+        defenceChance: parryWeapon?.system.chance ?? 0,
+      };
+    }
+    if (defence === "dodge") {
+      const dodgeSkill = defendingActor?.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge);
+      return { defenceName: dodgeSkill?.name ?? "", defenceChance: dodgeSkill?.system.chance };
+    }
+
+    return { defenceName: "Ignore", defenceChance: 0 }; // TODO Translate !!!
   }
 
   private getActorOptions(): Record<string, string> {
