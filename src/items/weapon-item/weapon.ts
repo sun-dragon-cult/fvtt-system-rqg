@@ -385,7 +385,12 @@ export class Weapon extends AbstractEmbeddedItem {
   //   damageRollTerms.push(...damageBonus);
   //
   //   const maximise = damageRollType === DamageRollTypeEnum.MaxSpecial;
-  //   const roll = Roll.fromTerms(damageRollTerms);
+  // const damageRollTermsWithPlusOperatorsInBetween = damageRollTerms.flatMap(
+  //   (value, index, array) =>
+  //     array.length - 1 !== index ? [value, new OperatorTerm({ operator: "+" })] : value,
+  // );
+  //
+  // const roll = Roll.fromTerms(damageRollTermsWithPlusOperatorsInBetween);
   //   await roll.evaluate({
   //     maximize: maximise,
   //     async: true,
