@@ -385,8 +385,8 @@ export class Weapon extends AbstractEmbeddedItem {
   //   damageRollTerms.push(...damageBonus);
   //
   //   const maximise = damageRollType === DamageRollTypeEnum.MaxSpecial;
-  // const damageRollTermsWithPlusOperatorsInBetween = damageRollTerms.flatMap(
-  //   (value, index, array) =>
+  //   const damageRollTermsWithPlusOperatorsInBetween = damageRollTerms.flatMap(
+  //     (value, index, array) =>
   //     array.length - 1 !== index ? [value, new OperatorTerm({ operator: "+" })] : value,
   // );
   //
@@ -493,7 +493,7 @@ export class Weapon extends AbstractEmbeddedItem {
   //     const roll = Roll.fromTerms(specialDamage);
   //     await roll.evaluate({ maximize: true, async: true });
   //     const crushSpecialDamageTag = localize("RQG.Dialog.weaponChat.CrushSpecialDamageTag");
-  //     return Roll.parse(`+ ${roll.result}[${crushSpecialDamageTag}]`, {});
+  //     return Roll.parse(`${roll.result}[${crushSpecialDamageTag}]`, {});
   //   }
   //   return [];
   // }
@@ -503,7 +503,7 @@ export class Weapon extends AbstractEmbeddedItem {
   //     damageType === "impale"
   //       ? localize("RQG.Dialog.weaponChat.ImpaleSpecialDamageTag")
   //       : localize("RQG.Dialog.weaponChat.SlashSpecialDamageTag");
-  //   return Roll.parse(`+ (${weaponDamage})[${specialDamageTag}]`, {});
+  //   return Roll.parse(`(${weaponDamage})[${specialDamageTag}]`, {});
   // }
 
   // public static getUsedSkillItem(weaponItem: RqgItem, usage: UsageType): RqgItem | undefined {
@@ -521,7 +521,7 @@ export class Weapon extends AbstractEmbeddedItem {
   //   }
   //
   //   const damageBonusDamageTag = localize("RQG.Dialog.weaponChat.DamageBonusDamageTag");
-  //   return Roll.parse(`+${damageBonusFormula}[${damageBonusDamageTag}]`, {});
+  //   return Roll.parse(`${damageBonusFormula}[${damageBonusDamageTag}]`, {});
   // }
 
   // private static getDamageBonusString(weaponItem: RqgItem, usage: Usage): string {
