@@ -223,11 +223,19 @@ export class DefenceDialog extends FormApplication<
       this.attackChatMessage?.getFlag(systemId, "chat.defendingActorUuid") !==
       this.object.defendingActorUuid
     ) {
+      // Update the chat with who is defending
+      const attackerName = (
+        await fromUuid(this.attackChatMessage?.flags.rqg.chat.attackingActorUuid ?? "")
+      )?.name;
+      const defenderNameName = (await fromUuid(this.object.defendingActorUuid ?? ""))?.name;
+      const flavor = localize("RQG.Dialog.Common.IsAttacking", {
+        attackerName: `<b>${attackerName}</b>`,
+        defenderName: `<b>${defenderNameName}</b>`,
+      });
       await this.attackChatMessage?.update({
-        flags: { [systemId]: { chat: { defendingActorUuid: this.object.defendingActorUuid } } },
-      } as any); // TODO fix type
-      this.attackChatMessage?.render(true);
-      // TODO update the chat message to reflect the current defender
+        flavor: flavor,
+        "flags.rqg.chat.defendingActorUuid": this.object.defendingActorUuid,
+      });
     }
   }
 

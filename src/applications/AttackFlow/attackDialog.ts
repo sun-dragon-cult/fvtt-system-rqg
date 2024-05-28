@@ -178,13 +178,17 @@ export class AttackDialog extends FormApplication<
           templatePaths.attackChatMessage,
           chatData.chat,
         );
+        const flavor = localize("RQG.Dialog.Common.IsAttacking", {
+          attackerName: `<b>${attackerActor.name}</b>`,
+          defenderName: `<b>${defenderActor?.name}</b>`,
+        });
 
         // TODO Introduce ability for GM to fudge roll here?
 
         const attackChatMessageOptions = {
           // @ts-expect-error CHAT_MESSAGE_STYLES
           type: CONST.CHAT_MESSAGE_STYLES.OTHER,
-          flavor: `<b>${attackerActor.name}</b> is attacking <b>${defenderActor?.name}</b>`,
+          flavor: flavor,
           content: attackChatContent,
           speaker: ChatMessage.getSpeaker({
             actor: this.weaponItem.parent as RqgActor | undefined,

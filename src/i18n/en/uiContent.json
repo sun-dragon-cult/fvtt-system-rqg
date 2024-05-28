@@ -506,6 +506,7 @@
         "OtherModifiers": "Other Modifiers",
         "CantFindChatMessageError": "CantFindChatMessageError",
         "TargetChance": "Target Chance",
+        "IsAttacking": "{attackerName} is attacking {defenderName}",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",
