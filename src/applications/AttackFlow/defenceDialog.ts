@@ -110,14 +110,14 @@ export class DefenceDialog extends FormApplication<
     }
 
     const parryingWeaponUsageOptions = this.getParryingWeaponUsageOptions(parryingWeapon);
-    const parrySkillUuid =
+    const parrySkillRqid =
       parryingWeapon?.system.usage[this.object.parryingWeaponUsage ?? "oneHand"]?.skillRqidLink
         ?.rqid; // TODO hardcoded oneHand fallback usage
 
     const { defenceName, defenceChance } = this.getDefenceNameAndChance(
       this.object.defence,
       defendingActor,
-      parrySkillUuid,
+      parrySkillRqid,
     );
 
     return {
@@ -146,12 +146,42 @@ export class DefenceDialog extends FormApplication<
     // Do the roll to chat
     html[0]?.querySelectorAll<HTMLElement>("[data-defend]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const actor = this.attackingWeaponItem.parent;
-        // TODO Hardcoded oneHand - could be dodge!
-        const skillItem = actor?.items.get(this.attackingWeaponItem.system.usage.oneHand.skillId);
+        // TODO duplicate code ***
+        const selectedParryingWeapon = (await fromUuid(
+          this.object.parryingWeaponUuid ?? "",
+        )) as RqgItem | null;
+        const parrySkillRqid =
+          selectedParryingWeapon?.system.usage[this.object.parryingWeaponUsage ?? "oneHand"]
+            ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
+        // TODO end duplicate code ***
+
+        const defendingActor = (await fromUuid(
+          this.object.defendingActorUuid ?? "",
+        )) as RqgActor | null;
+
+        let defendSkillItem: RqgItem | undefined;
+        switch (this.object.defence) {
+          case "parry": {
+            defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid) as
+              | RqgItem
+              | undefined;
+            break;
+          }
+
+          case "dodge": {
+            defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(
+              CONFIG.RQG.skillRqid.dodge,
+            );
+            break;
+          }
+
+          case "ignore":
+          default:
+          // Leave defendSkillItem undefined
+        }
 
         const defendRollOptions: AbilityRollOptions = {
-          naturalSkill: skillItem?.system.chance,
+          naturalSkill: defendSkillItem?.system.chance,
           modifiers: [
             {
               value: Number(this.object.augmentModifier),
@@ -182,6 +212,8 @@ export class DefenceDialog extends FormApplication<
         }
         const messageData = this.attackChatMessage!.toObject();
 
+        const defendRollHtml = await defendRoll.render();
+
         foundry.utils.mergeObject(
           messageData,
           {
@@ -190,6 +222,7 @@ export class DefenceDialog extends FormApplication<
                 chat: {
                   attackState: `Defended`,
                   defendRoll: defendRoll,
+                  defendRollHtml: defendRollHtml,
                 },
               },
             },
@@ -207,7 +240,7 @@ export class DefenceDialog extends FormApplication<
 
         // TODO Introduce ability for GM to fudge roll here
 
-        await skillItem?.checkExperience?.(defendRoll.successLevel); // TODO move to later in flow
+        await defendSkillItem?.checkExperience?.(defendRoll.successLevel); // TODO move to later in flow
         await this.close();
       });
     });
@@ -242,10 +275,10 @@ export class DefenceDialog extends FormApplication<
   private getDefenceNameAndChance(
     defence: string | undefined,
     defendingActor: RqgActor | null,
-    parrySkillUuid: string,
+    parrySkillRqid: string,
   ): { defenceName: string; defenceChance: number } {
     if (defence === "parry") {
-      const parryWeapon = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillUuid);
+      const parryWeapon = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid);
       return {
         defenceName: parryWeapon?.name ?? "",
         defenceChance: parryWeapon?.system.chance ?? 0,
@@ -329,19 +362,19 @@ export class DefenceDialog extends FormApplication<
     }
 
     if (this.usageHasParryManeuver(parryingWeapon.system.usage.oneHand)) {
-      usages.oneHand = localize("RQG.Game.WeaponUsage.oneHand-full");
+      usages.oneHand = "RQG.Game.WeaponUsage.oneHand-full";
     }
 
     if (this.usageHasParryManeuver(parryingWeapon.system.usage.offHand)) {
-      usages.offHand = localize("RQG.Game.WeaponUsage.offHand-full");
+      usages.offHand = "RQG.Game.WeaponUsage.offHand-full";
     }
 
     if (this.usageHasParryManeuver(parryingWeapon.system.usage.twoHand)) {
-      usages.twoHand = localize("RQG.Game.WeaponUsage.twoHand-full");
+      usages.twoHand = "RQG.Game.WeaponUsage.twoHand-full";
     }
 
     if (this.usageHasParryManeuver(parryingWeapon.system.usage.missile)) {
-      usages.missile = localize("RQG.Game.WeaponUsage.missile-full");
+      usages.missile = "RQG.Game.WeaponUsage.missile-full";
     }
 
     return usages;

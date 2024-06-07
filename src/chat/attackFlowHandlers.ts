@@ -19,6 +19,9 @@ import { DamageCalculations } from "../system/damageCalculations";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 
+/**
+ * Open the Defence Dialog to let someone defend against the attack
+ */
 export async function handleDefend(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId, attackWeaponUuid } = getChatMessageInfo(clickedButton);
 

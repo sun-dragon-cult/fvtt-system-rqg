@@ -154,6 +154,7 @@ export class AttackDialog extends FormApplication<
           // TODO Warn about not finding attacker actor
           return;
         }
+        const attackRollHtml = await attackRoll.render();
 
         const chatData: AttackChatFlags = {
           type: "attackChat",
@@ -172,6 +173,8 @@ export class AttackDialog extends FormApplication<
             hitLocationRoll: undefined,
             damagedActorUuid: "",
             damagedWeaponUuid: "",
+            attackRollHtml: attackRollHtml,
+            defendRollHtml: undefined,
           },
         };
         const attackChatContent = await renderTemplate(

@@ -1,6 +1,11 @@
 {{log "attackChatTemplate" this}}
 <div data-attack-weapon-uuid="{{attackWeaponUuid}}"
      data-defence-weapon-uuid="{{defenceWeaponUuid}}">
+  <div class="flexrow">
+    {{{attackRollHtml}}}
+    {{{defendRollHtml}}}
+  </div>
+
   {{#if (eq attackState 'Attacked')}}
     <div class="flexrow">
       <button data-defence="parry">Parry</button>
