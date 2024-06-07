@@ -941,6 +941,7 @@ input.readonly {
 
   .dice-total {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-around;
     mix-blend-mode: multiply;
 
