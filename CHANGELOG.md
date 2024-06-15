@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.5](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.4...v3.4.5) (2024-06-15)
+
+
+### Bug Fixes
+
+* localisation of empty keys fails in Foundry 12 ([555eb0c](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/555eb0c3c7ab88f7cffd3cad8d08341b7d6cb882)), closes [#713](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/713)
+
 ## [3.4.4](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.3...v3.4.4) (2024-05-26)
 
 
