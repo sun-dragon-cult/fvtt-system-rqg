@@ -16,8 +16,12 @@ import type { RqgItem } from "../items/rqgItem";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
-    strs.filter((s) => typeof s !== "object").join(""),
+    strs
+      .filter((s) => typeof s !== "object")
+      .map((v) => (v != "" ? v : "undefined")) // This concat is used for localization and empty keys don't work
+      .join(""),
   );
+
   Handlebars.registerHelper("json", (context) => JSON.stringify(context));
 
   /** Workaround since handlebars can't handle ../@key

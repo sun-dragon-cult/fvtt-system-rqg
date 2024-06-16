@@ -173,7 +173,7 @@
         },
         "Occupation": {
           "Heading": "Current Occupation",
-          "": " ",
+          "undefined": " ",
           "assistantShaman": "Assistant Shaman",
           "chariotDriver": "Chariot Driver",
           "crafter": "Crafter",
@@ -980,7 +980,7 @@
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
         "DurationEnum": {
-          "": "None",
+          "undefined": "None",
           "instant": "Instant",
           "temporal": "Temporal",
           "focused": "Focused",
@@ -988,14 +988,14 @@
           "special": "Special"
         },
         "RangeEnum": {
-          "": "None",
+          "undefined": "None",
           "self": "Self",
           "touch": "Touch",
           "ranged": "Ranged",
           "special": "Special"
         },
         "ConcentrationEnum": {
-          "": "",
+          "undefined": "",
           "active": "Active",
           "passive": "Passive"
         }
