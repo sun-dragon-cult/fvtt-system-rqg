@@ -39,8 +39,7 @@
     "recommends": [
       {
         "id": "wiki-en-rqg",
-        "type": "module",
-        "manifest": "https://github.com/sun-dragon-cult/wiki-en-rqg/releases/latest/download/system.json"
+        "type": "module"
       },
       {
         "id": "drag-ruler",
