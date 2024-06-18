@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.6](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.5...v3.4.6) (2024-06-18)
+
+
+### Bug Fixes
+
+* update relationship link to wiki module now that it's released ([01e6e6b](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/01e6e6b6d9133855c95d269ce224ada21e36e83d))
+
 ## [3.4.5](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.4...v3.4.5) (2024-06-15)
 
 
