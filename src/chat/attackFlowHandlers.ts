@@ -18,6 +18,7 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { DamageCalculations } from "../system/damageCalculations";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -266,4 +267,24 @@ function getOutcomeDescription(
   weaponAbsorbtion: number,
 ): string {
   return `...and does ${actorDamage} damage to ${hitLocationName} (${hitLocationRoll}) defending weapon absorbs ${weaponAbsorbtion}hp and is reduces by ${weaponDamage}HP`;
+}
+
+export function getBasicOutcomeDescription(
+  defence: string | undefined,
+  attackSuccessLevel: AbilitySuccessLevelEnum,
+  defenceSuccessLevel: AbilitySuccessLevelEnum | undefined,
+): string {
+  switch (defence) {
+    case "dodge": {
+      return localize(`RQG.Game.DodgeResults.${attackSuccessLevel}-${defenceSuccessLevel ?? 5}`);
+    }
+
+    case "parry":
+    default: {
+      // Ignore (undefined defenceSuccessLevel) is handled like a failed parry (5)
+      return localize(
+        `RQG.Game.AttackParryResults.${attackSuccessLevel}-${defenceSuccessLevel ?? 5}`,
+      );
+    }
+  }
 }

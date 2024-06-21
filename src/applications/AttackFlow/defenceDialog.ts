@@ -2,7 +2,7 @@ import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { getGame, localize, RqgError, toKebabCase, trimChars } from "../../system/util";
+import { getGame, localize, toKebabCase, trimChars } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
 import { AttackChatOptions } from "../../chat/RqgChatMessage.types";
@@ -10,6 +10,7 @@ import { DefenceDialogHandlebarsData, DefenceDialogObjectData } from "./DefenceD
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Usage, UsageType } from "../../data-model/item-data/weaponData";
+import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 
 export class DefenceDialog extends FormApplication<
   FormApplication.Options,
@@ -204,15 +205,32 @@ export class DefenceDialog extends FormApplication<
           }),
           // resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // TODO Idea - add fields in IAbility to specify text specific for an ability
         };
-
-        const defendRoll = new AbilityRoll("1d100", {}, defendRollOptions);
-        await defendRoll.evaluate();
-        if (!defendRoll.successLevel) {
-          throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+        const attackRoll = AbilityRoll.fromData(
+          this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
+        );
+        if (!attackRoll?.successLevel) {
+          const msg = "Didn't find an attackRoll in the chatmessage, aborting";
+          ui.notifications?.error(msg);
+          console.error(`RQG | ${msg}`);
+          return;
         }
+
+        const defendRoll =
+          this.object.defence !== "ignore"
+            ? new AbilityRoll("1d100", {}, defendRollOptions)
+            : undefined;
+        await defendRoll?.evaluate();
+
         const messageData = this.attackChatMessage!.toObject();
 
-        const defendRollHtml = await defendRoll.render();
+        const defendRollHtml =
+          (await defendRoll?.render()) ?? localize("RQG.Dialog.Defence.Ignored"); // TODO improve html
+
+        const outcomeDescription = getBasicOutcomeDescription(
+          this.object.defence,
+          attackRoll.successLevel,
+          defendRoll?.successLevel,
+        );
 
         foundry.utils.mergeObject(
           messageData,
@@ -220,6 +238,7 @@ export class DefenceDialog extends FormApplication<
             flags: {
               [systemId]: {
                 chat: {
+                  outcomeDescription: outcomeDescription,
                   attackState: `Defended`,
                   defendRoll: defendRoll,
                   defendRollHtml: defendRollHtml,
@@ -240,7 +259,7 @@ export class DefenceDialog extends FormApplication<
 
         // TODO Introduce ability for GM to fudge roll here
 
-        await defendSkillItem?.checkExperience?.(defendRoll.successLevel); // TODO move to later in flow
+        await defendSkillItem?.checkExperience?.(defendRoll?.successLevel); // TODO move to later in flow
         await this.close();
       });
     });
@@ -326,7 +345,7 @@ export class DefenceDialog extends FormApplication<
       defenceOptions.dodge = dodgeSkill.name;
     }
 
-    defenceOptions.ignore = "Ignore"; // TODO translate
+    defenceOptions.ignore = localize("RQG.Dialog.Defence.Ignore");
 
     return defenceOptions;
   }

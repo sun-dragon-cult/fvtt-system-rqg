@@ -1,6 +1,5 @@
 {
   "id": "rqg",
-  "type": "system",
   "title": "RuneQuest Glorantha",
   "description": "A RuneQuest Glorantha system implementation.",
   "version": "3.4.6",
