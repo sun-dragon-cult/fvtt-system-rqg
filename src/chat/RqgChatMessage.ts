@@ -6,6 +6,7 @@ import {
   handleApplyWeaponDamage,
   handleDamageAndHitlocation,
   handleDefend,
+  hideChatActionButtons,
 } from "./attackFlowHandlers";
 
 export type ChatMessageType = keyof typeof chatHandlerMap;
@@ -33,6 +34,11 @@ export class RqgChatMessage extends ChatMessage {
     // Hooks.on("renderChatMessage", (chatItem, html) => {
     //   RqidLink.addRqidLinkClickHandlers(html); // TODO this might not work if rqid points to compendium (async)
     // });
+
+    Hooks.on("renderChatMessage", (app: any, html: JQuery) => {
+      // Only display combat action buttons to players that should see them
+      hideChatActionButtons(html[0]);
+    });
   }
 
   declare flags: { [systemId]: RqgChatMessageFlags }; // v10 type workaround

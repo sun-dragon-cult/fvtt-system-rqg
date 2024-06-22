@@ -4,6 +4,7 @@ import {
   assertItemType,
   getDomDataset,
   getGame,
+  getGameUser,
   getRequiredDomDataset,
   localize,
   usersIdsThatOwnActor,
@@ -288,3 +289,26 @@ export function getBasicOutcomeDescription(
     }
   }
 }
+
+/**
+ * Optionally hide the display of chat card elements which should not be shown to user
+ */
+export const hideChatActionButtons = function (html: HTMLElement | undefined) {
+  if (getGameUser().isGM) {
+    return; // Do not hide anything from GM
+  }
+
+  // Otherwise conceal elements for unrelated actors/players
+  const maybeHideElements = html?.querySelectorAll(".rqg.chat-card [data-visible-actor-uuid]");
+
+  maybeHideElements?.forEach((el: Element) => {
+    if (!(el instanceof HTMLElement)) {
+      return;
+    }
+    // @ts-expect-error fromUuidSync
+    const actor = fromUuidSync(el.dataset.visibleActorUuid);
+    if (actor && !actor?.isOwner) {
+      el.style.display = "none";
+    }
+  });
+};

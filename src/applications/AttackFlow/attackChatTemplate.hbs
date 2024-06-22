@@ -1,16 +1,22 @@
 {{log "attackChatTemplate" this}}
-<div data-attack-weapon-uuid="{{attackWeaponUuid}}"
+<div class="rqg chat-card" data-attack-weapon-uuid="{{attackWeaponUuid}}"
      data-defence-weapon-uuid="{{defenceWeaponUuid}}">
   <div class="flexrow">
-    {{{attackRollHtml}}}
-    {{{defendRollHtml}}}
+    <span data-visible-actor-uuid="{{attackingActorUuid}}">{{{attackRollHtml}}}</span>
+    <span data-visible-actor-uuid="{{defendingActorUuid}}">{{{defendRollHtml}}}</span>
   </div>
 
   {{#if (eq attackState 'Attacked')}}
     <div class="flexrow">
-      <button data-defence="parry">Parry</button>
-      <button data-defence="dodge">Dodge</button>
-      <button data-defence="ignore">Ignore</button>
+      <button data-visible-actor-uuid="{{defendingActorUuid}}"
+              data-defence="parry">Parry
+      </button>
+      <button data-visible-actor-uuid="{{defendingActorUuid}}"
+              data-defence="dodge">Dodge
+      </button>
+      <button data-visible-actor-uuid="{{defendingActorUuid}}"
+              data-defence="ignore">Ignore
+      </button>
     </div>
   {{else if (eq attackState 'Defended')}}
     {{{outcomeDescription}}}
@@ -20,9 +26,11 @@
     {{outcomeDescription}}
     <div class="flexrow">
       {{#unless actorDamagedApplied}}
-        <button data-wounded-actor-uuid="{{damagedActorUuid}}">Apply damage to actor</button>{{/unless}}
+        <button data-visible-actor-uuid="{{damagedActorUuid}}"
+          data-wounded-actor-uuid="{{damagedActorUuid}}">Apply damage to actor</button>{{/unless}}
       {{#unless weaponDamageApplied}}
-        <button data-damaged-weapon-uuid="{{damagedWeaponUuid}}">Apply damage to weapon</button>{{/unless}}
+        <button data-visible-actor-uuid="{{defendingActorUuid}}"
+          data-damaged-weapon-uuid="{{damagedWeaponUuid}}">Apply damage to weapon</button>{{/unless}}
     </div>
   {{/if}}
 </div>
