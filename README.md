@@ -4,6 +4,7 @@
 ![Latest Release Download Count](https://img.shields.io/github/downloads/sun-dragon-cult/fvtt-system-rqg/latest/rqg.zip)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/LICENSE)
 [![Tests](https://github.com/sun-dragon-cult/fvtt-system-rqg/actions/workflows/test.yml/badge.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/actions/workflows/test.yml)
+![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Frqg)
 
 # RuneQuest Glorantha system for Foundry Virtual Table Top
 
