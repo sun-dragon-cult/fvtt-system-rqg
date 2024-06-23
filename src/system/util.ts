@@ -405,7 +405,9 @@ export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
   if (availableRunes.length > 0) {
     return availableRunes;
   }
+  console.time("RQG | Caching Runes took");
   availableRunes = await getItemsToCache("i.rune.");
+  console.timeEnd("RQG | Caching Runes took");
   return availableRunes;
 }
 
@@ -413,7 +415,9 @@ export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]
   if (availableHitLocations.length > 0) {
     return availableHitLocations;
   }
+  console.time("RQG | Caching Hit Locations took");
   availableHitLocations = await getItemsToCache("i.hit-location.");
+  console.timeEnd("RQG | Caching Hit Locations took");
   return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
 }
 
