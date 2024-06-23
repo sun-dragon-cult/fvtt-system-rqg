@@ -1388,7 +1388,8 @@ export class RqgActorSheet extends ActorSheet<
       if (getGameUser().isGM) {
         await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
       } else {
-        socketSend("deleteCombatant", {
+        socketSend({
+          action: "deleteCombatant",
           combatId: combat.id,
           idsToDelete: combatantIdsToDelete,
         });

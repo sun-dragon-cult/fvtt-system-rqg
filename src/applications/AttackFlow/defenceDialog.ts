@@ -2,7 +2,7 @@ import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { getGame, localize, toKebabCase, trimChars } from "../../system/util";
+import { getGame, localize, RqgError, toKebabCase, trimChars } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
 import { AttackChatOptions } from "../../chat/RqgChatMessage.types";
@@ -11,6 +11,7 @@ import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
+import { socketSend } from "../../sockets/RqgSocket";
 
 export class DefenceDialog extends FormApplication<
   FormApplication.Options,
@@ -147,6 +148,11 @@ export class DefenceDialog extends FormApplication<
     // Do the roll to chat
     html[0]?.querySelectorAll<HTMLElement>("[data-defend]").forEach((el) => {
       el.addEventListener("click", async () => {
+        if (!this.attackChatMessage?.id) {
+          const msg = "Attack chat message didn't have an id";
+          throw new RqgError(msg, this.attackChatMessage);
+        }
+
         // TODO duplicate code ***
         const selectedParryingWeapon = (await fromUuid(
           this.object.parryingWeaponUuid ?? "",
@@ -232,6 +238,8 @@ export class DefenceDialog extends FormApplication<
           defendRoll?.successLevel,
         );
 
+        // TODO Introduce ability for GM to fudge roll here
+
         foundry.utils.mergeObject(
           messageData,
           {
@@ -254,10 +262,13 @@ export class DefenceDialog extends FormApplication<
           messageData.flags[systemId]!.chat,
         );
 
-        // TODO Send update to Attacker user (or GM) via socket, include acting actor !!!
-        this.attackChatMessage?.update(messageData);
-
-        // TODO Introduce ability for GM to fudge roll here
+        socketSend({
+          action: "updateChatMessage",
+          messageId: this.attackChatMessage.id,
+          update: messageData,
+          // @ts-expect-error author
+          messageAuthorId: this.attackChatMessage.author.id,
+        });
 
         await defendSkillItem?.checkExperience?.(defendRoll?.successLevel); // TODO move to later in flow
         await this.close();
