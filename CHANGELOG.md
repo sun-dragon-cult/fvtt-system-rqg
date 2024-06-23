@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.7](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.6...v3.4.7) (2024-06-23)
+
+
+### Bug Fixes
+
+* add log to indicate how long caching of rune & hit locations take, and when they have finished ([884c660](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/884c660dc944ac68649dc82b19682436ff46e75d))
+
 ## [3.4.6](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.5...v3.4.6) (2024-06-18)
 
 
