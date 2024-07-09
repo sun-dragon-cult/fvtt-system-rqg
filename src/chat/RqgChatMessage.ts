@@ -6,6 +6,7 @@ import {
   handleApplyWeaponDamage,
   handleDamageAndHitlocation,
   handleDefend,
+  handleRollFumble,
   hideChatActionButtons,
 } from "./attackFlowHandlers";
 
@@ -71,6 +72,11 @@ export class RqgChatMessage extends ChatMessage {
     if (clickedButton?.dataset.damagedWeaponUuid !== undefined) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyWeaponDamage(clickedButton); // Damage weapon HP
+    }
+
+    if (clickedButton?.dataset.fumble !== undefined) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleRollFumble(clickedButton); // Roll the Fumble table
     }
 
     // *************************

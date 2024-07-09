@@ -1,7 +1,8 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import type { RqgActor } from "../../actors/rqgActor";
-import { UsageType } from "../../data-model/item-data/weaponData";
+import type { UsageType } from "../../data-model/item-data/weaponData";
+import type { DefenceType } from "../../chat/RqgChatMessage.types";
 
 /** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {
@@ -33,7 +34,7 @@ export type DefenceDialogHandlebarsData = {
 
 export type DefenceDialogObjectData = {
   defendingActorUuid: string | undefined;
-  defence: string | undefined;
+  defence: DefenceType | undefined;
   parryingWeaponUuid: string | undefined;
   parryingWeaponUsage: UsageType | undefined;
   defenceItemUuid: string | undefined; // Could be a weapon skill or the Dodge skill

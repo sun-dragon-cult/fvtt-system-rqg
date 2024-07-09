@@ -2,16 +2,26 @@ import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { getGame, localize, RqgError, toKebabCase, trimChars } from "../../system/util";
+import {
+  assertItemType,
+  getGame,
+  localize,
+  requireValue,
+  RqgError,
+  toKebabCase,
+  trimChars,
+} from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
-import { AttackChatOptions } from "../../chat/RqgChatMessage.types";
+import { AttackChatOptions, DefenceType } from "../../chat/RqgChatMessage.types";
 import { DefenceDialogHandlebarsData, DefenceDialogObjectData } from "./DefenceDialogData.types";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import { socketSend } from "../../sockets/RqgSocket";
+import { combatOutcome } from "../../system/combatCalculations";
+import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class DefenceDialog extends FormApplication<
   FormApplication.Options,
@@ -108,7 +118,7 @@ export class DefenceDialog extends FormApplication<
       parryingWeapon?.uuid,
     );
     if (!Object.keys(defenceOptions).includes(this.object.defence ?? "")) {
-      this.object.defence = Object.keys(defenceOptions)[0]; // Make sure there is a possible defence selected
+      this.object.defence = Object.keys(defenceOptions)[0] as DefenceType; // Make sure there is a possible defence selected
     }
 
     const parryingWeaponUsageOptions = this.getParryingWeaponUsageOptions(parryingWeapon);
@@ -221,11 +231,79 @@ export class DefenceDialog extends FormApplication<
           return;
         }
 
-        const defendRoll =
-          this.object.defence !== "ignore"
-            ? new AbilityRoll("1d100", {}, defendRollOptions)
-            : undefined;
-        await defendRoll?.evaluate();
+        const defendRoll = new AbilityRoll("1d100", {}, defendRollOptions);
+        await defendRoll.evaluate();
+        if (!defendRoll.successLevel) {
+          throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+        }
+
+        const attackingWeapon = (await fromUuid(
+          this.attackChatMessage?.getFlag(systemId, "chat.attackWeaponUuid"),
+        )) as RqgItem | null;
+        assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
+
+        const attackWeaponUsageType = this.attackChatMessage?.getFlag(
+          systemId,
+          "chat.attackWeaponUsage",
+        );
+        requireValue(
+          attackWeaponUsageType,
+          "No attacking weapon usage found in attack chat message",
+        );
+
+        const parryWeaponUsageType = this.attackChatMessage?.getFlag(
+          systemId,
+          "chat.defenceWeaponUsage",
+        );
+
+        const {
+          weaponDamage,
+          damagedWeapon,
+          defenderHitLocationDamage,
+          useParryHitLocation,
+          ignoreDefenderAp,
+        } = await combatOutcome(
+          this.object.defence,
+          attackRoll,
+          defendRoll,
+          attackingWeapon,
+          attackWeaponUsageType,
+          selectedParryingWeapon,
+          parryWeaponUsageType,
+        );
+
+        if (weaponDamage) {
+          // TODO add damage to chatMessage for the applyDamage button - check if attacker or defender weapon
+          console.log("*** Add damagedWeapon to chat", weaponDamage, damagedWeapon);
+        }
+
+        if (defenderHitLocationDamage) {
+          // TODO add damage to chatMessage for the applyDamage button
+          console.log(
+            "*** Add hitLocation damage to chat",
+            defenderHitLocationDamage,
+            useParryHitLocation,
+          );
+
+          if (useParryHitLocation) {
+            // TODO use the targets parry weapon hit location
+            // TODO need to expand the weapon item or equipped system for this
+          } else {
+            // TODO use the target hitlocation according to the hitLocationRoll
+          }
+        }
+
+        if (ignoreDefenderAp) {
+          // TODO add damage to chatMessage for apply damage options
+        }
+
+        if (attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble) {
+          // TODO add damage to chatMessage for the fumble button
+        }
+
+        if (defendRoll.successLevel === AbilitySuccessLevelEnum.Fumble) {
+          // TODO add damage to chatMessage for the fumble button
+        }
 
         const messageData = this.attackChatMessage!.toObject();
 
@@ -319,7 +397,7 @@ export class DefenceDialog extends FormApplication<
       return { defenceName: dodgeSkill?.name ?? "", defenceChance: dodgeSkill?.system.chance };
     }
 
-    return { defenceName: "Ignore", defenceChance: 0 }; // TODO Translate !!!
+    return { defenceName: localize("RQG.Dialog.Defence.Ignore"), defenceChance: 0 };
   }
 
   private getActorOptions(): Record<string, string> {
@@ -344,11 +422,11 @@ export class DefenceDialog extends FormApplication<
   private getDefenceOptions(
     defendingActor: RqgActor | undefined,
     parryingWeaponUuid: string | undefined,
-  ): Record<string, string> {
+  ): Record<DefenceType, string> {
     const defenceOptions: any = {};
 
     if (parryingWeaponUuid) {
-      defenceOptions.parry = "Parry"; // TODO translate
+      defenceOptions.parry = localize("RQG.Dialog.Defence.Parry");
     }
 
     const dodgeSkill = defendingActor?.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge);

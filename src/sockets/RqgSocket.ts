@@ -103,7 +103,7 @@ function handleSocketMsg(request: SocketAction): void {
     // ---
 
     default: {
-      const msg = `Got unknown socket action in payload: ${request.payload.action}`;
+      const msg = `Got unknown socket action in payload`;
       ui.notifications?.error(msg);
       throw new RqgError(msg, request);
     }

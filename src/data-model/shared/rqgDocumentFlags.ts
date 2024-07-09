@@ -52,8 +52,8 @@ export interface DocumentRqidFlags {
 export type BaseRqgChatFlags = {
   /** The different types of chatmessages. Used for type narrowing, see {@link assertChatMessageFlagType} */
   type: ChatMessageType;
-  /** Data that needs to be persisted. Should include {@link CommonRqgChatFlags} */
-  chat: object;
+  /** Data that needs to be persisted. */
+  chat: AttackChatFlags["chat"];
   // /** Data from inputs in the form only */
   // formData: object;
 };
@@ -106,7 +106,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     damageRoll?: Roll;
     hitLocationRoll?: Roll;
 
-    damagedActorUuid: string;
+    damagedHitLocationUuid: string;
     damagedWeaponUuid: string;
     // result: AbilitySuccessLevelEnum | undefined;
     // specialDamageTypeText: string | undefined;
@@ -114,6 +114,13 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     // combatManeuverName: FormDataEntryValue;
     // actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
     // actionValue: string; // the clicked buttons value (like "slash" or "special")
+    attackRollHtml: string; // TODO Is this really the best way?
+    defendRollHtml: string | undefined; // TODO Is this really the best way?
+
+    attackerFumbled: boolean;
+    defenderFumbled: boolean;
+    attackerFumbleOutcome: string;
+    defenderFumbleOutcome: string;
   };
 }
 

@@ -7,6 +7,8 @@ import {
   getGameUser,
   getRequiredDomDataset,
   localize,
+  logMisconfiguration,
+  RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
@@ -20,6 +22,7 @@ import { DamageCalculations } from "../system/damageCalculations";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
+import { socketSend } from "../sockets/RqgSocket";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -60,29 +63,27 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
   const damageRoll = new Roll("1d8+1"); // TODO fake damage formula
   await damageRoll.evaluate();
 
-  const attackRoll = attackChatMessage.getFlag(systemId, "chat.attackRoll") as
-    | AbilityRoll
-    | undefined;
-  const defendRoll = attackChatMessage.getFlag(systemId, "chat.defendRoll") as
-    | AbilityRoll
-    | undefined;
+  const attackRoll = AbilityRoll.fromData(
+    attackChatMessage.getFlag(systemId, "chat.attackRoll"),
+  ) as AbilityRoll | undefined;
   const attackerActor = attackWeapon.parent; // TODO or attackingActorUuid
   const defendingActor = (await fromUuid(
     attackChatMessage.getFlag(systemId, "chat.defendingActorUuid"),
   )) as RqgActor | undefined;
 
-  const { outcomeDescription, woundedActor, damagedWeapon } = calculateOutcome(
-    attackRoll!,
-    defendRoll!,
-    damageRoll,
-    hitLocationRoll,
-    attackerActor,
-    defendingActor,
-    attackWeapon,
-    // attackingNaturalWeaponHitlocation for parry damage
-    // defenceSkill,
-    // defendingWeapon,
-  );
+  if (!attackRoll || !attackerActor || !defendingActor) {
+    const msg = "Not enough data to calculate outcome";
+    ui.notifications?.error(msg);
+    console.error(`RQG | ${msg}`);
+    return;
+  }
+
+  const defendRoll = AbilityRoll.fromData(
+    attackChatMessage.getFlag(systemId, "chat.defendRoll"),
+  ) as AbilityRoll | undefined;
+
+  const attackerFumbled = attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
+  const defenderFumbled = defendRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
 
   const messageData = attackChatMessage.toObject();
   foundry.utils.mergeObject(
@@ -94,9 +95,8 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
             attackState: `DamageRolled`,
             damageRoll: damageRoll,
             hitLocationRoll: hitLocationRoll,
-            damagedActorUuid: woundedActor?.uuid,
-            damagedWeaponUuid: damagedWeapon.uuid,
-            outcomeDescription: outcomeDescription,
+            attackerFumbled: attackerFumbled,
+            defenderFumbled: defenderFumbled,
           },
         },
       },
@@ -109,6 +109,13 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
     messageData.flags.rqg!.chat!,
   );
 
+  // socketSend({
+  //   action: "updateChatMessage",
+  //   messageId: attackChatMessage.id ?? "",
+  //   // @ts-expect-error author
+  //   messageAuthorId: attackChatMessage.author.id,
+  //   update: messageData,
+  // });
   await attackChatMessage?.update(messageData);
 
   // TODO update chat with rolls
@@ -210,6 +217,90 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
 }
 
 /**
+ * Roll the fumble rolltable and put the result in fumbleOutcome
+ */
+export async function handleRollFumble(clickedButton: HTMLButtonElement): Promise<void> {
+  const chatMessageId = getRequiredDomDataset(clickedButton, "message-id");
+  const fumblingActor = getRequiredDomDataset(clickedButton, "fumble");
+  const attackChatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
+  if (!attackChatMessage) {
+    throw new RqgError("Couldn't find attack chat message");
+  }
+
+  const fumbleOutcome = await fumbleRoll();
+
+  const messageData = attackChatMessage.toObject();
+  let messageDataUpdate;
+
+  if (fumblingActor === "attacker") {
+    messageDataUpdate = {
+      flags: {
+        [systemId]: {
+          chat: {
+            attackerFumbled: false,
+            attackerFumbleOutcome: fumbleOutcome,
+          },
+        },
+      },
+    };
+  } else if (fumblingActor === "defender") {
+    messageDataUpdate = {
+      flags: {
+        [systemId]: {
+          chat: {
+            defenderFumbled: false,
+            defenderFumbleOutcome: fumbleOutcome,
+          },
+        },
+      },
+    };
+  } else {
+    throw new RqgError("Got unknown value in fumble button");
+  }
+  foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
+  messageData.content = await renderTemplate(
+    templatePaths.attackChatMessage,
+    messageData.flags[systemId]!.chat!,
+  );
+
+  // @ts-expect-error author
+  if (getGameUser().id === attackChatMessage.author.id) {
+    await attackChatMessage.update(messageData);
+  } else {
+    socketSend({
+      action: "updateChatMessage",
+      messageId: attackChatMessage.id ?? "",
+      // @ts-expect-error author
+      messageAuthorId: attackChatMessage.author.id,
+      update: messageData,
+    });
+  }
+}
+
+async function fumbleRoll(): Promise<string> {
+  const fumbleTableName = getGame().settings.get(systemId, "fumbleRollTable");
+  const fumbleTable = getGame().tables?.getName(fumbleTableName);
+  if (!fumbleTable) {
+    logMisconfiguration(
+      localize("RQG.Dialog.weaponChat.FumbleTableMissingWarn", {
+        fumbleTableName: fumbleTableName,
+      }),
+      true,
+    );
+    return "";
+  }
+  // @ts-expect-error draw
+  const draw = await fumbleTable.draw({ displayChat: false });
+  const text = draw.results.map((r: any) => `${r.text}<br>`); // TODO is TableResult
+
+  return await TextEditor.enrichHTML(text, {
+    // @ts-expect-error documents
+    documents: true,
+    async: true,
+  });
+}
+
+/**
  * Utility function to extract data from the AttackChat html.
  * TODO How to decide what should be in html and what should be in flags?
  */
@@ -226,48 +317,6 @@ function getChatMessageInfo(button: HTMLElement): {
     attackWeaponUuid: attackWeaponUuid,
     defenceWeaponUuid: defenceWeaponUuid,
   };
-}
-
-function calculateOutcome(
-  attackRoll: AbilityRoll,
-  defendRoll: AbilityRoll,
-  damageRoll: Roll,
-  hitLocationRoll: Roll,
-  attackerActor: RqgActor,
-  defendingActor: RqgActor | undefined,
-  attackWeapon: RqgItem,
-  // attackingNaturalWeaponHitlocation for parry damage
-  // defenceSkill,
-  // defendingWeapon,
-) {
-  const damagedHitLocation = defendingActor?.items.find(
-    (i) =>
-      (hitLocationRoll.total ?? 0) >= i.system.dieFrom &&
-      (hitLocationRoll.total ?? 0) <= i.system.dieTo,
-  );
-  const outcomeDescription = getOutcomeDescription(
-    damageRoll.total ?? 0,
-    damagedHitLocation?.name ?? "",
-    hitLocationRoll.total ?? 0,
-    0,
-    0,
-  );
-  return {
-    // TODO not correct actor/weapon for damage
-    outcomeDescription: outcomeDescription,
-    woundedActor: defendingActor,
-    damagedWeapon: attackWeapon,
-  };
-}
-
-function getOutcomeDescription(
-  actorDamage: number,
-  hitLocationName: string,
-  hitLocationRoll: number,
-  weaponDamage: number,
-  weaponAbsorbtion: number,
-): string {
-  return `...and does ${actorDamage} damage to ${hitLocationName} (${hitLocationRoll}) defending weapon absorbs ${weaponAbsorbtion}hp and is reduces by ${weaponDamage}HP`;
 }
 
 export function getBasicOutcomeDescription(

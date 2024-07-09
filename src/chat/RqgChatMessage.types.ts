@@ -2,7 +2,7 @@ import type { CombatManeuver, UsageType } from "../data-model/item-data/weaponDa
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import { Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
 
-export type DefenceType = "Parry" | "Dodge" | "Ignore";
+export type DefenceType = "parry" | "dodge" | "ignore";
 export type AttackState = "Attacked" | "Defended" | "DamageRolled";
 
 export type AttackChatOptions = {

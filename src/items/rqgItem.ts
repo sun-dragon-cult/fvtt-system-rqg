@@ -28,6 +28,8 @@ import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "../data-model/item-data/spell";
 import { AttackDialog } from "../applications/AttackFlow/attackDialog";
 import { AttackChatOptions } from "../chat/RqgChatMessage.types";
+import { UsageType } from "../data-model/item-data/weaponData";
+import { DamageDegree } from "../system/combatCalculations.types";
 
 export class RqgItem extends Item {
   public static init() {
@@ -284,6 +286,37 @@ export class RqgItem extends Item {
   public async attack(options: Partial<AttackChatOptions> = {}): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.Weapon);
     await new AttackDialog(this, options).render(true);
+  }
+
+  /**
+   * Get a damage Roll depending on weapon usage and success level.
+   */
+  public getDamageFormula(
+    usage: UsageType | undefined,
+    damageDegree: DamageDegree,
+  ): string | undefined {
+    if (!usage) {
+      return undefined;
+    }
+    assertItemType(this.type, ItemTypeEnum.Weapon);
+    const weaponDamage = this.system.usage[usage].damage;
+
+    switch (damageDegree) {
+      case "none": {
+        return undefined;
+      }
+
+      case "normal": {
+        return weaponDamage;
+      }
+      case "special":
+      case "maxSpecial": {
+        return weaponDamage + "+" + weaponDamage; // TODO just a placeholder for now, should not duplicate db
+      }
+      default: {
+        throw new RqgError("Tried to get damageFormula for invalid damageDegree");
+      }
+    }
   }
 
   /**

@@ -447,6 +447,7 @@
         "Title": "Defend",
         "DefendingActor": "Defending Actor",
         "Defence": "Defence",
+        "Parry": "Parry",
         "ParryingWeaponUuid": "Parrying Weapon",
         "ParryingWeaponUsage": "Usage",
         "OtherModifier": "Other Modifier",

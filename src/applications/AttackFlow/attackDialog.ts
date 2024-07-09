@@ -70,8 +70,11 @@ export class AttackDialog extends FormApplication<
 
   async getData(): Promise<AttackDialogHandlebarsData> {
     const usageTypeOptions = this.getUsageTypeOptions(this.weaponItem);
-    if (!this.weaponItem.system.defaultUsage) {
-      // Pick the first usage if none is selected
+    if (
+      !this.weaponItem.system.defaultUsage ||
+      !Object.keys(usageTypeOptions).includes(this.object.usageType)
+    ) {
+      // Pick the first usage if none is selected (or if the selected isn't available)
       this.weaponItem.system.defaultUsage = Object.keys(usageTypeOptions)[0] as UsageType;
       this.object.usageType = this.weaponItem.system.defaultUsage;
     }
@@ -171,10 +174,14 @@ export class AttackDialog extends FormApplication<
             defendRoll: undefined,
             damageRoll: undefined,
             hitLocationRoll: undefined,
-            damagedActorUuid: "",
+            damagedHitLocationUuid: "",
             damagedWeaponUuid: "",
             attackRollHtml: attackRollHtml,
             defendRollHtml: undefined,
+            attackerFumbled: false,
+            attackerFumbleOutcome: "",
+            defenderFumbled: false,
+            defenderFumbleOutcome: "",
           },
         };
         const attackChatContent = await renderTemplate(
