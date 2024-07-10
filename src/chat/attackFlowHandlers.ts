@@ -78,13 +78,6 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
     return;
   }
 
-  const defendRoll = AbilityRoll.fromData(
-    attackChatMessage.getFlag(systemId, "chat.defendRoll"),
-  ) as AbilityRoll | undefined;
-
-  const attackerFumbled = attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
-  const defenderFumbled = defendRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
-
   const messageData = attackChatMessage.toObject();
   foundry.utils.mergeObject(
     messageData,
@@ -95,8 +88,6 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
             attackState: `DamageRolled`,
             damageRoll: damageRoll,
             hitLocationRoll: hitLocationRoll,
-            attackerFumbled: attackerFumbled,
-            defenderFumbled: defenderFumbled,
           },
         },
       },

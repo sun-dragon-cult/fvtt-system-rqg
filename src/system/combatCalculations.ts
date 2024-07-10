@@ -170,7 +170,7 @@ function getDamagedWeapon(
   return damageDegree;
 }
 
-function getDamageDegree(
+export function getDamageDegree(
   defence: DefenceType,
   attackSuccessLevel: AbilitySuccessLevelEnum,
   defenceSuccessLevel: AbilitySuccessLevelEnum,

@@ -20,7 +20,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import { socketSend } from "../../sockets/RqgSocket";
-import { combatOutcome } from "../../system/combatCalculations";
+import { combatOutcome, getDamageDegree } from "../../system/combatCalculations";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export class DefenceDialog extends FormApplication<
@@ -318,6 +318,19 @@ export class DefenceDialog extends FormApplication<
 
         // TODO Introduce ability for GM to fudge roll here
 
+        // Skip roll damage button if no damage occurred
+        const attackState =
+          getDamageDegree(
+            this.object.defence ?? "ignore", // TODO correct?
+            attackRoll.successLevel,
+            defendRoll.successLevel,
+          ) !== "none"
+            ? "Defended"
+            : "DamageRolled";
+
+        const attackerFumbled = attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
+        const defenderFumbled = defendRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
+
         foundry.utils.mergeObject(
           messageData,
           {
@@ -325,9 +338,13 @@ export class DefenceDialog extends FormApplication<
               [systemId]: {
                 chat: {
                   outcomeDescription: outcomeDescription,
-                  attackState: `Defended`,
+                  attackState: attackState,
                   defendRoll: defendRoll,
                   defendRollHtml: defendRollHtml,
+                  attackerFumbled: attackerFumbled,
+                  defenderFumbled: defenderFumbled,
+                  actorDamagedApplied: attackState === "DamageRolled",
+                  weaponDamageApplied: attackState === "DamageRolled",
                 },
               },
             },
