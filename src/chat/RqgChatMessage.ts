@@ -38,7 +38,16 @@ export class RqgChatMessage extends ChatMessage {
 
     Hooks.on("renderChatMessage", (app: any, html: JQuery) => {
       // Only display combat action buttons to players that should see them
+      // TODO run the attackTemplate renderer to replace the html here?
       hideChatActionButtons(html[0]);
+
+      // Scroll to show the possibly enlarged message, but only if at bottom of chat
+      // @ts-expect-error isAtBottom
+      if (ui?.chat.isAtBottom) {
+        // TODO how to make it work without releasing the execution thread?
+        // @ts-expect-error scrollBottom
+        setTimeout(() => ui?.chat.scrollBottom(), 0);
+      }
     });
   }
 

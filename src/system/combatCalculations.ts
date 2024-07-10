@@ -83,9 +83,9 @@ export async function combatOutcome(
 
   const { weaponDamage, defenderHitLocationDamage, parryingHitLocation } = calculateDamages(
     defence,
+    damageRoll.total,
     attackSuccessLevel,
     defenceSuccessLevel,
-    damageRoll.total,
     parryingWeapon?.system.hitPoints.value,
     attackingWeapon?.system.hitPoints.value,
   );
