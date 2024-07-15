@@ -52,7 +52,6 @@ export class RqgChatMessage extends ChatMessage {
 
   private static addChatListeners(html: HTMLElement): void {
     html.addEventListener("submit", RqgChatMessage.formSubmitHandler);
-    html.addEventListener("input", RqgChatMessage.inputChangeHandler);
     html.addEventListener("change", RqgChatMessage.inputChangeHandler);
   }
 
