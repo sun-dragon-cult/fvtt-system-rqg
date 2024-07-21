@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.4.7](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.6...v3.4.7) (2024-07-21)
+
+
+### Bug Fixes
+
+* add log to indicate how long caching of rune & hit locations take, and when they have finished ([884c660](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/884c660dc944ac68649dc82b19682436ff46e75d))
+* can only add one digit at a time to Modifiers box ([#726](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/726)) ([5c281c6](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/5c281c6c87e94eeea6a896d314ecbf8f87d75fa3)), closes [#716](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/716)
+* concat handlebar fails to put "undefined" for null values ([41d6968](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/41d696833f2ad0221a3c6ef0e4972f9d4fc4b3fe)), closes [#725](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/725)
+* implement the context menu equipped entries ([17947a7](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/17947a730131a2d3d5b67f2ef9771e170cd49a6f)), closes [#723](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/723)
+* selecting ammo on combat tab of character sheet initiates a dice roll card ([7d20e7d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/7d20e7dfbc1a0ac80ec6a720f5c06a764be8455a)), closes [#701](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/701)
+* xp gain rolls modified by ENC penalties when they should not be ([46ed3ed](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/46ed3ed8e5119863ce5782bc22508fefda5e2ad5)), closes [#704](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/704)
+
 ## [3.4.6](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.5...v3.4.6) (2024-06-18)
 
 
