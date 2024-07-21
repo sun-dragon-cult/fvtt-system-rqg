@@ -94,8 +94,8 @@ export const skillMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.Skill);
-      const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
-      await showImproveAbilityDialog(actor, itemId, item, speakerName);
+      const speaker = ChatMessage.getSpeaker({ actor, token });
+      await showImproveAbilityDialog(item, speaker);
     },
   },
   {
