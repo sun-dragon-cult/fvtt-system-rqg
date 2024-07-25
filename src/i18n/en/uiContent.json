@@ -1182,7 +1182,7 @@
         "3-3": "<b>Attacker</b> rolls normal damage.<br><b>Defender’s</b> parrying weapon takes 1HP damage if damage more than its current HP. Any excess damage goes to the affected hit location.",
         "3-4": "<b>Attacker</b> rolls special damage.<br><b>Defender’s</b> parrying weapon takes damage over its HP, with same amount of damage going to adjacent hit location.",
         "3-5": "<b>Attacker</b> rolls special damage.<br><b>Defender</b> takes damage.",
-        "3-6": "<b>Attacker</b> causes special damage.<br><b>Defender takes damage and rolls on Fumbles table.",
+        "3-6": "<b>Attacker</b> causes special damage.<br><b>Defender</b> takes damage and rolls on Fumbles table.",
         "4-2": "<b>Attack</b> parried or deflected.<br><b>Defender</b> rolls parrying weapon’s special damage. Attacking weapon’s HP is reduced by any damage over its current HP.",
         "4-3": "<b>Attack</b> parried or deflected.<br><b>Defender</b> rolls parrying weapon’s normal damage. Attacking weapon’s HP is reduced by 1 HP if damage over its current HP.",
         "4-4": "<b>Attacker</b> rolls normal damage.<br><b>Defender’s</b> parrying weapon takes 1 HP damage if damage more than its current HP. Any excess damage goes to the affected hit location.",
@@ -1195,7 +1195,7 @@
         "5-6": "<b>Attacker</b> rolls normal damage.<br><b>Defender</b> takes damage and rolls on Fumbles table.",
         "6-2": "<b>Attacker</b> rolls on Fumbles table.<br><b>Defender</b> rolls parrying weapon’s special damage. Attacking weapon’s HP reduced by the damage rolled.",
         "6-3": "<b>Attacker</b> rolls on Fumbles table.<br><b>Defender</b> rolls parrying weapon’s special damage. Attacking weapon’s HP reduced by the damage over its current HP.",
-        "6-4": "<b>Attacker</b> rolls on Fumbles table.<br><b>Defender</b< rolls parrying weapon’s normal damage. Attacking weapon’s HP reduced by 1 HP if damage over its current HP.",
+        "6-4": "<b>Attacker</b> rolls on Fumbles table.<br><b>Defender</b> rolls parrying weapon’s normal damage. Attacking weapon’s HP reduced by 1 HP if damage over its current HP.",
         "6-5": "<b>Attacker</b> rolls on Fumbles table.<br><b>Defender</b> misses.",
         "6-6": "<b>Attacker</b> rolls on Fumbles table.<br><b>Defender</b> rolls on Fumbles table."
       },
