@@ -15,24 +15,30 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.ContextMenu.SetAsNotCarried"),
     icon: contextMenuRunes.SetNotCarried,
     condition: () => true,
-    callback: async (): Promise<void> => {
-      ui.notifications?.info("TODO set as not carried");
+    callback: async (el): Promise<void> => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      await item?.update({ "system.equippedStatus": "notCarried" }, {});
     },
   },
   {
     name: localize("RQG.ContextMenu.SetAsCarried"),
     icon: contextMenuRunes.SetCarried,
     condition: () => true,
-    callback: async (): Promise<void> => {
-      ui.notifications?.info("TODO set as carried");
+    callback: async (el): Promise<void> => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      await item?.update({ "system.equippedStatus": "carried" }, {});
     },
   },
   {
     name: localize("RQG.ContextMenu.SetAsEquipped"),
     icon: contextMenuRunes.SetEquipped,
     condition: () => true,
-    callback: async (): Promise<void> => {
-      ui.notifications?.info("TODO set as equipped");
+    callback: async (el): Promise<void> => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      await item?.update({ "system.equippedStatus": "equipped" }, {});
     },
   },
   {

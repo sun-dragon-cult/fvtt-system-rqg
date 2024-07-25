@@ -84,8 +84,8 @@ export const passionMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.Passion);
-      const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
-      showImproveAbilityDialog(actor, itemId, item, speakerName);
+      const speaker = ChatMessage.getSpeaker({ actor, token });
+      showImproveAbilityDialog(item, speaker);
     },
   },
   {

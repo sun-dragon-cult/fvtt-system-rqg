@@ -17,8 +17,8 @@ import type { RqgItem } from "../items/rqgItem";
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
     strs
-      .filter((s) => typeof s !== "object")
-      .map((v) => (v != "" ? v : "undefined")) // This concat is used for localization and empty keys don't work
+      .filter((s) => s == null || typeof s !== "object")
+      .map((v) => (v != null && v !== "" ? v : "undefined")) // This concat is used for localization and empty keys don't work
       .join(""),
   );
 

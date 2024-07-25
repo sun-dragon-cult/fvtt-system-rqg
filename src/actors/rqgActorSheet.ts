@@ -1091,6 +1091,10 @@ export class RqgActorSheet extends ActorSheet<
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
+        if ((ev.target as HTMLElement)?.tagName === "SELECT") {
+          return; // User clicked on a select element above this element - don't interpret it as an attack
+        }
+
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
