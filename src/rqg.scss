@@ -291,7 +291,7 @@ body {
   img.rune {
     height: 20px;
     border: none;
-    margin: 0;
+    margin: 0 1px;
     mix-blend-mode: overlay;
   }
 
@@ -335,6 +335,10 @@ body {
       position: relative;
       display: flex;
       align-items: center;
+    }
+
+    .centered {
+      justify-content: center;
     }
 
     .fullrow {
