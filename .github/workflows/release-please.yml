@@ -1,15 +1,77 @@
-name: Create PR or Build Release
+name: Create PR or Build Foundry Release
 on:
   push:
     branches:
       - main
 permissions: {}
+env:
+  manifest-file: system.json # Must match the manifest file name declared in Foundry
+  system-name: rqg # Must match the system / module name property in the manifest file
+
 jobs:
-  changes:
-    uses: sun-dragon-cult/github-workflows/.github/workflows/release-please.yml@main
+  PR:
     permissions:
       contents: write
       pull-requests: write
-    with:
-      manifest-file: system.json
-      system-name: rqg
+    runs-on: ubuntu-latest
+    outputs:
+      is_release_created: ${{ steps.release.outputs.release_created }}
+      release_id: ${{ steps.release.outputs.id }}
+      tagName: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Release Please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          release-type: node
+
+
+  release:
+    needs: PR
+    if: ${{ needs.PR.outputs.is_release_created }}
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          check-latest: true
+
+      - name: Init dependencies
+        run: yarn install
+
+      - name: Build project
+        run: yarn build
+
+      - name: Update version in manifest file
+        run: |
+          sed -i "s|#{VERSION}#|${{ needs.PR.outputs.version }}|" "src/${{ env.manifest-file }}"
+          sed -i "s|#{TAG_NAME}#|${{ needs.PR.outputs.tagName }}|" "src/${{ env.manifest-file }}"
+
+      - name: Create Zip
+        id: create_zip
+        run: |
+          mv dist /tmp/${{ env.system-name }}
+          cd /tmp/${{ env.system-name }}
+          zip -r ../${{ env.system-name }}.zip *
+          ls -al /tmp
+
+      - name: Add the manifest json file & zipped system/module to Release Assets
+        uses: xresloader/upload-to-github-release@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: "src/${{ env.manifest-file }};/tmp/${{ env.system-name }}.zip"
+          release_id: ${{ needs.PR.outputs.release_id }}
+          overwrite: true
+          verbose: true
+          draft: true
+
