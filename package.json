@@ -9,7 +9,7 @@
     "build": "run-s clean:dist build:system build:packs",
     "build:packs": "node --experimental-specifier-resolution=node --loader ts-node/esm -r tsconfig-paths/register buildScripts/buildPacks.ts",
     "build:system": "run-s bundle build:template analyze",
-    "bundle": "yarn snowpack build",
+    "bundle": "pnpm snowpack build",
     "build:template": "node jsTemplate2json.mjs",
     "compile:noemit": "tsc --noEmit",
     "lint": "eslint ./src --ext .js,.ts --fix",
@@ -19,7 +19,8 @@
     "clean:dist": "rimraf --glob dist src/assets/packs/*",
     "clean:deps": "rimraf node_modules",
     "clean": "run-p clean:dist clean:deps",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "preinstall": "npx only-allow pnpm"
   },
   "author": "",
   "license": "UNLICENCED",

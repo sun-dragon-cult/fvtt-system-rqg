@@ -46,10 +46,10 @@ jobs:
           check-latest: true
 
       - name: Init dependencies
-        run: yarn install
+        run: pnpm i
 
       - name: Build project
-        run: yarn build
+        run: pnpm build
 
       - name: Update version in manifest file
         run: |

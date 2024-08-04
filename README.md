@@ -23,23 +23,23 @@ In addition there are some recommended modules that are not necessary, but adds 
 
 ## Usage
 
-Se the [Wiki](https://github.com/sun-dragon-cult/fvtt-system-rqg/wiki) for more details.
+See the [Documentation](https://sun-dragon-cult.github.io/) for more details.
 
 ## Development
 
 Written in typescript wih the help of the fantastic [League of Foundry Developers Foundry VTT Types](https://github.com/League-of-Foundry-Developers/foundry-vtt-types).
-After a `yarn install` to get the dependencies, do `yarn build` to build the system and compile the compendium packs into a `dist` folder.
+After a `pnpm i` to get the dependencies, do `pnpm build` to build the system and compile the compendium packs into a `dist` folder.
 For easy development make a softlink from `foundrydata/Data/systems/rqg` to that `dist` folder.
 
-To decrease the time it takes to build the system you can skip generating the compendium packs by running `yarn build:system`.
-This assumes that you previously have compiled the compendium packs with `yarn build` or `yarn build:packs`.
+To decrease the time it takes to build the system you can skip generating the compendium packs by running `pnpm build:system`.
+This assumes that you previously have compiled the compendium packs with `pnpm build` or `pnpm build:packs`.
 These commands builds the pack db files to `src/assets/packs/` from the yaml file sources under `src/assets/compendiums/`
 
 If you like to remove the system from foundry then remove the file system softlink.
 
 ### Development in Windows
 The build scripts make use of [Husky](https://typicode.github.io/husky/) which means that you need to use the 
-Git Bash shell that is supplied by the nodejs windows install when you run the yarn commands to build the system.
+Git Bash shell that is supplied by the nodejs windows install when you run the pnpm commands to build the system.
 
 ### Conventional Commit message standard
 
