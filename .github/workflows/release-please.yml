@@ -39,13 +39,16 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Install Node
-        uses: actions/setup-node@latest
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           check-latest: true
-      - name: Install pnpm
-        uses: pnpm/action-setup@4
 
       - name: Init dependencies
         run: pnpm i
