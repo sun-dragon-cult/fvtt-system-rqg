@@ -44,6 +44,8 @@ jobs:
         with:
           node-version: 20
           check-latest: true
+      - name: Install pnpm
+        uses: pnpm/action-setup@4
 
       - name: Init dependencies
         run: pnpm i
