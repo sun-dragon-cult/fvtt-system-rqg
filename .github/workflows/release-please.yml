@@ -53,8 +53,7 @@ jobs:
 
       - name: Update version in manifest file
         run: |
-          sed -i "s|#{VERSION}#|${{ needs.PR.outputs.version }}|" "src/${{ env.manifest-file }}"
-          sed -i "s|#{TAG_NAME}#|${{ needs.PR.outputs.tagName }}|" "src/${{ env.manifest-file }}"
+          sed -i "s|99999.0.0-localhost|${{ needs.PR.outputs.version }}|" "src/${{ env.manifest-file }}"
 
       - name: Create Zip
         id: create_zip
