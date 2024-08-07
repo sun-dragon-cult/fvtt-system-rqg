@@ -54,7 +54,9 @@ export async function combatOutcome(
     damagedWeaponDesignation === "parryWeapon" ? parryWeaponUsageType : attackWeaponUsageType;
 
   const damagedWeapon =
-    damagedWeaponDesignation === "attackingWeapon" ? attackingWeapon : parryingWeapon ?? undefined;
+    damagedWeaponDesignation === "attackingWeapon"
+      ? attackingWeapon
+      : (parryingWeapon ?? undefined);
 
   if (damagedWeaponDesignation !== "none") {
     requireValue(usage, "No weapon usage for combatOutcome calculations");

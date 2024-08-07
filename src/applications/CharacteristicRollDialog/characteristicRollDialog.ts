@@ -56,8 +56,9 @@ export class CharacteristicRollDialog extends FormApplication<
       otherModifierDescription: localize("RQG.Dialog.CharacteristicRoll.OtherModifier"),
     };
 
-    options.characteristicValue = (actor.system.characteristics as any)[options.characteristicName]
-      ?.value;
+    options.characteristicValue = (actor.system.characteristics as any)[
+      options.characteristicName
+    ]?.value;
     if (options.characteristicValue == null) {
       throw new RqgError("tried to create Characteristic roll dialog without a value");
     }

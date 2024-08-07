@@ -186,8 +186,12 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
 
   console.error("RQG | TODO handle uselesslegs", uselessLegs); // TODO Handle uselesslegs
 
-  hitLocationUpdates && (await damagedHitLocation!.update(hitLocationUpdates));
-  actorUpdates && (await damagedActor!.update(actorUpdates as any)); // TODO fix type
+  if (hitLocationUpdates) {
+    await damagedHitLocation!.update(hitLocationUpdates);
+  }
+  if (actorUpdates) {
+    await damagedActor!.update(actorUpdates as any);
+  } // TODO fix type
   await ChatMessage.create({
     user: getGame().user?.id,
     speaker: speaker,

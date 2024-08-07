@@ -12,6 +12,7 @@ import {
 
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const chatHandlerMap = {
   weaponChat: WeaponChatHandler,
   attackChat: undefined, // TODO Remove this connection, only used to get ChatMessageTypes to rqgDocumentFlags??
