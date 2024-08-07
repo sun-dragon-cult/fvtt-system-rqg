@@ -130,7 +130,7 @@ export async function updateRqidLink(
 ): Promise<void> {
   const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
-    ? droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? ""
+    ? (droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? "")
     : "";
   const fullDocumentRqid =
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;

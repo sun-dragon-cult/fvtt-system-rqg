@@ -34,8 +34,10 @@ export class ActorWizard extends FormApplication {
   constructor(object: RqgActor, options: any) {
     super(object, options);
     this.actor = object;
-    const previouslySelectedTemplateId = this.actor.getFlag(systemId, actorWizardFlags)
-      ?.selectedSpeciesId;
+    const previouslySelectedTemplateId = this.actor.getFlag(
+      systemId,
+      actorWizardFlags,
+    )?.selectedSpeciesId;
 
     const template = getGame().actors?.get(previouslySelectedTemplateId as string) as
       | RqgActor
@@ -129,8 +131,10 @@ export class ActorWizard extends FormApplication {
 
     if (this.actor) {
       // See if the user has already chosen a species template that is stored in flags
-      const previouslySelectedSpeciesId = this.actor.getFlag(systemId, actorWizardFlags)
-        ?.selectedSpeciesId;
+      const previouslySelectedSpeciesId = this.actor.getFlag(
+        systemId,
+        actorWizardFlags,
+      )?.selectedSpeciesId;
 
       if (previouslySelectedSpeciesId) {
         const flaggedSpecies = this.species.speciesTemplates?.find(
@@ -147,8 +151,10 @@ export class ActorWizard extends FormApplication {
       }
 
       // Has the user already chosen a Homeland stored in flags?
-      const previouslySelectedHomelandRqid = this.actor.getFlag(systemId, actorWizardFlags)
-        ?.selectedHomelandRqid;
+      const previouslySelectedHomelandRqid = this.actor.getFlag(
+        systemId,
+        actorWizardFlags,
+      )?.selectedHomelandRqid;
       if (previouslySelectedHomelandRqid) {
         await this.setHomeland(previouslySelectedHomelandRqid);
       }

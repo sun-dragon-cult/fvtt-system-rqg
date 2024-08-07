@@ -27,7 +27,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           release-type: node
 
-
   release:
     needs: PR
     if: ${{ needs.PR.outputs.is_release_created }}
@@ -78,4 +77,3 @@ jobs:
           overwrite: true
           verbose: true
           draft: true
-

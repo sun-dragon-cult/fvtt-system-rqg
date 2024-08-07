@@ -67,8 +67,8 @@ export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | 
   return el instanceof HTMLElement
     ? el
     : (el as Event).target
-    ? ((el as Event).target as HTMLElement)
-    : (el as JQuery).get(0);
+      ? ((el as Event).target as HTMLElement)
+      : (el as JQuery).get(0);
 }
 
 /**
@@ -334,7 +334,7 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
 export async function getDocumentFromUuid<T>(
   documentUuid: string | undefined,
 ): Promise<T | undefined> {
-  return documentUuid ? ((await fromUuid(documentUuid)) as T | null) ?? undefined : undefined;
+  return documentUuid ? (((await fromUuid(documentUuid)) as T | null) ?? undefined) : undefined;
 }
 
 // A convenience getter that calls fromUuid and throws error if no result.

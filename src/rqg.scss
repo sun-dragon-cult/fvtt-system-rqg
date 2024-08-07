@@ -39,8 +39,7 @@ body {
 }
 
 .combat-sidebar .combat-tracker-header div.encounter-controls .encounter-title {
-  margin-left: calc(3*var(--control-width)); // Offset "Round 1" to account for removed buttons
-
+  margin-left: calc(3 * var(--control-width)); // Offset "Round 1" to account for removed buttons
 }
 
 .norse {
@@ -95,7 +94,8 @@ body {
 
 .rqg img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
 .app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
-.app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {  // Make them black in the default item icon setting
+.app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {
+  // Make them black in the default item icon setting
   filter: invert(0.9);
 }
 
@@ -993,7 +993,8 @@ body {
 }
 
 // Almost a copy if Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
-.rqid-content-link[data-rqid-link] { // Silly construct to raise specificity
+.rqid-content-link[data-rqid-link] {
+  // Silly construct to raise specificity
   background: #ddd;
   padding: 1px 4px;
   border: 1px solid var(--color-border-dark-tertiary);

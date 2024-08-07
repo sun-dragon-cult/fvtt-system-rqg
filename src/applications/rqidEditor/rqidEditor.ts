@@ -75,8 +75,10 @@ export class RqidEditor extends FormApplication {
           priority: d.flags?.rqg.documentRqidFlags.priority,
           link: link,
           // @ts-expect-error compendium
-          compendium: `${d.compendium?.metadata?.label} ⇒ ${// @ts-expect-error packageName
-d.compendium?.metadata?.packageName}`,
+          compendium: `${d.compendium?.metadata?.label} ⇒ ${
+            // @ts-expect-error packageName
+            d.compendium?.metadata?.packageName
+          }`,
         });
       }
 

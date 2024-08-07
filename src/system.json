@@ -24,12 +24,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": [
-    "rqg.js"
-  ],
-  "styles": [
-    "rqg.css"
-  ],
+  "esmodules": ["rqg.js"],
+  "styles": ["rqg.css"],
   "socket": true,
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",
@@ -56,17 +52,13 @@
       "name": "RuneQuest Glorantha System",
       "sorting": "m",
       "color": "#176341",
-      "packs": [
-        "documentation"
-      ],
+      "packs": ["documentation"],
       "folders": [
         {
           "name": "Macros",
           "sorting": "a",
           "color": "#269261",
-          "packs": [
-            "rqid-macros"
-          ]
+          "packs": ["rqid-macros"]
         }
       ]
     }

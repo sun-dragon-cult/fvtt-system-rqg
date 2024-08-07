@@ -10,46 +10,50 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
-export default [{
+export default [
+  {
     ignores: ["coverage/", "src/assets/packs/", "**/dist/"],
-}, ...compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:prettier/recommended",
-).map(config => ({
-    ...config,
-    files: ["**/*.ts", "**/*.js"],
-})), {
+  },
+  ...compat
+    .extends(
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended",
+    )
+    .map((config) => ({
+      ...config,
+      files: ["**/*.ts", "**/*.js"],
+    })),
+  {
     files: ["**/*.ts", "**/*.js"],
 
     plugins: {
-        prettier,
-        "@typescript-eslint": typescriptEslint,
+      prettier,
+      "@typescript-eslint": typescriptEslint,
     },
 
     languageOptions: {
-        globals: {
-            ...globals.browser,
-        },
+      globals: {
+        ...globals.browser,
+      },
 
-        parser: tsParser,
-        ecmaVersion: "latest",
-        sourceType: "module",
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
     },
 
     rules: {
-        "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
 
-        "prettier/prettier": "error",
-        // "allowShortCircuit": ["warn", true],
-        // "allowTernary": ["warn", true],
-        "no-unused-expressions": [2, { allowTernary: true }],
-        curly: ["error", "all"],
+      "prettier/prettier": "error",
+      "no-unused-expressions": [2, { allowTernary: true }],
+      curly: ["error", "all"],
     },
-}];
+  },
+];
