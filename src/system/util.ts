@@ -176,7 +176,11 @@ export function mergeArraysById<T>(target: T[], source: T[]): T[] {
     const targetProp = target.find((targetElement: any) => {
       return sourceProp._id === targetElement._id;
     });
-    targetProp ? Object.assign(targetProp, sourceProp) : target.push(sourceProp);
+    if (targetProp) {
+      Object.assign(targetProp, sourceProp);
+    } else {
+      target.push(sourceProp);
+    }
   });
   return target;
 }
@@ -646,7 +650,9 @@ export function localizeCharacteristic(characteristic: string): string {
  */
 export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
-  ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+  if (ui?.sidebar?.tabs.chat) {
+    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+  }
 }
 
 /**

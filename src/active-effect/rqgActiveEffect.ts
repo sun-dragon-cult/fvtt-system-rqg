@@ -25,7 +25,7 @@ export class RqgActiveEffect extends ActiveEffect {
           try {
             // @ts-expect-error fromUuidSync
             return fromUuidSync(e.origin)?.name ?? "❓no name";
-          } catch (e) {
+          } catch {
             return "❓embedded item in compendium"; // origin was in a compendium and could not be read synchronously
           }
         }),
@@ -74,7 +74,7 @@ export class RqgActiveEffect extends ActiveEffect {
         // @ts-expect-error _castDelta
         delta = this._castDelta(change.value, targetType);
       }
-    } catch (err) {
+    } catch {
       console.warn(
         `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
       );

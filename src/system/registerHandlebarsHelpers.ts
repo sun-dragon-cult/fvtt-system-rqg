@@ -270,7 +270,7 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
   try {
     // @ts-expect-error fromUuidSync
     itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
-  } catch (e) {
+  } catch {
     // This uuid can't be retrieved synchronously (it's in a compendium) Fail gracefully.
     return "�";
   }

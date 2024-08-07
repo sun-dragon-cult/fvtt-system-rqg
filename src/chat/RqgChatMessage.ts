@@ -96,7 +96,9 @@ export class RqgChatMessage extends ChatMessage {
       const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
         `[name=${elementName}]`,
       );
-      newInputElement && moveCursorToEnd(newInputElement);
+      if (newInputElement) {
+        moveCursorToEnd(newInputElement);
+      }
     }
     // @ts-expect-error is marked as private!?
     ui.chat?.scrollBottom(); // Fix that the weapon chat gets bigger and pushes the rest of the chatlog down

@@ -37,8 +37,8 @@ export function onDragLeave(event: DragEvent): void {
 
   // Workaround for Chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=68629
   const sameShadowDom = dropZone?.getRootNode() === relatedTarget?.getRootNode();
-  if (sameShadowDom && !dropZone?.contains(relatedTarget)) {
-    dropZone && dropZone.classList.remove("drag-hover");
+  if (dropZone && sameShadowDom && !dropZone.contains(relatedTarget)) {
+    dropZone.classList.remove("drag-hover");
   }
 }
 

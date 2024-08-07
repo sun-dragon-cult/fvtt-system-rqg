@@ -5,7 +5,7 @@ import { ActorUpdate } from "../applyMigrations";
 // Dummy Actor Migrator
 export function migrateActorDummy(actorData: ActorData): ActorUpdate {
   let updateData = {};
-  // eslint-disable-next-line no-constant-condition
+  // eslint-disable-next-line
   if (false && actorData.type === ActorTypeEnum.Character) {
     updateData = {
       system: {

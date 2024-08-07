@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 // eslint-disable-file no-undef
 global.foundry = {
   utils: { mergeObject: jest.fn((...args) => mockMergeObject(...args)) },
@@ -222,7 +221,7 @@ function mockMergeObject(
   }
 
   // Iterate over the other object
-  for (let k of Object.keys(other)) {
+  for (const k of Object.keys(other)) {
     const v = other[k];
     // eslint-disable-next-line no-prototype-builtins
     if (original.hasOwnProperty(k)) {
@@ -253,7 +252,7 @@ function expandObject(obj, _d = 0) {
 
   // Expand all object keys
   const expanded = {};
-  for (let [k, v] of Object.entries(obj)) {
+  for (const [k, v] of Object.entries(obj)) {
     setProperty(expanded, k, _expand(v));
   }
   return expanded;
@@ -265,7 +264,7 @@ function setProperty(object, key, value) {
 
   // Convert the key to an object reference if it contains dot notation
   if (key.indexOf(".") !== -1) {
-    let parts = key.split(".");
+    const parts = key.split(".");
     key = parts.pop();
     target = parts.reduce((o, i) => {
       // eslint-disable-next-line no-prototype-builtins
@@ -394,7 +393,7 @@ function mockGetProperty(object, key) {
     return undefined;
   }
   let target = object;
-  for (let p of key.split(".")) {
+  for (const p of key.split(".")) {
     const t = getType(target);
     if (!(t === "Object" || t === "Array")) {
       return undefined;
