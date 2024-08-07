@@ -186,8 +186,8 @@ export class RqgActor extends Actor {
     const { con, siz, pow } = this.actorCharacteristics();
     actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
 
-    this.items.forEach(
-      (item) => ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item),
+    this.items.forEach((item) =>
+      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item),
     );
   }
 
@@ -249,8 +249,8 @@ export class RqgActor extends Actor {
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach(
-      (item) => ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item),
+    this.items.forEach((item) =>
+      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item),
     );
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);

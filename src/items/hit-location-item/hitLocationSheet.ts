@@ -155,8 +155,12 @@ export class HitLocationSheet extends RqgItemSheet<
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
       DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation, actor, speakerName);
 
-    hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await actor.update(actorUpdates as any)); // TODO fix type
+    if (hitLocationUpdates) {
+      await hitLocation.update(hitLocationUpdates);
+    }
+    if (actorUpdates) {
+      await actor.update(actorUpdates as any);
+    } // TODO fix type
     await ChatMessage.create({
       user: getGame().user?.id,
       speaker: { alias: speakerName },
@@ -176,7 +180,9 @@ export class HitLocationSheet extends RqgItemSheet<
       const sceneTokens = getGame().scenes?.active?.tokens;
       if (activeTokens.length && sceneTokens) {
         const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
-        token && (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
+        if (token) {
+          await HitLocationSheet.setTokenEffect(token.object as RqgToken);
+        }
       }
     }
 
@@ -256,11 +262,17 @@ export class HitLocationSheet extends RqgItemSheet<
       actor,
     );
 
-    hitLocationUpdates && (await hitLocation.update(hitLocationUpdates));
-    actorUpdates && (await actor.update(actorUpdates));
+    if (hitLocationUpdates) {
+      await hitLocation.update(hitLocationUpdates);
+    }
+    if (actorUpdates) {
+      await actor.update(actorUpdates);
+    }
 
     if (actor.isToken) {
-      actor.token && (await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken));
+      if (actor.token) {
+        await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken);
+      }
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
       const activeScene = getGame().scenes?.active;
@@ -268,7 +280,9 @@ export class HitLocationSheet extends RqgItemSheet<
         const token = activeScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
           | TokenDocument
           | undefined; // TODO Hardcoded "first" token
-        token && (await HitLocationSheet.setTokenEffect(token.object as RqgToken));
+        if (token) {
+          await HitLocationSheet.setTokenEffect(token.object as RqgToken);
+        }
       }
     }
 
@@ -276,7 +290,9 @@ export class HitLocationSheet extends RqgItemSheet<
       if (update != null && update._id != null) {
         // TODO make sure usefulLegs only contain real data
         const item = actor.items.get(update._id);
-        item && (await item.update(update));
+        if (item) {
+          await item.update(update);
+        }
       }
     }
 

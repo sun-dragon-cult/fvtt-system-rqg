@@ -102,6 +102,10 @@ export const registerHandlebarsHelpers = function () {
     }
     const availableRunes = getAvailableRunes();
     const rune = availableRunes.find((r) => r.rqid === rqid);
+    if (availableRunes.length === 0) {
+      // Don't warn if the runes are not yet cached
+      return "";
+    }
     if (!rune) {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
         rqid: rqid,
@@ -266,7 +270,7 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
   try {
     // @ts-expect-error fromUuidSync
     itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
-  } catch (e) {
+  } catch {
     // This uuid can't be retrieved synchronously (it's in a compendium) Fail gracefully.
     return "�";
   }

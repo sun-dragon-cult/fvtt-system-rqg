@@ -136,7 +136,9 @@ export class RqgItemSheet<
               );
               throw reason;
             });
-          e[0].id && new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
+          if (e[0].id) {
+            new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
+          }
         });
       });
 

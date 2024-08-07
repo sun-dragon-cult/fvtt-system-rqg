@@ -78,9 +78,8 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
   }
 
   protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
-    formData[
-      "name"
-    ] = `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
+    formData["name"] =
+      `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
     return super._updateObject(event, formData);
   }
 

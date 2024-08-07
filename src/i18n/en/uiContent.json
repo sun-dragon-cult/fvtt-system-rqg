@@ -1283,7 +1283,6 @@
       "ShowHeropoints": {
         "settingName": "Show Hero Points",
         "settingHint": "Show an input field to track the optional rule of hero points."
-
       },
       "SpecialCrit": {
         "settingName": "Special & Hyper Critical results",
@@ -1362,7 +1361,7 @@
         "SpiritMagicSpell": "Spirit Magic Item Sheet",
         "Weapon": "Weapon Item Sheet"
       },
-      "RollTable":"Rollable Table Sheet"
+      "RollTable": "Rollable Table Sheet"
     },
     "Integrations": {
       "DragRuler": {

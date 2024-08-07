@@ -233,7 +233,7 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
 
     if (char.formula == null || char.formula == "" || !Roll.validate(char.formula)) {
       // no existing or valid formula
-      averages["cannot average"] == undefined;
+      averages["cannot average"] = undefined;
     } else if (!averages[char.formula]) {
       let avg = 0;
       if (Number.isNumeric(char.formula)) {

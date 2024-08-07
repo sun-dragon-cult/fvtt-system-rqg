@@ -543,13 +543,14 @@ export class Rqid {
 
       // Special handling for rune items to display the actual rune instead of the default item image
       if (itemType === ItemTypeEnum.Rune) {
-        const rune = getAvailableRunes().find((r) => r.rqid === rqid);
-        if (!rune) {
+        const availableRunes = getAvailableRunes();
+        const rune = availableRunes.find((r) => r.rqid === rqid);
+        if (!rune && availableRunes.length) {
           const msg = localize("RQG.RQGSystem.CouldNotFindRune", { rqid: rqid });
           // @ts-expect-error console
           ui.notifications?.warn(msg, { console: false });
           console.warn(`RQG | ${msg}`);
-        } else {
+        } else if (rune) {
           return `<img src="${rune.img}"/>`;
         }
       }

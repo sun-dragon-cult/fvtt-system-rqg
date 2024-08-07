@@ -37,8 +37,8 @@ export function onDragLeave(event: DragEvent): void {
 
   // Workaround for Chrome bug https://bugs.chromium.org/p/chromium/issues/detail?id=68629
   const sameShadowDom = dropZone?.getRootNode() === relatedTarget?.getRootNode();
-  if (sameShadowDom && !dropZone?.contains(relatedTarget)) {
-    dropZone && dropZone.classList.remove("drag-hover");
+  if (dropZone && sameShadowDom && !dropZone.contains(relatedTarget)) {
+    dropZone.classList.remove("drag-hover");
   }
 }
 
@@ -130,7 +130,7 @@ export async function updateRqidLink(
 ): Promise<void> {
   const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
-    ? droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? ""
+    ? (droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? "")
     : "";
   const fullDocumentRqid =
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;

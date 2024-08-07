@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.4.8](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.7...v3.4.8) (2024-08-07)
+
+
+### Bug Fixes
+
+* some runes appear to be too small ([734847d](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/734847df08be6d0f1f9ef5e14054131f3595d341)), closes [#727](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/727)
+* warnings about compendiums not indexed etc ([6a0a567](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/6a0a567da24e996d2c6caa3ddf2eeae65f6f06e2)), closes [#729](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/729)
+* wiki module does not work in localhost development ([725cbb4](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/725cbb40361a7c4c2c7128d793de9696dd52525b)), closes [#730](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/730)
+
 ## [3.4.7](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.6...v3.4.7) (2024-07-21)
 
 

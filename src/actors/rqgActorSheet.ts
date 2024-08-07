@@ -857,7 +857,7 @@ export class RqgActorSheet extends ActorSheet<
       ) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
-      message &&
+      if (message) {
         ChatMessage.create({
           user: getGameUser().id,
           speaker: speaker,
@@ -866,6 +866,7 @@ export class RqgActorSheet extends ActorSheet<
           // @ts-expect-error CHAT_MESSAGE_STYLES
           type: CONST.CHAT_MESSAGE_STYLES.WHISPER,
         });
+      }
     }
 
     this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
@@ -1141,7 +1142,11 @@ export class RqgActorSheet extends ActorSheet<
       const sr = Number(getRequiredDomDataset(el, "toggle-sr"));
 
       el.addEventListener("click", async () => {
-        this.activeInSR.has(sr) ? this.activeInSR.delete(sr) : this.activeInSR.add(sr);
+        if (this.activeInSR.has(sr)) {
+          this.activeInSR.delete(sr);
+        } else {
+          this.activeInSR.add(sr);
+        }
         await this.updateActiveCombatWithSR(this.activeInSR);
       });
     });
@@ -1942,11 +1947,13 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     itemsToSort.map((item: RqgItem, index) => {
-      index === 0
-        ? // @ts-expect-error sort
-          (item.sort = CONST.SORT_INTEGER_DENSITY)
-        : // @ts-expect-error sort
-          (item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY);
+      if (index === 0) {
+        // @ts-expect-error sort
+        item.sort = CONST.SORT_INTEGER_DENSITY;
+      } else {
+        // @ts-expect-error sort
+        item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY;
+      }
     });
     const updateData = itemsToSort.map((item) => ({
       _id: item.id,

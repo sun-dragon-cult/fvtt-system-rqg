@@ -227,7 +227,7 @@ export class ItemTree {
     if (!container) {
       return undefined;
     }
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       const maybeContainer = this.getContainerNodeOfItem(container.name ?? "");
       if (!maybeContainer || maybeContainer.name === "") {

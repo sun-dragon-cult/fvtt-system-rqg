@@ -6,7 +6,6 @@
 }
 
 .rqg.character {
-
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
     background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
@@ -39,15 +38,35 @@
     --rqg-color-main-bg: #007300;
     --rqg-box-shadow-grid-header: inset 0 0 20px 7px #00983c;
 
-    h1, h2, h3, h4, h5, h6, h7, h8,
-    .norse, label {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    h7,
+    h8,
+    .norse,
+    label {
       color: #007300;
     }
 
-    .head1, .head1-4, .head2, .head3, .head4, .head5, .head6, .head7, .head8, .head9, .head10, .head11, .head12, .head13 {
+    .head1,
+    .head1-4,
+    .head2,
+    .head3,
+    .head4,
+    .head5,
+    .head6,
+    .head7,
+    .head8,
+    .head9,
+    .head10,
+    .head11,
+    .head12,
+    .head13 {
       color: white;
     }
-
   }
 
   .dead {
@@ -62,7 +81,10 @@
     container-type: inline-size; // make it possible to use container relative units
     container-name: sheet-container;
 
-    &.dead, &.unconscious, &.shock, &.wounded {
+    &.dead,
+    &.unconscious,
+    &.shock,
+    &.wounded {
       background-color: #901010b0;
     }
   }
@@ -88,7 +110,7 @@
 
       .header-grid {
         display: grid;
-        grid-template-columns: [profile-start full-start ] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
+        grid-template-columns: [profile-start full-start] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
         grid-column-gap: 0;
         grid-row-gap: 0;
 
@@ -112,8 +134,6 @@
               flex: 0 0 20px;
             }
           }
-
-
         }
 
         .name-runes-cults {
@@ -208,17 +228,17 @@
           }
         }
 
-
         // Make the header more compact if the sheet is narrow
         @container sheet-container (max-width: 560px) {
-          .profile, .hero-points-container {
+          .profile,
+          .hero-points-container {
             display: none;
           }
 
-          .name-runes-cults, .characteristics {
+          .name-runes-cults,
+          .characteristics {
             grid-column: full-start / full-end;
           }
-
         }
       }
 
@@ -450,14 +470,18 @@
   .wounded {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+        brightness(99%) contrast(105%);
     }
   }
 
-  .shock, .unconscious, .dead {
+  .shock,
+  .unconscious,
+  .dead {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+        brightness(99%) contrast(105%) blur(1.5px);
     }
   }
 
@@ -523,7 +547,6 @@
             brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
         }
       }
-
     }
 
     .stats {
@@ -536,7 +559,8 @@
       max-width: 7rem;
       background-color: #ffffffb3;
 
-      &.useless, &.severed {
+      &.useless,
+      &.severed {
         background-color: #afafaf;
       }
 
@@ -577,19 +601,17 @@
 
       &.left-leg {
         top: 16rem;
-        right: 0
+        right: 0;
       }
 
       &.right-leg {
         top: 16rem;
-        left: 0
+        left: 0;
       }
-
     }
   }
 
   .tab.combat {
-
     .rate-range {
       color: var(--color-text-dark-secondary);
     }
@@ -643,7 +665,7 @@
     }
   }
 
-  .tab.spiritmagic .spirit-magic{
+  .tab.spiritmagic .spirit-magic {
     input {
       //noinspection CssInvalidPropertyValue
       width: -webkit-fill-available;

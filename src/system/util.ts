@@ -67,8 +67,8 @@ export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | 
   return el instanceof HTMLElement
     ? el
     : (el as Event).target
-    ? ((el as Event).target as HTMLElement)
-    : (el as JQuery).get(0);
+      ? ((el as Event).target as HTMLElement)
+      : (el as JQuery).get(0);
 }
 
 /**
@@ -176,7 +176,11 @@ export function mergeArraysById<T>(target: T[], source: T[]): T[] {
     const targetProp = target.find((targetElement: any) => {
       return sourceProp._id === targetElement._id;
     });
-    targetProp ? Object.assign(targetProp, sourceProp) : target.push(sourceProp);
+    if (targetProp) {
+      Object.assign(targetProp, sourceProp);
+    } else {
+      target.push(sourceProp);
+    }
   });
   return target;
 }
@@ -330,7 +334,7 @@ export function cleanIntegerString(value: FormDataEntryValue | null): string {
 export async function getDocumentFromUuid<T>(
   documentUuid: string | undefined,
 ): Promise<T | undefined> {
-  return documentUuid ? ((await fromUuid(documentUuid)) as T | null) ?? undefined : undefined;
+  return documentUuid ? (((await fromUuid(documentUuid)) as T | null) ?? undefined) : undefined;
 }
 
 // A convenience getter that calls fromUuid and throws error if no result.
@@ -363,16 +367,16 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   return rqgActor as unknown as T;
 }
 
-let availableHitLocations: AvailableItemCache[] = [];
+let availableHitLocations: AvailableItemCache[] | undefined;
 
 export function getAvailableHitLocations(silent: boolean = false): AvailableItemCache[] {
-  if (availableHitLocations.length > 0) {
-    return availableHitLocations;
+  if (availableHitLocations && availableHitLocations.length > 0) {
+    return availableHitLocations; // HitLocations are previously cached
   }
   if (!silent) {
     ui.notifications?.warn("compendiums not indexed yet, try again!");
   }
-  cacheAvailableHitLocations();
+  void cacheAvailableHitLocations();
   return [];
 }
 
@@ -384,27 +388,35 @@ export type AvailableItemCache = {
   lang: string;
 };
 
-let availableRunes: AvailableItemCache[] = [];
+let availableRunes: AvailableItemCache[] | undefined;
 
+let lastNotIndexedWarningTimeStamp = 0;
 /**
  * Get the cached data about the runes that are available in the world.
+ * If the caching is not yet finished it will return an empty array.
  * @see {@link cacheAvailableRunes}
  */
 export function getAvailableRunes(silent: boolean = false): AvailableItemCache[] {
-  if (availableRunes.length > 0) {
-    return availableRunes;
+  if (availableRunes && availableRunes.length > 0) {
+    return availableRunes; // Runes are previously cached
   }
-  if (!silent) {
+  if (!silent && Date.now() - lastNotIndexedWarningTimeStamp > 3000) {
+    // Throttle the warnings to one every 3 seconds
+    lastNotIndexedWarningTimeStamp = Date.now();
     ui.notifications?.warn("compendiums not indexed yet, try again!");
   }
-  cacheAvailableRunes();
+  void cacheAvailableRunes();
   return [];
 }
 
 export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
-  if (availableRunes.length > 0) {
-    return availableRunes;
+  if (availableRunes && availableRunes.length > 0) {
+    return availableRunes; // Runes are previously cached
   }
+  if (availableRunes?.length === 0) {
+    return availableRunes; // Caching is already initiated, but not finished. Return the empty array.
+  }
+  availableRunes = []; // Indicate that caching is initiated
   console.time("RQG | Caching Runes took");
   availableRunes = await getItemsToCache("i.rune.");
   console.timeEnd("RQG | Caching Runes took");
@@ -412,9 +424,13 @@ export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
 }
 
 export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]> {
-  if (availableHitLocations.length > 0) {
-    return availableHitLocations;
+  if (availableHitLocations && availableHitLocations.length > 0) {
+    return availableHitLocations; // HitLocations are previously cached
   }
+  if (availableHitLocations?.length === 0) {
+    return availableHitLocations; // Caching is already initiated, but not finished. Return the empty array.
+  }
+  availableHitLocations = [];
   console.time("RQG | Caching Hit Locations took");
   availableHitLocations = await getItemsToCache("i.hit-location.");
   console.timeEnd("RQG | Caching Hit Locations took");
@@ -621,7 +637,9 @@ export function localizeCharacteristic(characteristic: string): string {
  */
 export function activateChatTab() {
   // TODO: add player setting to allow skipping this if they don't like the tab changing
-  ui?.sidebar?.tabs.chat && ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+  if (ui?.sidebar?.tabs.chat) {
+    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+  }
 }
 
 /**
