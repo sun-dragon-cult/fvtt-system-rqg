@@ -89,8 +89,8 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
   // chat: CommonRqgChatFlags & {
   chat: {
     attackState: AttackState;
-    actorDamagedApplied: false;
-    weaponDamageApplied: false;
+    actorDamagedApplied: boolean;
+    weaponDamageApplied: boolean;
 
     attackingActorUuid: string;
     defendingActorUuid?: string;
@@ -100,6 +100,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     defenceWeaponUuid?: string;
     defenceWeaponUsage?: UsageType;
 
+    attackDamageBonus: string;
     outcomeDescription: string;
     attackRoll: AbilityRoll;
     defendRoll?: AbilityRoll;

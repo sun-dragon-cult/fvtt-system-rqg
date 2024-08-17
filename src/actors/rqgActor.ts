@@ -1,7 +1,7 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
@@ -260,6 +260,25 @@ export class RqgActor extends Actor {
     attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
+  }
+
+  /**
+   * Return the bodyType of an actor. Currently only "humanoid" or "other"
+   */
+  public getBodyType(): string {
+    const actorHitlocationRqids = this.items
+      .filter((i) => i.type === ItemTypeEnum.HitLocation)
+      .map((hl) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
+    if (
+      CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
+      CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
+        actorHitlocationRqids.includes(hitLocationRqid),
+      )
+    ) {
+      return "humanoid";
+    } else {
+      return "other";
+    }
   }
 
   // Currently only marks POW experience

@@ -26,6 +26,7 @@ export type AttackDialogHandlebarsData = {
   title: string;
   usageTypeOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
+  damageBonusSourceOptions: Record<string, string>;
   totalChance: number;
 };
 
@@ -34,4 +35,6 @@ export type AttackDialogObjectData = {
   augmentModifier: string;
   otherModifier: string;
   otherModifierDescription: string;
+  /** In the dialog it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
+  attackDamageBonus: string;
 };

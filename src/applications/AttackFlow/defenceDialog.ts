@@ -5,6 +5,7 @@ import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   assertItemType,
   getGame,
+  getGameUser,
   localize,
   requireValue,
   RqgError,
@@ -251,10 +252,9 @@ export class DefenceDialog extends FormApplication<
           "No attacking weapon usage found in attack chat message",
         );
 
-        const parryWeaponUsageType = this.attackChatMessage?.getFlag(
-          systemId,
-          "chat.defenceWeaponUsage",
-        );
+        const parryWeaponUsageType = this.object.parryingWeaponUsage;
+        const attackDamageBonus =
+          this.attackChatMessage?.flags?.rqg?.chat?.attackDamageBonus ?? "0";
 
         const {
           weaponDamage,
@@ -268,6 +268,7 @@ export class DefenceDialog extends FormApplication<
           defendRoll,
           attackingWeapon,
           attackWeaponUsageType,
+          attackDamageBonus,
           selectedParryingWeapon,
           parryWeaponUsageType,
         );
@@ -295,14 +296,6 @@ export class DefenceDialog extends FormApplication<
 
         if (ignoreDefenderAp) {
           // TODO add damage to chatMessage for apply damage options
-        }
-
-        if (attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble) {
-          // TODO add damage to chatMessage for the fumble button
-        }
-
-        if (defendRoll.successLevel === AbilitySuccessLevelEnum.Fumble) {
-          // TODO add damage to chatMessage for the fumble button
         }
 
         const messageData = this.attackChatMessage!.toObject();
@@ -337,6 +330,8 @@ export class DefenceDialog extends FormApplication<
             flags: {
               [systemId]: {
                 chat: {
+                  defenceWeaponUuid: selectedParryingWeapon?.uuid,
+                  defenceWeaponUsage: parryWeaponUsageType,
                   outcomeDescription: outcomeDescription,
                   attackState: attackState,
                   defendRoll: defendRoll,
@@ -345,6 +340,7 @@ export class DefenceDialog extends FormApplication<
                   defenderFumbled: defenderFumbled,
                   actorDamagedApplied: attackState === "DamageRolled",
                   weaponDamageApplied: attackState === "DamageRolled",
+                  weaponDamage: weaponDamage,
                 },
               },
             },
@@ -357,13 +353,18 @@ export class DefenceDialog extends FormApplication<
           messageData.flags[systemId]!.chat,
         );
 
-        socketSend({
-          action: "updateChatMessage",
-          messageId: this.attackChatMessage.id,
-          update: messageData,
-          // @ts-expect-error author
-          messageAuthorId: this.attackChatMessage.author.id,
-        });
+        // @ts-expect-error author
+        if (getGameUser().id === this.attackChatMessage.author.id) {
+          await this.attackChatMessage.update(messageData);
+        } else {
+          socketSend({
+            action: "updateChatMessage",
+            messageId: this.attackChatMessage.id,
+            update: messageData,
+            // @ts-expect-error author
+            messageAuthorId: this.attackChatMessage.author.id,
+          });
+        }
 
         await defendSkillItem?.checkExperience?.(defendRoll?.successLevel); // TODO move to later in flow
         await this.close();

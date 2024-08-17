@@ -23,6 +23,13 @@
     <div>
       <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
     </div>
+
+    <label>
+      {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
+    </label>
+    <select name="damageBonus">
+      {{selectOptions damageBonusSourceOptions selected=object.damageBonus}}
+    </select>
   </div>
   <div class="flexrow flex-wrap gap03rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">

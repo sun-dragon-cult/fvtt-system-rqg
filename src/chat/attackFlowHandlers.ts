@@ -2,12 +2,12 @@ import type { RqgItem } from "../items/rqgItem";
 import {
   assertActorType,
   assertItemType,
-  getDomDataset,
   getGame,
   getGameUser,
   getRequiredDomDataset,
   localize,
   logMisconfiguration,
+  requireValue,
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
@@ -28,7 +28,7 @@ import { socketSend } from "../sockets/RqgSocket";
  * Open the Defence Dialog to let someone defend against the attack
  */
 export async function handleDefend(clickedButton: HTMLButtonElement): Promise<void> {
-  const { chatMessageId, attackWeaponUuid } = getChatMessageInfo(clickedButton);
+  const { chatMessageId, attackWeaponUuid } = await getChatMessageInfo(clickedButton);
 
   const attackingWeapon = (await fromUuid(attackWeaponUuid)) as RqgItem | undefined;
   assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
@@ -43,7 +43,7 @@ export async function handleDefend(clickedButton: HTMLButtonElement): Promise<vo
  * Roll Damage and hit location rolls and update AttackChat with new state
  */
 export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElement): Promise<void> {
-  const { chatMessageId } = getChatMessageInfo(clickedButton);
+  const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
   const attackChatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
   if (!attackChatMessage) {
@@ -51,25 +51,27 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
     return;
   }
 
-  const attackingWeaponUuid = getRequiredDomDataset(clickedButton, "attack-weapon-uuid");
-  // @ts-expect-error fromUuidSync
-  const attackWeapon = fromUuidSync(attackingWeaponUuid);
+  const attackingWeaponUuid = attackChatMessage.getFlag(systemId, "chat.attackWeaponUuid") as
+    | string
+    | undefined;
+  requireValue(attackingWeaponUuid, "No attacking weapon in chat data", attackChatMessage);
+  const attackWeapon = await fromUuid(attackingWeaponUuid);
 
   const hitLocationRoll = new Roll("1d20");
   await hitLocationRoll.evaluate();
 
   // TODO const hitlocation = get target and find hitlocation from roll
-
-  const damageRoll = new Roll("1d8+1"); // TODO fake damage formula
+  const weaponDamage = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
+  const damageRoll = new Roll(weaponDamage);
   await damageRoll.evaluate();
 
   const attackRoll = AbilityRoll.fromData(
     attackChatMessage.getFlag(systemId, "chat.attackRoll"),
   ) as AbilityRoll | undefined;
-  const attackerActor = attackWeapon.parent; // TODO or attackingActorUuid
-  const defendingActor = (await fromUuid(
+  const attackerActor = attackWeapon?.parent; // TODO or attackingActorUuid
+  const defendingActor = await fromUuid(
     attackChatMessage.getFlag(systemId, "chat.defendingActorUuid"),
-  )) as RqgActor | undefined;
+  );
 
   if (!attackRoll || !attackerActor || !defendingActor) {
     const msg = "Not enough data to calculate outcome";
@@ -120,7 +122,7 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
  * Apply previously rolled damage to the actor pointed to by the actor-damage button
  */
 export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): Promise<void> {
-  const { chatMessageId } = getChatMessageInfo(clickedButton);
+  const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
   const attackChatMessage = getGame().messages?.get(chatMessageId);
   if (!attackChatMessage) {
@@ -299,14 +301,23 @@ async function fumbleRoll(): Promise<string> {
  * Utility function to extract data from the AttackChat html.
  * TODO How to decide what should be in html and what should be in flags?
  */
-function getChatMessageInfo(button: HTMLElement): {
+async function getChatMessageInfo(button: HTMLElement): Promise<{
   chatMessageId: string;
   attackWeaponUuid: string;
   defenceWeaponUuid: string | undefined;
-} {
+}> {
   const chatMessageId = getRequiredDomDataset(button, "message-id");
-  const attackWeaponUuid = getRequiredDomDataset(button, "attack-weapon-uuid");
-  const defenceWeaponUuid = getDomDataset(button, "defend-weapon-uuid");
+  const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
+
+  const attackWeaponUuid = chatMessage?.getFlag(systemId, "chat.attackWeaponUuid") as
+    | string
+    | undefined;
+  if (!attackWeaponUuid) {
+    throw new RqgError("No attackWeapon in chatFlags", chatMessage);
+  }
+  const defenceWeaponUuid = chatMessage?.getFlag(systemId, "chat.defenceWeaponUuid") as
+    | string
+    | undefined;
   return {
     chatMessageId: chatMessageId,
     attackWeaponUuid: attackWeaponUuid,

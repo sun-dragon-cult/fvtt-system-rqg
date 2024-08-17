@@ -441,7 +441,8 @@
       "Attack": {
         "Title": "Attack",
         "WeaponUsage": "Usage",
-        "OtherModifier": "Other Modifier"
+        "OtherModifier": "Other Modifier",
+        "DamageBonusFrom":"Damage Bonus from"
       },
       "Defence": {
         "Title": "Defend",

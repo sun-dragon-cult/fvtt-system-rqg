@@ -29,6 +29,7 @@ export async function combatOutcome(
   defenceRoll: AbilityRoll | undefined,
   attackingWeapon: RqgItem,
   attackWeaponUsageType: UsageType,
+  attackDamageBonus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
 ): Promise<CombatOutcome> {
@@ -74,8 +75,7 @@ export async function combatOutcome(
     };
   }
 
-  // TODO add damage bonus as selected from the attack chat
-  const damageFormulaWithDb = damageFormula.replaceAll("db", "1d4");
+  const damageFormulaWithDb = damageFormula.replaceAll("db", attackDamageBonus);
 
   const damageRoll = new Roll(damageFormulaWithDb);
   await damageRoll.evaluate({

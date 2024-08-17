@@ -5,6 +5,7 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   assertItemType,
+  getGame,
   getGameUser,
   localize,
   RqgError,
@@ -41,6 +42,7 @@ export class AttackDialog extends FormApplication<
       augmentModifier: "0",
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Attack.OtherModifier"),
+      attackDamageBonus: "",
     };
 
     super(formData, options as any);
@@ -78,6 +80,13 @@ export class AttackDialog extends FormApplication<
       this.weaponItem.system.defaultUsage = Object.keys(usageTypeOptions)[0] as UsageType;
       this.object.usageType = this.weaponItem.system.defaultUsage;
     }
+    if (!this.object.attackDamageBonus) {
+      // Default the damage bonus to the attacking actor if none is selected
+      this.object.attackDamageBonus = Object.keys(
+        this.getDamageBonusSourceOptions(this.weaponItem),
+      )[0];
+    }
+
     const skillRqid = this.weaponItem.system.usage[this.object.usageType].skillRqidLink.rqid;
     const usedSkill = this.weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
     return {
@@ -91,6 +100,7 @@ export class AttackDialog extends FormApplication<
       title: this.title,
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,
+      damageBonusSourceOptions: this.getDamageBonusSourceOptions(this.weaponItem),
       totalChance:
         Number(usedSkill?.system.chance ?? 0) +
         Number(this.object.augmentModifier ?? 0) +
@@ -170,6 +180,7 @@ export class AttackDialog extends FormApplication<
             outcomeDescription: "",
             actorDamagedApplied: false,
             weaponDamageApplied: false,
+            attackDamageBonus: this.object.attackDamageBonus.split(":")[1],
             attackRoll: attackRoll,
             defendRoll: undefined,
             damageRoll: undefined,
@@ -226,5 +237,26 @@ export class AttackDialog extends FormApplication<
       }
       return acc;
     }, {});
+  }
+
+  getDamageBonusSourceOptions(weapon: RqgItem): Record<string, string> {
+    assertItemType(weapon.type, ItemTypeEnum.Weapon);
+
+    const weaponOwner = weapon.parent;
+    if (!weaponOwner) {
+      throw new RqgError("weapon did not have an owner");
+    }
+    const nonHumanods: Record<string, string> = getGame()
+      .actors?.filter((a) => a.isOwner && a.getBodyType() !== "humanoid")
+      ?.reduce((acc: any, actor) => {
+        const optionKey = `${actor.id}:${actor.system.attributes.damageBonus}`;
+        acc[optionKey] = actor.name ?? "";
+        return acc;
+      }, {});
+    const weaponOwnerOptionKey = `${weaponOwner.id}:${weaponOwner.system.attributes.damageBonus}`;
+    return {
+      [weaponOwnerOptionKey]: weaponOwner.name ?? "",
+      ...nonHumanods,
+    };
   }
 }

@@ -216,7 +216,7 @@ export class RqgActorSheet extends ActorSheet<
       activeInSR: [...this.activeInSR],
 
       characteristicRanks: await this.rankCharacteristics(),
-      bodyType: this.getBodyType(),
+      bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
 
       // UI toggles
@@ -484,22 +484,6 @@ export class RqgActorSheet extends ActorSheet<
         return acc;
       }, [])
       .sort((a: any, b: any) => b.chance - a.chance);
-  }
-
-  private getBodyType(): string {
-    const actorHitlocationRqids = this.actor.items
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
-      .map((hl) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
-    if (
-      CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
-      CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
-        actorHitlocationRqids.includes(hitLocationRqid),
-      )
-    ) {
-      return "humanoid";
-    } else {
-      return "other";
-    }
   }
 
   /**
