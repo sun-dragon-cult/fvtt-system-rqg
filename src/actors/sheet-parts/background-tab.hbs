@@ -84,15 +84,19 @@
     <div class="key-value-grid">
       {{#if isGM}}
         <label for="homeland-{{id}}">{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-        <select id=homeland-{{id}} name="system.background.homeland">
-          {{#select system.background.homeland}}
-            {{#each homelands}}
-              <option value="{{this}}">{{localize
-                  (concat "RQG.Actor.Background.Homeland." this)
-                }}</option>
-            {{/each}}
-          {{/select}}
-        </select>
+        <input
+          id=homeland-{{id}}
+          name="system.background.homeland"
+          value="{{system.background.homeland}}"
+          type="text"
+          size="30"
+          list="homelands"
+          />
+        <datalist id="homelands">
+          {{#each homelands}}
+            <option value="{{localize (concat "RQG.Actor.Background.Homeland." this)}}"></option>
+          {{/each}}
+        </datalist>
       {{else if system.background.homeland}}
         <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
         {{localize (concat "RQG.Actor.Background.Homeland." system.background.homeland)}}
