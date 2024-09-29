@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.9](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.8...v3.4.9) (2024-09-29)
+
+
+### Bug Fixes
+
+* make homeland field more flexible ([c9b9dca](https://github.com/sun-dragon-cult/fvtt-system-rqg/commit/c9b9dca316811ceb0d720e180cca498a810c7547)), closes [#731](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues/731)
+
 ## [3.4.8](https://github.com/sun-dragon-cult/fvtt-system-rqg/compare/v3.4.7...v3.4.8) (2024-08-07)
 
 

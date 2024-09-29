@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "rqg",
-  "version": "3.4.8",
+  "version": "3.4.9",
   "type": "module",
   "esModuleInterop": true,
   "description": "",
