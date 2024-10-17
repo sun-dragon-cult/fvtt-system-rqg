@@ -1,0 +1,62 @@
+name: Create System Files For GitHub Release
+
+env:
+  manifest-file: system.json # Must match the manifest file name declared in Foundry
+  system-name: rqg # Must match the system / module name property in the manifest file
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          check-latest: true
+
+      - name: Init dependencies
+        run: pnpm i
+
+      - name: Build project
+        run: pnpm build
+
+      - name: Update version in manifest file
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          sed -i "s|99999.0.0-localhost|${VERSION}|" "src/${{ env.manifest-file }}"
+
+      - name: Create Zip
+        run: |
+          mv dist /tmp/${{ env.system-name }}
+          cp -f src/${{env.manifest-file}} /tmp/${{ env.system-name }}
+          cd /tmp/${{ env.system-name }}
+          zip -r ../${{ env.system-name }}.zip *
+
+      # Update the GitHub release with the manifest and module archive files.
+      - name: Update Release With Files
+        id: create_version_release
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          name: ${{ github.event.release.name }}
+          draft: ${{ github.event.release.unpublished }}
+          prerelease: ${{ github.event.release.prerelease }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: 'src/${{env.manifest-file}}, /tmp/${{env.system-name}}.zip'
+          tag: ${{ github.event.release.tag_name }}
+          body: ${{ github.event.release.body }}
