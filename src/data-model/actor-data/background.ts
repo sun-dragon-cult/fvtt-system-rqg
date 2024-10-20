@@ -24,6 +24,7 @@ export enum OccupationEnum {
   WarriorLightCavalry = "warriorLightCavalry",
 }
 
+// This is just the default proposed homelands, it will eventually be replaced by the homeland item
 export enum HomeLandEnum {
   Aggar = "aggar",
   Balazar = "balazar",
@@ -64,7 +65,7 @@ export interface Background {
   speciesRqidLink: RqidLink | undefined;
   occupation: OccupationEnum;
   currentOccupationRqidLink: RqidLink | undefined;
-  homeland: HomeLandEnum;
+  homeland: string | undefined;
   town?: string;
   birthYear?: number;
   age?: number;
@@ -89,7 +90,7 @@ export const defaultBackground: Background = {
   speciesRqidLink: undefined,
   occupation: OccupationEnum.NoOccupation,
   currentOccupationRqidLink: undefined,
-  homeland: HomeLandEnum.Sartar,
+  homeland: undefined,
   homelandJournalRqidLink: undefined,
   regionJournalRqidLink: undefined,
   cultureJournalRqidLinks: [],
