@@ -101,10 +101,12 @@ export class AttackDialog extends FormApplication<
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,
       damageBonusSourceOptions: this.getDamageBonusSourceOptions(this.weaponItem),
-      totalChance:
+      totalChance: Math.max(
+        0,
         Number(usedSkill?.system.chance ?? 0) +
-        Number(this.object.augmentModifier ?? 0) +
-        Number(this.object.otherModifier ?? 0),
+          Number(this.object.augmentModifier ?? 0) +
+          Number(this.object.otherModifier ?? 0),
+      ),
     };
   }
 

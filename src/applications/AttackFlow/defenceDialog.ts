@@ -38,13 +38,13 @@ export class DefenceDialog extends FormApplication<
     "-50": "RQG.Dialog.Common.AugmentOptions.Fumble",
   };
 
-  private meditateOptions = {
-    "0": "RQG.Dialog.Common.MeditateOptions.None",
-    "5": "RQG.Dialog.Common.MeditateOptions.1mr",
-    "10": "RQG.Dialog.Common.MeditateOptions.2mr",
-    "15": "RQG.Dialog.Common.MeditateOptions.5mr",
-    "20": "RQG.Dialog.Common.MeditateOptions.25mr",
-    "25": "RQG.Dialog.Common.MeditateOptions.50mr",
+  private subsequentDefendOptions = {
+    "0": "RQG.Dialog.Defence.SubsequentDefendOptions.First",
+    "-20": "RQG.Dialog.Defence.SubsequentDefendOptions.Second",
+    "-40": "RQG.Dialog.Defence.SubsequentDefendOptions.Third",
+    "-60": "RQG.Dialog.Defence.SubsequentDefendOptions.Fourth",
+    "-80": "RQG.Dialog.Defence.SubsequentDefendOptions.Fifth",
+    "-100": "RQG.Dialog.Defence.SubsequentDefendOptions.Sixth",
   };
 
   private readonly attackingWeaponItem: RqgItem;
@@ -58,7 +58,7 @@ export class DefenceDialog extends FormApplication<
       defence: options.defenceType,
       defenceItemUuid: undefined,
       augmentModifier: "0",
-      meditateModifier: "0",
+      subsequentDefendModifier: "0",
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Defence.OtherModifier"),
     };
@@ -142,16 +142,18 @@ export class DefenceDialog extends FormApplication<
       options: this.options,
       title: this.title,
       augmentOptions: this.augmentOptions,
-      meditateOptions: this.meditateOptions,
+      subsequentDefendOptions: this.subsequentDefendOptions,
       defendingActorOptions: actorOptions,
       defenceOptions: defenceOptions,
       parryingWeaponOptions: parryingWeaponOptions,
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
-      totalChance:
+      totalChance: Math.max(
+        0,
         Number(defenceChance ?? 0) +
-        Number(this.object.augmentModifier ?? 0) +
-        Number(this.object.meditateModifier ?? 0) +
-        Number(this.object.otherModifier ?? 0),
+          Number(this.object.augmentModifier ?? 0) +
+          Number(this.object.subsequentDefendModifier ?? 0) +
+          Number(this.object.otherModifier ?? 0),
+      ),
     };
   }
 
@@ -206,8 +208,8 @@ export class DefenceDialog extends FormApplication<
               description: localize("RQG.Roll.AbilityRoll.Augment"),
             },
             {
-              value: Number(this.object.meditateModifier),
-              description: localize("RQG.Roll.AbilityRoll.Meditate"),
+              value: Number(this.object.subsequentDefendModifier),
+              description: localize("RQG.Dialog.Defence.SubsequentDefendModifier"),
             },
             {
               value: Number(this.object.otherModifier),

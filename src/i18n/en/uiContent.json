@@ -453,7 +453,16 @@
         "ParryingWeaponUsage": "Usage",
         "OtherModifier": "Other Modifier",
         "Ignore": "Ignore",
-        "Ignored": "Ignored"
+        "Ignored": "Ignored",
+        "SubsequentDefendModifier": "Subsequent Defence Modifier",
+        "SubsequentDefendOptions": {
+          "First": "First -0%",
+          "Second": "Second -20%",
+          "Third": "Third -40%",
+          "Fourth": "Fourth -60%",
+          "Fifth": "Fifth -80%",
+          "Sixth": "Sixth -100%"
+        }
       },
       "AbilityRoll": {
         "Title": "Ability Check",
