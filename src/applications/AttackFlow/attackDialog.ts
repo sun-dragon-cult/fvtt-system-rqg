@@ -19,6 +19,11 @@ import { AttackChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Usage, UsageType } from "../../data-model/item-data/weaponData";
+import {
+  darknessModifier,
+  proneTargetModifier,
+  unawareTargetModifier,
+} from "../../system/penaltyConstants";
 
 export class AttackDialog extends FormApplication<
   FormApplication.Options,
@@ -40,6 +45,9 @@ export class AttackDialog extends FormApplication<
     const formData: AttackDialogObjectData = {
       usageType: "oneHand", // TODO might not be ok - pick the selected or first available
       augmentModifier: "0",
+      proneTarget: false,
+      unawareTarget: false,
+      darkness: false,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Attack.OtherModifier"),
       attackDamageBonus: "",
@@ -105,7 +113,10 @@ export class AttackDialog extends FormApplication<
         0,
         Number(usedSkill?.system.chance ?? 0) +
           Number(this.object.augmentModifier ?? 0) +
-          Number(this.object.otherModifier ?? 0),
+          Number(this.object.otherModifier ?? 0) +
+          (this.object.proneTarget ? proneTargetModifier : 0) +
+          (this.object.unawareTarget ? unawareTargetModifier : 0) +
+          (this.object.darkness ? darknessModifier : 0),
       ),
     };
   }
@@ -136,6 +147,18 @@ export class AttackDialog extends FormApplication<
             {
               value: Number(this.object.augmentModifier),
               description: localize("RQG.Roll.AbilityRoll.Augment"),
+            },
+            {
+              value: this.object.proneTarget ? proneTargetModifier : 0,
+              description: localize("RQG.Roll.AbilityRoll.ProneTarget"),
+            },
+            {
+              value: this.object.unawareTarget ? unawareTargetModifier : 0,
+              description: localize("RQG.Roll.AbilityRoll.UnawareTarget"),
+            },
+            {
+              value: this.object.darkness ? darknessModifier : 0,
+              description: localize("RQG.Roll.AbilityRoll.Darkness"),
             },
             {
               value: Number(this.object.otherModifier),

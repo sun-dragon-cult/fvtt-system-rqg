@@ -441,6 +441,9 @@
       "Attack": {
         "Title": "Attack",
         "WeaponUsage": "Usage",
+        "ProneTarget": "Prone Target",
+        "UnawareTarget": "Unaware Target",
+        "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",
         "DamageBonusFrom":"Damage Bonus from"
       },
@@ -1082,7 +1085,19 @@
       "AbilityRoll": {
         "Base": "base",
         "Augment": "augment",
-        "Meditate": "meditate"
+        "Meditate": "meditate",
+        "SubsequentDefendRoll": {
+          "First": "first defence",
+          "Second": "second defence",
+          "Third": "third defence",
+          "Fourth": "fourth defence",
+          "Fifth": "fifth defence",
+          "Sixth": "sixth defence"
+        },
+        "ProneTarget": "prone",
+        "UnawareTarget": "unaware",
+        "Darkness": "darkness",
+        "OtherModifier": "other modifier"
       },
       "CharacteristicRoll": {
         "Augment": "augment",

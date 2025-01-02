@@ -209,7 +209,9 @@ export class DefenceDialog extends FormApplication<
             },
             {
               value: Number(this.object.subsequentDefendModifier),
-              description: localize("RQG.Dialog.Defence.SubsequentDefendModifier"),
+              description: this.getSubsequestDefenceModifierLabel(
+                Number(this.object.subsequentDefendModifier),
+              ),
             },
             {
               value: Number(this.object.otherModifier),
@@ -420,6 +422,22 @@ export class DefenceDialog extends FormApplication<
     return { defenceName: localize("RQG.Dialog.Defence.Ignore"), defenceChance: 0 };
   }
 
+  getSubsequestDefenceModifierLabel(defenceModifier: number): string {
+    switch (defenceModifier) {
+      case -20:
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Second");
+      case -40:
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Third");
+      case -60:
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Fourth");
+      case -80:
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Fifth");
+      case -100:
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Sixth");
+      default:
+        return "";
+    }
+  }
   private getActorOptions(): Record<string, string> {
     // case 1 - defendingActorUuid is set (attacker has set a target)
     // @ts-expect-error fromUuidSync

@@ -33,6 +33,9 @@ export type AttackDialogHandlebarsData = {
 export type AttackDialogObjectData = {
   usageType: UsageType;
   augmentModifier: string;
+  proneTarget: boolean;
+  unawareTarget: boolean;
+  darkness: boolean;
   otherModifier: string;
   otherModifierDescription: string;
   /** In the dialog it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
