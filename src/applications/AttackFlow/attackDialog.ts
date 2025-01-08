@@ -14,7 +14,7 @@ import {
 } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
-import { AttackChatOptions } from "../../chat/RqgChatMessage.types";
+import { AttackDialogOptions } from "../../chat/RqgChatMessage.types";
 import { AttackChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -41,7 +41,7 @@ export class AttackDialog extends FormApplication<
 
   private weaponItem: RqgItem;
 
-  constructor(weaponItem: RqgItem, options: Partial<AttackChatOptions> = {}) {
+  constructor(weaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: AttackDialogObjectData = {
       usageType: "oneHand", // TODO might not be ok - pick the selected or first available
       augmentModifier: "0",

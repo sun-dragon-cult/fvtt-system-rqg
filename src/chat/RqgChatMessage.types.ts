@@ -5,7 +5,7 @@ import { Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
 export type DefenceType = "parry" | "dodge" | "ignore";
 export type AttackState = "Attacked" | "Defended" | "DamageRolled";
 
-export type AttackChatOptions = {
+export type AttackDialogOptions = {
   attackState: AttackState;
   defenceType: DefenceType;
   chatMessageId: string;

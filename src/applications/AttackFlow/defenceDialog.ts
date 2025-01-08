@@ -14,7 +14,7 @@ import {
 } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
-import { AttackChatOptions, DefenceType } from "../../chat/RqgChatMessage.types";
+import { AttackDialogOptions, DefenceType } from "../../chat/RqgChatMessage.types";
 import { DefenceDialogHandlebarsData, DefenceDialogObjectData } from "./DefenceDialogData.types";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -50,7 +50,7 @@ export class DefenceDialog extends FormApplication<
   private readonly attackingWeaponItem: RqgItem;
   private readonly attackChatMessage: RqgChatMessage | undefined;
 
-  constructor(attackingWeaponItem: RqgItem, options: Partial<AttackChatOptions> = {}) {
+  constructor(attackingWeaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: DefenceDialogObjectData = {
       defendingActorUuid: undefined,
       parryingWeaponUuid: undefined,
@@ -67,7 +67,7 @@ export class DefenceDialog extends FormApplication<
     this.attackingWeaponItem = attackingWeaponItem;
     this.object = formData;
 
-    const o = this.options as unknown as AttackChatOptions;
+    const o = this.options as unknown as AttackDialogOptions;
     this.attackChatMessage = getGame().messages?.get(o.chatMessageId) as RqgChatMessage | undefined;
     if (!this.attackChatMessage) {
       ui.notifications?.error("Could not find chat message"); // TODO Improve error

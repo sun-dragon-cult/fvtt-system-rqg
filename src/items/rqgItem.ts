@@ -27,7 +27,7 @@ import { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types
 import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "../data-model/item-data/spell";
 import { AttackDialog } from "../applications/AttackFlow/attackDialog";
-import { AttackChatOptions } from "../chat/RqgChatMessage.types";
+import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
 import { UsageType } from "../data-model/item-data/weaponData";
 import { DamageDegree } from "../system/combatCalculations.types";
 
@@ -283,7 +283,7 @@ export class RqgItem extends Item {
   /**
    * Open an attackDialog to initiate an attack sequence
    */
-  public async attack(options: Partial<AttackChatOptions> = {}): Promise<void> {
+  public async attack(options: Partial<AttackDialogOptions> = {}): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.Weapon);
     await new AttackDialog(this, options).render(true);
   }
