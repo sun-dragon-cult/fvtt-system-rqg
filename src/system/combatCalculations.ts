@@ -49,10 +49,20 @@ export async function combatOutcome(
     defenceSuccessLevel,
   );
 
-  const weaponForDamage =
-    damagedWeaponDesignation === "parryWeapon" ? parryingWeapon : attackingWeapon;
+  // If the damaged weapon is the parrying weapon then roll the attacking weapon damage, and vice versa.
+  const weaponForDamageMap = new Map([
+    ["parryWeapon", attackingWeapon],
+    ["attackingWeapon", parryingWeapon],
+  ]);
+
+  // TODO Should be undefined if no damage was dealt (fail/fail)
+  const weaponForDamage = weaponForDamageMap.get(damagedWeaponDesignation) ?? attackingWeapon;
+
+  // const weaponForDamage =
+  //   damagedWeaponDesignation === "parryWeapon" ? parryingWeapon : attackingWeapon;
+
   const usage =
-    damagedWeaponDesignation === "parryWeapon" ? parryWeaponUsageType : attackWeaponUsageType;
+    damagedWeaponDesignation === "attackingWeapon" ? parryWeaponUsageType : attackWeaponUsageType;
 
   const damagedWeapon =
     damagedWeaponDesignation === "attackingWeapon"
@@ -67,6 +77,7 @@ export async function combatOutcome(
   const damageFormula = weaponForDamage?.getDamageFormula(usage, damagedDegree);
   if (!damageFormula) {
     return {
+      damageRoll: undefined,
       weaponDamage: undefined,
       damagedWeapon: undefined,
       defenderHitLocationDamage: undefined,
@@ -75,6 +86,7 @@ export async function combatOutcome(
     };
   }
 
+  // TODO FIXME damage from parrying weapon should take db from defending actor
   const damageFormulaWithDb = damageFormula.replaceAll("db", attackDamageBonus);
 
   const damageRoll = new Roll(damageFormulaWithDb);
@@ -93,6 +105,7 @@ export async function combatOutcome(
   );
 
   return {
+    damageRoll: damageRoll,
     weaponDamage: weaponDamage,
     damagedWeapon: damagedWeapon,
     defenderHitLocationDamage: defenderHitLocationDamage,
@@ -158,6 +171,9 @@ function getIgnoreArmor(
   }
 }
 
+/**
+ * Calculate what weapon should get damage. Attacking Weapon, Defending Weapon or no weapon.
+ */
 function getDamagedWeapon(
   defence: DefenceType | undefined,
   attackSuccessLevel: AbilitySuccessLevelEnum,

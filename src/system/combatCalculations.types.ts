@@ -6,6 +6,10 @@ export type CombatOutcome = {
   // /** How much damage should be applied to the defenders parry weapon */
   // defenderWeaponDamage: number | undefined;
   /**
+   * The evaluated damage roll. If no damage is done, it's undefined.
+   */
+  damageRoll: Roll | undefined;
+  /**
    * How much damage should be applied to either the defenders parry weapon
    * or the attacking weapon, if any. Which weapon it applies to is calculated elsewhere.
    */

@@ -88,23 +88,42 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
   type: "attackChat";
   // chat: CommonRqgChatFlags & {
   chat: {
+    // *** Added in AttackDialog ***
+
     attackState: AttackState;
+    attackingActorUuid: string;
+    // Added by AttackDialog if target is set
+    defendingActorUuid?: string;
+    attackRoll: AbilityRoll;
+    // TODO Is this really the best way?
+    attackRollHtml: string;
+
+    attackDamageBonus: string;
+
     actorDamagedApplied: boolean;
     weaponDamageApplied: boolean;
 
-    attackingActorUuid: string;
-    defendingActorUuid?: string;
-
     attackWeaponUuid: string;
     attackWeaponUsage: UsageType;
+
+    // *** Added in DefenceDialog ***
+
     defenceWeaponUuid?: string;
     defenceWeaponUsage?: UsageType;
 
-    attackDamageBonus: string;
+    // TODO what about defending weapon db in case of parry
+
+    /** Formatted text from attack or dodge result table */
     outcomeDescription: string;
-    attackRoll: AbilityRoll;
     defendRoll?: AbilityRoll;
+    // TODO Is this really the best way?
+    defendRollHtml: string | undefined;
+    attackerFumbled: boolean;
+    defenderFumbled: boolean;
+
+    /** Can be from either attacking or defending weapon */
     damageRoll?: Roll;
+    /** Can be 1d20 or 1d10 or 1d10+10 - added in attackDialog, rolled by defenceDialog */
     hitLocationRoll?: Roll;
 
     damagedHitLocationUuid: string;
@@ -115,11 +134,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     // combatManeuverName: FormDataEntryValue;
     // actionName: string; // the clicked buttons name (like "combatManeuver" or "damageRoll")
     // actionValue: string; // the clicked buttons value (like "slash" or "special")
-    attackRollHtml: string; // TODO Is this really the best way?
-    defendRollHtml: string | undefined; // TODO Is this really the best way?
 
-    attackerFumbled: boolean;
-    defenderFumbled: boolean;
     attackerFumbleOutcome: string;
     defenderFumbleOutcome: string;
   };

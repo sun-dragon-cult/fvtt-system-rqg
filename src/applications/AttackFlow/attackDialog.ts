@@ -209,7 +209,7 @@ export class AttackDialog extends FormApplication<
             attackRoll: attackRoll,
             defendRoll: undefined,
             damageRoll: undefined,
-            hitLocationRoll: undefined,
+            hitLocationRoll: new Roll("1d20"), // TODO add options for 1d10 / 1d10+10
             damagedHitLocationUuid: "",
             damagedWeaponUuid: "",
             attackRollHtml: attackRollHtml,

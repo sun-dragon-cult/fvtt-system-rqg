@@ -261,6 +261,7 @@ export class DefenceDialog extends FormApplication<
           this.attackChatMessage?.flags?.rqg?.chat?.attackDamageBonus ?? "0";
 
         const {
+          damageRoll,
           weaponDamage,
           damagedWeapon,
           defenderHitLocationDamage,
@@ -345,6 +346,7 @@ export class DefenceDialog extends FormApplication<
                   actorDamagedApplied: attackState === "DamageRolled",
                   weaponDamageApplied: attackState === "DamageRolled",
                   weaponDamage: weaponDamage,
+                  damageRoll: damageRoll,
                 },
               },
             },

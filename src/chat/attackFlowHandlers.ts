@@ -57,13 +57,15 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
   requireValue(attackingWeaponUuid, "No attacking weapon in chat data", attackChatMessage);
   const attackWeapon = await fromUuid(attackingWeaponUuid);
 
-  const hitLocationRoll = new Roll("1d20");
-  await hitLocationRoll.evaluate();
+  const hitLocationRoll = AbilityRoll.fromData(
+    attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
+  ) as Roll | undefined;
+  await hitLocationRoll?.evaluate();
 
   // TODO const hitlocation = get target and find hitlocation from roll
-  const weaponDamage = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
-  const damageRoll = new Roll(weaponDamage);
-  await damageRoll.evaluate();
+  // const weaponDamage: string = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
+  const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
+  // await damageRoll.evaluate();  // TODO This is already evaluated in CombatOuitcome to calc weaponDamage
 
   const attackRoll = AbilityRoll.fromData(
     attackChatMessage.getFlag(systemId, "chat.attackRoll"),
@@ -114,8 +116,8 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
   // TODO update chat with rolls
 
   // TODO just testing.. should be part of the attack message.
-  hitLocationRoll.toMessage();
-  damageRoll.toMessage();
+  hitLocationRoll?.toMessage();
+  damageRoll?.toMessage();
 }
 
 /**
@@ -159,6 +161,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
       [systemId]: {
         chat: {
           actorDamagedApplied: true,
+          damagedHitLocation: damagedHitLocation,
         },
       },
     },
@@ -182,7 +185,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
       damageAmount,
       true,
       damagedHitLocation!,
-      damagedActor as RqgActor,
+      damagedHitLocation!.parent as RqgActor,
       speaker,
     );
 
@@ -192,25 +195,35 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     await damagedHitLocation!.update(hitLocationUpdates);
   }
   if (actorUpdates) {
-    await damagedActor!.update(actorUpdates as any);
+    await damagedHitLocation!.update(actorUpdates as any);
   } // TODO fix type
   await ChatMessage.create({
     user: getGame().user?.id,
     speaker: speaker,
     content: localize("RQG.Item.HitLocation.AddWoundChatContent", {
-      actorName: damagedActor!.name,
+      actorName: damagedHitLocation!.name,
       hitLocationName: damagedHitLocation!.name,
       notification: notification,
     }),
-    whisper: usersIdsThatOwnActor(damagedActor!),
+    whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
   });
 }
 
 /**
  * Reduce weapon HP by the number of points specified by the data-weapon-damage dataset on the button
+ * or by looking at the flag data?
  */
 export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement): Promise<void> {
-  ui.notifications?.info(`NotYetInvented ${clickedButton.dataset}`);
+  const { chatMessageId } = await getChatMessageInfo(clickedButton);
+
+  const attackChatMessage = getGame().messages?.get(chatMessageId);
+  if (!attackChatMessage) {
+    // TODO Warn about missing chat message
+    return;
+  }
+
+  const weaponDamage: string = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
+  ui.notifications?.info(`NotYetInvented ${clickedButton.dataset} weapoindamage ${weaponDamage}`);
 }
 
 /**
