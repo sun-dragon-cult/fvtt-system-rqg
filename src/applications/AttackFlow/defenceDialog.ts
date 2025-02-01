@@ -122,10 +122,17 @@ export class DefenceDialog extends FormApplication<
       this.object.defence = Object.keys(defenceOptions)[0] as DefenceType; // Make sure there is a possible defence selected
     }
 
+    // TODO should usage missile be excluded?
     const parryingWeaponUsageOptions = this.getParryingWeaponUsageOptions(parryingWeapon);
+    const parryingWeaponUsageOptionKeys = Object.keys(parryingWeaponUsageOptions);
+    if (
+      !this.object.parryingWeaponUsage ||
+      !parryingWeaponUsageOptionKeys.includes(this.object.parryingWeaponUsage)
+    ) {
+      this.object.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0] as UsageType; // If nothing is selected, select the first option
+    }
     const parrySkillRqid =
-      parryingWeapon?.system.usage[this.object.parryingWeaponUsage ?? "oneHand"]?.skillRqidLink
-        ?.rqid; // TODO hardcoded oneHand fallback usage
+      parryingWeapon?.system.usage[this.object.parryingWeaponUsage]?.skillRqidLink?.rqid;
 
     const { defenceName, defenceChance } = this.getDefenceNameAndChance(
       this.object.defence,
@@ -218,9 +225,9 @@ export class DefenceDialog extends FormApplication<
               description: this.object.otherModifierDescription,
             },
           ],
-          abilityName: this.attackingWeaponItem.name ?? undefined,
-          abilityType: this.attackingWeaponItem.type ?? undefined,
-          abilityImg: this.attackingWeaponItem.img ?? undefined,
+          abilityName: defendSkillItem?.name ?? undefined, // TODO should it be defending weapon!?
+          abilityType: defendSkillItem?.type ?? undefined,
+          abilityImg: defendSkillItem?.img ?? undefined,
           speaker: ChatMessage.getSpeaker({
             actor: this.attackingWeaponItem.parent as RqgActor | undefined,
           }),
