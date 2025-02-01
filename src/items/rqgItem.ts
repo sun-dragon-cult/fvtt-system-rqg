@@ -307,15 +307,48 @@ export class RqgItem extends Item {
       }
 
       case "normal": {
-        return weaponDamage;
+        const { damageFormula, damageBonus } =
+          this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+        return `${this.formatDamagePart(damageFormula, "weapon damage")}${damageBonus}`;
       }
       case "special":
       case "maxSpecial": {
-        return weaponDamage + "+" + weaponDamage; // TODO just a placeholder for now, should not duplicate db
+        const { damageFormula, damageBonus } =
+          this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+        return `${this.formatDamagePart(damageFormula, "weapon damage")} + ${this.formatDamagePart(damageFormula, "special damage")}${damageBonus}`;
       }
       default: {
         throw new RqgError("Tried to get damageFormula for invalid damageDegree");
       }
+    }
+  }
+
+  private getNormalizedDamageFormulaAndDamageBonus(damageFormula: string): {
+    damageFormula: string;
+    damageBonus: string;
+  } {
+    const normalizedDamageFormula = damageFormula.replaceAll(" ", "");
+    const damageFormulaWithoutDb = normalizedDamageFormula.replaceAll(/\+db\/2|\+db/g, "");
+    const damageBonus = normalizedDamageFormula.includes("db/2")
+      ? "+db/2"
+      : normalizedDamageFormula.includes("db")
+        ? "+db"
+        : "";
+
+    return {
+      damageFormula: damageFormulaWithoutDb,
+      damageBonus: damageBonus,
+    };
+  }
+
+  private formatDamagePart(damageFormula: string, description: string): string {
+    const compoundFormulaRegex = new RegExp("[+-]");
+    const isCompoundFormula = compoundFormulaRegex.test(damageFormula);
+
+    if (isCompoundFormula) {
+      return `(${damageFormula})[${description}]`;
+    } else {
+      return `${damageFormula}[${description}]`;
     }
   }
 

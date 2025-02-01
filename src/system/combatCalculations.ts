@@ -30,6 +30,7 @@ export async function combatOutcome(
   attackingWeapon: RqgItem,
   attackWeaponUsageType: UsageType,
   attackDamageBonus: string,
+  defendDamageBomus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
 ): Promise<CombatOutcome> {
@@ -86,8 +87,8 @@ export async function combatOutcome(
     };
   }
 
-  // TODO FIXME damage from parrying weapon should take db from defending actor
-  const damageFormulaWithDb = damageFormula.replaceAll("db", attackDamageBonus);
+  const damageBonus = weaponForDamage === parryingWeapon ? defendDamageBomus : attackDamageBonus;
+  const damageFormulaWithDb = applyDamageBonusToFormula(damageFormula, damageBonus);
 
   const damageRoll = new Roll(damageFormulaWithDb);
   await damageRoll.evaluate({
@@ -263,4 +264,31 @@ function calculateDodgeDamages(
     defenderHitLocationDamage: damageRolled,
     parryingHitLocation: false,
   };
+}
+
+/**
+ * If the damageFormula contains db or db/2 then apply the damageBonus die string instead of that placeholder.
+ * If db/2 is specified in damageFormula, reduce the damageBonus formula by half.
+ */
+function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
+  if (damageFormula.includes("db/2")) {
+    let oddDie = "";
+    let [dice, sides] = damageBonus
+      .toLowerCase()
+      .trim()
+      .split("d")
+      .map((n) => Number(n));
+    if (dice === 1) {
+      sides = sides / 2;
+    } else {
+      dice = Math.floor(dice / 2);
+      if (dice % 2 !== 0) {
+        // In case the number of die is not even, add another halved die. half 3d6 => 1d6+1d3
+        oddDie = `+1d${sides / 2}`;
+      }
+    }
+    return damageFormula.replaceAll("db/2", `(${dice}d${sides}${oddDie})[damage bonus]`);
+  } else {
+    return damageFormula.replaceAll("db", `${damageBonus}[damage bonus]`);
+  }
 }
