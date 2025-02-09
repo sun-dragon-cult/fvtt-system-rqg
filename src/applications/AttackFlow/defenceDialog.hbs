@@ -54,6 +54,14 @@
         {{selectOptions subsequentDefendOptions selected=object.subsequentDefendModifier localize=true}}
       </select>
 
+      <label>
+        {{localize "RQG.Dialog.Common.Halved"}}
+      </label>
+      <div>
+        <input type="checkbox" name="halved" {{checked object.halved}}>
+        {{#if object.halved}} {{halvedModifier}}%{{/if}}
+      </div>
+
       <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}"
              name="otherModifierDescription">
       <div>

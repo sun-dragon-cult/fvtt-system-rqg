@@ -529,6 +529,7 @@
         "CantFindChatMessageError": "CantFindChatMessageError",
         "TargetChance": "Target Chance",
         "IsAttacking": "{attackerName} is attacking {defenderName}",
+        "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
         "AugmentOptions": {
           "None": "None",
@@ -1107,6 +1108,7 @@
         "ProneTarget": "prone",
         "UnawareTarget": "unaware",
         "Darkness": "darkness",
+        "Halved": "halved",
         "OtherModifier": "other modifier"
       },
       "CharacteristicRoll": {

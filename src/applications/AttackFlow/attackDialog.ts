@@ -42,6 +42,7 @@ export class AttackDialog extends FormApplication<
   };
 
   private weaponItem: RqgItem;
+  private halvedModifier: number = 0;
 
   constructor(weaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: AttackDialogObjectData = {
@@ -50,6 +51,7 @@ export class AttackDialog extends FormApplication<
       proneTarget: false,
       unawareTarget: false,
       darkness: false,
+      halved: false,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Attack.OtherModifier"),
       attackDamageBonus: "",
@@ -103,6 +105,7 @@ export class AttackDialog extends FormApplication<
 
     const skillRqid = this.weaponItem.system.usage[this.object.usageType].skillRqidLink.rqid;
     const usedSkill = this.weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+    this.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
     return {
       weaponItem: this.weaponItem,
       // abilityName: this.weaponItem.name,
@@ -116,6 +119,7 @@ export class AttackDialog extends FormApplication<
       augmentOptions: this.augmentOptions,
       damageBonusSourceOptions: this.getDamageBonusSourceOptions(this.weaponItem),
       hitLocationFormulaOptions: this.getHitLocationFormulaOptions(),
+      halvedModifier: this.halvedModifier,
       totalChance: Math.max(
         0,
         Number(usedSkill?.system.chance ?? 0) +
@@ -123,7 +127,8 @@ export class AttackDialog extends FormApplication<
           Number(this.object.otherModifier ?? 0) +
           (this.object.proneTarget ? proneTargetModifier : 0) +
           (this.object.unawareTarget ? unawareTargetModifier : 0) +
-          (this.object.darkness ? darknessModifier : 0),
+          (this.object.darkness ? darknessModifier : 0) +
+          (this.object.halved ? this.halvedModifier : 0),
       ),
     };
   }
@@ -182,6 +187,10 @@ export class AttackDialog extends FormApplication<
             {
               value: this.object.darkness ? darknessModifier : 0,
               description: localize("RQG.Roll.AbilityRoll.Darkness"),
+            },
+            {
+              value: this.object.halved ? this.halvedModifier : 0,
+              description: localize("RQG.Roll.AbilityRoll.Halved"),
             },
             {
               value: Number(this.object.otherModifier),

@@ -49,6 +49,7 @@ export class DefenceDialog extends FormApplication<
 
   private readonly attackingWeaponItem: RqgItem;
   private readonly attackChatMessage: RqgChatMessage | undefined;
+  private halvedModifier: number = 0;
 
   constructor(attackingWeaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: DefenceDialogObjectData = {
@@ -59,6 +60,7 @@ export class DefenceDialog extends FormApplication<
       defenceItemUuid: undefined,
       augmentModifier: "0",
       subsequentDefendModifier: "0",
+      halved: false,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Defence.OtherModifier"),
     };
@@ -144,6 +146,8 @@ export class DefenceDialog extends FormApplication<
       parrySkillRqid,
     );
 
+    this.halvedModifier = -Math.floor(defenceChance / 2);
+
     const defenceButtonText =
       this.object.defence === "parry" ? localize("RQG.Dialog.Defence.Parry") : defenceName;
 
@@ -162,11 +166,13 @@ export class DefenceDialog extends FormApplication<
       defenceOptions: defenceOptions,
       parryingWeaponOptions: parryingWeaponOptions,
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
+      halvedModifier: this.halvedModifier,
       totalChance: Math.max(
         0,
         Number(defenceChance ?? 0) +
           Number(this.object.augmentModifier ?? 0) +
           Number(this.object.subsequentDefendModifier ?? 0) +
+          Number(this.object.halved ? this.halvedModifier : 0) +
           Number(this.object.otherModifier ?? 0),
       ),
     };
@@ -267,6 +273,10 @@ export class DefenceDialog extends FormApplication<
               description: this.getSubsequentDefenceModifierLabel(
                 Number(this.object.subsequentDefendModifier),
               ),
+            },
+            {
+              value: this.object.halved ? this.halvedModifier : 0,
+              description: localize("RQG.Roll.AbilityRoll.Halved"),
             },
             {
               value: Number(this.object.otherModifier),
