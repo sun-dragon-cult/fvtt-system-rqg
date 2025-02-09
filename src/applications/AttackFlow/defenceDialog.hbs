@@ -37,6 +37,9 @@
     {{/if}}
 
     {{#unless (eq object.defence "ignore")}}
+
+      <h2 class="submenu-span">{{localize "RQG.Dialog.Common.Modifiers"}}</h2>
+
       <label>
         {{localize "RQG.Dialog.AbilityRoll.Augment"}}
       </label>
@@ -63,7 +66,7 @@
       <i class="fa-solid fa-bullseye"></i><br>
       {{totalChance}}%
     </div>
-<!--    TODO show parry / dodge or Ignore-->
-    <button data-defend>{{localize "RQG.Game.TODO.Parry.or.Dodge.or.Ignore"}}</button>
+
+    <button data-defend>{{defenceButtonText}}</button>
   </div>
 </form>

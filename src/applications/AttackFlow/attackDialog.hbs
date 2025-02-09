@@ -13,6 +13,15 @@
     </select>
 
     <label>
+      {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
+    </label>
+    <select name="damageBonus">
+      {{selectOptions damageBonusSourceOptions selected=object.damageBonus}}
+    </select>
+
+    <h2 class="submenu-span">{{localize "RQG.Dialog.Common.Modifiers"}}</h2>
+
+    <label>
       {{localize "RQG.Dialog.AbilityRoll.Augment"}}
     </label>
     <select name="augmentModifier">
@@ -47,13 +56,6 @@
     <div>
       <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
     </div>
-
-    <label>
-      {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
-    </label>
-    <select name="damageBonus">
-      {{selectOptions damageBonusSourceOptions selected=object.damageBonus}}
-    </select>
   </div>
   <div class="flexrow flex-wrap gap03rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
@@ -63,7 +65,7 @@
     {{#with (lookup weaponItem.system.usage weaponItem.system.defaultUsage)}}
       {{#each combatManeuvers}}
         {{#unless (eq damageType "parry")}}
-        <button data-attack={{damageType}} name="combatManeuverRoll">
+        <button data-combat-maneuver-name="{{name}}" name="combatManeuverRoll">
           {{name}}
         </button>
         {{/unless}}

@@ -16,6 +16,7 @@ export type PartialAbilityItem = {
 
 export type DefenceDialogHandlebarsData = {
   defenceName: string | null;
+  defenceButtonText: string;
   // abilityType?: string;
   // abilityImg: string | null;
   defenceChance: number;

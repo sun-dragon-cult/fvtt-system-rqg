@@ -523,6 +523,7 @@
         "CantFindChatMessageError": "CantFindChatMessageError",
         "TargetChance": "Target Chance",
         "IsAttacking": "{attackerName} is attacking {defenderName}",
+        "Modifiers": "Modifiers",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",
@@ -668,7 +669,10 @@
         "FumbleTableMissingWarn": "The fumble table \"{fumbleTableName}\" is missing.",
         "PluralResults": "{numberOfResults} results",
         "SingularResult": "a result",
-        "FumbleResultFlavor": "Draws {numberOfResults} from the {fumbleTableName} table."
+        "FumbleResultFlavor": "Draws {numberOfResults} from the {fumbleTableName} table.",
+        "AttackSpecification": "Attack: {weaponName} / {usageType} / {damageType}",
+        "ParrySpecification": "Defence: {defence} / {weaponName} / {usageType}",
+        "DefenceSpecification": "Defence: {defence}"
       }
     },
     "Item": {

@@ -140,8 +140,12 @@ export class DefenceDialog extends FormApplication<
       parrySkillRqid,
     );
 
+    const defenceButtonText =
+      this.object.defence === "parry" ? localize("RQG.Dialog.Defence.Parry") : defenceName;
+
     return {
       defenceName: defenceName,
+      defenceButtonText: defenceButtonText,
       defenceChance: defenceChance,
       // abilityType: this.attackingWeaponItem.type,
       // abilityImg: parryingWeapon?.img ?? null, // TODO use it?
@@ -182,6 +186,46 @@ export class DefenceDialog extends FormApplication<
             ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
         // TODO end duplicate code ***
 
+        // Update the chat with how the defence was done
+
+        // @ts-expect-error flavor
+        const currentFlavor: string = this.attackChatMessage.flavor;
+
+        const defenderName = (await fromUuid(this.object.defendingActorUuid ?? ""))?.name;
+
+        const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
+
+        const { defenceName } = this.getDefenceNameAndChance(
+          this.object.defence,
+          selectedParryingWeapon?.parent ?? null,
+          parrySkillRqid,
+        );
+
+        if (this.object.defence === "parry") {
+          requireValue(
+            selectedParryingWeapon,
+            "parry defence selected without a parrying weapon",
+            this.object,
+          );
+        }
+
+        const defendFlavor =
+          this.object.defence === "parry"
+            ? localize("RQG.Dialog.weaponChat.ParrySpecification", {
+                defence: `<b>${localize(`RQG.Dialog.Defence.Parry`)}</b>`,
+                weaponName: `<b>${selectedParryingWeapon?.name ?? ""}</b>`,
+                usageType: `<b>${localize(`RQG.Game.WeaponUsage.${this.object.parryingWeaponUsage}`)}</b>`,
+              })
+            : localize("RQG.Dialog.weaponChat.DefenceSpecification", {
+                defence: `<b>${defenceName}</b>`,
+              });
+
+        const flavor = updatedFlavor + `<br>` + defendFlavor;
+        await this.attackChatMessage?.update({
+          flavor: flavor,
+          "flags.rqg.chat.defendingActorUuid": this.object.defendingActorUuid,
+        });
+
         const defendingActor = (await fromUuid(
           this.object.defendingActorUuid ?? "",
         )) as RqgActor | null;
@@ -216,7 +260,7 @@ export class DefenceDialog extends FormApplication<
             },
             {
               value: Number(this.object.subsequentDefendModifier),
-              description: this.getSubsequestDefenceModifierLabel(
+              description: this.getSubsequentDefenceModifierLabel(
                 Number(this.object.subsequentDefendModifier),
               ),
             },
@@ -392,25 +436,6 @@ export class DefenceDialog extends FormApplication<
   async _updateObject(event: Event, formData: DefenceDialogObjectData): Promise<void> {
     this.object = formData;
     this.render(true);
-
-    if (
-      this.attackChatMessage?.getFlag(systemId, "chat.defendingActorUuid") !==
-      this.object.defendingActorUuid
-    ) {
-      // Update the chat with who is defending
-      const attackerName = (
-        await fromUuid(this.attackChatMessage?.flags.rqg.chat.attackingActorUuid ?? "")
-      )?.name;
-      const defenderNameName = (await fromUuid(this.object.defendingActorUuid ?? ""))?.name;
-      const flavor = localize("RQG.Dialog.Common.IsAttacking", {
-        attackerName: `<b>${attackerName}</b>`,
-        defenderName: `<b>${defenderNameName}</b>`,
-      });
-      await this.attackChatMessage?.update({
-        flavor: flavor,
-        "flags.rqg.chat.defendingActorUuid": this.object.defendingActorUuid,
-      });
-    }
   }
 
   private getDefenceNameAndChance(
@@ -433,7 +458,7 @@ export class DefenceDialog extends FormApplication<
     return { defenceName: localize("RQG.Dialog.Defence.Ignore"), defenceChance: 0 };
   }
 
-  getSubsequestDefenceModifierLabel(defenceModifier: number): string {
+  getSubsequentDefenceModifierLabel(defenceModifier: number): string {
     switch (defenceModifier) {
       case -20:
         return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Second");
@@ -449,6 +474,7 @@ export class DefenceDialog extends FormApplication<
         return "";
     }
   }
+
   private getActorOptions(): Record<string, string> {
     // case 1 - defendingActorUuid is set (attacker has set a target)
     // @ts-expect-error fromUuidSync

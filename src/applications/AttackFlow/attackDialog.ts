@@ -5,9 +5,11 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   assertItemType,
+  getDomDataset,
   getGame,
   getGameUser,
   localize,
+  requireValue,
   RqgError,
   toKebabCase,
   trimChars,
@@ -18,7 +20,7 @@ import { AttackDialogOptions } from "../../chat/RqgChatMessage.types";
 import { AttackChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { Usage, UsageType } from "../../data-model/item-data/weaponData";
+import { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import {
   darknessModifier,
   proneTargetModifier,
@@ -135,11 +137,27 @@ export class AttackDialog extends FormApplication<
 
   activateListeners(html: JQuery): void {
     // Do the roll to chat
-    html[0]?.querySelectorAll<HTMLElement>("[data-attack]").forEach((el) => {
+    html[0]?.querySelectorAll<HTMLElement>("[data-combat-maneuver-name]").forEach((el) => {
       el.addEventListener("click", async () => {
         const actor = this.weaponItem.parent;
-        // TODO Hardcoded oneHand
-        const skillItem = actor?.items.get(this.weaponItem.system.usage.oneHand.skillId);
+
+        const skillItem = actor?.items.get(
+          this.weaponItem.system.usage[this.object.usageType].skillId,
+        );
+
+        const combatManeuverName = getDomDataset(el, "combat-maneuver-name");
+
+        const combatManeuver: CombatManeuver | undefined = this.weaponItem.system.usage[
+          this.object.usageType
+        ].combatManeuvers.find((cm: CombatManeuver) => cm.name === combatManeuverName);
+
+        requireValue(
+          combatManeuver,
+          "Missing combat maneuver",
+          combatManeuverName,
+          this.object.usageType,
+          this.weaponItem,
+        );
 
         const attackRollOptions: AbilityRollOptions = {
           naturalSkill: skillItem?.system.chance,
@@ -202,6 +220,7 @@ export class AttackDialog extends FormApplication<
             defendingActorUuid: defenderActor?.uuid, // TODO stämmer det här för unlinked?
             attackWeaponUuid: this.weaponItem.uuid,
             attackWeaponUsage: this.object.usageType,
+            attackCombatManeuver: combatManeuver,
             outcomeDescription: "",
             actorDamagedApplied: false,
             weaponDamageApplied: false,
@@ -224,10 +243,23 @@ export class AttackDialog extends FormApplication<
           templatePaths.attackChatMessage,
           chatData.chat,
         );
-        const flavor = localize("RQG.Dialog.Common.IsAttacking", {
+
+        const attackFlavor = localize("RQG.Dialog.Common.IsAttacking", {
           attackerName: `<b>${attackerActor.name}</b>`,
-          defenderName: `<b>${defenderActor?.name}</b>`,
+          defenderName: `<b>${defenderActor?.name ?? "???"}</b>`,
         });
+        const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
+        const damageTypeTranslated = localize(
+          `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
+        );
+
+        const weaponFlavor = localize("RQG.Dialog.weaponChat.AttackSpecification", {
+          weaponName: `<b>${this.weaponItem.name}</b>`,
+          usageType: `<b>${usageTypeTranslated}</b>`,
+          damageType: `<b>${damageTypeTranslated}</b>`,
+        });
+
+        const flavor = attackFlavor + `<br>` + weaponFlavor;
 
         // TODO Introduce ability for GM to fudge roll here?
 

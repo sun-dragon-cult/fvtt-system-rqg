@@ -1,7 +1,7 @@
 import { ChatMessageType } from "../../chat/RqgChatMessage";
 import { AttackState } from "../../chat/RqgChatMessage.types";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import { UsageType } from "../item-data/weaponData";
+import { CombatManeuver, UsageType } from "../item-data/weaponData";
 
 export const documentRqidFlags = "documentRqidFlags" as const;
 export const actorWizardFlags = "actorWizardFlags" as const;
@@ -97,7 +97,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     attackRoll: AbilityRoll;
     // TODO Is this really the best way?
     attackRollHtml: string;
-
+    attackCombatManeuver: CombatManeuver;
     attackDamageBonus: string;
 
     actorDamagedApplied: boolean;
