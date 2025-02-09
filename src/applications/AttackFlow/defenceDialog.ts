@@ -122,6 +122,10 @@ export class DefenceDialog extends FormApplication<
       this.object.defence = Object.keys(defenceOptions)[0] as DefenceType; // Make sure there is a possible defence selected
     }
 
+    if (this.object.defence === "parry" && !this.object.parryingWeaponUuid) {
+      this.object.parryingWeaponUuid = parryingWeaponUuid; // Make sure parrying weapon is selected if the defence is "parry"
+    }
+
     // TODO should usage missile be excluded?
     const parryingWeaponUsageOptions = this.getParryingWeaponUsageOptions(parryingWeapon);
     const parryingWeaponUsageOptionKeys = Object.keys(parryingWeaponUsageOptions);
