@@ -45,7 +45,7 @@ export class AttackDialog extends FormApplication<
 
   constructor(weaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: AttackDialogObjectData = {
-      usageType: "oneHand", // TODO might not be ok - pick the selected or first available
+      usageType: weaponItem.system.defaultUsage,
       augmentModifier: "0",
       proneTarget: false,
       unawareTarget: false,
@@ -87,8 +87,11 @@ export class AttackDialog extends FormApplication<
       !Object.keys(usageTypeOptions).includes(this.object.usageType)
     ) {
       // Pick the first usage if none is selected (or if the selected isn't available)
-      this.weaponItem.system.defaultUsage = Object.keys(usageTypeOptions)[0] as UsageType;
-      this.object.usageType = this.weaponItem.system.defaultUsage;
+      const defaultUsage = Object.keys(usageTypeOptions)[0] as UsageType;
+      this.object.usageType = defaultUsage;
+      await this.weaponItem.update({
+        system: { defaultUsage: defaultUsage },
+      });
     }
     if (!this.object.attackDamageBonus) {
       // Default the damage bonus to the attacking actor if none is selected
@@ -125,7 +128,7 @@ export class AttackDialog extends FormApplication<
 
   async _updateObject(event: Event, formData: AttackDialogObjectData): Promise<void> {
     // Initiate an update of the embedded weapon defaultUsage to store the preferred usage for next attack
-    if (this.object.usageType !== formData["usageType"]) {
+    if (this.weaponItem.system.defaultUsage !== formData["usageType"]) {
       await this.weaponItem.update({
         system: { defaultUsage: formData["usageType"] },
       });
