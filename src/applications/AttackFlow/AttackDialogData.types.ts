@@ -27,6 +27,7 @@ export type AttackDialogHandlebarsData = {
   usageTypeOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
   damageBonusSourceOptions: Record<string, string>;
+  hitLocationFormulaOptions: Record<string, string>;
   totalChance: number;
 };
 
@@ -40,4 +41,5 @@ export type AttackDialogObjectData = {
   otherModifierDescription: string;
   /** In the dialog it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
   attackDamageBonus: string;
+  hitLocationFormula: string;
 };

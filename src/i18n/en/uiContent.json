@@ -445,7 +445,13 @@
         "UnawareTarget": "Unaware Target",
         "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",
-        "DamageBonusFrom":"Damage Bonus from"
+        "DamageBonusFrom":"Damage Bonus from",
+        "HitLocationFormula": "Hit Location Formula",
+        "HitLocationFormulaOptions": {
+          "1d20": "Normal (1d20)",
+          "1d10": "From Below (1d10)",
+          "1d10+10": "From Above (1d10 + 10)"
+        }
       },
       "Defence": {
         "Title": "Defend",

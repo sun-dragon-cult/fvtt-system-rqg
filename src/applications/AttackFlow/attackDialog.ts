@@ -53,6 +53,7 @@ export class AttackDialog extends FormApplication<
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Attack.OtherModifier"),
       attackDamageBonus: "",
+      hitLocationFormula: "1d20",
     };
 
     super(formData, options as any);
@@ -114,6 +115,7 @@ export class AttackDialog extends FormApplication<
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,
       damageBonusSourceOptions: this.getDamageBonusSourceOptions(this.weaponItem),
+      hitLocationFormulaOptions: this.getHitLocationFormulaOptions(),
       totalChance: Math.max(
         0,
         Number(usedSkill?.system.chance ?? 0) +
@@ -231,7 +233,7 @@ export class AttackDialog extends FormApplication<
             attackRoll: attackRoll,
             defendRoll: undefined,
             damageRoll: undefined,
-            hitLocationRoll: new Roll("1d20"), // TODO add options for 1d10 / 1d10+10
+            hitLocationRoll: new Roll(this.object.hitLocationFormula),
             damagedHitLocationUuid: "",
             damagedWeaponUuid: "",
             attackRollHtml: attackRollHtml,
@@ -317,6 +319,14 @@ export class AttackDialog extends FormApplication<
     return {
       [weaponOwnerOptionKey]: weaponOwner.name ?? "",
       ...nonHumanods,
+    };
+  }
+
+  getHitLocationFormulaOptions(): Record<string, string> {
+    return {
+      "1d20": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d20"),
+      "1d10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10"),
+      "1d10+10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10+10"),
     };
   }
 }
