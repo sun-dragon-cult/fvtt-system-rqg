@@ -224,7 +224,16 @@ export class AttackDialog extends FormApplication<
           // TODO Warn about not finding attacker actor
           return;
         }
-        const attackRollHtml = await attackRoll.render();
+
+        const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
+        const damageTypeTranslated = localize(
+          `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
+        );
+
+        const attackRollFlavor = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
+<span>${this.weaponItem.name} | ${usageTypeTranslated} | ${damageTypeTranslated}</span>`;
+
+        const attackRollHtml = attackRollFlavor + (await attackRoll.render());
 
         const chatData: AttackChatFlags = {
           type: "attackChat",
@@ -262,25 +271,13 @@ export class AttackDialog extends FormApplication<
           attackerName: `<b>${attackerActor.name}</b>`,
           defenderName: `<b>${defenderActor?.name ?? "???"}</b>`,
         });
-        const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
-        const damageTypeTranslated = localize(
-          `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
-        );
-
-        const weaponFlavor = localize("RQG.Dialog.weaponChat.AttackSpecification", {
-          weaponName: `<b>${this.weaponItem.name}</b>`,
-          usageType: `<b>${usageTypeTranslated}</b>`,
-          damageType: `<b>${damageTypeTranslated}</b>`,
-        });
-
-        const flavor = attackFlavor + `<br>` + weaponFlavor;
 
         // TODO Introduce ability for GM to fudge roll here?
 
         const attackChatMessageOptions = {
           // @ts-expect-error CHAT_MESSAGE_STYLES
           type: CONST.CHAT_MESSAGE_STYLES.OTHER,
-          flavor: flavor,
+          flavor: attackFlavor,
           content: attackChatContent,
           speaker: ChatMessage.getSpeaker({
             actor: this.weaponItem.parent as RqgActor | undefined,

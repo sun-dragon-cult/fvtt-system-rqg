@@ -196,6 +196,10 @@ export class DefenceDialog extends FormApplication<
             ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
         // TODO end duplicate code ***
 
+        const defendingActor = (await fromUuid(
+          this.object.defendingActorUuid ?? "",
+        )) as RqgActor | null;
+
         // Update the chat with how the defence was done
 
         // @ts-expect-error flavor
@@ -205,9 +209,16 @@ export class DefenceDialog extends FormApplication<
 
         const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
 
+        if (updatedFlavor !== currentFlavor) {
+          await this.attackChatMessage?.update({
+            flavor: updatedFlavor,
+            "flags.rqg.chat.defendingActorUuid": this.object.defendingActorUuid,
+          });
+        }
+
         const { defenceName } = this.getDefenceNameAndChance(
           this.object.defence,
-          selectedParryingWeapon?.parent ?? null,
+          defendingActor,
           parrySkillRqid,
         );
 
@@ -218,27 +229,6 @@ export class DefenceDialog extends FormApplication<
             this.object,
           );
         }
-
-        const defendFlavor =
-          this.object.defence === "parry"
-            ? localize("RQG.Dialog.weaponChat.ParrySpecification", {
-                defence: `<b>${localize(`RQG.Dialog.Defence.Parry`)}</b>`,
-                weaponName: `<b>${selectedParryingWeapon?.name ?? ""}</b>`,
-                usageType: `<b>${localize(`RQG.Game.WeaponUsage.${this.object.parryingWeaponUsage}`)}</b>`,
-              })
-            : localize("RQG.Dialog.weaponChat.DefenceSpecification", {
-                defence: `<b>${defenceName}</b>`,
-              });
-
-        const flavor = updatedFlavor + `<br>` + defendFlavor;
-        await this.attackChatMessage?.update({
-          flavor: flavor,
-          "flags.rqg.chat.defendingActorUuid": this.object.defendingActorUuid,
-        });
-
-        const defendingActor = (await fromUuid(
-          this.object.defendingActorUuid ?? "",
-        )) as RqgActor | null;
 
         let defendSkillItem: RqgItem | undefined;
         switch (this.object.defence) {
@@ -372,8 +362,14 @@ export class DefenceDialog extends FormApplication<
 
         const messageData = this.attackChatMessage!.toObject();
 
-        const defendRollHtml =
-          (await defendRoll?.render()) ?? localize("RQG.Dialog.Defence.Ignored"); // TODO improve html
+        const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.DefenceSpecification")}</span>`;
+
+        const defendFlavor =
+          this.object.defence === "parry"
+            ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} | ${selectedParryingWeapon?.name ?? ""} | ${localize("RQG.Game.WeaponUsage." + this.object.parryingWeaponUsage)}</span>`
+            : `${defenceHtml} ${defenceName}`;
+
+        const defendRollHtml = defendFlavor + ((await defendRoll?.render()) ?? "");
 
         const outcomeDescription = getBasicOutcomeDescription(
           this.object.defence,
@@ -466,7 +462,10 @@ export class DefenceDialog extends FormApplication<
     }
     if (defence === "dodge") {
       const dodgeSkill = defendingActor?.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge);
-      return { defenceName: dodgeSkill?.name ?? "", defenceChance: dodgeSkill?.system.chance };
+      return {
+        defenceName: dodgeSkill?.name ?? "No dodge skill found!",
+        defenceChance: dodgeSkill?.system.chance,
+      };
     }
 
     return { defenceName: localize("RQG.Dialog.Defence.Ignore"), defenceChance: 0 };

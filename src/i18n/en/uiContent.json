@@ -677,9 +677,8 @@
         "PluralResults": "{numberOfResults} results",
         "SingularResult": "a result",
         "FumbleResultFlavor": "Draws {numberOfResults} from the {fumbleTableName} table.",
-        "AttackSpecification": "Attack: {weaponName} / {usageType} / {damageType}",
-        "ParrySpecification": "Defence: {defence} / {weaponName} / {usageType}",
-        "DefenceSpecification": "Defence: {defence}"
+        "AttackSpecification": "Attack",
+        "DefenceSpecification": "Defence"
       }
     },
     "Item": {

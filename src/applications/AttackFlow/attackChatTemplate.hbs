@@ -1,6 +1,6 @@
 {{log "attackChatTemplate" this}}
 <div class="rqg chat-card">
-  <div class="flexrow flex-align-center gap03rem">
+  <div class="flex-column gap03rem">
     <span data-visible-actor-uuid="{{attackingActorUuid}}">{{{attackRollHtml}}}</span>
     <span data-visible-actor-uuid="{{defendingActorUuid}}">{{{defendRollHtml}}}</span>
   </div>
@@ -18,7 +18,7 @@
       </button>
     </div>
   {{else if (eq attackState 'Defended')}}
-    {{{outcomeDescription}}}
+    <div class="outcome-description">{{{outcomeDescription}}}</div>
     {{#if true}} {{!-- TODO check that there is damage to roll, alse check if the defender should roll weapon damage instead --}}
       <button data-visible-actor-uuid="{{attackingActorUuid}}" data-damage-hitlocation>
         Roll some damage & hitlocation
@@ -26,7 +26,7 @@
     {{/if}}
 
   {{else if (eq attackState 'DamageRolled')}}
-    {{{outcomeDescription}}}
+    <div class="outcome-description">{{{outcomeDescription}}}</div>
     <div class="flexrow">
       {{#if damagedHitLocationUuid}}
       {{#unless actorDamagedApplied}}
