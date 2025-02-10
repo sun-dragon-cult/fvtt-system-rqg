@@ -366,7 +366,7 @@ export class DefenceDialog extends FormApplication<
 
         const defendFlavor =
           this.object.defence === "parry"
-            ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} | ${selectedParryingWeapon?.name ?? ""} | ${localize("RQG.Game.WeaponUsage." + this.object.parryingWeaponUsage)}</span>`
+            ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + this.object.parryingWeaponUsage)}</span>`
             : `${defenceHtml} ${defenceName}`;
 
         const defendRollHtml = defendFlavor + ((await defendRoll?.render()) ?? "");

@@ -231,7 +231,7 @@ export class AttackDialog extends FormApplication<
         );
 
         const attackRollFlavor = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
-<span>${this.weaponItem.name} | ${usageTypeTranslated} | ${damageTypeTranslated}</span>`;
+<span>${this.weaponItem.name} – ${usageTypeTranslated} – ${damageTypeTranslated}</span>`;
 
         const attackRollHtml = attackRollFlavor + (await attackRoll.render());
 

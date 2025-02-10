@@ -857,9 +857,12 @@ input.readonly {
 
     .outcome-description {
       font-size: var(--font-size-14);
-      margin: 0.3rem 0;
+      margin: 0.3rem -0.2rem;
       background-color: var(--rqg-color-main-bg);
-      padding: 0.3rem;
+      padding: 0.4rem;
+      mix-blend-mode: darken;
+      border-radius: 10px;
+      border: 9px double white;
     }
   }
 

@@ -116,8 +116,8 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
   // TODO update chat with rolls
 
   // TODO just testing.. should be part of the attack message.
-  hitLocationRoll?.toMessage();
   damageRoll?.toMessage();
+  hitLocationRoll?.toMessage();
 }
 
 /**
