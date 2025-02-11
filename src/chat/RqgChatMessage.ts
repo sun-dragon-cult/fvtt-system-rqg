@@ -5,10 +5,11 @@ import {
   handleApplyActorDamage,
   handleApplyWeaponDamage,
   handleDamageAndHitlocation,
-  handleDefend,
+  handleDefence,
   handleRollFumble,
   hideChatActionButtons,
 } from "./attackFlowHandlers";
+import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
@@ -57,7 +58,7 @@ export class RqgChatMessage extends ChatMessage {
     const html = await super.getHTML();
     const element = html instanceof HTMLElement ? html : html[0];
     this._enrichChatCard(element);
-    return html;
+    return $(element);
   }
 
   declare flags: { [systemId]: RqgChatMessageFlags }; // v10 type workaround
@@ -74,7 +75,7 @@ export class RqgChatMessage extends ChatMessage {
 
     if (clickedButton?.dataset.defence !== undefined) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
-      await handleDefend(clickedButton); // Open Defence Dialog (roll defence)
+      await handleDefence(clickedButton); // Open Defence Dialog (roll defence)
     }
 
     if (clickedButton?.dataset.damageHitlocation !== undefined) {
@@ -195,13 +196,14 @@ export class RqgChatMessage extends ChatMessage {
    * Augment the chat card markup for additional styling.
    * @protected
    */
-  _enrichChatCard(html: HTMLElement) {
-    // Dice Rolls
+  async _enrichChatCard(html: HTMLElement): Promise<void> {
+    // Event listener for Dice Rolls
     [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
       el.addEventListener("click", this._onClickDiceRoll.bind(this)),
     );
 
-    // TODO how to handle the rolls in the AttackChat?
+    await this.#enrichHtmlWithRoll(html, "chat.attackRoll", "[data-attack-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "chat.defenceRoll", "[data-defence-roll-html]");
   }
 
   /**
@@ -216,5 +218,20 @@ export class RqgChatMessage extends ChatMessage {
       return;
     }
     target?.classList.toggle("expanded");
+  }
+
+  async #enrichHtmlWithRoll(
+    html: HTMLElement,
+    flagPath: string,
+    domSelector: string,
+  ): Promise<void> {
+    const rollData = this.getFlag(systemId, flagPath);
+    if (rollData) {
+      const roll = AbilityRoll.fromData(rollData);
+      const element = html.querySelector<HTMLElement>(domSelector);
+      if (element) {
+        element.innerHTML = await roll.render();
+      }
+    }
   }
 }

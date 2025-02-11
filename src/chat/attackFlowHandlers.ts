@@ -27,7 +27,7 @@ import { socketSend } from "../sockets/RqgSocket";
 /**
  * Open the Defence Dialog to let someone defend against the attack
  */
-export async function handleDefend(clickedButton: HTMLButtonElement): Promise<void> {
+export async function handleDefence(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId, attackWeaponUuid } = await getChatMessageInfo(clickedButton);
 
   const attackingWeapon = (await fromUuid(attackWeaponUuid)) as RqgItem | undefined;

@@ -30,7 +30,7 @@ export async function combatOutcome(
   attackingWeapon: RqgItem,
   attackWeaponUsageType: UsageType,
   attackDamageBonus: string,
-  defendDamageBomus: string,
+  defenceDamageBonus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
 ): Promise<CombatOutcome> {
@@ -87,7 +87,7 @@ export async function combatOutcome(
     };
   }
 
-  const damageBonus = weaponForDamage === parryingWeapon ? defendDamageBomus : attackDamageBonus;
+  const damageBonus = weaponForDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
   const damageFormulaWithDb = applyDamageBonusToFormula(damageFormula, damageBonus);
 
   const damageRoll = new Roll(damageFormulaWithDb);

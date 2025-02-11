@@ -234,8 +234,6 @@ export class AttackDialog extends FormApplication<
           return;
         }
 
-        const attackRollHtml = await attackRoll.render();
-
         const chatData: AttackChatFlags = {
           type: "attackChat",
           chat: {
@@ -250,13 +248,11 @@ export class AttackDialog extends FormApplication<
             weaponDamageApplied: false,
             attackDamageBonus: this.object.attackDamageBonus.split(":")[1],
             attackRoll: attackRoll,
-            defendRoll: undefined,
+            defenceRoll: undefined,
             damageRoll: undefined,
             hitLocationRoll: new Roll(this.object.hitLocationFormula),
             damagedHitLocationUuid: "",
             damagedWeaponUuid: "",
-            attackRollHtml: attackRollHtml,
-            defendRollHtml: undefined,
             attackerFumbled: false,
             attackerFumbleOutcome: "",
             defenderFumbled: false,

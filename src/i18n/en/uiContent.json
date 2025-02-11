@@ -1096,7 +1096,7 @@
         "Base": "base",
         "Augment": "augment",
         "Meditate": "meditate",
-        "SubsequentDefendRoll": {
+        "SubsequentDefenceRoll": {
           "First": "first defence",
           "Second": "second defence",
           "Third": "third defence",

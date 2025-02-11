@@ -29,7 +29,7 @@ export type DefenceDialogHandlebarsData = {
   parryingWeaponOptions: Record<string, string>;
   parryingWeaponUsageOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
-  subsequentDefendOptions: Record<string, string>; // TODO Actually <number, string>
+  subsequentDefenceOptions: Record<string, string>; // TODO Actually <number, string>
   halvedModifier: number;
   totalChance: number;
 };
@@ -41,7 +41,7 @@ export type DefenceDialogObjectData = {
   parryingWeaponUsage: UsageType | undefined;
   defenceItemUuid: string | undefined; // Could be a weapon skill or the Dodge skill
   augmentModifier: string;
-  subsequentDefendModifier: string;
+  subsequentDefenceModifier: string;
   halved: boolean;
   otherModifier: string;
   otherModifierDescription: string;

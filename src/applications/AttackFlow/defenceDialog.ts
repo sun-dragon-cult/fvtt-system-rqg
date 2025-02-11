@@ -38,13 +38,13 @@ export class DefenceDialog extends FormApplication<
     "-50": "RQG.Dialog.Common.AugmentOptions.Fumble",
   };
 
-  private subsequentDefendOptions = {
-    "0": "RQG.Dialog.Defence.SubsequentDefendOptions.First",
-    "-20": "RQG.Dialog.Defence.SubsequentDefendOptions.Second",
-    "-40": "RQG.Dialog.Defence.SubsequentDefendOptions.Third",
-    "-60": "RQG.Dialog.Defence.SubsequentDefendOptions.Fourth",
-    "-80": "RQG.Dialog.Defence.SubsequentDefendOptions.Fifth",
-    "-100": "RQG.Dialog.Defence.SubsequentDefendOptions.Sixth",
+  private subsequentDefenceOptions = {
+    "0": "RQG.Dialog.Defence.SubsequentDefenceOptions.First",
+    "-20": "RQG.Dialog.Defence.SubsequentDefenceOptions.Second",
+    "-40": "RQG.Dialog.Defence.SubsequentDefenceOptions.Third",
+    "-60": "RQG.Dialog.Defence.SubsequentDefenceOptions.Fourth",
+    "-80": "RQG.Dialog.Defence.SubsequentDefenceOptions.Fifth",
+    "-100": "RQG.Dialog.Defence.SubsequentDefenceOptions.Sixth",
   };
 
   private readonly attackingWeaponItem: RqgItem;
@@ -59,7 +59,7 @@ export class DefenceDialog extends FormApplication<
       defence: options.defenceType,
       defenceItemUuid: undefined,
       augmentModifier: "0",
-      subsequentDefendModifier: "0",
+      subsequentDefenceModifier: "0",
       halved: false,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Defence.OtherModifier"),
@@ -161,7 +161,7 @@ export class DefenceDialog extends FormApplication<
       options: this.options,
       title: this.title,
       augmentOptions: this.augmentOptions,
-      subsequentDefendOptions: this.subsequentDefendOptions,
+      subsequentDefenceOptions: this.subsequentDefenceOptions,
       defendingActorOptions: actorOptions,
       defenceOptions: defenceOptions,
       parryingWeaponOptions: parryingWeaponOptions,
@@ -171,7 +171,7 @@ export class DefenceDialog extends FormApplication<
         0,
         Number(defenceChance ?? 0) +
           Number(this.object.augmentModifier ?? 0) +
-          Number(this.object.subsequentDefendModifier ?? 0) +
+          Number(this.object.subsequentDefenceModifier ?? 0) +
           Number(this.object.halved ? this.halvedModifier : 0) +
           Number(this.object.otherModifier ?? 0),
       ),
@@ -258,7 +258,7 @@ export class DefenceDialog extends FormApplication<
             ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + this.object.parryingWeaponUsage)}</span>`
             : `${defenceHtml} ${defenceName}`;
 
-        const defendRollOptions: AbilityRollOptions = {
+        const defenceRollOptions: AbilityRollOptions = {
           naturalSkill: defendSkillItem?.system.chance,
           modifiers: [
             {
@@ -266,9 +266,9 @@ export class DefenceDialog extends FormApplication<
               description: localize("RQG.Roll.AbilityRoll.Augment"),
             },
             {
-              value: Number(this.object.subsequentDefendModifier),
+              value: Number(this.object.subsequentDefenceModifier),
               description: this.getSubsequentDefenceModifierLabel(
-                Number(this.object.subsequentDefendModifier),
+                Number(this.object.subsequentDefenceModifier),
               ),
             },
             {
@@ -299,9 +299,9 @@ export class DefenceDialog extends FormApplication<
           return;
         }
 
-        const defendRoll = new AbilityRoll("1d100", {}, defendRollOptions);
-        await defendRoll.evaluate();
-        if (!defendRoll.successLevel) {
+        const defenceRoll = new AbilityRoll("1d100", {}, defenceRollOptions);
+        await defenceRoll.evaluate();
+        if (!defenceRoll.successLevel) {
           throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
         }
 
@@ -334,7 +334,7 @@ export class DefenceDialog extends FormApplication<
         } = await combatOutcome(
           this.object.defence,
           attackRoll,
-          defendRoll,
+          defenceRoll,
           attackingWeapon,
           attackWeaponUsageType,
           attackDamageBonus,
@@ -370,12 +370,10 @@ export class DefenceDialog extends FormApplication<
 
         const messageData = this.attackChatMessage!.toObject();
 
-        const defendRollHtml = await defendRoll?.render();
-
         const outcomeDescription = getBasicOutcomeDescription(
           this.object.defence,
           attackRoll.successLevel,
-          defendRoll?.successLevel,
+          defenceRoll?.successLevel,
         );
 
         // TODO Introduce ability for GM to fudge roll here
@@ -385,13 +383,13 @@ export class DefenceDialog extends FormApplication<
           getDamageDegree(
             this.object.defence ?? "ignore", // TODO correct?
             attackRoll.successLevel,
-            defendRoll.successLevel,
+            defenceRoll.successLevel,
           ) !== "none"
             ? "Defended"
             : "DamageRolled";
 
         const attackerFumbled = attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
-        const defenderFumbled = defendRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
+        const defenderFumbled = defenceRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
 
         foundry.utils.mergeObject(
           messageData,
@@ -403,8 +401,7 @@ export class DefenceDialog extends FormApplication<
                   defenceWeaponUsage: parryWeaponUsageType,
                   outcomeDescription: outcomeDescription,
                   attackState: attackState,
-                  defendRoll: defendRoll,
-                  defendRollHtml: defendRollHtml,
+                  defenceRoll: defenceRoll,
                   attackerFumbled: attackerFumbled,
                   defenderFumbled: defenderFumbled,
                   actorDamagedApplied: attackState === "DamageRolled",
@@ -436,7 +433,7 @@ export class DefenceDialog extends FormApplication<
           });
         }
 
-        await defendSkillItem?.checkExperience?.(defendRoll?.successLevel); // TODO move to later in flow
+        await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel); // TODO move to later in flow
         await this.close();
       });
     });
@@ -475,15 +472,15 @@ export class DefenceDialog extends FormApplication<
   getSubsequentDefenceModifierLabel(defenceModifier: number): string {
     switch (defenceModifier) {
       case -20:
-        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Second");
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefenceRoll.Second");
       case -40:
-        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Third");
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefenceRoll.Third");
       case -60:
-        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Fourth");
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefenceRoll.Fourth");
       case -80:
-        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Fifth");
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefenceRoll.Fifth");
       case -100:
-        return localize("RQG.Roll.AbilityRoll.SubsequentDefendRoll.Sixth");
+        return localize("RQG.Roll.AbilityRoll.SubsequentDefenceRoll.Sixth");
       default:
         return "";
     }

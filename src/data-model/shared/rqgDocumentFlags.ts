@@ -95,8 +95,6 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     // Added by AttackDialog if target is set
     defendingActorUuid?: string;
     attackRoll: AbilityRoll;
-    // TODO Is this really the best way?
-    attackRollHtml: string;
     attackCombatManeuver: CombatManeuver;
     attackDamageBonus: string;
 
@@ -115,9 +113,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
 
     /** Formatted text from attack or dodge result table */
     outcomeDescription: string;
-    defendRoll?: AbilityRoll;
-    // TODO Is this really the best way?
-    defendRollHtml: string | undefined;
+    defenceRoll?: AbilityRoll;
     attackerFumbled: boolean;
     defenderFumbled: boolean;
 
