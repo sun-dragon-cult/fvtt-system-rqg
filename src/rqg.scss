@@ -864,6 +864,7 @@ input.readonly {
       border-radius: 10px;
       border: 9px double white;
     }
+
   }
 
   &.chat-content {
@@ -945,71 +946,105 @@ input.readonly {
     border: none;
   }
 
-  .dice-tooltip {
-    text-align: end;
-  }
 
-  .roll-action {
-    font-size: var(--font-size-18);
-    font-weight: bold;
-    color: var(--color-text-dark-primary);
-  }
-
-  .roll-level {
-    font-size: var(--font-size-16);
-  }
-
-  .dice-total {
+  .dice-roll {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-around;
-    mix-blend-mode: multiply;
 
-    .target {
-      font-size: var(--font-size-14);
+    .dice-result {
+      order: 2;
     }
 
-    &.success-level-0, &.success-level-1, &.success-level-2  { // Crit and better
-      background-color: #6FD042CC;
-      border: 4px outset #ffcf00;
-      border-radius: 14px;
-      box-shadow: inset 3px 5px 12px 3px #ffd800cc;
+    .dice-tooltip {
+      text-align: end;
+      display: none;
+      order: 2;
+      background-color: #e2e2e2;
+      border: 1px inset white;
+      padding: 10px 0.3rem 0;
+      border-radius: 0 0 6px 6px;
+      margin-top: -10px;
+      border-top: none;
     }
 
-    &.success-level-3 { // Special Success
-      background-color: #6FD042CC;
-      border: 4px groove #ffcf00;
-      border-radius: 10px;
+    &.expanded {
+      .dice-tooltip {
+        display: block;
+      }
     }
 
-    &.success-level-4 { // Success
-      background-color: #6FD042CC;
+    .roll-action {
+      font-size: var(--font-size-18);
+      font-weight: bold;
+      color: var(--color-text-dark-primary);
     }
 
-    &.success-level-5 { // Fail
-      background-color: #CECBC5CC;
+    .roll-level {
+      font-size: var(--font-size-16);
     }
 
-    &.success-level-6 { // Fumble
-      background-color: #E23333CC;
-      box-shadow: inset 0 0 3px 0 black;
-      clip-path: polygon(
-          0% 17%,
-          7% 17%,
-          4% 0%,
+    .dice-total {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      mix-blend-mode: multiply;
 
-          97% 0%,
-          93% 17%,
-          100% 17%,
+      flex: 0;
+      font-size: var(--font-size-20);
+      font-weight: bold;
 
-          100% 83%,
-          93% 83%,
-          96% 100%,
+      position: relative;
+      margin: 0;
+      line-height: 24px;
+      text-align: center;
 
-          4% 100%,
-          7% 83%,
-          0% 83%
-      );
+      word-break: break-all;
+
+      .target {
+        font-size: var(--font-size-14);
+      }
+
+      &.success-level-0, &.success-level-1, &.success-level-2 { // Crit and better
+        background-color: #6FD042CC;
+        border: 4px outset #ffcf00;
+        border-radius: 14px;
+        box-shadow: inset 3px 5px 12px 3px #ffd800cc;
+      }
+
+      &.success-level-3 { // Special Success
+        background-color: #6FD042CC;
+        border: 4px groove #ffcf00;
+        border-radius: 10px;
+      }
+
+      &.success-level-4 { // Success
+        background-color: #6FD042CC;
+      }
+
+      &.success-level-5 { // Fail
+        background-color: #CECBC5CC;
+      }
+
+      &.success-level-6 { // Fumble
+        background-color: #E23333CC;
+        box-shadow: inset 0 0 3px 0 black;
+        clip-path: polygon(
+            0% 17%,
+            7% 17%,
+            4% 0%,
+            97% 0%,
+            93% 17%,
+            100% 17%,
+            100% 83%,
+            93% 83%,
+            96% 100%,
+            4% 100%,
+            7% 83%,
+            0% 83%
+        );
+      }
     }
   }
 

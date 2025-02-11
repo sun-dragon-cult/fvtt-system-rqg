@@ -52,6 +52,14 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
+  /** @inheritDoc */
+  async getHTML(): Promise<JQuery> {
+    const html = await super.getHTML();
+    const element = html instanceof HTMLElement ? html : html[0];
+    this._enrichChatCard(element);
+    return html;
+  }
+
   declare flags: { [systemId]: RqgChatMessageFlags }; // v10 type workaround
 
   private static addChatListeners(html: HTMLElement | undefined): void {
@@ -182,4 +190,31 @@ export class RqgChatMessage extends ChatMessage {
   //   // const chatMessageType = flags.type;
   //   // await chatHandlerMap[chatMessageType].rollFromChat(this);
   // }
+
+  /**
+   * Augment the chat card markup for additional styling.
+   * @protected
+   */
+  _enrichChatCard(html: HTMLElement) {
+    // Dice Rolls
+    [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
+      el.addEventListener("click", this._onClickDiceRoll.bind(this)),
+    );
+
+    // TODO how to handle the rolls in the AttackChat?
+  }
+
+  /**
+   * Handle dice roll expansion.
+   * @protected
+   */
+  _onClickDiceRoll(event: MouseEvent) {
+    event.stopPropagation();
+
+    const target = event.currentTarget;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+    target?.classList.toggle("expanded");
+  }
 }
