@@ -37,10 +37,12 @@ export class AbilityRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate({ async: true });
     }
+    const o = this.options as AbilityRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor, // TODO maybe show what the roll is?
       user: getGameUser().id,
+      heading: o?.heading,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
       target: this._targetChance,

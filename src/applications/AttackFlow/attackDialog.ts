@@ -169,6 +169,14 @@ export class AttackDialog extends FormApplication<
           this.weaponItem,
         );
 
+        const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
+        const damageTypeTranslated = localize(
+          `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
+        );
+
+        const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
+<span>${this.weaponItem.name} – ${usageTypeTranslated} – ${damageTypeTranslated}</span>`;
+
         const attackRollOptions: AbilityRollOptions = {
           naturalSkill: skillItem?.system.chance,
           modifiers: [
@@ -197,6 +205,7 @@ export class AttackDialog extends FormApplication<
               description: this.object.otherModifierDescription,
             },
           ],
+          heading: attackRollHeading,
           abilityName: this.weaponItem.name ?? undefined,
           abilityType: this.weaponItem.type ?? undefined,
           abilityImg: this.weaponItem.img ?? undefined,
@@ -225,15 +234,7 @@ export class AttackDialog extends FormApplication<
           return;
         }
 
-        const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
-        const damageTypeTranslated = localize(
-          `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
-        );
-
-        const attackRollFlavor = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
-<span>${this.weaponItem.name} – ${usageTypeTranslated} – ${damageTypeTranslated}</span>`;
-
-        const attackRollHtml = attackRollFlavor + (await attackRoll.render());
+        const attackRollHtml = await attackRoll.render();
 
         const chatData: AttackChatFlags = {
           type: "attackChat",

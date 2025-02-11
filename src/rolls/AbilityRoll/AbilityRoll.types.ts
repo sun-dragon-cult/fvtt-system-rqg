@@ -8,6 +8,8 @@ export type Modifier = { description: string; value: number };
 export type AbilityRollOptions = Partial<EvaluationOptions> & {
   naturalSkill: number; // Unmodified chance
   modifiers?: Modifier[];
+  /** Alternative roll heading, used instead of flavor */
+  heading?: string;
   abilityName?: string; // Skill name
   abilityType?: ItemTypeEnum;
   abilityImg?: string; // Usually skill item image

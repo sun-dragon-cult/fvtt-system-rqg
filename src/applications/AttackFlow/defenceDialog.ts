@@ -251,6 +251,13 @@ export class DefenceDialog extends FormApplication<
           // Leave defendSkillItem undefined
         }
 
+        const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.DefenceSpecification")}</span>`;
+
+        const defendHeading =
+          this.object.defence === "parry"
+            ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + this.object.parryingWeaponUsage)}</span>`
+            : `${defenceHtml} ${defenceName}`;
+
         const defendRollOptions: AbilityRollOptions = {
           naturalSkill: defendSkillItem?.system.chance,
           modifiers: [
@@ -273,6 +280,7 @@ export class DefenceDialog extends FormApplication<
               description: this.object.otherModifierDescription,
             },
           ],
+          heading: defendHeading,
           abilityName: defendSkillItem?.name ?? undefined, // TODO should it be defending weapon!?
           abilityType: defendSkillItem?.type ?? undefined,
           abilityImg: defendSkillItem?.img ?? undefined,
@@ -362,14 +370,7 @@ export class DefenceDialog extends FormApplication<
 
         const messageData = this.attackChatMessage!.toObject();
 
-        const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.DefenceSpecification")}</span>`;
-
-        const defendFlavor =
-          this.object.defence === "parry"
-            ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + this.object.parryingWeaponUsage)}</span>`
-            : `${defenceHtml} ${defenceName}`;
-
-        const defendRollHtml = defendFlavor + ((await defendRoll?.render()) ?? "");
+        const defendRollHtml = await defendRoll?.render();
 
         const outcomeDescription = getBasicOutcomeDescription(
           this.object.defence,
