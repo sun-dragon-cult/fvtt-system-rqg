@@ -463,8 +463,8 @@
         "OtherModifier": "Other Modifier",
         "Ignore": "Ignore",
         "Ignored": "Ignored",
-        "SubsequentDefendModifier": "Subsequent Defence Modifier",
-        "SubsequentDefendOptions": {
+        "SubsequentDefenceModifier": "Subsequent Defence Modifier",
+        "SubsequentDefenceOptions": {
           "First": "First -0%",
           "Second": "Second -20%",
           "Third": "Third -40%",

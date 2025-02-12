@@ -27,7 +27,10 @@
 
   {{else if (eq attackState 'DamageRolled')}}
     <div class="outcome-description">{{{outcomeDescription}}}</div>
-    <div class="flexrow">
+    <div class="flex-column gap1rem">
+      <span data-damage-roll-html></span>
+      <span data-hit-location-roll-html></span>
+      <div class="flex-row">
       {{#if damagedHitLocationUuid}}
       {{#unless actorDamagedApplied}}
         <button data-visible-actor-uuid="{{damagedHitLocationUuid}}"
@@ -40,6 +43,7 @@
           data-visible-actor-uuid="{{defendingActorUuid}}" {{!-- TODO should be visible tho the actor owning the weapon--}}
           data-damaged-weapon-uuid="{{damagedWeaponUuid}}">Apply damage to weapon
         </button>{{/unless}}
+      </div>
     </div>
   {{/if}}
 

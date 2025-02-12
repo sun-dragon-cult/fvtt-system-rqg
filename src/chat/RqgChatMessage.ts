@@ -204,6 +204,8 @@ export class RqgChatMessage extends ChatMessage {
 
     await this.#enrichHtmlWithRoll(html, "chat.attackRoll", "[data-attack-roll-html]");
     await this.#enrichHtmlWithRoll(html, "chat.defenceRoll", "[data-defence-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "chat.damageRoll", "[data-damage-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "chat.hitLocationRoll", "[data-hit-location-roll-html]");
   }
 
   /**
