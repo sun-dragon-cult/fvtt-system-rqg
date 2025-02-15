@@ -355,7 +355,7 @@ export function getBasicOutcomeDescription(
 /**
  * Optionally hide the display of chat card elements which should not be shown to user
  */
-export const hideChatActionButtons = function (html: HTMLElement | undefined) {
+export const hideChatActionButtons = function (html: HTMLElement | undefined): void {
   if (getGameUser().isGM) {
     return; // Do not hide anything from GM
   }

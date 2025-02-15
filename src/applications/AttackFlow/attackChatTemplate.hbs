@@ -1,8 +1,8 @@
 {{log "attackChatTemplate" this}}
 <div class="rqg chat-card">
   <div class="flex-column gap03rem">
-    <span data-visible-actor-uuid="{{attackingActorUuid}}" data-attack-roll-html></span>
-    <span data-visible-actor-uuid="{{defendingActorUuid}}" data-defence-roll-html></span>
+    <span {{#if (eq attackState 'Attacked')}} data-visible-actor-uuid="{{attackingActorUuid}}" {{/if}} data-attack-roll-html></span>
+    <span data-defence-roll-html></span>
   </div>
 
   {{#if (eq attackState 'Attacked')}}

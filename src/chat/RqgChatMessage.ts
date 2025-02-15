@@ -26,38 +26,25 @@ export class RqgChatMessage extends ChatMessage {
     Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
       RqgChatMessage.addChatListeners(html[0]);
     });
-    // Hooks.on("renderChatPopout", (chatPopout: any, html: JQuery) => {
-    //   if (html === chatPopout._element) {
-    //     // This is called on chatMessage.update as well with different html - resulting in double listeners.
-    //     // To prevent that check that html (which is a li.chat-message element in case of update) is the same as
-    //     // chatPopout.element (which always is div.chat-popout)
-    //     RqgChatMessage.addChatListeners(html[0]);
-    //   }
-    // });
-    // Hooks.on("renderChatMessage", (chatItem, html) => {
-    //   RqidLink.addRqidLinkClickHandlers(html); // TODO this might not work if rqid points to compendium (async)
-    // });
+  }
 
-    Hooks.on("renderChatMessage", (app: any, html: JQuery) => {
-      // Only display combat action buttons to players that should see them
-      // TODO run the attackTemplate renderer to replace the html here?
-      hideChatActionButtons(html[0]);
+  _onUpdate(data: any, options: any, userId: string) {
+    // @ts-expect-error isAtBottom
+    if (ui?.chat?.isAtBottom) {
+      // TODO how to make it work without releasing the execution thread?
+      // @ts-expect-error scrollBottom
+      setTimeout(() => ui?.chat.scrollBottom(), 0);
+    }
 
-      // Scroll to show the possibly enlarged message, but only if at bottom of chat
-      // @ts-expect-error isAtBottom
-      if (ui?.chat.isAtBottom) {
-        // TODO how to make it work without releasing the execution thread?
-        // @ts-expect-error scrollBottom
-        setTimeout(() => ui?.chat.scrollBottom(), 0);
-      }
-    });
+    super._onUpdate(data, options, userId);
   }
 
   /** @inheritDoc */
   async getHTML(): Promise<JQuery> {
     const html = await super.getHTML();
     const element = html instanceof HTMLElement ? html : html[0];
-    this._enrichChatCard(element);
+    hideChatActionButtons(element);
+    await this._enrichChatCard(element);
     return $(element);
   }
 
