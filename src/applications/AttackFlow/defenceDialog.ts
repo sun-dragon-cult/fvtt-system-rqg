@@ -405,7 +405,7 @@ export class DefenceDialog extends FormApplication<
                   attackerFumbled: attackerFumbled,
                   defenderFumbled: defenderFumbled,
                   actorDamagedApplied: attackState === "DamageRolled",
-                  weaponDamageApplied: attackState === "DamageRolled",
+                  weaponDamageApplied: damagedWeapon && attackState === "DamageRolled",
                   weaponDamage: weaponDamage,
                   damageRoll: damageRoll,
                 },
