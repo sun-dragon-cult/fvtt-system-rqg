@@ -151,7 +151,7 @@ function normalAttack_FailParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: true,
+    parryingHitLocation: false,
   };
 }
 
@@ -159,7 +159,7 @@ function normalAttack_FumbleParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: true,
+    parryingHitLocation: false,
   };
 }
 

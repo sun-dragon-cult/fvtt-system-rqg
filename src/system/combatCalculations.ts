@@ -20,6 +20,10 @@ import {
   parryIgnoreApTable,
 } from "./combatCalculations.defs";
 
+export const exportedForTesting = {
+  calculateDamages: calculateDamages,
+};
+
 /**
  * Provide a collected result of the outcome of a combat attack.
  */
@@ -56,8 +60,7 @@ export async function combatOutcome(
     ["attackingWeapon", parryingWeapon],
   ]);
 
-  // TODO Should be undefined if no damage was dealt (fail/fail)
-  const weaponForDamage = weaponForDamageMap.get(damagedWeaponDesignation) ?? attackingWeapon;
+  const weaponForDamage = weaponForDamageMap.get(damagedWeaponDesignation) ?? undefined;
 
   // const weaponForDamage =
   //   damagedWeaponDesignation === "parryWeapon" ? parryingWeapon : attackingWeapon;

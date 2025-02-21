@@ -7,7 +7,6 @@ import {
   getRequiredDomDataset,
   localize,
   logMisconfiguration,
-  requireValue,
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
@@ -20,7 +19,6 @@ import { RqgActor } from "../actors/rqgActor";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { DamageCalculations } from "../system/damageCalculations";
 import type { RqgChatMessage } from "./RqgChatMessage";
-import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { socketSend } from "../sockets/RqgSocket";
 
@@ -51,35 +49,27 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
     return;
   }
 
-  const attackingWeaponUuid = attackChatMessage.getFlag(systemId, "chat.attackWeaponUuid") as
-    | string
-    | undefined;
-  requireValue(attackingWeaponUuid, "No attacking weapon in chat data", attackChatMessage);
-  const attackWeapon = await fromUuid(attackingWeaponUuid);
-
-  const hitLocationRoll = AbilityRoll.fromData(
+  const hitLocationRoll = Roll.fromData(
     attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
   ) as Roll | undefined;
+
+  // TODO implement HitLocationRoll - get target and add hitlocation name to roll
   await hitLocationRoll?.evaluate();
 
-  // TODO const hitlocation = get target and find hitlocation from roll
-  // const weaponDamage: string = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
-  const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
-  // await damageRoll.evaluate();  // TODO This is already evaluated in CombatOuitcome to calc weaponDamage
+  // @ts-expect-error dice3d
+  if (game.dice3d) {
+    // TODO figure out if it's attacker or defender that deals damage - hardcoded true now
+    const defenderDamage = true;
 
-  const attackRoll = AbilityRoll.fromData(
-    attackChatMessage.getFlag(systemId, "chat.attackRoll"),
-  ) as AbilityRoll | undefined;
-  const attackerActor = attackWeapon?.parent; // TODO or attackingActorUuid
-  const defendingActor = await fromUuid(
-    attackChatMessage.getFlag(systemId, "chat.defendingActorUuid"),
-  );
+    // @ts-expect-error author
+    const userDealingDamage = defenderDamage ? getGameUser() : attackChatMessage.author;
 
-  if (!attackRoll || !attackerActor || !defendingActor) {
-    const msg = "Not enough data to calculate outcome";
-    ui.notifications?.error(msg);
-    console.error(`RQG | ${msg}`);
-    return;
+    // DamageRoll is already evaluated in CombatOutcome to calc weaponDamage
+    const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
+    // @ts-expect-error dice3d
+    void game.dice3d.showForRoll(damageRoll, userDealingDamage, true, null, false);
+    // @ts-expect-error dice3d
+    await game.dice3d.showForRoll(hitLocationRoll, userDealingDamage, true, null, false);
   }
 
   const messageData = attackChatMessage.toObject();
@@ -90,7 +80,6 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
         [systemId]: {
           chat: {
             attackState: `DamageRolled`,
-            damageRoll: damageRoll,
             hitLocationRoll: hitLocationRoll,
           },
         },
@@ -132,8 +121,10 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     return;
   }
   assertActorType(damagedActor.type, ActorTypeEnum.Character);
-  const damageRoll = attackChatMessage.getFlag(systemId, "chat.damageRoll") as Roll;
-  const hitLocationRoll = attackChatMessage.getFlag(systemId, "chat.hitLocationRoll") as Roll;
+  const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
+  const hitLocationRoll = Roll.fromData(
+    attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
+  );
   const damageAmount = damageRoll.total ?? 0;
   const hitLocationNumberAffected = hitLocationRoll.total;
   if (!hitLocationNumberAffected) {

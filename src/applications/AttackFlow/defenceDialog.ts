@@ -187,6 +187,8 @@ export class DefenceDialog extends FormApplication<
           throw new RqgError(msg, this.attackChatMessage);
         }
 
+        const messageData = this.attackChatMessage!.toObject();
+
         // TODO duplicate code ***
         const selectedParryingWeapon = (await fromUuid(
           this.object.parryingWeaponUuid ?? "",
@@ -321,7 +323,7 @@ export class DefenceDialog extends FormApplication<
 
         const parryWeaponUsageType = this.object.parryingWeaponUsage;
         const attackDamageBonus =
-          this.attackChatMessage?.flags?.rqg?.chat?.attackDamageBonus ?? "0";
+          this.attackChatMessage?.getFlag(systemId, "chat.attackDamageBonus") ?? 0;
         const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "0";
 
         const {
@@ -343,32 +345,42 @@ export class DefenceDialog extends FormApplication<
           parryWeaponUsageType,
         );
 
+        console.log("🦚🦚🦚 combatOutcome:", {
+          damageRoll: damageRoll?.total,
+          weaponDamage,
+          damagedWeapon,
+          defenderHitLocationDamage,
+          useParryHitLocation,
+          ignoreDefenderAp,
+        });
+
         if (weaponDamage) {
           // TODO add damage to chatMessage for the applyDamage button - check if attacker or defender weapon
-          console.log("*** Add damagedWeapon to chat", weaponDamage, damagedWeapon);
+          console.log("§§§ Add damagedWeapon to chat", weaponDamage, damagedWeapon);
         }
 
         if (defenderHitLocationDamage) {
           // TODO add damage to chatMessage for the applyDamage button
           console.log(
-            "*** Add hitLocation damage to chat",
+            "§§§ Add hitLocation damage to chat",
             defenderHitLocationDamage,
             useParryHitLocation,
           );
 
           if (useParryHitLocation) {
+            console.log("§§§ Use Parrying Weapon HitLocation instead if a rolled HitLocation");
             // TODO use the targets parry weapon hit location
             // TODO need to expand the weapon item or equipped system for this
           } else {
+            console.log("§§§ Roll a HitLocation");
             // TODO use the target hitlocation according to the hitLocationRoll
           }
         }
 
         if (ignoreDefenderAp) {
+          console.log("§§§ Ignores Defender AP");
           // TODO add damage to chatMessage for apply damage options
         }
-
-        const messageData = this.attackChatMessage!.toObject();
 
         const outcomeDescription = getBasicOutcomeDescription(
           this.object.defence,
@@ -378,15 +390,11 @@ export class DefenceDialog extends FormApplication<
 
         // TODO Introduce ability for GM to fudge roll here
 
-        // Skip roll damage button if no damage occurred
-        const attackState =
-          getDamageDegree(
-            this.object.defence ?? "ignore", // TODO correct?
-            attackRoll.successLevel,
-            defenceRoll.successLevel,
-          ) !== "none"
-            ? "Defended"
-            : "DamageRolled";
+        const damageDegree = getDamageDegree(
+          this.object.defence ?? "ignore", // TODO correct?
+          attackRoll.successLevel,
+          defenceRoll.successLevel,
+        );
 
         const attackerFumbled = attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
         const defenderFumbled = defenceRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
@@ -400,14 +408,18 @@ export class DefenceDialog extends FormApplication<
                   defenceWeaponUuid: selectedParryingWeapon?.uuid,
                   defenceWeaponUsage: parryWeaponUsageType,
                   outcomeDescription: outcomeDescription,
-                  attackState: attackState,
+                  attackState: "Defended",
                   defenceRoll: defenceRoll,
                   attackerFumbled: attackerFumbled,
                   defenderFumbled: defenderFumbled,
-                  actorDamagedApplied: attackState === "DamageRolled",
-                  weaponDamageApplied: damagedWeapon && attackState === "DamageRolled",
+                  damagedWeaponUuid: damagedWeapon?.uuid,
                   weaponDamage: weaponDamage,
                   damageRoll: damageRoll,
+                  actorDamagedApplied: damageDegree === "none",
+                  weaponDamageApplied: damageDegree === "none",
+                  hitLocationRoll: damageRoll // If there is a damageRoll there should also be a hitLocationRoll
+                    ? messageData?.flags[systemId]?.chat.hitLocationRoll
+                    : null,
                 },
               },
             },
@@ -419,6 +431,29 @@ export class DefenceDialog extends FormApplication<
           templatePaths.attackChatMessage,
           messageData.flags[systemId]!.chat,
         );
+
+        // @ts-expect-error dice3d
+        if (game.dice3d) {
+          const attackRoll = Roll.fromData(
+            this.attackChatMessage!.getFlag(systemId, "chat.attackRoll"),
+          );
+
+          // Wait a tad with the defence roll to separate the animations slightly
+          setTimeout(() => {
+            // @ts-expect-error dice3d
+            void game.dice3d.showForRoll(defenceRoll, getGameUser(), true, null, false);
+          }, 300);
+
+          // @ts-expect-error dice3d
+          await game.dice3d.showForRoll(
+            attackRoll,
+            // @ts-expect-error author
+            this.attackChatMessage.author,
+            true,
+            null,
+            false,
+          );
+        }
 
         // @ts-expect-error author
         if (getGameUser().id === this.attackChatMessage.author.id) {

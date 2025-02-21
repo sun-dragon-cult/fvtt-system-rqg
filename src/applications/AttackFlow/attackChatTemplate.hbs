@@ -19,7 +19,8 @@
     </div>
   {{else if (eq attackState 'Defended')}}
     <div class="outcome-description">{{{outcomeDescription}}}</div>
-    {{#if true}} {{!-- TODO check that there is damage to roll, alse check if the defender should roll weapon damage instead --}}
+    {{!-- use presence of damageRoll as sign of there being damage to roll, should be null:ed if no damage is to be rolled --}}
+     {{#if damageRoll}} {{!-- TODO check if the defender should roll weapon damage instead, change data-visible-actor-uuid & supply some data to element --}}
       <button data-visible-actor-uuid="{{attackingActorUuid}}" data-damage-hitlocation>
         Roll some damage & hitlocation
       </button>

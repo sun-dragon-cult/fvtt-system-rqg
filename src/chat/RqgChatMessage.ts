@@ -196,7 +196,7 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   /**
-   * Handle dice roll expansion.
+   * Handle dice roll expansion to show "specification".
    * @protected
    */
   _onClickDiceRoll(event: MouseEvent) {
