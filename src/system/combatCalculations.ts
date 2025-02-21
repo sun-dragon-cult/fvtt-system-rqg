@@ -18,10 +18,12 @@ import {
   parryDamageDegreeTable,
   parryDamagedWeaponTable,
   parryIgnoreApTable,
+  weaponForDamageTable,
 } from "./combatCalculations.defs";
 
 export const exportedForTesting = {
-  calculateDamages: calculateDamages,
+  calculateDamages,
+  getDamagedWeapon,
 };
 
 /**
@@ -46,7 +48,7 @@ export async function combatOutcome(
   const defenceSuccessLevel = defenceRoll?.successLevel ?? AbilitySuccessLevelEnum.Failure; // TODO is fail correct here?
   const defenceUsed = defence ?? "ignore";
 
-  const damagedDegree = getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel);
+  const damageDegree = getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel);
 
   const damagedWeaponDesignation = getDamagedWeapon(
     defence,
@@ -54,31 +56,34 @@ export async function combatOutcome(
     defenceSuccessLevel,
   );
 
-  // If the damaged weapon is the parrying weapon then roll the attacking weapon damage, and vice versa.
-  const weaponForDamageMap = new Map([
-    ["parryWeapon", attackingWeapon],
-    ["attackingWeapon", parryingWeapon],
+  const weaponItemMap = new Map([
+    ["parryWeapon", parryingWeapon],
+    ["attackingWeapon", attackingWeapon],
   ]);
 
-  const weaponForDamage = weaponForDamageMap.get(damagedWeaponDesignation) ?? undefined;
-
-  // const weaponForDamage =
-  //   damagedWeaponDesignation === "parryWeapon" ? parryingWeapon : attackingWeapon;
+  const weaponForDamageDesignation =
+    getWeaponForDamage(defence, attackSuccessLevel, defenceSuccessLevel) ?? "none";
+  const weaponForDamage =
+    weaponForDamageDesignation === "none"
+      ? undefined
+      : (weaponItemMap.get(weaponForDamageDesignation) ?? undefined);
 
   const usage =
-    damagedWeaponDesignation === "attackingWeapon" ? parryWeaponUsageType : attackWeaponUsageType;
+    weaponForDamageDesignation === "attackingWeapon" ? attackWeaponUsageType : parryWeaponUsageType;
 
   const damagedWeapon =
-    damagedWeaponDesignation === "attackingWeapon"
-      ? attackingWeapon
-      : (parryingWeapon ?? undefined);
+    damagedWeaponDesignation === "none"
+      ? undefined
+      : damagedWeaponDesignation === "attackingWeapon"
+        ? attackingWeapon
+        : (parryingWeapon ?? undefined);
 
   if (damagedWeaponDesignation !== "none") {
     requireValue(usage, "No weapon usage for combatOutcome calculations");
     assertItemType(weaponForDamage?.type, ItemTypeEnum.Weapon);
   }
 
-  const damageFormula = weaponForDamage?.getDamageFormula(usage, damagedDegree);
+  const damageFormula = weaponForDamage?.getDamageFormula(usage, damageDegree);
   if (!damageFormula) {
     return {
       damageRoll: undefined,
@@ -95,7 +100,7 @@ export async function combatOutcome(
 
   const damageRoll = new Roll(damageFormulaWithDb);
   await damageRoll.evaluate({
-    maximize: damagedDegree === "maxSpecial",
+    maximize: damageDegree === "maxSpecial",
   });
   requireValue(damageRoll.total, "damage roll was not yet evaluated?");
 
@@ -190,6 +195,17 @@ function getDamagedWeapon(
   const damageDegree = parryDamagedWeaponTable[attackSuccessLevel][defenceSuccessLevel];
   requireValue(damageDegree, "Tried to get damaged weapon for unsupported AbilitySuccessLevel");
   return damageDegree;
+}
+
+function getWeaponForDamage(
+  defence: DefenceType | undefined,
+  attackSuccessLevel: AbilitySuccessLevelEnum,
+  defenceSuccessLevel: AbilitySuccessLevelEnum,
+): DamagedWeapon | undefined {
+  if ([undefined, "dodge", "ignore"].includes(defence)) {
+    return "attackingWeapon";
+  }
+  return weaponForDamageTable[attackSuccessLevel][defenceSuccessLevel];
 }
 
 export function getDamageDegree(

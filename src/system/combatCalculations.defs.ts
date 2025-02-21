@@ -18,7 +18,24 @@ export const parryDamagedWeaponTable: readonly (DamagedWeapon | undefined)[][] =
   [undefined, undefined, "attackingWeapon", "attackingWeapon", "parryWeapon", "none", "none"], // Success Attack
   [undefined, undefined, "attackingWeapon", "attackingWeapon", "attackingWeapon", "none", "none"], // Failure Attack
   [undefined, undefined, "attackingWeapon", "attackingWeapon", "attackingWeapon", "none", "none"], // Fumble Attack
-];
+] as const;
+
+/**
+ * 2D array of what weapon is doing damage, based on AbilitySuccessLevel. From the rules Attack & Parry Results table.
+ * Defined as [attack success][parry success]
+ * Does not include data for the unsupported HyperCritical & SpecialCritical
+ */
+// prettier-ignore
+export const weaponForDamageTable: readonly (DamagedWeapon | undefined)[][] = [
+  // HyperCritical, SpecialCritical, Critical, Special, Success, Failure, Fumble Parry
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined], // HyperCritical Attack
+  [undefined, undefined, undefined, undefined, undefined, undefined, undefined], // SpecialCritical Attack
+  [undefined, undefined, "attackingWeapon", "attackingWeapon", "attackingWeapon", "attackingWeapon", "attackingWeapon"], // Critical Attack
+  [undefined, undefined, "parryWeapon", "attackingWeapon", "attackingWeapon", "attackingWeapon", "attackingWeapon"], // Special Attack
+  [undefined, undefined, "parryWeapon", "parryWeapon", "attackingWeapon", "attackingWeapon", "attackingWeapon"], // Success Attack
+  [undefined, undefined, "parryWeapon", "parryWeapon", "parryWeapon", "none", "attackingWeapon"], // Failure Attack
+  [undefined, undefined, "parryWeapon", "parryWeapon", "parryWeapon", "none", "none"], // Fumble Attack
+] as const;
 
 /**
  * 2D array of ignore AP info, based on AbilitySuccessLevel. From the rules Attack & Parry Results table.
@@ -34,7 +51,7 @@ export const parryIgnoreApTable: readonly (boolean | undefined)[][] = [
   [undefined, undefined, false, false, false, false, false], // Success Attack
   [undefined, undefined, false, false, false, false, false], // Failure Attack
   [undefined, undefined, false, false, false, false, false], // Fumble Attack
-];
+] as const;
 
 /**
  * 2D array of damage amount info, based on AbilitySuccessLevel. From the rules Attack & Parry Results table.
@@ -50,7 +67,7 @@ export const parryDamageDegreeTable: readonly (DamageDegree | undefined)[][] = [
   [undefined, undefined, "special", "normal", "normal", "normal", "normal"], // Success Attack
   [undefined, undefined, "special", "special", "normal", "none", "normal"], // Failure Attack
   [undefined, undefined, "special", "special", "normal", "none", "none"], // Fumble Attack
-];
+] as const;
 
 /***************************************************
  *** From the rules Dodge Results table ***
@@ -70,7 +87,7 @@ export const dodgeIgnoreApTable: readonly (boolean | undefined)[][] = [
   [undefined, undefined, false, false, false, false, false], // Success Attack
   [undefined, undefined, false, false, false, false, false], // Failure Attack
   [undefined, undefined, false, false, false, false, false], // Fumble Attack
-];
+] as const;
 
 /**
  * 2D array of damage amount info, based on AbilitySuccessLevel. From the rules Dodge Results table.
@@ -86,4 +103,4 @@ export const dodgeDamageDegreeTable: readonly (DamageDegree | undefined)[][] = [
   [undefined, undefined, "none", "none", "none", "normal", "normal"], // Success Attack
   [undefined, undefined, "none", "none", "none", "none", "none"], // Failure Attack
   [undefined, undefined, "none", "none", "none", "none", "none"], // Fumble Attack
-];
+] as const;

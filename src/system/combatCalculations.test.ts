@@ -152,3 +152,34 @@ describe("calculateDamages", () => {
     ).toThrow(RqgError);
   });
 });
+
+const getDamagedWeapon = exportedForTesting.getDamagedWeapon;
+
+describe("getDamagedWeapon", () => {
+  it("should return 'none' for dodge defense", () => {
+    const result = getDamagedWeapon(
+      "dodge",
+      AbilitySuccessLevelEnum.Success,
+      AbilitySuccessLevelEnum.Success,
+    );
+    expect(result).toBe("none");
+  });
+
+  it("should return 'parryWeapon' for parry defense with Success:Success", () => {
+    const result = getDamagedWeapon(
+      "parry",
+      AbilitySuccessLevelEnum.Success,
+      AbilitySuccessLevelEnum.Success,
+    );
+    expect(result).toBe("parryWeapon");
+  });
+
+  it("should return 'none' for parry defense with Crit:Failure", () => {
+    const result = getDamagedWeapon(
+      "parry",
+      AbilitySuccessLevelEnum.Critical,
+      AbilitySuccessLevelEnum.Failure,
+    );
+    expect(result).toBe("none");
+  });
+});
