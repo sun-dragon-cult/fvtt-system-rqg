@@ -31,15 +31,13 @@ export class CharacteristicRoll extends Roll {
     if (!this._evaluated || this.total === undefined) {
       return undefined;
     }
-    const useSpecialCriticals =
-      (this.options as CharacteristicRollOptions).useSpecialCriticals ?? false;
-    return calculateAbilitySuccessLevel(this._targetChance, this.total, useSpecialCriticals);
+    return calculateAbilitySuccessLevel(this._targetChance, this.total);
   }
 
   // Html for the "content" of the chat-message
   async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
-      await this.evaluate({ async: true });
+      await this.evaluate();
     }
     const chatData = {
       formula: isPrivate ? "???" : this._formula,

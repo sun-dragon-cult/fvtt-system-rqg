@@ -8,6 +8,5 @@ export type CharacteristicRollOptions = Partial<EvaluationOptions> & {
   characteristicName: string; // Characteristic name TODO type better
   difficulty?: number; // to multiply with characteristicValue
   modifiers?: Modifier[];
-  useSpecialCriticals?: boolean;
   speaker?: ChatSpeakerDataProperties;
 };

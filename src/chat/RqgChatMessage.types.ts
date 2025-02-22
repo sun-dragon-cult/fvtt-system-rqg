@@ -17,6 +17,5 @@ export type AttackDialogOptions = {
   combatManeuver?: CombatManeuver;
   usage?: UsageType;
   modifiers?: Modifier[];
-  useSpecialCriticals?: boolean;
   speaker?: ChatSpeakerDataProperties;
 };

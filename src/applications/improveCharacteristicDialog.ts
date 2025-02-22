@@ -16,7 +16,7 @@ export async function showImproveCharacteristicDialog(
   const researchable = ["strength", "constitution", "dexterity", "charisma"];
 
   const rollmax = Roll.create(char.formula);
-  const speciesRollableMax = (await rollmax.evaluate({ maximize: true, async: true })).total || 0;
+  const speciesRollableMax = (await rollmax.evaluate({ maximize: true })).total || 0;
   const { diceCount, bonusNumber } = char.formula
     .replaceAll(" ", "")
     .match(/(?:(?<diceCount>\d+)[dD]\d+\+?)?(?<bonusNumber>\d*)/).groups;

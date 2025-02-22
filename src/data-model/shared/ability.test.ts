@@ -2,11 +2,6 @@ import { Ability } from "./ability";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 describe("Evaluate Roll Result", () => {
-  beforeEach(() => {
-    (global as any).game = { settings: {} };
-    (global as any).game.settings.get = jest.fn(() => true); // Enable hyper criticals etc
-  });
-
   describe.each`
     chance | roll   | expected
     ${-99} | ${95}  | ${AbilitySuccessLevelEnum.Failure}
@@ -48,12 +43,12 @@ describe("Evaluate Roll Result", () => {
     ${110} | ${7}   | ${AbilitySuccessLevelEnum.Special}
     ${999} | ${100} | ${AbilitySuccessLevelEnum.Fumble}
     ${999} | ${96}  | ${AbilitySuccessLevelEnum.Failure}
-    ${100} | ${1}   | ${AbilitySuccessLevelEnum.HyperCritical}
-    ${101} | ${2}   | ${AbilitySuccessLevelEnum.SpecialCritical}
+    ${100} | ${1}   | ${AbilitySuccessLevelEnum.Critical}
+    ${101} | ${2}   | ${AbilitySuccessLevelEnum.Critical}
     ${101} | ${3}   | ${AbilitySuccessLevelEnum.Critical}
   `("chance $chance & roll $roll", ({ chance, roll, expected }) => {
     it(`should return ${expected}`, () => {
-      expect(Ability["evaluateResult"](chance, roll, true)).toBe(expected);
+      expect(Ability["evaluateResult"](chance, roll)).toBe(expected);
     });
   });
 });

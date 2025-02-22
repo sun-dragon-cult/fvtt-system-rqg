@@ -269,8 +269,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
   ): RpAndMpCost {
     switch (result) {
       case AbilitySuccessLevelEnum.Critical:
-      case AbilitySuccessLevelEnum.SpecialCritical:
-      case AbilitySuccessLevelEnum.HyperCritical:
         // spell takes effect, Rune Points NOT spent, Rune gets xp check, boosting Magic Points spent
         return {
           mp: magicPointsUsed,

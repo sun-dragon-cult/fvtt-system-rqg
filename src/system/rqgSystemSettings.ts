@@ -75,15 +75,6 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
-  getGame().settings.register(systemId, "specialCrit", {
-    name: "RQG.Settings.SpecialCrit.settingName",
-    hint: "RQG.Settings.SpecialCrit.settingHint",
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-  });
-
   getGame().settings.register(systemId, "worldMigrationVersion", {
     name: "RQG.Settings.WorldMigrationVersion.settingName",
     hint: "RQG.Settings.WorldMigrationVersion.settingHint",
@@ -93,19 +84,19 @@ export const registerRqgSystemSettings = function () {
     default: "",
   });
 
-  getGame().settings.register(systemId, "actor-wizard-feature-flag", {
-    name: "Feature Flag: Enable Actor Wizard",
-    hint: "For RnD use only",
-    scope: "world",
+  getGame().settings.register(systemId, "showCharacteristicRatings", {
+    name: "RQG.Settings.ShowCharacteristicRatings.settingName",
+    hint: "RQG.Settings.ShowCharacteristicRatings.settingHint",
+    scope: "client",
     config: true,
     type: Boolean,
     default: false,
   });
 
-  getGame().settings.register(systemId, "showCharacteristicRatings", {
-    name: "RQG.Settings.ShowCharacteristicRatings.settingName",
-    hint: "RQG.Settings.ShowCharacteristicRatings.settingHint",
-    scope: "client",
+  getGame().settings.register(systemId, "actor-wizard-feature-flag", {
+    name: "Feature Flag: Enable Actor Wizard",
+    hint: "For RnD use only",
+    scope: "world",
     config: true,
     type: Boolean,
     default: false,

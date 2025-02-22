@@ -10,6 +10,5 @@ export type SpiritMagicRollOptions = Partial<EvaluationOptions> & {
   modifiers?: Modifier[];
   spellName?: string;
   spellImg?: string;
-  useSpecialCriticals?: boolean;
   speaker?: ChatSpeakerDataProperties;
 };

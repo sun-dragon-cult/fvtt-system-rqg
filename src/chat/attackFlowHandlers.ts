@@ -288,11 +288,7 @@ async function fumbleRoll(): Promise<string> {
   const draw = await fumbleTable.draw({ displayChat: false });
   const text = draw.results.map((r: any) => `${r.text}<br>`); // TODO is TableResult
 
-  return await TextEditor.enrichHTML(text, {
-    // @ts-expect-error documents
-    documents: true,
-    async: true,
-  });
+  return await TextEditor.enrichHTML(text);
 }
 
 /**

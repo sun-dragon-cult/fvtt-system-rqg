@@ -15,12 +15,11 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
   damageTypes: string[];
-  weaponSkills: any[];
-  /** For showing the name of the linked skill if the item isn't owned */
-  skillNames: any;
   equippedStatuses: string[];
   rateOfFire: { [label: string]: number };
   ownedProjectiles: RqgItem[];
+  enrichedDescription: string;
+  enrichedGmNotes: string;
 }
 
 export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
@@ -58,10 +57,8 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      // @ts-expect-error async
-      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
-      // @ts-expect-error async
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      enrichedDescription: await TextEditor.enrichHTML(system.description),
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
       defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
         localize(`RQG.Item.Weapon.combatManeuver.${cm}`),
       ),

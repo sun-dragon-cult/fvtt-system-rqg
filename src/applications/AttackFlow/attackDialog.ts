@@ -216,7 +216,7 @@ export class AttackDialog extends FormApplication<
 
         const attackRoll = new AbilityRoll("1d100", {}, attackRollOptions);
         await attackRoll.evaluate();
-        if (!attackRoll.successLevel) {
+        if (attackRoll.successLevel == null) {
           throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
         }
 

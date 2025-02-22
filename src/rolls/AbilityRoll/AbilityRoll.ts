@@ -28,14 +28,13 @@ export class AbilityRoll extends Roll {
     if (!this._evaluated || this.total === undefined) {
       return undefined;
     }
-    const useSpecialCriticals = (this.options as AbilityRollOptions).useSpecialCriticals ?? false;
-    return calculateAbilitySuccessLevel(this._targetChance, this.total, useSpecialCriticals);
+    return calculateAbilitySuccessLevel(this._targetChance, this.total);
   }
 
   // Html for the "content" of the chat-message
   async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
-      await this.evaluate({ async: true });
+      await this.evaluate();
     }
     const o = this.options as AbilityRollOptions;
     const chatData = {

@@ -127,7 +127,6 @@ export class RqgActor extends Actor {
   ): Promise<void> {
     const reputationItem = this.createReputationFakeItem();
     const speaker = ChatMessage.getSpeaker({ actor: this });
-    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
 
     const combinedOptions = foundry.utils.mergeObject(
       options,
@@ -136,7 +135,6 @@ export class RqgActor extends Actor {
         modifiers: [],
         abilityName: reputationItem.name ?? undefined,
         abilityImg: reputationItem.img ?? undefined,
-        useSpecialCriticals: useSpecialCriticals,
         speaker: speaker,
       },
       { overwrite: false },

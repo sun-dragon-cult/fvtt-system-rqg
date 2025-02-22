@@ -10,6 +10,5 @@ export type RuneMagicRollOptions = Partial<EvaluationOptions> & {
   levelUsed: number;
   magicPointBoost: number;
   modifiers: Modifier[];
-  useSpecialCriticals?: boolean;
   speaker: ChatSpeakerDataProperties;
 };

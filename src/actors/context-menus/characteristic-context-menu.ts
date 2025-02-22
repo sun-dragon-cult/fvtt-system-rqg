@@ -149,7 +149,7 @@ async function getCharacteristicUpdate(
   }
 
   const r = new Roll(formula, {});
-  await r.evaluate({ async: true });
+  await r.evaluate();
   return {
     system: { characteristics: { [characteristic]: { value: Number(r.total) } } },
   };

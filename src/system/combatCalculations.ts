@@ -290,7 +290,7 @@ function calculateParryDamages(
   parryingWeaponHp: number,
   attackingWeaponHp: number,
 ): AttackDamages {
-  if (!defenceSuccessLevel) {
+  if (defenceSuccessLevel == null) {
     const msg = "Tried to calculate parry outcome without parry success level";
     throw new RqgError(msg, attackSuccessLevel);
   }

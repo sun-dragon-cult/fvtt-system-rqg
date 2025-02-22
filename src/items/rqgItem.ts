@@ -157,7 +157,6 @@ export class RqgItem extends Item {
 
     const chance: number = Number(this.system.chance) || 0; // Handle NaN
     const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
-    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
 
     const abilityRoll = await AbilityRoll.rollAndShow({
       naturalSkill: chance,
@@ -165,7 +164,6 @@ export class RqgItem extends Item {
       abilityName: this.name ?? undefined,
       abilityType: this.type,
       abilityImg: this.img ?? undefined,
-      useSpecialCriticals: useSpecialCriticals,
       resultMessages: options?.resultMessages,
       speaker: speaker,
     });
@@ -197,7 +195,6 @@ export class RqgItem extends Item {
 
     const powX5: number = (Number(this.parent?.system.characteristics.power.value) || 0) * 5; // Handle NaN
     const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
-    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
 
     const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
       powX5: powX5,
@@ -206,7 +203,6 @@ export class RqgItem extends Item {
       modifiers: options?.modifiers,
       spellName: this.name ?? undefined,
       spellImg: this.img ?? undefined,
-      useSpecialCriticals: useSpecialCriticals,
       speaker: speaker,
     });
     if (!spiritMagicRoll.successLevel) {
@@ -253,7 +249,6 @@ export class RqgItem extends Item {
     }
 
     const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
-    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
     const usedRune = options.usedRune
       ? options.usedRune
       : RuneMagic.getStrongestRune(RuneMagic.getEligibleRunes(this));
@@ -269,7 +264,6 @@ export class RqgItem extends Item {
       levelUsed: options.levelUsed ?? this.system.points,
       magicPointBoost: options.magicPointBoost ?? 0,
       modifiers: options?.modifiers ?? [],
-      useSpecialCriticals: useSpecialCriticals,
       speaker: speaker,
     });
     if (!runeMagicRoll.successLevel) {

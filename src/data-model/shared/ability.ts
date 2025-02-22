@@ -1,6 +1,5 @@
 import { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import { getGame, localize } from "../../system/util";
-import { systemId } from "../../system/config";
+import { localize } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 
 export interface IAbility {
@@ -31,10 +30,9 @@ export class Ability {
     resultMessages?: ResultMessage[],
   ): Promise<AbilitySuccessLevelEnum> {
     const r = new Roll("1d100");
-    await r.evaluate({ async: true });
+    await r.evaluate();
     const modifiedChance: number = chance + chanceMod;
-    const useSpecialCriticals = getGame().settings.get(systemId, "specialCrit");
-    const result = Ability.evaluateResult(modifiedChance, r.total!, useSpecialCriticals);
+    const result = Ability.evaluateResult(modifiedChance, r.total!);
     let resultMsgHtml: string | undefined = "";
     if (resultMessages) {
       resultMsgHtml = resultMessages.find((i) => i.result === result)?.html;
@@ -51,15 +49,8 @@ export class Ability {
     return result;
   }
 
-  private static evaluateResult(
-    chance: number,
-    roll: number,
-    useSpecialCriticals: boolean,
-  ): AbilitySuccessLevelEnum {
+  private static evaluateResult(chance: number, roll: number): AbilitySuccessLevelEnum {
     chance = Math.max(0, chance); // -50% = 0%
-
-    const hyperCritical = useSpecialCriticals && chance >= 100 ? Math.ceil(chance / 500) : 0;
-    const specialCritical = useSpecialCriticals && chance >= 100 ? Math.ceil(chance / 100) : 0;
 
     const critical = Math.max(1, Math.ceil((chance - 29) / 20) + 1);
     const special =
@@ -68,8 +59,6 @@ export class Ability {
     const success = Math.min(95, Math.max(chance, 5));
     const fail = fumble === 96 ? 95 : Math.max(96, fumble - 1);
     const lookup = [
-      { limit: hyperCritical, result: AbilitySuccessLevelEnum.HyperCritical },
-      { limit: specialCritical, result: AbilitySuccessLevelEnum.SpecialCritical },
       { limit: critical, result: AbilitySuccessLevelEnum.Critical },
       { limit: special, result: AbilitySuccessLevelEnum.Special },
       { limit: success, result: AbilitySuccessLevelEnum.Success },

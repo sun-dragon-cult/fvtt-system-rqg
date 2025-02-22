@@ -48,12 +48,12 @@ describe("Evaluate Ability Roll Success Levels", () => {
     ${110}       | ${7}   | ${AbilitySuccessLevelEnum.Special}
     ${999}       | ${100} | ${AbilitySuccessLevelEnum.Fumble}
     ${999}       | ${96}  | ${AbilitySuccessLevelEnum.Failure}
-    ${100}       | ${1}   | ${AbilitySuccessLevelEnum.HyperCritical}
-    ${101}       | ${2}   | ${AbilitySuccessLevelEnum.SpecialCritical}
+    ${100}       | ${1}   | ${AbilitySuccessLevelEnum.Critical}
+    ${101}       | ${2}   | ${AbilitySuccessLevelEnum.Critical}
     ${101}       | ${3}   | ${AbilitySuccessLevelEnum.Critical}
   `("targetChance $targetChance & roll $roll", ({ targetChance, roll, expectedSuccessLevel }) => {
     it(`should return ${expectedSuccessLevel}`, async () => {
-      const successLevel = calculateAbilitySuccessLevel(targetChance, roll, true);
+      const successLevel = calculateAbilitySuccessLevel(targetChance, roll);
       expect(successLevel).toBe(expectedSuccessLevel);
     });
   });

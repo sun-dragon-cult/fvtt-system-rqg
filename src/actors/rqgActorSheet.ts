@@ -172,12 +172,8 @@ export class RqgActorSheet extends ActorSheet<
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
-      // @ts-expect-error async
-      enrichedAllies: await TextEditor.enrichHTML(system.allies, { async: true }),
-      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? "", {
-        // @ts-expect-error async
-        async: true,
-      }),
+      enrichedAllies: await TextEditor.enrichHTML(system.allies),
+      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? ""),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
@@ -254,9 +250,11 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       const minRoll = new Roll(char.formula || "");
-      const minTotal = await minRoll.evaluate({ minimize: true }).total;
+      await minRoll.evaluate({ minimize: true });
+      const minTotal = minRoll.total;
       const maxRoll = new Roll(char.formula || "");
-      const maxTotal = await maxRoll.evaluate({ maximize: true }).total;
+      await maxRoll.evaluate({ maximize: true });
+      const maxTotal = maxRoll.total;
 
       if (minTotal == null || maxTotal == null) {
         // cannot evaluate
@@ -596,16 +594,9 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich Cult texts for holyDays, gifts & geases
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays, {
-          // @ts-expect-error async
-          async: true,
-        });
-        // @ts-expect-error async
-        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts, { async: true });
-        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases, {
-          // @ts-expect-error async
-          async: true,
-        });
+        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays);
+        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts);
+        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases);
       }),
     );
 
@@ -622,10 +613,6 @@ export class RqgActorSheet extends ActorSheet<
       itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
         passion.system.enrichedDescription = await TextEditor.enrichHTML(
           passion.system.description,
-          {
-            // @ts-expect-error async
-            async: true,
-          },
         );
       }),
     );
@@ -754,10 +741,7 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
-        // @ts-expect-error async
-        async: true,
-      });
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
     }
   }
 
@@ -796,10 +780,7 @@ export class RqgActorSheet extends ActorSheet<
       // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
-        // @ts-expect-error async
-        async: true,
-      });
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
     }
   }
 
@@ -1248,7 +1229,7 @@ export class RqgActorSheet extends ActorSheet<
       requireValue(damage, "direct damage roll without damage");
       el.addEventListener("click", async () => {
         const r = new Roll(damage);
-        await r.evaluate({ async: true });
+        await r.evaluate();
         await r.toMessage({
           speaker: ChatMessage.getSpeaker(),
           // @ts-expect-error CHAT_MESSAGE_STYLES
