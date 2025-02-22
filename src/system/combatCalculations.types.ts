@@ -29,11 +29,8 @@ export type CombatOutcome = {
   ignoreDefenderAp: boolean;
 };
 
-export type DamagedWeapon = "parryWeapon" | "attackingWeapon" | "none";
-export type DamageDegree = "none" | "normal" | "special" | "maxSpecial";
-
 export type AttackDamages = {
   weaponDamage: number | undefined;
   defenderHitLocationDamage: number | undefined;
-  parryingHitLocation: boolean;
+  affectParryingHitLocation: boolean;
 };

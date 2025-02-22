@@ -1,9 +1,4 @@
-import type {
-  AttackDamages,
-  CombatOutcome,
-  DamageDegree,
-  DamagedWeapon,
-} from "./combatCalculations.types";
+import type { AttackDamages, CombatOutcome } from "./combatCalculations.types";
 import type { DefenceType } from "../chat/RqgChatMessage.types";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { assertItemType, requireValue, RqgError } from "./util";
@@ -13,11 +8,13 @@ import type { RqgItem } from "../items/rqgItem";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { UsageType } from "../data-model/item-data/weaponData";
 import {
+  DamageDegree,
   dodgeDamageDegreeTable,
   dodgeIgnoreApTable,
   parryDamageDegreeTable,
   parryDamagedWeaponTable,
   parryIgnoreApTable,
+  WeaponDesignation,
   weaponForDamageTable,
 } from "./combatCalculations.defs";
 
@@ -40,71 +37,55 @@ export async function combatOutcome(
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
 ): Promise<CombatOutcome> {
-  if (!attackRoll.successLevel) {
-    const msg = "Tried to calculate combat outcome without an evaluated attack roll";
-    throw new RqgError(msg, defence, attackRoll, defenceRoll, parryingWeapon);
-  }
   const attackSuccessLevel = attackRoll.successLevel;
-  const defenceSuccessLevel = defenceRoll?.successLevel ?? AbilitySuccessLevelEnum.Failure; // TODO is fail correct here?
+  requireValue(
+    attackSuccessLevel,
+    "Tried to calculate combat outcome without an evaluated attack roll",
+  );
+  const defenceSuccessLevel = defenceRoll?.successLevel ?? AbilitySuccessLevelEnum.Failure;
   const defenceUsed = defence ?? "ignore";
 
   const damageDegree = getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel);
-
   const damagedWeaponDesignation = getDamagedWeapon(
     defence,
     attackSuccessLevel,
     defenceSuccessLevel,
   );
+  const weaponDoingDamageDesignation =
+    getWeaponDoingDamage(defence, attackSuccessLevel, defenceSuccessLevel) ??
+    WeaponDesignation.None;
 
-  const weaponItemMap = new Map([
-    ["parryWeapon", parryingWeapon],
-    ["attackingWeapon", attackingWeapon],
-  ]);
+  const weaponDoingDamage = getWeaponItemDoingDamage(
+    weaponDoingDamageDesignation,
+    attackingWeapon,
+    parryingWeapon ?? undefined,
+  );
+  const usage = getWeaponDoingDamageUsage(
+    weaponDoingDamageDesignation,
+    attackWeaponUsageType,
+    parryWeaponUsageType,
+  );
+  const damagedWeapon = getDamagedWeaponItem(
+    damagedWeaponDesignation,
+    attackingWeapon,
+    parryingWeapon,
+  );
 
-  const weaponForDamageDesignation =
-    getWeaponForDamage(defence, attackSuccessLevel, defenceSuccessLevel) ?? "none";
-  const weaponForDamage =
-    weaponForDamageDesignation === "none"
-      ? undefined
-      : (weaponItemMap.get(weaponForDamageDesignation) ?? undefined);
-
-  const usage =
-    weaponForDamageDesignation === "attackingWeapon" ? attackWeaponUsageType : parryWeaponUsageType;
-
-  const damagedWeapon =
-    damagedWeaponDesignation === "none"
-      ? undefined
-      : damagedWeaponDesignation === "attackingWeapon"
-        ? attackingWeapon
-        : (parryingWeapon ?? undefined);
-
-  if (damagedWeaponDesignation !== "none") {
-    requireValue(usage, "No weapon usage for combatOutcome calculations");
-    assertItemType(weaponForDamage?.type, ItemTypeEnum.Weapon);
+  if (weaponDoingDamageDesignation === WeaponDesignation.None) {
+    return createEmptyCombatOutcome();
   }
+  requireValue(usage, "No weapon usage for combatOutcome calculations");
+  assertItemType(weaponDoingDamage?.type, ItemTypeEnum.Weapon);
 
-  const damageFormula = weaponForDamage?.getDamageFormula(usage, damageDegree);
-  if (!damageFormula) {
-    return {
-      damageRoll: undefined,
-      weaponDamage: undefined,
-      damagedWeapon: undefined,
-      defenderHitLocationDamage: undefined,
-      useParryHitLocation: false,
-      ignoreDefenderAp: false,
-    };
-  }
+  const damageFormula = weaponDoingDamage?.getDamageFormula(usage, damageDegree);
+  requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
 
-  const damageBonus = weaponForDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
+  const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
   const damageFormulaWithDb = applyDamageBonusToFormula(damageFormula, damageBonus);
 
-  const damageRoll = new Roll(damageFormulaWithDb);
-  await damageRoll.evaluate({
-    maximize: damageDegree === "maxSpecial",
-  });
-  requireValue(damageRoll.total, "damage roll was not yet evaluated?");
+  const damageRoll = await evaluateDamageRoll(damageFormulaWithDb, damageDegree);
 
-  const { weaponDamage, defenderHitLocationDamage, parryingHitLocation } = calculateDamages(
+  const { weaponDamage, defenderHitLocationDamage, affectParryingHitLocation } = calculateDamages(
     defence,
     damageRoll.total,
     attackSuccessLevel,
@@ -114,23 +95,82 @@ export async function combatOutcome(
   );
 
   return {
-    damageRoll: damageRoll,
-    weaponDamage: weaponDamage,
-    damagedWeapon: damagedWeapon,
-    defenderHitLocationDamage: defenderHitLocationDamage,
-    useParryHitLocation: parryingHitLocation,
+    damageRoll,
+    weaponDamage,
+    damagedWeapon,
+    defenderHitLocationDamage,
+    useParryHitLocation: affectParryingHitLocation,
     ignoreDefenderAp: getIgnoreArmor(defence, attackSuccessLevel, defenceSuccessLevel),
   };
 }
 
+// *** Helper functions ***
+function getWeaponItemDoingDamage(
+  designation: WeaponDesignation,
+  attackingWeapon: RqgItem,
+  parryingWeapon: RqgItem | undefined,
+): RqgItem | undefined {
+  const weaponItemMap = new Map<WeaponDesignation, RqgItem | undefined>([
+    [WeaponDesignation.None, undefined],
+    [WeaponDesignation.AttackingWeapon, attackingWeapon],
+    [WeaponDesignation.ParryWeapon, parryingWeapon ?? undefined],
+  ]);
+  return designation === WeaponDesignation.None ? undefined : weaponItemMap.get(designation);
+}
+
+function getWeaponDoingDamageUsage(
+  designation: WeaponDesignation,
+  attackWeaponUsageType: UsageType,
+  parryWeaponUsageType: UsageType | undefined,
+): UsageType | undefined {
+  return designation === WeaponDesignation.AttackingWeapon
+    ? attackWeaponUsageType
+    : parryWeaponUsageType;
+}
+
+function getDamagedWeaponItem(
+  designation: WeaponDesignation,
+  attackingWeapon: RqgItem,
+  parryingWeapon: RqgItem | undefined | null,
+): RqgItem | undefined {
+  return designation === WeaponDesignation.None
+    ? undefined
+    : designation === WeaponDesignation.AttackingWeapon
+      ? attackingWeapon
+      : (parryingWeapon ?? undefined);
+}
+
+function createEmptyCombatOutcome(): CombatOutcome {
+  return {
+    damageRoll: undefined,
+    weaponDamage: undefined,
+    damagedWeapon: undefined,
+    defenderHitLocationDamage: undefined,
+    useParryHitLocation: false,
+    ignoreDefenderAp: false,
+  };
+}
+
+async function evaluateDamageRoll(
+  damageFormula: string,
+  damageDegree: DamageDegree,
+): Promise<Roll> {
+  const damageRoll = new Roll(damageFormula);
+  await damageRoll.evaluate({ maximize: damageDegree === "maxSpecial" });
+  requireValue(damageRoll.total, "damage roll was not yet evaluated?");
+  return damageRoll;
+}
+
 function calculateDamages(
   defence: DefenceType | undefined,
-  damageRolled: number,
+  damageRolled: number | undefined,
   attackSuccessLevel: AbilitySuccessLevelEnum,
   defenceSuccessLevel: AbilitySuccessLevelEnum | undefined,
   parryingWeaponHp: number | undefined,
   attackingWeaponHp: number | undefined,
 ): AttackDamages {
+  requireValue(damageRolled, "Tried to calculate damages without a rolled damage");
+
   switch (defence) {
     case "parry":
       return calculateParryDamages(
@@ -187,9 +227,9 @@ function getDamagedWeapon(
   defence: DefenceType | undefined,
   attackSuccessLevel: AbilitySuccessLevelEnum,
   defenceSuccessLevel: AbilitySuccessLevelEnum,
-): DamagedWeapon {
-  if (defence === "dodge") {
-    return "none";
+): WeaponDesignation {
+  if (defence === "dodge" || defence === "ignore") {
+    return WeaponDesignation.None;
   }
 
   const damageDegree = parryDamagedWeaponTable[attackSuccessLevel][defenceSuccessLevel];
@@ -197,13 +237,13 @@ function getDamagedWeapon(
   return damageDegree;
 }
 
-function getWeaponForDamage(
+function getWeaponDoingDamage(
   defence: DefenceType | undefined,
   attackSuccessLevel: AbilitySuccessLevelEnum,
   defenceSuccessLevel: AbilitySuccessLevelEnum,
-): DamagedWeapon | undefined {
+): WeaponDesignation | undefined {
   if ([undefined, "dodge", "ignore"].includes(defence)) {
-    return "attackingWeapon";
+    return WeaponDesignation.AttackingWeapon;
   }
   return weaponForDamageTable[attackSuccessLevel][defenceSuccessLevel];
 }
@@ -275,13 +315,13 @@ function calculateDodgeDamages(
     throw new RqgError(msg, attackSuccessLevel);
   }
 
-  // TODO implement dodge table
+  // TODO  *** implement dodge table ***
 
   return {
     // TODO fallback for testing - should be error
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -303,6 +343,7 @@ function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
       dice = Math.floor(dice / 2);
       if (dice % 2 !== 0) {
         // In case the number of die is not even, add another halved die. half 3d6 => 1d6+1d3
+        // Assumes sides is an even number, won't work for 1d3, but that is not used as DB in RQG
         oddDie = `+1d${sides / 2}`;
       }
     }

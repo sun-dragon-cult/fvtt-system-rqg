@@ -56,7 +56,7 @@ describe("calculateDamages", () => {
     expect(result).toEqual({
       weaponDamage: 1,
       defenderHitLocationDamage: 5,
-      parryingHitLocation: true,
+      affectParryingHitLocation: true,
     });
   });
 
@@ -72,7 +72,7 @@ describe("calculateDamages", () => {
     expect(result).toEqual({
       weaponDamage: undefined,
       defenderHitLocationDamage: 20,
-      parryingHitLocation: false,
+      affectParryingHitLocation: false,
     });
   });
 
@@ -88,7 +88,7 @@ describe("calculateDamages", () => {
     expect(result).toEqual({
       weaponDamage: 1,
       defenderHitLocationDamage: 46,
-      parryingHitLocation: true,
+      affectParryingHitLocation: true,
     });
   });
 
@@ -104,7 +104,7 @@ describe("calculateDamages", () => {
     expect(result).toEqual({
       weaponDamage: undefined,
       defenderHitLocationDamage: 20,
-      parryingHitLocation: false,
+      affectParryingHitLocation: false,
     });
   });
 
@@ -120,7 +120,7 @@ describe("calculateDamages", () => {
     expect(result).toEqual({
       weaponDamage: undefined,
       defenderHitLocationDamage: 10,
-      parryingHitLocation: false,
+      affectParryingHitLocation: false,
     });
   });
 
@@ -136,7 +136,7 @@ describe("calculateDamages", () => {
     expect(result).toEqual({
       weaponDamage: undefined,
       defenderHitLocationDamage: 10,
-      parryingHitLocation: false,
+      affectParryingHitLocation: false,
     });
   });
 

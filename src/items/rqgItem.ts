@@ -29,7 +29,7 @@ import { SpellRangeEnum } from "../data-model/item-data/spell";
 import { AttackDialog } from "../applications/AttackFlow/attackDialog";
 import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
 import { UsageType } from "../data-model/item-data/weaponData";
-import { DamageDegree } from "../system/combatCalculations.types";
+import { DamageDegree } from "../system/combatCalculations.defs";
 
 export class RqgItem extends Item {
   public static init() {

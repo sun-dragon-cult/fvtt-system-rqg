@@ -39,7 +39,7 @@ function critAttack_CritParry(damageRolled: number, parryingWeaponHp: number): A
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: damagePastParryWeapon,
-    parryingHitLocation: true,
+    affectParryingHitLocation: true,
   };
 }
 
@@ -48,7 +48,7 @@ function critAttack_SpecialParry(damageRolled: number, parryingWeaponHp: number)
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: damagePastParryWeapon,
-    parryingHitLocation: true,
+    affectParryingHitLocation: true,
   };
 }
 
@@ -57,7 +57,7 @@ function critAttack_NormalParry(damageRolled: number, parryingWeaponHp: number):
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: damagePastParryWeapon,
-    parryingHitLocation: true,
+    affectParryingHitLocation: true,
   };
 }
 
@@ -65,7 +65,7 @@ function critAttack_FailParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -73,7 +73,7 @@ function critAttack_FumbleParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -82,7 +82,7 @@ function specialAttack_CritParry(damageRolled: number, parryingWeaponHp: number)
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -91,7 +91,7 @@ function specialAttack_SpecialParry(damageRolled: number, parryingWeaponHp: numb
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: damagePastParryWeapon,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -100,7 +100,7 @@ function specialAttack_NormalParry(damageRolled: number, parryingWeaponHp: numbe
   return {
     weaponDamage: damagePastParryWeapon,
     defenderHitLocationDamage: damagePastParryWeapon,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -108,7 +108,7 @@ function specialAttack_FailParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -116,7 +116,7 @@ function specialAttack_FumbleParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -125,7 +125,7 @@ function normalAttack_CritParry(damageRolled: number, parryingWeaponHp: number):
   return {
     weaponDamage: damagePastParryWeapon,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -134,7 +134,7 @@ function normalAttack_SpecialParry(damageRolled: number, parryingWeaponHp: numbe
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -143,7 +143,7 @@ function normalAttack_NormalParry(damageRolled: number, parryingWeaponHp: number
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: damagePastParryWeapon,
-    parryingHitLocation: true,
+    affectParryingHitLocation: true,
   };
 }
 
@@ -151,7 +151,7 @@ function normalAttack_FailParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -159,7 +159,7 @@ function normalAttack_FumbleParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -167,7 +167,7 @@ function FailAttack_CritParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: damageRolled,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -176,7 +176,7 @@ function FailAttack_SpecialParry(damageRolled: number, parryingWeaponHp: number)
   return {
     weaponDamage: damagePastParryWeapon,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -185,14 +185,14 @@ function FailAttack_NormalParry(damageRolled: number, parryingWeaponHp: number):
   return {
     weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 function FailAttack_FailParry(): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -200,7 +200,7 @@ function FailAttack_FumbleParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: damageRolled,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -208,7 +208,7 @@ function FumbleAttack_CritParry(damageRolled: number): AttackDamages {
   return {
     weaponDamage: damageRolled,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -221,7 +221,7 @@ function FumbleAttack_SpecialParry(
   return {
     weaponDamage: damagePastAttackWeapon,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -234,7 +234,7 @@ function FumbleAttack_NormalParry(
   return {
     weaponDamage: damagePastAttackWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -242,7 +242,7 @@ function FumbleAttack_FailParry(): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
 
@@ -250,6 +250,6 @@ function FumbleAttack_FumbleParry(): AttackDamages {
   return {
     weaponDamage: undefined,
     defenderHitLocationDamage: undefined,
-    parryingHitLocation: false,
+    affectParryingHitLocation: false,
   };
 }
