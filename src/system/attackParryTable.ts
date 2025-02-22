@@ -1,7 +1,7 @@
 import type { AttackDamages } from "./combatCalculations.types";
 
 /**
- * calculations depending on attack-parry successLevel
+ * calculations depending on attack-parry successLevels
  */
 export const attackParryMap: Map<
   string,

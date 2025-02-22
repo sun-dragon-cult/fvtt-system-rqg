@@ -40,7 +40,7 @@ export const weaponForDamageTable: readonly (WeaponDesignation)[][] = [
   [WeaponDesignation.ParryWeapon,     WeaponDesignation.AttackingWeapon, WeaponDesignation.AttackingWeapon, WeaponDesignation.AttackingWeapon, WeaponDesignation.AttackingWeapon], // Special Attack
   [WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.AttackingWeapon, WeaponDesignation.AttackingWeapon, WeaponDesignation.AttackingWeapon], // Success Attack
   [WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.None,            WeaponDesignation.AttackingWeapon], // Failure Attack
-  [WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.None,            WeaponDesignation.None], // Fumble Attack
+  [WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.ParryWeapon,     WeaponDesignation.None,            WeaponDesignation.None],            // Fumble Attack
 ] as const;
 
 /**
@@ -82,7 +82,7 @@ export const parryDamageDegreeTable: readonly (DamageDegree)[][] = [
 // prettier-ignore
 export const dodgeIgnoreApTable: readonly (boolean)[][] = [
 // Critical,  Special,   Success,   Failure,   Fumble Dodge
-  [false,     false,     true,      true,      true], // Critical Attack
+  [false,     false,     true,      true,      true],  // Critical Attack
   [false,     false,     false,     false,     false], // Special Attack
   [false,     false,     false,     false,     false], // Success Attack
   [false,     false,     false,     false,     false], // Failure Attack

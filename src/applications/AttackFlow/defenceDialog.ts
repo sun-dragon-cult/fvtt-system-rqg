@@ -294,7 +294,7 @@ export class DefenceDialog extends FormApplication<
         const attackRoll = AbilityRoll.fromData(
           this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
         );
-        if (!attackRoll?.successLevel) {
+        if (attackRoll?.successLevel == null) {
           const msg = "Didn't find an attackRoll in the chatmessage, aborting";
           ui.notifications?.error(msg);
           console.error(`RQG | ${msg}`);

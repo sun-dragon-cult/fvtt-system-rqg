@@ -17,6 +17,7 @@ import {
   WeaponDesignation,
   weaponForDamageTable,
 } from "./combatCalculations.defs";
+import { attackDodgeMap } from "./attackDodgeTable";
 
 export const exportedForTesting = {
   calculateDamages,
@@ -46,6 +47,10 @@ export async function combatOutcome(
   const defenceUsed = defence ?? "ignore";
 
   const damageDegree = getDamageDegree(defenceUsed, attackSuccessLevel, defenceSuccessLevel);
+  if (damageDegree === DamageDegree.None) {
+    return createEmptyCombatOutcome();
+  }
+
   const damagedWeaponDesignation = getDamagedWeapon(
     defence,
     attackSuccessLevel,
@@ -78,7 +83,9 @@ export async function combatOutcome(
   assertItemType(weaponDoingDamage?.type, ItemTypeEnum.Weapon);
 
   const damageFormula = weaponDoingDamage?.getDamageFormula(usage, damageDegree);
-  requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
+  if (damageFormula == null) {
+    requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
+  }
 
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
   const damageFormulaWithDb = applyDamageBonusToFormula(damageFormula, damageBonus);
@@ -310,19 +317,16 @@ function calculateDodgeDamages(
   defenceSuccessLevel: AbilitySuccessLevelEnum | undefined,
   damageRolled: number,
 ): AttackDamages {
-  if (!defenceSuccessLevel) {
+  if (defenceSuccessLevel == null) {
     const msg = "Tried to calculate dodge outcome without dodge success level";
     throw new RqgError(msg, attackSuccessLevel);
   }
+  const damageOutcomeFn = attackDodgeMap.get(`${attackSuccessLevel}-${defenceSuccessLevel}`);
+  if (!damageOutcomeFn) {
+    throw new RqgError("Didn't find a damage calculating function from attack/dodge table");
+  }
 
-  // TODO  *** implement dodge table ***
-
-  return {
-    // TODO fallback for testing - should be error
-    weaponDamage: undefined,
-    defenderHitLocationDamage: damageRolled,
-    affectParryingHitLocation: false,
-  };
+  return damageOutcomeFn(damageRolled);
 }
 
 /**
