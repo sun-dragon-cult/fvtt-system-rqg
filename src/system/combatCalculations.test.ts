@@ -108,12 +108,28 @@ describe("calculateDamages", () => {
     });
   });
 
-  it("should return correct damage for a successful dodge", () => {
+  it("should return correct damage for Success:Success attack and dodge", () => {
     const result = calculateDamages(
       "dodge",
       10,
       AbilitySuccessLevelEnum.Success,
       AbilitySuccessLevelEnum.Success,
+      undefined,
+      undefined,
+    );
+    expect(result).toEqual({
+      weaponDamage: undefined,
+      defenderHitLocationDamage: undefined,
+      affectParryingHitLocation: false,
+    });
+  });
+
+  it("should return correct damage for Success:Failure attack and dodge", () => {
+    const result = calculateDamages(
+      "dodge",
+      10,
+      AbilitySuccessLevelEnum.Success,
+      AbilitySuccessLevelEnum.Failure,
       undefined,
       undefined,
     );
