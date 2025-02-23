@@ -36,7 +36,7 @@
       <div class="flex-row">
       {{#if defenderHitLocationDamage}}
       {{#unless actorDamagedApplied}}
-        <button data-visible-actor-uuid="{{attackingActorUuid}}" data-apply-damage-to-actor>
+        <button data-visible-actor-uuid="{{defendingActorUuid}}" data-apply-damage-to-actor>
           Apply damage to actor
         </button>
       {{/unless}}
@@ -45,7 +45,11 @@
       {{#if weaponDamage}}
       {{#unless weaponDamageApplied}}
         <button
-          data-visible-actor-uuid="{{defendingActorUuid}}" {{!-- TODO should be visible to the actor owning the weapon--}}
+          {{#if (eq weaponDoingDamage "attackingWeapon")}}
+            data-visible-actor-uuid="{{defendingActorUuid}}"
+          {{else}}
+            data-visible-actor-uuid="{{attackingActorUuid}}"
+          {{/if}}
           data-apply-damage-to-weapon>Apply damage to weapon
         </button>
       {{/unless}}

@@ -326,6 +326,7 @@ export class DefenceDialog extends FormApplication<
           defenderHitLocationDamage,
           useParryHitLocation,
           ignoreDefenderAp,
+          weaponDoingDamage,
         } = await combatOutcome(
           this.object.defence,
           attackRoll,
@@ -338,48 +339,13 @@ export class DefenceDialog extends FormApplication<
           parryWeaponUsageType,
         );
 
-        console.log("🦚🦚🦚 combatOutcome:", {
-          damageRoll: damageRoll?.total,
-          weaponDamage,
-          damagedWeapon,
-          defenderHitLocationDamage,
-          useParryHitLocation,
-          ignoreDefenderAp,
-        });
-
-        if (weaponDamage) {
-          // TODO add damage to chatMessage for the applyDamage button - check if attacker or defender weapon
-          console.log("§§§ Add damagedWeapon to chat", weaponDamage, damagedWeapon);
-        }
-
-        if (defenderHitLocationDamage) {
-          // TODO add damage to chatMessage for the applyDamage button
-          console.log(
-            "§§§ Add hitLocation damage to chat",
-            defenderHitLocationDamage,
-            useParryHitLocation,
-          );
-
-          if (useParryHitLocation) {
-            console.log("§§§ Use Parrying Weapon HitLocation instead if a rolled HitLocation");
-            // TODO use the targets parry weapon hit location
-            // TODO need to expand the weapon item or equipped system for this
-          } else {
-            console.log("§§§ Roll a HitLocation");
-            // TODO use the target hitlocation according to the hitLocationRoll
-          }
-        }
-
-        if (ignoreDefenderAp) {
-          console.log("§§§ Ignores Defender AP");
-          // TODO add damage to chatMessage for apply damage options
-        }
-
         const outcomeDescription = getBasicOutcomeDescription(
           this.object.defence,
           attackRoll.successLevel,
           defenceRoll?.successLevel,
         );
+
+        console.debug("no implementation for useParryHitLocation yet", useParryHitLocation);
 
         // TODO Introduce ability for GM to fudge roll here
 
@@ -409,6 +375,7 @@ export class DefenceDialog extends FormApplication<
                   defenderFumbled: defenderFumbled,
                   damagedWeaponUuid: damagedWeapon?.uuid,
                   weaponDamage: weaponDamage,
+                  weaponDoingDamage: weaponDoingDamage,
                   defenderHitLocationDamage: defenderHitLocationDamage,
                   damageRoll: damageRoll,
                   ignoreDefenderAp: ignoreDefenderAp,

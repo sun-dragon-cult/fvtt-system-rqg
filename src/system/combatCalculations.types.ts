@@ -1,4 +1,5 @@
 import type { RqgItem } from "../items/rqgItem";
+import { WeaponDesignation } from "./combatCalculations.defs";
 
 export type CombatOutcome = {
   // /** The base amount of damage to start calculations from */
@@ -27,6 +28,7 @@ export type CombatOutcome = {
   // parryingHitLocation: boolean;
   /** Do not subtract armor when applying damage to a hit location */
   ignoreDefenderAp: boolean;
+  weaponDoingDamage: WeaponDesignation;
 };
 
 export type AttackDamages = {

@@ -56,7 +56,7 @@ export async function combatOutcome(
     attackSuccessLevel,
     defenceSuccessLevel,
   );
-  const weaponDoingDamageDesignation =
+  const weaponDoingDamageDesignation: WeaponDesignation =
     getWeaponDoingDamage(defence, attackSuccessLevel, defenceSuccessLevel) ??
     WeaponDesignation.None;
 
@@ -108,6 +108,7 @@ export async function combatOutcome(
     defenderHitLocationDamage,
     useParryHitLocation: affectParryingHitLocation,
     ignoreDefenderAp: getIgnoreArmor(defence, attackSuccessLevel, defenceSuccessLevel),
+    weaponDoingDamage: weaponDoingDamageDesignation,
   };
 }
 
@@ -155,6 +156,7 @@ function createEmptyCombatOutcome(): CombatOutcome {
     defenderHitLocationDamage: undefined,
     useParryHitLocation: false,
     ignoreDefenderAp: false,
+    weaponDoingDamage: WeaponDesignation.None,
   };
 }
 
