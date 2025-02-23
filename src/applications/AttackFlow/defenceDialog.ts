@@ -296,7 +296,7 @@ export class DefenceDialog extends FormApplication<
 
         const defenceRoll = new AbilityRoll("1d100", {}, defenceRollOptions);
         await defenceRoll.evaluate();
-        if (!defenceRoll.successLevel) {
+        if (defenceRoll.successLevel == null) {
           throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
         }
 
@@ -410,6 +410,7 @@ export class DefenceDialog extends FormApplication<
                   damagedWeaponUuid: damagedWeapon?.uuid,
                   weaponDamage: weaponDamage,
                   damageRoll: damageRoll,
+                  ignoreDefenderAp: ignoreDefenderAp,
                   actorDamagedApplied: damageDegree === "none",
                   weaponDamageApplied: damageDegree === "none",
                   hitLocationRoll: damageRoll // If there is a damageRoll there should also be a hitLocationRoll

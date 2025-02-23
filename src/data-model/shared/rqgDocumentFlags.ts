@@ -120,6 +120,8 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     damageRoll?: Roll;
     /** Can be 1d20 or 1d10 or 1d10+10 - added in attackDialog, rolled by defenceDialog */
     hitLocationRoll?: Roll;
+    ignoreDefenderAp: boolean;
+    weaponDamage: number | undefined;
 
     damagedWeaponUuid: string;
     // result: AbilitySuccessLevelEnum | undefined;

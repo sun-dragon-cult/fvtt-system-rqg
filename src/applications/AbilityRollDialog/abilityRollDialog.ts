@@ -117,7 +117,7 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
 
         // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
         const roll = await AbilityRoll.rollAndShow(options);
-        if (!roll.successLevel) {
+        if (roll.successLevel == null) {
           throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
         }
         await this.abilityItem.checkExperience?.(roll.successLevel);

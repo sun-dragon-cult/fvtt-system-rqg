@@ -60,27 +60,27 @@ export class RqgChatMessage extends ChatMessage {
     // *** START - Attack Flow ***
     // ***************************
 
-    if (clickedButton?.dataset.defence !== undefined) {
+    if (clickedButton?.dataset.defence != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleDefence(clickedButton); // Open Defence Dialog (roll defence)
     }
 
-    if (clickedButton?.dataset.damageHitlocation !== undefined) {
+    if (clickedButton?.dataset.rollDamageAndHitlocation != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollDamageAndHitLocation(clickedButton); // Roll damage & hit location
     }
 
-    if (clickedButton?.dataset.applyDamageToActor !== undefined) {
+    if (clickedButton?.dataset.applyDamageToActor != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyActorDamage(clickedButton); // Inflict damage to actor
     }
 
-    if (clickedButton?.dataset.damagedWeaponUuid !== undefined) {
+    if (clickedButton?.dataset.applyDamageToWeapon != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyWeaponDamage(clickedButton); // Damage weapon HP
     }
 
-    if (clickedButton?.dataset.fumble !== undefined) {
+    if (clickedButton?.dataset.fumble != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollFumble(clickedButton); // Roll the Fumble table
     }

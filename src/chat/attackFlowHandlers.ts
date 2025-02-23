@@ -122,13 +122,16 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
   requireValue(damageRoll.total, "Damage roll was not evaluated before applying to actor");
 
+  const ignoreDefenderAp = attackChatMessage.getFlag(systemId, "chat.ignoreDefenderAp");
+  requireValue(ignoreDefenderAp, "Damage roll was not evaluated before applying to actor");
+
   const damagedActorUuid = attackChatMessage.getFlag(systemId, "chat.defendingActorUuid") as string;
   const damagedActor = (await fromUuid(damagedActorUuid)) as RqgActor | undefined;
   if (!damagedActor) {
     // TODO Warn about missing token
     return;
   }
-  await damagedActor.applyDamage(damageRoll.total, hitLocationRoll.total);
+  await damagedActor.applyDamage(damageRoll.total, hitLocationRoll.total, ignoreDefenderAp);
 
   const messageData = attackChatMessage.toObject();
   const messageDataUpdate = {

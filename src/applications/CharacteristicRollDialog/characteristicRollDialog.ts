@@ -139,7 +139,7 @@ export class CharacteristicRollDialog extends FormApplication<
         };
 
         const roll = await CharacteristicRoll.rollAndShow(options);
-        if (!roll.successLevel) {
+        if (roll.successLevel == null) {
           throw new RqgError("Evaluated CharacteristicRoll didn't give successLevel");
         }
         await this.actor.checkExperience(o.characteristicName ?? "", roll.successLevel);

@@ -33,7 +33,7 @@ export class RuneMagicRoll extends Roll {
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
-    if (!this._evaluated || this.total === undefined) {
+    if (!this._evaluated || this.total == null) {
       return undefined;
     }
     return calculateAbilitySuccessLevel(this._targetChance, this.total);

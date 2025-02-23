@@ -167,7 +167,7 @@ export class RqgItem extends Item {
       resultMessages: options?.resultMessages,
       speaker: speaker,
     });
-    if (!abilityRoll.successLevel) {
+    if (abilityRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
     await this.checkExperience(abilityRoll.successLevel);
@@ -205,7 +205,7 @@ export class RqgItem extends Item {
       spellImg: this.img ?? undefined,
       speaker: speaker,
     });
-    if (!spiritMagicRoll.successLevel) {
+    if (spiritMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
     const mpCost = options.levelUsed + (options.magicPointBoost ?? 0);
@@ -266,7 +266,7 @@ export class RqgItem extends Item {
       modifiers: options?.modifiers ?? [],
       speaker: speaker,
     });
-    if (!runeMagicRoll.successLevel) {
+    if (runeMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated RuneMagicRoll didn't give successLevel");
     }
     const mpCost = options.magicPointBoost ?? 0;
