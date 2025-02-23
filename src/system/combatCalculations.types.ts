@@ -16,7 +16,7 @@ export type CombatOutcome = {
   weaponDamage: number | undefined;
   /** The weapon (if any) that should be damaged */
   damagedWeapon: RqgItem | undefined;
-  /** How much damage should be applied to the defenders hitlocation, AP not subtracted yet */
+  /** How much damage should be applied to the defenders hitlocation, AP not subtracted yet, but parrying weapon HP is */
   defenderHitLocationDamage: number | undefined;
   /**
    * The hit location that should get the damage can be either the parry weapon HL (true)

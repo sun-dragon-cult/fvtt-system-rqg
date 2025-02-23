@@ -119,8 +119,15 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     hitLocationRoll.total,
     "HitLocation roll was not evaluated before applying to actor",
   );
-  const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
-  requireValue(damageRoll.total, "Damage roll was not evaluated before applying to actor");
+
+  const defenderHitLocationDamage: number | undefined = attackChatMessage.getFlag(
+    systemId,
+    "chat.defenderHitLocationDamage",
+  );
+  requireValue(
+    defenderHitLocationDamage,
+    "No defenderHitLocationDamage was calculated before applying to actor",
+  );
 
   const ignoreDefenderAp = attackChatMessage.getFlag(systemId, "chat.ignoreDefenderAp");
   requireValue(ignoreDefenderAp, "Damage roll was not evaluated before applying to actor");
@@ -131,7 +138,11 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     // TODO Warn about missing token
     return;
   }
-  await damagedActor.applyDamage(damageRoll.total, hitLocationRoll.total, ignoreDefenderAp);
+  await damagedActor.applyDamage(
+    defenderHitLocationDamage,
+    hitLocationRoll.total,
+    ignoreDefenderAp,
+  );
 
   const messageData = attackChatMessage.toObject();
   const messageDataUpdate = {

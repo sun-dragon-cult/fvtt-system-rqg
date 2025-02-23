@@ -254,6 +254,7 @@ export class AttackDialog extends FormApplication<
             hitLocationRoll: new Roll(this.object.hitLocationFormula),
             damagedWeaponUuid: "",
             weaponDamage: undefined,
+            defenderHitLocationDamage: undefined,
             attackerFumbled: false,
             attackerFumbleOutcome: "",
             defenderFumbled: false,

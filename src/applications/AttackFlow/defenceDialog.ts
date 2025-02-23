@@ -409,6 +409,7 @@ export class DefenceDialog extends FormApplication<
                   defenderFumbled: defenderFumbled,
                   damagedWeaponUuid: damagedWeapon?.uuid,
                   weaponDamage: weaponDamage,
+                  defenderHitLocationDamage: defenderHitLocationDamage,
                   damageRoll: damageRoll,
                   ignoreDefenderAp: ignoreDefenderAp,
                   actorDamagedApplied: damageDegree === "none",

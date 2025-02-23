@@ -301,7 +301,8 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Apply damage to a hitLocation and this actor
+   * Apply damage to a hitLocation and this actor.
+   * The HitLocation AP will be subtracted unless ignoreAP is true.
    */
   public async applyDamage(
     damageAmount: number,

@@ -122,6 +122,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     hitLocationRoll?: Roll;
     ignoreDefenderAp: boolean;
     weaponDamage: number | undefined;
+    defenderHitLocationDamage: number | undefined;
 
     damagedWeaponUuid: string;
     // result: AbilitySuccessLevelEnum | undefined;
