@@ -166,8 +166,33 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
     return;
   }
 
-  const weaponDamage: string = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
-  ui.notifications?.info(`NotYetInvented ${clickedButton.dataset} weapoindamage ${weaponDamage}`);
+  const weaponDamage: number | undefined = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
+  const damagedWeaponUuid: string = attackChatMessage.getFlag(systemId, "chat.damagedWeaponUuid");
+  const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as RqgItem | undefined;
+
+  const currentWeaponHp = damagedWeapon?.system.hitPoints.value;
+  const newWeaponHp = currentWeaponHp - weaponDamage;
+
+  await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
+
+  const messageData = attackChatMessage.toObject();
+  const messageDataUpdate = {
+    flags: {
+      [systemId]: {
+        chat: {
+          weaponDamageApplied: true,
+        },
+      },
+    },
+  };
+  foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
+
+  messageData.content = await renderTemplate(
+    templatePaths.attackChatMessage,
+    messageData.flags[systemId]!.chat!,
+  );
+
+  await attackChatMessage?.update(messageData);
 }
 
 /**
