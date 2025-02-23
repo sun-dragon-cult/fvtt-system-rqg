@@ -4,7 +4,7 @@ import { systemId } from "../system/config";
 import {
   handleApplyActorDamage,
   handleApplyWeaponDamage,
-  handleDamageAndHitlocation,
+  handleRollDamageAndHitLocation,
   handleDefence,
   handleRollFumble,
   hideChatActionButtons,
@@ -67,10 +67,10 @@ export class RqgChatMessage extends ChatMessage {
 
     if (clickedButton?.dataset.damageHitlocation !== undefined) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
-      await handleDamageAndHitlocation(clickedButton); // Roll damage & hit location
+      await handleRollDamageAndHitLocation(clickedButton); // Roll damage & hit location
     }
 
-    if (clickedButton?.dataset.woundedActorUuid !== undefined) {
+    if (clickedButton?.dataset.applyDamageToActor !== undefined) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyActorDamage(clickedButton); // Inflict damage to actor
     }

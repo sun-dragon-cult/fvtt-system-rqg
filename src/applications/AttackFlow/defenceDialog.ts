@@ -211,13 +211,6 @@ export class DefenceDialog extends FormApplication<
 
         const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
 
-        if (updatedFlavor !== currentFlavor) {
-          await this.attackChatMessage?.update({
-            flavor: updatedFlavor,
-            "flags.rqg.chat.defendingActorUuid": this.object.defendingActorUuid,
-          });
-        }
-
         const { defenceName } = this.getDefenceNameAndChance(
           this.object.defence,
           defendingActor,
@@ -402,13 +395,15 @@ export class DefenceDialog extends FormApplication<
         foundry.utils.mergeObject(
           messageData,
           {
+            flavor: updatedFlavor,
             flags: {
               [systemId]: {
                 chat: {
+                  attackState: "Defended",
+                  defendingActorUuid: this.object.defendingActorUuid,
                   defenceWeaponUuid: selectedParryingWeapon?.uuid,
                   defenceWeaponUsage: parryWeaponUsageType,
                   outcomeDescription: outcomeDescription,
-                  attackState: "Defended",
                   defenceRoll: defenceRoll,
                   attackerFumbled: attackerFumbled,
                   defenderFumbled: defenderFumbled,

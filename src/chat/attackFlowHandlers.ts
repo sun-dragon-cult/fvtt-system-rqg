@@ -1,14 +1,13 @@
 import type { RqgItem } from "../items/rqgItem";
 import {
-  assertActorType,
   assertItemType,
   getGame,
   getGameUser,
   getRequiredDomDataset,
   localize,
   logMisconfiguration,
+  requireValue,
   RqgError,
-  usersIdsThatOwnActor,
 } from "../system/util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { DefenceType } from "./RqgChatMessage.types";
@@ -16,8 +15,6 @@ import { DefenceDialog } from "../applications/AttackFlow/defenceDialog";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { RqgActor } from "../actors/rqgActor";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { DamageCalculations } from "../system/damageCalculations";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { socketSend } from "../sockets/RqgSocket";
@@ -40,7 +37,9 @@ export async function handleDefence(clickedButton: HTMLButtonElement): Promise<v
 /**
  * Roll Damage and hit location rolls and update AttackChat with new state
  */
-export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElement): Promise<void> {
+export async function handleRollDamageAndHitLocation(
+  clickedButton: HTMLButtonElement,
+): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
   const attackChatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
@@ -48,13 +47,11 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
     // TODO Warn about missing chat message
     return;
   }
-
   const hitLocationRoll = Roll.fromData(
     attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
-  ) as Roll | undefined;
+  );
 
-  // TODO implement HitLocationRoll - get target and add hitlocation name to roll
-  await hitLocationRoll?.evaluate();
+  await hitLocationRoll.evaluate();
 
   // @ts-expect-error dice3d
   if (game.dice3d) {
@@ -80,7 +77,7 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
         [systemId]: {
           chat: {
             attackState: `DamageRolled`,
-            hitLocationRoll: hitLocationRoll,
+            hitLocationRoll: hitLocationRoll.toJSON(),
           },
         },
       },
@@ -100,7 +97,7 @@ export async function handleDamageAndHitlocation(clickedButton: HTMLButtonElemen
   //   messageAuthorId: attackChatMessage.author.id,
   //   update: messageData,
   // });
-  await attackChatMessage?.update(messageData);
+  await attackChatMessage.update(messageData);
 }
 
 /**
@@ -114,31 +111,24 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     // TODO Warn about missing chat message
     return;
   }
-  const damagedActorUuid = getRequiredDomDataset(clickedButton, "wounded-actor-uuid");
+
+  const hitLocationRoll = Roll.fromData(
+    attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
+  );
+  requireValue(
+    hitLocationRoll.total,
+    "HitLocation roll was not evaluated before applying to actor",
+  );
+  const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
+  requireValue(damageRoll.total, "Damage roll was not evaluated before applying to actor");
+
+  const damagedActorUuid = attackChatMessage.getFlag(systemId, "chat.defendingActorUuid") as string;
   const damagedActor = (await fromUuid(damagedActorUuid)) as RqgActor | undefined;
   if (!damagedActor) {
     // TODO Warn about missing token
     return;
   }
-  assertActorType(damagedActor.type, ActorTypeEnum.Character);
-  const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
-  const hitLocationRoll = Roll.fromData(
-    attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
-  );
-  const damageAmount = damageRoll.total ?? 0;
-  const hitLocationNumberAffected = hitLocationRoll.total;
-  if (!hitLocationNumberAffected) {
-    // TODO Warn about missing hitlocationResult
-    return;
-  }
-  const damagedHitLocation = damagedActor.items.find(
-    (i) =>
-      hitLocationNumberAffected >= i.system.dieFrom && hitLocationNumberAffected <= i.system.dieTo,
-  );
-  if (!damagedHitLocation) {
-    // TODO Warn about missing hitlocation
-    return;
-  }
+  await damagedActor.applyDamage(damageRoll.total, hitLocationRoll.total);
 
   const messageData = attackChatMessage.toObject();
   const messageDataUpdate = {
@@ -146,7 +136,6 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
       [systemId]: {
         chat: {
           actorDamagedApplied: true,
-          damagedHitLocation: damagedHitLocation,
         },
       },
     },
@@ -159,39 +148,6 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   );
 
   await attackChatMessage?.update(messageData);
-
-  // TODO refactor to inflictWound method on actor instead
-  // TODO FIXME BUG - does not reduce damage by AP on hit location !!! ***
-  // @ts-expect-error speaker
-  const speaker = attackChatMessage.speaker;
-
-  const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
-    DamageCalculations.addWound(
-      damageAmount,
-      true,
-      damagedHitLocation!,
-      damagedHitLocation!.parent as RqgActor,
-      speaker,
-    );
-
-  console.error("RQG | TODO handle uselesslegs", uselessLegs); // TODO Handle uselesslegs
-
-  if (hitLocationUpdates) {
-    await damagedHitLocation!.update(hitLocationUpdates);
-  }
-  if (actorUpdates) {
-    await damagedHitLocation!.update(actorUpdates as any);
-  } // TODO fix type
-  await ChatMessage.create({
-    user: getGame().user?.id,
-    speaker: speaker,
-    content: localize("RQG.Item.HitLocation.AddWoundChatContent", {
-      actorName: damagedHitLocation!.name,
-      hitLocationName: damagedHitLocation!.name,
-      notification: notification,
-    }),
-    whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
-  });
 }
 
 /**

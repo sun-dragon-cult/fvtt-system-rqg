@@ -32,10 +32,10 @@
       <span data-damage-roll-html></span>
       <span data-hit-location-roll-html></span>
       <div class="flex-row">
-      {{#if damagedHitLocationUuid}}
+      {{#if hitLocationRoll}}
       {{#unless actorDamagedApplied}}
-        <button data-visible-actor-uuid="{{damagedHitLocationUuid}}"
-                data-wounded-actor-uuid="{{damagedHitLocationUuid}}">Apply damage to actor
+        <button data-visible-actor-uuid="{{attackingActorUuid}}" data-apply-damage-to-actor="true">
+          Apply damage to actor
         </button>
       {{/unless}}
       {{/if}}

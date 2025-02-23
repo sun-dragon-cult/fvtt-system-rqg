@@ -10,6 +10,7 @@ import {
   localize,
   localizeCharacteristic,
   RqgError,
+  usersIdsThatOwnActor,
 } from "../system/util";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { systemId } from "../system/config";
@@ -297,6 +298,58 @@ export class RqgActor extends Actor {
       });
       ui.notifications?.info(msg);
     }
+  }
+
+  /**
+   * Apply damage to a hitLocation and this actor
+   */
+  public async applyDamage(
+    damageAmount: number,
+    hitLocationRollTotal: number,
+    ignoreAP: boolean = false,
+    applyToActorHP: boolean = true,
+  ): Promise<void> {
+    const damagedHitLocation = this.items.find(
+      (i) =>
+        i.type === ItemTypeEnum.HitLocation &&
+        hitLocationRollTotal >= i.system.dieFrom &&
+        hitLocationRollTotal <= i.system.dieTo,
+    );
+
+    const hitLocationAP = damagedHitLocation?.system.armorPoints ?? 0;
+    const damageAfterAP = ignoreAP ? damageAmount : Math.max(0, damageAmount - hitLocationAP);
+    if (damageAfterAP === 0) {
+      return;
+    }
+    const speaker = ChatMessage.getSpeaker({ actor: this });
+
+    const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
+      DamageCalculations.addWound(
+        damageAfterAP,
+        applyToActorHP,
+        damagedHitLocation!,
+        this,
+        this.name!, // TODO this.name should be speaker?
+      );
+
+    console.error("RQG | TODO handle uselesslegs & ignoreAP", uselessLegs); // TODO Handle uselesslegs
+
+    if (hitLocationUpdates) {
+      await damagedHitLocation!.update(hitLocationUpdates);
+    }
+    if (actorUpdates) {
+      await this.update(actorUpdates as any);
+    } // TODO fix type
+    await ChatMessage.create({
+      user: getGame().user?.id,
+      speaker: speaker,
+      content: localize("RQG.Item.HitLocation.AddWoundChatContent", {
+        actorName: this.name,
+        hitLocationName: damagedHitLocation!.name,
+        notification: notification,
+      }),
+      whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
+    });
   }
 
   private calcMaxEncumbrance(

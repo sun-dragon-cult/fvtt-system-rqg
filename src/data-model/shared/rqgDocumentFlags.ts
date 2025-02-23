@@ -86,7 +86,6 @@ export type BaseRqgChatFlags = {
 
 export interface AttackChatFlags extends BaseRqgChatFlags {
   type: "attackChat";
-  // chat: CommonRqgChatFlags & {
   chat: {
     // *** Added in AttackDialog ***
 
@@ -122,7 +121,6 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     /** Can be 1d20 or 1d10 or 1d10+10 - added in attackDialog, rolled by defenceDialog */
     hitLocationRoll?: Roll;
 
-    damagedHitLocationUuid: string;
     damagedWeaponUuid: string;
     // result: AbilitySuccessLevelEnum | undefined;
     // specialDamageTypeText: string | undefined;
