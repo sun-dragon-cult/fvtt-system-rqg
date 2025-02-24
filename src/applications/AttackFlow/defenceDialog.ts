@@ -20,9 +20,9 @@ import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
-import { socketSend } from "../../sockets/RqgSocket";
 import { combatOutcome, getDamageDegree } from "../../system/combatCalculations";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
+import { updateChatMessage } from "../../sockets/SocketableRequests";
 
 export class DefenceDialog extends FormApplication<
   FormApplication.Options,
@@ -419,19 +419,7 @@ export class DefenceDialog extends FormApplication<
           );
         }
 
-        // @ts-expect-error author
-        if (getGameUser().id === this.attackChatMessage.author.id) {
-          await this.attackChatMessage.update(messageData);
-        } else {
-          socketSend({
-            action: "updateChatMessage",
-            messageId: this.attackChatMessage.id,
-            update: messageData,
-            // @ts-expect-error author
-            messageAuthorId: this.attackChatMessage.author.id,
-          });
-        }
-
+        await updateChatMessage(this.attackChatMessage, messageData);
         await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel); // TODO move to later in flow
         await this.close();
       });

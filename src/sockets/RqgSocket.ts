@@ -1,27 +1,6 @@
 import { systemId } from "../system/config";
 import { getGame, getGameUser, getGameUsers, getSocket, RqgError } from "../system/util";
-import type { ChatMessageDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
-import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
-
-type SocketAction = {
-  payload: SocketActionPayload;
-  socketMessageId?: string;
-};
-
-type SocketActionPayload = DeleteCombatantPayload | UpdateChatMessagePayload;
-
-type DeleteCombatantPayload = {
-  action: "deleteCombatant"; // action is a Discriminated Union
-  combatId: string;
-  idsToDelete: string[];
-};
-
-type UpdateChatMessagePayload = {
-  action: "updateChatMessage"; // action is a Discriminated Union
-  messageId: string;
-  messageAuthorId: string; // Owner of the chat message (userId)
-  update: PropertiesToSource<ChatMessageDataProperties>;
-};
+import type { SocketAction, SocketActionPayload } from "./RqgSocket.types";
 
 const eventNameSpace = `system.${systemId}`;
 const pendingRequests = new Map<string, (value: unknown) => void>(); // socketMessageId to stored promise

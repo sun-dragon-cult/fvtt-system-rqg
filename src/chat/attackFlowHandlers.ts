@@ -17,7 +17,7 @@ import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { RqgActor } from "../actors/rqgActor";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
-import { socketSend } from "../sockets/RqgSocket";
+import { updateChatMessage } from "../sockets/SocketableRequests";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -90,14 +90,7 @@ export async function handleRollDamageAndHitLocation(
     messageData.flags.rqg!.chat!,
   );
 
-  // socketSend({
-  //   action: "updateChatMessage",
-  //   messageId: attackChatMessage.id ?? "",
-  //   // @ts-expect-error author
-  //   messageAuthorId: attackChatMessage.author.id,
-  //   update: messageData,
-  // });
-  await attackChatMessage.update(messageData);
+  await updateChatMessage(attackChatMessage, messageData);
 }
 
 /**
@@ -161,7 +154,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     messageData.flags[systemId]!.chat!,
   );
 
-  await attackChatMessage?.update(messageData);
+  await updateChatMessage(attackChatMessage, messageData);
 }
 
 /**
@@ -187,6 +180,7 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
   await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
 
   const messageData = attackChatMessage.toObject();
+
   const messageDataUpdate = {
     flags: {
       [systemId]: {
@@ -202,8 +196,7 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
     templatePaths.attackChatMessage,
     messageData.flags[systemId]!.chat!,
   );
-
-  await attackChatMessage?.update(messageData);
+  await updateChatMessage(attackChatMessage, messageData);
 }
 
 /**
@@ -253,18 +246,7 @@ export async function handleRollFumble(clickedButton: HTMLButtonElement): Promis
     messageData.flags[systemId]!.chat!,
   );
 
-  // @ts-expect-error author
-  if (getGameUser().id === attackChatMessage.author.id) {
-    await attackChatMessage.update(messageData);
-  } else {
-    socketSend({
-      action: "updateChatMessage",
-      messageId: attackChatMessage.id ?? "",
-      // @ts-expect-error author
-      messageAuthorId: attackChatMessage.author.id,
-      update: messageData,
-    });
-  }
+  await updateChatMessage(attackChatMessage, messageData);
 }
 
 async function fumbleRoll(): Promise<string> {

@@ -67,9 +67,9 @@ import {
   getCombatantsSharingToken,
   getSrWithoutCombatants,
 } from "../combat/combatant-utils";
-import { socketSend } from "../sockets/RqgSocket";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
+import { deleteCombatant } from "../sockets/SocketableRequests";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -1358,17 +1358,8 @@ export class RqgActorSheet extends ActorSheet<
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
-    if (combatantIdsToDelete.length > 0) {
-      if (getGameUser().isGM) {
-        await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
-      } else {
-        socketSend({
-          action: "deleteCombatant",
-          combatId: combat.id,
-          idsToDelete: combatantIdsToDelete,
-        });
-      }
-    }
+    await deleteCombatant(combat, combatantIdsToDelete);
+
     if (activeInSR.size === 0) {
       await currentCombatants[0].update({ initiative: null });
     }
