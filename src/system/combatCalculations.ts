@@ -34,6 +34,7 @@ export async function combatOutcome(
   attackingWeapon: RqgItem,
   attackWeaponUsageType: UsageType,
   attackDamageBonus: string,
+  attackExtraDamage: string,
   defenceDamageBonus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
@@ -86,9 +87,13 @@ export async function combatOutcome(
   if (damageFormula == null) {
     requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
   }
-
+  const extraDamageFormula =
+    weaponDoingDamageDesignation === "attackingWeapon" && attackExtraDamage.trim()
+      ? `+${attackExtraDamage.trim()}[extra damage]`
+      : "";
+  const damageFormulaWithExtraDamage = `${damageFormula}${extraDamageFormula}`;
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
-  const damageFormulaWithDb = applyDamageBonusToFormula(damageFormula, damageBonus);
+  const damageFormulaWithDb = applyDamageBonusToFormula(damageFormulaWithExtraDamage, damageBonus);
 
   const damageRoll = await evaluateDamageRoll(damageFormulaWithDb, damageDegree);
 
@@ -165,8 +170,14 @@ async function evaluateDamageRoll(
   damageDegree: DamageDegree,
 ): Promise<Roll> {
   const damageRoll = new Roll(damageFormula);
-  await damageRoll.evaluate({ maximize: damageDegree === "maxSpecial" });
-  requireValue(damageRoll.total, "damage roll was not yet evaluated?");
+  try {
+    await damageRoll.evaluate({ maximize: damageDegree === "maxSpecial" });
+    requireValue(damageRoll.total, "damage roll was not yet evaluated?");
+  } catch (e) {
+    ui.notifications?.error(`Failed to evaluate damage roll: ${damageFormula}`);
+    console.warn("Failed to evaluate damage roll", e);
+  }
+
   return damageRoll;
 }
 
@@ -336,6 +347,12 @@ function calculateDodgeDamages(
  * If db/2 is specified in damageFormula, reduce the damageBonus formula by half.
  */
 function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
+  // Do not add damage bonus if it's 0
+  if (!damageBonus || damageBonus === "0") {
+    return damageFormula.replace(/\s*\+\s*db(\/2)?/g, "");
+  }
+
+  // Calculate half damage bonus
   if (damageFormula.includes("db/2")) {
     let oddDie = "";
     let [dice, sides] = damageBonus
@@ -355,6 +372,7 @@ function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
     }
     return damageFormula.replaceAll("db/2", `(${dice}d${sides}${oddDie})[damage bonus]`);
   } else {
+    // Add full damage bonus
     return damageFormula.replaceAll("db", `${damageBonus}[damage bonus]`);
   }
 }

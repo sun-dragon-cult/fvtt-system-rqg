@@ -41,6 +41,7 @@ export type AttackDialogObjectData = {
   halved: boolean;
   otherModifier: string;
   otherModifierDescription: string;
+  attackExtraDamage: string;
   /** In the dialog it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
   attackDamageBonus: string;
   hitLocationFormula: string;

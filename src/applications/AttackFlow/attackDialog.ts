@@ -54,6 +54,7 @@ export class AttackDialog extends FormApplication<
       halved: false,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Attack.OtherModifier"),
+      attackExtraDamage: "",
       attackDamageBonus: "",
       hitLocationFormula: "1d20",
     };
@@ -246,6 +247,7 @@ export class AttackDialog extends FormApplication<
             outcomeDescription: "",
             actorDamagedApplied: false,
             weaponDamageApplied: false,
+            attackExtraDamage: this.object.attackExtraDamage,
             attackDamageBonus: this.object.attackDamageBonus.split(":")[1],
             attackRoll: attackRoll,
             defenceRoll: undefined,

@@ -446,6 +446,7 @@
         "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",
         "DamageBonusFrom":"Damage Bonus from",
+        "ExtraDamage": "Extra Damage",
         "HitLocationFormula": "Hit Location Formula",
         "HitLocationFormulaOptions": {
           "1d20": "Normal (1d20)",

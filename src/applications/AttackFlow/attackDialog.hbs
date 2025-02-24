@@ -26,6 +26,13 @@
       {{selectOptions hitLocationFormulaOptions selected=object.hitLocationFormula}}
     </select>
 
+    <label>
+      {{localize "RQG.Dialog.Attack.ExtraDamage"}}
+    </label>
+    <div>
+      <input type="text" value="{{object.attackExtraDamage}}" name="attackExtraDamage" {{checked object.attackExtraDamage}}>
+    </div>
+
     <h2 class="submenu-span">{{localize "RQG.Dialog.Common.Modifiers"}}</h2>
 
     <label>

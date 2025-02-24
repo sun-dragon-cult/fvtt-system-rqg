@@ -16,6 +16,7 @@ export type AttackDialogOptions = {
   weaponImg?: string;
   combatManeuver?: CombatManeuver;
   usage?: UsageType;
+  attackExtraDamage: string;
   modifiers?: Modifier[];
   speaker?: ChatSpeakerDataProperties;
 };

@@ -95,6 +95,7 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     defendingActorUuid?: string;
     attackRoll: AbilityRoll;
     attackCombatManeuver: CombatManeuver;
+    attackExtraDamage: string;
     attackDamageBonus: string;
 
     actorDamagedApplied: boolean;

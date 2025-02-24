@@ -316,8 +316,10 @@ export class DefenceDialog extends FormApplication<
 
         const parryWeaponUsageType = this.object.parryingWeaponUsage;
         const attackDamageBonus =
-          this.attackChatMessage?.getFlag(systemId, "chat.attackDamageBonus") ?? 0;
-        const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "0";
+          this.attackChatMessage?.getFlag(systemId, "chat.attackDamageBonus") ?? "";
+        const attackExtraDamage =
+          this.attackChatMessage?.getFlag(systemId, "chat.attackExtraDamage") ?? "";
+        const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "";
 
         const {
           damageRoll,
@@ -334,6 +336,7 @@ export class DefenceDialog extends FormApplication<
           attackingWeapon,
           attackWeaponUsageType,
           attackDamageBonus,
+          attackExtraDamage,
           defendDamageBonus,
           selectedParryingWeapon,
           parryWeaponUsageType,
