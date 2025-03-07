@@ -4,9 +4,9 @@ import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { assertItemType, requireValue, RqgError } from "./util";
 import { attackParryMap } from "./attackParryTable";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import type { RqgItem } from "../items/rqgItem";
+import { RqgItem } from "../items/rqgItem";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { UsageType } from "../data-model/item-data/weaponData";
+import type { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import {
   DamageDegree,
   dodgeDamageDegreeTable,
@@ -38,6 +38,7 @@ export async function combatOutcome(
   defenceDamageBonus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
+  damageType: DamageType,
 ): Promise<CombatOutcome> {
   const attackSuccessLevel = attackRoll.successLevel;
   requireValue(
@@ -83,13 +84,13 @@ export async function combatOutcome(
   requireValue(usage, "No weapon usage for combatOutcome calculations");
   assertItemType(weaponDoingDamage?.type, ItemTypeEnum.Weapon);
 
-  const damageFormula = weaponDoingDamage?.getDamageFormula(usage, damageDegree);
+  const damageFormula = weaponDoingDamage?.getDamageFormula(usage, damageDegree, damageType);
   if (damageFormula == null) {
     requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
   }
   const extraDamageFormula =
-    weaponDoingDamageDesignation === "attackingWeapon" && attackExtraDamage.trim()
-      ? `+${attackExtraDamage.trim()}[extra damage]`
+    weaponDoingDamageDesignation === "attackingWeapon"
+      ? RqgItem.formatDamagePart(attackExtraDamage, "extra damage", "+") // TODO make extra damage text part of attack dialog
       : "";
   const damageFormulaWithExtraDamage = `${damageFormula}${extraDamageFormula}`;
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
@@ -165,6 +166,7 @@ function createEmptyCombatOutcome(): CombatOutcome {
   };
 }
 
+// TODO maximize maybe not needed if item getDamageFormula replaces maxSpecial with numbers?
 async function evaluateDamageRoll(
   damageFormula: string,
   damageDegree: DamageDegree,
@@ -370,9 +372,16 @@ function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
         oddDie = `+1d${sides / 2}`;
       }
     }
-    return damageFormula.replaceAll("db/2", `(${dice}d${sides}${oddDie})[damage bonus]`);
+
+    return damageFormula.replaceAll(
+      "db/2",
+      RqgItem.formatDamagePart(`${dice}d${sides}${oddDie}`, "RQG.Roll.DamageRoll.DamageBonus"),
+    );
   } else {
     // Add full damage bonus
-    return damageFormula.replaceAll("db", `${damageBonus}[damage bonus]`);
+    return damageFormula.replaceAll(
+      "db",
+      RqgItem.formatDamagePart(damageBonus, "RQG.Roll.DamageRoll.DamageBonus"),
+    );
   }
 }

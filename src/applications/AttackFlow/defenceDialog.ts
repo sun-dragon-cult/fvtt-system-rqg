@@ -18,7 +18,7 @@ import { AttackDialogOptions, DefenceType } from "../../chat/RqgChatMessage.type
 import { DefenceDialogHandlebarsData, DefenceDialogObjectData } from "./DefenceDialogData.types";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { Usage, UsageType } from "../../data-model/item-data/weaponData";
+import { DamageType, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import { combatOutcome, getDamageDegree } from "../../system/combatCalculations";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
@@ -320,6 +320,8 @@ export class DefenceDialog extends FormApplication<
         const attackExtraDamage =
           this.attackChatMessage?.getFlag(systemId, "chat.attackExtraDamage") ?? "";
         const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "";
+        const damageType: DamageType =
+          this.attackChatMessage?.getFlag(systemId, "chat.attackCombatManeuver.damageType") ?? "";
 
         const {
           damageRoll,
@@ -340,6 +342,7 @@ export class DefenceDialog extends FormApplication<
           defendDamageBonus,
           selectedParryingWeapon,
           parryWeaponUsageType,
+          damageType,
         );
 
         const outcomeDescription = getBasicOutcomeDescription(

@@ -1128,6 +1128,11 @@
         "Ritual": "ritual",
         "UsageCost": "Used {runePointsCost} rune points and {magicPointCost} magic points.",
         "OneUseUsageCost": "Used {runePointsCost} permanent rune points and {magicPointCost} magic points."
+      },
+      "DamageRoll": {
+        "WeaponDamage": "weapon damage",
+        "DamageBonus": "damage bonus",
+        "SpecialDamage": "special damage"
       }
     },
     "Hotbar": {

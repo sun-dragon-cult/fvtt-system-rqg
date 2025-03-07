@@ -9,7 +9,14 @@ import { WeaponSheet } from "./weapon-item/weaponSheet";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
-import { assertItemType, getGame, hasOwnProperty, localize, RqgError } from "../system/util";
+import {
+  assertItemType,
+  getGame,
+  hasOwnProperty,
+  localize,
+  requireValue,
+  RqgError,
+} from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
@@ -28,7 +35,7 @@ import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "../data-model/item-data/spell";
 import { AttackDialog } from "../applications/AttackFlow/attackDialog";
 import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
-import { UsageType } from "../data-model/item-data/weaponData";
+import { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import { DamageDegree } from "../system/combatCalculations.defs";
 
 export class RqgItem extends Item {
@@ -284,10 +291,13 @@ export class RqgItem extends Item {
 
   /**
    * Get a damage Roll depending on weapon usage and success level.
+   * The damageBonus description & actual formula is added in applyDamageBonusToFormula
+   * during combat calculations. From here it's only a placeholder like "+db".
    */
   public getDamageFormula(
     usage: UsageType | undefined,
     damageDegree: DamageDegree,
+    damageType: DamageType,
   ): string | undefined {
     if (!usage) {
       return undefined;
@@ -295,35 +305,123 @@ export class RqgItem extends Item {
     assertItemType(this.type, ItemTypeEnum.Weapon);
     const weaponDamage = this.system.usage[usage].damage;
 
-    switch (damageDegree) {
-      case "none": {
-        return undefined;
-      }
+    requireValue(
+      damageType,
+      "Could not get damageType when calculating damage formula",
+      this,
+      usage,
+      damageDegree,
+      damageType,
+    );
 
-      case "normal": {
-        const { damageFormula, damageBonus } =
-          this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
-        return `${this.formatDamagePart(damageFormula, "weapon damage")}${damageBonus}`;
-      }
-      case "special":
-      case "maxSpecial": {
-        const { damageFormula, damageBonus } =
-          this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
-        return `${this.formatDamagePart(damageFormula, "weapon damage")} + ${this.formatDamagePart(damageFormula, "special damage")}${damageBonus}`;
-      }
-      default: {
-        throw new RqgError("Tried to get damageFormula for invalid damageDegree");
+    if (damageDegree === "none") {
+      return undefined;
+    }
+
+    const { damageFormula, damageBonusPlaceholder } =
+      this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+
+    if (damageDegree === "normal") {
+      const weaponDamage = RqgItem.formatDamagePart(
+        damageFormula,
+        "RQG.Roll.DamageRoll.WeaponDamage",
+      );
+      return `${weaponDamage}${damageBonusPlaceholder}`;
+    }
+
+    if (damageDegree === "special") {
+      switch (damageType) {
+        case "crush": {
+          const db = this.parent?.system.attributes.damageBonus ?? "0";
+          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+
+          const weaponDamage = RqgItem.formatDamagePart(
+            damageFormula,
+            "RQG.Roll.DamageRoll.WeaponDamage",
+          );
+          const specialDamage = RqgItem.formatDamagePart(
+            maximisedDamageBonus,
+            "RQG.Roll.DamageRoll.SpecialDamage",
+            "+",
+          );
+          return `${weaponDamage}${damageBonusPlaceholder}${specialDamage}`;
+        }
+        case "slash":
+        case "impale": {
+          const specialDamage = RqgItem.formatDamagePart(
+            damageFormula,
+            "RQG.Roll.DamageRoll.SpecialDamage",
+            "+",
+          );
+          return `${RqgItem.formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage")}${specialDamage}${damageBonusPlaceholder}`;
+        }
+        default: {
+          return undefined; // parry or special
+        }
       }
     }
+
+    if (damageDegree === "maxSpecial") {
+      switch (damageType) {
+        case "crush": {
+          const db = this.parent?.system.attributes.damageBonus ?? "0";
+          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+
+          const damageFormulaRoll = new Roll(damageFormula);
+          // @ts-expect-error evaluateSync
+          damageFormulaRoll.evaluateSync({ maximize: true });
+
+          const evaluatedWeaponDamage = RqgItem.formatDamagePart(
+            damageFormulaRoll.total?.toString() ?? "",
+            "RQG.Roll.DamageRoll.WeaponDamage",
+          );
+          const evaluatedDamageBonus = RqgItem.formatDamagePart(
+            maximisedDamageBonus,
+            "RQG.Roll.DamageRoll.DamageBonus",
+            "+",
+          );
+          const evaluatedSpecialDamage = RqgItem.formatDamagePart(
+            maximisedDamageBonus,
+            "RQG.Roll.DamageRoll.SpecialDamage",
+            "+",
+          );
+
+          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
+        }
+        case "slash":
+        case "impale": {
+          const weaponDamage = RqgItem.formatDamagePart(
+            damageFormula,
+            "RQG.Roll.DamageRoll.WeaponDamage",
+          );
+          const specialDamage = RqgItem.formatDamagePart(
+            damageFormula,
+            "RQG.Roll.DamageRoll.SpecialDamage",
+            "+",
+          );
+
+          return `${weaponDamage}${damageBonusPlaceholder}${specialDamage}`;
+        }
+        default: {
+          return undefined; // parry or special
+        }
+      }
+    }
+
+    throw new RqgError("Tried to get damageFormula for invalid damageDegree");
   }
 
+  /**
+   * Split the damage formula into a part without damage bonus and a part with damage bonus placeholder.
+   * Also remove extra spaces from the formula.
+   */
   private getNormalizedDamageFormulaAndDamageBonus(damageFormula: string): {
     damageFormula: string;
-    damageBonus: string;
+    damageBonusPlaceholder: string;
   } {
     const normalizedDamageFormula = damageFormula.replaceAll(" ", "");
     const damageFormulaWithoutDb = normalizedDamageFormula.replaceAll(/\+db\/2|\+db/g, "");
-    const damageBonus = normalizedDamageFormula.includes("db/2")
+    const damageBonusPlaceholder = normalizedDamageFormula.includes("db/2")
       ? "+db/2"
       : normalizedDamageFormula.includes("db")
         ? "+db"
@@ -331,19 +429,49 @@ export class RqgItem extends Item {
 
     return {
       damageFormula: damageFormulaWithoutDb,
-      damageBonus: damageBonus,
+      damageBonusPlaceholder: damageBonusPlaceholder,
     };
   }
 
-  private formatDamagePart(damageFormula: string, description: string): string {
-    const compoundFormulaRegex = new RegExp("[+-]");
+  /**
+   * Format a damage part of a damage formula with a description in brackets.
+   * The description is localized.
+   * The prefixOperator is added before the damage formula if supplied.
+   */
+  public static formatDamagePart(
+    damageFormula: string, // Can also be a db placeholder like "+db"
+    description: string,
+    prefixOperator: string = "",
+  ): string {
+    if (!damageFormula.trim()) {
+      return ""; // 0 or empty string does not add the description
+    }
+
+    const compoundFormulaRegex = new RegExp("(?<!^)[+-]"); // contains + or - but ignore the first character to not match "+db"
     const isCompoundFormula = compoundFormulaRegex.test(damageFormula);
+    const translatedDescription = localize(description);
 
     if (isCompoundFormula) {
-      return `(${damageFormula})[${description}]`;
+      return `${prefixOperator}(${damageFormula})[${translatedDescription}]`;
     } else {
-      return `${damageFormula}[${description}]`;
+      return `${prefixOperator}${damageFormula}[${translatedDescription}]`;
     }
+  }
+
+  /**
+   * Create a string with the maximised or minimised result of a damage bonus roll.
+   */
+  getMaximisedDamageBonusValue(dbFormula: string): string {
+    const dbRoll = new Roll(dbFormula);
+    if (dbFormula.startsWith("-")) {
+      // TODO Actors with negative db will actually do less damage with special success! Rule inconsistency.
+      // @ts-expect-error evaluateSync
+      dbRoll.evaluateSync({ minimize: true });
+    } else {
+      // @ts-expect-error evaluateSync
+      dbRoll.evaluateSync({ maximize: true });
+    }
+    return dbRoll.total?.toString() ?? "";
   }
 
   /**

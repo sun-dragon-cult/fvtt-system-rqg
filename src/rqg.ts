@@ -108,6 +108,7 @@ Hooks.once("init", async () => {
 
   dragRulerModuleIntegrationInit();
 
+  // TODO RollTables init fails in Foundry v13
   // @ts-expect-error unregisterSheet
   RollTables.unregisterSheet("core", RollTableConfig);
   // @ts-expect-error registerSheet
