@@ -19,7 +19,7 @@
     "clean:dist": "rimraf --glob dist src/assets/packs/*",
     "clean:deps": "rimraf node_modules",
     "clean": "run-p clean:dist clean:deps",
-    "prepare": "husky install",
+    "prepare": "husky",
     "preinstall": "npx only-allow pnpm"
   },
   "author": "",

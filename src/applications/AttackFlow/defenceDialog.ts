@@ -180,8 +180,11 @@ export class DefenceDialog extends FormApplication<
 
   activateListeners(html: JQuery): void {
     // Do the roll to chat
-    html[0]?.querySelectorAll<HTMLElement>("[data-defend]").forEach((el) => {
+    html[0]?.querySelectorAll<HTMLButtonElement>("[data-defend]").forEach((el) => {
       el.addEventListener("click", async () => {
+        el.disabled = true;
+        setTimeout(() => (el.disabled = false), 1000);
+
         if (!this.attackChatMessage?.id) {
           const msg = "Attack chat message didn't have an id";
           throw new RqgError(msg, this.attackChatMessage);

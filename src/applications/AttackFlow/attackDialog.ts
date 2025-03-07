@@ -148,10 +148,12 @@ export class AttackDialog extends FormApplication<
 
   activateListeners(html: JQuery): void {
     // Do the roll to chat
-    html[0]?.querySelectorAll<HTMLElement>("[data-combat-maneuver-name]").forEach((el) => {
+    html[0]?.querySelectorAll<HTMLButtonElement>("[data-combat-maneuver-name]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const actor = this.weaponItem.parent;
+        el.disabled = true;
+        setTimeout(() => (el.disabled = false), 1000);
 
+        const actor = this.weaponItem.parent;
         const skillItem = actor?.items.get(
           this.weaponItem.system.usage[this.object.usageType].skillId,
         );

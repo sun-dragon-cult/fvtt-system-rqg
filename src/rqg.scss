@@ -865,6 +865,10 @@ input.readonly {
       border: 9px double white;
     }
 
+    button:disabled {
+      color: var(--color-text-dark-inactive);
+      cursor: progress;
+    }
   }
 
   &.chat-content {
@@ -1351,6 +1355,10 @@ input.readonly {
 
   button {
     background-color: var(--color-text-light-highlight);
+
+    &:disabled {
+      color: var(--color-text-dark-inactive);
+      cursor: progress;
+    }
   }
 }
-
