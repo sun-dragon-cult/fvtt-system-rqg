@@ -37,6 +37,7 @@ import { AttackDialog } from "../applications/AttackFlow/attackDialog";
 import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
 import { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import { DamageDegree } from "../system/combatCalculations.defs";
+import { formatDamagePart } from "../system/combatCalculations";
 
 export class RqgItem extends Item {
   public static init() {
@@ -322,10 +323,7 @@ export class RqgItem extends Item {
       this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
 
     if (damageDegree === "normal") {
-      const weaponDamage = RqgItem.formatDamagePart(
-        damageFormula,
-        "RQG.Roll.DamageRoll.WeaponDamage",
-      );
+      const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
       return `${weaponDamage}${damageBonusPlaceholder}`;
     }
 
@@ -335,11 +333,8 @@ export class RqgItem extends Item {
           const db = this.parent?.system.attributes.damageBonus ?? "0";
           const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
 
-          const weaponDamage = RqgItem.formatDamagePart(
-            damageFormula,
-            "RQG.Roll.DamageRoll.WeaponDamage",
-          );
-          const specialDamage = RqgItem.formatDamagePart(
+          const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
+          const specialDamage = formatDamagePart(
             maximisedDamageBonus,
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
@@ -348,12 +343,13 @@ export class RqgItem extends Item {
         }
         case "slash":
         case "impale": {
-          const specialDamage = RqgItem.formatDamagePart(
+          const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
+          const specialDamage = formatDamagePart(
             damageFormula,
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${RqgItem.formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage")}${specialDamage}${damageBonusPlaceholder}`;
+          return `${weaponDamage}${specialDamage}${damageBonusPlaceholder}`;
         }
         default: {
           return undefined; // parry or special
@@ -371,16 +367,16 @@ export class RqgItem extends Item {
           // @ts-expect-error evaluateSync
           damageFormulaRoll.evaluateSync({ maximize: true });
 
-          const evaluatedWeaponDamage = RqgItem.formatDamagePart(
+          const evaluatedWeaponDamage = formatDamagePart(
             damageFormulaRoll.total?.toString() ?? "",
             "RQG.Roll.DamageRoll.WeaponDamage",
           );
-          const evaluatedDamageBonus = RqgItem.formatDamagePart(
+          const evaluatedDamageBonus = formatDamagePart(
             maximisedDamageBonus,
             "RQG.Roll.DamageRoll.DamageBonus",
             "+",
           );
-          const evaluatedSpecialDamage = RqgItem.formatDamagePart(
+          const evaluatedSpecialDamage = formatDamagePart(
             maximisedDamageBonus,
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
@@ -390,11 +386,8 @@ export class RqgItem extends Item {
         }
         case "slash":
         case "impale": {
-          const weaponDamage = RqgItem.formatDamagePart(
-            damageFormula,
-            "RQG.Roll.DamageRoll.WeaponDamage",
-          );
-          const specialDamage = RqgItem.formatDamagePart(
+          const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
+          const specialDamage = formatDamagePart(
             damageFormula,
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
@@ -431,31 +424,6 @@ export class RqgItem extends Item {
       damageFormula: damageFormulaWithoutDb,
       damageBonusPlaceholder: damageBonusPlaceholder,
     };
-  }
-
-  /**
-   * Format a damage part of a damage formula with a description in brackets.
-   * The description is localized.
-   * The prefixOperator is added before the damage formula if supplied.
-   */
-  public static formatDamagePart(
-    damageFormula: string, // Can also be a db placeholder like "+db"
-    description: string,
-    prefixOperator: string = "",
-  ): string {
-    if (!damageFormula.trim()) {
-      return ""; // 0 or empty string does not add the description
-    }
-
-    const compoundFormulaRegex = new RegExp("(?<!^)[+-]"); // contains + or - but ignore the first character to not match "+db"
-    const isCompoundFormula = compoundFormulaRegex.test(damageFormula);
-    const translatedDescription = localize(description);
-
-    if (isCompoundFormula) {
-      return `${prefixOperator}(${damageFormula})[${translatedDescription}]`;
-    } else {
-      return `${prefixOperator}${damageFormula}[${translatedDescription}]`;
-    }
   }
 
   /**

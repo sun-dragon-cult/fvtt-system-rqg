@@ -1,10 +1,10 @@
 import type { AttackDamages, CombatOutcome } from "./combatCalculations.types";
 import type { DefenceType } from "../chat/RqgChatMessage.types";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
-import { assertItemType, requireValue, RqgError } from "./util";
+import { assertItemType, localize, requireValue, RqgError } from "./util";
 import { attackParryMap } from "./attackParryTable";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { RqgItem } from "../items/rqgItem";
+import type { RqgItem } from "../items/rqgItem";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import type { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import {
@@ -90,7 +90,7 @@ export async function combatOutcome(
   }
   const extraDamageFormula =
     weaponDoingDamageDesignation === "attackingWeapon"
-      ? RqgItem.formatDamagePart(attackExtraDamage, "extra damage", "+") // TODO make extra damage text part of attack dialog
+      ? formatDamagePart(attackExtraDamage, "extra damage", "+") // TODO make extra damage text part of attack dialog
       : "";
   const damageFormulaWithExtraDamage = `${damageFormula}${extraDamageFormula}`;
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
@@ -116,6 +116,30 @@ export async function combatOutcome(
     ignoreDefenderAp: getIgnoreArmor(defence, attackSuccessLevel, defenceSuccessLevel),
     weaponDoingDamage: weaponDoingDamageDesignation,
   };
+}
+/**
+ * Format a damage part of a damage formula with a description in brackets.
+ * The description is localized.
+ * The prefixOperator is added before the damage formula if supplied.
+ */
+export function formatDamagePart(
+  damageFormula: string, // Can also be a db placeholder like "+db"
+  description: string,
+  prefixOperator: string = "",
+): string {
+  if (!damageFormula.trim()) {
+    return ""; // 0 or empty string does not add the description
+  }
+
+  const compoundFormulaRegex = new RegExp("(?<!^)[+-]"); // contains + or - but ignore the first character to not match "+db"
+  const isCompoundFormula = compoundFormulaRegex.test(damageFormula);
+  const translatedDescription = localize(description);
+
+  if (isCompoundFormula) {
+    return `${prefixOperator}(${damageFormula})[${translatedDescription}]`;
+  } else {
+    return `${prefixOperator}${damageFormula}[${translatedDescription}]`;
+  }
 }
 
 // *** Helper functions ***
@@ -375,13 +399,13 @@ function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
 
     return damageFormula.replaceAll(
       "db/2",
-      RqgItem.formatDamagePart(`${dice}d${sides}${oddDie}`, "RQG.Roll.DamageRoll.DamageBonus"),
+      formatDamagePart(`${dice}d${sides}${oddDie}`, "RQG.Roll.DamageRoll.DamageBonus"),
     );
   } else {
     // Add full damage bonus
     return damageFormula.replaceAll(
       "db",
-      RqgItem.formatDamagePart(damageBonus, "RQG.Roll.DamageRoll.DamageBonus"),
+      formatDamagePart(damageBonus, "RQG.Roll.DamageRoll.DamageBonus"),
     );
   }
 }
