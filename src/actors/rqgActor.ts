@@ -5,10 +5,12 @@ import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/item
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
+  assertItemType,
   getGame,
   hasOwnProperty,
   localize,
   localizeCharacteristic,
+  requireValue,
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
@@ -34,6 +36,7 @@ import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import { ActorHealthState } from "../data-model/actor-data/attributes";
 
 export class RqgActor extends Actor {
   static init() {
@@ -322,18 +325,22 @@ export class RqgActor extends Actor {
     if (damageAfterAP === 0) {
       return;
     }
-    const speaker = ChatMessage.getSpeaker({ actor: this });
-
+    const speaker = ChatMessage.getSpeaker({ actor: this, token: this.token ?? undefined });
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
       DamageCalculations.addWound(
         damageAfterAP,
         applyToActorHP,
         damagedHitLocation!,
         this,
-        this.name!, // TODO this.name should be speaker?
+        speaker.alias!,
       );
 
-    console.error("RQG | TODO handle uselesslegs & ignoreAP", uselessLegs); // TODO Handle uselesslegs
+    for (const update of uselessLegs) {
+      // @ts-expect-error _id
+      const leg = this.items.get(update._id);
+      assertItemType(leg?.type, ItemTypeEnum.HitLocation);
+      await leg.update(update);
+    }
 
     if (hitLocationUpdates) {
       await damagedHitLocation!.update(hitLocationUpdates);
@@ -351,6 +358,49 @@ export class RqgActor extends Actor {
       }),
       whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
     });
+
+    await this.updateTokenEffectFromHealth();
+  }
+
+  /**
+   * Calculate and set actor token effects ("shock", "unconscious""dead")
+   * from what the actors health is.
+   */
+  public async updateTokenEffectFromHealth(): Promise<void> {
+    const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
+      new Map([
+        ["shock", this.findEffect("shock")],
+        ["unconscious", this.findEffect("unconscious")],
+        ["dead", this.findEffect("dead")],
+      ]);
+
+    const newEffect = health2Effect.get(this.system.attributes.health);
+
+    for (const status of health2Effect.values()) {
+      const actorHasEffectAlready = this.statuses.has(status?.id);
+      if (newEffect?.id === status.id && !actorHasEffectAlready) {
+        const asOverlay = status.id === "dead";
+        // Turn on the new effect
+        // @ts-expect-error toggleStatusEffect
+        await this.toggleStatusEffect(status.id, {
+          overlay: asOverlay,
+          active: true,
+        });
+      } else if (newEffect?.id !== status.id && actorHasEffectAlready) {
+        // This is not the effect we're applying, but it is on, so we need to turn it off
+        // @ts-expect-error toggleStatusEffect
+        await this.toggleStatusEffect(status.id, {
+          overlay: false,
+          active: false,
+        });
+      }
+    }
+  }
+
+  private findEffect(health: ActorHealthState): { id: string; label: string; icon: string } {
+    const effect = CONFIG.statusEffects.find((e) => e.id === health);
+    requireValue(effect, `Required statusEffect ${health} is missing`); // TODO translate message
+    return effect;
   }
 
   private calcMaxEncumbrance(

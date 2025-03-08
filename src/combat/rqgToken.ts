@@ -46,6 +46,7 @@ export class RqgToken extends Token {
     userId: string,
   ): void {
     super._onCreate(options, docModOptions);
+    this.actor?.updateTokenEffectFromHealth();
     if (userId === getGame().user?.id) {
       //@ts-expect-error actorLink
       if (!this.document.actorLink) {

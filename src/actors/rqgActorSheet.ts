@@ -61,7 +61,6 @@ import { CultRankEnum } from "../data-model/item-data/cultData";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
-import type { RqgToken } from "../combat/rqgToken";
 import {
   getCombatantIdsToDelete,
   getCombatantsSharingToken,
@@ -836,14 +835,9 @@ export class RqgActorSheet extends ActorSheet<
 
     this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     this.actor.system.attributes.magicPoints.value = mpTmp;
-    if (this.token) {
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      const tokenHealthBefore = this.token?.actor?.system.attributes.health;
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      this.token.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
-    }
+    this.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+    void this.actor.updateTokenEffectFromHealth();
+
     formData["system.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);
@@ -1190,11 +1184,7 @@ export class RqgActorSheet extends ActorSheet<
     // Add wound to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      const speakerName = (this.token?.name || this.actor.prototypeToken.name) ?? "";
-      el.addEventListener("click", () =>
-        HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName),
-      );
+      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
     });
 
     // Heal wounds to hit location

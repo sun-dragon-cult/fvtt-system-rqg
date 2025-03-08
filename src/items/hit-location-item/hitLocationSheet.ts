@@ -5,7 +5,6 @@ import {
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import {
-  activateChatTab,
   assertItemType,
   AvailableItemCache,
   getAvailableHitLocations,
@@ -14,14 +13,10 @@ import {
   localize,
   requireValue,
   RqgError,
-  usersIdsThatOwnActor,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { DamageCalculations } from "../../system/damageCalculations";
 import { HealingCalculations } from "../../system/healingCalculations";
-import { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { RqgItem } from "../rqgItem";
-import { RqgToken } from "../../combat/rqgToken";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
@@ -75,11 +70,7 @@ export class HitLocationSheet extends RqgItemSheet<
     };
   }
 
-  static async showAddWoundDialog(
-    actor: RqgActor,
-    hitLocationItemId: string,
-    speakerName: string,
-  ): Promise<void> {
+  static async showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): Promise<void> {
     const hitLocation = actor.items.get(hitLocationItemId);
     if (!hitLocation || hitLocation.type !== ItemTypeEnum.HitLocation) {
       const msg = localize("RQG.Item.HitLocation.Notification.CantFindHitLocation", {
@@ -106,12 +97,7 @@ export class HitLocationSheet extends RqgItemSheet<
             icon: '<i class="fas fa-check"></i>',
             label: localize("RQG.Item.HitLocation.AddWound.btnAddWound"),
             callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheet.submitAddWoundDialog(
-                html as JQuery,
-                actor,
-                hitLocation,
-                speakerName,
-              ),
+              await HitLocationSheet.submitAddWoundDialog(html as JQuery, actor, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -126,72 +112,15 @@ export class HitLocationSheet extends RqgItemSheet<
     ).render(true);
   }
 
-  private static async submitAddWoundDialog(
-    html: JQuery,
-    actor: RqgActor,
-    hitLocation: RqgItem,
-    speakerName: string,
-  ) {
+  private static async submitAddWoundDialog(html: JQuery, actor: RqgActor, hitLocation: RqgItem) {
     assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
-    const subtractAP: boolean = !!data.subtractAP;
-    let damage = Number(data.damage);
-    if (subtractAP) {
-      const armorPoints = hitLocation.system.armorPoints;
-      if (armorPoints == null) {
-        const msg = localize(
-          "RQG.Item.HitLocation.Notification.HitLocationDoesNotHaveCalculatedArmor",
-          {
-            hitLocationName: hitLocation.name,
-          },
-        );
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, hitLocation);
-      }
-      damage = Math.max(0, damage - armorPoints);
-    }
-    const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
-      DamageCalculations.addWound(damage, applyDamageToTotalHp, hitLocation, actor, speakerName);
+    const ignoreAP: boolean = !data.subtractAP;
+    const damage = Number(data.damage);
 
-    if (hitLocationUpdates) {
-      await hitLocation.update(hitLocationUpdates);
-    }
-    if (actorUpdates) {
-      await actor.update(actorUpdates as any);
-    } // TODO fix type
-    await ChatMessage.create({
-      user: getGame().user?.id,
-      speaker: { alias: speakerName },
-      content: localize("RQG.Item.HitLocation.AddWoundChatContent", {
-        actorName: speakerName,
-        hitLocationName: hitLocation.name,
-        notification: notification,
-      }),
-      whisper: usersIdsThatOwnActor(actor),
-    });
-    activateChatTab();
-
-    if (actor.isToken && actor.token) {
-      await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken);
-    } else {
-      const activeTokens = actor.getActiveTokens(true);
-      const sceneTokens = getGame().scenes?.active?.tokens;
-      if (activeTokens.length && sceneTokens) {
-        const token = sceneTokens.find((t) => t.id === activeTokens[0].id);
-        if (token) {
-          await HitLocationSheet.setTokenEffect(token.object as RqgToken);
-        }
-      }
-    }
-
-    for (const update of uselessLegs) {
-      // @ts-expect-error _id
-      const leg = actor.items.get(update._id);
-      assertItemType(leg?.type, ItemTypeEnum.HitLocation);
-      await leg.update(update);
-    }
+    actor.applyDamage(damage, hitLocation.system.dieFrom, ignoreAP, applyDamageToTotalHp);
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
@@ -270,9 +199,7 @@ export class HitLocationSheet extends RqgItemSheet<
     }
 
     if (actor.isToken) {
-      if (actor.token) {
-        await HitLocationSheet.setTokenEffect(actor.token.object as RqgToken);
-      }
+      await actor.updateTokenEffectFromHealth();
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
       const activeScene = getGame().scenes?.active;
@@ -281,7 +208,7 @@ export class HitLocationSheet extends RqgItemSheet<
           | TokenDocument
           | undefined; // TODO Hardcoded "first" token
         if (token) {
-          await HitLocationSheet.setTokenEffect(token.object as RqgToken);
+          await actor.updateTokenEffectFromHealth();
         }
       }
     }
@@ -299,46 +226,6 @@ export class HitLocationSheet extends RqgItemSheet<
     // Reopen the dialog if there still are wounds left
     if (hitLocation.system.wounds.length) {
       await this.showHealWoundDialog(actor, hitLocation.id!);
-    }
-  }
-
-  static findEffect(health: ActorHealthState): { id: string; label: string; icon: string } {
-    const effect = CONFIG.statusEffects.find((e) => e.id === health);
-    requireValue(effect, `Required statusEffect ${health} is missing`); // TODO translate message
-    return effect;
-  }
-
-  static async setTokenEffect(token: RqgToken): Promise<void> {
-    const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
-      new Map([
-        ["shock", HitLocationSheet.findEffect("shock")],
-        ["unconscious", HitLocationSheet.findEffect("unconscious")],
-        ["dead", HitLocationSheet.findEffect("dead")],
-      ]);
-
-    if (!token.actor) {
-      ui.notifications?.warn(localize("RQG.Item.HitLocation.Notification.NoActorOnTokenWarn"));
-      return;
-    }
-
-    const newEffect = health2Effect.get(token.actor.system.attributes.health);
-
-    for (const status of health2Effect.values()) {
-      const actorHasEffectAlready = token.actor.statuses.has(status?.id);
-      if (newEffect?.id === status.id && !actorHasEffectAlready) {
-        const asOverlay = status.id === "dead";
-        // Turn on the new effect
-        await token.toggleEffect(status, {
-          overlay: asOverlay,
-          active: true,
-        });
-      } else if (newEffect?.id !== status.id && actorHasEffectAlready) {
-        // This is not the effect we're applying, but it is on, so we need to turn it off
-        await token.toggleEffect(status, {
-          overlay: false,
-          active: false,
-        });
-      }
     }
   }
 }
