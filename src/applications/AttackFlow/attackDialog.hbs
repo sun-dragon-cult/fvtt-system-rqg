@@ -1,10 +1,24 @@
 {{log "*** Attack Dialog" this}}
 <form>
   <header class="roll-header">
-    <h1>{{weaponItem.name}}</h1>
+    <h1>{{skillItem.name}}</h1>
     <div class="sub-header">{{abilityChance}}%</div>
   </header>
   <div class="key-value-grid p-0 mb-1-5rem">
+    <label>
+      {{localize "RQG.Dialog.Attack.AttackingActor"}}
+    </label>
+    <select name="attackingActorUuid">
+      {{selectOptions attackingActorOptions selected=object.attackingActorUuid localize=false}}
+    </select>
+
+    <label>
+      {{localize "RQG.Dialog.Attack.AttackingWeapon"}}
+    </label>
+    <select name="attackingWeaponUuid">
+      {{selectOptions attackingWeaponOptions selected=object.attackingWeaponUuid localize=false}}
+    </select>
+
     <label>
       {{localize "RQG.Dialog.Attack.WeaponUsage"}}
     </label>
@@ -15,8 +29,8 @@
     <label>
       {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
     </label>
-    <select name="damageBonus">
-      {{selectOptions damageBonusSourceOptions selected=object.damageBonus}}
+    <select name="attackDamageBonus">
+      {{selectOptions damageBonusSourceOptions selected=object.attackDamageBonus}}
     </select>
 
     <label>

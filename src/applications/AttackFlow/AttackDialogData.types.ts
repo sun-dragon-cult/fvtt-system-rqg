@@ -15,10 +15,8 @@ export type PartialAbilityItem = {
 };
 
 export type AttackDialogHandlebarsData = {
-  // abilityName: string | null;
-  // abilityType?: string;
-  // abilityImg: string | null;
-  weaponItem: RqgItem;
+  weaponItem: RqgItem | undefined;
+  skillItem: RqgItem | undefined;
   abilityChance: number;
 
   object: AttackDialogObjectData;
@@ -26,6 +24,8 @@ export type AttackDialogHandlebarsData = {
   title: string;
   usageTypeOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
+  attackingActorOptions: Record<string, string>;
+  attackingWeaponOptions: Record<string, string>;
   damageBonusSourceOptions: Record<string, string>;
   hitLocationFormulaOptions: Record<string, string>;
   halvedModifier: number;
@@ -33,6 +33,8 @@ export type AttackDialogHandlebarsData = {
 };
 
 export type AttackDialogObjectData = {
+  attackingActorUuid: string | undefined;
+  attackingWeaponUuid: string | undefined;
   usageType: UsageType;
   augmentModifier: string;
   proneTarget: boolean;
@@ -43,6 +45,6 @@ export type AttackDialogObjectData = {
   otherModifierDescription: string;
   attackExtraDamage: string;
   /** In the dialog it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
-  attackDamageBonus: string;
+  attackDamageBonus: string | undefined;
   hitLocationFormula: string;
 };

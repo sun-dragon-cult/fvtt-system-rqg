@@ -440,6 +440,8 @@
     "Dialog": {
       "Attack": {
         "Title": "Attack",
+        "AttackingActor": "Attacking Actor",
+        "AttackingWeapon": "Attacking Weapon",
         "WeaponUsage": "Usage",
         "ProneTarget": "Prone Target",
         "UnawareTarget": "Unaware Target",

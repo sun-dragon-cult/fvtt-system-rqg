@@ -41,11 +41,12 @@ export class AttackDialog extends FormApplication<
     "-50": "RQG.Dialog.Common.AugmentOptions.Fumble",
   };
 
-  private weaponItem: RqgItem;
   private halvedModifier: number = 0;
 
   constructor(weaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: AttackDialogObjectData = {
+      attackingActorUuid: weaponItem.parent?.uuid,
+      attackingWeaponUuid: weaponItem.uuid,
       usageType: weaponItem.system.defaultUsage,
       augmentModifier: "0",
       proneTarget: false,
@@ -60,12 +61,11 @@ export class AttackDialog extends FormApplication<
     };
 
     super(formData, options as any);
-    this.weaponItem = weaponItem;
     this.object = formData;
   }
 
   get id() {
-    return `${this.constructor.name}-${trimChars(toKebabCase(this.weaponItem.name ?? ""), "-")}`;
+    return `${this.constructor.name}-${trimChars(toKebabCase(this.object.attackingActorUuid), "-")}`;
   }
 
   static get defaultOptions(): FormApplication.Options {
@@ -85,40 +85,52 @@ export class AttackDialog extends FormApplication<
   }
 
   async getData(): Promise<AttackDialogHandlebarsData> {
-    const usageTypeOptions = this.getUsageTypeOptions(this.weaponItem);
+    if (!this.object.attackingWeaponUuid) {
+      // If there is no weapon, then the actor probably has changed. Reload the weapon list and choose one
+      this.object.attackingWeaponUuid = Object.keys(
+        await this.getWeaponOptions(this.object.attackingActorUuid),
+      )[0];
+    }
+
+    const weaponItem = (await fromUuid(this.object.attackingWeaponUuid ?? "")) as
+      | RqgItem
+      | undefined;
+
+    const actorOptions = this.getActorOptions();
+    const weaponOptions = await this.getWeaponOptions(this.object.attackingActorUuid);
+    const usageTypeOptions = this.getUsageTypeOptions(weaponItem);
     if (
-      !this.weaponItem.system.defaultUsage ||
+      !weaponItem?.system.defaultUsage ||
       !Object.keys(usageTypeOptions).includes(this.object.usageType)
     ) {
       // Pick the first usage if none is selected (or if the selected isn't available)
       const defaultUsage = Object.keys(usageTypeOptions)[0] as UsageType;
       this.object.usageType = defaultUsage;
-      await this.weaponItem.update({
+      await weaponItem?.update({
         system: { defaultUsage: defaultUsage },
       });
     }
-    if (!this.object.attackDamageBonus) {
+    if (this.object.attackDamageBonus == null) {
       // Default the damage bonus to the attacking actor if none is selected
-      this.object.attackDamageBonus = Object.keys(
-        this.getDamageBonusSourceOptions(this.weaponItem),
-      )[0];
+      this.object.attackDamageBonus = Object.keys(this.getDamageBonusSourceOptions(weaponItem))[0];
     }
 
-    const skillRqid = this.weaponItem.system.usage[this.object.usageType].skillRqidLink.rqid;
-    const usedSkill = this.weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+    const skillRqid: string | undefined =
+      weaponItem?.system.usage[this.object.usageType].skillRqidLink.rqid;
+    const usedSkill = weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
     this.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
     return {
-      weaponItem: this.weaponItem,
-      // abilityName: this.weaponItem.name,
+      weaponItem: weaponItem,
+      skillItem: usedSkill,
       abilityChance: usedSkill?.system.chance,
-      // abilityType: this.weaponItem.type,
-      // abilityImg: this.weaponItem.img,
       object: this.object,
       options: this.options,
       title: this.title,
+      attackingActorOptions: actorOptions,
+      attackingWeaponOptions: weaponOptions,
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,
-      damageBonusSourceOptions: this.getDamageBonusSourceOptions(this.weaponItem),
+      damageBonusSourceOptions: this.getDamageBonusSourceOptions(weaponItem),
       hitLocationFormulaOptions: this.getHitLocationFormulaOptions(),
       halvedModifier: this.halvedModifier,
       totalChance: Math.max(
@@ -135,9 +147,21 @@ export class AttackDialog extends FormApplication<
   }
 
   async _updateObject(event: Event, formData: AttackDialogObjectData): Promise<void> {
+    if (this.object.attackingActorUuid !== formData["attackingActorUuid"]) {
+      const weaponOptions = await this.getWeaponOptions(formData["attackingActorUuid"]);
+      this.object.attackingWeaponUuid = Object.keys(weaponOptions)?.[0]; // TODO for now just pick any weapon
+      formData["attackingWeaponUuid"] = this.object.attackingWeaponUuid;
+      this.object.attackDamageBonus = undefined; // Make sure it is updated with the new actor's db
+      formData["attackingWeaponUuid"] = undefined;
+    }
+
+    const weaponItem = (await fromUuid(this.object.attackingWeaponUuid ?? "")) as
+      | RqgItem
+      | undefined;
+
     // Initiate an update of the embedded weapon defaultUsage to store the preferred usage for next attack
-    if (this.weaponItem.system.defaultUsage !== formData["usageType"]) {
-      await this.weaponItem.update({
+    if (weaponItem?.system.defaultUsage !== formData["usageType"]) {
+      await weaponItem?.update({
         system: { defaultUsage: formData["usageType"] },
       });
     }
@@ -153,14 +177,21 @@ export class AttackDialog extends FormApplication<
         el.disabled = true;
         setTimeout(() => (el.disabled = false), 1000);
 
-        const actor = this.weaponItem.parent;
-        const skillItem = actor?.items.get(
-          this.weaponItem.system.usage[this.object.usageType].skillId,
+        const weaponItem = (await fromUuid(this.object.attackingWeaponUuid ?? "")) as
+          | RqgItem
+          | undefined;
+        const actor = (await fromUuid(this.object.attackingActorUuid ?? "")) as
+          | RqgActor
+          | undefined;
+
+        const skillItem = actor?.getBestEmbeddedDocumentByRqid(
+          weaponItem?.system.usage[this.object.usageType].skillRqidLink.rqid,
         );
+        requireValue(skillItem, "Missing skillItem för attack", actor);
 
         const combatManeuverName = getDomDataset(el, "combat-maneuver-name");
 
-        const combatManeuver: CombatManeuver | undefined = this.weaponItem.system.usage[
+        const combatManeuver: CombatManeuver | undefined = weaponItem?.system.usage[
           this.object.usageType
         ].combatManeuvers.find((cm: CombatManeuver) => cm.name === combatManeuverName);
 
@@ -169,7 +200,7 @@ export class AttackDialog extends FormApplication<
           "Missing combat maneuver",
           combatManeuverName,
           this.object.usageType,
-          this.weaponItem,
+          weaponItem,
         );
 
         const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
@@ -178,10 +209,10 @@ export class AttackDialog extends FormApplication<
         );
 
         const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
-<span>${this.weaponItem.name} – ${usageTypeTranslated} – ${damageTypeTranslated}</span>`;
+<span>${weaponItem?.name} – ${usageTypeTranslated} – ${damageTypeTranslated}</span>`;
 
         const attackRollOptions: AbilityRollOptions = {
-          naturalSkill: skillItem?.system.chance,
+          naturalSkill: skillItem.system.chance,
           modifiers: [
             {
               value: Number(this.object.augmentModifier),
@@ -209,11 +240,11 @@ export class AttackDialog extends FormApplication<
             },
           ],
           heading: attackRollHeading,
-          abilityName: this.weaponItem.name ?? undefined,
-          abilityType: this.weaponItem.type ?? undefined,
-          abilityImg: this.weaponItem.img ?? undefined,
+          abilityName: weaponItem?.name ?? undefined,
+          abilityType: weaponItem?.type ?? undefined,
+          abilityImg: weaponItem?.img ?? undefined,
           speaker: ChatMessage.getSpeaker({
-            actor: this.weaponItem.parent as RqgActor | undefined,
+            actor: actor,
           }),
         };
 
@@ -231,7 +262,7 @@ export class AttackDialog extends FormApplication<
         const target = getGameUser().targets.first() as RqgToken | undefined;
         const defenderActor = target?.document.actor ?? undefined;
 
-        const attackerActor = this.weaponItem.actor;
+        const attackerActor = actor;
         if (!attackerActor) {
           // TODO Warn about not finding attacker actor
           return;
@@ -243,14 +274,14 @@ export class AttackDialog extends FormApplication<
             attackState: `Attacked`,
             attackingActorUuid: attackerActor.uuid,
             defendingActorUuid: defenderActor?.uuid, // TODO stämmer det här för unlinked?
-            attackWeaponUuid: this.weaponItem.uuid,
+            attackWeaponUuid: this.object.attackingWeaponUuid ?? "", // Checked for existence earlier
             attackWeaponUsage: this.object.usageType,
             attackCombatManeuver: combatManeuver,
             outcomeDescription: "",
             actorDamagedApplied: false,
             weaponDamageApplied: false,
             attackExtraDamage: this.object.attackExtraDamage,
-            attackDamageBonus: this.object.attackDamageBonus.split(":")[1],
+            attackDamageBonus: this.object.attackDamageBonus?.split(":")[1] ?? "0",
             attackRoll: attackRoll,
             defenceRoll: undefined,
             damageRoll: undefined,
@@ -283,7 +314,7 @@ export class AttackDialog extends FormApplication<
           flavor: attackFlavor,
           content: attackChatContent,
           speaker: ChatMessage.getSpeaker({
-            actor: this.weaponItem.parent as RqgActor | undefined,
+            actor: actor,
           }),
           flags: {
             rqg: chatData,
@@ -293,14 +324,56 @@ export class AttackDialog extends FormApplication<
         const cm = await ChatMessage.create(attackChatMessageOptions);
         cm?.render(true);
 
-        await skillItem?.checkExperience?.(attackRoll.successLevel); // TODO move to later in flow?
+        await skillItem.checkExperience?.(attackRoll.successLevel); // TODO move to later in flow?
       });
     });
 
     super.activateListeners(html);
   }
 
-  getUsageTypeOptions(weapon: RqgItem): Record<UsageType, string> {
+  private getActorOptions(): Record<string, string> {
+    // show a list of actors the user has access to
+    return getGame()
+      .actors?.filter((a) => a.isOwner)
+      ?.reduce((acc: any, actor) => {
+        acc[actor.uuid ?? ""] = actor.name;
+        return acc;
+      }, {});
+  }
+
+  /**
+   * show a list of weapons the actor has equipped and can be used for attacks.
+   */
+  private async getWeaponOptions(actorUuid: string | undefined): Promise<Record<string, string>> {
+    const actor = (await fromUuid(actorUuid ?? "")) as RqgActor | undefined;
+    const weaponsWithAttacks = (actor?.items ?? []).filter(
+      (i) =>
+        i.type === ItemTypeEnum.Weapon &&
+        (i.system.equippedStatus === "equipped" || i.system.isNatural) &&
+        (i.system.usage.oneHand.combatManeuvers.some((cm: CombatManeuver) =>
+          ["crush", "slash", "impale", "special"].includes(cm.damageType),
+        ) ||
+          i.system.usage.offHand.combatManeuvers.some((cm: CombatManeuver) =>
+            ["crush", "slash", "impale", "special"].includes(cm.damageType),
+          ) ||
+          i.system.usage.twoHand.combatManeuvers.some((cm: CombatManeuver) =>
+            ["crush", "slash", "impale", "special"].includes(cm.damageType),
+          ) ||
+          i.system.usage.missile.combatManeuvers.some((cm: CombatManeuver) =>
+            ["crush", "slash", "impale", "special"].includes(cm.damageType),
+          )),
+    );
+
+    return weaponsWithAttacks?.reduce((acc: any, item) => {
+      acc[item.uuid ?? ""] = item.name;
+      return acc;
+    }, {});
+  }
+
+  getUsageTypeOptions(weapon: RqgItem | undefined): Record<UsageType, string> {
+    if (weapon == null) {
+      return {} as Record<UsageType, string>;
+    }
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     return Object.entries<Usage>(weapon.system.usage).reduce((acc: any, [key, usage]) => {
       if (usage?.skillRqidLink?.rqid) {
@@ -310,7 +383,10 @@ export class AttackDialog extends FormApplication<
     }, {});
   }
 
-  getDamageBonusSourceOptions(weapon: RqgItem): Record<string, string> {
+  getDamageBonusSourceOptions(weapon: RqgItem | undefined): Record<string, string> {
+    if (weapon == null) {
+      return {};
+    }
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
     const weaponOwner = weapon.parent;

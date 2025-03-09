@@ -64,7 +64,7 @@ export class RqgActor extends Actor {
     return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 
-  public getBestEmbeddedDocumentByRqid(rqid: string): RqgItem | undefined {
+  public getBestEmbeddedDocumentByRqid(rqid: string | undefined): RqgItem | undefined {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 
