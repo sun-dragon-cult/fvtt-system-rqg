@@ -1,4 +1,4 @@
-import { exportedForTesting, getDamageDegree } from "./combatCalculations";
+import { __setLocalizeFunction, exportedForTesting, getDamageDegree } from "./combatCalculations";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { RqgError } from "./util";
 
@@ -197,5 +197,62 @@ describe("getDamagedWeapon", () => {
       AbilitySuccessLevelEnum.Failure,
     );
     expect(result).toBe("none");
+  });
+});
+
+const applyDamageBonusToFormula = exportedForTesting.applyDamageBonusToFormula;
+
+describe("applyDamageBonusToFormula", () => {
+  const mockLocalize = jest.fn((key) => key);
+  __setLocalizeFunction(mockLocalize);
+
+  it("should return the formula without db if damageBonus is 0", () => {
+    const result = applyDamageBonusToFormula("1d6 + db", "0");
+    expect(result).toBe("1d6");
+  });
+
+  it("should replace db with 2d6 damageBonus", () => {
+    const result = applyDamageBonusToFormula("1d6 + db", "2d6");
+    expect(result).toBe("1d6 + 2d6[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should replace db/2 with half 2d6 damageBonus", () => {
+    const result = applyDamageBonusToFormula("1d6 + db/2", "2d6");
+    expect(result).toBe("1d6 + 1d6[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should replace db/2 with half 1d4 damageBonus v2", () => {
+    const result = applyDamageBonusToFormula("1d6 + db/2", "1d4");
+    expect(result).toBe("1d6 + 1d2[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should handle odd dice numbers for db/2 with db 3d6", () => {
+    const result = applyDamageBonusToFormula("1d6 + db/2", "3d6");
+    expect(result).toBe("1d6 + (1d6+1d3)[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should replace db/2 with half of 5d6", () => {
+    const result = applyDamageBonusToFormula("1d6 + db/2", "5d6");
+    expect(result).toBe("1d6 + (2d6+1d3)[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should handle db/2 with negative db of -1d4", () => {
+    const result = applyDamageBonusToFormula("1d6 + db/2", "-1d4");
+    expect(result).toBe("1d6 + -1d2[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should remove db if damageBonus is empty", () => {
+    const result = applyDamageBonusToFormula("1d6 + db", "");
+    expect(result).toBe("1d6");
+  });
+
+  it("should handle complex formulas with db", () => {
+    const result = applyDamageBonusToFormula("1d6 + 2d4 + db", "1d8");
+    expect(result).toBe("1d6 + 2d4 + 1d8[RQG.Roll.DamageRoll.DamageBonus]");
+  });
+
+  it("should handle complex formulas with db/2", () => {
+    const result = applyDamageBonusToFormula("1d6 + 2d4 + db/2", "1d8");
+    expect(result).toBe("1d6 + 2d4 + 1d4[RQG.Roll.DamageRoll.DamageBonus]");
   });
 });

@@ -1,7 +1,7 @@
 import type { AttackDamages, CombatOutcome } from "./combatCalculations.types";
 import type { DefenceType } from "../chat/RqgChatMessage.types";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
-import { assertItemType, localize, requireValue, RqgError } from "./util";
+import { assertItemType, localize as realLocalize, requireValue, RqgError } from "./util";
 import { attackParryMap } from "./attackParryTable";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { RqgItem } from "../items/rqgItem";
@@ -22,7 +22,17 @@ import { attackDodgeMap } from "./attackDodgeTable";
 export const exportedForTesting = {
   calculateDamages,
   getDamagedWeapon,
+  applyDamageBonusToFormula,
 };
+
+let localize = (key: string): string => realLocalize(key); // Default implementation
+
+/**
+ * Make it possible to mock localize to make this testable
+ */
+export function __setLocalizeFunction(mockLocalize: (key: string) => string) {
+  localize = mockLocalize;
+}
 
 /**
  * Provide a collected result of the outcome of a combat attack.
@@ -372,7 +382,7 @@ function calculateDodgeDamages(
  * If the damageFormula contains db or db/2 then apply the damageBonus die string instead of that placeholder.
  * If db/2 is specified in damageFormula, reduce the damageBonus formula by half.
  */
-function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
+function applyDamageBonusToFormula(damageFormula: string, damageBonus: string): string {
   // Do not add damage bonus if it's 0
   if (!damageBonus || damageBonus === "0") {
     return damageFormula.replace(/\s*\+\s*db(\/2)?/g, "");
@@ -386,15 +396,17 @@ function applyDamageBonusToFormula(damageFormula: string, damageBonus: string) {
       .trim()
       .split("d")
       .map((n) => Number(n));
-    if (dice === 1) {
+    if (Math.abs(dice) === 1) {
       sides = sides / 2;
     } else {
-      dice = Math.floor(dice / 2);
-      if (dice % 2 !== 0) {
+      if (Math.abs(dice) % 2 !== 0) {
+        const sign = Math.sign(Number(damageBonus.split("d")[0])) === -1 ? "-" : "+";
+
         // In case the number of die is not even, add another halved die. half 3d6 => 1d6+1d3
         // Assumes sides is an even number, won't work for 1d3, but that is not used as DB in RQG
-        oddDie = `+1d${sides / 2}`;
+        oddDie = `${sign}1d${sides / 2}`;
       }
+      dice = Math.floor(dice / 2);
     }
 
     return damageFormula.replaceAll(
