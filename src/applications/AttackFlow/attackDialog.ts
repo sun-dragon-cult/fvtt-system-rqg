@@ -115,6 +115,15 @@ export class AttackDialog extends FormApplication<
       this.object.attackDamageBonus = Object.keys(this.getDamageBonusSourceOptions(weaponItem))[0];
     }
 
+    let isOutOfAmmo = false;
+    let ammoQuantity: number = 1;
+    if (this.object.usageType === "missile") {
+      const projectileItem = this.getWeaponProjectile(weaponItem);
+
+      ammoQuantity = projectileItem?.system.quantity;
+      isOutOfAmmo = ammoQuantity <= 0;
+    }
+
     const skillRqid: string | undefined =
       weaponItem?.system.usage[this.object.usageType].skillRqidLink.rqid;
     const usedSkill = weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
@@ -126,6 +135,8 @@ export class AttackDialog extends FormApplication<
       object: this.object,
       options: this.options,
       title: this.title,
+      ammoQuantity: ammoQuantity,
+      isOutOfAmmo: isOutOfAmmo,
       attackingActorOptions: actorOptions,
       attackingWeaponOptions: weaponOptions,
       usageTypeOptions: usageTypeOptions,
@@ -202,6 +213,29 @@ export class AttackDialog extends FormApplication<
           this.object.usageType,
           weaponItem,
         );
+
+        if (this.object.usageType === "missile") {
+          const projectileItem = this.getWeaponProjectile(weaponItem);
+          if (projectileItem?.system.quantity <= 0) {
+            ui.notifications?.warn(
+              localize("RQG.Dialog.Attack.OutOfAmmoWarn", {
+                projectileName: projectileItem?.name,
+                combatManeuverName: combatManeuver?.name,
+              }),
+            );
+            return;
+          }
+          const newQuantity = projectileItem?.system.quantity - 1;
+          if (newQuantity <= 0) {
+            ui.notifications?.warn(
+              localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
+                projectileName: projectileItem?.name,
+              }),
+            );
+          }
+          await projectileItem?.update({ system: { quantity: newQuantity } });
+          await this.render(true); // Make sure ammo count is updated in the dialog
+        }
 
         const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);
         const damageTypeTranslated = localize(
@@ -413,5 +447,21 @@ export class AttackDialog extends FormApplication<
       "1d10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10"),
       "1d10+10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10+10"),
     };
+  }
+
+  getWeaponProjectile(weaponItem: RqgItem | undefined): RqgItem | undefined {
+    if (weaponItem?.system.isThrownWeapon) {
+      return weaponItem;
+    } else if (weaponItem?.system.isProjectileWeapon) {
+      return weaponItem.parent?.items.get(weaponItem.system.projectileId);
+    } else if (weaponItem?.system.isRangedWeapon) {
+      // Should not decrease any quantity, keep projectileItem undefined
+      return undefined;
+    } else {
+      const msg = "Tried to do a missile attack with a projectile. Arrows should not have actions.";
+      ui.notifications?.warn(msg);
+      console.log("RQG |", msg);
+      return undefined;
+    }
   }
 }

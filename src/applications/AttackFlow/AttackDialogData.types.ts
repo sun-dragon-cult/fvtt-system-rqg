@@ -22,6 +22,8 @@ export type AttackDialogHandlebarsData = {
   object: AttackDialogObjectData;
   options: FormApplication.Options;
   title: string;
+  ammoQuantity: number;
+  isOutOfAmmo: boolean;
   usageTypeOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
   attackingActorOptions: Record<string, string>;

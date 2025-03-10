@@ -22,9 +22,19 @@
     <label>
       {{localize "RQG.Dialog.Attack.WeaponUsage"}}
     </label>
-    <select name="usageType">
-      {{selectOptions usageTypeOptions selected=object.usageType localize=true}}
-    </select>
+    <div>
+      <select name="usageType">
+        {{selectOptions usageTypeOptions selected=object.usageType localize=true}}
+      </select>
+      {{#if (eq object.usageType "missile")}}
+        {{#if isOutOfAmmo}}
+          <span>{{localize "RQG.Dialog.Attack.OutOfAmmo"}}</span>
+        {{else}}
+          <span>{{localize "RQG.Dialog.Attack.AmmoQuantity"}} {{ammoQuantity}}</span>
+        {{/if}}
+      {{/if}}
+
+    </div>
 
     <label>
       {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
