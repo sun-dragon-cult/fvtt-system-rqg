@@ -215,7 +215,8 @@ export class RqgChatMessage extends ChatMessage {
     domSelector: string,
   ): Promise<void> {
     const rollData = this.getFlag(systemId, flagPath);
-    if (rollData) {
+    // @ts-expect-error evaluated
+    if (rollData?.evaluated) {
       const roll = AbilityRoll.fromData(rollData);
       const element = html.querySelector<HTMLElement>(domSelector);
       if (element) {

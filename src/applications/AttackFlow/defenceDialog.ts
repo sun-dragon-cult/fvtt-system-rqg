@@ -1,7 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
+import { AbilityRollOptions, Modifier } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   assertItemType,
   getGame,
@@ -20,9 +20,14 @@ import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DamageType, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
-import { combatOutcome, getDamageDegree } from "../../system/combatCalculations";
+import {
+  combatOutcome,
+  getDamageDegree,
+  getMasterOpponentModifier,
+} from "../../system/combatCalculations";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../../sockets/SocketableRequests";
+import { WeaponDesignation } from "../../system/combatCalculations.defs";
 
 export class DefenceDialog extends FormApplication<
   FormApplication.Options,
@@ -50,6 +55,7 @@ export class DefenceDialog extends FormApplication<
   private readonly attackingWeaponItem: RqgItem;
   private readonly attackChatMessage: RqgChatMessage | undefined;
   private halvedModifier: number = 0;
+  private readonly attackRoll: AbilityRoll;
 
   constructor(attackingWeaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: DefenceDialogObjectData = {
@@ -63,6 +69,7 @@ export class DefenceDialog extends FormApplication<
       halved: false,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Defence.OtherModifier"),
+      masterOpponentModifier: 0,
     };
 
     super(formData, options as any);
@@ -75,6 +82,14 @@ export class DefenceDialog extends FormApplication<
       ui.notifications?.error("Could not find chat message"); // TODO Improve error
     }
     this.object.defendingActorUuid = this.attackChatMessage?.flags?.rqg?.chat?.defendingActorUuid;
+    this.attackRoll = AbilityRoll.fromData(
+      this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
+    );
+    if (!this.attackRoll) {
+      const msg = "No attack roll present - cannot defend";
+      ui.notifications?.warn(msg);
+      throw new RqgError(msg);
+    }
   }
 
   get id() {
@@ -128,7 +143,6 @@ export class DefenceDialog extends FormApplication<
       this.object.parryingWeaponUuid = parryingWeaponUuid; // Make sure parrying weapon is selected if the defence is "parry"
     }
 
-    // TODO should usage missile be excluded?
     const parryingWeaponUsageOptions = this.getParryingWeaponUsageOptions(parryingWeapon);
     const parryingWeaponUsageOptionKeys = Object.keys(parryingWeaponUsageOptions);
     if (
@@ -147,6 +161,54 @@ export class DefenceDialog extends FormApplication<
     );
 
     this.halvedModifier = -Math.floor(defenceChance / 2);
+
+    const totalChanceExclMasterOpponent = Math.max(
+      0,
+      Number(defenceChance ?? 0) +
+        Number(this.object.augmentModifier ?? 0) +
+        Number(this.object.subsequentDefenceModifier ?? 0) +
+        Number(this.object.halved ? this.halvedModifier : 0) +
+        Number(this.object.otherModifier ?? 0),
+    );
+
+    const { modifier, weapon } = getMasterOpponentModifier(
+      this.attackRoll.targetChance ?? 0,
+      totalChanceExclMasterOpponent,
+    );
+
+    // @ts-expect-error modifiers
+    const attackRollModifiers = this.attackRoll.options.modifiers as Modifier[];
+    const newMasterOpponentModifier: Modifier = {
+      description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
+      value: modifier,
+    };
+
+    if (weapon === WeaponDesignation.ParryWeapon) {
+      this.object.masterOpponentModifier = modifier;
+      // @ts-expect-error modifiers
+      this.attackRoll.options.modifiers = this.attackRoll.options.modifiers.filter(
+        (m: Modifier) => m.description !== newMasterOpponentModifier.description,
+      );
+    } else if (weapon === WeaponDesignation.AttackingWeapon) {
+      this.object.masterOpponentModifier = 0;
+      const newMasterOpponentModifier: Modifier = {
+        description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
+        value: modifier,
+      };
+
+      if (
+        attackRollModifiers.some(
+          (m: Modifier) => m.description === newMasterOpponentModifier.description,
+        )
+      ) {
+        // @ts-expect-error modifiers
+        this.attackRoll.options.modifiers = attackRollModifiers.filter(
+          (modifier: Modifier) => modifier.description === newMasterOpponentModifier.description,
+        );
+      }
+      // @ts-expect-error modifiers
+      this.attackRoll.options.modifiers = [...attackRollModifiers, newMasterOpponentModifier];
+    }
 
     const defenceButtonText =
       this.object.defence === "parry" ? localize("RQG.Dialog.Defence.Parry") : defenceName;
@@ -167,14 +229,7 @@ export class DefenceDialog extends FormApplication<
       parryingWeaponOptions: parryingWeaponOptions,
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
       halvedModifier: this.halvedModifier,
-      totalChance: Math.max(
-        0,
-        Number(defenceChance ?? 0) +
-          Number(this.object.augmentModifier ?? 0) +
-          Number(this.object.subsequentDefenceModifier ?? 0) +
-          Number(this.object.halved ? this.halvedModifier : 0) +
-          Number(this.object.otherModifier ?? 0),
-      ),
+      totalChance: totalChanceExclMasterOpponent + Number(this.object.masterOpponentModifier),
     };
   }
 
@@ -277,6 +332,10 @@ export class DefenceDialog extends FormApplication<
               value: Number(this.object.otherModifier),
               description: this.object.otherModifierDescription,
             },
+            {
+              value: Number(this.object.masterOpponentModifier),
+              description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
+            },
           ],
           heading: defendHeading,
           abilityName: defendSkillItem?.name ?? undefined, // TODO should it be defending weapon!?
@@ -287,10 +346,9 @@ export class DefenceDialog extends FormApplication<
           }),
           // resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // TODO Idea - add fields in IAbility to specify text specific for an ability
         };
-        const attackRoll = AbilityRoll.fromData(
-          this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
-        );
-        if (attackRoll?.successLevel == null) {
+
+        await this.attackRoll.evaluate();
+        if (this.attackRoll.successLevel == null) {
           const msg = "Didn't find an attackRoll in the chatmessage, aborting";
           ui.notifications?.error(msg);
           console.error(`RQG | ${msg}`);
@@ -336,7 +394,7 @@ export class DefenceDialog extends FormApplication<
           weaponDoingDamage,
         } = await combatOutcome(
           this.object.defence,
-          attackRoll,
+          this.attackRoll,
           defenceRoll,
           attackingWeapon,
           attackWeaponUsageType,
@@ -350,7 +408,7 @@ export class DefenceDialog extends FormApplication<
 
         const outcomeDescription = getBasicOutcomeDescription(
           this.object.defence,
-          attackRoll.successLevel,
+          this.attackRoll.successLevel,
           defenceRoll?.successLevel,
         );
 
@@ -360,11 +418,11 @@ export class DefenceDialog extends FormApplication<
 
         const damageDegree = getDamageDegree(
           this.object.defence ?? "ignore", // TODO correct?
-          attackRoll.successLevel,
+          this.attackRoll.successLevel,
           defenceRoll.successLevel,
         );
 
-        const attackerFumbled = attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
+        const attackerFumbled = this.attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
         const defenderFumbled = defenceRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
 
         foundry.utils.mergeObject(
@@ -379,6 +437,7 @@ export class DefenceDialog extends FormApplication<
                   defenceWeaponUuid: selectedParryingWeapon?.uuid,
                   defenceWeaponUsage: parryWeaponUsageType,
                   outcomeDescription: outcomeDescription,
+                  attackRoll: this.attackRoll.toJSON(),
                   defenceRoll: defenceRoll,
                   attackerFumbled: attackerFumbled,
                   defenderFumbled: defenderFumbled,
@@ -429,7 +488,20 @@ export class DefenceDialog extends FormApplication<
         }
 
         await updateChatMessage(this.attackChatMessage, messageData);
-        await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel); // TODO move to later in flow
+        const attackWeapon = (await fromUuid(
+          this.attackChatMessage.getFlag(systemId, "chat.attackWeaponUuid"),
+        )) as RqgItem | undefined;
+        const attackWeaponUsage = this.attackChatMessage.getFlag(
+          systemId,
+          "chat.attackWeaponUsage",
+        );
+        const attackSkill = attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
+          attackWeapon.system.usage[attackWeaponUsage].skillRqidLink.rqid,
+        );
+
+        await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
+        await attackSkill?.checkExperience?.(this.attackRoll.successLevel);
+
         await this.close();
       });
     });

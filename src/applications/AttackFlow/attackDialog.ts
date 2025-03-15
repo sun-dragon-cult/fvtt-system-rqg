@@ -283,10 +283,6 @@ export class AttackDialog extends FormApplication<
         };
 
         const attackRoll = new AbilityRoll("1d100", {}, attackRollOptions);
-        await attackRoll.evaluate();
-        if (attackRoll.successLevel == null) {
-          throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
-        }
 
         if (getGameUser().targets.size > 1) {
           ui.notifications?.info("Please target one token only");
@@ -340,8 +336,6 @@ export class AttackDialog extends FormApplication<
           defenderName: `<b>${defenderActor?.name ?? "???"}</b>`,
         });
 
-        // TODO Introduce ability for GM to fudge roll here?
-
         const attackChatMessageOptions = {
           // @ts-expect-error CHAT_MESSAGE_STYLES
           type: CONST.CHAT_MESSAGE_STYLES.OTHER,
@@ -357,8 +351,6 @@ export class AttackDialog extends FormApplication<
 
         const cm = await ChatMessage.create(attackChatMessageOptions);
         cm?.render(true);
-
-        await skillItem.checkExperience?.(attackRoll.successLevel); // TODO move to later in flow?
       });
     });
 

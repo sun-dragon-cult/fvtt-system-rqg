@@ -470,6 +470,7 @@
         "OtherModifier": "Other Modifier",
         "Ignore": "Ignore",
         "Ignored": "Ignored",
+        "MasterOpponentModifier": "Master Opponent Penalty",
         "SubsequentDefenceModifier": "Subsequent Defence Modifier",
         "SubsequentDefenceOptions": {
           "First": "First -0%",
@@ -1115,7 +1116,8 @@
         "UnawareTarget": "unaware",
         "Darkness": "darkness",
         "Halved": "halved",
-        "OtherModifier": "other modifier"
+        "OtherModifier": "other modifier",
+        "MasterOpponentModifier": "master opponent"
       },
       "CharacteristicRoll": {
         "Augment": "augment",

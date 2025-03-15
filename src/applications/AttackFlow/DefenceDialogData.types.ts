@@ -45,4 +45,5 @@ export type DefenceDialogObjectData = {
   halved: boolean;
   otherModifier: string;
   otherModifierDescription: string;
+  masterOpponentModifier: number;
 };

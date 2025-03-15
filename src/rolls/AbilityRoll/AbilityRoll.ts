@@ -31,6 +31,10 @@ export class AbilityRoll extends Roll {
     return calculateAbilitySuccessLevel(this._targetChance, this.total);
   }
 
+  get targetChance(): number {
+    return this._targetChance;
+  }
+
   // Html for the "content" of the chat-message
   async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {

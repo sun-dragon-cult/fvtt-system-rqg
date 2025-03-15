@@ -152,6 +152,34 @@ export function formatDamagePart(
   }
 }
 
+export function getMasterOpponentModifier(
+  modifiedAttackChance: number,
+  modifiedDefenceChance: number,
+): { modifier: number; weapon: WeaponDesignation } {
+  const attackOverHundred = Math.max(0, modifiedAttackChance - 100);
+  const defenceOverHundred = Math.max(0, modifiedDefenceChance - 100);
+
+  let modifier = 0;
+  if (attackOverHundred > 0 && defenceOverHundred > 0 && attackOverHundred !== defenceOverHundred) {
+    const sign = attackOverHundred > defenceOverHundred ? 1 : -1;
+    modifier = sign * Math.max(attackOverHundred, defenceOverHundred);
+  } else {
+    modifier = attackOverHundred - defenceOverHundred;
+  }
+
+  const weapon =
+    modifier === 0
+      ? WeaponDesignation.None
+      : modifier > 0
+        ? WeaponDesignation.ParryWeapon
+        : WeaponDesignation.AttackingWeapon;
+
+  return {
+    modifier: modifier === 0 ? 0 : -Math.abs(modifier),
+    weapon: weapon,
+  };
+}
+
 // *** Helper functions ***
 function getWeaponItemDoingDamage(
   designation: WeaponDesignation,
