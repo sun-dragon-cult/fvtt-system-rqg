@@ -335,7 +335,7 @@ function getWeaponDoingDamage(
 export function getDamageDegree(
   defence: DefenceType,
   attackSuccessLevel: AbilitySuccessLevelEnum,
-  defenceSuccessLevel: AbilitySuccessLevelEnum,
+  defenceSuccessLevel: AbilitySuccessLevelEnum = AbilitySuccessLevelEnum.Failure,
 ): DamageDegree {
   const errorMsg = "Tried to get damage degree for unsupported AbilitySuccessLevel";
 

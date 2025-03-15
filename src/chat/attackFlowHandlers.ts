@@ -303,14 +303,16 @@ export function getBasicOutcomeDescription(
 ): string {
   switch (defence) {
     case "dodge": {
-      return localize(`RQG.Game.DodgeResults.${attackSuccessLevel}-${defenceSuccessLevel ?? 5}`);
+      return localize(
+        `RQG.Game.DodgeResults.${attackSuccessLevel}-${defenceSuccessLevel ?? AbilitySuccessLevelEnum.Failure}`,
+      );
     }
 
     case "parry":
     default: {
-      // Ignore (undefined defenceSuccessLevel) is handled like a failed parry (5)
+      // Ignore (undefined defenceSuccessLevel) is handled like a failed parry
       return localize(
-        `RQG.Game.AttackParryResults.${attackSuccessLevel}-${defenceSuccessLevel ?? 5}`,
+        `RQG.Game.AttackParryResults.${attackSuccessLevel}-${defenceSuccessLevel ?? AbilitySuccessLevelEnum.Failure}`,
       );
     }
   }

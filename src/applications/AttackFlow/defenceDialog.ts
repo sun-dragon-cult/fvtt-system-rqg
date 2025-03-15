@@ -355,10 +355,13 @@ export class DefenceDialog extends FormApplication<
           return;
         }
 
-        const defenceRoll = new AbilityRoll("1d100", {}, defenceRollOptions);
-        await defenceRoll.evaluate();
-        if (defenceRoll.successLevel == null) {
-          throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+        const defenceRoll =
+          this.object.defence !== "ignore"
+            ? new AbilityRoll("1d100", {}, defenceRollOptions)
+            : undefined;
+        await defenceRoll?.evaluate();
+        if (this.object.defence !== "ignore" && defenceRoll?.successLevel == null) {
+          throw new RqgError("Evaluated DefenceRoll didn't give successLevel");
         }
 
         const attackingWeapon = (await fromUuid(
@@ -419,7 +422,7 @@ export class DefenceDialog extends FormApplication<
         const damageDegree = getDamageDegree(
           this.object.defence ?? "ignore", // TODO correct?
           this.attackRoll.successLevel,
-          defenceRoll.successLevel,
+          defenceRoll?.successLevel,
         );
 
         const attackerFumbled = this.attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
@@ -470,11 +473,14 @@ export class DefenceDialog extends FormApplication<
             this.attackChatMessage!.getFlag(systemId, "chat.attackRoll"),
           );
 
-          // Wait a tad with the defence roll to separate the animations slightly
-          setTimeout(() => {
-            // @ts-expect-error dice3d
-            void game.dice3d.showForRoll(defenceRoll, getGameUser(), true, null, false);
-          }, 300);
+          // Don't try to roll for ignore defence
+          if (this.object.defence !== "ignore") {
+            // Wait a tad with the defence roll to separate the animations slightly
+            setTimeout(() => {
+              // @ts-expect-error dice3d
+              void game.dice3d.showForRoll(defenceRoll, getGameUser(), true, null, false);
+            }, 300);
+          }
 
           // @ts-expect-error dice3d
           await game.dice3d.showForRoll(
