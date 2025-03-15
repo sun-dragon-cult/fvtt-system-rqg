@@ -8,15 +8,15 @@ export class AbilityRoll extends Roll {
   private _targetChance = 0; // Target value including any modifiers
 
   public static async rollAndShow(options: AbilityRollOptions) {
-    const roll = new AbilityRoll("1d100", {}, options);
+    const roll = new AbilityRoll(undefined, {}, options);
     await roll.evaluate();
     await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
     activateChatTab();
     return roll;
   }
 
-  constructor(formula: string, data: any, options: AbilityRollOptions) {
-    super("1d100", data, options);
+  constructor(formula: string = "1d100", data: any, options: AbilityRollOptions) {
+    super(formula, data, options);
     const o = this.options as AbilityRollOptions;
 
     const modificationsSum =

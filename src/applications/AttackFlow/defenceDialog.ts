@@ -357,8 +357,9 @@ export class DefenceDialog extends FormApplication<
 
         const defenceRoll =
           this.object.defence !== "ignore"
-            ? new AbilityRoll("1d100", {}, defenceRollOptions)
+            ? new AbilityRoll(undefined, {}, defenceRollOptions)
             : undefined;
+
         await defenceRoll?.evaluate();
         if (this.object.defence !== "ignore" && defenceRoll?.successLevel == null) {
           throw new RqgError("Evaluated DefenceRoll didn't give successLevel");

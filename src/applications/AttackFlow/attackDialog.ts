@@ -282,7 +282,7 @@ export class AttackDialog extends FormApplication<
           }),
         };
 
-        const attackRoll = new AbilityRoll("1d100", {}, attackRollOptions);
+        const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
 
         if (getGameUser().targets.size > 1) {
           ui.notifications?.info("Please target one token only");
