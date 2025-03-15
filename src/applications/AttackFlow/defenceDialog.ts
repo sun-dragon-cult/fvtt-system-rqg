@@ -470,10 +470,6 @@ export class DefenceDialog extends FormApplication<
 
         // @ts-expect-error dice3d
         if (game.dice3d) {
-          const attackRoll = Roll.fromData(
-            this.attackChatMessage!.getFlag(systemId, "chat.attackRoll"),
-          );
-
           // Don't try to roll for ignore defence
           if (this.object.defence !== "ignore") {
             // Wait a tad with the defence roll to separate the animations slightly
@@ -485,7 +481,7 @@ export class DefenceDialog extends FormApplication<
 
           // @ts-expect-error dice3d
           await game.dice3d.showForRoll(
-            attackRoll,
+            this.attackRoll,
             // @ts-expect-error author
             this.attackChatMessage.author,
             true,

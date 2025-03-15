@@ -5,9 +5,11 @@ export function calculateAbilitySuccessLevel(
   roll: number,
 ): AbilitySuccessLevelEnum {
   const chance = Math.max(0, rawChance);
-  const critical = Math.max(1, Math.ceil((chance - 29) / 20) + 1);
-  const special =
-    chance === 6 || chance === 7 ? 2 : Math.min(95, Math.max(1, Math.ceil((chance - 7) / 5) + 1));
+  const critical = Math.min(95, Math.max(1, Math.ceil((chance - 29) / 20) + 1));
+  const special = Math.min(
+    95,
+    chance === 6 || chance === 7 ? 2 : Math.min(95, Math.max(1, Math.ceil((chance - 7) / 5) + 1)),
+  );
   const fumble = Math.min(100, 100 - Math.ceil((100 - chance - 9) / 20) + 1);
   const success = Math.min(95, Math.max(chance, 5));
   const fail = fumble === 96 ? 95 : Math.max(96, fumble - 1);
