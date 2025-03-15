@@ -10,13 +10,7 @@
   {{#if (eq attackState 'Attacked')}}
     <div class="flexrow">
       <button data-visible-actor-uuid="{{defendingActorUuid}}"
-              data-defence="parry">Parry
-      </button>
-      <button data-visible-actor-uuid="{{defendingActorUuid}}"
-              data-defence="dodge">Dodge
-      </button>
-      <button data-visible-actor-uuid="{{defendingActorUuid}}"
-              data-defence="ignore">Ignore
+              data-defence="parry">Defend
       </button>
     </div>
   {{else if (eq attackState 'Defended')}}
