@@ -567,13 +567,16 @@ export class DefenceDialog extends FormApplication<
       return { [defendingActor?.uuid ?? ""]: defendingActor.name ?? "" };
     }
 
-    // case 2 - show a list of actors the user has access to
-    return getGame()
-      .actors?.filter((a) => a.isOwner)
-      ?.reduce((acc: any, actor) => {
-        acc[actor.uuid ?? ""] = actor.name;
-        return acc;
-      }, {});
+    // case 2 - show a list of actors the user has access to and are present on the active scene
+    return (
+      getGame()
+        .scenes?.active?.tokens.filter((t) => t.isOwner)
+        .map((t) => t.actor)
+        ?.reduce((acc: any, actor) => {
+          acc[actor?.uuid ?? ""] = actor?.name;
+          return acc;
+        }, {}) ?? {}
+    );
   }
 
   private getDefenceOptions(
