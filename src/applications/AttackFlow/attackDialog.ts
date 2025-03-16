@@ -359,12 +359,16 @@ export class AttackDialog extends FormApplication<
 
   private getActorOptions(): Record<string, string> {
     // show a list of actors the user has access to
-    return getGame()
-      .actors?.filter((a) => a.isOwner)
-      ?.reduce((acc: any, actor) => {
-        acc[actor.uuid ?? ""] = actor.name;
-        return acc;
-      }, {});
+
+    return (
+      getGame()
+        .scenes?.active?.tokens.filter((t) => t.isOwner)
+        .map((t) => t.actor)
+        ?.reduce((acc: any, actor) => {
+          acc[actor?.uuid ?? ""] = actor?.name;
+          return acc;
+        }, {}) ?? {}
+    );
   }
 
   /**
