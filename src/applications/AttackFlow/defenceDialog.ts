@@ -118,6 +118,17 @@ export class DefenceDialog extends FormApplication<
   async getData(): Promise<DefenceDialogHandlebarsData> {
     // const defenceWeaponOptions = this.getDefenceWeaponOptions(this.object.actor);
     const actorOptions = this.getActorOptions();
+    if (Object.keys(actorOptions).length === 0) {
+      const msg = "You don't have any actor that can defend this attack";
+      ui.notifications?.warn(msg);
+
+      setTimeout(() => {
+        this.close();
+      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
+    }
+    if (!this.object.defendingActorUuid) {
+      this.object.defendingActorUuid = Object.keys(actorOptions)[0];
+    }
     const defendingActor = (await fromUuid(
       this.object.defendingActorUuid ?? "",
     )) as RqgActor | null;
