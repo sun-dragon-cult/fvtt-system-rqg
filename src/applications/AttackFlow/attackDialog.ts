@@ -44,8 +44,13 @@ export class AttackDialog extends FormApplication<
   private halvedModifier: number = 0;
 
   constructor(weaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
+    const owningActorTokens = (weaponItem.parent?.getActiveTokens() ?? []) as unknown as RqgToken[];
+    const attackingToken =
+      owningActorTokens[0] ??
+      getGame().scenes?.active?.tokens.find((t) => t.actor?.id === weaponItem.parent?.id);
+
     const formData: AttackDialogObjectData = {
-      attackingActorUuid: weaponItem.parent?.uuid,
+      attackingTokenUuid: attackingToken?.document.uuid,
       attackingWeaponUuid: weaponItem.uuid,
       usageType: weaponItem.system.defaultUsage,
       augmentModifier: "0",
@@ -61,11 +66,20 @@ export class AttackDialog extends FormApplication<
     };
 
     super(formData, options as any);
+
+    if (!attackingToken) {
+      const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
+      ui.notifications?.warn(msg);
+      setTimeout(() => {
+        void this.close();
+      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
+      throw new RqgError(msg);
+    }
     this.object = formData;
   }
 
   get id() {
-    return `${this.constructor.name}-${trimChars(toKebabCase(this.object.attackingActorUuid), "-")}`;
+    return `${this.constructor.name}-${trimChars(toKebabCase(this.object.attackingTokenUuid), "-")}`;
   }
 
   static get defaultOptions(): FormApplication.Options {
@@ -88,7 +102,7 @@ export class AttackDialog extends FormApplication<
     if (!this.object.attackingWeaponUuid) {
       // If there is no weapon, then the actor probably has changed. Reload the weapon list and choose one
       this.object.attackingWeaponUuid = Object.keys(
-        await this.getWeaponOptions(this.object.attackingActorUuid),
+        await this.getWeaponOptions(this.object.attackingTokenUuid),
       )[0];
     }
 
@@ -96,8 +110,8 @@ export class AttackDialog extends FormApplication<
       | RqgItem
       | undefined;
 
-    const actorOptions = this.getActorOptions();
-    const weaponOptions = await this.getWeaponOptions(this.object.attackingActorUuid);
+    const tokenOptions = this.getTokenOptions();
+    const weaponOptions = await this.getWeaponOptions(this.object.attackingTokenUuid);
     const usageTypeOptions = this.getUsageTypeOptions(weaponItem);
     if (
       !weaponItem?.system.defaultUsage ||
@@ -137,7 +151,7 @@ export class AttackDialog extends FormApplication<
       title: this.title,
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
-      attackingActorOptions: actorOptions,
+      attackingTokenOptions: tokenOptions,
       attackingWeaponOptions: weaponOptions,
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,
@@ -158,8 +172,8 @@ export class AttackDialog extends FormApplication<
   }
 
   async _updateObject(event: Event, formData: AttackDialogObjectData): Promise<void> {
-    if (this.object.attackingActorUuid !== formData["attackingActorUuid"]) {
-      const weaponOptions = await this.getWeaponOptions(formData["attackingActorUuid"]);
+    if (this.object.attackingTokenUuid !== formData["attackingTokenUuid"]) {
+      const weaponOptions = await this.getWeaponOptions(formData["attackingTokenUuid"]);
       this.object.attackingWeaponUuid = Object.keys(weaponOptions)?.[0]; // TODO for now just pick any weapon
       formData["attackingWeaponUuid"] = this.object.attackingWeaponUuid;
       this.object.attackDamageBonus = undefined; // Make sure it is updated with the new actor's db
@@ -191,9 +205,16 @@ export class AttackDialog extends FormApplication<
         const weaponItem = (await fromUuid(this.object.attackingWeaponUuid ?? "")) as
           | RqgItem
           | undefined;
-        const actor = (await fromUuid(this.object.attackingActorUuid ?? "")) as
-          | RqgActor
+
+        const tokenDocument = (await fromUuid(this.object.attackingTokenUuid ?? "")) as
+          | TokenDocument
           | undefined;
+
+        const actor = tokenDocument?.actor ?? undefined;
+        if (!actor) {
+          ui.notifications?.error("Could not find an attacker actor to do the attack.");
+          return;
+        }
 
         const skillItem = actor?.getBestEmbeddedDocumentByRqid(
           weaponItem?.system.usage[this.object.usageType].skillRqidLink.rqid,
@@ -277,9 +298,6 @@ export class AttackDialog extends FormApplication<
           abilityName: weaponItem?.name ?? undefined,
           abilityType: weaponItem?.type ?? undefined,
           abilityImg: weaponItem?.img ?? undefined,
-          speaker: ChatMessage.getSpeaker({
-            actor: actor,
-          }),
         };
 
         const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
@@ -290,20 +308,13 @@ export class AttackDialog extends FormApplication<
 
         // @ts-expect-error first
         const target = getGameUser().targets.first() as RqgToken | undefined;
-        const defenderActor = target?.document.actor ?? undefined;
-
-        const attackerActor = actor;
-        if (!attackerActor) {
-          // TODO Warn about not finding attacker actor
-          return;
-        }
 
         const chatData: AttackChatFlags = {
           type: "attackChat",
           chat: {
             attackState: `Attacked`,
-            attackingActorUuid: attackerActor.uuid,
-            defendingActorUuid: defenderActor?.uuid, // TODO stämmer det här för unlinked?
+            attackingTokenUuid: tokenDocument?.uuid ?? "",
+            defendingTokenUuid: target?.document?.uuid,
             attackWeaponUuid: this.object.attackingWeaponUuid ?? "", // Checked for existence earlier
             attackWeaponUsage: this.object.usageType,
             attackCombatManeuver: combatManeuver,
@@ -332,8 +343,7 @@ export class AttackDialog extends FormApplication<
         );
 
         const attackFlavor = localize("RQG.Dialog.Common.IsAttacking", {
-          attackerName: `<b>${attackerActor.name}</b>`,
-          defenderName: `<b>${defenderActor?.name ?? "???"}</b>`,
+          defenderName: `<b>${target?.document?.name ?? "???"}</b>`,
         });
 
         const attackChatMessageOptions = {
@@ -342,7 +352,7 @@ export class AttackDialog extends FormApplication<
           flavor: attackFlavor,
           content: attackChatContent,
           speaker: ChatMessage.getSpeaker({
-            actor: actor,
+            token: actor.token ?? undefined,
           }),
           flags: {
             rqg: chatData,
@@ -357,15 +367,15 @@ export class AttackDialog extends FormApplication<
     super.activateListeners(html);
   }
 
-  private getActorOptions(): Record<string, string> {
-    // show a list of actors the user has access to
-
+  /**
+   * Return a list of tokens on the current scene the user has access to
+   */
+  private getTokenOptions(): Record<string, string> {
     return (
       getGame()
         .scenes?.active?.tokens.filter((t) => t.isOwner)
-        .map((t) => t.actor)
-        ?.reduce((acc: any, actor) => {
-          acc[actor?.uuid ?? ""] = actor?.name;
+        ?.reduce((acc: any, token) => {
+          acc[token?.uuid ?? ""] = token?.name;
           return acc;
         }, {}) ?? {}
     );
@@ -374,8 +384,9 @@ export class AttackDialog extends FormApplication<
   /**
    * show a list of weapons the actor has equipped and can be used for attacks.
    */
-  private async getWeaponOptions(actorUuid: string | undefined): Promise<Record<string, string>> {
-    const actor = (await fromUuid(actorUuid ?? "")) as RqgActor | undefined;
+  private async getWeaponOptions(tokenUuid: string | undefined): Promise<Record<string, string>> {
+    // @ts-expect-error actor
+    const actor = (await fromUuid(tokenUuid ?? ""))?.actor as RqgActor | undefined;
     const weaponsWithAttacks = (actor?.items ?? []).filter(
       (i) =>
         i.type === ItemTypeEnum.Weapon &&

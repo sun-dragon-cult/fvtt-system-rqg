@@ -24,7 +24,7 @@ export type DefenceDialogHandlebarsData = {
   object: DefenceDialogObjectData;
   options: FormApplication.Options;
   title: string;
-  defendingActorOptions: Record<string, string>;
+  defendingTokenOptions: Record<string, string>;
   defenceOptions: Record<string, string>;
   parryingWeaponOptions: Record<string, string>;
   parryingWeaponUsageOptions: Record<string, string>;
@@ -35,7 +35,7 @@ export type DefenceDialogHandlebarsData = {
 };
 
 export type DefenceDialogObjectData = {
-  defendingActorUuid: string | undefined;
+  defendingTokenUuid: string | undefined;
   defence: DefenceType | undefined;
   parryingWeaponUuid: string | undefined;
   parryingWeaponUsage: UsageType | undefined;

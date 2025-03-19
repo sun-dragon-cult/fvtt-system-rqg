@@ -458,7 +458,8 @@
           "1d20": "Normal (1d20)",
           "1d10": "From Below (1d10)",
           "1d10+10": "From Above (1d10 + 10)"
-        }
+        },
+        "NoTokenToAttackWith": "You don't have any token in this scene to do an attack"
       },
       "Defence": {
         "Title": "Defend",
@@ -479,7 +480,8 @@
           "Fourth": "Fourth -60%",
           "Fifth": "Fifth -80%",
           "Sixth": "Sixth -100%"
-        }
+        },
+        "NoTokenToDefendWith": "You don't have any token in this scene that can defend this attack"
       },
       "AbilityRoll": {
         "Title": "Ability Check",
@@ -536,7 +538,7 @@
         "OtherModifiers": "Other Modifiers",
         "CantFindChatMessageError": "CantFindChatMessageError",
         "TargetChance": "Target Chance",
-        "IsAttacking": "{attackerName} is attacking {defenderName}",
+        "IsAttacking": "attacks {defenderName}",
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
         "AugmentOptions": {

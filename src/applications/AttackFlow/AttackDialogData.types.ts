@@ -26,7 +26,7 @@ export type AttackDialogHandlebarsData = {
   isOutOfAmmo: boolean;
   usageTypeOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
-  attackingActorOptions: Record<string, string>;
+  attackingTokenOptions: Record<string, string>;
   attackingWeaponOptions: Record<string, string>;
   damageBonusSourceOptions: Record<string, string>;
   hitLocationFormulaOptions: Record<string, string>;
@@ -35,7 +35,7 @@ export type AttackDialogHandlebarsData = {
 };
 
 export type AttackDialogObjectData = {
-  attackingActorUuid: string | undefined;
+  attackingTokenUuid: string | undefined;
   attackingWeaponUuid: string | undefined;
   usageType: UsageType;
   augmentModifier: string;

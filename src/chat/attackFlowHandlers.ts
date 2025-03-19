@@ -125,8 +125,9 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   const ignoreDefenderAp = attackChatMessage.getFlag(systemId, "chat.ignoreDefenderAp");
   requireValue(ignoreDefenderAp, "Damage roll was not evaluated before applying to actor");
 
-  const damagedActorUuid = attackChatMessage.getFlag(systemId, "chat.defendingActorUuid") as string;
-  const damagedActor = (await fromUuid(damagedActorUuid)) as RqgActor | undefined;
+  const damagedTokenUuid = attackChatMessage.getFlag(systemId, "chat.defendingTokenUuid") as string;
+  // @ts-expect-error actor
+  const damagedActor = (await fromUuid(damagedTokenUuid))?.actor as RqgActor | undefined;
   if (!damagedActor) {
     // TODO Warn about missing token
     return;
@@ -327,15 +328,15 @@ export const hideChatActionButtons = function (html: HTMLElement | undefined): v
   }
 
   // Otherwise conceal elements for unrelated actors/players
-  const maybeHideElements = html?.querySelectorAll(".rqg.chat-card [data-visible-actor-uuid]");
+  const maybeHideElements = html?.querySelectorAll(".rqg.chat-card [data-visible-token-uuid]");
 
   maybeHideElements?.forEach((el: Element) => {
     if (!(el instanceof HTMLElement)) {
       return;
     }
     // @ts-expect-error fromUuidSync
-    const actor = fromUuidSync(el.dataset.visibleActorUuid);
-    if (actor && !actor?.isOwner) {
+    const token = fromUuidSync(el.dataset.visibleTokenUuid);
+    if (token && !token?.isOwner) {
       el.style.display = "none";
     }
   });

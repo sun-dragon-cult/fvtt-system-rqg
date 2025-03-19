@@ -90,9 +90,9 @@ export interface AttackChatFlags extends BaseRqgChatFlags {
     // *** Added in AttackDialog ***
 
     attackState: AttackState;
-    attackingActorUuid: string;
+    attackingTokenUuid: string;
     // Added by AttackDialog if target is set
-    defendingActorUuid?: string;
+    defendingTokenUuid?: string;
     attackRoll: AbilityRoll;
     attackCombatManeuver: CombatManeuver;
     attackExtraDamage: string;

@@ -59,7 +59,7 @@ export class DefenceDialog extends FormApplication<
 
   constructor(attackingWeaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
     const formData: DefenceDialogObjectData = {
-      defendingActorUuid: undefined,
+      defendingTokenUuid: undefined,
       parryingWeaponUuid: undefined,
       parryingWeaponUsage: undefined,
       defence: options.defenceType,
@@ -81,7 +81,10 @@ export class DefenceDialog extends FormApplication<
     if (!this.attackChatMessage) {
       ui.notifications?.error("Could not find chat message"); // TODO Improve error
     }
-    this.object.defendingActorUuid = this.attackChatMessage?.flags?.rqg?.chat?.defendingActorUuid;
+    this.object.defendingTokenUuid = this.attackChatMessage?.getFlag(
+      systemId,
+      "chat.defendingTokenUuid",
+    );
     this.attackRoll = AbilityRoll.fromData(
       this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
     );
@@ -116,22 +119,23 @@ export class DefenceDialog extends FormApplication<
   }
 
   async getData(): Promise<DefenceDialogHandlebarsData> {
-    // const defenceWeaponOptions = this.getDefenceWeaponOptions(this.object.actor);
-    const actorOptions = this.getActorOptions();
-    if (Object.keys(actorOptions).length === 0) {
-      const msg = "You don't have any actor that can defend this attack";
+    const tokenOptions = this.getTokenOptions();
+    if (Object.keys(tokenOptions).length === 0) {
+      const msg = localize("RQG.Dialog.Defence.NoTokenToDefendWith");
       ui.notifications?.warn(msg);
 
       setTimeout(() => {
         this.close();
       }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
     }
-    if (!this.object.defendingActorUuid) {
-      this.object.defendingActorUuid = Object.keys(actorOptions)[0];
+    if (!this.object.defendingTokenUuid) {
+      this.object.defendingTokenUuid = Object.keys(tokenOptions)[0];
     }
-    const defendingActor = (await fromUuid(
-      this.object.defendingActorUuid ?? "",
-    )) as RqgActor | null;
+    const defendingToken = (await fromUuid(
+      this.object.defendingTokenUuid ?? "",
+    )) as TokenDocument | null;
+
+    const defendingActor = defendingToken?.actor ?? undefined;
 
     // TODO can probably be simplify a bit
     const parryingWeaponOptions = this.getParryingWeaponOptions(defendingActor);
@@ -142,10 +146,7 @@ export class DefenceDialog extends FormApplication<
       selectedParryingWeapon?.uuid ?? Object.keys(parryingWeaponOptions)?.[0];
     const parryingWeapon =
       selectedParryingWeapon ?? ((await fromUuid(parryingWeaponUuid)) as RqgItem | null);
-    const defenceOptions = this.getDefenceOptions(
-      defendingActor ?? undefined,
-      parryingWeapon?.uuid,
-    );
+    const defenceOptions = this.getDefenceOptions(defendingActor, parryingWeapon?.uuid);
     if (!Object.keys(defenceOptions).includes(this.object.defence ?? "")) {
       this.object.defence = Object.keys(defenceOptions)[0] as DefenceType; // Make sure there is a possible defence selected
     }
@@ -235,7 +236,7 @@ export class DefenceDialog extends FormApplication<
       title: this.title,
       augmentOptions: this.augmentOptions,
       subsequentDefenceOptions: this.subsequentDefenceOptions,
-      defendingActorOptions: actorOptions,
+      defendingTokenOptions: tokenOptions,
       defenceOptions: defenceOptions,
       parryingWeaponOptions: parryingWeaponOptions,
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
@@ -267,16 +268,18 @@ export class DefenceDialog extends FormApplication<
             ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
         // TODO end duplicate code ***
 
-        const defendingActor = (await fromUuid(
-          this.object.defendingActorUuid ?? "",
-        )) as RqgActor | null;
+        const defendingTokenDocument = (await fromUuid(
+          this.object.defendingTokenUuid ?? "",
+        )) as TokenDocument | null;
+
+        const defendingActor = defendingTokenDocument?.actor ?? undefined;
 
         // Update the chat with how the defence was done
 
         // @ts-expect-error flavor
         const currentFlavor: string = this.attackChatMessage.flavor;
 
-        const defenderName = (await fromUuid(this.object.defendingActorUuid ?? ""))?.name;
+        const defenderName = (await fromUuid(this.object.defendingTokenUuid ?? ""))?.name;
 
         const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
 
@@ -349,13 +352,9 @@ export class DefenceDialog extends FormApplication<
             },
           ],
           heading: defendHeading,
-          abilityName: defendSkillItem?.name ?? undefined, // TODO should it be defending weapon!?
+          abilityName: defendSkillItem?.name ?? undefined,
           abilityType: defendSkillItem?.type ?? undefined,
           abilityImg: defendSkillItem?.img ?? undefined,
-          speaker: ChatMessage.getSpeaker({
-            actor: this.attackingWeaponItem.parent as RqgActor | undefined,
-          }),
-          // resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // TODO Idea - add fields in IAbility to specify text specific for an ability
         };
 
         await this.attackRoll.evaluate();
@@ -448,7 +447,7 @@ export class DefenceDialog extends FormApplication<
               [systemId]: {
                 chat: {
                   attackState: "Defended",
-                  defendingActorUuid: this.object.defendingActorUuid,
+                  defendingTokenUuid: this.object.defendingTokenUuid,
                   defenceWeaponUuid: selectedParryingWeapon?.uuid,
                   defenceWeaponUsage: parryWeaponUsageType,
                   outcomeDescription: outcomeDescription,
@@ -530,7 +529,7 @@ export class DefenceDialog extends FormApplication<
 
   private getDefenceNameAndChance(
     defence: string | undefined,
-    defendingActor: RqgActor | null,
+    defendingActor: RqgActor | undefined,
     parrySkillRqid: string,
   ): { defenceName: string; defenceChance: number } {
     if (defence === "parry") {
@@ -568,23 +567,22 @@ export class DefenceDialog extends FormApplication<
     }
   }
 
-  private getActorOptions(): Record<string, string> {
-    // case 1 - defendingActorUuid is set (attacker has set a target)
+  private getTokenOptions(): Record<string, string> {
+    // case 1 - defendingTokenUuid is set (attacker has set a target)
     // @ts-expect-error fromUuidSync
-    const defendingActor = fromUuidSync(
-      this.attackChatMessage?.flags[systemId]!.chat.defendingActorUuid ?? "",
-    ) as RqgActor | null;
-    if (defendingActor) {
-      return { [defendingActor?.uuid ?? ""]: defendingActor.name ?? "" };
+    const defendingToken = fromUuidSync(
+      this.attackChatMessage?.getFlag(systemId, "chat.defendingTokenUuid") ?? "",
+    ) as TokenDocument | null;
+    if (defendingToken) {
+      return { [defendingToken?.uuid ?? ""]: defendingToken.name ?? "" };
     }
 
     // case 2 - show a list of actors the user has access to and are present on the active scene
     return (
       getGame()
         .scenes?.active?.tokens.filter((t) => t.isOwner)
-        .map((t) => t.actor)
-        ?.reduce((acc: any, actor) => {
-          acc[actor?.uuid ?? ""] = actor?.name;
+        ?.reduce((acc: any, tokenDocument) => {
+          acc[tokenDocument?.uuid ?? ""] = tokenDocument?.name;
           return acc;
         }, {}) ?? {}
     );
@@ -610,7 +608,7 @@ export class DefenceDialog extends FormApplication<
     return defenceOptions;
   }
 
-  private getParryingWeaponOptions(defendingActor: RqgActor | null): Record<string, string> {
+  private getParryingWeaponOptions(defendingActor: RqgActor | undefined): Record<string, string> {
     // get all weapons that can be used for parry
     const parryingWeapons =
       defendingActor?.items.filter(
