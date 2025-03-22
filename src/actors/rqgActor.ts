@@ -306,12 +306,14 @@ export class RqgActor extends Actor {
   /**
    * Apply damage to a hitLocation and this actor.
    * The HitLocation AP will be subtracted unless ignoreAP is true.
+   * damageAmount is the amount of damage to apply, if parrying weapon has absorbed anything this should be the reduced amount.
    */
   public async applyDamage(
     damageAmount: number,
     hitLocationRollTotal: number,
     ignoreAP: boolean = false,
     applyToActorHP: boolean = true,
+    wasDamagedReducedByParry: boolean = false,
   ): Promise<void> {
     const damagedHitLocation = this.items.find(
       (i) =>
@@ -323,6 +325,14 @@ export class RqgActor extends Actor {
     const hitLocationAP = damagedHitLocation?.system.armorPoints ?? 0;
     const damageAfterAP = ignoreAP ? damageAmount : Math.max(0, damageAmount - hitLocationAP);
     if (damageAfterAP === 0) {
+      if (wasDamagedReducedByParry) {
+        ui.notifications?.info(
+          "The attack strikes through the parrying weapon, but is stopped by the armor",
+        );
+      } else if (damageAmount > 0) {
+        ui.notifications?.info("The attack bounces off the armor");
+      }
+
       return;
     }
     const speaker = ChatMessage.getSpeaker({ actor: this, token: this.token ?? undefined });
@@ -348,6 +358,8 @@ export class RqgActor extends Actor {
     if (actorUpdates) {
       await this.update(actorUpdates as any);
     } // TODO fix type
+
+    // TODO should this be part of the attack chat message? Or should it still only be visible to attacker & defender?
     await ChatMessage.create({
       user: getGame().user?.id,
       speaker: speaker,

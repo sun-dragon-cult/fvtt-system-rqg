@@ -132,10 +132,13 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     // TODO Warn about missing token
     return;
   }
+  const wasDamagedReducedByParry = !!attackChatMessage.getFlag(systemId, "chat.damagedWeaponUuid");
+
   await damagedActor.applyDamage(
     defenderHitLocationDamage,
     hitLocationRoll.total,
     ignoreDefenderAp,
+    wasDamagedReducedByParry,
   );
 
   const messageData = attackChatMessage.toObject();

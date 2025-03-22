@@ -264,7 +264,7 @@ export class AttackDialog extends FormApplication<
         );
 
         const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
-<span>${weaponItem?.name} – ${usageTypeTranslated} – ${damageTypeTranslated}</span>`;
+<span>${damageTypeTranslated} – ${weaponItem?.name} – ${usageTypeTranslated}</span>`;
 
         const attackRollOptions: AbilityRollOptions = {
           naturalSkill: skillItem.system.chance,
