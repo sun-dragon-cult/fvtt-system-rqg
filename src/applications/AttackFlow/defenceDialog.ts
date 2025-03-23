@@ -183,43 +183,27 @@ export class DefenceDialog extends FormApplication<
         Number(this.object.otherModifier ?? 0),
     );
 
-    const { modifier, weapon } = getMasterOpponentModifier(
+    const { modifier, modifiedWeapon } = getMasterOpponentModifier(
       this.attackRoll.targetChance ?? 0,
       totalChanceExclMasterOpponent,
     );
 
-    // @ts-expect-error modifiers
-    const attackRollModifiers = this.attackRoll.options.modifiers as Modifier[];
     const newMasterOpponentModifier: Modifier = {
-      description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
       value: modifier,
+      description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
     };
 
-    if (weapon === WeaponDesignation.ParryWeapon) {
-      this.object.masterOpponentModifier = modifier;
-      // @ts-expect-error modifiers
-      this.attackRoll.options.modifiers = this.attackRoll.options.modifiers.filter(
-        (m: Modifier) => m.description !== newMasterOpponentModifier.description,
-      );
-    } else if (weapon === WeaponDesignation.AttackingWeapon) {
-      this.object.masterOpponentModifier = 0;
-      const newMasterOpponentModifier: Modifier = {
-        description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
-        value: modifier,
-      };
+    // @ts-expect-error modifiers
+    this.attackRoll.options.modifiers = this.attackRoll.options.modifiers.filter(
+      (m: Modifier) => m.description !== newMasterOpponentModifier.description,
+    );
+    this.object.masterOpponentModifier = 0;
 
-      if (
-        attackRollModifiers.some(
-          (m: Modifier) => m.description === newMasterOpponentModifier.description,
-        )
-      ) {
-        // @ts-expect-error modifiers
-        this.attackRoll.options.modifiers = attackRollModifiers.filter(
-          (modifier: Modifier) => modifier.description === newMasterOpponentModifier.description,
-        );
-      }
+    if (modifiedWeapon === WeaponDesignation.ParryWeapon) {
+      this.object.masterOpponentModifier = modifier;
+    } else if (modifiedWeapon === WeaponDesignation.AttackingWeapon) {
       // @ts-expect-error modifiers
-      this.attackRoll.options.modifiers = [...attackRollModifiers, newMasterOpponentModifier];
+      this.attackRoll.options.modifiers.push(newMasterOpponentModifier);
     }
 
     const defenceButtonText =

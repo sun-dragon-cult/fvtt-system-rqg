@@ -12,30 +12,30 @@ import { SpiritMagicRollOptions } from "./SpiritMagicRoll.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class SpiritMagicRoll extends Roll {
-  private _targetChance = 0; // Target value including any modifiers
-
   public static async rollAndShow(options: SpiritMagicRollOptions) {
-    const roll = new SpiritMagicRoll("1d100", {}, options);
+    const roll = new SpiritMagicRoll(undefined, {}, options);
     await roll.evaluate();
     await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
     activateChatTab();
     return roll;
   }
 
-  constructor(formula: string, data: any, options: SpiritMagicRollOptions) {
-    super("1d100", data, options);
-    const o = this.options as SpiritMagicRollOptions;
+  constructor(formula: string = "1d100", data: any, options: SpiritMagicRollOptions) {
+    super(formula, data, options);
+  }
 
+  get targetChance(): number {
+    const o = this.options as SpiritMagicRollOptions;
     const modificationsSum =
       o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    this._targetChance = Math.max(0, (o.powX5 ?? 0) + modificationsSum); // -50% => 0% to make the calculations work
+    return Math.max(0, (o.powX5 ?? 0) + modificationsSum); // -50% => 0% to make the calculations work;
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
     if (!this._evaluated || this.total == null) {
       return undefined;
     }
-    return calculateAbilitySuccessLevel(this._targetChance, this.total);
+    return calculateAbilitySuccessLevel(this.targetChance, this.total);
   }
 
   // Html for the "content" of the chat-message
@@ -49,7 +49,7 @@ export class SpiritMagicRoll extends Roll {
       user: getGameUser().id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
-      target: this._targetChance,
+      target: this.targetChance,
       successLevel: this.successLevel,
     };
     return renderTemplate(templatePaths.spiritMagicRoll, chatData);

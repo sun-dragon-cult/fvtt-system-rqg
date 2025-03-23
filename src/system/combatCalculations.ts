@@ -155,7 +155,7 @@ export function formatDamagePart(
 export function getMasterOpponentModifier(
   modifiedAttackChance: number,
   modifiedDefenceChance: number,
-): { modifier: number; weapon: WeaponDesignation } {
+): { modifier: number; modifiedWeapon: WeaponDesignation } {
   const attackOverHundred = Math.max(0, modifiedAttackChance - 100);
   const defenceOverHundred = Math.max(0, modifiedDefenceChance - 100);
 
@@ -176,7 +176,7 @@ export function getMasterOpponentModifier(
 
   return {
     modifier: modifier === 0 ? 0 : -Math.abs(modifier),
-    weapon: weapon,
+    modifiedWeapon: weapon,
   };
 }
 

@@ -5,8 +5,6 @@ import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export class AbilityRoll extends Roll {
-  private _targetChance = 0; // Target value including any modifiers
-
   public static async rollAndShow(options: AbilityRollOptions) {
     const roll = new AbilityRoll(undefined, {}, options);
     await roll.evaluate();
@@ -17,22 +15,20 @@ export class AbilityRoll extends Roll {
 
   constructor(formula: string = "1d100", data: any, options: AbilityRollOptions) {
     super(formula, data, options);
-    const o = this.options as AbilityRollOptions;
-
-    const modificationsSum =
-      o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    this._targetChance = Math.max(0, o.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
     if (!this._evaluated || this.total == null) {
       return undefined;
     }
-    return calculateAbilitySuccessLevel(this._targetChance, this.total);
+    return calculateAbilitySuccessLevel(this.targetChance, this.total);
   }
 
   get targetChance(): number {
-    return this._targetChance;
+    const o = this.options as AbilityRollOptions;
+    const modificationsSum =
+      o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
+    return Math.max(0, o.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work;
   }
 
   // Html for the "content" of the chat-message
@@ -48,7 +44,7 @@ export class AbilityRoll extends Roll {
       heading: o?.heading,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
-      target: this._targetChance,
+      target: this.targetChance,
       successLevel: this.successLevel,
     };
     return renderTemplate(templatePaths.abilityRoll, chatData);

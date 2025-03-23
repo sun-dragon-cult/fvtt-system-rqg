@@ -13,30 +13,30 @@ import { RuneMagicRollOptions } from "./RuneMagicRoll.types";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
 
 export class RuneMagicRoll extends Roll {
-  private _targetChance = 0; // Target value including any modifiers
-
   public static async rollAndShow(options: RuneMagicRollOptions) {
-    const roll = new RuneMagicRoll("1d100", {}, options);
+    const roll = new RuneMagicRoll(undefined, {}, options);
     await roll.evaluate();
     await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
     activateChatTab();
     return roll;
   }
 
-  constructor(formula: string, data: any, options: RuneMagicRollOptions) {
-    super("1d100", data, options);
-    const o = this.options as RuneMagicRollOptions;
+  constructor(formula: string = "1d100", data: any, options: RuneMagicRollOptions) {
+    super(formula, data, options);
+  }
 
+  get targetChance(): number {
+    const o = this.options as RuneMagicRollOptions;
     const modificationsSum =
       o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    this._targetChance = Math.max(0, (options.usedRune.system?.chance ?? 0) + modificationsSum); // -50% => 0% to make the calculations work
+    return Math.max(0, (o.usedRune.system?.chance ?? 0) + modificationsSum); // -50% => 0% to make the calculations work;
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
     if (!this._evaluated || this.total == null) {
       return undefined;
     }
-    return calculateAbilitySuccessLevel(this._targetChance, this.total);
+    return calculateAbilitySuccessLevel(this.targetChance, this.total);
   }
 
   // Html for the "content" of the chat-message
@@ -50,7 +50,7 @@ export class RuneMagicRoll extends Roll {
       user: getGameUser().id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
-      target: this._targetChance,
+      target: this.targetChance,
       successLevel: this.successLevel,
     };
     return renderTemplate(templatePaths.runeMagicRoll, chatData);
