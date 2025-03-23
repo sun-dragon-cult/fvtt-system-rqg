@@ -265,7 +265,11 @@ export function assertHtmlElement<T extends HTMLElement>(
   }
 }
 
-export function requireValue(val: unknown, errorMessage: string, ...debugData: any): asserts val {
+export function requireValue<T>(
+  val: T,
+  errorMessage: string,
+  ...debugData: any
+): asserts val is NonNullable<T> {
   if (val == null) {
     ui.notifications?.error(errorMessage);
     throw new RqgError(errorMessage, debugData);

@@ -241,7 +241,7 @@ export class AttackDialog extends FormApplication<
             ui.notifications?.warn(
               localize("RQG.Dialog.Attack.OutOfAmmoWarn", {
                 projectileName: projectileItem?.name,
-                combatManeuverName: combatManeuver?.name,
+                combatManeuverName: combatManeuver.name,
               }),
             );
             return;
