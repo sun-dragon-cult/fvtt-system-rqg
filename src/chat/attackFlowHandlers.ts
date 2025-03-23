@@ -138,6 +138,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     defenderHitLocationDamage,
     hitLocationRoll.total,
     ignoreDefenderAp,
+    true,
     wasDamagedReducedByParry,
   );
 
