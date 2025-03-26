@@ -322,26 +322,3 @@ export function getBasicOutcomeDescription(
     }
   }
 }
-
-/**
- * Optionally hide the display of chat card elements which should not be shown to user
- */
-export const hideChatActionButtons = function (html: HTMLElement | undefined): void {
-  if (getGameUser().isGM) {
-    return; // Do not hide anything from GM
-  }
-
-  // Otherwise conceal elements for unrelated actors/players
-  const maybeHideElements = html?.querySelectorAll(".rqg.chat-card [data-visible-token-uuid]");
-
-  maybeHideElements?.forEach((el: Element) => {
-    if (!(el instanceof HTMLElement)) {
-      return;
-    }
-    // @ts-expect-error fromUuidSync
-    const token = fromUuidSync(el.dataset.visibleTokenUuid);
-    if (token && !token?.isOwner) {
-      el.style.display = "none";
-    }
-  });
-};

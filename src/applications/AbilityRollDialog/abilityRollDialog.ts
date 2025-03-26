@@ -8,7 +8,6 @@ import {
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import { localize, RqgError, toKebabCase, trimChars } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
 
 export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplication<
   FormApplication.Options,
@@ -110,7 +109,8 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
           abilityType: this.abilityItem.type ?? undefined,
           abilityImg: this.abilityItem.img ?? undefined,
           speaker: ChatMessage.getSpeaker({
-            actor: this.abilityItem.parent as RqgActor | undefined,
+            token: this.abilityItem.parent?.token ?? undefined,
+            actor: this.abilityItem.parent ?? undefined,
           }),
           // resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // TODO Idea - add fields in IAbility to specify text specific for an ability
         };

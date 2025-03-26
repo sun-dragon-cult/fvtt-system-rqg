@@ -158,6 +158,8 @@ export class RqgActor extends Actor {
       system: {
         chance: this.system.background.reputation ?? 0,
       },
+      // @ts-expect-error ownership to make the Ability roll hiding work
+      ownership: { default: 0 },
     } as const;
   }
 

@@ -164,6 +164,7 @@ export class RuneMagicRollDialog extends FormApplication<
             },
           ],
           speaker: ChatMessage.getSpeaker({
+            token: actor?.token ?? undefined,
             actor: actor,
           }),
         };

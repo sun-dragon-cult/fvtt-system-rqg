@@ -26,6 +26,7 @@ import {
   proneTargetModifier,
   unawareTargetModifier,
 } from "../../system/penaltyConstants";
+import { RqgChatMessage } from "../../chat/RqgChatMessage";
 
 export class AttackDialog extends FormApplication<
   FormApplication.Options,
@@ -298,6 +299,7 @@ export class AttackDialog extends FormApplication<
           abilityName: weaponItem?.name ?? undefined,
           abilityType: weaponItem?.type ?? undefined,
           abilityImg: weaponItem?.img ?? undefined,
+          speaker: RqgChatMessage.getSpeaker({ token: tokenDocument }), // Used to decide who can see the roll in chat
         };
 
         const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);

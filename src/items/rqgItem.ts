@@ -246,9 +246,11 @@ export class RqgItem extends Item {
       throw new RqgError(msg, this);
     }
 
+    const levelUsedOrDefault = options.levelUsed ?? this.system.points;
+
     const validationError = RuneMagic.hasEnoughToCastSpell(
       cult,
-      options.levelUsed,
+      levelUsedOrDefault,
       options.magicPointBoost,
     );
     if (validationError) {
@@ -256,7 +258,6 @@ export class RqgItem extends Item {
       return;
     }
 
-    const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
     const usedRune = options.usedRune
       ? options.usedRune
       : RuneMagic.getStrongestRune(RuneMagic.getEligibleRunes(this));
@@ -269,10 +270,13 @@ export class RqgItem extends Item {
     const runeMagicRoll = await RuneMagicRoll.rollAndShow({
       usedRune: usedRune,
       runeMagicItem: this,
-      levelUsed: options.levelUsed ?? this.system.points,
+      levelUsed: levelUsedOrDefault,
       magicPointBoost: options.magicPointBoost ?? 0,
       modifiers: options?.modifiers ?? [],
-      speaker: speaker,
+      speaker: ChatMessage.getSpeaker({
+        token: this.actor?.token ?? undefined,
+        actor: this.actor ?? undefined,
+      }),
     });
     if (runeMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated RuneMagicRoll didn't give successLevel");

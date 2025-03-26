@@ -5,7 +5,6 @@ import {
   SpiritMagicRollDialogObjectData,
 } from "./SpiritMagicRollDialogData.types";
 import { localize, toKebabCase, trimChars } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import type { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
@@ -120,7 +119,8 @@ export class SpiritMagicRollDialog extends FormApplication<
           spellName: this.spellItem.name ?? undefined,
           spellImg: this.spellItem.img ?? undefined,
           speaker: ChatMessage.getSpeaker({
-            actor: this.spellItem.parent as RqgActor | undefined,
+            token: this.spellItem.parent?.token ?? undefined,
+            actor: this.spellItem.parent ?? undefined,
           }),
         };
         const validationError = SpiritMagic.hasEnoughToCastSpell(

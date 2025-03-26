@@ -984,6 +984,10 @@ input.readonly {
       }
     }
 
+    .dont-display {
+      display: none !important;
+    }
+
     .roll-level {
       font-size: var(--font-size-16);
     }

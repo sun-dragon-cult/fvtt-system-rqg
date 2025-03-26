@@ -7,9 +7,9 @@ import {
   handleRollDamageAndHitLocation,
   handleDefence,
   handleRollFumble,
-  hideChatActionButtons,
 } from "./attackFlowHandlers";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import { getGameUser } from "../system/util";
 
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
@@ -43,8 +43,7 @@ export class RqgChatMessage extends ChatMessage {
   async getHTML(): Promise<JQuery> {
     const html = await super.getHTML();
     const element = html instanceof HTMLElement ? html : html[0];
-    hideChatActionButtons(element);
-    await this._enrichChatCard(element);
+    await this.#enrichChatCard(element);
     return $(element);
   }
 
@@ -180,19 +179,21 @@ export class RqgChatMessage extends ChatMessage {
   // }
 
   /**
-   * Augment the chat card markup for additional styling.
-   * @protected
+   * Augment the chat card html markup for additional styling and eventlisteners.
    */
-  async _enrichChatCard(html: HTMLElement): Promise<void> {
-    // Event listener for Dice Rolls
+  async #enrichChatCard(html: HTMLElement): Promise<void> {
+    // Add event listener for Dice Rolls
     [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
       el.addEventListener("click", this._onClickDiceRoll.bind(this)),
     );
 
+    // Enrich the combat chat message with evaluated rolls
     await this.#enrichHtmlWithRoll(html, "chat.attackRoll", "[data-attack-roll-html]");
     await this.#enrichHtmlWithRoll(html, "chat.defenceRoll", "[data-defence-roll-html]");
     await this.#enrichHtmlWithRoll(html, "chat.damageRoll", "[data-damage-roll-html]");
     await this.#enrichHtmlWithRoll(html, "chat.hitLocationRoll", "[data-hit-location-roll-html]");
+
+    this.#hideHtmlElementsByOwnership(html);
   }
 
   /**
@@ -207,6 +208,30 @@ export class RqgChatMessage extends ChatMessage {
       return;
     }
     target?.classList.toggle("expanded");
+  }
+
+  /**
+   * Optionally hide the display of chat html elements which should not be shown to user.
+   * The data-only-owner-visible-uuid value should be a document uuid that can be checked for ownership.
+   */
+  #hideHtmlElementsByOwnership(html: HTMLElement | undefined): void {
+    if (getGameUser().isGM) {
+      return; // Do not hide anything from GM
+    }
+
+    // Otherwise conceal elements for unrelated actors/players
+    const maybeHideElements = html?.querySelectorAll("[data-only-owner-visible-uuid]");
+
+    maybeHideElements?.forEach((el: Element) => {
+      if (!(el instanceof HTMLElement)) {
+        return;
+      }
+      // @ts-expect-error fromUuidSync
+      const document = fromUuidSync(el.dataset.onlyOwnerVisibleUuid);
+      if (el.dataset.onlyOwnerVisibleUuid && !document?.isOwner) {
+        el.classList.add("dont-display");
+      }
+    });
   }
 
   async #enrichHtmlWithRoll(

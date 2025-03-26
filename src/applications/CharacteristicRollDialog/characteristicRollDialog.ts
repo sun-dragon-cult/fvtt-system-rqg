@@ -134,6 +134,7 @@ export class CharacteristicRollDialog extends FormApplication<
             },
           ],
           speaker: ChatMessage.getSpeaker({
+            token: this.actor?.token ?? undefined,
             actor: this.actor,
           }),
         };

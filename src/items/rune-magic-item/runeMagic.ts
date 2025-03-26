@@ -167,13 +167,12 @@ export class RuneMagic extends AbstractEmbeddedItem {
   public static hasEnoughToCastSpell(
     cultItem: RqgItem,
     runePointCost: number | undefined,
-    magicPointsBoost: number | undefined,
+    magicPointsBoost: number = 0,
   ): string | undefined {
     assertItemType(cultItem?.type, ItemTypeEnum.Cult);
     if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
       return getGame().i18n.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     } else if (
-      magicPointsBoost == null ||
       magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
     ) {
       return localize("RQG.Item.RuneMagic.RuneMagic.validationNotEnoughMagicPoints");

@@ -36,6 +36,7 @@ export class CharacteristicRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate();
     }
+    const o = this.options as CharacteristicRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor, // TODO maybe show what the roll is?
@@ -44,6 +45,7 @@ export class CharacteristicRoll extends Roll {
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
       target: this.targetChance,
       successLevel: this.successLevel,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
     return renderTemplate(templatePaths.characteristicRoll, chatData);
   }
@@ -64,6 +66,7 @@ export class CharacteristicRoll extends Roll {
       difficulty: o.difficulty ?? 5,
       difficultyName: this.getDifficultyName(o.difficulty ?? 5),
       modifiers: nonzeroSignedModifiers,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     });
   }
 

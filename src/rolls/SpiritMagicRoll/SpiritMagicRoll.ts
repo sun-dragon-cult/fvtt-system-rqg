@@ -43,6 +43,7 @@ export class SpiritMagicRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate();
     }
+    const o = this.options as SpiritMagicRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor, // TODO maybe show what the roll is?
@@ -51,6 +52,7 @@ export class SpiritMagicRoll extends Roll {
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
       target: this.targetChance,
       successLevel: this.successLevel,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
     return renderTemplate(templatePaths.spiritMagicRoll, chatData);
   }
@@ -71,6 +73,7 @@ export class SpiritMagicRoll extends Roll {
       magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", { cost: mpDrawn }),
       powX5: o.powX5,
       modifiers: nonzeroSignedModifiers,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,
     });
   }
 

@@ -339,6 +339,9 @@ export class DefenceDialog extends FormApplication<
           abilityName: defendSkillItem?.name ?? undefined,
           abilityType: defendSkillItem?.type ?? undefined,
           abilityImg: defendSkillItem?.img ?? undefined,
+          speaker: ChatMessage.getSpeaker({
+            token: defendingTokenDocument ?? undefined, // Connect the roll to the defender
+          }),
         };
 
         await this.attackRoll.evaluate();

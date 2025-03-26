@@ -46,13 +46,15 @@ export class AbilityRoll extends Roll {
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
       target: this.targetChance,
       successLevel: this.successLevel,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
     return renderTemplate(templatePaths.abilityRoll, chatData);
   }
 
   // Html for what modifiers are applied
   async getTooltip(): Promise<string> {
-    const modifiers = (this.options as AbilityRollOptions).modifiers ?? [];
+    const o = this.options as AbilityRollOptions;
+    const modifiers = o.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
@@ -62,6 +64,7 @@ export class AbilityRoll extends Roll {
     return renderTemplate(templatePaths.abilityRollTooltip, {
       naturalSkill: (this.options as AbilityRollOptions).naturalSkill,
       modifiers: nonzeroSignedModifiers,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,
     });
   }
 

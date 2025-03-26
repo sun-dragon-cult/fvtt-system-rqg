@@ -1,15 +1,13 @@
 {{log "attackChatTemplate" this}}
 <div class="rqg chat-card">
   <div class="flex-column gap03rem">
-    <span {{#if (eq attackState 'Attacked')}} data-visible-token-uuid="{{attackingTokenUuid}}" {{/if}}
-      data-attack-roll-html>
-    </span>
+    <span data-attack-roll-html></span>
     <span data-defence-roll-html></span>
   </div>
 
   {{#if (eq attackState 'Attacked')}}
     <div class="flexrow">
-      <button data-visible-token-uuid="{{defendingTokenUuid}}"
+      <button data-only-owner-visible-uuid="{{defendingTokenUuid}}"
               data-defence="parry">Defend
       </button>
     </div>
@@ -17,7 +15,7 @@
     <div class="outcome-description">{{{outcomeDescription}}}</div>
     {{!-- use presence of damageRoll as sign of there being damage to roll, should be null:ed if no damage is to be rolled --}}
     {{#if damageRoll}}
-      <button data-visible-token-uuid="{{attackingTokenUuid}}" data-roll-damage-and-hitlocation>
+      <button data-only-owner-visible-uuid="{{attackingTokenUuid}}" data-roll-damage-and-hitlocation>
         Roll some damage & hitlocation
       </button>
     {{/if}}
@@ -30,7 +28,7 @@
       <div class="flex-row">
       {{#if defenderHitLocationDamage}}
       {{#unless actorDamagedApplied}}
-        <button data-visible-token-uuid="{{defendingTokenUuid}}" data-apply-damage-to-actor>
+        <button data-only-owner-visible-uuid="{{defendingTokenUuid}}" data-apply-damage-to-actor>
           Apply damage to actor
         </button>
       {{/unless}}
@@ -40,9 +38,9 @@
       {{#unless weaponDamageApplied}}
         <button
           {{#if (eq weaponDoingDamage "attackingWeapon")}}
-            data-visible-token-uuid="{{defendingTokenUuid}}"
+            data-only-owner-visible-uuid="{{defendingTokenUuid}}"
           {{else}}
-            data-visible-token-uuid="{{attackingTokenUuid}}"
+            data-only-owner-visible-uuid="{{attackingTokenUuid}}"
           {{/if}}
           data-apply-damage-to-weapon>Apply damage to weapon
         </button>
@@ -53,13 +51,13 @@
   {{/if}}
 
   {{#if attackerFumbled}}
-    <button data-visible-token-uuid="{{attackingTokenUuid}}"
+    <button data-only-owner-visible-uuid="{{attackingTokenUuid}}"
             data-fumble="attacker">Roll Attacker Fumble
     </button>
   {{/if}}
 
   {{#if defenderFumbled}}
-    <button data-visible-token-uuid="{{defendingTokenUuid}}"
+    <button data-only-owner-visible-uuid="{{defendingTokenUuid}}"
             data-fumble="defender">Roll Defender Fumble
     </button>
   {{/if}}

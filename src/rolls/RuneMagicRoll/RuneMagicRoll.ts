@@ -44,6 +44,7 @@ export class RuneMagicRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate();
     }
+    const o = this.options as RuneMagicRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor, // TODO maybe show what the roll is?
@@ -52,6 +53,7 @@ export class RuneMagicRoll extends Roll {
       total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
       target: this.targetChance,
       successLevel: this.successLevel,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
     return renderTemplate(templatePaths.runeMagicRoll, chatData);
   }
@@ -85,8 +87,8 @@ export class RuneMagicRoll extends Roll {
       usageCostText: usageCostText,
       usedRuneChance: o.usedRune.system.chance,
       usedRuneName: o.usedRune.name,
-
       modifiers: nonzeroSignedModifiers,
+      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,
     });
   }
 
