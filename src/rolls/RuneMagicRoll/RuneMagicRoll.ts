@@ -47,12 +47,15 @@ export class RuneMagicRoll extends Roll {
     const o = this.options as RuneMagicRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
-      flavor: isPrivate ? null : flavor, // TODO maybe show what the roll is?
+      flavor: isPrivate ? null : flavor,
       user: getGameUser().id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
-      total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
-      target: this.targetChance,
-      successLevel: this.successLevel,
+      total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
+      target: isPrivate ? undefined : this.targetChance,
+      successLevel: isPrivate ? "private" : this.successLevel,
+      successLevelText: isPrivate
+        ? undefined
+        : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
     return renderTemplate(templatePaths.runeMagicRoll, chatData);

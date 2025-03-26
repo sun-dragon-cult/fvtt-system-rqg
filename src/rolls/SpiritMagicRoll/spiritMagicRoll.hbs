@@ -1,9 +1,13 @@
 <div class="dice-roll">
   <div class="dice-result">
     <div class="dice-total success-level-{{successLevel}}">
-      <div class="outcome">{{localize (concat "RQG.Game.AbilityResultEnum." successLevel)}}</div>
+      {{#if successLevelText}}
+        <div class="outcome">{{successLevelText}}</div>
+      {{/if}}
       <div data-tooltip="1d100"><i class="fa-solid fa-dice"></i>{{total}}</div>
-      <div class="target" data-only-owner-visible-uuid="{{speakerUuid}}"><i class="fa-solid fa-bullseye"></i> {{target}}%</div>
+      {{#if target}}
+        <div class="target" data-only-owner-visible-uuid="{{speakerUuid}}"><i class="fa-solid fa-bullseye"></i> {{target}}%</div>
+      {{/if}}
     </div>
   </div>
   {{{tooltip}}}

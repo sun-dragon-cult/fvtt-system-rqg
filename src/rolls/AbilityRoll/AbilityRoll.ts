@@ -1,6 +1,12 @@
 import type { AbilityRollOptions } from "./AbilityRoll.types";
 import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
-import { activateChatTab, getGameUser, isTruthy, localizeItemType } from "../../system/util";
+import {
+  activateChatTab,
+  getGameUser,
+  isTruthy,
+  localize,
+  localizeItemType,
+} from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -39,13 +45,16 @@ export class AbilityRoll extends Roll {
     const o = this.options as AbilityRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
-      flavor: isPrivate ? null : flavor, // TODO maybe show what the roll is?
+      flavor: isPrivate ? null : flavor,
       user: getGameUser().id,
       heading: o?.heading,
       tooltip: isPrivate ? "" : await this.getTooltip(),
-      total: isPrivate ? "?" : Math.round(this.total! * 100) / 100,
-      target: this.targetChance,
-      successLevel: this.successLevel,
+      total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
+      target: isPrivate ? undefined : this.targetChance,
+      successLevel: isPrivate ? "private" : this.successLevel,
+      successLevelText: isPrivate
+        ? undefined
+        : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
     return renderTemplate(templatePaths.abilityRoll, chatData);
