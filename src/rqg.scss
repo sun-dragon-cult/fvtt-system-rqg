@@ -98,6 +98,10 @@ input.readonly {
   cursor: pointer;
 }
 
+.dont-display {
+  display: none !important;
+}
+
 .rqg img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
 .app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
 .app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {
@@ -982,10 +986,6 @@ input.readonly {
       .dice-tooltip {
         display: block;
       }
-    }
-
-    .dont-display {
-      display: none !important;
     }
 
     .roll-level {
