@@ -5,9 +5,13 @@
     {{#unless (eq object.defence "ignore")}}<div class="sub-header">{{defenceChance}}%</div>{{/unless}}
   </header>
   <div class="key-value-grid">
+    <label>
+      {{localize "RQG.Dialog.Common.AttackingActor"}}
+    </label>
+    <div>{{attackingTokenName}}</div>
 
     <label>
-      {{localize "RQG.Dialog.Defence.DefendingActor"}}
+      {{localize "RQG.Dialog.Common.DefendingActor"}}
     </label>
     <select name="defendingTokenUuid">
       {{selectOptions defendingTokenOptions selected=object.defendingTokenUuid localize=false}}

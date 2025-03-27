@@ -26,6 +26,7 @@ export type AttackDialogHandlebarsData = {
   isOutOfAmmo: boolean;
   usageTypeOptions: Record<string, string>;
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
+  defendingTokenName: string;
   attackingTokenOptions: Record<string, string>;
   attackingWeaponOptions: Record<string, string>;
   damageBonusSourceOptions: Record<string, string>;

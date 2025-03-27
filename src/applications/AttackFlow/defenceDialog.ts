@@ -53,6 +53,7 @@ export class DefenceDialog extends FormApplication<
   };
 
   private readonly attackingWeaponItem: RqgItem;
+  private readonly attackingTokenName: string;
   private readonly attackChatMessage: RqgChatMessage | undefined;
   private halvedModifier: number = 0;
   private readonly attackRoll: AbilityRoll;
@@ -85,6 +86,11 @@ export class DefenceDialog extends FormApplication<
       systemId,
       "chat.defendingTokenUuid",
     );
+
+    const attackingTokenUuid = this.attackChatMessage?.getFlag(systemId, "chat.attackingTokenUuid");
+    // @ts-expect-error fromUuidSync
+    this.attackingTokenName = fromUuidSync(attackingTokenUuid ?? "")?.name ?? "None?";
+
     this.attackRoll = AbilityRoll.fromData(
       this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
     );
@@ -218,6 +224,7 @@ export class DefenceDialog extends FormApplication<
       object: this.object,
       options: this.options,
       title: this.title,
+      attackingTokenName: this.attackingTokenName,
       augmentOptions: this.augmentOptions,
       subsequentDefenceOptions: this.subsequentDefenceOptions,
       defendingTokenOptions: tokenOptions,

@@ -24,6 +24,7 @@ export type DefenceDialogHandlebarsData = {
   object: DefenceDialogObjectData;
   options: FormApplication.Options;
   title: string;
+  attackingTokenName: string;
   defendingTokenOptions: Record<string, string>;
   defenceOptions: Record<string, string>;
   parryingWeaponOptions: Record<string, string>;

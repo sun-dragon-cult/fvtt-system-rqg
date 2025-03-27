@@ -143,6 +143,14 @@ export class AttackDialog extends FormApplication<
       weaponItem?.system.usage[this.object.usageType].skillRqidLink.rqid;
     const usedSkill = weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
     this.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
+
+    if (getGameUser().targets.size > 1) {
+      ui.notifications?.info("Please target one token only");
+    }
+
+    // @ts-expect-error first
+    const target = getGameUser().targets.first() as RqgToken | undefined;
+
     return {
       weaponItem: weaponItem,
       skillItem: usedSkill,
@@ -153,6 +161,7 @@ export class AttackDialog extends FormApplication<
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
       attackingTokenOptions: tokenOptions,
+      defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
       attackingWeaponOptions: weaponOptions,
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,

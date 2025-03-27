@@ -440,7 +440,7 @@
     "Dialog": {
       "Attack": {
         "Title": "Attack",
-        "AttackingActor": "Attacking Actor",
+        "NoTargetSelected": "No target selected",
         "AttackingWeapon": "Attacking Weapon",
         "WeaponUsage": "Usage",
         "ProneTarget": "Prone Target",
@@ -463,7 +463,6 @@
       },
       "Defence": {
         "Title": "Defend",
-        "DefendingActor": "Defending Actor",
         "Defence": "Defence",
         "Parry": "Parry",
         "ParryingWeaponUuid": "Parrying Weapon",
@@ -541,6 +540,8 @@
         "IsAttacking": "attacks {defenderName}",
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
+        "AttackingActor": "Attacking Actor",
+        "DefendingActor": "Defending Actor",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",

@@ -6,11 +6,16 @@
   </header>
   <div class="key-value-grid p-0 mb-1-5rem">
     <label>
-      {{localize "RQG.Dialog.Attack.AttackingActor"}}
+      {{localize "RQG.Dialog.Common.AttackingActor"}}
     </label>
     <select name="attackingTokenUuid">
       {{selectOptions attackingTokenOptions selected=object.attackingTokenUuid localize=false}}
     </select>
+
+    <label>
+      {{localize "RQG.Dialog.Common.DefendingActor"}}
+    </label>
+    <div>{{defendingTokenName}}</div>
 
     <label>
       {{localize "RQG.Dialog.Attack.AttackingWeapon"}}
