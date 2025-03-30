@@ -54,6 +54,7 @@ export class AttackDialog extends FormApplication<
       attackingTokenUuid: attackingToken?.document.uuid,
       attackingWeaponUuid: weaponItem.uuid,
       usageType: weaponItem.system.defaultUsage,
+      reduceAmmoQuantity: true,
       augmentModifier: "0",
       proneTarget: false,
       unawareTarget: false,
@@ -256,16 +257,19 @@ export class AttackDialog extends FormApplication<
             );
             return;
           }
-          const newQuantity = projectileItem?.system.quantity - 1;
-          if (newQuantity <= 0) {
-            ui.notifications?.warn(
-              localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
-                projectileName: projectileItem?.name,
-              }),
-            );
+
+          if (this.object.reduceAmmoQuantity) {
+            const newQuantity = projectileItem?.system.quantity - 1;
+            if (newQuantity <= 0) {
+              ui.notifications?.warn(
+                localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
+                  projectileName: projectileItem?.name,
+                }),
+              );
+            }
+            await projectileItem?.update({ system: { quantity: newQuantity } });
+            await this.render(true); // Make sure ammo count is updated in the dialog
           }
-          await projectileItem?.update({ system: { quantity: newQuantity } });
-          await this.render(true); // Make sure ammo count is updated in the dialog
         }
 
         const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${this.object.usageType}`);

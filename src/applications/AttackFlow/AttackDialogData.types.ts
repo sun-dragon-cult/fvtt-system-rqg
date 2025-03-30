@@ -39,6 +39,7 @@ export type AttackDialogObjectData = {
   attackingTokenUuid: string | undefined;
   attackingWeaponUuid: string | undefined;
   usageType: UsageType;
+  reduceAmmoQuantity: boolean;
   augmentModifier: string;
   proneTarget: boolean;
   unawareTarget: boolean;

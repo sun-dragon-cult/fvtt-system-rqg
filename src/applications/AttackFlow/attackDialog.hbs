@@ -38,8 +38,15 @@
           <span>{{localize "RQG.Dialog.Attack.AmmoQuantity"}} {{ammoQuantity}}</span>
         {{/if}}
       {{/if}}
-
     </div>
+
+    {{#if (eq object.usageType "missile")}}
+      <label>{{localize "RQG.Dialog.Attack.ReduceAmmoQuantity"}}</label>
+      <div>
+        <input type="checkbox" {{checked object.reduceAmmoQuantity}} name="reduceAmmoQuantity">
+      </div>
+    {{/if}}
+
 
     <label>
       {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
@@ -59,7 +66,7 @@
       {{localize "RQG.Dialog.Attack.ExtraDamage"}}
     </label>
     <div>
-      <input type="text" value="{{object.attackExtraDamage}}" name="attackExtraDamage" {{checked object.attackExtraDamage}}>
+      <input type="text" value="{{object.attackExtraDamage}}" name="attackExtraDamage">
     </div>
 
     <h2 class="submenu-span">{{localize "RQG.Dialog.Common.Modifiers"}}</h2>
