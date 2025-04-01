@@ -31,6 +31,7 @@ export type AttackDialogHandlebarsData = {
   attackingWeaponOptions: Record<string, string>;
   damageBonusSourceOptions: Record<string, string>;
   hitLocationFormulaOptions: Record<string, string>;
+  aimedBlowOptions: SelectOptionData<number>[];
   halvedModifier: number;
   totalChance: number;
 };
@@ -45,6 +46,7 @@ export type AttackDialogObjectData = {
   unawareTarget: boolean;
   darkness: boolean;
   halved: boolean;
+  aimedBlow: number;
   otherModifier: string;
   otherModifierDescription: string;
   attackExtraDamage: string;

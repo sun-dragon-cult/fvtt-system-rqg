@@ -454,6 +454,7 @@
         "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
         "OutOfAmmo": "Out of Ammo",
         "AmmoQuantity": "Ammo Quantity",
+        "AimedBlow": "Aimed Blow",
         "HitLocationFormula": "Hit Location Formula",
         "HitLocationFormulaOptions": {
           "1d20": "Normal (1d20)",
@@ -1120,6 +1121,7 @@
         "UnawareTarget": "unaware",
         "Darkness": "darkness",
         "Halved": "halved",
+        "AimedBlow": "aimed blow",
         "OtherModifier": "other modifier",
         "MasterOpponentModifier": "master opponent"
       },

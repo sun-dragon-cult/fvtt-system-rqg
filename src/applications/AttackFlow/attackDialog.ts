@@ -60,6 +60,7 @@ export class AttackDialog extends FormApplication<
       unawareTarget: false,
       darkness: false,
       halved: false,
+      aimedBlow: 0,
       otherModifier: "0",
       otherModifierDescription: localize("RQG.Dialog.Attack.OtherModifier"),
       attackExtraDamage: "",
@@ -106,6 +107,10 @@ export class AttackDialog extends FormApplication<
       this.object.attackingWeaponUuid = Object.keys(
         await this.getWeaponOptions(this.object.attackingTokenUuid),
       )[0];
+    }
+
+    if (!this.object.aimedBlow) {
+      this.object.aimedBlow = 0;
     }
 
     const weaponItem = (await fromUuid(this.object.attackingWeaponUuid ?? "")) as
@@ -168,6 +173,7 @@ export class AttackDialog extends FormApplication<
       augmentOptions: this.augmentOptions,
       damageBonusSourceOptions: this.getDamageBonusSourceOptions(weaponItem),
       hitLocationFormulaOptions: this.getHitLocationFormulaOptions(),
+      aimedBlowOptions: this.getAimedBlowOptions(target),
       halvedModifier: this.halvedModifier,
       totalChance: Math.max(
         0,
@@ -177,7 +183,8 @@ export class AttackDialog extends FormApplication<
           (this.object.proneTarget ? proneTargetModifier : 0) +
           (this.object.unawareTarget ? unawareTargetModifier : 0) +
           (this.object.darkness ? darknessModifier : 0) +
-          (this.object.halved ? this.halvedModifier : 0),
+          (this.object.halved ? this.halvedModifier : 0) +
+          (this.object.aimedBlow > 0 ? this.halvedModifier : 0),
       ),
     };
   }
@@ -304,6 +311,10 @@ export class AttackDialog extends FormApplication<
               description: localize("RQG.Roll.AbilityRoll.Halved"),
             },
             {
+              value: this.object.aimedBlow > 0 ? this.halvedModifier : 0,
+              description: localize("RQG.Roll.AbilityRoll.AimedBlow"),
+            },
+            {
               value: Number(this.object.otherModifier),
               description: this.object.otherModifierDescription,
             },
@@ -396,6 +407,22 @@ export class AttackDialog extends FormApplication<
     );
   }
 
+  private getAimedBlowOptions(target: RqgToken | undefined): SelectOptionData<number>[] {
+    if (!target) {
+      return [];
+    }
+
+    const optionsArray = (target.actor?.items ?? [])
+      .filter((i) => i.type === ItemTypeEnum.HitLocation)
+      .sort((a: any, b: any) => b.system.dieFrom - a.system.dieFrom)
+      .map((hitLocation: RqgItem) => ({
+        value: hitLocation.system.dieFrom,
+        label: hitLocation.name ?? "",
+      }));
+
+    return [{ value: 0, label: "" }, ...optionsArray];
+  }
+
   /**
    * show a list of weapons the actor has equipped and can be used for attacks.
    */
@@ -464,6 +491,12 @@ export class AttackDialog extends FormApplication<
   }
 
   getHitLocationFormulaOptions(): Record<string, string> {
+    if (this.object.aimedBlow > 0) {
+      return {
+        [this.object.aimedBlow]: localize("RQG.Dialog.Attack.AimedBlow"),
+      };
+    }
+
     return {
       "1d20": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d20"),
       "1d10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10"),

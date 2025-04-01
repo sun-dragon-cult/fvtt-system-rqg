@@ -13,6 +13,11 @@ import {
 import { IconSettingsData } from "./applications/defaultItemIconSettings";
 
 declare global {
+  /** Standard format for data to Foundry SelectOptions handlebar helper */
+  type SelectOptionData<T> = { value: T; label: string };
+}
+
+declare global {
   interface DocumentClassConfig {
     Item: typeof RqgItem;
     Actor: typeof RqgActor;
