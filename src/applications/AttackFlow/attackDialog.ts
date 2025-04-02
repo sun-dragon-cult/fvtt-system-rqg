@@ -466,9 +466,9 @@ export class AttackDialog extends FormApplication<
     }, {});
   }
 
-  getDamageBonusSourceOptions(weapon: RqgItem | undefined): Record<string, string> {
+  getDamageBonusSourceOptions(weapon: RqgItem | undefined): SelectOptionData<string>[] {
     if (weapon == null) {
-      return {};
+      return [];
     }
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
 
@@ -476,18 +476,29 @@ export class AttackDialog extends FormApplication<
     if (!weaponOwner) {
       throw new RqgError("weapon did not have an owner");
     }
-    const nonHumanods: Record<string, string> = getGame()
-      .actors?.filter((a) => a.isOwner && a.getBodyType() !== "humanoid")
-      ?.reduce((acc: any, actor) => {
-        const optionKey = `${actor.id}:${actor.system.attributes.damageBonus}`;
-        acc[optionKey] = actor.name ?? "";
-        return acc;
-      }, {});
-    const weaponOwnerOptionKey = `${weaponOwner.id}:${weaponOwner.system.attributes.damageBonus}`;
-    return {
-      [weaponOwnerOptionKey]: weaponOwner.name ?? "",
-      ...nonHumanods,
-    };
+
+    const weaponOwnerOptionKey = `${weaponOwner.id}:${weaponOwner.system.attributes?.damageBonus}`;
+    const nonHumanoids = getGame()
+      .scenes?.active?.tokens?.filter(
+        (t) =>
+          t.isOwner &&
+          !!t.actor?.system?.attributes?.damageBonus &&
+          t.actor.getBodyType() !== "humanoid",
+      )
+      ?.reduce(
+        (acc: SelectOptionData<string>[], token: TokenDocument) => {
+          const optionKey = `${token.id}:${token.actor?.system.attributes?.damageBonus}`;
+          acc.push({ value: optionKey, label: token.name ?? "" });
+          return acc;
+        },
+        [
+          {
+            value: weaponOwnerOptionKey,
+            label: weaponOwner.name ?? "",
+          },
+        ],
+      );
+    return nonHumanoids ?? [];
   }
 
   getHitLocationFormulaOptions(): Record<string, string> {

@@ -29,7 +29,7 @@ export type AttackDialogHandlebarsData = {
   defendingTokenName: string;
   attackingTokenOptions: Record<string, string>;
   attackingWeaponOptions: Record<string, string>;
-  damageBonusSourceOptions: Record<string, string>;
+  damageBonusSourceOptions: SelectOptionData<string>[];
   hitLocationFormulaOptions: Record<string, string>;
   aimedBlowOptions: SelectOptionData<number>[];
   halvedModifier: number;
