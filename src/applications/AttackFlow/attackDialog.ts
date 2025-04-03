@@ -157,6 +157,11 @@ export class AttackDialog extends FormApplication<
     // @ts-expect-error first
     const target = getGameUser().targets.first() as RqgToken | undefined;
 
+    const damageBonusSourceOptions = this.getDamageBonusSourceOptions(weaponItem);
+    if (!this.object.attackDamageBonus) {
+      this.object.attackDamageBonus = damageBonusSourceOptions[0]?.value;
+    }
+
     return {
       weaponItem: weaponItem,
       skillItem: usedSkill,
@@ -171,7 +176,7 @@ export class AttackDialog extends FormApplication<
       attackingWeaponOptions: weaponOptions,
       usageTypeOptions: usageTypeOptions,
       augmentOptions: this.augmentOptions,
-      damageBonusSourceOptions: this.getDamageBonusSourceOptions(weaponItem),
+      damageBonusSourceOptions: damageBonusSourceOptions,
       hitLocationFormulaOptions: this.getHitLocationFormulaOptions(),
       aimedBlowOptions: this.getAimedBlowOptions(target),
       halvedModifier: this.halvedModifier,
