@@ -4,7 +4,7 @@ import {
   SpiritMagicRollDialogHandlebarsData,
   SpiritMagicRollDialogObjectData,
 } from "./SpiritMagicRollDialogData.types";
-import { localize, toKebabCase, trimChars } from "../../system/util";
+import { getSpeakerFromItem, localize, toKebabCase, trimChars } from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import type { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
@@ -118,10 +118,7 @@ export class SpiritMagicRollDialog extends FormApplication<
           ],
           spellName: this.spellItem.name ?? undefined,
           spellImg: this.spellItem.img ?? undefined,
-          speaker: ChatMessage.getSpeaker({
-            token: this.spellItem.parent?.token ?? undefined,
-            actor: this.spellItem.parent ?? undefined,
-          }),
+          speaker: getSpeakerFromItem(this.spellItem),
         };
         const validationError = SpiritMagic.hasEnoughToCastSpell(
           this.object.levelUsed,

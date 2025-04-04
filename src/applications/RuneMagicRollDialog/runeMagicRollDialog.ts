@@ -4,7 +4,7 @@ import {
   RuneMagicRollDialogHandlebarsData,
   RuneMagicRollDialogObjectData,
 } from "./RuneMagicRollDialogData.types";
-import { localize, RqgError, toKebabCase, trimChars } from "../../system/util";
+import { getSpeakerFromItem, localize, RqgError, toKebabCase, trimChars } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
@@ -163,10 +163,7 @@ export class RuneMagicRollDialog extends FormApplication<
               description: o.otherModifierDescription,
             },
           ],
-          speaker: ChatMessage.getSpeaker({
-            token: actor?.token ?? undefined,
-            actor: actor,
-          }),
+          speaker: getSpeakerFromItem(this.spellItem),
         };
         const validationError = RuneMagic.hasEnoughToCastSpell(cult, o.levelUsed, o.boost);
         if (validationError) {

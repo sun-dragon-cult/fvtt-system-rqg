@@ -7,6 +7,7 @@ import { DamageCalculations } from "../system/damageCalculations";
 import {
   assertItemType,
   getGame,
+  getTokenFromActor,
   hasOwnProperty,
   localize,
   localizeCharacteristic,
@@ -108,7 +109,7 @@ export class RqgActor extends Actor {
         characteristicName: characteristicName,
         characteristicValue: rollCharacteristic.value ?? 0,
         difficulty: 5,
-        speaker: ChatMessage.getSpeaker({ actor: this }),
+        speaker: ChatMessage.getSpeaker({ token: getTokenFromActor(this), actor: this }),
       },
       { overwrite: false },
     ) as CharacteristicRollOptions;
@@ -130,7 +131,7 @@ export class RqgActor extends Actor {
     options: Omit<AbilityRollOptions, "naturalSkill"> = {},
   ): Promise<void> {
     const reputationItem = this.createReputationFakeItem();
-    const speaker = ChatMessage.getSpeaker({ actor: this });
+    const speaker = ChatMessage.getSpeaker({ token: this.token ?? undefined, actor: this });
 
     const combinedOptions = foundry.utils.mergeObject(
       options,
@@ -152,6 +153,7 @@ export class RqgActor extends Actor {
       systemId,
       "defaultItemIconSettings",
     );
+    const token = getTokenFromActor(this);
     return {
       name: "Reputation",
       img: defaultItemIconSettings.reputation,
@@ -160,6 +162,7 @@ export class RqgActor extends Actor {
       },
       // @ts-expect-error ownership to make the Ability roll hiding work
       ownership: { default: 0 },
+      actingToken: token,
     } as const;
   }
 

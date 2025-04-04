@@ -3,6 +3,10 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import type { ChatMessageType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
+import type { RqgItem } from "../items/rqgItem";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
+import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -703,4 +707,46 @@ export function* range(start: number | undefined, end: number | undefined): Gene
     return;
   }
   yield* range(start + 1, end);
+}
+
+export function getSpeakerFromItem(
+  item: RqgItem | PartialAbilityItem,
+): PropertiesToSource<ChatSpeakerDataProperties> {
+  const token = getTokenFromItem(item);
+  const actor = item.parent;
+  return ChatMessage.getSpeaker({
+    token: token,
+    actor: actor ?? undefined,
+  });
+}
+
+/**
+ * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
+ */
+export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
+  const token = getTokenFromActor(item.parent);
+
+  if (token) {
+    return token;
+  } else {
+    return (item as PartialAbilityItem).actingToken;
+  }
+}
+
+/**
+ * Get the token that is associated with actor, by looking at the tokens in the active scene.
+ */
+export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocument | undefined {
+  // First try to get the token from the item parent, this only works if the actor is unlinked
+  const tokenFromUnlinkedActor = actor?.token;
+  if (tokenFromUnlinkedActor) {
+    return tokenFromUnlinkedActor;
+  }
+
+  // If the actor is linked, we need to get the token from the active scene by comparing IDs
+  const owningActorTokens: TokenDocument[] =
+    actor?.getActiveTokens()?.map((t: any) => t.document) ?? [];
+  const attackingToken =
+    owningActorTokens[0] ?? getGame().scenes?.active?.tokens.find((t) => t.actor?.id === actor?.id);
+  return attackingToken;
 }

@@ -4,7 +4,7 @@ import {
   CharacteristicRollDialogHandlebarsData,
   CharacteristicRollDialogObjectData,
 } from "./CharacteristicRollDialogData.types";
-import { localize, RqgError } from "../../system/util";
+import { getTokenFromActor, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
@@ -134,7 +134,7 @@ export class CharacteristicRollDialog extends FormApplication<
             },
           ],
           speaker: ChatMessage.getSpeaker({
-            token: this.actor?.token ?? undefined,
+            token: getTokenFromActor(this.actor),
             actor: this.actor,
           }),
         };

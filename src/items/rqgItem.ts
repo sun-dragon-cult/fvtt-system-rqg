@@ -12,6 +12,7 @@ import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
   assertItemType,
   getGame,
+  getSpeakerFromItem,
   hasOwnProperty,
   localize,
   requireValue,
@@ -164,7 +165,6 @@ export class RqgItem extends Item {
     }
 
     const chance: number = Number(this.system.chance) || 0; // Handle NaN
-    const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
 
     const abilityRoll = await AbilityRoll.rollAndShow({
       naturalSkill: chance,
@@ -173,7 +173,7 @@ export class RqgItem extends Item {
       abilityType: this.type,
       abilityImg: this.img ?? undefined,
       resultMessages: options?.resultMessages,
-      speaker: speaker,
+      speaker: getSpeakerFromItem(this),
     });
     if (abilityRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
@@ -202,7 +202,6 @@ export class RqgItem extends Item {
     }
 
     const powX5: number = (Number(this.parent?.system.characteristics.power.value) || 0) * 5; // Handle NaN
-    const speaker = ChatMessage.getSpeaker({ actor: this.actor ?? undefined });
 
     const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
       powX5: powX5,
@@ -211,7 +210,7 @@ export class RqgItem extends Item {
       modifiers: options?.modifiers,
       spellName: this.name ?? undefined,
       spellImg: this.img ?? undefined,
-      speaker: speaker,
+      speaker: getSpeakerFromItem(this),
     });
     if (spiritMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
@@ -273,10 +272,7 @@ export class RqgItem extends Item {
       levelUsed: levelUsedOrDefault,
       magicPointBoost: options.magicPointBoost ?? 0,
       modifiers: options?.modifiers ?? [],
-      speaker: ChatMessage.getSpeaker({
-        token: this.actor?.token ?? undefined,
-        actor: this.actor ?? undefined,
-      }),
+      speaker: getSpeakerFromItem(this),
     });
     if (runeMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated RuneMagicRoll didn't give successLevel");

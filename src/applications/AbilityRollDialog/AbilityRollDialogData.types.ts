@@ -10,6 +10,8 @@ export type PartialAbilityItem = {
   system: { chance: number };
   parent?: RqgActor | null;
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
+  /** Special handling for Reputation rolls */
+  actingToken?: TokenDocument;
 };
 
 export type AbilityRollDialogHandlebarsData = {

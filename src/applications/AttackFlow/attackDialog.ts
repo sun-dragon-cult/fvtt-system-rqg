@@ -8,6 +8,7 @@ import {
   getDomDataset,
   getGame,
   getGameUser,
+  getTokenFromItem,
   localize,
   requireValue,
   RqgError,
@@ -45,13 +46,10 @@ export class AttackDialog extends FormApplication<
   private halvedModifier: number = 0;
 
   constructor(weaponItem: RqgItem, options: Partial<AttackDialogOptions> = {}) {
-    const owningActorTokens = (weaponItem.parent?.getActiveTokens() ?? []) as unknown as RqgToken[];
-    const attackingToken =
-      owningActorTokens[0] ??
-      getGame().scenes?.active?.tokens.find((t) => t.actor?.id === weaponItem.parent?.id);
+    const attackingToken = getTokenFromItem(weaponItem);
 
     const formData: AttackDialogObjectData = {
-      attackingTokenUuid: attackingToken?.document.uuid,
+      attackingTokenUuid: attackingToken?.uuid,
       attackingWeaponUuid: weaponItem.uuid,
       usageType: weaponItem.system.defaultUsage,
       reduceAmmoQuantity: true,
