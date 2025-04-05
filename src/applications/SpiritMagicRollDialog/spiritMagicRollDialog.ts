@@ -75,7 +75,10 @@ export class SpiritMagicRollDialog extends FormApplication<
   }
 
   async getData(): Promise<SpiritMagicRollDialogHandlebarsData> {
+    const speaker = getSpeakerFromItem(this.spellItem);
+
     return {
+      speakerName: speaker.alias ?? "",
       spellName: this.spellItem.name,
       spellSignature: this.spellItem.spellSignature,
       powX5: this.powX5,

@@ -89,11 +89,16 @@ export class CharacteristicRollDialog extends FormApplication<
   }
 
   async getData(): Promise<CharacteristicRollDialogHandlebarsData> {
+    const speaker = ChatMessage.getSpeaker({
+      token: getTokenFromActor(this.actor),
+      actor: this.actor,
+    });
     const o = this.options as unknown as CharacteristicRollOptions;
     const characteristicName = o.characteristicName ?? "";
     const characteristicValue =
       (this.actor.system.characteristics as any)[characteristicName]?.value ?? 0;
     return {
+      speakerName: speaker.alias ?? "",
       characteristicValue: characteristicValue,
       characteristicName: o.characteristicName ?? null,
       object: this.object,

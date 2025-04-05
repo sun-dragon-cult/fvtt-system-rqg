@@ -11,6 +11,7 @@ export type SpiritMagicRollDialogHandlebarsData = {
   augmentOptions: Record<string, string>; // TODO Actually <number, string>
   meditateOptions: Record<string, string>; // TODO Actually <number, string>
   totalChance: number;
+  speakerName: string;
 };
 
 export type SpiritMagicRollDialogObjectData = {

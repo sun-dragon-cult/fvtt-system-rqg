@@ -98,7 +98,9 @@ export class RuneMagicRollDialog extends FormApplication<
 
   async getData(): Promise<RuneMagicRollDialogHandlebarsData> {
     const usedRune = this.getUsedRune();
+    const speaker = getSpeakerFromItem(this.spellItem);
     return {
+      speakerName: speaker.alias ?? "",
       spell: this.spellItem,
       usedRune: usedRune,
       object: this.object,

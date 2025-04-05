@@ -67,7 +67,9 @@ export class AbilityRollDialog<T extends PartialAbilityItem> extends FormApplica
   }
 
   async getData(): Promise<AbilityRollDialogHandlebarsData> {
+    const speaker = getSpeakerFromItem(this.abilityItem);
     return {
+      speakerName: speaker.alias ?? "",
       abilityName: this.abilityItem.name,
       abilityChance: this.abilityItem.system.chance,
       abilityType: this.abilityItem.type,

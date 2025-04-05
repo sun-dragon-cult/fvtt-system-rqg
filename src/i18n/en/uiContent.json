@@ -542,6 +542,7 @@
         "IsAttacking": "attacks {defenderName}",
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
+        "Actor": "Actor",
         "AttackingActor": "Attacking Actor",
         "DefendingActor": "Defending Actor",
         "AugmentOptions": {

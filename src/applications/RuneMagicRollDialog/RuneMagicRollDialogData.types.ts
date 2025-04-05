@@ -12,6 +12,7 @@ export type RuneMagicRollDialogHandlebarsData = {
   meditateOptions: Record<string, string>; // TODO Actually <number, string>
   ritualOptions: Record<string, string>; // TODO Actually <number, string>
   totalChance: number;
+  speakerName: string;
 };
 
 export type RuneMagicRollDialogObjectData = {

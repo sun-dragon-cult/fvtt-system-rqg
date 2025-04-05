@@ -9,6 +9,7 @@ export type CharacteristicRollDialogHandlebarsData = {
   meditateOptions: Record<string, string>; // TODO Actually <number, string>
   difficultyOptions: Record<string, string>; // TODO Actually <number, string>
   totalChance: number;
+  speakerName: string;
 };
 
 export type CharacteristicRollDialogObjectData = {
