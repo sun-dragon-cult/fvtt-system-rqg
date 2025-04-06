@@ -28,6 +28,8 @@ import {
   unawareTargetModifier,
 } from "../../system/penaltyConstants";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
+import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
+import { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 
 export class AttackDialog extends FormApplication<
   FormApplication.Options,
@@ -331,12 +333,23 @@ export class AttackDialog extends FormApplication<
 
         const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
 
+        // @ts-expect-error first
+        const target = getGameUser().targets.first() as RqgToken | undefined;
+
         if (getGameUser().targets.size > 1) {
           ui.notifications?.info("Please target one token only");
         }
 
-        // @ts-expect-error first
-        const target = getGameUser().targets.first() as RqgToken | undefined;
+        const hitLocationRollOptions: HitLocationRollOptions = {
+          hitLocationNames: [], // hitLocationNames are added in defenceDialog when the target definitely selected
+          speaker: RqgChatMessage.getSpeaker({ token: tokenDocument }),
+        };
+
+        const hitLocationRoll = new HitLocationRoll(
+          this.object.hitLocationFormula,
+          {},
+          hitLocationRollOptions,
+        );
 
         const chatData: AttackChatFlags = {
           type: "attackChat",
@@ -356,7 +369,7 @@ export class AttackDialog extends FormApplication<
             defenceRoll: undefined,
             damageRoll: undefined,
             ignoreDefenderAp: false,
-            hitLocationRoll: new Roll(this.object.hitLocationFormula),
+            hitLocationRoll: hitLocationRoll,
             damagedWeaponUuid: "",
             weaponDamage: undefined,
             defenderHitLocationDamage: undefined,

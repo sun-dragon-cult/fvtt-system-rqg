@@ -28,6 +28,8 @@ import {
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../../sockets/SocketableRequests";
 import { WeaponDesignation } from "../../system/combatCalculations.defs";
+import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
+import { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 
 export class DefenceDialog extends FormApplication<
   FormApplication.Options,
@@ -270,7 +272,7 @@ export class DefenceDialog extends FormApplication<
         // @ts-expect-error flavor
         const currentFlavor: string = this.attackChatMessage.flavor;
 
-        const defenderName = (await fromUuid(this.object.defendingTokenUuid ?? ""))?.name;
+        const defenderName = defendingTokenDocument?.name;
 
         const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
 
@@ -423,6 +425,12 @@ export class DefenceDialog extends FormApplication<
         console.debug("no implementation for useParryHitLocation yet", useParryHitLocation);
 
         // TODO Introduce ability for GM to fudge roll here
+
+        const hitLocationRoll = messageData?.flags[systemId]?.chat.hitLocationRoll;
+        requireValue(hitLocationRoll, "No Hit Location Roll found in chat message");
+
+        (hitLocationRoll.options as HitLocationRollOptions).hitLocationNames =
+          HitLocationRoll.tokenToHitLocationNames(defendingTokenDocument);
 
         const damageDegree = getDamageDegree(
           this.object.defence ?? "ignore", // TODO correct?

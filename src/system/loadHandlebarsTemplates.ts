@@ -24,6 +24,8 @@ export const templatePaths = {
   abilityRoll: "systems/rqg/rolls/AbilityRoll/abilityRoll.hbs",
   characteristicRollTooltip: "systems/rqg/rolls/CharacteristicRoll/characteristicRollTooltip.hbs",
   characteristicRoll: "systems/rqg/rolls/CharacteristicRoll/characteristicRoll.hbs",
+  hitLocationRoll: "systems/rqg/rolls/HitLocationRoll/hitLocationRoll.hbs",
+  hitLocationTooltip: "systems/rqg/rolls/HitLocationRoll/hitLocationRollTooltip.hbs",
   spiritMagicRollTooltip: "systems/rqg/rolls/SpiritMagicRoll/spiritMagicRollTooltip.hbs",
   spiritMagicRoll: "systems/rqg/rolls/SpiritMagicRoll/spiritMagicRoll.hbs",
   runeMagicRollTooltip: "systems/rqg/rolls/RuneMagicRoll/runeMagicRollTooltip.hbs",
