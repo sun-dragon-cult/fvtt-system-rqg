@@ -1,3 +1,9 @@
+// needed for DamageRoll class
+// @ts-expect-error Roll
+global.Roll = class MockRoll {
+  constructor() {}
+};
+
 import {
   __setLocalizeFunction,
   exportedForTesting,
