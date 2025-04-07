@@ -1148,6 +1148,7 @@
         "OneUseUsageCost": "Used {runePointsCost} permanent rune points and {magicPointCost} magic points."
       },
       "DamageRoll": {
+        "Damage": "Damage",
         "WeaponDamage": "weapon damage",
         "DamageBonus": "damage bonus",
         "SpecialDamage": "special damage"

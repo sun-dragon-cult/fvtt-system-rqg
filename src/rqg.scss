@@ -966,6 +966,10 @@ input.readonly {
     flex-wrap: wrap;
     justify-content: space-around;
 
+    .damage-formula {
+      margin-bottom: 0.5rem;
+    }
+
     .dice-result {
       order: 2;
     }

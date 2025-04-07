@@ -22,6 +22,8 @@ export const templatePaths = {
   // Dice & Rolls
   abilityRollTooltip: "systems/rqg/rolls/AbilityRoll/abilityRollTooltip.hbs",
   abilityRoll: "systems/rqg/rolls/AbilityRoll/abilityRoll.hbs",
+  damageRollTooltip: "systems/rqg/rolls/DamageRoll/damageRollTooltip.hbs",
+  damageRoll: "systems/rqg/rolls/DamageRoll/damageRoll.hbs",
   characteristicRollTooltip: "systems/rqg/rolls/CharacteristicRoll/characteristicRollTooltip.hbs",
   characteristicRoll: "systems/rqg/rolls/CharacteristicRoll/characteristicRoll.hbs",
   hitLocationRoll: "systems/rqg/rolls/HitLocationRoll/hitLocationRoll.hbs",

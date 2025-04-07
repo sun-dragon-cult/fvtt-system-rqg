@@ -18,6 +18,7 @@ import {
   weaponForDamageTable,
 } from "./combatCalculations.defs";
 import { attackDodgeMap } from "./attackDodgeTable";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 
 export const exportedForTesting = {
   calculateDamages,
@@ -233,7 +234,7 @@ async function evaluateDamageRoll(
   damageFormula: string,
   damageDegree: DamageDegree,
 ): Promise<Roll> {
-  const damageRoll = new Roll(damageFormula);
+  const damageRoll = new DamageRoll(damageFormula);
   try {
     await damageRoll.evaluate({ maximize: damageDegree === "maxSpecial" });
     requireValue(damageRoll.total, "damage roll was not yet evaluated?");

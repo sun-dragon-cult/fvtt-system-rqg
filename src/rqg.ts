@@ -34,6 +34,7 @@ import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRol
 import { SpiritMagicRoll } from "./rolls/SpiritMagicRoll/SpiritMagicRoll";
 import { RuneMagicRoll } from "./rolls/RuneMagicRoll/RuneMagicRoll";
 import { HitLocationRoll } from "./rolls/HitLocationRoll/HitLocationRoll";
+import { DamageRoll } from "./rolls/DamageRoll/DamageRoll";
 
 Hooks.once("init", async () => {
   console.log(
@@ -90,6 +91,7 @@ Hooks.once("init", async () => {
     SpiritMagicRoll,
     RuneMagicRoll,
     HitLocationRoll,
+    DamageRoll,
   ];
   CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
