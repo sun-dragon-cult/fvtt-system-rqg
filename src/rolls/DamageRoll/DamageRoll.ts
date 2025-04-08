@@ -28,6 +28,10 @@ export class DamageRoll extends Roll {
     return Math.max(0, superTotal ?? 0); // Damage can't be negative
   }
 
+  get originalFormula(): string {
+    return this._formula;
+  }
+
   // Html for the details of how much damage was rolled
   async getTooltip(): Promise<string> {
     const parts = this.dice.map((d) => d.getTooltipData());

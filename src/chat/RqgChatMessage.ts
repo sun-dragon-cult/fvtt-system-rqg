@@ -4,12 +4,14 @@ import { systemId } from "../system/config";
 import {
   handleApplyActorDamage,
   handleApplyWeaponDamage,
-  handleRollDamageAndHitLocation,
   handleDefence,
+  handleRollDamageAndHitLocation,
   handleRollFumble,
 } from "./attackFlowHandlers";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { getGameUser } from "../system/util";
+import { getGameUser, localize } from "../system/util";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
+import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 
 export type ChatMessageType = keyof typeof chatHandlerMap;
 
@@ -248,5 +250,90 @@ export class RqgChatMessage extends ChatMessage {
         element.innerHTML = await roll.render();
       }
     }
+  }
+
+  /**
+   * Export the content of the chat message into a standardized log format
+   * @returns {string}
+   */
+  export() {
+    let content = [];
+
+    // Handle HTML content
+    // @ts-expect-error content
+    if (this.content) {
+      // @ts-expect-error content
+      const html = $("<article>").html(this.content.replace(/<\/div>/g, "</div>|n"));
+      // @ts-expect-error content
+      const text = html.length ? html.text() : this.content;
+      const lines = text
+        .replace(/\n/g, "")
+        .split("  ")
+        .filter((p: string) => p !== "")
+        .join(" ");
+      content = lines.split("|n").map((l: string) => l.trim());
+    }
+
+    // Add Roll content
+    // @ts-expect-error rolls
+    for (const roll of this.rolls) {
+      if (hasProperty(roll, "successLevel")) {
+        content.push(
+          `AbilityRoll: ${roll.flavor
+            .replaceAll(/<[^>]*>/gm, "")
+            .replaceAll(/\n */gm, " ")
+            .trim()} ${roll.total} / ${roll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${roll.successLevel}`)} `,
+        );
+      } else {
+        content.push(`${roll.formula} = ${roll.result} = ${roll.total}`);
+      }
+    }
+
+    const defenceRollData = this.flags[systemId]?.chat?.defenceRoll as any;
+    const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
+    if (defenceRoll?.total) {
+      content.unshift(
+        `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
+      );
+    }
+
+    const attackRollData = this.flags[systemId]?.chat?.attackRoll as any;
+    const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
+    if (attackRoll?.total) {
+      content.unshift(
+        `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
+      );
+      // @ts-expect-error content
+      content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
+    }
+
+    const damageRollData = this.flags[systemId]?.chat?.damageRoll as any;
+    const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
+    if (damageRoll?.total) {
+      content.push(
+        `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
+      );
+    }
+
+    const hitLocationRollData = this.flags[systemId]?.chat?.hitLocationRoll as any;
+    const hitLocationRoll = hitLocationRollData
+      ? HitLocationRoll.fromData(hitLocationRollData)
+      : undefined;
+    if (hitLocationRoll?.total) {
+      content.push(
+        `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
+      );
+    }
+
+    // Author and timestamp
+    // @ts-expect-error timestamp
+    const time = new Date(this.timestamp).toLocaleDateString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    });
+
+    // Format logged result
+    return `[${time}] ${this.alias}\n${content.filterJoin("\n")}`;
   }
 }
