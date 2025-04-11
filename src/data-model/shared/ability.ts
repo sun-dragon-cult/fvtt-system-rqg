@@ -44,7 +44,7 @@ export class Ability {
       flavor: `${flavor} (${chance}${chanceModText}%) <h1>${resultText}</h1><div>${resultMsgHtml}</div>`,
       speaker: speaker,
       // @ts-expect-error CHAT_MESSAGE_STYLES
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
     });
     return result;
   }

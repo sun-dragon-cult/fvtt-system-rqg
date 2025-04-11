@@ -828,7 +828,7 @@ export class RqgActorSheet extends ActorSheet<
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
           // @ts-expect-error CHAT_MESSAGE_STYLES
-          type: CONST.CHAT_MESSAGE_STYLES.WHISPER,
+          style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
         });
       }
     }
@@ -1223,7 +1223,7 @@ export class RqgActorSheet extends ActorSheet<
         await r.toMessage({
           speaker: ChatMessage.getSpeaker(),
           // @ts-expect-error CHAT_MESSAGE_STYLES
-          type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+          style: CONST.CHAT_MESSAGE_STYLES.ROLL,
           flavor: `damage`,
         });
       });

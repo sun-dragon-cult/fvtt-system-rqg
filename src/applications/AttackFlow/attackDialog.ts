@@ -390,7 +390,7 @@ export class AttackDialog extends FormApplication<
 
         const attackChatMessageOptions = {
           // @ts-expect-error CHAT_MESSAGE_STYLES
-          type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: attackFlavor,
           content: attackChatContent,
           speaker: ChatMessage.getSpeaker({

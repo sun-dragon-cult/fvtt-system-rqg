@@ -189,7 +189,7 @@ async function submitImproveAbilityDialog(
       await expRoll.toMessage({
         speaker: speaker,
         // @ts-expect-error CHAT_MESSAGE_STYLES
-        type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+        style: CONST.CHAT_MESSAGE_STYLES.ROLL,
         flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
       });
 
@@ -212,7 +212,7 @@ async function submitImproveAbilityDialog(
           await gainRoll.toMessage({
             speaker: speaker,
             // @ts-expect-error CHAT_MESSAGE_STYLES
-            type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+            style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
           });
           gain = adapter.experienceGainFixed;
@@ -226,7 +226,7 @@ async function submitImproveAbilityDialog(
           await gainRoll.toMessage({
             speaker: speaker,
             // @ts-expect-error CHAT_MESSAGE_STYLES
-            type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+            style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
           });
           gain = Number(gainRoll.total) || 0;
@@ -245,7 +245,7 @@ async function submitImproveAbilityDialog(
         const failChat = {
           speaker: speaker,
           // @ts-expect-error CHAT_MESSAGE_STYLES
-          type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+          style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: failedFlavor,
           content: failedContent,
         };
@@ -273,7 +273,7 @@ async function submitImproveAbilityDialog(
     await roll.toMessage({
       speaker: speaker,
       // @ts-expect-error CHAT_MESSAGE_STYLES
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });
     gain = adapter.trainingGainFixed;
@@ -291,7 +291,7 @@ async function submitImproveAbilityDialog(
     await gainRoll.toMessage({
       speaker: speaker,
       // @ts-expect-error CHAT_MESSAGE_STYLES
-      type: CONST.CHAT_MESSAGE_STYLES.ROLL,
+      style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });
     gain = Number(gainRoll.total) || 0;
