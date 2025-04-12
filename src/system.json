@@ -64,6 +64,11 @@
       ]
     }
   ],
+  "documentTypes": {
+    "ChatMessage": {
+      "combat": {}
+    }
+  },
   "packs": [
     {
       "name": "documentation",

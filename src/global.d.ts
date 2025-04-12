@@ -3,7 +3,6 @@ import { RqgItemDataProperties, RqgItemDataSource } from "./data-model/item-data
 import { RqgActor } from "./actors/rqgActor";
 import { RqgActorDataProperties, RqgActorDataSource } from "./data-model/actor-data/rqgActorData";
 import { RqgConfig, systemId } from "./system/config";
-import { RqgChatMessageFlags } from "./data-model/shared/rqgDocumentFlags";
 import {
   RqgActorFlags,
   RqgItemFlags,
@@ -44,7 +43,6 @@ declare global {
     Actor: { [systemId]?: RqgActorFlags };
     JournalEntry: { [systemId]?: RqgJournalEntryFlags };
     RollTable: { [systemId]?: RqgRollTableFlags };
-    ChatMessage: { [systemId]?: RqgChatMessageFlags };
   }
 }
 

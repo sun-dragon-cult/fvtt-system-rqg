@@ -1,7 +1,6 @@
 import type { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import type { ChatMessageType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
@@ -240,20 +239,6 @@ export function assertActorType<T extends ActorTypeEnum>(
 ): asserts actorType is T {
   if (!actorType || actorType !== type) {
     const msg = `Got unexpected actor type in assert, ${actorType} ≠ ${type}`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
-}
-
-/**
- * Check if a flags of a chat message has the specified type and narrow the flag data to that type.
- */
-export function assertChatMessageFlagType<T extends ChatMessageType>(
-  chatMessageType: ChatMessageType | undefined,
-  type: T,
-): asserts chatMessageType is T {
-  if (!chatMessageType || chatMessageType !== type) {
-    const msg = `Got unexpected chat message type in assert, ${chatMessageType} ≠ ${type}`;
     ui.notifications?.error(msg);
     throw new RqgError(msg);
   }

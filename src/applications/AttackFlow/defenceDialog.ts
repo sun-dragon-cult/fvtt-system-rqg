@@ -84,18 +84,13 @@ export class DefenceDialog extends FormApplication<
     if (!this.attackChatMessage) {
       ui.notifications?.error("Could not find chat message"); // TODO Improve error
     }
-    this.object.defendingTokenUuid = this.attackChatMessage?.getFlag(
-      systemId,
-      "chat.defendingTokenUuid",
-    );
+    this.object.defendingTokenUuid = this.attackChatMessage?.system.defendingTokenUuid;
 
-    const attackingTokenUuid = this.attackChatMessage?.getFlag(systemId, "chat.attackingTokenUuid");
+    const attackingTokenUuid = this.attackChatMessage?.system.attackingTokenUuid;
     // @ts-expect-error fromUuidSync
     this.attackingTokenName = fromUuidSync(attackingTokenUuid ?? "")?.name ?? "None?";
 
-    this.attackRoll = AbilityRoll.fromData(
-      this.attackChatMessage?.getFlag(systemId, "chat.attackRoll") as any,
-    );
+    this.attackRoll = AbilityRoll.fromData(this.attackChatMessage?.system.attackRoll as any);
     if (!this.attackRoll) {
       const msg = "No attack roll present - cannot defend";
       ui.notifications?.warn(msg);
@@ -372,27 +367,22 @@ export class DefenceDialog extends FormApplication<
         }
 
         const attackingWeapon = (await fromUuid(
-          this.attackChatMessage?.getFlag(systemId, "chat.attackWeaponUuid"),
+          this.attackChatMessage?.system.attackWeaponUuid,
         )) as RqgItem | null;
         assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
 
-        const attackWeaponUsageType = this.attackChatMessage?.getFlag(
-          systemId,
-          "chat.attackWeaponUsage",
-        );
+        const attackWeaponUsageType = this.attackChatMessage?.system.attackWeaponUsage;
         requireValue(
           attackWeaponUsageType,
           "No attacking weapon usage found in attack chat message",
         );
 
         const parryWeaponUsageType = this.object.parryingWeaponUsage;
-        const attackDamageBonus =
-          this.attackChatMessage?.getFlag(systemId, "chat.attackDamageBonus") ?? "";
-        const attackExtraDamage =
-          this.attackChatMessage?.getFlag(systemId, "chat.attackExtraDamage") ?? "";
+        const attackDamageBonus = this.attackChatMessage?.system.attackDamageBonus ?? "";
+        const attackExtraDamage = this.attackChatMessage?.system.attackExtraDamage ?? "";
         const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "";
         const damageType: DamageType =
-          this.attackChatMessage?.getFlag(systemId, "chat.attackCombatManeuver.damageType") ?? "";
+          this.attackChatMessage?.system.attackCombatManeuver.damageType ?? "";
 
         const {
           damageRoll,
@@ -426,7 +416,7 @@ export class DefenceDialog extends FormApplication<
 
         // TODO Introduce ability for GM to fudge roll here
 
-        const hitLocationRoll = messageData?.flags[systemId]?.chat.hitLocationRoll;
+        const hitLocationRoll = this.attackChatMessage?.system.hitLocationRoll;
         requireValue(hitLocationRoll, "No Hit Location Roll found in chat message");
 
         (hitLocationRoll.options as HitLocationRollOptions).hitLocationNames =
@@ -440,44 +430,42 @@ export class DefenceDialog extends FormApplication<
 
         const attackerFumbled = this.attackRoll.successLevel === AbilitySuccessLevelEnum.Fumble;
         const defenderFumbled = defenceRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
+        const systemUpdate = {
+          attackState: "Defended",
+          defendingTokenUuid: this.object.defendingTokenUuid,
+          defenceWeaponUuid: selectedParryingWeapon?.uuid,
+          defenceWeaponUsage: parryWeaponUsageType,
+          outcomeDescription: outcomeDescription,
+          attackRoll: this.attackRoll.toJSON(),
+          defenceRoll: defenceRoll,
+          attackerFumbled: attackerFumbled,
+          defenderFumbled: defenderFumbled,
+          damagedWeaponUuid: damagedWeapon?.uuid,
+          weaponDamage: weaponDamage,
+          weaponDoingDamage: weaponDoingDamage,
+          defenderHitLocationDamage: defenderHitLocationDamage,
+          damageRoll: damageRoll,
+          ignoreDefenderAp: ignoreDefenderAp,
+          actorDamagedApplied: damageDegree === "none",
+          weaponDamageApplied: damageDegree === "none",
+          hitLocationRoll: damageRoll // If there is a damageRoll there should also be a hitLocationRoll
+            ? hitLocationRoll
+            : null,
+        };
 
         foundry.utils.mergeObject(
           messageData,
           {
+            system: systemUpdate,
             flavor: updatedFlavor,
-            flags: {
-              [systemId]: {
-                chat: {
-                  attackState: "Defended",
-                  defendingTokenUuid: this.object.defendingTokenUuid,
-                  defenceWeaponUuid: selectedParryingWeapon?.uuid,
-                  defenceWeaponUsage: parryWeaponUsageType,
-                  outcomeDescription: outcomeDescription,
-                  attackRoll: this.attackRoll.toJSON(),
-                  defenceRoll: defenceRoll,
-                  attackerFumbled: attackerFumbled,
-                  defenderFumbled: defenderFumbled,
-                  damagedWeaponUuid: damagedWeapon?.uuid,
-                  weaponDamage: weaponDamage,
-                  weaponDoingDamage: weaponDoingDamage,
-                  defenderHitLocationDamage: defenderHitLocationDamage,
-                  damageRoll: damageRoll,
-                  ignoreDefenderAp: ignoreDefenderAp,
-                  actorDamagedApplied: damageDegree === "none",
-                  weaponDamageApplied: damageDegree === "none",
-                  hitLocationRoll: damageRoll // If there is a damageRoll there should also be a hitLocationRoll
-                    ? messageData?.flags[systemId]?.chat.hitLocationRoll
-                    : null,
-                },
-              },
-            },
           },
           { overwrite: true },
         );
 
         messageData.content = await renderTemplate(
           templatePaths.attackChatMessage,
-          messageData.flags[systemId]!.chat,
+          // @ts-expect-error system
+          messageData.system,
         );
 
         // @ts-expect-error dice3d
@@ -503,13 +491,10 @@ export class DefenceDialog extends FormApplication<
         }
 
         await updateChatMessage(this.attackChatMessage, messageData);
-        const attackWeapon = (await fromUuid(
-          this.attackChatMessage.getFlag(systemId, "chat.attackWeaponUuid"),
-        )) as RqgItem | undefined;
-        const attackWeaponUsage = this.attackChatMessage.getFlag(
-          systemId,
-          "chat.attackWeaponUsage",
-        );
+        const attackWeapon = (await fromUuid(this.attackChatMessage.system.attackWeaponUuid)) as
+          | RqgItem
+          | undefined;
+        const attackWeaponUsage = this.attackChatMessage.system.attackWeaponUsage;
         const attackSkill = attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
           attackWeapon.system.usage[attackWeaponUsage].skillRqidLink.rqid,
         );
@@ -573,7 +558,7 @@ export class DefenceDialog extends FormApplication<
     // case 1 - defendingTokenUuid is set (attacker has set a target)
     // @ts-expect-error fromUuidSync
     const defendingToken = fromUuidSync(
-      this.attackChatMessage?.getFlag(systemId, "chat.defendingTokenUuid") ?? "",
+      this.attackChatMessage?.system.defendingTokenUuid ?? "",
     ) as TokenDocument | null;
     if (defendingToken) {
       return { [defendingToken?.uuid ?? ""]: defendingToken.name ?? "" };

@@ -18,7 +18,6 @@ import {
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
 import { AttackDialogOptions } from "../../chat/RqgChatMessage.types";
-import { AttackChatFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
@@ -30,6 +29,7 @@ import {
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
+import { ChatMessageTypes } from "../../data-model/chat-data/combatChatMessage.dataModel";
 
 export class AttackDialog extends FormApplication<
   FormApplication.Options,
@@ -351,37 +351,35 @@ export class AttackDialog extends FormApplication<
           hitLocationRollOptions,
         );
 
-        const chatData: AttackChatFlags = {
-          type: "attackChat",
-          chat: {
-            attackState: `Attacked`,
-            attackingTokenUuid: tokenDocument?.uuid ?? "",
-            defendingTokenUuid: target?.document?.uuid,
-            attackWeaponUuid: this.object.attackingWeaponUuid ?? "", // Checked for existence earlier
-            attackWeaponUsage: this.object.usageType,
-            attackCombatManeuver: combatManeuver,
-            outcomeDescription: "",
-            actorDamagedApplied: false,
-            weaponDamageApplied: false,
-            attackExtraDamage: this.object.attackExtraDamage,
-            attackDamageBonus: this.object.attackDamageBonus?.split(":")[1] ?? "0",
-            attackRoll: attackRoll,
-            defenceRoll: undefined,
-            damageRoll: undefined,
-            ignoreDefenderAp: false,
-            hitLocationRoll: hitLocationRoll,
-            damagedWeaponUuid: "",
-            weaponDamage: undefined,
-            defenderHitLocationDamage: undefined,
-            attackerFumbled: false,
-            attackerFumbleOutcome: "",
-            defenderFumbled: false,
-            defenderFumbleOutcome: "",
-          },
+        const chatSystemData: any = {
+          attackState: `Attacked`,
+          attackingTokenUuid: tokenDocument?.uuid ?? "",
+          defendingTokenUuid: target?.document?.uuid,
+          attackWeaponUuid: this.object.attackingWeaponUuid ?? "", // Checked for existence earlier
+          attackWeaponUsage: this.object.usageType,
+          attackCombatManeuver: combatManeuver,
+          outcomeDescription: "",
+          actorDamagedApplied: false,
+          weaponDamageApplied: false,
+          attackExtraDamage: this.object.attackExtraDamage,
+          attackDamageBonus: this.object.attackDamageBonus?.split(":")[1] ?? "0",
+          attackRoll: attackRoll,
+          defenceRoll: undefined,
+          damageRoll: undefined,
+          ignoreDefenderAp: false,
+          hitLocationRoll: hitLocationRoll,
+          damagedWeaponUuid: "",
+          weaponDamage: undefined,
+          defenderHitLocationDamage: undefined,
+          attackerFumbled: false,
+          attackerFumbleOutcome: "",
+          defenderFumbled: false,
+          defenderFumbleOutcome: "",
         };
+
         const attackChatContent = await renderTemplate(
           templatePaths.attackChatMessage,
-          chatData.chat,
+          chatSystemData,
         );
 
         const attackFlavor = localize("RQG.Dialog.Common.IsAttacking", {
@@ -389,6 +387,8 @@ export class AttackDialog extends FormApplication<
         });
 
         const attackChatMessageOptions = {
+          type: ChatMessageTypes.Combat,
+          system: chatSystemData,
           // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: attackFlavor,
@@ -396,11 +396,9 @@ export class AttackDialog extends FormApplication<
           speaker: ChatMessage.getSpeaker({
             token: actor.token ?? undefined,
           }),
-          flags: {
-            rqg: chatData,
-          },
         };
 
+        // @ts-expect-error type
         const cm = await ChatMessage.create(attackChatMessageOptions);
         cm?.render(true);
       });

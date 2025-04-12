@@ -1,6 +1,3 @@
-import { WeaponChatHandler } from "./weaponChatHandler";
-import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
-import { systemId } from "../system/config";
 import {
   handleApplyActorDamage,
   handleApplyWeaponDamage,
@@ -12,18 +9,15 @@ import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { getGameUser, localize } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
-
-export type ChatMessageType = keyof typeof chatHandlerMap;
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const chatHandlerMap = {
-  weaponChat: WeaponChatHandler,
-  attackChat: undefined, // TODO Remove this connection, only used to get ChatMessageTypes to rqgDocumentFlags??
-};
+import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
 
 export class RqgChatMessage extends ChatMessage {
+  declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
+
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
+    // @ts-expect-error dataModels
+    CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
 
     Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
       RqgChatMessage.addChatListeners(html[0]);
@@ -48,8 +42,6 @@ export class RqgChatMessage extends ChatMessage {
     await this.#enrichChatCard(element);
     return $(element);
   }
-
-  declare flags: { [systemId]: RqgChatMessageFlags }; // v10 type workaround
 
   private static addChatListeners(html: HTMLElement | undefined): void {
     html?.addEventListener("click", RqgChatMessage.clickHandler);
@@ -97,89 +89,6 @@ export class RqgChatMessage extends ChatMessage {
     setTimeout(() => (clickedButton.disabled = false), 1000); // Prevent double clicks
   }
 
-  // private static async inputChangeHandler(inputEvent: Event): Promise<void> {
-  //   const target = inputEvent.target;
-  //   assertHtmlElement(target);
-  //   if (target?.dataset.handleChange == null) {
-  //     return; // Only handle inputs etc that are tagged with "data-handle-change"
-  //   }
-  //   const { chatMessageId } = RqgChatMessage.getChatMessageInfo(inputEvent);
-  //   const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage;
-  //   requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
-  //
-  //   const flags = chatMessage.flags.rqg;
-  //   requireValue(flags, "No rqg flags found on chat message");
-  //   const chatMessageType = flags?.type;
-  //   requireValue(chatMessageType, "Found chatmessage without chat message type");
-  //
-  //   chatHandlerMap[chatMessageType].updateFlagsFromForm(flags, inputEvent);
-  //   const data = await chatHandlerMap[chatMessageType].renderContent(flags);
-  //
-  //   const domChatMessages = document.querySelectorAll<HTMLElement>(
-  //     `[data-message-id="${chatMessage.id}"]`,
-  //   );
-  //   const domChatMessage = Array.from(domChatMessages).find((m) =>
-  //     m.contains(inputEvent.currentTarget as Node),
-  //   );
-  //   const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
-  //
-  //   await chatMessage.update(data); // Rerenders the dom chatmessages
-  //   const newDomChatMessages = document.querySelectorAll<HTMLElement>(
-  //     `[data-message-id="${chatMessage.id}"]`,
-  //   );
-  //   const newDomChatMessage = Array.from(newDomChatMessages).find(
-  //     (m) => !!m.closest<HTMLElement>(".chat-popout") === isFromPopoutChat,
-  //   );
-  //
-  //   // Find the input element that inititated the change and move the cursor there.
-  //   const inputElement = inputEvent.target;
-  //   if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
-  //     const elementName = inputElement?.name;
-  //     const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
-  //       `[name=${elementName}]`,
-  //     );
-  //     newInputElement && moveCursorToEnd(newInputElement);
-  //   }
-  //   // @ts-expect-error is marked as private!?
-  //   ui.chat?.scrollBottom(); // Fix that the weapon chat gets bigger and pushes the rest of the chatlog down
-  // }
-  //
-  // public static async formSubmitHandler(submitEvent: SubmitEvent): Promise<boolean> {
-  //   submitEvent.preventDefault();
-  //
-  //   const { chatMessageId } = RqgChatMessage.getChatMessageInfo(submitEvent);
-  //
-  //   const clickedButton = submitEvent.submitter as HTMLButtonElement;
-  //   clickedButton.disabled = true;
-  //   setTimeout(() => (clickedButton.disabled = false), 1000); // Prevent double clicks
-  //
-  //   const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
-  //   const flags = chatMessage?.flags.rqg;
-  //   requireValue(flags, "Couldn't find flags on chatmessage");
-  //
-  //   const chatMessageType = flags.type;
-  //
-  //   chatHandlerMap[chatMessageType].updateFlagsFromForm(flags, submitEvent);
-  //
-  //   const form = submitEvent.target as HTMLFormElement;
-  //   // Disable form until completed
-  //   form.style.pointerEvents = "none";
-  //
-  //   await chatMessage.doRoll();
-  //
-  //   // Enabling the form again after DsN animation is finished TODO doesn't wait?
-  //   form.style.pointerEvents = "auto";
-  //   return false;
-  // }
-  //
-  // public async doRoll(): Promise<void> {
-  //   const flags = this.flags.rqg;
-  //   requireValue(flags, "No rqg flags found on chat message");
-  //   // TODO don't roll from chat, roll from dialog
-  //   // const chatMessageType = flags.type;
-  //   // await chatHandlerMap[chatMessageType].rollFromChat(this);
-  // }
-
   /**
    * Augment the chat card html markup for additional styling and eventlisteners.
    */
@@ -190,10 +99,10 @@ export class RqgChatMessage extends ChatMessage {
     );
 
     // Enrich the combat chat message with evaluated rolls
-    await this.#enrichHtmlWithRoll(html, "chat.attackRoll", "[data-attack-roll-html]");
-    await this.#enrichHtmlWithRoll(html, "chat.defenceRoll", "[data-defence-roll-html]");
-    await this.#enrichHtmlWithRoll(html, "chat.damageRoll", "[data-damage-roll-html]");
-    await this.#enrichHtmlWithRoll(html, "chat.hitLocationRoll", "[data-hit-location-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "damageRoll", "[data-damage-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]");
 
     this.#hideHtmlElementsByOwnership(html);
   }
@@ -238,11 +147,10 @@ export class RqgChatMessage extends ChatMessage {
 
   async #enrichHtmlWithRoll(
     html: HTMLElement,
-    flagPath: string,
+    systemDataProp: string,
     domSelector: string,
   ): Promise<void> {
-    const rollData = this.getFlag(systemId, flagPath);
-    // @ts-expect-error evaluated
+    const rollData = this.system[systemDataProp];
     if (rollData?.evaluated) {
       const roll = AbilityRoll.fromData(rollData);
       const element = html.querySelector<HTMLElement>(domSelector);
@@ -254,9 +162,8 @@ export class RqgChatMessage extends ChatMessage {
 
   /**
    * Export the content of the chat message into a standardized log format
-   * @returns {string}
    */
-  export() {
+  export(): string {
     let content = [];
 
     // Handle HTML content
@@ -289,7 +196,7 @@ export class RqgChatMessage extends ChatMessage {
       }
     }
 
-    const defenceRollData = this.flags[systemId]?.chat?.defenceRoll as any;
+    const defenceRollData = this.system.defenceRoll;
     const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
     if (defenceRoll?.total) {
       content.unshift(
@@ -297,7 +204,7 @@ export class RqgChatMessage extends ChatMessage {
       );
     }
 
-    const attackRollData = this.flags[systemId]?.chat?.attackRoll as any;
+    const attackRollData = this.system.attackRoll;
     const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
     if (attackRoll?.total) {
       content.unshift(
@@ -307,7 +214,7 @@ export class RqgChatMessage extends ChatMessage {
       content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
     }
 
-    const damageRollData = this.flags[systemId]?.chat?.damageRoll as any;
+    const damageRollData = this.system.damageRoll;
     const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
     if (damageRoll?.total) {
       content.push(
@@ -315,7 +222,7 @@ export class RqgChatMessage extends ChatMessage {
       );
     }
 
-    const hitLocationRollData = this.flags[systemId]?.chat?.hitLocationRoll as any;
+    const hitLocationRollData = this.system.hitLocationRoll;
     const hitLocationRoll = hitLocationRollData
       ? HitLocationRoll.fromData(hitLocationRollData)
       : undefined;

@@ -35,7 +35,6 @@ export const templatePaths = {
 
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
-  chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
   attackChatMessage: "systems/rqg/applications/AttackFlow/attackChatTemplate.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",

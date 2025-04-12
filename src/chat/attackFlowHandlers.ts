@@ -18,6 +18,8 @@ import { RqgActor } from "../actors/rqgActor";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../sockets/SocketableRequests";
+import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -47,9 +49,7 @@ export async function handleRollDamageAndHitLocation(
     // TODO Warn about missing chat message
     return;
   }
-  const hitLocationRoll = Roll.fromData(
-    attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
-  );
+  const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
 
   await hitLocationRoll.evaluate();
 
@@ -62,7 +62,7 @@ export async function handleRollDamageAndHitLocation(
     const userDealingDamage = defenderDamage ? getGameUser() : attackChatMessage.author;
 
     // DamageRoll is already evaluated in CombatOutcome to calc weaponDamage
-    const damageRoll = Roll.fromData(attackChatMessage.getFlag(systemId, "chat.damageRoll"));
+    const damageRoll = DamageRoll.fromData(attackChatMessage.system.damageRoll);
     // @ts-expect-error dice3d
     void game.dice3d.showForRoll(damageRoll, userDealingDamage, true, null, false);
     // @ts-expect-error dice3d
@@ -73,22 +73,16 @@ export async function handleRollDamageAndHitLocation(
   foundry.utils.mergeObject(
     messageData,
     {
-      flags: {
-        [systemId]: {
-          chat: {
-            attackState: `DamageRolled`,
-            hitLocationRoll: hitLocationRoll.toJSON(),
-          },
-        },
+      system: {
+        attackState: `DamageRolled`,
+        hitLocationRoll: hitLocationRoll.toJSON(),
       },
     },
     { overwrite: true },
   );
 
-  messageData.content = await renderTemplate(
-    templatePaths.attackChatMessage,
-    messageData.flags.rqg!.chat!,
-  );
+  // @ts-expect-error system
+  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
 
   await updateChatMessage(attackChatMessage, messageData);
 }
@@ -105,34 +99,35 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     return;
   }
 
-  const hitLocationRoll = Roll.fromData(
-    attackChatMessage.getFlag(systemId, "chat.hitLocationRoll"),
-  );
+  // @ts-expect-error system
+  const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
   requireValue(
     hitLocationRoll.total,
     "HitLocation roll was not evaluated before applying to actor",
   );
 
-  const defenderHitLocationDamage: number | undefined = attackChatMessage.getFlag(
-    systemId,
-    "chat.defenderHitLocationDamage",
-  );
+  const defenderHitLocationDamage: number | undefined =
+    // @ts-expect-error system
+    attackChatMessage.system.defenderHitLocationDamage;
   requireValue(
     defenderHitLocationDamage,
     "No defenderHitLocationDamage was calculated before applying to actor",
   );
 
-  const ignoreDefenderAp = attackChatMessage.getFlag(systemId, "chat.ignoreDefenderAp");
+  // @ts-expect-error system
+  const ignoreDefenderAp = attackChatMessage.system.ignoreDefenderAp;
   requireValue(ignoreDefenderAp, "Damage roll was not evaluated before applying to actor");
 
-  const damagedTokenUuid = attackChatMessage.getFlag(systemId, "chat.defendingTokenUuid") as string;
+  // @ts-expect-error system
+  const damagedTokenUuid = attackChatMessage.system.defendingTokenUuid as string;
   // @ts-expect-error actor
   const damagedActor = (await fromUuid(damagedTokenUuid))?.actor as RqgActor | undefined;
   if (!damagedActor) {
     // TODO Warn about missing token
     return;
   }
-  const wasDamagedReducedByParry = !!attackChatMessage.getFlag(systemId, "chat.damagedWeaponUuid");
+  // @ts-expect-error system
+  const wasDamagedReducedByParry = !!attackChatMessage.system.damagedWeaponUuid;
 
   await damagedActor.applyDamage(
     defenderHitLocationDamage,
@@ -144,27 +139,21 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
 
   const messageData = attackChatMessage.toObject();
   const messageDataUpdate = {
-    flags: {
-      [systemId]: {
-        chat: {
-          actorDamagedApplied: true,
-        },
-      },
+    system: {
+      actorDamagedApplied: true,
     },
   };
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  messageData.content = await renderTemplate(
-    templatePaths.attackChatMessage,
-    messageData.flags[systemId]!.chat!,
-  );
+  // @ts-expect-error system
+  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
 
   await updateChatMessage(attackChatMessage, messageData);
 }
 
 /**
  * Reduce weapon HP by the number of points specified by the data-weapon-damage dataset on the button
- * or by looking at the flag data?
+ * or by looking at the system data?
  */
 export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
@@ -175,32 +164,28 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
     return;
   }
 
-  const weaponDamage: number | undefined = attackChatMessage.getFlag(systemId, "chat.weaponDamage");
-  const damagedWeaponUuid: string = attackChatMessage.getFlag(systemId, "chat.damagedWeaponUuid");
+  // @ts-expect-error system
+  const weaponDamage: number | undefined = attackChatMessage.system.weaponDamage;
+  // @ts-expect-error system
+  const damagedWeaponUuid: string = attackChatMessage.system.damagedWeaponUuid;
   const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as RqgItem | undefined;
 
   const currentWeaponHp = damagedWeapon?.system.hitPoints.value;
-  const newWeaponHp = currentWeaponHp - weaponDamage;
+  const newWeaponHp = currentWeaponHp - (weaponDamage ?? 0);
 
   await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
 
   const messageData = attackChatMessage.toObject();
 
   const messageDataUpdate = {
-    flags: {
-      [systemId]: {
-        chat: {
-          weaponDamageApplied: true,
-        },
-      },
+    system: {
+      weaponDamageApplied: true,
     },
   };
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  messageData.content = await renderTemplate(
-    templatePaths.attackChatMessage,
-    messageData.flags[systemId]!.chat!,
-  );
+  // @ts-expect-error system
+  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
   await updateChatMessage(attackChatMessage, messageData);
 }
 
@@ -222,34 +207,24 @@ export async function handleRollFumble(clickedButton: HTMLButtonElement): Promis
 
   if (fumblingActor === "attacker") {
     messageDataUpdate = {
-      flags: {
-        [systemId]: {
-          chat: {
-            attackerFumbled: false,
-            attackerFumbleOutcome: fumbleOutcome,
-          },
-        },
+      system: {
+        attackerFumbled: false,
+        attackerFumbleOutcome: fumbleOutcome,
       },
     };
   } else if (fumblingActor === "defender") {
     messageDataUpdate = {
-      flags: {
-        [systemId]: {
-          chat: {
-            defenderFumbled: false,
-            defenderFumbleOutcome: fumbleOutcome,
-          },
-        },
+      system: {
+        defenderFumbled: false,
+        defenderFumbleOutcome: fumbleOutcome,
       },
     };
   } else {
     throw new RqgError("Got unknown value in fumble button");
   }
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
-  messageData.content = await renderTemplate(
-    templatePaths.attackChatMessage,
-    messageData.flags[systemId]!.chat!,
-  );
+  // @ts-expect-error system
+  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
 
   await updateChatMessage(attackChatMessage, messageData);
 }
@@ -275,7 +250,7 @@ async function fumbleRoll(): Promise<string> {
 
 /**
  * Utility function to extract data from the AttackChat html.
- * TODO How to decide what should be in html and what should be in flags?
+ * TODO How to decide what should be in html and what should be in system data?
  */
 async function getChatMessageInfo(button: HTMLElement): Promise<{
   chatMessageId: string;
@@ -285,15 +260,11 @@ async function getChatMessageInfo(button: HTMLElement): Promise<{
   const chatMessageId = getRequiredDomDataset(button, "message-id");
   const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
 
-  const attackWeaponUuid = chatMessage?.getFlag(systemId, "chat.attackWeaponUuid") as
-    | string
-    | undefined;
+  const attackWeaponUuid = chatMessage?.system.attackWeaponUuid as string | undefined;
   if (!attackWeaponUuid) {
-    throw new RqgError("No attackWeapon in chatFlags", chatMessage);
+    throw new RqgError("No attackWeapon in chat system data", chatMessage);
   }
-  const defenceWeaponUuid = chatMessage?.getFlag(systemId, "chat.defenceWeaponUuid") as
-    | string
-    | undefined;
+  const defenceWeaponUuid = chatMessage?.system.defenceWeaponUuid as string | undefined;
   return {
     chatMessageId: chatMessageId,
     attackWeaponUuid: attackWeaponUuid,
