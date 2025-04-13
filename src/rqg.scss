@@ -967,7 +967,9 @@ input.readonly {
     justify-content: space-around;
 
     .damage-formula {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.2rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 3px double var(--color-text-light-6);
     }
 
     .dice-result {
@@ -980,9 +982,9 @@ input.readonly {
       order: 2;
       background-color: #e2e2e2;
       border: 1px inset white;
-      padding: 10px 0.3rem 0;
+      padding: 0.3rem;
       border-radius: 0 0 6px 6px;
-      margin-top: -10px;
+      margin-top: -1px;
       border-top: none;
     }
 

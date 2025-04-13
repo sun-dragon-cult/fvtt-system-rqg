@@ -69,6 +69,7 @@ import {
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 import { deleteCombatant } from "../sockets/SocketableRequests";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -1217,14 +1218,13 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
       const damage = el.dataset.damageRoll;
       requireValue(damage, "direct damage roll without damage");
+      const heading = el.dataset.damageRollHeading ?? "";
       el.addEventListener("click", async () => {
-        const r = new Roll(damage);
+        const r = new DamageRoll(damage);
         await r.evaluate();
         await r.toMessage({
           speaker: ChatMessage.getSpeaker(),
-          // @ts-expect-error CHAT_MESSAGE_STYLES
-          style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-          flavor: `damage`,
+          flavor: `<div class="roll-action">${localize(heading)}</div>`,
         });
       });
     });

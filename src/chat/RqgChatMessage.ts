@@ -184,52 +184,60 @@ export class RqgChatMessage extends ChatMessage {
     // Add Roll content
     // @ts-expect-error rolls
     for (const roll of this.rolls) {
-      if (hasProperty(roll, "successLevel")) {
+      if (roll instanceof AbilityRoll) {
         content.push(
           `AbilityRoll: ${roll.flavor
             .replaceAll(/<[^>]*>/gm, "")
             .replaceAll(/\n */gm, " ")
             .trim()} ${roll.total} / ${roll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${roll.successLevel}`)} `,
         );
+      } else if (roll instanceof DamageRoll) {
+        content.push(
+          // @ts-expect-error flavor
+          `DamageRoll: ${roll.flavor.replaceAll(/<[^>]*>/gm, "").replaceAll(/\n */gm, " ")}`,
+        );
       } else {
         content.push(`${roll.formula} = ${roll.result} = ${roll.total}`);
       }
     }
 
-    const defenceRollData = this.system.defenceRoll;
-    const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
-    if (defenceRoll?.total) {
-      content.unshift(
-        `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
-      );
-    }
+    // @ts-expect-error type
+    if (this.type === "combat") {
+      const defenceRollData = this.system.defenceRoll;
+      const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
+      if (defenceRoll?.total) {
+        content.unshift(
+          `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
+        );
+      }
 
-    const attackRollData = this.system.attackRoll;
-    const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
-    if (attackRoll?.total) {
-      content.unshift(
-        `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
-      );
-      // @ts-expect-error content
-      content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
-    }
+      const attackRollData = this.system.attackRoll;
+      const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
+      if (attackRoll?.total) {
+        content.unshift(
+          `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
+        );
+        // @ts-expect-error content
+        content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
+      }
 
-    const damageRollData = this.system.damageRoll;
-    const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
-    if (damageRoll?.total) {
-      content.push(
-        `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
-      );
-    }
+      const damageRollData = this.system.damageRoll;
+      const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
+      if (damageRoll?.total) {
+        content.push(
+          `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
+        );
+      }
 
-    const hitLocationRollData = this.system.hitLocationRoll;
-    const hitLocationRoll = hitLocationRollData
-      ? HitLocationRoll.fromData(hitLocationRollData)
-      : undefined;
-    if (hitLocationRoll?.total) {
-      content.push(
-        `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
-      );
+      const hitLocationRollData = this.system.hitLocationRoll;
+      const hitLocationRoll = hitLocationRollData
+        ? HitLocationRoll.fromData(hitLocationRollData)
+        : undefined;
+      if (hitLocationRoll?.total) {
+        content.push(
+          `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
+        );
+      }
     }
 
     // Author and timestamp
