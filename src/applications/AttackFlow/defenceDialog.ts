@@ -306,7 +306,7 @@ export class DefenceDialog extends FormApplication<
           // Leave defendSkillItem undefined
         }
 
-        const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.DefenceSpecification")}</span>`;
+        const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.Defence.Defence")}</span>`;
 
         const defendHeading =
           this.object.defence === "parry"

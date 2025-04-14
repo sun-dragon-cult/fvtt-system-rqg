@@ -234,7 +234,7 @@ async function fumbleRoll(): Promise<string> {
   const fumbleTable = getGame().tables?.getName(fumbleTableName);
   if (!fumbleTable) {
     logMisconfiguration(
-      localize("RQG.Dialog.weaponChat.FumbleTableMissingWarn", {
+      localize("RQG.RQGSystem.Error.FumbleTableMissing", {
         fumbleTableName: fumbleTableName,
       }),
       true,

@@ -437,6 +437,17 @@
         "CantEditSpiritMagicError": "Couldn't find itemSheet for [{itemId}] on actor {actorName} to edit the spirit magic item from the spirit magic context menu."
       }
     },
+    "ChatMessage": {
+      "Combat": {
+        "RollDamageAndHitLocation": "Roll Damage & Hit Location",
+          "ApplyActorDamage": "Apply Damage to Actor",
+          "ApplyWeaponDamage": "Apply Damage to Weapon",
+          "RollAttackerFumble": "Roll Attacker Fumble",
+          "RollDefenderFumble": "Roll Defender Fumble",
+          "AttackerFumble": "Attacker Fumble",
+          "DefenderFumble": "Defender Fumble"
+      }
+    },
     "Dialog": {
       "Attack": {
         "Title": "Attack",
@@ -532,12 +543,8 @@
       "Common": {
         "yes": "yes",
         "no": "no",
-        "btnYes": "Yes",
-        "btnNo": "No",
         "btnCancel": "Cancel",
         "btnConfirm": "Confirm",
-        "OtherModifiers": "Other Modifiers",
-        "CantFindChatMessageError": "CantFindChatMessageError",
         "TargetChance": "Target Chance",
         "IsAttacking": "attacks {defenderName}",
         "Halved": "Halved Chance",
@@ -661,38 +668,6 @@
         "title": "Decide skill specialization",
         "inputRequired": "Skill specialization is required",
         "btnSetSpecialization": "Set Specialization"
-      },
-      "weaponChat": {
-        "Damage": "Damage",
-        "damageRollType": {
-          "normal": "Normal",
-          "special": "Special",
-          "maxSpecial": "Max Special"
-        },
-        "fumbleRoll": "Roll Fumble",
-        "hitLocationRoll": "Roll Hit location",
-        "Modifier": "Modifier",
-        "CantFindActorWarn": "Can't find world actor to do action",
-        "UsedLastOfAmmoWarn": "You just used the last of your {projectileName}!",
-        "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
-        "HitLocationRollFlavor": "Hit Location Roll",
-        "UnknownButtonInChatError": "Unknown button \"{actionButton}\" in weapon chat message",
-        "WeaponChatFlavor": "Weapon: {weaponName}",
-        "NoCombatManeuverInDamageRollError": "No combat maneuver in Damage Roll.",
-        "CantFindActorToDoDamageRollWarn": "Can't find world actor do do damage roll.",
-        "WeaponDoesNotHaveCombatManeuverError": "Weapon doesn't have a combat maneuver.",
-        "WeaponDoesNotHaveAttachManeuverError": "The weapon named \"{weaponName}\" does not have an attack Combat Maneuver.",
-        "WeaponDamageTag": "weapon",
-        "DamageBonusDamageTag": "damage bonus",
-        "CrushSpecialDamageTag": "crushing special",
-        "ImpaleSpecialDamageTag": "impale special",
-        "SlashSpecialDamageTag": "slash special",
-        "FumbleTableMissingWarn": "The fumble table \"{fumbleTableName}\" is missing.",
-        "PluralResults": "{numberOfResults} results",
-        "SingularResult": "a result",
-        "FumbleResultFlavor": "Draws {numberOfResults} from the {fumbleTableName} table.",
-        "AttackSpecification": "Attack",
-        "DefenceSpecification": "Defence"
       }
     },
     "Item": {
@@ -1307,7 +1282,8 @@
         "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
         "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in compendium packs) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
         "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
-        "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the rqid \"{rqid}\", and lang \"{lang}\". See console log."
+        "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the rqid \"{rqid}\", and lang \"{lang}\". See console log.",
+        "FumbleTableMissing": "The fumble table \"{fumbleTableName}\" is missing."
       }
     },
     "Notification": {

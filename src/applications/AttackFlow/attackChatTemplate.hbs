@@ -16,7 +16,7 @@
     {{!-- use presence of damageRoll as sign of there being damage to roll, should be null:ed if no damage is to be rolled --}}
     {{#if damageRoll}}
       <button data-only-owner-visible-uuid="{{attackingTokenUuid}}" data-roll-damage-and-hitlocation>
-        Roll some damage & hitlocation
+        {{localize "RQG.ChatMessage.Combat.RollDamageAndHitLocation"}}
       </button>
     {{/if}}
 
@@ -29,7 +29,7 @@
       {{#if defenderHitLocationDamage}}
       {{#unless actorDamagedApplied}}
         <button data-only-owner-visible-uuid="{{defendingTokenUuid}}" data-apply-damage-to-actor>
-          Apply damage to actor
+          {{localize "RQG.ChatMessage.Combat.ApplyActorDamage"}}
         </button>
       {{/unless}}
       {{/if}}
@@ -42,7 +42,7 @@
           {{else}}
             data-only-owner-visible-uuid="{{attackingTokenUuid}}"
           {{/if}}
-          data-apply-damage-to-weapon>Apply damage to weapon
+          data-apply-damage-to-weapon>{{localize "RQG.ChatMessage.Combat.ApplyWeaponDamage"}}
         </button>
       {{/unless}}
       {{/if}}
@@ -52,23 +52,23 @@
 
   {{#if attackerFumbled}}
     <button data-only-owner-visible-uuid="{{attackingTokenUuid}}"
-            data-fumble="attacker">Roll Attacker Fumble
+            data-fumble="attacker">{{localize "RQG.ChatMessage.Combat.RollAttackerFumble"}}
     </button>
   {{/if}}
 
   {{#if defenderFumbled}}
     <button data-only-owner-visible-uuid="{{defendingTokenUuid}}"
-            data-fumble="defender">Roll Defender Fumble
+            data-fumble="defender">{{localize "RQG.ChatMessage.Combat.RollDefenderFumble"}}
     </button>
   {{/if}}
 
   {{#if attackerFumbleOutcome}}
-    <b>Attacker Fumble:</b><br>
+    <b>{{localize "RQG.ChatMessage.Combat.AttackerFumble"}}:</b><br>
     {{{attackerFumbleOutcome}}}
   {{/if}}
 
   {{#if defenderFumbleOutcome}}
-    <b>Defender Fumble:</b><br>
+    <b>{{localize "RQG.ChatMessage.Combat.DefenderFumble"}}:</b><br>
     {{{defenderFumbleOutcome}}}
   {{/if}}
 </div>

@@ -289,7 +289,7 @@ export class AttackDialog extends FormApplication<
           `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
         );
 
-        const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.weaponChat.AttackSpecification")}</span>
+        const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.Attack.Title")}</span>
 <span>${damageTypeTranslated} – ${weaponItem?.name} – ${usageTypeTranslated}</span>`;
 
         const attackRollOptions: AbilityRollOptions = {
