@@ -166,6 +166,10 @@ input.readonly {
     align-items: flex-end;
   }
 
+  .flex-0 {
+    flex: 0;
+  }
+
   .flex-1 {
     flex: 1;
   }
@@ -1342,12 +1346,12 @@ input.readonly {
 .rqg.form.roll-dialog {
 
   height: fit-content !important; // override the element style
+  overflow: auto;
 
   .roll-header {
-    margin: -8px -8px 1.5rem;
-    padding: 7px;
+    margin: -1rem -1rem 0.5rem;
+    padding: 1rem;
     box-shadow: 0px -3px 11px 0px;
-    background-color: var(--color-text-light-highlight);
     text-align: center;
 
     .sub-header {
@@ -1359,15 +1363,11 @@ input.readonly {
   .target-box {
     flex: none;
     text-align: center;
-    border: inset;
-    padding: 4px;
+    padding: 0 0.5rem 0 0;
   }
 
   button {
-    background-color: var(--color-text-light-highlight);
-
     &:disabled {
-      color: var(--color-text-dark-inactive);
       cursor: progress;
     }
   }

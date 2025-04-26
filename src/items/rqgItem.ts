@@ -34,11 +34,11 @@ import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "../data-model/item-data/spell";
-import { AttackDialog } from "../applications/AttackFlow/attackDialog";
-import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
 import { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import { formatDamagePart } from "../system/combatCalculations";
+import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
+import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 
 export class RqgItem extends Item {
   public static init() {
@@ -287,7 +287,10 @@ export class RqgItem extends Item {
    */
   public async attack(options: Partial<AttackDialogOptions> = {}): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.Weapon);
-    await new AttackDialog(this, options).render(true);
+    // @ts-expect-error document
+    options.weaponItem = this;
+    // @ts-expect-error render
+    await new AttackDialogV2(options).render(true);
   }
 
   /**

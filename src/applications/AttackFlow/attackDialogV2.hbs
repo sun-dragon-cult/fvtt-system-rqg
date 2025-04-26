@@ -1,5 +1,5 @@
-{{log "*** Attack Dialog" this}}
-<form>
+{{log "*** Attack Dialog V2" this}}
+<div class="standard-form">
   <header class="roll-header">
     <h1>{{skillItem.name}}</h1>
     <div class="sub-header">{{abilityChance}}%</div>
@@ -9,7 +9,7 @@
       {{localize "RQG.Dialog.Common.AttackingActor"}}
     </label>
     <select name="attackingTokenUuid">
-      {{selectOptions attackingTokenOptions selected=object.attackingTokenUuid localize=false}}
+      {{selectOptions attackingTokenOptions selected=formData.attackingTokenUuid localize=false}}
     </select>
 
     <label>
@@ -21,17 +21,17 @@
       {{localize "RQG.Dialog.Attack.AttackingWeapon"}}
     </label>
     <select name="attackingWeaponUuid">
-      {{selectOptions attackingWeaponOptions selected=object.attackingWeaponUuid localize=false}}
+      {{selectOptions attackingWeaponOptions selected=formData.attackingWeaponUuid localize=false}}
     </select>
 
     <label>
       {{localize "RQG.Dialog.Attack.WeaponUsage"}}
     </label>
-    <div>
+    <div class="fullwidth">
       <select name="usageType">
-        {{selectOptions usageTypeOptions selected=object.usageType localize=true}}
+        {{selectOptions usageTypeOptions selected=formData.usageType localize=true}}
       </select>
-      {{#if (eq object.usageType "missile")}}
+      {{#if (eq formData.usageType "missile")}}
         {{#if isOutOfAmmo}}
           <span>{{localize "RQG.Dialog.Attack.OutOfAmmo"}}</span>
         {{else}}
@@ -40,10 +40,10 @@
       {{/if}}
     </div>
 
-    {{#if (eq object.usageType "missile")}}
+    {{#if (eq formData.usageType "missile")}}
       <label>{{localize "RQG.Dialog.Attack.ReduceAmmoQuantity"}}</label>
       <div>
-        <input type="checkbox" {{checked object.reduceAmmoQuantity}} name="reduceAmmoQuantity">
+        <input type="checkbox" {{checked formData.reduceAmmoQuantity}} name="reduceAmmoQuantity">
       </div>
     {{/if}}
 
@@ -52,32 +52,36 @@
       {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
     </label>
     <select name="attackDamageBonus">
-      {{selectOptions damageBonusSourceOptions selected=object.attackDamageBonus}}
+      {{selectOptions damageBonusSourceOptions selected=formData.attackDamageBonus}}
     </select>
 
     <label>
       {{localize "RQG.Dialog.Attack.ExtraDamage"}}
     </label>
     <div>
-      <input type="text" value="{{object.attackExtraDamage}}" name="attackExtraDamage">
+      <input type="text" value="{{formData.attackExtraDamage}}" name="attackExtraDamage">
     </div>
 
     <label>
       {{localize "RQG.Dialog.Attack.HitLocationFormula"}}
     </label>
-    <select name="hitLocationFormula">
-      {{selectOptions hitLocationFormulaOptions selected=object.hitLocationFormula}}
-    </select>
+    {{#if (eq formData.aimedBlow 0)}}
+      <select name="hitLocationFormula">
+        {{selectOptions hitLocationFormulaOptions selected=formData.hitLocationFormula}}
+      </select>
+    {{else}}
+      <input type="text" readonly value="{{localize "RQG.Dialog.Attack.AimedBlow"}}">
+    {{/if}}
 
     <h2 class="submenu-span">{{localize "RQG.Dialog.Common.Modifiers"}}</h2>
 
     <label>{{localize "RQG.Dialog.Attack.AimedBlow"}}</label>
-    <div>
+    <div class="fullwidth flexrow flex-align-center">
       {{#if aimedBlowOptions}}
         <select name="aimedBlow">
-          {{selectOptions aimedBlowOptions selected=object.aimedBlow}}
+          {{selectOptions aimedBlowOptions selected=formData.aimedBlow}}
         </select>
-        {{#if (gt object.aimedBlow 0)}}<span class="ml-5">{{halvedModifier}}%</span>{{/if}}
+        {{#if (gt formData.aimedBlow 0)}}<span class="ml-5 flex-0">{{formData.halvedModifier}}%</span>{{/if}}
 
       {{else}}
         {{localize "RQG.Dialog.Attack.NoTargetSelected"}}
@@ -88,52 +92,54 @@
       {{localize "RQG.Dialog.AbilityRoll.Augment"}}
     </label>
     <select name="augmentModifier">
-      {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+      {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
     </select>
 
     <label>
       {{localize "RQG.Dialog.Attack.ProneTarget"}}
     </label>
     <div>
-      <input type="checkbox" name="proneTarget" {{checked object.proneTarget}}>
-      {{#if object.proneTarget}} +40%{{/if}}
+      <input type="checkbox" name="proneTarget" {{checked formData.proneTarget}}>
+      {{#if formData.proneTarget}}<span class="ml-5">+40%</span>{{/if}}
     </div>
 
     <label>
       {{localize "RQG.Dialog.Attack.UnawareTarget"}}
     </label>
     <div>
-      <input type="checkbox" name="unawareTarget" {{checked object.unawareTarget}}>
-      {{#if object.unawareTarget}} +40%{{/if}}
+      <input type="checkbox" name="unawareTarget" {{checked formData.unawareTarget}}>
+      {{#if formData.unawareTarget}}<span class="ml-5">+40%</span>{{/if}}
     </div>
 
     <label>
       {{localize "RQG.Dialog.Attack.Darkness"}}
     </label>
     <div>
-      <input type="checkbox" name="darkness" {{checked object.darkness}}>
-      {{#if object.darkness}} -75%{{/if}}
+      <input type="checkbox" name="darkness" {{checked formData.darkness}}>
+      {{#if formData.darkness}}<span class="ml-5">-75%</span>{{/if}}
     </div>
 
     <label>
       {{localize "RQG.Dialog.Common.Halved"}}
     </label>
     <div>
-      <input type="checkbox" name="halved" {{checked object.halved}}>
-      {{#if object.halved}} {{halvedModifier}}%{{/if}}
+      <input type="checkbox" name="halved" {{checked formData.halved}}>
+      {{#if formData.halved}}<span class="ml-5">{{formData.halvedModifier}}%</span>{{/if}}
     </div>
 
-    <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+    <input type="text" style="text-align:end;font-weight:bold;"
+           value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
     <div>
-      <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+      <input type="number" value="{{formData.otherModifier}}" name="otherModifier"><span class="ml-5">%</span>
     </div>
   </div>
+  <input name="halvedModifier" value="{{halvedModifier}}" type="hidden">
   <div class="flexrow flex-wrap gap03rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
       <i class="fa-solid fa-bullseye"></i><br>
       {{totalChance}}%
     </div>
-    {{#with (lookup weaponItem.system.usage weaponItem.system.defaultUsage)}}
+    {{#with (lookup weaponItem.system.usage formData.usageType)}}
       {{#each combatManeuvers}}
         {{#unless (eq damageType "parry")}}
         <button data-combat-maneuver-name="{{name}}" name="combatManeuverRoll">
@@ -143,4 +149,4 @@
       {{/each}}
     {{/with}}
   </div>
-</form>
+</div>

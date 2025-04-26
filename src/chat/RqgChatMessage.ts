@@ -10,6 +10,7 @@ import { getGameUser, localize } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
+import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 export class RqgChatMessage extends ChatMessage {
   declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
@@ -24,7 +25,11 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  _onUpdate(data: any, options: any, userId: string) {
+  _onUpdate(
+    data: DeepPartial<foundry.data.ChatMessageData["_source"]>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
     // @ts-expect-error isAtBottom
     if (ui?.chat?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?

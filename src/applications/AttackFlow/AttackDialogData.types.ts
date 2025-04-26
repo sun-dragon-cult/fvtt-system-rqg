@@ -14,14 +14,13 @@ export type PartialAbilityItem = {
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
 };
 
+// context in app v2
 export type AttackDialogHandlebarsData = {
   weaponItem: RqgItem | undefined;
   skillItem: RqgItem | undefined;
   abilityChance: number;
 
-  object: AttackDialogObjectData;
-  options: FormApplication.Options;
-  title: string;
+  formData: AttackDialogObjectData;
   ammoQuantity: number;
   isOutOfAmmo: boolean;
   usageTypeOptions: Record<string, string>;
@@ -32,25 +31,26 @@ export type AttackDialogHandlebarsData = {
   damageBonusSourceOptions: SelectOptionData<string>[];
   hitLocationFormulaOptions: Record<string, string>;
   aimedBlowOptions: SelectOptionData<number>[];
-  halvedModifier: number;
   totalChance: number;
 };
 
+// name:d form components data
 export type AttackDialogObjectData = {
   attackingTokenUuid: string | undefined;
   attackingWeaponUuid: string | undefined;
   usageType: UsageType;
+  /** In the dialog, it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
+  attackDamageBonus: string | undefined;
+  attackExtraDamage: string;
   reduceAmmoQuantity: boolean;
+  hitLocationFormula: string;
+  aimedBlow: number;
   augmentModifier: string;
   proneTarget: boolean;
   unawareTarget: boolean;
   darkness: boolean;
   halved: boolean;
-  aimedBlow: number;
-  otherModifier: string;
+  halvedModifier: number; // now a hidden field
   otherModifierDescription: string;
-  attackExtraDamage: string;
-  /** In the dialog it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
-  attackDamageBonus: string | undefined;
-  hitLocationFormula: string;
+  otherModifier: string;
 };

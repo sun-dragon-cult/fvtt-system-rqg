@@ -26,6 +26,10 @@ const weaponDesignation = ["none", "attackingWeapon", "parryWeapon"] as const;
 
 // @ts-expect-error TypeDataModel
 export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
+  constructor(data = {}, options = {}) {
+    super(data, options);
+  }
+
   static defineSchema() {
     return {
       attackState: new StringField({
@@ -46,31 +50,25 @@ export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
         required: false,
       }),
 
-      attackRoll: new JSONField({}),
+      attackRoll: new JSONField({
+        blank: false,
+        nullable: false,
+        required: true,
+      }),
       attackCombatManeuver: new SchemaField({
         // TODO should reference CombatManeuver dataModel eventually
-        name: new StringField({ blank: false, nullable: true, initial: undefined }),
-        damageType: new StringField({ blank: false, nullable: true, initial: undefined }),
-        description: new StringField({ blank: false, nullable: true, initial: undefined }),
+        name: new StringField({ blank: false, nullable: false }),
+        damageType: new StringField({ blank: false, nullable: false }),
+        description: new StringField({ blank: false, nullable: false }),
       }),
       attackExtraDamage: new StringField({ blank: false, nullable: true, initial: undefined }),
       attackDamageBonus: new StringField({ blank: false, nullable: true, initial: undefined }),
       actorDamagedApplied: new BooleanField({ blank: false, nullable: false, initial: false }),
       weaponDamageApplied: new BooleanField({ blank: false, nullable: false, initial: false }),
-      attackWeaponUuid: new DocumentUUIDField({
-        blank: false,
-        nullable: true,
-        initial: undefined,
-        required: false,
-      }),
+      attackWeaponUuid: new DocumentUUIDField({ blank: false, nullable: true, required: true }),
 
       // TODO should be a reference to the weapon usageType dataModel eventually
-      attackWeaponUsage: new StringField({
-        blank: false,
-        nullable: true,
-        initial: undefined,
-        choices: usageType,
-      }),
+      attackWeaponUsage: new StringField({ blank: false, nullable: false, choices: usageType }),
 
       defenceWeaponUuid: new DocumentUUIDField({
         blank: false,
@@ -96,9 +94,19 @@ export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
       attackerFumbled: new BooleanField({ blank: false, nullable: false, initial: false }),
       defenderFumbled: new BooleanField({ blank: false, nullable: false, initial: false }),
 
-      damageRoll: new JSONField({}),
+      damageRoll: new JSONField({
+        blank: false,
+        nullable: true,
+        required: false,
+        initial: undefined,
+      }),
 
-      hitLocationRoll: new JSONField({}),
+      hitLocationRoll: new JSONField({
+        blank: false,
+        nullable: true,
+        required: false,
+        initial: undefined,
+      }),
       ignoreDefenderAp: new BooleanField({ blank: false, nullable: false, initial: false }),
       weaponDamage: new NumberField({ integer: true, min: 0, nullable: true, initial: undefined }),
       defenderHitLocationDamage: new NumberField({

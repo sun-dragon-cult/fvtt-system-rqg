@@ -19,6 +19,9 @@
     },
     "Actor": {
       "character": "Character"
+    },
+    "ChatMessage": {
+      "combat": "Combat"
     }
   },
   "COMBAT": {
