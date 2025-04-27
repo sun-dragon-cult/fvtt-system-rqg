@@ -34,7 +34,7 @@ import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRo
 import { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
 import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
 import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
-import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
+import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
 import { ActorHealthState } from "../data-model/actor-data/attributes";
@@ -118,10 +118,11 @@ export class RqgActor extends Actor {
   /**
    * Open an ability roll dialog for reputation   */
   public async reputationRoll(
-    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
+    options: Omit<AbilityRollOptions & { abilityItem?: PartialAbilityItem }, "naturalSkill"> = {},
   ): Promise<void> {
-    const reputationItem = this.createReputationFakeItem();
-    await new AbilityRollDialog(reputationItem, options).render(true);
+    options.abilityItem = this.createReputationFakeItem();
+    // @ts-expect-error render
+    await new AbilityRollDialogV2(options).render(true);
   }
 
   /**

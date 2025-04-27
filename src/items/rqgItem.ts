@@ -25,7 +25,7 @@ import type { DocumentModificationOptions } from "@league-of-foundry-developers/
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
-import { AbilityRollDialog } from "../applications/AbilityRollDialog/abilityRollDialog";
+import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { SpiritMagicRoll } from "../rolls/SpiritMagicRoll/SpiritMagicRoll";
 import { SpiritMagicRollDialog } from "../applications/SpiritMagicRollDialog/spiritMagicRollDialog";
@@ -148,15 +148,20 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for an AbilityRoll
    */
-  public async abilityRoll(options: Partial<AbilityRollOptions> = {}): Promise<void> {
-    await new AbilityRollDialog(this, options).render(true);
+  public async abilityRoll(
+    options: Partial<AbilityRollOptions & { abilityItem?: RqgItem }> = {},
+  ): Promise<void> {
+    options.abilityItem = this;
+
+    // @ts-expect-error render
+    await new AbilityRollDialogV2(options).render(true);
   }
 
   /**
    * Do an abilityRoll and handle checking experience afterward.
    */
   public async abilityRollImmediate(
-    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
+    options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
   ): Promise<void> {
     if (!this.isEmbedded) {
       const msg = "Item is not embedded";

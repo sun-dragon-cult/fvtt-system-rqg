@@ -122,24 +122,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       });
     }
 
-    // if (
-    //   !this.weaponItem?.system.defaultUsage ||
-    //   !Object.keys(usageTypeOptions).includes(formData.usageType)
-    // ) {
-    //   // Pick the first usage if none is selected (or if the selected isn't available)
-    //   const defaultUsage =
-    //     this.weaponItem.system.defaultUsage ?? (Object.keys(usageTypeOptions)[0] as UsageType);
-    //
-    //   formData.usageType = defaultUsage;
-    //   // The weapon either didn't have a default usage, or the selected usage was not available, update it
-    //   await this.weaponItem.update({
-    //     system: { defaultUsage: defaultUsage },
-    //   });
-    // } else {
-    //   // Wait with updating the weaponItem default usage until the dialog is closed
-    //   formData.usageType ??= this.weaponItem.system.defaultUsage;
-    // }
-
     let isOutOfAmmo = false;
     let ammoQuantity: number = 1;
 

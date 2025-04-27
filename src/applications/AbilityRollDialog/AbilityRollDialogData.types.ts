@@ -5,33 +5,30 @@ import type { RqgActor } from "../../actors/rqgActor";
 /** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {
   name: string | null;
-  type?: ItemTypeEnum;
   img: string | null;
   system: { chance: number };
+  type?: ItemTypeEnum;
   parent?: RqgActor | null;
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
   /** Special handling for Reputation rolls */
   actingToken?: TokenDocument;
+  uuid?: string;
 };
 
-export type AbilityRollDialogHandlebarsData = {
-  abilityName: string | null;
-  abilityType?: string;
-  abilityImg: string | null;
-  abilityChance: number;
-
-  object: AbilityRollDialogObjectData;
-  options: FormApplication.Options;
-  title: string;
-  augmentOptions: Record<string, string>; // TODO Actually <number, string>
-  meditateOptions: Record<string, string>; // TODO Actually <number, string>
+export type AbilityRollDialogContext = {
+  formData: AbilityRollDialogFormData;
+  abilityItem: PartialAbilityItem;
+  augmentOptions: SelectOptionData<number>[];
+  meditateOptions: SelectOptionData<number>[];
   totalChance: number;
   speakerName: string;
 };
 
-export type AbilityRollDialogObjectData = {
+export type AbilityRollDialogFormData = {
   augmentModifier: string;
   meditateModifier: string;
   otherModifier: string;
   otherModifierDescription: string;
+  abilityItemUuid?: string; // hidden field
+  reputationItemJson?: string; // hidden field - backup for uuid
 };

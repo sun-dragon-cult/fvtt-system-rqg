@@ -1,7 +1,7 @@
-<form>
+<div class="standard-form">
   <header class="roll-header">
-    <h1>{{abilityName}}</h1>
-    <div class="sub-header">{{abilityChance}}%</div>
+    <h1>{{abilityItem.name}}</h1>
+    <div class="sub-header">{{abilityItem.system.chance}}%</div>
   </header>
   <div class="key-value-grid p-0 mb-1-5rem">
     <label>
@@ -13,22 +13,23 @@
       {{localize "RQG.Dialog.AbilityRoll.Augment"}}
     </label>
     <select name="augmentModifier">
-      {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+      {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
     </select>
 
     <label>
       {{localize "RQG.Dialog.AbilityRoll.Meditate"}}
     </label>
     <select name="meditateModifier">
-      {{selectOptions meditateOptions selected=object.meditateModifier localize=true}}
+      {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
     </select>
 
-    <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
     <div>
-      <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+      <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
     </div>
   </div>
-
+  <input type="hidden" value="{{formData.abilityItemUuid}}" name="abilityItemUuid">
+  <input type="hidden" value="{{formData.reputationItemJson}}" name="reputationItemJson">
   <div class="flexrow flex-wrap gap03rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
       <i class="fa-solid fa-bullseye"></i><br>
@@ -36,4 +37,4 @@
     </div>
     <button data-ability-roll>{{localize "RQG.Game.Roll"}}</button>
   </div>
-</form>
+</div>
