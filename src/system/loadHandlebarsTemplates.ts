@@ -53,8 +53,8 @@ export const templatePaths = {
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
   abilityRollDialogV2: "systems/rqg/applications/abilityRollDialog/abilityRollDialogV2.hbs",
-  characteristicRollDialog:
-    "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialog.hbs",
+  characteristicRollDialogV2:
+    "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
   spiritMagicRollDialog: "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialog.hbs",
   runeMagicRollDialog: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialog.hbs",
   attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",

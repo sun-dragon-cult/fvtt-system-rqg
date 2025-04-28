@@ -509,7 +509,16 @@
         "Difficulty": "Difficulty",
         "Augment": "Augment",
         "Meditate": "Meditate",
-        "OtherModifier": "Other Modifier"
+        "OtherModifier": "Other Modifier",
+        "RollDifficultyLevel": {
+          "0": "Nearly impossible (/2)",
+          "1": "Very hard (*1)",
+          "2": "Hard (*2)",
+          "3": "Moderate (*3)",
+          "4": "Easy (*4)",
+          "5": "Simple action (*5)",
+          "6": "Very simple action (*6)"
+        }
       },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
@@ -1107,7 +1116,16 @@
       "CharacteristicRoll": {
         "Augment": "augment",
         "Meditate": "meditate",
-        "Other": "other"
+        "Other": "other",
+        "RollDifficultyLevel": {
+          "0": "nearly impossible",
+          "1": "very hard",
+          "2": "hard",
+          "3": "moderate",
+          "4": "easy",
+          "5": "simple action",
+          "6": "very simple action"
+        }
       },
       "HitLocationRoll": {
         "FallbackHitLocationName": "Hit Location"
@@ -1199,15 +1217,6 @@
         "offHand-full": "One-handed – offhand",
         "twoHand-full": "Two-handed",
         "missile-full": "Missile"
-      },
-      "RollDifficultyLevel": {
-        "0": "nearly impossible",
-        "1": "very hard",
-        "2": "hard",
-        "3": "moderate",
-        "4": "easy",
-        "5": "simple action",
-        "6": "very simple action"
       },
       "AttackParryResults": {
         "0-0": "<b>Attacker</b> rolls normal damage.<br><b>Defender’s</b> parrying weapon takes 1 HP damage if rolled damage is greater than its current HP. Any excess damage goes to affected hit location.",

@@ -32,7 +32,7 @@ import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
 import { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
-import { CharacteristicRollDialog } from "../applications/CharacteristicRollDialog/characteristicRollDialog";
+import { CharacteristicRollDialogV2 } from "../applications/CharacteristicRollDialog/characteristicRollDialogV2";
 import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
@@ -74,7 +74,8 @@ export class RqgActor extends Actor {
     options: Partial<CharacteristicRollOptions> = {},
   ): Promise<void> {
     const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options);
-    await new CharacteristicRollDialog(this, rollOptions).render(true);
+    // @ts-expect-error render
+    await new CharacteristicRollDialogV2(rollOptions).render(true);
   }
   /**
    * Do a characteristic roll and handle possible POW experience check afterward.
@@ -106,6 +107,7 @@ export class RqgActor extends Actor {
     return foundry.utils.mergeObject(
       options,
       {
+        actor: this,
         characteristicName: characteristicName,
         characteristicValue: rollCharacteristic.value ?? 0,
         difficulty: 5,

@@ -1,0 +1,44 @@
+<div class="standard-form">
+  <header class="roll-header">
+    <h1>{{formData.characteristicName}}</h1>
+    <div class="sub-header">{{formData.characteristicValue}}</div>
+  </header>
+  <div class="key-value-grid p-0 mb-1-5rem">
+    <label>
+      {{localize "RQG.Dialog.Common.Actor"}}
+    </label>
+    <div>{{speakerName}}</div>
+
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Difficulty"}}</label>
+    <select name="difficulty">
+      {{selectOptions difficultyOptions selected=formData.difficulty localize=true}}
+    </select>
+
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
+    <select name="augmentModifier">
+      {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
+    </select>
+
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}</label>
+    <select name="meditateModifier">
+      {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
+    </select>
+
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
+    <div>
+      <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
+    </div>
+  </div>
+
+  <input type="hidden" value="{{formData.actorUuid}}" name="actorUuid">
+  <input type="hidden" value="{{formData.characteristicName}}" name="characteristicName">
+  <input type="hidden" value="{{formData.characteristicValue}}" name="characteristicValue">
+
+  <div class="flexrow flex-wrap gap03rem">
+    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+      <i class="fa-solid fa-bullseye"></i><br>
+      {{totalChance}}%
+    </div>
+    <button data-characteristic-roll>{{localize "RQG.Game.Roll"}}</button>
+  </div>
+</div>

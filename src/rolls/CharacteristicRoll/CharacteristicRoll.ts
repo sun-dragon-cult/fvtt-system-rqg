@@ -8,8 +8,10 @@ export class CharacteristicRoll extends Roll {
   public static async rollAndShow(options: CharacteristicRollOptions) {
     const roll = new CharacteristicRoll(undefined, {}, options);
     await roll.evaluate();
-    await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
     activateChatTab();
+    const msg = await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
+    // @ts-expect-error Dice3D (Dice So Nice)
+    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
     return roll;
   }
 
@@ -21,7 +23,7 @@ export class CharacteristicRoll extends Roll {
     const o = this.options as CharacteristicRollOptions;
     const modificationsSum =
       o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    return Math.max(0, o.characteristicValue! * (o.difficulty ?? 5) + modificationsSum); // -50% => 0% to make the calculations work;
+    return Math.ceil(Math.max(0, o.characteristicValue! * (o.difficulty ?? 5) + modificationsSum)); // -50% => 0% to make the calculations work;
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
@@ -84,8 +86,10 @@ export class CharacteristicRoll extends Roll {
 
   private getDifficultyName(difficulty: number): string {
     const translationKeyDifficulty = difficulty === 0.5 ? 0 : difficulty;
-    const translation = localize(`RQG.Game.RollDifficultyLevel.${translationKeyDifficulty}`);
-    if (translation.startsWith("RQG.Game.RollDifficultyLevel.")) {
+    const translation = localize(
+      `RQG.Roll.CharacteristicRoll.RollDifficultyLevel.${translationKeyDifficulty}`,
+    );
+    if (translation.startsWith("RQG.Roll.CharacteristicRoll.RollDifficultyLevel.")) {
       return localize("RQG.Roll.CharacteristicRoll.Other");
     }
     return translation;
