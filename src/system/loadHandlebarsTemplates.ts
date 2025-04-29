@@ -55,7 +55,8 @@ export const templatePaths = {
   abilityRollDialogV2: "systems/rqg/applications/abilityRollDialog/abilityRollDialogV2.hbs",
   characteristicRollDialogV2:
     "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
-  spiritMagicRollDialog: "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialog.hbs",
+  spiritMagicRollDialogV2:
+    "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialogV2.hbs",
   runeMagicRollDialog: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialog.hbs",
   attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",
   defenceDialog: "systems/rqg/applications/AttackFlow/defenceDialog.hbs",

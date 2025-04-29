@@ -1,24 +1,25 @@
-export type SpiritMagicRollDialogHandlebarsData = {
+export type SpiritMagicRollDialogContext = {
+  formData: SpiritMagicRollDialogFormData;
+
   spellName: string | null;
   spellSignature: string;
   spellImg: string | null;
-  powX5: number;
   isVariable: boolean;
 
-  object: SpiritMagicRollDialogObjectData;
-  options: FormApplication.Options;
-  title: string;
-  augmentOptions: Record<string, string>; // TODO Actually <number, string>
-  meditateOptions: Record<string, string>; // TODO Actually <number, string>
+  augmentOptions: SelectOptionData<number>[];
+  meditateOptions: SelectOptionData<number>[];
   totalChance: number;
   speakerName: string;
 };
 
-export type SpiritMagicRollDialogObjectData = {
+export type SpiritMagicRollDialogFormData = {
   levelUsed: number;
   boost: number;
-  augmentModifier: string;
-  meditateModifier: string;
-  otherModifier: string;
+  augmentModifier: number;
+  meditateModifier: number;
+  otherModifier: number;
   otherModifierDescription: string;
+
+  spellItemUuid?: string; // hidden field
+  powX5: number; // hidden field
 };

@@ -15,8 +15,10 @@ export class SpiritMagicRoll extends Roll {
   public static async rollAndShow(options: SpiritMagicRollOptions) {
     const roll = new SpiritMagicRoll(undefined, {}, options);
     await roll.evaluate();
-    await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
     activateChatTab();
+    const msg = await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
+    // @ts-expect-error Dice3D (Dice So Nice)
+    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
     return roll;
   }
 
