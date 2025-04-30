@@ -1,26 +1,27 @@
 import type { RqgItem } from "../../items/rqgItem";
 
-export type RuneMagicRollDialogHandlebarsData = {
+export type RuneMagicRollDialogContext = {
+  formData: RuneMagicRollDialogFormData;
+
   spell: RqgItem | undefined;
   usedRune: RqgItem | undefined;
 
-  object: RuneMagicRollDialogObjectData;
-  options: FormApplication.Options;
-  title: string;
-  eligibleRuneOptions: Record<string, string>;
-  augmentOptions: Record<string, string>; // TODO Actually <number, string>
-  meditateOptions: Record<string, string>; // TODO Actually <number, string>
-  ritualOptions: Record<string, string>; // TODO Actually <number, string>
+  eligibleRuneOptions: SelectOptionData<string>[];
+  augmentOptions: SelectOptionData<number>[];
+  meditateOptions: SelectOptionData<number>[];
+  ritualOptions: SelectOptionData<number>[];
   totalChance: number;
   speakerName: string;
 };
 
-export type RuneMagicRollDialogObjectData = {
+export type RuneMagicRollDialogFormData = {
   levelUsed: number;
   usedRuneId: string; // id of embedded rune
   boost: number;
-  augmentModifier: string;
-  meditateModifier: string;
-  otherModifier: string;
+  augmentModifier: number;
+  meditateModifier: number;
+  otherModifier: number;
   otherModifierDescription: string;
+
+  spellItemUuid?: string; // hidden field
 };

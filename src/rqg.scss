@@ -102,12 +102,50 @@ input.readonly {
   display: none !important;
 }
 
-.rqg img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
+// elements marked with .themed are AppV2 and theme aware, part of AppV2 migration
+.rqg:not(.themed) img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
 .app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
 .app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {
   // Make them black in the default item icon setting
   filter: invert(0.9);
 }
+
+// *** Start of theme specific styles ***
+
+.rqg {
+  &.themed {
+    .experienced {
+      text-shadow: -1px 1px 1px var(--rqg-themed-exp-outline),
+      1px -1px 1px var(--rqg-themed-exp-outline),
+      1px 1px 1px var(--rqg-themed-exp-outline),
+      -1px -1px 1px var(--rqg-themed-exp-outline),
+      0 0 1em var(--rqg-themed-highlight),
+      0 0 0.6em var(--rqg-themed-highlight),
+      0 0 0.4em var(--rqg-themed-highlight);
+      font-weight: bold;
+    }
+  }
+}
+
+.theme-light {
+  .rqg.themed {
+    &.roll-dialog img[src*="systems/rqg/assets/images"][src$=".svg"] { // Make rqg svg icons black to match text color
+      filter: invert(0.9);
+    }
+
+
+  }
+}
+
+.theme-dark {
+  .rqg.themed {
+    &.roll-dialog img[src*="systems/rqg/assets/images"][src$=".svg"] { // Make rqg svg icons black to match text color
+      filter: none;
+    }
+  }
+}
+
+// *** End of theme specific styles ***
 
 .rqg {
   h1,

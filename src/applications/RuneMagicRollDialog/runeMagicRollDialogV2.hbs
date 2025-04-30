@@ -1,4 +1,4 @@
-<form>
+<div class="standard-form">
   <header class="roll-header">
     <h1>{{spell.name}}</h1>
     <div class="sub-header">{{spell.spellSignature}}</div>
@@ -13,7 +13,7 @@
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}
     </label>
     <div>
-      <input type="number" {{#unless spell.system.isStackable}}class="readonly"{{/unless}} name="levelUsed" value={{object.levelUsed}}>
+      <input type="number" data-dtype="Number" {{#unless spell.system.isStackable}}class="readonly"{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
       {{localize "RQG.Actor.RuneMagic.RunePoints"}}
     </div>
 
@@ -28,7 +28,7 @@
     </label>
     <div class="flex-row-start flex-align-center gap03rem">
       <select name="usedRuneId">
-        {{selectOptions eligibleRuneOptions selected=object.usedRuneId localize=true}}
+        {{selectOptions eligibleRuneOptions selected=formData.usedRuneId localize=true}}
       </select>
       <img class="rune-dark" src="{{usedRune.img}}"><span {{#if usedRune.system.hasExperience}}class="experienced"{{/if}}> {{usedRune.system.chance}}%</span>
     </div>
@@ -37,34 +37,36 @@
       {{localize "RQG.Dialog.RuneMagicRoll.Boost"}}
     </label>
     <div>
-      <input type="number" name="boost" value={{object.boost}}>
+      <input type="number" data-dtype="Number" name="boost" value={{formData.boost}}>
       {{localize "RQG.Actor.Attributes.MagicPoints"}}
     </div>
 
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.Augment"}}
     </label>
-    <select name="augmentModifier">
-      {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+    <select name="augmentModifier" data-dtype="Number">
+      {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
     </select>
 
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.MeditateRitual"}}
     </label>
-    <select name="meditateModifier">
+    <select name="meditateModifier" data-dtype="Number">
       <optgroup label="{{localize "RQG.Dialog.Common.MeditateOptions.Title"}}">
-      {{selectOptions meditateOptions selected=object.meditateModifier localize=true}}
+      {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
       </optgroup>
       <optgroup label="{{localize "RQG.Dialog.Common.RitualOptions.Title"}}">
-        {{selectOptions ritualOptions selected=object.meditateModifier localize=true}}
+        {{selectOptions ritualOptions selected=formData.meditateModifier localize=true}}
       </optgroup>
     </select>
 
-    <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}" name="otherModifierDescription">
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
     <div>
-      <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+      <input type="number" data-dtype="Number" value="{{formData.otherModifier}}" name="otherModifier"> %
     </div>
   </div>
+
+  <input type="hidden" value="{{formData.spellItemUuid}}" name="spellItemUuid">
 
   <div class="flexrow flex-wrap gap03rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
@@ -73,4 +75,4 @@
     </div>
     <button data-rune-magic-roll>{{localize "RQG.Game.Roll"}}</button>
   </div>
-</form>
+</div>

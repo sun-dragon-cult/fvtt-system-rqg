@@ -29,7 +29,7 @@ import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRo
 import { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { SpiritMagicRoll } from "../rolls/SpiritMagicRoll/SpiritMagicRoll";
 import { SpiritMagicRollDialogV2 } from "../applications/SpiritMagicRollDialog/spiritMagicRollDialogV2";
-import { RuneMagicRollDialog } from "../applications/RuneMagicRollDialog/runeMagicRollDialog";
+import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeMagicRollDialogV2";
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
@@ -231,9 +231,13 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for a RuneMagicRoll
    */
-  public async runeMagicRoll(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+  public async runeMagicRoll(
+    options: Partial<RuneMagicRollOptions & { spellItem?: RqgItem }> = {},
+  ): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.RuneMagic);
-    await new RuneMagicRollDialog(this, options).render(true);
+    options.spellItem = this;
+    // @ts-expect-error render
+    await new RuneMagicRollDialogV2(options).render(true);
   }
 
   /**
