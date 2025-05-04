@@ -47,14 +47,14 @@
       <label>
         {{localize "RQG.Dialog.AbilityRoll.Augment"}}
       </label>
-      <select name="augmentModifier">
+      <select name="augmentModifier" data-dtype="Number">
         {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
       </select>
 
       <label>
         {{localize "RQG.Dialog.Defence.SubsequentDefenceModifier"}}
       </label>
-      <select name="subsequentDefenceModifier">
+      <select name="subsequentDefenceModifier" data-dtype="Number">
         {{selectOptions subsequentDefenceOptions selected=formData.subsequentDefenceModifier localize=true}}
       </select>
 
@@ -62,22 +62,22 @@
         {{localize "RQG.Dialog.Common.Halved"}}
       </label>
       <div>
-        <input type="checkbox" name="halved" {{checked formData.halved}}>
+        <input type="checkbox" data-dtype="Number" name="halved" {{checked formData.halved}}>
         {{#if formData.halved}} {{formData.halvedModifier}}%{{/if}}
       </div>
 
       <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}"
              name="otherModifierDescription">
       <div>
-        <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
+        <input type="number" data-dtype="Number" value="{{formData.otherModifier}}" name="otherModifier"> %
       </div>
 
       <label>
         {{localize "RQG.Dialog.Defence.MasterOpponentModifier"}}
       </label>
-      <input type="number" name="masterOpponentModifier" value="{{formData.masterOpponentModifier}}" readonly>
+      <input type="number" data-dtype="Number" name="masterOpponentModifier" value="{{formData.masterOpponentModifier}}" readonly>
 
-    <input type="hidden" value="{{formData.halvedModifier}}" name="halvedModifier">
+    <input type="hidden" data-dtype="Number" value="{{formData.halvedModifier}}" name="halvedModifier">
     <input type="hidden" value="{{formData.attackChatMessageUuid}}" name="attackChatMessageUuid">
 
     {{/unless}}
