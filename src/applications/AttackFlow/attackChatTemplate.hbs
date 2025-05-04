@@ -15,8 +15,13 @@
     <div class="outcome-description">{{{outcomeDescription}}}</div>
     {{!-- use presence of damageRoll as sign of there being damage to roll, should be null:ed if no damage is to be rolled --}}
     {{#if damageRoll}}
-      <button data-only-owner-visible-uuid="{{attackingTokenUuid}}" data-roll-damage-and-hitlocation>
-        {{localize "RQG.ChatMessage.Combat.RollDamageAndHitLocation"}}
+      <button data-roll-damage-and-hitlocation
+        {{#if (eq weaponDoingDamage "attackingWeapon")}}
+              data-only-owner-visible-uuid="{{attackingTokenUuid}}"
+        {{else}}
+              data-only-owner-visible-uuid="{{defendingTokenUuid}}"
+        {{/if}}
+        >{{localize "RQG.ChatMessage.Combat.RollDamageAndHitLocation"}}
       </button>
     {{/if}}
 
@@ -28,7 +33,7 @@
       <div class="flex-row">
       {{#if defenderHitLocationDamage}}
       {{#unless actorDamagedApplied}}
-        <button data-only-owner-visible-uuid="{{defendingTokenUuid}}" data-apply-damage-to-actor>
+        <button data-apply-damage-to-actor data-only-owner-visible-uuid="{{defendingTokenUuid}}">
           {{localize "RQG.ChatMessage.Combat.ApplyActorDamage"}}
         </button>
       {{/unless}}
@@ -36,13 +41,13 @@
 
       {{#if weaponDamage}}
       {{#unless weaponDamageApplied}}
-        <button
+        <button data-apply-damage-to-weapon
           {{#if (eq weaponDoingDamage "attackingWeapon")}}
             data-only-owner-visible-uuid="{{defendingTokenUuid}}"
           {{else}}
             data-only-owner-visible-uuid="{{attackingTokenUuid}}"
           {{/if}}
-          data-apply-damage-to-weapon>{{localize "RQG.ChatMessage.Combat.ApplyWeaponDamage"}}
+          >{{localize "RQG.ChatMessage.Combat.ApplyWeaponDamage"}}
         </button>
       {{/unless}}
       {{/if}}
