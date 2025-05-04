@@ -1,45 +1,31 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import type { RqgActor } from "../../actors/rqgActor";
 import type { UsageType } from "../../data-model/item-data/weaponData";
 import type { RqgItem } from "../../items/rqgItem";
 
-/** "fake" item to be able to handle reputation as Ability rolls */
-export type PartialAbilityItem = {
-  name: string | null;
-  type?: ItemTypeEnum;
-  img: string | null;
-  system: { chance: number };
-  parent?: RqgActor | null;
-  checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
-};
-
 export type AttackDialogContext = {
+  formData: AttackDialogFormData;
+
   weaponItem: RqgItem | undefined;
   skillItem: RqgItem | undefined;
   abilityChance: number;
 
-  formData: AttackDialogFormData;
   ammoQuantity: number;
   isOutOfAmmo: boolean;
-  usageTypeOptions: Record<string, string>;
-  augmentOptions: Record<string, string>; // TODO Actually <number, string>
+  usageTypeOptions: SelectOptionData<UsageType>[];
+  augmentOptions: SelectOptionData<number>[];
   defendingTokenName: string;
-  attackingTokenOptions: Record<string, string>;
-  attackingWeaponOptions: Record<string, string>;
+  attackingTokenOptions: SelectOptionData<string>[];
+  attackingWeaponOptions: SelectOptionData<string>[];
   damageBonusSourceOptions: SelectOptionData<string>[];
-  hitLocationFormulaOptions: Record<string, string>;
+  hitLocationFormulaOptions: SelectOptionData<string>[];
   aimedBlowOptions: SelectOptionData<number>[];
   totalChance: number;
 };
 
-// name:d form components data
 export type AttackDialogFormData = {
-  attackingTokenUuid: string | undefined;
-  attackingWeaponUuid: string | undefined;
+  attackingTokenUuid: string;
+  attackingWeaponUuid: string;
   usageType: UsageType;
-  /** In the dialog, it should be in the format `id:db` where the part before the colon is there to keep the select options unique */
-  attackDamageBonus: string | undefined;
+  attackDamageBonus: string;
   attackExtraDamage: string;
   reduceAmmoQuantity: boolean;
   hitLocationFormula: string;
@@ -49,7 +35,8 @@ export type AttackDialogFormData = {
   unawareTarget: boolean;
   darkness: boolean;
   halved: boolean;
-  halvedModifier: number; // now a hidden field
   otherModifierDescription: string;
   otherModifier: string;
+
+  halvedModifier: number; // hidden field
 };

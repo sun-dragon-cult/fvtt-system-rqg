@@ -36,14 +36,14 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   declare element: HTMLFormElement;
 
-  private static augmentOptions = {
-    "0": "RQG.Dialog.Common.AugmentOptions.None",
-    "20": "RQG.Dialog.Common.AugmentOptions.Success",
-    "30": "RQG.Dialog.Common.AugmentOptions.SpecialSuccess",
-    "50": "RQG.Dialog.Common.AugmentOptions.CriticalSuccess",
-    "-20": "RQG.Dialog.Common.AugmentOptions.Failure",
-    "-50": "RQG.Dialog.Common.AugmentOptions.Fumble",
-  };
+  private static augmentOptions: SelectOptionData<number>[] = [
+    { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
+    { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
+    { value: 30, label: "RQG.Dialog.Common.AugmentOptions.SpecialSuccess" },
+    { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
+    { value: -20, label: "RQG.Dialog.Common.AugmentOptions.Failure" },
+    { value: -50, label: "RQG.Dialog.Common.AugmentOptions.Fumble" },
+  ];
 
   private weaponItem: RqgItem; // The chosen actor might not have any weapon
 
@@ -107,12 +107,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     formData.attackingTokenUuid = attackingToken.uuid;
 
-    const tokenOptions = AttackDialogV2.getTokenOptions();
-    const weaponOptions = AttackDialogV2.getWeaponOptions(attackingToken?.uuid);
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
 
     formData.usageType =
-      this.weaponItem.system.defaultUsage ?? (Object.keys(usageTypeOptions)[0] as UsageType);
+      this.weaponItem.system.defaultUsage ?? Object.values(usageTypeOptions)[0].value;
 
     if (this.weaponItem.system.defaultUsage !== formData.usageType) {
       await this.weaponItem.update({
@@ -147,9 +145,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     formData.otherModifierDescription ??= localize("RQG.Dialog.Attack.OtherModifier");
     formData.reduceAmmoQuantity ??= true;
     formData.aimedBlow = formData.aimedBlow ? Number(formData.aimedBlow) : 0;
-    formData.attackDamageBonus ??= Object.keys(
-      AttackDialogV2.getDamageBonusSourceOptions(this.weaponItem),
-    )[0];
 
     return {
       formData: formData,
@@ -158,13 +153,13 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       abilityChance: usedSkill?.system.chance,
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
-      attackingTokenOptions: tokenOptions,
+      attackingTokenOptions: AttackDialogV2.getTokenOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
-      attackingWeaponOptions: weaponOptions,
+      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(attackingToken?.uuid),
       usageTypeOptions: usageTypeOptions,
       augmentOptions: AttackDialogV2.augmentOptions,
       damageBonusSourceOptions: damageBonusSourceOptions,
-      hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(),
+      hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(formData.aimedBlow),
       aimedBlowOptions: AttackDialogV2.getAimedBlowOptions(target),
 
       totalChance: Math.max(
@@ -212,7 +207,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     assertHtmlElement<HTMLSelectElement>(tokenSelectElement);
 
     const weaponOptions = AttackDialogV2.getWeaponOptions(tokenSelectElement.value);
-    const weaponUuid = Object.keys(weaponOptions)?.[0]; // TODO for now just pick any weapon;
+    const weaponUuid = Object.values(weaponOptions)?.[0].value; // TODO for now just pick any weapon;
 
     const weaponItem = (await fromUuid(weaponUuid ?? "")) as RqgItem | undefined;
 
@@ -221,12 +216,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       return;
     }
     this.weaponItem = weaponItem;
-    //
-    // const formElement = tokenSelectElement?.closest("form");
-    // requireValue(formElement, "Form not found - programming error");
-    // assertHtmlElement(formElement);
-    //
-    // formElement.attackingWeaponUuid.value = weaponUuid;
 
     // @ts-expect-error render
     this.render();
@@ -260,7 +249,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Create a type "combat" ChatMessage when the form is submitted.
    */
-  // static performCombatManeuverName(event: PointerEvent, el: HTMLElement): void {
   private static async onSubmit(
     event: SubmitEvent,
     form: HTMLFormElement,
@@ -415,7 +403,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       actorDamagedApplied: false,
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
-      attackDamageBonus: formDataObject.attackDamageBonus?.split(":")[1] ?? "0",
+      attackDamageBonus: formDataObject.attackDamageBonus,
       attackRoll: attackRoll,
       defenceRoll: undefined,
       damageRoll: undefined,
@@ -456,15 +444,15 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Return a list of tokens on the current scene the user has access to that also has at least one weapon to attack with
    */
-  private static getTokenOptions(): Record<string, string> {
+  private static getTokenOptions(): SelectOptionData<string>[] {
     return (
       getGame()
         .scenes?.active?.tokens.filter((t) => t.isOwner)
-        .filter((t) => Object.keys(AttackDialogV2.getWeaponOptions(t.uuid)).length > 0)
-        ?.reduce((acc: any, token) => {
-          acc[token?.uuid ?? ""] = token?.name;
-          return acc;
-        }, {}) ?? {}
+        .filter((t) => AttackDialogV2.getWeaponOptions(t.uuid).length > 0)
+        ?.map((token) => ({
+          value: token?.uuid ?? "",
+          label: token?.name ?? "",
+        })) ?? []
     );
   }
 
@@ -487,7 +475,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * show a list of weapons the actor has equipped and can be used for attacks.
    */
-  private static getWeaponOptions(tokenUuid: string | undefined): Record<string, string> {
+  private static getWeaponOptions(tokenUuid: string | undefined): SelectOptionData<string>[] {
     // @ts-expect-error fromUuidSync
     const actor = fromUuidSync(tokenUuid ?? "")?.actor as RqgActor | undefined;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry
@@ -509,29 +497,28 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
           )),
     );
 
-    return weaponsWithAttacks?.reduce((acc: any, item) => {
-      acc[item.uuid ?? ""] = item.name;
-      return acc;
-    }, {});
+    return weaponsWithAttacks.map((item) => ({
+      value: item.uuid ?? "",
+      label: item.name ?? "",
+    }));
   }
 
-  private static getUsageTypeOptions(weapon: RqgItem | undefined): Record<UsageType, string> {
+  private static getUsageTypeOptions(weapon: RqgItem | undefined): SelectOptionData<UsageType>[] {
     if (weapon == null) {
-      return {} as Record<UsageType, string>;
+      return [];
     }
     assertItemType(weapon.type, ItemTypeEnum.Weapon);
     return Object.entries<Usage>(weapon.system.usage).reduce((acc: any, [key, usage]) => {
       if (usage?.skillRqidLink?.rqid) {
-        acc[key] = localize(`RQG.Game.WeaponUsage.${key}-full`);
+        acc.push({ value: key, label: localize(`RQG.Game.WeaponUsage.${key}-full`) });
       }
       return acc;
-    }, {});
+    }, []);
   }
 
   /**
    * Get the damage bonus source options from non-humanoid tokens on the active scene that the user owns.
    * The idea is that horses and other rideable animals should show up here.
-   * The token actor owning the weapon is always included at position [0] in the list.
    */
   private static getDamageBonusSourceOptions(
     weapon: RqgItem | undefined,
@@ -546,42 +533,37 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       throw new RqgError("weapon did not have an owner");
     }
 
-    const weaponOwnerOptionKey = `${weaponOwner.id}:${weaponOwner.system.attributes?.damageBonus}`;
-    const nonHumanoids = getGame()
-      .scenes?.active?.tokens?.filter(
-        (t) =>
-          t.isOwner &&
-          !!t.actor?.system?.attributes?.damageBonus &&
-          t.actor.getBodyType() !== "humanoid",
-      )
-      ?.reduce(
-        (acc: SelectOptionData<string>[], token: TokenDocument) => {
-          const optionKey = `${token.id}:${token.actor?.system.attributes?.damageBonus}`;
-          acc.push({ value: optionKey, label: token.name ?? "" });
-          return acc;
-        },
-        [
-          {
-            value: weaponOwnerOptionKey,
-            label: weaponOwner.name ?? "",
-          },
-        ],
-      );
-    return nonHumanoids ?? [];
+    const nonHumanoids =
+      getGame()
+        .scenes?.active?.tokens?.filter(
+          (t) =>
+            t.isOwner &&
+            !!t.actor?.system?.attributes?.damageBonus &&
+            t.actor.getBodyType() !== "humanoid",
+        )
+        ?.map((token: TokenDocument) => ({
+          value: token.actor?.system.attributes?.damageBonus ?? "",
+          label: token.name ?? "",
+        })) ?? [];
+
+    nonHumanoids.unshift({
+      value: weaponOwner.system.attributes?.damageBonus ?? "",
+      label: weaponOwner.name ?? "",
+    });
+
+    return nonHumanoids;
   }
 
-  private static getHitLocationFormulaOptions(aim: number = 0): Record<string, string> {
+  private static getHitLocationFormulaOptions(aim: number = 0): SelectOptionData<string>[] {
     if (aim > 0) {
-      return {
-        [aim]: localize("RQG.Dialog.Attack.AimedBlow"),
-      };
+      return [{ value: aim.toString(), label: localize("RQG.Dialog.Attack.AimedBlow") }];
     }
 
-    return {
-      "1d20": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d20"),
-      "1d10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10"),
-      "1d10+10": localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10+10"),
-    };
+    return [
+      { value: "1d20", label: localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d20") },
+      { value: "1d10", label: localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10") },
+      { value: "1d10+10", label: localize("RQG.Dialog.Attack.HitLocationFormulaOptions.1d10+10") },
+    ];
   }
 
   private static getWeaponProjectile(weaponItem: RqgItem | undefined): RqgItem | undefined {
