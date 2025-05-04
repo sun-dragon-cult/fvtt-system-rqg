@@ -40,9 +40,9 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const item = (itemId && actor.items.get(itemId)) || undefined;
       assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
       if (item.system.isVariable && item.system.points > 1) {
-        await item?.spiritMagicRoll();
+        await item.spiritMagicRoll();
       } else {
-        await item?.spiritMagicRollImmediate();
+        await item.spiritMagicRollImmediate();
       }
     },
   },

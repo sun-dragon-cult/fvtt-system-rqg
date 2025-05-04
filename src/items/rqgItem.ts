@@ -37,7 +37,6 @@ import { SpellRangeEnum } from "../data-model/item-data/spell";
 import { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import { formatDamagePart } from "../system/combatCalculations";
-import { AttackDialogOptions } from "../chat/RqgChatMessage.types";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 
 export class RqgItem extends Item {
@@ -148,13 +147,9 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for an AbilityRoll
    */
-  public async abilityRoll(
-    options: Partial<AbilityRollOptions & { abilityItem?: RqgItem }> = {},
-  ): Promise<void> {
-    options.abilityItem = this;
-
+  public async abilityRoll(): Promise<void> {
     // @ts-expect-error render
-    await new AbilityRollDialogV2(options).render(true);
+    await new AbilityRollDialogV2({ abilityItem: this }).render(true);
   }
 
   /**
@@ -189,13 +184,11 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for a SpiritMagicRoll
    */
-  public async spiritMagicRoll(
-    options: Partial<SpiritMagicRollOptions & { spellItem?: RqgItem }> = {},
-  ): Promise<void> {
+  public async spiritMagicRoll(): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.SpiritMagic);
-    options.spellItem = this;
+
     // @ts-expect-error render
-    await new SpiritMagicRollDialogV2(options).render(true);
+    await new SpiritMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
   /**
@@ -231,13 +224,11 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for a RuneMagicRoll
    */
-  public async runeMagicRoll(
-    options: Partial<RuneMagicRollOptions & { spellItem?: RqgItem }> = {},
-  ): Promise<void> {
+  public async runeMagicRoll(): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.RuneMagic);
-    options.spellItem = this;
+
     // @ts-expect-error render
-    await new RuneMagicRollDialogV2(options).render(true);
+    await new RuneMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
   /**
@@ -298,12 +289,10 @@ export class RqgItem extends Item {
   /**
    * Open an attackDialog to initiate an attack sequence
    */
-  public async attack(options: Partial<AttackDialogOptions> = {}): Promise<void> {
+  public async attack(): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.Weapon);
-    // @ts-expect-error document
-    options.weaponItem = this;
     // @ts-expect-error render
-    await new AttackDialogV2(options).render(true);
+    await new AttackDialogV2({ weaponItem: this }).render(true);
   }
 
   /**

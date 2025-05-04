@@ -34,7 +34,8 @@ export const skillMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      await item?.abilityRoll();
+      assertItemType(item?.type, ItemTypeEnum.Skill);
+      await item.abilityRoll();
     },
   },
   {
@@ -61,7 +62,7 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await item?.abilityRollImmediate();
+      await item.abilityRollImmediate();
     },
   },
   {

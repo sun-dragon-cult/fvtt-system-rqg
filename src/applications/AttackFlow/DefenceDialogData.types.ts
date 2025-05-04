@@ -1,5 +1,6 @@
 import type { UsageType } from "../../data-model/item-data/weaponData";
-import type { DefenceType } from "../../chat/RqgChatMessage.types";
+
+export type DefenceType = "parry" | "dodge" | "ignore";
 
 export type DefenceDialogContext = {
   formData: DefenceDialogFormData;

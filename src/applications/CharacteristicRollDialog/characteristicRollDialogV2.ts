@@ -8,6 +8,7 @@ import { getTokenFromActor, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
+import { Characteristics } from "../../data-model/actor-data/characteristics";
 
 // @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -43,24 +44,8 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
 
   private actor: RqgActor;
 
-  constructor(
-    options: Partial<
-      CharacteristicRollOptions & { actor?: RqgActor } & Pick<
-          CharacteristicRollOptions,
-          "characteristicName"
-        >
-    >,
-  ) {
+  constructor(options: { actor: RqgActor; characteristicName: keyof Characteristics }) {
     super(options);
-    if (!options.actor || !options.characteristicName) {
-      const msg = "No actor or characteristicName to roll for";
-      ui.notifications?.warn(msg);
-      setTimeout(() => {
-        // @ts-expect-error close
-        void this.close();
-      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
-      throw new RqgError(msg);
-    }
     this.actor = options.actor;
   }
 

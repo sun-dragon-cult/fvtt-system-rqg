@@ -4,7 +4,7 @@ import {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./SpiritMagicRollDialogData.types";
-import { assertItemType, getSpeakerFromItem, localize, RqgError } from "../../system/util";
+import { assertItemType, getSpeakerFromItem, localize } from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
@@ -36,19 +36,8 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   private spellItem: RqgItem;
   private powX5: number;
 
-  constructor(
-    options: Omit<SpiritMagicRollOptions, "powX5" | "levelUsed"> & { spellItem?: RqgItem } = {},
-  ) {
+  constructor(options: { spellItem: RqgItem }) {
     super(options);
-    if (!options.spellItem) {
-      const msg = "No SpellItem to roll Spirit Magic for";
-      ui.notifications?.warn(msg);
-      setTimeout(() => {
-        // @ts-expect-error close
-        void this.close();
-      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
-      throw new RqgError(msg);
-    }
 
     this.spellItem = options.spellItem;
     this.powX5 = (this.spellItem.parent?.system?.characteristics?.power?.value ?? 0) * 5;

@@ -34,9 +34,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
 
   private abilityItem: RqgItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
 
-  constructor(
-    options: Partial<AbilityRollOptions & { abilityItem?: RqgItem | PartialAbilityItem }>,
-  ) {
+  constructor(options: { abilityItem?: RqgItem | PartialAbilityItem }) {
     super(options);
     if (!options.abilityItem) {
       const msg = "No AbilityItem to roll for";

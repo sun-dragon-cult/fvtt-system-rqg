@@ -1,5 +1,4 @@
 import type { AttackDamages, CombatOutcome } from "./combatCalculations.types";
-import type { DefenceType } from "../chat/RqgChatMessage.types";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { assertItemType, localize as realLocalize, requireValue, RqgError } from "./util";
 import { attackParryMap } from "./attackParryTable";
@@ -19,6 +18,7 @@ import {
 } from "./combatCalculations.defs";
 import { attackDodgeMap } from "./attackDodgeTable";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
+import type { DefenceType } from "../applications/AttackFlow/DefenceDialogData.types";
 
 export const exportedForTesting = {
   calculateDamages,

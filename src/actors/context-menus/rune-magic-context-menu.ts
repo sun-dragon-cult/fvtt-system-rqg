@@ -18,11 +18,11 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
-    callback: async () => {
-      // const itemId = getRequiredDomDataset(el, "item-id");
-      // const item = actor.items.get(itemId);
-      // TODO use future RuneMagicRoll
-      // await item?.toChat();
+    callback: async (el: JQuery) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId);
+      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
+      await item.runeMagicRoll();
     },
   },
   {
@@ -32,14 +32,13 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.RuneMagic);
-      return item?.system.points === 1;
+      return item.system.points === 1;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.RuneMagic);
-      // TODO use future RuneMagicRoll
-      // item.abilityRoll({ runePointCost: 1, magicPointBoost: 0 });
+      await item.runeMagicRollImmediate();
     },
   },
   {

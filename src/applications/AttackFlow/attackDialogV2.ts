@@ -29,7 +29,6 @@ import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
-import { AttackDialogOptions } from "../../chat/RqgChatMessage.types";
 
 // @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -48,9 +47,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   private weaponItem: RqgItem; // The chosen actor might not have any weapon
 
-  constructor(options: Partial<AttackDialogOptions> = {}) {
+  constructor(options: { weaponItem: RqgItem }) {
     super(options as any);
-    // @ts-expect-error weaponItem
     this.weaponItem = options.weaponItem;
     const attackingToken = getTokenFromItem(this.weaponItem);
 

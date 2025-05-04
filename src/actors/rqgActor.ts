@@ -69,13 +69,12 @@ export class RqgActor extends Actor {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 
-  public async characteristicRoll(
-    characteristicName: keyof Characteristics,
-    options: Partial<CharacteristicRollOptions> = {},
-  ): Promise<void> {
-    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options);
-    // @ts-expect-error render
-    await new CharacteristicRollDialogV2(rollOptions).render(true);
+  public async characteristicRoll(characteristicName: keyof Characteristics): Promise<void> {
+    await new CharacteristicRollDialogV2({
+      actor: this,
+      characteristicName: characteristicName,
+      // @ts-expect-error render
+    }).render(true);
   }
   /**
    * Do a characteristic roll and handle possible POW experience check afterward.
@@ -119,12 +118,9 @@ export class RqgActor extends Actor {
 
   /**
    * Open an ability roll dialog for reputation   */
-  public async reputationRoll(
-    options: Omit<AbilityRollOptions & { abilityItem?: PartialAbilityItem }, "naturalSkill"> = {},
-  ): Promise<void> {
-    options.abilityItem = this.createReputationFakeItem();
+  public async reputationRoll(): Promise<void> {
     // @ts-expect-error render
-    await new AbilityRollDialogV2(options).render(true);
+    await new AbilityRollDialogV2({ abilityItem: this.createReputationFakeItem() }).render(true);
   }
 
   /**

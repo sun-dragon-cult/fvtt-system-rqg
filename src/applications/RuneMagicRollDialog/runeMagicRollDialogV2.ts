@@ -53,17 +53,8 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
 
   private spellItem: RqgItem;
 
-  constructor(options: Partial<RuneMagicRollOptions> & { spellItem?: RqgItem } = {}) {
+  constructor(options: { spellItem: RqgItem }) {
     super(options);
-    if (!options.spellItem) {
-      const msg = "No SpellItem to roll Rune Magic for";
-      ui.notifications?.warn(msg);
-      setTimeout(() => {
-        // @ts-expect-error close
-        void this.close();
-      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
-      throw new RqgError(msg);
-    }
     this.spellItem = options.spellItem;
   }
 

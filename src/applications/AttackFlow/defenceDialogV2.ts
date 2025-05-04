@@ -12,8 +12,11 @@ import {
 } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
-import type { AttackDialogOptions, DefenceType } from "../../chat/RqgChatMessage.types";
-import type { DefenceDialogContext, DefenceDialogFormData } from "./DefenceDialogData.types";
+import type {
+  DefenceDialogContext,
+  DefenceDialogFormData,
+  DefenceType,
+} from "./DefenceDialogData.types";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { DamageType, Usage, UsageType } from "../../data-model/item-data/weaponData";
@@ -53,7 +56,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   private readonly attackChatMessage: RqgChatMessage;
 
-  constructor(options: Partial<AttackDialogOptions & { chatMessageId?: string }> = {}) {
+  constructor(options: { chatMessageId: string }) {
     super(options);
     const attackChatMessage = getGame().messages?.get(options.chatMessageId ?? "") as
       | RqgChatMessage

@@ -1,19 +1,28 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
-import { getDomDataset, getGame, localize, localizeItemType, RqgError } from "../../system/util";
+import {
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getRequiredDomDataset,
+  localize,
+  localizeItemType,
+  RqgError,
+} from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import type { RqgItem } from "../../items/rqgItem";
 
 export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
-    callback: async () => {
-      // const weaponItemId = getRequiredDomDataset(el, "item-id");
-      // const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
-      // TODO use future AttackRoll
-      // await weapon?.toChat();
+    callback: async (el: JQuery) => {
+      const weaponItemId = getRequiredDomDataset(el, "item-id");
+      const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
+      assertItemType(weapon?.type, ItemTypeEnum.Weapon);
+      await weapon.attack();
     },
   },
   {
