@@ -14,13 +14,12 @@ export type PartialAbilityItem = {
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
 };
 
-// context in app v2
-export type AttackDialogHandlebarsData = {
+export type AttackDialogContext = {
   weaponItem: RqgItem | undefined;
   skillItem: RqgItem | undefined;
   abilityChance: number;
 
-  formData: AttackDialogObjectData;
+  formData: AttackDialogFormData;
   ammoQuantity: number;
   isOutOfAmmo: boolean;
   usageTypeOptions: Record<string, string>;
@@ -35,7 +34,7 @@ export type AttackDialogHandlebarsData = {
 };
 
 // name:d form components data
-export type AttackDialogObjectData = {
+export type AttackDialogFormData = {
   attackingTokenUuid: string | undefined;
   attackingWeaponUuid: string | undefined;
   usageType: UsageType;

@@ -1,4 +1,4 @@
-import { AttackDialogHandlebarsData, AttackDialogObjectData } from "./AttackDialogData.types";
+import { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
 
 import {
   assertHtmlElement,
@@ -39,9 +39,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   private static augmentOptions = {
     "0": "RQG.Dialog.Common.AugmentOptions.None",
-    "50": "RQG.Dialog.Common.AugmentOptions.CriticalSuccess",
-    "30": "RQG.Dialog.Common.AugmentOptions.SpecialSuccess",
     "20": "RQG.Dialog.Common.AugmentOptions.Success",
+    "30": "RQG.Dialog.Common.AugmentOptions.SpecialSuccess",
+    "50": "RQG.Dialog.Common.AugmentOptions.CriticalSuccess",
     "-20": "RQG.Dialog.Common.AugmentOptions.Failure",
     "-50": "RQG.Dialog.Common.AugmentOptions.Fumble",
   };
@@ -94,8 +94,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     return localize("RQG.Dialog.Attack.Title");
   }
 
-  async _prepareContext(): Promise<AttackDialogHandlebarsData> {
-    const formData: AttackDialogObjectData =
+  async _prepareContext(): Promise<AttackDialogContext> {
+    const formData: AttackDialogFormData =
       // @ts-expect-error object
       (this.element && new FormDataExtended(this.element, {}).object) ?? {};
 
@@ -269,9 +269,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     formData: any,
   ): Promise<void> {
     const submitter = event.submitter;
-    const formDataObject: AttackDialogObjectData = formData.object;
+    const formDataObject: AttackDialogFormData = formData.object;
 
-    console.log("TODO AttackDialogV2 submitted", event, form, formData);
     if (!(submitter instanceof HTMLButtonElement)) {
       ui.notifications?.warn("Button not working - programming error");
       return;

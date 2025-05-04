@@ -70,12 +70,6 @@ export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
       // TODO should be a reference to the weapon usageType dataModel eventually
       attackWeaponUsage: new StringField({ blank: false, nullable: false, choices: usageType }),
 
-      defenceWeaponUuid: new DocumentUUIDField({
-        blank: false,
-        nullable: true,
-        initial: undefined,
-        required: false,
-      }),
       // TODO should be a reference to the weapon usageType dataModel eventually
       defenceWeaponUsage: new StringField({
         blank: false,

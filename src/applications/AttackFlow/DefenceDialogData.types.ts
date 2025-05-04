@@ -1,50 +1,35 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import type { RqgActor } from "../../actors/rqgActor";
 import type { UsageType } from "../../data-model/item-data/weaponData";
 import type { DefenceType } from "../../chat/RqgChatMessage.types";
 
-/** "fake" item to be able to handle reputation as Ability rolls */
-export type PartialAbilityItem = {
-  name: string | null;
-  type?: ItemTypeEnum;
-  img: string | null;
-  system: { chance: number };
-  parent?: RqgActor | null;
-  checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
-};
+export type DefenceDialogContext = {
+  formData: DefenceDialogFormData;
 
-export type DefenceDialogHandlebarsData = {
   defenceName: string | null;
   defenceButtonText: string;
-  // abilityType?: string;
-  // abilityImg: string | null;
-  defenceChance: number;
 
-  object: DefenceDialogObjectData;
-  options: FormApplication.Options;
-  title: string;
+  defenceChance: number;
   attackingTokenName: string;
-  defendingTokenOptions: Record<string, string>;
-  defenceOptions: Record<string, string>;
-  parryingWeaponOptions: Record<string, string>;
-  parryingWeaponUsageOptions: Record<string, string>;
-  augmentOptions: Record<string, string>; // TODO Actually <number, string>
-  subsequentDefenceOptions: Record<string, string>; // TODO Actually <number, string>
-  halvedModifier: number;
+  defendingTokenOptions: SelectOptionData<string>[];
+  defenceOptions: SelectOptionData<string>[];
+  parryingWeaponOptions: SelectOptionData<string>[];
+  parryingWeaponUsageOptions: SelectOptionData<string>[];
+  augmentOptions: SelectOptionData<number>[];
+  subsequentDefenceOptions: SelectOptionData<number>[];
   totalChance: number;
 };
 
-export type DefenceDialogObjectData = {
-  defendingTokenUuid: string | undefined;
+export type DefenceDialogFormData = {
+  defendingTokenUuid: string;
   defence: DefenceType | undefined;
   parryingWeaponUuid: string | undefined;
   parryingWeaponUsage: UsageType | undefined;
-  defenceItemUuid: string | undefined; // Could be a weapon skill or the Dodge skill
   augmentModifier: string;
   subsequentDefenceModifier: string;
   halved: boolean;
   otherModifier: string;
   otherModifierDescription: string;
   masterOpponentModifier: number;
+
+  halvedModifier: number; // hidden field
+  attackChatMessageUuid: string | undefined; // hidden field
 };

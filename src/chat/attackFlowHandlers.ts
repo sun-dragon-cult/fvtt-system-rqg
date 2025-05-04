@@ -10,8 +10,7 @@ import {
   RqgError,
 } from "../system/util";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { DefenceType } from "./RqgChatMessage.types";
-import { DefenceDialog } from "../applications/AttackFlow/defenceDialog";
+import { DefenceDialogV2 } from "../applications/AttackFlow/defenceDialogV2";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { RqgActor } from "../actors/rqgActor";
@@ -29,10 +28,9 @@ export async function handleDefence(clickedButton: HTMLButtonElement): Promise<v
 
   const attackingWeapon = (await fromUuid(attackWeaponUuid)) as RqgItem | undefined;
   assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
-  const defence = getRequiredDomDataset(clickedButton, "defence") as DefenceType;
-  await new DefenceDialog(attackingWeapon, {
-    defenceType: defence,
+  await new DefenceDialogV2({
     chatMessageId: chatMessageId,
+    // @ts-expect-error render
   }).render(true);
 }
 
@@ -255,7 +253,6 @@ async function fumbleRoll(): Promise<string> {
 async function getChatMessageInfo(button: HTMLElement): Promise<{
   chatMessageId: string;
   attackWeaponUuid: string;
-  defenceWeaponUuid: string | undefined;
 }> {
   const chatMessageId = getRequiredDomDataset(button, "message-id");
   const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
@@ -264,11 +261,9 @@ async function getChatMessageInfo(button: HTMLElement): Promise<{
   if (!attackWeaponUuid) {
     throw new RqgError("No attackWeapon in chat system data", chatMessage);
   }
-  const defenceWeaponUuid = chatMessage?.system.defenceWeaponUuid as string | undefined;
   return {
     chatMessageId: chatMessageId,
     attackWeaponUuid: attackWeaponUuid,
-    defenceWeaponUuid: defenceWeaponUuid,
   };
 }
 

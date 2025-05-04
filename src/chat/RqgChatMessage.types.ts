@@ -5,6 +5,7 @@ import { Modifier } from "../rolls/AbilityRoll/AbilityRoll.types";
 export type DefenceType = "parry" | "dodge" | "ignore";
 export type AttackState = "Attacked" | "Defended" | "DamageRolled";
 
+// TODO are these types used?
 export type AttackDialogOptions = {
   attackState: AttackState;
   defenceType: DefenceType;

@@ -1,8 +1,8 @@
 {{log "***defenceDialog" this}}
-<form>
+<div class="standard-form">
   <header class="roll-header">
     <h1>{{defenceName}}</h1>
-    {{#unless (eq object.defence "ignore")}}<div class="sub-header">{{defenceChance}}%</div>{{/unless}}
+    {{#unless (eq formData.defence "ignore")}}<div class="sub-header">{{defenceChance}}%</div>{{/unless}}
   </header>
   <div class="key-value-grid">
     <label>
@@ -14,33 +14,33 @@
       {{localize "RQG.Dialog.Common.DefendingActor"}}
     </label>
     <select name="defendingTokenUuid">
-      {{selectOptions defendingTokenOptions selected=object.defendingTokenUuid localize=false}}
+      {{selectOptions defendingTokenOptions selected=formData.defendingTokenUuid localize=false}}
     </select>
 
     <label>
       {{localize "RQG.Dialog.Defence.Defence"}}
     </label>
     <select name="defence">
-      {{selectOptions defenceOptions selected=object.defence localize=true}}
+      {{selectOptions defenceOptions selected=formData.defence localize=true}}
     </select>
 
-    {{#if (eq object.defence "parry")}}
+    {{#if (eq formData.defence "parry")}}
       <label>
         {{localize "RQG.Dialog.Defence.ParryingWeaponUuid"}}
       </label>
       <select name="parryingWeaponUuid">
-        {{selectOptions parryingWeaponOptions selected=object.parryingWeaponUuid localize=false}}
+        {{selectOptions parryingWeaponOptions selected=formData.parryingWeaponUuid localize=false}}
       </select>
 
       <label>
         {{localize "RQG.Dialog.Defence.ParryingWeaponUsage"}}
       </label>
       <select name="parryingWeaponUsage">
-        {{selectOptions parryingWeaponUsageOptions selected=object.parryingWeaponUsage localize=true}}
+        {{selectOptions parryingWeaponUsageOptions selected=formData.parryingWeaponUsage localize=true}}
       </select>
     {{/if}}
 
-    {{#unless (eq object.defence "ignore")}}
+    {{#unless (eq formData.defence "ignore")}}
 
       <h2 class="submenu-span">{{localize "RQG.Dialog.Common.Modifiers"}}</h2>
 
@@ -48,34 +48,37 @@
         {{localize "RQG.Dialog.AbilityRoll.Augment"}}
       </label>
       <select name="augmentModifier">
-        {{selectOptions augmentOptions selected=object.augmentModifier localize=true}}
+        {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
       </select>
 
       <label>
         {{localize "RQG.Dialog.Defence.SubsequentDefenceModifier"}}
       </label>
       <select name="subsequentDefenceModifier">
-        {{selectOptions subsequentDefenceOptions selected=object.subsequentDefenceModifier localize=true}}
+        {{selectOptions subsequentDefenceOptions selected=formData.subsequentDefenceModifier localize=true}}
       </select>
 
       <label>
         {{localize "RQG.Dialog.Common.Halved"}}
       </label>
       <div>
-        <input type="checkbox" name="halved" {{checked object.halved}}>
-        {{#if object.halved}} {{halvedModifier}}%{{/if}}
+        <input type="checkbox" name="halved" {{checked formData.halved}}>
+        {{#if formData.halved}} {{formData.halvedModifier}}%{{/if}}
       </div>
 
-      <input type="text" style="text-align:end;font-weight:bold;" value="{{object.otherModifierDescription}}"
+      <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}"
              name="otherModifierDescription">
       <div>
-        <input type="number" value="{{object.otherModifier}}" name="otherModifier"> %
+        <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
       </div>
 
       <label>
         {{localize "RQG.Dialog.Defence.MasterOpponentModifier"}}
       </label>
-      <input type="number" name="masterOpponentModifier" value="{{object.masterOpponentModifier}}" readonly>
+      <input type="number" name="masterOpponentModifier" value="{{formData.masterOpponentModifier}}" readonly>
+
+    <input type="hidden" value="{{formData.halvedModifier}}" name="halvedModifier">
+    <input type="hidden" value="{{formData.attackChatMessageUuid}}" name="attackChatMessageUuid">
 
     {{/unless}}
   </div>
@@ -87,4 +90,4 @@
 
     <button data-defend>{{defenceButtonText}}</button>
   </div>
-</form>
+</div>

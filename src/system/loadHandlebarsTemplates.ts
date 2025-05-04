@@ -59,7 +59,7 @@ export const templatePaths = {
     "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialogV2.hbs",
   runeMagicRollDialogV2: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialogV2.hbs",
   attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",
-  defenceDialog: "systems/rqg/applications/AttackFlow/defenceDialog.hbs",
+  defenceDialogV2: "systems/rqg/applications/AttackFlow/defenceDialogV2.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
