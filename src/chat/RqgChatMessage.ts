@@ -197,10 +197,7 @@ export class RqgChatMessage extends ChatMessage {
             .trim()} ${roll.total} / ${roll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${roll.successLevel}`)} `,
         );
       } else if (roll instanceof DamageRoll) {
-        content.push(
-          // @ts-expect-error flavor
-          `DamageRoll: ${roll.flavor.replaceAll(/<[^>]*>/gm, "").replaceAll(/\n */gm, " ")}`,
-        );
+        content.push(`DamageRoll: ${roll.formula} = ${roll.result} = ${roll.total}`);
       } else {
         content.push(`${roll.formula} = ${roll.result} = ${roll.total}`);
       }
