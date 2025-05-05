@@ -76,11 +76,11 @@
         {{localize "RQG.Dialog.Defence.MasterOpponentModifier"}}
       </label>
       <input type="number" data-dtype="Number" name="masterOpponentModifier" value="{{formData.masterOpponentModifier}}" readonly>
-
-    <input type="hidden" data-dtype="Number" value="{{formData.halvedModifier}}" name="halvedModifier">
-    <input type="hidden" value="{{formData.attackChatMessageUuid}}" name="attackChatMessageUuid">
+      <input type="hidden" data-dtype="Number" value="{{formData.halvedModifier}}" name="halvedModifier">
 
     {{/unless}}
+    <input type="hidden" value="{{formData.attackChatMessageUuid}}" name="attackChatMessageUuid">
+
   </div>
   <div class="flexrow flex-wrap gap03rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
