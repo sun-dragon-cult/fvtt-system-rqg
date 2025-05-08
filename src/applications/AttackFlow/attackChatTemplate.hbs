@@ -15,21 +15,24 @@
     <div class="outcome-description">{{{outcomeDescription}}}</div>
     {{!-- use presence of damageRoll as sign of there being damage to roll, should be null:ed if no damage is to be rolled --}}
     {{#if damageRoll}}
-      <button data-roll-damage-and-hitlocation
         {{#if (eq weaponDoingDamage "attackingWeapon")}}
-              data-only-owner-visible-uuid="{{attackingTokenUuid}}"
+        <button data-roll-damage-and-hitlocation data-only-owner-visible-uuid="{{attackingTokenUuid}}">
+          {{localize "RQG.ChatMessage.Combat.RollDamageAndHitLocation"}}
+        </button>
         {{else}}
-              data-only-owner-visible-uuid="{{defendingTokenUuid}}"
+          <button data-roll-damage-and-hitlocation data-only-owner-visible-uuid="{{defendingTokenUuid}}">
+            {{localize "RQG.ChatMessage.Combat.RollDamage"}}
+          </button>
         {{/if}}
-        >{{localize "RQG.ChatMessage.Combat.RollDamageAndHitLocation"}}
-      </button>
     {{/if}}
 
   {{else if (eq attackState 'DamageRolled')}}
     <div class="outcome-description">{{{outcomeDescription}}}</div>
-    <div class="flex-column gap1rem">
+    <div class="flex-column gap05rem">
       <span data-damage-roll-html></span>
-      <span data-hit-location-roll-html></span>
+      {{#if (eq weaponDoingDamage "attackingWeapon")}}
+        <span data-hit-location-roll-html></span>
+      {{/if}}
       <div class="flex-row">
       {{#if defenderHitLocationDamage}}
       {{#unless actorDamagedApplied}}

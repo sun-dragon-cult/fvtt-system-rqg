@@ -443,6 +443,7 @@
     "ChatMessage": {
       "Combat": {
         "RollDamageAndHitLocation": "Roll Damage & Hit Location",
+        "RollDamage": "Roll Damage",
           "ApplyActorDamage": "Apply Damage to Actor",
           "ApplyWeaponDamage": "Apply Damage to Weapon",
           "RollAttackerFumble": "Roll Attacker Fumble",

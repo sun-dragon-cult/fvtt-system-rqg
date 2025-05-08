@@ -49,7 +49,11 @@ export async function handleRollDamageAndHitLocation(
   }
   const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
 
-  await hitLocationRoll.evaluate();
+  const shouldRollHitLocation = attackChatMessage.system.weaponDoingDamage === "attackingWeapon";
+
+  if (shouldRollHitLocation) {
+    await hitLocationRoll.evaluate();
+  }
 
   // @ts-expect-error dice3d
   if (game.dice3d) {
@@ -63,8 +67,10 @@ export async function handleRollDamageAndHitLocation(
     const damageRoll = DamageRoll.fromData(attackChatMessage.system.damageRoll);
     // @ts-expect-error dice3d
     void game.dice3d.showForRoll(damageRoll, userDealingDamage, true, null, false);
-    // @ts-expect-error dice3d
-    await game.dice3d.showForRoll(hitLocationRoll, userDealingDamage, true, null, false);
+    if (shouldRollHitLocation) {
+      // @ts-expect-error dice3d
+      await game.dice3d.showForRoll(hitLocationRoll, userDealingDamage, true, null, false);
+    }
   }
 
   const messageData = attackChatMessage.toObject();
@@ -73,7 +79,7 @@ export async function handleRollDamageAndHitLocation(
     {
       system: {
         attackState: `DamageRolled`,
-        hitLocationRoll: hitLocationRoll.toJSON(),
+        hitLocationRoll: shouldRollHitLocation ? hitLocationRoll.toJSON() : null,
       },
     },
     { overwrite: true },
