@@ -20,6 +20,7 @@ import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { damageType } from "../../data-model/item-data/weaponData";
 
 interface HitLocationSheetData {
   allHitLocations: AvailableItemCache[];
@@ -120,7 +121,13 @@ export class HitLocationSheet extends RqgItemSheet<
     const ignoreAP: boolean = !data.subtractAP;
     const damage = Number(data.damage);
 
-    actor.applyDamage(damage, hitLocation.system.dieFrom, ignoreAP, applyDamageToTotalHp);
+    actor.applyDamage(
+      damage,
+      hitLocation.system.dieFrom,
+      ignoreAP,
+      applyDamageToTotalHp,
+      damageType.Impale, // TODO add dropdown to dialog? For now use Impale (still unused)
+    );
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {

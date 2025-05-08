@@ -132,6 +132,8 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     hitLocationRoll.total,
     ignoreDefenderAp,
     true,
+    // @ts-expect-error system
+    attackChatMessage.system.attackCombatManeuver.damageType,
     wasDamagedReducedByParry,
   );
 

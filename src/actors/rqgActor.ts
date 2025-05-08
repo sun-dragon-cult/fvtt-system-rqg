@@ -38,6 +38,7 @@ import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRo
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
 import { ActorHealthState } from "../data-model/actor-data/attributes";
+import { DamageType } from "../data-model/item-data/weaponData";
 
 export class RqgActor extends Actor {
   static init() {
@@ -317,6 +318,7 @@ export class RqgActor extends Actor {
     hitLocationRollTotal: number,
     ignoreAP: boolean = false,
     applyToActorHP: boolean = true,
+    damageType: DamageType,
     wasDamagedReducedByParry: boolean = false,
   ): Promise<void> {
     const damagedHitLocation = this.items.find(
@@ -363,15 +365,24 @@ export class RqgActor extends Actor {
       await this.update(actorUpdates as any);
     } // TODO fix type
 
+    // Incapacitating Rule
+    const incapacitatingText =
+      damageType === "slash" && damageAfterAP >= damagedHitLocation!.system.hitPoints.max
+        ? `<p>${localize("RQG.Item.HitLocation.IncapacitationRule", {
+            damage: damageAfterAP,
+          })}</p>`
+        : "";
+
     // TODO should this be part of the attack chat message? Or should it still only be visible to attacker & defender?
     await ChatMessage.create({
       user: getGame().user?.id,
       speaker: speaker,
-      content: localize("RQG.Item.HitLocation.AddWoundChatContent", {
-        actorName: this.name,
-        hitLocationName: damagedHitLocation!.name,
-        notification: notification,
-      }),
+      content:
+        localize("RQG.Item.HitLocation.AddWoundChatContent", {
+          actorName: this.name,
+          hitLocationName: damagedHitLocation!.name,
+          notification: notification,
+        }) + incapacitatingText,
       whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
     });
 

@@ -790,6 +790,7 @@
           "btnAddWound": "Add Wound"
         },
         "AddWoundChatContent": "{actorName} takes a wound to the {hitLocationName}. {notification}",
+        "IncapacitationRule": "Roll below (CON-{damage})*5 or pass out, unless already passed out from the damage. If the roll is failed the character is unconscious for [[/r 1d6]] hours or until woken.",
         "HealWound": {
           "Title": "Heal Wound to {hitLocationName}",
           "SelectWoundToHeal": "Select Wound to Heal on {hitLocationName}",
