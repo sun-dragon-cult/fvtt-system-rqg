@@ -174,6 +174,7 @@ export class RqgItem extends Item {
       abilityImg: this.img ?? undefined,
       resultMessages: options?.resultMessages,
       speaker: getSpeakerFromItem(this),
+      rollMode: options?.rollMode,
     });
     if (abilityRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");

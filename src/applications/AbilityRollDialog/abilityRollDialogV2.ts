@@ -1,14 +1,15 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import {
+import type {
   AbilityRollDialogContext,
   AbilityRollDialogFormData,
   PartialAbilityItem,
 } from "./AbilityRollDialogData.types";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { getSpeakerFromItem, localize, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getSpeakerFromItem, localize, RqgError } from "../../system/util";
 import { RqgItem } from "../../items/rqgItem";
+import type { RollMode } from "../../chat/chatMessage.types";
 
 // @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -33,6 +34,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
   ];
 
   private abilityItem: RqgItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
+  private rollMode: RollMode;
 
   constructor(options: { abilityItem?: RqgItem | PartialAbilityItem }) {
     super(options);
@@ -47,6 +49,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     }
 
     this.abilityItem = options.abilityItem;
+    this.rollMode = getGame().settings.get("core", "rollMode");
   }
 
   static DEFAULT_OPTIONS = {
@@ -111,10 +114,31 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
         Number(formData.augmentModifier ?? 0) +
         Number(formData.meditateModifier ?? 0) +
         Number(formData.otherModifier ?? 0),
+      rollMode: this.rollMode,
     };
   }
 
+  _onRender(context: any, options: any) {
+    super._onRender(context, options);
+    // @ts-expect-error element
+    this.element
+      .querySelector("[data-roll-mode-parent]")
+      .addEventListener("click", this.onChangeRollMode.bind(this));
+  }
+
   _onChangeForm(): void {
+    // @ts-expect-error render
+    this.render();
+  }
+
+  private onChangeRollMode(event: SubmitEvent) {
+    const target = event.target as HTMLButtonElement;
+    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
+    if (!newRollMode) {
+      return; // Clicked outside the buttons
+    }
+    this.rollMode = newRollMode;
+
     // @ts-expect-error render
     this.render();
   }
@@ -125,6 +149,10 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     formData: any,
   ): Promise<void> {
     const formDataObject: AbilityRollDialogFormData = formData.object;
+
+    const rollMode =
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
+        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     let abilityItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.abilityItemUuid ?? "",
@@ -159,6 +187,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
       abilityType: abilityItem?.type ?? undefined,
       abilityImg: abilityItem?.img ?? undefined,
       speaker: getSpeakerFromItem(abilityItem),
+      rollMode: rollMode,
     };
 
     if (abilityItem instanceof RqgItem) {

@@ -196,12 +196,20 @@ input.readonly {
     flex-wrap: wrap;
   }
 
+  .flex-nowrap {
+    flex-wrap: nowrap;
+  }
+
   .flex-align-center {
     align-items: center;
   }
 
   .flex-align-end {
     align-items: flex-end;
+  }
+
+  .flex-none {
+    flex: none;
   }
 
   .flex-0 {
@@ -251,6 +259,11 @@ input.readonly {
   .warning {
     outline: 2px dashed var(--rqg-color-enc-warning);
     background-color: var(--rqg-color-enc-warning);
+  }
+
+  .buttongroup {
+    border-radius: 4px;
+    background: var(--color-light-5);
   }
 
   .mp-ellipses {
@@ -1405,7 +1418,6 @@ input.readonly {
   .target-box {
     flex: none;
     text-align: center;
-    padding: 0 0.5rem 0 0;
   }
 
   button {

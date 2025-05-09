@@ -30,10 +30,16 @@
   </div>
   <input type="hidden" value="{{formData.abilityItemUuid}}" name="abilityItemUuid">
   <input type="hidden" value="{{formData.reputationItemJson}}" name="reputationItemJson">
-  <div class="flexrow flex-wrap gap03rem">
+  <div class="flexrow flex-wrap gap1rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
       <i class="fa-solid fa-bullseye"></i><br>
       {{totalChance}}%
+    </div>
+    <div data-roll-mode-parent class="flexrow flex-nowrap flex-none buttongroup">
+      <button type="button" class="ui-control icon fa-solid fa-globe {{#if (eq rollMode "publicroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="publicroll" data-tooltip="{{localize "CHAT.RollPublic"}}"></button>
+      <button type="button" class="ui-control icon fa-solid fa-user-secret {{#if (eq rollMode "gmroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="gmroll" data-tooltip="{{localize "CHAT.RollPrivate"}}"></button>
+      <button type="button" class="ui-control icon fa-solid fa-eye-slash {{#if (eq rollMode "blindroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="blindroll" data-tooltip="{{localize "CHAT.RollBlind"}}"></button>
+      <button type="button" class="ui-control icon fa-solid fa-user {{#if (eq rollMode "selfroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="selfroll" data-tooltip="{{localize "CHAT.RollSelf"}}"></button>
     </div>
     <button data-ability-roll>{{localize "RQG.Game.Roll"}}</button>
   </div>
