@@ -1,0 +1,6 @@
+<div data-roll-mode-parent class="flexrow flex-nowrap flex-none buttongroup">
+  <button type="button" class="ui-control icon fa-solid fa-globe {{#if (eq rollMode "publicroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="publicroll" data-tooltip="{{localize "CHAT.RollPublic"}}"></button>
+  <button type="button" class="ui-control icon fa-solid fa-user-secret {{#if (eq rollMode "gmroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="gmroll" data-tooltip="{{localize "CHAT.RollPrivate"}}"></button>
+  <button type="button" class="ui-control icon fa-solid fa-eye-slash {{#if (eq rollMode "blindroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="blindroll" data-tooltip="{{localize "CHAT.RollBlind"}}"></button>
+  <button type="button" class="ui-control icon fa-solid fa-user {{#if (eq rollMode "selfroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="selfroll" data-tooltip="{{localize "CHAT.RollSelf"}}"></button>
+</div>

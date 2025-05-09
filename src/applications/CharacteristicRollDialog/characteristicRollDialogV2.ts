@@ -4,11 +4,12 @@ import {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
 } from "./CharacteristicRollDialogData.types";
-import { getTokenFromActor, localize, RqgError } from "../../system/util";
+import { getDomDataset, getGame, getTokenFromActor, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 import { Characteristics } from "../../data-model/actor-data/characteristics";
+import type { RollMode } from "../../chat/chatMessage.types";
 
 // @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -43,10 +44,12 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   ];
 
   private actor: RqgActor;
+  private rollMode: RollMode;
 
   constructor(options: { actor: RqgActor; characteristicName: keyof Characteristics }) {
     super(options);
     this.actor = options.actor;
+    this.rollMode = getGame().settings.get("core", "rollMode");
   }
 
   static DEFAULT_OPTIONS = {
@@ -114,10 +117,31 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
         Number(formData.augmentModifier ?? 0) +
         Number(formData.meditateModifier ?? 0) +
         Number(formData.otherModifier ?? 0),
+      rollMode: this.rollMode,
     };
   }
 
+  _onRender(context: any, options: any) {
+    super._onRender(context, options);
+    // @ts-expect-error element
+    this.element
+      .querySelector("[data-roll-mode-parent]")
+      .addEventListener("click", this.onChangeRollMode.bind(this));
+  }
+
   _onChangeForm(): void {
+    // @ts-expect-error render
+    this.render();
+  }
+
+  private onChangeRollMode(event: SubmitEvent) {
+    const target = event.target as HTMLButtonElement;
+    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
+    if (!newRollMode) {
+      return; // Clicked outside the buttons
+    }
+    this.rollMode = newRollMode;
+
     // @ts-expect-error render
     this.render();
   }
@@ -128,6 +152,10 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     formData: any,
   ): Promise<void> {
     const formDataObject: CharacteristicRollDialogFormData = formData.object;
+
+    const rollMode =
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
+        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
     if (!actor || !formDataObject.characteristicName) {
@@ -157,6 +185,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
         token: getTokenFromActor(actor),
         actor: actor,
       }),
+      rollMode: rollMode,
     };
 
     const roll = await CharacteristicRoll.rollAndShow(options);

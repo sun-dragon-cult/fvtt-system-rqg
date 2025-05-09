@@ -34,11 +34,12 @@
   <input type="hidden" value="{{formData.characteristicName}}" name="characteristicName">
   <input type="hidden" value="{{formData.characteristicValue}}" name="characteristicValue">
 
-  <div class="flexrow flex-wrap gap03rem">
+  <div class="flexrow flex-wrap gap1rem">
     <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
       <i class="fa-solid fa-bullseye"></i><br>
       {{totalChance}}%
     </div>
+    {{>rollModes rollMode=rollMode}}
     <button data-characteristic-roll>{{localize "RQG.Game.Roll"}}</button>
   </div>
 </div>

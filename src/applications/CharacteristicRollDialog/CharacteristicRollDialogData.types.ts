@@ -1,3 +1,5 @@
+import type { RollMode } from "../../chat/chatMessage.types";
+
 export type CharacteristicRollDialogContext = {
   formData: CharacteristicRollDialogFormData;
 
@@ -6,6 +8,7 @@ export type CharacteristicRollDialogContext = {
   difficultyOptions: SelectOptionData<number>[];
   totalChance: number;
   speakerName: string;
+  rollMode: RollMode; // read in onSubmit by checking the active class
 };
 
 export type CharacteristicRollDialogFormData = {

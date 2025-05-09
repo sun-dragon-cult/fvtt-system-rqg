@@ -120,6 +120,9 @@ export const loadHandlebarsTemplates = async function () {
     itemActiveEffects: "systems/rqg/items/sheet-parts/itemActiveEffects.hbs",
     itemCommonPhysical: "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
 
+    // Application sheet parts
+    rollModes: "systems/rqg/applications/app-parts/rollModes.hbs",
+
     // RqidLink partials
     rqidLink: "systems/rqg/sheet-partials/rqidLink.hbs",
     rqidLinkDropzone: "systems/rqg/sheet-partials/rqidLinkDropzone.hbs",
