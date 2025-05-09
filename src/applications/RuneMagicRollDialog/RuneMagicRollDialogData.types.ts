@@ -1,4 +1,5 @@
 import type { RqgItem } from "../../items/rqgItem";
+import type { RollMode } from "../../chat/chatMessage.types";
 
 export type RuneMagicRollDialogContext = {
   formData: RuneMagicRollDialogFormData;
@@ -12,6 +13,7 @@ export type RuneMagicRollDialogContext = {
   ritualOptions: SelectOptionData<number>[];
   totalChance: number;
   speakerName: string;
+  rollMode: RollMode; // read in onSubmit by checking the active class
 };
 
 export type RuneMagicRollDialogFormData = {

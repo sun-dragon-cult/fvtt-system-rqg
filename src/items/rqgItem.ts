@@ -278,6 +278,7 @@ export class RqgItem extends Item {
       magicPointBoost: options.magicPointBoost ?? 0,
       modifiers: options?.modifiers ?? [],
       speaker: getSpeakerFromItem(this),
+      rollMode: options?.rollMode,
     });
     if (runeMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated RuneMagicRoll didn't give successLevel");

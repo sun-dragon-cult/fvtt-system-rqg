@@ -17,7 +17,10 @@ export class RuneMagicRoll extends Roll {
     const roll = new RuneMagicRoll(undefined, {}, options);
     await roll.evaluate();
     activateChatTab();
-    const msg = await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker });
+    const msg = await roll.toMessage(
+      { flavor: roll.flavor, speaker: options.speaker },
+      { rollMode: options.rollMode, create: true },
+    );
     // @ts-expect-error Dice3D (Dice So Nice)
     await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
     return roll;

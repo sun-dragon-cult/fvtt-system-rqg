@@ -1,6 +1,13 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { assertItemType, getSpeakerFromItem, localize, RqgError } from "../../system/util";
+import {
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getSpeakerFromItem,
+  localize,
+  RqgError,
+} from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
@@ -11,6 +18,7 @@ import {
 } from "./RuneMagicRollDialogData.types";
 import { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import type { RollMode } from "../../chat/chatMessage.types";
 
 // @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -52,10 +60,12 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   ];
 
   private spellItem: RqgItem;
+  private rollMode: RollMode;
 
   constructor(options: { spellItem: RqgItem }) {
     super(options);
     this.spellItem = options.spellItem;
+    this.rollMode = getGame().settings.get("core", "rollMode");
   }
 
   static DEFAULT_OPTIONS = {
@@ -127,10 +137,31 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
         Number(formData.augmentModifier ?? 0) +
         Number(formData.meditateModifier ?? 0) +
         Number(formData.otherModifier ?? 0),
+      rollMode: this.rollMode,
     };
   }
 
+  _onRender(context: any, options: any) {
+    super._onRender(context, options);
+    // @ts-expect-error element
+    this.element
+      .querySelector("[data-roll-mode-parent]")
+      .addEventListener("click", this.onChangeRollMode.bind(this));
+  }
+
   _onChangeForm(): void {
+    // @ts-expect-error render
+    this.render();
+  }
+
+  private onChangeRollMode(event: SubmitEvent) {
+    const target = event.target as HTMLButtonElement;
+    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
+    if (!newRollMode) {
+      return; // Clicked outside the buttons
+    }
+    this.rollMode = newRollMode;
+
     // @ts-expect-error render
     this.render();
   }
@@ -141,6 +172,10 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     formData: any,
   ): Promise<void> {
     const formDataObject: RuneMagicRollDialogFormData = formData.object;
+
+    const rollMode =
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
+        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",
@@ -190,6 +225,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
         },
       ],
       speaker: getSpeakerFromItem(spellItem),
+      rollMode: rollMode,
     };
     const validationError = RuneMagic.hasEnoughToCastSpell(
       cult,

@@ -1,6 +1,7 @@
 import EvaluationOptions = RollTerm.EvaluationOptions;
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 import type { RqgItem } from "../../items/rqgItem";
+import type { RollMode } from "../../chat/chatMessage.types";
 
 export type Modifier = { description: string; value: number };
 
@@ -11,4 +12,5 @@ export type RuneMagicRollOptions = Partial<EvaluationOptions> & {
   magicPointBoost: number;
   modifiers: Modifier[];
   speaker: ChatSpeakerDataProperties;
+  rollMode?: RollMode;
 };
