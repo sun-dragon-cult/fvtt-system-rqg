@@ -4,12 +4,19 @@ import {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./SpiritMagicRollDialogData.types";
-import { assertItemType, getSpeakerFromItem, localize } from "../../system/util";
+import {
+  assertItemType,
+  getDomDataset,
+  getGame,
+  getSpeakerFromItem,
+  localize,
+} from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
 import { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import type { RollMode } from "../../chat/chatMessage.types";
 
 // @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -35,12 +42,14 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
 
   private spellItem: RqgItem;
   private powX5: number;
+  private rollMode: RollMode;
 
   constructor(options: { spellItem: RqgItem }) {
     super(options);
 
     this.spellItem = options.spellItem;
     this.powX5 = (this.spellItem.parent?.system?.characteristics?.power?.value ?? 0) * 5;
+    this.rollMode = getGame().settings.get("core", "rollMode");
   }
 
   static DEFAULT_OPTIONS = {
@@ -105,10 +114,31 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
         Number(formData.augmentModifier) +
         Number(formData.meditateModifier) +
         Number(formData.otherModifier),
+      rollMode: this.rollMode,
     };
   }
 
+  _onRender(context: any, options: any) {
+    super._onRender(context, options);
+    // @ts-expect-error element
+    this.element
+      .querySelector("[data-roll-mode-parent]")
+      .addEventListener("click", this.onChangeRollMode.bind(this));
+  }
+
   _onChangeForm(): void {
+    // @ts-expect-error render
+    this.render();
+  }
+
+  private onChangeRollMode(event: SubmitEvent) {
+    const target = event.target as HTMLButtonElement;
+    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
+    if (!newRollMode) {
+      return; // Clicked outside the buttons
+    }
+    this.rollMode = newRollMode;
+
     // @ts-expect-error render
     this.render();
   }
@@ -119,6 +149,10 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     formData: any,
   ): Promise<void> {
     const formDataObject: SpiritMagicRollDialogFormData = formData.object;
+
+    const rollMode =
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
+        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",
@@ -150,6 +184,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
       ],
       spellName: spellItem?.name ?? undefined,
       spellImg: spellItem?.img ?? undefined,
+      rollMode: rollMode,
       speaker: getSpeakerFromItem(spellItem),
     };
     const validationError = SpiritMagic.hasEnoughToCastSpell(

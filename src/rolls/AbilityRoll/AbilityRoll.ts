@@ -16,10 +16,7 @@ export class AbilityRoll extends Roll {
     await roll.evaluate();
     activateChatTab();
     const msg = await roll.toMessage(
-      {
-        flavor: roll.flavor,
-        speaker: options.speaker,
-      },
+      { flavor: roll.flavor, speaker: options.speaker },
       { rollMode: options.rollMode, create: true },
     );
     // @ts-expect-error Dice3D (Dice So Nice)

@@ -214,6 +214,7 @@ export class RqgItem extends Item {
       spellName: this.name ?? undefined,
       spellImg: this.img ?? undefined,
       speaker: getSpeakerFromItem(this),
+      rollMode: options?.rollMode,
     });
     if (spiritMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");

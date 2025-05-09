@@ -1,3 +1,5 @@
+import type { RollMode } from "../../chat/chatMessage.types";
+
 export type SpiritMagicRollDialogContext = {
   formData: SpiritMagicRollDialogFormData;
 
@@ -10,6 +12,7 @@ export type SpiritMagicRollDialogContext = {
   meditateOptions: SelectOptionData<number>[];
   totalChance: number;
   speakerName: string;
+  rollMode: RollMode; // read in onSubmit by checking the active class
 };
 
 export type SpiritMagicRollDialogFormData = {
