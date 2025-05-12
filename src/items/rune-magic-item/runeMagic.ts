@@ -128,11 +128,15 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeMagicName: string,
     actorName: string,
   ): Promise<string> {
-    const htmlContent = await renderTemplate(templatePaths.dialogRuneMagicCult, {
-      actorCults: actorCults,
-      runeMagicName: runeMagicName,
-      actorName: actorName,
-    });
+    // @ts-expect-error applications
+    const htmlContent = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.dialogRuneMagicCult,
+      {
+        actorCults: actorCults,
+        runeMagicName: runeMagicName,
+        actorName: actorName,
+      },
+    );
     return await new Promise((resolve, reject) => {
       const dialog = new Dialog({
         title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),

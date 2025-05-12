@@ -33,12 +33,14 @@ export class HitLocationRoll extends Roll {
       hitLocationName: isPrivate ? "??" : this.hitLocationName,
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.hitLocationRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationRoll, chatData);
   }
 
   // Html for what the hit location formula was
   async getTooltip(): Promise<string> {
-    return renderTemplate(templatePaths.hitLocationTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationTooltip, {
       formula: this.formula,
     });
   }

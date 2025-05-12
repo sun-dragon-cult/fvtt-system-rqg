@@ -68,10 +68,8 @@ Hooks.once("init", async () => {
   // CONFIG.debug.hooks = true; // console log when hooks fire
   // CONFIG.debug.time = true; // console log time
 
-  CONFIG.time = {
-    turnTime: 0, // Don't advance time per combatant
-    roundTime: 12, // Melee round
-  };
+  CONFIG.time.turnTime = 0; // Don't advance time per combatant
+  CONFIG.time.roundTime = 12; // Melee round
 
   CONFIG.statusEffects = getTokenStatusEffects();
 

@@ -55,7 +55,11 @@ export class CharacteristicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.characteristicRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(
+      templatePaths.characteristicRoll,
+      chatData,
+    );
   }
 
   // Html for what modifiers are applied
@@ -68,7 +72,8 @@ export class CharacteristicRoll extends Roll {
         return m;
       });
     const o = this.options as CharacteristicRollOptions;
-    return renderTemplate(templatePaths.characteristicRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.characteristicRollTooltip, {
       characteristicName: localize(`RQG.Actor.Characteristics.${o.characteristicName}`),
       characteristicValue: o.characteristicValue,
       difficulty: o.difficulty ?? 5,

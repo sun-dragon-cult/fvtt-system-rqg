@@ -476,7 +476,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       { overwrite: true },
     );
 
-    messageData.content = await renderTemplate(
+    // @ts-expect-error applications
+    messageData.content = await foundry.applications.handlebars.renderTemplate(
       templatePaths.attackChatMessage,
       // @ts-expect-error system
       messageData.system,

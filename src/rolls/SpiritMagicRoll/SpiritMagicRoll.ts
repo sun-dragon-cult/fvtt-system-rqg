@@ -62,7 +62,8 @@ export class SpiritMagicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.spiritMagicRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRoll, chatData);
   }
 
   // Html for what modifiers are applied and how many mp are used
@@ -77,7 +78,8 @@ export class SpiritMagicRoll extends Roll {
     const o = this.options as SpiritMagicRollOptions;
     const mpCost = o.levelUsed + (o.magicPointBoost ?? 0);
     const mpDrawn = this.successLevel! <= AbilitySuccessLevelEnum.Success ? mpCost : 0;
-    return renderTemplate(templatePaths.spiritMagicRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRollTooltip, {
       magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", { cost: mpDrawn }),
       powX5: o.powX5,
       modifiers: nonzeroSignedModifiers,

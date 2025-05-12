@@ -62,7 +62,8 @@ export class AbilityRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.abilityRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRoll, chatData);
   }
 
   // Html for what modifiers are applied
@@ -75,7 +76,8 @@ export class AbilityRoll extends Roll {
         m.value = m.value.signedString();
         return m;
       });
-    return renderTemplate(templatePaths.abilityRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRollTooltip, {
       naturalSkill: (this.options as AbilityRollOptions).naturalSkill,
       modifiers: nonzeroSignedModifiers,
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,

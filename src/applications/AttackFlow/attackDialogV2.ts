@@ -418,7 +418,11 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defenderFumbleOutcome: "",
     };
 
-    const attackChatContent = await renderTemplate(templatePaths.attackChatMessage, chatSystemData);
+    // @ts-expect-error applications
+    const attackChatContent = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.attackChatMessage,
+      chatSystemData,
+    );
 
     const attackFlavor = localize("RQG.Dialog.Common.IsAttacking", {
       defenderName: `<b>${target?.document?.name ?? "???"}</b>`,

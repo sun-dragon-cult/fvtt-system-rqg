@@ -131,5 +131,5 @@ export const loadHandlebarsTemplates = async function () {
   } as const;
 
   // @ts-expect-error object
-  return loadTemplates(partialPaths);
+  return foundry.applications.handlebars.loadTemplates(partialPaths);
 };

@@ -63,7 +63,8 @@ export class RuneMagicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.runeMagicRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRoll, chatData);
   }
 
   // Html for what modifiers are applied and how many mp are used
@@ -91,7 +92,8 @@ export class RuneMagicRoll extends Roll {
           magicPointCost: cost.mp,
         });
 
-    return renderTemplate(templatePaths.runeMagicRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRollTooltip, {
       usageCostText: usageCostText,
       usedRuneChance: o.usedRune.system.chance,
       usedRuneName: o.usedRune.name,
