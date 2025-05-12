@@ -211,9 +211,10 @@ export class HitLocationSheet extends RqgItemSheet<
       const activeTokens = actor.getActiveTokens(true, false);
       const currentScene = getGame().scenes?.current;
       if (currentScene && activeTokens.length) {
+        // TODO could be a bug if the actor has tokens in multiple scenes maybe. then getting activeTokens[0] could be wrong. Should check that the scene match?
         const token = currentScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
           | TokenDocument
-          | undefined; // TODO Hardcoded "first" token
+          | undefined;
         if (token) {
           await actor.updateTokenEffectFromHealth();
         }
