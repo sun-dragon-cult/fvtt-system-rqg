@@ -569,7 +569,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     // case 2 - show a list of actors the user has access to and are present on the active scene
     return (
       getGame()
-        .scenes?.active?.tokens.filter((t) => t.isOwner)
+        .scenes?.current?.tokens.filter((t) => t.isOwner)
         ?.map((tokenDocument) => ({
           value: tokenDocument?.uuid ?? "",
           label: tokenDocument?.name ?? "",

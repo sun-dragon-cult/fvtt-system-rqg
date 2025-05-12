@@ -447,7 +447,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   private static getTokenOptions(): SelectOptionData<string>[] {
     return (
       getGame()
-        .scenes?.active?.tokens.filter((t) => t.isOwner)
+        .scenes?.current?.tokens.filter((t) => t.isOwner)
         .filter((t) => AttackDialogV2.getWeaponOptions(t.uuid).length > 0)
         ?.map((token) => ({
           value: token?.uuid ?? "",
@@ -535,7 +535,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const nonHumanoids =
       getGame()
-        .scenes?.active?.tokens?.filter(
+        .scenes?.current?.tokens?.filter(
           (t) =>
             t.isOwner &&
             !!t.actor?.system?.attributes?.damageBonus &&

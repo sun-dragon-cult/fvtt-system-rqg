@@ -209,9 +209,9 @@ export class HitLocationSheet extends RqgItemSheet<
       await actor.updateTokenEffectFromHealth();
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
-      const activeScene = getGame().scenes?.active;
-      if (activeScene && activeTokens.length) {
-        const token = activeScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
+      const currentScene = getGame().scenes?.current;
+      if (currentScene && activeTokens.length) {
+        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
           | TokenDocument
           | undefined; // TODO Hardcoded "first" token
         if (token) {

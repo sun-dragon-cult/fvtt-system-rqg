@@ -732,6 +732,7 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
   const owningActorTokens: TokenDocument[] =
     actor?.getActiveTokens()?.map((t: any) => t.document) ?? [];
   const attackingToken =
-    owningActorTokens[0] ?? getGame().scenes?.active?.tokens.find((t) => t.actor?.id === actor?.id);
+    owningActorTokens[0] ??
+    getGame().scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
   return attackingToken;
 }
