@@ -19,7 +19,12 @@ import type {
 } from "./DefenceDialogData.types";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { DamageType, Usage, UsageType } from "../../data-model/item-data/weaponData";
+import {
+  CombatManeuver,
+  DamageType,
+  Usage,
+  UsageType,
+} from "../../data-model/item-data/weaponData";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import {
   combatOutcome,
@@ -139,7 +144,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     formData.augmentModifier ??= "0";
     formData.subsequentDefenceModifier ??= "0";
     formData.halved ??= false;
-    formData.otherModifier ??= "0";
+    formData.otherModifier ??= "";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Defence.OtherModifier");
     formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid;
 
@@ -396,7 +401,11 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const attackDamageBonus = attackChatMessage?.system.attackDamageBonus ?? "";
     const attackExtraDamage = attackChatMessage?.system.attackExtraDamage ?? "";
     const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "";
-    const damageType: DamageType = attackChatMessage?.system.attackCombatManeuver.damageType ?? "";
+    const attackingWeaponDamageType: DamageType =
+      attackChatMessage?.system.attackCombatManeuver.damageType ?? "";
+    const parryingWeaponDamageType: DamageType = selectedParryingWeapon?.system.usage[
+      parryWeaponUsageType ?? ""
+    ]?.combatManeuvers.find((cm: CombatManeuver) => cm.damageType !== "parry")?.damageType;
 
     const {
       damageRoll,
@@ -417,7 +426,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defendDamageBonus,
       selectedParryingWeapon,
       parryWeaponUsageType,
-      damageType,
+      attackingWeaponDamageType,
+      parryingWeaponDamageType,
     );
 
     const outcomeDescription = getBasicOutcomeDescription(

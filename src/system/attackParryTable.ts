@@ -55,7 +55,7 @@ function critAttack_SpecialParry(damageRolled: number, parryingWeaponHp: number)
 function critAttack_NormalParry(damageRolled: number, parryingWeaponHp: number): AttackDamages {
   const damagePastParryWeapon = Math.max(0, damageRolled - parryingWeaponHp);
   return {
-    weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
+    weaponDamage: damageRolled,
     defenderHitLocationDamage: damagePastParryWeapon,
     affectParryingHitLocation: true,
   };
@@ -77,10 +77,14 @@ function critAttack_FumbleParry(damageRolled: number): AttackDamages {
   };
 }
 
-function specialAttack_CritParry(damageRolled: number, parryingWeaponHp: number): AttackDamages {
-  const damagePastParryWeapon = Math.max(0, damageRolled - parryingWeaponHp);
+function specialAttack_CritParry(
+  damageRolled: number,
+  _: number,
+  attackingWeaponHp: number,
+): AttackDamages {
+  const damagePastAttackingWeapon = Math.max(0, damageRolled - attackingWeaponHp);
   return {
-    weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
+    weaponDamage: damagePastAttackingWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
     affectParryingHitLocation: false,
   };
@@ -120,19 +124,27 @@ function specialAttack_FumbleParry(damageRolled: number): AttackDamages {
   };
 }
 
-function normalAttack_CritParry(damageRolled: number, parryingWeaponHp: number): AttackDamages {
-  const damagePastParryWeapon = Math.max(0, damageRolled - parryingWeaponHp);
+function normalAttack_CritParry(
+  damageRolled: number,
+  _: number,
+  attackingWeaponHp: number,
+): AttackDamages {
+  const damagePastAttackingWeapon = Math.max(0, damageRolled - attackingWeaponHp);
   return {
-    weaponDamage: damagePastParryWeapon,
+    weaponDamage: damagePastAttackingWeapon,
     defenderHitLocationDamage: undefined,
     affectParryingHitLocation: false,
   };
 }
 
-function normalAttack_SpecialParry(damageRolled: number, parryingWeaponHp: number): AttackDamages {
-  const damagePastParryWeapon = Math.max(0, damageRolled - parryingWeaponHp);
+function normalAttack_SpecialParry(
+  damageRolled: number,
+  _: number,
+  attackingWeaponHp: number,
+): AttackDamages {
+  const damagePastAttackingWeapon = Math.max(0, damageRolled - attackingWeaponHp);
   return {
-    weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
+    weaponDamage: damagePastAttackingWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
     affectParryingHitLocation: false,
   };
@@ -171,19 +183,27 @@ function FailAttack_CritParry(damageRolled: number): AttackDamages {
   };
 }
 
-function FailAttack_SpecialParry(damageRolled: number, parryingWeaponHp: number): AttackDamages {
-  const damagePastParryWeapon = Math.max(0, damageRolled - parryingWeaponHp);
+function FailAttack_SpecialParry(
+  damageRolled: number,
+  _: number,
+  attackingWeaponHp: number,
+): AttackDamages {
+  const damagePastAttackingWeapon = Math.max(0, damageRolled - attackingWeaponHp);
   return {
-    weaponDamage: damagePastParryWeapon,
+    weaponDamage: damagePastAttackingWeapon,
     defenderHitLocationDamage: undefined,
     affectParryingHitLocation: false,
   };
 }
 
-function FailAttack_NormalParry(damageRolled: number, parryingWeaponHp: number): AttackDamages {
-  const damagePastParryWeapon = Math.max(0, damageRolled - parryingWeaponHp);
+function FailAttack_NormalParry(
+  damageRolled: number,
+  _: number,
+  attackingWeaponHp: number,
+): AttackDamages {
+  const damagePastAttackingWeapon = Math.max(0, damageRolled - attackingWeaponHp);
   return {
-    weaponDamage: damagePastParryWeapon > 0 ? 1 : 0,
+    weaponDamage: damagePastAttackingWeapon > 0 ? 1 : 0,
     defenderHitLocationDamage: undefined,
     affectParryingHitLocation: false,
   };
@@ -214,7 +234,7 @@ function FumbleAttack_CritParry(damageRolled: number): AttackDamages {
 
 function FumbleAttack_SpecialParry(
   damageRolled: number,
-  parryingWeaponHp: number,
+  _: number,
   attackingWeaponHp: number,
 ): AttackDamages {
   const damagePastAttackWeapon = Math.max(0, damageRolled - attackingWeaponHp);
@@ -227,7 +247,7 @@ function FumbleAttack_SpecialParry(
 
 function FumbleAttack_NormalParry(
   damageRolled: number,
-  parryingWeaponHp: number,
+  _: number,
   attackingWeaponHp: number,
 ): AttackDamages {
   const damagePastAttackWeapon = Math.max(0, damageRolled - attackingWeaponHp);

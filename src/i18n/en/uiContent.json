@@ -444,12 +444,13 @@
       "Combat": {
         "RollDamageAndHitLocation": "Roll Damage & Hit Location",
         "RollDamage": "Roll Damage",
-          "ApplyActorDamage": "Apply Damage to Actor",
-          "ApplyWeaponDamage": "Apply Damage to Weapon",
-          "RollAttackerFumble": "Roll Attacker Fumble",
-          "RollDefenderFumble": "Roll Defender Fumble",
-          "AttackerFumble": "Attacker Fumble",
-          "DefenderFumble": "Defender Fumble"
+        "ApplyActorDamage": "Apply Damage to Actor",
+        "ApplyWeaponDamage": "Apply Damage to Weapon",
+        "RollAttackerFumble": "Roll Attacker Fumble",
+        "RollDefenderFumble": "Roll Defender Fumble",
+        "AttackerFumble": "Attacker Fumble",
+        "DefenderFumble": "Defender Fumble",
+        "ApplyNaturalWeaponDamageNotImplemented": "Automatically applying damage to natural weapons is not supported yet.<br>Please manually add {weaponDamage} damage to the appropriate hit location, AP is not subtracted from {weaponDamage}.<br>Then close this notification."
       }
     },
     "Dialog": {

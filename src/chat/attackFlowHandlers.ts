@@ -176,10 +176,19 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
   const damagedWeaponUuid: string = attackChatMessage.system.damagedWeaponUuid;
   const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as RqgItem | undefined;
 
-  const currentWeaponHp = damagedWeapon?.system.hitPoints.value;
-  const newWeaponHp = currentWeaponHp - (weaponDamage ?? 0);
+  if (damagedWeapon?.system.isNatural) {
+    const msg = localize("RQG.ChatMessage.Combat.ApplyNaturalWeaponDamageNotImplemented", {
+      weaponDamage: weaponDamage,
+    });
+    // TODO inflict damage to the correct hit location - how to know where?
+    // @ts-expect-error console
+    ui.notifications?.info(msg, { permanent: true, console: false });
+  } else {
+    const currentWeaponHp = damagedWeapon?.system.hitPoints.value;
+    const newWeaponHp = currentWeaponHp - (weaponDamage ?? 0);
 
-  await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
+    await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
+  }
 
   const messageData = attackChatMessage.toObject();
 

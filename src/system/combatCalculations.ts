@@ -49,7 +49,8 @@ export async function combatOutcome(
   defenceDamageBonus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
-  damageType: DamageType,
+  attackingWeaponDamageType: DamageType,
+  parryingWeaponDamageType: DamageType,
 ): Promise<CombatOutcome> {
   const attackSuccessLevel = attackRoll.successLevel;
   requireValue(
@@ -95,7 +96,16 @@ export async function combatOutcome(
   requireValue(usage, "No weapon usage for combatOutcome calculations");
   assertItemType(weaponDoingDamage?.type, ItemTypeEnum.Weapon);
 
-  const damageFormula = weaponDoingDamage?.getDamageFormula(usage, damageDegree, damageType);
+  const weaponDoingDamageDamageType =
+    weaponDoingDamageDesignation === "attackingWeapon"
+      ? attackingWeaponDamageType
+      : parryingWeaponDamageType;
+
+  const damageFormula = weaponDoingDamage?.getDamageFormula(
+    usage,
+    damageDegree,
+    weaponDoingDamageDamageType,
+  );
   if (damageFormula == null) {
     requireValue(damageFormula, "Tried to calculate combat outcome without a damage formula");
   }
