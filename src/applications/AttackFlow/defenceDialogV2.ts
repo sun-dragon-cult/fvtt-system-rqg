@@ -144,7 +144,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     formData.augmentModifier ??= "0";
     formData.subsequentDefenceModifier ??= "0";
     formData.halved ??= false;
-    formData.otherModifier ??= "0";
+    formData.otherModifier ??= "";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Defence.OtherModifier");
     formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid;
 
