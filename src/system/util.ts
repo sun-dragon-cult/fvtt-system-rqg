@@ -78,12 +78,13 @@ export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | 
  * Gets game and Throws RqgExceptions if not initialized yet.
  */
 export function getGame(): Game {
-  if (!(game instanceof Game)) {
+  // @ts-expect-error data
+  if (Object.keys(game?.data ?? {}).length === 0) {
     const msg = `game is not initialized yet! (Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;
     ui.notifications?.error(msg);
     throw new RqgError(msg);
   }
-  return game;
+  return game as Game;
 }
 
 /**
