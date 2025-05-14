@@ -7,7 +7,7 @@ import {
   localizeDocumentName,
   localizeItemType,
 } from "../system/util";
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";

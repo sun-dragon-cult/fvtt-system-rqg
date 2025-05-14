@@ -29,16 +29,16 @@ import type {
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect";
 import type { RqgItem } from "../items/rqgItem";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
-import { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
+import type { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
 import { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
 import { CharacteristicRollDialogV2 } from "../applications/CharacteristicRollDialog/characteristicRollDialogV2";
-import { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
+import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
-import { ActorHealthState } from "../data-model/actor-data/attributes";
-import { DamageType } from "../data-model/item-data/weaponData";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import type { ActorHealthState } from "../data-model/actor-data/attributes";
+import type { DamageType } from "../data-model/item-data/weaponData";
 
 export class RqgActor extends Actor {
   static init() {

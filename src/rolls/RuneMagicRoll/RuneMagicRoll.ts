@@ -9,7 +9,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneMagicRollOptions } from "./RuneMagicRoll.types";
+import type { RuneMagicRollOptions } from "./RuneMagicRoll.types";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
 
 export class RuneMagicRoll extends Roll {

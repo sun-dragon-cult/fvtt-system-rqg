@@ -10,7 +10,7 @@ import { getGameUser, localize } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
-import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 export class RqgChatMessage extends ChatMessage {
   declare system: any; // TODO type workaround, should be the type of RqgChatMessageData

@@ -14,7 +14,7 @@ import {
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
-import { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { RollMode } from "../../chat/chatMessage.types";
 

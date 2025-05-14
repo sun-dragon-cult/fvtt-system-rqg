@@ -6,7 +6,7 @@ import {
 } from "../data-model/item-data/hitLocationData";
 import { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgItem } from "../items/rqgItem";
 

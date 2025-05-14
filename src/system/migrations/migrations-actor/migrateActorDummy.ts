@@ -1,4 +1,4 @@
-import { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { ActorTypeEnum } from "../../../data-model/actor-data/rqgActorData";
 import { ActorUpdate } from "../applyMigrations";
 

@@ -7,7 +7,7 @@ import {
   requireValue,
   RqgError,
 } from "../../system/util";
-import { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
+import type { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 

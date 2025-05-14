@@ -1,4 +1,4 @@
-import { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
+import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
 
 import {
   assertHtmlElement,
@@ -15,11 +15,11 @@ import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
 import { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
+import type { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
 import { ChatMessageTypes } from "../../data-model/chat-data/combatChatMessage.dataModel";
-import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
+import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   darknessModifier,
   proneTargetModifier,
@@ -27,7 +27,7 @@ import {
 } from "../../system/penaltyConstants";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
+import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 
 // @ts-expect-error application v2

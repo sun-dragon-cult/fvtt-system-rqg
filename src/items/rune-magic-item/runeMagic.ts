@@ -10,7 +10,7 @@ import {
   localize,
   RqgError,
 } from "../../system/util";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
 import { RqidLink } from "../../data-model/shared/rqidLink";

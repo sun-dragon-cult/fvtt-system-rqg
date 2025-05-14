@@ -11,12 +11,12 @@ import {
 import type { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
-import { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
-import {
+import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
+import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
 } from "./RuneMagicRollDialogData.types";
-import { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { RollMode } from "../../chat/chatMessage.types";
 

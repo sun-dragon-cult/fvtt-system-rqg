@@ -6,7 +6,7 @@ import {
 } from "./CharacteristicRollDialogData.types";
 import { getDomDataset, getGame, getTokenFromActor, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
-import { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
+import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 import { Characteristics } from "../../data-model/actor-data/characteristics";
 import type { RollMode } from "../../chat/chatMessage.types";

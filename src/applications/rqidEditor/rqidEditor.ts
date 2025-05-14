@@ -1,4 +1,4 @@
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../../system/config";
 import { escapeRegex, getRequiredDomDataset, toKebabCase, trimChars } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";

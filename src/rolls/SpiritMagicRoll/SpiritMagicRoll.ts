@@ -8,7 +8,7 @@ import {
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
-import { SpiritMagicRollOptions } from "./SpiritMagicRoll.types";
+import type { SpiritMagicRollOptions } from "./SpiritMagicRoll.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export class SpiritMagicRoll extends Roll {

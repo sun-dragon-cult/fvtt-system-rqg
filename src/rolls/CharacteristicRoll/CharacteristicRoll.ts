@@ -2,7 +2,7 @@ import { activateChatTab, getGameUser, isTruthy, localize } from "../../system/u
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
-import { CharacteristicRollOptions } from "./CharacteristicRoll.types";
+import type { CharacteristicRollOptions } from "./CharacteristicRoll.types";
 
 export class CharacteristicRoll extends Roll {
   public static async rollAndShow(options: CharacteristicRollOptions) {
