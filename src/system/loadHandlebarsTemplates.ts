@@ -52,7 +52,7 @@ export const templatePaths = {
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-  abilityRollDialogV2: "systems/rqg/applications/abilityRollDialog/abilityRollDialogV2.hbs",
+  abilityRollDialogV2: "systems/rqg/applications/AbilityRollDialog/abilityRollDialogV2.hbs",
   characteristicRollDialogV2:
     "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
   spiritMagicRollDialogV2:
