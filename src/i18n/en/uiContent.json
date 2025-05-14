@@ -1316,6 +1316,10 @@
         "settingName": "Sort Hitlocations Low to High",
         "settingHint": "Activating this setting sorts the character hitlocation in the same way as stat blocks are sorted with the lowest die number first. The setting can be toggled in the actor sheet Health table."
       },
+      "AutoactivateChatTab": {
+        "settingName": "Autoactivate and expand the chat tab",
+        "settingHint": "Activating this setting opens the chat when rolls etc send messages to chat."
+      },
       "DefaultItemIcons": {
         "dialogTitle": "Default Item Icon Settings",
         "settingName": "Default Item Icons",

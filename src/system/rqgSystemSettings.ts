@@ -24,6 +24,15 @@ export const registerRqgSystemSettings = function () {
     default: hitLocationNamesObject,
   });
 
+  getGame().settings.register(systemId, "autoActivateChatTab", {
+    name: "RQG.Settings.AutoactivateChatTab.settingName",
+    hint: "RQG.Settings.AutoactivateChatTab.settingHint",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+
   getGame().settings.register(systemId, "sortHitLocationsLowToHigh", {
     name: "RQG.Settings.SortHitLocationsLowToHigh.settingName",
     hint: "RQG.Settings.SortHitLocationsLowToHigh.settingHint",

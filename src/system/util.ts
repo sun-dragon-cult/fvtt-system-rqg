@@ -627,12 +627,15 @@ export function localizeCharacteristic(characteristic: string): string {
 }
 
 /**
- * Sets the Chat sidebar tab to active.
+ * Sets the Chat sidebar tab to active and expands the sidebar is collapsed.
  */
 export function activateChatTab() {
-  // TODO: add player setting to allow skipping this if they don't like the tab changing
-  if (ui?.sidebar?.tabs.chat) {
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+  if (getGame().settings.get(systemId, "autoActivateChatTab")) {
+    // @ts-expect-error changeTab
+    ui.sidebar.changeTab("chat", "primary");
+
+    // @ts-expect-error toggleExpanded
+    ui.sidebar.toggleExpanded(true);
   }
 }
 
