@@ -17,7 +17,6 @@ import {
   PhysicalItemType,
 } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
-import { CharacteristicChatHandler } from "../chat/characteristicChatHandler/characteristicChatHandler";
 import {
   assertHtmlElement,
   assertItemType,
@@ -40,7 +39,6 @@ import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ReputationChatHandler } from "../chat/reputationChatHandler";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -63,15 +61,15 @@ import { CultRankEnum } from "../data-model/item-data/cultData";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
-import type { RqgToken } from "../combat/rqgToken";
 import {
   getCombatantIdsToDelete,
   getCombatantsSharingToken,
   getSrWithoutCombatants,
 } from "../combat/combatant-utils";
-import { socketSend } from "../sockets/RqgSocket";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
+import { deleteCombatant } from "../sockets/SocketableRequests";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -174,12 +172,8 @@ export class RqgActorSheet extends ActorSheet<
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
-      // @ts-expect-error async
-      enrichedAllies: await TextEditor.enrichHTML(system.allies, { async: true }),
-      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? "", {
-        // @ts-expect-error async
-        async: true,
-      }),
+      enrichedAllies: await TextEditor.enrichHTML(system.allies),
+      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? ""),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
@@ -218,7 +212,7 @@ export class RqgActorSheet extends ActorSheet<
       activeInSR: [...this.activeInSR],
 
       characteristicRanks: await this.rankCharacteristics(),
-      bodyType: this.getBodyType(),
+      bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
 
       // UI toggles
@@ -256,9 +250,11 @@ export class RqgActorSheet extends ActorSheet<
       }
 
       const minRoll = new Roll(char.formula || "");
-      const minTotal = await minRoll.evaluate({ minimize: true }).total;
+      await minRoll.evaluate({ minimize: true });
+      const minTotal = minRoll.total;
       const maxRoll = new Roll(char.formula || "");
-      const maxTotal = await maxRoll.evaluate({ maximize: true }).total;
+      await maxRoll.evaluate({ maximize: true });
+      const maxTotal = maxRoll.total;
 
       if (minTotal == null || maxTotal == null) {
         // cannot evaluate
@@ -488,22 +484,6 @@ export class RqgActorSheet extends ActorSheet<
       .sort((a: any, b: any) => b.chance - a.chance);
   }
 
-  private getBodyType(): string {
-    const actorHitlocationRqids = this.actor.items
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
-      .map((hl) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
-    if (
-      CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
-      CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
-        actorHitlocationRqids.includes(hitLocationRqid),
-      )
-    ) {
-      return "humanoid";
-    } else {
-      return "other";
-    }
-  }
-
   /**
    * Return a translated error string if the hit location dice do not cover the range 1-20
    * once and only once.
@@ -614,16 +594,9 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich Cult texts for holyDays, gifts & geases
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays, {
-          // @ts-expect-error async
-          async: true,
-        });
-        // @ts-expect-error async
-        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts, { async: true });
-        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases, {
-          // @ts-expect-error async
-          async: true,
-        });
+        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays);
+        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts);
+        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases);
       }),
     );
 
@@ -640,10 +613,6 @@ export class RqgActorSheet extends ActorSheet<
       itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
         passion.system.enrichedDescription = await TextEditor.enrichHTML(
           passion.system.description,
-          {
-            // @ts-expect-error async
-            async: true,
-          },
         );
       }),
     );
@@ -772,10 +741,7 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
-        // @ts-expect-error async
-        async: true,
-      });
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
     }
   }
 
@@ -814,10 +780,7 @@ export class RqgActorSheet extends ActorSheet<
       // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`, {
-        // @ts-expect-error async
-        async: true,
-      });
+      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
     }
   }
 
@@ -865,21 +828,17 @@ export class RqgActorSheet extends ActorSheet<
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
-          type: CONST.CHAT_MESSAGE_TYPES.WHISPER,
+          // @ts-expect-error CHAT_MESSAGE_STYLES
+          style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
         });
       }
     }
 
     this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
     this.actor.system.attributes.magicPoints.value = mpTmp;
-    if (this.token) {
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      const tokenHealthBefore = this.token?.actor?.system.attributes.health;
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      this.token.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      HitLocationSheet.setTokenEffect(this.token.object as RqgToken, tokenHealthBefore);
-    }
+    this.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
+    void this.actor.updateTokenEffectFromHealth();
+
     formData["system.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);
@@ -932,7 +891,9 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
       const closestDataCharacteristic = el.closest("[data-characteristic]");
       assertHtmlElement(closestDataCharacteristic);
-      const characteristicName = closestDataCharacteristic?.dataset.characteristic;
+      const characteristicName = closestDataCharacteristic?.dataset.characteristic as
+        | keyof typeof actorCharacteristics
+        | undefined;
 
       let clickCount = 0;
       const actorCharacteristics = this.actor.system.characteristics;
@@ -945,30 +906,13 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await CharacteristicChatHandler.roll(
-            characteristicName,
-            actorCharacteristics[characteristicName as keyof typeof actorCharacteristics].value,
-            5,
-            0,
-            this.actor,
-            // @ts-expect-error this.token should be TokenDocument, but is typed as Token
-            ChatMessage.getSpeaker({ actor: this.actor, token: this.token }),
-          );
+          await this.actor.characteristicRollImmediate(characteristicName);
+
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await CharacteristicChatHandler.show(
-                {
-                  name: characteristicName,
-                  data: actorCharacteristics[
-                    characteristicName as keyof typeof actorCharacteristics
-                  ],
-                },
-                this.actor,
-                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-                this.token,
-              );
+              await this.actor.characteristicRoll(characteristicName);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -983,22 +927,12 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-          const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-          await ReputationChatHandler.roll(
-            this.actor.system.background.reputation ?? 0,
-            0,
-            speaker,
-          );
+          await this.actor.reputationRollImmediate();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await ReputationChatHandler.show(
-                this.actor,
-                // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-                this.token,
-              );
+              await this.actor.reputationRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1031,12 +965,12 @@ export class RqgActorSheet extends ActorSheet<
 
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRoll();
+          await item.abilityRollImmediate();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.toChat();
+              await item.abilityRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1056,19 +990,16 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
-            await runeMagicItem.toChat();
+            await runeMagicItem?.runeMagicRoll();
           } else {
-            await runeMagicItem.abilityRoll({
-              runePointCost: 1,
-              magicPointBoost: 0,
-            });
+            await runeMagicItem?.runeMagicRollImmediate();
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await runeMagicItem.toChat();
+              await runeMagicItem?.runeMagicRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1096,16 +1027,16 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.system.isVariable && item.system.points > 1) {
-            await item.toChat();
+            await item.spiritMagicRoll();
           } else {
-            await item.abilityRoll({ level: item.system.points, boost: 0 });
+            await item.spiritMagicRollImmediate();
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.toChat();
+              await item.spiritMagicRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1128,12 +1059,12 @@ export class RqgActorSheet extends ActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           // Ignore double clicks by doing the same as on single click
-          await weapon.toChat();
+          await weapon.attack();
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await weapon.toChat();
+              weapon.attack();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1254,11 +1185,7 @@ export class RqgActorSheet extends ActorSheet<
     // Add wound to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      const speakerName = (this.token?.name || this.actor.prototypeToken.name) ?? "";
-      el.addEventListener("click", () =>
-        HitLocationSheet.showAddWoundDialog(this.actor, itemId, speakerName),
-      );
+      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
     });
 
     // Heal wounds to hit location
@@ -1291,13 +1218,13 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
       const damage = el.dataset.damageRoll;
       requireValue(damage, "direct damage roll without damage");
+      const heading = el.dataset.damageRollHeading ?? "";
       el.addEventListener("click", async () => {
-        const r = new Roll(damage);
-        await r.evaluate({ async: true });
+        const r = new DamageRoll(damage);
+        await r.evaluate();
         await r.toMessage({
           speaker: ChatMessage.getSpeaker(),
-          type: CONST.CHAT_MESSAGE_TYPES.ROLL,
-          flavor: `damage`,
+          flavor: `<div class="roll-action">${localize(heading)}</div>`,
         });
       });
     });
@@ -1421,16 +1348,8 @@ export class RqgActorSheet extends ActorSheet<
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
-    if (combatantIdsToDelete.length > 0) {
-      if (getGameUser().isGM) {
-        await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
-      } else {
-        socketSend("deleteCombatant", {
-          combatId: combat.id,
-          idsToDelete: combatantIdsToDelete,
-        });
-      }
-    }
+    await deleteCombatant(combat, combatantIdsToDelete);
+
     if (activeInSR.size === 0) {
       await currentCombatants[0].update({ initiative: null });
     }

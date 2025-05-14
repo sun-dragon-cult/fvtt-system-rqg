@@ -65,10 +65,8 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       equippedStatuses: [...equippedStatuses],
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
-      // @ts-expect-error async
-      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
-      // @ts-expect-error async
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      enrichedDescription: await TextEditor.enrichHTML(system.description),
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
     };
   }
 

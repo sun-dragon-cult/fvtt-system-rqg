@@ -19,14 +19,23 @@ export const templatePaths = {
   itemSkillSheet: "systems/rqg/items/skill-item/skillSheet.hbs",
   itemSpiritMagicSheet: "systems/rqg/items/spirit-magic-item/spiritMagicSheet.hbs",
 
+  // Dice & Rolls
+  abilityRollTooltip: "systems/rqg/rolls/AbilityRoll/abilityRollTooltip.hbs",
+  abilityRoll: "systems/rqg/rolls/AbilityRoll/abilityRoll.hbs",
+  damageRollTooltip: "systems/rqg/rolls/DamageRoll/damageRollTooltip.hbs",
+  damageRoll: "systems/rqg/rolls/DamageRoll/damageRoll.hbs",
+  characteristicRollTooltip: "systems/rqg/rolls/CharacteristicRoll/characteristicRollTooltip.hbs",
+  characteristicRoll: "systems/rqg/rolls/CharacteristicRoll/characteristicRoll.hbs",
+  hitLocationRoll: "systems/rqg/rolls/HitLocationRoll/hitLocationRoll.hbs",
+  hitLocationTooltip: "systems/rqg/rolls/HitLocationRoll/hitLocationRollTooltip.hbs",
+  spiritMagicRollTooltip: "systems/rqg/rolls/SpiritMagicRoll/spiritMagicRollTooltip.hbs",
+  spiritMagicRoll: "systems/rqg/rolls/SpiritMagicRoll/spiritMagicRoll.hbs",
+  runeMagicRollTooltip: "systems/rqg/rolls/RuneMagicRoll/runeMagicRollTooltip.hbs",
+  runeMagicRoll: "systems/rqg/rolls/RuneMagicRoll/runeMagicRoll.hbs",
+
   // Chat
-  chatCharacteristicHandler:
-    "systems/rqg/chat/characteristicChatHandler/characteristicChatHandler.hbs",
-  chatItemHandler: "systems/rqg/chat/itemChatHandler.hbs",
-  chatWeaponHandler: "systems/rqg/chat/weaponChatHandler.hbs",
-  reputationChatHandler: "systems/rqg/chat/reputationChatHandler.hbs",
-  chatSpiritMagicHandler: "systems/rqg/chat/spiritMagicChatHandler.hbs",
-  runeMagicChatHandler: "systems/rqg/chat/runeMagicChatHandler.hbs",
+  chatMessage: "systems/rqg/chat/chat-message.hbs",
+  attackChatMessage: "systems/rqg/applications/AttackFlow/attackChatTemplate.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 
@@ -43,6 +52,14 @@ export const templatePaths = {
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
+  abilityRollDialogV2: "systems/rqg/applications/abilityRollDialog/abilityRollDialogV2.hbs",
+  characteristicRollDialogV2:
+    "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
+  spiritMagicRollDialogV2:
+    "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialogV2.hbs",
+  runeMagicRollDialogV2: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialogV2.hbs",
+  attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",
+  defenceDialogV2: "systems/rqg/applications/AttackFlow/defenceDialogV2.hbs",
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
@@ -102,6 +119,9 @@ export const loadHandlebarsTemplates = async function () {
     // Item sheet parts
     itemActiveEffects: "systems/rqg/items/sheet-parts/itemActiveEffects.hbs",
     itemCommonPhysical: "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
+
+    // Application sheet parts
+    rollModes: "systems/rqg/applications/app-parts/rollModes.hbs",
 
     // RqidLink partials
     rqidLink: "systems/rqg/sheet-partials/rqidLink.hbs",

@@ -1,8 +1,11 @@
 import type { RqgActor } from "../actors/rqgActor";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import type { ChatMessageType } from "../chat/RqgChatMessage";
 import { systemId } from "./config";
+import type { RqgItem } from "../items/rqgItem";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
+import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
 export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
   const data = getDomDataset(el, dataset);
@@ -241,20 +244,6 @@ export function assertActorType<T extends ActorTypeEnum>(
   }
 }
 
-/**
- * Check if a flags of a chat message has the specified type and narrow the flag data to that type.
- */
-export function assertChatMessageFlagType<T extends ChatMessageType>(
-  chatMessageType: ChatMessageType | undefined,
-  type: T,
-): asserts chatMessageType is T {
-  if (!chatMessageType || chatMessageType !== type) {
-    const msg = `Got unexpected chat message type in assert, ${chatMessageType} ≠ ${type}`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
-}
-
 export function assertHtmlElement<T extends HTMLElement>(
   eventTarget: EventTarget | null | undefined,
 ): asserts eventTarget is T | null | undefined {
@@ -265,7 +254,11 @@ export function assertHtmlElement<T extends HTMLElement>(
   }
 }
 
-export function requireValue(val: unknown, errorMessage: string, ...debugData: any): asserts val {
+export function requireValue<T>(
+  val: T,
+  errorMessage: string,
+  ...debugData: any
+): asserts val is NonNullable<T> {
   if (val == null) {
     ui.notifications?.error(errorMessage);
     throw new RqgError(errorMessage, debugData);
@@ -613,25 +606,12 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   return result;
 }
 
-export function localizeItemType(itemType: ItemTypeEnum): string {
+export function localizeItemType(itemType: ItemTypeEnum | "reputation"): string {
   return localize("TYPES.Item." + itemType);
 }
 
 export function localizeDocumentName(documentName: string | undefined): string {
   return documentName ? localize("DOCUMENT." + documentName) : "";
-}
-
-/**
- * Formats the value as a modifier, ie negative numbers have a "-" and zero or positive numbers have a "+"
- * @param value The value to format
- * @returns A string with the value formatted as a modifier.
- */
-export function formatModifier(value: number): string {
-  if (value < 0) {
-    return String(value);
-  } else {
-    return "+" + String(value);
-  }
 }
 
 /**
@@ -712,4 +692,47 @@ export function* range(start: number | undefined, end: number | undefined): Gene
     return;
   }
   yield* range(start + 1, end);
+}
+
+export function getSpeakerFromItem(
+  item: RqgItem | PartialAbilityItem,
+): PropertiesToSource<ChatSpeakerDataProperties> {
+  const token = getTokenFromItem(item);
+  const actor = item.parent;
+  return ChatMessage.getSpeaker({
+    token: token,
+    actor: actor ?? undefined,
+  });
+}
+
+/**
+ * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
+ */
+export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
+  const token = getTokenFromActor(item.parent);
+
+  if (token) {
+    return token;
+  } else {
+    return (item as PartialAbilityItem).actingToken;
+  }
+}
+
+/**
+ * Get the token that is associated with actor, by looking at the tokens in the active scene.
+ */
+export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocument | undefined {
+  // First try to get the token from the item parent, this only works if the actor is unlinked
+  const tokenFromUnlinkedActor = actor?.token;
+  if (tokenFromUnlinkedActor) {
+    return tokenFromUnlinkedActor;
+  }
+
+  // If the actor is linked, we need to get the token from the active scene by comparing IDs
+  const owningActorTokens: TokenDocument[] =
+    actor?.getActiveTokens()?.map((t: any) => t.document) ?? [];
+  const attackingToken =
+    owningActorTokens[0] ??
+    getGame().scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
+  return attackingToken;
 }

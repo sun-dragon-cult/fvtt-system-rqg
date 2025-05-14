@@ -3,7 +3,6 @@ import { RqgItemDataProperties, RqgItemDataSource } from "./data-model/item-data
 import { RqgActor } from "./actors/rqgActor";
 import { RqgActorDataProperties, RqgActorDataSource } from "./data-model/actor-data/rqgActorData";
 import { RqgConfig, systemId } from "./system/config";
-import { RqgChatMessageFlags } from "./data-model/shared/rqgDocumentFlags";
 import {
   RqgActorFlags,
   RqgItemFlags,
@@ -11,6 +10,11 @@ import {
   RqgRollTableFlags,
 } from "./data-model/shared/rqgDocumentFlags";
 import { IconSettingsData } from "./applications/defaultItemIconSettings";
+
+declare global {
+  /** Standard format for data to Foundry SelectOptions handlebar helper */
+  type SelectOptionData<T> = { value: T; label: string };
+}
 
 declare global {
   interface DocumentClassConfig {
@@ -39,7 +43,6 @@ declare global {
     Actor: { [systemId]?: RqgActorFlags };
     JournalEntry: { [systemId]?: RqgJournalEntryFlags };
     RollTable: { [systemId]?: RqgRollTableFlags };
-    ChatMessage: { [systemId]?: RqgChatMessageFlags };
   }
 }
 
@@ -47,7 +50,6 @@ declare global {
   namespace ClientSettings {
     interface Values {
       "rqg.worldLanguage": string;
-      "rqg.specialCrit": boolean;
       "rqg.fumbleRollTable": string;
       "rqg.worldMigrationVersion": string;
       "rqg.hitLocations": object;
@@ -64,6 +66,19 @@ declare global {
   interface CONFIG {
     RQG: RqgConfig;
   }
+}
+
+declare global {
+  const CONST: {
+    CHAT_MESSAGE_STYLES: {
+      OTHER: 0;
+      OOC: 1;
+      IC: 2;
+      EMOTE: 3;
+      WHISPER: 4;
+      ROLL: 5;
+    };
+  };
 }
 
 declare global {

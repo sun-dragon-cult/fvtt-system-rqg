@@ -34,7 +34,8 @@ export const skillMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      await item?.toChat();
+      assertItemType(item?.type, ItemTypeEnum.Skill);
+      await item.abilityRoll();
     },
   },
   {
@@ -53,7 +54,7 @@ export const skillMenuOptions = (
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.Skill);
       const itemChance = item.system.chance;
-      if (!itemChance) {
+      if (itemChance == null) {
         const msg = localize("RQG.ContextMenu.Notification.CantRollQuickSkillError", {
           itemId: itemId,
           actorName: actor.name,
@@ -61,7 +62,7 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await item?.abilityRoll();
+      await item.abilityRollImmediate();
     },
   },
   {

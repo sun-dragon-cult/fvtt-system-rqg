@@ -43,10 +43,7 @@ export class HomelandSheet extends RqgItemSheet<
       isGM: getGameUser().isGM,
       system: system,
       isEmbedded: this.document.isEmbedded,
-      enrichedWizardInstructions: await TextEditor.enrichHTML(system.wizardInstructions, {
-        // @ts-expect-error async
-        async: true,
-      }),
+      enrichedWizardInstructions: await TextEditor.enrichHTML(system.wizardInstructions),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
     };
   }

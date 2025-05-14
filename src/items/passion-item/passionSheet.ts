@@ -59,10 +59,8 @@ export class PassionSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
       system: system,
-      // @ts-expect-error async
-      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
-      // @ts-expect-error async
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      enrichedDescription: await TextEditor.enrichHTML(system.description),
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
       passionTypes: Object.values(PassionsEnum),
     };
   }

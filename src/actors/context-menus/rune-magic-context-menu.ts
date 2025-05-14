@@ -21,7 +21,8 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      await item?.toChat();
+      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
+      await item.runeMagicRoll();
     },
   },
   {
@@ -31,13 +32,13 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.RuneMagic);
-      return item?.system.points === 1;
+      return item.system.points === 1;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
       assertItemType(item?.type, ItemTypeEnum.RuneMagic);
-      item.abilityRoll({ runePointCost: 1, magicPointBoost: 0 });
+      await item.runeMagicRollImmediate();
     },
   },
   {

@@ -177,8 +177,6 @@ export class ActorWizard extends FormApplication {
       this.species.selectedSpeciesTemplate.system.background.biography =
         await TextEditor.enrichHTML(
           this.species.selectedSpeciesTemplate?.system.background.biography,
-          // @ts-expect-error async
-          { async: true },
         );
     }
 
@@ -244,8 +242,6 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.system.wizardInstructions) {
       selectedHomeland.system.wizardInstructions = await TextEditor.enrichHTML(
         selectedHomeland.system.wizardInstructions,
-        // @ts-expect-error async
-        { async: true },
       );
     }
 

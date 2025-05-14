@@ -44,10 +44,8 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      // @ts-expect-error async
-      enrichedDescription: await TextEditor.enrichHTML(system.description, { async: true }),
-      // @ts-expect-error async
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes, { async: true }),
+      enrichedDescription: await TextEditor.enrichHTML(system.description),
+      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
       equippedStatuses: [...equippedStatuses],
       physicalItemTypes: [...physicalItemTypes],
     };

@@ -1,6 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
+  assertItemType,
   getDomDataset,
   getGame,
   getRequiredDomDataset,
@@ -9,8 +10,8 @@ import {
   RqgError,
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
-import type { RqgItem } from "../../items/rqgItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import type { RqgItem } from "../../items/rqgItem";
 
 export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
@@ -20,7 +21,8 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: async (el: JQuery) => {
       const weaponItemId = getRequiredDomDataset(el, "item-id");
       const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
-      await weapon?.toChat();
+      assertItemType(weapon?.type, ItemTypeEnum.Weapon);
+      await weapon.attack();
     },
   },
   {

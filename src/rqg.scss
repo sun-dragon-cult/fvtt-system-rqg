@@ -10,6 +10,12 @@ body {
   background: url("assets/images/ui/sacred-time.webp") no-repeat;
 }
 
+// adding attribute readonly to the input excludes it from the form application?
+input.readonly {
+  border: none;
+  pointer-events: none;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -92,12 +98,54 @@ body {
   cursor: pointer;
 }
 
-.rqg img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
+.dont-display {
+  display: none !important;
+}
+
+// elements marked with .themed are AppV2 and theme aware, part of AppV2 migration
+.rqg:not(.themed) img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
 .app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
 .app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {
   // Make them black in the default item icon setting
   filter: invert(0.9);
 }
+
+// *** Start of theme specific styles ***
+
+.rqg {
+  &.themed {
+    .experienced {
+      text-shadow: -1px 1px 1px var(--rqg-themed-exp-outline),
+      1px -1px 1px var(--rqg-themed-exp-outline),
+      1px 1px 1px var(--rqg-themed-exp-outline),
+      -1px -1px 1px var(--rqg-themed-exp-outline),
+      0 0 1em var(--rqg-themed-highlight),
+      0 0 0.6em var(--rqg-themed-highlight),
+      0 0 0.4em var(--rqg-themed-highlight);
+      font-weight: bold;
+    }
+  }
+}
+
+.theme-light {
+  .rqg.themed {
+    &.roll-dialog img[src*="systems/rqg/assets/images"][src$=".svg"] { // Make rqg svg icons black to match text color
+      filter: invert(0.9);
+    }
+
+
+  }
+}
+
+.theme-dark {
+  .rqg.themed {
+    &.roll-dialog img[src*="systems/rqg/assets/images"][src$=".svg"] { // Make rqg svg icons black to match text color
+      filter: none;
+    }
+  }
+}
+
+// *** End of theme specific styles ***
 
 .rqg {
   h1,
@@ -148,12 +196,24 @@ body {
     flex-wrap: wrap;
   }
 
+  .flex-nowrap {
+    flex-wrap: nowrap;
+  }
+
   .flex-align-center {
     align-items: center;
   }
 
   .flex-align-end {
     align-items: flex-end;
+  }
+
+  .flex-none {
+    flex: none;
+  }
+
+  .flex-0 {
+    flex: 0;
   }
 
   .flex-1 {
@@ -170,6 +230,10 @@ body {
 
   .gap1rem {
     gap: 1rem;
+  }
+
+  .gap05rem {
+    gap: 0.5rem;
   }
 
   .gap03rem {
@@ -195,6 +259,11 @@ body {
   .warning {
     outline: 2px dashed var(--rqg-color-enc-warning);
     background-color: var(--rqg-color-enc-warning);
+  }
+
+  .buttongroup {
+    border-radius: 4px;
+    background: var(--color-light-5);
   }
 
   .mp-ellipses {
@@ -249,6 +318,15 @@ body {
     font-size: 14px;
     line-height: 28px;
     font-family: var(--font-primary);
+  }
+
+  input:read-only {
+      border: none;
+      color: var(--color-text-dark-secondary);
+  }
+
+  .mb-1-5rem {
+    margin-bottom: 1.5rem;
   }
 
   .ml-5 {
@@ -835,6 +913,27 @@ body {
     padding: 0;
   }
 
+
+  // Default text size in chat
+  &.chat-card {
+    font-size: var(--font-size-12);
+
+    .outcome-description {
+      font-size: var(--font-size-14);
+      margin: 0.3rem -0.2rem;
+      background-color: var(--rqg-color-main-bg);
+      padding: 0.4rem;
+      mix-blend-mode: darken;
+      border-radius: 10px;
+      border: 9px double white;
+    }
+
+    button:disabled {
+      color: var(--color-text-dark-inactive);
+      cursor: progress;
+    }
+  }
+
   &.chat-content {
     & > * {
       margin-top: 5px;
@@ -903,6 +1002,141 @@ body {
   .chat-number-input {
     text-align: right;
     width: 50px;
+  }
+}
+
+.chat-message {
+
+  .acting-img {
+    width: 25px;
+    flex: unset;
+    border: none;
+  }
+
+  .roll-action {
+    font-size: var(--font-size-18);
+    font-weight: bold;
+    color: var(--color-text-dark-primary);
+  }
+
+  .dice-roll {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+
+    .damage-formula {
+      margin-bottom: 0.2rem;
+      padding-bottom: 0.3rem;
+      border-bottom: 3px double var(--color-text-light-6);
+    }
+
+    .dice-result {
+      order: 2;
+    }
+
+    .dice-tooltip {
+      text-align: end;
+      display: none;
+      order: 2;
+      background-color: #e2e2e2;
+      border: 1px inset white;
+      padding: 0.3rem;
+      border-radius: 0 0 6px 6px;
+      margin-top: -1px;
+      border-top: none;
+    }
+
+    &.expanded {
+      .dice-tooltip {
+        display: block;
+      }
+    }
+
+    .roll-level {
+      font-size: var(--font-size-16);
+    }
+
+    .dice-total {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      mix-blend-mode: multiply;
+
+      flex: 0;
+      font-size: var(--font-size-20);
+      font-weight: bold;
+
+      position: relative;
+      margin: 0;
+      line-height: 24px;
+      text-align: center;
+
+      word-break: break-all;
+
+      .target {
+        font-size: var(--font-size-14);
+      }
+
+      &.success-level-0 { // Crit
+        background-color: #6FD042CC;
+        border: 4px outset #ffcf00;
+        border-radius: 14px;
+        box-shadow: inset 3px 5px 12px 3px #ffd800cc;
+      }
+
+      &.success-level-1 { // Special Success
+        background-color: #6FD042CC;
+        border: 4px groove #ffcf00;
+        border-radius: 10px;
+      }
+
+      &.success-level-2 { // Success
+        background-color: #6FD042CC;
+      }
+
+      &.success-level-3 { // Fail
+        background-color: #CECBC5CC;
+      }
+
+      &.success-level-4 { // Fumble
+        background-color: #E23333CC;
+        box-shadow: inset 0 0 3px 0 black;
+        clip-path: polygon(
+            0% 17%,
+            7% 17%,
+            4% 0%,
+            97% 0%,
+            93% 17%,
+            100% 17%,
+            100% 83%,
+            93% 83%,
+            96% 100%,
+            4% 100%,
+            7% 83%,
+            0% 83%
+        );
+      }
+    }
+  }
+
+  .rqg.flavor {
+    position: relative;
+    width: 100%;
+    display: block;
+    margin-left:auto;
+    margin-right:auto;
+
+    img {
+      position: absolute;
+      top: -1.6rem;
+      height: 5rem;
+      border: none;
+      mix-blend-mode: overlay;
+      display: block;
+      width: 100%;
+      filter: invert(0.9) drop-shadow(0px 4px 4px black)
+    }
   }
 }
 
@@ -1120,6 +1354,16 @@ body {
     }
   }
 
+  .submenu-span {
+    place-self: center;
+    text-align: center;
+    grid-column: 1 / 3;
+    width: 80%;
+    border-bottom: 2px dotted grey;
+    border-radius: 10%;
+    margin-top: 1.5rem;
+  }
+
   div.drop-target {
     width: 100%;
   }
@@ -1149,5 +1393,36 @@ body {
 
   .editor-container {
     width: 100%;
+  }
+}
+
+
+
+.rqg.form.roll-dialog {
+
+  height: fit-content !important; // override the element style
+  overflow: auto;
+
+  .roll-header {
+    margin: -1rem -1rem 0.5rem;
+    padding: 1rem;
+    box-shadow: 0px -3px 11px 0px;
+    text-align: center;
+
+    .sub-header {
+      font-style: italic;
+      margin-top: -2px;
+    }
+  }
+
+  .target-box {
+    flex: none;
+    text-align: center;
+  }
+
+  button {
+    &:disabled {
+      cursor: progress;
+    }
   }
 }

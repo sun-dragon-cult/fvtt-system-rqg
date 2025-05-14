@@ -19,6 +19,7 @@ interface CultSheetData {
   ranksEnum: CultRankEnum[];
   enrichedGifts: string;
   enrichedGeases: string;
+  enrichedSubCults: string;
   enrichedHolyDays: string;
 }
 
@@ -57,14 +58,10 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       isEmbedded: this.document.isEmbedded,
       isGM: getGameUser().isGM,
       system: system,
-      // @ts-expect-error async
-      enrichedGifts: await TextEditor.enrichHTML(system.gifts, { async: true }),
-      // @ts-expect-error async
-      enrichedGeases: await TextEditor.enrichHTML(system.geases, { async: true }),
-      // @ts-expect-error async
-      enrichedSubCults: await TextEditor.enrichHTML(system.subCults, { async: true }),
-      // @ts-expect-error async
-      enrichedHolyDays: await TextEditor.enrichHTML(system.holyDays, { async: true }),
+      enrichedGifts: await TextEditor.enrichHTML(system.gifts),
+      enrichedGeases: await TextEditor.enrichHTML(system.geases),
+      enrichedSubCults: await TextEditor.enrichHTML(system.subCults),
+      enrichedHolyDays: await TextEditor.enrichHTML(system.holyDays),
       // journalEntryName: system.descriptionRqidLink.name,
       ranksEnum: Object.values(CultRankEnum),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),

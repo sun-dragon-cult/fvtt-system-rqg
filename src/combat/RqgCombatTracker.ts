@@ -70,7 +70,7 @@ export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any)
   if (currentCombat) {
     // Rerender actorSheets to update the SR display there
     getGame()
-      .scenes?.active?.tokens.filter((t) =>
+      .scenes?.current?.tokens.filter((t) =>
         // @ts-expect-errors DOCUMENT_OWNERSHIP_LEVELS
         t.testUserPermission(getGameUser(), CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED),
       )

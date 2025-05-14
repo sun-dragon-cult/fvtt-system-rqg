@@ -1,148 +1,256 @@
-import { ReputationChatHandler } from "./reputationChatHandler";
-import { CharacteristicChatHandler } from "./characteristicChatHandler/characteristicChatHandler";
 import {
-  assertHtmlElement,
-  getGame,
-  getRequiredDomDataset,
-  localize,
-  moveCursorToEnd,
-  requireValue,
-} from "../system/util";
-import { RqidLink } from "../data-model/shared/rqidLink";
-import { ItemChatHandler } from "./itemChatHandler";
-import { SpiritMagicChatHandler } from "./spiritMagicChatHandler";
-import { RuneMagicChatHandler } from "./runeMagicChatHandler";
-import { WeaponChatHandler } from "./weaponChatHandler";
-import { RqgChatMessageFlags } from "../data-model/shared/rqgDocumentFlags";
-import { systemId } from "../system/config";
-
-export type ChatMessageType = keyof typeof chatHandlerMap;
-
-const chatHandlerMap = {
-  characteristicChat: CharacteristicChatHandler,
-  itemChat: ItemChatHandler,
-  spiritMagicChat: SpiritMagicChatHandler,
-  runeMagicChat: RuneMagicChatHandler,
-  weaponChat: WeaponChatHandler,
-  reputationChat: ReputationChatHandler,
-};
+  handleApplyActorDamage,
+  handleApplyWeaponDamage,
+  handleDefence,
+  handleRollDamageAndHitLocation,
+  handleRollFumble,
+} from "./attackFlowHandlers";
+import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import { getGameUser, localize } from "../system/util";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
+import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
+import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
+import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 export class RqgChatMessage extends ChatMessage {
+  declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
+
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
-    // CONFIG.ChatMessage.template = "systems/rqg/chat/chat-message.hbs"; // TODO redefine the base chat message
+    // @ts-expect-error dataModels
+    CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
 
     Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
       RqgChatMessage.addChatListeners(html[0]);
     });
-    Hooks.on("renderChatPopout", (chatPopout: any, html: JQuery) => {
-      if (html === chatPopout._element) {
-        // This is called on chatMessage.update as well with different html - resulting in double listeners.
-        // To prevent that check that html (which is a li.chat-message element in case of update) is the same as
-        // chatPopout.element (which always is div.chat-popout)
-        RqgChatMessage.addChatListeners(html[0]);
-      }
-    });
-    Hooks.on("renderChatMessage", (chatItem, html) => {
-      RqidLink.addRqidLinkClickHandlers(html); // TODO this might not work if rqid points to compendium (async)
-    });
   }
 
-  declare flags: { [systemId]: RqgChatMessageFlags }; // v10 type workaround
-
-  private static addChatListeners(html: HTMLElement): void {
-    html.addEventListener("submit", RqgChatMessage.formSubmitHandler);
-    html.addEventListener("change", RqgChatMessage.inputChangeHandler);
-  }
-
-  private static async inputChangeHandler(inputEvent: Event): Promise<void> {
-    const target = inputEvent.target;
-    assertHtmlElement(target);
-    if (target?.dataset.handleChange == null) {
-      return; // Only handle inputs etc that are tagged with "data-handle-change"
+  _onUpdate(
+    data: DeepPartial<foundry.data.ChatMessageData["_source"]>,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
+    // @ts-expect-error isAtBottom
+    if (ui?.chat?.isAtBottom) {
+      // TODO how to make it work without releasing the execution thread?
+      // @ts-expect-error scrollBottom
+      setTimeout(() => ui?.chat.scrollBottom(), 0);
     }
-    const { chatMessageId } = RqgChatMessage.getChatMessageInfo(inputEvent);
-    const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage;
-    requireValue(chatMessage, localize("RQG.Dialog.Common.CantFindChatMessageError"));
 
-    const flags = chatMessage.flags.rqg;
-    requireValue(flags, "No rqg flags found on chat message");
-    const chatMessageType = flags?.type;
-    requireValue(chatMessageType, "Found chatmessage without chat message type");
-
-    chatHandlerMap[chatMessageType].updateFlagsFromForm(flags, inputEvent);
-    const data = await chatHandlerMap[chatMessageType].renderContent(flags);
-
-    const domChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`,
-    );
-    const domChatMessage = Array.from(domChatMessages).find((m) =>
-      m.contains(inputEvent.currentTarget as Node),
-    );
-    const isFromPopoutChat = !!domChatMessage?.closest(".chat-popout");
-
-    await chatMessage.update(data); // Rerenders the dom chatmessages
-    const newDomChatMessages = document.querySelectorAll<HTMLElement>(
-      `[data-message-id="${chatMessage.id}"]`,
-    );
-    const newDomChatMessage = Array.from(newDomChatMessages).find(
-      (m) => !!m.closest<HTMLElement>(".chat-popout") === isFromPopoutChat,
-    );
-
-    // Find the input element that inititated the change and move the cursor there.
-    const inputElement = inputEvent.target;
-    if (inputElement instanceof HTMLInputElement && inputElement.type === "text") {
-      const elementName = inputElement?.name;
-      const newInputElement = newDomChatMessage?.querySelector<HTMLInputElement>(
-        `[name=${elementName}]`,
-      );
-      if (newInputElement) {
-        moveCursorToEnd(newInputElement);
-      }
-    }
-    // @ts-expect-error is marked as private!?
-    ui.chat?.scrollBottom(); // Fix that the weapon chat gets bigger and pushes the rest of the chatlog down
+    super._onUpdate(data, options, userId);
   }
 
-  public static async formSubmitHandler(submitEvent: SubmitEvent): Promise<boolean> {
-    submitEvent.preventDefault();
+  /** @inheritDoc */
+  async getHTML(): Promise<JQuery> {
+    const html = await super.getHTML();
+    const element = html instanceof HTMLElement ? html : html[0];
+    await this.#enrichChatCard(element);
+    return $(element);
+  }
 
-    const { chatMessageId } = RqgChatMessage.getChatMessageInfo(submitEvent);
+  private static addChatListeners(html: HTMLElement | undefined): void {
+    html?.addEventListener("click", RqgChatMessage.clickHandler);
+  }
 
-    const clickedButton = submitEvent.submitter as HTMLButtonElement;
+  public static async clickHandler(clickEvent: MouseEvent): Promise<void> {
+    const clickedButton = clickEvent.target as HTMLButtonElement;
+    // ***************************
+    // *** START - Attack Flow ***
+    // ***************************
+
+    if (clickedButton?.dataset.defence != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleDefence(clickedButton); // Open Defence Dialog (roll defence)
+    }
+
+    if (clickedButton?.dataset.rollDamageAndHitlocation != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleRollDamageAndHitLocation(clickedButton); // Roll damage & hit location
+    }
+
+    if (clickedButton?.dataset.applyDamageToActor != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleApplyActorDamage(clickedButton); // Inflict damage to actor
+    }
+
+    if (clickedButton?.dataset.applyDamageToWeapon != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleApplyWeaponDamage(clickedButton); // Damage weapon HP
+    }
+
+    if (clickedButton?.dataset.fumble != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleRollFumble(clickedButton); // Roll the Fumble table
+    }
+
+    // *************************
+    // *** END - Attack Flow ***
+    // *************************
+  }
+
+  private static commonClickHandling(clickEvent: MouseEvent, clickedButton: HTMLButtonElement) {
+    clickEvent.preventDefault();
     clickedButton.disabled = true;
     setTimeout(() => (clickedButton.disabled = false), 1000); // Prevent double clicks
-
-    const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
-    const flags = chatMessage?.flags.rqg;
-    requireValue(flags, "Couldn't find flags on chatmessage");
-
-    const chatMessageType = flags.type;
-
-    chatHandlerMap[chatMessageType].updateFlagsFromForm(flags, submitEvent);
-
-    const form = submitEvent.target as HTMLFormElement;
-    // Disable form until completed
-    form.style.pointerEvents = "none";
-
-    await chatMessage.doRoll();
-
-    // Enabling the form again after DsN animation is finished TODO doesn't wait?
-    form.style.pointerEvents = "auto";
-    return false;
   }
 
-  public async doRoll(): Promise<void> {
-    const flags = this.flags.rqg;
-    requireValue(flags, "No rqg flags found on chat message");
-    const chatMessageType = flags.type;
-    await chatHandlerMap[chatMessageType].rollFromChat(this);
+  /**
+   * Augment the chat card html markup for additional styling and eventlisteners.
+   */
+  async #enrichChatCard(html: HTMLElement): Promise<void> {
+    // Add event listener for Dice Rolls
+    [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
+      el.addEventListener("click", this._onClickDiceRoll.bind(this)),
+    );
+
+    // Enrich the combat chat message with evaluated rolls
+    await this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "damageRoll", "[data-damage-roll-html]");
+    await this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]");
+
+    this.#hideHtmlElementsByOwnership(html);
   }
 
-  private static getChatMessageInfo(event: Event): {
-    chatMessageId: string;
-  } {
-    const chatMessageId = getRequiredDomDataset(event, "message-id");
-    return { chatMessageId: chatMessageId };
+  /**
+   * Handle dice roll expansion to show "specification".
+   * @protected
+   */
+  _onClickDiceRoll(event: MouseEvent) {
+    event.stopPropagation();
+
+    const target = event.currentTarget;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+    target?.classList.toggle("expanded");
+  }
+
+  /**
+   * Optionally hide the display of chat html elements which should not be shown to user.
+   * The data-only-owner-visible-uuid value should be a document uuid that can be checked for ownership.
+   */
+  #hideHtmlElementsByOwnership(html: HTMLElement | undefined): void {
+    if (getGameUser().isGM) {
+      return; // Do not hide anything from GM
+    }
+
+    // Otherwise conceal elements for unrelated actors/players
+    const maybeHideElements = html?.querySelectorAll("[data-only-owner-visible-uuid]");
+
+    maybeHideElements?.forEach((el: Element) => {
+      if (!(el instanceof HTMLElement)) {
+        return;
+      }
+      // @ts-expect-error fromUuidSync
+      const document = fromUuidSync(el.dataset.onlyOwnerVisibleUuid);
+      if (el.dataset.onlyOwnerVisibleUuid && !document?.isOwner) {
+        el.classList.add("dont-display");
+      }
+    });
+  }
+
+  async #enrichHtmlWithRoll(
+    html: HTMLElement,
+    systemDataProp: string,
+    domSelector: string,
+  ): Promise<void> {
+    const rollData = this.system[systemDataProp];
+    if (rollData?.evaluated) {
+      const roll = AbilityRoll.fromData(rollData);
+      const element = html.querySelector<HTMLElement>(domSelector);
+      if (element) {
+        element.innerHTML = await roll.render();
+      }
+    }
+  }
+
+  /**
+   * Export the content of the chat message into a standardized log format
+   */
+  export(): string {
+    let content = [];
+
+    // Handle HTML content
+    // @ts-expect-error content
+    if (this.content) {
+      // @ts-expect-error content
+      const html = $("<article>").html(this.content.replace(/<\/div>/g, "</div>|n"));
+      // @ts-expect-error content
+      const text = html.length ? html.text() : this.content;
+      const lines = text
+        .replace(/\n/g, "")
+        .split("  ")
+        .filter((p: string) => p !== "")
+        .join(" ");
+      content = lines.split("|n").map((l: string) => l.trim());
+    }
+
+    // Add Roll content
+    // @ts-expect-error rolls
+    for (const roll of this.rolls) {
+      if (roll instanceof AbilityRoll) {
+        content.push(
+          `AbilityRoll: ${roll.flavor
+            .replaceAll(/<[^>]*>/gm, "")
+            .replaceAll(/\n */gm, " ")
+            .trim()} ${roll.total} / ${roll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${roll.successLevel}`)} `,
+        );
+      } else if (roll instanceof DamageRoll) {
+        content.push(`DamageRoll: ${roll.formula} = ${roll.result} = ${roll.total}`);
+      } else {
+        content.push(`${roll.formula} = ${roll.result} = ${roll.total}`);
+      }
+    }
+
+    // @ts-expect-error type
+    if (this.type === "combat") {
+      const defenceRollData = this.system.defenceRoll;
+      const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
+      if (defenceRoll?.total) {
+        content.unshift(
+          `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
+        );
+      }
+
+      const attackRollData = this.system.attackRoll;
+      const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
+      if (attackRoll?.total) {
+        content.unshift(
+          `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
+        );
+        // @ts-expect-error content
+        content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
+      }
+
+      const damageRollData = this.system.damageRoll;
+      const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
+      if (damageRoll?.total) {
+        content.push(
+          `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
+        );
+      }
+
+      const hitLocationRollData = this.system.hitLocationRoll;
+      const hitLocationRoll = hitLocationRollData
+        ? HitLocationRoll.fromData(hitLocationRollData)
+        : undefined;
+      if (hitLocationRoll?.total) {
+        content.push(
+          `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
+        );
+      }
+    }
+
+    // Author and timestamp
+    // @ts-expect-error timestamp
+    const time = new Date(this.timestamp).toLocaleDateString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+    });
+
+    // Format logged result
+    return `[${time}] ${this.alias}\n${content.filterJoin("\n")}`;
   }
 }

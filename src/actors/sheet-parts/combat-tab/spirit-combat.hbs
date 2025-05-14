@@ -3,7 +3,7 @@
     <h2>{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
     {{#if (ne system.attributes.spiritCombatDamage "0")}}
       <div class="flex-row nowrap flex-align-center">
-        <label data-damage-roll="{{system.attributes.spiritCombatDamage}}">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
+        <label data-damage-roll="{{system.attributes.spiritCombatDamage}}" data-damage-roll-heading="RQG.Actor.Combat.SpiritCombatDamage">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
           {{system.attributes.spiritCombatDamage}}</label>
       </div>
     {{/if}}

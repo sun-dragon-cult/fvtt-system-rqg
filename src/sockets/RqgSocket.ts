@@ -1,23 +1,9 @@
 import { systemId } from "../system/config";
 import { getGame, getGameUser, getGameUsers, getSocket, RqgError } from "../system/util";
-
-type SocketAction = "deleteCombatant";
-
-type SocketRequest = {
-  action: SocketAction;
-  payload: any;
-  messageId?: string;
-};
-
-type DeleteCombatantPayload = {
-  combatId: string;
-  idsToDelete: string[];
-};
-
-type ActionPayload = DeleteCombatantPayload;
+import type { SocketAction, SocketActionPayload } from "./RqgSocket.types";
 
 const eventNameSpace = `system.${systemId}`;
-const pendingRequests = new Map<string, (value: unknown) => void>(); // messageId to stored promise
+const pendingRequests = new Map<string, (value: unknown) => void>(); // socketMessageId to stored promise
 
 /**
  * Start the handler for socket messages
@@ -27,29 +13,29 @@ export function initSockets() {
 }
 
 // Request - response pattern
-export async function socketRequest(action: SocketAction, payload: ActionPayload): Promise<any> {
+export async function socketRequest(payload: SocketActionPayload): Promise<any> {
   // TODO Add a race between a timeout and the Promise to clear the pendingRequests
   return new Promise((resolve) => {
     const messageId = randomID();
     pendingRequests.set(messageId, resolve);
-    getSocket().emit(eventNameSpace, { action: action, messageId: messageId, payload: payload });
+    getSocket().emit(eventNameSpace, { messageId: messageId, payload: payload });
   });
 }
 
 // Send and forget
-export function socketSend(action: SocketAction, payload: ActionPayload): void {
-  getSocket().emit(eventNameSpace, { action: action, payload: payload });
+export function socketSend(payload: SocketActionPayload): void {
+  getSocket().emit(eventNameSpace, { payload: payload });
 }
 
-function handleSocketMsg(request: SocketRequest, userId: string): void {
+function handleSocketMsg(request: SocketAction): void {
   // let responsePromise;
 
-  if (request.messageId) {
-    // responsePromise = pendingRequests.get(request.messageId);
-    pendingRequests.delete(request.messageId);
+  if (request.socketMessageId) {
+    // responsePromise = pendingRequests.get(request.socketMessageId);
+    pendingRequests.delete(request.socketMessageId);
   }
 
-  switch (request.action) {
+  switch (request.payload.action) {
     case "deleteCombatant": {
       if (!isResponsibleGM()) {
         return;
@@ -57,6 +43,16 @@ function handleSocketMsg(request: SocketRequest, userId: string): void {
       const combat = getGame().combats?.get(request.payload?.combatId);
       const idsToDelete = request.payload?.idsToDelete;
       combat?.deleteEmbeddedDocuments("Combatant", idsToDelete);
+      break;
+    }
+
+    case "updateChatMessage": {
+      if (getGameUser().id !== request.payload.messageAuthorId) {
+        return;
+      }
+
+      const attackChatMessage = getGame().messages?.get(request.payload.messageId);
+      attackChatMessage?.update(request.payload.update);
       break;
     }
 
@@ -70,9 +66,8 @@ function handleSocketMsg(request: SocketRequest, userId: string): void {
     //   const idsToDelete = request.payload?.idsToDelete;
     //   combat?.deleteEmbeddedDocuments("Combatant", idsToDelete);
     //   getSocket().emit(eventNameSpace, {
-    //     action: "deleteCombatantResponse",
-    //     messageId: request.messageId,
-    //     payload: { response: "deleted it now" },
+    //     socketMessageId: request.socketMessageId,
+    //     payload: { action: "deleteCombatantResponse", response: "deleted it now" },
     //   });
     //   break;
     // }
@@ -87,9 +82,9 @@ function handleSocketMsg(request: SocketRequest, userId: string): void {
     // ---
 
     default: {
-      const msg = `Got unknown socket action: ${request.action}`;
+      const msg = `Got unknown socket action in payload`;
       ui.notifications?.error(msg);
-      throw new RqgError(msg, request, userId);
+      throw new RqgError(msg, request);
     }
   }
 }
