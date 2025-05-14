@@ -41,66 +41,71 @@ import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 
 export class RqgItem extends Item {
   public static init() {
+    // @ts-expect-error collections
+    const collections = foundry.documents.collections;
+    // @ts-expect-error appv1
+    const sheetsV1 = foundry.appv1.sheets;
+
     CONFIG.Item.documentClass = RqgItem;
 
-    Items.unregisterSheet("core", ItemSheet);
+    collections.Items.unregisterSheet("core", sheetsV1.ItemSheet);
 
-    Items.registerSheet(systemId, PassionSheet as any, {
+    collections.Items.registerSheet(systemId, PassionSheet as any, {
       label: "RQG.SheetName.Item.Passion",
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, RuneSheet as any, {
+    collections.Items.registerSheet(systemId, RuneSheet as any, {
       label: "RQG.SheetName.Item.Rune",
       types: [ItemTypeEnum.Rune],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, SkillSheet as any, {
+    collections.Items.registerSheet(systemId, SkillSheet as any, {
       label: "RQG.SheetName.Item.Skill",
       types: [ItemTypeEnum.Skill],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, HitLocationSheet as any, {
+    collections.Items.registerSheet(systemId, HitLocationSheet as any, {
       label: "RQG.SheetName.Item.HitLocation",
       types: [ItemTypeEnum.HitLocation],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, HomelandSheet as any, {
+    collections.Items.registerSheet(systemId, HomelandSheet as any, {
       label: "RQG.SheetName.Item.Homeland",
       types: [ItemTypeEnum.Homeland],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, OccupationSheet as any, {
+    collections.Items.registerSheet(systemId, OccupationSheet as any, {
       label: "RQG.SheetName.Item.Occupation",
       types: [ItemTypeEnum.Occupation],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, GearSheet as any, {
+    collections.Items.registerSheet(systemId, GearSheet as any, {
       label: "RQG.SheetName.Item.Gear",
       types: [ItemTypeEnum.Gear],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, ArmorSheet as any, {
+    collections.Items.registerSheet(systemId, ArmorSheet as any, {
       label: "RQG.SheetName.Item.Armor",
       types: [ItemTypeEnum.Armor],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, WeaponSheet as any, {
+    collections.Items.registerSheet(systemId, WeaponSheet as any, {
       label: "RQG.SheetName.Item.Weapon",
       types: [ItemTypeEnum.Weapon],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, SpiritMagicSheet as any, {
+    collections.Items.registerSheet(systemId, SpiritMagicSheet as any, {
       label: "RQG.SheetName.Item.SpiritMagicSpell",
       types: [ItemTypeEnum.SpiritMagic],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, CultSheet as any, {
+    collections.Items.registerSheet(systemId, CultSheet as any, {
       label: "RQG.SheetName.Item.Cult",
       types: [ItemTypeEnum.Cult],
       makeDefault: true,
     });
-    Items.registerSheet(systemId, RuneMagicSheet as any, {
+    collections.Items.registerSheet(systemId, RuneMagicSheet as any, {
       label: "RQG.SheetName.Item.RuneMagicSpell",
       types: [ItemTypeEnum.RuneMagic],
       makeDefault: true,
