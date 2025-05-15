@@ -20,8 +20,9 @@ export class RqgChatMessage extends ChatMessage {
     // @ts-expect-error dataModels
     CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
 
-    Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
-      RqgChatMessage.addChatListeners(html[0]);
+    Hooks.on("ready", () => {
+      // one listener for sidebar chat, popped out chat & chat notification
+      document.addEventListener("click", RqgChatMessage.clickHandler);
     });
   }
 
@@ -46,10 +47,6 @@ export class RqgChatMessage extends ChatMessage {
     const element = html instanceof HTMLElement ? html : html[0];
     await this.#enrichChatCard(element);
     return $(element);
-  }
-
-  private static addChatListeners(html: HTMLElement | undefined): void {
-    html?.addEventListener("click", RqgChatMessage.clickHandler);
   }
 
   public static async clickHandler(clickEvent: MouseEvent): Promise<void> {

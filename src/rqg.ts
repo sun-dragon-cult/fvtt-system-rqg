@@ -115,11 +115,12 @@ Hooks.once("init", async () => {
   // @ts-expect-error appv1
   const sheetsV1 = foundry.appv1.sheets;
 
-  collections.RollTables.unregisterSheet("core", sheetsV1.RollTableConfig);
-  collections.RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
-    label: "RQG.SheetName.RollTable",
-    makeDefault: true,
-  });
+  // TODO this does not actually work, there is no RollTableConfig under sheetsv1
+  // collections.RollTables.unregisterSheet("core", sheetsV1.RollTableConfig);
+  // collections.RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
+  //   label: "RQG.SheetName.RollTable",
+  //   makeDefault: true,
+  // });
 
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
