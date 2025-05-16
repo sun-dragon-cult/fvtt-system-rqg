@@ -95,11 +95,6 @@ export class RqgChatMessage extends ChatMessage {
    * Augment the chat card html markup for additional styling and eventlisteners.
    */
   async #enrichChatCard(html: HTMLElement): Promise<void> {
-    // Add event listener for Dice Rolls
-    [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
-      el.addEventListener("click", this._onClickDiceRoll.bind(this)),
-    );
-
     // Enrich the combat chat message with evaluated rolls
     await this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]");
     await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
@@ -107,6 +102,11 @@ export class RqgChatMessage extends ChatMessage {
     await this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]");
 
     this.#hideHtmlElementsByOwnership(html);
+
+    // Add event listener for Dice Rolls
+    [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
+      el.addEventListener("click", this._onClickDiceRoll.bind(this)),
+    );
   }
 
   /**
