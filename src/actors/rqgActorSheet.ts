@@ -188,9 +188,8 @@ export class RqgActorSheet extends ActorSheet<
       },
 
       currencyTotals: this.calcCurrencyTotals(),
-      // Disable the SR buttons for unlinked actors since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
       // @ts-expect-error inCombat
-      isInCombat: this.actor.inCombat && this.actor.prototypeToken.actorLink,
+      isInCombat: this.actor.inCombat,
 
       dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
       sizSR: [
@@ -1343,8 +1342,8 @@ export class RqgActorSheet extends ActorSheet<
     }
     // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
     // @ts-expect-error actorId
-    const actorCombatant = combat.combatants.find((c) => c.actorId === this.actor.id);
-    const currentCombatants = getCombatantsSharingToken(actorCombatant);
+    const tokenCombatant = combat.combatants.find((c) => c.tokenId === this.token.id);
+    const currentCombatants = getCombatantsSharingToken(tokenCombatant);
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);

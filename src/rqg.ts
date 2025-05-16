@@ -36,6 +36,9 @@ import { RuneMagicRoll } from "./rolls/RuneMagicRoll/RuneMagicRoll";
 import { HitLocationRoll } from "./rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "./rolls/DamageRoll/DamageRoll";
 
+// CONFIG.debug.hooks = true; // console log when hooks fire
+// CONFIG.debug.time = true; // console log time
+
 Hooks.once("init", async () => {
   console.log(
     "%c                                                                                            \n" +
@@ -64,9 +67,6 @@ Hooks.once("init", async () => {
   console.log("RQG | Initializing the Runequest Glorantha Game System");
 
   CONFIG.RQG = RQG_CONFIG;
-
-  // CONFIG.debug.hooks = true; // console log when hooks fire
-  // CONFIG.debug.time = true; // console log time
 
   CONFIG.time.turnTime = 0; // Don't advance time per combatant
   CONFIG.time.roundTime = 12; // Melee round

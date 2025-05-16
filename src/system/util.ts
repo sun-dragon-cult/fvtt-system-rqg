@@ -7,7 +7,10 @@ import type { PartialAbilityItem } from "../applications/AbilityRollDialog/Abili
 import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
-export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
+export function getRequiredDomDataset(
+  el: HTMLElement | Element | Event | JQuery,
+  dataset: string,
+): string {
   const data = getDomDataset(el, dataset);
   if (!data) {
     const msg = `Couldn't find dataset [${dataset}]`;
@@ -24,7 +27,7 @@ export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset:
  * (`my-value` searches for `data-my-value`)
  */
 export function getDomDataset(
-  el: HTMLElement | Event | JQuery,
+  el: HTMLElement | Element | Event | JQuery,
   dataset: string,
 ): string | undefined {
   const elem = getHTMLElement(el);
@@ -66,7 +69,9 @@ export function getDomDatasetAmongSiblings(
   return firstItemEl?.dataset[toCamelCase(dataset)];
 }
 
-export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | undefined {
+export function getHTMLElement(
+  el: HTMLElement | Element | Event | JQuery,
+): HTMLElement | undefined {
   return el instanceof HTMLElement
     ? el
     : (el as Event).target

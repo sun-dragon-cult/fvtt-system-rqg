@@ -1175,8 +1175,6 @@
       },
       "CombatTracker": {
         "DuplicateCombatant": "Duplicate Combatant",
-        "UpdateCombatant": "Update Combatant",
-        "RemoveCombatant": "Remove Combatant",
         "RemoveAllDuplicates": "Remove All Duplicates",
         "CombatantWithoutActor": "The combatant \"{combatantName}\" references an actor that no longer exists within the world",
         "UnknownName": "Unknown"
