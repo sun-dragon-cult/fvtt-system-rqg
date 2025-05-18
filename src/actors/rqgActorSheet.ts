@@ -1595,7 +1595,7 @@ export class RqgActorSheet extends ActorSheet<
     if (!this.actor.isOwner) {
       return [];
     }
-    const compendiumId = data.id;
+    const compendiumId = data.collection;
     const pack = getGame().packs.get(compendiumId);
     const packIndex = await pack?.getIndex();
     if (!packIndex) {
