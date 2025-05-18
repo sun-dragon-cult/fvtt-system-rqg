@@ -42,11 +42,11 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   /** @inheritDoc */
-  async getHTML(): Promise<JQuery> {
-    const html = await super.getHTML();
-    const element = html instanceof HTMLElement ? html : html[0];
+  async renderHTML(...args: any): Promise<HTMLElement> {
+    // @ts-expect-error renderHTML
+    const element = await super.renderHTML(args);
     await this.#enrichChatCard(element);
-    return $(element);
+    return element;
   }
 
   public static async clickHandler(clickEvent: MouseEvent): Promise<void> {
