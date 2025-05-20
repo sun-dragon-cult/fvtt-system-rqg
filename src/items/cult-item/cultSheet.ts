@@ -16,7 +16,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
   allRuneOptions: AvailableItemCache[];
-  ranksEnum: CultRankEnum[];
+  rankOptions: SelectOptionData<string>[];
   enrichedGifts: string;
   enrichedGeases: string;
   enrichedSubCults: string;
@@ -66,7 +66,10 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       enrichedSubCults: await foundry.applications.ux.TextEditor.enrichHTML(system.subCults),
       // @ts-expect-error applications
       enrichedHolyDays: await foundry.applications.ux.TextEditor.enrichHTML(system.holyDays),
-      ranksEnum: Object.values(CultRankEnum),
+      rankOptions: Object.values(CultRankEnum).map((cr) => ({
+        value: cr,
+        label: "RQG.Actor.RuneMagic.CultRank." + cr,
+      })),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),
     };
   }

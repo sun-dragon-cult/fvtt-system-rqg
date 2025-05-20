@@ -149,13 +149,7 @@
 
                 <label for="cult-rank-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
                 <select name="system.joinedCults.rank" id="cult-rank-{{@index}}-{{id}}">
-                  {{#select this.rank}}
-                    {{#each @root.ranksEnum}}
-                      <option value="{{this}}">{{localize
-                        (concat "RQG.Actor.RuneMagic.CultRank." this)
-                      }}</option>
-                    {{/each}}
-                  {{/select}}
+                  {{selectOptions @root.rankOptions selected=this.rank localize=true}}
                 </select>
               </div>
               <a data-tooltip="Delete Cult" data-delete-cult="{{@index}}"><i class="fas fa-trash"></i></a>
