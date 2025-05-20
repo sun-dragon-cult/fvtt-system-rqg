@@ -2,7 +2,6 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultRankEnum } from "../../data-model/item-data/cultData";
 import {
   getGameUser,
-  AvailableItemCache,
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
@@ -15,7 +14,7 @@ import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
-  allRuneOptions: AvailableItemCache[];
+  allRuneOptions: SelectOptionData<string>[];
   rankOptions: SelectOptionData<string>[];
   enrichedGifts: string;
   enrichedGeases: string;

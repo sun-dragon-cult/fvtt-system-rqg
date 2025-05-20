@@ -1,12 +1,12 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { AvailableItemCache, getGameUser, getSelectRuneOptions } from "../../system/util";
+import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface HomelandSheetData {
-  allRuneOptions: AvailableItemCache[];
+  allRuneOptions: SelectOptionData<string>[];
   enrichedWizardInstructions: string;
 }
 

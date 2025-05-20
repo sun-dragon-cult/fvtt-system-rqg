@@ -502,38 +502,29 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
   }));
 }
 
-export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-    priority: "",
-    lang: "",
-  };
+export function getSelectRuneOptions(emptyPlaceholderKey: string): SelectOptionData<string>[] {
+  const emptyOption = { value: "empty", label: localize(emptyPlaceholderKey) };
   return getSelectOptions(emptyOption, getAvailableRunes);
 }
 
-export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-    priority: "",
-    lang: "",
-  };
+export function getSelectHitLocationOptions(
+  emptyPlaceholderKey: string,
+): SelectOptionData<string>[] {
+  const emptyOption = { value: "empty", label: localize(emptyPlaceholderKey) };
   return getSelectOptions(emptyOption, getAvailableHitLocations);
 }
 
 function getSelectOptions(
-  emptyOption: AvailableItemCache,
+  emptyOption: SelectOptionData<string>,
   getItemFn: () => AvailableItemCache[],
-): AvailableItemCache[] {
-  const sortedOptions = (getItemFn() ?? []).sort((a, b) => a.name.localeCompare(b.name));
-  const options: AvailableItemCache[] =
-    [emptyOption, ...sortedOptions].reduce((acc: any, i: any) => {
-      return { ...acc, [i.rqid]: i.name };
-    }, {}) ?? {};
-  return options;
+): SelectOptionData<string>[] {
+  const sortedOptions = (getItemFn() ?? [])
+    .map((i: any) => ({
+      value: i.rqid ?? "",
+      label: i.name ?? "",
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+  return [emptyOption, ...sortedOptions];
 }
 
 function getIndexData(

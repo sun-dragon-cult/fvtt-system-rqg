@@ -1,7 +1,7 @@
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser, AvailableItemCache, getSelectRuneOptions } from "../../system/util";
+import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
@@ -10,7 +10,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
   skillCategoryOptions: SelectOptionData<SkillCategoryEnum>[];
-  allRuneOptions: AvailableItemCache[];
+  allRuneOptions: SelectOptionData<string>[];
 }
 
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {

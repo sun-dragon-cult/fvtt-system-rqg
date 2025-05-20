@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getGameUser, AvailableItemCache, localize, getSelectRuneOptions } from "../../system/util";
+import { getGameUser, localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -8,8 +8,8 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneSheetData {
-  opposingRuneOptions: AvailableItemCache[];
-  minorRuneOptions: AvailableItemCache[];
+  opposingRuneOptions: SelectOptionData<string>[];
+  minorRuneOptions: SelectOptionData<string>[];
   runeTypeOption: SelectOptionData<RuneTypeEnum>[];
   rqid: string;
 }

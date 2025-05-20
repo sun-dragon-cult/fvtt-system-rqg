@@ -6,7 +6,6 @@ import {
 import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
-  AvailableItemCache,
   convertFormValueToString,
   getAvailableHitLocations,
   getGameUser,
@@ -20,7 +19,7 @@ import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface ArmorSheetData {
-  allHitLocationOptions: AvailableItemCache[];
+  allHitLocationOptions: SelectOptionData<string>[];
   equippedStatusOptions: SelectOptionData<EquippedStatus>[];
   armorTypeNames: string[];
   materialNames: string[];
