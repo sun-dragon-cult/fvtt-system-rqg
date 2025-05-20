@@ -82,9 +82,13 @@ export async function showImproveCharacteristicDialog(
     callback: () => null,
   };
 
-  const content: string = await renderTemplate(templatePaths.dialogImproveAbility, {
-    adapter: adapter,
-  });
+  // @ts-expect-error renderTemplate
+  const content: string = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.dialogImproveAbility,
+    {
+      adapter: adapter,
+    },
+  );
   const title = localize("RQG.Dialog.improveAbilityDialog.titleChar", {
     name: adapter.name,
     typeLocName: adapter.typeLocName,

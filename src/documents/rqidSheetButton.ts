@@ -16,9 +16,13 @@ export async function addRqidLinkToSheetHtml(
   const rqidLink = document.createElement("a");
   rqidLink.classList.add("title-rqid-link");
   rqidLink.setAttribute("alt", "Edit / Copy document rqid");
-  rqidLink.dataset.tooltip = await renderTemplate(templatePaths.rqidTooltip, {
-    rqid: rqid,
-  });
+  // @ts-expect-error renderTemplate
+  rqidLink.dataset.tooltip = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.rqidTooltip,
+    {
+      rqid: rqid,
+    },
+  );
   rqidLink.dataset.tooltipDirection = "UP";
   rqidLink.innerHTML = '<i class="fas fa-fingerprint"></i>';
   if (getGameUser().isGM) {

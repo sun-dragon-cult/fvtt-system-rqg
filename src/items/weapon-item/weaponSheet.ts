@@ -1,10 +1,10 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
-import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
+import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getDomDataset, getGameUser, localize } from "../../system/util";
-import { damageType } from "../../data-model/item-data/weaponData";
+import { DamageType, damageTypeOptions } from "../../data-model/item-data/weaponData";
 import { systemId } from "../../system/config";
 import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
@@ -14,10 +14,10 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
-  damageTypes: string[];
-  equippedStatuses: string[];
-  rateOfFire: { [label: string]: number };
-  ownedProjectiles: RqgItem[];
+  damageTypeOptions: SelectOptionData<DamageType>[];
+  equippedStatusOptions: SelectOptionData<EquippedStatus>[];
+  rateOfFireOptions: SelectOptionData<number>[];
+  ownedProjectileOptions: SelectOptionData<string>[];
   enrichedDescription: string;
   enrichedGmNotes: string;
 }
@@ -57,33 +57,37 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      enrichedDescription: await TextEditor.enrichHTML(system.description),
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
+      // @ts-expect-error applications
+      enrichedDescription: await foundry.applications.ux.TextEditor.enrichHTML(system.description),
+      // @ts-expect-error applications
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.enrichHTML(system.gmNotes),
       defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
         localize(`RQG.Item.Weapon.combatManeuver.${cm}`),
       ),
-      damageTypes: Object.values(damageType),
-      equippedStatuses: [...equippedStatuses],
-      ownedProjectiles: this.getOwnedProjectiles(),
-      rateOfFire: {
-        [localize("RQG.Game.SrMeleeRoundAbbr")]: 0,
-        [`1/${localize("RQG.Game.MeleeRoundAbbr")}`]: 1,
-        [`1/2${localize("RQG.Game.MeleeRoundAbbr")}`]: 2,
-        [`1/3${localize("RQG.Game.MeleeRoundAbbr")}`]: 3,
-        [`1/4${localize("RQG.Game.MeleeRoundAbbr")}`]: 4,
-        [`1/5${localize("RQG.Game.MeleeRoundAbbr")}`]: 5,
-      },
+      damageTypeOptions: damageTypeOptions,
+      equippedStatusOptions: equippedStatusOptions,
+      ownedProjectileOptions: this.getOwnedProjectileOptions(),
+      rateOfFireOptions: [
+        { value: 0, label: localize("RQG.Game.SrMeleeRoundAbbr") },
+        { value: 1, label: `1/${localize("RQG.Game.MeleeRoundAbbr")}` },
+        { value: 2, label: `1/2${localize("RQG.Game.MeleeRoundAbbr")}` },
+        { value: 3, label: `1/3${localize("RQG.Game.MeleeRoundAbbr")}` },
+        { value: 4, label: `1/4${localize("RQG.Game.MeleeRoundAbbr")}` },
+        { value: 5, label: `1/5${localize("RQG.Game.MeleeRoundAbbr")}` },
+      ],
     };
   }
 
-  private getOwnedProjectiles(): any[] {
+  private getOwnedProjectileOptions(): SelectOptionData<string>[] {
     if (this.item.isOwned) {
       return [
-        [{ _id: "", name: "---" }],
-        ...this.actor!.getEmbeddedCollection("Item").filter(
-          // @ts-expect-error system
-          (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile,
-        ),
+        { value: "", label: "---" },
+        ...this.actor!.getEmbeddedCollection("Item")
+          .filter(
+            // @ts-expect-error system
+            (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile,
+          )
+          .map((i) => ({ value: i.id ?? "", label: i.name ?? "" })),
       ];
     }
     return [];

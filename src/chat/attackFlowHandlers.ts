@@ -85,8 +85,12 @@ export async function handleRollDamageAndHitLocation(
     { overwrite: true },
   );
 
-  // @ts-expect-error system
-  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
+  // @ts-expect-error renderTemplate
+  messageData.content = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.attackChatMessage,
+    // @ts-expect-error system
+    messageData.system,
+  );
 
   await updateChatMessage(attackChatMessage, messageData);
 }
@@ -151,8 +155,12 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   };
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  // @ts-expect-error system
-  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
+  // @ts-expect-error renderTemplate
+  messageData.content = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.attackChatMessage,
+    // @ts-expect-error system
+    messageData.system,
+  );
 
   await updateChatMessage(attackChatMessage, messageData);
 }
@@ -199,8 +207,12 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
   };
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  // @ts-expect-error system
-  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
+  // @ts-expect-error renderTemplate
+  messageData.content = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.attackChatMessage,
+    // @ts-expect-error system
+    messageData.system,
+  );
   await updateChatMessage(attackChatMessage, messageData);
 }
 
@@ -238,8 +250,13 @@ export async function handleRollFumble(clickedButton: HTMLButtonElement): Promis
     throw new RqgError("Got unknown value in fumble button");
   }
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
-  // @ts-expect-error system
-  messageData.content = await renderTemplate(templatePaths.attackChatMessage, messageData.system);
+
+  // @ts-expect-error renderTemplate
+  messageData.content = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.attackChatMessage,
+    // @ts-expect-error system
+    messageData.system,
+  );
 
   await updateChatMessage(attackChatMessage, messageData);
 }
@@ -260,7 +277,8 @@ async function fumbleRoll(): Promise<string> {
   const draw = await fumbleTable.draw({ displayChat: false });
   const text = draw.results.map((r: any) => `${r.text}<br>`); // TODO is TableResult
 
-  return await TextEditor.enrichHTML(text);
+  // @ts-expect-error applications
+  return await foundry.applications.ux.TextEditor.enrichHTML(text);
 }
 
 /**

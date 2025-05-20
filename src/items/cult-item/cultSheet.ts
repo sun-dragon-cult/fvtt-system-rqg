@@ -58,11 +58,14 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       isEmbedded: this.document.isEmbedded,
       isGM: getGameUser().isGM,
       system: system,
-      enrichedGifts: await TextEditor.enrichHTML(system.gifts),
-      enrichedGeases: await TextEditor.enrichHTML(system.geases),
-      enrichedSubCults: await TextEditor.enrichHTML(system.subCults),
-      enrichedHolyDays: await TextEditor.enrichHTML(system.holyDays),
-      // journalEntryName: system.descriptionRqidLink.name,
+      // @ts-expect-error applications
+      enrichedGifts: await foundry.applications.ux.TextEditor.enrichHTML(system.gifts),
+      // @ts-expect-error applications
+      enrichedGeases: await foundry.applications.ux.TextEditor.enrichHTML(system.geases),
+      // @ts-expect-error applications
+      enrichedSubCults: await foundry.applications.ux.TextEditor.enrichHTML(system.subCults),
+      // @ts-expect-error applications
+      enrichedHolyDays: await foundry.applications.ux.TextEditor.enrichHTML(system.holyDays),
       ranksEnum: Object.values(CultRankEnum),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),
     };

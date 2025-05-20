@@ -3,7 +3,7 @@ import {
   armorTypeTranslationKeys,
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
-import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
+import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   AvailableItemCache,
@@ -21,7 +21,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface ArmorSheetData {
   allHitLocationOptions: AvailableItemCache[];
-  equippedStatuses: string[];
+  equippedStatusOptions: SelectOptionData<EquippedStatus>[];
   armorTypeNames: string[];
   materialNames: string[];
   enrichedDescription: string;
@@ -62,11 +62,13 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       allHitLocationOptions: getSelectHitLocationOptions(
         "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder",
       ),
-      equippedStatuses: [...equippedStatuses],
+      equippedStatusOptions: equippedStatusOptions,
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
-      enrichedDescription: await TextEditor.enrichHTML(system.description),
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
+      // @ts-expect-error applications
+      enrichedDescription: await foundry.applications.ux.TextEditor.enrichHTML(system.description),
+      // @ts-expect-error applications
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.enrichHTML(system.gmNotes),
     };
   }
 

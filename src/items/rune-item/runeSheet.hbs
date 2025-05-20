@@ -15,11 +15,7 @@
           <div class="nowrap">
             (
             <select id="rune-type-{{id}}" name="system.runeType.type">
-              {{#select system.runeType.type}}
-                {{#each runeTypes}}
-                  <option value="{{type}}">{{name}}</option>
-                {{/each}}
-              {{/select}}
+              {{selectOptions runeTypeOption selected=system.runeType.type localize=false}}
             </select>
             {{! Show the actual runeTypeName if it does not match the system translation }}
             {{#unless  (eq system.runeType.name (localize (concat "RQG.Item.Rune.RuneType." system.runeType.type)))}}

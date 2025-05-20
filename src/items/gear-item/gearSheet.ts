@@ -1,5 +1,10 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { equippedStatuses, physicalItemTypes } from "../../data-model/item-data/IPhysicalItem";
+import {
+  EquippedStatus,
+  equippedStatusOptions,
+  PhysicalItemType,
+  physicalItemTypeOptions,
+} from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
@@ -9,8 +14,8 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 interface GearSheetData {
   enrichedDescription: string;
   enrichedGmNotes: string;
-  equippedStatuses: typeof equippedStatuses;
-  physicalItemTypes: typeof physicalItemTypes;
+  equippedStatusOptions: SelectOptionData<EquippedStatus>[];
+  physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[];
 }
 
 export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | ItemSheet.Data> {
@@ -44,10 +49,12 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      enrichedDescription: await TextEditor.enrichHTML(system.description),
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
-      equippedStatuses: [...equippedStatuses],
-      physicalItemTypes: [...physicalItemTypes],
+      // @ts-expect-error applications
+      enrichedDescription: await foundry.applications.ux.TextEditor.enrichHTML(system.description),
+      // @ts-expect-error applications
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.enrichHTML(system.gmNotes),
+      equippedStatusOptions: equippedStatusOptions,
+      physicalItemTypeOptions: physicalItemTypeOptions,
     };
   }
 

@@ -175,7 +175,8 @@ export class ActorWizard extends FormApplication {
     // enrich biography for purposes of sheet
     if (this.species.selectedSpeciesTemplate?.system.background.biography) {
       this.species.selectedSpeciesTemplate.system.background.biography =
-        await TextEditor.enrichHTML(
+        // @ts-expect-error applications
+        await foundry.applications.ux.TextEditor.enrichHTML(
           this.species.selectedSpeciesTemplate?.system.background.biography,
         );
     }
@@ -240,9 +241,11 @@ export class ActorWizard extends FormApplication {
 
     // enrich homeland wizard instructions for purposes of sheet
     if (selectedHomeland?.system.wizardInstructions) {
-      selectedHomeland.system.wizardInstructions = await TextEditor.enrichHTML(
-        selectedHomeland.system.wizardInstructions,
-      );
+      selectedHomeland.system.wizardInstructions =
+        // @ts-expect-error applications
+        await foundry.applications.ux.TextEditor.enrichHTML(
+          selectedHomeland.system.wizardInstructions,
+        );
     }
 
     // Create an object similar to the one from ActorSheet organizeEmbeddedItems

@@ -122,10 +122,7 @@
                         <td>
                           {{#if name}}
                             <select name="system.usage.{{../usage}}.combatManeuvers.damageTypes">
-                              {{#select damageType}} {{#each @root.damageTypes}}
-                                <option value="{{this}}">{{localize
-                                  (concat "RQG.Item.Weapon.DamageTypeEnum." this)}}</option>
-                              {{/each}} {{/select}}
+                              {{selectOptions @root.damageTypeOptions selected=damageType localize=true}}
                             </select>
                           {{/if}}
                         </td>
@@ -168,9 +165,7 @@
                             {{#if @root.isEmbedded}}
                               <label class="mp">{{localize "RQG.Item.Weapon.Projectile"}}
                                 <select name="system.projectileId">
-                                  {{#select system.projectileId}} {{#each ownedProjectiles}}
-                                    <option value="{{id}}">{{name}}</option>
-                                  {{/each}} {{/select}}
+                                  {{selectOptions ownedProjectileOptions selected=system.projectileId localize=false}}
                                 </select>
                               </label><br>
                             {{/if}}
@@ -180,9 +175,7 @@
                                                                              value="{{system.range}}"></label><br>
                           <label>{{localize "RQG.Item.Weapon.Rate"}}
                             <select name="system.rate">
-                              {{#select system.rate}} {{#each rateOfFire}}
-                                <option value="{{this}}">{{@key}}</option>
-                              {{/each}} {{/select}}
+                              {{selectOptions rateOfFireOptions selected=system.rate localize=false}}
                             </select>
                           </label><br>
                         </div>

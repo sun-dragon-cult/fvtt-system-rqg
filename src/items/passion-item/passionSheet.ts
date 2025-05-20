@@ -59,8 +59,10 @@ export class PassionSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
       system: system,
-      enrichedDescription: await TextEditor.enrichHTML(system.description),
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
+      // @ts-expect-error applications
+      enrichedDescription: await foundry.applications.ux.TextEditor.enrichHTML(system.description),
+      // @ts-expect-error applications
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.enrichHTML(system.gmNotes),
       passionTypes: Object.values(PassionsEnum),
     };
   }

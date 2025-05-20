@@ -82,7 +82,11 @@ export class HitLocationSheet extends RqgItemSheet<
       throw new RqgError(msg);
     }
 
-    const dialogContentHtml = await renderTemplate(templatePaths.hitLocationAddWound, {});
+    // @ts-expect-error renderTemplate
+    const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.hitLocationAddWound,
+      {},
+    );
     new Dialog(
       {
         title: localize("RQG.Item.HitLocation.AddWound.Title", {
@@ -134,10 +138,14 @@ export class HitLocationSheet extends RqgItemSheet<
     const hitLocation = actor.items.get(hitLocationItemId);
     assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
-    const dialogContentHtml = await renderTemplate(templatePaths.hitLocationHealWound, {
-      hitLocationName: hitLocation.name,
-      wounds: hitLocation.system.wounds,
-    });
+    // @ts-expect-error renderTemplate
+    const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.hitLocationHealWound,
+      {
+        hitLocationName: hitLocation.name,
+        wounds: hitLocation.system.wounds,
+      },
+    );
 
     new Dialog(
       {

@@ -172,8 +172,12 @@ export class RqgActorSheet extends ActorSheet<
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
-      enrichedAllies: await TextEditor.enrichHTML(system.allies),
-      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? ""),
+      // @ts-expect-error applications
+      enrichedAllies: await foundry.applications.ux.TextEditor.enrichHTML(system.allies),
+      // @ts-expect-error applications
+      enrichedBiography: await foundry.applications.ux.TextEditor.enrichHTML(
+        system.background.biography ?? "",
+      ),
 
       // Lists for dropdown values
       occupations: Object.values(OccupationEnum),
@@ -593,9 +597,18 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich Cult texts for holyDays, gifts & geases
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays);
-        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts);
-        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases);
+        // @ts-expect-error applications
+        cult.system.enrichedHolyDays = await foundry.applications.ux.TextEditor.enrichHTML(
+          cult.system.holyDays,
+        );
+        // @ts-expect-error applications
+        cult.system.enrichedGifts = await foundry.applications.ux.TextEditor.enrichHTML(
+          cult.system.gifts,
+        );
+        // @ts-expect-error applications
+        cult.system.enrichedGeases = await foundry.applications.ux.TextEditor.enrichHTML(
+          cult.system.geases,
+        );
       }),
     );
 
@@ -610,7 +623,8 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich passion description texts
     await Promise.all(
       itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
-        passion.system.enrichedDescription = await TextEditor.enrichHTML(
+        // @ts-expect-error applications
+        passion.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(
           passion.system.description,
         );
       }),
@@ -740,7 +754,8 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
+      // @ts-expect-error applications
+      return await foundry.applications.ux.TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
     }
   }
 
@@ -779,7 +794,8 @@ export class RqgActorSheet extends ActorSheet<
       // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
+      // @ts-expect-error applications
+      return await foundry.applications.ux.TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
     }
   }
 
@@ -1639,9 +1655,13 @@ export class RqgActorSheet extends ActorSheet<
       sourceActor: sourceActor,
       targetActor: this.actor,
     };
-    const content: string = await renderTemplate(templatePaths.confirmCopyIntangibleItem, {
-      adapter: adapter,
-    });
+    // @ts-expect-error renderTemplate
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmCopyIntangibleItem,
+      {
+        adapter: adapter,
+      },
+    );
 
     const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
       itemName: incomingItemDataSource.name,
@@ -1684,9 +1704,13 @@ export class RqgActorSheet extends ActorSheet<
       showQuantity: incomingItemDataSource.system.quantity > 1,
     };
 
-    const content: string = await renderTemplate(templatePaths.confirmTransferPhysicalItem, {
-      adapter: adapter,
-    });
+    // @ts-expect-error renderTemplate
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmTransferPhysicalItem,
+      {
+        adapter: adapter,
+      },
+    );
 
     const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
       itemName: incomingItemDataSource.name,

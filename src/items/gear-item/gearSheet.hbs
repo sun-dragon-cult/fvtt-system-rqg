@@ -29,9 +29,7 @@
 
           <label for="physicalItemType-{{id}}">{{localize "RQG.Item.Gear.ItemType"}}</label>
           <select name="system.physicalItemType" id="physicalItemType-{{id}}">
-            {{#select system.physicalItemType}} {{#each physicalItemTypes}}
-            <option value="{{this}}">{{localize (concat "RQG.Item.Gear.PhysicalItemTypeEnum." this)}}</option>
-            {{/each}} {{/select}}
+            {{selectOptions physicalItemTypeOptions selected=system.physicalItemType localize=true}}
           </select>
 
           {{#unless (eq system.physicalItemType "unique")}}

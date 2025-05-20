@@ -1,8 +1,22 @@
 export const equippedStatuses = ["notCarried", "carried", "equipped"] as const;
 export type EquippedStatus = (typeof equippedStatuses)[number];
 
+export const equippedStatusOptions: SelectOptionData<EquippedStatus>[] = equippedStatuses.map(
+  (status) => ({
+    value: status,
+    label: "RQG.Item.EquippedStatus." + status,
+  }),
+);
+
 export const physicalItemTypes = ["unique", "currency", "consumable"];
 export type PhysicalItemType = (typeof physicalItemTypes)[number];
+
+export const physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[] = physicalItemTypes.map(
+  (type) => ({
+    value: type,
+    label: "RQG.Item.Gear.PhysicalItemTypeEnum." + type,
+  }),
+);
 
 interface Price {
   real: number;
