@@ -161,7 +161,10 @@ export class RqgItemSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          const deleteFromProperty = getProperty(this.item.system, deleteFromPropertyName);
+          const deleteFromProperty = foundry.utils.getProperty(
+            this.item.system,
+            deleteFromPropertyName,
+          );
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid,
@@ -193,7 +196,7 @@ export class RqgItemSheet<
         const editRqid = getRequiredDomDataset($(el), "rqid");
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
-          const updateProperty = getProperty(this.item.system, editPropertyName);
+          const updateProperty = foundry.utils.getProperty(this.item.system, editPropertyName);
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
               (rqidLink) => rqidLink.rqid === editRqid,

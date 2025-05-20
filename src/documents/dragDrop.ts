@@ -135,8 +135,11 @@ export async function updateRqidLink(
   const fullDocumentRqid =
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
-  // @ts-expect-error system
-  const targetProperty = getProperty(targetDocument?.system, targetPropertyName ?? "");
+  const targetProperty = foundry.utils.getProperty(
+    // @ts-expect-error system
+    targetDocument?.system,
+    targetPropertyName ?? "",
+  );
 
   // TODO Should really check if this.item has a property like targetPropertyName,
   //  but !hasOwnProperty(this.item.system, targetPropertyName) won't work if the default value is undefined.

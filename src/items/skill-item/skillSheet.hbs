@@ -88,11 +88,7 @@
 
           <label for="category-{{id}}">{{localize "RQG.Item.Skill.Category"}}</label>
           <select id="category-{{id}}" name="system.category">
-            {{#select system.category}}
-              {{#each skillCategories}}
-                <option value="{{this}}">{{localize (concat 'RQG.Actor.Skill.SkillCategory.' this)}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions skillCategoryOptions selected=system.category localize=true}}
           </select>
 
           <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>

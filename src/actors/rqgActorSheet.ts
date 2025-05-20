@@ -1254,7 +1254,10 @@ export class RqgActorSheet extends ActorSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          const deleteFromProperty = getProperty(this.actor.system, deleteFromPropertyName);
+          const deleteFromProperty = foundry.utils.getProperty(
+            this.actor.system,
+            deleteFromPropertyName,
+          );
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid,

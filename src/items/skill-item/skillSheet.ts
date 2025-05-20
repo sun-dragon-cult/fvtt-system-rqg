@@ -9,7 +9,7 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
-  skillCategories: SkillCategoryEnum[];
+  skillCategoryOptions: SelectOptionData<SkillCategoryEnum>[];
   allRuneOptions: AvailableItemCache[];
 }
 
@@ -50,7 +50,10 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       system: system,
       isEmbedded: this.document.isEmbedded,
 
-      skillCategories: Object.values(SkillCategoryEnum),
+      skillCategoryOptions: Object.values(SkillCategoryEnum).map((sc) => ({
+        value: sc,
+        label: "RQG.Actor.Skill.SkillCategory." + sc,
+      })),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Skill.AddSorceryRunePlaceholder"),
     };
   }
