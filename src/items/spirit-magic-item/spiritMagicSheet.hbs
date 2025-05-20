@@ -55,30 +55,18 @@
 
           <label for="range-{{id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Range"}}</label>
           <select id="range-{{id}}" name="system.castingRange">
-            {{#select system.castingRange}}
-              {{#each ranges}}
-                <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions rangeOptions selected=system.castingRange localize=true}}
           </select>
 
           <label for="duration-{{id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Duration"}}</label>
           <select id="duration-{{id}}" name="system.duration">
-            {{#select system.duration}}
-              {{#each durations}}
-                <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions durationOptions selected=system.duration localize=true}}
           </select>
 
           {{#if (eq system.duration "temporal")}}
             <label for="concentration-{{id}}" class="mp">{{localize "RQG.Item.SpiritMagic.Concentration"}}</label>
             <select id="concentration-{{id}}" name="system.concentration">
-              {{#select system.concentration}}
-                {{#each types}}
-                  <option value="{{this}}">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." this)}}</option>
-                {{/each}}
-              {{/select}}
+              {{selectOptions concentrationOptions selected=system.concentration localize=true}}
             </select>
           {{/if}}
 
