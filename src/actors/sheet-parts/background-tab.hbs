@@ -197,13 +197,7 @@
       {{#if isGM}}
         <label for="occupation-{{id}}">{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
         <select id="occupation-{{id}}" name="system.background.occupation">
-          {{#select system.background.occupation}}
-            {{#each occupations}}
-              <option value="{{this}}">{{localize
-                  (concat "RQG.Actor.Background.Occupation." this)
-                }}</option>
-            {{/each}}
-          {{/select}}
+          {{selectOptions occupationOptions selected=system.background.occupation localize=true}}
         </select>
       {{else if system.background.occupation}}
         <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>

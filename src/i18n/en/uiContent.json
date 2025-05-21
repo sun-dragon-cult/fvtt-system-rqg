@@ -176,7 +176,7 @@
         },
         "Occupation": {
           "Heading": "Current Occupation",
-          "undefined": " ",
+          "none": " ",
           "assistantShaman": "Assistant Shaman",
           "chariotDriver": "Chariot Driver",
           "crafter": "Crafter",

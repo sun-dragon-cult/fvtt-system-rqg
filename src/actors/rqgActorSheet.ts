@@ -180,11 +180,14 @@ export class RqgActorSheet extends ActorSheet<
       ),
 
       // Lists for dropdown values
-      occupations: Object.values(OccupationEnum),
+      occupationOptions: Object.values(OccupationEnum).map((occupation) => ({
+        value: occupation,
+        label: localize("RQG.Actor.Background.Occupation." + (occupation || "none")),
+      })),
       homelands: Object.values(HomeLandEnum),
       locations: itemTree.getPhysicalItemLocations(),
       healthStatuses: [...actorHealthStatuses],
-      ownedProjectiles: this.getEquippedProjectiles(),
+      ownedProjectileOptions: this.getEquippedProjectileOptions(),
       locomotionModes: {
         [LocomotionEnum.Walk]: "Walk",
         [LocomotionEnum.Swim]: "Swim",
@@ -1391,16 +1394,21 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  private getEquippedProjectiles(): any[] {
+  private getEquippedProjectileOptions(): SelectOptionData<string>[] {
     return [
-      [{ _id: "", name: "---" }],
-      ...this.actor.getEmbeddedCollection("Item").filter(
-        // @ts-expect-error type & system
-        (i: RqgItem) =>
-          i.type === ItemTypeEnum.Weapon &&
-          i.system.isProjectile &&
-          i.system.equippedStatus === "equipped",
-      ),
+      { value: "", label: localize("RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert") },
+      ...this.actor
+        .getEmbeddedCollection("Item")
+        .filter(
+          (i: any) =>
+            i.type === ItemTypeEnum.Weapon &&
+            i.system.isProjectile &&
+            i.system.equippedStatus === "equipped",
+        )
+        .map((i: any) => ({
+          value: i.id ?? "",
+          label: `${i.name ?? ""} (${i.system.quantity})`,
+        })),
     ];
   }
 
