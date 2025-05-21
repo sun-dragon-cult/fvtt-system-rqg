@@ -508,14 +508,16 @@ export function getSelectRuneOptions(emptyPlaceholderKey: string): SelectOptionD
 }
 
 export function getSelectHitLocationOptions(
-  emptyPlaceholderKey: string,
+  emptyPlaceholderKey?: string,
 ): SelectOptionData<string>[] {
-  const emptyOption = { value: "empty", label: localize(emptyPlaceholderKey) };
+  const emptyOption = emptyPlaceholderKey
+    ? { value: "empty", label: localize(emptyPlaceholderKey) }
+    : undefined;
   return getSelectOptions(emptyOption, getAvailableHitLocations);
 }
 
 function getSelectOptions(
-  emptyOption: SelectOptionData<string>,
+  emptyOption: SelectOptionData<string> | undefined,
   getItemFn: () => AvailableItemCache[],
 ): SelectOptionData<string>[] {
   const sortedOptions = (getItemFn() ?? [])
@@ -524,7 +526,11 @@ function getSelectOptions(
       label: i.name ?? "",
     }))
     .sort((a, b) => a.label.localeCompare(b.label));
-  return [emptyOption, ...sortedOptions];
+
+  if (emptyOption) {
+    sortedOptions.unshift(emptyOption);
+  }
+  return sortedOptions;
 }
 
 function getIndexData(
