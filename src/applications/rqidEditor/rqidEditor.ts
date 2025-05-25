@@ -108,7 +108,7 @@ export class RqidEditor extends FormApplication {
       appData.compendiumDocumentInfo = compendiumDocumentInfo;
     }
 
-    appData.supportedLanguages = CONFIG.supportedLanguages;
+    appData.supportedLanguagesOptions = CONFIG.supportedLanguages;
     appData.id = this.document.id;
     appData.parentId = this.document?.parent?.id ?? "";
     // @ts-expect-error uuid
