@@ -4,7 +4,7 @@ import {
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertHtmlElement, getDomDataset, getGameUser } from "../../system/util";
+import { assertHtmlElement, getDomDataset, getGameUser, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
@@ -16,7 +16,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface OccupationSheetData {
   homelandsJoined: string;
-  standardsOfLiving: StandardOfLivingEnum[];
+  standardsOfLivingOptions: SelectOptionData<StandardOfLivingEnum>[];
   skillsJoined: string;
 }
 
@@ -54,7 +54,10 @@ export class OccupationSheet extends RqgItemSheet<
       system: system,
 
       homelandsJoined: system.homelands.join(", "),
-      standardsOfLiving: Object.values(StandardOfLivingEnum),
+      standardsOfLivingOptions: Object.values(StandardOfLivingEnum).map((standard) => ({
+        value: standard,
+        label: localize("RQG.Item.Occupation.StandardOfLivingEnum." + standard),
+      })),
       skillsJoined: system.occupationalSkills
         .map((skill: any) => {
           const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;

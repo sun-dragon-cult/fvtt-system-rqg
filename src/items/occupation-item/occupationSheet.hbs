@@ -113,11 +113,7 @@
 
           <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
           <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
-            {{#select system.standardOfLiving}}
-              {{#each standardsOfLiving}}
-                <option value="{{this}}">{{localize (concat "RQG.Item.Occupation.StandardOfLivingEnum." this)}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions standardsOfLivingOptions selected=system.standardOfLiving localize=true}}
           </select>
 
           <label for="base-income-{{id}}">{{localize "RQG.Item.Occupation.BaseIncome"}}</label>
