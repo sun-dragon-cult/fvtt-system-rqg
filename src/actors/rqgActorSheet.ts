@@ -862,6 +862,102 @@ export class RqgActorSheet extends ActorSheet<
     return super._updateObject(event, formData);
   }
 
+  _contextMenu(html: HTMLElement): void {
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".characteristic.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      characteristicMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".combat.contextmenu",
+      combatMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".hit-location.contextmenu",
+      hitLocationMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".rune.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      runeMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".spirit-magic.contextmenu",
+      spiritMagicMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".cult.contextmenu",
+      cultMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".rune-magic.contextmenu",
+      runeMagicMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".skill.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      skillMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".gear.contextmenu",
+      gearMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".passion.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      passionMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+  }
+
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.actor.isOwner) {
@@ -883,24 +979,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    new ContextMenu(
-      html,
-      ".characteristic.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      characteristicMenuOptions(this.actor, this.token),
-    );
-    new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
-    new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
-    new ContextMenu(html, ".spirit-magic.contextmenu", spiritMagicMenuOptions(this.actor));
-    new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
-    new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
-    new ContextMenu(html, ".gear.contextmenu", gearMenuOptions(this.actor));
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".passion.contextmenu", passionMenuOptions(this.actor, this.token));
+    this._contextMenu(htmlElement);
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
