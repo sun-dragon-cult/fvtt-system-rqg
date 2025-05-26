@@ -4,13 +4,8 @@
 
 <div class="key-value-grid">
   <label>{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}:</label>
-  <select name="selectedSpeciesTemplateId">
-    {{#select species.selectedSpeciesTemplate.id}}
-    <option value="">{{localize "RQG.ActorCreation.Step0.ChooseSpecies"}}</option>
-    {{#each species.speciesTemplates}}
-    <option value="{{id}}">{{name}}</option>
-    {{/each}}
-    {{/select}}
+  <select name="selectedSpeciesTemplateUuid">
+    {{selectOptions species.speciesTemplateOptions selected=species.selectedSpeciesTemplate.uuid localize=false}}
   </select>
   <label>{{localize "RQG.ActorCreation.Step0.SpeciesDescription"}}:</label>
   <div>

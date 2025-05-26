@@ -7,6 +7,7 @@ import {
   getItemDocumentTypes,
   getGame,
   localize,
+  getDocumentFromUuid,
 } from "../system/util";
 import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
@@ -22,26 +23,25 @@ export class ActorWizard extends FormApplication {
   actor: RqgActor;
   species: {
     selectedSpeciesTemplate: RqgActor | undefined;
-    speciesTemplates: RqgActor[] | undefined;
-  } = { selectedSpeciesTemplate: undefined, speciesTemplates: undefined };
+    speciesTemplateOptions: SelectOptionData<string>[] | undefined; // value is uuid
+  } = { selectedSpeciesTemplate: undefined, speciesTemplateOptions: undefined };
   homeland: {
     selectedHomeland: RqgItem | undefined;
-    homelands: RqgItem[] | undefined;
-  } = { selectedHomeland: undefined, homelands: undefined };
+    homelandOptions: SelectOptionData<string>[] | undefined; // value is rqid
+  } = { selectedHomeland: undefined, homelandOptions: undefined };
   collapsibleOpenStates: Record<string, boolean> = {};
   choices: Record<string, CreationChoice> = {};
 
   constructor(object: RqgActor, options: any) {
     super(object, options);
     this.actor = object;
-    const previouslySelectedTemplateId = this.actor.getFlag(
+    const previouslySelectedTemplateUuid = this.actor.getFlag(
       systemId,
       actorWizardFlags,
-    )?.selectedSpeciesId;
+    )?.selectedSpeciesUuid;
 
-    const template = getGame().actors?.get(previouslySelectedTemplateId as string) as
-      | RqgActor
-      | undefined;
+    // @ts-expect-error fromUuidSync
+    const template = fromUuidSync(previouslySelectedTemplateUuid) as RqgActor | undefined;
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
@@ -49,7 +49,7 @@ export class ActorWizard extends FormApplication {
       this.species.selectedSpeciesTemplate = template;
     } else {
       this.species.selectedSpeciesTemplate = undefined;
-      const msg = `The Actor named ${this.actor.name} has a \n[rqg.actorWizardFlags.selectedSpeciesId]\n flag with a value that is not an RqgActor.`;
+      const msg = `The Actor named ${this.actor.name} has a \n[rqg.actorWizardFlags.selectedSpeciesUuid]\n flag with a value that is not an RqgActor.`;
       // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
@@ -112,41 +112,59 @@ export class ActorWizard extends FormApplication {
 
     const worldLanguage = getGame().settings.get(systemId, "worldLanguage");
 
-    if (!this.species.speciesTemplates) {
+    if (!this.species.speciesTemplateOptions) {
       // Don't get these every time.
       // this.species.speciesTemplates = await getActorTemplates();
-      const templates = await Rqid.fromRqidRegexBest(/.*template.*/, "a", worldLanguage);
-      this.species.speciesTemplates = templates as RqgActor[];
+      const templates = (await Rqid.fromRqidRegexBest(
+        /.*template.*/,
+        "a",
+        worldLanguage,
+      )) as RqgActor[];
+      this.species.speciesTemplateOptions = templates.map((templateActor) => ({
+        value: templateActor.uuid ?? "",
+        label: templateActor.name ?? "",
+      }));
+      this.species.speciesTemplateOptions.unshift({
+        value: "",
+        label: localize("RQG.ActorCreation.Step0.ChooseSpecies"),
+      });
     }
 
-    if (!this.homeland.homelands) {
+    if (!this.homeland.homelandOptions) {
       // Don't get these every time
       const homelands = (await Rqid.fromRqidRegexBest(
         /.*homeland.*/,
         "i",
         worldLanguage,
       )) as RqgItem[];
-      this.homeland.homelands = homelands.filter((i) => i.type === ItemTypeEnum.Homeland);
+      this.homeland.homelandOptions = homelands
+        .filter((i) => i.type === ItemTypeEnum.Homeland)
+        .map((homelandItem) => ({
+          value: homelandItem.getFlag(systemId, "documentRqidFlags.id") ?? "",
+          label: homelandItem.name ?? "",
+        }));
+
+      this.homeland.homelandOptions.unshift({
+        value: "",
+        label: localize("RQG.ActorCreation.Step1.ChooseHomeland"),
+      });
     }
 
     if (this.actor) {
       // See if the user has already chosen a species template that is stored in flags
-      const previouslySelectedSpeciesId = this.actor.getFlag(
+      const previouslySelectedSpeciesUuid = this.actor.getFlag(
         systemId,
         actorWizardFlags,
-      )?.selectedSpeciesId;
+      )?.selectedSpeciesUuid;
 
-      if (previouslySelectedSpeciesId) {
-        const flaggedSpecies = this.species.speciesTemplates?.find(
-          (s) => s.id === previouslySelectedSpeciesId,
-        );
-        if (
-          flaggedSpecies &&
-          flaggedSpecies.id &&
-          this.species.selectedSpeciesTemplate === undefined
-        ) {
+      if (
+        previouslySelectedSpeciesUuid &&
+        previouslySelectedSpeciesUuid !== this.species?.selectedSpeciesTemplate?.uuid
+      ) {
+        const flaggedSpecies = await getDocumentFromUuid<RqgActor>(previouslySelectedSpeciesUuid);
+        if (flaggedSpecies?.uuid && this.species.selectedSpeciesTemplate === undefined) {
           // User has chosen a species in a previous session, so set it
-          await this.setSpeciesTemplate(flaggedSpecies.id, false);
+          await this.setSpeciesTemplate(flaggedSpecies.uuid, false);
         }
       }
 
@@ -367,25 +385,25 @@ export class ActorWizard extends FormApplication {
     });
 
     // Handle rqid links
-    RqidLink.addRqidLinkClickHandlers($(this.form!));
+    void RqidLink.addRqidLinkClickHandlers($(this.form!));
   }
 
   _setActorCreationComplete() {
-    this.actor.setFlag(systemId, actorWizardFlags, { actorWizardComplete: true });
+    void this.actor.setFlag(systemId, actorWizardFlags, { actorWizardComplete: true });
     document.querySelectorAll(`.actor-wizard-button-${this.actor.id}`).forEach((el) => {
       el.remove();
     });
-    this.close();
+    void this.close();
   }
 
   async _updateObject(event: Event, formData?: object): Promise<unknown> {
     const target = event.target;
     if (target instanceof HTMLSelectElement) {
       const select = target as HTMLSelectElement;
-      if (select.name === "selectedSpeciesTemplateId") {
-        // @ts-expect-error selectedSpeciesTemplateId
-        const selectedTemplateId = formData?.selectedSpeciesTemplateId;
-        await this.setSpeciesTemplate(selectedTemplateId, true);
+      if (select.name === "selectedSpeciesTemplateUuid") {
+        // @ts-expect-error selectedSpeciesTemplateUuid
+        const selectedTemplateUuid = formData?.selectedSpeciesTemplateUuid;
+        await this.setSpeciesTemplate(selectedTemplateUuid, true);
       }
       if (select.name === "selectedHomelandRqid") {
         // @ts-expect-error selectedHomelandRqid
@@ -397,15 +415,14 @@ export class ActorWizard extends FormApplication {
     return;
   }
 
-  async setSpeciesTemplate(selectedTemplateId: string, checkAll: boolean) {
-    this.species.selectedSpeciesTemplate = this.species.speciesTemplates?.find(
-      (t) => t.id === selectedTemplateId,
-    );
+  async setSpeciesTemplate(selectedTemplateUuid: string, checkAll: boolean): Promise<void> {
+    this.species.selectedSpeciesTemplate =
+      await getDocumentFromUuid<RqgActor>(selectedTemplateUuid);
 
-    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesId");
+    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesUuid");
 
     await this.actor.setFlag(systemId, actorWizardFlags, {
-      selectedSpeciesId: this.species.selectedSpeciesTemplate?.id ?? undefined,
+      selectedSpeciesUuid: this.species.selectedSpeciesTemplate?.uuid ?? undefined,
     });
 
     const templateChars = this.species.selectedSpeciesTemplate?.system.characteristics;
@@ -520,19 +537,16 @@ export class ActorWizard extends FormApplication {
     }
   }
 
-  async setHomeland(selectedHomelandRqid: string) {
-    this.homeland.selectedHomeland = this.homeland.homelands?.find(
-      (h) => h.getFlag(systemId, documentRqidFlags)?.id === selectedHomelandRqid,
-    );
+  async setHomeland(selectedHomelandRqid: string): Promise<void> {
+    const selectedHomeland = (await Rqid.fromRqid(selectedHomelandRqid)) as RqgItem | undefined;
+
+    this.homeland.selectedHomeland = selectedHomeland;
 
     await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedHomelandRqid");
 
     await this.actor.setFlag(systemId, actorWizardFlags, {
-      selectedHomelandRqid: this.homeland.selectedHomeland?.getFlag(systemId, documentRqidFlags)
-        ?.id,
+      selectedHomelandRqid: selectedHomelandRqid,
     });
-
-    const selectedHomeland = this.homeland.selectedHomeland;
 
     if (selectedHomeland) {
       selectedHomeland.system.cultureJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
