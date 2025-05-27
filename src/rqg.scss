@@ -1193,24 +1193,20 @@ input.readonly {
 }
 
 #pause {
-  background: none;
-
   figcaption {
-    font-size: 3rem;
-    text-shadow:
-      1px 1px 2px var(--rqg-color-main),
-      0 0 1em var(--rqg-color-main-bg),
-      0 0 0.2em var(--rqg-color-main-bg);
+    font-family: "Norse", "Signika", "Palatino Linotype", serif;
+    font-size: 2rem;
+    opacity: 0.7;
+  }
 
-    margin: 0;
-    //font-size: 2em;
-    font-weight: normal;
-    line-height: 100px;
-    text-align: center;
-    position: relative;
-    z-index: calc(var(--z-index-window) - 1);
-    color: var(--color-text-light-1);
-    //text-shadow: 1px 1px 30px var(--color-shadow-dark);
+  img {
+    content: url(/systems/rqg/assets/images/runes/movement_change.svg);
+    opacity: 0.7;
+    height: 120px;
+    width: 120px;
+    filter: brightness(0.7);
+    margin-bottom: 8px;
+    transform-origin: 66px 71px;
   }
 }
 

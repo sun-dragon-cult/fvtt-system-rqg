@@ -15,7 +15,6 @@ import {
   getGame,
   getGameUser,
 } from "./system/util";
-import { RqgPause } from "./foundryUi/rqgPause";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
@@ -101,7 +100,6 @@ Hooks.once("init", async () => {
   RqgToken.init();
   RqgActor.init();
   RqgItem.init();
-  RqgPause.init();
   RqgHotbar.init();
   RqgJournalEntry.init();
   TextEditorHooks.init();
