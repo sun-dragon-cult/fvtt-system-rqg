@@ -63,6 +63,9 @@ export const templatePaths = {
 
   // Settings
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
+
+  // Interface
+  settings: "systems/rqg/foundryUi/settings.hbs",
 } as const;
 
 export const loadHandlebarsTemplates = async function () {

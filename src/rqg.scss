@@ -1219,6 +1219,20 @@ input.readonly {
   }
 }
 
+
+// Style the extra line in the settings tab
+.settingLinks {
+  margin-top: -5px;
+  gap: 0.2rem;
+  flex-flow: nowrap;
+  align-items: center;
+  text-align: center;
+
+  a {
+    color: var(--color-text-secondary);
+    text-wrap-style: balance;
+  }
+}
 // Almost a copy if Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
 .rqid-content-link[data-rqid-link] {
   // Silly construct to raise specificity

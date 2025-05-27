@@ -1,47 +1,52 @@
-import { getGame, getGameUser, localize } from "../system/util";
+import { getGame, localize } from "../system/util";
 import { systemId } from "../system/config";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class RqgSettings extends Settings {
   static init() {
     CONFIG.ui.settings = RqgSettings;
   }
 
-  activateListeners(html: JQuery) {
-    super.activateListeners(html);
-    if (!getGameUser().isGM) {
-      return;
-    }
-    html
-      .find("#settings-game")
-      .append(
-        '<button class="trigger-data-migration"><i class="fas fa-wrench"></i> ' +
-          localize("RQG.Foundry.Settings.Migrate.TriggerButton") +
-          "</button>",
-      );
-    html.find(".trigger-data-migration").click(() => {
-      new Dialog(
+  static DEFAULT_OPTIONS = {
+    window: {
+      title: "SIDEBAR.TabSettings",
+    },
+    actions: {
+      worldMigration: RqgSettings.migrateWorld,
+    },
+  };
+
+  /** @override */
+  static PARTS = {
+    settings: {
+      template: templatePaths.settings,
+      root: true,
+    },
+  };
+
+  static async migrateWorld(): Promise<void> {
+    // @ts-expect-error applications
+    return foundry.applications.api.DialogV2.wait({
+      window: { title: "RQG.Foundry.Settings.Migrate.TriggerTitle" },
+      content: localize("RQG.Foundry.Settings.Migrate.TriggerContents"),
+      buttons: [
         {
-          title: localize("RQG.Foundry.Settings.Migrate.TriggerTitle"),
-          content: localize("RQG.Foundry.Settings.Migrate.TriggerContents"),
-          buttons: {
-            migrate: {
-              icon: '<i class="fas fa-check"></i>',
-              label: localize("RQG.Foundry.Settings.Migrate.TriggerRestart"),
-              callback: async () => {
-                await getGame().settings.set(systemId, "worldMigrationVersion", "---");
-                window.location.reload();
-              },
-            },
-            close: {
-              icon: '<i class="fas fa-ban"></i>',
-              label: localize("Cancel"),
-              callback: () => {},
-            },
+          action: "migrate",
+          label: "RQG.Foundry.Settings.Migrate.TriggerRestart",
+          icon: "fas fa-check",
+          callback: async () => {
+            await getGame().settings.set(systemId, "worldMigrationVersion", "---");
+            window.location.reload();
           },
-          default: "close",
         },
-        {},
-      ).render(true);
+        {
+          action: "cancel",
+          label: "Cancel",
+          icon: "fa-solid fa-xmark",
+          callback: () => false,
+          default: true,
+        },
+      ],
     });
   }
 }
