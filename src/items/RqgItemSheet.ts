@@ -117,8 +117,15 @@ export class RqgItemSheet<
         el.addEventListener("click", async () => {
           const effect = new ActiveEffect(
             {
+              // @ts-expect-error name
+              name: "new effect",
               icon: "icons/svg/aura.svg",
-              changes: [],
+              changes: [
+                {
+                  key: "",
+                  value: "",
+                },
+              ],
               label: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
               transfer: true,
               disabled: false,
