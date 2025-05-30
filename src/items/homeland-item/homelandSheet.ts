@@ -18,7 +18,7 @@ export class HomelandSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
       template: templatePaths.itemHomelandSheet,
-      width: 500,
+      width: 600,
       height: 650,
       tabs: [
         {

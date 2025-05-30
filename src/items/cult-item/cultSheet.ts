@@ -27,7 +27,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: templatePaths.itemCultSheet,
-      width: 450,
+      width: 700,
       height: 500,
       tabs: [
         {

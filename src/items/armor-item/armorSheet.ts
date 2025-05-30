@@ -32,7 +32,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
       template: templatePaths.itemArmorSheet,
-      width: 500,
+      width: 600,
       height: 600,
       tabs: [
         {

@@ -37,7 +37,7 @@ export class HitLocationSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: templatePaths.itemHitLocationSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {

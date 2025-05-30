@@ -28,7 +28,7 @@ export class OccupationSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Occupation],
       template: templatePaths.itemOccupationSheet,
-      width: 500,
+      width: 600,
       height: 650,
       tabs: [
         {

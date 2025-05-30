@@ -1,4 +1,4 @@
-<form autocomplete="off">
+<form autocomplete="off" class="flex-column">
   <header class="item-sheet-header">
     <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
     <div class="label-above">
@@ -7,7 +7,7 @@
     </div>
   </header>
 
-  <main>
+  <main class="flex-column flex-1">
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="weapon">{{localize "RQG.Item.SheetTab.Weapon"}}</a>
@@ -19,7 +19,7 @@
       {{/if}}
     </nav>
 
-    <section class="sheet-body">
+    <section class="sheet-body flex-1">
       {{!-- Weapon Tab --}}
       <div class="tab" data-group="primary" data-tab="weapon">
 
@@ -205,6 +205,7 @@
           enrichedDescription
           target="system.description"
           button=true
+          engine="prosemirror"
           editable=isEditable
         }}
       </div>
@@ -215,6 +216,7 @@
           enrichedGmNotes
           target="system.gmNotes"
           button=true
+          engine="prosemirror"
           editable=isEditable}}
       </div>
 

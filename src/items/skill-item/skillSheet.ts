@@ -18,7 +18,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
       template: templatePaths.itemSkillSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {

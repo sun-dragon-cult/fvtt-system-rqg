@@ -18,7 +18,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
       template: templatePaths.itemRuneSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {

@@ -25,7 +25,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
       template: templatePaths.itemSpiritMagicSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {

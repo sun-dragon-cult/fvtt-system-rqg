@@ -23,7 +23,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Gear],
       template: templatePaths.itemGearSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {

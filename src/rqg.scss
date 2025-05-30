@@ -102,6 +102,14 @@ input.readonly {
   display: none !important;
 }
 
+.self-stretch {
+  align-self: stretch;
+}
+
+.self-start {
+  align-self: start;
+}
+
 // elements marked with .themed are AppV2 and theme aware, part of AppV2 migration
 .rqg:not(.themed) img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
 .app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
@@ -888,19 +896,25 @@ input.readonly {
     }
   }
 
-  .editor {
-    height: auto;
-    min-height: 100px;
-    margin: 10px auto;
-    min-width: 100%;
-
-    .editor-content {
-      max-width: 100vw; // Make sure the edit button always is viewable
-    }
+  .editor-label {
+    margin-top: 0.5rem;
+    align-self: start;
   }
 
-  .tox.tox-tinymce {
-    min-height: 200px;
+  .editor {
+    height: 100%;
+    min-height: 100px;
+    min-width: 100%;
+  }
+
+  &.sheet.character {
+    .editor {
+      height: auto; // use auto for character sheet, but 100% for itemSheets
+
+      &.prosemirror {
+        height: 35rem; // Default height for the character sheet editor when editing
+      }
+    }
   }
 
   &.character.sheet .editor-content {
@@ -1401,6 +1415,8 @@ input.readonly {
 
   .editor-container {
     width: 100%;
+    height: 100%;
+    align-self: start;
   }
 }
 
