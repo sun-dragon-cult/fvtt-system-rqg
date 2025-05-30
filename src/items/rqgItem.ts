@@ -366,43 +366,42 @@ export class RqgItem extends Item {
     }
 
     if (damageDegree === "maxSpecial") {
+      const db = this.parent?.system.attributes.damageBonus ?? "0";
+      const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+      const evaluatedDamageBonus = formatDamagePart(
+        maximisedDamageBonus,
+        "RQG.Roll.DamageRoll.DamageBonus",
+        "+",
+      );
+
+      const damageFormulaRoll = new Roll(damageFormula);
+      // @ts-expect-error evaluateSync
+      damageFormulaRoll.evaluateSync({ maximize: true });
+      const evaluatedWeaponDamage = formatDamagePart(
+        damageFormulaRoll.total?.toString() ?? "",
+        "RQG.Roll.DamageRoll.WeaponDamage",
+      );
+
       switch (damageType) {
         case "crush": {
-          const db = this.parent?.system.attributes.damageBonus ?? "0";
-          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
-
-          const damageFormulaRoll = new Roll(damageFormula);
-          // @ts-expect-error evaluateSync
-          damageFormulaRoll.evaluateSync({ maximize: true });
-
-          const evaluatedWeaponDamage = formatDamagePart(
-            damageFormulaRoll.total?.toString() ?? "",
-            "RQG.Roll.DamageRoll.WeaponDamage",
-          );
-          const evaluatedDamageBonus = formatDamagePart(
-            maximisedDamageBonus,
-            "RQG.Roll.DamageRoll.DamageBonus",
-            "+",
-          );
           const evaluatedSpecialDamage = formatDamagePart(
             maximisedDamageBonus,
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-
           return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
         }
+
         case "slash":
         case "impale": {
-          const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
-          const specialDamage = formatDamagePart(
-            damageFormula,
+          const evaluatedSpecialDamage = formatDamagePart(
+            damageFormulaRoll.total?.toString() ?? "",
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-
-          return `${weaponDamage}${damageBonusPlaceholder}${specialDamage}`;
+          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
         }
+
         default: {
           return undefined; // parry or special
         }
