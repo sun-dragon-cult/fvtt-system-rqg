@@ -61,7 +61,7 @@ export class RqidEditor extends FormApplication {
       const worldDocumentInfo: Document<any, any>[] = [];
       for (const d of worldDocuments) {
         // @ts-expect-error applications
-        const link = await foundry.applications.ux.TextEditor.enrichHTML(d.link);
+        const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         worldDocumentInfo.push({
           // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
@@ -73,7 +73,7 @@ export class RqidEditor extends FormApplication {
       const compendiumDocumentInfo: Document<any, any>[] = [];
       for (const d of compendiumDocuments) {
         // @ts-expect-error applications
-        const link = await foundry.applications.ux.TextEditor.enrichHTML(d.link);
+        const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         compendiumDocumentInfo.push({
           // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,

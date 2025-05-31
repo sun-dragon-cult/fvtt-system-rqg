@@ -43,10 +43,11 @@ export class HomelandSheet extends RqgItemSheet<
       isGM: getGameUser().isGM,
       system: system,
       isEmbedded: this.document.isEmbedded,
-      // @ts-expect-error applications
-      enrichedWizardInstructions: await foundry.applications.ux.TextEditor.enrichHTML(
-        system.wizardInstructions,
-      ),
+      enrichedWizardInstructions:
+        // @ts-expect-error applications
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          system.wizardInstructions,
+        ),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
     };
   }

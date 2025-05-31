@@ -58,13 +58,21 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       isGM: getGameUser().isGM,
       system: system,
       // @ts-expect-error applications
-      enrichedGifts: await foundry.applications.ux.TextEditor.enrichHTML(system.gifts),
+      enrichedGifts: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.gifts,
+      ),
       // @ts-expect-error applications
-      enrichedGeases: await foundry.applications.ux.TextEditor.enrichHTML(system.geases),
+      enrichedGeases: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.geases,
+      ),
       // @ts-expect-error applications
-      enrichedSubCults: await foundry.applications.ux.TextEditor.enrichHTML(system.subCults),
+      enrichedSubCults: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.subCults,
+      ),
       // @ts-expect-error applications
-      enrichedHolyDays: await foundry.applications.ux.TextEditor.enrichHTML(system.holyDays),
+      enrichedHolyDays: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.holyDays,
+      ),
       rankOptions: Object.values(CultRankEnum).map((cr) => ({
         value: cr,
         label: "RQG.Actor.RuneMagic.CultRank." + cr,

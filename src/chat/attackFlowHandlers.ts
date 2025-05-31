@@ -278,7 +278,7 @@ async function fumbleRoll(): Promise<string> {
   const text = draw.results.map((r: any) => `${r.text}<br>`); // TODO is TableResult
 
   // @ts-expect-error applications
-  return await foundry.applications.ux.TextEditor.enrichHTML(text);
+  return await foundry.applications.ux.TextEditor.implementation.enrichHTML(text);
 }
 
 /**

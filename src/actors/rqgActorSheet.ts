@@ -173,9 +173,11 @@ export class RqgActorSheet extends ActorSheet<
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
       // @ts-expect-error applications
-      enrichedAllies: await foundry.applications.ux.TextEditor.enrichHTML(system.allies),
+      enrichedAllies: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.allies,
+      ),
       // @ts-expect-error applications
-      enrichedBiography: await foundry.applications.ux.TextEditor.enrichHTML(
+      enrichedBiography: foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
       ),
 
@@ -600,18 +602,15 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich Cult texts for holyDays, gifts & geases
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-        // @ts-expect-error applications
-        cult.system.enrichedHolyDays = await foundry.applications.ux.TextEditor.enrichHTML(
-          cult.system.holyDays,
-        );
-        // @ts-expect-error applications
-        cult.system.enrichedGifts = await foundry.applications.ux.TextEditor.enrichHTML(
-          cult.system.gifts,
-        );
-        // @ts-expect-error applications
-        cult.system.enrichedGeases = await foundry.applications.ux.TextEditor.enrichHTML(
-          cult.system.geases,
-        );
+        cult.system.enrichedHolyDays =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.holyDays);
+        cult.system.enrichedGifts =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.gifts);
+        cult.system.enrichedGeases =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.geases);
       }),
     );
 
@@ -626,10 +625,11 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich passion description texts
     await Promise.all(
       itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
-        // @ts-expect-error applications
-        passion.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(
-          passion.system.description,
-        );
+        passion.system.enrichedDescription =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            passion.system.description,
+          );
       }),
     );
 
@@ -758,7 +758,9 @@ export class RqgActorSheet extends ActorSheet<
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
       // @ts-expect-error applications
-      return await foundry.applications.ux.TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
+      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        `${warningText} ${itemLinks}`,
+      );
     }
   }
 
@@ -798,7 +800,9 @@ export class RqgActorSheet extends ActorSheet<
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
       // @ts-expect-error applications
-      return await foundry.applications.ux.TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
+      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        `${warningText} ${itemLinks}`,
+      );
     }
   }
 
@@ -1561,7 +1565,7 @@ export class RqgActorSheet extends ActorSheet<
     this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
     // @ts-expect-error getDragEventData
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
     if (
       data.type !== "Compendium" &&

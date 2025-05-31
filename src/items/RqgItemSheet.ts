@@ -244,8 +244,9 @@ export class RqgItemSheet<
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Get rid of any remaining drag-hover classes
 
-    // @ts-expect-error getDragEventData
-    const droppedDocumentData = TextEditor.getDragEventData(event);
+    const droppedDocumentData =
+      // @ts-expect-error getDragEventData
+      foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
     if (!isAllowedDocumentNames(droppedDocumentData.type, allowedDropDocumentNames)) {

@@ -194,7 +194,7 @@ export class ActorWizard extends FormApplication {
     if (this.species.selectedSpeciesTemplate?.system.background.biography) {
       this.species.selectedSpeciesTemplate.system.background.biography =
         // @ts-expect-error applications
-        await foundry.applications.ux.TextEditor.enrichHTML(
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           this.species.selectedSpeciesTemplate?.system.background.biography,
         );
     }
@@ -261,7 +261,7 @@ export class ActorWizard extends FormApplication {
     if (selectedHomeland?.system.wizardInstructions) {
       selectedHomeland.system.wizardInstructions =
         // @ts-expect-error applications
-        await foundry.applications.ux.TextEditor.enrichHTML(
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           selectedHomeland.system.wizardInstructions,
         );
     }

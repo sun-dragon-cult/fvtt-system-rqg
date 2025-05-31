@@ -58,9 +58,13 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       system: system,
       effects: this.document.effects,
       // @ts-expect-error applications
-      enrichedDescription: await foundry.applications.ux.TextEditor.enrichHTML(system.description),
+      enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.description,
+      ),
       // @ts-expect-error applications
-      enrichedGmNotes: await foundry.applications.ux.TextEditor.enrichHTML(system.gmNotes),
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.gmNotes,
+      ),
       defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
         localize(`RQG.Item.Weapon.combatManeuver.${cm}`),
       ),
