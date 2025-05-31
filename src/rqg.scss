@@ -766,6 +766,10 @@ input.readonly {
         grid-area: description;
       }
 
+      details {
+        display: block;
+      }
+
       .img {
         grid-row: 1 / -1;
 
