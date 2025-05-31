@@ -1,6 +1,34 @@
-<div data-roll-mode-parent class="flexrow flex-nowrap flex-none buttongroup">
-  <button type="button" class="ui-control icon fa-solid fa-globe {{#if (eq rollMode "publicroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="publicroll" data-tooltip="{{localize "CHAT.RollPublic"}}"></button>
-  <button type="button" class="ui-control icon fa-solid fa-user-secret {{#if (eq rollMode "gmroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="gmroll" data-tooltip="{{localize "CHAT.RollPrivate"}}"></button>
-  <button type="button" class="ui-control icon fa-solid fa-eye-slash {{#if (eq rollMode "blindroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="blindroll" data-tooltip="{{localize "CHAT.RollBlind"}}"></button>
-  <button type="button" class="ui-control icon fa-solid fa-user {{#if (eq rollMode "selfroll")}}active{{/if}}" data-action="rollMode" data-roll-mode="selfroll" data-tooltip="{{localize "CHAT.RollSelf"}}"></button>
+<div data-roll-mode-parent  class="split-button flex-none">
+  <button type="button"
+          class="ui-control icon fa-solid fa-globe"
+          data-action="rollMode"
+          data-roll-mode="publicroll"
+          aria-pressed="{{#if (eq rollMode "publicroll")}}true{{else}}false{{/if}}"
+          data-tooltip="{{localize "CHAT.RollPublic"}}"
+          aria-label="Public Roll">
+  </button>
+  <button type="button"
+          class="ui-control icon fa-solid fa-user-secret"
+          data-action="rollMode"
+          data-roll-mode="gmroll"
+          aria-pressed="{{#if (eq rollMode "gmroll")}}true{{else}}false{{/if}}"
+          data-tooltip="{{localize "CHAT.RollPrivate"}}"
+          aria-label="Private GM Roll">
+  </button>
+  <button type="button"
+          class="ui-control icon fa-solid fa-eye-slash"
+          data-action="rollMode"
+          data-roll-mode="blindroll"
+          aria-pressed="{{#if (eq rollMode "blindroll")}}true{{else}}false{{/if}}"
+          data-tooltip="{{localize "CHAT.RollBlind"}}"
+          aria-label="Blind GM Roll">
+  </button>
+  <button type="button"
+          class="ui-control icon fa-solid fa-user"
+          data-action="rollMode"
+          data-roll-mode="selfroll"
+          aria-pressed="{{#if (eq rollMode "selfroll")}}true{{else}}false{{/if}}"
+          data-tooltip="{{localize "CHAT.RollSelf"}}"
+          aria-label="Self Roll">
+  </button>
 </div>

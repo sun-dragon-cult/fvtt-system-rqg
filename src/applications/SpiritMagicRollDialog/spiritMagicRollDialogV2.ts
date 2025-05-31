@@ -151,8 +151,8 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     const formDataObject: SpiritMagicRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

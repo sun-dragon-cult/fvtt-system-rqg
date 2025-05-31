@@ -154,8 +154,8 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     const formDataObject: CharacteristicRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
     if (!actor || !formDataObject.characteristicName) {

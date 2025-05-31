@@ -151,8 +151,8 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     const formDataObject: AbilityRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     let abilityItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.abilityItemUuid ?? "",
