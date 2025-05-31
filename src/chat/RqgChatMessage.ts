@@ -239,7 +239,7 @@ export class RqgChatMessage extends ChatMessage {
       }
     }
 
-    // Author and timestamp
+    // Author and timestamp TODO users locale (don't have that), or maybe Gloranthan time formatting?
     // @ts-expect-error timestamp
     const time = new Date(this.timestamp).toLocaleDateString("en-US", {
       hour: "numeric",

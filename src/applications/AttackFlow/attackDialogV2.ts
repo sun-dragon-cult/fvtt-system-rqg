@@ -95,7 +95,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext(): Promise<AttackDialogContext> {
     const formData: AttackDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const attackingToken = getTokenFromItem(this.weaponItem);
     if (!attackingToken) {

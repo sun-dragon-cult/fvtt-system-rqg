@@ -1,4 +1,10 @@
-import { activateChatTab, getGameUser, isTruthy, localize } from "../../system/util";
+import {
+  activateChatTab,
+  getGameUser,
+  isTruthy,
+  localize,
+  toSignedString,
+} from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
@@ -68,7 +74,7 @@ export class CharacteristicRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
-        m.value = m.value.signedString();
+        m.value = toSignedString(m.value);
         return m;
       });
     const o = this.options as CharacteristicRollOptions;

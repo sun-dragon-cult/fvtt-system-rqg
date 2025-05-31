@@ -84,7 +84,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
   async _prepareContext(): Promise<AbilityRollDialogContext> {
     const formData: AbilityRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";

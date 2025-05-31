@@ -84,7 +84,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   async _prepareContext(): Promise<SpiritMagicRollDialogContext> {
     const formData: SpiritMagicRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const speaker = getSpeakerFromItem(this.spellItem);
 

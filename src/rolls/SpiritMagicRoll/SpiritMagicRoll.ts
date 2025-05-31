@@ -4,6 +4,7 @@ import {
   isTruthy,
   localize,
   localizeItemType,
+  toSignedString,
 } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
@@ -72,7 +73,7 @@ export class SpiritMagicRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
-        m.value = m.value.signedString();
+        m.value = toSignedString(m.value);
         return m;
       });
     const o = this.options as SpiritMagicRollOptions;

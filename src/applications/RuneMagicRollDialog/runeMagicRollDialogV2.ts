@@ -100,7 +100,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   async _prepareContext(): Promise<RuneMagicRollDialogContext> {
     const formData: RuneMagicRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const speaker = getSpeakerFromItem(this.spellItem);
 

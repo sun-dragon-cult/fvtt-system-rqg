@@ -84,7 +84,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   async _prepareContext(): Promise<CharacteristicRollDialogContext> {
     const formData: CharacteristicRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     formData.difficulty ??= 5;
     formData.augmentModifier ??= "0";

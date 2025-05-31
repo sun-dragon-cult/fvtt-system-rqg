@@ -742,3 +742,20 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
     getGame().scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
   return attackingToken;
 }
+
+/**
+ * The V13 Foundry version returns a &minus; sign instead of a normal - which makes it impossible
+ * to do a Number(x) on the resulting string to revert into number again.
+ */
+export function toSignedString(num: number) {
+  const n = num.toLocaleString(getGame().i18n.lang);
+
+  if (num === 0) {
+    return n;
+  }
+  if (num < 0) {
+    return n;
+  } else {
+    return `+${n}`;
+  }
+}

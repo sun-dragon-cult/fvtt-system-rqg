@@ -111,7 +111,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext(): Promise<DefenceDialogContext> {
     const formData: DefenceDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const tokenOptions = DefenceDialogV2.getTokenOptions(this.attackChatMessage);
     if (Object.keys(tokenOptions).length === 0) {
@@ -461,7 +461,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defenceWeaponUsage: parryWeaponUsageType,
       outcomeDescription: outcomeDescription,
       attackRoll: attackRoll.toJSON(),
-      defenceRoll: defenceRoll,
+      defenceRoll: defenceRoll?.toJSON(),
       attackerFumbled: attackerFumbled,
       defenderFumbled: defenderFumbled,
       damagedWeaponUuid: damagedWeapon?.uuid,

@@ -6,6 +6,7 @@ import {
   isTruthy,
   localize,
   localizeItemType,
+  toSignedString,
 } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
@@ -73,7 +74,7 @@ export class AbilityRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
-        m.value = m.value.signedString();
+        m.value = toSignedString(m.value);
         return m;
       });
     // @ts-expect-error applications
