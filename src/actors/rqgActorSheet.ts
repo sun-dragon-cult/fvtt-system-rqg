@@ -177,7 +177,7 @@ export class RqgActorSheet extends ActorSheet<
         system.allies,
       ),
       // @ts-expect-error applications
-      enrichedBiography: foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
       ),
 
