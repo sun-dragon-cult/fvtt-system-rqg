@@ -42,15 +42,15 @@ import type { DamageType } from "../data-model/item-data/weaponData";
 
 export class RqgActor extends Actor {
   static init() {
-    // @ts-expect-error collections
-    const collections = foundry.documents.collections;
-    // @ts-expect-error appv1
-    const sheetsV1 = foundry.appv1.sheets;
-
     CONFIG.Actor.documentClass = RqgActor;
 
-    collections.Actors.unregisterSheet("core", sheetsV1.ActorSheet);
-    collections.Actors.registerSheet(systemId, RqgActorSheet as any, {
+    // @ts-expect-error applications
+    const sheets = foundry.applications.apps.DocumentSheetConfig;
+
+    // @ts-expect-error appv1
+    sheets.unregisterSheet(Actor, "core", foundry.appv1.sheets.ActorSheet);
+
+    sheets.registerSheet(Actor, systemId, RqgActorSheet as any, {
       label: "RQG.SheetName.Actor.Character",
       types: [ActorTypeEnum.Character],
       makeDefault: true,
