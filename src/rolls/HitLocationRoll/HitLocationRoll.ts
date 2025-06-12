@@ -3,6 +3,7 @@ import { getGameUser, localize } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { RqgItem } from "../../items/rqgItem";
+import type { RqgActor } from "../../actors/rqgActor";
 
 /**
  * HitLocationRoll is only displayed as part of the CombatChatMessage,
@@ -44,11 +45,16 @@ export class HitLocationRoll extends Roll {
   }
 
   /**
-   * Transform a token into a list of hit location names to put in the roll options.
+   * Transform a token or actor into a list of hit location names to put in the roll options.
    */
-  static tokenToHitLocationNames(token: TokenDocument | undefined | null): HitLocationName[] {
+  static tokenToHitLocationNames(
+    tokenOrActor: TokenDocument | RqgActor | undefined | null,
+  ): HitLocationName[] {
+    const actor =
+      (tokenOrActor instanceof TokenDocument ? tokenOrActor.actor : tokenOrActor) ?? undefined;
+
     return (
-      token?.actor?.items
+      actor?.items
         .filter((i: RqgItem) => i.type === ItemTypeEnum.HitLocation)
         .map((hl: RqgItem) => ({
           dieFrom: hl.system.dieFrom,

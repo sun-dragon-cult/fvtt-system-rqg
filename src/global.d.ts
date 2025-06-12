@@ -13,7 +13,7 @@ import { IconSettingsData } from "./applications/defaultItemIconSettings";
 
 declare global {
   /** Standard format for data to Foundry SelectOptions handlebar helper */
-  type SelectOptionData<T> = { value: T; label: string };
+  type SelectOptionData<T> = { value: T; label: string; group?: string };
 }
 
 declare global {

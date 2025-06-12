@@ -446,6 +446,7 @@
         "RollDamage": "Roll Damage",
         "ApplyActorDamage": "Apply Damage to Actor",
         "ApplyWeaponDamage": "Apply Damage to Weapon",
+        "CannotApplyDamageToUnlinkedActor": "Cannot apply damage to unlinked actor",
         "RollAttackerFumble": "Roll Attacker Fumble",
         "RollDefenderFumble": "Roll Defender Fumble",
         "AttackerFumble": "Attacker Fumble",
@@ -477,7 +478,7 @@
           "1d10": "From Below (1d10)",
           "1d10+10": "From Above (1d10 + 10)"
         },
-        "NoTokenToAttackWith": "You don't have any token in this scene to do an attack"
+        "WeaponNotEmbedded": "Could not find the owner of the used weapon"
       },
       "Defence": {
         "Title": "Defend",
@@ -564,8 +565,11 @@
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
         "Actor": "Actor",
-        "AttackingActor": "Attacking Actor",
-        "DefendingActor": "Defending Actor",
+        "AttackingActor": "Attacker",
+        "DefendingActor": "Defender",
+        "TargetedToken": "targeted token",
+        "Tokens": "tokens",
+        "Actors": "actors",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",

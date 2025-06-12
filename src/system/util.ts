@@ -697,24 +697,30 @@ export function* range(start: number | undefined, end: number | undefined): Gene
 export function getSpeakerFromItem(
   item: RqgItem | PartialAbilityItem,
 ): PropertiesToSource<ChatSpeakerDataProperties> {
-  const token = getTokenFromItem(item);
-  const actor = item.parent;
+  const tokenOrActor = getTokenOrActorFromItem(item);
+  const token = tokenOrActor instanceof TokenDocument ? tokenOrActor : undefined;
+  const actor = tokenOrActor instanceof Actor ? tokenOrActor : undefined;
   return ChatMessage.getSpeaker({
     token: token,
-    actor: actor ?? undefined,
+    actor: token ? undefined : actor,
   });
 }
 
 /**
  * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
+ * If there is no token, it will return the actor itself.
  */
-export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
+export function getTokenOrActorFromItem(
+  item: RqgItem | PartialAbilityItem,
+): TokenDocument | RqgActor | undefined {
   const token = getTokenFromActor(item.parent);
 
   if (token) {
     return token;
-  } else {
+  } else if ((item as PartialAbilityItem).actingToken) {
     return (item as PartialAbilityItem).actingToken;
+  } else {
+    return item.parent ?? undefined;
   }
 }
 
@@ -735,4 +741,15 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
     owningActorTokens[0] ??
     getGame().scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
   return attackingToken;
+}
+
+/**
+ * Get the actor name with a link if the actor has a prototype token that is linked and the user is GM.
+ */
+export function getActorLinkDecoration(actor: RqgActor | null | undefined): string {
+  if (getGameUser().isGM) {
+    return actor?.prototypeToken.actorLink ? " 🔗" : "";
+  } else {
+    return "";
+  }
 }
