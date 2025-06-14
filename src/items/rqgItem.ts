@@ -504,7 +504,7 @@ export class RqgItem extends Item {
 
     if (this.system.castingRange) {
       const rangeValueTranslation = localize(
-        "RQG.Item.Spell.RangeEnum." + this.system.castingRange,
+        "RQG.Item.Spell.RangeEnum." + (this.system.castingRange || "undefined"),
       );
       const rangeTranslation = localize("RQG.Item.SpiritMagic.Range");
       const translation =

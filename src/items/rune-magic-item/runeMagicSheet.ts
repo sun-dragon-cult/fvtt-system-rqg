@@ -50,11 +50,11 @@ export class RuneMagicSheet extends RqgItemSheet<
 
       rangeOptions: Object.values(SpellRangeEnum).map((range) => ({
         value: range,
-        label: "RQG.Item.Spell.RangeEnum." + (range || "none"),
+        label: "RQG.Item.Spell.RangeEnum." + (range || "undefined"),
       })),
       durationOptions: Object.values(SpellDurationEnum).map((range) => ({
         value: range,
-        label: "RQG.Item.Spell.DurationEnum." + (range || "none"),
+        label: "RQG.Item.Spell.DurationEnum." + (range || "undefined"),
       })),
       actorCultOptions: this.getActorCultOptions(),
       allRuneOptions: getSelectRuneOptions("RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder"),

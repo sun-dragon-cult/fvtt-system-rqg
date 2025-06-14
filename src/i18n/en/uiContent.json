@@ -1015,7 +1015,7 @@
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
         "DurationEnum": {
-          "none": "None",
+          "undefined": "None",
           "instant": "Instant",
           "temporal": "Temporal",
           "focused": "Focused",
@@ -1023,14 +1023,14 @@
           "special": "Special"
         },
         "RangeEnum": {
-          "none": "None",
+          "undefined": "None",
           "self": "Self",
           "touch": "Touch",
           "ranged": "Ranged",
           "special": "Special"
         },
         "ConcentrationEnum": {
-          "none": "",
+          "undefined": "",
           "active": "Active",
           "passive": "Passive"
         }
