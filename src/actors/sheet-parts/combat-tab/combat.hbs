@@ -93,12 +93,13 @@
             {{/each}}
           </span>
         </div>
-        <div class="item" data-weapon-roll data-item-id="{{id}}">
+        <div class="item" data-item-id="{{id}}">
           <span class="flex-column">
             {{#each system.usage}}
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
                       data-skill-id="{{skillId}}"
+                      data-damage-roll="{{damage}}" data-damage-roll-heading="{{../name}} – {{localize (concat "RQG.Game.WeaponUsage." @key)}}"
                       >{{damage}}&nbsp;</span>
               {{/if}}
             {{/each}}
@@ -165,9 +166,10 @@
               {{#if skillId}}
                 <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
                       data-skill-id="{{skillId}}" data-item-id="{{../id}}"
-                      data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
-                      {{damage}}&nbsp;
-                </span>
+                      data-tooltip="{{localize "RQG.Game.RollChat"}}"
+                      data-skill-id="{{skillId}}"
+                      data-damage-roll="{{damage}}" data-damage-roll-heading="{{../name}}"
+                      >{{damage}}&nbsp;</span>
               {{/if}}
             {{/each}}
           </span>

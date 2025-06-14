@@ -70,6 +70,11 @@ import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 import { deleteCombatant } from "../sockets/SocketableRequests";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
+import {
+  applyDamageBonusToFormula,
+  formatDamagePart,
+  getNormalizedDamageFormulaAndDamageBonus,
+} from "../system/combatCalculations";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -1214,13 +1219,25 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    // Roll Damage for spirit magic (and separate damage bonus)
+    // Roll Damage for spirit magic, separate damage bonus and weapon damage
     htmlElement?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
       const damage = el.dataset.damageRoll;
       requireValue(damage, "direct damage roll without damage");
+      const { damageFormula, damageBonusPlaceholder } =
+        getNormalizedDamageFormulaAndDamageBonus(damage);
+
+      let damageFormulaWithDb = damage;
+      if (damageBonusPlaceholder) {
+        const formattedDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
+        damageFormulaWithDb = applyDamageBonusToFormula(
+          formattedDamage + damageBonusPlaceholder,
+          this.actor.system.attributes.damageBonus,
+        );
+      }
+
       const heading = el.dataset.damageRollHeading ?? "";
       el.addEventListener("click", async () => {
-        const r = new DamageRoll(damage);
+        const r = new DamageRoll(damageFormulaWithDb);
         await r.evaluate();
         await r.toMessage({
           speaker: ChatMessage.getSpeaker(),
