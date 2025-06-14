@@ -38,12 +38,12 @@ export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
         initial: attackState[0],
         choices: attackState,
       }),
-      attackingTokenUuid: new DocumentUUIDField({
+      attackingTokenOrActorUuid: new DocumentUUIDField({
         blank: false,
         nullable: false,
         required: true,
       }),
-      defendingTokenUuid: new DocumentUUIDField({
+      defendingTokenOrActorUuid: new DocumentUUIDField({
         blank: false,
         nullable: true,
         initial: undefined,

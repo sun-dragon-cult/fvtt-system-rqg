@@ -6,7 +6,7 @@
 
   {{#if (eq attackState 'Attacked')}}
     <div class="flexrow">
-      <button data-only-owner-visible-uuid="{{defendingTokenUuid}}"
+      <button data-only-owner-visible-uuid="{{defendingTokenOrActorUuid}}"
               data-defence>Defend
       </button>
     </div>
@@ -15,11 +15,11 @@
     {{!-- use presence of damageRoll as sign of there being damage to roll, should be null:ed if no damage is to be rolled --}}
     {{#if damageRoll}}
         {{#if (eq weaponDoingDamage "attackingWeapon")}}
-        <button data-roll-damage-and-hitlocation data-only-owner-visible-uuid="{{attackingTokenUuid}}">
+        <button data-roll-damage-and-hitlocation data-only-owner-visible-uuid="{{attackingTokenOrActorUuid}}">
           {{localize "RQG.ChatMessage.Combat.RollDamageAndHitLocation"}}
         </button>
         {{else}}
-          <button data-roll-damage-and-hitlocation data-only-owner-visible-uuid="{{defendingTokenUuid}}">
+          <button data-roll-damage-and-hitlocation data-only-owner-visible-uuid="{{defendingTokenOrActorUuid}}">
             {{localize "RQG.ChatMessage.Combat.RollDamage"}}
           </button>
         {{/if}}
@@ -35,7 +35,7 @@
       <div class="flex-row">
       {{#if defenderHitLocationDamage}}
       {{#unless actorDamagedApplied}}
-        <button data-apply-damage-to-actor data-only-owner-visible-uuid="{{defendingTokenUuid}}">
+        <button data-apply-damage-to-actor data-only-owner-visible-uuid="{{defendingTokenOrActorUuid}}">
           {{localize "RQG.ChatMessage.Combat.ApplyActorDamage"}}
         </button>
       {{/unless}}
@@ -45,9 +45,9 @@
       {{#unless weaponDamageApplied}}
         <button data-apply-damage-to-weapon
           {{#if (eq weaponDoingDamage "attackingWeapon")}}
-            data-only-owner-visible-uuid="{{defendingTokenUuid}}"
+            data-only-owner-visible-uuid="{{defendingTokenOrActorUuid}}"
           {{else}}
-            data-only-owner-visible-uuid="{{attackingTokenUuid}}"
+            data-only-owner-visible-uuid="{{attackingTokenOrActorUuid}}"
           {{/if}}
           >{{localize "RQG.ChatMessage.Combat.ApplyWeaponDamage"}}
         </button>
@@ -58,13 +58,13 @@
   {{/if}}
 
   {{#if attackerFumbled}}
-    <button data-only-owner-visible-uuid="{{attackingTokenUuid}}"
+    <button data-only-owner-visible-uuid="{{attackingTokenOrActorUuid}}"
             data-fumble="attacker">{{localize "RQG.ChatMessage.Combat.RollAttackerFumble"}}
     </button>
   {{/if}}
 
   {{#if defenderFumbled}}
-    <button data-only-owner-visible-uuid="{{defendingTokenUuid}}"
+    <button data-only-owner-visible-uuid="{{defendingTokenOrActorUuid}}"
             data-fumble="defender">{{localize "RQG.ChatMessage.Combat.RollDefenderFumble"}}
     </button>
   {{/if}}

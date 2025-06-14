@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import { ItemUpdate } from "../applyMigrations";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.
