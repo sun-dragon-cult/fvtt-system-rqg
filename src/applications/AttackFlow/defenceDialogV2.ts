@@ -612,20 +612,24 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
           group: localize("RQG.Dialog.Common.Tokens"),
         })) ?? [];
 
-    const ownedTokenActorIds =
-      getGame()
-        .scenes?.current?.tokens.filter((t) => t.isOwner)
-        ?.map((t) => t.actor?.id) ?? [];
+    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    let ownedActorsWithoutTokens: any[] = [];
 
-    const ownedActorsWithoutTokens =
-      getGame()
-        .actors?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
-        .map((actor) => ({
-          value: actor.uuid ?? "",
-          label: (actor.name ?? "") + getActorLinkDecoration(actor),
-          group: localize("RQG.Dialog.Common.Actors"),
-        })) ?? [];
+    if (allowCombatWithoutToken) {
+      const ownedTokenActorIds =
+        getGame()
+          .scenes?.current?.tokens.filter((t) => t.isOwner)
+          ?.map((t) => t.actor?.id) ?? [];
 
+      ownedActorsWithoutTokens =
+        getGame()
+          .actors?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
+          .map((actor) => ({
+            value: actor.uuid ?? "",
+            label: (actor.name ?? "") + getActorLinkDecoration(actor),
+            group: localize("RQG.Dialog.Common.Actors"),
+          })) ?? [];
+    }
     return [...ownedTokens, ...ownedActorsWithoutTokens];
   }
 

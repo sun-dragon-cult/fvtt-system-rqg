@@ -7,6 +7,7 @@ import {
   getDomDataset,
   getGame,
   getGameUser,
+  getTokenFromItem,
   getTokenOrActorFromItem,
   isTruthy,
   localize,
@@ -52,6 +53,18 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   constructor(options: { weaponItem: RqgItem }) {
     super(options as any);
     this.weaponItem = options.weaponItem;
+    const attackingToken = getTokenFromItem(this.weaponItem);
+    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+
+    if (!attackingToken && !allowCombatWithoutToken) {
+      const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
+      ui.notifications?.warn(msg);
+      setTimeout(() => {
+        // @ts-expect-error close
+        void this.close();
+      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
+      throw new RqgError(msg);
+    }
   }
 
   static DEFAULT_OPTIONS = {
@@ -462,20 +475,24 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         group: localize("RQG.Dialog.Common.Tokens"),
       })) ?? [];
 
-    const tokenActorIds = ownedTokensWithWeapons.map((t) => t.actor?.id).filter(isTruthy);
+    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    let ownedActorOptions: any[] = [];
+    if (allowCombatWithoutToken) {
+      const tokenActorIds = ownedTokensWithWeapons.map((t) => t.actor?.id).filter(isTruthy);
 
-    const ownedActors =
-      getGame().actors?.filter(
-        (a) =>
-          a.isOwner &&
-          !tokenActorIds.some((taId) => taId === a.id) &&
-          AttackDialogV2.getWeaponOptions(a.uuid).length > 0,
-      ) ?? [];
-    const ownedActorOptions = ownedActors.map((actor) => ({
-      value: actor?.uuid ?? "",
-      label: (actor.name ?? "") + getActorLinkDecoration(actor),
-      group: localize("RQG.Dialog.Common.Actors"),
-    }));
+      const ownedActors =
+        getGame().actors?.filter(
+          (a) =>
+            a.isOwner &&
+            !tokenActorIds.some((taId) => taId === a.id) &&
+            AttackDialogV2.getWeaponOptions(a.uuid).length > 0,
+        ) ?? [];
+      ownedActorOptions = ownedActors.map((actor) => ({
+        value: actor?.uuid ?? "",
+        label: (actor.name ?? "") + getActorLinkDecoration(actor),
+        group: localize("RQG.Dialog.Common.Actors"),
+      }));
+    }
 
     return [...tokenOptions, ...ownedActorOptions];
   }

@@ -478,6 +478,7 @@
           "1d10": "From Below (1d10)",
           "1d10+10": "From Above (1d10 + 10)"
         },
+        "NoTokenToAttackWith": "You don't have any token in this scene to do an attack",
         "WeaponNotEmbedded": "Could not find the owner of the used weapon"
       },
       "Defence": {
@@ -1334,6 +1335,10 @@
       "FumbleRollTable": {
         "settingName": "Fumble Roll Table",
         "settingHint": "The name of the Fumble roll table - will be used in combat"
+      },
+      "AllowCombatWithoutToken": {
+        "settingName": "Allow Combat without Token",
+        "settingHint": "If enabled, combat can be started without a token on a scene. This is useful for GMs who want to run \"theater of the mind\" style combats."
       },
       "ShowHeropoints": {
         "settingName": "Show Hero Points",

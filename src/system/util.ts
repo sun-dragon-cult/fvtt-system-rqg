@@ -708,6 +708,19 @@ export function getSpeakerFromItem(
 
 /**
  * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
+ */
+export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
+  const token = getTokenFromActor(item.parent);
+
+  if (token) {
+    return token;
+  } else {
+    return (item as PartialAbilityItem).actingToken;
+  }
+}
+
+/**
+ * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
  * If there is no token, it will return the actor itself.
  */
 export function getTokenOrActorFromItem(
