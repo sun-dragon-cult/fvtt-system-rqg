@@ -130,6 +130,6 @@ export const loadHandlebarsTemplates = async function () {
     rqidLinkSelector: "systems/rqg/sheet-partials/rqidLinkSelector.hbs",
   } as const;
 
-  // @ts-expect-error object
+  // @ts-expect-error applications
   return foundry.applications.handlebars.loadTemplates(partialPaths);
 };

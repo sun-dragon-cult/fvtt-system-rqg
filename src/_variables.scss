@@ -1,11 +1,13 @@
 .theme-dark {
   --rqg-themed-exp-outline: rgba(0, 0, 0, 0.8);
   --rqg-themed-highlight: #f8da10;
+  --rqg-svg-invert-param: 0.1;
 }
 
 .theme-light {
   --rqg-themed-exp-outline: rgba(255, 255, 255, 0.8);
   --rqg-themed-highlight: #901010;
+  --rqg-svg-invert-param: 0.9;
 }
 
 :root {

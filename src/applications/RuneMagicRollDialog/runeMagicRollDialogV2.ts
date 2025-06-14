@@ -71,6 +71,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
     form: {
       handler: RuneMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -83,7 +84,6 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog", "themed"],
     },
   };
 
