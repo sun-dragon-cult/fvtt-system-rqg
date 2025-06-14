@@ -4,6 +4,7 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions, Modifier } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   assertItemType,
+  getActorLinkDecoration,
   getGame,
   getGameUser,
   localize,
@@ -113,17 +114,20 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       // @ts-expect-error object
       (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
-    const tokenOptions = DefenceDialogV2.getTokenOptions(this.attackChatMessage);
-    if (Object.keys(tokenOptions).length === 0) {
+    const defenderOptions = DefenceDialogV2.getDefenderOptions(this.attackChatMessage);
+    if (Object.keys(defenderOptions).length === 0) {
       const msg = localize("RQG.Dialog.Defence.NoTokenToDefendWith");
       ui.notifications?.warn(msg);
       // @ts-expect-error close
       this.close();
     }
 
-    const attackingTokenUuid = this.attackChatMessage?.system.attackingTokenUuid;
+    const attackingTokenOrActorUuid = this.attackChatMessage?.system.attackingTokenOrActorUuid;
     // @ts-expect-error fromUuidSync
-    const attackingToken = fromUuidSync(attackingTokenUuid ?? "") as TokenDocument | undefined;
+    const attackingTokenOrActor = fromUuidSync(attackingTokenOrActorUuid ?? "") as
+      | TokenDocument
+      | RqgActor
+      | undefined;
 
     const attackRoll = AbilityRoll.fromData(this.attackChatMessage?.system.attackRoll as any);
     if (!attackRoll) {
@@ -132,11 +136,17 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       throw new RqgError(msg);
     }
 
-    formData.defendingTokenUuid ??=
-      this.attackChatMessage.system.defendingTokenUuid ?? Object.values(tokenOptions)[0].value;
+    formData.defendingTokenOrActorUuid ??=
+      this.attackChatMessage.system.defendingTokenOrActorUuid ??
+      Object.values(defenderOptions)[0].value;
 
-    const defendingToken = (await fromUuid(formData.defendingTokenUuid)) as TokenDocument | null;
-    const defendingActor = defendingToken?.actor ?? undefined;
+    const defendingTokenOrActor = (await fromUuid(
+      formData.defendingTokenOrActorUuid,
+    )) as TokenDocument | null;
+    const defendingActor =
+      (defendingTokenOrActor instanceof TokenDocument
+        ? defendingTokenOrActor?.actor
+        : defendingTokenOrActor) ?? undefined;
     const parryingWeaponOptions = DefenceDialogV2.getParryingWeaponOptions(defendingActor);
 
     formData.parryingWeaponUuid ??= Object.values(parryingWeaponOptions)?.map((o) => o.value)[0];
@@ -230,8 +240,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defenceButtonText: defenceButtonText,
       defenceChance: defenceChance,
 
-      attackingTokenName: attackingToken?.name ?? "",
-      defendingTokenOptions: tokenOptions,
+      attackerName: attackingTokenOrActor?.name ?? "",
+      defenderOptions: defenderOptions,
       defenceOptions: defenceOptions,
       parryingWeaponOptions: parryingWeaponOptions,
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
@@ -279,18 +289,26 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       selectedParryingWeapon?.system.usage[formDataObject.parryingWeaponUsage ?? "oneHand"]
         ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
 
-    const defendingTokenDocument = (await fromUuid(
-      formDataObject.defendingTokenUuid ?? "",
-    )) as TokenDocument | null;
+    const defendingTokenDocumentOrActor = (await fromUuid(
+      formDataObject.defendingTokenOrActorUuid ?? "",
+    )) as TokenDocument | RqgActor | null;
 
-    const defendingActor = defendingTokenDocument?.actor ?? undefined;
+    const defendingToken =
+      defendingTokenDocumentOrActor instanceof TokenDocument
+        ? defendingTokenDocumentOrActor
+        : undefined;
+
+    const defendingActor =
+      (defendingTokenDocumentOrActor instanceof TokenDocument
+        ? defendingTokenDocumentOrActor?.actor
+        : defendingTokenDocumentOrActor) ?? undefined;
 
     // Update the chat with how the defence was done
 
     // @ts-expect-error flavor
     const currentFlavor: string = this.attackChatMessage.flavor;
 
-    const defenderName = defendingTokenDocument?.name;
+    const defenderName = defendingTokenDocumentOrActor?.name;
 
     const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
 
@@ -365,7 +383,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       abilityType: defendSkillItem?.type ?? undefined,
       abilityImg: defendSkillItem?.img ?? undefined,
       speaker: ChatMessage.getSpeaker({
-        token: defendingTokenDocument ?? undefined, // Connect the roll to the defender
+        token: defendingToken, // Connect the roll to the defender
+        actor: defendingToken ? undefined : defendingActor,
       }),
     };
 
@@ -444,7 +463,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     requireValue(hitLocationRoll, "No Hit Location Roll found in chat message");
 
     (hitLocationRoll.options as HitLocationRollOptions).hitLocationNames =
-      HitLocationRoll.tokenToHitLocationNames(defendingTokenDocument);
+      HitLocationRoll.tokenToHitLocationNames(defendingTokenDocumentOrActor);
 
     const damageDegree = getDamageDegree(
       formDataObject.defence ?? "ignore", // TODO correct?
@@ -456,7 +475,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const defenderFumbled = defenceRoll?.successLevel === AbilitySuccessLevelEnum.Fumble;
     const systemUpdate = {
       attackState: "Defended",
-      defendingTokenUuid: formDataObject.defendingTokenUuid,
+      defendingTokenOrActorUuid: formDataObject.defendingTokenOrActorUuid,
       defenceWeaponUuid: selectedParryingWeapon?.uuid,
       defenceWeaponUsage: parryWeaponUsageType,
       outcomeDescription: outcomeDescription,
@@ -568,24 +587,51 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     }
   }
 
-  private static getTokenOptions(attackChatMessage: RqgChatMessage): SelectOptionData<string>[] {
-    // case 1 - defendingTokenUuid is set (attacker has set a target)
-    const initialDefendingTokenUuid = attackChatMessage.system.defendingTokenUuid;
+  private static getDefenderOptions(attackChatMessage: RqgChatMessage): SelectOptionData<string>[] {
+    // case 1 - defendingTokenOrActorUuid is set (attacker has set a target)
+    const initialDefendingTokenUuid = attackChatMessage.system.defendingTokenOrActorUuid;
     if (initialDefendingTokenUuid) {
       // @ts-expect-error fromUuidSync
       const defendingToken = fromUuidSync(initialDefendingTokenUuid) as TokenDocument | null;
-      return [{ value: initialDefendingTokenUuid, label: defendingToken?.name ?? "" }];
+      return [
+        {
+          value: initialDefendingTokenUuid,
+          label: (defendingToken?.name ?? "") + getActorLinkDecoration(defendingToken?.actor),
+          group: localize("RQG.Dialog.Common.TargetedToken"),
+        },
+      ];
     }
 
-    // case 2 - show a list of actors the user has access to and are present on the active scene
-    return (
+    // case 2 - show a list of token the user owns and are present on the active scene,
+    //  and include the owned actors that do not have tokens.
+    const ownedTokens =
       getGame()
         .scenes?.current?.tokens.filter((t) => t.isOwner)
         ?.map((tokenDocument) => ({
           value: tokenDocument?.uuid ?? "",
-          label: tokenDocument?.name ?? "",
-        })) ?? []
-    );
+          label: (tokenDocument?.name ?? "") + getActorLinkDecoration(tokenDocument.actor),
+          group: localize("RQG.Dialog.Common.Tokens"),
+        })) ?? [];
+
+    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    let ownedActorsWithoutTokens: any[] = [];
+
+    if (allowCombatWithoutToken) {
+      const ownedTokenActorIds =
+        getGame()
+          .scenes?.current?.tokens.filter((t) => t.isOwner)
+          ?.map((t) => t.actor?.id) ?? [];
+
+      ownedActorsWithoutTokens =
+        getGame()
+          .actors?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
+          .map((actor) => ({
+            value: actor.uuid ?? "",
+            label: (actor.name ?? "") + getActorLinkDecoration(actor),
+            group: localize("RQG.Dialog.Common.Actors"),
+          })) ?? [];
+    }
+    return [...ownedTokens, ...ownedActorsWithoutTokens];
   }
 
   private static getDefenceOptions(

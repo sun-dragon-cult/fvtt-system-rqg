@@ -111,7 +111,7 @@ export async function combatOutcome(
   }
   const extraDamageFormula =
     weaponDoingDamageDesignation === "attackingWeapon"
-      ? formatDamagePart(attackExtraDamage, "extra damage", "+") // TODO make extra damage text part of attack dialog
+      ? formatDamagePart(attackExtraDamage, "RQG.Roll.DamageRoll.ExtraDamage", "+")
       : "";
   const damageFormulaWithExtraDamage = `${damageFormula}${extraDamageFormula}`;
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
@@ -421,7 +421,10 @@ function calculateDodgeDamages(
  * If the damageFormula contains db or db/2 then apply the damageBonus die string instead of that placeholder.
  * If db/2 is specified in damageFormula, reduce the damageBonus formula by half.
  */
-function applyDamageBonusToFormula(damageFormula: string, damageBonus: string): string {
+export function applyDamageBonusToFormula(
+  damageFormula: string,
+  damageBonus: string | undefined,
+): string {
   // Do not add damage bonus if it's 0
   if (!damageBonus || damageBonus === "0") {
     return damageFormula.replace(/\s*\+\s*db(\/2)?/g, "");
@@ -459,4 +462,26 @@ function applyDamageBonusToFormula(damageFormula: string, damageBonus: string): 
       formatDamagePart(damageBonus, "RQG.Roll.DamageRoll.DamageBonus"),
     );
   }
+}
+
+/**
+ * Split the damage formula into a part without damage bonus and a part with damage bonus placeholder.
+ * Also remove extra spaces from the formula.
+ */
+export function getNormalizedDamageFormulaAndDamageBonus(damageFormula: string): {
+  damageFormula: string;
+  damageBonusPlaceholder: string;
+} {
+  const normalizedDamageFormula = damageFormula.replaceAll(" ", "");
+  const damageFormulaWithoutDb = normalizedDamageFormula.replaceAll(/\+db\/2|\+db/g, "");
+  const damageBonusPlaceholder = normalizedDamageFormula.includes("db/2")
+    ? "+db/2"
+    : normalizedDamageFormula.includes("db")
+      ? "+db"
+      : "";
+
+  return {
+    damageFormula: damageFormulaWithoutDb,
+    damageBonusPlaceholder: damageBonusPlaceholder,
+  };
 }

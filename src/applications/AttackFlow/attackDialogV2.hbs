@@ -1,4 +1,3 @@
-{{log "*** Attack Dialog V2" this}}
 <div class="standard-form">
   <header class="roll-header">
     <h1>{{skillItem.name}}</h1>
@@ -8,8 +7,8 @@
     <label>
       {{localize "RQG.Dialog.Common.AttackingActor"}}
     </label>
-    <select name="attackingTokenUuid">
-      {{selectOptions attackingTokenOptions selected=formData.attackingTokenUuid localize=false}}
+    <select name="attackingTokenOrActorUuid">
+      {{selectOptions attackerOptions selected=formData.attackingTokenOrActorUuid localize=false}}
     </select>
 
     <label>

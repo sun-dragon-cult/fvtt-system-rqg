@@ -3,17 +3,20 @@ import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogDa
 import {
   assertHtmlElement,
   assertItemType,
+  getActorLinkDecoration,
   getDomDataset,
   getGame,
   getGameUser,
   getTokenFromItem,
+  getTokenOrActorFromItem,
+  isTruthy,
   localize,
   requireValue,
   RqgError,
 } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
-import { RqgToken } from "../../combat/rqgToken";
+import type { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
@@ -51,8 +54,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     super(options as any);
     this.weaponItem = options.weaponItem;
     const attackingToken = getTokenFromItem(this.weaponItem);
+    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
 
-    if (!attackingToken) {
+    if (!attackingToken && !allowCombatWithoutToken) {
       const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
       ui.notifications?.warn(msg);
       setTimeout(() => {
@@ -97,15 +101,15 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       // @ts-expect-error object
       (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
-    const attackingToken = getTokenFromItem(this.weaponItem);
-    if (!attackingToken) {
-      const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
+    const attackingTokenOrActor = getTokenOrActorFromItem(this.weaponItem);
+    if (!attackingTokenOrActor) {
+      const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
       ui.notifications?.warn(msg);
       // @ts-expect-error close
       this.close();
       throw new RqgError(msg);
     }
-    formData.attackingTokenUuid = attackingToken.uuid;
+    formData.attackingTokenOrActorUuid = attackingTokenOrActor?.uuid;
 
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
 
@@ -153,9 +157,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       abilityChance: usedSkill?.system.chance,
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
-      attackingTokenOptions: AttackDialogV2.getTokenOptions(),
+      attackerOptions: AttackDialogV2.getAttackerOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
-      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(attackingToken?.uuid),
+      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(attackingTokenOrActor?.uuid),
       usageTypeOptions: usageTypeOptions,
       augmentOptions: AttackDialogV2.augmentOptions,
       damageBonusSourceOptions: damageBonusSourceOptions,
@@ -180,7 +184,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     super._onRender(context, options);
     // @ts-expect-error element
     this.element
-      .querySelector("select[name=attackingTokenUuid]")
+      .querySelector("select[name=attackingTokenOrActorUuid]")
       .addEventListener("change", this.onTokenChange.bind(this));
 
     // @ts-expect-error element
@@ -268,11 +272,17 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       | RqgItem
       | undefined;
 
-    const tokenDocument = (await fromUuid(formDataObject.attackingTokenUuid ?? "")) as
-      | TokenDocument
-      | undefined;
+    const tokenDocumentOrRqgActor = (await fromUuid(
+      formDataObject.attackingTokenOrActorUuid ?? "",
+    )) as TokenDocument | RqgActor | undefined;
 
-    const actor = tokenDocument?.actor ?? undefined;
+    const tokenDocument =
+      tokenDocumentOrRqgActor instanceof TokenDocument ? tokenDocumentOrRqgActor : undefined;
+
+    const actor =
+      tokenDocumentOrRqgActor instanceof TokenDocument
+        ? tokenDocumentOrRqgActor?.actor
+        : tokenDocumentOrRqgActor;
     if (!actor) {
       ui.notifications?.error("Could not find an attacker actor to do the attack.");
       return;
@@ -368,7 +378,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       abilityName: weaponItem?.name ?? undefined,
       abilityType: weaponItem?.type ?? undefined,
       abilityImg: weaponItem?.img ?? undefined,
-      speaker: RqgChatMessage.getSpeaker({ token: tokenDocument }), // Used to decide who can see the roll in chat
+      speaker: RqgChatMessage.getSpeaker({
+        token: tokenDocument,
+        actor: tokenDocument ? undefined : actor,
+      }), // Used to decide who can see the roll in chat
     };
 
     const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
@@ -382,7 +395,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const hitLocationRollOptions: HitLocationRollOptions = {
       hitLocationNames: [], // hitLocationNames are added in defenceDialog when the target definitely selected
-      speaker: RqgChatMessage.getSpeaker({ token: tokenDocument }),
+      speaker: RqgChatMessage.getSpeaker({
+        token: tokenDocument,
+        actor: tokenDocument ? undefined : actor,
+      }),
     };
 
     const hitLocationFormula =
@@ -394,8 +410,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const chatSystemData: any = {
       attackState: `Attacked`,
-      attackingTokenUuid: tokenDocument?.uuid ?? "",
-      defendingTokenUuid: target?.document?.uuid,
+      attackingTokenOrActorUuid: tokenDocumentOrRqgActor?.uuid ?? "",
+      defendingTokenOrActorUuid: target?.document?.uuid,
       attackWeaponUuid: formDataObject.attackingWeaponUuid ?? "", // Checked for existence earlier
       attackWeaponUsage: formDataObject.usageType,
       attackCombatManeuver: combatManeuver,
@@ -436,7 +452,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       flavor: attackFlavor,
       content: attackChatContent,
       speaker: ChatMessage.getSpeaker({
-        token: actor.token ?? undefined,
+        token: tokenDocument,
+        actor: tokenDocument ? undefined : actor,
       }),
     };
 
@@ -446,18 +463,42 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   /**
-   * Return a list of tokens on the current scene the user has access to that also has at least one weapon to attack with
+   * Return a list of tokenUuids on the current scene the user has access to that also has at least one weapon to attack with.
+   * Also returns the actors that the user owns and do not have a token in the current scene and has at least one weapon to attack with.
    */
-  private static getTokenOptions(): SelectOptionData<string>[] {
-    return (
+  private static getAttackerOptions(): SelectOptionData<string>[] {
+    const ownedTokensWithWeapons =
       getGame()
         .scenes?.current?.tokens.filter((t) => t.isOwner)
-        .filter((t) => AttackDialogV2.getWeaponOptions(t.uuid).length > 0)
-        ?.map((token) => ({
-          value: token?.uuid ?? "",
-          label: token?.name ?? "",
-        })) ?? []
-    );
+        .filter((t) => AttackDialogV2.getWeaponOptions(t.uuid).length > 0) ?? [];
+
+    const tokenOptions =
+      ownedTokensWithWeapons.map((token) => ({
+        value: token?.uuid ?? "",
+        label: (token?.name ?? "") + getActorLinkDecoration(token.actor),
+        group: localize("RQG.Dialog.Common.Tokens"),
+      })) ?? [];
+
+    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    let ownedActorOptions: any[] = [];
+    if (allowCombatWithoutToken) {
+      const tokenActorIds = ownedTokensWithWeapons.map((t) => t.actor?.id).filter(isTruthy);
+
+      const ownedActors =
+        getGame().actors?.filter(
+          (a) =>
+            a.isOwner &&
+            !tokenActorIds.some((taId) => taId === a.id) &&
+            AttackDialogV2.getWeaponOptions(a.uuid).length > 0,
+        ) ?? [];
+      ownedActorOptions = ownedActors.map((actor) => ({
+        value: actor?.uuid ?? "",
+        label: (actor.name ?? "") + getActorLinkDecoration(actor),
+        group: localize("RQG.Dialog.Common.Actors"),
+      }));
+    }
+
+    return [...tokenOptions, ...ownedActorOptions];
   }
 
   private static getAimedBlowOptions(target: RqgToken | undefined): SelectOptionData<number>[] {
@@ -479,9 +520,16 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * show a list of weapons the actor has equipped and can be used for attacks.
    */
-  private static getWeaponOptions(tokenUuid: string | undefined): SelectOptionData<string>[] {
+  private static getWeaponOptions(
+    tokenOrActorUuid: string | undefined,
+  ): SelectOptionData<string>[] {
     // @ts-expect-error fromUuidSync
-    const actor = fromUuidSync(tokenUuid ?? "")?.actor as RqgActor | undefined;
+    const actorOrToken = fromUuidSync(tokenOrActorUuid ?? "") as
+      | TokenDocument
+      | RqgActor
+      | undefined;
+
+    const actor = actorOrToken instanceof TokenDocument ? actorOrToken?.actor : actorOrToken;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry
     const weaponsWithAttacks = (actor?.items ?? []).filter(
       (i) =>
@@ -523,6 +571,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   /**
    * Get the damage bonus source options from non-humanoid tokens on the active scene that the user owns.
    * The idea is that horses and other rideable animals should show up here.
+   * This does not have any support for actor based combat without tokens.
    */
   private static getDamageBonusSourceOptions(
     weapon: RqgItem | undefined,

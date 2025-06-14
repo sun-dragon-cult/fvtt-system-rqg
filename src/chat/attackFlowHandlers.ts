@@ -13,7 +13,7 @@ import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { DefenceDialogV2 } from "../applications/AttackFlow/defenceDialogV2";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-import { RqgActor } from "../actors/rqgActor";
+import type { RqgActor } from "../actors/rqgActor";
 import type { RqgChatMessage } from "./RqgChatMessage";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../sockets/SocketableRequests";
@@ -127,11 +127,21 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   requireValue(ignoreDefenderAp, "Damage roll was not evaluated before applying to actor");
 
   // @ts-expect-error system
-  const damagedTokenUuid = attackChatMessage.system.defendingTokenUuid as string;
-  // @ts-expect-error actor
-  const damagedActor = (await fromUuid(damagedTokenUuid))?.actor as RqgActor | undefined;
-  if (!damagedActor) {
-    // TODO Warn about missing token
+  const damagedTokenOrActorUuid = attackChatMessage.system.defendingTokenOrActorUuid as string;
+  const damagedTokenOrActor = (await fromUuid(damagedTokenOrActorUuid)) as
+    | RqgActor
+    | TokenDocument
+    | undefined;
+
+  const damagedActor =
+    damagedTokenOrActor instanceof TokenDocument ? damagedTokenOrActor.actor : damagedTokenOrActor;
+  if (
+    !damagedActor ||
+    (damagedTokenOrActor instanceof Actor && !damagedTokenOrActor?.prototypeToken.actorLink)
+  ) {
+    ui.notifications?.info("RQG.ChatMessage.Combat.CannotApplyDamageToUnlinkedActor", {
+      localize: true,
+    });
     return;
   }
   // @ts-expect-error system

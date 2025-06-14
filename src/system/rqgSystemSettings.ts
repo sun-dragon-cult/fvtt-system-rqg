@@ -75,6 +75,15 @@ export const registerRqgSystemSettings = function () {
     default: "Fumble",
   });
 
+  getGame().settings.register(systemId, "allowCombatWithoutToken", {
+    name: "RQG.Settings.AllowCombatWithoutToken.settingName",
+    hint: "RQG.Settings.AllowCombatWithoutToken.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   getGame().settings.register(systemId, "showHeropoints", {
     name: "RQG.Settings.ShowHeropoints.settingName",
     hint: "RQG.Settings.ShowHeropoints.settingHint",

@@ -31,11 +31,11 @@ export class DamageCalculations {
   public static addWound(
     damage: number,
     applyDamageToTotalHp: boolean,
-    hitLocation: RqgItem,
+    hitLocation: RqgItem | undefined,
     actor: RqgActor,
     speakerName: string,
   ): DamageEffects {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
     if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Limb) {
       return DamageCalculations.calcLimbDamageEffects(

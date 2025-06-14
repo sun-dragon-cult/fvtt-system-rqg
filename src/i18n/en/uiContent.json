@@ -446,6 +446,7 @@
         "RollDamage": "Roll Damage",
         "ApplyActorDamage": "Apply Damage to Actor",
         "ApplyWeaponDamage": "Apply Damage to Weapon",
+        "CannotApplyDamageToUnlinkedActor": "Cannot apply damage to unlinked actor",
         "RollAttackerFumble": "Roll Attacker Fumble",
         "RollDefenderFumble": "Roll Defender Fumble",
         "AttackerFumble": "Attacker Fumble",
@@ -477,7 +478,8 @@
           "1d10": "From Below (1d10)",
           "1d10+10": "From Above (1d10 + 10)"
         },
-        "NoTokenToAttackWith": "You don't have any token in this scene to do an attack"
+        "NoTokenToAttackWith": "You don't have any token in this scene to do an attack",
+        "WeaponNotEmbedded": "Could not find the owner of the used weapon"
       },
       "Defence": {
         "Title": "Defend",
@@ -564,8 +566,11 @@
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
         "Actor": "Actor",
-        "AttackingActor": "Attacking Actor",
-        "DefendingActor": "Defending Actor",
+        "AttackingActor": "Attacker",
+        "DefendingActor": "Defender",
+        "TargetedToken": "targeted token",
+        "Tokens": "tokens",
+        "Actors": "actors",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",
@@ -1150,7 +1155,8 @@
         "Damage": "Damage",
         "WeaponDamage": "weapon damage",
         "DamageBonus": "damage bonus",
-        "SpecialDamage": "special damage"
+        "SpecialDamage": "special damage",
+        "ExtraDamage": "extra damage"
       }
     },
     "Hotbar": {
@@ -1336,6 +1342,10 @@
       "FumbleRollTable": {
         "settingName": "Fumble Roll Table",
         "settingHint": "The name of the Fumble roll table - will be used in combat"
+      },
+      "AllowCombatWithoutToken": {
+        "settingName": "Allow Combat without Token",
+        "settingHint": "If enabled, combat can be started without a token on a scene. This is useful for GMs who want to run \"theater of the mind\" style combats. Disabling will reduce the length of the combat dialog dropdowns of attackers and defenders so only tokens of the current scene are shown."
       },
       "ShowHeropoints": {
         "settingName": "Show Hero Points",

@@ -13,7 +13,7 @@ export type AttackDialogContext = {
   usageTypeOptions: SelectOptionData<UsageType>[];
   augmentOptions: SelectOptionData<number>[];
   defendingTokenName: string;
-  attackingTokenOptions: SelectOptionData<string>[];
+  attackerOptions: SelectOptionData<string>[];
   attackingWeaponOptions: SelectOptionData<string>[];
   damageBonusSourceOptions: SelectOptionData<string>[];
   hitLocationFormulaOptions: SelectOptionData<string>[];
@@ -22,7 +22,7 @@ export type AttackDialogContext = {
 };
 
 export type AttackDialogFormData = {
-  attackingTokenUuid: string;
+  attackingTokenOrActorUuid: string;
   attackingWeaponUuid: string;
   usageType: UsageType;
   attackDamageBonus: string;

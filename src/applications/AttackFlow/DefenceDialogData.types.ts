@@ -9,8 +9,8 @@ export type DefenceDialogContext = {
   defenceButtonText: string;
 
   defenceChance: number;
-  attackingTokenName: string;
-  defendingTokenOptions: SelectOptionData<string>[];
+  attackerName: string;
+  defenderOptions: SelectOptionData<string>[];
   defenceOptions: SelectOptionData<string>[];
   parryingWeaponOptions: SelectOptionData<string>[];
   parryingWeaponUsageOptions: SelectOptionData<string>[];
@@ -20,7 +20,7 @@ export type DefenceDialogContext = {
 };
 
 export type DefenceDialogFormData = {
-  defendingTokenUuid: string;
+  defendingTokenOrActorUuid: string;
   defence: DefenceType | undefined;
   parryingWeaponUuid: string | undefined;
   parryingWeaponUsage: UsageType | undefined;
