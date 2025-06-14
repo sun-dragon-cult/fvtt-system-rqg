@@ -83,6 +83,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "defence-dialog"],
     form: {
       handler: DefenceDialogV2.onSubmit,
       submitOnChange: false,
@@ -95,7 +96,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "defence-dialog"],
     },
   };
 

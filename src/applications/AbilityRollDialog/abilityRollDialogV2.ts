@@ -55,6 +55,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
     form: {
       handler: AbilityRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -67,7 +68,6 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
     },
   };
 

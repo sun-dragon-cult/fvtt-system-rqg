@@ -70,6 +70,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "attack-dialog"],
     form: {
       handler: AttackDialogV2.onSubmit,
       submitOnChange: false,
@@ -82,7 +83,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "attack-dialog"],
     },
   };
 

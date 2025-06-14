@@ -55,6 +55,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
     form: {
       handler: CharacteristicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -67,7 +68,6 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
     },
   };
 

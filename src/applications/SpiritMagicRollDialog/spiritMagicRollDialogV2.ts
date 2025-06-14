@@ -55,6 +55,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
     form: {
       handler: SpiritMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -67,7 +68,6 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
     },
   };
 
