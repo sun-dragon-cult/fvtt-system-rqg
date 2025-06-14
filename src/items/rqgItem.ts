@@ -36,7 +36,10 @@ import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "../data-model/item-data/spell";
 import { DamageType, UsageType } from "../data-model/item-data/weaponData";
 import { DamageDegree } from "../system/combatCalculations.defs";
-import { formatDamagePart } from "../system/combatCalculations";
+import {
+  formatDamagePart,
+  getNormalizedDamageFormulaAndDamageBonus,
+} from "../system/combatCalculations";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 
 export class RqgItem extends Item {
@@ -328,7 +331,7 @@ export class RqgItem extends Item {
     }
 
     const { damageFormula, damageBonusPlaceholder } =
-      this.getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+      getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
 
     if (damageDegree === "normal") {
       const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
@@ -409,28 +412,6 @@ export class RqgItem extends Item {
     }
 
     throw new RqgError("Tried to get damageFormula for invalid damageDegree");
-  }
-
-  /**
-   * Split the damage formula into a part without damage bonus and a part with damage bonus placeholder.
-   * Also remove extra spaces from the formula.
-   */
-  private getNormalizedDamageFormulaAndDamageBonus(damageFormula: string): {
-    damageFormula: string;
-    damageBonusPlaceholder: string;
-  } {
-    const normalizedDamageFormula = damageFormula.replaceAll(" ", "");
-    const damageFormulaWithoutDb = normalizedDamageFormula.replaceAll(/\+db\/2|\+db/g, "");
-    const damageBonusPlaceholder = normalizedDamageFormula.includes("db/2")
-      ? "+db/2"
-      : normalizedDamageFormula.includes("db")
-        ? "+db"
-        : "";
-
-    return {
-      damageFormula: damageFormulaWithoutDb,
-      damageBonusPlaceholder: damageBonusPlaceholder,
-    };
   }
 
   /**

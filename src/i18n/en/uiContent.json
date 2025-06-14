@@ -1154,7 +1154,8 @@
         "Damage": "Damage",
         "WeaponDamage": "weapon damage",
         "DamageBonus": "damage bonus",
-        "SpecialDamage": "special damage"
+        "SpecialDamage": "special damage",
+        "ExtraDamage": "extra damage"
       }
     },
     "Hotbar": {
