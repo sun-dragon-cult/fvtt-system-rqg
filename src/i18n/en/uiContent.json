@@ -1338,7 +1338,7 @@
       },
       "AllowCombatWithoutToken": {
         "settingName": "Allow Combat without Token",
-        "settingHint": "If enabled, combat can be started without a token on a scene. This is useful for GMs who want to run \"theater of the mind\" style combats."
+        "settingHint": "If enabled, combat can be started without a token on a scene. This is useful for GMs who want to run \"theater of the mind\" style combats. Disabling will reduce the length of the combat dialog dropdowns of attackers and defenders so only tokens of the current scene are shown."
       },
       "ShowHeropoints": {
         "settingName": "Show Hero Points",

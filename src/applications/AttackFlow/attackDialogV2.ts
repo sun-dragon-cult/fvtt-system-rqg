@@ -14,9 +14,9 @@ import {
   requireValue,
   RqgError,
 } from "../../system/util";
-import { RqgActor } from "../../actors/rqgActor";
+import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
-import { RqgToken } from "../../combat/rqgToken";
+import type { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
