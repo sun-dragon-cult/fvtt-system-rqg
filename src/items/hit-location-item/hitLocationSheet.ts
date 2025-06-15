@@ -134,6 +134,7 @@ export class HitLocationSheet extends RqgItemSheet<
       ignoreAP,
       applyDamageToTotalHp,
       damageType.Impale, // TODO add dropdown to dialog? For now use Impale (still unused)
+      // TODO add dropdown to dialog for choosing successLevel as well? Probably overkill
     );
   }
 

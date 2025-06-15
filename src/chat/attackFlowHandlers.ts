@@ -19,6 +19,7 @@ import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../sockets/SocketableRequests";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
+import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -101,13 +102,14 @@ export async function handleRollDamageAndHitLocation(
 export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = getGame().messages?.get(chatMessageId);
+  const attackChatMessage = getGame().messages?.get(chatMessageId) as
+    | StoredDocument<RqgChatMessage>
+    | undefined;
   if (!attackChatMessage) {
     // TODO Warn about missing chat message
     return;
   }
 
-  // @ts-expect-error system
   const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
   requireValue(
     hitLocationRoll.total,
@@ -115,18 +117,15 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   );
 
   const defenderHitLocationDamage: number | undefined =
-    // @ts-expect-error system
     attackChatMessage.system.defenderHitLocationDamage;
   requireValue(
     defenderHitLocationDamage,
     "No defenderHitLocationDamage was calculated before applying to actor",
   );
 
-  // @ts-expect-error system
   const ignoreDefenderAp = attackChatMessage.system.ignoreDefenderAp;
   requireValue(ignoreDefenderAp, "Damage roll was not evaluated before applying to actor");
 
-  // @ts-expect-error system
   const damagedTokenOrActorUuid = attackChatMessage.system.defendingTokenOrActorUuid as string;
   const damagedTokenOrActor = (await fromUuid(damagedTokenOrActorUuid)) as
     | RqgActor
@@ -144,17 +143,18 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     });
     return;
   }
-  // @ts-expect-error system
   const wasDamagedReducedByParry = !!attackChatMessage.system.damagedWeaponUuid;
+
+  const attackRoll = AbilityRoll.fromData(attackChatMessage.system.attackRoll);
 
   await damagedActor.applyDamage(
     defenderHitLocationDamage,
     hitLocationRoll.total,
     ignoreDefenderAp,
     true,
-    // @ts-expect-error system
     attackChatMessage.system.attackCombatManeuver.damageType,
     wasDamagedReducedByParry,
+    attackRoll.successLevel,
   );
 
   const messageData = attackChatMessage.toObject();
