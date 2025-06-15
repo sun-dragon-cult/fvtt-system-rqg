@@ -320,6 +320,7 @@ export class RqgActor extends Actor {
     applyToActorHP: boolean = true,
     damageType: DamageType,
     wasDamagedReducedByParry: boolean = false,
+    attackSuccessLevel?: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
     const damagedHitLocation = this.items.find(
       (i) =>
@@ -366,8 +367,10 @@ export class RqgActor extends Actor {
     } // TODO fix type
 
     // Incapacitating Rule
-    const incapacitatingText =
-      damageType === "slash" && damageAfterAP >= damagedHitLocation!.system.hitPoints.max
+    const incapacitatingText = // include crit / special check!
+      damageType === "slash" &&
+      (attackSuccessLevel ?? Infinity) <= AbilitySuccessLevelEnum.Special &&
+      damageAfterAP >= damagedHitLocation!.system.hitPoints.max
         ? `<p>${localize("RQG.Item.HitLocation.IncapacitationRule", {
             damage: damageAfterAP,
           })}</p>`
