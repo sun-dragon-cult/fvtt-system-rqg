@@ -18,7 +18,6 @@ import {
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
-import { RqgRollTableConfig } from "./rollTables/rqgRollTableConfig";
 import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
 import { RqgJournalEntry } from "./journals/rqgJournalEntry";
@@ -34,6 +33,7 @@ import { SpiritMagicRoll } from "./rolls/SpiritMagicRoll/SpiritMagicRoll";
 import { RuneMagicRoll } from "./rolls/RuneMagicRoll/RuneMagicRoll";
 import { HitLocationRoll } from "./rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "./rolls/DamageRoll/DamageRoll";
+import { RqgRollTableSheet } from "./rollTables/rqgRollTableSheet";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -108,17 +108,16 @@ Hooks.once("init", async () => {
 
   dragRulerModuleIntegrationInit();
 
-  // @ts-expect-error collections
-  const collections = foundry.documents.collections;
-  // @ts-expect-error appv1
-  const sheetsV1 = foundry.appv1.sheets;
+  // @ts-expect-error applications
+  const sheetsConfig = foundry.applications.apps.DocumentSheetConfig;
+  // @ts-expect-error applications
+  const sheets = foundry.applications.sheets;
 
-  // TODO this does not actually work, there is no RollTableConfig under sheetsv1
-  // collections.RollTables.unregisterSheet("core", sheetsV1.RollTableConfig);
-  // collections.RollTables.registerSheet(systemId, RqgRollTableConfig as any, {
-  //   label: "RQG.SheetName.RollTable",
-  //   makeDefault: true,
-  // });
+  sheetsConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
+  sheetsConfig.registerSheet(RollTable, systemId, RqgRollTableSheet, {
+    label: "RQG.SheetName.RollTable",
+    makeDefault: true,
+  });
 
   await loadHandlebarsTemplates();
   registerHandlebarsHelpers();

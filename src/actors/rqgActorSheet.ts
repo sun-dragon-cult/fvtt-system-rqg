@@ -43,7 +43,7 @@ import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
-import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
+import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
@@ -1348,7 +1348,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Handle rqid links
-    RqidLink.addRqidLinkClickHandlers(html);
+    void RqidLink.addRqidLinkClickHandlersToJQuery(html);
 
     // Handle deleting RqidLinks from RqidLink Array Properties
     $(htmlElement!)
@@ -1946,7 +1946,7 @@ export class RqgActorSheet extends ActorSheet<
 
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
-    await addRqidLinkToSheetHtml(html, this);
+    await addRqidLinkToSheetJQuery(html, this);
 
     const editModeLink = html.find(".title-edit-mode")[0];
     if (editModeLink) {

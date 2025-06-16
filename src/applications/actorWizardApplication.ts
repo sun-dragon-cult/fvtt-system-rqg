@@ -385,7 +385,7 @@ export class ActorWizard extends FormApplication {
     });
 
     // Handle rqid links
-    void RqidLink.addRqidLinkClickHandlers($(this.form!));
+    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.form!));
   }
 
   _setActorCreationComplete() {

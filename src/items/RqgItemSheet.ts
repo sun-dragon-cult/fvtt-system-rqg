@@ -1,6 +1,6 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
-import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
+import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgItem } from "./rqgItem";
 import {
   extractDropInfo,
@@ -159,7 +159,7 @@ export class RqgItemSheet<
     });
 
     // Handle rqid links
-    RqidLink.addRqidLinkClickHandlers($(this.form!));
+    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.form!));
 
     // Handle deleting RqidLinks from RqidLink Array Properties
     $(this.form!)
@@ -327,7 +327,7 @@ export class RqgItemSheet<
 
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
-    await addRqidLinkToSheetHtml(html, this);
+    await addRqidLinkToSheetJQuery(html, this);
     return html;
   }
 }
