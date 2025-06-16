@@ -106,6 +106,7 @@ export class RqidEditor extends FormApplication {
       appData.compendiumDuplicates = compendiumDocuments.length ?? 0;
       appData.worldDocumentInfo = worldDocumentInfo;
       appData.compendiumDocumentInfo = compendiumDocumentInfo;
+      appData.rqidLink = `@RQID[${documentRqid}]{${this.document.name}}`;
     }
 
     appData.supportedLanguagesOptions = CONFIG.supportedLanguages;
@@ -113,6 +114,7 @@ export class RqidEditor extends FormApplication {
     appData.parentId = this.document?.parent?.id ?? "";
     // @ts-expect-error uuid
     appData.uuid = this.document.uuid;
+
     appData.folder = this.getPath(this.document);
     appData.flags = {
       rqg: {
