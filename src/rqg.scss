@@ -1210,18 +1210,20 @@ input.readonly {
     text-wrap-style: balance;
   }
 }
-// Almost a copy if Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
-.rqid-content-link[data-rqid-link] {
-  // Silly construct to raise specificity
-  background: #ddd;
-  padding: 1px 4px;
-  border: 1px solid var(--color-border-dark-tertiary);
-  border-radius: 2px 9px 9px 2px;
+// Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
+.rqid-content-link {
+  border-radius: 9px;
+  background: var(--content-link-background);
+  border: 2px dashed var(--content-link-border-color);
+  color: var(--content-link-text-color);
+  margin: -1px 0;
+  padding: 1px 4px 0;
   white-space: nowrap;
   word-break: break-all;
 
   i {
-    color: var(--color-text-dark-inactive);
+    color: var(--content-link-icon-color);
+    font-size: 0.8em;
     margin-right: 0.25em;
   }
 
