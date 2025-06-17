@@ -15,11 +15,11 @@ import type { RqgItem } from "../../items/rqgItem";
 
 export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
   {
-    name: localize("RQG.Game.RollChat"),
+    name: localize("RQG.Game.InitiateCombat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
+    condition: (el: JQuery) => !!getDomDataset(el, "weapon-item-id"),
     callback: async (el: JQuery) => {
-      const weaponItemId = getRequiredDomDataset(el, "item-id");
+      const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
       assertItemType(weapon?.type, ItemTypeEnum.Weapon);
       await weapon.attack();
@@ -72,7 +72,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: contextMenuRunes.Edit,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
-      const weaponItemId = getDomDataset(el, "item-id");
+      const weaponItemId = getDomDataset(el, "weapon-item-id");
       const item = weaponItemId && actor.items.get(weaponItemId);
       if (!item || !item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponSheetError", {
@@ -94,7 +94,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
-        RqgActorSheet.confirmItemDelete(actor, skillItemId);
+        void RqgActorSheet.confirmItemDelete(actor, skillItemId);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantDeleteSkillError", {
           weaponItemId: skillItemId,
@@ -112,9 +112,9 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: contextMenuRunes.Delete,
     condition: () => !!getGame().user?.isGM,
     callback: (el: JQuery) => {
-      const weaponItemId = getDomDataset(el, "item-id");
+      const weaponItemId = getDomDataset(el, "weapon-item-id");
       if (weaponItemId) {
-        RqgActorSheet.confirmItemDelete(actor, weaponItemId);
+        void RqgActorSheet.confirmItemDelete(actor, weaponItemId);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantDeleteWeaponError", {
           weaponItemId: weaponItemId,

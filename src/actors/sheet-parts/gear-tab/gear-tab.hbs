@@ -204,12 +204,10 @@
             <div data-item-id="{{id}}" class="gear usagecontainer contextmenu nowrap item">
               {{#each system.usage}}
                 {{#if skillId}}
-                  <div class="usagecell
-                        {{#if unusable}} warning{{/if}}"
-                        {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
-                  >
-                    <span class="combat contextmenu usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
-                          data-skill-id="{{skillId}}" data-item-id="{{../id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.RollChat"}}">
+                  <div class="usagecell {{#if unusable}} warning{{/if}}"
+                       {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                       data-skill-id="{{skillId}}">
+                    <span class="usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}">
                           {{skillchance @root.uuid skillId}}%
                     </span>
                     &nbsp; {{skillname @root.uuid skillId}}
