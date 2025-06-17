@@ -565,7 +565,7 @@
         "IsAttacking": "attacks {defenderName}",
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
-        "Actor": "Actor",
+        "Character": "Character",
         "AttackingActor": "Attacker",
         "DefendingActor": "Defender",
         "TargetedToken": "targeted token",
@@ -1220,6 +1220,7 @@
       "RollQuick": "Direct Roll (dbl click)",
       "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",
       "RollTitle": "Roll via Dialog (click), Direct Roll (dbl click)",
+      "InitiateCombat": "Initiate combat",
       "WeaponUsage": {
         "oneHand": "1H",
         "offHand": "offH",
