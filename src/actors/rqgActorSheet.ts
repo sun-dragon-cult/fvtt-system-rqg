@@ -1054,21 +1054,6 @@ export class RqgActorSheet extends ActorSheet<
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
-        if (
-          hasOwnProperty(item.system, "category") &&
-          [
-            SkillCategoryEnum.MeleeWeapons,
-            SkillCategoryEnum.MissileWeapons,
-            SkillCategoryEnum.Shields,
-            SkillCategoryEnum.NaturalWeapons,
-          ].includes(item.system.category)
-        ) {
-          ui.notifications?.warn(
-            "To use a weapon please make sure it is equipped and use the Combat tab instead.",
-          );
-          return;
-        }
-
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           await item.abilityRollImmediate();
@@ -1152,7 +1137,7 @@ export class RqgActorSheet extends ActorSheet<
 
     // Roll Weapon Ability (send to chat)
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
-      const weaponItemId = getRequiredDomDataset(el, "item-id");
+      const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = this.actor.items.get(weaponItemId);
       assertItemType(weapon?.type, ItemTypeEnum.Weapon);
 

@@ -3,6 +3,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions, Modifier } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
+  activateChatTab,
   assertItemType,
   getActorLinkDecoration,
   getGame,
@@ -534,6 +535,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       );
     }
 
+    activateChatTab();
     await updateChatMessage(attackChatMessage, messageData);
     const attackWeapon = (await fromUuid(attackChatMessage.system.attackWeaponUuid)) as
       | RqgItem

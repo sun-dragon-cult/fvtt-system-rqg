@@ -1,5 +1,6 @@
 import type { RqgItem } from "../items/rqgItem";
 import {
+  activateChatTab,
   assertItemType,
   getGame,
   getGameUser,
@@ -93,6 +94,7 @@ export async function handleRollDamageAndHitLocation(
     messageData.system,
   );
 
+  activateChatTab();
   await updateChatMessage(attackChatMessage, messageData);
 }
 
