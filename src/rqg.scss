@@ -131,6 +131,10 @@ input.readonly {
   align-self: start;
 }
 
+.max-w-10rem {
+  max-width: 10rem;
+}
+
 .rqg {
   h1,
   h2,
@@ -1279,6 +1283,8 @@ input.readonly {
 
   & .input-button {
     display: flex;
+    align-items: center;
+    width: 100%;
 
     & input {
       width: 100%;
@@ -1309,6 +1315,10 @@ input.readonly {
 
     &[type="text"] {
       width: 100%;
+    }
+
+    &[name="rqidNamePart"] {
+      width: 12rem;
     }
 
     &.short {
