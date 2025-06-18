@@ -5,12 +5,7 @@
 <div class="key-value-grid">
   <label>{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}:</label>
   <select name="selectedHomelandRqid">
-    {{#select homeland.selectedHomeland.flags.rqg.documentRqidFlags.id}}
-    <option value="">{{localize "RQG.ActorCreation.Step1.ChooseHomeland"}}</option>
-    {{#each homeland.homelands}}
-    <option value="{{flags.rqg.documentRqidFlags.id}}">{{this.name}}</option>
-    {{/each}}
-    {{/select}}
+    {{selectOptions homeland.homelandOptions selected=homeland.selectedHomeland.flags.rqg.documentRqidFlags.id localize=false}}
   </select>
 
   <label>{{localize "RQG.ActorCreation.Step1.HomelandDescription"}}:</label>

@@ -12,6 +12,13 @@ export const damageType = {
 } as const;
 export type DamageType = (typeof damageType)[keyof typeof damageType];
 
+export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(
+  (damageType) => ({
+    value: damageType,
+    label: "RQG.Item.Weapon.DamageTypeEnum." + damageType,
+  }),
+);
+
 export type UsageType = "oneHand" | "twoHand" | "offHand" | "missile";
 
 export type CombatManeuver = {

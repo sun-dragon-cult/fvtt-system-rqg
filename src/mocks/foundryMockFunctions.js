@@ -1,10 +1,11 @@
 // eslint-disable-file no-undef
 global.foundry = {
-  utils: { mergeObject: jest.fn((...args) => mockMergeObject(...args)) },
+  utils: {
+    mergeObject: jest.fn((...args) => mockMergeObject(...args)),
+    getProperty: jest.fn((...args) => mockGetProperty(...args)),
+    getType: jest.fn((...args) => mockGetType(...args)),
+  },
 };
-
-global.getType = jest.fn((...args) => mockGetType(...args));
-global.getProperty = jest.fn((...args) => mockGetProperty(...args));
 
 const mockCONFIG = {
   statusEffects: [
@@ -225,80 +226,88 @@ function mockMergeObject(
     const v = other[k];
     // eslint-disable-next-line no-prototype-builtins
     if (original.hasOwnProperty(k)) {
-      _mergeUpdate(original, k, v, options, _d + 1);
+      _mergeUpdate(original, k, v, _d + 1, options);
     } else {
-      _mergeInsert(original, k, v, options, _d + 1);
+      _mergeInsert(original, k, v, _d + 1, options);
     }
   }
   return original;
 }
 
-function expandObject(obj, _d = 0) {
-  if (_d > 100) {
-    throw new Error("Maximum object expansion depth exceeded");
-  }
-
-  // Recursive expansion function
-  function _expand(value) {
-    if (value instanceof Object) {
-      if (Array.isArray(value)) {
-        return value.map(_expand);
-      } else {
-        return expandObject(value, _d + 1);
-      }
+function expandObject(obj) {
+  const _expand = (value, depth) => {
+    if (depth > 32) {
+      throw new Error("Maximum object expansion depth exceeded");
     }
-    return value;
-  }
-
-  // Expand all object keys
-  const expanded = {};
-  for (const [k, v] of Object.entries(obj)) {
-    setProperty(expanded, k, _expand(v));
-  }
-  return expanded;
+    if (!value) {
+      return value;
+    }
+    if (Array.isArray(value)) {
+      return value.map((v) => _expand(v, depth + 1));
+    } // Map arrays
+    if (foundry.utils.getType(value) !== "Object") {
+      return value;
+    } // Return advanced objects directly
+    const expanded = {}; // Expand simple objects
+    for (const [k, v] of Object.entries(value)) {
+      setProperty(expanded, k, _expand(v, depth + 1));
+    }
+    return expanded;
+  };
+  return _expand(obj, 0);
 }
 
 function setProperty(object, key, value) {
-  let target = object;
-  let changed = false;
+  if (!key) {
+    return false;
+  }
 
   // Convert the key to an object reference if it contains dot notation
+  let target = object;
   if (key.indexOf(".") !== -1) {
     const parts = key.split(".");
     key = parts.pop();
-    target = parts.reduce((o, i) => {
-      // eslint-disable-next-line no-prototype-builtins
-      if (!o.hasOwnProperty(i)) {
-        o[i] = {};
+    target = parts.reduce((target, p) => {
+      if (!(p in target)) {
+        target[p] = {};
       }
-      return o[i];
+      return target[p];
     }, object);
   }
 
   // Update the target
-  if (target[key] !== value) {
-    changed = true;
+  if (!(key in target) || target[key] !== value) {
     target[key] = value;
+    return true;
   }
-
-  // Return changed status
-  return changed;
+  return false;
 }
 
-function _mergeInsert(original, k, v, { insertKeys, insertValues, performDeletions } = {}, _d) {
-  // Delete a key
-  if (k.startsWith("-=") && performDeletions) {
+function _mergeInsert(original, k, v, _d, { insertKeys, insertValues, performDeletions } = {}) {
+  // Force replace a specific key
+  if (performDeletions && k.startsWith("==")) {
+    original[k.slice(2)] = applySpecialKeys(v);
+    return;
+  }
+
+  // Delete a specific key
+  if (performDeletions && k.startsWith("-=")) {
+    if (v !== null) {
+      throw new Error(
+        "Removing a key using the -= deletion syntax requires the value of that" +
+          " deletion key to be null, for example {-=key: null}",
+      );
+    }
     delete original[k.slice(2)];
     return;
   }
 
+  // Insert a new object, either recursively or directly
   const canInsert = (_d <= 1 && insertKeys) || (_d > 1 && insertValues);
   if (!canInsert) {
     return;
   }
-
-  // Recursively create simple objects
-  if (v?.constructor === Object) {
+  if (foundry.utils.getType(v) === "Object") {
     original[k] = foundry.utils.mergeObject({}, v, {
       insertKeys: true,
       inplace: true,
@@ -306,8 +315,6 @@ function _mergeInsert(original, k, v, { insertKeys, insertValues, performDeletio
     });
     return;
   }
-
-  // Insert a key
   original[k] = v;
 }
 
@@ -315,16 +322,18 @@ function _mergeUpdate(
   original,
   k,
   v,
-  { insertKeys, insertValues, enforceTypes, overwrite, recursive, performDeletions } = {},
   _d,
+  { insertKeys, insertValues, enforceTypes, overwrite, recursive, performDeletions } = {},
 ) {
   const x = original[k];
-  const tv = getType(v);
-  const tx = getType(x);
+  const tv = foundry.utils.getType(v);
+  const tx = foundry.utils.getType(x);
+  const ov = tv === "Object" || tv === "Unknown";
+  const ox = tx === "Object" || tx === "Unknown";
 
   // Recursively merge an inner object
-  if (tv === "Object" && tx === "Object" && recursive) {
-    return mockMergeObject(
+  if (ov && ox && recursive) {
+    return foundry.utils.mergeObject(
       x,
       v,
       {
@@ -342,11 +351,52 @@ function _mergeUpdate(
   // Overwrite an existing value
   if (overwrite) {
     if (tx !== "undefined" && tv !== tx && enforceTypes) {
-      throw new Error(`Mismatched data types encountered during object merge.`);
+      throw new Error("Mismatched data types encountered during object merge.");
     }
-    original[k] = v;
+    original[k] = applySpecialKeys(v);
   }
 }
+
+function applySpecialKeys(obj) {
+  const type = foundry.utils.getType(obj);
+  if (type === "Array") {
+    return obj.map(applySpecialKeys);
+  }
+  if (type !== "Object") {
+    return obj;
+  }
+  const clone = {};
+  for (const key in obj) {
+    const v = obj[key];
+    if (isDeletionKey(key)) {
+      if (key[0] === "-") {
+        if (v !== null) {
+          throw new Error(
+            "Removing a key using the -= deletion syntax requires the value of that" +
+              " deletion key to be null, for example {-=key: null}",
+          );
+        }
+        delete clone[key.substring(2)];
+        continue;
+      }
+      if (key[0] === "=") {
+        clone[key.substring(2)] = applySpecialKeys(v);
+        continue;
+      }
+    }
+    clone[key] = applySpecialKeys(v);
+  }
+  return clone;
+}
+
+const typePrototypes = [
+  [Array, "Array"],
+  [Set, "Set"],
+  [Map, "Map"],
+  [Promise, "Promise"],
+  [Error, "Error"],
+  // [Color, "number"], // Color is not used in the RQG code
+];
 
 function mockGetType(variable) {
   // Primitive types, handled with simple typeof check
@@ -362,40 +412,38 @@ function mockGetType(variable) {
   if (!variable.constructor) {
     return "Object";
   } // Object with the null prototype.
-  if (variable.constructor.name === "Object") {
+  if (variable.constructor === Object) {
     return "Object";
-  } // simple objects
+  } // Simple objects
 
   // Match prototype instances
-  const prototypes = [
-    [Array, "Array"],
-    [Set, "Set"],
-    [Map, "Map"],
-    [Promise, "Promise"],
-    [Error, "Error"],
-    // [Color, "number"], // Don't mock Color to avoid adding even more Foundry code - not used in tests
-  ];
-  if ("HTMLElement" in globalThis) {
-    prototypes.push([globalThis.HTMLElement, "HTMLElement"]);
-  }
-  for (const [cls, type] of prototypes) {
+  for (const [cls, type] of typePrototypes) {
     if (variable instanceof cls) {
       return type;
     }
   }
+  if ("HTMLElement" in globalThis && variable instanceof globalThis.HTMLElement) {
+    return "HTMLElement";
+  }
 
   // Unknown Object type
-  return "Object";
+  return "Unknown";
 }
 
 function mockGetProperty(object, key) {
-  if (!key) {
+  if (!key || !object) {
     return undefined;
+  }
+  if (key in object) {
+    return object[key];
   }
   let target = object;
   for (const p of key.split(".")) {
-    const t = getType(target);
-    if (!(t === "Object" || t === "Array")) {
+    if (!target) {
+      return undefined;
+    }
+    const type = typeof target;
+    if (type !== "object" && type !== "function") {
       return undefined;
     }
     if (p in target) {

@@ -24,7 +24,7 @@ export interface RqidBatchEditorData {
   summary: string;
   itemType: string;
   idPrefix: string;
-  existingRqids: ExistingRqids[];
+  existingRqidOptions: SelectOptionData<string>[];
   itemNamesWithoutRqid: ItemNameWithoutRqid[];
 }
 

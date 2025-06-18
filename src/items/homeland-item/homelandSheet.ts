@@ -1,12 +1,12 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { AvailableItemCache, getGameUser, getSelectRuneOptions } from "../../system/util";
+import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface HomelandSheetData {
-  allRuneOptions: AvailableItemCache[];
+  allRuneOptions: SelectOptionData<string>[];
   enrichedWizardInstructions: string;
 }
 
@@ -18,7 +18,7 @@ export class HomelandSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
       template: templatePaths.itemHomelandSheet,
-      width: 500,
+      width: 600,
       height: 650,
       tabs: [
         {
@@ -43,7 +43,11 @@ export class HomelandSheet extends RqgItemSheet<
       isGM: getGameUser().isGM,
       system: system,
       isEmbedded: this.document.isEmbedded,
-      enrichedWizardInstructions: await TextEditor.enrichHTML(system.wizardInstructions),
+      enrichedWizardInstructions:
+        // @ts-expect-error applications
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          system.wizardInstructions,
+        ),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
     };
   }

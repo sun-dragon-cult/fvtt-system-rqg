@@ -6,6 +6,7 @@ import {
   isTruthy,
   localize,
   localizeItemType,
+  toSignedString,
 } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
@@ -62,7 +63,8 @@ export class AbilityRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.abilityRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRoll, chatData);
   }
 
   // Html for what modifiers are applied
@@ -72,10 +74,11 @@ export class AbilityRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
-        m.value = m.value.signedString();
+        m.value = toSignedString(m.value);
         return m;
       });
-    return renderTemplate(templatePaths.abilityRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRollTooltip, {
       naturalSkill: (this.options as AbilityRollOptions).naturalSkill,
       modifiers: nonzeroSignedModifiers,
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,

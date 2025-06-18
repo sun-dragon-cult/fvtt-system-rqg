@@ -53,20 +53,12 @@
 
             <label for="range-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.Range"}}</label>
             <select id="range-{{id}}" name="system.castingRange">
-              {{#select system.castingRange}}
-                {{#each ranges}}
-                  <option value="{{this}}">{{localize (concat "RQG.Item.Spell.RangeEnum." this)}}</option>
-                {{/each}}
-              {{/select}}
+              {{selectOptions rangeOptions selected=system.castingRange localize=true}}
             </select>
 
             <label for="duration-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.Duration"}} </label>
             <select id="duration-{{id}}" name="system.duration">
-              {{#select system.duration}}
-                {{#each durations}}
-                  <option value="{{this}}">{{localize (concat "RQG.Item.Spell.DurationEnum." this)}}</option>
-                {{/each}}
-              {{/select}}
+              {{selectOptions durationOptions selected=system.duration localize=true}}
             </select>
 
           {{/unless}}
@@ -87,9 +79,7 @@
           {{#if isEmbedded}}
             <label for="cult-id-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.GrantedByCult"}}</label>
             <select id="cult-id-{{id}}" name="system.cultId">
-              {{#select system.cultId}} {{#each actorCults}}
-                <option value="{{id}}">{{name}}</option>
-              {{/each}} {{/select}}
+              {{selectOptions actorCultOptions selected=system.cultId localize=false}}
             </select>
           {{/if}}
 

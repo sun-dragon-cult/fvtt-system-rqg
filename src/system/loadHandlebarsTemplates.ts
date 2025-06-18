@@ -65,7 +65,7 @@ export const templatePaths = {
   defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
 
   // Interface
-  rqgPause: "systems/rqg/foundryUi/rqgPause.hbs",
+  settings: "systems/rqg/foundryUi/settings.hbs",
 } as const;
 
 export const loadHandlebarsTemplates = async function () {
@@ -130,6 +130,6 @@ export const loadHandlebarsTemplates = async function () {
     rqidLinkSelector: "systems/rqg/sheet-partials/rqidLinkSelector.hbs",
   } as const;
 
-  // @ts-expect-error object
-  return loadTemplates(partialPaths);
+  // @ts-expect-error applications
+  return foundry.applications.handlebars.loadTemplates(partialPaths);
 };

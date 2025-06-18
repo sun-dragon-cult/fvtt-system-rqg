@@ -1,4 +1,4 @@
-<form autocomplete="off">
+<form autocomplete="off" class="flex-column">
   <header class="item-sheet-header">
     <img src="{{img}}" data-edit="img" data-tooltip="{{name}}">
 
@@ -32,7 +32,7 @@
       }}
     </div>
   </header>
-  <main>
+  <main class="flex-column flex-1">
     {{! Sheet Tab Navigation }}
     <nav class="item-sheet-nav-tabs" data-group="primary">
       <a class="item" data-tab="deity">{{localize "RQG.Item.SheetTab.Deity"}}</a>
@@ -42,10 +42,10 @@
       <a class="item" data-tab="cults">{{localize "RQG.Item.SheetTab.Cults"}}</a>
     </nav>
 
-    <section class="sheet-body">
+    <section class="sheet-body flex-1">
       {{! Deity Tab }}
       <div class="tab" data-group="primary" data-tab="deity">
-        <div class="key-value-grid">
+        <div class="key-value-grid fullheight" style="grid-template-rows: repeat(3, min-content) 1fr;">
           <label for="rune-points-value-{{id}}">{{localize "RQG.Item.Cult.RunePoints"}}</label>
           <div>
             <input
@@ -93,7 +93,9 @@
               enrichedHolyDays
               target="system.holyDays"
               button=true
+              engine="prosemirror"
               editable=isEditable
+              class="self-stretch"
             }}
           </div>
         </div>
@@ -101,13 +103,14 @@
 
       {{! Gifts and Geases Tab }}
       <div class="tab" data-group="primary" data-tab="giftsandgeases">
-        <div class="key-value-grid">
+        <div class="key-value-grid fullheight" style="grid-template-rows: 1fr 1fr">
           <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGifts"}}</label>
           <div class="editor-container">
             {{editor
               enrichedGifts
               target="system.gifts"
               button=true
+              engine="prosemirror"
               editable=isEditable
             }}
           </div>
@@ -118,6 +121,7 @@
               enrichedGeases
               target="system.geases"
               button=true
+              engine="prosemirror"
               editable=isEditable
             }}
           </div>
@@ -149,13 +153,7 @@
 
                 <label for="cult-rank-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
                 <select name="system.joinedCults.rank" id="cult-rank-{{@index}}-{{id}}">
-                  {{#select this.rank}}
-                    {{#each @root.ranksEnum}}
-                      <option value="{{this}}">{{localize
-                        (concat "RQG.Actor.RuneMagic.CultRank." this)
-                      }}</option>
-                    {{/each}}
-                  {{/select}}
+                  {{selectOptions @root.rankOptions selected=this.rank localize=true}}
                 </select>
               </div>
               <a data-tooltip="Delete Cult" data-delete-cult="{{@index}}"><i class="fas fa-trash"></i></a>

@@ -7,7 +7,7 @@ import {
   localizeDocumentName,
   localizeItemType,
 } from "../system/util";
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -135,8 +135,11 @@ export async function updateRqidLink(
   const fullDocumentRqid =
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
-  // @ts-expect-error system
-  const targetProperty = getProperty(targetDocument?.system, targetPropertyName ?? "");
+  const targetProperty = foundry.utils.getProperty(
+    // @ts-expect-error system
+    targetDocument?.system,
+    targetPropertyName ?? "",
+  );
 
   // TODO Should really check if this.item has a property like targetPropertyName,
   //  but !hasOwnProperty(this.item.system, targetPropertyName) won't work if the default value is undefined.

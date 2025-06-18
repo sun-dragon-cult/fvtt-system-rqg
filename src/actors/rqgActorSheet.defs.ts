@@ -37,7 +37,7 @@ export interface CharacterSheetData {
   dodgeSkillData: RqgItem | undefined;
 
   // Lists for dropdown values
-  occupations: `${OccupationEnum}`[];
+  occupationOptions: SelectOptionData<OccupationEnum>[];
   homelands: `${HomeLandEnum}`[];
   locations: string[];
   healthStatuses: typeof actorHealthStatuses;
@@ -63,7 +63,7 @@ export interface CharacterSheetData {
   baseStrikeRank: number | undefined;
   enrichedAllies: string;
   enrichedBiography: string;
-  ownedProjectiles: RqgItem[];
+  ownedProjectileOptions: SelectOptionData<string>[];
   locomotionModes: { [a: string]: string };
 
   currencyTotals: any;

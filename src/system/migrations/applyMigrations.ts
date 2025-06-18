@@ -1,11 +1,11 @@
 import { getGame, localize } from "../util";
 import { RqgItem } from "../../items/rqgItem";
-import {
+import type {
   ActorData,
   ActorDataConstructorData,
 } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { systemId } from "../config";
 
 export type ItemUpdate = object &
@@ -47,10 +47,8 @@ async function migrateWorldActors(
     return;
   }
   let progress = 0;
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  updateProgressBar(progress, actorCount, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
-  const step = 100 / actorCount;
   for (const actor of actorArray) {
     try {
       const updates = await getActorMigrationUpdates(
@@ -63,16 +61,13 @@ async function migrateWorldActors(
         console.log(`RQG | Migrating Actor document ${actor.name}`, updates);
         await actor.update(updates, { enforceTypes: false });
       }
-      progress += step;
-      // @ts-expect-error displayProgressBar
-      SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
+      updateProgressBar(++progress, actorCount, migrationMsg);
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
       console.error(err, actor);
     }
   }
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
+  updateProgressBar(actorCount, actorCount, migrationMsg);
 }
 
 async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void> {
@@ -85,10 +80,8 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
     return;
   }
   let progress = 0;
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  updateProgressBar(progress, itemArray.length, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
-  const step = 100 / itemCount;
   for (const item of itemArray) {
     try {
       const updateData = await getItemMigrationUpdates((item as any).toObject(), itemMigrations);
@@ -96,17 +89,14 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Item document ${item.name}`, updateData);
         await item.update(updateData, { enforceTypes: false });
-        progress += step;
-        // @ts-expect-error displayProgressBar
-        SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
+        updateProgressBar(++progress, itemArray.length, migrationMsg);
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
       console.error(err, item);
     }
   }
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
+  updateProgressBar(itemArray.length, itemArray.length, migrationMsg);
 }
 
 async function migrateWorldScenes(
@@ -122,10 +112,8 @@ async function migrateWorldScenes(
     return;
   }
   let progress = 0;
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  updateProgressBar(progress, scenesCount, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
-  const step = 100 / scenesCount;
   for (const scene of scenes) {
     try {
       const updateData = await getSceneMigrationUpdates(scene, itemMigrations, actorMigrations);
@@ -137,17 +125,14 @@ async function migrateWorldScenes(
         // If we do not do this, then synthetic token actors remain in cache
         // with the un-updated actorData.
         scene.tokens.contents.forEach((t: any) => (t._actor = null));
-        progress += step;
-        // @ts-expect-error displayProgressBar
-        SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
+        updateProgressBar(++progress, scenesCount, migrationMsg);
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
       console.error(err, scene);
     }
   }
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
+  updateProgressBar(scenesCount, scenesCount, migrationMsg);
 }
 
 async function migrateWorldCompendiumPacks(
@@ -164,10 +149,8 @@ async function migrateWorldCompendiumPacks(
     return;
   }
   let progress = 0;
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: progress });
+  updateProgressBar(progress, packsCount, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
-  const step = 100 / packsCount;
   for (const pack of packs) {
     // @ts-expect-error packageType
     if (pack.metadata.packageType !== "world") {
@@ -178,12 +161,9 @@ async function migrateWorldCompendiumPacks(
       continue;
     }
     await migrateCompendium(pack, itemMigrations, actorMigrations);
-    progress += step;
-    // @ts-expect-error displayProgressBar
-    SceneNavigation.displayProgressBar({ label: migrationMsg, pct: Math.round(progress) });
+    updateProgressBar(++progress, packsCount, migrationMsg);
   }
-  // @ts-expect-error displayProgressBar
-  SceneNavigation.displayProgressBar({ label: migrationMsg, pct: 100 });
+  updateProgressBar(packsCount, packsCount, migrationMsg);
 }
 
 /* -------------------------------------------- */
@@ -365,4 +345,23 @@ async function getSceneMigrationUpdates(
     }),
   );
   return { tokens };
+}
+
+let progressBar: any;
+
+function updateProgressBar(index: number, totalCount: number, prefix: string = ""): void {
+  const total = totalCount || 1; // Avoid division by zero
+  const progress = Math.ceil((100 * index) / total);
+  const pct = Math.round(progress) / 100;
+  const message = `${prefix} ${index} / ${totalCount}`;
+
+  if (!progressBar?.active) {
+    // @ts-expect-error progress
+    progressBar = ui.notifications?.info(message, { progress: true });
+  }
+  progressBar.update({ message, pct });
+
+  if (index === totalCount) {
+    progressBar?.remove();
+  }
 }

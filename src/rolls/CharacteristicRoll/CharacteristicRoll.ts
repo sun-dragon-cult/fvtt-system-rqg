@@ -1,8 +1,14 @@
-import { activateChatTab, getGameUser, isTruthy, localize } from "../../system/util";
+import {
+  activateChatTab,
+  getGameUser,
+  isTruthy,
+  localize,
+  toSignedString,
+} from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
-import { CharacteristicRollOptions } from "./CharacteristicRoll.types";
+import type { CharacteristicRollOptions } from "./CharacteristicRoll.types";
 
 export class CharacteristicRoll extends Roll {
   public static async rollAndShow(options: CharacteristicRollOptions) {
@@ -55,7 +61,11 @@ export class CharacteristicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.characteristicRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(
+      templatePaths.characteristicRoll,
+      chatData,
+    );
   }
 
   // Html for what modifiers are applied
@@ -64,11 +74,12 @@ export class CharacteristicRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
-        m.value = m.value.signedString();
+        m.value = toSignedString(m.value);
         return m;
       });
     const o = this.options as CharacteristicRollOptions;
-    return renderTemplate(templatePaths.characteristicRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.characteristicRollTooltip, {
       characteristicName: localize(`RQG.Actor.Characteristics.${o.characteristicName}`),
       characteristicValue: o.characteristicValue,
       difficulty: o.difficulty ?? 5,

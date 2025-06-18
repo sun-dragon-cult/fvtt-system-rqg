@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneType, RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getGameUser, AvailableItemCache, localize, getSelectRuneOptions } from "../../system/util";
+import { RuneTypeEnum } from "../../data-model/item-data/runeData";
+import { getGameUser, localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -8,9 +8,9 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneSheetData {
-  opposingRuneOptions: AvailableItemCache[];
-  minorRuneOptions: AvailableItemCache[];
-  runeTypes: RuneType[];
+  opposingRuneOptions: SelectOptionData<string>[];
+  minorRuneOptions: SelectOptionData<string>[];
+  runeTypeOption: SelectOptionData<RuneTypeEnum>[];
   rqid: string;
 }
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
@@ -18,7 +18,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
       template: templatePaths.itemRuneSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {
@@ -49,9 +49,9 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       isEmbedded: this.document.isEmbedded,
       opposingRuneOptions: getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder"),
       minorRuneOptions: getSelectRuneOptions("RQG.Item.Rune.AddMinorRunePlaceholder"),
-      runeTypes: Object.values(RuneTypeEnum).map((rt) => ({
-        type: rt,
-        name: localize(`RQG.Item.Rune.RuneType.${rt}`),
+      runeTypeOption: Object.values(RuneTypeEnum).map((rt) => ({
+        value: rt,
+        label: localize(`RQG.Item.Rune.RuneType.${rt}`),
       })),
     };
   }

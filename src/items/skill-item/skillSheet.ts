@@ -1,7 +1,7 @@
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser, AvailableItemCache, getSelectRuneOptions } from "../../system/util";
+import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
@@ -9,8 +9,8 @@ import { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
-  skillCategories: SkillCategoryEnum[];
-  allRuneOptions: AvailableItemCache[];
+  skillCategoryOptions: SelectOptionData<SkillCategoryEnum>[];
+  allRuneOptions: SelectOptionData<string>[];
 }
 
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
@@ -18,7 +18,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
       template: templatePaths.itemSkillSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {
@@ -50,7 +50,10 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       system: system,
       isEmbedded: this.document.isEmbedded,
 
-      skillCategories: Object.values(SkillCategoryEnum),
+      skillCategoryOptions: Object.values(SkillCategoryEnum).map((sc) => ({
+        value: sc,
+        label: "RQG.Actor.Skill.SkillCategory." + sc,
+      })),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Skill.AddSorceryRunePlaceholder"),
     };
   }

@@ -15,8 +15,12 @@ export class RqidLink {
   }
 
   // Handle rqid links
-  static async addRqidLinkClickHandlers(html: JQuery): Promise<void> {
-    html.find("[data-rqid-link]").each((i: number, el: HTMLElement) => {
+  static async addRqidLinkClickHandlersToJQuery(jQuery: JQuery): Promise<void> {
+    await RqidLink.addRqidLinkClickHandlers(jQuery[0] as HTMLElement);
+  }
+
+  static async addRqidLinkClickHandlers(html: HTMLElement): Promise<void> {
+    html.querySelectorAll("[data-rqid-link]").forEach((el: Element) => {
       const rqid = getDomDataset(el, "rqid-link");
       const anchor = getDomDataset(el, "anchor");
       if (rqid) {

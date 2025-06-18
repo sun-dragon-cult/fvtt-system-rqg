@@ -3,6 +3,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions, Modifier } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
+  activateChatTab,
   assertItemType,
   getActorLinkDecoration,
   getGame,
@@ -83,6 +84,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "defence-dialog"],
     form: {
       handler: DefenceDialogV2.onSubmit,
       submitOnChange: false,
@@ -95,7 +97,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "defence-dialog"],
     },
   };
 
@@ -112,7 +113,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext(): Promise<DefenceDialogContext> {
     const formData: DefenceDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const defenderOptions = DefenceDialogV2.getDefenderOptions(this.attackChatMessage);
     if (Object.keys(defenderOptions).length === 0) {
@@ -480,7 +481,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defenceWeaponUsage: parryWeaponUsageType,
       outcomeDescription: outcomeDescription,
       attackRoll: attackRoll.toJSON(),
-      defenceRoll: defenceRoll,
+      defenceRoll: defenceRoll?.toJSON(),
       attackerFumbled: attackerFumbled,
       defenderFumbled: defenderFumbled,
       damagedWeaponUuid: damagedWeapon?.uuid,
@@ -505,7 +506,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       { overwrite: true },
     );
 
-    messageData.content = await renderTemplate(
+    // @ts-expect-error applications
+    messageData.content = await foundry.applications.handlebars.renderTemplate(
       templatePaths.attackChatMessage,
       // @ts-expect-error system
       messageData.system,
@@ -533,6 +535,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       );
     }
 
+    activateChatTab();
     await updateChatMessage(attackChatMessage, messageData);
     const attackWeapon = (await fromUuid(attackChatMessage.system.attackWeaponUuid)) as
       | RqgItem

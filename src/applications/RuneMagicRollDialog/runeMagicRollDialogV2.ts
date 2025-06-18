@@ -11,12 +11,12 @@ import {
 import type { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../../items/rqgItem";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
-import { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
-import {
+import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
+import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
 } from "./RuneMagicRollDialogData.types";
-import { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { RollMode } from "../../chat/chatMessage.types";
 
@@ -71,6 +71,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
     form: {
       handler: RuneMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -83,7 +84,6 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog", "themed"],
     },
   };
 
@@ -100,7 +100,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   async _prepareContext(): Promise<RuneMagicRollDialogContext> {
     const formData: RuneMagicRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
@@ -174,8 +174,8 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     const formDataObject: RuneMagicRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

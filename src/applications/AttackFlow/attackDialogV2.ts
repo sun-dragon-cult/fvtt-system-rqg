@@ -1,6 +1,7 @@
-import { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
+import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
 
 import {
+  activateChatTab,
   assertHtmlElement,
   assertItemType,
   getActorLinkDecoration,
@@ -18,11 +19,11 @@ import type { RqgActor } from "../../actors/rqgActor";
 import type { RqgItem } from "../../items/rqgItem";
 import type { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
+import type { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
 import { ChatMessageTypes } from "../../data-model/chat-data/combatChatMessage.dataModel";
-import { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
+import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   darknessModifier,
   proneTargetModifier,
@@ -30,7 +31,7 @@ import {
 } from "../../system/penaltyConstants";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
+import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 
 // @ts-expect-error application v2
@@ -70,6 +71,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "attack-dialog"],
     form: {
       handler: AttackDialogV2.onSubmit,
       submitOnChange: false,
@@ -82,7 +84,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "attack-dialog"],
     },
   };
 
@@ -99,7 +100,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   async _prepareContext(): Promise<AttackDialogContext> {
     const formData: AttackDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const attackingTokenOrActor = getTokenOrActorFromItem(this.weaponItem);
     if (!attackingTokenOrActor) {
@@ -434,7 +435,11 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defenderFumbleOutcome: "",
     };
 
-    const attackChatContent = await renderTemplate(templatePaths.attackChatMessage, chatSystemData);
+    // @ts-expect-error applications
+    const attackChatContent = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.attackChatMessage,
+      chatSystemData,
+    );
 
     const attackFlavor = localize("RQG.Dialog.Common.IsAttacking", {
       defenderName: `<b>${target?.document?.name ?? "???"}</b>`,
@@ -453,6 +458,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       }),
     };
 
+    activateChatTab();
     // @ts-expect-error type
     const cm = await ChatMessage.create(attackChatMessageOptions);
     cm?.render(true);

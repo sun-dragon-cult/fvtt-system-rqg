@@ -20,7 +20,8 @@ export class DamageRoll extends Roll {
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
     };
-    return renderTemplate(templatePaths.damageRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.damageRoll, chatData);
   }
 
   get total(): number {
@@ -36,7 +37,8 @@ export class DamageRoll extends Roll {
   async getTooltip(): Promise<string> {
     const parts = this.dice.map((d) => d.getTooltipData());
 
-    return renderTemplate(templatePaths.damageRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.damageRollTooltip, {
       parts,
       formulaHtml: this._formula
         .replaceAll(" ", "&nbsp;") // Prevent linebreaks

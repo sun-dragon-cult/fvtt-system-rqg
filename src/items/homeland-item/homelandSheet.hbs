@@ -1,4 +1,4 @@
-<form autocomplete="off">
+<form autocomplete="off" class="flex-column">
   <header class="item-sheet-header">
     <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
 
@@ -44,7 +44,7 @@
     </div>
   </header>
 
-  <main>
+  <main class="flex-column flex-1">
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="item-sheet-nav-tabs" data-group="primary">
@@ -52,7 +52,7 @@
       <a class="item" data-tab="wizardInstructions">{{localize "RQG.Item.SheetTab.WizardInstructions"}}</a>
     </nav>
 
-    <section class="sheet-body">
+    <section class="sheet-body flex-1">
       {{!-- Homeland Tab --}}
       <div class="tab" data-group="primary" data-tab="homeland">
 
@@ -136,6 +136,7 @@
           enrichedWizardInstructions
           target="system.wizardInstructions"
           button=true
+          engine="prosemirror"
           editable=isEditable
         }}
       </div>

@@ -1,0 +1,106 @@
+<section class="info flexcol">
+  <h1 class="title">Foundry Virtual Tabletop</h1>
+  <p class="subtitle version">{{versionDisplay}}</p>
+  {{#if isDemo}}
+    <p class="subtitle demo">{{localize "SIDEBAR.SETTINGS.LABELS.Demo"}}</p>
+  {{/if}}
+  <div class="build">
+    <span class="label">{{localize "SIDEBAR.SETTINGS.LABELS.Build"}}</span>
+    <span class="value">
+            {{~release.build~}}
+      {{~#if coreUpdate}}
+        <a class="notification-pip active fa-solid fa-circle-exclamation" data-tooltip-text="{{coreUpdate}}"
+           data-action="notifyUpdate" data-update="core"></a>
+      {{/if~}}
+        </span>
+  </div>
+  <div class="system">
+    <span class="label">{{system.title}}</span>
+    <span class="value">
+            {{~system.version~}}
+      {{~#if systemUpdate}}
+        <a class="notification-pip active fa-solid fa-circle-exclamation" data-tooltip-text="{{systemUpdate}}"
+           data-action="notifyUpdate" data-update="system"></a>
+      {{/if~}}
+    </span>
+  </div>
+
+  {{!-- BEGIN RQG ADDITION --}}
+  <div class="settingLinks">
+    <a class="label" href="https://sun-dragon-cult.github.io/release-notes">{{localize "RQG.Foundry.Settings.Links.ReleaseNotes"}}</a>
+    <a class="label" href="https://sun-dragon-cult.github.io/">{{localize "RQG.Foundry.Settings.Links.Documentation"}}</a>
+    <a class="label" href="https://github.com/sun-dragon-cult/fvtt-system-rqg/issues">{{localize "RQG.Foundry.Settings.Links.BugReports"}}</a>
+  </div>
+  {{!-- END RQG ADDITION --}}
+
+  <div class="modules">
+    <span class="label">{{localize "SIDEBAR.SETTINGS.LABELS.Modules"}}</span>
+    <span class="value">{{modules}}</span>
+  </div>
+</section>
+
+<section class="settings flexcol">
+  <h4 class="divider">{{localize "SIDEBAR.SETTINGS.HEADERS.Settings"}}</h4>
+  <button type="button" data-action="openApp" data-app="configure">
+    <i class="fa-solid fa-gears" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Configure"}}
+  </button>
+  <button type="button" data-action="openApp" data-app="controls">
+    <i class="fa-solid fa-gamepad" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Keybindings"}}
+  </button>
+  <button type="button" data-action="openApp" data-app="modules">
+    <i class="fa-solid fa-cube" inert></i>
+    {{#if canConfigure}}{{localize "SIDEBAR.SETTINGS.ACTIONS.ManageModules"}}
+    {{else}}{{localize "SIDEBAR.SETTINGS.ACTIONS.ViewModules"}}
+    {{/if}}
+  </button>
+  {{#if canEditWorld}}
+    <button type="button" data-action="openApp" data-app="world">
+      <i class="fa-solid fa-globe" inert></i> {{localize "SETUP.WorldEdit"}}
+    </button>
+  {{/if}}
+  {{#if canManagePlayers}}
+    <button type="button" data-action="openApp" data-app="players">
+      <i class="fa-solid fa-users" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Players"}}
+    </button>
+  {{/if}}
+  <button type="button" data-action="openApp" data-app="tours">
+    <i class="fa-solid fa-person-hiking" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Tours"}}
+  </button>
+
+  {{!-- BEGIN RQG ADDITION --}}
+  <button type="button" data-action="worldMigration">
+    <i class="fa-solid fa-wrench" inert></i> {{localize "RQG.Foundry.Settings.Migrate.TriggerButton"}}
+  </button>
+  {{!-- END RQG ADDITION --}}
+</section>
+
+<section class="documentation flexcol" data-help-docs>
+  <h4 class="divider">{{localize "SIDEBAR.SETTINGS.HEADERS.Docs"}}</h4>
+  <button type="button" data-action="openApp" data-app="support">
+    <i class="fa-solid fa-handshake-angle" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Support"}}
+    {{#if issues}}({{issues}}){{/if}}
+  </button>
+  <a class="button" href="https://foundryvtt.com/kb/" rel="nofollow" target="_blank">
+    <i class="fa-solid fa-book" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Docs"}}
+  </a>
+  <a class="button" href="https://foundryvtt.wiki/" rel="nofollow noopener" target="_blank">
+    <i class="fa-solid fa-landmark" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Wiki"}}
+  </a>
+</section>
+
+<section class="access flexcol">
+  <h4 class="divider">{{localize "SIDEBAR.SETTINGS.HEADERS.Access"}}</h4>
+  {{#if user.isGM }}
+    <button type="button" data-action="openApp" data-app="invitations">
+      <i class="fa-solid fa-wifi" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Invite"}}
+    </button>
+  {{/if}}
+  <button type="button" data-action="openApp" data-app="logout">
+    <i class="fa-solid fa-door-closed" inert></i> {{localize "SIDEBAR.SETTINGS.ACTIONS.Logout"}}
+  </button>
+  {{#if canReturnSetup}}
+    <button type="button" data-action="openApp" data-app="setup">
+      <i class="fa-solid fa-house" inert></i> {{localize "GAME.ReturnSetup"}}
+    </button>
+  {{/if}}
+</section>

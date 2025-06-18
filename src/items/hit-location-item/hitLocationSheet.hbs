@@ -32,11 +32,7 @@
 
             <label for="health-status-{{id}}">{{localize "RQG.Item.HitLocation.HealthStatus"}}</label>
             <select id="health-status-{{id}}" name="system.hitLocationHealthState">
-              {{#select system.hitLocationHealthState}}
-                {{#each hitLocationHealthStatuses}}
-                  <option value="{{this}}">{{localize (concat "RQG.Item.HitLocation.HealthStatusEnum." this)}}</option>
-                {{/each}}
-              {{/select}}
+              {{selectOptions hitLocationHealthStatusOptions selected=system.hitLocationHealthState localize=true}}
             </select>
 
           <label for="hit-points-value-{{id}}">{{localize "RQG.Item.HitLocation.HitPoints"}}</label>
@@ -63,21 +59,13 @@
 
           <label for="act-as-{{id}}">{{localize "RQG.Item.HitLocation.ActAs"}}</label>
           <select id="act-as-{{id}}" name="system.hitLocationType">
-            {{#select system.hitLocationType}}
-              {{#each hitLocationTypes}}
-                <option value="{{this}}">{{localize (concat "RQG.Item.HitLocationType." this)}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions hitLocationTypeOptions selected=system.hitLocationType localize=true}}
           </select>
 
           {{#if (eq system.hitLocationType "limb")}}
           <label for="connected-to-{{id}}">{{localize "RQG.Item.HitLocation.ConnectedTo"}}</label>
           <select id="connected-to-{{id}}" name="system.connectedTo">
-            {{#select system.connectedTo}}
-              {{#each allHitLocations}}
-                <option value="{{rqid}}">{{name}}</option>
-              {{/each}}
-            {{/select}}
+            {{selectOptions allHitLocationOptions selected=system.connectedTo localize=false}}
           </select>
           {{/if}}
 
@@ -123,7 +111,7 @@
 </form>
 
 <datalist id="allHitLocations">
-  {{#each allHitLocations}}
-    <option value="{{name}}">{{name}}</option>
+  {{#each allHitLocationOptions}}
+    <option value="{{label}}">{{label}}</option>
   {{/each}}
 </datalist>

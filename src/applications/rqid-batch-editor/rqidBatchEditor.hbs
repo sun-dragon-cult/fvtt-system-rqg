@@ -16,12 +16,7 @@
           <span class="skill-name">{{name}} </span>
           <div class="value">
             <select class="existing">
-              <option value="">{{localize 'RQG.Dialog.BatchRqidEditor.NewRqid'}}</option>
-              {{#select selectedRqid}}
-                {{#each ../existingRqids}}
-                  <option value="{{rqid}}">{{optionText}}</option>
-                {{/each}}
-              {{/select}}
+              {{selectOptions @root.existingRqidOptions localize=false}}
             </select>
           </div>
           <div class="value flexrow">

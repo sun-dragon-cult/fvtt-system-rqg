@@ -10,7 +10,7 @@ import { getGameUser, localize } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
-import { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 
 export class RqgChatMessage extends ChatMessage {
   declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
@@ -20,8 +20,9 @@ export class RqgChatMessage extends ChatMessage {
     // @ts-expect-error dataModels
     CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
 
-    Hooks.on("renderChatLog", (chatLog: any, html: JQuery) => {
-      RqgChatMessage.addChatListeners(html[0]);
+    Hooks.on("ready", () => {
+      // one listener for sidebar chat, popped out chat & chat notification
+      document.addEventListener("click", RqgChatMessage.clickHandler);
     });
   }
 
@@ -41,15 +42,11 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   /** @inheritDoc */
-  async getHTML(): Promise<JQuery> {
-    const html = await super.getHTML();
-    const element = html instanceof HTMLElement ? html : html[0];
+  async renderHTML(...args: any): Promise<HTMLElement> {
+    // @ts-expect-error renderHTML
+    const element = await super.renderHTML(args);
     await this.#enrichChatCard(element);
-    return $(element);
-  }
-
-  private static addChatListeners(html: HTMLElement | undefined): void {
-    html?.addEventListener("click", RqgChatMessage.clickHandler);
+    return element;
   }
 
   public static async clickHandler(clickEvent: MouseEvent): Promise<void> {
@@ -98,11 +95,6 @@ export class RqgChatMessage extends ChatMessage {
    * Augment the chat card html markup for additional styling and eventlisteners.
    */
   async #enrichChatCard(html: HTMLElement): Promise<void> {
-    // Add event listener for Dice Rolls
-    [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
-      el.addEventListener("click", this._onClickDiceRoll.bind(this)),
-    );
-
     // Enrich the combat chat message with evaluated rolls
     await this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]");
     await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
@@ -110,6 +102,11 @@ export class RqgChatMessage extends ChatMessage {
     await this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]");
 
     this.#hideHtmlElementsByOwnership(html);
+
+    // Add event listener for Dice Rolls
+    [...html.querySelectorAll<HTMLElement>(".dice-roll")].forEach((el) =>
+      el.addEventListener("click", this._onClickDiceRoll.bind(this)),
+    );
   }
 
   /**
@@ -242,7 +239,7 @@ export class RqgChatMessage extends ChatMessage {
       }
     }
 
-    // Author and timestamp
+    // Author and timestamp TODO users locale (don't have that), or maybe Gloranthan time formatting?
     // @ts-expect-error timestamp
     const time = new Date(this.timestamp).toLocaleDateString("en-US", {
       hour: "numeric",

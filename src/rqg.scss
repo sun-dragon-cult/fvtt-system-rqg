@@ -10,6 +10,32 @@ body {
   background: url("assets/images/ui/sacred-time.webp") no-repeat;
 }
 
+// *** Start of theme specific styles ***
+
+.rqg {
+  .experienced {
+    text-shadow: -1px 1px 1px var(--rqg-themed-exp-outline),
+    1px -1px 1px var(--rqg-themed-exp-outline),
+    1px 1px 1px var(--rqg-themed-exp-outline),
+    -1px -1px 1px var(--rqg-themed-exp-outline),
+    0 0 1em var(--rqg-themed-highlight),
+    0 0 0.6em var(--rqg-themed-highlight),
+    0 0 0.4em var(--rqg-themed-highlight);
+    font-weight: bold;
+  }
+}
+
+#interface img[src="icons/svg/mystery-man.svg"] {
+  filter: invert(var(--rqg-svg-invert-param));
+}
+
+img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
+    // Make them black for light backgrounds, but exclude the token-hud images
+    filter: invert(var(--rqg-svg-invert-param));
+  }
+
+// *** End of theme specific styles ***
+
 // adding attribute readonly to the input excludes it from the form application?
 input.readonly {
   border: none;
@@ -89,11 +115,6 @@ input.readonly {
   align-items: baseline;
 }
 
-.title-rqid-link {
-  opacity: 0.5;
-  cursor: pointer;
-}
-
 .title-edit-mode {
   cursor: pointer;
 }
@@ -102,50 +123,13 @@ input.readonly {
   display: none !important;
 }
 
-// elements marked with .themed are AppV2 and theme aware, part of AppV2 migration
-.rqg:not(.themed) img[src*="systems/rqg/assets/images"][src$=".svg"], // Make rqg svg icons black to match text color
-.app.sheet img[src*="systems/rqg/assets/images"][src$=".svg"], // make them black in all sheets (like journals)
-.app.default-icons img[src*="systems/rqg/assets/images"][src$=".svg"] {
-  // Make them black in the default item icon setting
-  filter: invert(0.9);
+.self-stretch {
+  align-self: stretch;
 }
 
-// *** Start of theme specific styles ***
-
-.rqg {
-  &.themed {
-    .experienced {
-      text-shadow: -1px 1px 1px var(--rqg-themed-exp-outline),
-      1px -1px 1px var(--rqg-themed-exp-outline),
-      1px 1px 1px var(--rqg-themed-exp-outline),
-      -1px -1px 1px var(--rqg-themed-exp-outline),
-      0 0 1em var(--rqg-themed-highlight),
-      0 0 0.6em var(--rqg-themed-highlight),
-      0 0 0.4em var(--rqg-themed-highlight);
-      font-weight: bold;
-    }
-  }
+.self-start {
+  align-self: start;
 }
-
-.theme-light {
-  .rqg.themed {
-    &.roll-dialog img[src*="systems/rqg/assets/images"][src$=".svg"] { // Make rqg svg icons black to match text color
-      filter: invert(0.9);
-    }
-
-
-  }
-}
-
-.theme-dark {
-  .rqg.themed {
-    &.roll-dialog img[src*="systems/rqg/assets/images"][src$=".svg"] { // Make rqg svg icons black to match text color
-      filter: none;
-    }
-  }
-}
-
-// *** End of theme specific styles ***
 
 .rqg {
   h1,
@@ -261,11 +245,6 @@ input.readonly {
     background-color: var(--rqg-color-enc-warning);
   }
 
-  .buttongroup {
-    border-radius: 4px;
-    background: var(--color-light-5);
-  }
-
   .mp-ellipses {
     text-overflow: ellipsis;
     max-width: 7rem;
@@ -371,6 +350,7 @@ input.readonly {
     border: none;
     margin: 0 1px;
     mix-blend-mode: overlay;
+    display: inline-block;
   }
 
   img.requires-training {
@@ -757,6 +737,10 @@ input.readonly {
         grid-area: description;
       }
 
+      details {
+        display: block;
+      }
+
       .img {
         grid-row: 1 / -1;
 
@@ -789,18 +773,6 @@ input.readonly {
     &.opposed-rune-edit-mode {
       grid-template-columns: [col-start] max-content max-content 50px max-content min-content max-content max-content 50px max-content [col-end];
     }
-  }
-
-  .experienced {
-    text-shadow:
-      -1px 1px 1px var(--rqg-light-outline),
-      1px -1px 1px var(--rqg-light-outline),
-      1px 1px 1px var(--rqg-light-outline),
-      -1px -1px 1px var(--rqg-light-outline),
-      0 0 1em var(--rqg-highlight),
-      0 0 0.6em var(--rqg-highlight),
-      0 0 0.4em var(--rqg-highlight);
-    font-weight: bold;
   }
 
   [data-characteristic-roll],
@@ -887,19 +859,25 @@ input.readonly {
     }
   }
 
-  .editor {
-    height: auto;
-    min-height: 100px;
-    margin: 10px auto;
-    min-width: 100%;
-
-    .editor-content {
-      max-width: 100vw; // Make sure the edit button always is viewable
-    }
+  .editor-label {
+    margin-top: 0.5rem;
+    align-self: start;
   }
 
-  .tox.tox-tinymce {
-    min-height: 200px;
+  .editor {
+    height: 100%;
+    min-height: 100px;
+    min-width: 100%;
+  }
+
+  &.sheet.character {
+    .editor {
+      height: auto; // use auto for character sheet, but 100% for itemSheets
+
+      &.prosemirror {
+        height: 35rem; // Default height for the character sheet editor when editing
+      }
+    }
   }
 
   &.character.sheet .editor-content {
@@ -1152,10 +1130,6 @@ input.readonly {
   margin: 0;
 }
 
-.token-initiative input {
-  color: white;
-}
-
 .app {
   &.sheet.journal-sheet {
     font-size: 16px;
@@ -1196,24 +1170,20 @@ input.readonly {
 }
 
 #pause {
-  background: none;
-
   figcaption {
-    font-size: 3rem;
-    text-shadow:
-      1px 1px 2px var(--rqg-color-main),
-      0 0 1em var(--rqg-color-main-bg),
-      0 0 0.2em var(--rqg-color-main-bg);
+    font-family: "Norse", "Signika", "Palatino Linotype", serif;
+    font-size: 2rem;
+    opacity: 0.7;
+  }
 
-    margin: 0;
-    //font-size: 2em;
-    font-weight: normal;
-    line-height: 100px;
-    text-align: center;
-    position: relative;
-    z-index: calc(var(--z-index-window) - 1);
-    color: var(--color-text-light-1);
-    //text-shadow: 1px 1px 30px var(--color-shadow-dark);
+  img {
+    content: url(/systems/rqg/assets/images/runes/movement_change.svg);
+    opacity: 0.7;
+    height: 120px;
+    width: 120px;
+    filter: brightness(0.7);
+    margin-bottom: 8px;
+    transform-origin: 66px 71px;
   }
 }
 
@@ -1226,22 +1196,39 @@ input.readonly {
   }
 }
 
-// Almost a copy if Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
-.rqid-content-link[data-rqid-link] {
-  // Silly construct to raise specificity
-  background: #ddd;
-  padding: 1px 4px;
-  border: 1px solid var(--color-border-dark-tertiary);
-  border-radius: 2px 9px 9px 2px;
+
+// Style the extra line in the settings tab
+.settingLinks {
+  margin-top: -5px;
+  gap: 0.2rem;
+  flex-flow: nowrap;
+  align-items: center;
+  text-align: center;
+
+  a {
+    color: var(--color-text-secondary);
+    text-wrap-style: balance;
+  }
+}
+// Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
+.rqid-content-link {
+  border-radius: 9px;
+  background: var(--content-link-background);
+  border: 2px dashed var(--content-link-border-color);
+  color: var(--content-link-text-color);
+  margin: -1px 0;
+  padding: 1px 4px 0;
   white-space: nowrap;
   word-break: break-all;
 
   i {
-    color: var(--color-text-dark-inactive);
+    color: var(--content-link-icon-color);
+    font-size: 0.8em;
     margin-right: 0.25em;
   }
 
   img {
+    display: inline-block;
     margin-right: 0.25em;
     border: none;
     height: 0.8rem;
@@ -1393,6 +1380,8 @@ input.readonly {
 
   .editor-container {
     width: 100%;
+    height: 100%;
+    align-self: start;
   }
 }
 

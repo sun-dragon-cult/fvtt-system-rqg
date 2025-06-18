@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser, AvailableItemCache, getSelectRuneOptions } from "../../system/util";
+import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
@@ -7,10 +7,10 @@ import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneMagicSheetData {
-  allRuneOptions: AvailableItemCache[];
-  ranges: SpellRangeEnum[];
-  durations: SpellDurationEnum[];
-  actorCults: any[];
+  allRuneOptions: SelectOptionData<string>[];
+  rangeOptions: SelectOptionData<SpellRangeEnum>[];
+  durationOptions: SelectOptionData<SpellDurationEnum>[];
+  actorCultOptions: SelectOptionData<string>[];
 }
 
 export class RuneMagicSheet extends RqgItemSheet<
@@ -21,7 +21,7 @@ export class RuneMagicSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
       template: templatePaths.itemRuneMagicSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {
@@ -48,18 +48,29 @@ export class RuneMagicSheet extends RqgItemSheet<
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
 
-      ranges: Object.values(SpellRangeEnum),
-      durations: Object.values(SpellDurationEnum),
-      actorCults: this.getActorCults(),
+      rangeOptions: Object.values(SpellRangeEnum).map((range) => ({
+        value: range,
+        label: "RQG.Item.Spell.RangeEnum." + (range || "undefined"),
+      })),
+      durationOptions: Object.values(SpellDurationEnum).map((range) => ({
+        value: range,
+        label: "RQG.Item.Spell.DurationEnum." + (range || "undefined"),
+      })),
+      actorCultOptions: this.getActorCultOptions(),
       allRuneOptions: getSelectRuneOptions("RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder"),
     };
   }
 
-  private getActorCults(): any[] {
-    return this.actor
-      ? // @ts-expect-error v10
-        this.actor.getEmbeddedCollection("Item").filter((i) => i.type === ItemTypeEnum.Cult)
-      : [];
+  private getActorCultOptions(): SelectOptionData<string>[] {
+    return (
+      this.actor
+        ?.getEmbeddedCollection("Item")
+        .filter((i: any) => i.type === ItemTypeEnum.Cult)
+        .map((c) => ({
+          value: c.id ?? "",
+          label: c.name ?? "",
+        })) ?? []
+    );
   }
 
   protected _updateObject(event: Event, formData: any): Promise<any> {

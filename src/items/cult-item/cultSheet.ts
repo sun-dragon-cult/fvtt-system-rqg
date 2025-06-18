@@ -2,7 +2,6 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultRankEnum } from "../../data-model/item-data/cultData";
 import {
   getGameUser,
-  AvailableItemCache,
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
@@ -15,8 +14,8 @@ import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
-  allRuneOptions: AvailableItemCache[];
-  ranksEnum: CultRankEnum[];
+  allRuneOptions: SelectOptionData<string>[];
+  rankOptions: SelectOptionData<string>[];
   enrichedGifts: string;
   enrichedGeases: string;
   enrichedSubCults: string;
@@ -28,7 +27,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: templatePaths.itemCultSheet,
-      width: 450,
+      width: 700,
       height: 500,
       tabs: [
         {
@@ -58,12 +57,26 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       isEmbedded: this.document.isEmbedded,
       isGM: getGameUser().isGM,
       system: system,
-      enrichedGifts: await TextEditor.enrichHTML(system.gifts),
-      enrichedGeases: await TextEditor.enrichHTML(system.geases),
-      enrichedSubCults: await TextEditor.enrichHTML(system.subCults),
-      enrichedHolyDays: await TextEditor.enrichHTML(system.holyDays),
-      // journalEntryName: system.descriptionRqidLink.name,
-      ranksEnum: Object.values(CultRankEnum),
+      // @ts-expect-error applications
+      enrichedGifts: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.gifts,
+      ),
+      // @ts-expect-error applications
+      enrichedGeases: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.geases,
+      ),
+      // @ts-expect-error applications
+      enrichedSubCults: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.subCults,
+      ),
+      // @ts-expect-error applications
+      enrichedHolyDays: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.holyDays,
+      ),
+      rankOptions: Object.values(CultRankEnum).map((cr) => ({
+        value: cr,
+        label: "RQG.Actor.RuneMagic.CultRank." + cr,
+      })),
       allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),
     };
   }

@@ -14,7 +14,7 @@ import {
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
-import { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import type { RollMode } from "../../chat/chatMessage.types";
 
@@ -55,6 +55,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
     form: {
       handler: SpiritMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -67,7 +68,6 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
     },
   };
 
@@ -84,7 +84,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   async _prepareContext(): Promise<SpiritMagicRollDialogContext> {
     const formData: SpiritMagicRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
@@ -151,8 +151,8 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     const formDataObject: SpiritMagicRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

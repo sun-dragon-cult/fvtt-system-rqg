@@ -12,11 +12,7 @@
 
 <label for="equipped-status-{{id}}">{{localize "RQG.Item.Gear.EquippedStatus"}}</label>
 <select id="equipped-status-{{id}}" name="system.equippedStatus">
-  {{#select system.equippedStatus}}
-    {{#each equippedStatuses}}
-      <option value="{{this}}">{{localize (concat "RQG.Item.EquippedStatus." this)}}</option>
-    {{/each}}
-  {{/select}}
+  {{selectOptions equippedStatusOptions selected=system.equippedStatus localize=true}}
 </select>
 
 {{#if isGM}}

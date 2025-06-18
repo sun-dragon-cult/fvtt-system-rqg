@@ -1,4 +1,4 @@
-import { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../../system/config";
 import { escapeRegex, getRequiredDomDataset, toKebabCase, trimChars } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";
@@ -60,8 +60,8 @@ export class RqidEditor extends FormApplication {
 
       const worldDocumentInfo: Document<any, any>[] = [];
       for (const d of worldDocuments) {
-        // @ts-expect-error async
-        const link = await TextEditor.enrichHTML(d.link);
+        // @ts-expect-error applications
+        const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         worldDocumentInfo.push({
           // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
@@ -72,8 +72,8 @@ export class RqidEditor extends FormApplication {
 
       const compendiumDocumentInfo: Document<any, any>[] = [];
       for (const d of compendiumDocuments) {
-        // @ts-expect-error async
-        const link = await TextEditor.enrichHTML(d.link);
+        // @ts-expect-error applications
+        const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         compendiumDocumentInfo.push({
           // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
@@ -108,7 +108,7 @@ export class RqidEditor extends FormApplication {
       appData.compendiumDocumentInfo = compendiumDocumentInfo;
     }
 
-    appData.supportedLanguages = CONFIG.supportedLanguages;
+    appData.supportedLanguagesOptions = CONFIG.supportedLanguages;
     appData.id = this.document.id;
     appData.parentId = this.document?.parent?.id ?? "";
     // @ts-expect-error uuid

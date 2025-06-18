@@ -9,14 +9,8 @@
     </div>
 
     <label for="rqidLang-editor">{{localize "RQG.RQGSystem.rqidLang"}}</label>
-    <select
-      id="rqidLang-editor"
-      name="flags.rqg.documentRqidFlags.lang">
-      {{#select flags.rqg.documentRqidFlags.lang}}
-        {{#each supportedLanguages}}
-          <option value="{{@key}}">{{this}} ({{@key}})</option>
-        {{/each}}
-      {{/select}}
+    <select id="rqidLang-editor" name="flags.rqg.documentRqidFlags.lang">
+      {{selectOptions supportedLanguagesOptions selected=flags.rqg.documentRqidFlags.lang}}
     </select>
 
     <label for="rqidPriority-editor">{{localize "RQG.RQGSystem.rqidPriority"}}</label>

@@ -2,8 +2,6 @@
 <h3>{{localize "RQG.Item.RuneMagic.runeMagicCultDialog.RuneMagic"}} {{runeMagicName}}</h3>
 <label class="mp">Cult
   <select name="cultId">
-    {{#select cultId}} {{#each actorCults}}
-      <option value="{{id}}">{{name}}</option>
-    {{/each}} {{/select}}
+    {{selectOptions actorCultOptions selected=system.cultId localize=true}}
   </select>
 </label>

@@ -7,7 +7,10 @@ import type { PartialAbilityItem } from "../applications/AbilityRollDialog/Abili
 import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
-export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset: string): string {
+export function getRequiredDomDataset(
+  el: HTMLElement | Element | Event | JQuery,
+  dataset: string,
+): string {
   const data = getDomDataset(el, dataset);
   if (!data) {
     const msg = `Couldn't find dataset [${dataset}]`;
@@ -24,7 +27,7 @@ export function getRequiredDomDataset(el: HTMLElement | Event | JQuery, dataset:
  * (`my-value` searches for `data-my-value`)
  */
 export function getDomDataset(
-  el: HTMLElement | Event | JQuery,
+  el: HTMLElement | Element | Event | JQuery,
   dataset: string,
 ): string | undefined {
   const elem = getHTMLElement(el);
@@ -66,7 +69,9 @@ export function getDomDatasetAmongSiblings(
   return firstItemEl?.dataset[toCamelCase(dataset)];
 }
 
-export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | undefined {
+export function getHTMLElement(
+  el: HTMLElement | Element | Event | JQuery,
+): HTMLElement | undefined {
   return el instanceof HTMLElement
     ? el
     : (el as Event).target
@@ -78,12 +83,13 @@ export function getHTMLElement(el: HTMLElement | Event | JQuery): HTMLElement | 
  * Gets game and Throws RqgExceptions if not initialized yet.
  */
 export function getGame(): Game {
-  if (!(game instanceof Game)) {
+  // @ts-expect-error data
+  if (Object.keys(game?.data ?? {}).length === 0) {
     const msg = `game is not initialized yet! (Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;
     ui.notifications?.error(msg);
     throw new RqgError(msg);
   }
-  return game;
+  return game as Game;
 }
 
 /**
@@ -496,38 +502,35 @@ export async function getItemsToCache(rqidStart: string): Promise<AvailableItemC
   }));
 }
 
-export function getSelectRuneOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-    priority: "",
-    lang: "",
-  };
+export function getSelectRuneOptions(emptyPlaceholderKey: string): SelectOptionData<string>[] {
+  const emptyOption = { value: "empty", label: localize(emptyPlaceholderKey) };
   return getSelectOptions(emptyOption, getAvailableRunes);
 }
 
-export function getSelectHitLocationOptions(emptyPlaceholderKey: string): AvailableItemCache[] {
-  const emptyOption: AvailableItemCache = {
-    rqid: "empty",
-    name: localize(emptyPlaceholderKey),
-    img: "",
-    priority: "",
-    lang: "",
-  };
+export function getSelectHitLocationOptions(
+  emptyPlaceholderKey?: string,
+): SelectOptionData<string>[] {
+  const emptyOption = emptyPlaceholderKey
+    ? { value: "empty", label: localize(emptyPlaceholderKey) }
+    : undefined;
   return getSelectOptions(emptyOption, getAvailableHitLocations);
 }
 
 function getSelectOptions(
-  emptyOption: AvailableItemCache,
+  emptyOption: SelectOptionData<string> | undefined,
   getItemFn: () => AvailableItemCache[],
-): AvailableItemCache[] {
-  const sortedOptions = (getItemFn() ?? []).sort((a, b) => a.name.localeCompare(b.name));
-  const options: AvailableItemCache[] =
-    [emptyOption, ...sortedOptions].reduce((acc: any, i: any) => {
-      return { ...acc, [i.rqid]: i.name };
-    }, {}) ?? {};
-  return options;
+): SelectOptionData<string>[] {
+  const sortedOptions = (getItemFn() ?? [])
+    .map((i: any) => ({
+      value: i.rqid ?? "",
+      label: i.name ?? "",
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  if (emptyOption) {
+    sortedOptions.unshift(emptyOption);
+  }
+  return sortedOptions;
 }
 
 function getIndexData(
@@ -626,12 +629,15 @@ export function localizeCharacteristic(characteristic: string): string {
 }
 
 /**
- * Sets the Chat sidebar tab to active.
+ * Sets the Chat sidebar tab to active and expands the sidebar is collapsed.
  */
 export function activateChatTab() {
-  // TODO: add player setting to allow skipping this if they don't like the tab changing
-  if (ui?.sidebar?.tabs.chat) {
-    ui.sidebar?.activateTab(ui.sidebar.tabs.chat.tabName);
+  if (getGame().settings.get(systemId, "autoActivateChatTab")) {
+    // @ts-expect-error changeTab
+    ui.sidebar.changeTab("chat", "primary");
+
+    // @ts-expect-error toggleExpanded
+    ui.sidebar.toggleExpanded(true);
   }
 }
 
@@ -754,6 +760,23 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
     owningActorTokens[0] ??
     getGame().scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
   return attackingToken;
+}
+
+/**
+ * The V13 Foundry version returns a &minus; sign instead of a normal - which makes it impossible
+ * to do a Number(x) on the resulting string to revert into number again.
+ */
+export function toSignedString(num: number) {
+  const n = num.toLocaleString(getGame().i18n.lang);
+
+  if (num === 0) {
+    return n;
+  }
+  if (num < 0) {
+    return n;
+  } else {
+    return `+${n}`;
+  }
 }
 
 /**

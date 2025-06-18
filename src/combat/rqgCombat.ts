@@ -3,6 +3,7 @@ import { RqgCombatTracker } from "./RqgCombatTracker";
 export class RqgCombat extends Combat {
   public static init() {
     CONFIG.Combat.documentClass = RqgCombat;
+    // @ts-expect-error number of arguments v13
     CONFIG.ui.combat = RqgCombatTracker;
     CONFIG.Combat.initiative = {
       formula: null,

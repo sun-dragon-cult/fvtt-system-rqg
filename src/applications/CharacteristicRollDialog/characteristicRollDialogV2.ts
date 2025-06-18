@@ -6,7 +6,7 @@ import {
 } from "./CharacteristicRollDialogData.types";
 import { getDomDataset, getGame, getTokenFromActor, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "../../actors/rqgActor";
-import { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
+import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 import { Characteristics } from "../../data-model/actor-data/characteristics";
 import type { RollMode } from "../../chat/chatMessage.types";
@@ -55,6 +55,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
     form: {
       handler: CharacteristicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -67,7 +68,6 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
     },
   };
 
@@ -84,7 +84,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   async _prepareContext(): Promise<CharacteristicRollDialogContext> {
     const formData: CharacteristicRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     formData.difficulty ??= 5;
     formData.augmentModifier ??= "0";
@@ -154,8 +154,8 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     const formDataObject: CharacteristicRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
     if (!actor || !formDataObject.characteristicName) {

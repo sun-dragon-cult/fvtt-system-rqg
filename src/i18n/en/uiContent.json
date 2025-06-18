@@ -176,7 +176,7 @@
         },
         "Occupation": {
           "Heading": "Current Occupation",
-          "undefined": " ",
+          "none": " ",
           "assistantShaman": "Assistant Shaman",
           "chariotDriver": "Chariot Driver",
           "crafter": "Crafter",
@@ -1181,8 +1181,6 @@
       },
       "CombatTracker": {
         "DuplicateCombatant": "Duplicate Combatant",
-        "UpdateCombatant": "Update Combatant",
-        "RemoveCombatant": "Remove Combatant",
         "RemoveAllDuplicates": "Remove All Duplicates",
         "CombatantWithoutActor": "The combatant \"{combatantName}\" references an actor that no longer exists within the world",
         "UnknownName": "Unknown"
@@ -1194,6 +1192,11 @@
         "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
       },
       "Settings": {
+        "Links": {
+          "ReleaseNotes": "Release Notes",
+          "Documentation": "Documentation",
+          "BugReports": "Bug Reports"
+        },
         "Migrate": {
           "TriggerButton": "Trigger World Migration",
           "TriggerTitle": "Trigger World Data Migration",
@@ -1322,6 +1325,10 @@
       "SortHitLocationsLowToHigh": {
         "settingName": "Sort Hitlocations Low to High",
         "settingHint": "Activating this setting sorts the character hitlocation in the same way as stat blocks are sorted with the lowest die number first. The setting can be toggled in the actor sheet Health table."
+      },
+      "AutoactivateChatTab": {
+        "settingName": "Autoactivate and expand the chat tab",
+        "settingHint": "Activating this setting opens the Chat Messages sidebar when rolls send messages to chat."
       },
       "DefaultItemIcons": {
         "dialogTitle": "Default Item Icon Settings",

@@ -32,6 +32,9 @@ export class RqidBatchEditor extends FormApplication<
   public resolve: (value: PromiseLike<void> | void) => void = () => {};
   public reject: (value: PromiseLike<void> | void) => void = () => {};
 
+  /** Keep a single progress object. */
+  private static updateProgressBar: any;
+
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-batch-editor"],
@@ -53,7 +56,7 @@ export class RqidBatchEditor extends FormApplication<
   }
 
   async getData(): Promise<RqidBatchEditorData> {
-    const existingRqids = [...this.options.existingRqids.keys()]
+    const existingRqidOptions = [...this.options.existingRqids.keys()]
       .reduce((out: any, itemName) => {
         out.push({
           name: itemName,
@@ -62,7 +65,15 @@ export class RqidBatchEditor extends FormApplication<
         });
         return out;
       }, [])
-      .sort((a: Document<any, any>, b: Document<any, any>) => a.name!.localeCompare(b.name!));
+      .sort((a: Document<any, any>, b: Document<any, any>) => a.name!.localeCompare(b.name!))
+      .map((d: any) => ({
+        value: d.rqid,
+        label: d.optionText,
+      }));
+    existingRqidOptions.unshift({
+      value: "",
+      label: localize("RQG.Dialog.BatchRqidEditor.NewRqid"),
+    });
 
     const itemNamesWithoutRqid: ItemNameWithoutRqid[] = [...this.object.itemName2Rqid.keys()]
       .reduce((out: any, itemName) => {
@@ -98,7 +109,7 @@ export class RqidBatchEditor extends FormApplication<
       summary: summary,
       itemType: this.options.itemType,
       idPrefix: this.options.idPrefix,
-      existingRqids: existingRqids,
+      existingRqidOptions: existingRqidOptions,
       itemNamesWithoutRqid: itemNamesWithoutRqid,
     };
   }
@@ -174,8 +185,6 @@ export class RqidBatchEditor extends FormApplication<
       packItemChanges.size +
       packActorChanges.size;
     let progress = 0;
-    // @ts-expect-error displayProgressBar
-    SceneNavigation.displayProgressBar({ label: `0 / ${changesCount}`, pct: 0 });
 
     progress = await RqidBatchEditor.updateItemsEmbeddedInActors(
       actorChangesMap,
@@ -395,8 +404,6 @@ export class RqidBatchEditor extends FormApplication<
       getGame().packs.reduce((acc, p) => acc + p.index.size, 0) +
       (getGame().scenes?.size ?? 0);
     let progress = 0;
-    // @ts-expect-error displayProgressBar
-    SceneNavigation.displayProgressBar({ label: `0 / ${scanningCount}`, pct: 0 });
 
     // Collect Rqids from world Actors items
     const worldActors = getGame().actors?.contents ?? [];
@@ -824,12 +831,24 @@ export class RqidBatchEditor extends FormApplication<
     };
   }
 
-  static updateProgress(index: number, totalCount: number, prefix: string = ""): void {
-    const progress = Math.ceil((100 * index) / totalCount);
-    // @ts-expect-error displayProgressBar
-    SceneNavigation.displayProgressBar({
-      label: `${prefix} ${index} / ${totalCount}`,
-      pct: Math.round(progress),
-    });
+  private static updateProgress(index: number, totalCount: number, prefix: string = ""): void {
+    const total = totalCount || 1; // Avoid division by zero
+    const progress = Math.ceil((100 * index) / total);
+    const pct = Math.round(progress) / 100;
+    const message = `${prefix} ${index} / ${totalCount}`;
+
+    // Reduce the number of console messages to avoid clutter
+    if (index % Math.ceil(totalCount / 10) === 0 || index === totalCount) {
+      console.log(message, pct);
+    }
+
+    if (!RqidBatchEditor.updateProgressBar?.active) {
+      RqidBatchEditor.updateProgressBar = ui.notifications?.info(message, {
+        // @ts-expect-error progress
+        progress: true,
+        console: false,
+      });
+    }
+    RqidBatchEditor.updateProgressBar.update({ message, pct });
   }
 }

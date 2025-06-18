@@ -53,17 +53,7 @@
             {{#if system.isProjectileWeapon}}
               <br>
               <select class="projectile{{#unless system.projectileId}} invalid{{/unless}}" data-item-edit-value="system.projectileId">
-                {{#select system.projectileId}}
-                  {{#each @root.ownedProjectiles}}
-                    <option value="{{id}}">{{name}}
-                      {{#if name}}
-                        ({{system.quantity}})
-                      {{else}}
-                        {{localize "RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert"}}
-                      {{/if}}
-                    </option>
-                  {{/each}}
-                {{/select}}
+                {{selectOptions @root.ownedProjectileOptions selected=system.projectileId localize=false}}
               </select>
             {{else if system.isThrownWeapon}}
               (<input class="quantity" type="number" min="0" max="99" data-item-edit-value="system.quantity" value="{{system.quantity}}">)

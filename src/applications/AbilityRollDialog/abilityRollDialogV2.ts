@@ -55,6 +55,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
   static DEFAULT_OPTIONS = {
     id: "{id}",
     tag: "form",
+    classes: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
     form: {
       handler: AbilityRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -67,7 +68,6 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     },
     window: {
       resizable: true,
-      contentClasses: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
     },
   };
 
@@ -84,7 +84,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
   async _prepareContext(): Promise<AbilityRollDialogContext> {
     const formData: AbilityRollDialogFormData =
       // @ts-expect-error object
-      (this.element && new FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
@@ -151,8 +151,8 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     const formDataObject: AbilityRollDialogFormData = formData.object;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"].active')?.dataset
-        .rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
 
     let abilityItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.abilityItemUuid ?? "",

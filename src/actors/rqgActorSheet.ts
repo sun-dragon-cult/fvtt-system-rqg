@@ -43,7 +43,7 @@ import { ActorWizard } from "../applications/actorWizardApplication";
 import { systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
-import { addRqidLinkToSheetHtml } from "../documents/rqidSheetButton";
+import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { ActorSheetData } from "../items/shared/sheetInterfaces";
 import { Characteristics } from "src/data-model/actor-data/characteristics";
@@ -177,15 +177,24 @@ export class RqgActorSheet extends ActorSheet<
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
-      enrichedAllies: await TextEditor.enrichHTML(system.allies),
-      enrichedBiography: await TextEditor.enrichHTML(system.background.biography ?? ""),
+      // @ts-expect-error applications
+      enrichedAllies: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.allies,
+      ),
+      // @ts-expect-error applications
+      enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.background.biography ?? "",
+      ),
 
       // Lists for dropdown values
-      occupations: Object.values(OccupationEnum),
+      occupationOptions: Object.values(OccupationEnum).map((occupation) => ({
+        value: occupation,
+        label: localize("RQG.Actor.Background.Occupation." + (occupation || "none")),
+      })),
       homelands: Object.values(HomeLandEnum),
       locations: itemTree.getPhysicalItemLocations(),
       healthStatuses: [...actorHealthStatuses],
-      ownedProjectiles: this.getEquippedProjectiles(),
+      ownedProjectileOptions: this.getEquippedProjectileOptions(),
       locomotionModes: {
         [LocomotionEnum.Walk]: "Walk",
         [LocomotionEnum.Swim]: "Swim",
@@ -193,9 +202,8 @@ export class RqgActorSheet extends ActorSheet<
       },
 
       currencyTotals: this.calcCurrencyTotals(),
-      // Disable the SR buttons for unlinked actors since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
       // @ts-expect-error inCombat
-      isInCombat: this.actor.inCombat && this.actor.prototypeToken.actorLink,
+      isInCombat: this.actor.inCombat,
 
       dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
       sizSR: [
@@ -599,9 +607,15 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich Cult texts for holyDays, gifts & geases
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-        cult.system.enrichedHolyDays = await TextEditor.enrichHTML(cult.system.holyDays);
-        cult.system.enrichedGifts = await TextEditor.enrichHTML(cult.system.gifts);
-        cult.system.enrichedGeases = await TextEditor.enrichHTML(cult.system.geases);
+        cult.system.enrichedHolyDays =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.holyDays);
+        cult.system.enrichedGifts =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.gifts);
+        cult.system.enrichedGeases =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.geases);
       }),
     );
 
@@ -616,9 +630,11 @@ export class RqgActorSheet extends ActorSheet<
     // Enrich passion description texts
     await Promise.all(
       itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
-        passion.system.enrichedDescription = await TextEditor.enrichHTML(
-          passion.system.description,
-        );
+        passion.system.enrichedDescription =
+          // @ts-expect-error applications
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+            passion.system.description,
+          );
       }),
     );
 
@@ -746,7 +762,10 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
+      // @ts-expect-error applications
+      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        `${warningText} ${itemLinks}`,
+      );
     }
   }
 
@@ -785,7 +804,10 @@ export class RqgActorSheet extends ActorSheet<
       // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
-      return await TextEditor.enrichHTML(`${warningText} ${itemLinks}`);
+      // @ts-expect-error applications
+      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        `${warningText} ${itemLinks}`,
+      );
     }
   }
 
@@ -849,6 +871,102 @@ export class RqgActorSheet extends ActorSheet<
     return super._updateObject(event, formData);
   }
 
+  _contextMenu(html: HTMLElement): void {
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".characteristic.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      characteristicMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".combat.contextmenu",
+      combatMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".hit-location.contextmenu",
+      hitLocationMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".rune.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      runeMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".spirit-magic.contextmenu",
+      spiritMagicMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".cult.contextmenu",
+      cultMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".rune-magic.contextmenu",
+      runeMagicMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".skill.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      skillMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".gear.contextmenu",
+      gearMenuOptions(this.actor),
+      { jQuery: false },
+    );
+
+    // @ts-expect-error applications
+    foundry.applications.ux.ContextMenu.implementation.create(
+      this,
+      html,
+      ".passion.contextmenu",
+      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
+      passionMenuOptions(this.actor, this.token),
+      { jQuery: false },
+    );
+  }
+
   activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.actor.isOwner) {
@@ -870,24 +988,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     });
 
-    new ContextMenu(
-      html,
-      ".characteristic.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      characteristicMenuOptions(this.actor, this.token),
-    );
-    new ContextMenu(html, ".combat.contextmenu", combatMenuOptions(this.actor));
-    new ContextMenu(html, ".hit-location.contextmenu", hitLocationMenuOptions(this.actor));
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
-    new ContextMenu(html, ".spirit-magic.contextmenu", spiritMagicMenuOptions(this.actor));
-    new ContextMenu(html, ".cult.contextmenu", cultMenuOptions(this.actor));
-    new ContextMenu(html, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
-    new ContextMenu(html, ".gear.contextmenu", gearMenuOptions(this.actor));
-    // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-    new ContextMenu(html, ".passion.contextmenu", passionMenuOptions(this.actor, this.token));
+    this._contextMenu(htmlElement);
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
@@ -1232,7 +1333,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     // Handle rqid links
-    RqidLink.addRqidLinkClickHandlers(html);
+    void RqidLink.addRqidLinkClickHandlersToJQuery(html);
 
     // Handle deleting RqidLinks from RqidLink Array Properties
     $(htmlElement!)
@@ -1241,7 +1342,10 @@ export class RqgActorSheet extends ActorSheet<
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
-          const deleteFromProperty = getProperty(this.actor.system, deleteFromPropertyName);
+          const deleteFromProperty = foundry.utils.getProperty(
+            this.actor.system,
+            deleteFromPropertyName,
+          );
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid,
@@ -1345,8 +1449,8 @@ export class RqgActorSheet extends ActorSheet<
     }
     // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
     // @ts-expect-error actorId
-    const actorCombatant = combat.combatants.find((c) => c.actorId === this.actor.id);
-    const currentCombatants = getCombatantsSharingToken(actorCombatant);
+    const tokenCombatant = combat.combatants.find((c) => c.tokenId === this.token.id);
+    const currentCombatants = getCombatantsSharingToken(tokenCombatant);
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
@@ -1375,16 +1479,21 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  private getEquippedProjectiles(): any[] {
+  private getEquippedProjectileOptions(): SelectOptionData<string>[] {
     return [
-      [{ _id: "", name: "---" }],
-      ...this.actor.getEmbeddedCollection("Item").filter(
-        // @ts-expect-error type & system
-        (i: RqgItem) =>
-          i.type === ItemTypeEnum.Weapon &&
-          i.system.isProjectile &&
-          i.system.equippedStatus === "equipped",
-      ),
+      { value: "", label: localize("RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert") },
+      ...this.actor
+        .getEmbeddedCollection("Item")
+        .filter(
+          (i: any) =>
+            i.type === ItemTypeEnum.Weapon &&
+            i.system.isProjectile &&
+            i.system.equippedStatus === "equipped",
+        )
+        .map((i: any) => ({
+          value: i.id ?? "",
+          label: `${i.name ?? ""} (${i.system.quantity})`,
+        })),
     ];
   }
 
@@ -1458,7 +1567,7 @@ export class RqgActorSheet extends ActorSheet<
     this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
     // @ts-expect-error getDragEventData
-    const data = TextEditor.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
     if (
       data.type !== "Compendium" &&
@@ -1598,7 +1707,7 @@ export class RqgActorSheet extends ActorSheet<
     if (!this.actor.isOwner) {
       return [];
     }
-    const compendiumId = data.id;
+    const compendiumId = data.collection;
     const pack = getGame().packs.get(compendiumId);
     const packIndex = await pack?.getIndex();
     if (!packIndex) {
@@ -1642,9 +1751,13 @@ export class RqgActorSheet extends ActorSheet<
       sourceActor: sourceActor,
       targetActor: this.actor,
     };
-    const content: string = await renderTemplate(templatePaths.confirmCopyIntangibleItem, {
-      adapter: adapter,
-    });
+    // @ts-expect-error renderTemplate
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmCopyIntangibleItem,
+      {
+        adapter: adapter,
+      },
+    );
 
     const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
       itemName: incomingItemDataSource.name,
@@ -1687,9 +1800,13 @@ export class RqgActorSheet extends ActorSheet<
       showQuantity: incomingItemDataSource.system.quantity > 1,
     };
 
-    const content: string = await renderTemplate(templatePaths.confirmTransferPhysicalItem, {
-      adapter: adapter,
-    });
+    // @ts-expect-error renderTemplate
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmTransferPhysicalItem,
+      {
+        adapter: adapter,
+      },
+    );
 
     const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
       itemName: incomingItemDataSource.name,
@@ -1814,7 +1931,7 @@ export class RqgActorSheet extends ActorSheet<
 
   protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
-    await addRqidLinkToSheetHtml(html, this);
+    await addRqidLinkToSheetJQuery(html, this);
 
     const editModeLink = html.find(".title-edit-mode")[0];
     if (editModeLink) {

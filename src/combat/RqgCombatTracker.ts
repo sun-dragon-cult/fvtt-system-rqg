@@ -18,12 +18,16 @@ export class RqgCombatTracker extends CombatTracker {
 
   // CombatTracker - Add a Duplicate Combatant option
   _getEntryContextOptions(): ContextMenu.Item[] {
+    const getCombatant = (li: HTMLElement) =>
+      this.viewed?.combatants.get(li.dataset.combatantId ?? "");
     return [
       {
         name: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
         icon: '<i class="far fa-copy fa-fw"></i>',
-        callback: async (li: JQuery) => {
-          const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
+        condition: () => getGameUser().isGM,
+        // @ts-expect-error html, not jquery
+        callback: async (li: HTMLElement) => {
+          const combatant = getCombatant(li);
           if (combatant) {
             // @ts-expect-error combatant
             await this.viewed!.createEmbeddedDocuments("Combatant", [combatant]);
@@ -31,25 +35,34 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        name: localize("RQG.Foundry.CombatTracker.UpdateCombatant"),
-        icon: '<i class="fas fa-edit fa-fw"></i>',
-        callback: this._onConfigureCombatant.bind(this),
+        name: localize("COMBAT.CombatantUpdate"),
+        icon: '<i class="fa-solid fa-pen-to-square"></i>',
+        condition: () => getGameUser().isGM,
+        // @ts-expect-error html, not jquery
+        callback: (li: HTMLElement) =>
+          // @ts-expect-error render
+          getCombatant(li)?.sheet?.render({
+            force: true,
+            position: {
+              top: Math.min(li.offsetTop, window.innerHeight - 350),
+              left: window.innerWidth - 720,
+            },
+          }),
       },
       {
-        name: localize("RQG.Foundry.CombatTracker.RemoveCombatant"),
-        icon: '<i class="fas fa-trash fa-fw"></i>',
-        callback: (li: JQuery) => {
-          const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
-          if (combatant) {
-            return combatant.delete();
-          }
-        },
+        name: "COMBAT.CombatantRemove",
+        icon: '<i class="fa-solid fa-trash"></i>',
+        condition: () => getGameUser().isGM,
+        // @ts-expect-error html, not jquery
+        callback: (li: HTMLElement) => getCombatant(li)?.delete(),
       },
       {
         name: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
-        icon: '<i class="fas fa-trash fa-fw"></i>',
-        callback: async (li: JQuery) => {
-          const combatant = this.viewed?.combatants.get(li.data("combatant-id"));
+        icon: '<i class="fa-solid fa-trash"></i>',
+        condition: () => getGameUser().isGM,
+        // @ts-expect-error html, not jquery
+        callback: async (li: HTMLElement) => {
+          const combatant = getCombatant(li);
           if (combatant) {
             const combatantIds = getCombatantsSharingToken(combatant).map((c: any) => c.id);
             if (combatantIds.length > 1) {
@@ -62,24 +75,52 @@ export class RqgCombatTracker extends CombatTracker {
       },
     ];
   }
+
+  // Open the tokenActor instead of the actor
+  // @ts-expect-error number of arguments
+  _onCombatantMouseDown(event, target) {
+    if (event.target instanceof HTMLInputElement) {
+      return;
+    }
+    const { combatantId } = target?.dataset ?? {};
+    const combatant = this.viewed?.combatants.get(combatantId);
+    if (!combatant) {
+      return;
+    }
+    if (event.type === "dblclick") {
+      if (combatant.actor?.testUserPermission(getGameUser(), "OBSERVER")) {
+        combatant.token?.actor?.sheet?.render(true);
+      }
+      return;
+    }
+    const token = combatant.token?.object;
+    if (!token) {
+      return;
+    }
+    const controlled = token.control({ releaseOthers: true });
+    if (controlled) {
+      canvas?.animatePan(token.center);
+    }
+  }
 }
 
-// Called from the renderCombatTracker Hook
-export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any): void {
-  const currentCombat = data.combats[data.currentIndex - 1] as Combat | undefined;
+// Called from the renderCombatTracker Hook, it's not really a User, but something that contains the user it seems
+function renderCombatTracker(app: RqgCombatTracker, html: HTMLElement, user: User): void {
+  const currentCombat = app.viewed;
+
   if (currentCombat) {
     // Rerender actorSheets to update the SR display there
     getGame()
       .scenes?.current?.tokens.filter((t) =>
         // @ts-expect-errors DOCUMENT_OWNERSHIP_LEVELS
-        t.testUserPermission(getGameUser(), CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED),
+        t.testUserPermission(user.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED),
       )
       .forEach((t) => t.actor?.sheet?.render());
 
-    html.find("[data-control=rollAll]").remove();
-    html.find("[data-control=rollNPC]").remove();
+    html.querySelector('button[data-tooltip="COMBAT.RollAll"]')?.remove();
+    html.querySelector('button[data-tooltip="COMBAT.RollNPC"]')?.remove();
 
-    html.find(".combatant").each(async (i: number, el: HTMLElement) => {
+    html.querySelectorAll(".combatant").forEach((el: Element) => {
       const combId = getRequiredDomDataset(el, "combatant-id");
       const combatant = currentCombat.combatants.find((c: Combatant) => c.id === combId);
       if (!combatant?.actor) {
@@ -89,16 +130,11 @@ export function renderCombatTracker(app: RqgCombatTracker, html: any, data: any)
           }),
         );
       }
-      const readOnly = combatant?.actor?.isOwner ? "" : "readonly";
+      const readOnly = combatant?.isOwner ? "" : "readonly";
       const initDiv = el.getElementsByClassName("token-initiative")[0];
       const valueString = combatant?.initiative ? `value=${combatant.initiative}` : "";
-      initDiv.innerHTML = `<input type="number" min="1" max="12" ${valueString} ${readOnly}>`;
-
-      initDiv.addEventListener("change", async (e: Event) => {
-        const inputElement = e.target as HTMLInputElement;
-        const combatantId = getRequiredDomDataset(el, "combatant-id");
-        await currentCombat.setInitiative(combatantId, Number(inputElement.value));
-      });
+      const ariaLabel = localize("RQG.Actor.Attributes.StrikeRank");
+      initDiv.innerHTML = `<input type="number" inputmode="numeric" min="1" max="12" ${valueString} aria-label="${ariaLabel}" ${readOnly}>`;
     });
   }
 }

@@ -90,9 +90,13 @@ export async function showImproveAbilityDialog(
     name: adapter.name,
     typeLocName: adapter.typeLocName,
   });
-  const content: string = await renderTemplate(templatePaths.dialogImproveAbility, {
-    adapter: adapter,
-  });
+  // @ts-expect-error renderTemplate
+  const content: string = await foundry.applications.handlebars.renderTemplate(
+    templatePaths.dialogImproveAbility,
+    {
+      adapter: adapter,
+    },
+  );
 
   new Dialog(
     {

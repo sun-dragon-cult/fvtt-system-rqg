@@ -10,7 +10,7 @@ import {
   localize,
   RqgError,
 } from "../../system/util";
-import { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
 import { RqidLink } from "../../data-model/shared/rqidLink";
@@ -128,11 +128,15 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeMagicName: string,
     actorName: string,
   ): Promise<string> {
-    const htmlContent = await renderTemplate(templatePaths.dialogRuneMagicCult, {
-      actorCults: actorCults,
-      runeMagicName: runeMagicName,
-      actorName: actorName,
-    });
+    // @ts-expect-error applications
+    const htmlContent = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.dialogRuneMagicCult,
+      {
+        actorCults: actorCults,
+        runeMagicName: runeMagicName,
+        actorName: actorName,
+      },
+    );
     return await new Promise((resolve, reject) => {
       const dialog = new Dialog({
         title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),

@@ -3,10 +3,9 @@ import {
   armorTypeTranslationKeys,
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
-import { equippedStatuses } from "../../data-model/item-data/IPhysicalItem";
+import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
-  AvailableItemCache,
   convertFormValueToString,
   getAvailableHitLocations,
   getGameUser,
@@ -20,8 +19,8 @@ import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface ArmorSheetData {
-  allHitLocationOptions: AvailableItemCache[];
-  equippedStatuses: string[];
+  allHitLocationOptions: SelectOptionData<string>[];
+  equippedStatusOptions: SelectOptionData<EquippedStatus>[];
   armorTypeNames: string[];
   materialNames: string[];
   enrichedDescription: string;
@@ -33,7 +32,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
       template: templatePaths.itemArmorSheet,
-      width: 500,
+      width: 600,
       height: 600,
       tabs: [
         {
@@ -62,11 +61,17 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       allHitLocationOptions: getSelectHitLocationOptions(
         "RQG.Item.Armor.AddNewCoveredHitLocationPlaceholder",
       ),
-      equippedStatuses: [...equippedStatuses],
+      equippedStatusOptions: equippedStatusOptions,
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
-      enrichedDescription: await TextEditor.enrichHTML(system.description),
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
+      // @ts-expect-error applications
+      enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.description,
+      ),
+      // @ts-expect-error applications
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.gmNotes,
+      ),
     };
   }
 

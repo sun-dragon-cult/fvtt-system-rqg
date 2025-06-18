@@ -68,11 +68,9 @@ export class RqgActiveEffect extends ActiveEffect {
     try {
       if (targetType === "Array") {
         const innerType = target.length ? foundry.utils.getType(target[0]) : "string";
-        // @ts-expect-error _castArray
-        delta = this._castArray(change.value, innerType);
+        delta = this.#castArray(change.value, innerType);
       } else {
-        // @ts-expect-error _castDelta
-        delta = this._castDelta(change.value, targetType);
+        delta = this.#castDelta(change.value, targetType);
       }
     } catch {
       console.warn(
@@ -105,6 +103,49 @@ export class RqgActiveEffect extends ActiveEffect {
       // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG |", msg, change, e);
+    }
+  }
+
+  // TODO this is just copied from the ActiveEffect class. Refactor when items use DataModels
+
+  #castDelta(raw: any, type: any) {
+    let delta;
+    switch (type) {
+      case "boolean":
+        delta = Boolean(this.#parseOrString(raw));
+        break;
+      case "number":
+        // @ts-expect-error fromString
+        delta = Number.fromString(raw);
+        if (Number.isNaN(delta)) {
+          delta = 0;
+        }
+        break;
+      case "string":
+        delta = String(raw);
+        break;
+      default:
+        delta = this.#parseOrString(raw);
+    }
+    return delta;
+  }
+
+  #castArray(raw: any, type: any) {
+    let delta;
+    try {
+      delta = this.#parseOrString(raw);
+      delta = delta instanceof Array ? delta : [delta];
+    } catch (e) {
+      delta = [raw];
+    }
+    return delta.map((d) => this.#castDelta(d, type));
+  }
+
+  #parseOrString(raw: any) {
+    try {
+      return JSON.parse(raw);
+    } catch (err) {
+      return raw;
     }
   }
 }

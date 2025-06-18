@@ -6,6 +6,12 @@ import { ActorHealthState } from "../actor-data/attributes";
 export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
 export type HitLocationHealthState = (typeof hitLocationHealthStatuses)[number];
 
+export const hitLocationHealthStatusOptions: SelectOptionData<HitLocationHealthState>[] =
+  hitLocationHealthStatuses.map((status) => ({
+    value: status,
+    label: "RQG.Item.HitLocation.HealthStatusEnum." + status,
+  }));
+
 export enum HitLocationTypesEnum {
   Limb = "limb",
   Head = "head",

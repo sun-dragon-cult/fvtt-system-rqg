@@ -12,9 +12,9 @@ import { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SpiritMagicSheetData {
-  ranges: SpellRangeEnum[];
-  durations: SpellDurationEnum[];
-  types: SpellConcentrationEnum[];
+  rangeOptions: SelectOptionData<SpellRangeEnum>[];
+  durationOptions: SelectOptionData<SpellDurationEnum>[];
+  concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
 }
 
 export class SpiritMagicSheet extends RqgItemSheet<
@@ -25,7 +25,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
       template: templatePaths.itemSpiritMagicSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {
@@ -52,9 +52,18 @@ export class SpiritMagicSheet extends RqgItemSheet<
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
 
-      ranges: Object.values(SpellRangeEnum),
-      durations: Object.values(SpellDurationEnum),
-      types: Object.values(SpellConcentrationEnum),
+      rangeOptions: Object.values(SpellRangeEnum).map((range) => ({
+        value: range,
+        label: "RQG.Item.Spell.RangeEnum." + (range || "undefined"),
+      })),
+      durationOptions: Object.values(SpellDurationEnum).map((range) => ({
+        value: range,
+        label: "RQG.Item.Spell.DurationEnum." + (range || "undefined"),
+      })),
+      concentrationOptions: Object.values(SpellConcentrationEnum).map((range) => ({
+        value: range,
+        label: "RQG.Item.Spell.ConcentrationEnum." + (range || "undefined"),
+      })),
     };
   }
 

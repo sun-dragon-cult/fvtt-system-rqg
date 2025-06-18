@@ -1,15 +1,15 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  hitLocationHealthStatuses,
+  HitLocationHealthState,
+  hitLocationHealthStatusOptions,
   HitLocationTypesEnum,
 } from "../../data-model/item-data/hitLocationData";
 import { RqgActor } from "../../actors/rqgActor";
 import {
   assertItemType,
-  AvailableItemCache,
-  getAvailableHitLocations,
   getGame,
   getGameUser,
+  getSelectHitLocationOptions,
   localize,
   requireValue,
   RqgError,
@@ -23,9 +23,9 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { damageType } from "../../data-model/item-data/weaponData";
 
 interface HitLocationSheetData {
-  allHitLocations: AvailableItemCache[];
-  hitLocationTypes: string[];
-  hitLocationHealthStatuses: string[];
+  allHitLocationOptions: SelectOptionData<string>[];
+  hitLocationTypeOptions: SelectOptionData<HitLocationTypesEnum>[];
+  hitLocationHealthStatusOptions: SelectOptionData<HitLocationHealthState>[];
   rqid: string;
 }
 
@@ -37,7 +37,7 @@ export class HitLocationSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: templatePaths.itemHitLocationSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {
@@ -65,9 +65,12 @@ export class HitLocationSheet extends RqgItemSheet<
       isEmbedded: this.document.isEmbedded,
       system: system,
 
-      allHitLocations: getAvailableHitLocations(),
-      hitLocationTypes: Object.values(HitLocationTypesEnum),
-      hitLocationHealthStatuses: Object.values(hitLocationHealthStatuses),
+      allHitLocationOptions: getSelectHitLocationOptions(),
+      hitLocationHealthStatusOptions: hitLocationHealthStatusOptions,
+      hitLocationTypeOptions: Object.values(HitLocationTypesEnum).map((type) => ({
+        value: type,
+        label: "RQG.Item.HitLocationType." + type,
+      })),
     };
   }
 
@@ -82,7 +85,11 @@ export class HitLocationSheet extends RqgItemSheet<
       throw new RqgError(msg);
     }
 
-    const dialogContentHtml = await renderTemplate(templatePaths.hitLocationAddWound, {});
+    // @ts-expect-error renderTemplate
+    const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.hitLocationAddWound,
+      {},
+    );
     new Dialog(
       {
         title: localize("RQG.Item.HitLocation.AddWound.Title", {
@@ -135,10 +142,14 @@ export class HitLocationSheet extends RqgItemSheet<
     const hitLocation = actor.items.get(hitLocationItemId);
     assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
-    const dialogContentHtml = await renderTemplate(templatePaths.hitLocationHealWound, {
-      hitLocationName: hitLocation.name,
-      wounds: hitLocation.system.wounds,
-    });
+    // @ts-expect-error renderTemplate
+    const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.hitLocationHealWound,
+      {
+        hitLocationName: hitLocation.name,
+        wounds: hitLocation.system.wounds,
+      },
+    );
 
     new Dialog(
       {

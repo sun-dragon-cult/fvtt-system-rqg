@@ -4,12 +4,13 @@ import {
   isTruthy,
   localize,
   localizeItemType,
+  toSignedString,
 } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneMagicRollOptions } from "./RuneMagicRoll.types";
+import type { RuneMagicRollOptions } from "./RuneMagicRoll.types";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
 
 export class RuneMagicRoll extends Roll {
@@ -63,7 +64,8 @@ export class RuneMagicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    return renderTemplate(templatePaths.runeMagicRoll, chatData);
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRoll, chatData);
   }
 
   // Html for what modifiers are applied and how many mp are used
@@ -72,7 +74,7 @@ export class RuneMagicRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
-        m.value = m.value.signedString();
+        m.value = toSignedString(m.value);
         return m;
       });
     const o = this.options as RuneMagicRollOptions;
@@ -91,7 +93,8 @@ export class RuneMagicRoll extends Roll {
           magicPointCost: cost.mp,
         });
 
-    return renderTemplate(templatePaths.runeMagicRollTooltip, {
+    // @ts-expect-error applications
+    return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRollTooltip, {
       usageCostText: usageCostText,
       usedRuneChance: o.usedRune.system.chance,
       usedRuneName: o.usedRune.name,

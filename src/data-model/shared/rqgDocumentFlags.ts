@@ -17,7 +17,7 @@ export interface RqgActorFlags {
   [documentRqidFlags]?: DocumentRqidFlags;
   [actorWizardFlags]?: {
     actorWizardComplete?: boolean;
-    selectedSpeciesId?: string;
+    selectedSpeciesUuid?: string;
     selectedHomelandRqid?: string;
     isActorTemplate?: boolean;
     wizardChoices?: string;

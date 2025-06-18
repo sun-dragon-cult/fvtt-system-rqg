@@ -34,7 +34,7 @@ export class PassionSheet extends RqgItemSheet<
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Passion],
       template: templatePaths.itemPassionSheet,
-      width: 450,
+      width: 600,
       height: 500,
       tabs: [
         {
@@ -59,8 +59,14 @@ export class PassionSheet extends RqgItemSheet<
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
       system: system,
-      enrichedDescription: await TextEditor.enrichHTML(system.description),
-      enrichedGmNotes: await TextEditor.enrichHTML(system.gmNotes),
+      // @ts-expect-error applications
+      enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.description,
+      ),
+      // @ts-expect-error applications
+      enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.gmNotes,
+      ),
       passionTypes: Object.values(PassionsEnum),
     };
   }
