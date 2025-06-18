@@ -1,6 +1,7 @@
 import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
 
 import {
+  activateChatTab,
   assertHtmlElement,
   assertItemType,
   getActorLinkDecoration,
@@ -457,6 +458,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       }),
     };
 
+    activateChatTab();
     // @ts-expect-error type
     const cm = await ChatMessage.create(attackChatMessageOptions);
     cm?.render(true);

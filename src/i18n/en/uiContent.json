@@ -1328,7 +1328,7 @@
       },
       "AutoactivateChatTab": {
         "settingName": "Autoactivate and expand the chat tab",
-        "settingHint": "Activating this setting opens the chat when rolls etc send messages to chat."
+        "settingHint": "Activating this setting opens the Chat Messages sidebar when rolls send messages to chat."
       },
       "DefaultItemIcons": {
         "dialogTitle": "Default Item Icon Settings",
