@@ -11,12 +11,15 @@ import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
 import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class RqgChatMessage extends ChatMessage {
   declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
 
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
+    CONFIG.ChatMessage.template = templatePaths.chatMessage;
+
     // @ts-expect-error dataModels
     CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
 

@@ -58,6 +58,7 @@ declare global {
       "rqg.actor-wizard-feature-flag": boolean;
       "rqg.showHeropoints": boolean;
       "rqg.showCharacteristicRatings": boolean;
+      "rqg.tokenRulerSettings": TokenRulerSettings;
     }
   }
 }

@@ -1,0 +1,55 @@
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.SprintMultiplier.Name"}}</label>
+  <div class="form-fields text-nowrap">
+    <input type="number" min="0" step="0.1" name="sprintMultiplier" value="{{sprintMultiplier}}" data-action="updateSprint">
+    <div>
+      = <span data-sprint-meters>{{sprintMeters}}</span>
+      {{localize "RQG.Settings.TokenRulerSettings.SprintMultiplier.ExampleRange"}}
+    </div>
+  </div>
+  <p class="hint">{{localize "RQG.Settings.TokenRulerSettings.SprintMultiplier.Hint"}}</p>
+</div>
+
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.LineWidth.Name"}}</label>
+  <div class="form-fields">
+    <range-picker name="lineWidth" value="{{lineWidth}}" min="0" max="200" step="1"></range-picker>
+  </div>
+  <p class="hint">{{localize "RQG.Settings.TokenRulerSettings.LineWidth.Hint"}}</p>
+</div>
+
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.Alpha.Name"}}</label>
+  <div class="form-fields">
+    <range-picker name="alpha" value="{{alpha}}" min="0" max="1" step="0.05"></range-picker>
+  </div>
+  <p class="hint">{{localize "RQG.Settings.TokenRulerSettings.Alpha.Hint"}}</p>
+</div>
+
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.Ranges.Attack"}}</label>
+  <div class="form-fields">
+    <color-picker name="rangeColors.attack" value="{{rangeColors.attack}}"></color-picker>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.Ranges.Walk"}}</label>
+  <div class="form-fields">
+    <color-picker name="rangeColors.walk" value="{{rangeColors.walk}}"></color-picker>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.Ranges.Sprint"}}</label>
+  <div class="form-fields">
+    <color-picker name="rangeColors.sprint" value="{{rangeColors.sprint}}"></color-picker>
+  </div>
+</div>
+
+<div class="form-group">
+  <label>{{localize "RQG.Settings.TokenRulerSettings.Ranges.Unreachable"}}</label>
+  <div class="form-fields">
+    <color-picker name="rangeColors.unreachable" value="{{rangeColors.unreachable}}"></color-picker>
+  </div>
+</div>

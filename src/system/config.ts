@@ -114,6 +114,8 @@ export const RQG_CONFIG = {
     ],
   ]),
 
+  metersPerMov: 3,
+
   equippedIcons: {
     notCarried: "systems/rqg/assets/images/equipped/not_carried.svg",
     carried: "systems/rqg/assets/images/equipped/carried.svg",

@@ -3,6 +3,8 @@ import { hitLocationNamesObject } from "./settings/hitLocationNames";
 import { DefaultItemIconSettings } from "../applications/defaultItemIconSettings";
 import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
+import TokenRulerSettings from "../applications/settings/tokenRulerSettings";
+import { defaultTokenRulerSettings } from "./settings/defaultTokenRulerSettings";
 
 export const registerRqgSystemSettings = function () {
   getGame().settings.register(systemId, "worldLanguage", {
@@ -73,6 +75,23 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: String,
     default: "Fumble",
+  });
+
+  getGame().settings.registerMenu(systemId, "TokenRulerSettings", {
+    name: "RQG.Settings.TokenRulerSettings.settingName",
+    label: "RQG.Settings.TokenRulerSettings.settingLabel",
+    hint: "RQG.Settings.TokenRulerSettings.settingHint",
+    icon: "fa-solid fa-ruler",
+    // @ts-expect-error type
+    type: TokenRulerSettings,
+    restricted: true,
+  });
+
+  getGame().settings.register(systemId, "TokenRulerSettings", {
+    scope: "world",
+    config: false,
+    type: Object,
+    default: defaultTokenRulerSettings,
   });
 
   getGame().settings.register(systemId, "allowCombatWithoutToken", {

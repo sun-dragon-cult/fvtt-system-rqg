@@ -1,5 +1,5 @@
 import { registerRqgSystemSettings } from "./system/rqgSystemSettings.js";
-import { loadHandlebarsTemplates, templatePaths } from "./system/loadHandlebarsTemplates.js";
+import { loadHandlebarsTemplates } from "./system/loadHandlebarsTemplates.js";
 import { RqgActor } from "./actors/rqgActor.js";
 import { RqgItem } from "./items/rqgItem";
 import { registerHandlebarsHelpers } from "./system/registerHandlebarsHelpers";
@@ -25,7 +25,6 @@ import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 import { RqgSettings } from "./foundryUi/RqgSettings";
 import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
 import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
-import { dragRulerModuleIntegrationInit } from "./external-module-integrations/drag-ruler";
 import { initSockets } from "./sockets/RqgSocket";
 import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
 import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRoll";
@@ -34,6 +33,7 @@ import { RuneMagicRoll } from "./rolls/RuneMagicRoll/RuneMagicRoll";
 import { HitLocationRoll } from "./rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "./rolls/DamageRoll/DamageRoll";
 import { RqgRollTableSheet } from "./rollTables/rqgRollTableSheet";
+import { RqgTokenRuler } from "./combat/RqgTokenRuler";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -90,13 +90,13 @@ Hooks.once("init", async () => {
     HitLocationRoll,
     DamageRoll,
   ];
-  CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
   Rqid.init();
   RqgChatMessage.init();
   RqgActiveEffect.init();
   RqgCombat.init();
   RqgCombatTracker.init();
+  RqgTokenRuler.init();
   RqgToken.init();
   RqgActor.init();
   RqgItem.init();
@@ -105,8 +105,6 @@ Hooks.once("init", async () => {
   TextEditorHooks.init();
   RqgSettings.init();
   initSockets();
-
-  dragRulerModuleIntegrationInit();
 
   // @ts-expect-error applications
   const sheetsConfig = foundry.applications.apps.DocumentSheetConfig;

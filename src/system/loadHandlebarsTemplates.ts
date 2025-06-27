@@ -62,8 +62,8 @@ export const templatePaths = {
   defenceDialogV2: "systems/rqg/applications/AttackFlow/defenceDialogV2.hbs",
 
   // Settings
-  defaultItemIconSettings: "./systems/rqg/applications/defaultItemIconSettings.hbs",
-
+  defaultItemIconSettings: "systems/rqg/applications/defaultItemIconSettings.hbs",
+  tokenRulerSettings: "systems/rqg/applications/settings/tokenRulerSettings.hbs",
   // Interface
   settings: "systems/rqg/foundryUi/settings.hbs",
 } as const;

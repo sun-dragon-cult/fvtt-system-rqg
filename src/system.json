@@ -39,10 +39,6 @@
         "type": "module"
       },
       {
-        "id": "drag-ruler",
-        "type": "module"
-      },
-      {
         "id": "times-up",
         "type": "module"
       }

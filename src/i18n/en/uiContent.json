@@ -1334,7 +1334,7 @@
       "DefaultItemIcons": {
         "dialogTitle": "Default Item Icon Settings",
         "settingName": "Default Item Icons",
-        "settingLabel": "Configure Default Icons for new Items",
+        "settingLabel": "Configure Default Icons",
         "settingHint": "Set the default icons used when creating new items."
       },
       "WorldLanguage": {
@@ -1360,6 +1360,31 @@
       "ShowCharacteristicRatings": {
         "settingName": "Show Characteristic Ratings",
         "settingHint": "Show a colored rating bar below characteristics which rates the value as compared to the dice expression formula for the characteristic.  Red is lower than average and green is higher than average.  This can help you to judge an actor's strengths and weaknesses at a glance."
+      },
+      "TokenRulerSettings": {
+        "dialogTitle": "Token Ruler Settings",
+        "settingName": "Token Ruler Configuration",
+        "settingLabel": "Configure Token Ruler",
+        "settingHint": "Settings that affect colors etc for the token movement range visualisation system that visualises how far a token can travel on the map during a round. It is based on the token's movement speed and the sprint multiplier.",
+        "LineWidth": {
+          "Name": "Line Width",
+          "Hint": "Decides the thickness of the lines are that are drawn to visualise the token movement range. The default is 30. If the width is set to 0, no line is drawn."
+        },
+        "Alpha": {
+          "Name": "Alpha",
+          "Hint": "How translucent the line should be, 1 means totally opaque, 0 means totally transparent. Default is 0.45."
+        },
+        "SprintMultiplier": {
+          "Name": "Sprint Range Multiplier",
+          "Hint": "This is for the optional rule that allows sprinting longer than MOV in certain situations. For example a MOV 8 character with a speed multiplier of 3 would be able to sprint 8 MOV * 3m * 3 multiplier = 72m. Set it to 0 to disable it.",
+          "ExampleRange": "m / 12 sec (MOV 8)"
+        },
+        "Ranges": {
+          "Attack": "Color for Attack",
+          "Walk": "Color for Walk",
+          "Sprint": "Color for Sprint",
+          "Unreachable": "Color for Unreachable"
+        }
       }
     },
     "TokenEffects": {
@@ -1427,21 +1452,6 @@
         "Weapon": "Weapon Item Sheet"
       },
       "RollTable": "Rollable Table Sheet"
-    },
-    "Integrations": {
-      "DragRuler": {
-        "Speeds": {
-          "Attack": "attack",
-          "Walk": "walk",
-          "Sprint": "sprint"
-        },
-        "Settings": {
-          "SprintMultiplier": {
-            "Name": "Sprint Speed Multiplier",
-            "Hint": "This is for the optional rule that allows sprinting longer than MOV in certain situations. For example a MOV 8 character with a speed multiplier of 3 would be able to sprint 8 MOV * 3m * 3 multiplier = 72m. Set it to 0 to disable it."
-          }
-        }
-      }
     }
   }
 }
