@@ -35,6 +35,7 @@ import { DamageRoll } from "./rolls/DamageRoll/DamageRoll";
 import { RqgRollTableSheet } from "./rollTables/rqgRollTableSheet";
 import { RqgTokenRuler } from "./combat/RqgTokenRuler";
 import { ClickableScriptsRegionBehavior } from "./scene/ClickableScriptsRegionBehavior";
+import { RqgTokenLayer } from "./scene/RqgTokenLayer";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -105,6 +106,7 @@ Hooks.once("init", async () => {
   RqgJournalEntry.init();
   TextEditorHooks.init();
   RqgSettings.init();
+  RqgTokenLayer.init();
   ClickableScriptsRegionBehavior.init();
   initSockets();
 
