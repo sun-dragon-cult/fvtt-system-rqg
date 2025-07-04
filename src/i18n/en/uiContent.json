@@ -22,6 +22,9 @@
     },
     "ChatMessage": {
       "combat": "Combat"
+    },
+    "RegionBehavior": {
+      "clickableScripts": "Click to Execute Script"
     }
   },
   "COMBAT": {
@@ -1310,6 +1313,21 @@
         "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
         "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the rqid \"{rqid}\", and lang \"{lang}\". See console log.",
         "FumbleTableMissing": "The fumble table \"{fumbleTableName}\" is missing."
+      }
+    },
+    "Region": {
+      "ClickableScripts": {
+        "ShowPointerOnHover": {
+          "Title": "Hover Pointer",
+          "Hint": "Decides if the \"hand\" pointer should be shown when hovering over this clickable region. This improves the user experience if the users are supposed to discover the clickable area."
+        },
+        "LeftClick": {
+          "Title": "Left Click Script",
+          "Hint": "Both script has access to all global Foundry variables, and also the 'scene', 'region', 'behavior' & 'event' variables that refer to the clicked scene, region, behavior and the click event."
+        },
+        "RightClick": {
+          "Title": "Right Click Script"
+        }
       }
     },
     "Notification": {

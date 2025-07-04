@@ -63,6 +63,9 @@
   "documentTypes": {
     "ChatMessage": {
       "combat": {}
+    },
+    "RegionBehavior": {
+      "clickableScripts": {}
     }
   },
   "packs": [
