@@ -1,5 +1,5 @@
 import { systemId } from "../system/config";
-import { getGame, getGameUser, getGameUsers, getSocket, RqgError } from "../system/util";
+import { getGame, getGameUser, getSocket, RqgError } from "../system/util";
 import type { SocketAction, SocketActionPayload } from "./RqgSocket.types";
 
 const eventNameSpace = `system.${systemId}`;
@@ -27,7 +27,7 @@ export function socketSend(payload: SocketActionPayload): void {
   getSocket().emit(eventNameSpace, { payload: payload });
 }
 
-function handleSocketMsg(request: SocketAction): void {
+async function handleSocketMsg(request: SocketAction): Promise<void> {
   // let responsePromise;
 
   if (request.socketMessageId) {
@@ -36,16 +36,6 @@ function handleSocketMsg(request: SocketAction): void {
   }
 
   switch (request.payload.action) {
-    case "deleteCombatant": {
-      if (!isResponsibleGM()) {
-        return;
-      }
-      const combat = getGame().combats?.get(request.payload?.combatId);
-      const idsToDelete = request.payload?.idsToDelete;
-      combat?.deleteEmbeddedDocuments("Combatant", idsToDelete);
-      break;
-    }
-
     case "updateChatMessage": {
       if (getGameUser().id !== request.payload.messageAuthorId) {
         return;
@@ -58,7 +48,7 @@ function handleSocketMsg(request: SocketAction): void {
 
     // --- Left here as an example for any future implementation that might need a request-response message
 
-    // case "deleteCombatantRequest": {
+    // case "deleteCombatantsRequest": {
     //   if (!getGameUser().isGM) {
     //     return;
     //   }
@@ -67,12 +57,12 @@ function handleSocketMsg(request: SocketAction): void {
     //   combat?.deleteEmbeddedDocuments("Combatant", idsToDelete);
     //   getSocket().emit(eventNameSpace, {
     //     socketMessageId: request.socketMessageId,
-    //     payload: { action: "deleteCombatantResponse", response: "deleted it now" },
+    //     payload: { action: "deleteCombatantsResponse", response: "deleted it now" },
     //   });
     //   break;
     // }
 
-    // case "deleteCombatantResponse": {
+    // case "deleteCombatantsResponse": {
     //   if (responsePromise) {
     //     responsePromise(request.payload.response);
     //   }
@@ -89,14 +79,14 @@ function handleSocketMsg(request: SocketAction): void {
   }
 }
 
-function isResponsibleGM() {
-  if (!getGameUser().isGM) {
-    return false;
-  }
-  const connectedGMs = getGameUsers().filter(isActiveGM);
-  return !connectedGMs.some((other) => other.id < (getGameUser().id ?? " "));
-}
-
-function isActiveGM(user: User) {
-  return user.active && user.isGM;
-}
+// function isResponsibleGM() {
+//   if (!getGameUser().isGM) {
+//     return false;
+//   }
+//   const connectedGMs = getGameUsers().filter(isActiveGM);
+//   return !connectedGMs.some((other) => other.id < (getGameUser().id ?? " "));
+// }
+//
+// function isActiveGM(user: User) {
+//   return user.active && user.isGM;
+// }

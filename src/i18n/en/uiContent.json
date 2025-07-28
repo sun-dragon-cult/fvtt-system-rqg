@@ -28,7 +28,9 @@
     }
   },
   "COMBAT": {
-    "InitiativeReset": "Reset SR"
+    "InitiativeReset": "Reset All Strike Ranks",
+    "CombatantInitiative": "Strike Rank",
+    "CombatantClear": "Clear Strike Rank"
   },
   "RQG": {
     "ActorCreation": {

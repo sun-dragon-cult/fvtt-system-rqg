@@ -1,6 +1,3 @@
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
-import type { TokenDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/tokenData";
-import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import { getGame } from "../system/util";
 import { initializeAllCharacteristics } from "../actors/context-menus/characteristic-context-menu";
 import { getCombatantsSharingToken } from "./combatant-utils";
@@ -13,45 +10,34 @@ export class RqgToken extends Token {
 
   _onHoverIn(event: any, options: any): void {
     super._onHoverIn(event, options);
-    const combatant = this.combatant;
-    if (combatant) {
-      const tracker = document.getElementById("combat") as any;
-      getCombatantsSharingToken(combatant).forEach((cb: any) => {
-        const li = tracker.querySelector(`.combatant[data-combatant-id="${cb.id}"]`);
-        if (li) {
-          li.classList.add("hover");
-        }
+    if (this.combatant) {
+      getCombatantsSharingToken(this.combatant).forEach((combatant: Combatant) => {
+        // @ts-expect-error hoverCombatant
+        ui.combat?.hoverCombatant(combatant, ui.combat._isTokenVisible(this));
       });
     }
   }
 
   _onHoverOut(event: any) {
     super._onHoverOut(event);
-    const combatant = this.combatant;
-    if (combatant) {
-      const tracker = document.getElementById("combat") as any;
-      getCombatantsSharingToken(combatant).forEach((cb: any) => {
-        const li = tracker.querySelector(`.combatant[data-combatant-id="${cb.id}"]`);
-        if (li) {
-          li.classList.remove("hover");
-        }
+    if (this.combatant) {
+      getCombatantsSharingToken(this.combatant).forEach((combatant: Combatant) => {
+        // @ts-expect-error hoverCombatant
+        ui.combat?.hoverCombatant(combatant, false);
       });
     }
   }
 
   // @ts-expect-error _onCreate
-  protected _onCreate(
-    options: PropertiesToSource<TokenDataProperties>,
-    docModOptions: DocumentModificationOptions,
-    userId: string,
-  ): void {
-    super._onCreate(options, docModOptions);
+  protected _onCreate(data: any, options: any, userId: string): void {
+    // @ts-expect-error 3 parameters
+    super._onCreate(data, options, userId);
     this.actor?.updateTokenEffectFromHealth();
     if (userId === getGame().user?.id) {
       //@ts-expect-error actorLink
       if (!this.document.actorLink) {
         if (this.actor) {
-          initializeAllCharacteristics(this.actor);
+          void initializeAllCharacteristics(this.actor);
         }
       }
     }
