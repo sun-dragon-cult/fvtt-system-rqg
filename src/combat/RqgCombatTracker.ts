@@ -1,19 +1,52 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import { getGame, getGameUser, getRequiredDomDataset, localize } from "../system/util";
+import {
+  getDomDataset,
+  getGame,
+  getGameUser,
+  getRequiredDomDataset,
+  localize,
+} from "../system/util";
+import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class RqgCombatTracker extends CombatTracker {
   static init() {
-    Hooks.on("renderCombatTracker", renderCombatTracker);
+    Hooks.on("ready", () => {
+      // one listener for sidebar combat & popped out combat
+      document.addEventListener("change", RqgCombatTracker.editSRHandler);
+    });
   }
+
+  /** @override */
+  static PARTS = {
+    header: {
+      template: templatePaths.combatHeader,
+    },
+    tracker: {
+      template: templatePaths.combatTracker,
+    },
+    footer: {
+      template: "templates/sidebar/tabs/combat/footer.hbs",
+    },
+  };
 
   async _onToggleDefeatedStatus(combatant: Combatant): Promise<void> {
     // @ts-expect-errors isDefeated
     const isDefeated = !combatant.isDefeated;
-    const otherCombatantsSharingToken = getCombatantsSharingToken(combatant);
-    await super._onToggleDefeatedStatus(combatant);
-    for (const cb of otherCombatantsSharingToken) {
-      await cb.update({ defeated: isDefeated });
-    }
+
+    // --- start RQG code --- replace the updating to update all combatants sharing a token
+    const combatantsSharingToken = getCombatantsSharingToken(combatant);
+    const combat = combatant.parent;
+    const updates = combatantsSharingToken.map((combatant) => ({
+      _id: combatant.id,
+      defeated: isDefeated,
+    }));
+    combat?.updateEmbeddedDocuments("Combatant", updates);
+    // --- end RQG code ---
+
+    // @ts-expect-error specialStatusEffects
+    const defeatedId = CONFIG.specialStatusEffects.DEFEATED;
+    // @ts-expect-error toggleStatusEffect
+    await combat.actor?.toggleStatusEffect(defeatedId, { overlay: true, active: isDefeated });
   }
 
   // CombatTracker - Add a Duplicate Combatant option
@@ -50,6 +83,41 @@ export class RqgCombatTracker extends CombatTracker {
           }),
       },
       {
+        name: "COMBAT.CombatantClear",
+        icon: '<i class="fa-solid fa-arrow-rotate-left"></i>',
+        // @ts-expect-error html, not jquery
+        condition: (li: HTMLElement) =>
+          getGameUser().isGM && Number.isFinite(getCombatant(li)?.initiative),
+        // @ts-expect-error html, not jquery
+        callback: async (li: HTMLElement) => {
+          const combatant = getCombatant(li);
+          if (combatant) {
+            await combatant?.update({ initiative: null });
+          }
+        },
+      },
+      {
+        name: "COMBAT.CombatantClearMovementHistory",
+        icon: '<i class="fa-solid fa-shoe-prints"></i>',
+        // @ts-expect-error html, not jquery
+        condition: (li: HTMLElement) =>
+          // @ts-expect-error movementHistory
+          getGameUser().isGM && getCombatant(li)?.token?.movementHistory.length > 0,
+        // @ts-expect-error html, not jquery
+        callback: async (li: HTMLElement) => {
+          const combatant = getCombatant(li);
+          if (!combatant) {
+            return;
+          }
+          // @ts-expect-error movementHistory
+          await combatant.clearMovementHistory();
+          ui.notifications?.info("COMBAT.CombatantMovementHistoryCleared", {
+            // @ts-expect-error format
+            format: { name: combatant.token?.name },
+          });
+        },
+      },
+      {
         name: "COMBAT.CombatantRemove",
         icon: '<i class="fa-solid fa-trash"></i>',
         condition: () => getGameUser().isGM,
@@ -79,7 +147,7 @@ export class RqgCombatTracker extends CombatTracker {
   // Open the tokenActor instead of the actor
   // @ts-expect-error number of arguments
   _onCombatantMouseDown(event, target) {
-    if (event.target instanceof HTMLInputElement) {
+    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLButtonElement) {
       return;
     }
     const { combatantId } = target?.dataset ?? {};
@@ -89,7 +157,7 @@ export class RqgCombatTracker extends CombatTracker {
     }
     if (event.type === "dblclick") {
       if (combatant.actor?.testUserPermission(getGameUser(), "OBSERVER")) {
-        combatant.token?.actor?.sheet?.render(true);
+        combatant.token?.actor?.sheet?.render(true); // --- RQG code --- open the token actor instead of the combatant actor
       }
       return;
     }
@@ -99,42 +167,22 @@ export class RqgCombatTracker extends CombatTracker {
     }
     const controlled = token.control({ releaseOthers: true });
     if (controlled) {
-      canvas?.animatePan(token.center);
+      void canvas?.animatePan(token.center);
     }
   }
-}
 
-// Called from the renderCombatTracker Hook, it's not really a User, but something that contains the user it seems
-function renderCombatTracker(app: RqgCombatTracker, html: HTMLElement, user: User): void {
-  const currentCombat = app.viewed;
+  public static async editSRHandler(inputEvent: Event): Promise<void> {
+    const changedInput = inputEvent.target as HTMLInputElement;
+    const isSRInput = getDomDataset(changedInput, "strike-rank");
+    if (isSRInput == undefined) {
+      return;
+    }
 
-  if (currentCombat) {
-    // Rerender actorSheets to update the SR display there
-    getGame()
-      .scenes?.current?.tokens.filter((t) =>
-        // @ts-expect-errors DOCUMENT_OWNERSHIP_LEVELS
-        t.testUserPermission(user.user, CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED),
-      )
-      .forEach((t) => t.actor?.sheet?.render());
+    const combatantId = getRequiredDomDataset(changedInput, "combatant-id");
+    const combatant = getGame().combats?.active?.combatants.get(combatantId);
+    const inputValue = Number(changedInput.value);
+    const newSR = inputValue < 1 || inputValue > 12 ? null : inputValue;
 
-    html.querySelector('button[data-tooltip="COMBAT.RollAll"]')?.remove();
-    html.querySelector('button[data-tooltip="COMBAT.RollNPC"]')?.remove();
-
-    html.querySelectorAll(".combatant").forEach((el: Element) => {
-      const combId = getRequiredDomDataset(el, "combatant-id");
-      const combatant = currentCombat.combatants.find((c: Combatant) => c.id === combId);
-      if (!combatant?.actor) {
-        ui.notifications?.warn(
-          localize("RQG.Foundry.CombatTracker.CombatantWithoutActor", {
-            combatantName: combatant?.name ?? localize("RQG.Foundry.CombatTracker.UnknownName"),
-          }),
-        );
-      }
-      const readOnly = combatant?.isOwner ? "" : "readonly";
-      const initDiv = el.getElementsByClassName("token-initiative")[0];
-      const valueString = combatant?.initiative ? `value=${combatant.initiative}` : "";
-      const ariaLabel = localize("RQG.Actor.Attributes.StrikeRank");
-      initDiv.innerHTML = `<input type="number" inputmode="numeric" min="1" max="12" ${valueString} aria-label="${ariaLabel}" ${readOnly}>`;
-    });
+    await combatant?.parent?.setInitiative(combatantId, newSR!); // setInitiative can handle null - fake !
   }
 }

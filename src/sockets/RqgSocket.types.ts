@@ -1,8 +1,8 @@
-import type { DeleteCombatantPayload, UpdateChatMessagePayload } from "./SocketableRequests.types";
+import { UpdateChatMessagePayload } from "./SocketableRequests.types";
 
 export type SocketAction = {
   payload: SocketActionPayload;
   socketMessageId?: string;
 };
 
-export type SocketActionPayload = DeleteCombatantPayload | UpdateChatMessagePayload;
+export type SocketActionPayload = UpdateChatMessagePayload;

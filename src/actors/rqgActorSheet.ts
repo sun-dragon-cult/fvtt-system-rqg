@@ -61,20 +61,16 @@ import { CultRankEnum } from "../data-model/item-data/cultData";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
-import {
-  getCombatantIdsToDelete,
-  getCombatantsSharingToken,
-  getSrWithoutCombatants,
-} from "../combat/combatant-utils";
+import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
-import { deleteCombatant } from "../sockets/SocketableRequests";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import {
   applyDamageBonusToFormula,
   formatDamagePart,
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../system/combatCalculations";
+import { NewCombatant } from "../combat/rqgCombatant.types";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -123,6 +119,57 @@ export class RqgActorSheet extends ActorSheet<
 
   /* -------------------------------------------- */
 
+  // TODO Add & remove appId when this is an appv2 application
+  /** @override */
+  // async _onFirstRender(context: any, options: any): Promise<void> {
+  //   // @ts-expect-error _onFirstRender
+  //   await super._onFirstRender(context, options);
+  //
+  //   // @ts-expect-error getCombatantByActor
+  //   const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+  //     this.actor,
+  //   );
+  //   actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
+  // }
+  //
+  // /** @override */
+  // _onPreClose(options: any): void {
+  //   // @ts-expect-error _onPreClose
+  //   super._onPreClose(options);
+  //   // @ts-expect-error getCombatantByActor
+  //   const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+  //     this.actor,
+  //   );
+  //   actorCombatants?.forEach((c) => delete c.apps[this.appId]);
+  // }
+
+  /** @override */
+  async _render(force = false, options = {}) {
+    await super._render(force, options);
+    // @ts-expect-error getCombatantByActor
+    const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+      this.actor,
+    );
+    actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
+  }
+
+  /** @override */
+  async close(options = {}) {
+    // @ts-expect-error rnderContext
+    if (options.renderContext === "deleteCombatant") {
+      // Don't close the actor sheet even is a combatant linked to it that is deleted,
+      // but try to remove the combatant.apps reference.
+      // This is is a workaround - can I remove the app reference in a better way?
+      // @ts-expect-error getCombatantByActor
+      const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+        this.actor,
+      );
+      actorCombatants?.forEach((c) => delete c.apps[this.appId]);
+    } else {
+      return super.close(options);
+    }
+  }
+
   async getData(): Promise<CharacterSheetData & ActorSheetData> {
     this.incorrectRunes = [];
     const system = foundry.utils.duplicate(this.document.system);
@@ -130,13 +177,14 @@ export class RqgActorSheet extends ActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
-    // This will just give a random combatant connected to the actor if there are multiple
     // @ts-expect-error getCombatantByActor
-    const actorCombatant = getGame().combat?.getCombatantByActor(this.actor);
+    const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+      this.actor,
+    );
 
     this.activeInSR = new Set(
-      getCombatantsSharingToken(actorCombatant)
-        .map((c) => c.initiative)
+      actorCombatants
+        ?.map((c) => c.initiative)
         .filter(isTruthy)
         .filter((sr: number) => sr >= 1 && sr <= 12),
     );
@@ -1447,14 +1495,13 @@ export class RqgActorSheet extends ActorSheet<
         "Programming error: updateActiveCombatWithSR should not be run if there are no combats.",
       );
     }
-    // Don't start from the token.combatant since double-clicking the combatant in the combat tracker opens the prototype token instead of the token.
-    // @ts-expect-error actorId
-    const tokenCombatant = combat.combatants.find((c) => c.tokenId === this.token.id);
-    const currentCombatants = getCombatantsSharingToken(tokenCombatant);
+
+    // @ts-expect-error getCombatantsByActor
+    const currentCombatants = combat.getCombatantsByActor(this.actor);
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
-    await deleteCombatant(combat, combatantIdsToDelete);
+    await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
 
     if (activeInSR.size === 0) {
       await currentCombatants[0].update({ initiative: null });
@@ -1463,20 +1510,15 @@ export class RqgActorSheet extends ActorSheet<
     // Create new Combatants for missing SR
     const srWithoutCombatants = getSrWithoutCombatants(currentCombatants, activeInSR);
 
-    const newCombatants = srWithoutCombatants
+    const newCombatants: NewCombatant[] = srWithoutCombatants
       .map((sr) => ({
-        // @ts-expect-error tokenId
-        tokenId: currentCombatants[0].tokenId,
-        // @ts-expect-error sceneId
-        sceneId: currentCombatants[0].sceneId,
-        // @ts-expect-error actorId
-        actorId: currentCombatants[0].actorId,
+        actorId: currentCombatants[0]?.actorId,
+        tokenId: currentCombatants[0]?.tokenId,
+        sceneId: currentCombatants[0]?.sceneId,
         initiative: sr,
       }))
       .filter(isTruthy);
-    if (newCombatants.length > 0) {
-      await combat.createEmbeddedDocuments("Combatant", newCombatants);
-    }
+    await combat.createEmbeddedDocuments("Combatant", newCombatants);
   }
 
   private getEquippedProjectileOptions(): SelectOptionData<string>[] {

@@ -36,6 +36,7 @@ import { RqgRollTableSheet } from "./rollTables/rqgRollTableSheet";
 import { RqgTokenRuler } from "./combat/RqgTokenRuler";
 import { ClickableScriptsRegionBehavior } from "./scene/ClickableScriptsRegionBehavior";
 import { RqgTokenLayer } from "./scene/RqgTokenLayer";
+import { RqgCombatant } from "./combat/rqgCombatant";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -108,6 +109,7 @@ Hooks.once("init", async () => {
   RqgSettings.init();
   RqgTokenLayer.init();
   ClickableScriptsRegionBehavior.init();
+  RqgCombatant.init();
   initSockets();
 
   // @ts-expect-error applications

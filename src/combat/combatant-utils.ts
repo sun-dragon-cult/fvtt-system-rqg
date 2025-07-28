@@ -1,10 +1,16 @@
+import { getGame } from "../system/util";
+
 export function getCombatantsSharingToken(combatant: Combatant | undefined): Combatant[] {
   if (combatant?.actor == null || combatant.parent == null) {
     return [];
   }
 
+  // @ts-expect-error sceneId
+  const scene = getGame().scenes?.get(combatant.sceneId);
+
   const combatantTokenIds = combatant.actor
-    .getActiveTokens(false, true)
+    // @ts-expect-error getDependentTokens
+    .getDependentTokens({ scenes: scene })
     .map((t: TokenDocument) => t.id);
   return combatant.parent.combatants.filter((cb: any) => combatantTokenIds.includes(cb.tokenId));
 }
@@ -29,7 +35,7 @@ export function getCombatantIdsToDelete(combatants: Combatant[], activeSr: Set<n
 
   const seenSr = new Set<number | null>();
   const duplicateCombatants: Combatant[] = [];
-  const nonDuplicateCombtants = combatants.filter((c) => {
+  const nonDuplicateCombatants = combatants.filter((c) => {
     const isDuplicate = seenSr.has(c.initiative);
     seenSr.add(c.initiative);
     if (isDuplicate) {
@@ -38,6 +44,6 @@ export function getCombatantIdsToDelete(combatants: Combatant[], activeSr: Set<n
     }
     return true;
   });
-  const extraSr = nonDuplicateCombtants.filter((c) => !activeSr.has(c.initiative ?? -1));
+  const extraSr = nonDuplicateCombatants.filter((c) => !activeSr.has(c.initiative ?? -1));
   return [...duplicateCombatants, ...extraSr].map((c) => c.id ?? "");
 }

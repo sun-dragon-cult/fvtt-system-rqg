@@ -14,26 +14,33 @@ export class RqgCombat extends Combat {
   /**
    * Reset all combatant SR, remove duplicate combatants and set the turn back to zero
    */
-  async resetAll(): Promise<any> {
-    const tokenIds = new Set();
-    const combatantIdsToDelete = [];
-    for (const combatant of this.combatants) {
-      // @ts-expect-error tokenId
-      if (tokenIds.has(combatant.tokenId)) {
-        // There is at least one token connected to this combatant
-        combatantIdsToDelete.push(combatant.id ?? "");
-      } else {
-        // @ts-expect-error tokenId
-        tokenIds.add(combatant.tokenId);
-      }
-    }
-    await this.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
-
+  async resetAll({ updateTurn = true } = {}): Promise<any> {
+    const currentId = this.combatant?.id;
+    const tokenIds = new Set(); // --- RQG code
+    const combatantIdsToDelete = []; // --- RQG code
     for (const c of this.combatants) {
       // @ts-expect-error updateSource
       c.updateSource({ initiative: null });
+
+      // --- start RQG code --- find duplicated combatants
+      // @ts-expect-error tokenId
+      if (tokenIds.has(c.tokenId)) {
+        // There is more than one token connected to this combatant
+        combatantIdsToDelete.push(c.id ?? "");
+      } else {
+        // @ts-expect-error tokenId
+        tokenIds.add(c.tokenId);
+      }
+      // --- end RQG code ---
     }
-    return this.update({ turn: 0, combatants: this.combatants.toObject() }, { diff: false });
+    const update: any = { combatants: this.combatants.toObject() };
+    if (updateTurn && currentId) {
+      update.turn = this.turns.findIndex((t) => t.id === currentId);
+    }
+    // @ts-expect-error turnEvents
+    await this.update(update, { turnEvents: false, diff: false });
+    await this.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
+    // --- RQG code
   }
 
   _sortCombatants(a: Combatant, b: Combatant): number {

@@ -66,6 +66,8 @@ export const templatePaths = {
   tokenRulerSettings: "systems/rqg/applications/settings/tokenRulerSettings.hbs",
   // Interface
   settings: "systems/rqg/foundryUi/settings.hbs",
+  combatTracker: "systems/rqg/combat/tracker.hbs",
+  combatHeader: "systems/rqg/combat/header.hbs",
 } as const;
 
 export const loadHandlebarsTemplates = async function () {
