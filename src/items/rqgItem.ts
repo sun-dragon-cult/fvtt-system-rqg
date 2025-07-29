@@ -41,6 +41,7 @@ import {
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../system/combatCalculations";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
+import { Skill } from "./skill-item/skill";
 
 export class RqgItem extends Item {
   public static init() {
@@ -537,6 +538,26 @@ export class RqgItem extends Item {
     }
 
     return descriptionParts.join(", ");
+  }
+
+  async _preCreate(data: any, options: any, user: User): Promise<void> {
+    if (this.parent && this.type === ItemTypeEnum.Skill) {
+      // Update the baseChance for Dodge & Jump skills that depend on actor DEX
+      const itemRqid = this.getFlag(systemId, "documentRqidFlags")?.id;
+      const actorDex = this.parent.system.characteristics.dexterity.value ?? 0;
+      const newBaseChance =
+        itemRqid === CONFIG.RQG.skillRqid.dodge
+          ? Skill.dodgeBaseChance(actorDex)
+          : itemRqid === CONFIG.RQG.skillRqid.jump
+            ? Skill.jumpBaseChance(actorDex)
+            : undefined;
+      if (newBaseChance) {
+        // @ts-expect-error updateSource
+        this.updateSource({ system: { baseChance: newBaseChance } });
+      }
+    }
+
+    return super._preCreate(data, options, user);
   }
 
   protected _onCreate(
