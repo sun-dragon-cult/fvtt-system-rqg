@@ -16,7 +16,7 @@ import {
   usersIdsThatOwnActor,
 } from "../system/util";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
-import { systemId } from "../system/config";
+import { RQG_CONFIG, systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
 import type { AnyDocumentData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs";
 import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
@@ -39,6 +39,7 @@ import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "../data-model/item-data/weaponData";
+import { Skill } from "../items/skill-item/skill";
 
 export class RqgActor extends Actor {
   static init() {
@@ -554,6 +555,25 @@ export class RqgActor extends Actor {
     }
     // @ts-expect-error _onDeleteDescendantDocuments
     super._onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId);
+  }
+
+  // Update the baseChance for Dodge & Jump skills that depend on actor DEX
+  async _preUpdate(changes: any, options: any, user: User): Promise<void> {
+    const actorDex = changes?.system?.characteristics?.dexterity?.value;
+
+    const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
+    // @ts-expect-error _source
+    if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
+      await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+    }
+
+    const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
+    // @ts-expect-error _source
+    if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
+      await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
+    }
+
+    return super._preUpdate(changes, options, user);
   }
 
   // Return shorthand access to actor data & characteristics
