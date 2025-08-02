@@ -7,7 +7,7 @@
 body {
   background-attachment: fixed !important;
   background-size: cover !important;
-  background: url("/assets/images/ui/sacred-time.webp") no-repeat;
+  background: url("/systems/rqg/assets/images/ui/sacred-time.webp") no-repeat;
 }
 
 // *** Start of theme specific styles ***
@@ -29,7 +29,7 @@ body {
   filter: invert(var(--rqg-svg-invert-param));
 }
 
-img[src*="systems/rqg/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
+img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
     // Make them black for light backgrounds, but exclude the token-hud images
     filter: invert(var(--rqg-svg-invert-param));
   }
@@ -927,7 +927,7 @@ input.readonly {
     }
 
     .chat-options {
-      background: url(/assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
+      background: url(/systems/rqg/assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
     }
 
     .chat-option {

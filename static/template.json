@@ -1,0 +1,342 @@
+{
+  "Actor": {
+    "types": [
+      "character"
+    ],
+    "character": {
+      "characteristics": {
+        "strength": {
+          "value": 0,
+          "formula": "3d6"
+        },
+        "constitution": {
+          "value": 0,
+          "formula": "3d6"
+        },
+        "size": {
+          "value": 0,
+          "formula": "2d6+6"
+        },
+        "dexterity": {
+          "value": 0,
+          "formula": "3d6"
+        },
+        "intelligence": {
+          "value": 0,
+          "formula": "2d6+6"
+        },
+        "power": {
+          "value": 0,
+          "formula": "3d6",
+          "hasExperience": false
+        },
+        "charisma": {
+          "value": 0,
+          "formula": "3d6"
+        }
+      },
+      "background": {
+        "species": "Human",
+        "occupation": "",
+        "cultureJournalRqidLinks": [],
+        "tribeJournalRqidLinks": [],
+        "clanJournalRqidLinks": []
+      },
+      "allies": "",
+      "extendedName": "",
+      "attributes": {
+        "magicPoints": {
+          "value": 0
+        },
+        "hitPoints": {
+          "value": 0
+        },
+        "move": {
+          "currentLocomotion": "walk",
+          "walk": {
+            "value": 8,
+            "carryingFactor": 1
+          },
+          "swim": {
+            "value": 2,
+            "carryingFactor": 0.5
+          },
+          "fly": {}
+        },
+        "heroPoints": 0,
+        "isCreature": false,
+        "health": "healthy"
+      },
+      "editMode": true
+    }
+  },
+  "Item": {
+    "types": [
+      "armor",
+      "cult",
+      "gear",
+      "hitLocation",
+      "homeland",
+      "occupation",
+      "passion",
+      "rune",
+      "runeMagic",
+      "skill",
+      "spiritMagic",
+      "weapon"
+    ],
+    "armor": {
+      "description": "",
+      "gmNotes": "",
+      "size": 0,
+      "price": {
+        "real": 0,
+        "estimated": 0
+      },
+      "encumbrance": 1,
+      "equippedStatus": "carried",
+      "hitLocationRqidLinks": [],
+      "namePrefix": "",
+      "armorType": "",
+      "material": "",
+      "absorbs": 0,
+      "moveQuietlyPenalty": 0,
+      "location": "",
+      "isContainer": false,
+      "attunedTo": "",
+      "physicalItemType": "unique",
+      "quantity": 1
+    },
+    "cult": {
+      "joinedCults": [
+        {
+          "cultName": "",
+          "tagline": "",
+          "rank": "layMember"
+        }
+      ],
+      "commonRuneMagicRqidLinks": [
+        {
+          "rqid": "i.rune-magic.command-cult-spirit",
+          "name": "Command Cult Spirit"
+        },
+        {
+          "rqid": "i.rune-magic.dismiss-magic",
+          "name": "Dismiss Magic"
+        },
+        {
+          "rqid": "i.rune-magic.divination",
+          "name": "Divination"
+        },
+        {
+          "rqid": "i.rune-magic.extension",
+          "name": "Extension"
+        },
+        {
+          "rqid": "i.rune-magic.find-enemy",
+          "name": "Find Enemy"
+        },
+        {
+          "rqid": "i.rune-magic.heal-wound",
+          "name": "Heal Wound"
+        },
+        {
+          "rqid": "i.rune-magic.multispell",
+          "name": "Multispell"
+        },
+        {
+          "rqid": "i.rune-magic.sanctify",
+          "name": "Sanctify"
+        },
+        {
+          "rqid": "i.rune-magic.soul-sight",
+          "name": "Soul Sight"
+        },
+        {
+          "rqid": "i.rune-magic.spirit-block",
+          "name": "Spirit Block"
+        },
+        {
+          "rqid": "i.rune-magic.summon-cult-spirit",
+          "name": "Summon Cult Spirit"
+        },
+        {
+          "rqid": "i.rune-magic.warding",
+          "name": "Warding"
+        }
+      ],
+      "runePoints": {
+        "value": 0,
+        "max": 0
+      },
+      "holyDays": "",
+      "gifts": "",
+      "geases": "",
+      "runeRqidLinks": []
+    },
+    "gear": {
+      "description": "",
+      "gmNotes": "",
+      "quantity": 1,
+      "price": {
+        "real": 0,
+        "estimated": 0
+      },
+      "encumbrance": 1,
+      "equippedStatus": "carried",
+      "location": "",
+      "isContainer": false,
+      "attunedTo": "",
+      "physicalItemType": "unique"
+    },
+    "hitLocation": {
+      "dieFrom": 0,
+      "dieTo": 0,
+      "hitPoints": {
+        "value": 0
+      },
+      "baseHpDelta": 0,
+      "naturalAp": 0,
+      "wounds": [],
+      "hitLocationHealthState": "healthy",
+      "actorHealthImpact": "healthy",
+      "hitLocationType": "limb",
+      "connectedTo": ""
+    },
+    "homeland": {
+      "homeland": "",
+      "region": "",
+      "cultureJournalRqidLinks": [],
+      "tribeJournalRqidLinks": [],
+      "clanJournalRqidLinks": [],
+      "cultRqidLinks": [],
+      "skillRqidLinks": [],
+      "runeRqidLinks": [],
+      "passionRqidLinks": [],
+      "wizardInstructions": ""
+    },
+    "occupation": {
+      "occupation": "",
+      "specialization": "",
+      "homelands": [],
+      "occupationalSkills": [],
+      "standardOfLiving": "free",
+      "baseIncome": 0,
+      "baseIncomeNotes": "",
+      "cultRqidLinks": [],
+      "ransom": 0,
+      "startingEquipmentRqidLinks": []
+    },
+    "passion": {
+      "passion": "",
+      "subject": "",
+      "description": "",
+      "gmNotes": "",
+      "chance": 60,
+      "canGetExperience": true,
+      "hasExperience": false
+    },
+    "rune": {
+      "rune": "",
+      "chance": 0,
+      "canGetExperience": true,
+      "hasExperience": false,
+      "runeType": {
+        "type": "form",
+        "name": "form"
+      },
+      "minorRuneRqidLinks": [],
+      "isMastered": false
+    },
+    "runeMagic": {
+      "cultId": "",
+      "runeRqidLinks": [],
+      "points": 0,
+      "castingRange": "ranged",
+      "duration": "temporal",
+      "concentration": "passive",
+      "isRitual": false,
+      "isStackable": false,
+      "isOneUse": false,
+      "isEnchantment": false
+    },
+    "skill": {
+      "category": "magic",
+      "skillName": "",
+      "specialization": "",
+      "baseChance": 0,
+      "gainedChance": 0,
+      "canGetExperience": true,
+      "hasExperience": false,
+      "runeRqidLinks": []
+    },
+    "spiritMagic": {
+      "points": 0,
+      "isVariable": false,
+      "isRitual": false,
+      "isEnchantment": false,
+      "castingRange": "ranged",
+      "duration": "instant",
+      "concentration": "passive",
+      "incompatibleWith": [],
+      "spellFocus": "",
+      "isMatrix": false
+    },
+    "weapon": {
+      "usage": {
+        "oneHand": {
+          "combatManeuvers": [],
+          "damage": "",
+          "minStrength": 0,
+          "minDexterity": 0,
+          "strikeRank": 0
+        },
+        "offHand": {
+          "combatManeuvers": [],
+          "damage": "",
+          "minStrength": 0,
+          "minDexterity": 0,
+          "strikeRank": 0
+        },
+        "twoHand": {
+          "combatManeuvers": [],
+          "damage": "",
+          "minStrength": 0,
+          "minDexterity": 0,
+          "strikeRank": 0
+        },
+        "missile": {
+          "combatManeuvers": [],
+          "damage": "",
+          "minStrength": 0,
+          "minDexterity": 0
+        }
+      },
+      "description": "",
+      "gmNotes": "",
+      "hitPoints": {
+        "value": 0
+      },
+      "hitPointLocation": "",
+      "encumbrance": 0,
+      "location": "",
+      "attunedTo": "",
+      "physicalItemType": "unique",
+      "quantity": 1,
+      "isContainer": false,
+      "price": {
+        "real": 0,
+        "estimated": 0
+      },
+      "isNatural": false,
+      "equippedStatus": "carried",
+      "rate": 0,
+      "range": 0,
+      "isProjectile": false,
+      "isProjectileWeapon": false,
+      "isThrownWeapon": false,
+      "isRangedWeapon": false,
+      "projectileId": ""
+    }
+  }
+}
