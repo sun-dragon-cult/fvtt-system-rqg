@@ -1,6 +1,6 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import {
+import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./SpiritMagicRollDialogData.types";

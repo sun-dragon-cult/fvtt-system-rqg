@@ -1,10 +1,10 @@
-import { ActorHealthState } from "../data-model/actor-data/attributes";
+import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import { assertItemType, RqgError } from "./util";
-import {
+import type {
   HitLocationDataSource,
   HitLocationHealthState,
 } from "../data-model/item-data/hitLocationData";
-import { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
+import type { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { RqgActor } from "../actors/rqgActor";

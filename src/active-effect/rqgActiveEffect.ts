@@ -5,6 +5,7 @@ import type { RqgActor } from "../actors/rqgActor";
 
 export class RqgActiveEffect extends ActiveEffect {
   static init() {
+    // @ts-expect-error type error
     CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
     // @ts-expect-error legacyTransferral
     CONFIG.ActiveEffect.legacyTransferral = false;
@@ -17,7 +18,7 @@ export class RqgActiveEffect extends ActiveEffect {
    * The format of the key should be "<rqid>:<propertyPath>" like "i.skill.dodge:system.baseChance"
    * The effect will try to find an embedded item with the specified rqid.
    */
-  _applyCustom(actor: RqgActor, change: EffectChangeData): void {
+  override _applyCustom(actor: RqgActor, change: EffectChangeData): void {
     const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
@@ -135,7 +136,7 @@ export class RqgActiveEffect extends ActiveEffect {
     try {
       delta = this.#parseOrString(raw);
       delta = delta instanceof Array ? delta : [delta];
-    } catch (e) {
+    } catch {
       delta = [raw];
     }
     return delta.map((d) => this.#castDelta(d, type));
@@ -144,7 +145,7 @@ export class RqgActiveEffect extends ActiveEffect {
   #parseOrString(raw: any) {
     try {
       return JSON.parse(raw);
-    } catch (err) {
+    } catch {
       return raw;
     }
   }

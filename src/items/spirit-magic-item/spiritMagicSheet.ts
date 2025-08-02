@@ -8,7 +8,7 @@ import {
 } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
 import { RqgItem } from "../rqgItem";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SpiritMagicSheetData {
@@ -21,7 +21,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
   ItemSheet.Options,
   SpiritMagicSheetData | ItemSheet.Data
 > {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
       template: templatePaths.itemSpiritMagicSheet,
@@ -37,7 +37,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
     });
   }
 
-  getData(): SpiritMagicSheetData & EffectsItemSheetData {
+  override getData(): SpiritMagicSheetData & EffectsItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -67,7 +67,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     // Set a concentration value if there isn't one already
     if (formData["system.duration"] === SpellDurationEnum.Temporal) {
       formData["system.concentration"] = formData["system.concentration"]

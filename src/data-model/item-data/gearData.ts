@@ -1,4 +1,4 @@
-import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
+import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 
 export interface GearDataSourceData extends IPhysicalItem {}

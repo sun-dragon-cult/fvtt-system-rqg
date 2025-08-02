@@ -1,12 +1,15 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { RqgItem } from "../rqgItem";
-import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
+import {
+  type EquippedStatus,
+  equippedStatusOptions,
+} from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getDomDataset, getGameUser, localize } from "../../system/util";
-import { DamageType, damageTypeOptions } from "../../data-model/item-data/weaponData";
+import { type DamageType, damageTypeOptions } from "../../data-model/item-data/weaponData";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
@@ -23,7 +26,7 @@ interface WeaponSheetData {
 }
 
 export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
       template: templatePaths.itemWeaponSheet,
@@ -39,7 +42,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     });
   }
 
-  async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
+  override async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -97,7 +100,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     return [];
   }
 
-  protected async _updateObject(event: Event, formData: any): Promise<any> {
+  protected override async _updateObject(event: Event, formData: any): Promise<any> {
     formData["system.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "oneHand",
       formData,
@@ -207,7 +210,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
    * Update the weapon skill link and if the weapon is embedded in an actor
    * embed the dropped skill items if the actor does not yet have it.
    */
-  async _onDropItem(
+  override async _onDropItem(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {

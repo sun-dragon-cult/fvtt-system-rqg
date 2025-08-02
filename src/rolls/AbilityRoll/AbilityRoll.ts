@@ -44,7 +44,7 @@ export class AbilityRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -68,7 +68,7 @@ export class AbilityRoll extends Roll {
   }
 
   // Html for what modifiers are applied
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const o = this.options as AbilityRollOptions;
     const modifiers = o.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers

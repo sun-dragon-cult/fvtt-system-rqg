@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  HitLocationHealthState,
+  type HitLocationHealthState,
   hitLocationHealthStatusOptions,
   HitLocationTypesEnum,
 } from "../../data-model/item-data/hitLocationData";
@@ -18,7 +18,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { damageType } from "../../data-model/item-data/weaponData";
 
@@ -33,7 +33,7 @@ export class HitLocationSheet extends RqgItemSheet<
   ItemSheet.Options,
   HitLocationSheetData | ItemSheet.Data
 > {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: templatePaths.itemHitLocationSheet,
@@ -49,7 +49,7 @@ export class HitLocationSheet extends RqgItemSheet<
     });
   }
 
-  getData(): HitLocationSheetData & ItemSheetData {
+  override getData(): HitLocationSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
     system.hitPoints = this.document.system.hitPoints; // Use the actor derived values

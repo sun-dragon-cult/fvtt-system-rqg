@@ -1,7 +1,7 @@
 import { RqgItem } from "../rqgItem";
 import { localize, mergeArraysById, RqgError } from "../../system/util";
 import { ItemTree } from "./ItemTree";
-import { EquippedStatus } from "../../data-model/item-data/IPhysicalItem";
+import type { EquippedStatus } from "../../data-model/item-data/IPhysicalItem";
 
 /**
  * Only update the content of a bag if the changed item is the bag itself and that change

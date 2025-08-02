@@ -1,6 +1,6 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import {
+import type {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
 } from "./CharacteristicRollDialogData.types";
@@ -8,7 +8,7 @@ import { getDomDataset, getGame, getTokenFromActor, localize, RqgError } from ".
 import type { RqgActor } from "../../actors/rqgActor";
 import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
-import { Characteristics } from "../../data-model/actor-data/characteristics";
+import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import type { RollMode } from "../../chat/chatMessage.types";
 
 // @ts-expect-error application v2

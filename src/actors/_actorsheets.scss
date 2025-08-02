@@ -8,27 +8,27 @@
 .rqg.character {
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-    background: url(assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
+    background: url(/assets/images/ui/mainbackground.webp) repeat-y scroll top left/100%;
   }
 
   .play-mode-icon {
-    content: url(assets/images/ui/play-mode.svg);
+    content: url(/assets/images/ui/play-mode.svg);
     margin-top: 6px;
     height: 0.9rem;
 
     &:hover {
-      content: url(assets/images/ui/edit-mode.svg);
+      content: url(/assets/images/ui/edit-mode.svg);
       filter: brightness(0.5);
     }
   }
 
   .edit-mode-icon {
-    content: url(assets/images/ui/edit-mode.svg);
+    content: url(/assets/images/ui/edit-mode.svg);
     margin-top: 6px;
     height: 0.9rem;
 
     &:hover {
-      content: url(assets/images/ui/play-mode.svg);
+      content: url(/assets/images/ui/play-mode.svg);
       filter: brightness(0.5);
     }
   }
@@ -528,7 +528,7 @@
 
       &::before {
         content: "";
-        background: center/contain no-repeat url(assets/images/runes/man.svg);
+        background: center/contain no-repeat url(/assets/images/runes/man.svg);
         width: inherit;
         height: inherit;
         position: absolute;

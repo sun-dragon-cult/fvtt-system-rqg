@@ -12,7 +12,7 @@ import {
 } from "../../system/util";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
-import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
+import type { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
@@ -27,7 +27,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   //   });
   // }
 
-  static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+  static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.type !== ItemTypeEnum.RuneMagic || !item.actor) {
       const msg = localize("RQG.Item.Notification.WrongItemTypeRuneMagicError");
       ui.notifications?.error(msg);
@@ -83,7 +83,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   /*
    * Connect runeMagic item to a cult.
    */
-  static async onEmbedItem(
+  static override async onEmbedItem(
     actor: RqgActor,
     runeMagicItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

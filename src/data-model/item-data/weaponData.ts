@@ -1,4 +1,4 @@
-import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
+import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
 import { defaultResource, Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";

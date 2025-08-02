@@ -1,6 +1,6 @@
 import {
   OccupationalSkill,
-  OccupationDataSourceData,
+  type OccupationDataSourceData,
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
@@ -10,7 +10,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
-import { DocumentSheetData } from "../shared/sheetInterfaces";
+import type { DocumentSheetData } from "../shared/sheetInterfaces";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -24,7 +24,7 @@ export class OccupationSheet extends RqgItemSheet<
   ItemSheet.Options,
   OccupationSheetData | ItemSheet.Data
 > {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Occupation],
       template: templatePaths.itemOccupationSheet,
@@ -40,7 +40,7 @@ export class OccupationSheet extends RqgItemSheet<
     });
   }
 
-  getData(): OccupationSheetData & DocumentSheetData {
+  override getData(): OccupationSheetData & DocumentSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -137,7 +137,7 @@ export class OccupationSheet extends RqgItemSheet<
     return super._updateObject(event, formData);
   }
 
-  public activateListeners(html: JQuery): void {
+  public override activateListeners(html: JQuery): void {
     super.activateListeners(html);
     const form = this.form as HTMLFormElement;
 
@@ -204,7 +204,7 @@ export class OccupationSheet extends RqgItemSheet<
     }
   }
 
-  async _onDropItem(
+  override async _onDropItem(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {

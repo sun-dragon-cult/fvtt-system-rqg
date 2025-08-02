@@ -1,8 +1,12 @@
+// @ts-expect-error foswig isn't typed
 import Foswig from "foswig";
 import { RQG_CONFIG, systemId } from "../config";
 import { getGame, localize } from "../util";
 import { Rqid } from "./rqidApi";
-import { DocumentRqidFlags, documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import {
+  type DocumentRqidFlags,
+  documentRqidFlags,
+} from "../../data-model/shared/rqgDocumentFlags";
 
 export class nameGeneration {
   static defaultConstraints = {

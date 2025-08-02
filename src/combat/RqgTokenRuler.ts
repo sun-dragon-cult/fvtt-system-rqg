@@ -1,6 +1,6 @@
 import { getGame } from "../system/util";
 import { systemId } from "../system/config";
-import { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
+import type { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
 
 // @ts-expect-error canvas;
 const placeables = foundry.canvas.placeables;

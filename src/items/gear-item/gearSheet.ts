@@ -1,14 +1,14 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import {
-  EquippedStatus,
+  type EquippedStatus,
   equippedStatusOptions,
-  PhysicalItemType,
+  type PhysicalItemType,
   physicalItemTypeOptions,
 } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface GearSheetData {
@@ -19,7 +19,7 @@ interface GearSheetData {
 }
 
 export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Gear],
       template: templatePaths.itemGearSheet,
@@ -35,7 +35,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     });
   }
 
-  async getData(): Promise<GearSheetData & EffectsItemSheetData> {
+  override async getData(): Promise<GearSheetData & EffectsItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -62,7 +62,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     };
   }
 
-  protected async _updateObject(event: Event, formData: any): Promise<any> {
+  protected override async _updateObject(event: Event, formData: any): Promise<any> {
     if (formData[`system.physicalItemType`] === "unique") {
       formData[`system.quantity`] = 1;
     }

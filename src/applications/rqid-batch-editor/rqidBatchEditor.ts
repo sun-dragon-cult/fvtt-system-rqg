@@ -11,7 +11,7 @@ import {
 import { Rqid } from "../../system/api/rqidApi";
 import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import type { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { RqgActor } from "../../actors/rqgActor";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "../../items/rqgItem";
@@ -35,7 +35,7 @@ export class RqidBatchEditor extends FormApplication<
   /** Keep a single progress object. */
   private static updateProgressBar: any;
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-batch-editor"],
       popOut: true,
@@ -50,12 +50,12 @@ export class RqidBatchEditor extends FormApplication<
     });
   }
 
-  async close(options?: FormApplication.CloseOptions): Promise<void> {
+  override async close(options?: FormApplication.CloseOptions): Promise<void> {
     await super.close(options);
     this.resolve();
   }
 
-  async getData(): Promise<RqidBatchEditorData> {
+  override async getData(): Promise<RqidBatchEditorData> {
     const existingRqidOptions = [...this.options.existingRqids.keys()]
       .reduce((out: any, itemName) => {
         out.push({
@@ -114,7 +114,7 @@ export class RqidBatchEditor extends FormApplication<
     };
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
     html.find(".existing").change(this.onSetExistingName.bind(this));
     html.find(".generate-rqid").click(this.onClickGuess.bind(this));
@@ -160,7 +160,7 @@ export class RqidBatchEditor extends FormApplication<
     }
   }
 
-  get title(): string {
+  override get title(): string {
     return super.title + " - " + localizeItemType(this.options.itemType);
   }
 

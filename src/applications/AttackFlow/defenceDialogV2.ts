@@ -21,7 +21,7 @@ import type {
 } from "./DefenceDialogData.types";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
+import type {
   CombatManeuver,
   DamageType,
   Usage,

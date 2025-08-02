@@ -23,8 +23,8 @@
       "email": "moonpile@moonpile.com"
     }
   ],
-  "esmodules": ["rqg.js"],
-  "styles": ["rqg.css"],
+  "esmodules": ["index.js"],
+  "styles": ["index.css"],
   "socket": true,
   "primaryTokenAttribute": "attributes.hitPoints.value",
   "secondaryTokenAttribute": "attributes.magicPoints.value",

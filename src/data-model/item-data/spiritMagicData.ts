@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "./itemTypes";
-import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
+import { type Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 
 export interface SpiritMagicDataSourceData extends Spell {
   /** Can the caster decide the number of magic points used */

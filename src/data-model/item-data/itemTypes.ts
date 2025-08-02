@@ -8,22 +8,22 @@ import { Cult } from "../../items/cult-item/cult";
 import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
 import { Passion } from "../../items/passion-item/passion";
 import { Rune } from "../../items/rune-item/rune";
-import { ArmorDataProperties, ArmorDataSource } from "./armorData";
-import { PassionDataProperties, PassionDataSource } from "./passionData";
-import { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
-import { GearDataProperties, GearDataSource } from "./gearData";
-import { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
-import { CultDataProperties, CultDataSource } from "./cultData";
-import { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
-import { SkillDataProperties, SkillDataSource } from "./skillData";
-import { RuneDataProperties, RuneDataSource } from "./runeData";
-import { WeaponDataProperties, WeaponDataSource } from "./weaponData";
+import type { ArmorDataProperties, ArmorDataSource } from "./armorData";
+import type { PassionDataProperties, PassionDataSource } from "./passionData";
+import type { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
+import type { GearDataProperties, GearDataSource } from "./gearData";
+import type { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
+import type { CultDataProperties, CultDataSource } from "./cultData";
+import type { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
+import type { SkillDataProperties, SkillDataSource } from "./skillData";
+import type { RuneDataProperties, RuneDataSource } from "./runeData";
+import type { WeaponDataProperties, WeaponDataSource } from "./weaponData";
 import { Weapon } from "../../items/weapon-item/weapon";
-import {
+import type {
   HomelandDataProperties as HomelandDataProperties,
   HomelandDataSource,
 } from "./homelandData";
-import {
+import type {
   OccupationDataProperties as OccupationDataProperties,
   OccupationDataSource,
 } from "./occupationData";

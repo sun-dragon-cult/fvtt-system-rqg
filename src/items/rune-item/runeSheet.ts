@@ -4,7 +4,7 @@ import { getGameUser, localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneSheetData {
@@ -14,7 +14,7 @@ interface RuneSheetData {
   rqid: string;
 }
 export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
       template: templatePaths.itemRuneSheet,
@@ -30,7 +30,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     });
   }
 
-  getData(): RuneSheetData & ItemSheetData {
+  override getData(): RuneSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -56,7 +56,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     const runeType = formData["system.runeType.type"];
     const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
     formData["name"] = `${formData["system.rune"]} (${translatedRuneType})`;

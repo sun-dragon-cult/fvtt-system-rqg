@@ -1,4 +1,4 @@
-import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
+import type { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
 import {
   formatListByUserLanguage,
   getAvailableRunes,

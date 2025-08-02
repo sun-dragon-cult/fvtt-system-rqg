@@ -1,6 +1,6 @@
 import { Attributes, defaultAttributes } from "./attributes";
-import { Characteristics, defaultCharacteristics } from "./characteristics";
-import { Background, defaultBackground } from "./background";
+import { type Characteristics, defaultCharacteristics } from "./characteristics";
+import { type Background, defaultBackground } from "./background";
 import { SkillCategories } from "./skillCategories";
 
 export enum ActorTypeEnum {

@@ -1,5 +1,5 @@
 import { RqgActor } from "../rqgActor";
-import { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
+import type { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
   getDomDataset,
   localize,

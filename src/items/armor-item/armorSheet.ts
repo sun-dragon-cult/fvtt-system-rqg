@@ -3,7 +3,10 @@ import {
   armorTypeTranslationKeys,
   materialTranslationKeys,
 } from "../../data-model/item-data/armorData";
-import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
+import {
+  type EquippedStatus,
+  equippedStatusOptions,
+} from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   convertFormValueToString,
@@ -14,7 +17,7 @@ import {
 } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -28,7 +31,7 @@ interface ArmorSheetData {
 }
 
 export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
       template: templatePaths.itemArmorSheet,
@@ -44,7 +47,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
     });
   }
 
-  async getData(): Promise<ArmorSheetData & EffectsItemSheetData> {
+  override async getData(): Promise<ArmorSheetData & EffectsItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -75,12 +78,12 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
     };
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
     html.find("[data-add-hit-location]").change(this.onAddHitLocation.bind(this));
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     formData["name"] =
       `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
     return super._updateObject(event, formData);

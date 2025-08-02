@@ -1,4 +1,4 @@
-import { IAbility } from "../shared/ability";
+import type { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 

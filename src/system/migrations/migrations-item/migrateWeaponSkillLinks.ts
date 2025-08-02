@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import { ItemUpdate } from "../applyMigrations";
+import type { ItemUpdate } from "../applyMigrations";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
-import { UsageType } from "../../../data-model/item-data/weaponData";
+import type { UsageType } from "../../../data-model/item-data/weaponData";
 import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 

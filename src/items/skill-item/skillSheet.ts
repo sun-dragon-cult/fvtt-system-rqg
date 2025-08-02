@@ -5,7 +5,7 @@ import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
@@ -14,7 +14,7 @@ interface SkillSheetData {
 }
 
 export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
       template: templatePaths.itemSkillSheet,
@@ -30,7 +30,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     });
   }
 
-  getData(): SkillSheetData & ItemSheetData {
+  override getData(): SkillSheetData & ItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
     system.categoryMod = this.document.system.categoryMod; // Use the actor derived value
@@ -58,7 +58,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
     formData["name"] = concatenateSkillName(
       formData["system.skillName"],
       formData["system.specialization"],

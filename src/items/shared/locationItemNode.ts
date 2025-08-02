@@ -1,8 +1,8 @@
 import {
   defaultPriceData,
-  EquippedStatus,
-  IPhysicalItem,
-  PhysicalItemType,
+  type EquippedStatus,
+  type IPhysicalItem,
+  type PhysicalItemType,
 } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItem } from "../rqgItem";
 

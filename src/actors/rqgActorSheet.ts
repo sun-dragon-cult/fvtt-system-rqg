@@ -12,9 +12,9 @@ import { cultMenuOptions } from "./context-menus/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import {
-  EquippedStatus,
+  type EquippedStatus,
   equippedStatuses,
-  PhysicalItemType,
+  type PhysicalItemType,
 } from "../data-model/item-data/IPhysicalItem";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import {
@@ -35,18 +35,18 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
-import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
+import { type RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { ActorWizard } from "../applications/actorWizardApplication";
-import { systemId } from "../system/config";
+import { RQG_CONFIG, systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
-import { ActorSheetData } from "../items/shared/sheetInterfaces";
-import { Characteristics } from "src/data-model/actor-data/characteristics";
+import type { ActorSheetData } from "../items/shared/sheetInterfaces";
+import type { Characteristics } from "../data-model/actor-data/characteristics";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -63,14 +63,14 @@ import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
+import type { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import {
   applyDamageBonusToFormula,
   formatDamagePart,
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../system/combatCalculations";
-import { NewCombatant } from "../combat/rqgCombatant.types";
+import type { NewCombatant } from "../combat/rqgCombatant.types";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 export class RqgActorSheet extends ActorSheet<
@@ -81,7 +81,8 @@ export class RqgActorSheet extends ActorSheet<
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
 
-  get title(): string {
+  override get title(): string {
+    // @ts-expect-error prototypeToken
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
 
@@ -89,7 +90,9 @@ export class RqgActorSheet extends ActorSheet<
     if (!linked) {
       prefix = isToken ? "[Token] " : "[Prototype] ";
     }
+    // @ts-expect-error prototypeToken
     const speakerName = isToken ? this.actor.token!.name : this.actor.prototypeToken.name;
+    // @ts-expect-error prototypeToken
     const postfix = isToken ? ` (${this.actor.prototypeToken.name})` : "";
 
     return prefix + speakerName + postfix;
@@ -143,8 +146,7 @@ export class RqgActorSheet extends ActorSheet<
   //   actorCombatants?.forEach((c) => delete c.apps[this.appId]);
   // }
 
-  /** @override */
-  async _render(force = false, options = {}) {
+  override async _render(force = false, options = {}) {
     await super._render(force, options);
     // @ts-expect-error getCombatantByActor
     const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
@@ -153,8 +155,7 @@ export class RqgActorSheet extends ActorSheet<
     actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
   }
 
-  /** @override */
-  async close(options = {}) {
+  override async close(options = {}) {
     // @ts-expect-error rnderContext
     if (options.renderContext === "deleteCombatant") {
       // Don't close the actor sheet even is a combatant linked to it that is deleted,
@@ -170,7 +171,7 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  async getData(): Promise<CharacterSheetData & ActorSheetData> {
+  override async getData(): Promise<CharacterSheetData & ActorSheetData> {
     this.incorrectRunes = [];
     const system = foundry.utils.duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
@@ -207,10 +208,12 @@ export class RqgActorSheet extends ActorSheet<
 
       embeddedItems: embeddedItems,
 
+      // @ts-expect-error actor type is wrong
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
-        CONFIG.RQG.skillRqid.spiritCombat,
+        RQG_CONFIG.skillRqid.spiritCombat,
       ),
-      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
+      // @ts-expect-error actor type is wrong
+      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge),
 
       mainCult: this.getMainCultInfo(),
       characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance

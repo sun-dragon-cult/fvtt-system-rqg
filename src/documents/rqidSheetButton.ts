@@ -1,7 +1,7 @@
 import { getGame, getGameUser } from "../system/util";
 import { RqidEditor } from "../applications/rqidEditor/rqidEditor";
 import { systemId } from "../system/config";
-import { DocumentRqidFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { type DocumentRqidFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 /**

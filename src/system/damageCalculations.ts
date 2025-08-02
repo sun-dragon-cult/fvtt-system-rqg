@@ -1,11 +1,10 @@
 import {
-  HitLocationDataProperties,
+  type HitLocationDataProperties,
   hitLocationHealthStatuses,
   HitLocationTypesEnum,
 } from "../data-model/item-data/hitLocationData";
-import { RqgActorDataProperties } from "../data-model/actor-data/rqgActorData";
-import { ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
-import { DeepPartial } from "snowpack";
+import type { RqgActorDataProperties } from "../data-model/actor-data/rqgActorData";
+import { type ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
 import { assertItemType, RqgError } from "./util";
 import { RqgItem } from "../items/rqgItem";

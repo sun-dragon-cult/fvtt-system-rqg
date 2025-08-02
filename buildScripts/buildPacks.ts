@@ -2,7 +2,7 @@ import chalk from "chalk";
 import * as path from "path";
 import * as fs from "fs";
 import { cwd } from "process";
-import { CompendiumPack, PackMetadata } from "./compendium-pack";
+import { CompendiumPack, type PackMetadata } from "./compendium-pack";
 import { tryOrThrow } from "./utils";
 import { PackError } from "./packError";
 import { existsSync, promises } from "fs";

@@ -3,7 +3,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface PassionSheetData {
@@ -30,7 +30,7 @@ export class PassionSheet extends RqgItemSheet<
     [PassionsEnum.Vanity, "systems/rqg/assets/images/passion/vanity.svg"],
   ]);
 
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Passion],
       template: templatePaths.itemPassionSheet,

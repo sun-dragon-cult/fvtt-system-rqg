@@ -3,7 +3,7 @@ import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneMagicSheetData {
@@ -17,7 +17,7 @@ export class RuneMagicSheet extends RqgItemSheet<
   ItemSheet.Options,
   RuneMagicSheetData | ItemSheet.Data
 > {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
       template: templatePaths.itemRuneMagicSheet,
@@ -33,7 +33,7 @@ export class RuneMagicSheet extends RqgItemSheet<
     });
   }
 
-  getData(): RuneMagicSheetData & EffectsItemSheetData {
+  override getData(): RuneMagicSheetData & EffectsItemSheetData {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -73,7 +73,7 @@ export class RuneMagicSheet extends RqgItemSheet<
     );
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     return super._updateObject(event, formData);
   }
 }

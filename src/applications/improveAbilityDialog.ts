@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { IAbility } from "../data-model/shared/ability";
+import type { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "../system/config";
 import {

@@ -2,7 +2,7 @@ import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { getGameUser, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface HomelandSheetData {
@@ -14,7 +14,7 @@ export class HomelandSheet extends RqgItemSheet<
   ItemSheet.Options,
   HomelandSheetData | ItemSheet.Data
 > {
-  static get defaultOptions(): ItemSheet.Options {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
       template: templatePaths.itemHomelandSheet,
@@ -30,7 +30,7 @@ export class HomelandSheet extends RqgItemSheet<
     });
   }
 
-  async getData(): Promise<HomelandSheetData & ItemSheetData> {
+  override async getData(): Promise<HomelandSheetData & ItemSheetData> {
     // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
@@ -52,7 +52,7 @@ export class HomelandSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     const region = formData["system.region"] ? ` (${formData["system.region"]})` : "";
     const newName = formData["system.homeland"] + region;
     if (newName) {
