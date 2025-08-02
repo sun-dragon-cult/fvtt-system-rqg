@@ -3,6 +3,7 @@
 .run/
 # Project exclude paths
 dist/
+build/
 node_modules/
 coverage/
 
