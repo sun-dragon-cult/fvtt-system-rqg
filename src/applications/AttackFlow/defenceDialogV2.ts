@@ -82,7 +82,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: "combat-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "defence-dialog"],
     form: {
@@ -91,24 +91,24 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       closeOnSubmit: true,
     },
     position: {
-      width: 400,
-      left: 35,
-      top: 15,
+      width: "auto",
+      height: "auto",
+      left: 100,
+      top: 10,
     },
     window: {
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-shield",
+      title: "RQG.Dialog.Defence.Title",
       resizable: true,
     },
   };
 
   static PARTS = {
-    form: {
-      template: templatePaths.defenceDialogV2,
-    },
+    header: { template: templatePaths.combatRollHeader },
+    form: { template: templatePaths.defenceDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.defenceFooter },
   };
-
-  get title() {
-    return localize("RQG.Dialog.Defence.Title");
-  }
 
   async _prepareContext(): Promise<DefenceDialogContext> {
     const formData: DefenceDialogFormData =
@@ -237,10 +237,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     return {
       formData: formData,
 
-      defenceName: defenceName,
-      defenceButtonText: defenceButtonText,
-      defenceChance: defenceChance,
-
       attackerName: attackingTokenOrActor?.name ?? "",
       defenderOptions: defenderOptions,
       defenceOptions: defenceOptions,
@@ -248,7 +244,14 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
       augmentOptions: DefenceDialogV2.augmentOptions,
       subsequentDefenceOptions: DefenceDialogV2.subsequentDefenceOptions,
+
+      // combatRollHeader
+      skillName: defenceName,
+      skillChance: defenceChance,
+
+      // defenceFooter
       totalChance: totalChanceExclMasterOpponent + Number(formData.masterOpponentModifier),
+      defenceButtonText: defenceButtonText,
     };
   }
 

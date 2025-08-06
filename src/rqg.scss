@@ -1402,18 +1402,24 @@ input.readonly {
 
 
 .rqg.form.roll-dialog {
-
-  height: fit-content !important; // override the element style
-  overflow: auto;
-
   .roll-header {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
     margin: -1rem -1rem 0.5rem;
     padding: 1rem;
     box-shadow: 0px -3px 11px 0px;
-    text-align: center;
+    height: 2.7rem;
+
+    .main-header {
+      font: bold 2rem/1rem "Norse", "Signika", "Palatino Linotype", serif;
+      font-variant: small-caps;
+      letter-spacing: 1.5px;
+    }
 
     .sub-header {
       font-style: italic;
+      line-height: 1;
       margin-top: -2px;
     }
   }

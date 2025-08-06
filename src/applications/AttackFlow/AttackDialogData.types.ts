@@ -1,25 +1,22 @@
 import type { UsageType } from "../../data-model/item-data/weaponData";
-import type { RqgItem } from "../../items/rqgItem";
+import type { combatRollHeaderPartData } from "./combatRollHeader.types";
+import { AttackFooterData } from "./attackFooter.types";
 
-export type AttackDialogContext = {
-  formData: AttackDialogFormData;
+export type AttackDialogContext = combatRollHeaderPartData &
+  AttackFooterData & {
+    formData: AttackDialogFormData;
 
-  weaponItem: RqgItem | undefined;
-  skillItem: RqgItem | undefined;
-  abilityChance: number;
-
-  ammoQuantity: number;
-  isOutOfAmmo: boolean;
-  usageTypeOptions: SelectOptionData<UsageType>[];
-  augmentOptions: SelectOptionData<number>[];
-  defendingTokenName: string;
-  attackerOptions: SelectOptionData<string>[];
-  attackingWeaponOptions: SelectOptionData<string>[];
-  damageBonusSourceOptions: SelectOptionData<string>[];
-  hitLocationFormulaOptions: SelectOptionData<string>[];
-  aimedBlowOptions: SelectOptionData<number>[];
-  totalChance: number;
-};
+    ammoQuantity: number;
+    isOutOfAmmo: boolean;
+    usageTypeOptions: SelectOptionData<UsageType>[];
+    augmentOptions: SelectOptionData<number>[];
+    defendingTokenName: string;
+    attackerOptions: SelectOptionData<string>[];
+    attackingWeaponOptions: SelectOptionData<string>[];
+    damageBonusSourceOptions: SelectOptionData<string>[];
+    hitLocationFormulaOptions: SelectOptionData<string>[];
+    aimedBlowOptions: SelectOptionData<number>[];
+  };
 
 export type AttackDialogFormData = {
   attackingTokenOrActorUuid: string;
