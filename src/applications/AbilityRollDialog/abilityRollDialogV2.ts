@@ -7,7 +7,14 @@ import type {
 } from "./AbilityRollDialogData.types";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { getDomDataset, getGame, getSpeakerFromItem, localize, RqgError } from "../../system/util";
+import {
+  getDomDataset,
+  getGame,
+  getSpeakerFromItem,
+  localize,
+  localizeItemType,
+  RqgError,
+} from "../../system/util";
 import { RqgItem } from "../../items/rqgItem";
 import type { RollMode } from "../../chat/chatMessage.types";
 
@@ -53,7 +60,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: "ability-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
     form: {
@@ -62,24 +69,24 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
       closeOnSubmit: true,
     },
     position: {
-      width: 400,
+      width: "auto",
+      height: "auto",
       left: 35,
       top: 15,
     },
     window: {
-      resizable: true,
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-dice",
+      title: "RQG.Dialog.AbilityRoll.Title",
+      resizable: false,
     },
   };
 
   static PARTS = {
-    form: {
-      template: templatePaths.abilityRollDialogV2,
-    },
+    header: { template: templatePaths.rollHeader },
+    form: { template: templatePaths.abilityRollDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.rollFooter },
   };
-
-  get title() {
-    return localize("RQG.Dialog.AbilityRoll.Title");
-  }
 
   async _prepareContext(): Promise<AbilityRollDialogContext> {
     const formData: AbilityRollDialogFormData =
@@ -105,10 +112,16 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     const speaker = getSpeakerFromItem(this.abilityItem);
     return {
       formData: formData,
-      abilityItem: this.abilityItem,
       speakerName: speaker.alias ?? "",
       augmentOptions: AbilityRollDialogV2.augmentOptions,
       meditateOptions: AbilityRollDialogV2.meditateOptions,
+
+      // RollHeader
+      rollType: this.abilityItem.type ? localizeItemType(this.abilityItem.type) : "",
+      rollName: this.abilityItem.name ?? "",
+      baseChance: this.abilityItem.system.chance ?? 0,
+
+      // RollFooter
       totalChance:
         Number(this.abilityItem.system.chance ?? 0) +
         Number(formData.augmentModifier ?? 0) +

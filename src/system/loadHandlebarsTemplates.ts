@@ -63,6 +63,7 @@ export const templatePaths = {
   defenceFooter: "systems/rqg/applications/AttackFlow/defenceFooter.hbs",
   attackFooter: "systems/rqg/applications/AttackFlow/attackFooter.hbs",
   rollHeader: "systems/rqg/applications/app-parts/rollHeader.hbs",
+  rollFooter: "systems/rqg/applications/app-parts/rollFooter.hbs",
   combatRollHeader: "systems/rqg/applications/AttackFlow/combatRollHeader.hbs",
 
   // Settings

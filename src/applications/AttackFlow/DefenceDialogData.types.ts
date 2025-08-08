@@ -1,11 +1,11 @@
 import type { UsageType } from "../../data-model/item-data/weaponData";
-import type { combatRollHeaderPartData } from "./combatRollHeader.types";
-import { defenceFooterData } from "./defenceFooterData.types";
+import type { CombatRollHeaderPartData } from "./combatRollHeader.types";
+import type { DefenceFooterData } from "./defenceFooterData.types";
 
 export type DefenceType = "parry" | "dodge" | "ignore";
 
-export type DefenceDialogContext = combatRollHeaderPartData &
-  defenceFooterData & {
+export type DefenceDialogContext = CombatRollHeaderPartData &
+  DefenceFooterData & {
     formData: DefenceDialogFormData;
 
     attackerName: string;
