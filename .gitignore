@@ -9,3 +9,8 @@ coverage/
 package-lock.json
 yarn-error.log
 yarn.lock
+
+# Ignore Nova and Zed settings
+.nova/
+.zed/
+

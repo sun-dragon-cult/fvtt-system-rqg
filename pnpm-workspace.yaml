@@ -1,0 +1,8 @@
+ignoredBuiltDependencies:
+  - '@parcel/watcher'
+  - bufferutil
+  - classic-level
+  - utf-8-validate
+
+onlyBuiltDependencies:
+  - esbuild
