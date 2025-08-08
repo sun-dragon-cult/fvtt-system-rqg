@@ -1,4 +1,3 @@
-.idea/
 **/.DS_Store
 .run/
 # Project exclude paths
@@ -9,3 +8,9 @@ coverage/
 package-lock.json
 yarn-error.log
 yarn.lock
+
+# Ignore Editor settings
+.nova/
+.zed/
+.vscode/
+.idea/
