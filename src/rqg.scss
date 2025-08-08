@@ -1407,15 +1407,21 @@ input.readonly {
     justify-content: space-between;
     text-align: center;
     margin: -1rem -1rem 0.5rem;
-    padding: 1rem;
+    padding: 1rem 1rem 0.9rem;
     box-shadow: 0px -3px 11px 0px;
-    height: 2.7rem;
     gap: 1rem;
 
     .main-header {
       font: bold 2rem/1rem "Norse", "Signika", "Palatino Linotype", serif;
       font-variant: small-caps;
       letter-spacing: 1.5px;
+    }
+
+    .spell-signature {
+      font-weight: 100;
+      font-style: italic;
+      position: relative;
+      top: 0.5rem;
     }
 
     .sub-header {
