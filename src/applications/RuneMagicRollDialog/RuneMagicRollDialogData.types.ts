@@ -1,20 +1,19 @@
 import type { RqgItem } from "../../items/rqgItem";
-import type { RollMode } from "../../chat/chatMessage.types";
+import type { RollHeaderData } from "../app-parts/rollHeader.types";
+import type { RollFooterData } from "../app-parts/rollFooter.types";
 
-export type RuneMagicRollDialogContext = {
-  formData: RuneMagicRollDialogFormData;
+export type RuneMagicRollDialogContext = RollHeaderData &
+  RollFooterData & {
+    formData: RuneMagicRollDialogFormData;
 
-  spell: RqgItem | undefined;
-  usedRune: RqgItem | undefined;
+    speakerName: string;
 
-  eligibleRuneOptions: SelectOptionData<string>[];
-  augmentOptions: SelectOptionData<number>[];
-  meditateOptions: SelectOptionData<number>[];
-  ritualOptions: SelectOptionData<number>[];
-  totalChance: number;
-  speakerName: string;
-  rollMode: RollMode; // read in onSubmit by checking the active class
-};
+    usedRune: RqgItem | undefined;
+    eligibleRuneOptions: SelectOptionData<string>[];
+    augmentOptions: SelectOptionData<number>[];
+    meditateOptions: SelectOptionData<number>[];
+    ritualOptions: SelectOptionData<number>[];
+  };
 
 export type RuneMagicRollDialogFormData = {
   levelUsed: number;

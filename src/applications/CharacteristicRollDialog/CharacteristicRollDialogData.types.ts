@@ -1,15 +1,15 @@
-import type { RollMode } from "../../chat/chatMessage.types";
+import type { RollHeaderData } from "../app-parts/rollHeader.types";
+import type { RollFooterData } from "../app-parts/rollFooter.types";
 
-export type CharacteristicRollDialogContext = {
-  formData: CharacteristicRollDialogFormData;
+export type CharacteristicRollDialogContext = RollHeaderData &
+  RollFooterData & {
+    formData: CharacteristicRollDialogFormData;
 
-  augmentOptions: SelectOptionData<number>[];
-  meditateOptions: SelectOptionData<number>[];
-  difficultyOptions: SelectOptionData<number>[];
-  totalChance: number;
-  speakerName: string;
-  rollMode: RollMode; // read in onSubmit by checking the active class
-};
+    speakerName: string;
+    augmentOptions: SelectOptionData<number>[];
+    meditateOptions: SelectOptionData<number>[];
+    difficultyOptions: SelectOptionData<number>[];
+  };
 
 export type CharacteristicRollDialogFormData = {
   difficulty: number;

@@ -1,9 +1,5 @@
-<div class="standard-form">
-  <header class="roll-header">
-    <h1>{{formData.characteristicName}}</h1>
-    <div class="sub-header">{{formData.characteristicValue}}</div>
-  </header>
-  <div class="key-value-grid p-0 mb-1-5rem">
+<div class="scrollable">
+  <div class="key-value-grid p-0">
     <label>
       {{localize "RQG.Dialog.Common.Character"}}
     </label>
@@ -33,13 +29,4 @@
   <input type="hidden" value="{{formData.actorUuid}}" name="actorUuid">
   <input type="hidden" value="{{formData.characteristicName}}" name="characteristicName">
   <input type="hidden" value="{{formData.characteristicValue}}" name="characteristicValue">
-
-  <div class="flexrow flex-wrap gap1rem">
-    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
-      <i class="fa-solid fa-bullseye"></i><br>
-      {{totalChance}}%
-    </div>
-    {{>rollModes rollMode=rollMode}}
-    <button data-characteristic-roll>{{localize "RQG.Game.Roll"}}</button>
-  </div>
 </div>

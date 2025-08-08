@@ -1,0 +1,13 @@
+<footer class="form-footer">
+  <div class="flexrow flex-wrap gap1rem fullwidth">
+    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+      <i class="fa-solid fa-bullseye"></i><br>
+      {{totalChance}}%
+    </div>
+    {{#each combatManeuverNames}}
+      <button data-combat-maneuver-name="{{this}}" name="combatManeuverRoll">
+        {{this}}
+      </button>
+    {{/each}}
+  </div>
+</footer>

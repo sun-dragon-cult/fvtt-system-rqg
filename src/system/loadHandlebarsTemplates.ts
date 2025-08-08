@@ -60,6 +60,11 @@ export const templatePaths = {
   runeMagicRollDialogV2: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialogV2.hbs",
   attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",
   defenceDialogV2: "systems/rqg/applications/AttackFlow/defenceDialogV2.hbs",
+  defenceFooter: "systems/rqg/applications/AttackFlow/defenceFooter.hbs",
+  attackFooter: "systems/rqg/applications/AttackFlow/attackFooter.hbs",
+  rollHeader: "systems/rqg/applications/app-parts/rollHeader.hbs",
+  rollFooter: "systems/rqg/applications/app-parts/rollFooter.hbs",
+  combatRollHeader: "systems/rqg/applications/AttackFlow/combatRollHeader.hbs",
 
   // Settings
   defaultItemIconSettings: "systems/rqg/applications/defaultItemIconSettings.hbs",

@@ -1,9 +1,5 @@
-<div class="standard-form">
-  <header class="roll-header">
-    <h1>{{skillItem.name}}</h1>
-    <div class="sub-header">{{abilityChance}}%</div>
-  </header>
-  <div class="key-value-grid p-0 mb-1-5rem">
+<div class="scrollable">
+  <div class="key-value-grid p-0">
     <label>
       {{localize "RQG.Dialog.Common.AttackingActor"}}
     </label>
@@ -133,19 +129,4 @@
     </div>
   </div>
   <input name="halvedModifier" value="{{halvedModifier}}" type="hidden">
-  <div class="flexrow flex-wrap gap1rem">
-    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
-      <i class="fa-solid fa-bullseye"></i><br>
-      {{totalChance}}%
-    </div>
-    {{#with (lookup weaponItem.system.usage formData.usageType)}}
-      {{#each combatManeuvers}}
-        {{#unless (eq damageType "parry")}}
-        <button data-combat-maneuver-name="{{name}}" name="combatManeuverRoll">
-          {{name}}
-        </button>
-        {{/unless}}
-      {{/each}}
-    {{/with}}
-  </div>
 </div>
