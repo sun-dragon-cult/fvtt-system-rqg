@@ -119,7 +119,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
       // RollHeader
       rollType: this.abilityItem.type ? localizeItemType(this.abilityItem.type) : "",
       rollName: this.abilityItem.name ?? "",
-      baseChance: this.abilityItem.system.chance ?? 0,
+      baseChance: (this.abilityItem.system.chance ?? 0) + "%",
 
       // RollFooter
       totalChance:

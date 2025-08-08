@@ -53,7 +53,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: `characteristic-{id}`,
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
     form: {
@@ -62,24 +62,24 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
       closeOnSubmit: true,
     },
     position: {
-      width: 400,
+      width: "auto",
+      height: "auto",
       left: 35,
       top: 15,
     },
     window: {
-      resizable: true,
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-dice",
+      title: "RQG.Dialog.CharacteristicRoll.Title",
+      resizable: false,
     },
   };
 
   static PARTS = {
-    form: {
-      template: templatePaths.characteristicRollDialogV2,
-    },
+    header: { template: templatePaths.rollHeader },
+    form: { template: templatePaths.characteristicRollDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.rollFooter },
   };
-
-  get title() {
-    return localize("RQG.Dialog.CharacteristicRoll.Title");
-  }
 
   async _prepareContext(): Promise<CharacteristicRollDialogContext> {
     const formData: CharacteristicRollDialogFormData =
@@ -105,10 +105,18 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
 
     return {
       formData: formData,
+
       speakerName: speaker.alias ?? "",
       augmentOptions: CharacteristicRollDialogV2.augmentOptions,
       meditateOptions: CharacteristicRollDialogV2.meditateOptions,
       difficultyOptions: CharacteristicRollDialogV2.difficultyOptions,
+
+      // RollHeader
+      rollType: localize("RQG.Actor.Characteristics.Characteristic"),
+      rollName: formData.characteristicName,
+      baseChance: formData.characteristicValue.toString(),
+
+      // RollFooter
       totalChance:
         Math.ceil(
           Number(formData.characteristicValue) *
