@@ -53,7 +53,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: "spirit-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
     form: {
