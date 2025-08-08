@@ -1,6 +1,6 @@
 import type { UsageType } from "../../data-model/item-data/weaponData";
 import type { CombatRollHeaderPartData } from "./combatRollHeader.types";
-import { AttackFooterData } from "./attackFooter.types";
+import type { AttackFooterData } from "./attackFooter.types";
 
 export type AttackDialogContext = CombatRollHeaderPartData &
   AttackFooterData & {
