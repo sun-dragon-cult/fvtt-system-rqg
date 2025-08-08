@@ -113,7 +113,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
 
       // RollHeader
       rollType: localize("RQG.Actor.Characteristics.Characteristic"),
-      rollName: formData.characteristicName,
+      rollName: formData.characteristicName.capitalize(),
       baseChance: formData.characteristicValue.toString(),
 
       // RollFooter

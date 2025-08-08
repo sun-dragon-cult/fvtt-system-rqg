@@ -1,19 +1,16 @@
-import type { RollMode } from "../../chat/chatMessage.types";
+import type { RollHeaderData } from "../app-parts/rollHeader.types";
+import type { RollFooterData } from "../app-parts/rollFooter.types";
 
-export type SpiritMagicRollDialogContext = {
-  formData: SpiritMagicRollDialogFormData;
+export type SpiritMagicRollDialogContext = RollHeaderData &
+  RollFooterData & {
+    formData: SpiritMagicRollDialogFormData;
 
-  spellName: string | null;
-  spellSignature: string;
-  spellImg: string | null;
-  isVariable: boolean;
+    speakerName: string;
+    isVariable: boolean;
 
-  augmentOptions: SelectOptionData<number>[];
-  meditateOptions: SelectOptionData<number>[];
-  totalChance: number;
-  speakerName: string;
-  rollMode: RollMode; // read in onSubmit by checking the active class
-};
+    augmentOptions: SelectOptionData<number>[];
+    meditateOptions: SelectOptionData<number>[];
+  };
 
 export type SpiritMagicRollDialogFormData = {
   levelUsed: number;
