@@ -157,6 +157,7 @@
                 <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}} {{experiencedclass @root.uuid skillId}}"
                       data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                       data-skill-id="{{skillId}}"
+                      data-item-id="{{skillId}}"
                       data-item-roll>
                       {{skillchance @root.uuid skillId}}%
                 </span>

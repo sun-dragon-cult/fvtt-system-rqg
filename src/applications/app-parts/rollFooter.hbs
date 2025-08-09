@@ -1,0 +1,41 @@
+<footer class="flexrow flex-wrap gap1rem">
+  <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+    <i class="fa-solid fa-bullseye"></i><br>
+    {{totalChance}}%
+  </div>
+  <div data-roll-mode-parent class="split-button flex-none">
+    <button type="button"
+            class="ui-control icon fa-solid fa-globe"
+            data-action="rollMode"
+            data-roll-mode="publicroll"
+            aria-pressed="{{#if (eq rollMode "publicroll")}}true{{else}}false{{/if}}"
+            data-tooltip="{{localize "CHAT.RollPublic"}}"
+            aria-label="Public Roll">
+    </button>
+    <button type="button"
+            class="ui-control icon fa-solid fa-user-secret"
+            data-action="rollMode"
+            data-roll-mode="gmroll"
+            aria-pressed="{{#if (eq rollMode "gmroll")}}true{{else}}false{{/if}}"
+            data-tooltip="{{localize "CHAT.RollPrivate"}}"
+            aria-label="Private GM Roll">
+    </button>
+    <button type="button"
+            class="ui-control icon fa-solid fa-eye-slash"
+            data-action="rollMode"
+            data-roll-mode="blindroll"
+            aria-pressed="{{#if (eq rollMode "blindroll")}}true{{else}}false{{/if}}"
+            data-tooltip="{{localize "CHAT.RollBlind"}}"
+            aria-label="Blind GM Roll">
+    </button>
+    <button type="button"
+            class="ui-control icon fa-solid fa-user"
+            data-action="rollMode"
+            data-roll-mode="selfroll"
+            aria-pressed="{{#if (eq rollMode "selfroll")}}true{{else}}false{{/if}}"
+            data-tooltip="{{localize "CHAT.RollSelf"}}"
+            aria-label="Self Roll">
+    </button>
+  </div>
+  <button data-ability-roll>{{localize "RQG.Game.Roll"}}</button>
+</footer>

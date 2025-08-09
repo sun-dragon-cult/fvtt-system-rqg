@@ -53,7 +53,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: "spirit-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
     form: {
@@ -62,24 +62,24 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
       closeOnSubmit: true,
     },
     position: {
-      width: 400,
+      width: "auto",
+      height: "auto",
       left: 35,
       top: 15,
     },
     window: {
-      resizable: true,
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-dice",
+      title: "RQG.Dialog.SpiritMagicRoll.Title",
+      resizable: false,
     },
   };
 
   static PARTS = {
-    form: {
-      template: templatePaths.spiritMagicRollDialogV2,
-    },
+    header: { template: templatePaths.rollHeader },
+    form: { template: templatePaths.spiritMagicRollDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.rollFooter },
   };
-
-  get title() {
-    return localize("RQG.Dialog.SpiritMagicRoll.Title");
-  }
 
   async _prepareContext(): Promise<SpiritMagicRollDialogContext> {
     const formData: SpiritMagicRollDialogFormData =
@@ -101,14 +101,17 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
       formData: formData,
 
       speakerName: speaker.alias ?? "",
-      spellName: this.spellItem.name,
-      spellSignature: this.spellItem.spellSignature,
-
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
-      spellImg: this.spellItem.img,
-
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
+
+      // RollHeader
+      rollType: localize("TYPES.Item.spiritMagic"),
+      rollName: this.spellItem.name ?? "",
+      spellSignature: this.spellItem.spellSignature ?? "",
+      baseChance: (this.powX5 ?? 0) + "%",
+
+      // RollFooter
       totalChance:
         Number(this.powX5) +
         Number(formData.augmentModifier) +

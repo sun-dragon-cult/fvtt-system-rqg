@@ -1,7 +1,8 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import type { RqgActor } from "../../actors/rqgActor";
-import type { RollMode } from "../../chat/chatMessage.types";
+import type { RollHeaderData } from "../app-parts/rollHeader.types";
+import type { RollFooterData } from "../app-parts/rollFooter.types";
 
 /** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {
@@ -16,21 +17,21 @@ export type PartialAbilityItem = {
   uuid?: string;
 };
 
-export type AbilityRollDialogContext = {
-  formData: AbilityRollDialogFormData;
-  abilityItem: PartialAbilityItem;
-  augmentOptions: SelectOptionData<number>[];
-  meditateOptions: SelectOptionData<number>[];
-  totalChance: number;
-  speakerName: string;
-  rollMode: RollMode; // read in onSubmit by checking the active class
-};
+export type AbilityRollDialogContext = RollHeaderData &
+  RollFooterData & {
+    formData: AbilityRollDialogFormData;
+
+    speakerName: string;
+    augmentOptions: SelectOptionData<number>[];
+    meditateOptions: SelectOptionData<number>[];
+  };
 
 export type AbilityRollDialogFormData = {
   augmentModifier: string;
   meditateModifier: string;
   otherModifier: string;
   otherModifierDescription: string;
+
   abilityItemUuid?: string; // hidden field
   reputationItemJson?: string; // hidden field - backup for uuid
 };

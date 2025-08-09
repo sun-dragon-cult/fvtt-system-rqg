@@ -69,7 +69,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: "combat-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "attack-dialog"],
     form: {
@@ -78,24 +78,24 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       closeOnSubmit: false,
     },
     position: {
-      width: 400,
+      width: "auto",
+      height: "auto",
       left: 35,
       top: 15,
     },
     window: {
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-swords",
+      title: "RQG.Dialog.Attack.Title",
       resizable: true,
     },
   };
 
   static PARTS = {
-    form: {
-      template: templatePaths.attackDialogV2,
-    },
+    header: { template: templatePaths.combatRollHeader },
+    form: { template: templatePaths.attackDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.attackFooter },
   };
-
-  get title() {
-    return localize("RQG.Dialog.Attack.Title");
-  }
 
   async _prepareContext(): Promise<AttackDialogContext> {
     const formData: AttackDialogFormData =
@@ -153,9 +153,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     return {
       formData: formData,
-      weaponItem: this.weaponItem.toObject() as any,
-      skillItem: usedSkill,
-      abilityChance: usedSkill?.system.chance,
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
@@ -167,6 +164,11 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(formData.aimedBlow),
       aimedBlowOptions: AttackDialogV2.getAimedBlowOptions(target),
 
+      // combatRollHeader
+      skillName: usedSkill?.name ?? "",
+      skillChance: usedSkill?.system.chance,
+
+      // attackFooter
       totalChance: Math.max(
         0,
         Number(usedSkill?.system.chance ?? 0) +
@@ -178,6 +180,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
           (formData.halved ? formData.halvedModifier : 0) +
           (formData.aimedBlow > 0 ? formData.halvedModifier : 0),
       ),
+      combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
+        .filter((cm: CombatManeuver) => cm.damageType !== "parry")
+        .map((cm: CombatManeuver) => cm.name),
     };
   }
 

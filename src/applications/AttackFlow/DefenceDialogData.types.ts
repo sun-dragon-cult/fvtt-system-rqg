@@ -1,23 +1,21 @@
 import type { UsageType } from "../../data-model/item-data/weaponData";
+import type { CombatRollHeaderPartData } from "./combatRollHeader.types";
+import type { DefenceFooterData } from "./defenceFooterData.types";
 
 export type DefenceType = "parry" | "dodge" | "ignore";
 
-export type DefenceDialogContext = {
-  formData: DefenceDialogFormData;
+export type DefenceDialogContext = CombatRollHeaderPartData &
+  DefenceFooterData & {
+    formData: DefenceDialogFormData;
 
-  defenceName: string | null;
-  defenceButtonText: string;
-
-  defenceChance: number;
-  attackerName: string;
-  defenderOptions: SelectOptionData<string>[];
-  defenceOptions: SelectOptionData<string>[];
-  parryingWeaponOptions: SelectOptionData<string>[];
-  parryingWeaponUsageOptions: SelectOptionData<string>[];
-  augmentOptions: SelectOptionData<number>[];
-  subsequentDefenceOptions: SelectOptionData<number>[];
-  totalChance: number;
-};
+    attackerName: string;
+    defenderOptions: SelectOptionData<string>[];
+    defenceOptions: SelectOptionData<string>[];
+    parryingWeaponOptions: SelectOptionData<string>[];
+    parryingWeaponUsageOptions: SelectOptionData<string>[];
+    augmentOptions: SelectOptionData<number>[];
+    subsequentDefenceOptions: SelectOptionData<number>[];
+  };
 
 export type DefenceDialogFormData = {
   defendingTokenOrActorUuid: string;

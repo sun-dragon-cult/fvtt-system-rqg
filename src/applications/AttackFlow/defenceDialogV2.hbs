@@ -1,8 +1,4 @@
-<div class="standard-form">
-  <header class="roll-header">
-    <h1>{{defenceName}}</h1>
-    {{#unless (eq formData.defence "ignore")}}<div class="sub-header">{{defenceChance}}%</div>{{/unless}}
-  </header>
+<div class="scrollable">
   <div class="key-value-grid">
     <label>
       {{localize "RQG.Dialog.Common.AttackingActor"}}
@@ -80,13 +76,5 @@
     {{/unless}}
     <input type="hidden" value="{{formData.attackChatMessageUuid}}" name="attackChatMessageUuid">
 
-  </div>
-  <div class="flexrow flex-wrap gap1rem">
-    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
-      <i class="fa-solid fa-bullseye"></i><br>
-      {{totalChance}}%
-    </div>
-
-    <button data-defend>{{defenceButtonText}}</button>
   </div>
 </div>

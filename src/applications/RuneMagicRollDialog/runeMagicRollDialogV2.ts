@@ -69,7 +69,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   }
 
   static DEFAULT_OPTIONS = {
-    id: "{id}",
+    id: "rune-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
     form: {
@@ -78,24 +78,24 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
       closeOnSubmit: true,
     },
     position: {
-      width: 400,
+      width: "auto",
+      height: "auto",
       left: 35,
       top: 15,
     },
     window: {
-      resizable: true,
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-dice",
+      title: "RQG.Dialog.RuneMagicRoll.Title",
+      resizable: false,
     },
   };
 
   static PARTS = {
-    form: {
-      template: templatePaths.runeMagicRollDialogV2,
-    },
+    header: { template: templatePaths.rollHeader },
+    form: { template: templatePaths.runeMagicRollDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.rollFooter },
   };
-
-  get title() {
-    return localize("RQG.Dialog.RuneMagicRoll.Title");
-  }
 
   async _prepareContext(): Promise<RuneMagicRollDialogContext> {
     const formData: RuneMagicRollDialogFormData =
@@ -125,13 +125,19 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
       formData: formData,
 
       speakerName: speaker.alias ?? "",
-      spell: this.spellItem,
       usedRune: usedRune,
       eligibleRuneOptions: eligibleRuneOptions,
       augmentOptions: RuneMagicRollDialogV2.augmentOptions,
       meditateOptions: RuneMagicRollDialogV2.meditateOptions,
       ritualOptions: RuneMagicRollDialogV2.ritualOptions,
 
+      // RollHeader
+      rollType: localize("TYPES.Item.runeMagic"),
+      rollName: this.spellItem.name ?? "",
+      spellSignature: this.spellItem.spellSignature ?? "",
+      baseChance: (usedRune?.system.chance ?? 0) + "%",
+
+      // RollFooter
       totalChance:
         Number(usedRune?.system.chance ?? 0) +
         Number(formData.augmentModifier ?? 0) +
