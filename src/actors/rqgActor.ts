@@ -487,7 +487,23 @@ export class RqgActor extends Actor {
     super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
     if (!this.prototypeToken.actorLink) {
-      initializeAllCharacteristics(this);
+      initializeAllCharacteristics(this).then(void this.updateDexBasedSkills());
+    } else {
+      void this.updateDexBasedSkills();
+    }
+  }
+
+  private async updateDexBasedSkills(): Promise<void> {
+    const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
+    const dodgeBaseChance = Skill.dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
+    if (dodgeItem && dodgeItem.system.baseChance !== dodgeBaseChance) {
+      await dodgeItem.update({ system: { baseChance: dodgeBaseChance } });
+    }
+
+    const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
+    const jumpBaseChance = Skill.jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
+    if (jumpItem && jumpItem.system.baseChance !== jumpBaseChance) {
+      await jumpItem.update({ system: { baseChance: jumpBaseChance } });
     }
   }
 
@@ -559,7 +575,9 @@ export class RqgActor extends Actor {
 
   // Update the baseChance for Dodge & Jump skills that depend on actor DEX
   async _preUpdate(changes: any, options: any, user: User): Promise<void> {
-    const actorDex = changes?.system?.characteristics?.dexterity?.value;
+    const actorDex =
+      changes?.system?.characteristics?.dexterity?.value ??
+      this.system.characteristics.dexterity.value;
 
     const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
     // @ts-expect-error _source
