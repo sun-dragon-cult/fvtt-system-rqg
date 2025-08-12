@@ -61,7 +61,15 @@ export class ClickableScriptsRegionBehavior extends RegionBehaviorType {
       leftClickSource: new JavaScriptField({
         async: true,
         gmOnly: true,
-        initial: "",
+        initial:
+          "// Open a thing with rqid\n" +
+          '// game.system.api.rqid.renderRqidDocument("je..axis-mundi", "en");\n\n' +
+          "// Open anything\n" +
+          '// fromUuidSync("Actor.BKBAy0w4MgvgYeKZ").sheet.render(true);\n\n' +
+          "// Open things in compendiums\n" +
+          '// (await fromUuid("Compendium.wiki-en-rqg.cults.Item.61zfpHEpM9RtE6XS")).sheet.render(true);\n\n' +
+          "// Run a macro (UUID, or rqid)\n" +
+          '// fromUuidSync("Macro.ufYFMHFOpuncTeiq").execute();',
         nullable: false,
         label: "RQG.Region.ClickableScripts.LeftClick.Title",
         hint: "RQG.Region.ClickableScripts.LeftClick.Hint",
