@@ -85,7 +85,6 @@ export class Weapon extends AbstractEmbeddedItem {
         );
         return false;
       }
-      // @ts-expect-error skill
       await actor.createEmbeddedDocuments("Item", [skill]);
     }
     return true;

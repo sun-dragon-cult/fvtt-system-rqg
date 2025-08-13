@@ -1,4 +1,4 @@
-import { getGame, localize } from "../system/util";
+import { localize } from "../system/util";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
@@ -35,7 +35,7 @@ export class RqgSettings extends Settings {
           label: "RQG.Foundry.Settings.Migrate.TriggerRestart",
           icon: "fas fa-check",
           callback: async () => {
-            await getGame().settings.set(systemId, "worldMigrationVersion", "---");
+            await game.settings.set(systemId, "worldMigrationVersion", "---");
             window.location.reload();
           },
         },

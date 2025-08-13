@@ -1,8 +1,8 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { systemId } from "../config";
-import { getAvailableRunes, getGame, localize, RqgError, toKebabCase, trimChars } from "../util";
+import { getAvailableRunes, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+// import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 
 // TODO Look into enhancing typing of rqid strings like this
 export type RqidString =
@@ -20,21 +20,13 @@ export class Rqid {
   public static init(): void {
     // Include rqid flags in index for compendium packs
 
-    // @ts-expect-error compendiumIndexFields
     CONFIG.Actor.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.Cards.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.Item.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.JournalEntry.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.Macro.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.Playlist.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.RollTable.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
-    // @ts-expect-error compendiumIndexFields
     CONFIG.Scene.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
   }
 
@@ -48,12 +40,12 @@ export class Rqid {
     rqid: string | undefined,
     lang?: string,
     silent: boolean = false,
-  ): Promise<Document<any, any> | undefined> {
+  ): Promise<Document.Any | undefined> {
     if (!rqid) {
       return undefined;
     }
 
-    lang = lang ?? getGame().settings.get(systemId, "worldLanguage");
+    lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
 
     const worldItem = await Rqid.documentFromWorld(rqid, lang);
     if (worldItem) {
@@ -74,7 +66,6 @@ export class Rqid {
         rqid: rqid,
         lang: lang,
       });
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG |", msg);
     }
@@ -189,7 +180,7 @@ export class Rqid {
 
     // Check World
     if (["all", "world"].includes(scope)) {
-      count = (getGame() as any)[this.getGameProperty(rqid)]?.contents.reduce(
+      count = (game as any)[this.getGameProperty(rqid)]?.contents.reduce(
         (count: number, document: Document<any, any>) => {
           if (
             document.getFlag(systemId, documentRqidFlags)?.id === rqid &&
@@ -210,9 +201,8 @@ export class Rqid {
     // Check compendium packs
     if (["all", "packs"].includes(scope)) {
       const documentName = Rqid.getDocumentName(rqid);
-      for (const pack of getGame().packs) {
+      for (const pack of game.packs ?? []) {
         if (pack.documentClass.documentName === documentName) {
-          // @ts-expect-error indexed
           if (!pack.indexed) {
             await pack.getIndex();
           }
@@ -242,14 +232,12 @@ export class Rqid {
     }
 
     const rqidDocumentString = Rqid.getRqidDocumentName(document);
-    // @ts-expect-error v10
     const documentSubType = toKebabCase(document.type ?? "");
     let rqidIdentifier = "";
 
     if (document instanceof Item) {
       if (document.type === ItemTypeEnum.Skill) {
         rqidIdentifier = trimChars(
-          // @ts-expect-error system
           toKebabCase(`${document.system.skillName ?? ""}-${document.system.specialization ?? ""}`),
           "-",
         );
@@ -257,9 +245,7 @@ export class Rqid {
       if (document.type === ItemTypeEnum.Armor) {
         rqidIdentifier = trimChars(
           toKebabCase(
-            // @ts-expect-error system
             `${document.system.namePrefix ?? ""}-${document.system.armorType ?? ""}-${
-              // @ts-expect-error system
               document.system.material ?? ""
             }`,
           ),
@@ -284,7 +270,6 @@ export class Rqid {
       await journal?.sheet?._render(true, { focus: true });
       journal?.sheet.goToPage(document.id, anchor);
     } else {
-      // @ts-expect-error all rqid supported documents have sheet
       document?.sheet?.render(true, { focus: true });
     }
   }
@@ -346,7 +331,7 @@ export class Rqid {
     const documentRqid = Rqid.documentRqid(rqid);
     const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
 
-    const candidateDocuments: Document<any, any>[] = (getGame() as any)[
+    const candidateDocuments: Document<any, any>[] = (game as any)[
       this.getGameProperty(documentRqid)
     ]?.contents
       .filter(
@@ -371,7 +356,6 @@ export class Rqid {
         lang: lang,
         priority: candidateDocuments[0]?.getFlag(systemId, documentRqidFlags)?.priority ?? "---",
       });
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       // TODO Or should this be handled in the compendium browser eventually?
@@ -405,7 +389,7 @@ export class Rqid {
     }
 
     const gameProperty = Rqid.getGameProperty(`${rqidDocumentName}..`);
-    const candidateDocuments = (getGame() as any)[gameProperty]?.filter(
+    const candidateDocuments = (game as any)[gameProperty]?.filter(
       (d: Document<any, any>) =>
         rqidRegex.test(d.getFlag(systemId, documentRqidFlags)?.id) &&
         d.getFlag(systemId, documentRqidFlags)?.lang === lang,
@@ -435,9 +419,8 @@ export class Rqid {
     const documentName = Rqid.getDocumentName(documentRqid);
     const indexCandidates: { pack: any; indexData: any }[] = [];
 
-    for (const pack of getGame().packs) {
+    for (const pack of game.packs) {
       if (pack.documentClass.documentName === documentName) {
-        // @ts-expect-error indexed
         if (!pack.indexed) {
           await pack.getIndex();
         }
@@ -467,7 +450,6 @@ export class Rqid {
         lang: lang,
         priority: result[0].indexData.flags.rqg.documentRqidFlags.priority ?? "---",
       });
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       console.warn(msg + "  Duplicate items: ", result);
@@ -491,9 +473,8 @@ export class Rqid {
     const documentName = Rqid.getDocumentName(`${rqidDocumentName}..fake-rqid`);
     const candidateDocuments: Document<any, any>[] = [];
 
-    for (const pack of getGame().packs) {
+    for (const pack of game.packs) {
       if (pack.documentClass.documentName === documentName) {
-        // @ts-expect-error indexed
         if (!pack.indexed) {
           await pack.getIndex();
         }
@@ -510,7 +491,6 @@ export class Rqid {
               rqid: rqidRegex,
               lang: lang,
             });
-            // @ts-expect-error console
             ui.notifications?.error(msg, { console: false });
             console.error("RQG |", msg, index);
             throw new RqgError(msg, index, indexInstances);
@@ -547,7 +527,6 @@ export class Rqid {
         const rune = availableRunes.find((r) => r.rqid === rqid);
         if (!rune && availableRunes.length) {
           const msg = localize("RQG.RQGSystem.CouldNotFindRune", { rqid: rqid });
-          // @ts-expect-error console
           ui.notifications?.warn(msg, { console: false });
           console.warn(`RQG | ${msg}`);
         } else if (rune) {
@@ -555,7 +534,7 @@ export class Rqid {
         }
       }
 
-      const iconSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
+      const iconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
       const defaultItemIcon = itemType && iconSettings[itemType];
       if (defaultItemIcon) {
         // TODO If undefined then the rqid is invalid since all items need a type

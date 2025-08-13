@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "./itemTypes";
-import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
+import { type Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
 import { RqidLink } from "../shared/rqidLink";
 
 export interface RuneMagicDataSourceData extends Spell {

@@ -1,9 +1,9 @@
 import type { HitLocationName, HitLocationRollOptions } from "./HitLocationRoll.types";
-import { getGameUser, localize } from "../../system/util";
+import { localize } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { RqgItem } from "../../items/rqgItem";
-import type { RqgActor } from "../../actors/rqgActor";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 /**
  * HitLocationRoll is only displayed as part of the CombatChatMessage,
@@ -22,25 +22,23 @@ export class HitLocationRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ isPrivate = false } = {}) {
+  override async render({ isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
     const o = this.options as HitLocationRollOptions;
     const chatData = {
-      user: getGameUser().id,
+      user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       hitLocationName: isPrivate ? "??" : this.hitLocationName,
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationRoll, chatData);
   }
 
   // Html for what the hit location formula was
-  async getTooltip(): Promise<string> {
-    // @ts-expect-error applications
+  override async getTooltip(): Promise<string> {
     return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationTooltip, {
       formula: this.formula,
     });

@@ -3,7 +3,6 @@ import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
   getDomDatasetAmongSiblings,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -84,7 +83,7 @@ export const runeMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Rune),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM || actor.system.editMode,
+    condition: () => !!game.user?.isGM || actor.system.editMode,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -105,7 +104,7 @@ export const runeMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Rune),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

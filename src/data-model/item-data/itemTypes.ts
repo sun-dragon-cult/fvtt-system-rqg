@@ -1,13 +1,3 @@
-import { Skill } from "../../items/skill-item/skill";
-import { AbstractEmbeddedItem } from "../../items/abstractEmbeddedItem";
-import { HitLocation } from "../../items/hit-location-item/hitLocation";
-import { Gear } from "../../items/gear-item/gear";
-import { Armor } from "../../items/armor-item/armor";
-import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
-import { Cult } from "../../items/cult-item/cult";
-import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
-import { Passion } from "../../items/passion-item/passion";
-import { Rune } from "../../items/rune-item/rune";
 import type { ArmorDataProperties, ArmorDataSource } from "./armorData";
 import type { PassionDataProperties, PassionDataSource } from "./passionData";
 import type { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
@@ -18,7 +8,6 @@ import type { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicDa
 import type { SkillDataProperties, SkillDataSource } from "./skillData";
 import type { RuneDataProperties, RuneDataSource } from "./runeData";
 import type { WeaponDataProperties, WeaponDataSource } from "./weaponData";
-import { Weapon } from "../../items/weapon-item/weapon";
 import type {
   HomelandDataProperties as HomelandDataProperties,
   HomelandDataSource,
@@ -27,6 +16,48 @@ import type {
   OccupationDataProperties as OccupationDataProperties,
   OccupationDataSource,
 } from "./occupationData";
+import type { AbstractEmbeddedItem } from "@items/abstractEmbeddedItem.ts";
+
+import { Armor } from "@items/armor-item/armor.ts";
+import { Cult } from "@items/cult-item/cult.ts";
+import { Gear } from "@items/gear-item/gear.ts";
+import { HitLocation } from "@items/hit-location-item/hitLocation.ts";
+import { Passion } from "@items/passion-item/passion.ts";
+import { Rune } from "@items/rune-item/rune.ts";
+import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
+import { Skill } from "@items/skill-item/skill.ts";
+import { SpiritMagic } from "@items/spirit-magic-item/spiritMagic.ts";
+import { Weapon } from "@items/weapon-item/weapon.ts";
+
+// TODO en experiment with removing enums
+// const itemTypes = [
+//   "armor",
+//   "cult",
+//   "gear",
+//   "hitLocation",
+//   "homeland",
+//   "occupation",
+//   "passion",
+//   "rune",
+//   "runeMagic",
+//   "skill",
+//   "spiritMagic",
+//   "weapon",
+//   // "shamanicAbility", future expansion
+//   // "sorceryMagic",    future expansion
+// ] as const;
+//
+// export type ItemType = (typeof itemTypes)[number];
+// export { itemTypes };
+//
+// export function assertDocumentType<T extends { type: ItemType | "type" | "base" | "system"} }>(
+//   obj: { type: ItemType },
+//   itemType: T["type"],
+// ): asserts obj is T {
+//   if (obj.type !== itemType) {
+//     throw new Error(`Expected type ${itemType}, got ${obj.type}`);
+//   }
+// }
 
 export enum ItemTypeEnum {
   Armor = "armor",

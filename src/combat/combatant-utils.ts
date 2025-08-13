@@ -1,15 +1,12 @@
-import { getGame } from "../system/util";
-
 export function getCombatantsSharingToken(combatant: Combatant | undefined): Combatant[] {
   if (combatant?.actor == null || combatant.parent == null) {
     return [];
   }
 
   // @ts-expect-error sceneId
-  const scene = getGame().scenes?.get(combatant.sceneId);
+  const scene = game.scenes?.get(combatant.sceneId);
 
   const combatantTokenIds = combatant.actor
-    // @ts-expect-error getDependentTokens
     .getDependentTokens({ scenes: scene })
     .map((t: TokenDocument) => t.id);
   return combatant.parent.combatants.filter((cb: any) => combatantTokenIds.includes(cb.tokenId));

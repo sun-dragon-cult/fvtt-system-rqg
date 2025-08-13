@@ -1,5 +1,4 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   SpellConcentrationEnum,
@@ -47,7 +46,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,

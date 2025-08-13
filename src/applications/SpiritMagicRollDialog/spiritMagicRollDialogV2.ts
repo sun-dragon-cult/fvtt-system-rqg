@@ -4,13 +4,7 @@ import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./SpiritMagicRollDialogData.types";
-import {
-  assertItemType,
-  getDomDataset,
-  getGame,
-  getSpeakerFromItem,
-  localize,
-} from "../../system/util";
+import { assertItemType, getDomDataset, getSpeakerFromItem, localize } from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "../../items/rqgItem";
 import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
@@ -49,7 +43,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
 
     this.spellItem = options.spellItem;
     this.powX5 = (this.spellItem.parent?.system?.characteristics?.power?.value ?? 0) * 5;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    this.rollMode = game.settings.get("core", "rollMode");
   }
 
   static DEFAULT_OPTIONS = {
@@ -155,7 +149,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+        ?.dataset.rollMode as RollMode) ?? game.settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

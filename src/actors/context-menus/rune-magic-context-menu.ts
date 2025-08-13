@@ -3,7 +3,6 @@ import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
   getDomDatasetAmongSiblings,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -60,7 +59,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.RuneMagic),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
@@ -78,7 +77,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.RuneMagic),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

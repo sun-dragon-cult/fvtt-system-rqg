@@ -7,7 +7,6 @@ export class RqgActiveEffect extends ActiveEffect {
   static init() {
     // @ts-expect-error type error
     CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
-    // @ts-expect-error legacyTransferral
     CONFIG.ActiveEffect.legacyTransferral = false;
   }
 

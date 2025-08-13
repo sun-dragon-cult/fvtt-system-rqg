@@ -19,7 +19,6 @@ export class Skill extends AbstractEmbeddedItem {
       ui.notifications?.error(msg);
       throw new RqgError(msg, actor);
     }
-    // @ts-expect-error system
     const actorData = actor.toObject(false).system; // TODO Why use toObject ???
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
     skillItem.system.categoryMod = actorData.skillCategoryModifiers![skillItem.system.category];

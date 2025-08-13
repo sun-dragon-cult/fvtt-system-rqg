@@ -7,8 +7,6 @@ import {
 import { RqgActor } from "../../actors/rqgActor";
 import {
   assertItemType,
-  getGame,
-  getGameUser,
   getSelectHitLocationOptions,
   localize,
   requireValue,
@@ -61,7 +59,7 @@ export class HitLocationSheet extends RqgItemSheet<
       rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEmbedded: this.document.isEmbedded,
       system: system,
 
@@ -85,7 +83,6 @@ export class HitLocationSheet extends RqgItemSheet<
       throw new RqgError(msg);
     }
 
-    // @ts-expect-error renderTemplate
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationAddWound,
       {},
@@ -142,7 +139,6 @@ export class HitLocationSheet extends RqgItemSheet<
     const hitLocation = actor.items.get(hitLocationItemId);
     assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
 
-    // @ts-expect-error renderTemplate
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationHealWound,
       {
@@ -221,7 +217,7 @@ export class HitLocationSheet extends RqgItemSheet<
       await actor.updateTokenEffectFromHealth();
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
-      const currentScene = getGame().scenes?.current;
+      const currentScene = game.scenes?.current;
       if (currentScene && activeTokens.length) {
         // TODO could be a bug if the actor has tokens in multiple scenes maybe. then getting activeTokens[0] could be wrong. Should check that the scene match?
         const token = currentScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as

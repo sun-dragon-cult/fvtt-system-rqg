@@ -1,7 +1,7 @@
 import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser, getSelectRuneOptions } from "../../system/util";
+import { getSelectRuneOptions } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
@@ -46,7 +46,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
 

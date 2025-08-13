@@ -1,9 +1,7 @@
 import EvaluationOptions = RollTerm.EvaluationOptions;
 import type { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
-import type { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import type { ItemTypeEnum } from "@item-model/itemTypes";
 import type { RollMode } from "../../chat/chatMessage.types";
-
 export type Modifier = { description: string; value: number };
 
 export type AbilityRollOptions = Partial<EvaluationOptions> & {

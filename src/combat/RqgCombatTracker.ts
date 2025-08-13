@@ -1,11 +1,5 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import {
-  getDomDataset,
-  getGame,
-  getGameUser,
-  getRequiredDomDataset,
-  localize,
-} from "../system/util";
+import { getDomDataset, getRequiredDomDataset, localize } from "../system/util";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export class RqgCombatTracker extends CombatTracker {
@@ -17,7 +11,7 @@ export class RqgCombatTracker extends CombatTracker {
   }
 
   /** @override */
-  static PARTS = {
+  static override PARTS = {
     header: {
       template: templatePaths.combatHeader,
     },
@@ -29,8 +23,7 @@ export class RqgCombatTracker extends CombatTracker {
     },
   };
 
-  async _onToggleDefeatedStatus(combatant: Combatant): Promise<void> {
-    // @ts-expect-errors isDefeated
+  override async _onToggleDefeatedStatus(combatant: Combatant): Promise<void> {
     const isDefeated = !combatant.isDefeated;
 
     // --- start RQG code --- replace the updating to update all combatants sharing a token
@@ -43,26 +36,23 @@ export class RqgCombatTracker extends CombatTracker {
     combat?.updateEmbeddedDocuments("Combatant", updates);
     // --- end RQG code ---
 
-    // @ts-expect-error specialStatusEffects
     const defeatedId = CONFIG.specialStatusEffects.DEFEATED;
     // @ts-expect-error toggleStatusEffect
     await combat.actor?.toggleStatusEffect(defeatedId, { overlay: true, active: isDefeated });
   }
 
   // CombatTracker - Add a Duplicate Combatant option
-  _getEntryContextOptions(): ContextMenu.Item[] {
+  override _getEntryContextOptions(): ContextMenu.Item[] {
     const getCombatant = (li: HTMLElement) =>
       this.viewed?.combatants.get(li.dataset.combatantId ?? "");
     return [
       {
         name: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
         icon: '<i class="far fa-copy fa-fw"></i>',
-        condition: () => getGameUser().isGM,
-        // @ts-expect-error html, not jquery
+        condition: () => game.user?.isGM,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
-            // @ts-expect-error combatant
             await this.viewed!.createEmbeddedDocuments("Combatant", [combatant]);
           }
         },
@@ -70,8 +60,7 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: localize("COMBAT.CombatantUpdate"),
         icon: '<i class="fa-solid fa-pen-to-square"></i>',
-        condition: () => getGameUser().isGM,
-        // @ts-expect-error html, not jquery
+        condition: () => game.user?.isGM,
         callback: (li: HTMLElement) =>
           // @ts-expect-error render
           getCombatant(li)?.sheet?.render({
@@ -85,10 +74,8 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: "COMBAT.CombatantClear",
         icon: '<i class="fa-solid fa-arrow-rotate-left"></i>',
-        // @ts-expect-error html, not jquery
         condition: (li: HTMLElement) =>
-          getGameUser().isGM && Number.isFinite(getCombatant(li)?.initiative),
-        // @ts-expect-error html, not jquery
+          game.user?.isGM && Number.isFinite(getCombatant(li)?.initiative),
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
@@ -99,11 +86,9 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: "COMBAT.CombatantClearMovementHistory",
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
-        // @ts-expect-error html, not jquery
         condition: (li: HTMLElement) =>
           // @ts-expect-error movementHistory
-          getGameUser().isGM && getCombatant(li)?.token?.movementHistory.length > 0,
-        // @ts-expect-error html, not jquery
+          game.user?.isGM && getCombatant(li)?.token?.movementHistory.length > 0,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (!combatant) {
@@ -120,15 +105,13 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: "COMBAT.CombatantRemove",
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: () => getGameUser().isGM,
-        // @ts-expect-error html, not jquery
+        condition: () => game.user?.isGM,
         callback: (li: HTMLElement) => getCombatant(li)?.delete(),
       },
       {
         name: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: () => getGameUser().isGM,
-        // @ts-expect-error html, not jquery
+        condition: () => game.user?.isGM,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
@@ -145,8 +128,7 @@ export class RqgCombatTracker extends CombatTracker {
   }
 
   // Open the tokenActor instead of the actor
-  // @ts-expect-error number of arguments
-  _onCombatantMouseDown(event, target) {
+  override _onCombatantMouseDown(event: PointerEvent, target: HTMLElement): void {
     if (event.target instanceof HTMLInputElement || event.target instanceof HTMLButtonElement) {
       return;
     }
@@ -156,7 +138,7 @@ export class RqgCombatTracker extends CombatTracker {
       return;
     }
     if (event.type === "dblclick") {
-      if (combatant.actor?.testUserPermission(getGameUser(), "OBSERVER")) {
+      if (combatant.actor?.testUserPermission(game.user, "OBSERVER")) {
         combatant.token?.actor?.sheet?.render(true); // --- RQG code --- open the token actor instead of the combatant actor
       }
       return;
@@ -179,7 +161,7 @@ export class RqgCombatTracker extends CombatTracker {
     }
 
     const combatantId = getRequiredDomDataset(changedInput, "combatant-id");
-    const combatant = getGame().combats?.active?.combatants.get(combatantId);
+    const combatant = game.combats?.active?.combatants.get(combatantId);
     const inputValue = Number(changedInput.value);
     const newSR = inputValue < 1 || inputValue > 12 ? null : inputValue;
 

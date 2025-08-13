@@ -1,4 +1,3 @@
-import { getGameUser } from "../system/util";
 import { socketSend } from "./RqgSocket";
 import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
 import type { ChatMessageDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
@@ -14,7 +13,7 @@ export async function updateChatMessage(
   // @ts-expect-error author
   const chatMessageAuthorId = attackChatMessage.author.id;
 
-  if (getGameUser().id === chatMessageAuthorId) {
+  if (game.user?.id === chatMessageAuthorId) {
     await attackChatMessage.update(messageData);
   } else {
     socketSend({

@@ -6,7 +6,6 @@ import {
   physicalItemTypeOptions,
 } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
@@ -44,16 +43,14 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEmbedded: this.document.isEmbedded,
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),

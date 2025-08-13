@@ -3,24 +3,22 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import {
   assertItemType,
   getDomDataset,
-  getGame,
   getSpeakerFromItem,
   localize,
   RqgError,
 } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
-import { RqgItem } from "../../items/rqgItem";
-import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import { RqgItem } from "@items/rqgItem.ts";
+import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
 import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
 } from "./RuneMagicRollDialogData.types";
 import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RollMode } from "../../chat/chatMessage.types";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -65,10 +63,10 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   constructor(options: { spellItem: RqgItem }) {
     super(options);
     this.spellItem = options.spellItem;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    this.rollMode = game.settings.get("core", "rollMode");
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "rune-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
@@ -91,13 +89,13 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.rollHeader },
     form: { template: templatePaths.runeMagicRollDialogV2, scrollable: [""] },
     footer: { template: templatePaths.rollFooter },
   };
 
-  async _prepareContext(): Promise<RuneMagicRollDialogContext> {
+  override async _prepareContext(): Promise<RuneMagicRollDialogContext> {
     const formData: RuneMagicRollDialogFormData =
       // @ts-expect-error object
       (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
@@ -147,20 +145,19 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
     // @ts-expect-error element
     this.element
-      .querySelector("[data-roll-mode-parent]")
+      .querySelector<HTMLElement>("[data-roll-mode-parent]")
       .addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
-  private onChangeRollMode(event: SubmitEvent) {
+  private onChangeRollMode(event: MouseEvent): void {
     const target = event.target as HTMLButtonElement;
     const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
     if (!newRollMode) {
@@ -168,7 +165,6 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     }
     this.rollMode = newRollMode;
 
-    // @ts-expect-error render
     this.render();
   }
 
@@ -181,7 +177,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+        ?.dataset.rollMode as RollMode) ?? game.settings.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

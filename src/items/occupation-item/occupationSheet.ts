@@ -4,7 +4,7 @@ import {
   StandardOfLivingEnum,
 } from "../../data-model/item-data/occupationData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertHtmlElement, getDomDataset, getGameUser, localize } from "../../system/util";
+import { assertHtmlElement, getDomDataset, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
@@ -50,7 +50,7 @@ export class OccupationSheet extends RqgItemSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
 
       homelandsJoined: system.homelands.join(", "),
@@ -209,7 +209,6 @@ export class OccupationSheet extends RqgItemSheet<
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    // @ts-expect-error fromDropData
     const droppedItem = await Item.implementation.fromDropData(data);
 
     if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {

@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RuneTypeEnum } from "../../data-model/item-data/runeData";
-import { getGameUser, localize, getSelectRuneOptions } from "../../system/util";
+import { localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -44,7 +44,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
       rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
       opposingRuneOptions: getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder"),

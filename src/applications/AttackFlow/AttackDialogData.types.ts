@@ -1,4 +1,4 @@
-import type { UsageType } from "../../data-model/item-data/weaponData";
+import type { UsageType } from "@item-model/weaponData.ts";
 import type { CombatRollHeaderPartData } from "./combatRollHeader.types";
 import type { AttackFooterData } from "./attackFooter.types";
 

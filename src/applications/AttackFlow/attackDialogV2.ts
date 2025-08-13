@@ -6,20 +6,19 @@ import {
   assertItemType,
   getActorLinkDecoration,
   getDomDataset,
-  getGame,
-  getGameUser,
   getTokenFromItem,
   getTokenOrActorFromItem,
+  isDocumentType,
   isTruthy,
   localize,
   requireValue,
   RqgError,
 } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
-import type { RqgItem } from "../../items/rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgToken } from "../../combat/rqgToken";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { CombatManeuver, Usage, UsageType } from "../../data-model/item-data/weaponData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { CombatManeuver, Usage, UsageType } from "@item-model/weaponData.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
 import { ChatMessageTypes } from "../../data-model/chat-data/combatChatMessage.dataModel";
@@ -34,12 +33,9 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
-  declare element: HTMLFormElement;
-
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
@@ -55,20 +51,19 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     super(options as any);
     this.weaponItem = options.weaponItem;
     const attackingToken = getTokenFromItem(this.weaponItem);
-    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    const allowCombatWithoutToken = game.settings?.get(systemId, "allowCombatWithoutToken");
 
     if (!attackingToken && !allowCombatWithoutToken) {
       const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
       ui.notifications?.warn(msg);
       setTimeout(() => {
-        // @ts-expect-error close
         void this.close();
       }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
       throw new RqgError(msg);
     }
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "combat-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "attack-dialog"],
@@ -91,31 +86,29 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.combatRollHeader },
     form: { template: templatePaths.attackDialogV2, scrollable: [""] },
     footer: { template: templatePaths.attackFooter },
   };
 
-  async _prepareContext(): Promise<AttackDialogContext> {
+  override async _prepareContext(): Promise<AttackDialogContext> {
     const formData: AttackDialogFormData =
-      // @ts-expect-error object
       (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const attackingTokenOrActor = getTokenOrActorFromItem(this.weaponItem);
     if (!attackingTokenOrActor) {
       const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
       ui.notifications?.warn(msg);
-      // @ts-expect-error close
       this.close();
       throw new RqgError(msg);
     }
-    formData.attackingTokenOrActorUuid = attackingTokenOrActor?.uuid;
+    formData.attackingTokenOrActorUuid = (attackingTokenOrActor as any)?.uuid;
 
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
 
     formData.usageType =
-      this.weaponItem.system.defaultUsage ?? Object.values(usageTypeOptions)[0].value;
+      this.weaponItem.system.defaultUsage ?? Object.values(usageTypeOptions)[0]?.value;
 
     if (this.weaponItem.system.defaultUsage !== formData.usageType) {
       await this.weaponItem.update({
@@ -137,16 +130,15 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const usedSkill = this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
     formData.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
 
-    if (getGameUser().targets.size > 1) {
+    if ((game.user?.targets.size ?? 0) > 1) {
       ui.notifications?.info("Please target one token only");
     }
 
-    // @ts-expect-error first
-    const target = getGameUser().targets.first() as RqgToken | undefined;
+    const target = game.user?.targets.first() as RqgToken | undefined;
 
     const damageBonusSourceOptions = AttackDialogV2.getDamageBonusSourceOptions(this.weaponItem);
     formData.attackingWeaponUuid ??= this.weaponItem.uuid;
-    formData.attackDamageBonus ??= damageBonusSourceOptions[0]?.value;
+    formData.attackDamageBonus ??= damageBonusSourceOptions[0]?.value ?? "";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Attack.OtherModifier");
     formData.reduceAmmoQuantity ??= true;
     formData.aimedBlow = formData.aimedBlow ? Number(formData.aimedBlow) : 0;
@@ -157,7 +149,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       isOutOfAmmo: isOutOfAmmo,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
-      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(attackingTokenOrActor?.uuid),
+      attackingWeaponOptions: AttackDialogV2.getWeaponOptions((attackingTokenOrActor as any)?.uuid),
       usageTypeOptions: usageTypeOptions,
       augmentOptions: AttackDialogV2.augmentOptions,
       damageBonusSourceOptions: damageBonusSourceOptions,
@@ -186,7 +178,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
     // @ts-expect-error element
     this.element
@@ -204,8 +196,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       .addEventListener("change", this.onUsageChange.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
@@ -217,7 +208,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     assertHtmlElement<HTMLSelectElement>(tokenSelectElement);
 
     const weaponOptions = AttackDialogV2.getWeaponOptions(tokenSelectElement.value);
-    const weaponUuid = Object.values(weaponOptions)?.[0].value; // TODO for now just pick any weapon;
+    const weaponUuid = Object.values(weaponOptions)?.[0]?.value; // TODO for now just pick any weapon;
 
     const weaponItem = (await fromUuid(weaponUuid ?? "")) as RqgItem | undefined;
 
@@ -227,7 +218,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     }
     this.weaponItem = weaponItem;
 
-    // @ts-expect-error render
     this.render();
   }
 
@@ -239,7 +229,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     requireValue(weaponItem, "Weapon not found - programming error", weaponSelectElement.value);
     this.weaponItem = weaponItem;
 
-    // @ts-expect-error render
     this.render();
   }
 
@@ -252,7 +241,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       system: { defaultUsage: usageSelectElement.value },
     });
 
-    // @ts-expect-error render
     this.render();
   }
 
@@ -288,7 +276,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const actor =
       tokenDocumentOrRqgActor instanceof TokenDocument
         ? tokenDocumentOrRqgActor?.actor
-        : tokenDocumentOrRqgActor;
+        : (tokenDocumentOrRqgActor as RqgActor);
     if (!actor) {
       ui.notifications?.error("Could not find an attacker actor to do the attack.");
       return;
@@ -392,10 +380,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
 
-    // @ts-expect-error first
-    const target = getGameUser().targets.first() as RqgToken | undefined;
+    const target = game.user?.targets.first() as RqgToken | undefined;
 
-    if (getGameUser().targets.size > 1) {
+    if ((game.user?.targets.size ?? 0) > 1) {
       ui.notifications?.info("Please target one token only");
     }
 
@@ -440,7 +427,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       defenderFumbleOutcome: "",
     };
 
-    // @ts-expect-error applications
     const attackChatContent = await foundry.applications.handlebars.renderTemplate(
       templatePaths.attackChatMessage,
       chatSystemData,
@@ -453,7 +439,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const attackChatMessageOptions = {
       type: ChatMessageTypes.Combat,
       system: chatSystemData,
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       flavor: attackFlavor,
       content: attackChatContent,
@@ -475,8 +460,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
    */
   private static getAttackerOptions(): SelectOptionData<string>[] {
     const ownedTokensWithWeapons =
-      getGame()
-        .scenes?.current?.tokens.filter((t) => t.isOwner)
+      game.scenes?.current?.tokens
+        .filter((t) => t.isOwner)
         .filter((t) => AttackDialogV2.getWeaponOptions(t.uuid).length > 0) ?? [];
 
     const tokenOptions =
@@ -486,13 +471,13 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         group: localize("RQG.Dialog.Common.Tokens"),
       })) ?? [];
 
-    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    const allowCombatWithoutToken = game.settings?.get(systemId, "allowCombatWithoutToken");
     let ownedActorOptions: any[] = [];
     if (allowCombatWithoutToken) {
       const tokenActorIds = ownedTokensWithWeapons.map((t) => t.actor?.id).filter(isTruthy);
 
       const ownedActors =
-        getGame().actors?.filter(
+        game.actors?.filter(
           (a) =>
             a.isOwner &&
             !tokenActorIds.some((taId) => taId === a.id) &&
@@ -513,8 +498,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       return [];
     }
 
-    const optionsArray = (target.actor?.items ?? [])
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
+    const optionsArray = (target.actor?.items.contents ?? [])
+      .filter((i) => isDocumentType(i.type, ItemTypeEnum.HitLocation))
       .sort((a: any, b: any) => b.system.dieFrom - a.system.dieFrom)
       .map((hitLocation: RqgItem) => ({
         value: hitLocation.system.dieFrom,
@@ -530,7 +515,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   private static getWeaponOptions(
     tokenOrActorUuid: string | undefined,
   ): SelectOptionData<string>[] {
-    // @ts-expect-error fromUuidSync
     const actorOrToken = fromUuidSync(tokenOrActorUuid ?? "") as
       | TokenDocument
       | RqgActor
@@ -538,9 +522,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     const actor = actorOrToken instanceof TokenDocument ? actorOrToken?.actor : actorOrToken;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry
-    const weaponsWithAttacks = (actor?.items ?? []).filter(
+    const weaponsWithAttacks = (actor?.items.contents ?? []).filter(
       (i) =>
-        i.type === ItemTypeEnum.Weapon &&
+        isDocumentType(i.type, ItemTypeEnum.Weapon) &&
         (i.system.equippedStatus === "equipped" || i.system.isNatural) &&
         (i.system.usage.oneHand.combatManeuvers.some((cm: CombatManeuver) =>
           offensiveDamageTypes.includes(cm.damageType),
@@ -594,8 +578,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     }
 
     const nonHumanoids =
-      getGame()
-        .scenes?.current?.tokens?.filter(
+      game.scenes?.current?.tokens
+        ?.filter(
           (t) =>
             t.isOwner &&
             !!t.actor?.system?.attributes?.damageBonus &&

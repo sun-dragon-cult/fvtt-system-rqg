@@ -1,30 +1,15 @@
-export enum ChatMessageTypes {
-  Combat = "combat",
-}
+import { attackState, usageType, weaponDesignation } from "./combatChatMessage.defs.ts";
 
 const {
-  // @ts-expect-error data fields not yet defined in types
   BooleanField,
-  // @ts-expect-error data fields not yet defined in types
   NumberField,
-  // @ts-expect-error data fields not yet defined in types
   DocumentUUIDField,
-  // @ts-expect-error data fields not yet defined in types
   JSONField,
-  // @ts-expect-error data fields not yet defined in types
   HTMLField,
-  // @ts-expect-error data fields not yet defined in types
   SchemaField,
-  // @ts-expect-error data fields not yet defined in types
   StringField,
 } = foundry.data.fields;
 
-// TODO: This is a temporary fix until the data model is fully implemented
-const attackState = ["Attacked", "Defended", "DamageRolled"] as const;
-const usageType = ["oneHand", "twoHand", "offHand", "missile"] as const;
-const weaponDesignation = ["none", "attackingWeapon", "parryWeapon"] as const;
-
-// @ts-expect-error TypeDataModel
 export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
   constructor(data = {}, options = {}) {
     super(data, options);

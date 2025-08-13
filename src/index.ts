@@ -9,12 +9,7 @@ import { RQG_CONFIG, systemId } from "./system/config";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import {
-  cacheAvailableHitLocations,
-  cacheAvailableRunes,
-  getGame,
-  getGameUser,
-} from "./system/util";
+import { cacheAvailableHitLocations, cacheAvailableRunes } from "./system/util";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
@@ -75,12 +70,11 @@ Hooks.once("init", async () => {
 
   CONFIG.statusEffects = getTokenStatusEffects();
 
-  // @ts-expect-error fontDefinitions
   CONFIG.fontDefinitions["Norse"] = {
     editor: true,
     fonts: [
-      { urls: ["systems/rqg/assets/fonts/Norse-KaWl.otf"] },
-      { urls: ["systems/rqg/assets/fonts/NorseBold-2Kge.otf"], weight: "bold" },
+      { urls: ["systems/rqg/fonts/Norse-KaWl.otf"] },
+      { urls: ["systems/rqg/fonts/NorseBold-2Kge.otf"], weight: "bold" },
     ],
   };
 
@@ -112,9 +106,7 @@ Hooks.once("init", async () => {
   RqgCombatant.init();
   initSockets();
 
-  // @ts-expect-error applications
   const sheetsConfig = foundry.applications.apps.DocumentSheetConfig;
-  // @ts-expect-error applications
   const sheets = foundry.applications.sheets;
 
   sheetsConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
@@ -128,7 +120,7 @@ Hooks.once("init", async () => {
   registerRqgSystemSettings();
 
   // Define the system.api
-  (getGame().system as any).api = {
+  (game.system as any).api = {
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
     /**
@@ -158,10 +150,8 @@ Hooks.once("ready", async () => {
 
   // Verify that at least one wiki module is activated
   if (
-    getGameUser().isGM &&
-    ![...getGame().modules.entries()].some(
-      ([name, mod]) => /wiki-[a-z]{2}-rqg/.test(name) && mod.active,
-    )
+    game.user?.isGM &&
+    ![...game.modules.entries()].some(([name, mod]) => /wiki-[a-z]{2}-rqg/.test(name) && mod.active)
   ) {
     await Rqid.renderRqidDocument("je..quick-start");
   }

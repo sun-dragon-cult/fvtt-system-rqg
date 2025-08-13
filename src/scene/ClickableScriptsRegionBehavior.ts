@@ -1,13 +1,10 @@
 import { RqgTokenLayer } from "./RqgTokenLayer";
 
-// @ts-expect-error regionBehaviors
 const { RegionBehaviorType } = foundry.data.regionBehaviors;
-// @ts-expect-error data fields not yet defined in types
 const { JavaScriptField, BooleanField } = foundry.data.fields;
 
 export class ClickableScriptsRegionBehavior extends RegionBehaviorType {
   static init(): void {
-    // @ts-expect-error RegionBehavior
     const regionBehaviorConfig = CONFIG.RegionBehavior;
 
     regionBehaviorConfig.dataModels.clickableScripts = ClickableScriptsRegionBehavior;
@@ -19,14 +16,12 @@ export class ClickableScriptsRegionBehavior extends RegionBehaviorType {
         return;
       }
 
-      // @ts-expect-error events
       const pointer = canvas?.app?.renderer?.events?.pointer;
       if (!pointer) {
         return;
       }
       const currentPoint = canvas.activeLayer.toLocal(event);
 
-      // @ts-expect-error region
       const isPointerInsideRegion: boolean | undefined = canvas.scene?.regions?.contents?.some(
         (region: any) =>
           region.behaviors.some(

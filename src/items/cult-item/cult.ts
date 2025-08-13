@@ -1,6 +1,6 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType, isTruthy, RqgError } from "../../system/util";
+import { assertItemType, isDocumentType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
 import { RqidLink } from "../../data-model/shared/rqidLink";
@@ -18,10 +18,15 @@ export class Cult extends AbstractEmbeddedItem {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static onDeleteItem(actor: RqgActor, cultItem: RqgItem, options: any, userId: string): any[] {
+
+  static override onDeleteItem(
+    actor: RqgActor,
+    cultItem: RqgItem,
+    options: any,
+    userId: string,
+  ): any[] {
     const cultRuneMagicItems = actor.items.filter(
-      (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultItem.id,
+      (i) => isDocumentType(i.type, ItemTypeEnum.RuneMagic) && i.system.cultId === cultItem.id,
     );
     return cultRuneMagicItems.map((i) => {
       return { _id: i.id, "system.cultId": "" };
@@ -31,7 +36,7 @@ export class Cult extends AbstractEmbeddedItem {
   /**
    * If the actor already has a Cult with the same Deity, then merge the data from the joined subcults.
    */
-  static async onEmbedItem(
+  static override async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -42,7 +47,7 @@ export class Cult extends AbstractEmbeddedItem {
     assertItemType(child.type, ItemTypeEnum.Cult);
 
     const matchingDeityInActorCults = actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Cult && i.system.deity === child.system.deity,
+      (i) => isDocumentType(i.type, ItemTypeEnum.Cult) && i.system.deity === child.system.deity,
     );
 
     switch (matchingDeityInActorCults.length) {

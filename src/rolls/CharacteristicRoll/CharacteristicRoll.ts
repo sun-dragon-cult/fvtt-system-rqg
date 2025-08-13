@@ -1,10 +1,4 @@
-import {
-  activateChatTab,
-  getGameUser,
-  isTruthy,
-  localize,
-  toSignedString,
-} from "../../system/util";
+import { activateChatTab, isTruthy, localize, toSignedString } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
@@ -51,7 +45,7 @@ export class CharacteristicRoll extends Roll {
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
-      user: getGameUser().id,
+      user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,

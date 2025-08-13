@@ -2,14 +2,7 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgActor } from "../../actors/rqgActor";
 import { RqgItem } from "../rqgItem";
-import {
-  assertActorType,
-  assertItemType,
-  getGame,
-  isTruthy,
-  localize,
-  RqgError,
-} from "../../system/util";
+import { assertActorType, assertItemType, isTruthy, localize, RqgError } from "../../system/util";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import type { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
@@ -128,7 +121,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeMagicName: string,
     actorName: string,
   ): Promise<string> {
-    // @ts-expect-error applications
     const htmlContent = await foundry.applications.handlebars.renderTemplate(
       templatePaths.dialogRuneMagicCult,
       {
@@ -175,7 +167,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   ): string | undefined {
     assertItemType(cultItem?.type, ItemTypeEnum.Cult);
     if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
-      return getGame().i18n.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
+      return game.i18n.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     } else if (
       magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
     ) {

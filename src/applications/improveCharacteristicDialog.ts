@@ -82,7 +82,6 @@ export async function showImproveCharacteristicDialog(
     callback: () => null,
   };
 
-  // @ts-expect-error renderTemplate
   const content: string = await foundry.applications.handlebars.renderTemplate(
     templatePaths.dialogImproveAbility,
     {
@@ -188,7 +187,6 @@ export async function submitImproveCharacteristicDialog(
           { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName },
         );
         const failChat = {
-          // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: failedFlavor,
           content: failedContent,
@@ -275,7 +273,6 @@ export async function submitImproveCharacteristicDialog(
         typeLocName: adapter.typeLocName,
       });
       const failChat = {
-        // @ts-expect-error CHAT_MESSAGE_STYLES
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flavor: failedFlavor,
         content: failedContent,

@@ -1,17 +1,14 @@
-import { getGame } from "../system/util";
 import { systemId } from "../system/config";
 import type { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
 
-// @ts-expect-error canvas;
 const placeables = foundry.canvas.placeables;
 
 export class RqgTokenRuler extends placeables.tokens.TokenRuler {
   static init() {
-    // @ts-expect-error rulerClass
     CONFIG.Token.rulerClass = RqgTokenRuler;
   }
 
-  _getSegmentStyle(waypoint: any): any {
+  override _getSegmentStyle(waypoint: any): any {
     const style = super._getSegmentStyle(waypoint);
     this.#rangeValueStyle(style, waypoint);
     return style;
@@ -21,14 +18,12 @@ export class RqgTokenRuler extends placeables.tokens.TokenRuler {
    * Adjusts the grid or segment style based on the token's movement characteristics
    */
   #rangeValueStyle(style: any, waypoint: any) {
-    // @ts-expect-error token
     if (!this.token.combatant) {
       // Only show the waypoints for tokens that are in combat.
       style.width = 0;
       return;
     }
     const tokenMovementAction = waypoint.action;
-    // @ts-expect-error token
     const actorAttributes = this.token.actor.system.attributes;
     // TODO Duplicated from RqgActor, make more DRY
     const equippedMovementEncumbrancePenalty = Math.min(
@@ -57,7 +52,7 @@ export class RqgTokenRuler extends placeables.tokens.TokenRuler {
       }
     }
 
-    const tokenRulerSettings = getGame().settings.get(
+    const tokenRulerSettings = game.settings.get(
       systemId,
       "TokenRulerSettings",
     ) as TokenRulerSettingsType;

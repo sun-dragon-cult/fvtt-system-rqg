@@ -4,7 +4,6 @@ import {
   assertItemType,
   getDomDataset,
   getDomDatasetAmongSiblings,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -65,7 +64,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.SpiritMagic),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = (itemId && actor.items.get(itemId)) || undefined;
@@ -86,7 +85,7 @@ export const spiritMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.SpiritMagic),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

@@ -4,7 +4,7 @@ import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
 describe("Evaluate Ability Roll Success Levels", () => {
   beforeEach(() => {
     (global as any).game = { settings: {} };
-    (global as any).game.settings.get = jest.fn(() => true); // Enable hyper criticals etc
+    (global as any).game.settings.get = vi.fn(() => true); // Enable hyper criticals etc
   });
 
   describe.each`

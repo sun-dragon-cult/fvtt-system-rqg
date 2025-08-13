@@ -1,14 +1,12 @@
-import { getGame } from "../system/util";
 import { initializeAllCharacteristics } from "../actors/context-menus/characteristic-context-menu";
 import { getCombatantsSharingToken } from "./combatant-utils";
 
 export class RqgToken extends Token {
   static init() {
-    // @ts-expect-error config
     CONFIG.Token.objectClass = RqgToken;
   }
 
-  _onHoverIn(event: any, options: any): void {
+  override _onHoverIn(event: any, options: any): void {
     super._onHoverIn(event, options);
     if (this.combatant) {
       getCombatantsSharingToken(this.combatant).forEach((combatant: Combatant) => {
@@ -18,7 +16,7 @@ export class RqgToken extends Token {
     }
   }
 
-  _onHoverOut(event: any) {
+  override _onHoverOut(event: any) {
     super._onHoverOut(event);
     if (this.combatant) {
       getCombatantsSharingToken(this.combatant).forEach((combatant: Combatant) => {
@@ -28,12 +26,10 @@ export class RqgToken extends Token {
     }
   }
 
-  // @ts-expect-error _onCreate
-  protected _onCreate(data: any, options: any, userId: string): void {
-    // @ts-expect-error 3 parameters
+  protected override _onCreate(data: any, options: any, userId: string): void {
     super._onCreate(data, options, userId);
     this.actor?.updateTokenEffectFromHealth();
-    if (userId === getGame().user?.id) {
+    if (userId === game.user?.id) {
       //@ts-expect-error actorLink
       if (!this.document.actorLink) {
         if (this.actor) {

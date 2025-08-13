@@ -1,4 +1,4 @@
-import { getGame, localize } from "../system/util";
+import { localize } from "../system/util";
 import Options = FormApplication.Options;
 import { systemId } from "../system/config";
 import { defaultItemIconsObject } from "../system/settings/defaultItemIcons";
@@ -47,7 +47,7 @@ export class DefaultItemIconSettings extends FormApplication<
   }
 
   getData(): IconSettingsData {
-    const currentSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
+    const currentSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
     const settings = Object.entries(defaultItemIconsObject).reduce((acc: any, [key, value]) => {
       acc[key] = currentSettings[key] ?? value;
       return acc;
@@ -58,7 +58,7 @@ export class DefaultItemIconSettings extends FormApplication<
   async _updateObject(event: Event, formData?: object): Promise<void> {
     if (formData != null) {
       const data = expandObject(formData);
-      await getGame().settings.set(systemId, "defaultItemIconSettings", data);
+      await game.settings.set(systemId, "defaultItemIconSettings", data);
       this.render();
     }
   }

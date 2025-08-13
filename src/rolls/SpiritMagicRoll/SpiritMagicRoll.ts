@@ -1,6 +1,5 @@
 import {
   activateChatTab,
-  getGameUser,
   isTruthy,
   localize,
   localizeItemType,
@@ -53,7 +52,7 @@ export class SpiritMagicRoll extends Roll {
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
-      user: getGameUser().id,
+      user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,

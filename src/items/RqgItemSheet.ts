@@ -96,7 +96,6 @@ export class RqgItemSheet<
       .each((i: number, el: HTMLElement) => {
         const effectUuid = getRequiredDomDataset($(el), "effect-uuid");
         el.addEventListener("click", () => {
-          // @ts-expect-error fromUuidSync
           const effect = fromUuidSync(effectUuid);
           if (effect) {
             new ActiveEffectConfig(effect).render(true);
@@ -109,7 +108,6 @@ export class RqgItemSheet<
       .find("[data-item-effect-add]")
       .each((i: number, el: HTMLElement) => {
         const itemUuid = getRequiredDomDataset($(el), "item-uuid");
-        // @ts-expect-error fromUuidSync
         const item = fromUuidSync(itemUuid);
         if (!item) {
           return; // The item is not in the world (ie it's in a compendium)
@@ -117,7 +115,6 @@ export class RqgItemSheet<
         el.addEventListener("click", async () => {
           const effect = new ActiveEffect(
             {
-              // @ts-expect-error name
               name: "new effect",
               icon: "icons/svg/aura.svg",
               changes: [
@@ -245,7 +242,6 @@ export class RqgItemSheet<
     this.render(true); // Get rid of any remaining drag-hover classes
 
     const droppedDocumentData =
-      // @ts-expect-error getDragEventData
       foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
@@ -315,7 +311,6 @@ export class RqgItemSheet<
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      // @ts-expect-error JournalEntryPage
     } = await extractDropInfo<JournalEntryPage>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedPage)) {

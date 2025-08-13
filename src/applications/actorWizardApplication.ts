@@ -5,12 +5,12 @@ import {
   assertHtmlElement,
   assertItemType,
   getItemDocumentTypes,
-  getGame,
   localize,
   getDocumentFromUuid,
+  isDocumentType,
 } from "../system/util";
-import { SkillCategoryEnum } from "../data-model/item-data/skillData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -19,7 +19,7 @@ import type { IAbility } from "../data-model/shared/ability";
 import type { RqgActor } from "../actors/rqgActor";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
-export class ActorWizard extends FormApplication {
+export class ActorWizard extends foundry.appv1.api.FormApplication {
   actor: RqgActor;
   species: {
     selectedSpeciesTemplate: RqgActor | undefined;
@@ -40,17 +40,15 @@ export class ActorWizard extends FormApplication {
       actorWizardFlags,
     )?.selectedSpeciesUuid;
 
-    // @ts-expect-error fromUuidSync
     const template = fromUuidSync(previouslySelectedTemplateUuid) as RqgActor | undefined;
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
-    } else if (template?.type === ActorTypeEnum.Character) {
+    } else if (isDocumentType(template?.type, ActorTypeEnum.Character)) {
       this.species.selectedSpeciesTemplate = template;
     } else {
       this.species.selectedSpeciesTemplate = undefined;
       const msg = `The Actor named ${this.actor.name} has a \n[rqg.actorWizardFlags.selectedSpeciesUuid]\n flag with a value that is not an RqgActor.`;
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
     }
@@ -68,7 +66,7 @@ export class ActorWizard extends FormApplication {
     }
   }
 
-  static get defaultOptions(): FormApplication.Options {
+  static override get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(FormApplication.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       popOut: true,
@@ -110,7 +108,8 @@ export class ActorWizard extends FormApplication {
       this.collapsibleOpenStates["homelandAdvanced"] = true;
     }
 
-    const worldLanguage = getGame().settings.get(systemId, "worldLanguage");
+    const worldLanguage =
+      game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
 
     if (!this.species.speciesTemplateOptions) {
       // Don't get these every time.
@@ -193,7 +192,6 @@ export class ActorWizard extends FormApplication {
     // enrich biography for purposes of sheet
     if (this.species.selectedSpeciesTemplate?.system.background.biography) {
       this.species.selectedSpeciesTemplate.system.background.biography =
-        // @ts-expect-error applications
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           this.species.selectedSpeciesTemplate?.system.background.biography,
         );
@@ -260,7 +258,6 @@ export class ActorWizard extends FormApplication {
     // enrich homeland wizard instructions for purposes of sheet
     if (selectedHomeland?.system.wizardInstructions) {
       selectedHomeland.system.wizardInstructions =
-        // @ts-expect-error applications
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           selectedHomeland.system.wizardInstructions,
         );
@@ -479,7 +476,6 @@ export class ActorWizard extends FormApplication {
       (h) => h.type === ItemTypeEnum.HitLocation,
     );
     if (addHitLocations) {
-      //@ts-expect-error addHitLocations
       await this.actor.createEmbeddedDocuments("Item", addHitLocations);
     }
 
@@ -673,8 +669,8 @@ export class ActorWizard extends FormApplication {
             }
           }
           // Handle Cults which use .homelandCultChosen and don't need to get "added up"
-          if (actorItem.type === ItemTypeEnum.Cult) {
-            if (this.choices[key].homelandCultChosen) {
+          if (isDocumentType(actorItem.type, ItemTypeEnum.Cult)) {
+            if (this.choices[key]?.homelandCultChosen) {
               // Cult already exists on actor
               // Do nothing
             } else {
@@ -705,16 +701,16 @@ export class ActorWizard extends FormApplication {
           if (itemsToAddFromTemplate) {
             for (const templateItem of itemsToAddFromTemplate) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it
-              if (templateItem.type === ItemTypeEnum.Skill) {
-                templateItem.system.baseChance = this.choices[key].totalValue();
+              if (isDocumentType(templateItem.type, ItemTypeEnum.Skill)) {
+                templateItem.system.baseChance = this.choices[key]?.totalValue();
                 templateItem.system.hasExperience = false;
               }
-              if (templateItem.type === ItemTypeEnum.Rune) {
-                templateItem.system.chance = this.choices[key].totalValue();
+              if (isDocumentType(templateItem.type, ItemTypeEnum.Rune)) {
+                templateItem.system.chance = this.choices[key]?.totalValue();
                 templateItem.system.hasExperience = false;
               }
-              if (templateItem.type === ItemTypeEnum.Passion) {
-                templateItem.system.chance = this.choices[key].totalValue();
+              if (isDocumentType(templateItem.type, ItemTypeEnum.Passion)) {
+                templateItem.system.chance = this.choices[key]?.totalValue();
                 templateItem.system.hasExperience = false;
               }
               adds.push(templateItem);
@@ -723,20 +719,20 @@ export class ActorWizard extends FormApplication {
         }
 
         // Copy Skills, Runes, and Passions from the Homeland using rqid
-        if (this.choices[key].homelandPresent) {
+        if (this.choices[key]?.homelandPresent) {
           const itemToAddFromHomeland = await Rqid.fromRqid(key);
           if (itemToAddFromHomeland instanceof RqgItem) {
             // Item exists on the template and has been chosen but does not exist on the actor, so add it
-            if (itemToAddFromHomeland.type === ItemTypeEnum.Skill) {
-              itemToAddFromHomeland.system.baseChance = this.choices[key].totalValue();
+            if (isDocumentType(itemToAddFromHomeland.type, ItemTypeEnum.Skill)) {
+              itemToAddFromHomeland.system.baseChance = this.choices[key]?.totalValue();
               itemToAddFromHomeland.system.hasExperience = false;
             }
-            if (itemToAddFromHomeland.type === ItemTypeEnum.Rune) {
-              itemToAddFromHomeland.system.chance = this.choices[key].totalValue();
+            if (isDocumentType(itemToAddFromHomeland.type, ItemTypeEnum.Rune)) {
+              itemToAddFromHomeland.system.chance = this.choices[key]?.totalValue();
               itemToAddFromHomeland.system.hasExperience = false;
             }
-            if (itemToAddFromHomeland.type === ItemTypeEnum.Passion) {
-              itemToAddFromHomeland.system.chance = this.choices[key].totalValue();
+            if (isDocumentType(itemToAddFromHomeland.type, ItemTypeEnum.Passion)) {
+              itemToAddFromHomeland.system.chance = this.choices[key]?.totalValue();
               itemToAddFromHomeland.system.hasExperience = false;
             }
             adds.push(itemToAddFromHomeland); // TODO or itemToAddFromHomeland.toObject() ??
@@ -751,7 +747,7 @@ export class ActorWizard extends FormApplication {
         }
 
         if (cultsEligibleToAdd.map((c) => c.rqid).includes(key)) {
-          if (this.choices[key].homelandCultChosen) {
+          if (this.choices[key]?.homelandCultChosen) {
             const cult = await Rqid.fromRqid(key);
             if (cult) {
               adds.push(cult);
@@ -760,7 +756,6 @@ export class ActorWizard extends FormApplication {
         }
       }
     }
-    //@ts-expect-errors adds // TODO fix "adds" typing
     await this.actor.createEmbeddedDocuments("Item", adds);
     await this.actor.updateEmbeddedDocuments("Item", updates);
     await this.actor.deleteEmbeddedDocuments("Item", deletes);

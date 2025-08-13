@@ -6,8 +6,6 @@ import {
   activateChatTab,
   assertItemType,
   getActorLinkDecoration,
-  getGame,
-  getGameUser,
   localize,
   requireValue,
   RqgError,
@@ -39,7 +37,6 @@ import { WeaponDesignation } from "../../system/combatCalculations.defs";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -65,7 +62,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   constructor(options: { chatMessageId: string }) {
     super(options);
-    const attackChatMessage = getGame().messages?.get(options.chatMessageId ?? "") as
+    const attackChatMessage = game.messages?.get(options.chatMessageId ?? "") as
       | RqgChatMessage
       | undefined;
 
@@ -73,7 +70,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       const msg = "No attackChatMessage to defend";
       ui.notifications?.warn(msg);
       setTimeout(() => {
-        // @ts-expect-error close
         void this.close();
       }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
       throw new RqgError(msg);
@@ -81,7 +77,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     this.attackChatMessage = attackChatMessage;
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "combat-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "defence-dialog"],
@@ -104,27 +100,24 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.combatRollHeader },
     form: { template: templatePaths.defenceDialogV2, scrollable: [""] },
     footer: { template: templatePaths.defenceFooter },
   };
 
-  async _prepareContext(): Promise<DefenceDialogContext> {
+  override async _prepareContext(): Promise<DefenceDialogContext> {
     const formData: DefenceDialogFormData =
-      // @ts-expect-error object
       (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const defenderOptions = DefenceDialogV2.getDefenderOptions(this.attackChatMessage);
     if (Object.keys(defenderOptions).length === 0) {
       const msg = localize("RQG.Dialog.Defence.NoTokenToDefendWith");
       ui.notifications?.warn(msg);
-      // @ts-expect-error close
       this.close();
     }
 
     const attackingTokenOrActorUuid = this.attackChatMessage?.system.attackingTokenOrActorUuid;
-    // @ts-expect-error fromUuidSync
     const attackingTokenOrActor = fromUuidSync(attackingTokenOrActorUuid ?? "") as
       | TokenDocument
       | RqgActor
@@ -255,8 +248,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
@@ -509,10 +501,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       { overwrite: true },
     );
 
-    // @ts-expect-error applications
     messageData.content = await foundry.applications.handlebars.renderTemplate(
       templatePaths.attackChatMessage,
-      // @ts-expect-error system
       messageData.system,
     );
 
@@ -522,20 +512,11 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       if (formDataObject.defence !== "ignore") {
         // Wait a tad with the defence roll to separate the animations slightly
         setTimeout(() => {
-          // @ts-expect-error dice3d
-          void game.dice3d.showForRoll(defenceRoll, getGameUser(), true, null, false);
+          void game.dice3d.showForRoll(defenceRoll, game.user, true, null, false);
         }, 300);
       }
 
-      // @ts-expect-error dice3d
-      await game.dice3d.showForRoll(
-        attackRoll,
-        // @ts-expect-error author
-        attackChatMessage.author,
-        true,
-        null,
-        false,
-      );
+      await game.dice3d.showForRoll(attackRoll, attackChatMessage.author, true, null, false);
     }
 
     activateChatTab();
@@ -596,7 +577,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     // case 1 - defendingTokenOrActorUuid is set (attacker has set a target)
     const initialDefendingTokenUuid = attackChatMessage.system.defendingTokenOrActorUuid;
     if (initialDefendingTokenUuid) {
-      // @ts-expect-error fromUuidSync
       const defendingToken = fromUuidSync(initialDefendingTokenUuid) as TokenDocument | null;
       return [
         {
@@ -610,26 +590,24 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     // case 2 - show a list of token the user owns and are present on the active scene,
     //  and include the owned actors that do not have tokens.
     const ownedTokens =
-      getGame()
-        .scenes?.current?.tokens.filter((t) => t.isOwner)
+      game.scenes?.current?.tokens
+        .filter((t) => t.isOwner)
         ?.map((tokenDocument) => ({
           value: tokenDocument?.uuid ?? "",
           label: (tokenDocument?.name ?? "") + getActorLinkDecoration(tokenDocument.actor),
           group: localize("RQG.Dialog.Common.Tokens"),
         })) ?? [];
 
-    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    const allowCombatWithoutToken = game.settings.get(systemId, "allowCombatWithoutToken");
     let ownedActorsWithoutTokens: any[] = [];
 
     if (allowCombatWithoutToken) {
       const ownedTokenActorIds =
-        getGame()
-          .scenes?.current?.tokens.filter((t) => t.isOwner)
-          ?.map((t) => t.actor?.id) ?? [];
+        game.scenes?.current?.tokens.filter((t) => t.isOwner)?.map((t) => t.actor?.id) ?? [];
 
       ownedActorsWithoutTokens =
-        getGame()
-          .actors?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
+        game.actors
+          ?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
           .map((actor) => ({
             value: actor.uuid ?? "",
             label: (actor.name ?? "") + getActorLinkDecoration(actor),

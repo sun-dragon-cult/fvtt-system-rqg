@@ -1,4 +1,4 @@
-import { getGame, localize } from "../util";
+import { localize } from "../util";
 import { RqgItem } from "../../items/rqgItem";
 import type {
   ActorData,
@@ -38,7 +38,7 @@ async function migrateWorldActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  const actorArray = getGame().actors?.contents;
+  const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.actors", {
     count: actorCount,
@@ -56,7 +56,6 @@ async function migrateWorldActors(
         itemMigrations,
         actorMigrations,
       );
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(updates)) {
         console.log(`RQG | Migrating Actor document ${actor.name}`, updates);
         await actor.update(updates, { enforceTypes: false });
@@ -71,7 +70,7 @@ async function migrateWorldActors(
 }
 
 async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void> {
-  const itemArray = getGame().items?.contents as RqgItem[] | undefined;
+  const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.items", {
     count: itemCount,
@@ -85,7 +84,6 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
   for (const item of itemArray) {
     try {
       const updateData = await getItemMigrationUpdates((item as any).toObject(), itemMigrations);
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Item document ${item.name}`, updateData);
         await item.update(updateData, { enforceTypes: false });
@@ -103,7 +101,7 @@ async function migrateWorldScenes(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  const scenes = getGame()?.scenes?.contents;
+  const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.scenes", {
     count: scenesCount,
@@ -117,7 +115,6 @@ async function migrateWorldScenes(
   for (const scene of scenes) {
     try {
       const updateData = await getSceneMigrationUpdates(scene, itemMigrations, actorMigrations);
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Scene document ${scene.name}`, updateData);
         await scene.update(updateData, { enforceTypes: false });
@@ -140,7 +137,7 @@ async function migrateWorldCompendiumPacks(
   actorMigrations: ActorMigration[],
 ): Promise<void> {
   // @ts-expect-error packageName
-  const packs = getGame().packs.contents.filter((p) => p.metadata.packageName !== systemId); // Exclude system packs
+  const packs = game.packs.contents.filter((p) => p.metadata.packageName !== systemId); // Exclude system packs
   const packsCount = packs?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.compendiums", {
     count: packsCount,
@@ -152,11 +149,9 @@ async function migrateWorldCompendiumPacks(
   updateProgressBar(progress, packsCount, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const pack of packs) {
-    // @ts-expect-error packageType
     if (pack.metadata.packageType !== "world") {
       continue;
     }
-    // @ts-expect-error type
     if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
       continue;
     }
@@ -176,7 +171,6 @@ async function migrateCompendium(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  // @ts-expect-error type
   const documentType: string = pack.metadata.type;
   if (!["Actor", "Item", "Scene"].includes(documentType)) {
     return;
@@ -215,7 +209,6 @@ async function migrateCompendium(
       }
 
       // Save the entry, if data was changed
-      // @ts-expect-error isEmpty
       if (foundry.utils.isEmpty(updateData)) {
         continue;
       }
@@ -246,7 +239,6 @@ async function getActorMigrationUpdates(
   actorMigrations.forEach(
     (fn: (actorData: ActorData) => ActorUpdate) =>
       (updateData = foundry.utils.mergeObject(updateData, fn(actorData), {
-        // @ts-expect-error performDeletions
         performDeletions: false,
       })),
   );
@@ -259,7 +251,6 @@ async function getActorMigrationUpdates(
         const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData); // item is already `item.toObject()`
 
         // Update the Owned Item
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(itemUpdate)) {
           hasItemUpdates = true;
           return foundry.utils.mergeObject(item, itemUpdate, {
@@ -289,7 +280,6 @@ async function getItemMigrationUpdates(
   let updateData: ItemUpdate = {};
   for (const fn of itemMigrations) {
     updateData = foundry.utils.mergeObject(updateData, await fn(itemData, owningActorData), {
-      // @ts-expect-error performDeletions
       performDeletions: false,
     });
   }
@@ -308,7 +298,7 @@ async function getSceneMigrationUpdates(
       const t = token.toJSON();
       if (!t.actorId || t.actorLink) {
         t.actorData = {};
-      } else if (!getGame().actors!.has(t.actorId)) {
+      } else if (!game.actors!.has(t.actorId)) {
         t.actorId = null;
         t.actorData = {};
       } else if (!t.actorLink) {
@@ -329,7 +319,6 @@ async function getSceneMigrationUpdates(
             // TODO fix type
             const update: any = updates.get(original._id);
             if (update) {
-              // @ts-expect-error performDeletions
               foundry.utils.mergeObject(original, update, { performDeletions: false });
             }
           });
@@ -338,7 +327,6 @@ async function getSceneMigrationUpdates(
         });
 
         // TODO implement AE Delete for scene Actors as well?
-        // @ts-expect-error performDeletions
         foundry.utils.mergeObject(t.actorData, update, { performDeletions: false });
       }
       return t;
@@ -356,7 +344,6 @@ function updateProgressBar(index: number, totalCount: number, prefix: string = "
   const message = `${prefix} ${index} / ${totalCount}`;
 
   if (!progressBar?.active) {
-    // @ts-expect-error progress
     progressBar = ui.notifications?.info(message, { progress: true });
   }
   progressBar.update({ message, pct });

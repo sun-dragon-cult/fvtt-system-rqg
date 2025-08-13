@@ -2,7 +2,6 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
   getDomDataset,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -52,7 +51,7 @@ export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM || actor.system.editMode,
+    condition: () => !!game.user?.isGM || actor.system.editMode,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

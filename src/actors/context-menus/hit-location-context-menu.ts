@@ -1,7 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   getDomDataset,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -37,7 +36,7 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

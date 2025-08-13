@@ -1,6 +1,5 @@
 import {
   activateChatTab,
-  getGameUser,
   isTruthy,
   localize,
   localizeItemType,
@@ -54,7 +53,7 @@ export class RuneMagicRoll extends Roll {
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
-      user: getGameUser().id,
+      user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,
@@ -64,7 +63,6 @@ export class RuneMagicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRoll, chatData);
   }
 

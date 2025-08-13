@@ -1,6 +1,6 @@
-import { SkillCategoryEnum } from "../data-model/item-data/skillData";
+import { SkillCategoryEnum } from "@item-model/skillData.ts";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
@@ -15,14 +15,12 @@ import {
   type EquippedStatus,
   equippedStatuses,
   type PhysicalItemType,
-} from "../data-model/item-data/IPhysicalItem";
+} from "@item-model/IPhysicalItem.ts";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import {
   assertHtmlElement,
   assertItemType,
   formatListByWorldLanguage,
-  getGame,
-  getGameUser,
   getHTMLElement,
   getItemDocumentTypes,
   getRequiredDomDataset,
@@ -35,7 +33,7 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
-import { type RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
+import { type RuneDataSource, RuneTypeEnum } from "@item-model/runeData.ts";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
@@ -57,7 +55,7 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
-import { CultRankEnum } from "../data-model/item-data/cultData";
+import { CultRankEnum } from "@item-model/cultData.ts";
 import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
@@ -129,7 +127,7 @@ export class RqgActorSheet extends ActorSheet<
   //   await super._onFirstRender(context, options);
   //
   //   // @ts-expect-error getCombatantByActor
-  //   const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+  //   const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
   //     this.actor,
   //   );
   //   actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
@@ -140,7 +138,7 @@ export class RqgActorSheet extends ActorSheet<
   //   // @ts-expect-error _onPreClose
   //   super._onPreClose(options);
   //   // @ts-expect-error getCombatantByActor
-  //   const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+  //   const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
   //     this.actor,
   //   );
   //   actorCombatants?.forEach((c) => delete c.apps[this.appId]);
@@ -148,10 +146,7 @@ export class RqgActorSheet extends ActorSheet<
 
   override async _render(force = false, options = {}) {
     await super._render(force, options);
-    // @ts-expect-error getCombatantByActor
-    const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
-      this.actor,
-    );
+    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
     actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
   }
 
@@ -161,8 +156,7 @@ export class RqgActorSheet extends ActorSheet<
       // Don't close the actor sheet even is a combatant linked to it that is deleted,
       // but try to remove the combatant.apps reference.
       // This is is a workaround - can I remove the app reference in a better way?
-      // @ts-expect-error getCombatantByActor
-      const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+      const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
         this.actor,
       );
       actorCombatants?.forEach((c) => delete c.apps[this.appId]);
@@ -178,10 +172,7 @@ export class RqgActorSheet extends ActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
-    // @ts-expect-error getCombatantByActor
-    const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
-      this.actor,
-    );
+    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
 
     this.activeInSR = new Set(
       actorCombatants
@@ -198,10 +189,9 @@ export class RqgActorSheet extends ActorSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isPC: this.actor.hasPlayerOwner,
-      showCharacteristicRatings:
-        getGame().settings.get(systemId, "showCharacteristicRatings") || false,
+      showCharacteristicRatings: game.settings.get(systemId, "showCharacteristicRatings") || false,
       system: system,
       // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
@@ -228,11 +218,9 @@ export class RqgActorSheet extends ActorSheet<
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: this.getFreeInt(spiritMagicPointSum),
       baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
-      // @ts-expect-error applications
       enrichedAllies: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.allies,
       ),
-      // @ts-expect-error applications
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
       ),
@@ -280,9 +268,9 @@ export class RqgActorSheet extends ActorSheet<
       hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
 
       // UI toggles
-      showHeropoints: getGame().settings.get(systemId, "showHeropoints"),
+      showHeropoints: game.settings.get(systemId, "showHeropoints"),
       showUiSection: this.getUiSectionVisibility(),
-      actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
+      actorWizardFeatureFlag: game.settings.get(systemId, "actor-wizard-feature-flag"),
       itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
       enrichedIncorrectRunes: await this.getIncorrectRunesText(embeddedItems?.rune),
@@ -636,7 +624,7 @@ export class RqgActorSheet extends ActorSheet<
     }, resultObject);
 
     // Sort the hit locations
-    if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
+    if (game.settings.get(systemId, "sortHitLocationsLowToHigh")) {
       itemTypes[ItemTypeEnum.HitLocation].sort(
         (a: any, b: any) => a.system.dieFrom - b.system.dieFrom,
       );
@@ -659,13 +647,10 @@ export class RqgActorSheet extends ActorSheet<
     await Promise.all(
       itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
         cult.system.enrichedHolyDays =
-          // @ts-expect-error applications
           await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.holyDays);
         cult.system.enrichedGifts =
-          // @ts-expect-error applications
           await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.gifts);
         cult.system.enrichedGeases =
-          // @ts-expect-error applications
           await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.geases);
       }),
     );
@@ -682,7 +667,6 @@ export class RqgActorSheet extends ActorSheet<
     await Promise.all(
       itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
         passion.system.enrichedDescription =
-          // @ts-expect-error applications
           await foundry.applications.ux.TextEditor.implementation.enrichHTML(
             passion.system.description,
           );
@@ -709,7 +693,6 @@ export class RqgActorSheet extends ActorSheet<
       const actorDex = actor.system.characteristics.dexterity.value ?? 0;
       for (const key in usages) {
         const usage = usages[key];
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(usage?.skillRqidLink?.rqid)) {
           usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
           usage.unusable = false;
@@ -802,7 +785,7 @@ export class RqgActorSheet extends ActorSheet<
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Passion),
       background: true,
-      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && getGameUser().isGM,
+      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && game.user?.isGM,
     };
   }
 
@@ -813,7 +796,6 @@ export class RqgActorSheet extends ActorSheet<
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
-      // @ts-expect-error applications
       return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         `${warningText} ${itemLinks}`,
       );
@@ -855,7 +837,6 @@ export class RqgActorSheet extends ActorSheet<
       // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
       const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
       const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
-      // @ts-expect-error applications
       return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         `${warningText} ${itemLinks}`,
       );
@@ -902,7 +883,7 @@ export class RqgActorSheet extends ActorSheet<
       }
       if (message) {
         ChatMessage.create({
-          user: getGameUser().id,
+          user: game.user!.id,
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
@@ -923,7 +904,6 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   _contextMenu(html: HTMLElement): void {
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -933,7 +913,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -942,7 +921,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -951,7 +929,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -961,7 +938,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -970,7 +946,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -979,7 +954,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -988,7 +962,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -998,7 +971,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -1007,7 +979,6 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -1219,8 +1190,8 @@ export class RqgActorSheet extends ActorSheet<
       ?.querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
       .forEach((el) => {
         el.addEventListener("click", async () => {
-          const currentValue = getGame().settings.get(systemId, "sortHitLocationsLowToHigh");
-          await getGame().settings.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
+          const currentValue = game.settings.get(systemId, "sortHitLocationsLowToHigh");
+          await game.settings.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
           // Rerender all actor sheets the user has open
           Object.values(ui.windows).forEach((a: any) => {
             if (a?.document?.type === ActorTypeEnum.Character) {
@@ -1340,7 +1311,6 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
       const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        // @ts-expect-error fromUuidSync
         const effect = fromUuidSync(effectUuid);
         requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
         new ActiveEffectConfig(effect).render(true);
@@ -1411,10 +1381,7 @@ export class RqgActorSheet extends ActorSheet<
     // Add Passion button
     htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = getGame().settings.get(
-          systemId,
-          "defaultItemIconSettings",
-        );
+        const defaultItemIconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
         const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
         const passion = {
           name: newPassionName,
@@ -1464,10 +1431,7 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
       const physicalItemType = getRequiredDomDataset(el, "gear-add");
       el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = getGame().settings.get(
-          systemId,
-          "defaultItemIconSettings",
-        );
+        const defaultItemIconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
 
         const physicalItemType2ItemName = new Map<PhysicalItemType, string>([
           ["unique", "RQG.Actor.Gear.NewGear"],
@@ -1492,7 +1456,7 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private async updateActiveCombatWithSR(activeInSR: Set<number>) {
-    const combat = getGame().combat;
+    const combat = game.combat;
     if (!combat) {
       throw new RqgError(
         "Programming error: updateActiveCombatWithSR should not be run if there are no combats.",
@@ -1611,7 +1575,6 @@ export class RqgActorSheet extends ActorSheet<
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
-    // @ts-expect-error getDragEventData
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
     if (
@@ -1665,7 +1628,6 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  // @ts-expect-error parameter types
   async _onDropItem(
     event: DragEvent,
     data: { type: string; uuid: string },
@@ -1753,14 +1715,13 @@ export class RqgActorSheet extends ActorSheet<
       return [];
     }
     const compendiumId = data.collection;
-    const pack = getGame().packs.get(compendiumId);
+    const pack = game.packs.get(compendiumId);
     const packIndex = await pack?.getIndex();
     if (!packIndex) {
       return [];
     }
     const documents = await Promise.all(
       packIndex.map(async (di) => {
-        // @ts-expect-error uuid
         const doc = await fromUuid(di.uuid);
         return doc?.toObject();
       }),
@@ -1771,13 +1732,11 @@ export class RqgActorSheet extends ActorSheet<
   async _onDropJournalEntryPage(
     event: DragEvent,
     data: { type: string; uuid: string },
-    // @ts-expect-error JournalEntryPage
   ): Promise<boolean | JournalEntryPage[]> {
     const {
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      // @ts-expect-error JournalEntryPage
     } = await extractDropInfo<JournalEntryPage>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedPage)) {
@@ -1796,7 +1755,6 @@ export class RqgActorSheet extends ActorSheet<
       sourceActor: sourceActor,
       targetActor: this.actor,
     };
-    // @ts-expect-error renderTemplate
     const content: string = await foundry.applications.handlebars.renderTemplate(
       templatePaths.confirmCopyIntangibleItem,
       {
@@ -1841,11 +1799,9 @@ export class RqgActorSheet extends ActorSheet<
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
       targetActor: this.actor,
-      // @ts-expect-error quantity
       showQuantity: incomingItemDataSource.system.quantity > 1,
     };
 
-    // @ts-expect-error renderTemplate
     const content: string = await foundry.applications.handlebars.renderTemplate(
       templatePaths.confirmTransferPhysicalItem,
       {
@@ -1916,7 +1872,6 @@ export class RqgActorSheet extends ActorSheet<
       ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
       return false;
     }
-    // @ts-expect-error quantity
     if (quantityToTransfer > incomingItemDataSource.system.quantity) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
@@ -1993,7 +1948,7 @@ export class RqgActorSheet extends ActorSheet<
     const headerButtons = super._getHeaderButtons();
 
     if (
-      getGame().settings.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
+      game.settings.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
       !this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete &&
       !this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
@@ -2005,7 +1960,7 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
 
-    const user = getGameUser();
+    const user = game.user;
 
     if (user.isGM || user.isTrusted) {
       if (this.actor.system.editMode) {

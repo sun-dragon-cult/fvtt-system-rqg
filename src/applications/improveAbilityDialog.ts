@@ -1,4 +1,4 @@
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "../system/config";
@@ -90,7 +90,6 @@ export async function showImproveAbilityDialog(
     name: adapter.name,
     typeLocName: adapter.typeLocName,
   });
-  // @ts-expect-error renderTemplate
   const content: string = await foundry.applications.handlebars.renderTemplate(
     templatePaths.dialogImproveAbility,
     {
@@ -140,7 +139,6 @@ function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
   }
 
   adapter.chance =
-    // @ts-expect-error _source
     adapter.categoryMod + item._source.system.baseChance + item._source.system.gainedChance;
   adapter.chanceToGain = Math.max(100 - Number(adapter.chance), 1);
 }
@@ -248,7 +246,6 @@ async function submitImproveAbilityDialog(
         );
         const failChat = {
           speaker: speaker,
-          // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: failedFlavor,
           content: failedContent,

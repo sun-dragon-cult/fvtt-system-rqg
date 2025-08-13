@@ -1,5 +1,5 @@
 import { systemId } from "../system/config";
-import { getGame, getGameUser, getSocket, RqgError } from "../system/util";
+import { getSocket, RqgError } from "../system/util";
 import type { SocketAction, SocketActionPayload } from "./RqgSocket.types";
 
 const eventNameSpace = `system.${systemId}`;
@@ -37,11 +37,11 @@ async function handleSocketMsg(request: SocketAction): Promise<void> {
 
   switch (request.payload.action) {
     case "updateChatMessage": {
-      if (getGameUser().id !== request.payload.messageAuthorId) {
+      if (game.user?.id !== request.payload.messageAuthorId) {
         return;
       }
 
-      const attackChatMessage = getGame().messages?.get(request.payload.messageId);
+      const attackChatMessage = game.messages?.get(request.payload.messageId);
       attackChatMessage?.update(request.payload.update);
       break;
     }
@@ -49,10 +49,10 @@ async function handleSocketMsg(request: SocketAction): Promise<void> {
     // --- Left here as an example for any future implementation that might need a request-response message
 
     // case "deleteCombatantsRequest": {
-    //   if (!getGameUser().isGM) {
+    //   if (!game.user?.isGM) {
     //     return;
     //   }
-    //   const combat = getGame().combats?.get(request.payload?.combatId);
+    //   const combat = game.combats?.get(request.payload?.combatId);
     //   const idsToDelete = request.payload?.idsToDelete;
     //   combat?.deleteEmbeddedDocuments("Combatant", idsToDelete);
     //   getSocket().emit(eventNameSpace, {
@@ -80,11 +80,11 @@ async function handleSocketMsg(request: SocketAction): Promise<void> {
 }
 
 // function isResponsibleGM() {
-//   if (!getGameUser().isGM) {
+//   if (!game.user?.isGM) {
 //     return false;
 //   }
 //   const connectedGMs = getGameUsers().filter(isActiveGM);
-//   return !connectedGMs.some((other) => other.id < (getGameUser().id ?? " "));
+//   return !connectedGMs.some((other) => other.id < (game.user?.id ?? " "));
 // }
 //
 // function isActiveGM(user: User) {

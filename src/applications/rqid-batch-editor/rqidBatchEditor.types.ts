@@ -1,4 +1,4 @@
-import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import type { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 
 export interface ItemChange {

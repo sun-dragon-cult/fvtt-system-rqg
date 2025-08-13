@@ -12,8 +12,12 @@ export class Rune extends AbstractEmbeddedItem {
   //   });
   // }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
+  static override preUpdateItem(
+    actor: RqgActor,
+    rune: RqgItem,
+    updates: any[],
+    options: any,
+  ): void {
     if (rune.type === ItemTypeEnum.Rune) {
       const chanceResult = updates.find(
         (r) => r["system.chance"] != null || r?.system?.chance != null,

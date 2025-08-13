@@ -1,7 +1,6 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { CultRankEnum } from "../../data-model/item-data/cultData";
 import {
-  getGameUser,
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
@@ -55,21 +54,17 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       img: this.document.img ?? "",
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
-      // @ts-expect-error applications
       enrichedGifts: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gifts,
       ),
-      // @ts-expect-error applications
       enrichedGeases: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.geases,
       ),
-      // @ts-expect-error applications
       enrichedSubCults: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.subCults,
       ),
-      // @ts-expect-error applications
       enrichedHolyDays: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.holyDays,
       ),

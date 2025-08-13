@@ -4,14 +4,13 @@ import type {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
 } from "./CharacteristicRollDialogData.types";
-import { getDomDataset, getGame, getTokenFromActor, localize, RqgError } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
+import { getDomDataset, getTokenFromActor, localize, RqgError } from "../../system/util";
+import type { RqgActor } from "@actors/rqgActor.ts";
 import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import type { RollMode } from "../../chat/chatMessage.types";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -49,10 +48,10 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   constructor(options: { actor: RqgActor; characteristicName: keyof Characteristics }) {
     super(options);
     this.actor = options.actor;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    this.rollMode = game.settings?.get("core", "rollMode");
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: `characteristic-{id}`,
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
@@ -75,16 +74,15 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.rollHeader },
     form: { template: templatePaths.characteristicRollDialogV2, scrollable: [""] },
     footer: { template: templatePaths.rollFooter },
   };
 
-  async _prepareContext(): Promise<CharacteristicRollDialogContext> {
+  override async _prepareContext(): Promise<CharacteristicRollDialogContext> {
     const formData: CharacteristicRollDialogFormData =
-      // @ts-expect-error object
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+      (this.element && new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ?? {};
 
     formData.difficulty ??= 5;
     formData.augmentModifier ??= "0";
@@ -129,20 +127,18 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
-      .querySelector("[data-roll-mode-parent]")
-      .addEventListener("click", this.onChangeRollMode.bind(this));
+      ?.querySelector<HTMLElement>("[data-roll-mode-parent]")
+      ?.addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
-  private onChangeRollMode(event: SubmitEvent) {
+  private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
     const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
     if (!newRollMode) {
@@ -150,7 +146,6 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     }
     this.rollMode = newRollMode;
 
-    // @ts-expect-error render
     this.render();
   }
 
@@ -163,7 +158,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+        ?.dataset["rollMode"] as RollMode) ?? game.settings?.get("core", "rollMode");
 
     const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
     if (!actor || !formDataObject.characteristicName) {

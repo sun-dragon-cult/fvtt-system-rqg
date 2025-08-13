@@ -1,10 +1,9 @@
-import { getGame, localize } from "../system/util";
+import { localize } from "../system/util";
 import { Rqid } from "../system/api/rqidApi";
 
 export class TextEditorHooks {
   public static init() {
     const pattern = /@RQID\[([^#\]]+)(?:#([^\]]+))?](?:{([^}]+)})?/g;
-    // @ts-expect-error CONFIG.TextEditor
     CONFIG.TextEditor.enrichers.push({ pattern, enricher });
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -22,7 +21,7 @@ export class TextEditorHooks {
       a.draggable = true;
       a.dataset.tooltip = localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
         rqid: rqid,
-        documentName: getGame().i18n.localize(`DOCUMENT.${documentName}`),
+        documentName: game.i18n.localize(`DOCUMENT.${documentName}`),
         documentType: Rqid.getDocumentType(rqid),
       });
       a.dataset.rqidLink = rqid;

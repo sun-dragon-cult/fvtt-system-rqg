@@ -55,7 +55,6 @@ async function getSkillRqidLink(
 ): Promise<RqidLink | undefined> {
   if (
     itemData.type !== ItemTypeEnum.Weapon ||
-    // @ts-expect-error skillOrigin
     (foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin) &&
       itemData.system.usage[usageType].skillRqidLink?.name !== notFoundString)
   ) {
@@ -79,7 +78,6 @@ async function getSkillRqidLink(
         }] has a linked skill item for ${usageType} use that does not have a rqid. Old link was [${
           (itemData.system as any).usage[usageType].skillOrigin
         }]`;
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn("RQG |", msg);
   }

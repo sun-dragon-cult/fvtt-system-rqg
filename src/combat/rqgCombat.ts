@@ -3,7 +3,6 @@ import { RqgCombatTracker } from "./RqgCombatTracker";
 export class RqgCombat extends Combat {
   public static init() {
     CONFIG.Combat.documentClass = RqgCombat;
-    // @ts-expect-error number of arguments v13
     CONFIG.ui.combat = RqgCombatTracker;
     CONFIG.Combat.initiative = {
       formula: null,
@@ -19,16 +18,13 @@ export class RqgCombat extends Combat {
     const tokenIds = new Set(); // --- RQG code
     const combatantIdsToDelete = []; // --- RQG code
     for (const c of this.combatants) {
-      // @ts-expect-error updateSource
       c.updateSource({ initiative: null });
 
       // --- start RQG code --- find duplicated combatants
-      // @ts-expect-error tokenId
       if (tokenIds.has(c.tokenId)) {
         // There is more than one token connected to this combatant
         combatantIdsToDelete.push(c.id ?? "");
       } else {
-        // @ts-expect-error tokenId
         tokenIds.add(c.tokenId);
       }
       // --- end RQG code ---
@@ -37,7 +33,6 @@ export class RqgCombat extends Combat {
     if (updateTurn && currentId) {
       update.turn = this.turns.findIndex((t) => t.id === currentId);
     }
-    // @ts-expect-error turnEvents
     await this.update(update, { turnEvents: false, diff: false });
     await this.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
     // --- RQG code

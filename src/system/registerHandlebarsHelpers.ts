@@ -1,17 +1,16 @@
-import type { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
+// import type { AnyDocument } from "fvtt-types/src/foundry/client/data/abstract/client-document.mjs";
+
+import type { EquippedStatus } from "@item-model/IPhysicalItem.ts";
 import {
   formatListByUserLanguage,
   getAvailableRunes,
-  getGame,
-  getGameUser,
   localize,
   localizeItemType,
   toCamelCase,
 } from "./util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import type { RqgItem } from "../items/rqgItem";
 
 export const registerHandlebarsHelpers = function () {
@@ -87,9 +86,8 @@ export const registerHandlebarsHelpers = function () {
   );
 
   Handlebars.registerHelper("toAnchor", (...args) => {
-    const documentLink = applyFnToDocumentFromHandlebarsArgs<Document<any, any>>(
+    const documentLink = applyFnToDocumentFromHandlebarsArgs<AnyDocument>(
       args,
-      // @ts-expect-error toAnchor
       (document) => (document ? document.toAnchor({ classes: ["content-link"] }).outerHTML : "🐛"),
       ["Item", "Actor"],
     );
@@ -110,7 +108,6 @@ export const registerHandlebarsHelpers = function () {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
         rqid: rqid,
       });
-      // @ts-expect-error console
       ui.notifications?.error(msg, { console: false });
       console.error("RQG |", msg);
       return "";
@@ -119,10 +116,7 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("defaultItemIconSrc", (itemType: string): string | undefined => {
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     return defaultItemIconSettings[itemType];
   });
 
@@ -189,7 +183,6 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("isEmptyObject", function (value) {
-    // @ts-expect-error isEmpty
     return foundry.utils.isEmpty(value);
   });
 
@@ -206,7 +199,7 @@ export const registerHandlebarsHelpers = function () {
       | undefined;
     return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
       rqid: rqid,
-      documentName: getGame().i18n.localize(`DOCUMENT.${documentName}`),
+      documentName: game.i18n.localize(`DOCUMENT.${documentName}`),
       documentType: itemType ? localizeItemType(itemType) : "",
     });
   });
@@ -224,13 +217,13 @@ export const registerHandlebarsHelpers = function () {
       return options.fn();
     }
 
-    const user = getGameUser();
+    const user = game.user;
 
-    if (user.isGM && forUserTypes.toLowerCase().includes("gm")) {
+    if (user?.isGM && forUserTypes.toLowerCase().includes("gm")) {
       return options.fn();
     }
 
-    if (user.isTrusted && forUserTypes.toLowerCase().includes("trusted")) {
+    if (user?.isTrusted && forUserTypes.toLowerCase().includes("trusted")) {
       return options.fn();
     }
 
@@ -259,7 +252,6 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
 
   if (!uuid) {
     const msg = `Handlebars helper called with an empty uuid`;
-    // @ts-expect-error console
     ui.notifications?.error(msg, { console: false });
     // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, arguments);
@@ -268,8 +260,7 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
 
   let itemActorOrToken;
   try {
-    // @ts-expect-error fromUuidSync
-    itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
+    itemActorOrToken = fromUuidSync(uuid);
   } catch {
     // This uuid can't be retrieved synchronously (it's in a compendium) Fail gracefully.
     return "�";

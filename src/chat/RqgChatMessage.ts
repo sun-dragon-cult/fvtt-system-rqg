@@ -6,16 +6,14 @@ import {
   handleRollFumble,
 } from "./attackFlowHandlers";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { getGameUser, localize } from "../system/util";
+import { localize } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
+// TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {
-  declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
-
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
     CONFIG.ChatMessage.template = templatePaths.chatMessage;
@@ -29,25 +27,20 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  _onUpdate(
-    data: DeepPartial<foundry.data.ChatMessageData["_source"]>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ) {
+  override _onUpdate(data: any, options: any, userId: string) {
     // @ts-expect-error isAtBottom
     if (ui?.chat?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?
       // @ts-expect-error scrollBottom
-      setTimeout(() => ui?.chat.scrollBottom(), 0);
+      setTimeout(() => ui?.chat?.scrollBottom(), 0);
     }
 
     super._onUpdate(data, options, userId);
   }
 
   /** @inheritDoc */
-  async renderHTML(...args: any): Promise<HTMLElement> {
-    // @ts-expect-error renderHTML
-    const element = await super.renderHTML(args);
+  override async renderHTML(...args: any[]): Promise<HTMLElement> {
+    const element = await super.renderHTML(...args);
     await this.#enrichChatCard(element);
     return element;
   }
@@ -58,27 +51,27 @@ export class RqgChatMessage extends ChatMessage {
     // *** START - Attack Flow ***
     // ***************************
 
-    if (clickedButton?.dataset.defence != null) {
+    if (clickedButton?.dataset["defence"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleDefence(clickedButton); // Open Defence Dialog (roll defence)
     }
 
-    if (clickedButton?.dataset.rollDamageAndHitlocation != null) {
+    if (clickedButton?.dataset["rollDamageAndHitlocation"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollDamageAndHitLocation(clickedButton); // Roll damage & hit location
     }
 
-    if (clickedButton?.dataset.applyDamageToActor != null) {
+    if (clickedButton?.dataset["applyDamageToActor"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyActorDamage(clickedButton); // Inflict damage to actor
     }
 
-    if (clickedButton?.dataset.applyDamageToWeapon != null) {
+    if (clickedButton?.dataset["applyDamageToWeapon"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyWeaponDamage(clickedButton); // Damage weapon HP
     }
 
-    if (clickedButton?.dataset.fumble != null) {
+    if (clickedButton?.dataset["fumble"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollFumble(clickedButton); // Roll the Fumble table
     }
@@ -131,7 +124,7 @@ export class RqgChatMessage extends ChatMessage {
    * The data-only-owner-visible-uuid value should be a document uuid that can be checked for ownership.
    */
   #hideHtmlElementsByOwnership(html: HTMLElement | undefined): void {
-    if (getGameUser().isGM) {
+    if (game.user?.isGM) {
       return; // Do not hide anything from GM
     }
 
@@ -144,7 +137,7 @@ export class RqgChatMessage extends ChatMessage {
       }
       // @ts-expect-error fromUuidSync
       const document = fromUuidSync(el.dataset.onlyOwnerVisibleUuid);
-      if (el.dataset.onlyOwnerVisibleUuid && !document?.isOwner) {
+      if (el.dataset["onlyOwnerVisibleUuid"] && !(document as any)?.isOwner) {
         el.classList.add("dont-display");
       }
     });
@@ -155,7 +148,7 @@ export class RqgChatMessage extends ChatMessage {
     systemDataProp: string,
     domSelector: string,
   ): Promise<void> {
-    const rollData = this.system[systemDataProp];
+    const rollData = (this.system as any)[systemDataProp];
     if (rollData?.evaluated) {
       const roll = AbilityRoll.fromData(rollData);
       const element = html.querySelector<HTMLElement>(domSelector);
@@ -168,15 +161,12 @@ export class RqgChatMessage extends ChatMessage {
   /**
    * Export the content of the chat message into a standardized log format
    */
-  export(): string {
-    let content = [];
+  override export(): string {
+    let content: string[] = [];
 
     // Handle HTML content
-    // @ts-expect-error content
     if (this.content) {
-      // @ts-expect-error content
       const html = $("<article>").html(this.content.replace(/<\/div>/g, "</div>|n"));
-      // @ts-expect-error content
       const text = html.length ? html.text() : this.content;
       const lines = text
         .replace(/\n/g, "")
@@ -187,7 +177,6 @@ export class RqgChatMessage extends ChatMessage {
     }
 
     // Add Roll content
-    // @ts-expect-error rolls
     for (const roll of this.rolls) {
       if (roll instanceof AbilityRoll) {
         content.push(
@@ -203,7 +192,6 @@ export class RqgChatMessage extends ChatMessage {
       }
     }
 
-    // @ts-expect-error type
     if (this.type === "combat") {
       const defenceRollData = this.system.defenceRoll;
       const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
@@ -219,7 +207,6 @@ export class RqgChatMessage extends ChatMessage {
         content.unshift(
           `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
         );
-        // @ts-expect-error content
         content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
       }
 
@@ -243,7 +230,6 @@ export class RqgChatMessage extends ChatMessage {
     }
 
     // Author and timestamp TODO users locale (don't have that), or maybe Gloranthan time formatting?
-    // @ts-expect-error timestamp
     const time = new Date(this.timestamp).toLocaleDateString("en-US", {
       hour: "numeric",
       minute: "numeric",

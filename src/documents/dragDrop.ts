@@ -63,7 +63,6 @@ export function isAllowedDocumentNames(
       allowedDocumentNames: allowedDocumentNamesString,
       documentName: translatedDocumentName,
     });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
     return false;
@@ -92,7 +91,6 @@ export function isAllowedDocumentType(
       allowedDropTypes: allowedDocumentTypesString,
       type: localizeItemType(document?.type as any),
     });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
     return false;
@@ -109,7 +107,6 @@ export function hasRqid(document: Document<any, any> | undefined): boolean {
       name: document?.name,
       uuid: (document as any).uuid,
     });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
     return false;
@@ -136,7 +133,6 @@ export async function updateRqidLink(
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
   const targetProperty = foundry.utils.getProperty(
-    // @ts-expect-error system
     targetDocument?.system,
     targetPropertyName ?? "",
   );
@@ -204,7 +200,6 @@ export async function extractDropInfo<T extends Document<any, any>>(
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
   const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
-  // @ts-expect-error fromDropData
   const droppedDocument = await cls?.implementation.fromDropData(data as any);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(

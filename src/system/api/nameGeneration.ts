@@ -1,7 +1,7 @@
 // @ts-expect-error foswig isn't typed
 import Foswig from "foswig";
 import { RQG_CONFIG, systemId } from "../config";
-import { getGame, localize } from "../util";
+import { localize } from "../util";
 import { Rqid } from "./rqidApi";
 import {
   type DocumentRqidFlags,
@@ -58,7 +58,6 @@ export class nameGeneration {
     }
 
     const msg = localize("RQG.Notification.Warn.NameGenRqidNotSupported", { rqid: rqid });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(msg);
 
@@ -79,7 +78,6 @@ export class nameGeneration {
 
     if (!nameBase) {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", { rqid: rqid });
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
       return undefined;
@@ -108,7 +106,6 @@ export class nameGeneration {
     }
     if (warn) {
       // Only warn once because the try catch above could fail numerous times
-      // @ts-expect-error console
       ui.notifications?.warn(nameBaseNotLongEnoughMsg, { console: false });
       console.warn(nameBaseNotLongEnoughMsg);
     }
@@ -116,7 +113,7 @@ export class nameGeneration {
   }
 
   static async GetNameBases(): Promise<Map<string, NameBase> | undefined> {
-    const worldRqids = getGame().journal!.reduce((acc: DocumentRqidFlags[], j: JournalEntry) => {
+    const worldRqids = game.journal!.reduce((acc: DocumentRqidFlags[], j: JournalEntry) => {
       const rqidFlags = j.getFlag(systemId, documentRqidFlags);
       if (rqidFlags?.id?.startsWith("names-")) {
         acc.push(rqidFlags);
@@ -125,7 +122,7 @@ export class nameGeneration {
     }, []);
 
     const compendiumRqids: DocumentRqidFlags[] = [];
-    for (const pack of getGame().packs) {
+    for (const pack of game.packs) {
       if (pack.documentClass.name === "JournalEntry") {
         for (const journal of (await pack.getDocuments()) as StoredDocument<JournalEntry>[]) {
           const rqid = journal.getFlag(systemId, documentRqidFlags);
@@ -189,7 +186,6 @@ export class nameGeneration {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", {
         rqid: rqid,
       });
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(msg);
       return undefined;
@@ -200,7 +196,6 @@ export class nameGeneration {
     const result: string[] = [];
 
     for (let i = 0; i < numRolls; i++) {
-      // @ts-expect-error roll
       const tableResult = await nameTable.roll();
       result.push(await this.ResolveTableResult(tableResult, constraints));
     }

@@ -1,9 +1,9 @@
 // eslint-disable-file no-undef
 global.foundry = {
   utils: {
-    mergeObject: jest.fn((...args) => mockMergeObject(...args)),
-    getProperty: jest.fn((...args) => mockGetProperty(...args)),
-    getType: jest.fn((...args) => mockGetType(...args)),
+    mergeObject: vi.fn((...args) => mockMergeObject(...args)),
+    getProperty: vi.fn((...args) => mockGetProperty(...args)),
+    getType: vi.fn((...args) => mockGetType(...args)),
   },
 };
 

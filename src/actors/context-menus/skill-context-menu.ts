@@ -4,7 +4,6 @@ import {
   assertItemType,
   getDomDataset,
   getDomDatasetAmongSiblings,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -136,7 +135,7 @@ export const skillMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);

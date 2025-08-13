@@ -11,7 +11,6 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import {
   convertFormValueToString,
   getAvailableHitLocations,
-  getGameUser,
   getSelectHitLocationOptions,
   localize,
 } from "../../system/util";
@@ -58,7 +57,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       img: this.document.img ?? "",
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       effects: this.document.effects,
       allHitLocationOptions: getSelectHitLocationOptions(
@@ -67,11 +66,9 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       equippedStatusOptions: equippedStatusOptions,
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),

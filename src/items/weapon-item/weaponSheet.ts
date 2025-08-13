@@ -6,7 +6,7 @@ import {
   equippedStatusOptions,
 } from "../../data-model/item-data/IPhysicalItem";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getDomDataset, getGameUser, localize } from "../../system/util";
+import { getDomDataset, localize } from "../../system/util";
 import { type DamageType, damageTypeOptions } from "../../data-model/item-data/weaponData";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
@@ -55,16 +55,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEmbedded: this.document.isEmbedded,
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
@@ -215,7 +213,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    // @ts-expect-error fromDropData
     const droppedItem = await Item.implementation.fromDropData(data);
     const usage = getDomDataset(event, "dropzone");
 
@@ -231,7 +228,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       ].includes(droppedItem.system.category)
     ) {
       const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(`RQG | ${msg}`);
       return false;

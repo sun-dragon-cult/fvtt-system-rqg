@@ -26,13 +26,11 @@ export class RqgJournalEntry extends JournalEntry {
   /**
    * Only handles embedded Pages
    */
-  // @ts-expect-error JournalEntryPage
   public getEmbeddedDocumentsByRqid(rqid: string): JournalEntryPage[] {
     // @ts-expect-error pages
     return this.pages.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 
-  // @ts-expect-error JournalEntryPage
   public getBestEmbeddedDocumentByRqid(rqid: string): JournalEntryPage | undefined {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }

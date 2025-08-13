@@ -1,5 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -11,7 +11,6 @@ import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
   assertItemType,
-  getGame,
   getSpeakerFromItem,
   hasOwnProperty,
   localize,
@@ -21,7 +20,6 @@ import {
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
@@ -33,8 +31,8 @@ import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeM
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
-import { SpellRangeEnum } from "../data-model/item-data/spell";
-import type { DamageType, UsageType } from "../data-model/item-data/weaponData";
+import { SpellRangeEnum } from "@item-model/spell.ts";
+import type { DamageType, UsageType } from "@item-model/weaponData.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import {
   formatDamagePart,
@@ -47,10 +45,8 @@ export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
 
-    // @ts-expect-error applications
     const sheets = foundry.applications.apps.DocumentSheetConfig;
 
-    // @ts-expect-error appv1
     sheets.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
 
     sheets.registerSheet(Item, systemId, PassionSheet, {
@@ -149,14 +145,13 @@ export class RqgItem extends Item {
     });
   }
 
-  declare system: any; // v10 type workaround
-  declare flags: FlagConfig["Item"]; // type workaround
+  // declare system: any; // v10 type workaround
+  // declare flags: FlagConfig["Item"]; // type workaround
 
   /**
    * Open a dialog for an AbilityRoll
    */
   public async abilityRoll(): Promise<void> {
-    // @ts-expect-error render
     await new AbilityRollDialogV2({ abilityItem: this }).render(true);
   }
 
@@ -195,8 +190,6 @@ export class RqgItem extends Item {
    */
   public async spiritMagicRoll(): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.SpiritMagic);
-
-    // @ts-expect-error render
     await new SpiritMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
@@ -236,8 +229,6 @@ export class RqgItem extends Item {
    */
   public async runeMagicRoll(): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.RuneMagic);
-
-    // @ts-expect-error render
     await new RuneMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
@@ -302,7 +293,6 @@ export class RqgItem extends Item {
    */
   public async attack(): Promise<void> {
     assertItemType(this.type, ItemTypeEnum.Weapon);
-    // @ts-expect-error render
     await new AttackDialogV2({ weaponItem: this }).render(true);
   }
 
@@ -383,7 +373,6 @@ export class RqgItem extends Item {
       );
 
       const damageFormulaRoll = new Roll(damageFormula);
-      // @ts-expect-error evaluateSync
       damageFormulaRoll.evaluateSync({ maximize: true });
       const evaluatedWeaponDamage = formatDamagePart(
         damageFormulaRoll.total?.toString() ?? "",
@@ -426,10 +415,8 @@ export class RqgItem extends Item {
     const dbRoll = new Roll(dbFormula);
     if (dbFormula.startsWith("-")) {
       // TODO Actors with negative db will actually do less damage with special success! Rule inconsistency.
-      // @ts-expect-error evaluateSync
       dbRoll.evaluateSync({ minimize: true });
     } else {
-      // @ts-expect-error evaluateSync
       dbRoll.evaluateSync({ maximize: true });
     }
     return dbRoll.total?.toString() ?? "";
@@ -468,7 +455,6 @@ export class RqgItem extends Item {
         itemName: this.name,
         itemId: this.id,
       });
-      // @ts-expect-error console
       ui.notifications?.error(msg, { console: false });
       console.error(msg);
     }
@@ -552,7 +538,6 @@ export class RqgItem extends Item {
             ? Skill.jumpBaseChance(actorDex)
             : undefined;
       if (newBaseChance) {
-        // @ts-expect-error updateSource
         this.updateSource({ system: { baseChance: newBaseChance } });
       }
     }
@@ -565,12 +550,8 @@ export class RqgItem extends Item {
     options: DocumentModificationOptions,
     userId: string,
   ): void {
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
-    const item = itemData._id ? getGame().items?.get(itemData._id) : undefined;
-    // @ts-expect-errors Foundry v10
+    const defaultItemIconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
+    const item = itemData._id ? game.items?.get(itemData._id) : undefined;
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
     if (item?.img === defaultIcon) {
@@ -599,7 +580,6 @@ export class RqgItem extends Item {
   }
 
   static async updateDocuments(updates: any[], context: any): Promise<any> {
-    // @ts-expect-error isEmpty
     if (foundry.utils.isEmpty(updates)) {
       return [];
     }
@@ -608,7 +588,6 @@ export class RqgItem extends Item {
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {

@@ -3,7 +3,6 @@ import { RqgActor } from "../rqgActor";
 import {
   assertItemType,
   getDomDataset,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -49,7 +48,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
+    condition: (el: JQuery) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const skillItem = skillItemId && actor.items.get(skillItemId);
@@ -70,7 +69,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Weapon),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
       const item = weaponItemId && actor.items.get(weaponItemId);
@@ -90,7 +89,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Delete,
-    condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
+    condition: (el: JQuery) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
@@ -110,7 +109,7 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Weapon),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
       if (weaponItemId) {

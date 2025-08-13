@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser, getSelectRuneOptions } from "../../system/util";
+import { getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces";
@@ -40,11 +40,10 @@ export class HomelandSheet extends RqgItemSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
       enrichedWizardInstructions:
-        // @ts-expect-error applications
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           system.wizardInstructions,
         ),

@@ -1,7 +1,6 @@
 import { PassionsEnum } from "../../data-model/item-data/passionData";
 import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
@@ -55,15 +54,13 @@ export class PassionSheet extends RqgItemSheet<
       uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
       system: system,
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),

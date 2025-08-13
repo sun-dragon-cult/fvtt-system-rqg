@@ -1,10 +1,9 @@
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../../system/config";
 import { escapeRegex, getRequiredDomDataset, toKebabCase, trimChars } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
-export class RqidEditor extends FormApplication {
+export class RqidEditor extends foundry.appv1.api.FormApplication {
   private document: Document<any, any>;
   constructor(document: Document<any, any>, options: any) {
     super(document, options);
@@ -12,7 +11,6 @@ export class RqidEditor extends FormApplication {
   }
 
   get id() {
-    // @ts-expect-error uuid
     return `${this.constructor.name}-${trimChars(toKebabCase(this.document.uuid ?? ""), "-")}`;
   }
 
@@ -35,11 +33,8 @@ export class RqidEditor extends FormApplication {
   async getData(): Promise<any> {
     const appData: any = {};
 
-    // @ts-expect-error flags
     const documentRqid: string | undefined = this.document?.flags?.rqg?.documentRqidFlags?.id;
-    const documentLang: string | undefined =
-      // @ts-expect-error flags
-      this.document?.flags?.rqg?.documentRqidFlags?.lang;
+    const documentLang: string | undefined = this.document?.flags?.rqg?.documentRqidFlags?.lang;
     if (documentRqid && documentLang) {
       const rqidDocumentPrefix = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
@@ -60,10 +55,8 @@ export class RqidEditor extends FormApplication {
 
       const worldDocumentInfo: Document<any, any>[] = [];
       for (const d of worldDocuments) {
-        // @ts-expect-error applications
         const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         worldDocumentInfo.push({
-          // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
           link: link,
           folder: this.getPath(d),
@@ -72,22 +65,15 @@ export class RqidEditor extends FormApplication {
 
       const compendiumDocumentInfo: Document<any, any>[] = [];
       for (const d of compendiumDocuments) {
-        // @ts-expect-error applications
         const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         compendiumDocumentInfo.push({
-          // @ts-expect-error flags
           priority: d.flags?.rqg.documentRqidFlags.priority,
           link: link,
-          // @ts-expect-error compendium
-          compendium: `${d.compendium?.metadata?.label} ⇒ ${
-            // @ts-expect-error packageName
-            d.compendium?.metadata?.packageName
-          }`,
+          compendium: `${d.compendium?.metadata?.label} ⇒ ${d.compendium?.metadata?.packageName}`,
         });
       }
 
       const uniqueWorldPriorityCount = new Set(
-        // @ts-expect-error flags
         worldDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority),
       ).size;
       if (uniqueWorldPriorityCount !== worldDocuments.length) {
@@ -95,7 +81,6 @@ export class RqidEditor extends FormApplication {
       }
 
       const uniqueCompendiumPriorityCount = new Set(
-        // @ts-expect-error flags
         compendiumDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority),
       ).size;
       if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
@@ -112,23 +97,19 @@ export class RqidEditor extends FormApplication {
     appData.supportedLanguagesOptions = CONFIG.supportedLanguages;
     appData.id = this.document.id;
     appData.parentId = this.document?.parent?.id ?? "";
-    // @ts-expect-error uuid
     appData.uuid = this.document.uuid;
 
     appData.folder = this.getPath(this.document);
     appData.flags = {
       rqg: {
         documentRqidFlags: {
-          // @ts-expect-error flags
           lang: this.document?.flags?.rqg?.documentRqidFlags?.lang ?? CONFIG.RQG.fallbackLanguage,
-          // @ts-expect-error flags
           priority: this.document?.flags?.rqg?.documentRqidFlags?.priority ?? 0,
         },
       },
     };
     const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
     appData.rqidPrefix = `${documentIdPart}.${documentType}.`;
-    // @ts-expect-error flags
     appData.rqidNamePart = this.document?.flags?.rqg?.documentRqidFlags?.id?.split(".").pop();
 
     return appData;
