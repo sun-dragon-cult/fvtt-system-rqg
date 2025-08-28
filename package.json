@@ -28,7 +28,7 @@
     "lint": "run-s lint:scripts lint:styles",
     "lint:scripts": "eslint .",
     "lint:styles": "stylelint **/*.{css,scss}",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -noEmit"
   },
   "author": "",
   "license": "UNLICENCED",
@@ -59,7 +59,7 @@
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-tsdoc": "^0.4.0",
     "fs-extra": "^11.3.0",
-    "fvtt-types": "github:League-of-Foundry-Developers/foundry-vtt-types#main",
+    "fvtt-types": "npm:@league-of-foundry-developers/foundry-vtt-types@13.346.0-beta.20250812191140",
     "globals": "^16.0.0",
     "husky": "^9.1.7",
     "js-yaml": "^4.1.0",
@@ -79,7 +79,7 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.0.0",
     "type-fest": "^4.31.0",
-    "typescript": "^5.9.2",
+    "typescript": "5.8.3",
     "typescript-eslint": "^8.18.0",
     "vite": "^7.0.6",
     "vite-plugin-checker": "^0.8.0",

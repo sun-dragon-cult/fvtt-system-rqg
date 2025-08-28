@@ -1,10 +1,10 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertItemType, isDocumentType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
 import { RqidLink } from "../../data-model/shared/rqidLink";
-import type { RqgActor } from "../../actors/rqgActor";
+import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "../rqgItem";
 
 export class Cult extends AbstractEmbeddedItem {
@@ -22,7 +22,9 @@ export class Cult extends AbstractEmbeddedItem {
   static override onDeleteItem(
     actor: RqgActor,
     cultItem: RqgItem,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId: string,
   ): any[] {
     const cultRuneMagicItems = actor.items.filter(

@@ -41,15 +41,17 @@ import {
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 import { Skill } from "./skill-item/skill";
 
-export class RqgItem extends Item {
+export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
 
     const sheets = foundry.applications.apps.DocumentSheetConfig;
+    const items = foundry.documents.collections.Items;
 
-    sheets.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
+    // sheets.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
+    items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 
-    sheets.registerSheet(Item, systemId, PassionSheet, {
+    items.registerSheet(systemId, PassionSheet, {
       label: "RQG.SheetName.Item.Passion",
       types: [ItemTypeEnum.Passion],
       makeDefault: true,
@@ -124,7 +126,7 @@ export class RqgItem extends Item {
       if (RqgItem.isDuplicateItem(document)) {
         ui.notifications?.warn(
           localize("RQG.Item.Notification.ItemNotUnique", {
-            actorName: document.parent.name,
+            actorName: document.parent?.name ?? "",
             documentType: document.type,
             documentName: document.name,
           }),
@@ -135,7 +137,7 @@ export class RqgItem extends Item {
       if (RqgItem.isRuneMagicWithoutCult(document)) {
         ui.notifications?.warn(
           localize("RQG.Actor.RuneMagic.EmbeddingRuneMagicWithoutCultWarning", {
-            characterName: document.parent.name,
+            characterName: document.parent?.name ?? "",
             spellName: document.name,
           }),
         );
@@ -144,9 +146,6 @@ export class RqgItem extends Item {
       return true;
     });
   }
-
-  // declare system: any; // v10 type workaround
-  // declare flags: FlagConfig["Item"]; // type workaround
 
   /**
    * Open a dialog for an AbilityRoll
@@ -526,7 +525,7 @@ export class RqgItem extends Item {
     return descriptionParts.join(", ");
   }
 
-  async _preCreate(data: any, options: any, user: User): Promise<void> {
+  override async _preCreate(data: any, options: any, user: User): Promise<void> {
     if (this.parent && this.type === ItemTypeEnum.Skill) {
       // Update the baseChance for Dodge & Jump skills that depend on actor DEX
       const itemRqid = this.getFlag(systemId, "documentRqidFlags")?.id;
@@ -542,15 +541,11 @@ export class RqgItem extends Item {
       }
     }
 
-    return super._preCreate(data, options, user);
+    await super._preCreate(data, options, user);
   }
 
-  protected _onCreate(
-    itemData: RqgItem["system"]["_source"],
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void {
-    const defaultItemIconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
+  protected override _onCreate(itemData: any, options: never, userId: string): void {
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const item = itemData._id ? game.items?.get(itemData._id) : undefined;
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
@@ -579,7 +574,7 @@ export class RqgItem extends Item {
     return super._onCreate(itemData, options, userId);
   }
 
-  static async updateDocuments(updates: any[], context: any): Promise<any> {
+  static override async updateDocuments(updates: any[], context: any): Promise<any> {
     if (foundry.utils.isEmpty(updates)) {
       return [];
     }

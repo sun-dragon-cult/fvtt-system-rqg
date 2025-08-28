@@ -1,16 +1,13 @@
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
 import type { RqgActor } from "../actors/rqgActor";
 import type { RqgItem } from "./rqgItem";
 
 /**
  * Separate item specific actions that should be done on embedded items when actor _onCreateDescendantDocuments etc. is called.
+ * TODO to be refactored away from static methods
  */
 export abstract class AbstractEmbeddedItem {
   // TODO ***
   // public static init() {}
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static preEmbedItem(actor: RqgActor, item: ItemData, options: object[], userId: string): void {}
 
   /**
    * Will be called when the item is embedded into an actor.
@@ -53,8 +50,4 @@ export abstract class AbstractEmbeddedItem {
   static onActorPrepareDerivedData(item: RqgItem): RqgItem {
     return item;
   }
-
-  // TODO not used (yet)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static activateActorSheetListeners(html: JQuery, sheet: any) {}
 }

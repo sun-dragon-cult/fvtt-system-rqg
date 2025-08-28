@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 
 export class Gear extends AbstractEmbeddedItem {
@@ -12,8 +12,13 @@ export class Gear extends AbstractEmbeddedItem {
   //   });
   // }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static preUpdateItem(actor: RqgActor, gear: RqgItem, updates: object[], options: any): void {
+  static override preUpdateItem(
+    actor: RqgActor,
+    gear: RqgItem,
+    updates: object[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options: any,
+  ): void {
     if (gear.type === ItemTypeEnum.Gear) {
       updates.push(...getLocationRelatedUpdates(actor.items.contents, gear, updates));
     }

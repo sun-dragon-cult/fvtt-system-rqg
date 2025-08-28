@@ -9,3 +9,8 @@ export type TokenRulerSettingsType = {
     unreachable: string;
   };
 };
+
+export type TokenRulerSettingsContext = TokenRulerSettingsType & {
+  sprintMeters: number;
+  buttons: { type: string; icon: string; label: string }[];
+};

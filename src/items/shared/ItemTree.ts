@@ -1,5 +1,5 @@
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { LocationItemNode, type LocationItemNodeData } from "./locationItemNode";
 import { formatListByUserLanguage, isDefined, localize } from "../../system/util";
 

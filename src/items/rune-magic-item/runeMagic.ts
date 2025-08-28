@@ -1,11 +1,10 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActor } from "../../actors/rqgActor";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { assertActorType, assertItemType, isTruthy, localize, RqgError } from "../../system/util";
-import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
-import type { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
+import type { RuneDataPropertiesData } from "@item-model/runeData.ts";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
@@ -52,7 +51,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   }
 
   private static calcRuneMagicChance(
-    actorItems: ItemDataSource[],
+    actorItems: Item.SystemOfType<Item.SubType>[], // TODO fix typing
     cultRuneRqidLinks: RqidLink[],
     runeMagicRuneRqidLinks: RqidLink[],
   ): number {
@@ -167,7 +166,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   ): string | undefined {
     assertItemType(cultItem?.type, ItemTypeEnum.Cult);
     if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
-      return game.i18n.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
+      return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     } else if (
       magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
     ) {
@@ -231,7 +230,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
     const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "");
     assertItemType(cult?.type, ItemTypeEnum.Cult);
-    const isOneUse = runeMagicItem.system.isOneUse;
+    const isOneUse = runeMagicItem.system?.isOneUse;
 
     const costs = RuneMagic.calcRuneAndMagicPointCost(result, runePointCost, magicPointsUsed);
 
@@ -249,7 +248,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     if (costs.mp > 0 || costs.rp > 0) {
       ui.notifications?.info(
         localize("RQG.Item.RuneMagic.CastingCostInfo", {
-          actorName: runeMagicItem.parent?.name,
+          actorName: runeMagicItem.parent?.name ?? "",
           runePointAmount: costs.rp,
           magicPointAmount: costs.mp,
         }),

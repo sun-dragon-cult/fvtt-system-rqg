@@ -1,8 +1,8 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface HomelandSheetData {
@@ -10,10 +10,7 @@ export interface HomelandSheetData {
   enrichedWizardInstructions: string;
 }
 
-export class HomelandSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  HomelandSheetData | ItemSheet.Data
-> {
+export class HomelandSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
@@ -31,7 +28,6 @@ export class HomelandSheet extends RqgItemSheet<
   }
 
   override async getData(): Promise<HomelandSheetData & ItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {

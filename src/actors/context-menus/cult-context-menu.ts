@@ -8,10 +8,10 @@ import {
   RqgError,
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { Rqid } from "../../system/api/rqidApi";
 
-export const cultMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const cultMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,

@@ -1,8 +1,9 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { systemId } from "../config";
 import { getAvailableRunes, localize, RqgError, toKebabCase, trimChars } from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-// import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
+
+import Document = foundry.abstract.Document;
 
 // TODO Look into enhancing typing of rqid strings like this
 export type RqidString =
@@ -90,13 +91,13 @@ export class Rqid {
     rqidDocumentName: string, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
     scope: "match" | "all" | "world" | "packs" = "match",
-  ): Promise<Document<any, any>[]> {
+  ): Promise<Document.Any[]> {
     if (!rqidRegex) {
       return [];
     }
-    const result: Document<any, any>[] = [];
+    const result: Document.Any[] = [];
 
-    let worldDocuments: Document<any, any>[] = [];
+    let worldDocuments: Document.Any[] = [];
     if (["match", "all", "world"].includes(scope)) {
       worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang);
       result.splice(0, 0, ...worldDocuments);
@@ -132,7 +133,7 @@ export class Rqid {
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
-  ): Promise<Document<any, any>[]> {
+  ): Promise<Document.Any[]> {
     const matchingDocuments = await this.fromRqidRegexAll(
       rqidRegex,
       rqidDocumentName,
@@ -147,8 +148,8 @@ export class Rqid {
    * @param documents
    * @returns
    */
-  public static filterBestRqid(documents: Document<any, any>[]): Document<any, any>[] {
-    const highestPrioDocuments = new Map<string, Document<any, any>>();
+  public static filterBestRqid(documents: Document.Any[]): Document.Any[] {
+    const highestPrioDocuments = new Map<string, Document.Any>();
 
     for (const doc of documents) {
       const docPrio: number = doc.getFlag(systemId, documentRqidFlags)?.priority;
@@ -181,7 +182,7 @@ export class Rqid {
     // Check World
     if (["all", "world"].includes(scope)) {
       count = (game as any)[this.getGameProperty(rqid)]?.contents.reduce(
-        (count: number, document: Document<any, any>) => {
+        (count: number, document: Document.Any) => {
           if (
             document.getFlag(systemId, documentRqidFlags)?.id === rqid &&
             document.getFlag(systemId, documentRqidFlags)?.lang === lang
@@ -226,7 +227,7 @@ export class Rqid {
   /**
    * Given a Document, create a valid rqid string for the document.
    */
-  public static getDefaultRqid(document: Document<any, any>): string {
+  public static getDefaultRqid(document: Document.Any): string {
     if (!document.name) {
       return "";
     }
@@ -280,7 +281,7 @@ export class Rqid {
    * Returns the new rqid flag
    */
   public static async setRqid(
-    document: Document<any, any>,
+    document: Document.Any,
     newRqid: string,
     lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
@@ -302,7 +303,7 @@ export class Rqid {
    * Returns the new rqid flag
    */
   public static async setDefaultRqid(
-    document: Document<any, any>,
+    document: Document.Any,
     lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
   ): Promise<any> {
@@ -324,18 +325,18 @@ export class Rqid {
   private static async documentFromWorld(
     rqid: string,
     lang: string,
-  ): Promise<Document<any, any> | undefined> {
+  ): Promise<Document.Any | undefined> {
     if (!rqid) {
       return undefined;
     }
     const documentRqid = Rqid.documentRqid(rqid);
     const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
 
-    const candidateDocuments: Document<any, any>[] = (game as any)[
+    const candidateDocuments: Document.Any[] = (game as any)[
       this.getGameProperty(documentRqid)
     ]?.contents
       .filter(
-        (doc: Document<any, any>) =>
+        (doc: Document.Any) =>
           doc.getFlag(systemId, documentRqidFlags)?.id === documentRqid &&
           doc.getFlag(systemId, documentRqidFlags)?.lang === lang,
       )
@@ -383,14 +384,14 @@ export class Rqid {
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string,
     lang: string,
-  ): Promise<Document<any, any>[]> {
+  ): Promise<Document.Any[]> {
     if (!rqidRegex) {
       return [];
     }
 
     const gameProperty = Rqid.getGameProperty(`${rqidDocumentName}..`);
     const candidateDocuments = (game as any)[gameProperty]?.filter(
-      (d: Document<any, any>) =>
+      (d: Document.Any) =>
         rqidRegex.test(d.getFlag(systemId, documentRqidFlags)?.id) &&
         d.getFlag(systemId, documentRqidFlags)?.lang === lang,
     );
@@ -410,7 +411,7 @@ export class Rqid {
   private static async documentFromPacks(
     rqid: string,
     lang: string,
-  ): Promise<Document<any, any> | undefined> {
+  ): Promise<Document.Any | undefined> {
     if (!rqid) {
       return undefined;
     }
@@ -419,7 +420,7 @@ export class Rqid {
     const documentName = Rqid.getDocumentName(documentRqid);
     const indexCandidates: { pack: any; indexData: any }[] = [];
 
-    for (const pack of game.packs) {
+    for (const pack of game.packs ?? []) {
       if (pack.documentClass.documentName === documentName) {
         if (!pack.indexed) {
           await pack.getIndex();
@@ -439,7 +440,7 @@ export class Rqid {
     }
 
     const sortedCandidates = indexCandidates.sort(Rqid.compareCandidatesPrio);
-    const topPrio = sortedCandidates[0].indexData.flags.rqg.documentRqidFlags.priority;
+    const topPrio = sortedCandidates[0]?.indexData.flags.rqg.documentRqidFlags.priority;
     const result = sortedCandidates.filter(
       (i: any) => i.indexData.flags.rqg.documentRqidFlags.priority === topPrio,
     );
@@ -466,14 +467,14 @@ export class Rqid {
     rqidRegex: RegExp,
     rqidDocumentName: string,
     lang: string,
-  ): Promise<Document<any, any>[]> {
+  ): Promise<Document.Any[]> {
     if (!rqidRegex) {
       return [];
     }
     const documentName = Rqid.getDocumentName(`${rqidDocumentName}..fake-rqid`);
-    const candidateDocuments: Document<any, any>[] = [];
+    const candidateDocuments: Document.Any[] = [];
 
-    for (const pack of game.packs) {
+    for (const pack of game.packs ?? []) {
       if (pack.documentClass.documentName === documentName) {
         if (!pack.indexed) {
           await pack.getIndex();
@@ -488,7 +489,7 @@ export class Rqid {
           const document = await pack.getDocument(index._id);
           if (!document) {
             const msg = localize("RQG.RQGSystem.Error.DocumentNotFoundByRqid", {
-              rqid: rqidRegex,
+              rqid: rqidRegex.toString(),
               lang: lang,
             });
             ui.notifications?.error(msg, { console: false });
@@ -507,7 +508,7 @@ export class Rqid {
    * @example
    * aListOfDocuments.sort(Rqid.compareRqidPrio)
    */
-  public static compareRqidPrio<T extends Document<any, any>>(a: T, b: T): number {
+  public static compareRqidPrio<T extends Document.Any>(a: T, b: T): number {
     return (
       b.getFlag(systemId, documentRqidFlags)?.priority -
       a.getFlag(systemId, documentRqidFlags)?.priority
@@ -634,7 +635,7 @@ export class Rqid {
   /**
    * Get the first part of a rqid (like "i") from a Document.
    */
-  private static getRqidDocumentName(document: Document<any, any>): string {
+  private static getRqidDocumentName(document: Document.Any): string {
     const documentString = Rqid.rqidDocumentNameLookup[document.documentName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";

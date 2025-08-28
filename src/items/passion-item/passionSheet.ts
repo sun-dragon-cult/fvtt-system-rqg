@@ -1,8 +1,8 @@
-import { PassionsEnum } from "../../data-model/item-data/passionData";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { PassionsEnum } from "@item-model/passionData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface PassionSheetData {
@@ -11,10 +11,7 @@ export interface PassionSheetData {
   passionTypes: PassionsEnum[];
 }
 
-export class PassionSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  PassionSheetData | ItemSheet.Data
-> {
+export class PassionSheet extends RqgItemSheet {
   // TODO move to config?
   static passionImgUrl = new Map([
     [PassionsEnum.Ambition, "systems/rqg/assets/images/passion/ambition.svg"],
@@ -45,8 +42,7 @@ export class PassionSheet extends RqgItemSheet<
     });
   }
 
-  async getData(): Promise<PassionSheetData & ItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<PassionSheetData & ItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -68,7 +64,7 @@ export class PassionSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
     formData["name"] = formData["system.passion"] + subject;
 

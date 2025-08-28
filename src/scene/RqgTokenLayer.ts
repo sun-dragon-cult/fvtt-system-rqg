@@ -1,24 +1,21 @@
 import { ClickableScriptsRegionBehavior } from "./ClickableScriptsRegionBehavior";
 
-// @ts-expect-error AsyncFunction
 const { AsyncFunction } = foundry.utils;
-// @ts-expect-error TokenLayer
 const { TokenLayer } = foundry.canvas.layers;
 
 export class RqgTokenLayer extends TokenLayer {
   static init() {
-    // @ts-expect-error layerClass
     CONFIG.Canvas.layers.tokens.layerClass = RqgTokenLayer;
   }
 
   /** @override */
-  _onClickLeft(event: any): void {
+  override _onClickLeft(event: any): void {
     super._onClickLeft(event);
     RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "leftClickSource");
   }
 
   /** @override */
-  _onClickRight(event: any): void {
+  override _onClickRight(event: any): void {
     super._onClickLeft(event);
     RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "rightClickSource");
   }
@@ -28,7 +25,6 @@ export class RqgTokenLayer extends TokenLayer {
       return;
     }
 
-    // @ts-expect-error regions
     canvas.scene?.regions?.forEach((region) => {
       if (region.polygonTree.testPoint(clickedPoint)) {
         region.behaviors

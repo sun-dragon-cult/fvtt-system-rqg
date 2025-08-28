@@ -1,14 +1,16 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { defaultTokenRulerSettings } from "../../system/settings/defaultTokenRulerSettings";
-import type { TokenRulerSettingsType } from "./tokenRulerSettings.types";
+import type { TokenRulerSettingsContext } from "./tokenRulerSettings.types.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
  * The application responsible for configuring RqgTokenRuler.
  */
-export default class TokenRulerSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class TokenRulerSettings extends HandlebarsApplicationMixin(
+  ApplicationV2<TokenRulerSettingsContext>,
+) {
   static exampleMov = 8;
 
   /** @inheritDoc */
@@ -46,10 +48,8 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(Appli
   /*  Application                                 */
   /* -------------------------------------------- */
 
-  override async _prepareContext() {
-    const config =
-      (game.settings?.get(systemId, "TokenRulerSettings") as TokenRulerSettingsType) ||
-      defaultTokenRulerSettings;
+  override async _prepareContext(): Promise<TokenRulerSettingsContext> {
+    const config = game.settings?.get(systemId, "tokenRulerSettings") || defaultTokenRulerSettings;
     const sprintMultiplier = config.sprintMultiplier ?? 0;
     return {
       sprintMultiplier: sprintMultiplier,
@@ -97,9 +97,13 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(Appli
   /* -------------------------------------------- */
 
   /** @override */
-  private static async onSubmit(_event: any, _form: any, formData: any) {
-    const config: object = game.settings.get(systemId, "TokenRulerSettings") as object;
+  private static async onSubmit(
+    _event: SubmitEvent | Event,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ) {
+    const config = game.settings?.get(systemId, "tokenRulerSettings") ?? defaultTokenRulerSettings;
     foundry.utils.mergeObject(config, formData.object);
-    await game.settings.set(systemId, "TokenRulerSettings", config);
+    await game.settings?.set(systemId, "tokenRulerSettings", config);
   }
 }

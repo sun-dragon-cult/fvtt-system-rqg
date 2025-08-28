@@ -7,14 +7,13 @@ import {
   requireValue,
   RqgError,
 } from "../../system/util";
-import type { ActorDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 
 export const characteristicMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | undefined,
-): ContextMenu.Item[] => [
+): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,

@@ -2,12 +2,12 @@ import { localize } from "../system/util";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
-export class RqgSettings extends Settings {
+export class RqgSettings extends foundry.applications.sidebar.tabs.Settings {
   static init() {
     CONFIG.ui.settings = RqgSettings;
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     window: {
       title: "SIDEBAR.TabSettings",
     },
@@ -16,8 +16,7 @@ export class RqgSettings extends Settings {
     },
   };
 
-  /** @override */
-  static PARTS = {
+  static override PARTS = {
     settings: {
       template: templatePaths.settings,
       root: true,
@@ -25,8 +24,7 @@ export class RqgSettings extends Settings {
   };
 
   static async migrateWorld(): Promise<void> {
-    // @ts-expect-error applications
-    return foundry.applications.api.DialogV2.wait({
+    await foundry.applications.api.DialogV2.wait({
       window: { title: "RQG.Foundry.Settings.Migrate.TriggerTitle" },
       content: localize("RQG.Foundry.Settings.Migrate.TriggerContents"),
       buttons: [
@@ -35,7 +33,7 @@ export class RqgSettings extends Settings {
           label: "RQG.Foundry.Settings.Migrate.TriggerRestart",
           icon: "fas fa-check",
           callback: async () => {
-            await game.settings.set(systemId, "worldMigrationVersion", "---");
+            await game.settings?.set(systemId, "worldMigrationVersion", "---");
             window.location.reload();
           },
         },

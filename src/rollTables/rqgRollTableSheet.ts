@@ -1,10 +1,8 @@
 import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
 
-// @ts-expect-error applications
 export class RqgRollTableSheet extends foundry.applications.sheets.RollTableSheet {
-  async _renderFrame(options: any) {
+  override async _renderFrame(options: any) {
     const frame = await super._renderFrame(options);
-    // @ts-expect-error _renderFrame _renderFrame hasFrame
     if (!this.hasFrame) {
       return frame;
     }

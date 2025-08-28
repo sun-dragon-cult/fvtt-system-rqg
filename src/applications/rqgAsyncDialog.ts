@@ -23,6 +23,9 @@ import { RqgError } from "../system/util";
  * };
  *
  * const answer = await myDialog.setButtons(buttons, "submit").show();
+ *
+ * TODO Remove
+ * @deprecated Use native v2 dialogs instead
  */
 export class RqgAsyncDialog<T> {
   public resolve: (value: PromiseLike<T> | T) => void = () => {};

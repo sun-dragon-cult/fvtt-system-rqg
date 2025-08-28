@@ -9,7 +9,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import type { SpiritMagicRollOptions } from "./SpiritMagicRoll.types";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
 export class SpiritMagicRoll extends Roll {
   public static async rollAndShow(options: SpiritMagicRollOptions) {
@@ -44,7 +44,7 @@ export class SpiritMagicRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -62,12 +62,11 @@ export class SpiritMagicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRoll, chatData);
   }
 
   // Html for what modifiers are applied and how many mp are used
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const modifiers = (this.options as SpiritMagicRollOptions).modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
@@ -78,7 +77,6 @@ export class SpiritMagicRoll extends Roll {
     const o = this.options as SpiritMagicRollOptions;
     const mpCost = o.levelUsed + (o.magicPointBoost ?? 0);
     const mpDrawn = this.successLevel! <= AbilitySuccessLevelEnum.Success ? mpCost : 0;
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRollTooltip, {
       magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", { cost: mpDrawn }),
       powX5: o.powX5,

@@ -1,11 +1,14 @@
-import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { ItemUpdate } from "../applyMigrations";
+import { isDocumentType } from "../../util.ts";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.
-export async function tagSkillNameSkillsWithRqid(itemData: ItemData): Promise<ItemUpdate> {
+export async function tagSkillNameSkillsWithRqid(itemData: Item.Stored): Promise<ItemUpdate> {
   let updateData = {};
-  if (itemData.type === ItemTypeEnum.Skill && [...name2Rqid.keys()].includes(itemData.name)) {
+  if (
+    isDocumentType(itemData.type, ItemTypeEnum.Skill) &&
+    [...name2Rqid.keys()].includes(itemData.name)
+  ) {
     updateData = {
       flags: {
         rqg: {

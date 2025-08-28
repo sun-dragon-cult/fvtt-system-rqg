@@ -1,5 +1,3 @@
-// import type { AnyDocument } from "fvtt-types/src/foundry/client/data/abstract/client-document.mjs";
-
 import type { EquippedStatus } from "@item-model/IPhysicalItem.ts";
 import {
   formatListByUserLanguage,
@@ -12,6 +10,8 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
 import type { RqgItem } from "../items/rqgItem";
+
+import Document = foundry.abstract.Document;
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -70,23 +70,25 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillname", (...args) => {
     return applyFnToDocumentFromHandlebarsArgs(args, (item) => {
-      const specialization = item?.system.specialization ? ` (${item.system.specialization})` : "";
-      return `${item?.system.skillName}${specialization}`;
+      const specialization = item?.system?.specialization ? ` (${item.system.specialization})` : "";
+      return `${item?.system?.skillName}${specialization}`;
     });
   });
 
   Handlebars.registerHelper("skillchance", (...args) =>
-    applyFnToDocumentFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---")),
+    applyFnToDocumentFromHandlebarsArgs(args, (item) =>
+      item?.system?.chance ? item.system.chance : "---",
+    ),
   );
 
   Handlebars.registerHelper("experiencedclass", (...args) =>
     applyFnToDocumentFromHandlebarsArgs(args, (item) =>
-      item?.system.hasExperience ? "experienced" : "",
+      item?.system?.hasExperience ? "experienced" : "",
     ),
   );
 
   Handlebars.registerHelper("toAnchor", (...args) => {
-    const documentLink = applyFnToDocumentFromHandlebarsArgs<AnyDocument>(
+    const documentLink = applyFnToDocumentFromHandlebarsArgs<Document.WithSystem>(
       args,
       (document) => (document ? document.toAnchor({ classes: ["content-link"] }).outerHTML : "🐛"),
       ["Item", "Actor"],
@@ -187,7 +189,6 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("ifIn", (elem, list, options) =>
-    // @ts-expect-error this is any
     list.includes(elem) ? options.fn(this) : options.inverse(this),
   );
 
@@ -199,7 +200,7 @@ export const registerHandlebarsHelpers = function () {
       | undefined;
     return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
       rqid: rqid,
-      documentName: game.i18n.localize(`DOCUMENT.${documentName}`),
+      documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
       documentType: itemType ? localizeItemType(itemType) : "",
     });
   });
@@ -242,7 +243,7 @@ export const registerHandlebarsHelpers = function () {
  * The expectedDocumentNames is a guard against unexpected returns, and should be a list if documentNames that is
  * expected to be returned.
  */
-function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgItem>(
+function applyFnToDocumentFromHandlebarsArgs<T extends Document.WithSystem = RqgItem>(
   handlebarsArgs: any[],
   fn: (document: T | undefined) => string,
   expectedDocumentNames: string[] = ["Item"],
@@ -273,13 +274,11 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
   }
 
   const itemOrActor =
-    itemActorOrToken.documentName === "Token"
-      ? (itemActorOrToken as TokenDocument).actor
-      : itemActorOrToken;
+    itemActorOrToken instanceof TokenDocument ? itemActorOrToken.actor : itemActorOrToken;
 
   const document =
-    embeddedItemId && itemOrActor?.documentName === "Actor"
-      ? itemOrActor.getEmbeddedDocument("Item", embeddedItemId)
+    embeddedItemId && itemOrActor instanceof Actor
+      ? itemOrActor.getEmbeddedDocument("Item", embeddedItemId, {})
       : itemOrActor;
 
   if (embeddedItemId && document?.documentName !== "Item") {

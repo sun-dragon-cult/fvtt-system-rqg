@@ -3,7 +3,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 
 export function getRequiredDomDataset(
   el: HTMLElement | Element | Event | JQuery,
@@ -21,7 +21,8 @@ export function getRequiredDomDataset(
 /**
  * Get the dataset value of the first DOM element where it is set, searching
  * in parents until found.
- * @param dataset Should be formatted as kebab case without the `data-`
+ *
+ * `dataset` Should be formatted as kebab case without the `data-`
  * (`my-value` searches for `data-my-value`)
  */
 export function getDomDataset(
@@ -199,7 +200,7 @@ export function assertItemType<T extends ItemTypeEnum>(
  * Check if actor data type if of correct type to narrow type to that actor type.
  */
 export function assertActorType<T extends ActorTypeEnum>(
-  actorType: ActorTypeEnum | undefined,
+  actorType: string | ActorTypeEnum | undefined,
   type: T,
 ): asserts actorType is T {
   if (!actorType || actorType !== type) {
@@ -403,17 +404,18 @@ export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]
 export async function getItemsToCache(rqidStart: string): Promise<AvailableItemCache[]> {
   const compendiumItemIndexData = (
     await Promise.all(
-      game.packs.map(async (pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
+      game.packs?.map(async (pack: CompendiumCollection<CompendiumCollection.DocumentName>) => {
         if (!pack.indexed) {
           await pack.getIndex();
         }
         return getIndexData(rqidStart, pack);
-      }),
+      }) ?? [],
     )
   ).flat();
 
   const worldLanguage =
-    (game.settings?.get(systemId, "worldLanguage") as string) ?? CONFIG.RQG.fallbackLanguage;
+    (game.settings?.get(systemId, "worldLanguage") as unknown as string) ??
+    CONFIG.RQG.fallbackLanguage;
 
   // Only keep one of each rqid, the one with the highest priority, taking account of world & fallback language
   const highestPriorityItemData = compendiumItemIndexData.reduce(
@@ -494,22 +496,16 @@ function getSelectOptions(
 
 function getIndexData(
   rqidStart: string,
-  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+  pack: CompendiumCollection<CompendiumCollection.DocumentName>,
 ): AvailableItemCache[] {
-  return pack.index.reduce((acc: AvailableItemCache[], indexData) => {
-    // @ts-expect-error flags
-    if (indexData?.flags?.rqg?.documentRqidFlags?.id?.startsWith(rqidStart)) {
+  return pack.index.reduce((acc: AvailableItemCache[], indexEntry: any) => {
+    if (indexEntry?.flags?.rqg?.documentRqidFlags?.id?.startsWith(rqidStart)) {
       acc.push({
-        // @ts-expect-error name
-        name: indexData.name ?? "",
-        // @ts-expect-error img
-        img: indexData.img ?? "",
-        // @ts-expect-error flags
-        rqid: indexData?.flags?.rqg?.documentRqidFlags?.id ?? "",
-        // @ts-expect-error flags
-        priority: indexData?.flags?.rqg?.documentRqidFlags?.priority ?? "",
-        // @ts-expect-error flags
-        lang: indexData?.flags?.rqg?.documentRqidFlags?.lang ?? "",
+        name: indexEntry.name ?? "",
+        img: indexEntry.img ?? "",
+        rqid: indexEntry?.flags?.rqg?.documentRqidFlags?.id ?? "",
+        priority: indexEntry?.flags?.rqg?.documentRqidFlags?.priority ?? "",
+        lang: indexEntry?.flags?.rqg?.documentRqidFlags?.lang ?? "",
       });
     }
     return acc;
@@ -568,7 +564,7 @@ export function localize(key: string, data?: Record<string, string>): string {
   return result;
 }
 
-export function localizeItemType(itemType: ItemTypeEnum | "reputation"): string {
+export function localizeItemType(itemType: ItemTypeEnum | string | "reputation"): string {
   return localize("TYPES.Item." + itemType);
 }
 
@@ -612,7 +608,8 @@ export function formatListByWorldLanguage(
   concatType: ListFormatType = "conjunction",
 ): string {
   const worldLanguage =
-    (game.settings?.get(systemId, "worldLanguage") as string) ?? CONFIG.RQG.fallbackLanguage;
+    (game.settings?.get(systemId, "worldLanguage") as unknown as string) ??
+    CONFIG.RQG.fallbackLanguage;
   return formatListByLanguage(worldLanguage, list, concatType);
 }
 
@@ -626,7 +623,7 @@ export function formatListByUserLanguage(
   concatType: ListFormatType = "conjunction",
 ): string {
   const userLanguage =
-    (game.settings?.get("core", "language") as string) ?? CONFIG.RQG.fallbackLanguage;
+    (game.settings?.get("core", "language") as unknown as string) ?? CONFIG.RQG.fallbackLanguage;
   return formatListByLanguage(userLanguage, list, concatType);
 }
 
@@ -711,7 +708,7 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
   const owningActorTokens: TokenDocument[] =
     actor?.getActiveTokens()?.map((t: any) => t.document) ?? [];
   const attackingToken =
-    owningActorTokens[0] ?? game.scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
+    owningActorTokens[0] ?? game.scenes?.current?.tokens.find((t) => t.actorId === actor?.id); // TODO t.actor.id => t.actorId
   return attackingToken;
 }
 

@@ -1,5 +1,5 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CultRankEnum } from "../../data-model/item-data/cultData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { CultRankEnum } from "@item-model/cultData.ts";
 import {
   isTruthy,
   getRequiredDomDataset,
@@ -7,9 +7,8 @@ import {
   getSelectRuneOptions,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import type { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
@@ -21,8 +20,8 @@ interface CultSheetData {
   enrichedHolyDays: string;
 }
 
-export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class CultSheet extends RqgItemSheet {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: templatePaths.itemCultSheet,
@@ -38,8 +37,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     });
   }
 
-  async getData(): Promise<CultSheetData & ItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<CultSheetData & ItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     // To improve UX of creating a new item, set deity to name if empty
@@ -76,7 +74,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     const formCultName = formData["system.joinedCults.cultName"];
     const formTagLine = formData["system.joinedCults.tagline"];
     const formrank = formData["system.joinedCults.rank"];
@@ -99,7 +97,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     return super._updateObject(event, formData);
   }
 
-  activateListeners(html: JQuery) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // add another cult

@@ -100,7 +100,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     });
   }
 
-  async getData(): Promise<any> {
+  override async getData(): Promise<any> {
     // Set any collapsible sections that need to be open by default
     if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
       this.collapsibleOpenStates["speciesBackground"] = true;
@@ -300,7 +300,6 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     if (this.homeland.selectedHomeland) {
       // put skills and passions on homeland for purposes of sheet
-      //@ts-expect-error embeddedItems
       this.homeland.selectedHomeland.embeddedItems = itemTypes; //TODO Sort this by category and use the skill tab
     }
 
@@ -318,7 +317,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     };
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
     this.form?.querySelectorAll(".wizard-choice-input").forEach((el) => {
@@ -664,7 +663,6 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
               if (actorItem.id && !deletes.includes(actorItem.id)) {
                 // TODO ???
               }
-              //@ts-expect-error actorItem.id
               deletes.push(actorItem.id);
             }
           }

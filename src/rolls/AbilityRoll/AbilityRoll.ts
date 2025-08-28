@@ -1,4 +1,3 @@
-import type { AbilityRollOptions } from "./AbilityRoll.types";
 import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
 import {
   activateChatTab,
@@ -9,6 +8,7 @@ import {
 } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { AbilityRollOptions } from "./AbilityRoll.types";
 
 export class AbilityRoll extends Roll<AbilityRollOptions> {
   // TODO hur deklarerar jag att options är AbilityRollOptions ???

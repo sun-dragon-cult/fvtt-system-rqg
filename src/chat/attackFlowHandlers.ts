@@ -8,7 +8,7 @@ import {
   requireValue,
   RqgError,
 } from "../system/util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { DefenceDialogV2 } from "../applications/AttackFlow/defenceDialogV2";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";

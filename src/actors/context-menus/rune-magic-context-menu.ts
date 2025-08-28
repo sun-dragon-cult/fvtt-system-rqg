@@ -8,11 +8,11 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
 
-export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,

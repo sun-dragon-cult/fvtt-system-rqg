@@ -9,8 +9,9 @@ import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import { localize } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
-import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
+
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel.ts";
 
 // TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {
@@ -18,7 +19,6 @@ export class RqgChatMessage extends ChatMessage {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
     CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
-    // @ts-expect-error dataModels
     CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
 
     Hooks.on("ready", () => {
@@ -28,7 +28,6 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   override _onUpdate(data: any, options: any, userId: string) {
-    // @ts-expect-error isAtBottom
     if (ui?.chat?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?
       // @ts-expect-error scrollBottom
@@ -135,7 +134,6 @@ export class RqgChatMessage extends ChatMessage {
       if (!(el instanceof HTMLElement)) {
         return;
       }
-      // @ts-expect-error fromUuidSync
       const document = fromUuidSync(el.dataset.onlyOwnerVisibleUuid);
       if (el.dataset["onlyOwnerVisibleUuid"] && !(document as any)?.isOwner) {
         el.classList.add("dont-display");

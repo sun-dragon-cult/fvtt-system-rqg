@@ -1,9 +1,7 @@
-import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { ItemUpdate } from "../applyMigrations";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
-import type { UsageType } from "../../../data-model/item-data/weaponData";
-import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { UsageType } from "@item-model/weaponData.ts";
 
 const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink

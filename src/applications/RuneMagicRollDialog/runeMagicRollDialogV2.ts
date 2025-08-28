@@ -14,14 +14,15 @@ import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRo
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
-} from "./RuneMagicRollDialogData.types";
-import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
+} from "./RuneMagicRollDialogData.types.ts";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { RollMode } from "../../chat/chatMessage.types";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<RuneMagicRollDialogContext>,
+) {
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -58,12 +59,12 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
   ];
 
   private spellItem: RqgItem;
-  private rollMode: RollMode;
+  private rollMode: CONST.DICE_ROLL_MODES;
 
   constructor(options: { spellItem: RqgItem }) {
     super(options);
     this.spellItem = options.spellItem;
-    this.rollMode = game.settings.get("core", "rollMode");
+    this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -76,8 +77,8 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -97,7 +98,6 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
 
   override async _prepareContext(): Promise<RuneMagicRollDialogContext> {
     const formData: RuneMagicRollDialogFormData =
-      // @ts-expect-error object
       (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
 
     const speaker = getSpeakerFromItem(this.spellItem);
@@ -147,10 +147,9 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
 
   override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
       .querySelector<HTMLElement>("[data-roll-mode-parent]")
-      .addEventListener("click", this.onChangeRollMode.bind(this));
+      ?.addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
   override _onChangeForm(): void {
@@ -159,25 +158,25 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
 
   private onChangeRollMode(event: MouseEvent): void {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
-    if (!newRollMode) {
-      return; // Clicked outside the buttons
+    const newRollMode = getDomDataset(target, "roll-mode");
+    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+      return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode;
+    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
 
     this.render();
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
     const formDataObject: RuneMagicRollDialogFormData = formData.object;
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? game.settings.get("core", "rollMode");
+        ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ?? game.settings?.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

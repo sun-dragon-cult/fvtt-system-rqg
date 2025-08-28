@@ -1,10 +1,10 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
   type HitLocationHealthState,
   hitLocationHealthStatusOptions,
   HitLocationTypesEnum,
-} from "../../data-model/item-data/hitLocationData";
-import { RqgActor } from "../../actors/rqgActor";
+} from "@item-model/hitLocationData.ts";
+import { RqgActor } from "@actors/rqgActor.ts";
 import {
   assertItemType,
   getSelectHitLocationOptions,
@@ -16,9 +16,9 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { damageType } from "../../data-model/item-data/weaponData";
+import { damageType } from "@item-model/weaponData.ts";
 
 interface HitLocationSheetData {
   allHitLocationOptions: SelectOptionData<string>[];
@@ -27,10 +27,7 @@ interface HitLocationSheetData {
   rqid: string;
 }
 
-export class HitLocationSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  HitLocationSheetData | ItemSheet.Data
-> {
+export class HitLocationSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
@@ -48,7 +45,6 @@ export class HitLocationSheet extends RqgItemSheet<
   }
 
   override getData(): HitLocationSheetData & ItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
     system.hitPoints = this.document.system.hitPoints; // Use the actor derived values
     system.armorPoints = this.document.system.armorPoints; // Use the actor derived value

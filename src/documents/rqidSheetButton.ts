@@ -23,7 +23,7 @@ export async function addRqidLinkToSheet(sheet: DocumentSheet<any, any>): Promis
  */
 export async function addRqidLinkToSheetJQuery(
   jquery: JQuery<JQuery.Node>,
-  sheet: DocumentSheet<any, any>,
+  sheet: DocumentSheet.Any,
 ) {
   const title = jquery.find(".window-title");
   const rqid: DocumentRqidFlags = sheet.object.getFlag(systemId, documentRqidFlags);
@@ -33,7 +33,7 @@ export async function addRqidLinkToSheetJQuery(
 
 async function createRqidLink(
   rqid: DocumentRqidFlags,
-  sheet: DocumentSheet<any, any>,
+  sheet: DocumentSheet,
   rootElement: "a" | "button" = "button",
 ): Promise<HTMLElement> {
   const rqidLink = document.createElement(rootElement);

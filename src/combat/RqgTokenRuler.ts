@@ -1,9 +1,7 @@
 import { systemId } from "../system/config";
 import type { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
 
-const placeables = foundry.canvas.placeables;
-
-export class RqgTokenRuler extends placeables.tokens.TokenRuler {
+export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   static init() {
     CONFIG.Token.rulerClass = RqgTokenRuler;
   }
@@ -24,7 +22,7 @@ export class RqgTokenRuler extends placeables.tokens.TokenRuler {
       return;
     }
     const tokenMovementAction = waypoint.action;
-    const actorAttributes = this.token.actor.system.attributes;
+    const actorAttributes = this.token.actor?.system.attributes;
     // TODO Duplicated from RqgActor, make more DRY
     const equippedMovementEncumbrancePenalty = Math.min(
       0,
@@ -52,9 +50,9 @@ export class RqgTokenRuler extends placeables.tokens.TokenRuler {
       }
     }
 
-    const tokenRulerSettings = game.settings.get(
+    const tokenRulerSettings = game.settings?.get(
       systemId,
-      "TokenRulerSettings",
+      "tokenRulerSettings",
     ) as TokenRulerSettingsType;
 
     const baseRange = move * 3; // movement in meters (1 MOV = 3 meters), assumes scene grid scale is expressed in meters

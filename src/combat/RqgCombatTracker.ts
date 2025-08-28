@@ -2,7 +2,7 @@ import { getCombatantsSharingToken } from "./combatant-utils";
 import { getDomDataset, getRequiredDomDataset, localize } from "../system/util";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
-export class RqgCombatTracker extends CombatTracker {
+export class RqgCombatTracker extends foundry.applications.sidebar.tabs.CombatTracker {
   static init() {
     Hooks.on("ready", () => {
       // one listener for sidebar combat & popped out combat
@@ -23,7 +23,7 @@ export class RqgCombatTracker extends CombatTracker {
     },
   };
 
-  override async _onToggleDefeatedStatus(combatant: Combatant): Promise<void> {
+  override async _onToggleDefeatedStatus(combatant: Combatant.Stored): Promise<void> {
     const isDefeated = !combatant.isDefeated;
 
     // --- start RQG code --- replace the updating to update all combatants sharing a token
@@ -42,14 +42,14 @@ export class RqgCombatTracker extends CombatTracker {
   }
 
   // CombatTracker - Add a Duplicate Combatant option
-  override _getEntryContextOptions(): ContextMenu.Item[] {
+  override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[] {
     const getCombatant = (li: HTMLElement) =>
-      this.viewed?.combatants.get(li.dataset.combatantId ?? "");
+      this.viewed?.combatants.get(li.dataset["combatantId"] ?? "");
     return [
       {
         name: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
         icon: '<i class="far fa-copy fa-fw"></i>',
-        condition: () => game.user?.isGM,
+        condition: () => game.user?.isGM ?? false,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
@@ -60,7 +60,7 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: localize("COMBAT.CombatantUpdate"),
         icon: '<i class="fa-solid fa-pen-to-square"></i>',
-        condition: () => game.user?.isGM,
+        condition: () => game.user?.isGM ?? false,
         callback: (li: HTMLElement) =>
           // @ts-expect-error render
           getCombatant(li)?.sheet?.render({
@@ -75,7 +75,7 @@ export class RqgCombatTracker extends CombatTracker {
         name: "COMBAT.CombatantClear",
         icon: '<i class="fa-solid fa-arrow-rotate-left"></i>',
         condition: (li: HTMLElement) =>
-          game.user?.isGM && Number.isFinite(getCombatant(li)?.initiative),
+          (game.user?.isGM && Number.isFinite(getCombatant(li)?.initiative)) ?? false,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
@@ -87,8 +87,7 @@ export class RqgCombatTracker extends CombatTracker {
         name: "COMBAT.CombatantClearMovementHistory",
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
         condition: (li: HTMLElement) =>
-          // @ts-expect-error movementHistory
-          game.user?.isGM && getCombatant(li)?.token?.movementHistory.length > 0,
+          (game.user?.isGM && (getCombatant(li)?.token?.movementHistory.length ?? 0) > 0) ?? false,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (!combatant) {
@@ -105,13 +104,13 @@ export class RqgCombatTracker extends CombatTracker {
       {
         name: "COMBAT.CombatantRemove",
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: () => game.user?.isGM,
+        condition: () => game.user?.isGM ?? false,
         callback: (li: HTMLElement) => getCombatant(li)?.delete(),
       },
       {
         name: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: () => game.user?.isGM,
+        condition: () => game.user?.isGM ?? false,
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
@@ -133,8 +132,8 @@ export class RqgCombatTracker extends CombatTracker {
       return;
     }
     const { combatantId } = target?.dataset ?? {};
-    const combatant = this.viewed?.combatants.get(combatantId);
-    if (!combatant) {
+    const combatant = this.viewed?.combatants.get(combatantId ?? "");
+    if (!combatant || !game.user) {
       return;
     }
     if (event.type === "dblclick") {

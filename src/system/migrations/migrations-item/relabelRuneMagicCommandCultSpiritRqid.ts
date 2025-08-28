@@ -1,5 +1,4 @@
-import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { ItemUpdate } from "../applyMigrations";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
 

@@ -1,4 +1,4 @@
-import { RqgItem } from "src/items/rqgItem";
+import type { RqgItem } from "@items/rqgItem.ts";
 
 // Mock contains derived values
 export const mockItemsWithVirtualNode = [

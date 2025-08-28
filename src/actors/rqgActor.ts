@@ -4,6 +4,7 @@ import { ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
+  assertActorType,
   assertItemType,
   getTokenFromActor,
   hasOwnProperty,
@@ -24,13 +25,15 @@ import { CharacteristicRollDialogV2 } from "../applications/CharacteristicRollDi
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weaponData.ts";
 import { Skill } from "../items/skill-item/skill";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export class RqgActor extends Actor {
+import Document = foundry.abstract.Document;
+
+export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Subtype> {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
 
@@ -39,7 +42,7 @@ export class RqgActor extends Actor {
 
     sheets.registerSheet(Actor, systemId, RqgActorSheet as any, {
       label: "RQG.SheetName.Actor.Character",
-      types: [ActorTypeEnum.Character],
+      types: ["character"],
       makeDefault: true,
     });
   }
@@ -51,7 +54,7 @@ export class RqgActor extends Actor {
     if (!rqid) {
       return [];
     }
-    return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags")?.id === rqid);
+    return this.items.filter((i: RqgItem) => i.getFlag(systemId, "documentRqidFlags")?.id === rqid);
   }
 
   public getBestEmbeddedDocumentByRqid(rqid: string | undefined): RqgItem | undefined {
@@ -80,6 +83,11 @@ export class RqgActor extends Actor {
     characteristicName: keyof Characteristics,
     options: Partial<CharacteristicRollOptions>,
   ): CharacteristicRollOptions {
+    // TODO EXPERIMENTERAR ...
+    if (this.type !== "character") {
+      throw new RqgError("Actor is not character");
+    }
+    assertActorType(this.type, ActorTypeEnum.Character); // TODO needed? make the type system understand the character actor type!
     const actorCharacteristics = this.system.characteristics;
     const rollCharacteristic = actorCharacteristics[characteristicName] as
       | Characteristic
@@ -455,8 +463,11 @@ export class RqgActor extends Actor {
   }
 
   // Entity-specific actions that should occur when the Entity is first created
-  // @ts-expect-error _onCreate
-  protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
+  protected override _onCreate(
+    actorData: ActorData,
+    options: DocumentModificationOptions,
+    userId: string,
+  ) {
     super._onCreate(actorData as any, options, userId); // TODO type bug ??
 
     if (!this.prototypeToken.actorLink) {
@@ -480,25 +491,10 @@ export class RqgActor extends Actor {
     }
   }
 
-  protected _preCreateDescendantDocuments(
-    parent: Document<any, any>,
-    collection: string,
-    data: AnyDocumentData[],
-    options: object,
-    userId: string,
-  ): void {
-    if (parent === this && collection === "items" && game.user?.id === userId) {
-      data.forEach((d) => {
-        // @ts-expect-error d.type
-        ResponsibleItemClass.get(d.type)?.preEmbedItem(this, d, options, userId);
-      });
-    }
-  }
-
   protected override _onCreateDescendantDocuments(
-    parent: Document<any, any>,
+    parent: Document.Any,
     collection: string,
-    documents: Document<any, any>[],
+    documents: Document.Any[],
     data: object[],
     options: object,
     userId: string,
@@ -519,12 +515,12 @@ export class RqgActor extends Actor {
     super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
   }
 
-  protected _onDeleteDescendantDocuments(
-    parent: Document<any, any>,
-    collection: string,
-    documents: Document<any, any>[],
+  protected override _onDeleteDescendantDocuments(
+    parent: Document.AnyStored,
+    collection: Embedded[Document.Any["documentName"]],
+    documents: Document.Any[],
     ids: string[],
-    options: object,
+    options: Document.Database.DeleteOptionsFor<Document.Any["documentName"]>,
     userId: string,
   ): void {
     if (parent === this && collection === "item" && game.user?.id === userId) {
@@ -544,7 +540,11 @@ export class RqgActor extends Actor {
   }
 
   // Update the baseChance for Dodge & Jump skills that depend on actor DEX
-  async _preUpdate(changes: any, options: any, user: User): Promise<void> {
+  override async _preUpdate(
+    changes: Actor.UpdateData,
+    options: Actor.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void> {
     const actorDex =
       changes?.system?.characteristics?.dexterity?.value ??
       this.system.characteristics.dexterity.value;

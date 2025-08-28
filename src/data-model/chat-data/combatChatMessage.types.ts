@@ -1,6 +1,6 @@
-import type { CombatManeuver, UsageType } from "@item-model/weaponData.ts";
 import type { weaponDesignation } from "./combatChatMessage.defs";
 import type { attackState } from "./combatChatMessage.defs";
+import type { CombatManeuver, UsageType } from "@item-model/weaponData.ts";
 
 // TODO: This is a temporary fix until the data model is fully implemented
 export type AttackState = (typeof attackState)[number];

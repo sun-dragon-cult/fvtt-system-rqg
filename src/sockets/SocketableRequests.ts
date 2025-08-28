@@ -1,6 +1,4 @@
 import { socketSend } from "./RqgSocket";
-import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
-import type { ChatMessageDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 /**
  * Update a chat message. If the user is the author of the message, update it directly.

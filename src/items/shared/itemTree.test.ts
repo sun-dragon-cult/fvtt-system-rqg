@@ -1,7 +1,7 @@
 import { RqgItem } from "../rqgItem";
 import { ItemTree } from "./ItemTree";
 import { mockItems } from "../../mocks/mockLocationItems";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { testItems } from "./itemTree.testdata";
 import { mockItemsWithLoop } from "../../mocks/mockItemsForLocationLoop";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
@@ -194,7 +194,7 @@ describe("ItemTree", () => {
     });
 
     // TODO figure out how to mock localize
-    xit("should complain if items contain a simple loop", () => {
+    it.skip("should complain if items contain a simple loop", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
       const horse = items.find((i) => i.name === "Riding Horse");
@@ -211,7 +211,7 @@ describe("ItemTree", () => {
     });
 
     // TODO figure out how to mock localize
-    xit("should complain if items contain a multi step loop", () => {
+    it.skip("should complain if items contain a multi step loop", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithLoop));
 

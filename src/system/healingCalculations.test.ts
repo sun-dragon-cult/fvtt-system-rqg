@@ -1,9 +1,9 @@
 import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { HealingCalculations, HealingEffects } from "./healingCalculations";
+import { HealingCalculations, type HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
 import { DamageCalculations } from "./damageCalculations";
 import { assertItemType } from "./util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgItem } from "../items/rqgItem";
 

@@ -1,6 +1,6 @@
-import type { UsageType } from "../../data-model/item-data/weaponData";
-import type { CombatRollHeaderPartData } from "./combatRollHeader.types";
-import type { DefenceFooterData } from "./defenceFooterData.types";
+import type { UsageType } from "@item-model/weaponData.ts";
+import type { CombatRollHeaderPartData } from "./combatRollHeader.types.ts";
+import type { DefenceFooterData } from "./defenceFooterData.types.ts";
 
 export type DefenceType = "parry" | "dodge" | "ignore";
 

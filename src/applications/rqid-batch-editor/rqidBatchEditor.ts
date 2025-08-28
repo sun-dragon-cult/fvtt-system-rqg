@@ -7,7 +7,6 @@ import {
   toKebabCase,
 } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";
-// import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { RqgActor } from "@actors/rqgActor.ts";
@@ -20,6 +19,8 @@ import type {
   RqidBatchEditorData,
   RqidBatchEditorOptions,
 } from "./rqidBatchEditor.types";
+
+import Document = foundry.abstract.Document;
 
 export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   RqidBatchEditorData,
@@ -93,7 +94,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         });
         return out;
       }, [])
-      .sort((a: Document<any, any>, b: Document<any, any>) => a.name!.localeCompare(b.name!));
+      .sort((a: Document.Any, b: Document.Any) => a.name!.localeCompare(b.name!));
 
     let summary: string;
     switch (this.options.itemType) {
@@ -215,7 +216,6 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
     RqidBatchEditor.updateProgress(progress, changesCount, "Update World Items");
     const worldItemUpdates = RqidBatchEditor.getItemUpdates(worldItemChanges, itemNames2Rqid);
-    // @ts-expect-error isEmpty
     if (!foundry.utils.isEmpty(worldItemUpdates)) {
       await Item.updateDocuments(worldItemUpdates);
     }
@@ -239,9 +239,12 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
           itemNames2Rqid,
         );
 
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(embeddedItemUpdates)) {
-          const pack = game.packs.get(packId)!;
+          const pack: CompendiumCollection.Any | undefined = game.packs?.get(packId);
+          if (!pack) {
+            console.warn("RQG | Could not find Actor pack compendium pack with id", packId);
+            continue;
+          }
           const wasLocked = pack.locked;
           await pack.configure({ locked: false });
           if (!actors) {
@@ -272,7 +275,11 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       const itemUpdates = RqidBatchEditor.getItemUpdates(itemChanges, itemNames2Rqid);
 
       if (!foundry.utils.isEmpty(itemUpdates)) {
-        const pack = game.packs.get(packId)!;
+        const pack = game.packs?.get(packId);
+        if (!pack) {
+          console.warn("RQG | Could not find Item pack compendium pack with id", packId);
+          continue;
+        }
         const wasLocked = pack.locked;
         await pack.configure({ locked: false });
         await Item.updateDocuments(itemUpdates, { pack: packId });
@@ -311,7 +318,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
         tokenItemUpdates.forEach((itemUpdate) => {
           const tokenUpdate: any = { _id: token.id };
-          tokenUpdate.delta = { _id: token.delta.id };
+          tokenUpdate.delta = { _id: token.delta?.id };
           tokenUpdate.delta.items = [];
           const item = token.actor!.items.get(itemUpdate.itemId);
           if (!item) {
@@ -324,7 +331,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
           }
           const rqidFlags: DocumentRqidFlags = {
             id: newRqid,
-            lang: itemUpdate.documentRqidFlags.lang ?? game.settings.get(systemId, "worldLanguage"),
+            lang:
+              itemUpdate.documentRqidFlags.lang ?? game.settings?.get(systemId, "worldLanguage"),
             priority: itemUpdate.documentRqidFlags.priority ?? 0,
           };
 
@@ -362,7 +370,6 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         itemNames2Rqid,
       );
 
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(embeddedItemUpdates)) {
         await Item.updateDocuments(embeddedItemUpdates, {
           parent: game.actors?.get(actorId),
@@ -388,7 +395,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
     existingRqids: Map<string, string>;
   }> {
-    // sceneId -> tokenIs -> ItemChange
+    // sceneId -> tokenId -> ItemChange
     const sceneChangesMap = new Map<string, Map<string, ItemChange[]>>();
     // actorId -> ItemChange
     const actorChangesMap = new Map<string, ItemChange[]>();
@@ -404,7 +411,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     const scanningCount =
       (game.actors?.size ?? 0) +
       (game.items?.size ?? 0) +
-      game.packs.reduce((acc, p) => acc + p.index.size, 0) +
+      (game.packs?.reduce((acc, p) => acc + p.index.size, 0) ?? 0) +
       (game.scenes?.size ?? 0);
     let progress = 0;
 
@@ -457,7 +464,6 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       }
       if (
         prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
-        // @ts-expect-error isEmpty
         !foundry.utils.isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
       ) {
         existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
@@ -481,9 +487,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     const worldItemPacks = game.packs;
     RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from Compendiums");
 
-    for (const pack of worldItemPacks) {
+    for (const pack of worldItemPacks ?? []) {
       const packIndex = await pack.getIndex();
-      // @ts-expect-error type
       const actors: any[] = pack.metadata.type === "Actor" ? await pack.getDocuments() : [];
 
       for (const packIndexData of packIndex) {
@@ -678,9 +683,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
           documentRqidFlags: packIndexData?.flags?.rqg?.documentRqidFlags ?? {},
         });
 
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(currentChanges)) {
-          // @ts-expect-error metadata.id
           packItemChangesMap.set(pack.metadata.id, currentChanges);
         }
       }

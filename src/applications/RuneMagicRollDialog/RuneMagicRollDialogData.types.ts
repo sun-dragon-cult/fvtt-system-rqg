@@ -1,6 +1,6 @@
-import type { RqgItem } from "../../items/rqgItem";
-import type { RollHeaderData } from "../app-parts/rollHeader.types";
-import type { RollFooterData } from "../app-parts/rollFooter.types";
+import type { RqgItem } from "@items/rqgItem.ts";
+import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
+import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
 
 export type RuneMagicRollDialogContext = RollHeaderData &
   RollFooterData & {

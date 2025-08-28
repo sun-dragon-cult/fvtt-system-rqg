@@ -1,10 +1,8 @@
-import EvaluationOptions = RollTerm.EvaluationOptions;
 import type { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import type { ItemTypeEnum } from "@item-model/itemTypes";
-import type { RollMode } from "../../chat/chatMessage.types";
 export type Modifier = { description: string; value: number };
 
-export type AbilityRollOptions = Partial<EvaluationOptions> & {
+export type AbilityRollOptions = Partial<Roll.Options> & {
   naturalSkill: number; // Unmodified chance
   modifiers?: Modifier[];
   /** Alternative roll heading, used instead of flavor */
@@ -13,6 +11,6 @@ export type AbilityRollOptions = Partial<EvaluationOptions> & {
   abilityType?: ItemTypeEnum;
   abilityImg?: string; // Usually skill item image
   resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // Extra html to display in the roll
-  speaker?: ChatSpeakerDataProperties;
-  rollMode?: RollMode;
+  speaker?: ChatMessage.SpeakerData;
+  rollMode?: CONFIG.Dice.RollMode;
 };

@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 
 export class Armor extends AbstractEmbeddedItem {

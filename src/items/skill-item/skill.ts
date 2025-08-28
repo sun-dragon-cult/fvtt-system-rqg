@@ -1,13 +1,13 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { localize, RqgError } from "../../system/util";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { systemId } from "../../system/config";
 
 export class Skill extends AbstractEmbeddedItem {
-  public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+  public static override onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     if (skillItem.type !== ItemTypeEnum.Skill) {
       const msg = localize("RQG.Item.Notification.PrepareDerivedDataNotSkillError");
       ui.notifications?.error(msg);

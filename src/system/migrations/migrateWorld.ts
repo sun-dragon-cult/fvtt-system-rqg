@@ -5,7 +5,7 @@ import { systemId } from "../config";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
 import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
 import { migrateWeaponSkillLinks } from "./migrations-item/migrateWeaponSkillLinks";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
 import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabelRuneMagicCommandCultSpiritRqid";
@@ -14,8 +14,9 @@ import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel
  * Perform a system migration for the entire World, applying migrations for what is in it
  */
 export async function migrateWorld(): Promise<void> {
-  const systemVersion: string = game.system.version;
-  const worldVersion = game.settings.get(systemId, "worldMigrationVersion");
+  const systemVersion: string = game.system?.version ?? "";
+  const worldVersion = (game.settings?.get(systemId, "worldMigrationVersion") ??
+    "") as unknown as string;
   if (worldVersion === "" && game.user?.isGM) {
     // Initialize world version to current system version for new worlds (with the default "" version).
     await game.settings.set(systemId, "worldMigrationVersion", systemVersion);

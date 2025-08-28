@@ -1,4 +1,4 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { IconSettingsData } from "../../applications/defaultItemIconSettings";
 
 export const defaultItemIconsObject: IconSettingsData = {

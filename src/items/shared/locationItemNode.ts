@@ -3,7 +3,7 @@ import {
   type EquippedStatus,
   type IPhysicalItem,
   type PhysicalItemType,
-} from "../../data-model/item-data/IPhysicalItem";
+} from "@item-model/IPhysicalItem.ts";
 import { RqgItem } from "../rqgItem";
 
 export interface LocationItemNodeData extends IPhysicalItem {

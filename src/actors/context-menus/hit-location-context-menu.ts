@@ -8,9 +8,11 @@ import {
 } from "../../system/util";
 import { RqgActor } from "../rqgActor";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
-export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const hitLocationMenuOptions = (
+  actor: RqgActor,
+): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.HitLocation),

@@ -2,10 +2,10 @@ import {
   type HitLocationDataProperties,
   hitLocationHealthStatuses,
   HitLocationTypesEnum,
-} from "../data-model/item-data/hitLocationData";
+} from "@item-model/hitLocationData.ts";
 import type { RqgActorDataProperties } from "../data-model/actor-data/rqgActorData";
 import { type ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertItemType, RqgError } from "./util";
 import { RqgItem } from "../items/rqgItem";
 import { RqgActor } from "../actors/rqgActor";

@@ -9,8 +9,8 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { SkillCategoryEnum } from "@item-model/skillData.ts";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
@@ -18,7 +18,7 @@ import { Rqid } from "../../system/api/rqidApi";
 export const skillMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | undefined,
-): ContextMenu.Item[] => [
+): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,

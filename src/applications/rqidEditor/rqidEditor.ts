@@ -3,18 +3,20 @@ import { escapeRegex, getRequiredDomDataset, toKebabCase, trimChars } from "../.
 import { Rqid } from "../../system/api/rqidApi";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
+import Document = foundry.abstract.Document;
+
 export class RqidEditor extends foundry.appv1.api.FormApplication {
-  private document: Document<any, any>;
-  constructor(document: Document<any, any>, options: any) {
+  private document: Document.Any;
+  constructor(document: Document.Any, options: any) {
     super(document, options);
     this.document = document;
   }
 
-  get id() {
+  override get id() {
     return `${this.constructor.name}-${trimChars(toKebabCase(this.document.uuid ?? ""), "-")}`;
   }
 
-  static get defaultOptions() {
+  static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "form", "rqid-editor"],
       popOut: true,
@@ -30,7 +32,7 @@ export class RqidEditor extends foundry.appv1.api.FormApplication {
     });
   }
 
-  async getData(): Promise<any> {
+  override async getData(): Promise<any> {
     const appData: any = {};
 
     const documentRqid: string | undefined = this.document?.flags?.rqg?.documentRqidFlags?.id;
@@ -53,7 +55,7 @@ export class RqidEditor extends foundry.appv1.api.FormApplication {
         "packs",
       );
 
-      const worldDocumentInfo: Document<any, any>[] = [];
+      const worldDocumentInfo: Document.Any[] = [];
       for (const d of worldDocuments) {
         const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         worldDocumentInfo.push({
@@ -63,7 +65,7 @@ export class RqidEditor extends foundry.appv1.api.FormApplication {
         });
       }
 
-      const compendiumDocumentInfo: Document<any, any>[] = [];
+      const compendiumDocumentInfo: Document.Any[] = [];
       for (const d of compendiumDocuments) {
         const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         compendiumDocumentInfo.push({
@@ -74,14 +76,14 @@ export class RqidEditor extends foundry.appv1.api.FormApplication {
       }
 
       const uniqueWorldPriorityCount = new Set(
-        worldDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority),
+        worldDocuments.map((d) => d.flags?.rqg.documentRqidFlags.priority),
       ).size;
       if (uniqueWorldPriorityCount !== worldDocuments.length) {
         appData.warnDuplicateWorldPriority = true;
       }
 
       const uniqueCompendiumPriorityCount = new Set(
-        compendiumDocuments.map((d) => d.flags.rqg.documentRqidFlags.priority),
+        compendiumDocuments.map((d) => d.flags?.rqg.documentRqidFlags.priority),
       ).size;
       if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
         appData.warnDuplicateCompendiumPriority = true;
@@ -115,15 +117,15 @@ export class RqidEditor extends foundry.appv1.api.FormApplication {
     return appData;
   }
 
-  get title(): string {
+  override get title(): string {
     return `${super.title} ${this.document.documentName}: ${this.document.name}`;
   }
 
-  protected _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>> {
+  protected override _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>> {
     return super._getSubmitData(updateData);
   }
 
-  activateListeners(html: JQuery) {
+  override activateListeners(html: JQuery) {
     // update the document with a default rqid
     html[0]?.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
       const uuid = getRequiredDomDataset(el, "document-uuid");
@@ -141,8 +143,9 @@ export class RqidEditor extends foundry.appv1.api.FormApplication {
               documentRqidFlags: {
                 id: Rqid.getDefaultRqid(document),
                 lang:
-                  document.getFlag("rqg", "documentRqidFlags.lang") ?? CONFIG.RQG.fallbackLanguage,
-                priority: document.getFlag("rqg", "documentRqidFlags.priority") ?? 0,
+                  document.getFlag(systemId, "documentRqidFlags.lang") ??
+                  CONFIG.RQG.fallbackLanguage,
+                priority: document.getFlag(systemId, "documentRqidFlags.priority") ?? 0,
               },
             },
           },

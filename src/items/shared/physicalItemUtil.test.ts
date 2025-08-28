@@ -1,7 +1,7 @@
 import { RqgItem } from "../rqgItem";
 import { mockItems } from "../../mocks/mockLocationItems";
 import { getLocationRelatedUpdates } from "./physicalItemUtil";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
 import { ItemTree } from "./ItemTree";
 import { mergeArraysById } from "../../system/util";

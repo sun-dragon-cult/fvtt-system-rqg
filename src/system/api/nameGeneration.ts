@@ -122,7 +122,7 @@ export class nameGeneration {
     }, []);
 
     const compendiumRqids: DocumentRqidFlags[] = [];
-    for (const pack of game.packs) {
+    for (const pack of game.packs ?? []) {
       if (pack.documentClass.name === "JournalEntry") {
         for (const journal of (await pack.getDocuments()) as StoredDocument<JournalEntry>[]) {
           const rqid = journal.getFlag(systemId, documentRqidFlags);

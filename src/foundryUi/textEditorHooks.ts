@@ -19,9 +19,9 @@ export class TextEditorHooks {
         a.classList.add("malformed-rqid-link");
       }
       a.draggable = true;
-      a.dataset.tooltip = localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
+      a.dataset["tooltip"] = localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
         rqid: rqid,
-        documentName: game.i18n.localize(`DOCUMENT.${documentName}`),
+        documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
         documentType: Rqid.getDocumentType(rqid),
       });
       a.dataset.rqidLink = rqid;

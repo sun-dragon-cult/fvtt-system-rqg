@@ -35,7 +35,7 @@ const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
 
   const plugins: Vite.PluginOption[] = [
     checker({
-      typescript: { buildMode: true },
+      // typescript: { buildMode: true },
       eslint: {
         lintCommand: "eslint .",
         useFlatConfig: true,

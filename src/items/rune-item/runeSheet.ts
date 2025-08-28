@@ -1,10 +1,9 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RuneTypeEnum } from "../../data-model/item-data/runeData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { RuneTypeEnum } from "@item-model/runeData.ts";
 import { localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneSheetData {
@@ -13,7 +12,7 @@ interface RuneSheetData {
   runeTypeOption: SelectOptionData<RuneTypeEnum>[];
   rqid: string;
 }
-export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | ItemSheet.Data> {
+export class RuneSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],
@@ -31,7 +30,6 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
   }
 
   override getData(): RuneSheetData & ItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     if (!system.rune) {
@@ -56,7 +54,7 @@ export class RuneSheet extends RqgItemSheet<ItemSheet.Options, RuneSheetData | I
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     const runeType = formData["system.runeType.type"];
     const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
     formData["name"] = `${formData["system.rune"]} (${translatedRuneType})`;

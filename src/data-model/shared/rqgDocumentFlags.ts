@@ -9,7 +9,27 @@ export interface RqgJournalEntryFlags {
   [documentRqidFlags]: DocumentRqidFlags;
 }
 
-export interface RqgRollTableFlags {
+export interface RqgJournalEntryPageFlags {
+  [documentRqidFlags]: DocumentRqidFlags;
+}
+
+export interface CardFlags {
+  [documentRqidFlags]: DocumentRqidFlags;
+}
+
+export interface PlaylistFlags {
+  [documentRqidFlags]: DocumentRqidFlags;
+}
+
+export interface MacroFlags {
+  [documentRqidFlags]: DocumentRqidFlags;
+}
+
+export interface RollTableFlags {
+  [documentRqidFlags]: DocumentRqidFlags;
+}
+
+export interface SceneFlags {
   [documentRqidFlags]: DocumentRqidFlags;
 }
 

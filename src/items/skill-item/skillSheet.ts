@@ -1,11 +1,10 @@
-import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getSelectRuneOptions } from "../../system/util";
-import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
@@ -13,7 +12,7 @@ interface SkillSheetData {
   allRuneOptions: SelectOptionData<string>[];
 }
 
-export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
+export class SkillSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
@@ -31,10 +30,9 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
   }
 
   override getData(): SkillSheetData & ItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
-    system.categoryMod = this.document.system.categoryMod; // Use the actor derived value
-    system.chance = this.document.system.chance; // Use the actor derived value
+    system.categoryMod = this.document.system?.categoryMod; // Use the actor derived value
+    system.chance = this.document.system?.chance; // Use the actor derived value
 
     if (!system.skillName) {
       system.skillName = system.name;
@@ -58,7 +56,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     formData["name"] = concatenateSkillName(
       formData["system.skillName"],
       formData["system.specialization"],

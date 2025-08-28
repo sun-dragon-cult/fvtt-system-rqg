@@ -12,12 +12,11 @@ import {
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { AbilityImprovementData } from "./improveAbilityDialog.types";
 import { RqgCalculations } from "../system/rqgCalculations";
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
 
 /** Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
   item: RqgItem | undefined,
-  speaker: ChatSpeakerDataProperties,
+  speaker: ChatMessage.SpeakerData,
 ): Promise<void> {
   if (!item) {
     throw new RqgError("Tried to show improve ability dialog without ability item");
@@ -146,7 +145,7 @@ function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
 async function submitImproveAbilityDialog(
   html: JQuery,
   item: RqgItem,
-  speaker: ChatSpeakerDataProperties,
+  speaker: ChatMessage.SpeakerData,
   adapter: AbilityImprovementData,
 ): Promise<void> {
   const abilityData = item.system;
@@ -190,7 +189,6 @@ async function submitImproveAbilityDialog(
       const expRoll = new Roll("1d100" + maybeSkillCategoryMod);
       await expRoll.toMessage({
         speaker: speaker,
-        // @ts-expect-error CHAT_MESSAGE_STYLES
         style: CONST.CHAT_MESSAGE_STYLES.ROLL,
         flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
       });
@@ -213,7 +211,6 @@ async function submitImproveAbilityDialog(
           const gainRoll = new Roll(String(adapter.experienceGainFixed));
           await gainRoll.toMessage({
             speaker: speaker,
-            // @ts-expect-error CHAT_MESSAGE_STYLES
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
           });
@@ -227,7 +224,6 @@ async function submitImproveAbilityDialog(
           const gainRoll = new Roll(adapter.experienceGainRandom);
           await gainRoll.toMessage({
             speaker: speaker,
-            // @ts-expect-error CHAT_MESSAGE_STYLES
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
           });
@@ -273,7 +269,6 @@ async function submitImproveAbilityDialog(
     const roll = new Roll(String(adapter.trainingGainFixed));
     await roll.toMessage({
       speaker: speaker,
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });
@@ -291,7 +286,6 @@ async function submitImproveAbilityDialog(
     const gainRoll = new Roll(adapter.trainingGainRandom);
     await gainRoll.toMessage({
       speaker: speaker,
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });

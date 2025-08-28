@@ -47,14 +47,14 @@ export const registerRqgSystemSettings = function () {
     label: "RQG.Settings.DefaultItemIcons.settingLabel",
     hint: "RQG.Settings.DefaultItemIcons.settingHint",
     icon: "fas fa-image",
-    type: DefaultItemIconSettings,
+    type: DefaultItemIconSettings as any,
     restricted: true,
   });
 
   game.settings?.register(systemId, "defaultItemIconSettings", {
     scope: "world",
     config: false,
-    type: Object as any, // TODO how to type?
+    type: Object as never, // TODO how to type?
     default: defaultItemIconsObject,
   });
 

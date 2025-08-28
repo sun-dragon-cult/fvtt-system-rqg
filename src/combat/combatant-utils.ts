@@ -1,4 +1,4 @@
-export function getCombatantsSharingToken(combatant: Combatant | undefined): Combatant[] {
+export function getCombatantsSharingToken(combatant: Combatant.Stored | undefined): Combatant[] {
   if (combatant?.actor == null || combatant.parent == null) {
     return [];
   }

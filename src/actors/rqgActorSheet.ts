@@ -25,6 +25,7 @@ import {
   getItemDocumentTypes,
   getRequiredDomDataset,
   hasOwnProperty,
+  isDocumentType,
   isTruthy,
   localize,
   localizeItemType,
@@ -43,7 +44,7 @@ import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
-import type { ActorSheetData } from "../items/shared/sheetInterfaces";
+import type { ActorSheetData } from "@items/shared/sheetInterfaces.types.ts";
 import type { Characteristics } from "../data-model/actor-data/characteristics";
 import {
   extractDropInfo,
@@ -56,7 +57,6 @@ import {
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
 import { CultRankEnum } from "@item-model/cultData.ts";
-import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
@@ -71,16 +71,17 @@ import {
 import type { NewCombatant } from "../combat/rqgCombatant.types";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
-export class RqgActorSheet extends ActorSheet<
-  ActorSheet.Options,
-  CharacterSheetData | ActorSheet.Data
-> {
+// export class RqgActorSheet extends ActorSheet<
+//   ActorSheet.Options,
+//   CharacterSheetData | ActorSheet.Data
+// > {
+// TODO where should I add the sheet data?
+export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
 
   override get title(): string {
-    // @ts-expect-error prototypeToken
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
 
@@ -88,15 +89,13 @@ export class RqgActorSheet extends ActorSheet<
     if (!linked) {
       prefix = isToken ? "[Token] " : "[Prototype] ";
     }
-    // @ts-expect-error prototypeToken
     const speakerName = isToken ? this.actor.token!.name : this.actor.prototypeToken.name;
-    // @ts-expect-error prototypeToken
     const postfix = isToken ? ` (${this.actor.prototypeToken.name})` : "";
 
     return prefix + speakerName + postfix;
   }
 
-  static get defaultOptions(): ActorSheet.Options {
+  static override get defaultOptions(): ActorSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: templatePaths.rqgActorSheet,
@@ -151,7 +150,6 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   override async close(options = {}) {
-    // @ts-expect-error rnderContext
     if (options.renderContext === "deleteCombatant") {
       // Don't close the actor sheet even is a combatant linked to it that is deleted,
       // but try to remove the combatant.apps reference.
@@ -193,16 +191,13 @@ export class RqgActorSheet extends ActorSheet<
       isPC: this.actor.hasPlayerOwner,
       showCharacteristicRatings: game.settings.get(systemId, "showCharacteristicRatings") || false,
       system: system,
-      // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
 
       embeddedItems: embeddedItems,
 
-      // @ts-expect-error actor type is wrong
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
         RQG_CONFIG.skillRqid.spiritCombat,
       ),
-      // @ts-expect-error actor type is wrong
       dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge),
 
       mainCult: this.getMainCultInfo(),
@@ -241,7 +236,6 @@ export class RqgActorSheet extends ActorSheet<
       },
 
       currencyTotals: this.calcCurrencyTotals(),
-      // @ts-expect-error inCombat
       isInCombat: this.actor.inCombat,
 
       dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
@@ -268,9 +262,9 @@ export class RqgActorSheet extends ActorSheet<
       hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
 
       // UI toggles
-      showHeropoints: game.settings.get(systemId, "showHeropoints"),
+      showHeropoints: game.settings?.get(systemId, "showHeropoints") ?? false,
       showUiSection: this.getUiSectionVisibility(),
-      actorWizardFeatureFlag: game.settings.get(systemId, "actor-wizard-feature-flag"),
+      actorWizardFeatureFlag: game.settings?.get(systemId, "actor-wizard-feature-flag") ?? false,
       itemLoopMessage: itemTree.loopMessage,
       enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
       enrichedIncorrectRunes: await this.getIncorrectRunesText(embeddedItems?.rune),
@@ -283,21 +277,22 @@ export class RqgActorSheet extends ActorSheet<
       const rankClass = "characteristic-rank-";
       const char = this.actor.system.characteristics[characteristic as keyof Characteristics];
 
+      // TODO bug? should it be `result[characteristic] = ""`
       if (char == null || char.value == null || char.formula == null || char.formula == "") {
         // cannot evaluate
-        result.characteristic = "";
+        result["characteristic"] = "";
         continue;
       }
 
       if (Number.isNumeric(char.formula)) {
         // formula is a literal number and does not need evaluation
-        result.characteristic = "";
+        result["characteristic"] = "";
         continue;
       }
 
       if (!Roll.validate(char.formula)) {
         // formula is not valid and cannnot be evaluated
-        result.characteristic = "";
+        result["characteristic"] = "";
         continue;
       }
 
@@ -310,7 +305,7 @@ export class RqgActorSheet extends ActorSheet<
 
       if (minTotal == null || maxTotal == null) {
         // cannot evaluate
-        result.characteristic = "";
+        result["characteristic"] = "";
         continue;
       }
 
@@ -334,7 +329,8 @@ export class RqgActorSheet extends ActorSheet<
 
   private calcCurrencyTotals(): any {
     const currency: RqgItem[] = this.actor.items.filter(
-      (i: RqgItem) => i.type === ItemTypeEnum.Gear && i.system.physicalItemType === "currency",
+      (i: RqgItem) =>
+        isDocumentType(i.type, ItemTypeEnum.Gear) && i.system.physicalItemType === "currency",
     );
     const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
     currency.forEach((curr) => {
@@ -433,12 +429,12 @@ export class RqgActorSheet extends ActorSheet<
       ["4", reloadIcon],
       ["5", reloadIcon],
     ];
-    return dexSr != null ? loadedMissileSr[dexSr] : [];
+    return dexSr != null ? (loadedMissileSr[dexSr] ?? []) : [];
   }
 
   private getLoadedMissileSr(dexSr: number | undefined): string {
     const loadedMissileSr = ["1,6,11", "1,7", "2,9", "3,11", "4", "5"];
-    return dexSr != null ? loadedMissileSr[dexSr] : "";
+    return dexSr != null ? (loadedMissileSr[dexSr] ?? "") : "";
   }
 
   private getUnloadedMissileSrDisplay(dexSr: number | undefined): string[] {
@@ -451,12 +447,12 @@ export class RqgActorSheet extends ActorSheet<
       [reloadIcon, "9"],
       [reloadIcon, "10"],
     ];
-    return dexSr != null ? unloadedMissileSr[dexSr] : [];
+    return dexSr != null ? (unloadedMissileSr[dexSr] ?? []) : [];
   }
 
   private getUnloadedMissileSr(dexSr: number | undefined): string {
     const unloadedMissileSr = ["5,10", "6,12", "7", "8", "9", "10"];
-    return dexSr != null ? unloadedMissileSr[dexSr] : "";
+    return dexSr != null ? (unloadedMissileSr[dexSr] ?? "") : "";
   }
 
   private getBaseStrikeRank(
@@ -477,7 +473,7 @@ export class RqgActorSheet extends ActorSheet<
     return this.actor.items
       .reduce((acc: any[], i: RqgItem) => {
         if (
-          i.type === ItemTypeEnum.Rune &&
+          isDocumentType(i.type, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Element &&
           !!i.system.chance
         ) {
@@ -498,7 +494,7 @@ export class RqgActorSheet extends ActorSheet<
     return this.actor.items
       .reduce((acc: any[], i: RqgItem) => {
         if (
-          i.type === ItemTypeEnum.Rune &&
+          isDocumentType(i.type, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Power &&
           i.system.chance > 50
         ) {
@@ -519,7 +515,7 @@ export class RqgActorSheet extends ActorSheet<
     return this.actor.items
       .reduce((acc: any[], i: RqgItem) => {
         if (
-          i.type === ItemTypeEnum.Rune &&
+          isDocumentType(i.type, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Form &&
           (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
         ) {
@@ -542,7 +538,9 @@ export class RqgActorSheet extends ActorSheet<
    * If there is no error, it returns an empty string.
    */
   private getHitLocationDiceRangeError(): string {
-    const hitLocations = this.actor.items.filter((i) => i.type === ItemTypeEnum.HitLocation);
+    const hitLocations = this.actor.items.filter((i) =>
+      isDocumentType(i.type, ItemTypeEnum.HitLocation),
+    );
     if (hitLocations.length === 0) {
       return ""; // No hit locations is a valid state
     }
@@ -570,7 +568,7 @@ export class RqgActorSheet extends ActorSheet<
 
     const currency: any = [];
     actor.items.forEach((item) => {
-      if (item.type === ItemTypeEnum.Gear) {
+      if (isDocumentType(item.type, ItemTypeEnum.Gear)) {
         //TODO: Assert that this is Gear or something else that has physicalItemType??
         if (item.system.physicalItemType === "currency") {
           currency.push(item);
@@ -624,7 +622,7 @@ export class RqgActorSheet extends ActorSheet<
     }, resultObject);
 
     // Sort the hit locations
-    if (game.settings.get(systemId, "sortHitLocationsLowToHigh")) {
+    if (game.settings?.get(systemId, "sortHitLocationsLowToHigh")) {
       itemTypes[ItemTypeEnum.HitLocation].sort(
         (a: any, b: any) => a.system.dieFrom - b.system.dieFrom,
       );
@@ -843,7 +841,7 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -863,22 +861,13 @@ export class RqgActorSheet extends ActorSheet<
 
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
-      // @ts-expect-error this.token should be TokenDocument, but is typed as Token
       const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
       const speakerName = speaker.alias;
       let message;
-      if (
-        newHealth === "dead" &&
-        // @ts-expect-error token.actor
-        !this.token?.actor.statuses.has("dead")
-      ) {
+      if (newHealth === "dead" && !this.token?.actor.statuses.has("dead")) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
-      if (
-        newHealth === "unconscious" &&
-        // @ts-expect-error token?.actor
-        !this.token?.actor.statuses.has("unconscious")
-      ) {
+      if (newHealth === "unconscious" && !this.token?.actor.statuses.has("unconscious")) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
       if (message) {
@@ -887,7 +876,6 @@ export class RqgActorSheet extends ActorSheet<
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
-          // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
         });
       }
@@ -903,7 +891,7 @@ export class RqgActorSheet extends ActorSheet<
     return super._updateObject(event, formData);
   }
 
-  _contextMenu(html: HTMLElement): void {
+  override _contextMenu(html: HTMLElement): void {
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -983,13 +971,12 @@ export class RqgActorSheet extends ActorSheet<
       this,
       html,
       ".passion.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       passionMenuOptions(this.actor, this.token),
       { jQuery: false },
     );
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.actor.isOwner) {
       // Only owners are allowed to interact
@@ -1463,7 +1450,6 @@ export class RqgActorSheet extends ActorSheet<
       );
     }
 
-    // @ts-expect-error getCombatantsByActor
     const currentCombatants = combat.getCombatantsByActor(this.actor);
 
     // Delete combatants that don't match activeInSR
@@ -1571,7 +1557,7 @@ export class RqgActorSheet extends ActorSheet<
     onDragLeave(event);
   }
 
-  protected async _onDrop(event: DragEvent): Promise<unknown> {
+  protected override async _onDrop(event: DragEvent): Promise<unknown> {
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
@@ -1628,7 +1614,7 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  async _onDropItem(
+  override async _onDropItem(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
@@ -1653,7 +1639,7 @@ export class RqgActorSheet extends ActorSheet<
       return this._onSortItem(event, itemData) ?? false;
     }
 
-    if (item.type === ItemTypeEnum.Occupation) {
+    if (isDocumentType(item.type, ItemTypeEnum.Occupation)) {
       if (!hasRqid(item)) {
         return false;
       }
@@ -1679,9 +1665,9 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     if (
-      itemData.type === ItemTypeEnum.Armor ||
-      itemData.type === ItemTypeEnum.Gear ||
-      itemData.type === ItemTypeEnum.Weapon
+      isDocumentType(itemData.type, ItemTypeEnum.Armor) ||
+      isDocumentType(itemData.type, ItemTypeEnum.Gear) ||
+      isDocumentType(itemData.type, ItemTypeEnum.Weapon)
     ) {
       // Prompt to confirm giving physical item from one Actor to another,
       // and ask how many if it has a quantity of more than one.
@@ -1905,7 +1891,6 @@ export class RqgActorSheet extends ActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          // @ts-expect-error _id
           return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
         }
       }
@@ -1921,7 +1906,6 @@ export class RqgActorSheet extends ActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          // @ts-expect-error _id
           return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
         }
       }
@@ -1929,14 +1913,14 @@ export class RqgActorSheet extends ActorSheet<
     return false;
   }
 
-  protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
-    const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
+  protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
+    const html = await super._renderOuter();
     await addRqidLinkToSheetJQuery(html, this);
 
     const editModeLink = html.find(".title-edit-mode")[0];
     if (editModeLink) {
-      editModeLink.dataset.tooltipDirection = "UP";
-      editModeLink.dataset.tooltip = this.actor.system.editMode
+      editModeLink.dataset["tooltipDirection"] = "UP";
+      editModeLink.dataset["tooltip"] = this.actor.system.editMode
         ? localize("RQG.Actor.EditMode.SwitchToPlayMode")
         : localize("RQG.Actor.EditMode.SwitchToEditMode");
     }
@@ -1944,11 +1928,11 @@ export class RqgActorSheet extends ActorSheet<
     return html;
   }
 
-  protected _getHeaderButtons(): Application.HeaderButton[] {
+  protected override _getHeaderButtons(): Application.HeaderButton[] {
     const headerButtons = super._getHeaderButtons();
 
     if (
-      game.settings.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
+      game.settings?.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
       !this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete &&
       !this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
@@ -1962,7 +1946,7 @@ export class RqgActorSheet extends ActorSheet<
 
     const user = game.user;
 
-    if (user.isGM || user.isTrusted) {
+    if (user?.isGM || user?.isTrusted) {
       if (this.actor.system.editMode) {
         headerButtons.splice(0, 0, {
           class: "title-edit-mode",
@@ -2013,16 +1997,13 @@ export class RqgActorSheet extends ActorSheet<
 
     itemsToSort.map((item: RqgItem, index) => {
       if (index === 0) {
-        // @ts-expect-error sort
         item.sort = CONST.SORT_INTEGER_DENSITY;
       } else {
-        // @ts-expect-error sort
         item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY;
       }
     });
     const updateData = itemsToSort.map((item) => ({
       _id: item.id,
-      // @ts-expect-error sort
       sort: item.sort,
     }));
     await actor.updateEmbeddedDocuments("Item", updateData);

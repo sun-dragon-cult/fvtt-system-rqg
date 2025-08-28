@@ -1,11 +1,5 @@
 import { localize } from "../util";
-import { RqgItem } from "../../items/rqgItem";
-import type {
-  ActorData,
-  ActorDataConstructorData,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { RqgItem } from "@items/rqgItem.ts";
 import { systemId } from "../config";
 
 export type ItemUpdate = object &
@@ -41,7 +35,7 @@ async function migrateWorldActors(
   const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.actors", {
-    count: actorCount,
+    count: actorCount.toString(),
   });
   if (!actorArray || actorCount === 0) {
     return;
@@ -73,7 +67,7 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
   const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.items", {
-    count: itemCount,
+    count: itemCount.toString(),
   });
   if (!itemArray || itemCount === 0) {
     return;
@@ -104,7 +98,7 @@ async function migrateWorldScenes(
   const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.scenes", {
-    count: scenesCount,
+    count: scenesCount.toString(),
   });
   if (!scenes || scenesCount === 0) {
     return;
@@ -136,11 +130,10 @@ async function migrateWorldCompendiumPacks(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  // @ts-expect-error packageName
   const packs = game.packs.contents.filter((p) => p.metadata.packageName !== systemId); // Exclude system packs
   const packsCount = packs?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.compendiums", {
-    count: packsCount,
+    count: packsCount.toString(),
   });
   if (!packs || packsCount === 0) {
     return;
@@ -181,7 +174,7 @@ async function migrateCompendium(
   await pack.configure({ locked: false });
 
   // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate({});
+  await pack.migrate();
   const documents = await pack.getDocuments();
 
   // Iterate over compendium entries - applying fine-tuned migration functions

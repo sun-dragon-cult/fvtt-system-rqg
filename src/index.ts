@@ -19,7 +19,7 @@ import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 import { RqgSettings } from "./foundryUi/RqgSettings";
 import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
-import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { initSockets } from "./sockets/RqgSocket";
 import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
 import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRoll";

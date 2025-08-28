@@ -7,7 +7,7 @@ export async function migrateWorldDialog(systemVersion: string): Promise<void> {
     const title = localize("RQG.Migration.Dialog.windowTitle");
     foundry.applications.handlebars
       .renderTemplate(templatePaths.dialogMigrateWorld, {
-        worldVersion: game.settings.get(systemId, "worldMigrationVersion"),
+        worldVersion: game.settings?.get(systemId, "worldMigrationVersion"),
         systemVersion: systemVersion,
       })
       .then((contentHtml: string) => {
@@ -19,7 +19,7 @@ export async function migrateWorldDialog(systemVersion: string): Promise<void> {
             buttons: {
               submit: {
                 label: localize("RQG.Migration.Dialog.btnMigrate", {
-                  worldTitle: game.world.title,
+                  worldTitle: game.world?.title ?? "",
                   systemVersion: systemVersion,
                 }),
                 icon: '<i class="fas fa-wrench"></i>',

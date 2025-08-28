@@ -1,6 +1,6 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { localize, RqgError } from "../../system/util";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 
@@ -12,7 +12,7 @@ export class HitLocation extends AbstractEmbeddedItem {
   //   });
   // }
 
-  public static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+  public static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (item.type !== ItemTypeEnum.HitLocation) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);

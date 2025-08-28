@@ -9,10 +9,10 @@ import {
   RqgError,
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { RqgItem } from "../../items/rqgItem";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 
-export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const combatMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.InitiateCombat"),
     icon: contextMenuRunes.RollViaChat,

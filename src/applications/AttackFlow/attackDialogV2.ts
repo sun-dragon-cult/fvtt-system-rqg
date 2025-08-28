@@ -1,4 +1,4 @@
-import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types";
+import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types.ts";
 
 import {
   activateChatTab,
@@ -21,7 +21,6 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { CombatManeuver, Usage, UsageType } from "@item-model/weaponData.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
-import { ChatMessageTypes } from "../../data-model/chat-data/combatChatMessage.dataModel";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   darknessModifier,
@@ -35,7 +34,7 @@ import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<AttackDialogContext>) {
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
@@ -73,8 +72,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       closeOnSubmit: false,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -180,20 +179,17 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
       .querySelector("select[name=attackingTokenOrActorUuid]")
-      .addEventListener("change", this.onTokenChange.bind(this));
+      ?.addEventListener("change", this.onTokenChange.bind(this));
 
-    // @ts-expect-error element
     this.element
       .querySelector("select[name=attackingWeaponUuid]")
-      .addEventListener("change", this.onWeaponChange.bind(this));
+      ?.addEventListener("change", this.onWeaponChange.bind(this));
 
-    // @ts-expect-error element
     this.element
       .querySelector("select[name=usageType]")
-      .addEventListener("change", this.onUsageChange.bind(this));
+      ?.addEventListener("change", this.onUsageChange.bind(this));
   }
 
   override _onChangeForm(): void {
@@ -248,9 +244,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
    * Create a type "combat" ChatMessage when the form is submitted.
    */
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
     const submitter = event.submitter;
     const formDataObject: AttackDialogFormData = formData.object;
@@ -323,7 +319,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
           );
         }
         await projectileItem?.update({ system: { quantity: newQuantity } });
-        // @ts-expect-error render
         await this.render(); // Make sure ammo count is updated in the dialog
       }
     }
@@ -437,7 +432,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     });
 
     const attackChatMessageOptions = {
-      type: ChatMessageTypes.Combat,
+      type: "combat", // TODO ChatMessageTypes
       system: chatSystemData,
       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       flavor: attackFlavor,
@@ -449,7 +444,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     };
 
     activateChatTab();
-    // @ts-expect-error type
     const cm = await ChatMessage.create(attackChatMessageOptions);
     cm?.render(true);
   }

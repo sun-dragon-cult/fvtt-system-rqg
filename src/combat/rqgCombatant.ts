@@ -1,6 +1,8 @@
 import type { RqgActor } from "../actors/rqgActor";
 
-export class RqgCombatant extends Combatant {
+export class RqgCombatant<
+  SubType extends Combatant.SubType = Combatant.SubType,
+> extends Combatant<SubType> {
   public static init() {
     CONFIG.Combatant.documentClass = RqgCombatant;
   }

@@ -1,14 +1,10 @@
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import { assertItemType, RqgError } from "./util";
-import type {
-  HitLocationDataSource,
-  HitLocationHealthState,
-} from "../data-model/item-data/hitLocationData";
+import type { HitLocationDataSource, HitLocationHealthState } from "@item-model/hitLocationData.ts";
 import type { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { RqgActor } from "../actors/rqgActor";
-import { RqgItem } from "../items/rqgItem";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RqgActor } from "../actors/rqgActor";
+import type { RqgItem } from "../items/rqgItem";
 
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */

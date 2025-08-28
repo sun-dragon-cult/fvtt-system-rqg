@@ -1,13 +1,9 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import {
-  SpellConcentrationEnum,
-  SpellDurationEnum,
-  SpellRangeEnum,
-} from "../../data-model/item-data/spell";
+import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { RqgItem } from "../rqgItem";
-import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SpiritMagicSheetData {
@@ -16,10 +12,7 @@ interface SpiritMagicSheetData {
   concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
 }
 
-export class SpiritMagicSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  SpiritMagicSheetData | ItemSheet.Data
-> {
+export class SpiritMagicSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
@@ -37,7 +30,6 @@ export class SpiritMagicSheet extends RqgItemSheet<
   }
 
   override getData(): SpiritMagicSheetData & EffectsItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {

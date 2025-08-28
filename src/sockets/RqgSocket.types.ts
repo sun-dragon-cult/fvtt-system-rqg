@@ -1,4 +1,4 @@
-import { UpdateChatMessagePayload } from "./SocketableRequests.types";
+import type { UpdateChatMessagePayload } from "./SocketableRequests.types";
 
 export type SocketAction = {
   payload: SocketActionPayload;

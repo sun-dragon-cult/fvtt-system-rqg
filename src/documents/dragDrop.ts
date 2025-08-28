@@ -7,10 +7,11 @@ import {
   localizeDocumentName,
   localizeItemType,
 } from "../system/util";
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";
+
+import Document = foundry.abstract.Document;
 
 export function onDragEnter(event: DragEvent): void {
   const dropZone = event.currentTarget; // Target the event handler was attached to
@@ -71,7 +72,7 @@ export function isAllowedDocumentNames(
 }
 
 export function isAllowedDocumentType(
-  document: Document<any, any> | undefined,
+  document: Document.Any | undefined,
   allowedDocumentTypes: string[] | undefined,
 ): boolean {
   if (
@@ -98,7 +99,7 @@ export function isAllowedDocumentType(
   return true;
 }
 
-export function hasRqid(document: Document<any, any> | undefined): boolean {
+export function hasRqid(document: Document.Any | undefined): boolean {
   const droppedItemRqid = document?.getFlag(systemId, documentRqidFlags)?.id;
 
   if (!droppedItemRqid) {
@@ -120,9 +121,9 @@ export function hasRqid(document: Document<any, any> | undefined): boolean {
  * TODO always construct an embedded rqid?
  */
 export async function updateRqidLink(
-  targetDocument: Document<any, any>,
+  targetDocument: Document.Any,
   targetPropertyName: string | undefined,
-  droppedDocument: Document<any, any>,
+  droppedDocument: Document.Any,
   allowDuplicates: boolean = false, // need a version that allows duplicates for cult runes, Orlanth have 2 air for example
 ): Promise<void> {
   const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
@@ -189,9 +190,9 @@ export function getAllowedDropDocumentNames(event: DragEvent) {
   return convertStringToArray(getDomDataset(event, "dropzone-document-names"));
 }
 
-export async function extractDropInfo<T extends Document<any, any>>(
+export async function extractDropInfo<T extends Document.Any>(
   event: DragEvent,
-  data: { type: string; uuid: string },
+  data: { type: CONST.ALL_DOCUMENT_TYPES; uuid: string },
 ): Promise<{
   droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
   dropZoneData: string | undefined;
@@ -199,7 +200,7 @@ export async function extractDropInfo<T extends Document<any, any>>(
   allowDuplicates: boolean;
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-  const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
+  const cls = getDocumentClass(data.type);
   const droppedDocument = await cls?.implementation.fromDropData(data as any);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(

@@ -8,9 +8,9 @@ import {
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RuneMagicRollOptions } from "./RuneMagicRoll.types";
-import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
+import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
 
 export class RuneMagicRoll extends Roll {
   public static async rollAndShow(options: RuneMagicRollOptions) {
@@ -45,7 +45,7 @@ export class RuneMagicRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -67,7 +67,7 @@ export class RuneMagicRoll extends Roll {
   }
 
   // Html for what modifiers are applied and how many mp are used
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const modifiers = (this.options as RuneMagicRollOptions).modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
@@ -83,15 +83,14 @@ export class RuneMagicRoll extends Roll {
     );
     const usageCostText = o.runeMagicItem.system.isOneUse
       ? localize("RQG.Roll.RuneMagicRoll.OneUseUsageCost", {
-          runePointsCost: cost.rp,
-          magicPointCost: cost.mp,
+          runePointsCost: cost.rp.toString(),
+          magicPointCost: cost.mp.toString(),
         })
       : localize("RQG.Roll.RuneMagicRoll.UsageCost", {
-          runePointsCost: cost.rp,
-          magicPointCost: cost.mp,
+          runePointsCost: cost.rp.toString(),
+          magicPointCost: cost.mp.toString(),
         });
 
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRollTooltip, {
       usageCostText: usageCostText,
       usedRuneChance: o.usedRune.system.chance,

@@ -1,9 +1,9 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
+import { SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
-import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface RuneMagicSheetData {
@@ -13,10 +13,7 @@ interface RuneMagicSheetData {
   actorCultOptions: SelectOptionData<string>[];
 }
 
-export class RuneMagicSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  RuneMagicSheetData | ItemSheet.Data
-> {
+export class RuneMagicSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
@@ -34,7 +31,6 @@ export class RuneMagicSheet extends RqgItemSheet<
   }
 
   override getData(): RuneMagicSheetData & EffectsItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {

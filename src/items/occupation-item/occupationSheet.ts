@@ -2,15 +2,15 @@ import {
   OccupationalSkill,
   type OccupationDataSourceData,
   StandardOfLivingEnum,
-} from "../../data-model/item-data/occupationData";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+} from "@item-model/occupationData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertHtmlElement, getDomDataset, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
-import type { DocumentSheetData } from "../shared/sheetInterfaces";
+import type { DocumentSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -20,10 +20,7 @@ export interface OccupationSheetData {
   skillsJoined: string;
 }
 
-export class OccupationSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  OccupationSheetData | ItemSheet.Data
-> {
+export class OccupationSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Occupation],
@@ -41,7 +38,6 @@ export class OccupationSheet extends RqgItemSheet<
   }
 
   override getData(): OccupationSheetData & DocumentSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -71,7 +67,7 @@ export class OccupationSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     // @ts-expect-error currentTarget.id
     if (event?.currentTarget?.id.startsWith("bonus-")) {
       //@ts-expect-error dataset
@@ -99,7 +95,6 @@ export class OccupationSheet extends RqgItemSheet<
       }
     }
 
-    //@ts-expect-error name
     if (event?.currentTarget?.id.startsWith("income-skill-")) {
       //@ts-expect-error dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
@@ -107,7 +102,6 @@ export class OccupationSheet extends RqgItemSheet<
         const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
-            //@ts-expect-error checked
             skill.incomeSkill = event.currentTarget?.checked;
           }
         }

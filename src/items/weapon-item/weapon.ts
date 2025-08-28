@@ -1,8 +1,8 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { assertItemType, localize, logMisconfiguration, mergeArraysById } from "../../system/util";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { Rqid } from "../../system/api/rqidApi";
 
@@ -14,8 +14,13 @@ export class Weapon extends AbstractEmbeddedItem {
   //   });
   // }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
+  static override preUpdateItem(
+    actor: RqgActor,
+    weapon: RqgItem,
+    updates: object[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options: any,
+  ): void {
     if (weapon.type === ItemTypeEnum.Weapon) {
       mergeArraysById(updates, getLocationRelatedUpdates(actor.items.contents, weapon, updates));
     }
@@ -25,7 +30,7 @@ export class Weapon extends AbstractEmbeddedItem {
    * Add the skills specified in the weapon to the actor (if not already there)
    * and connect the weapons with the embedded item skill id.
    */
-  static async onEmbedItem(
+  static override async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
     options: any,

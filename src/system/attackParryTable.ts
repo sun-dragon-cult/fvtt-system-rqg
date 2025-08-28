@@ -1,4 +1,4 @@
-import type { AttackDamages } from "./combatCalculations.types";
+import type { AttackDamages } from "./combatCalculations.types.ts";
 
 /**
  * calculations depending on attack-parry successLevels

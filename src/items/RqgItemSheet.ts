@@ -1,7 +1,7 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
-import { RqgItem } from "./rqgItem";
+import type { RqgItem } from "./rqgItem";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -12,11 +12,8 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 
-export class RqgItemSheet<
-  Options extends ItemSheet.Options,
-  Data extends object = ItemSheet.Data<Options>,
-> extends ItemSheet<Options, Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,
       height: 800,
@@ -29,24 +26,24 @@ export class RqgItemSheet<
     });
   }
 
-  get title(): string {
+  override get title(): string {
     const parentName = this.object?.parent?.name;
     const parentAddition = parentName ? ` @ ${parentName}` : "";
     return `${localizeItemType(this.object.type)}: ${this.object.name}${parentAddition}`;
   }
 
-  public activateListeners(html: JQuery): void {
+  public override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
     // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
-    html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+    html[0]?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
       elem.addEventListener("dragenter", this._onDragEnter);
       elem.addEventListener("dragleave", this._onDragLeave);
     });
 
     // Handle adding rqidLink via dropdown to an array of links
     html[0]
-      .querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]")
+      ?.querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]")
       .forEach((elem: HTMLElement) => {
         const targetProperty = getDomDataset(elem, "dropzone");
 
@@ -73,7 +70,7 @@ export class RqgItemSheet<
 
     // Handle setting a single rqidLink via dropdown
     html[0]
-      .querySelectorAll<HTMLElement>("[data-replace-rqid-link]")
+      ?.querySelectorAll<HTMLElement>("[data-replace-rqid-link]")
       .forEach((elem: HTMLElement) => {
         const targetProperty = getDomDataset(elem, "dropzone");
 
@@ -98,7 +95,7 @@ export class RqgItemSheet<
         el.addEventListener("click", () => {
           const effect = fromUuidSync(effectUuid);
           if (effect) {
-            new ActiveEffectConfig(effect).render(true);
+            new foundry.applications.sheets.ActiveEffectConfig(effect).render(true);
           }
         });
       });
@@ -141,7 +138,9 @@ export class RqgItemSheet<
               throw reason;
             });
           if (e[0].id) {
-            new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
+            new foundry.applications.sheets.ActiveEffectConfig(item.effects.get(e[0].id)!).render(
+              true,
+            );
           }
         });
       });
@@ -237,7 +236,7 @@ export class RqgItemSheet<
     onDragLeave(event);
   }
 
-  protected async _onDrop(event: DragEvent): Promise<unknown> {
+  protected override async _onDrop(event: DragEvent): Promise<unknown> {
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Get rid of any remaining drag-hover classes
 
@@ -245,12 +244,12 @@ export class RqgItemSheet<
       foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
-    if (!isAllowedDocumentNames(droppedDocumentData.type, allowedDropDocumentNames)) {
+    if (!isAllowedDocumentNames(droppedDocumentData?.type, allowedDropDocumentNames)) {
       return;
     }
 
     switch (
-      droppedDocumentData.type // type is actually documentName
+      droppedDocumentData?.type // type is actually documentName
     ) {
       case "Item":
         return await this._onDropItem(event, droppedDocumentData);
@@ -260,7 +259,7 @@ export class RqgItemSheet<
         return await this._onDropJournalEntryPage(event, droppedDocumentData);
       default:
         // This will warn about not supported Document Name
-        isAllowedDocumentNames(droppedDocumentData.type, [
+        isAllowedDocumentNames(droppedDocumentData?.type, [
           "Item",
           "JournalEntry",
           "JournalEntryPage",
@@ -320,7 +319,7 @@ export class RqgItemSheet<
     return false;
   }
 
-  protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
+  protected override async _renderOuter(): Promise<JQuery<JQuery.Node>> {
     const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
     await addRqidLinkToSheetJQuery(html, this);
     return html;

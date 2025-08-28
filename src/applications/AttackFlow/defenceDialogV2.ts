@@ -10,21 +10,16 @@ import {
   requireValue,
   RqgError,
 } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
-import type { RqgItem } from "../../items/rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import type {
   DefenceDialogContext,
   DefenceDialogFormData,
   DefenceType,
-} from "./DefenceDialogData.types";
+} from "./DefenceDialogData.types.ts";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type {
-  CombatManeuver,
-  DamageType,
-  Usage,
-  UsageType,
-} from "../../data-model/item-data/weaponData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { CombatManeuver, DamageType, Usage, UsageType } from "@item-model/weaponData.ts";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import {
   combatOutcome,
@@ -39,7 +34,9 @@ import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLoca
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class DefenceDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<DefenceDialogContext>,
+) {
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
@@ -87,8 +84,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 100,
       top: 10,
     },
@@ -253,10 +250,13 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
+    if (!(event instanceof SubmitEvent)) {
+      return; // Should only be called on form submits
+    }
     const submitter = event.submitter;
     const formDataObject: DefenceDialogFormData = formData.object;
 
@@ -301,7 +301,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // Update the chat with how the defence was done
 
-    // @ts-expect-error flavor
     const currentFlavor: string = this.attackChatMessage.flavor;
 
     const defenderName = defendingTokenDocumentOrActor?.name;
@@ -506,7 +505,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       messageData.system,
     );
 
-    // @ts-expect-error dice3d
     if (game.dice3d) {
       // Don't try to roll for ignore defence
       if (formDataObject.defence !== "ignore") {

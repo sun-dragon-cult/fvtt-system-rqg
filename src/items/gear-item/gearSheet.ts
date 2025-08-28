@@ -1,13 +1,13 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
   type EquippedStatus,
   equippedStatusOptions,
   type PhysicalItemType,
   physicalItemTypeOptions,
-} from "../../data-model/item-data/IPhysicalItem";
+} from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
-import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface GearSheetData {
@@ -17,7 +17,7 @@ interface GearSheetData {
   physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[];
 }
 
-export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | ItemSheet.Data> {
+export class GearSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Gear],
@@ -35,7 +35,6 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
   }
 
   override async getData(): Promise<GearSheetData & EffectsItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {

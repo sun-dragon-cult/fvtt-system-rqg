@@ -1,11 +1,11 @@
-import type { AttackDamages, CombatOutcome } from "./combatCalculations.types";
+import type { AttackDamages, CombatOutcome } from "./combatCalculations.types.ts";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { assertItemType, localize as realLocalize, requireValue, RqgError } from "./util";
 import { attackParryMap } from "./attackParryTable";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { RqgItem } from "../items/rqgItem";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import type { DamageType, UsageType } from "../data-model/item-data/weaponData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { DamageType, UsageType } from "@item-model/weaponData.ts";
 import {
   DamageDegree,
   dodgeDamageDegreeTable,
@@ -18,7 +18,7 @@ import {
 } from "./combatCalculations.defs";
 import { attackDodgeMap } from "./attackDodgeTable";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
-import type { DefenceType } from "../applications/AttackFlow/DefenceDialogData.types";
+import type { DefenceType } from "../applications/AttackFlow/DefenceDialogData.types.ts";
 
 export const exportedForTesting = {
   calculateDamages,

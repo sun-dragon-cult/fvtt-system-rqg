@@ -1,15 +1,12 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { SkillCategoryEnum } from "@item-model/skillData.ts";
 import { RqgItem } from "../rqgItem";
-import {
-  type EquippedStatus,
-  equippedStatusOptions,
-} from "../../data-model/item-data/IPhysicalItem";
+import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { getDomDataset, localize } from "../../system/util";
-import { type DamageType, damageTypeOptions } from "../../data-model/item-data/weaponData";
+import { type DamageType, damageTypeOptions } from "@item-model/weaponData.ts";
 import { systemId } from "../../system/config";
-import type { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
@@ -25,7 +22,7 @@ interface WeaponSheetData {
   enrichedGmNotes: string;
 }
 
-export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
+export class WeaponSheet extends RqgItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
@@ -43,7 +40,6 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   override async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
     const system = foundry.utils.duplicate(this.document._source.system);
 
     if (isNaN(Number(system.quantity))) {
@@ -141,7 +137,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       formData["system.quantity"] = 1;
     }
 
-    // Non projectile weapons should not decrease any projectile quantity (remove link)
+    // Non-projectile weapons should not decrease any projectile quantity (remove link)
     if (!formData["system.isProjectileWeapon"] && !formData["system.isThrownWeapon"]) {
       formData["system.projectileId"] = "";
     }
@@ -225,14 +221,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         SkillCategoryEnum.MissileWeapons,
         SkillCategoryEnum.NaturalWeapons,
         SkillCategoryEnum.Shields,
-      ].includes(droppedItem.system.category)
+      ].includes(droppedItem?.system.category)
     ) {
       const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
       ui.notifications?.warn(msg, { console: false });
       console.warn(`RQG | ${msg}`);
       return false;
     }
-    const droppedItemRqid = droppedItem.getFlag(systemId, documentRqidFlags)?.id;
+    const droppedItemRqid = droppedItem?.getFlag(systemId, documentRqidFlags)?.id;
     const actorItemWithSameRqid = this.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
 
     if (!actorItemWithSameRqid) {

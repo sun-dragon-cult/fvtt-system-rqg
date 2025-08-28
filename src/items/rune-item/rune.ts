@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertItemType } from "../../system/util";
 
 export class Rune extends AbstractEmbeddedItem {
@@ -16,6 +16,7 @@ export class Rune extends AbstractEmbeddedItem {
     actor: RqgActor,
     rune: RqgItem,
     updates: any[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
   ): void {
     if (rune.type === ItemTypeEnum.Rune) {
