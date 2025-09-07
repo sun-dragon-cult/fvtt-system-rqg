@@ -39,7 +39,7 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
   }
 
   get targetChance(): number {
-    const o = this.options; //TODO fix type as AbilityRollOptions;
+    const o = this.options as AbilityRollOptions; //TODO fix type as AbilityRollOptions;
     const modificationsSum =
       o?.modifiers?.reduce((acc: number, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
     return Math.max(0, o.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work;

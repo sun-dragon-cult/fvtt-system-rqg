@@ -1,11 +1,10 @@
 import { RqgCalculations } from "../system/rqgCalculations";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
-  assertActorType,
-  assertItemType,
+  assertDocumentSubType,
   getTokenFromActor,
   hasOwnProperty,
   localize,
@@ -32,6 +31,7 @@ import { Skill } from "../items/skill-item/skill";
 import type { RqgItem } from "@items/rqgItem.ts";
 
 import Document = foundry.abstract.Document;
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 
 export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Subtype> {
   static init() {
@@ -67,6 +67,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
       characteristicName: characteristicName,
     }).render(true);
   }
+
   /**
    * Do a characteristic roll and handle possible POW experience check afterward.
    */
@@ -83,11 +84,8 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     characteristicName: keyof Characteristics,
     options: Partial<CharacteristicRollOptions>,
   ): CharacteristicRollOptions {
-    // TODO EXPERIMENTERAR ...
-    if (this.type !== "character") {
-      throw new RqgError("Actor is not character");
-    }
-    assertActorType(this.type, ActorTypeEnum.Character); // TODO needed? make the type system understand the character actor type!
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+
     const actorCharacteristics = this.system.characteristics;
     const rollCharacteristic = actorCharacteristics[characteristicName] as
       | Characteristic
@@ -263,9 +261,10 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    * Return the bodyType of an actor. Currently only "humanoid" or "other"
    */
   public getBodyType(): string {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
-      .map((hl) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
+      .filter((i: RqgItem) => i.isType<HitLocationItem>(ItemTypeEnum.HitLocation))
+      .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
     if (
       CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
       CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
@@ -283,6 +282,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     characteristicName: string,
     result: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     if (
       result != null &&
       result <= AbilitySuccessLevelEnum.Success &&
@@ -344,7 +344,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
 
     for (const update of uselessLegs) {
       const leg = this.items.get(update._id);
-      assertItemType(leg?.type, ItemTypeEnum.HitLocation);
+      assertDocumentSubType<HitLocationItem>(leg, ItemTypeEnum.HitLocation);
       await leg.update(update);
     }
 
@@ -582,4 +582,17 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     const cha = characteristics.charisma.value;
     return { str, con, siz, dex, int, pow, cha };
   }
+
+  // Typeguards
+  isCharacter(): this is CharacterActor {
+    return this.type === ActorTypeEnum.Character.toString();
+  }
+
+  // assertIsCharacter(): this is CharacterActor {
+  //   const isCharacter = this.type === ActorTypeEnum.Character.toString();
+  //   if (!isCharacter) {
+  //     throw new RqgError("Actor is not a character", this);
+  //   }
+  //   return isCharacter;
+  // }
 }

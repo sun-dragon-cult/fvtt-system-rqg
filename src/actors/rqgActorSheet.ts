@@ -19,7 +19,7 @@ import {
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import {
   assertHtmlElement,
-  assertItemType,
+  assertDocumentSubType,
   formatListByWorldLanguage,
   getHTMLElement,
   getItemDocumentTypes,
@@ -37,7 +37,7 @@ import {
 import { type RuneDataSource, RuneTypeEnum } from "@item-model/runeData.ts";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { RQG_CONFIG, systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -69,6 +69,9 @@ import {
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../system/combatCalculations";
 import type { NewCombatant } from "../combat/rqgCombatant.types";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 // export class RqgActorSheet extends ActorSheet<
@@ -334,7 +337,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     );
     const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
     currency.forEach((curr) => {
-      assertItemType(curr.type, ItemTypeEnum.Gear);
+      assertDocumentSubType<GearItem>(curr, ItemTypeEnum.Gear);
       result.quantity += Number(curr.system.quantity);
       result.price.real += curr.system.price.real * curr.system.quantity;
       result.price.estimated += curr.system.price.estimated * curr.system.quantity;
@@ -561,6 +564,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
    * TODO Fix the typing
    */
   public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
     actor.items.forEach((item) => {
       itemTypes[item.type].push(item);
@@ -684,7 +688,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Add weapon data
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
-      assertItemType(weapon.type, ItemTypeEnum.Weapon);
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
       const usages = weapon.system.usage;
       const actorStr = actor.system.characteristics.strength.value ?? 0;
@@ -1081,12 +1085,12 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     // Roll Rune Magic
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId) as RqgItem | undefined;
-      assertItemType(runeMagicItem?.type, ItemTypeEnum.RuneMagic);
+      const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId, {});
+      assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
-        assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
+        assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
@@ -1148,7 +1152,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = this.actor.items.get(weaponItemId);
-      assertItemType(weapon?.type, ItemTypeEnum.Weapon);
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
@@ -1177,8 +1181,8 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
       ?.querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
       .forEach((el) => {
         el.addEventListener("click", async () => {
-          const currentValue = game.settings.get(systemId, "sortHitLocationsLowToHigh");
-          await game.settings.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
+          const currentValue = game.settings?.get(systemId, "sortHitLocationsLowToHigh");
+          await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
           // Rerender all actor sheets the user has open
           Object.values(ui.windows).forEach((a: any) => {
             if (a?.document?.type === ActorTypeEnum.Character) {

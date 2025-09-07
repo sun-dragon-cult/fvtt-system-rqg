@@ -1,7 +1,7 @@
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getSelectRuneOptions } from "../../system/util";
+import { assertDocumentSubType, getSelectRuneOptions } from "../../system/util";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
 import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
@@ -31,8 +31,10 @@ export class SkillSheet extends RqgItemSheet {
 
   override getData(): SkillSheetData & ItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
-    system.categoryMod = this.document.system?.categoryMod; // Use the actor derived value
-    system.chance = this.document.system?.chance; // Use the actor derived value
+    const skillItem = this.document;
+    assertDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill);
+    system.categoryMod = skillItem.system?.categoryMod; // Use the actor derived value
+    system.chance = skillItem.system?.chance; // Use the actor derived value
 
     if (!system.skillName) {
       system.skillName = system.name;

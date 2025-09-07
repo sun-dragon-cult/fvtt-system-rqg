@@ -5,6 +5,8 @@ import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 
+import Document = foundry.abstract.Document;
+
 export function getRequiredDomDataset(
   el: HTMLElement | Element | Event | JQuery,
   dataset: string,
@@ -162,6 +164,12 @@ export function isDefined<T>(argument: T | undefined | null): argument is T {
   return argument != null;
 }
 
+export function assertDefined<T>(argument: T | undefined | null): asserts argument is T {
+  if (argument == null) {
+    throw new RqgError("Expected value to be defined", argument);
+  }
+}
+
 /**
  * Type guard used for filtering arrays to remove falsy values.
  *
@@ -184,20 +192,32 @@ export function hasOwnProperty<X extends object | undefined, Y extends PropertyK
 /**
  * Check if item data type if of correct type to narrow type to that itemtype.
  * Modified to with both ItemTypeEnum and string like the `type` property on ItemData.
+ * TODO The type Document.WithSubTypes includes ActorDelta that seems to miss subtypes
  */
-export function assertItemType<T extends ItemTypeEnum>(
-  itemType: string | ItemTypeEnum | undefined,
-  type: T,
-): asserts itemType is T {
-  if (!itemType || itemType !== type) {
-    const msg = `Got unexpected item type in assert, ${itemType} ≠ ${type}`;
+export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
+  document: Document.WithSubTypes | RqgItem | RqgActor | undefined | null,
+  itemOrActorType: string | ItemTypeEnum | ActorTypeEnum | undefined | null,
+  errorMsg?: string,
+): asserts document is T {
+  if (!document || (document as any).type !== itemOrActorType?.toString()) {
+    const msg = errorMsg
+      ? localize(errorMsg)
+      : `Got unexpected document type in assert, ${itemOrActorType} ≠ ${(document as any).type}`;
     ui.notifications?.error(msg);
-    throw new RqgError(msg);
+    throw new RqgError(msg, document);
   }
+}
+
+export function isDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
+  document: Document.WithSubTypes | RqgItem | RqgActor | undefined,
+  itemType: string | ItemTypeEnum | undefined,
+): document is T {
+  return !document || (document as any).type !== itemType?.toString();
 }
 
 /**
  * Check if actor data type if of correct type to narrow type to that actor type.
+ * @deprecated use xxx.isCharacter() instead TODO remove when no longer used
  */
 export function assertActorType<T extends ActorTypeEnum>(
   actorType: string | ActorTypeEnum | undefined,
@@ -732,7 +752,7 @@ export function toSignedString(num: number) {
 /**
  * Get the actor name with a link if the actor has a prototype token that is linked and the user is GM.
  */
-export function getActorLinkDecoration(actor: Actor | null | undefined): string {
+export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefined): string {
   if (game.user?.isGM) {
     return actor?.prototypeToken.actorLink ? " 🔗" : "";
   } else {
@@ -742,7 +762,8 @@ export function getActorLinkDecoration(actor: Actor | null | undefined): string 
 
 /**
  * A temporary solution to check if a item type matches a enum value.
- * TODO When the enums are refactored away this can be removed.
+ * TODO When the enums are refactored away this can be removed. Use isDocumentSubType instead.
+ * @deprecated
  */
 export function isDocumentType(type: string, enumValue: string): boolean {
   return type === enumValue;

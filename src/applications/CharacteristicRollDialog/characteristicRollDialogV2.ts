@@ -15,6 +15,10 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
   ApplicationV2<CharacteristicRollDialogContext>,
 ) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },

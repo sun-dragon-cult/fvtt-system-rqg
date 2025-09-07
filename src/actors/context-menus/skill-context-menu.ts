@@ -1,7 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDataset,
   getDomDatasetAmongSiblings,
   getRequiredDomDataset,
@@ -10,10 +10,12 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import Document = foundry.abstract.Document;
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -24,16 +26,16 @@ export const skillMenuOptions = (
     icon: contextMenuRunes.RollViaChat,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
         item.system.category,
       );
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       await item.abilityRoll();
     },
   },
@@ -42,16 +44,16 @@ export const skillMenuOptions = (
     icon: contextMenuRunes.RollQuick,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
         item.system.category,
       );
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       const itemChance = item.system.chance;
       if (itemChance == null) {
         const msg = localize("RQG.ContextMenu.Notification.CantRollQuickSkillError", {
@@ -69,15 +71,15 @@ export const skillMenuOptions = (
     icon: contextMenuRunes.ToggleExperience,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return item.system.canGetExperience;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
-      await item.update({ "system.hasExperience": !item.system.hasExperience }, {});
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      await item.update({ system: { hasExperience: !item.system.hasExperience } }, {});
     },
   },
   {
@@ -87,13 +89,16 @@ export const skillMenuOptions = (
     icon: contextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && actor.items.get(itemId);
-      return !!(item && item.type === ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
+      return !!(item && item.type === ItemTypeEnum.Skill.toString());
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+
+      const item: Document.Any | undefined = actor.items.get(itemId);
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+
       const speaker = ChatMessage.getSpeaker({ actor, token });
       await showImproveAbilityDialog(item, speaker);
     },
@@ -120,8 +125,8 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => !!getRequiredDomDataset(el, "item-id"),
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Skill);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       if (!item.sheet) {
         const msg = `Couldn't find sheet on [${item.name}] on actor ${actor.name} to edit the skill item from the skill context menu`;
         ui.notifications?.error(msg);
@@ -138,7 +143,7 @@ export const skillMenuOptions = (
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      RqgActorSheet.confirmItemDelete(actor, itemId);
+      void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

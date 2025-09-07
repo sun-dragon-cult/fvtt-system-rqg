@@ -1,6 +1,9 @@
 import { Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type CultItem = RqgItem & { system: CultDataPropertiesData };
 
 export enum CultRankEnum {
   LayMember = "layMember",

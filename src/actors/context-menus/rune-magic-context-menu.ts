@@ -1,7 +1,7 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDatasetAmongSiblings,
   getRequiredDomDataset,
   localize,
@@ -11,6 +11,7 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
@@ -20,7 +21,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
+      assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
       await item.runeMagicRoll();
     },
   },
@@ -30,13 +31,13 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
+      assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
       return item.system.points === 1;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
+      assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
       await item.runeMagicRollImmediate();
     },
   },
@@ -63,7 +64,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.RuneMagic);
+      assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
       if (!item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${actor.name} to edit the runemagic item from the runemagic context menu.`;
         ui.notifications?.error(msg);

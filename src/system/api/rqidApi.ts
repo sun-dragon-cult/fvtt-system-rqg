@@ -233,7 +233,7 @@ export class Rqid {
     }
 
     const rqidDocumentString = Rqid.getRqidDocumentName(document);
-    const documentSubType = toKebabCase(document.type ?? "");
+    const documentSubType = toKebabCase((document as any).type ?? "");
     let rqidIdentifier = "";
 
     if (document instanceof Item) {
@@ -265,9 +265,9 @@ export class Rqid {
    * Render the sheet of the documents the rqid points to and brings it to top.
    */
   public static async renderRqidDocument(rqid: string, anchor?: string): Promise<void> {
-    const document = await Rqid.fromRqid(rqid);
+    const document: any = await Rqid.fromRqid(rqid);
     if (document != null && rqid.split(".")?.[3] === "jp") {
-      const journal = document.parent;
+      const journal: any = document.parent;
       await journal?.sheet?._render(true, { focus: true });
       journal?.sheet.goToPage(document.id, anchor);
     } else {
@@ -342,7 +342,7 @@ export class Rqid {
       )
       .sort(Rqid.compareRqidPrio);
 
-    if (candidateDocuments === undefined || candidateDocuments.length === 0) {
+    if (candidateDocuments == null || !candidateDocuments[0]) {
       return undefined;
     }
 
@@ -449,7 +449,7 @@ export class Rqid {
       const msg = localize("RQG.RQGSystem.Error.MoreThanOneRqidMatchInPacks", {
         rqid: rqid,
         lang: lang,
-        priority: result[0].indexData.flags.rqg.documentRqidFlags.priority ?? "---",
+        priority: result[0]?.indexData.flags.rqg.documentRqidFlags.priority ?? "---",
       });
       ui.notifications?.warn(msg, { console: false });
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
@@ -496,7 +496,7 @@ export class Rqid {
             console.error("RQG |", msg, index);
             throw new RqgError(msg, index, indexInstances);
           }
-          candidateDocuments.push(document);
+          candidateDocuments.push(document as Document.Any);
         }
       }
     }
@@ -527,7 +527,7 @@ export class Rqid {
         const availableRunes = getAvailableRunes();
         const rune = availableRunes.find((r) => r.rqid === rqid);
         if (!rune && availableRunes.length) {
-          const msg = localize("RQG.RQGSystem.CouldNotFindRune", { rqid: rqid });
+          const msg = localize("RQG.RQGSystem.CouldNotFindRune", { rqid: rqid ?? "" });
           ui.notifications?.warn(msg, { console: false });
           console.warn(`RQG | ${msg}`);
         } else if (rune) {
@@ -535,7 +535,7 @@ export class Rqid {
         }
       }
 
-      const iconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
+      const iconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
       const defaultItemIcon = itemType && iconSettings[itemType];
       if (defaultItemIcon) {
         // TODO If undefined then the rqid is invalid since all items need a type

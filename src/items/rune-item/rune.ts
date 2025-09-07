@@ -2,7 +2,8 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { assertItemType } from "../../system/util";
+import { assertDocumentSubType } from "../../system/util";
+import type { RuneItem } from "@item-model/runeData.ts";
 
 export class Rune extends AbstractEmbeddedItem {
   // public static init() {
@@ -44,7 +45,7 @@ export class Rune extends AbstractEmbeddedItem {
     newChance: number,
     updates: object[],
   ) {
-    assertItemType(opposingRune?.type, ItemTypeEnum.Rune);
+    assertDocumentSubType<RuneItem>(opposingRune, ItemTypeEnum.Rune);
     const opposingRuneChance = opposingRune.system.chance;
     if (newChance + opposingRuneChance !== 100) {
       updates.push({

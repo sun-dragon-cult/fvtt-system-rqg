@@ -14,7 +14,9 @@ export class CharacteristicRoll extends Roll {
       { rollMode: options.rollMode, create: true },
     );
 
-    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    if (msg?.id != null) {
+      await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    }
     return roll;
   }
 
@@ -37,7 +39,7 @@ export class CharacteristicRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -62,7 +64,7 @@ export class CharacteristicRoll extends Roll {
   }
 
   // Html for what modifiers are applied
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const modifiers = (this.options as CharacteristicRollOptions).modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))

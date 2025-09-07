@@ -1,4 +1,9 @@
-import { RqidLink } from "../shared/rqidLink";
+import type { RqidLink } from "../shared/rqidLink";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+
+/** For now a spell is either Spirit Magic or Rune Magic. Sorcery can be added here later. */
+export type SpellItem = SpiritMagicItem | RuneMagicItem;
 
 export enum SpellRangeEnum {
   None = "",

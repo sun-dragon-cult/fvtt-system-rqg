@@ -1,5 +1,8 @@
 import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type GearItem = RqgItem & { system: GearDataPropertiesData };
 
 export interface GearDataSourceData extends IPhysicalItem {}
 

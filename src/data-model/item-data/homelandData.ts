@@ -1,5 +1,8 @@
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type HomelandItem = RqgItem & { system: HomelandDataPropertiesData };
 
 export interface HomelandDataSourceData {
   homeland: string;

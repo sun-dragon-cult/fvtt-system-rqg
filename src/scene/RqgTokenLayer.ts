@@ -1,4 +1,5 @@
 import { ClickableScriptsRegionBehavior } from "./ClickableScriptsRegionBehavior";
+import type { AsyncFunction } from "type-fest/source/async-return-type";
 
 const { AsyncFunction } = foundry.utils;
 const { TokenLayer } = foundry.canvas.layers;
@@ -20,8 +21,11 @@ export class RqgTokenLayer extends TokenLayer {
     RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "rightClickSource");
   }
 
-  private static handleBehaviorClick(clickedPoint: Point | undefined, sourcePath: string): void {
-    if (!canvas?.activeLayer || !(canvas.activeLayer instanceof RqgTokenLayer)) {
+  private static handleBehaviorClick(
+    clickedPoint: Canvas.Point | undefined,
+    sourcePath: string,
+  ): void {
+    if (!clickedPoint || !canvas?.activeLayer || !(canvas.activeLayer instanceof RqgTokenLayer)) {
       return;
     }
 
@@ -31,7 +35,7 @@ export class RqgTokenLayer extends TokenLayer {
           .filter((b: any) => !b.disabled && b.system instanceof ClickableScriptsRegionBehavior)
           .forEach((behavior: any) => {
             try {
-              const fn = new AsyncFunction(
+              const fn: AsyncFunction = new (AsyncFunction as any)(
                 "scene",
                 "region",
                 "behavior",

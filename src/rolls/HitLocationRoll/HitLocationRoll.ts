@@ -4,6 +4,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 
 /**
  * HitLocationRoll is only displayed as part of the CombatChatMessage,
@@ -55,8 +56,8 @@ export class HitLocationRoll extends Roll {
 
     return (
       actor?.items
-        .filter((i: RqgItem) => i.type === ItemTypeEnum.HitLocation)
-        .map((hl: RqgItem) => ({
+        .filter((i: RqgItem) => i.type === ItemTypeEnum.HitLocation.toString())
+        .map((hl: HitLocationItem) => ({
           dieFrom: hl.system.dieFrom,
           dieTo: hl.system.dieTo,
           name: hl.name ?? "",

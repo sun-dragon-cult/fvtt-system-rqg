@@ -1,21 +1,22 @@
 import { DamageCalculations } from "./damageCalculations";
 import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { RqgActor } from "../actors/rqgActor";
 import { RqgItem } from "../items/rqgItem";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 describe("Inflict Damage", () => {
-  let mockActor: RqgActor;
-  let mockLeftLeg: RqgItem;
-  let mockHead: RqgItem;
-  let mockChest: RqgItem;
-  let mockAbdomen: RqgItem;
+  let mockActor: CharacterActor;
+  let mockLeftLeg: HitLocationItem;
+  let mockHead: HitLocationItem;
+  let mockChest: HitLocationItem;
+  let mockAbdomen: HitLocationItem;
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")!;
-    mockHead = mockActor.items.find((i) => i.name === "Head")!;
-    mockChest = mockActor.items.find((i) => i.name === "Chest")!;
-    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")!;
+    mockLeftLeg = mockActor.items.find((i: RqgItem) => i.name === "Left Leg")!;
+    mockHead = mockActor.items.find((i: RqgItem) => i.name === "Head")!;
+    mockChest = mockActor.items.find((i: RqgItem) => i.name === "Chest")!;
+    mockAbdomen = mockActor.items.find((i: RqgItem) => i.name === "Abdomen")!;
     (global as any).ui = {
       notifications: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -692,8 +693,8 @@ describe("Inflict Damage", () => {
 export function applyTestDamage(
   damage: number,
   applyDamageToTotalHp: boolean,
-  hitLocation: RqgItem,
-  actor: RqgActor,
+  hitLocation: HitLocationItem,
+  actor: CharacterActor,
 ) {
   const damageEffects = DamageCalculations.addWound(
     damage,

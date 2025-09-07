@@ -1,7 +1,9 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
-import { assertItemType, localize } from "../../system/util";
+import { assertDocumentSubType, localize } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export class SpiritMagic extends AbstractEmbeddedItem {
   // public static init() {
@@ -20,12 +22,13 @@ export class SpiritMagic extends AbstractEmbeddedItem {
     boost: number | undefined,
     spellItem: RqgItem,
   ): string | undefined {
-    assertItemType(spellItem.type, ItemTypeEnum.SpiritMagic);
+    assertDocumentSubType<SpiritMagicItem>(spellItem, ItemTypeEnum.SpiritMagic);
     if (levelUsed == null || levelUsed > spellItem.system.points) {
       return localize("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
     } else if (
       boost == null ||
-      levelUsed + boost > (spellItem.actor?.system.attributes.magicPoints.value || 0)
+      levelUsed + boost >
+        ((spellItem.actor as CharacterActor)?.system.attributes.magicPoints.value || 0)
     ) {
       return localize("RQG.Item.SpiritMagic.NotEnoughMagicPoints");
     } else {

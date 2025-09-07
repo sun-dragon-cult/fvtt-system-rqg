@@ -2,13 +2,13 @@ import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogDa
 
 import {
   activateChatTab,
+  assertDocumentSubType,
   assertHtmlElement,
-  assertItemType,
   getActorLinkDecoration,
   getDomDataset,
   getTokenFromItem,
   getTokenOrActorFromItem,
-  isDocumentType,
+  isDocumentSubType,
   isTruthy,
   localize,
   requireValue,
@@ -18,7 +18,7 @@ import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { CombatManeuver, Usage, UsageType } from "@item-model/weaponData.ts";
+import type { CombatManeuver, Usage, UsageType, WeaponItem } from "@item-model/weaponData.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
@@ -31,10 +31,17 @@ import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<AttackDialogContext>) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
@@ -44,9 +51,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     { value: -50, label: "RQG.Dialog.Common.AugmentOptions.Fumble" },
   ];
 
-  private weaponItem: RqgItem; // The chosen actor might not have any weapon
+  private weaponItem: WeaponItem; // The chosen actor might not have any weapon
 
-  constructor(options: { weaponItem: RqgItem }) {
+  constructor(options: { weaponItem: WeaponItem }) {
     super(options as any);
     this.weaponItem = options.weaponItem;
     const attackingToken = getTokenFromItem(this.weaponItem);
@@ -107,7 +114,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
 
     formData.usageType =
-      this.weaponItem.system.defaultUsage ?? Object.values(usageTypeOptions)[0]?.value;
+      this.weaponItem.system.defaultUsage ?? Object.values(usageTypeOptions)[0]!.value; // TODO should always have at least one usageType
 
     if (this.weaponItem.system.defaultUsage !== formData.usageType) {
       await this.weaponItem.update({
@@ -120,13 +127,15 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     if (formData.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(this.weaponItem);
-      ammoQuantity = projectileItem?.system.quantity;
+      ammoQuantity = projectileItem?.system.quantity ?? 0;
       isOutOfAmmo = ammoQuantity <= 0;
     }
 
     const skillRqid: string | undefined =
-      this.weaponItem?.system.usage[formData.usageType].skillRqidLink.rqid;
-    const usedSkill = this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+      this.weaponItem?.system.usage[formData.usageType].skillRqidLink?.rqid;
+    const usedSkill: RqgItem | undefined =
+      this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+    assertDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill);
     formData.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
 
     if ((game.user?.targets.size ?? 0) > 1) {
@@ -208,7 +217,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     const weaponItem = (await fromUuid(weaponUuid ?? "")) as RqgItem | undefined;
 
-    if (!weaponItem) {
+    if (!isDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon)) {
       ui.notifications?.warn("No weapon found for the selected token, can't be used for attack");
       return;
     }
@@ -222,9 +231,13 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     requireValue(weaponSelectElement, "Weapon select not working - programming error");
     assertHtmlElement<HTMLSelectElement>(weaponSelectElement);
     const weaponItem = (await fromUuid(weaponSelectElement.value ?? "")) as RqgItem | undefined;
-    requireValue(weaponItem, "Weapon not found - programming error", weaponSelectElement.value);
-    this.weaponItem = weaponItem;
+    assertDocumentSubType<WeaponItem>(
+      weaponItem,
+      ItemTypeEnum.Weapon,
+      "Weapon not found - programming error",
+    );
 
+    this.weaponItem = weaponItem;
     this.render();
   }
 
@@ -248,8 +261,11 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
+    if (!(event instanceof SubmitEvent)) {
+      return;
+    }
     const submitter = event.submitter;
-    const formDataObject: AttackDialogFormData = formData.object;
+    const formDataObject = formData.object as AttackDialogFormData;
 
     if (!(submitter instanceof HTMLButtonElement)) {
       ui.notifications?.warn("Button not working - programming error");
@@ -261,6 +277,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const weaponItem = (await fromUuid(formDataObject.attackingWeaponUuid ?? "")) as
       | RqgItem
       | undefined;
+    assertDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon, "Missing weapon for attack");
 
     const tokenDocumentOrRqgActor = (await fromUuid(
       formDataObject.attackingTokenOrActorUuid ?? "",
@@ -279,9 +296,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     }
 
     const skillItem = actor?.getBestEmbeddedDocumentByRqid(
-      weaponItem?.system.usage[formDataObject.usageType].skillRqidLink.rqid,
+      weaponItem.system.usage[formDataObject.usageType].skillRqidLink?.rqid,
     );
-    requireValue(skillItem, "Missing skillItem för attack", actor);
+    assertDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill, "Missing skillItem för attack");
 
     const combatManeuverName = getDomDataset(submitter, "combat-maneuver-name");
 
@@ -299,10 +316,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     if (formDataObject.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
-      if (projectileItem?.system.quantity <= 0) {
+      if (!projectileItem || projectileItem?.system.quantity <= 0) {
         ui.notifications?.warn(
           localize("RQG.Dialog.Attack.OutOfAmmoWarn", {
-            projectileName: projectileItem?.name,
+            projectileName: projectileItem?.name ?? "???",
             combatManeuverName: combatManeuver.name,
           }),
         );
@@ -365,7 +382,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       ],
       heading: attackRollHeading,
       abilityName: weaponItem?.name ?? undefined,
-      abilityType: weaponItem?.type ?? undefined,
+      abilityType: (weaponItem as any)?.type ?? undefined,
       abilityImg: weaponItem?.img ?? undefined,
       speaker: RqgChatMessage.getSpeaker({
         token: tokenDocument,
@@ -444,7 +461,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     };
 
     activateChatTab();
-    const cm = await ChatMessage.create(attackChatMessageOptions);
+    const cm = await ChatMessage.create(attackChatMessageOptions as any);
     cm?.render(true);
   }
 
@@ -493,10 +510,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     }
 
     const optionsArray = (target.actor?.items.contents ?? [])
-      .filter((i) => isDocumentType(i.type, ItemTypeEnum.HitLocation))
-      .sort((a: any, b: any) => b.system.dieFrom - a.system.dieFrom)
-      .map((hitLocation: RqgItem) => ({
-        value: hitLocation.system.dieFrom,
+      .filter((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
+      .sort((a: HitLocationItem, b: HitLocationItem) => b.system.dieFrom - a.system.dieFrom)
+      .map((hitLocation: HitLocationItem) => ({
+        value: hitLocation.system?.dieFrom,
         label: hitLocation.name ?? "",
       }));
 
@@ -516,9 +533,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     const actor = actorOrToken instanceof TokenDocument ? actorOrToken?.actor : actorOrToken;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry
-    const weaponsWithAttacks = (actor?.items.contents ?? []).filter(
-      (i) =>
-        isDocumentType(i.type, ItemTypeEnum.Weapon) &&
+    const weaponsWithAttacks: WeaponItem[] = (actor?.items.contents ?? []).filter(
+      (i: RqgItem) =>
+        isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) &&
         (i.system.equippedStatus === "equipped" || i.system.isNatural) &&
         (i.system.usage.oneHand.combatManeuvers.some((cm: CombatManeuver) =>
           offensiveDamageTypes.includes(cm.damageType),
@@ -544,7 +561,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     if (weapon == null) {
       return [];
     }
-    assertItemType(weapon.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
     return Object.entries<Usage>(weapon.system.usage).reduce((acc: any, [key, usage]) => {
       if (usage?.skillRqidLink?.rqid) {
         acc.push({ value: key, label: localize(`RQG.Game.WeaponUsage.${key}-full`) });
@@ -564,23 +581,24 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     if (weapon == null) {
       return [];
     }
-    assertItemType(weapon.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
     const weaponOwner = weapon.parent;
     if (!weaponOwner) {
       throw new RqgError("weapon did not have an owner");
     }
+    assertDocumentSubType<CharacterActor>(weaponOwner, ActorTypeEnum.Character);
 
     const nonHumanoids =
       game.scenes?.current?.tokens
         ?.filter(
           (t) =>
             t.isOwner &&
-            !!t.actor?.system?.attributes?.damageBonus &&
-            t.actor.getBodyType() !== "humanoid",
+            !!(t.actor as CharacterActor)?.system?.attributes?.damageBonus &&
+            t.actor?.getBodyType() !== "humanoid",
         )
         ?.map((token: TokenDocument) => ({
-          value: token.actor?.system.attributes?.damageBonus ?? "",
+          value: (token.actor as CharacterActor)?.system.attributes?.damageBonus ?? "",
           label: token.name ?? "",
         })) ?? [];
 
@@ -604,7 +622,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     ];
   }
 
-  private static getWeaponProjectile(weaponItem: RqgItem | undefined): RqgItem | undefined {
+  private static getWeaponProjectile(weaponItem: RqgItem | undefined): WeaponItem | undefined {
+    assertDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon);
     if (weaponItem?.system.isThrownWeapon) {
       return weaponItem;
     } else if (weaponItem?.system.isProjectileWeapon) {

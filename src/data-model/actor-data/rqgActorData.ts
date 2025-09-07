@@ -1,11 +1,15 @@
-import { Attributes, defaultAttributes } from "./attributes";
-import { type Characteristics, defaultCharacteristics } from "./characteristics";
-import { type Background, defaultBackground } from "./background";
+import { Attributes } from "./attributes";
+import { type Characteristics } from "./characteristics";
+import { type Background } from "./background";
 import { SkillCategories } from "./skillCategories";
 
 export enum ActorTypeEnum {
   Character = "character",
 }
+
+import type { RqgActor } from "@actors/rqgActor.ts";
+
+export type CharacterActor = RqgActor & { system: CharacterDataPropertiesData };
 
 export interface CharacterDataSourceData {
   characteristics: Characteristics;
@@ -24,23 +28,23 @@ export interface CharacterDataPropertiesData extends CharacterDataSourceData {
 
 export interface CharacterDataSource {
   type: "character";
-  data: CharacterDataSourceData;
+  system: CharacterDataSourceData;
 }
 
 export interface CharacterDataProperties {
   type: "character";
-  data: CharacterDataPropertiesData;
+  system: CharacterDataPropertiesData;
 }
 
 export type RqgActorDataSource = CharacterDataSource;
 
 export type RqgActorDataProperties = CharacterDataProperties;
 
-export const defaultCharacterData: CharacterDataSourceData = {
-  characteristics: defaultCharacteristics,
-  background: defaultBackground,
-  allies: "",
-  extendedName: "",
-  attributes: defaultAttributes, // Needs to be persisted?
-  editMode: true,
-};
+// export const defaultCharacterData: CharacterDataSourceData = {
+//   characteristics: defaultCharacteristics,
+//   background: defaultBackground,
+//   allies: "",
+//   extendedName: "",
+//   attributes: defaultAttributes, // Needs to be persisted?
+//   editMode: true,
+// };

@@ -1,20 +1,14 @@
 import { localize } from "../util";
 import { RqgItem } from "@items/rqgItem.ts";
 import { systemId } from "../config";
-
-export type ItemUpdate = object &
-  DeepPartial<ItemDataConstructorData | (ItemDataConstructorData & Record<string, unknown>)> & {
-    system?: any;
-  };
-
-export type ActorUpdate = object &
-  DeepPartial<ActorDataConstructorData | (ActorDataConstructorData & Record<string, unknown>)>;
+import type { RqgItemDataSource } from "@item-model/itemTypes.ts";
+import { type RqgActorDataSource } from "../../data-model/actor-data/rqgActorData.ts";
 
 export type ItemMigration = (
-  itemData: ItemData,
-  owningActorData?: ActorData,
-) => Promise<ItemUpdate>;
-export type ActorMigration = (actorData: ActorData) => ActorUpdate;
+  itemData: RqgItemDataSource,
+  owningActorData?: RqgActorDataSource,
+) => Promise<Item.UpdateData>;
+export type ActorMigration = (actorData: RqgActorDataSource) => Actor.UpdateData;
 
 export async function applyMigrations(
   itemMigrations: ItemMigration[],
@@ -224,17 +218,17 @@ async function migrateCompendium(
 /*  Document Type Migration Helpers             */
 /* -------------------------------------------- */
 async function getActorMigrationUpdates(
-  actorData: ActorData,
+  actorData: Actor.Schema,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
-): Promise<ActorUpdate> {
-  let updateData: ActorUpdate = {};
-  actorMigrations.forEach(
-    (fn: (actorData: ActorData) => ActorUpdate) =>
-      (updateData = foundry.utils.mergeObject(updateData, fn(actorData), {
-        performDeletions: false,
-      })),
-  );
+): Promise<Actor.UpdateData> {
+  let updateData: Actor.UpdateData = {};
+  actorMigrations.forEach((fn: (actorData: RqgActorDataSource) => Actor.UpdateData) => {
+    // Merge in the updates
+    updateData = updateData = foundry.utils.mergeObject(updateData, fn(actorData as any), {
+      performDeletions: false,
+    }) as Actor.UpdateData;
+  });
 
   // Migrate Owned Items
   if (actorData.items) {

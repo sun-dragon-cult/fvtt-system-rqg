@@ -1,15 +1,20 @@
-import { ActorTypeEnum } from "../../../data-model/actor-data/rqgActorData";
-import type { ActorUpdate } from "../applyMigrations";
+import {
+  ActorTypeEnum,
+  type CharacterActor,
+  type RqgActorDataSource,
+} from "../../../data-model/actor-data/rqgActorData";
+import { assertDocumentSubType } from "../../util.ts";
 
 // Dummy Actor Migrator
-export function migrateActorDummy(actorData: ActorData): ActorUpdate {
+export function migrateActorDummy(actorData: RqgActorDataSource): Actor.UpdateData {
   let updateData = {};
   // eslint-disable-next-line
-  if (false && actorData.type === ActorTypeEnum.Character) {
+  if (false && actorData.type === ActorTypeEnum.Character.toString()) {
+    assertDocumentSubType<CharacterActor>(actorData as any, ActorTypeEnum.Character);
     updateData = {
       system: {
         background: {
-          species: (actorData.background as any).race,
+          species: (actorData.system.background as any).race,
           [`-=race`]: null,
         },
       },

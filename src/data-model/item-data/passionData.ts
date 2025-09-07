@@ -1,5 +1,8 @@
 import type { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type PassionItem = RqgItem & { system: PassionDataPropertiesData };
 
 export enum PassionsEnum {
   Ambition = "Ambition",

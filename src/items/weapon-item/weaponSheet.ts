@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { RqgItem } from "../rqgItem";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
@@ -209,7 +209,7 @@ export class WeaponSheet extends RqgItemSheet {
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    const droppedItem = await Item.implementation.fromDropData(data);
+    const droppedItem = (await Item.implementation.fromDropData(data)) as SkillItem;
     const usage = getDomDataset(event, "dropzone");
 
     if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
@@ -221,7 +221,7 @@ export class WeaponSheet extends RqgItemSheet {
         SkillCategoryEnum.MissileWeapons,
         SkillCategoryEnum.NaturalWeapons,
         SkillCategoryEnum.Shields,
-      ].includes(droppedItem?.system.category)
+      ].includes(droppedItem?.system?.category)
     ) {
       const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
       ui.notifications?.warn(msg, { console: false });
@@ -229,6 +229,19 @@ export class WeaponSheet extends RqgItemSheet {
       return false;
     }
     const droppedItemRqid = droppedItem?.getFlag(systemId, documentRqidFlags)?.id;
+    if (!droppedItemRqid) {
+      const msg = "No Rqid on dropped skill"; // TODO localize
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return false;
+    }
+
+    if (!usage || !["oneHand", "twoHand", "offHand", "missile"].includes(usage)) {
+      const msg = localize("RQG.Item.Weapon.WrongDropzone");
+      ui.notifications?.warn(msg, { console: false });
+      console.error(`RQG | ${msg}`);
+      return false;
+    }
     const actorItemWithSameRqid = this.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
 
     if (!actorItemWithSameRqid) {

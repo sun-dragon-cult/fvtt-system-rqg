@@ -2,11 +2,12 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
   type HitLocationHealthState,
   hitLocationHealthStatusOptions,
+  type HitLocationItem,
   HitLocationTypesEnum,
 } from "@item-model/hitLocationData.ts";
 import { RqgActor } from "@actors/rqgActor.ts";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getSelectHitLocationOptions,
   localize,
   requireValue,
@@ -19,6 +20,7 @@ import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { damageType } from "@item-model/weaponData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 interface HitLocationSheetData {
   allHitLocationOptions: SelectOptionData<string>[];
@@ -114,7 +116,7 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   private static async submitAddWoundDialog(html: JQuery, actor: RqgActor, hitLocation: RqgItem) {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
@@ -132,8 +134,9 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const hitLocation = actor.items.get(hitLocationItemId);
-    assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationHealWound,
@@ -178,7 +181,7 @@ export class HitLocationSheet extends RqgItemSheet {
     actor: RqgActor,
     hitLocation: RqgItem,
   ): Promise<void> {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
     requireValue(

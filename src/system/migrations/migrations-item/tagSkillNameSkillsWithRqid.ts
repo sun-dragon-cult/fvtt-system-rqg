@@ -1,12 +1,10 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { ItemUpdate } from "../applyMigrations";
-import { isDocumentType } from "../../util.ts";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.
-export async function tagSkillNameSkillsWithRqid(itemData: Item.Stored): Promise<ItemUpdate> {
+export async function tagSkillNameSkillsWithRqid(itemData: Item): Promise<Item.UpdateData> {
   let updateData = {};
   if (
-    isDocumentType(itemData.type, ItemTypeEnum.Skill) &&
+    itemData.type === ItemTypeEnum.Skill.toString() &&
     [...name2Rqid.keys()].includes(itemData.name)
   ) {
     updateData = {

@@ -3,7 +3,7 @@ import type { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "../system/config";
 import {
-  assertItemType,
+  assertDocumentSubType,
   convertFormValueToString,
   localize,
   localizeItemType,
@@ -12,6 +12,10 @@ import {
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { AbilityImprovementData } from "./improveAbilityDialog.types";
 import { RqgCalculations } from "../system/rqgCalculations";
+import type { PassionItem } from "@item-model/passionData.ts";
+import type { RuneItem } from "@item-model/runeData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 /** Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
@@ -39,21 +43,21 @@ export async function showImproveAbilityDialog(
   };
 
   switch (item.type) {
-    case ItemTypeEnum.Skill: {
+    case ItemTypeEnum.Skill.toString(): {
       updateAdaptorForSkill(adapter, item);
       break;
     }
 
-    case ItemTypeEnum.Passion: {
-      assertItemType(item?.type, ItemTypeEnum.Passion);
+    case ItemTypeEnum.Passion.toString(): {
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       adapter.abilityType = "passion";
       // Cannot train passions
       adapter.showTraining = false;
       break;
     }
 
-    case ItemTypeEnum.Rune: {
-      assertItemType(item?.type, ItemTypeEnum.Rune);
+    case ItemTypeEnum.Rune.toString(): {
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       adapter.abilityType = "rune";
       adapter.name = item.system.rune;
       break;
@@ -110,12 +114,13 @@ export async function showImproveAbilityDialog(
 }
 
 function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
-  assertItemType(item?.type, ItemTypeEnum.Skill);
+  assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
   adapter.abilityType = "skill";
   const actor = item.parent;
   if (!actor) {
     throw new RqgError("Tried to improve a skill item that isn't embedded on an actor", item);
   }
+  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
   const pureCategoryMods = RqgCalculations.skillCategoryModifiers(
     actor.system.characteristics.strength.value,
     actor.system.characteristics.size.value,

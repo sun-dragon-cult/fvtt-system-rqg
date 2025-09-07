@@ -1,4 +1,3 @@
-import { RqgActor } from "../rqgActor";
 import type { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
   getDomDataset,
@@ -9,9 +8,11 @@ import {
 } from "../../system/util";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 export const characteristicMenuOptions = (
-  actor: RqgActor,
+  actor: CharacterActor,
   token: TokenDocument | undefined,
 ): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
@@ -39,10 +40,15 @@ export const characteristicMenuOptions = (
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
     },
-    callback: async (): Promise<RqgActor | undefined> =>
+    callback: async (): Promise<CharacterActor | undefined> =>
       await actor.update({
-        "system.characteristics.power.hasExperience":
-          !actor.system.characteristics.power.hasExperience,
+        system: {
+          characteristics: {
+            power: {
+              hasExperience: !actor.system.characteristics.power.hasExperience,
+            },
+          },
+        },
       }),
   },
   {
@@ -155,7 +161,7 @@ async function getCharacteristicUpdate(
 }
 
 export async function initializeCharacteristic(
-  actor: RqgActor,
+  actor: CharacterActor,
   characteristic: string,
 ): Promise<void> {
   if (!actor.isOwner || characteristic == null) {
@@ -175,7 +181,7 @@ export async function initializeCharacteristic(
   await initializeCurrentDerivedAttributes(actor);
 }
 
-export async function initializeAllCharacteristics(actor: RqgActor): Promise<void> {
+export async function initializeAllCharacteristics(actor: CharacterActor): Promise<void> {
   const updateData = {};
 
   if (!actor.isOwner) {
@@ -204,7 +210,7 @@ export async function initializeAllCharacteristics(actor: RqgActor): Promise<voi
 }
 
 /** Sets actor's current hitPoints.value to the hitPoints.max */
-async function initializeCurrentDerivedAttributes(actor: RqgActor) {
+async function initializeCurrentDerivedAttributes(actor: CharacterActor) {
   if (actor.system.attributes.hitPoints.max != null) {
     const hpUpdate = {
       "system.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
@@ -214,7 +220,7 @@ async function initializeCurrentDerivedAttributes(actor: RqgActor) {
   }
 }
 
-export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<void> {
+export async function setAllCharacteristicsToAverage(actor: CharacterActor): Promise<void> {
   if (!actor.isOwner) {
     return;
   }
@@ -265,7 +271,7 @@ export async function setAllCharacteristicsToAverage(actor: RqgActor): Promise<v
 }
 
 function getCharacteristic(
-  actor: RqgActor,
+  actor: CharacterActor,
   el: JQuery,
 ): { name: keyof Characteristics; value: Characteristic } {
   const characteristicName = getDomDataset(el, "characteristic");
@@ -278,7 +284,7 @@ function getCharacteristic(
   } else {
     throw new RqgError(
       localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {
-        characteristicName: characteristicName,
+        characteristicName: characteristicName ?? "",
         actorName: actor.name,
       }),
     );

@@ -1,7 +1,7 @@
 import type { RqgItem } from "../items/rqgItem";
 import {
   activateChatTab,
-  assertItemType,
+  assertDocumentSubType,
   getRequiredDomDataset,
   localize,
   logMisconfiguration,
@@ -19,6 +19,7 @@ import { updateChatMessage } from "../sockets/SocketableRequests";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import type { WeaponItem } from "@item-model/weaponData.ts";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -27,7 +28,7 @@ export async function handleDefence(clickedButton: HTMLButtonElement): Promise<v
   const { chatMessageId, attackWeaponUuid } = await getChatMessageInfo(clickedButton);
 
   const attackingWeapon = (await fromUuid(attackWeaponUuid)) as RqgItem | undefined;
-  assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
+  assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
   await new DefenceDialogV2({
     chatMessageId: chatMessageId,
   }).render(true);
@@ -54,12 +55,11 @@ export async function handleRollDamageAndHitLocation(
     await hitLocationRoll.evaluate();
   }
 
-  // @ts-expect-error dice3d
   if (game.dice3d) {
     // TODO figure out if it's attacker or defender that deals damage - hardcoded true now
     const defenderDamage = true;
 
-    const userDealingDamage = defenderDamage ? game.user : attackChatMessage.author;
+    const userDealingDamage = defenderDamage ? game.user! : attackChatMessage.author;
 
     // DamageRoll is already evaluated in CombatOutcome to calc weaponDamage
     const damageRoll = DamageRoll.fromData(attackChatMessage.system.damageRoll);
@@ -178,21 +178,19 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
     return;
   }
 
-  // @ts-expect-error system
   const weaponDamage: number | undefined = attackChatMessage.system.weaponDamage;
-  // @ts-expect-error system
-  const damagedWeaponUuid: string = attackChatMessage.system.damagedWeaponUuid;
-  const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as RqgItem | undefined;
+  const damagedWeaponUuid = attackChatMessage.system.damagedWeaponUuid;
+  const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as WeaponItem | undefined;
 
   if (damagedWeapon?.system.isNatural) {
     const msg = localize("RQG.ChatMessage.Combat.ApplyNaturalWeaponDamageNotImplemented", {
-      weaponDamage: weaponDamage,
+      weaponDamage: weaponDamage?.toString() ?? "",
     });
     // TODO inflict damage to the correct hit location - how to know where?
     ui.notifications?.info(msg, { permanent: true, console: false });
   } else {
     const currentWeaponHp = damagedWeapon?.system.hitPoints.value;
-    const newWeaponHp = currentWeaponHp - (weaponDamage ?? 0);
+    const newWeaponHp = (currentWeaponHp ?? 0) - (weaponDamage ?? 0);
 
     await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
   }
@@ -257,7 +255,7 @@ export async function handleRollFumble(clickedButton: HTMLButtonElement): Promis
 }
 
 async function fumbleRoll(): Promise<string> {
-  const fumbleTableName = game.settings.get(systemId, "fumbleRollTable");
+  const fumbleTableName = game.settings?.get(systemId, "fumbleRollTable") ?? "Fumble";
   const fumbleTable = game.tables?.getName(fumbleTableName);
   if (!fumbleTable) {
     logMisconfiguration(
@@ -268,12 +266,10 @@ async function fumbleRoll(): Promise<string> {
     );
     return "";
   }
-  // @ts-expect-error draw
-  const draw = await fumbleTable.draw({ displayChat: false });
-  const text = draw.results.map((r: any) => `${r.text}<br>`); // TODO is TableResult
 
-  // @ts-expect-error applications
-  return await foundry.applications.ux.TextEditor.implementation.enrichHTML(text);
+  const draw = await fumbleTable.draw({ displayChat: false } as RollTable.DrawOptions); // TODO typings wrong? should not have to define all options
+  const text = draw.results.map((r: any) => `${r.text}<br>`);
+  return await foundry.applications.ux.TextEditor.implementation.enrichHTML(text.join());
 }
 
 /**

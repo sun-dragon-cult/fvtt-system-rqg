@@ -10,7 +10,7 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getSpeakerFromItem,
   hasOwnProperty,
   localize,
@@ -32,7 +32,7 @@ import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { SpellRangeEnum } from "@item-model/spell.ts";
-import type { DamageType, UsageType } from "@item-model/weaponData.ts";
+import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponData.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import {
   formatDamagePart,
@@ -40,6 +40,11 @@ import {
 } from "../system/combatCalculations";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 import { Skill } from "./skill-item/skill";
+import type { ArmorItem } from "@item-model/armorData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {
   public static init() {
@@ -188,7 +193,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open a dialog for a SpiritMagicRoll
    */
   public async spiritMagicRoll(): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.SpiritMagic);
+    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
     await new SpiritMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
@@ -196,15 +201,15 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Do a SpiritMagicRoll and possibly draw magic points afterward
    */
   public async spiritMagicRollImmediate(
-    options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.system.points },
+    options: Omit<SpiritMagicRollOptions, "powX5"> = {
+      levelUsed: (this as SpiritMagicItem).system.points,
+    },
   ): Promise<void> {
-    if (!this.isEmbedded) {
-      const msg = "Item is not embedded";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
-    }
+    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
+    const actor = this.actor;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
 
-    const powX5: number = (Number(this.parent?.system.characteristics.power.value) || 0) * 5; // Handle NaN
+    const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
     const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
       powX5: powX5,
@@ -227,7 +232,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open a dialog for a RuneMagicRoll
    */
   public async runeMagicRoll(): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.RuneMagic);
+    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
     await new RuneMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
@@ -235,14 +240,12 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
    */
   public async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.RuneMagic);
-    if (!this.isEmbedded) {
-      const msg = "Rune Magic item is not embedded";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
-    }
+    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
 
-    const cult = this.parent?.items.find((i) => i.id === this.system.cultId);
+    const actor = this.parent;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+
+    const cult = actor.items.find((i: RqgItem) => i.id === this.system.cultId);
     if (!cult) {
       const msg = "Rune Magic item isn't connected to a cult";
       ui.notifications?.error(msg);
@@ -291,7 +294,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open an attackDialog to initiate an attack sequence
    */
   public async attack(): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
     await new AttackDialogV2({ weaponItem: this }).render(true);
   }
 
@@ -308,7 +311,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     if (!usage) {
       return undefined;
     }
-    assertItemType(this.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
     const weaponDamage = this.system.usage[usage].damage;
 
     requireValue(
@@ -622,4 +625,84 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
   }
+
+  // Typeguards
+  isType<T>(typeEnum: ItemTypeEnum): this is T {
+    return this.type === typeEnum.toString();
+  }
+
+  // assertType<T>(typeEnum: ItemTypeEnum, errorMsg?: string): asserts this is T {
+  //   if (!this.isType<T>(typeEnum)) {
+  //     const msg = errorMsg ? localize(errorMsg) : `Item is not a ${typeEnum}`;
+  //     ui.notifications?.error(msg);
+  //     throw new RqgError(msg, this);
+  //   }
+  // }
+
+  // assertItemType<T extends RqgItem>(
+  //   item: RqgItem | undefined,
+  //   itemType: string | ItemTypeEnum | undefined,
+  // ): asserts item is T {
+  //   if (!item || item.type !== itemType?.toString()) {
+  //     const msg = `Got unexpected item type in assert, ${itemType} ≠ ${item}`;
+  //     ui.notifications?.error(msg);
+  //     throw new RqgError(msg);
+  //   }
+  // }
+
+  isPhysicalItem(): this is GearItem | ArmorItem | WeaponItem {
+    return [
+      ItemTypeEnum.Gear.toString(),
+      ItemTypeEnum.Armor.toString(),
+      ItemTypeEnum.Weapon.toString(),
+    ].includes(this.type);
+  }
+
+  // assertIsArmor(errorMsg?: string): asserts this is ArmorItem {
+  //   this.assertType<ArmorItem>(ItemTypeEnum.Armor, errorMsg);
+  // }
+  //
+  // assertIsCult(errorMsg?: string): asserts this is CultItem {
+  //   this.assertType<CultItem>(ItemTypeEnum.Cult, errorMsg);
+  // }
+  //
+  // assertIsGear(errorMsg?: string): asserts this is GearItem {
+  //   this.assertType<GearItem>(ItemTypeEnum.Gear, errorMsg);
+  // }
+  //
+  // assertIsHitLocation(errorMsg?: string): asserts this is HitLocationItem {
+  //   this.assertType<HitLocationItem>(ItemTypeEnum.HitLocation, errorMsg);
+  // }
+  //
+  // assertIsHomeland(errorMsg?: string): asserts this is HomelandItem {
+  //   this.assertType<HomelandItem>(ItemTypeEnum.Homeland, errorMsg);
+  // }
+  //
+  // assertIsOccupation(errorMsg?: string): asserts this is OccupationItem {
+  //   this.assertType<OccupationItem>(ItemTypeEnum.Occupation, errorMsg);
+  // }
+  //
+  // assertIsPassion(errorMsg?: string): asserts this is PassionItem {
+  //   this.assertType<PassionItem>(ItemTypeEnum.Passion, errorMsg);
+  // }
+  //
+  // assertIsRune(errorMsg?: string): asserts this is RuneItem {
+  //   this.assertType<RuneItem>(ItemTypeEnum.Rune, errorMsg);
+  // }
+  //
+  // assertIsRuneMagic(errorMsg?: string): asserts this is RuneMagicItem {
+  //   this.assertType<RuneMagicItem>(ItemTypeEnum.RuneMagic, errorMsg);
+  // }
+  //
+  // assertIsSkill(errorMsg?: string): asserts this is SkillItem {
+  //   this.assertType<SkillItem>(ItemTypeEnum.Skill, errorMsg);
+  // }
+  //
+  // assertIsSpiritMagic(errorMsg?: string): asserts this is SpiritMagicItem {
+  //   this.assertType<SpiritMagicItem>(ItemTypeEnum.SpiritMagic, errorMsg);
+  // }
+  //
+  // assertIsWeapon(errorMsg?: string): asserts this is WeaponItem {
+  //   this.assertItemType<WeaponItem>(this as RqgItem, ItemTypeEnum.Weapon);
+  // }
 }

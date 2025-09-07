@@ -81,7 +81,7 @@ export function isAllowedDocumentType(
     !allowedDocumentTypes.includes(document?.type as string) // Does the type match
   ) {
     const translatedAllowedDocumentTypes = allowedDocumentTypes.map(
-      (d: any) => localizeItemType(d), // TODO assumes the document in a Item. Ok for now?
+      (d: any) => localizeItemType(d), // TODO assumes the document is an Item. Ok for now?
     );
 
     const allowedDocumentTypesString = formatListByUserLanguage(

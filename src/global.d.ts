@@ -71,32 +71,6 @@ declare global {
     ChatMessage: {
       combat: CombatChatMessageData;
     };
-    // Actor: {
-    //   character: defaultCharacterData;
-    //   mech: MechModel;
-    //   npc: NpcModel;
-    //   pilot: PilotModel;
-    // };
-    // Item: {
-    //   bond: BondModel;
-    //   core_bonus: CoreBonusModel;
-    //   frame: FrameModel;
-    //   license: LicenseModel;
-    //   mech_system: MechSystemModel;
-    //   mech_weapon: MechWeaponModel;
-    //   npc_class: NpcClassModel;
-    //   npc_feature: NpcFeatureModel;
-    //   npc_template: NpcTemplateModel;
-    //   organization: OrganizationModel;
-    //   pilot_armor: PilotArmorModel;
-    //   pilot_gear: PilotGearModel;
-    //   pilot_weapon: PilotWeaponModel;
-    //   reserve: ReserveModel;
-    //   skill: SkillModel;
-    //   status: StatusModel;
-    //   talent: TalentModel;
-    //   weapon_mod: WeaponModModel;
-    // };
   }
 
   interface FlagConfig {
@@ -128,6 +102,20 @@ declare global {
     "rqg.showCharacteristicRatings": boolean;
     "rqg.tokenRulerSettings": TokenRulerSettingsType;
     "rqg.allowCombatWithoutToken": boolean;
+  }
+
+  // interface SystemConfig {
+  //   Item: {
+  //     discriminate: "all";
+  //   };
+  //   Actor: {
+  //     moduleSubtype: "ignore";
+  //     base: "ignore";
+  //   };
+  // }
+
+  interface SystemNameConfig {
+    name: "rqg";
   }
 }
 

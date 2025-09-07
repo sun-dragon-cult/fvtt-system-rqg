@@ -3,13 +3,14 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "../system/config";
 import {
   assertHtmlElement,
-  assertItemType,
+  assertDocumentSubType,
   getItemDocumentTypes,
   localize,
   getDocumentFromUuid,
   isDocumentType,
+  isDocumentSubType,
 } from "../system/util";
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
@@ -18,6 +19,8 @@ import { Rqid } from "../system/api/rqidApi";
 import type { IAbility } from "../data-model/shared/ability";
 import type { RqgActor } from "../actors/rqgActor";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import type { RuneItem } from "@item-model/runeData.ts";
+import type { PassionItem } from "@item-model/passionData.ts";
 
 export class ActorWizard extends foundry.appv1.api.FormApplication {
   actor: RqgActor;
@@ -220,7 +223,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
         const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
-        assertItemType(rune?.type, ItemTypeEnum.Rune);
+        assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
         rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
         rune.system.hasExperience = false;
         const associatedChoice = this.choices[runeRqidLink.rqid];
@@ -239,7 +242,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks ?? []) {
         const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as RqgItem | undefined;
-        assertItemType(skill?.type, ItemTypeEnum.Skill);
+        assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland skills for purposes of sheet
@@ -280,15 +283,15 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     const homelandPassions: RqgItem[] = [];
     if (selectedHomeland?.system?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
-        const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as RqgItem | undefined;
-        assertItemType(passion?.type, ItemTypeEnum.Passion);
+        const passion = await Rqid.fromRqid(passionRqidLink.rqid);
+        assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         passion.system.hasExperience = false;
         if (associatedChoice) {
           // put choice on homeland passions for purposes of sheet
           passion.system.choice = associatedChoice;
         }
-        homelandPassions.push(passion as RqgItem); // Already asserted
+        homelandPassions.push(passion); // Already asserted
       }
     }
 
@@ -631,13 +634,12 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         for (const actorItem of existingItems) {
           // Handle Skills, Runes, and Passions, which use the .present property of the choice
           if (
-            actorItem.type === ItemTypeEnum.Skill ||
-            actorItem.type === ItemTypeEnum.Rune ||
-            actorItem.type === ItemTypeEnum.Passion
+            isDocumentSubType<SkillItem>(actorItem, ItemTypeEnum.Skill) ||
+            isDocumentSubType<RuneItem>(actorItem, ItemTypeEnum.Rune) ||
+            isDocumentSubType<PassionItem>(actorItem, ItemTypeEnum.Passion)
           ) {
             if (this.choices[key].present()) {
-              if (actorItem.type === ItemTypeEnum.Skill) {
-                assertItemType(actorItem.type, ItemTypeEnum.Skill);
+              if (isDocumentSubType<SkillItem>(actorItem, ItemTypeEnum.Skill)) {
                 const existingSkillData = actorItem.system;
                 const newBaseChance = this.choices[key].totalValue();
                 if (existingSkillData.baseChance !== newBaseChance) {
@@ -648,7 +650,10 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
                   });
                 }
               }
-              if (actorItem.type === ItemTypeEnum.Rune || actorItem.type === ItemTypeEnum.Passion) {
+              if (
+                isDocumentSubType<RuneItem>(actorItem, ItemTypeEnum.Rune) ||
+                isDocumentSubType<PassionItem>(actorItem, ItemTypeEnum.Passion)
+              ) {
                 const existingAbilityData = actorItem.system as IAbility;
                 const newChance = this.choices[key].totalValue();
                 if (existingAbilityData.chance !== newChance) {

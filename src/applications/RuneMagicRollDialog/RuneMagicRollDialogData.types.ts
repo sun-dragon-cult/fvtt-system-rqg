@@ -1,6 +1,6 @@
-import type { RqgItem } from "@items/rqgItem.ts";
 import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
 import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
+import type { RuneItem } from "@item-model/runeData.ts";
 
 export type RuneMagicRollDialogContext = RollHeaderData &
   RollFooterData & {
@@ -8,7 +8,7 @@ export type RuneMagicRollDialogContext = RollHeaderData &
 
     speakerName: string;
 
-    usedRune: RqgItem | undefined;
+    usedRune: RuneItem | undefined;
     eligibleRuneOptions: SelectOptionData<string>[];
     augmentOptions: SelectOptionData<number>[];
     meditateOptions: SelectOptionData<number>[];

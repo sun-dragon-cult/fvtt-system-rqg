@@ -1,7 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDataset,
   getSpeakerFromItem,
   localize,
@@ -17,12 +17,18 @@ import type {
 } from "./RuneMagicRollDialogData.types.ts";
 import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { SpellItem } from "@item-model/spell.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
   ApplicationV2<RuneMagicRollDialogContext>,
 ) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -58,10 +64,10 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     { value: 100, label: "RQG.Dialog.Common.RitualOptions.20years" },
   ];
 
-  private spellItem: RqgItem;
+  private spellItem: SpellItem;
   private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { spellItem: RqgItem }) {
+  constructor(options: { spellItem: SpellItem }) {
     super(options);
     this.spellItem = options.spellItem;
     this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
@@ -104,7 +110,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
     const eligibleRunes = RuneMagic.getEligibleRunes(this.spellItem);
 
-    const eligibleRuneOptions = eligibleRunes.map((rune: RqgItem) => ({
+    const eligibleRuneOptions = eligibleRunes.map((rune) => ({
       value: rune.id ?? "",
       label: rune.name ?? "",
     }));
@@ -186,7 +192,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
       ui.notifications?.error("Could not find an rune magic spellItem to roll.");
       return;
     }
-    assertItemType(spellItem.type, ItemTypeEnum.RuneMagic);
+    assertDocumentSubType<RuneMagicItem>(spellItem, ItemTypeEnum.RuneMagic);
 
     const eligibleRunes = RuneMagic.getEligibleRunes(spellItem);
 

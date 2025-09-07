@@ -2,6 +2,9 @@ import type { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
 
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type RuneItem = RqgItem & { system: RuneDataPropertiesData };
 
 export enum RuneTypeEnum {
   Element = "element",

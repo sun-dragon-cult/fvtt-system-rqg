@@ -1,7 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { RqgActor } from "../rqgActor";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDataset,
   getDomDatasetAmongSiblings,
   getRequiredDomDataset,
@@ -12,9 +11,11 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const spiritMagicMenuOptions = (
-  actor: RqgActor,
+  actor: CharacterActor,
 ): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),
@@ -22,8 +23,8 @@ export const spiritMagicMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.items.get(itemId)) || undefined;
-      assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
+      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       await item.spiritMagicRoll();
     },
   },
@@ -32,14 +33,14 @@ export const spiritMagicMenuOptions = (
     icon: contextMenuRunes.RollQuick,
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.items.get(itemId)) || undefined;
-      assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
+      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       return !item.system.isVariable || item.system.points === 1;
     },
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.items.get(itemId)) || undefined;
-      assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
+      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       if (item.system.isVariable && item.system.points > 1) {
         await item.spiritMagicRoll();
       } else {
@@ -69,11 +70,11 @@ export const spiritMagicMenuOptions = (
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = (itemId && actor.items.get(itemId)) || undefined;
-      assertItemType(item?.type, ItemTypeEnum.SpiritMagic);
+      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       if (!item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditSpiritMagicError", {
-          itemId: itemId,
+          itemId: itemId!,
           actorName: actor.name,
         });
         ui.notifications?.error(msg);
@@ -90,7 +91,7 @@ export const spiritMagicMenuOptions = (
     condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      RqgActorSheet.confirmItemDelete(actor, itemId);
+      void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

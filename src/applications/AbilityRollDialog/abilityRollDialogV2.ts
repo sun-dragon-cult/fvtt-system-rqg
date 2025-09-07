@@ -1,6 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type {
+  AbilityItem,
   AbilityRollDialogContext,
   AbilityRollDialogFormData,
   PartialAbilityItem,
@@ -21,6 +22,10 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
   ApplicationV2<AbilityRollDialogContext>,
 ) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -39,10 +44,10 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     { value: 25, label: "RQG.Dialog.Common.MeditateOptions.50mr" },
   ];
 
-  private abilityItem: RqgItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
+  private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
   private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { abilityItem?: RqgItem | PartialAbilityItem }) {
+  constructor(options: { abilityItem?: AbilityItem | PartialAbilityItem }) {
     super(options);
     if (!options.abilityItem) {
       const msg = "No AbilityItem to roll for";
@@ -161,9 +166,10 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
         ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ?? game.settings?.get("core", "rollMode");
 
-    let abilityItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
-      formDataObject.abilityItemUuid ?? "",
-    )) as RqgItem | undefined;
+    let abilityItem = (await fromUuid(formDataObject.abilityItemUuid ?? "")) as
+      | AbilityItem
+      | PartialAbilityItem
+      | undefined;
 
     if (!abilityItem) {
       abilityItem = JSON.parse(formDataObject.reputationItemJson ?? "");
@@ -175,7 +181,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     }
 
     const options: AbilityRollOptions = {
-      naturalSkill: abilityItem?.system.chance,
+      naturalSkill: abilityItem?.system.chance ?? 0,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -191,7 +197,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
         },
       ],
       abilityName: abilityItem?.name ?? undefined,
-      abilityType: abilityItem?.type ?? undefined,
+      abilityType: (abilityItem as any)?.type ?? undefined,
       abilityImg: abilityItem?.img ?? undefined,
       speaker: getSpeakerFromItem(abilityItem),
       rollMode: rollMode,

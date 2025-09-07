@@ -1,16 +1,17 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { ItemUpdate } from "../applyMigrations";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
-import type { UsageType } from "@item-model/weaponData.ts";
+import type { UsageType, WeaponItem } from "@item-model/weaponData.ts";
+import type { CharacterActor } from "../../../data-model/actor-data/rqgActorData.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 
 const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
-  itemData: ItemData,
-  owningActorData?: ActorData,
-): Promise<ItemUpdate> {
+  itemData: WeaponItem,
+  owningActorData?: CharacterActor,
+): Promise<Item.UpdateData> {
   let updateData = {};
-  if (itemData.type === ItemTypeEnum.Weapon) {
+  if (itemData.type === ItemTypeEnum.Weapon.toString()) {
     const oneHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "oneHand");
     const offHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "offHand");
     const twoHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "twoHand");
@@ -47,13 +48,13 @@ export async function migrateWeaponSkillLinks(
 }
 
 async function getSkillRqidLink(
-  itemData: ItemData,
-  owningActorData: ActorData | undefined,
+  itemData: WeaponItem,
+  owningActorData: CharacterActor | undefined,
   usageType: UsageType,
 ): Promise<RqidLink | undefined> {
   if (
-    itemData.type !== ItemTypeEnum.Weapon ||
-    (foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin) &&
+    itemData.type !== ItemTypeEnum.Weapon.toString() ||
+    (foundry.utils.isEmpty((itemData.system.usage[usageType] as any).skillOrigin) &&
       itemData.system.usage[usageType].skillRqidLink?.name !== notFoundString)
   ) {
     return;
@@ -90,11 +91,11 @@ async function getSkillRqidLink(
 }
 
 async function findSkillItem(
-  itemData: ItemData,
-  owningActorData: ActorData | undefined,
+  itemData: WeaponItem,
+  owningActorData: CharacterActor | undefined,
   usageType: UsageType,
 ): Promise<any | undefined> {
-  if (itemData.type !== ItemTypeEnum.Weapon) {
+  if (itemData.type !== ItemTypeEnum.Weapon.toString()) {
     return;
   }
 
@@ -120,10 +121,12 @@ async function findSkillItem(
   if (skillOriginItem) {
     return skillOriginItem;
   }
-  const embeddedSkillData = owningActorData?.items.find((i: any) => i._id === skillEmbeddedItemId);
+  const embeddedSkillData: any = owningActorData?.items.find(
+    (i: RqgItem) => i._id === skillEmbeddedItemId,
+  );
 
   if (embeddedSkillData && owningActorData) {
-    return owningActorData.items.find((i) => i._id === embeddedSkillData._id);
+    return owningActorData.items.find((i: RqgItem) => i._id === embeddedSkillData._id);
   }
 
   return undefined;

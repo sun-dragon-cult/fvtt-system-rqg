@@ -32,11 +32,11 @@ export declare class Dice3D {
   /**
    * Show the 3D Dice animation based on data configuration made by the User.
    *
-   * @param data:  data containing the formula and the result to show in the 3D animation.
-   * @param user: the user who made the roll (game.user by default).
-   * @param synchronize: if the animation needs to be shown to other players. Default: false
-   * @param whisper: list of users or userId who can see the roll, leave it empty if everyone can see.
-   * @param blind: if the roll is blind for the current user
+   * @param data  data containing the formula and the result to show in the 3D animation.
+   * @param user the user who made the roll (game.user by default).
+   * @param synchronize if the animation needs to be shown to other players. Default: false
+   * @param whisper list of users or userId who can see the roll, leave it empty if everyone can see.
+   * @param blind if the roll is blind for the current user
    * @returns when resolved true if the animation was displayed, false if not.
    */
   show(
@@ -56,7 +56,7 @@ export declare class Dice3D {
    * Default will add the system as a choice left to each user.
    */
 
-  addSystem(data: { id: string; name: string }, mode: "preferred" | "default");
+  addSystem(data: { id: string; name: string }, mode: "preferred" | "default"): void;
 
   /**
    * Add a colorset (theme)
@@ -66,7 +66,7 @@ export declare class Dice3D {
    * - "default" only register the colorset
    * - "preferred" apply the colorset if the player didn't already change his dice appearance for this world.
    */
-  addColorset(colorset: DiceColorsetData, mode: "default" | "preferred" | "no");
+  addColorset(colorset: DiceColorsetData, mode: "default" | "preferred" | "no"): void;
 
   /**
    * Register a new dice preset

@@ -1,6 +1,9 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { ItemUpdate } from "../applyMigrations";
+
 import { RqidLink } from "../../../data-model/shared/rqidLink";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import { assertDocumentSubType } from "../../util.ts";
+import type { CultItem } from "@item-model/cultData.ts";
 
 const oldRqid = "i.rune-magic.command-cult-spirit-elemental";
 const newRqid = "i.rune-magic.command-cult-spirit";
@@ -9,12 +12,12 @@ const newEnglishName = "Command Cult Spirit";
 const newCommandCultSpiritDescriptionRqid = "je..command-cult-spirit";
 
 export async function relabelRuneMagicCommandCultSpiritRqid(
-  itemData: ItemData,
-): Promise<ItemUpdate> {
+  itemData: RuneMagicItem | CultItem,
+): Promise<Item.UpdateData> {
   const updateData: any = {};
 
   if (
-    itemData.type === ItemTypeEnum.RuneMagic &&
+    itemData.type === ItemTypeEnum.RuneMagic.toString() &&
     itemData?.flags?.rqg?.documentRqidFlags?.id === oldRqid
   ) {
     if (itemData.name === oldEnglishName) {
@@ -44,7 +47,8 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
     });
   }
 
-  if (itemData.type === ItemTypeEnum.Cult) {
+  if (itemData.type === ItemTypeEnum.Cult.toString()) {
+    assertDocumentSubType<CultItem>(itemData, ItemTypeEnum.Cult);
     const commandCultSpiritLink = itemData.system.commonRuneMagicRqidLinks.find(
       (link) => link.rqid === oldRqid,
     );

@@ -89,7 +89,7 @@ export class nameGeneration {
     const chain = new Foswig(3, nameBase.names);
     const nameBaseNotLongEnoughMsg = localize("RQG.Notification.Warn.NameBaseNotLongEnough", {
       rqid: rqid,
-      attempts: mergedConstraints.maxAttempts,
+      attempts: mergedConstraints.maxAttempts.toString(),
     });
 
     const numRolls = num < 1 ? 1 : num;
@@ -124,7 +124,7 @@ export class nameGeneration {
     const compendiumRqids: DocumentRqidFlags[] = [];
     for (const pack of game.packs ?? []) {
       if (pack.documentClass.name === "JournalEntry") {
-        for (const journal of (await pack.getDocuments()) as StoredDocument<JournalEntry>[]) {
+        for (const journal of await pack.getDocuments()) {
           const rqid = journal.getFlag(systemId, documentRqidFlags);
           if (rqid?.id?.startsWith("names-")) {
             compendiumRqids.push(rqid);

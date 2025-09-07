@@ -8,7 +8,7 @@ export type AbilityRollOptions = Partial<Roll.Options> & {
   /** Alternative roll heading, used instead of flavor */
   heading?: string;
   abilityName?: string; // Skill name
-  abilityType?: ItemTypeEnum;
+  abilityType?: keyof typeof ItemTypeEnum;
   abilityImg?: string; // Usually skill item image
   resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // Extra html to display in the roll
   speaker?: ChatMessage.SpeakerData;

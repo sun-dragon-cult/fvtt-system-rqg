@@ -1,6 +1,9 @@
 import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type ArmorItem = RqgItem & { system: ArmorDataPropertiesData };
 
 export const armorTypeTranslationKeys = [
   "RQG.Item.Armor.ArmorType.Hood",
