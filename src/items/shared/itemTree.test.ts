@@ -5,6 +5,8 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { testItems } from "./itemTree.testdata";
 import { mockItemsWithLoop } from "../../mocks/mockItemsForLocationLoop";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
+import { isDocumentSubType } from "../../system/util.ts";
+import type { WeaponItem } from "@item-model/weaponData.ts";
 
 describe("ItemTree", () => {
   beforeEach(() => {});
@@ -21,8 +23,8 @@ describe("ItemTree", () => {
       const itemLocationDataMap = itemTree["itemLocationData"];
       const physicalItemCount = items.filter(
         (item) =>
-          item.system.physicalItemType &&
-          !(item.type === ItemTypeEnum.Weapon && item.system.isNatural),
+          (item.system as any).physicalItemType &&
+          !(isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural),
       ).length;
       const virtualNodeCount = 5; // "", "Belt", "armor", "backen" & "under Armor"
       expect(itemLocationDataMap.size).toBe(physicalItemCount + virtualNodeCount);

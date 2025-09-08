@@ -4,8 +4,9 @@ import { Rqid } from "../../system/api/rqidApi";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 import Document = foundry.abstract.Document;
+import FormApplication = foundry.appv1.api.FormApplication;
 
-export class RqidEditor extends foundry.appv1.api.FormApplication {
+export class RqidEditor extends FormApplication {
   private document: Document.Any;
   constructor(document: Document.Any, options: any) {
     super(document, options);

@@ -1,4 +1,4 @@
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
@@ -18,13 +18,14 @@ import {
 } from "@item-model/IPhysicalItem.ts";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import {
-  assertHtmlElement,
   assertDocumentSubType,
+  assertHtmlElement,
   formatListByWorldLanguage,
   getHTMLElement,
   getItemDocumentTypes,
   getRequiredDomDataset,
   hasOwnProperty,
+  isDocumentSubType,
   isDocumentType,
   isTruthy,
   localize,
@@ -34,7 +35,7 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
-import { type RuneDataSource, RuneTypeEnum } from "@item-model/runeData.ts";
+import { type RuneDataSource, type RuneItem, RuneTypeEnum } from "@item-model/runeData.ts";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
@@ -56,7 +57,7 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
-import { CultRankEnum } from "@item-model/cultData.ts";
+import { type CultItem, CultRankEnum } from "@item-model/cultData.ts";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
@@ -72,6 +73,9 @@ import type { NewCombatant } from "../combat/rqgCombatant.types";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { PassionItem } from "@item-model/passionData.ts";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 // export class RqgActorSheet extends ActorSheet<
@@ -365,9 +369,12 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
   private getMainCultInfo(): MainCult {
     const cults = this.actor.items
-      .filter((i) => i.type === ItemTypeEnum.Cult)
-      .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
-    const mainCultItem: RqgItem | undefined = cults[0];
+      .filter((i: RqgItem) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
+      .sort(
+        (a: CultItem, b: CultItem) =>
+          (b.system.runePoints.max ?? 0) - (a.system.runePoints.max ?? 0),
+      );
+    const mainCultItem = cults[0];
     const mainCultRankTranslation = mainCultItem?.system?.joinedCults.map((c: any) =>
       c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : "",
     );
@@ -382,7 +389,10 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
   private getSpiritMagicPointSum(): number {
     return this.actor.items.reduce((acc: number, item: RqgItem) => {
-      if (item.type === ItemTypeEnum.SpiritMagic && !item.system.isMatrix) {
+      if (
+        isDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic) &&
+        !item.system.isMatrix
+      ) {
         return acc + item.system.points;
       } else {
         return acc;
@@ -410,12 +420,13 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   private getFreeInt(spiritMagicPointSum: number): number {
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     return (
       (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
       this.actor.items.filter(
         (i: RqgItem) =>
-          i.type === ItemTypeEnum.Skill &&
+          isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) &&
           i.system.category === SkillCategoryEnum.Magic &&
           !!i.system.runeRqidLinks?.length,
       ).length
@@ -476,7 +487,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     return this.actor.items
       .reduce((acc: any[], i: RqgItem) => {
         if (
-          isDocumentType(i.type, ItemTypeEnum.Rune) &&
+          isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Element &&
           !!i.system.chance
         ) {
@@ -497,7 +508,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     return this.actor.items
       .reduce((acc: any[], i: RqgItem) => {
         if (
-          isDocumentType(i.type, ItemTypeEnum.Rune) &&
+          isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Power &&
           i.system.chance > 50
         ) {
@@ -518,7 +529,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     return this.actor.items
       .reduce((acc: any[], i: RqgItem) => {
         if (
-          isDocumentType(i.type, ItemTypeEnum.Rune) &&
+          isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Form &&
           (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
         ) {
@@ -542,7 +553,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
    */
   private getHitLocationDiceRangeError(): string {
     const hitLocations = this.actor.items.filter((i) =>
-      isDocumentType(i.type, ItemTypeEnum.HitLocation),
+      isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation),
     );
     if (hitLocations.length === 0) {
       return ""; // No hit locations is a valid state
@@ -566,17 +577,17 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
-    actor.items.forEach((item) => {
+    actor.items.forEach((item: RqgItem) => {
       itemTypes[item.type].push(item);
     });
 
     const currency: any = [];
-    actor.items.forEach((item) => {
-      if (isDocumentType(item.type, ItemTypeEnum.Gear)) {
-        //TODO: Assert that this is Gear or something else that has physicalItemType??
-        if (item.system.physicalItemType === "currency") {
-          currency.push(item);
-        }
+    actor.items.forEach((item: RqgItem) => {
+      if (
+        isDocumentSubType<GearItem>(item, ItemTypeEnum.Gear) &&
+        item.system.physicalItemType === "currency"
+      ) {
+        currency.push(item);
       }
     });
 
@@ -743,24 +754,29 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   private getUiSectionVisibility(): UiSections {
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.system.attributes.hitPoints.max != null ||
-        this.actor.items.some((i) => i.type === ItemTypeEnum.HitLocation),
+        this.actor.items.some((i: RqgItem) =>
+          isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation),
+        ),
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
           (i: RqgItem) =>
-            i.getFlag(systemId, documentRqidFlags)?.id === CONFIG.RQG.skillRqid.dodge ||
-            i.type === ItemTypeEnum.Weapon,
+            isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) ||
+            i.getFlag(systemId, documentRqidFlags)?.id === CONFIG.RQG.skillRqid.dodge,
         ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Rune),
+        this.actor.items.some((i: RqgItem) => isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune)),
       spiritMagic:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.SpiritMagic),
+        this.actor.items.some((i: RqgItem) =>
+          isDocumentSubType<SpiritMagicItem>(i, ItemTypeEnum.SpiritMagic),
+        ),
       runeMagic:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some((i: RqgItem) =>
@@ -770,12 +786,12 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
           (i: RqgItem) =>
-            i.type === ItemTypeEnum.Rune &&
+            isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
             (i.system.isMastered || i.system.runeType.type === RuneTypeEnum.Technique),
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Skill),
+        this.actor.items.some((i: RqgItem) => isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill)),
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
@@ -785,15 +801,20 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
         ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Passion),
+        this.actor.items.some((i: RqgItem) =>
+          isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion),
+        ),
       background: true,
-      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && game.user?.isGM,
+      activeEffects: (CONFIG.RQG.debug.showActorActiveEffectsTab && game.user?.isGM) ?? false,
     };
   }
 
   private async getUnspecifiedSkillText(): Promise<string | undefined> {
     const unspecifiedSkills = this.actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Skill && !!i.name && i.system?.specialization === "...",
+      (i: RqgItem) =>
+        isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) &&
+        !!i.name &&
+        i.system?.specialization === "...",
     );
     if (unspecifiedSkills.length) {
       const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
@@ -831,7 +852,8 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
         .map((r: any) => r.id),
     ].flat(Infinity);
     const extraRunes = this.actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Rune && !validRuneIds.includes(i.id),
+      (i: RqgItem) =>
+        isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) && !validRuneIds.includes(i.id),
     );
     embeddedRunes.invalid = extraRunes;
 
@@ -846,6 +868,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   protected override _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -876,7 +899,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
       }
       if (message) {
         ChatMessage.create({
-          user: game.user!.id,
+          user: game.user?.id,
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
@@ -1185,7 +1208,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
           await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
           // Rerender all actor sheets the user has open
           Object.values(ui.windows).forEach((a: any) => {
-            if (a?.document?.type === ActorTypeEnum.Character) {
+            if (isDocumentSubType<CharacterActor>(a?.document, ActorTypeEnum.Character)) {
               a.render();
             }
           });
@@ -1484,8 +1507,8 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
       ...this.actor
         .getEmbeddedCollection("Item")
         .filter(
-          (i: any) =>
-            i.type === ItemTypeEnum.Weapon &&
+          (i: RqgItem) =>
+            isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) &&
             i.system.isProjectile &&
             i.system.equippedStatus === "equipped",
         )
@@ -1497,7 +1520,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
-    const item = actor.items.get(itemId);
+    const item: RqgItem | undefined = actor.items.get(itemId);
     requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
 
     const itemTypeLoc: string = localizeItemType(item.type);
@@ -1508,7 +1531,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     });
 
     let content: string;
-    if (item.type === ItemTypeEnum.Cult) {
+    if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
       content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
         itemType: itemTypeLoc,
         itemName: item.name,
@@ -1538,10 +1561,12 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     if (await confirmDialog.setButtons(buttons, "cancel").show()) {
       const idsToDelete = [];
-      if (item.type === ItemTypeEnum.Cult) {
+      if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
         const cultId = item.id;
         const runeMagicSpells = actor.items.filter(
-          (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultId,
+          (i: RqgItem) =>
+            isDocumentSubType<RuneMagicItem>(i, ItemTypeEnum.RuneMagic) &&
+            i.system.cultId === cultId,
         );
         runeMagicSpells.forEach((s) => {
           idsToDelete.push(s.id);

@@ -1,8 +1,11 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { localize, RqgError } from "../../system/util";
+import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
 import { RqidLink } from "../../data-model/shared/rqidLink";
+import type { ArmorItem } from "@item-model/armorData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export class HitLocation extends AbstractEmbeddedItem {
   // public static init() {
@@ -13,23 +16,23 @@ export class HitLocation extends AbstractEmbeddedItem {
   // }
 
   public static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
-    if (item.type !== ItemTypeEnum.HitLocation) {
+    if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);
       throw new RqgError(msg, item);
     }
     const actor = item.actor;
-    if (!actor) {
-      const msg = localize("RQG.Item.Notification.HitLocationDoesNotHaveActorError");
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item);
-    }
+    assertDocumentSubType<CharacterActor>(
+      actor,
+      ActorTypeEnum.Character,
+      "RQG.Item.Notification.HitLocationDoesNotHaveActorError",
+    );
     const actorData = actor.system;
 
     // Add equipped armor absorptions for this hit location
-    const armorAbsorption = actor.items.reduce((sum, armorItem) => {
+    const armorAbsorption = actor.items.reduce((sum, armorItem: RqgItem) => {
       if (
-        armorItem.type === ItemTypeEnum.Armor &&
+        isDocumentSubType<ArmorItem>(armorItem, ItemTypeEnum.Armor) &&
         armorItem.system.equippedStatus === "equipped" &&
         armorItem.system.hitLocationRqidLinks.some(
           (l: RqidLink) => l.rqid === item.flags?.rqg?.documentRqidFlags?.id,
@@ -45,7 +48,6 @@ export class HitLocation extends AbstractEmbeddedItem {
     // Calc HP
     const totalHp = actorData.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
     // Remove any healed wounds
-    // @ts-expect-error system
     item.system.wounds = item.system.wounds.filter((w) => w > 0);
 
     item.system.hitPoints.max = HitLocation.hitPointsPerLocation(totalHp, item.system.baseHpDelta);

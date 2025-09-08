@@ -1,5 +1,5 @@
 import type { HitLocationName, HitLocationRollOptions } from "./HitLocationRoll.types";
-import { localize } from "../../system/util";
+import { isDocumentSubType, localize } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
@@ -56,7 +56,7 @@ export class HitLocationRoll extends Roll {
 
     return (
       actor?.items
-        .filter((i: RqgItem) => i.type === ItemTypeEnum.HitLocation.toString())
+        .filter((i: RqgItem) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
         .map((hl: HitLocationItem) => ({
           dieFrom: hl.system.dieFrom,
           dieTo: hl.system.dieTo,

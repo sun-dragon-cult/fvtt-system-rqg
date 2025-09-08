@@ -1,5 +1,6 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { ArmorItem } from "@item-model/armorData.ts";
+import { isDocumentSubType } from "../../util.ts";
 
 // Dummy placeholder item Migrator.
 // Note that all updates will be done in one update, so if one migration changes an item name,
@@ -7,7 +8,7 @@ import type { ArmorItem } from "@item-model/armorData.ts";
 export async function migrateItemDummy(itemData: ArmorItem): Promise<Item.UpdateData> {
   let updateData = {};
   // eslint-disable-next-line
-  if (false && itemData.type === ItemTypeEnum.Armor.toString()) {
+  if (false && isDocumentSubType<ArmorItem>(itemData, ItemTypeEnum.Armor)) {
     updateData = {
       name: "newName",
       system: {

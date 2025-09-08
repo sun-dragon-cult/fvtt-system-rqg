@@ -5,6 +5,7 @@ import {
   getDomDataset,
   getDomDatasetAmongSiblings,
   getRequiredDomDataset,
+  isDocumentSubType,
   localize,
   localizeItemType,
   RqgError,
@@ -90,7 +91,7 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
-      return !!(item && item.type === ItemTypeEnum.Skill.toString());
+      return isDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");

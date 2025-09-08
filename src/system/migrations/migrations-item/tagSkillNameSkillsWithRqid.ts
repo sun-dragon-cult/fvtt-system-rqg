@@ -1,10 +1,13 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { isDocumentSubType } from "../../util.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.
-export async function tagSkillNameSkillsWithRqid(itemData: Item): Promise<Item.UpdateData> {
+export async function tagSkillNameSkillsWithRqid(itemData: RqgItem): Promise<Item.UpdateData> {
   let updateData = {};
   if (
-    itemData.type === ItemTypeEnum.Skill.toString() &&
+    isDocumentSubType<SkillItem>(itemData, ItemTypeEnum.Skill) &&
     [...name2Rqid.keys()].includes(itemData.name)
   ) {
     updateData = {

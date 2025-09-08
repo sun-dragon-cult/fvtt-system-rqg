@@ -4,7 +4,8 @@ import { getLocationRelatedUpdates } from "./physicalItemUtil";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
 import { ItemTree } from "./ItemTree";
-import { mergeArraysById } from "../../system/util";
+import { isDocumentSubType, mergeArraysById } from "../../system/util";
+import type { WeaponItem } from "@item-model/weaponData.ts";
 
 describe("getLocationRelatedUpdates", () => {
   describe("equipped status change", () => {
@@ -177,7 +178,7 @@ describe("getLocationRelatedUpdates", () => {
       const targetContainerName = "Riding Horse";
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
       const changedItem = items.find(
-        (i) => i.name === "Dagger" && i.type === ItemTypeEnum.Weapon,
+        (i) => i.name === "Dagger" && isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon),
       ) as RqgItem;
       const targetContainer = items.find((i) => i.name === targetContainerName);
       const updates = [

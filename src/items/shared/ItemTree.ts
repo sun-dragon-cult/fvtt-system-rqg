@@ -1,7 +1,13 @@
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { LocationItemNode, type LocationItemNodeData } from "./locationItemNode";
-import { formatListByUserLanguage, isDefined, localize } from "../../system/util";
+import {
+  formatListByUserLanguage,
+  isDefined,
+  isDocumentSubType,
+  localize,
+} from "../../system/util";
+import type { WeaponItem } from "@item-model/weaponData.ts";
 
 export class ItemTree {
   /** Map container name to a list of content names */
@@ -16,8 +22,8 @@ export class ItemTree {
   constructor(items: RqgItem[]) {
     const physicalItems = items.filter(
       (item) =>
-        item.system.physicalItemType &&
-        !(item.type === ItemTypeEnum.Weapon && item.system.isNatural),
+        (item.system as any).physicalItemType &&
+        !(isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural),
     );
 
     // Items that only exist because another item has a location that references it

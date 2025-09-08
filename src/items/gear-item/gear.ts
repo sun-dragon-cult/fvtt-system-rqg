@@ -3,6 +3,8 @@ import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
+import { isDocumentSubType } from "../../system/util.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 
 export class Gear extends AbstractEmbeddedItem {
   // public static init() {
@@ -19,7 +21,7 @@ export class Gear extends AbstractEmbeddedItem {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
   ): void {
-    if (gear.type === ItemTypeEnum.Gear) {
+    if (isDocumentSubType<GearItem>(gear, ItemTypeEnum.Gear)) {
       updates.push(...getLocationRelatedUpdates(actor.items.contents, gear, updates));
     }
   }

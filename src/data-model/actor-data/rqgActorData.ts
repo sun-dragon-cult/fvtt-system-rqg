@@ -27,12 +27,12 @@ export interface CharacterDataPropertiesData extends CharacterDataSourceData {
 }
 
 export interface CharacterDataSource {
-  type: "character";
+  type: ActorTypeEnum.Character;
   system: CharacterDataSourceData;
 }
 
 export interface CharacterDataProperties {
-  type: "character";
+  type: ActorTypeEnum.Character;
   system: CharacterDataPropertiesData;
 }
 

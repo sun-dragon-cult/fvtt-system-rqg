@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { assertDocumentSubType } from "../../system/util";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import type { RuneItem } from "@item-model/runeData.ts";
 
 export class Rune extends AbstractEmbeddedItem {
@@ -20,7 +20,7 @@ export class Rune extends AbstractEmbeddedItem {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
   ): void {
-    if (rune.type === ItemTypeEnum.Rune) {
+    if (isDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune)) {
       const chanceResult = updates.find(
         (r) => r["system.chance"] != null || r?.system?.chance != null,
       );

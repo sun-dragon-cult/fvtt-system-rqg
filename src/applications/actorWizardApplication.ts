@@ -21,6 +21,8 @@ import type { RqgActor } from "../actors/rqgActor";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { RuneItem } from "@item-model/runeData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
+import type { HomelandItem } from "@item-model/homelandData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 
 export class ActorWizard extends foundry.appv1.api.FormApplication {
   actor: RqgActor;
@@ -140,9 +142,9 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         worldLanguage,
       )) as RqgItem[];
       this.homeland.homelandOptions = homelands
-        .filter((i) => i.type === ItemTypeEnum.Homeland)
+        .filter((i) => isDocumentSubType<HomelandItem>(i, ItemTypeEnum.Homeland))
         .map((homelandItem) => ({
-          value: homelandItem.getFlag(systemId, "documentRqidFlags.id") ?? "",
+          value: homelandItem.getFlag(systemId, "documentRqidFlags").id ?? "",
           label: homelandItem.name ?? "",
         }));
 
@@ -468,27 +470,27 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     // Delete existing hit locations from actor
     const existingHitLocationIds = this.actor.items
-      .filter((h) => h.type === ItemTypeEnum.HitLocation)
-      .map((h) => h.id)
+      .filter((h: RqgItem) => isDocumentSubType<HitLocationItem>(h, ItemTypeEnum.HitLocation))
+      .map((h: HitLocationItem) => h.id)
       .filter((h): h is string => h !== null);
     await this.actor.deleteEmbeddedDocuments("Item", existingHitLocationIds);
 
     // add hit locations from template to actor
-    const addHitLocations = this.species.selectedSpeciesTemplate?.items.filter(
-      (h) => h.type === ItemTypeEnum.HitLocation,
+    const addHitLocations = this.species.selectedSpeciesTemplate?.items.filter((h) =>
+      isDocumentSubType<HitLocationItem>(h, ItemTypeEnum.HitLocation),
     );
     if (addHitLocations) {
       await this.actor.createEmbeddedDocuments("Item", addHitLocations);
     }
 
-    this.species.selectedSpeciesTemplate?.items.forEach((i) => {
+    this.species.selectedSpeciesTemplate?.items.forEach((i: RqgItem) => {
       const rqidFlags = i.getFlag(systemId, documentRqidFlags);
       if (!rqidFlags?.id) {
         console.warn("NO RQID!", i);
         return; // TODO How should this be handled?
       }
 
-      if (i.type === ItemTypeEnum.Skill) {
+      if (isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill)) {
         const skillData = i.system;
         if (!this.choices[rqidFlags.id]) {
           // Adding a new choice that hasn't existed before so it should be checked.
@@ -504,9 +506,12 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
           }
         }
       }
-      if (i.type === ItemTypeEnum.Rune || i.type === ItemTypeEnum.Passion) {
+      if (
+        isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) ||
+        isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion)
+      ) {
         // Rune or Passion
-        const abilityData = i.system as IAbility;
+        const abilityData = i.system;
         if (this.choices[rqidFlags.id] === undefined) {
           // Adding a new choice that hasn't existed before so it should be checked.
           this.choices[rqidFlags.id] = new CreationChoice();
@@ -822,7 +827,7 @@ class CreationChoice {
 
   totalValue = () => {
     let result: number = 0;
-    if (this.type === ItemTypeEnum.Passion) {
+    if (isDocumentSubType<PassionItem>(this as any, ItemTypeEnum.Passion)) {
       // The first instance of a Passion is worth 60% and each additional one is worth +10%
       if (this.speciesPresent) {
         result += 10;

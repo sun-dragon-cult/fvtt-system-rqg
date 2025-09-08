@@ -199,7 +199,7 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
   itemOrActorType: string | ItemTypeEnum | ActorTypeEnum | undefined | null,
   errorMsg?: string,
 ): asserts document is T {
-  if (!document || (document as any).type !== itemOrActorType?.toString()) {
+  if (!!document && (document as any).type === itemOrActorType?.toString()) {
     const msg = errorMsg
       ? localize(errorMsg)
       : `Got unexpected document type in assert, ${itemOrActorType} ≠ ${(document as any).type}`;
@@ -208,11 +208,14 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
   }
 }
 
+/**
+ * Check if document is defined, has the correct type and narrow to the T type.
+ */
 export function isDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
   document: Document.WithSubTypes | RqgItem | RqgActor | undefined,
   itemType: string | ItemTypeEnum | undefined,
 ): document is T {
-  return !document || (document as any).type !== itemType?.toString();
+  return !!document && (document as any).type === itemType?.toString();
 }
 
 /**

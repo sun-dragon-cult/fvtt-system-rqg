@@ -4,7 +4,7 @@ import {
   StandardOfLivingEnum,
 } from "@item-model/occupationData.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { assertHtmlElement, getDomDataset, localize } from "../../system/util";
+import { assertHtmlElement, getDomDataset, isDocumentSubType, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
@@ -13,6 +13,8 @@ import { RqidLink } from "../../data-model/shared/rqidLink";
 import type { DocumentSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { HomelandItem } from "@item-model/homelandData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
 
 export interface OccupationSheetData {
   homelandsJoined: string;
@@ -209,7 +211,7 @@ export class OccupationSheet extends RqgItemSheet {
       return false;
     }
 
-    if (droppedItem.type === ItemTypeEnum.Homeland) {
+    if (isDocumentSubType<HomelandItem>(droppedItem, ItemTypeEnum.Homeland)) {
       // For this one we're just saving the name of the homeland, without the region
       // to an array of strings.
       const homelands = this.item.system.homelands;
@@ -232,7 +234,7 @@ export class OccupationSheet extends RqgItemSheet {
       return [this.item];
     }
 
-    if (droppedItem.type === ItemTypeEnum.Skill) {
+    if (isDocumentSubType<SkillItem>(droppedItem, ItemTypeEnum.Skill)) {
       // Skills require special handling here (rather than in RqgItemSheet) because
       // we will associate the skill with a bonus
       const droppedRqid = droppedItem.getFlag(systemId, documentRqidFlags);

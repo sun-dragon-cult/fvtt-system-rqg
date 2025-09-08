@@ -13,6 +13,7 @@ import {
   assertDocumentSubType,
   getSpeakerFromItem,
   hasOwnProperty,
+  isDocumentSubType,
   localize,
   requireValue,
   RqgError,
@@ -45,6 +46,11 @@ import type { GearItem } from "@item-model/gearData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+import type { CultItem } from "@item-model/cultData.ts";
+
+import Document = foundry.abstract.Document;
+import type { PassionItem } from "@item-model/passionData.ts";
 
 export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {
   public static init() {
@@ -467,7 +473,12 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * is used in the books. The "1+" syntax for stackable rune magic is used
    */
   get spellSignature(): string {
-    if (!hasOwnProperty(this.system, "points")) {
+    if (
+      // TODO should be possible to make this check cleaner and check for Spell Item
+      !isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) ||
+      !isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic)
+    ) {
+      // if (!hasOwnProperty(this.system, "points")) {
       console.error("RQG | Tried to get spellSignature on a non spell item");
       return "";
     }
@@ -509,19 +520,22 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       );
       const durationTranslation = localize("RQG.Item.SpiritMagic.Duration");
       const translation =
-        this.system.duration === SpellRangeEnum.Special
+        this.system.duration === SpellRangeEnum.Special.toString() // TODO bug??? compares duration with range
           ? `${durationTranslation} (${durationValueTranslation.toLowerCase()})`
           : durationValueTranslation;
       descriptionParts.push(translation);
     }
 
-    if (this.system.concentration && this.type === ItemTypeEnum.SpiritMagic) {
+    if (
+      isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) &&
+      this.system.concentration
+    ) {
       descriptionParts.push(
         localize("RQG.Item.Spell.ConcentrationEnum." + this.system.concentration),
       );
     }
 
-    if (this.system.isOneUse && this.type === ItemTypeEnum.RuneMagic) {
+    if (this.system.isOneUse && isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic)) {
       descriptionParts.push(localize("RQG.Item.RuneMagic.OneUse"));
     }
 
@@ -529,7 +543,8 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
   }
 
   override async _preCreate(data: any, options: any, user: User): Promise<void> {
-    if (this.parent && this.type === ItemTypeEnum.Skill) {
+    if (this.parent && isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill)) {
+      assertDocumentSubType<CharacterActor>(this.parent, ActorTypeEnum.Character);
       // Update the baseChance for Dodge & Jump skills that depend on actor DEX
       const itemRqid = this.getFlag(systemId, "documentRqidFlags")?.id;
       const actorDex = this.parent.system.characteristics.dexterity.value ?? 0;
@@ -568,7 +583,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
         },
       };
 
-      if (itemData.type === ItemTypeEnum.Passion) {
+      if (isDocumentSubType<PassionItem>(itemData, ItemTypeEnum.Passion)) {
         updateData.system = { subject: itemData.name };
       }
 
@@ -620,16 +635,15 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
 
   // Validate that embedded runeMagic can be connected to a cult
   private static isRuneMagicWithoutCult(document: any): boolean {
-    const isRuneMagic = document.type === ItemTypeEnum.RuneMagic;
-    const actorHasCult = document.parent.items.some((i: RqgItem) => i.type === ItemTypeEnum.Cult);
+    const isRuneMagic = isDocumentSubType<RuneMagicItem>(document, ItemTypeEnum.RuneMagic);
+    const actorHasCult: boolean = document.parent.items.some((i: RqgItem) =>
+      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult),
+    );
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
   }
 
   // Typeguards
-  isType<T>(typeEnum: ItemTypeEnum): this is T {
-    return this.type === typeEnum.toString();
-  }
 
   // assertType<T>(typeEnum: ItemTypeEnum, errorMsg?: string): asserts this is T {
   //   if (!this.isType<T>(typeEnum)) {

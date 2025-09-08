@@ -3,8 +3,8 @@ import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { RqgItem } from "../rqgItem";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getDomDataset, localize } from "../../system/util";
-import { type DamageType, damageTypeOptions } from "@item-model/weaponData.ts";
+import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
+import { type DamageType, damageTypeOptions, type WeaponItem } from "@item-model/weaponData.ts";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
@@ -85,8 +85,7 @@ export class WeaponSheet extends RqgItemSheet {
         { value: "", label: "---" },
         ...this.actor!.getEmbeddedCollection("Item")
           .filter(
-            // @ts-expect-error system
-            (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile,
+            (i) => isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) && i.system.isProjectile,
           )
           .map((i) => ({ value: i.id ?? "", label: i.name ?? "" })),
       ];

@@ -3,6 +3,8 @@ import { systemId } from "./config";
 import { defaultItemIconsObject } from "./settings/defaultItemIcons";
 import TokenRulerSettings from "../applications/settings/tokenRulerSettings";
 import { defaultTokenRulerSettings } from "./settings/defaultTokenRulerSettings";
+import { isDocumentSubType } from "./util.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 export const registerRqgSystemSettings = function () {
   game.settings?.register(systemId, "worldLanguage", {
@@ -35,7 +37,7 @@ export const registerRqgSystemSettings = function () {
     // Rerender all actor sheets the user has open
     onChange: () => {
       Object.values(ui.windows).forEach((a: any) => {
-        if (a?.document?.type === "character") {
+        if (isDocumentSubType<CharacterActor>(a?.document, ActorTypeEnum.Character)) {
           a.render();
         }
       });

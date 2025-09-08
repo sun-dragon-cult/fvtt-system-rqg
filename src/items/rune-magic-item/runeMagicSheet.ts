@@ -1,10 +1,12 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { getSelectRuneOptions } from "../../system/util";
+import { getSelectRuneOptions, isDocumentSubType } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { CultItem } from "@item-model/cultData.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 
 interface RuneMagicSheetData {
   allRuneOptions: SelectOptionData<string>[];
@@ -61,7 +63,7 @@ export class RuneMagicSheet extends RqgItemSheet {
     return (
       this.actor
         ?.getEmbeddedCollection("Item")
-        .filter((i: any) => i.type === ItemTypeEnum.Cult)
+        .filter((i: RqgItem) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
         .map((c) => ({
           value: c.id ?? "",
           label: c.name ?? "",

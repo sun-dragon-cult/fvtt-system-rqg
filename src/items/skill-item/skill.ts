@@ -1,7 +1,7 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { assertDocumentSubType } from "../../system/util";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { systemId } from "../../system/config";
 import type { ArmorItem } from "@item-model/armorData.ts";
@@ -42,7 +42,8 @@ export class Skill extends AbstractEmbeddedItem {
         ...actor.items
           .filter(
             (i: RqgItem) =>
-              i.isType<ArmorItem>(ItemTypeEnum.Armor) && i.system.equippedStatus === "equipped",
+              isDocumentSubType<ArmorItem>(i, ItemTypeEnum.Armor) &&
+              i.system.equippedStatus === "equipped",
           )
           .map((a: any) => Math.abs(a.system.moveQuietlyPenalty)),
       );

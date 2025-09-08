@@ -1,9 +1,18 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { systemId } from "../config";
-import { getAvailableRunes, localize, RqgError, toKebabCase, trimChars } from "../util";
+import {
+  getAvailableRunes,
+  isDocumentSubType,
+  localize,
+  RqgError,
+  toKebabCase,
+  trimChars,
+} from "../util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 
 import Document = foundry.abstract.Document;
+import type { SkillItem } from "@item-model/skillData.ts";
+import type { ArmorItem } from "@item-model/armorData.ts";
 
 // TODO Look into enhancing typing of rqid strings like this
 export type RqidString =
@@ -227,7 +236,7 @@ export class Rqid {
   /**
    * Given a Document, create a valid rqid string for the document.
    */
-  public static getDefaultRqid(document: Document.Any): string {
+  public static getDefaultRqid(document: Document.WithSubTypes): string {
     if (!document.name) {
       return "";
     }
@@ -237,13 +246,13 @@ export class Rqid {
     let rqidIdentifier = "";
 
     if (document instanceof Item) {
-      if (document.type === ItemTypeEnum.Skill) {
+      if (isDocumentSubType<SkillItem>(document, ItemTypeEnum.Skill)) {
         rqidIdentifier = trimChars(
           toKebabCase(`${document.system.skillName ?? ""}-${document.system.specialization ?? ""}`),
           "-",
         );
       }
-      if (document.type === ItemTypeEnum.Armor) {
+      if (isDocumentSubType<ArmorItem>(document, ItemTypeEnum.Armor)) {
         rqidIdentifier = trimChars(
           toKebabCase(
             `${document.system.namePrefix ?? ""}-${document.system.armorType ?? ""}-${
@@ -635,7 +644,7 @@ export class Rqid {
   /**
    * Get the first part of a rqid (like "i") from a Document.
    */
-  private static getRqidDocumentName(document: Document.Any): string {
+  private static getRqidDocumentName(document: Document.WithSubTypes): string {
     const documentString = Rqid.rqidDocumentNameLookup[document.documentName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";

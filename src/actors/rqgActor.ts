@@ -7,6 +7,7 @@ import {
   assertDocumentSubType,
   getTokenFromActor,
   hasOwnProperty,
+  isDocumentSubType,
   localize,
   localizeCharacteristic,
   requireValue,
@@ -263,7 +264,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   public getBodyType(): string {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
-      .filter((i: RqgItem) => i.isType<HitLocationItem>(ItemTypeEnum.HitLocation))
+      .filter((i: RqgItem) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
       .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
     if (
       CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
@@ -313,8 +314,8 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     attackSuccessLevel?: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
     const damagedHitLocation = this.items.find(
-      (i) =>
-        i.type === ItemTypeEnum.HitLocation &&
+      (i: RqgItem) =>
+        isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
         hitLocationRollTotal >= i.system.dieFrom &&
         hitLocationRollTotal <= i.system.dieTo,
     );

@@ -3,6 +3,7 @@ import { RqgItem } from "../rqgItem";
 import { RqgActor } from "@actors/rqgActor.ts";
 import {
   assertDocumentSubType,
+  isDocumentSubType,
   localize,
   logMisconfiguration,
   mergeArraysById,
@@ -30,7 +31,7 @@ export class Weapon extends AbstractEmbeddedItem {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     options: any,
   ): void {
-    if (weapon.type === ItemTypeEnum.Weapon.toString()) {
+    if (isDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon)) {
       mergeArraysById(updates, getLocationRelatedUpdates(actor.items.contents, weapon, updates));
     }
   }

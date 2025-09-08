@@ -1,9 +1,10 @@
 import { RqgActor } from "../actors/rqgActor";
-import { convertFormValueToString, localize } from "../system/util";
+import { convertFormValueToString, isDocumentSubType, localize } from "../system/util";
 import { systemId } from "../system/config";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { CultRankEnum } from "@item-model/cultData.ts";
+import { type CultItem, CultRankEnum } from "@item-model/cultData.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import type { RqgItem } from "@items/rqgItem.ts";
 
 //**Shows a dialog for improving a Characteristic */
 export async function showImproveCharacteristicDialog(
@@ -24,8 +25,8 @@ export async function showImproveCharacteristicDialog(
   const speciesMax = speciesRollableMax + speciesMin;
   // Priests & God-talkers get a 20% bonus, p276 & p278
   const cultStandingBonus = actor.items.some(
-    (i) =>
-      i.type === ItemTypeEnum.Cult &&
+    (i: RqgItem) =>
+      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
       i.system.joinedCults.some((c: any) =>
         [
           CultRankEnum.GodTalker,
