@@ -78,7 +78,9 @@ export class SpiritMagicRoll extends Roll {
     const mpCost = o.levelUsed + (o.magicPointBoost ?? 0);
     const mpDrawn = this.successLevel! <= AbilitySuccessLevelEnum.Success ? mpCost : 0;
     return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRollTooltip, {
-      magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", { cost: mpDrawn }),
+      magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", {
+        cost: mpDrawn.toString(),
+      }),
       powX5: o.powX5,
       modifiers: nonzeroSignedModifiers,
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,

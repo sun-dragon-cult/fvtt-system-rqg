@@ -28,7 +28,7 @@ export async function handleDefence(clickedButton: HTMLButtonElement): Promise<v
   const { chatMessageId, attackWeaponUuid } = await getChatMessageInfo(clickedButton);
 
   const attackingWeapon = (await fromUuid(attackWeaponUuid)) as RqgItem | undefined;
-  assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
+  assertDocumentSubType<WeaponItem>(attackingWeapon, [ItemTypeEnum.Weapon]);
   await new DefenceDialogV2({
     chatMessageId: chatMessageId,
   }).render(true);

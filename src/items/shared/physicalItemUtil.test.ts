@@ -1,11 +1,12 @@
 import { RqgItem } from "../rqgItem";
 import { mockItems } from "../../mocks/mockLocationItems";
 import { getLocationRelatedUpdates } from "./physicalItemUtil";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
 import { ItemTree } from "./ItemTree";
 import { isDocumentSubType, mergeArraysById } from "../../system/util";
 import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 
 describe("getLocationRelatedUpdates", () => {
   describe("equipped status change", () => {
@@ -99,7 +100,7 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should change all items contained in the same virtual container tree", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
       const nestedItems = items.map((i) => {
         // virtual <- A <- B <- C <-  D
         if (i.name === "B") {
@@ -148,7 +149,7 @@ describe("getLocationRelatedUpdates", () => {
     it("should change a single location to a virtual item", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
-      const changedItem = items.find((i) => i.name === "Broad-brimmed Hat  (Leather)") as RqgItem;
+      const changedItem = items.find((i) => i.name === "Broad-brimmed Hat  (Leather)") as GearItem;
       const updates = [
         {
           _id: changedItem.id,
@@ -179,8 +180,10 @@ describe("getLocationRelatedUpdates", () => {
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
       const changedItem = items.find(
         (i) => i.name === "Dagger" && isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon),
-      ) as RqgItem;
-      const targetContainer = items.find((i) => i.name === targetContainerName);
+      ) as WeaponItem;
+      const targetContainer: GearItem | undefined = items.find(
+        (i) => i.name === targetContainerName,
+      ) as GearItem;
       const updates = [
         {
           "system.location": targetContainerName,
@@ -271,7 +274,7 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should assign correct equippedStatus to the virtual node if it is new", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
       const changedItem = items.find((i) => i.name === "C") as RqgItem;
       const updates = [
         {
@@ -310,12 +313,12 @@ describe("getLocationRelatedUpdates", () => {
       ]);
 
       expect(virtualNode?.equippedStatus).toStrictEqual("carried");
-      expect(virtualNode?.equippedStatus).toStrictEqual(virtualNode?.contains[0].equippedStatus);
+      expect(virtualNode?.equippedStatus).toStrictEqual(virtualNode?.contains[0]?.equippedStatus);
     });
 
     it("should return other item ids that are in same virtual location for nested items", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
       const nestedItems = items.map((i) => {
         if (i.name === "B") {
           i.system.location = "A";

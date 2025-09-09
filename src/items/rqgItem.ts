@@ -1,5 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
+import { type AbilityItem, ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -10,6 +10,7 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
+  assertDefined,
   assertDocumentSubType,
   getSpeakerFromItem,
   hasOwnProperty,
@@ -176,6 +177,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
+    assertDocumentSubType<AbilityItem>(this, [ItemTypeEnum.Skill]);
 
     const chance: number = Number(this.system.chance) || 0; // Handle NaN
 
@@ -199,7 +201,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open a dialog for a SpiritMagicRoll
    */
   public async spiritMagicRoll(): Promise<void> {
-    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
+    assertDocumentSubType<SpiritMagicItem>(this, [ItemTypeEnum.SpiritMagic]);
     await new SpiritMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
@@ -211,9 +213,9 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       levelUsed: (this as SpiritMagicItem).system.points,
     },
   ): Promise<void> {
-    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
+    assertDocumentSubType<SpiritMagicItem>(this, [ItemTypeEnum.SpiritMagic]);
     const actor = this.actor;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character], "Item is not embedded");
 
     const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
@@ -238,7 +240,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open a dialog for a RuneMagicRoll
    */
   public async runeMagicRoll(): Promise<void> {
-    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
+    assertDocumentSubType<RuneMagicItem>(this, [ItemTypeEnum.RuneMagic]);
     await new RuneMagicRollDialogV2({ spellItem: this }).render(true);
   }
 
@@ -246,10 +248,10 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
    */
   public async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
-    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
+    assertDocumentSubType<RuneMagicItem>(this, [ItemTypeEnum.RuneMagic]);
 
     const actor = this.parent;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character], "Item is not embedded");
 
     const cult = actor.items.find((i: RqgItem) => i.id === this.system.cultId);
     if (!cult) {
@@ -300,7 +302,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open an attackDialog to initiate an attack sequence
    */
   public async attack(): Promise<void> {
-    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(this, [ItemTypeEnum.Weapon]);
     await new AttackDialogV2({ weaponItem: this }).render(true);
   }
 
@@ -317,7 +319,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     if (!usage) {
       return undefined;
     }
-    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(this, [ItemTypeEnum.Weapon]);
     const weaponDamage = this.system.usage[usage].damage;
 
     requireValue(
@@ -452,7 +454,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
             { _id: this.id, system: { hasExperience: true } },
           ]);
           const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-            actorName: this.actor?.name,
+            actorName: this.actor?.name ?? "",
             itemName: this.name,
           });
           ui.notifications?.info(msg);
@@ -461,7 +463,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     } else {
       const msg = localize("RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError", {
         itemName: this.name,
-        itemId: this.id,
+        itemId: this.id ?? "",
       });
       ui.notifications?.error(msg, { console: false });
       console.error(msg);
@@ -544,7 +546,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
 
   override async _preCreate(data: any, options: any, user: User): Promise<void> {
     if (this.parent && isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill)) {
-      assertDocumentSubType<CharacterActor>(this.parent, ActorTypeEnum.Character);
+      assertDocumentSubType<CharacterActor>(this.parent, [ActorTypeEnum.Character]);
       // Update the baseChance for Dodge & Jump skills that depend on actor DEX
       const itemRqid = this.getFlag(systemId, "documentRqidFlags")?.id;
       const actorDex = this.parent.system.characteristics.dexterity.value ?? 0;

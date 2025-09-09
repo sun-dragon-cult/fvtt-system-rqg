@@ -1,12 +1,13 @@
 import { RqgItem } from "../rqgItem";
 import { ItemTree } from "./ItemTree";
 import { mockItems } from "../../mocks/mockLocationItems";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { testItems } from "./itemTree.testdata";
 import { mockItemsWithLoop } from "../../mocks/mockItemsForLocationLoop";
 import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
 import { isDocumentSubType } from "../../system/util.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 
 describe("ItemTree", () => {
   beforeEach(() => {});
@@ -199,9 +200,9 @@ describe("ItemTree", () => {
     it.skip("should complain if items contain a simple loop", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
-      const horse = items.find((i) => i.name === "Riding Horse");
+      const horse = items.find((i) => i.name === "Riding Horse") as GearItem;
       if (!horse) {
-        fail("Arrange error, could not find Riding Horse");
+        expect.fail("Arrange error, could not find Riding Horse");
       }
       horse.system.location = "Backpack"; // Put the horse in the backpack to create a loop
 
@@ -531,7 +532,7 @@ describe("ItemTree", () => {
 
     it("should not return ids of virtual items", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
       const nestedItems = items.map((i) => {
         if (i.name === "B") {
           i.system.location = "A";

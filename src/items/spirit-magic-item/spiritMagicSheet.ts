@@ -2,7 +2,6 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
-import { RqgItem } from "../rqgItem";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -58,7 +57,7 @@ export class SpiritMagicSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     // Set a concentration value if there isn't one already
     if (formData["system.duration"] === SpellDurationEnum.Temporal) {
       formData["system.concentration"] = formData["system.concentration"]

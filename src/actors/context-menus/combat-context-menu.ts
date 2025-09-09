@@ -23,7 +23,7 @@ export const combatMenuOptions = (
     callback: async (el: JQuery) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = actor.getEmbeddedDocument("Item", weaponItemId, {});
-      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
+      assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
       await weapon?.attack();
     },
   },

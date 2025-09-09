@@ -35,8 +35,8 @@ export class HealingCalculations {
     hitLocation: RqgItem,
     actor: RqgActor,
   ): HealingEffects {
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
-    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
     const healingEffects: HealingEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},

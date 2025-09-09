@@ -28,7 +28,7 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
         item.system.category,
       );
@@ -36,7 +36,7 @@ export const skillMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       await item.abilityRoll();
     },
   },
@@ -46,7 +46,7 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
         item.system.category,
       );
@@ -54,7 +54,7 @@ export const skillMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       const itemChance = item.system.chance;
       if (itemChance == null) {
         const msg = localize("RQG.ContextMenu.Notification.CantRollQuickSkillError", {
@@ -73,13 +73,13 @@ export const skillMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       return item.system.canGetExperience;
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       await item.update({ system: { hasExperience: !item.system.hasExperience } }, {});
     },
   },
@@ -95,10 +95,10 @@ export const skillMenuOptions = (
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+      assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
 
       const item: Document.Any | undefined = actor.items.get(itemId);
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
 
       const speaker = ChatMessage.getSpeaker({ actor, token });
       await showImproveAbilityDialog(item, speaker);
@@ -127,7 +127,7 @@ export const skillMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       if (!item.sheet) {
         const msg = `Couldn't find sheet on [${item.name}] on actor ${actor.name} to edit the skill item from the skill context menu`;
         ui.notifications?.error(msg);

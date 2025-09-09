@@ -58,9 +58,9 @@ export async function combatOutcome(
     "Tried to calculate combat outcome without an evaluated attack roll",
   );
 
-  assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
+  assertDocumentSubType<WeaponItem>(attackingWeapon, [ItemTypeEnum.Weapon]);
   if (parryingWeapon != null) {
-    assertDocumentSubType<WeaponItem>(parryingWeapon, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(parryingWeapon, [ItemTypeEnum.Weapon]);
   }
 
   const defenceSuccessLevel = defenceRoll?.successLevel ?? AbilitySuccessLevelEnum.Failure;
@@ -100,7 +100,7 @@ export async function combatOutcome(
     return createEmptyCombatOutcome();
   }
   requireValue(usage, "No weapon usage for combatOutcome calculations");
-  assertDocumentSubType<WeaponItem>(weaponDoingDamage, ItemTypeEnum.Weapon);
+  assertDocumentSubType<WeaponItem>(weaponDoingDamage, [ItemTypeEnum.Weapon]);
 
   const weaponDoingDamageDamageType =
     weaponDoingDamageDesignation === "attackingWeapon"

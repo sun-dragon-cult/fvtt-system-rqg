@@ -26,7 +26,6 @@ import {
   getRequiredDomDataset,
   hasOwnProperty,
   isDocumentSubType,
-  isDocumentType,
   isTruthy,
   localize,
   localizeItemType,
@@ -76,6 +75,8 @@ import type { GearItem } from "@item-model/gearData.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
+import type { OccupationItem } from "@item-model/occupationData.ts";
+import type { ArmorItem } from "@item-model/armorData.ts";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 // export class RqgActorSheet extends ActorSheet<
@@ -337,11 +338,12 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   private calcCurrencyTotals(): any {
     const currency: RqgItem[] = this.actor.items.filter(
       (i: RqgItem) =>
-        isDocumentType(i.type, ItemTypeEnum.Gear) && i.system.physicalItemType === "currency",
+        isDocumentSubType<GearItem>(i, [ItemTypeEnum.Gear]) &&
+        i.system.physicalItemType === "currency",
     );
     const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
     currency.forEach((curr) => {
-      assertDocumentSubType<GearItem>(curr, ItemTypeEnum.Gear);
+      assertDocumentSubType<GearItem>(curr, [ItemTypeEnum.Gear]);
       result.quantity += Number(curr.system.quantity);
       result.price.real += curr.system.price.real * curr.system.quantity;
       result.price.estimated += curr.system.price.estimated * curr.system.quantity;
@@ -420,7 +422,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   private getFreeInt(spiritMagicPointSum: number): number {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(this.actor, [ActorTypeEnum.Character]);
     return (
       (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
@@ -575,7 +577,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
    * TODO Fix the typing
    */
   public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
     const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
     actor.items.forEach((item: RqgItem) => {
       itemTypes[item.type].push(item);
@@ -699,7 +701,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Add weapon data
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
-      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
+      assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
 
       const usages = weapon.system.usage;
       const actorStr = actor.system.characteristics.strength.value ?? 0;
@@ -754,7 +756,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   private getUiSectionVisibility(): UiSections {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(this.actor, [ActorTypeEnum.Character]);
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -868,7 +870,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   protected override _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(this.actor, [ActorTypeEnum.Character]);
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -923,7 +925,6 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
       this,
       html,
       ".characteristic.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token),
       { jQuery: false },
     );
@@ -1109,11 +1110,11 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId, {});
-      assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
+      assertDocumentSubType<RuneMagicItem>(runeMagicItem, [ItemTypeEnum.RuneMagic]);
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
-        assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
+        assertDocumentSubType<RuneMagicItem>(runeMagicItem, [ItemTypeEnum.RuneMagic]);
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
@@ -1175,7 +1176,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = this.actor.items.get(weaponItemId);
-      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
+      assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
@@ -1668,7 +1669,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
       return this._onSortItem(event, itemData) ?? false;
     }
 
-    if (isDocumentType(item.type, ItemTypeEnum.Occupation)) {
+    if (isDocumentSubType<OccupationItem>(item, ItemTypeEnum.Occupation)) {
       if (!hasRqid(item)) {
         return false;
       }
@@ -1694,9 +1695,9 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     }
 
     if (
-      isDocumentType(itemData.type, ItemTypeEnum.Armor) ||
-      isDocumentType(itemData.type, ItemTypeEnum.Gear) ||
-      isDocumentType(itemData.type, ItemTypeEnum.Weapon)
+      isDocumentSubType<ArmorItem>(itemData as any, ItemTypeEnum.Armor) ||
+      isDocumentSubType<GearItem>(itemData as any, ItemTypeEnum.Gear) ||
+      isDocumentSubType<WeaponItem>(itemData as any, ItemTypeEnum.Weapon)
     ) {
       // Prompt to confirm giving physical item from one Actor to another,
       // and ask how many if it has a quantity of more than one.

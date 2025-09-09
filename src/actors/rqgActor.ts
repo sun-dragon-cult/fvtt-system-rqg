@@ -85,7 +85,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     characteristicName: keyof Characteristics,
     options: Partial<CharacteristicRollOptions>,
   ): CharacteristicRollOptions {
-    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
 
     const actorCharacteristics = this.system.characteristics;
     const rollCharacteristic = actorCharacteristics[characteristicName] as
@@ -262,7 +262,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    * Return the bodyType of an actor. Currently only "humanoid" or "other"
    */
   public getBodyType(): string {
-    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     const actorHitlocationRqids = this.items
       .filter((i: RqgItem) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
       .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
@@ -283,7 +283,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     characteristicName: string,
     result: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
-    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     if (
       result != null &&
       result <= AbilitySuccessLevelEnum.Success &&
@@ -345,7 +345,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
 
     for (const update of uselessLegs) {
       const leg = this.items.get(update._id);
-      assertDocumentSubType<HitLocationItem>(leg, ItemTypeEnum.HitLocation);
+      assertDocumentSubType<HitLocationItem>(leg, [ItemTypeEnum.HitLocation]);
       await leg.update(update);
     }
 

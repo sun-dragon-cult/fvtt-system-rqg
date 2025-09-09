@@ -47,7 +47,7 @@ export class Weapon extends AbstractEmbeddedItem {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId: string,
   ): Promise<any> {
-    assertDocumentSubType<WeaponItem>(child, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(child, [ItemTypeEnum.Weapon]);
 
     const actorHasRightArm = !!actor.getBestEmbeddedDocumentByRqid("i.hit-location.right-arm");
 

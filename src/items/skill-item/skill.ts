@@ -12,13 +12,13 @@ export class Skill extends AbstractEmbeddedItem {
   public static override onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     assertDocumentSubType<SkillItem>(
       skillItem,
-      ItemTypeEnum.Skill,
+      [ItemTypeEnum.Skill],
       "RQG.Item.Notification.PrepareDerivedDataNotSkillError",
     );
     const actor = skillItem.actor!;
     assertDocumentSubType<CharacterActor>(
       actor,
-      ActorTypeEnum.Character,
+      [ActorTypeEnum.Character],
       "RQG.Item.Notification.ActorNotCharacterError",
     );
     const actorData = actor.toObject(false).system; // TODO Why use toObject ???

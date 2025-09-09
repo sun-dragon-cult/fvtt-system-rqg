@@ -196,13 +196,13 @@ export function hasOwnProperty<X extends object | undefined, Y extends PropertyK
  */
 export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
   document: Document.WithSubTypes | RqgItem | RqgActor | undefined | null,
-  itemOrActorType: string | ItemTypeEnum | ActorTypeEnum | undefined | null,
+  itemOrActorTypes: (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[],
   errorMsg?: string,
 ): asserts document is T {
-  if (!!document && (document as any).type === itemOrActorType?.toString()) {
+  if (!!document && itemOrActorTypes.map(toString).includes((document as any).type)) {
     const msg = errorMsg
       ? localize(errorMsg)
-      : `Got unexpected document type in assert, ${itemOrActorType} ≠ ${(document as any).type}`;
+      : `Got unexpected document type in assert, [${itemOrActorTypes.join(", ")}] ≠ ${(document as any).type}`;
     ui.notifications?.error(msg);
     throw new RqgError(msg, document);
   }
@@ -761,13 +761,4 @@ export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefine
   } else {
     return "";
   }
-}
-
-/**
- * A temporary solution to check if a item type matches a enum value.
- * TODO When the enums are refactored away this can be removed. Use isDocumentSubType instead.
- * @deprecated
- */
-export function isDocumentType(type: string, enumValue: string): boolean {
-  return type === enumValue;
 }

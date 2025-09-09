@@ -1,13 +1,13 @@
-import type { ArmorDataProperties, ArmorDataSource } from "./armorData";
-import type { PassionDataProperties, PassionDataSource } from "./passionData";
+import type { ArmorDataProperties, ArmorDataSource, ArmorItem } from "./armorData";
+import type { PassionDataProperties, PassionDataSource, PassionItem } from "./passionData";
 import type { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
-import type { GearDataProperties, GearDataSource } from "./gearData";
+import type { GearDataProperties, GearDataSource, GearItem } from "./gearData";
 import type { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
 import type { CultDataProperties, CultDataSource } from "./cultData";
 import type { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
-import type { SkillDataProperties, SkillDataSource } from "./skillData";
-import type { RuneDataProperties, RuneDataSource } from "./runeData";
-import type { WeaponDataProperties, WeaponDataSource } from "./weaponData";
+import type { SkillDataProperties, SkillDataSource, SkillItem } from "./skillData";
+import type { RuneDataProperties, RuneDataSource, RuneItem } from "./runeData";
+import type { WeaponDataProperties, WeaponDataSource, WeaponItem } from "./weaponData";
 import type {
   HomelandDataProperties as HomelandDataProperties,
   HomelandDataSource,
@@ -119,3 +119,7 @@ export type RqgItemDataProperties =
   | SkillDataProperties
   | SpiritMagicDataProperties
   | WeaponDataProperties;
+
+export type PhysicalItem = GearItem | WeaponItem | ArmorItem;
+
+export type AbilityItem = PassionItem | RuneItem | SkillItem;

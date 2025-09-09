@@ -55,7 +55,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
     super(options);
 
     const actor = options.spellItem.parent;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
 
     this.spellItem = options.spellItem;
     this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
@@ -173,7 +173,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
       ui.notifications?.error("Could not find an spirit magic spellItem to roll.");
       return;
     }
-    assertDocumentSubType<SpiritMagicItem>(spellItem, ItemTypeEnum.SpiritMagic);
+    assertDocumentSubType<SpiritMagicItem>(spellItem, [ItemTypeEnum.SpiritMagic]);
 
     const options: SpiritMagicRollOptions = {
       powX5: formDataObject.powX5,

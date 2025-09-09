@@ -1,5 +1,5 @@
 import { RqgActorSheet } from "../actors/rqgActorSheet";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "../system/config";
 import {
   assertHtmlElement,
@@ -7,7 +7,6 @@ import {
   getItemDocumentTypes,
   localize,
   getDocumentFromUuid,
-  isDocumentType,
   isDocumentSubType,
 } from "../system/util";
 import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
@@ -23,6 +22,7 @@ import type { RuneItem } from "@item-model/runeData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
 import type { HomelandItem } from "@item-model/homelandData.ts";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { CultItem } from "@item-model/cultData.ts";
 
 export class ActorWizard extends foundry.appv1.api.FormApplication {
   actor: RqgActor;
@@ -49,7 +49,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     if (!template) {
       this.species.selectedSpeciesTemplate = undefined;
-    } else if (isDocumentType(template?.type, ActorTypeEnum.Character)) {
+    } else if (isDocumentSubType<CharacterActor>(template, ActorTypeEnum.Character)) {
       this.species.selectedSpeciesTemplate = template;
     } else {
       this.species.selectedSpeciesTemplate = undefined;
@@ -225,7 +225,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
         const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
-        assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
+        assertDocumentSubType<RuneItem>(rune, [ItemTypeEnum.Rune]);
         rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
         rune.system.hasExperience = false;
         const associatedChoice = this.choices[runeRqidLink.rqid];
@@ -244,7 +244,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks ?? []) {
         const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as RqgItem | undefined;
-        assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
+        assertDocumentSubType<SkillItem>(skill, [ItemTypeEnum.Skill]);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland skills for purposes of sheet
@@ -286,7 +286,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
         const passion = await Rqid.fromRqid(passionRqidLink.rqid);
-        assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
+        assertDocumentSubType<PassionItem>(passion, [ItemTypeEnum.Passion]);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         passion.system.hasExperience = false;
         if (associatedChoice) {
@@ -677,7 +677,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
             }
           }
           // Handle Cults which use .homelandCultChosen and don't need to get "added up"
-          if (isDocumentType(actorItem.type, ItemTypeEnum.Cult)) {
+          if (isDocumentSubType<CultItem>(actorItem, ItemTypeEnum.Cult)) {
             if (this.choices[key]?.homelandCultChosen) {
               // Cult already exists on actor
               // Do nothing
@@ -709,15 +709,15 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
           if (itemsToAddFromTemplate) {
             for (const templateItem of itemsToAddFromTemplate) {
               // Item exists on the template and has been chosen but does not exist on the actor, so add it
-              if (isDocumentType(templateItem.type, ItemTypeEnum.Skill)) {
-                templateItem.system.baseChance = this.choices[key]?.totalValue();
+              if (isDocumentSubType<SkillItem>(templateItem, ItemTypeEnum.Skill)) {
+                templateItem.system.baseChance = this.choices[key]?.totalValue() ?? 0;
                 templateItem.system.hasExperience = false;
               }
-              if (isDocumentType(templateItem.type, ItemTypeEnum.Rune)) {
-                templateItem.system.chance = this.choices[key]?.totalValue();
+              if (isDocumentSubType<RuneItem>(templateItem, ItemTypeEnum.Rune)) {
+                templateItem.system.chance = this.choices[key]?.totalValue() ?? 0;
                 templateItem.system.hasExperience = false;
               }
-              if (isDocumentType(templateItem.type, ItemTypeEnum.Passion)) {
+              if (isDocumentSubType<PassionItem>(templateItem, ItemTypeEnum.Passion)) {
                 templateItem.system.chance = this.choices[key]?.totalValue();
                 templateItem.system.hasExperience = false;
               }
@@ -731,15 +731,15 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
           const itemToAddFromHomeland = await Rqid.fromRqid(key);
           if (itemToAddFromHomeland instanceof RqgItem) {
             // Item exists on the template and has been chosen but does not exist on the actor, so add it
-            if (isDocumentType(itemToAddFromHomeland.type, ItemTypeEnum.Skill)) {
+            if (isDocumentSubType<SkillItem>(itemToAddFromHomeland, ItemTypeEnum.Skill)) {
               itemToAddFromHomeland.system.baseChance = this.choices[key]?.totalValue();
               itemToAddFromHomeland.system.hasExperience = false;
             }
-            if (isDocumentType(itemToAddFromHomeland.type, ItemTypeEnum.Rune)) {
+            if (isDocumentSubType<RuneItem>(itemToAddFromHomeland, ItemTypeEnum.Rune)) {
               itemToAddFromHomeland.system.chance = this.choices[key]?.totalValue();
               itemToAddFromHomeland.system.hasExperience = false;
             }
-            if (isDocumentType(itemToAddFromHomeland.type, ItemTypeEnum.Passion)) {
+            if (isDocumentSubType<PassionItem>(itemToAddFromHomeland, ItemTypeEnum.Passion)) {
               itemToAddFromHomeland.system.chance = this.choices[key]?.totalValue();
               itemToAddFromHomeland.system.hasExperience = false;
             }
