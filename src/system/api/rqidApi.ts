@@ -46,11 +46,11 @@ export class Rqid {
    * If lang parameter is not supplied the language selected for the world will be used.
    * If no document is found with the specified lang, then "en" will be used as a fallback.
    */
-  public static async fromRqid(
+  public static async fromRqid<T = Document.Any>(
     rqid: string | undefined,
     lang?: string,
     silent: boolean = false,
-  ): Promise<Document.Any | undefined> {
+  ): Promise<T | undefined> {
     if (!rqid) {
       return undefined;
     }

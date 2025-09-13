@@ -26,7 +26,7 @@ export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
     // TODO Duplicated from RqgActor, make more DRY
     const equippedMovementEncumbrancePenalty = Math.min(
       0,
-      (actorAttributes.encumbrance.max || 0) - (actorAttributes.encumbrance.equipped || 0),
+      (actorAttributes.encumbrance?.max || 0) - (actorAttributes.encumbrance?.equipped || 0),
     );
 
     // Start by setting the movement decided on the actorSheet

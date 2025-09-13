@@ -320,7 +320,7 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
   }
 
   protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
-    const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
+    const html = await super._renderOuter();
     await addRqidLinkToSheetJQuery(html, this);
     return html;
   }

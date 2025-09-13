@@ -14,7 +14,9 @@ import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel.ts";
 
 // TODO how to type this so combat subtype data is typed?
-export class RqgChatMessage extends ChatMessage {
+export class RqgChatMessage<
+  SubType extends ChatMessage.SubType = ChatMessage.SubType,
+> extends ChatMessage<SubType> {
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
     CONFIG.ChatMessage.template = templatePaths.chatMessage;
@@ -28,7 +30,7 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   override _onUpdate(data: any, options: any, userId: string) {
-    if (ui?.chat?.isAtBottom) {
+    if ((ui?.chat as any)?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?
       // @ts-expect-error scrollBottom
       setTimeout(() => ui?.chat?.scrollBottom(), 0);
@@ -134,7 +136,7 @@ export class RqgChatMessage extends ChatMessage {
       if (!(el instanceof HTMLElement)) {
         return;
       }
-      const document = fromUuidSync(el.dataset.onlyOwnerVisibleUuid);
+      const document = fromUuidSync(el.dataset["onlyOwnerVisibleUuid"]);
       if (el.dataset["onlyOwnerVisibleUuid"] && !(document as any)?.isOwner) {
         el.classList.add("dont-display");
       }

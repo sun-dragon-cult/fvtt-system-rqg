@@ -199,7 +199,7 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
   itemOrActorTypes: (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[],
   errorMsg?: string,
 ): asserts document is T {
-  if (!!document && itemOrActorTypes.map(toString).includes((document as any).type)) {
+  if (!document || !itemOrActorTypes.includes((document as any).type)) {
     const msg = errorMsg
       ? localize(errorMsg)
       : `Got unexpected document type in assert, [${itemOrActorTypes.join(", ")}] ≠ ${(document as any).type}`;
@@ -213,7 +213,7 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
  */
 export function isDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
   document: Document.WithSubTypes | RqgItem | RqgActor | undefined,
-  itemType: string | ItemTypeEnum | undefined,
+  itemType: string | ItemTypeEnum | ActorTypeEnum | undefined | null,
 ): document is T {
   return !!document && (document as any).type === itemType?.toString();
 }

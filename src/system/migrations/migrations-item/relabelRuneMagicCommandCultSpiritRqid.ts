@@ -2,7 +2,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
 import { RqidLink } from "../../../data-model/shared/rqidLink";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
-import { assertDocumentSubType, isDocumentSubType } from "../../util.ts";
+import { isDocumentSubType } from "../../util.ts";
 import type { CultItem } from "@item-model/cultData.ts";
 
 const oldRqid = "i.rune-magic.command-cult-spirit-elemental";

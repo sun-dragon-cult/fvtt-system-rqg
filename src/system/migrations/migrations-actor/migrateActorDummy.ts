@@ -1,23 +1,18 @@
-import {
-  ActorTypeEnum,
-  type CharacterActor,
-  type RqgActorDataSource,
-} from "../../../data-model/actor-data/rqgActorData";
-import { isDocumentSubType } from "../../util.ts";
+import { type RqgActorDataSource } from "../../../data-model/actor-data/rqgActorData";
 
 // Dummy Actor Migrator
 export function migrateActorDummy(actorData: RqgActorDataSource): Actor.UpdateData {
-  let updateData = {};
-  // eslint-disable-next-line
-  if (false && isDocumentSubType<CharacterActor>(actorData as any, [ActorTypeEnum.Character])) {
-    updateData = {
-      system: {
-        background: {
-          species: (actorData.system.background as any).race,
-          [`-=race`]: null,
-        },
-      },
-    };
-  }
+  const updateData = {};
+
+  // if (isDocumentSubType<CharacterActor>(actorData as any, ActorTypeEnum.Character)) {
+  //   updateData = {
+  //     system: {
+  //       background: {
+  //         species: (actorData.system.background as any).race,
+  //         [`-=race`]: null,
+  //       },
+  //     },
+  //   };
+  // }
   return updateData;
 }

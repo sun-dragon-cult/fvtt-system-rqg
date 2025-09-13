@@ -13,9 +13,6 @@ import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { Rqid } from "../../system/api/rqidApi";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 
-import Document = foundry.abstract.Document;
-import type { SkillItem } from "@item-model/skillData.ts";
-
 export class Weapon extends AbstractEmbeddedItem {
   // public static init() {
   //   Items.registerSheet("rqg", WeaponSheet, {

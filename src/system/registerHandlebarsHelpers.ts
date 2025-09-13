@@ -7,12 +7,13 @@ import {
   localizeItemType,
   toCamelCase,
 } from "./util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
 import type { RqgItem } from "../items/rqgItem";
 import type { SkillItem } from "@item-model/skillData.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -71,7 +72,7 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillname", (...args) => {
     return applyFnToDocumentFromHandlebarsArgs(args, (item) => {
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       const specialization = item?.system?.specialization ? ` (${item.system.specialization})` : "";
       return `${item?.system?.skillName}${specialization}`;
     });
@@ -79,7 +80,7 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillchance", (...args) =>
     applyFnToDocumentFromHandlebarsArgs(args, (item) => {
-      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
       return item?.system?.chance ? item.system.chance.toString() : "---";
     }),
   );

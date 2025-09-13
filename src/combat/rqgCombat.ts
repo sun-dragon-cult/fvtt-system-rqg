@@ -1,6 +1,8 @@
 import { RqgCombatTracker } from "./RqgCombatTracker";
+import { assertDocumentSubType } from "../system/util.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
-export class RqgCombat extends Combat {
+export class RqgCombat<Subtype extends Combat.SubType = Combat.SubType> extends Combat<Subtype> {
   public static init() {
     CONFIG.Combat.documentClass = RqgCombat;
     CONFIG.ui.combat = RqgCombatTracker;
@@ -13,7 +15,7 @@ export class RqgCombat extends Combat {
   /**
    * Reset all combatant SR, remove duplicate combatants and set the turn back to zero
    */
-  async resetAll({ updateTurn = true } = {}): Promise<any> {
+  override async resetAll({ updateTurn = true } = {}): Promise<any> {
     const currentId = this.combatant?.id;
     const tokenIds = new Set(); // --- RQG code
     const combatantIdsToDelete = []; // --- RQG code
@@ -38,10 +40,12 @@ export class RqgCombat extends Combat {
     // --- RQG code
   }
 
-  _sortCombatants(a: Combatant, b: Combatant): number {
+  override _sortCombatants(a: Combatant, b: Combatant): number {
+    assertDocumentSubType<CharacterActor>(a.actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(b.actor, [ActorTypeEnum.Character]);
     const ia = Number.isNumeric(a.initiative) ? a.initiative : Infinity;
     const ib = Number.isNumeric(b.initiative) ? b.initiative : Infinity;
-    const ci = ia - ib;
+    const ci = (ia ?? 0) - (ib ?? 0);
     if (!isNaN(ci) && ci !== 0) {
       return ci; // Sort on lowest Strike Rank (initiative)
     }

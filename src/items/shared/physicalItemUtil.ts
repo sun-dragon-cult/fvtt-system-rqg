@@ -2,14 +2,15 @@ import { RqgItem } from "../rqgItem";
 import { localize, mergeArraysById, RqgError } from "../../system/util";
 import { ItemTree } from "./ItemTree";
 import type { EquippedStatus } from "@item-model/IPhysicalItem.ts";
+import type { PhysicalItem } from "@item-model/itemTypes.ts";
 
 /**
  * Only update the content of a bag if the changed item is the bag itself and that change
  * is the equippedStatus.
  */
 export function getLocationRelatedUpdates(
-  actorEmbeddedItems: RqgItem[],
-  physicalItem: RqgItem,
+  actorEmbeddedItems: PhysicalItem[],
+  physicalItem: PhysicalItem,
   updates: object[], // TODO Error what if not all updates have the same location !
 ): any[] {
   if ("isNatural" in physicalItem.system && physicalItem.system.isNatural) {
@@ -73,8 +74,8 @@ function getChangedEquippedStatusRelatedUpdates(
 }
 
 function getChangedLocationRelatedChanges(
-  actorEmbeddedItems: RqgItem[],
-  physicalItem: RqgItem,
+  actorEmbeddedItems: PhysicalItem[],
+  physicalItem: PhysicalItem,
   locationUpdateValue: string | undefined,
   equippedStatusUpdateValue: EquippedStatus | undefined,
 ): any[] {
@@ -87,7 +88,7 @@ function getChangedLocationRelatedChanges(
     ui.notifications?.error(msg);
     throw new RqgError(msg, actorEmbeddedItems);
   }
-  updatedItem.system.location = locationUpdateValue; // Mimic the change that is about to happen so the tree can be searched
+  updatedItem.system.location = locationUpdateValue ?? ""; // Mimic the change that is about to happen so the tree can be searched
   const itemTree = new ItemTree(actorEmbeddedItems);
   const container = itemTree.getContainerNodeOfItem(physicalItem.name ?? "");
   if (container) {

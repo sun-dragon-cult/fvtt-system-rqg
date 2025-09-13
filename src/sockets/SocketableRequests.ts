@@ -6,10 +6,9 @@ import { socketSend } from "./RqgSocket";
  */
 export async function updateChatMessage(
   attackChatMessage: ChatMessage,
-  messageData: PropertiesToSource<ChatMessageDataProperties>,
+  messageData: ChatMessage.UpdateData,
 ): Promise<void> {
-  // @ts-expect-error author
-  const chatMessageAuthorId = attackChatMessage.author.id;
+  const chatMessageAuthorId = attackChatMessage.author?.id ?? "";
 
   if (game.user?.id === chatMessageAuthorId) {
     await attackChatMessage.update(messageData);

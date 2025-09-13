@@ -123,9 +123,9 @@ export class nameGeneration {
 
     const compendiumRqids: DocumentRqidFlags[] = [];
     for (const pack of game.packs ?? []) {
-      if (pack.documentClass.name === "JournalEntry") {
+      if ((pack.documentClass.name as any) === "JournalEntry") {
         for (const journal of await pack.getDocuments()) {
-          const rqid = journal.getFlag(systemId, documentRqidFlags);
+          const rqid = (journal as any).getFlag(systemId, documentRqidFlags);
           if (rqid?.id?.startsWith("names-")) {
             compendiumRqids.push(rqid);
           }
@@ -157,7 +157,7 @@ export class nameGeneration {
       return;
     }
 
-    let names = nameJournal?.data.content;
+    let names = (nameJournal as any)?.data.content;
     // TODO: This could possibly be more robust to allow users to not have to be exact in entering names
     names = names
       ?.replace("<pre>", "")
@@ -180,7 +180,7 @@ export class nameGeneration {
       return undefined;
     }
 
-    const nameTable = await Rqid.fromRqid(rqid);
+    const nameTable = await Rqid.fromRqid<any>(rqid);
 
     if (!nameTable) {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", {
@@ -218,7 +218,7 @@ export class nameGeneration {
 
     while ((match = regex.exec(tableString)) != null) {
       const generatedValue = await this.Generate(match[0], 1, constraints);
-      if (generatedValue) {
+      if (generatedValue && generatedValue[0]) {
         resultString = resultString.replace(match[0], generatedValue[0]);
       }
       // If it couldn't generate a message, just leave the token.

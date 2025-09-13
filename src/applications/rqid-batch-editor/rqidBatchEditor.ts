@@ -798,7 +798,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     return itemChanges.reduce((acc: any[], itemChange) => {
       const rqidFlags: DocumentRqidFlags = {
         id: itemNames2Rqid.get(itemChange.name),
-        lang: itemChange.documentRqidFlags.lang ?? game.settings.get(systemId, "worldLanguage"),
+        lang: itemChange.documentRqidFlags.lang ?? game.settings?.get(systemId, "worldLanguage"),
         priority: itemChange.documentRqidFlags.priority ?? 0,
       };
       const embeddedItemUpdate = RqidBatchEditor.getItemUpdate(itemChange, rqidFlags);

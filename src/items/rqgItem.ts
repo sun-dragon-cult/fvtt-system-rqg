@@ -10,7 +10,6 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
-  assertDefined,
   assertDocumentSubType,
   getSpeakerFromItem,
   hasOwnProperty,
@@ -50,7 +49,6 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 import type { SkillItem } from "@item-model/skillData.ts";
 import type { CultItem } from "@item-model/cultData.ts";
 
-import Document = foundry.abstract.Document;
 import type { PassionItem } from "@item-model/passionData.ts";
 
 export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {

@@ -47,7 +47,8 @@ export class ClickableScriptsRegionBehavior extends RegionBehaviorType<Clickable
 
     regionBehaviorConfig.dataModels["clickableScripts"] = ClickableScriptsRegionBehavior;
     regionBehaviorConfig.typeIcons["clickableScripts"] = "fa-solid fa-computer-mouse";
-    regionBehaviorConfig.typeLabels["clickableScripts"] = "TYPES.RegionBehavior.clickableScripts";
+    (regionBehaviorConfig.typeLabels as any)["clickableScripts"] =
+      "TYPES.RegionBehavior.clickableScripts";
 
     document.body.addEventListener("mousemove", async function (event: MouseEvent) {
       if (!canvas?.activeLayer || !(canvas.activeLayer instanceof RqgTokenLayer)) {
