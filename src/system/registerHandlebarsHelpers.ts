@@ -72,7 +72,7 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillname", (...args) => {
     return applyFnToDocumentFromHandlebarsArgs(args, (item) => {
-      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       const specialization = item?.system?.specialization ? ` (${item.system.specialization})` : "";
       return `${item?.system?.skillName}${specialization}`;
     });
@@ -80,7 +80,7 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillchance", (...args) =>
     applyFnToDocumentFromHandlebarsArgs(args, (item) => {
-      assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return item?.system?.chance ? item.system.chance.toString() : "---";
     }),
   );

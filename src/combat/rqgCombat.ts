@@ -41,8 +41,8 @@ export class RqgCombat<Subtype extends Combat.SubType = Combat.SubType> extends 
   }
 
   override _sortCombatants(a: Combatant, b: Combatant): number {
-    assertDocumentSubType<CharacterActor>(a.actor, [ActorTypeEnum.Character]);
-    assertDocumentSubType<CharacterActor>(b.actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(a.actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(b.actor, ActorTypeEnum.Character);
     const ia = Number.isNumeric(a.initiative) ? a.initiative : Infinity;
     const ib = Number.isNumeric(b.initiative) ? b.initiative : Infinity;
     const ci = (ia ?? 0) - (ib ?? 0);

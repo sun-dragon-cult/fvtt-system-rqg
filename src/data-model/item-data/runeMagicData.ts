@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "./itemTypes";
-import { type Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
+import type { Spell } from "./spell";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 

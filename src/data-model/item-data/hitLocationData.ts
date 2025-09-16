@@ -1,4 +1,4 @@
-import { defaultResource, Resource } from "../shared/resource";
+import { Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
 import type { ActorHealthState } from "../actor-data/attributes";
 import type { RqgItem } from "@items/rqgItem.ts";

@@ -180,8 +180,8 @@ describe("healing", () => {
     // TODO handle multiple hit locations causing shock
 
     // --- Arrange ---
-    assertDocumentSubType<CharacterActor>(mockActor, [ActorTypeEnum.Character]);
-    assertDocumentSubType<HitLocationItem>(mockChest, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<CharacterActor>(mockActor, ActorTypeEnum.Character);
+    assertDocumentSubType<HitLocationItem>(mockChest, ItemTypeEnum.HitLocation);
 
     const healPoints = 1;
     const chestHP = mockChest.system.hitPoints.max!; // 6
@@ -219,8 +219,8 @@ describe("healing", () => {
 
   it("should remove 'useless' state from limb when HP > 0", () => {
     // --- Arrange ---
-    assertDocumentSubType<CharacterActor>(mockActor, [ActorTypeEnum.Character]);
-    assertDocumentSubType<HitLocationItem>(mockLeftLeg, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<CharacterActor>(mockActor, ActorTypeEnum.Character);
+    assertDocumentSubType<HitLocationItem>(mockLeftLeg, ItemTypeEnum.HitLocation);
     const legDamage = mockLeftLeg.system.hitPoints.max!; // 5
     const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
 
@@ -264,8 +264,8 @@ export function applyTestHealing(
   hitLocation: RqgItem,
   actor: RqgActor,
 ): HealingEffects {
-  assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
-  assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+  assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
   const healingEffects = HealingCalculations.healWound(
     healPoints,
     healWoundIndex,

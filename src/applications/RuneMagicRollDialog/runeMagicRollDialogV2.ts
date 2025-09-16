@@ -192,7 +192,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
       ui.notifications?.error("Could not find an rune magic spellItem to roll.");
       return;
     }
-    assertDocumentSubType<RuneMagicItem>(spellItem, [ItemTypeEnum.RuneMagic]);
+    assertDocumentSubType<RuneMagicItem>(spellItem, ItemTypeEnum.RuneMagic);
 
     const eligibleRunes = RuneMagic.getEligibleRunes(spellItem);
 

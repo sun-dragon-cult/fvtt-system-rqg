@@ -1,4 +1,4 @@
-import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
+import { type IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 import type { RqgItem } from "@items/rqgItem.ts";
 

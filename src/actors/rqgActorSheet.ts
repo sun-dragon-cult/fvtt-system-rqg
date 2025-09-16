@@ -77,6 +77,8 @@ import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
 import type { OccupationItem } from "@item-model/occupationData.ts";
 import type { ArmorItem } from "@item-model/armorData.ts";
+import type { FormApplication } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/appv1/api/_module";
+import type Application from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/appv1/api/application-v1";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 // export class RqgActorSheet extends ActorSheet<
@@ -84,7 +86,12 @@ import type { ArmorItem } from "@item-model/armorData.ts";
 //   CharacterSheetData | ActorSheet.Data
 // > {
 // TODO where should I add the sheet data?
-export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
+export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends foundry
+  .appv1.sheets.ActorSheet<Options> {
+  override get object(): RqgActor {
+    return super.object as RqgActor;
+  }
+
   // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
@@ -151,13 +158,14 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   //   actorCombatants?.forEach((c) => delete c.apps[this.appId]);
   // }
 
-  override async _render(force = false, options = {}) {
+  override async _render(force = false, options: Application.RenderOptions<Options> = {}) {
     await super._render(force, options);
-    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
+    const actorCombatants: Combatant.Implementation[] =
+      game.combat?.getCombatantsByActor(this.actor) ?? [];
     actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
   }
 
-  override async close(options = {}) {
+  override async close(options: FormApplication.CloseOptions = {}) {
     if (options.renderContext === "deleteCombatant") {
       // Don't close the actor sheet even is a combatant linked to it that is deleted,
       // but try to remove the combatant.apps reference.
@@ -172,6 +180,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   override async getData(): Promise<CharacterSheetData & ActorSheetData> {
+    assertDocumentSubType<CharacterActor>(this.document, ActorTypeEnum.Character);
     this.incorrectRunes = [];
     const system = foundry.utils.duplicate(this.document.system);
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
@@ -338,12 +347,12 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   private calcCurrencyTotals(): any {
     const currency: RqgItem[] = this.actor.items.filter(
       (i: RqgItem) =>
-        isDocumentSubType<GearItem>(i, [ItemTypeEnum.Gear]) &&
+        isDocumentSubType<GearItem>(i, ItemTypeEnum.Gear) &&
         i.system.physicalItemType === "currency",
     );
     const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
     currency.forEach((curr) => {
-      assertDocumentSubType<GearItem>(curr, [ItemTypeEnum.Gear]);
+      assertDocumentSubType<GearItem>(curr, ItemTypeEnum.Gear);
       result.quantity += Number(curr.system.quantity);
       result.price.real += curr.system.price.real * curr.system.quantity;
       result.price.estimated += curr.system.price.estimated * curr.system.quantity;
@@ -422,7 +431,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   private getFreeInt(spiritMagicPointSum: number): number {
-    assertDocumentSubType<CharacterActor>(this.actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     return (
       (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
@@ -577,7 +586,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
    * TODO Fix the typing
    */
   public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
-    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
     actor.items.forEach((item: RqgItem) => {
       itemTypes[item.type].push(item);
@@ -701,7 +710,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
 
     // Add weapon data
     itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
-      assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
       const usages = weapon.system.usage;
       const actorStr = actor.system.characteristics.strength.value ?? 0;
@@ -756,7 +765,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   private getUiSectionVisibility(): UiSections {
-    assertDocumentSubType<CharacterActor>(this.actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -870,7 +879,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
   }
 
   protected override _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
-    assertDocumentSubType<CharacterActor>(this.actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -1110,11 +1119,11 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId, {});
-      assertDocumentSubType<RuneMagicItem>(runeMagicItem, [ItemTypeEnum.RuneMagic]);
+      assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
-        assertDocumentSubType<RuneMagicItem>(runeMagicItem, [ItemTypeEnum.RuneMagic]);
+        assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
@@ -1176,7 +1185,7 @@ export class RqgActorSheet extends foundry.appv1.sheets.ActorSheet {
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = this.actor.items.get(weaponItemId);
-      assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {

@@ -196,13 +196,19 @@ export function hasOwnProperty<X extends object | undefined, Y extends PropertyK
  */
 export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
   document: Document.WithSubTypes | RqgItem | RqgActor | undefined | null,
-  itemOrActorTypes: Readonly<(string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]>, // TODO accept single value too, see isDocumentSubType
+  documentSubTypes: Readonly<
+    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
+    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
+  >,
   errorMsg?: string,
 ): asserts document is T {
-  if (!document || !itemOrActorTypes.includes((document as any).type)) {
+  const documentSubTypesArray = Array.isArray(documentSubTypes)
+    ? documentSubTypes
+    : [documentSubTypes];
+  if (!document || !documentSubTypesArray.includes((document as any).type)) {
     const msg = errorMsg
       ? localize(errorMsg)
-      : `Got unexpected document type in assert, [${itemOrActorTypes.join(", ")}] ≠ ${(document as any).type}`;
+      : `Got unexpected document type in assert, [${documentSubTypesArray.join(", ")}] ≠ ${(document as any).type}`;
     ui.notifications?.error(msg);
     throw new RqgError(msg, document);
   }

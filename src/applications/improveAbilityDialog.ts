@@ -49,7 +49,7 @@ export async function showImproveAbilityDialog(
     }
 
     case ItemTypeEnum.Passion.toString(): {
-      assertDocumentSubType<PassionItem>(item, [ItemTypeEnum.Passion]);
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       adapter.abilityType = "passion";
       // Cannot train passions
       adapter.showTraining = false;
@@ -57,7 +57,7 @@ export async function showImproveAbilityDialog(
     }
 
     case ItemTypeEnum.Rune.toString(): {
-      assertDocumentSubType<RuneItem>(item, [ItemTypeEnum.Rune]);
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       adapter.abilityType = "rune";
       adapter.name = item.system.rune;
       break;
@@ -114,13 +114,13 @@ export async function showImproveAbilityDialog(
 }
 
 function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
-  assertDocumentSubType<SkillItem>(item, [ItemTypeEnum.Skill]);
+  assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
   adapter.abilityType = "skill";
   const actor = item.parent;
   if (!actor) {
     throw new RqgError("Tried to improve a skill item that isn't embedded on an actor", item);
   }
-  assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
   const pureCategoryMods = RqgCalculations.skillCategoryModifiers(
     actor.system.characteristics.strength.value,
     actor.system.characteristics.size.value,

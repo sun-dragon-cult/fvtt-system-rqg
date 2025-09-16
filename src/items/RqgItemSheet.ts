@@ -11,8 +11,14 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
+import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
-export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
+export class RqgItemSheet<Options extends ItemSheet.Options = ItemSheet.Options> extends foundry
+  .appv1.sheets.ItemSheet<Options> {
+  override get object(): RqgItem {
+    return super.object as RqgItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,
@@ -75,8 +81,8 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
           elem.addEventListener("change", async (event) => {
             const selectElem = event.currentTarget as HTMLSelectElement;
             const newRqid = selectElem?.value;
-            if (this.document.system[targetProperty].rqid !== newRqid) {
-              const newName = selectElem?.selectedOptions[0]?.innerText;
+            if ((this.document as any).system[targetProperty].rqid !== newRqid) {
+              const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
               const newHitLocationRqidLink = new RqidLink(newRqid, newName);
               await this.document.update({ [`system.${targetProperty}`]: newHitLocationRqidLink });
             }
@@ -90,7 +96,7 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
       .each((i: number, el: HTMLElement) => {
         const effectUuid = getRequiredDomDataset($(el), "effect-uuid");
         el.addEventListener("click", () => {
-          const effect = fromUuidSync(effectUuid);
+          const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
           if (effect) {
             new foundry.applications.sheets.ActiveEffectConfig(effect).render(true);
           }
@@ -102,7 +108,7 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
       .find("[data-item-effect-add]")
       .each((i: number, el: HTMLElement) => {
         const itemUuid = getRequiredDomDataset($(el), "item-uuid");
-        const item = fromUuidSync(itemUuid);
+        const item = fromUuidSync(itemUuid) as RqgItem | undefined;
         if (!item) {
           return; // The item is not in the world (ie it's in a compendium)
         }
@@ -134,7 +140,7 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
               );
               throw reason;
             });
-          if (e[0].id) {
+          if (e[0]?.id) {
             new foundry.applications.sheets.ActiveEffectConfig(item.effects.get(e[0].id)!).render(
               true,
             );
@@ -196,7 +202,10 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
         const editRqid = getRequiredDomDataset($(el), "rqid");
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
-          const updateProperty = foundry.utils.getProperty(this.item.system, editPropertyName);
+          const updateProperty = foundry.utils.getProperty(
+            this.item.system as object,
+            editPropertyName,
+          );
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
               (rqidLink) => rqidLink.rqid === editRqid,

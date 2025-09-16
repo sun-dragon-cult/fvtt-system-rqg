@@ -36,7 +36,7 @@ export class DamageCalculations {
     actor: CharacterActor,
     speakerName: string,
   ): DamageEffects {
-    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
     if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Limb) {
       return DamageCalculations.calcLimbDamageEffects(
@@ -61,7 +61,7 @@ export class DamageCalculations {
     damage: number,
     actor: RqgActor,
   ): Document.UpdateDataForName<"Actor"> {
-    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
     if (actor.system.attributes.hitPoints.max != null) {
       const currentTotalHp = actor.system.attributes.hitPoints.value;
@@ -89,7 +89,7 @@ export class DamageCalculations {
     applyDamageToTotalHp: boolean,
     speakerName: string,
   ): DamageEffects {
-    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const damageEffects: DamageEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},
@@ -177,7 +177,7 @@ export class DamageCalculations {
       notification: "",
       uselessLegs: [],
     };
-    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const hpValue = hitLocation.system.hitPoints.value;
     const hpMax = hitLocation.system.hitPoints.max;
     if (!hitLocation.system.hitLocationType) {
@@ -259,7 +259,7 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
-    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
     const maxHitPoints = actor.system.attributes.hitPoints.max;
 

@@ -51,8 +51,8 @@ export class Cult extends AbstractEmbeddedItem {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId: string,
   ): Promise<any> {
-    assertDocumentSubType<CultItem>(child, [ItemTypeEnum.Cult]);
-    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CultItem>(child, ItemTypeEnum.Cult);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const matchingDeityInActorCults: CultItem[] = actor.items.filter(
       (i: RqgItem) =>
         isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) && i.system.deity === child.system.deity,
@@ -99,12 +99,12 @@ export class Cult extends AbstractEmbeddedItem {
     const actor = cult.parent;
     assertDocumentSubType<CharacterActor>(
       actor,
-      [ActorTypeEnum.Character],
+      ActorTypeEnum.Character,
       "Bug - tried to embed linked common rune magic on a cult that is not embedded",
     );
     assertDocumentSubType<CultItem>(
       cult,
-      [ItemTypeEnum.Cult],
+      ItemTypeEnum.Cult,
       "Bug - tried to embed linked common rune magic with a cult that does not have id",
     );
 

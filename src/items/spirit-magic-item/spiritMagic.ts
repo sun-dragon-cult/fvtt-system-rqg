@@ -22,7 +22,7 @@ export class SpiritMagic extends AbstractEmbeddedItem {
     boost: number | undefined,
     spellItem: RqgItem,
   ): string | undefined {
-    assertDocumentSubType<SpiritMagicItem>(spellItem, [ItemTypeEnum.SpiritMagic]);
+    assertDocumentSubType<SpiritMagicItem>(spellItem, ItemTypeEnum.SpiritMagic);
     if (levelUsed == null || levelUsed > spellItem.system.points) {
       return localize("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
     } else if (

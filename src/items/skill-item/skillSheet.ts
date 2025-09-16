@@ -32,7 +32,7 @@ export class SkillSheet extends RqgItemSheet {
   override getData(): SkillSheetData & ItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
     const skillItem = this.document;
-    assertDocumentSubType<SkillItem>(skillItem, [ItemTypeEnum.Skill]);
+    assertDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill);
     system.categoryMod = skillItem.system?.categoryMod; // Use the actor derived value
     system.chance = skillItem.system?.chance; // Use the actor derived value
 

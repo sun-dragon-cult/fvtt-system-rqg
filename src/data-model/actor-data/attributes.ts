@@ -1,4 +1,4 @@
-import { defaultResource, Resource } from "../shared/resource";
+import { Resource } from "../shared/resource";
 
 export const actorHealthStatuses = ["healthy", "wounded", "shock", "unconscious", "dead"] as const;
 export type ActorHealthState = (typeof actorHealthStatuses)[number];

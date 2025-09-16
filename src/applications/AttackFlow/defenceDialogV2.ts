@@ -417,7 +417,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     const attackingWeapon = (await fromUuid(
       attackChatMessage?.system.attackWeaponUuid,
     )) as RqgItem | null;
-    assertDocumentSubType<WeaponItem>(attackingWeapon, [ItemTypeEnum.Weapon]);
+    assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
 
     const attackWeaponUsageType = attackChatMessage?.system.attackWeaponUsage;
     requireValue(attackWeaponUsageType, "No attacking weapon usage found in attack chat message");

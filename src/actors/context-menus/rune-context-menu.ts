@@ -25,7 +25,7 @@ export const runeMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
-      assertDocumentSubType<RuneItem>(item, [ItemTypeEnum.Rune]);
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       await item.abilityRoll();
     },
   },
@@ -36,7 +36,7 @@ export const runeMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
-      assertDocumentSubType<RuneItem>(item, [ItemTypeEnum.Rune]);
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       await item.abilityRollImmediate();
     },
   },
@@ -47,7 +47,7 @@ export const runeMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
-      assertDocumentSubType<RuneItem>(item, [ItemTypeEnum.Rune]);
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       await item.update({ system: { hasExperience: !item.system.hasExperience } }, {});
     },
   },
@@ -60,7 +60,7 @@ export const runeMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
-      assertDocumentSubType<RuneItem>(item, [ItemTypeEnum.Rune]);
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       const speaker = ChatMessage.getSpeaker({ actor, token });
       void showImproveAbilityDialog(item, speaker);
     },
@@ -88,7 +88,7 @@ export const runeMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
-      assertDocumentSubType<RuneItem>(item, [ItemTypeEnum.Rune]);
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       if (!item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditRuneError", {
           itemId: itemId,

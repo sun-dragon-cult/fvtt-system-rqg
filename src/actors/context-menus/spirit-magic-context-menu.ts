@@ -24,7 +24,7 @@ export const spiritMagicMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, [ItemTypeEnum.SpiritMagic]);
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       await item.spiritMagicRoll();
     },
   },
@@ -34,13 +34,13 @@ export const spiritMagicMenuOptions = (
     condition: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, [ItemTypeEnum.SpiritMagic]);
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       return !item.system.isVariable || item.system.points === 1;
     },
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, [ItemTypeEnum.SpiritMagic]);
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       if (item.system.isVariable && item.system.points > 1) {
         await item.spiritMagicRoll();
       } else {
@@ -71,7 +71,7 @@ export const spiritMagicMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, [ItemTypeEnum.SpiritMagic]);
+      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       if (!item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditSpiritMagicError", {
           itemId: itemId!,

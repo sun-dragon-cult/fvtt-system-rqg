@@ -211,7 +211,7 @@ export async function extractDropInfo<T extends Document.Any>(
   return {
     droppedDocument: droppedDocument,
     dropZoneData: dropZoneData,
-    isAllowedToDrop: droppedDocument && isAllowedDropDocumentType,
+    isAllowedToDrop: !!droppedDocument && isAllowedDropDocumentType,
     allowDuplicates: allowDuplicates,
   };
 }

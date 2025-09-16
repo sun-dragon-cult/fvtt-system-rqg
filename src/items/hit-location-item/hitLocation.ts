@@ -24,7 +24,7 @@ export class HitLocation extends AbstractEmbeddedItem {
     const actor = item.actor;
     assertDocumentSubType<CharacterActor>(
       actor,
-      [ActorTypeEnum.Character],
+      ActorTypeEnum.Character,
       "RQG.Item.Notification.HitLocationDoesNotHaveActorError",
     );
     const actorData = actor.system;

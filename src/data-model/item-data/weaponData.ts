@@ -1,5 +1,5 @@
-import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
-import { defaultResource, Resource } from "../shared/resource";
+import type { IPhysicalItem } from "./IPhysicalItem";
+import { Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";

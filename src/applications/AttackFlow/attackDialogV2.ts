@@ -135,7 +135,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       this.weaponItem?.system.usage[formData.usageType].skillRqidLink?.rqid;
     const usedSkill: RqgItem | undefined =
       this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
-    assertDocumentSubType<SkillItem>(usedSkill, [ItemTypeEnum.Skill]);
+    assertDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill);
     formData.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
 
     if ((game.user?.targets.size ?? 0) > 1) {
@@ -233,7 +233,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const weaponItem = (await fromUuid(weaponSelectElement.value ?? "")) as RqgItem | undefined;
     assertDocumentSubType<WeaponItem>(
       weaponItem,
-      [ItemTypeEnum.Weapon],
+      ItemTypeEnum.Weapon,
       "Weapon not found - programming error",
     );
 
@@ -277,11 +277,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const weaponItem = (await fromUuid(formDataObject.attackingWeaponUuid ?? "")) as
       | RqgItem
       | undefined;
-    assertDocumentSubType<WeaponItem>(
-      weaponItem,
-      [ItemTypeEnum.Weapon],
-      "Missing weapon for attack",
-    );
+    assertDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon, "Missing weapon for attack");
 
     const tokenDocumentOrRqgActor = (await fromUuid(
       formDataObject.attackingTokenOrActorUuid ?? "",
@@ -302,11 +298,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const skillItem = actor?.getBestEmbeddedDocumentByRqid(
       weaponItem.system.usage[formDataObject.usageType].skillRqidLink?.rqid,
     );
-    assertDocumentSubType<SkillItem>(
-      skillItem,
-      [ItemTypeEnum.Skill],
-      "Missing skillItem för attack",
-    );
+    assertDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill, "Missing skillItem för attack");
 
     const combatManeuverName = getDomDataset(submitter, "combat-maneuver-name");
 
@@ -569,7 +561,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     if (weapon == null) {
       return [];
     }
-    assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
+    assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
     return Object.entries<Usage>(weapon.system.usage).reduce((acc: any, [key, usage]) => {
       if (usage?.skillRqidLink?.rqid) {
         acc.push({ value: key, label: localize(`RQG.Game.WeaponUsage.${key}-full`) });
@@ -589,13 +581,13 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     if (weapon == null) {
       return [];
     }
-    assertDocumentSubType<WeaponItem>(weapon, [ItemTypeEnum.Weapon]);
+    assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
     const weaponOwner = weapon.parent;
     if (!weaponOwner) {
       throw new RqgError("weapon did not have an owner");
     }
-    assertDocumentSubType<CharacterActor>(weaponOwner, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(weaponOwner, ActorTypeEnum.Character);
 
     const nonHumanoids =
       game.scenes?.current?.tokens
@@ -631,7 +623,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
   }
 
   private static getWeaponProjectile(weaponItem: RqgItem | undefined): WeaponItem | undefined {
-    assertDocumentSubType<WeaponItem>(weaponItem, [ItemTypeEnum.Weapon]);
+    assertDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon);
     if (weaponItem?.system.isThrownWeapon) {
       return weaponItem;
     } else if (weaponItem?.system.isProjectileWeapon) {

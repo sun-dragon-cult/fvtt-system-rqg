@@ -225,7 +225,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
         const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
-        assertDocumentSubType<RuneItem>(rune, [ItemTypeEnum.Rune]);
+        assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
         rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
         rune.system.hasExperience = false;
         const associatedChoice = this.choices[runeRqidLink.rqid];
@@ -244,7 +244,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks ?? []) {
         const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as RqgItem | undefined;
-        assertDocumentSubType<SkillItem>(skill, [ItemTypeEnum.Skill]);
+        assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
           // put choice on homeland skills for purposes of sheet
@@ -286,7 +286,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
         const passion = await Rqid.fromRqid(passionRqidLink.rqid);
-        assertDocumentSubType<PassionItem>(passion, [ItemTypeEnum.Passion]);
+        assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         passion.system.hasExperience = false;
         if (associatedChoice) {

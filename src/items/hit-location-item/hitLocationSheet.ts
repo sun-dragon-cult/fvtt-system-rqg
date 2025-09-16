@@ -116,7 +116,7 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   private static async submitAddWoundDialog(html: JQuery, actor: RqgActor, hitLocation: RqgItem) {
-    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
     const applyDamageToTotalHp: boolean = !!data.toTotalHp;
@@ -134,9 +134,9 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
-    assertDocumentSubType<CharacterActor>(actor, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const hitLocation = actor.items.get(hitLocationItemId);
-    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationHealWound,
@@ -181,7 +181,7 @@ export class HitLocationSheet extends RqgItemSheet {
     actor: RqgActor,
     hitLocation: RqgItem,
   ): Promise<void> {
-    assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
     requireValue(

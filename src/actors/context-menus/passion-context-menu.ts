@@ -23,7 +23,7 @@ export const passionMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
-      assertDocumentSubType<PassionItem>(item, [ItemTypeEnum.Passion]);
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       await item.abilityRoll();
     },
   },
@@ -34,7 +34,7 @@ export const passionMenuOptions = (
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
-      assertDocumentSubType<PassionItem>(item, [ItemTypeEnum.Passion]);
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       if (item.system.chance == null) {
         const msg = localize("RQG.ContextMenu.Notification.CantDirectRollPassionError", {
           itemId: itemId,
@@ -85,7 +85,7 @@ export const passionMenuOptions = (
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId);
-      assertDocumentSubType<PassionItem>(item, [ItemTypeEnum.Passion]);
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       const speaker = ChatMessage.getSpeaker({ actor, token });
       void showImproveAbilityDialog(item, speaker);
     },

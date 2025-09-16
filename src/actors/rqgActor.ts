@@ -91,7 +91,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     characteristicName: keyof Characteristics,
     options: Partial<CharacteristicRollOptions>,
   ): CharacteristicRollOptions {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
     const actorCharacteristics = this.system.characteristics;
     const rollCharacteristic = actorCharacteristics[characteristicName] as
@@ -150,7 +150,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   private createReputationFakeItem(): PartialAbilityItem {
     const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const token = getTokenFromActor(this);
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     return {
       name: "Reputation",
       img: defaultItemIconSettings.reputation,
@@ -165,7 +165,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   // TODO should use result: SpiritMagicSuccessLevelEnum
   public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
     if (result <= AbilitySuccessLevelEnum.Success) {
-      assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+      assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
       await this.update(
         foundry.utils.expandObject({ "system.attributes.magicPoints.value": newMp }),
@@ -181,14 +181,14 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    */
   override prepareBaseData(): void {
     super.prepareBaseData();
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     // Set this here before Active effects to allow POW crystals to boost it.
     this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
   }
 
   override prepareEmbeddedDocuments(): void {
     super.prepareEmbeddedDocuments();
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
     const { con, siz, pow } = this.actorCharacteristics();
     this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
@@ -210,7 +210,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    */
   override prepareDerivedData(): void {
     super.prepareDerivedData();
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     const skillCategoryModifiers = (this.system.skillCategoryModifiers =
@@ -274,7 +274,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    * Return the bodyType of an actor. Currently only "humanoid" or "other"
    */
   public getBodyType(): string {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
       .filter((i: RqgItem) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
       .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
@@ -295,7 +295,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     characteristicName: string,
     result: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     if (
       result != null &&
       result <= AbilitySuccessLevelEnum.Success &&
@@ -327,14 +327,14 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     wasDamagedReducedByParry: boolean = false,
     attackSuccessLevel?: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const damagedHitLocation = this.items.find(
       (i: RqgItem) =>
         isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
         hitLocationRollTotal >= i.system.dieFrom &&
         hitLocationRollTotal <= i.system.dieTo,
     ) as HitLocationItem | undefined;
-    assertDocumentSubType<HitLocationItem>(damagedHitLocation, [ItemTypeEnum.HitLocation]);
+    assertDocumentSubType<HitLocationItem>(damagedHitLocation, ItemTypeEnum.HitLocation);
 
     const hitLocationAP = damagedHitLocation?.system.armorPoints ?? 0;
     const damageAfterAP = ignoreAP ? damageAmount : Math.max(0, damageAmount - hitLocationAP);
@@ -361,7 +361,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
 
     for (const update of uselessLegs) {
       const leg = this.items.get(update._id) as HitLocationItem | undefined;
-      assertDocumentSubType<HitLocationItem>(leg, [ItemTypeEnum.HitLocation]);
+      assertDocumentSubType<HitLocationItem>(leg, ItemTypeEnum.HitLocation);
       await leg.update(update);
     }
 
@@ -403,7 +403,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    * from what the actors health is.
    */
   public async updateTokenEffectFromHealth(): Promise<void> {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
         ["shock", this.findEffect("shock")],
@@ -490,7 +490,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
 
     if (
       !this.prototypeToken.actorLink &&
-      isDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character])
+      isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)
     ) {
       initializeAllCharacteristics(this).then(void this.updateDexBasedSkills());
     } else {
@@ -499,16 +499,16 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   }
 
   private async updateDexBasedSkills(): Promise<void> {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
-    assertDocumentSubType<SkillItem>(dodgeItem, [ItemTypeEnum.Skill]);
+    assertDocumentSubType<SkillItem>(dodgeItem, ItemTypeEnum.Skill);
     const dodgeBaseChance = Skill.dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
     if (dodgeItem && dodgeItem.system.baseChance !== dodgeBaseChance) {
       await dodgeItem.update({ system: { baseChance: dodgeBaseChance } });
     }
 
     const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
-    assertDocumentSubType<SkillItem>(jumpItem, [ItemTypeEnum.Skill]);
+    assertDocumentSubType<SkillItem>(jumpItem, ItemTypeEnum.Skill);
     const jumpBaseChance = Skill.jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
     if (jumpItem && jumpItem.system.baseChance !== jumpBaseChance) {
       await jumpItem.update({ system: { baseChance: jumpBaseChance } });
@@ -518,6 +518,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   protected override _onCreateDescendantDocuments(
     ...args: Actor.OnCreateDescendantDocumentsArgs
   ): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [parent, collection, documents, data, options, userId] = args;
     if (
       isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) &&
@@ -569,7 +570,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     options: Actor.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void> {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
     const actorDex =
       (changes as DeepPartial<CharacterDataSource>)?.system?.characteristics?.dexterity?.value ??
@@ -598,7 +599,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     pow: number | undefined;
     cha: number | undefined;
   } {
-    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const characteristics = this.system.characteristics;
     const str = characteristics.strength.value;
     const con = characteristics.constitution.value;
