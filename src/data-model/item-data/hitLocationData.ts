@@ -56,15 +56,15 @@ export interface HitLocationDataProperties {
   system: HitLocationDataPropertiesData;
 }
 
-export const defaultHitLocationData: HitLocationDataSourceData = {
-  dieFrom: 0,
-  dieTo: 0,
-  hitPoints: defaultResource,
-  baseHpDelta: 0,
-  naturalAp: 0,
-  wounds: [],
-  hitLocationHealthState: "healthy",
-  actorHealthImpact: "healthy",
-  hitLocationType: HitLocationTypesEnum.Limb,
-  connectedTo: "",
-};
+// export const defaultHitLocationData: HitLocationDataSourceData = {
+//   dieFrom: 0,
+//   dieTo: 0,
+//   hitPoints: defaultResource,
+//   baseHpDelta: 0,
+//   naturalAp: 0,
+//   wounds: [],
+//   hitLocationHealthState: "healthy",
+//   actorHealthImpact: "healthy",
+//   hitLocationType: HitLocationTypesEnum.Limb,
+//   connectedTo: "",
+// };

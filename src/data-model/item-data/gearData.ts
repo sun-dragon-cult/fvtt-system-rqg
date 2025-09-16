@@ -19,15 +19,15 @@ export interface GearDataProperties {
   system: GearDataPropertiesData;
 }
 
-export const defaultGearData: GearDataSourceData = {
-  description: "",
-  gmNotes: "",
-  quantity: 1,
-  price: defaultPriceData,
-  encumbrance: 1,
-  equippedStatus: "carried",
-  location: "",
-  isContainer: false,
-  attunedTo: "",
-  physicalItemType: "unique",
-};
+// export const defaultGearData: GearDataSourceData = {
+//   description: "",
+//   gmNotes: "",
+//   quantity: 1,
+//   price: defaultPriceData,
+//   encumbrance: 1,
+//   equippedStatus: "carried",
+//   location: "",
+//   isContainer: false,
+//   attunedTo: "",
+//   physicalItemType: "unique",
+// };

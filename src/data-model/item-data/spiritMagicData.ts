@@ -27,16 +27,16 @@ export interface SpiritMagicDataProperties {
   system: SpiritMagicDataPropertiesData;
 }
 
-export const defaultSpiritMagicData: SpiritMagicDataSourceData = {
-  descriptionRqidLink: undefined,
-  points: 0,
-  isVariable: false,
-  isRitual: false,
-  isEnchantment: false,
-  castingRange: SpellRangeEnum.Ranged,
-  duration: SpellDurationEnum.Instant,
-  concentration: SpellConcentrationEnum.Passive,
-  incompatibleWith: [],
-  spellFocus: "",
-  isMatrix: false,
-};
+// export const defaultSpiritMagicData: SpiritMagicDataSourceData = {
+//   descriptionRqidLink: undefined,
+//   points: 0,
+//   isVariable: false,
+//   isRitual: false,
+//   isEnchantment: false,
+//   castingRange: SpellRangeEnum.Ranged,
+//   duration: SpellDurationEnum.Instant,
+//   concentration: SpellConcentrationEnum.Passive,
+//   incompatibleWith: [],
+//   spellFocus: "",
+//   isMatrix: false,
+// };

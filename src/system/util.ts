@@ -196,7 +196,7 @@ export function hasOwnProperty<X extends object | undefined, Y extends PropertyK
  */
 export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
   document: Document.WithSubTypes | RqgItem | RqgActor | undefined | null,
-  itemOrActorTypes: (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[],
+  itemOrActorTypes: Readonly<(string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]>, // TODO accept single value too, see isDocumentSubType
   errorMsg?: string,
 ): asserts document is T {
   if (!document || !itemOrActorTypes.includes((document as any).type)) {
@@ -213,9 +213,15 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
  */
 export function isDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
   document: Document.WithSubTypes | RqgItem | RqgActor | undefined,
-  itemType: string | ItemTypeEnum | ActorTypeEnum | undefined | null,
+  documentSubTypes: Readonly<
+    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
+    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
+  >,
 ): document is T {
-  return !!document && (document as any).type === itemType?.toString();
+  const documentSubTypesArray = Array.isArray(documentSubTypes)
+    ? documentSubTypes
+    : [documentSubTypes];
+  return !!document && documentSubTypesArray.includes((document as any).type);
 }
 
 /**

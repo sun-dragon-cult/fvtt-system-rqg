@@ -32,17 +32,17 @@ export interface HomelandDataProperties {
   system: HomelandDataSourceData;
 }
 
-export const defaultHomelandData: HomelandDataSourceData = {
-  homeland: "",
-  homelandJournalRqidLink: undefined,
-  region: "",
-  regionJournalRqidLink: undefined,
-  cultureJournalRqidLinks: [],
-  tribeJournalRqidLinks: [],
-  clanJournalRqidLinks: [],
-  cultRqidLinks: [],
-  skillRqidLinks: [],
-  runeRqidLinks: [],
-  passionRqidLinks: [],
-  wizardInstructions: "",
-};
+// export const defaultHomelandData: HomelandDataSourceData = {
+//   homeland: "",
+//   homelandJournalRqidLink: undefined,
+//   region: "",
+//   regionJournalRqidLink: undefined,
+//   cultureJournalRqidLinks: [],
+//   tribeJournalRqidLinks: [],
+//   clanJournalRqidLinks: [],
+//   cultRqidLinks: [],
+//   skillRqidLinks: [],
+//   runeRqidLinks: [],
+//   passionRqidLinks: [],
+//   wizardInstructions: "",
+// };

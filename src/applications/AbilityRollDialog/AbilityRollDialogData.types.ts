@@ -18,6 +18,7 @@ export type PartialAbilityItem = {
   /** Special handling for Reputation rolls */
   actingToken?: TokenDocument;
   uuid?: string;
+  ownership?: { default: number }; // TODO should probably ber something like foundry.applications.apps.DocumentOwnershipConfig;
 };
 
 export type AbilityRollDialogContext = RollHeaderData &

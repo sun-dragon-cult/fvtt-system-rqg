@@ -32,16 +32,16 @@ export interface RuneMagicDataProperties {
   system: RuneMagicDataPropertiesData;
 }
 
-export const defaultRuneMagicData: RuneMagicDataSourceData = {
-  descriptionRqidLink: undefined,
-  cultId: "",
-  runeRqidLinks: [],
-  points: 0,
-  castingRange: SpellRangeEnum.Ranged,
-  duration: SpellDurationEnum.Temporal,
-  concentration: SpellConcentrationEnum.Passive,
-  isRitual: false,
-  isStackable: false,
-  isOneUse: false,
-  isEnchantment: false,
-};
+// export const defaultRuneMagicData: RuneMagicDataSourceData = {
+//   descriptionRqidLink: undefined,
+//   cultId: "",
+//   runeRqidLinks: [],
+//   points: 0,
+//   castingRange: SpellRangeEnum.Ranged,
+//   duration: SpellDurationEnum.Temporal,
+//   concentration: SpellConcentrationEnum.Passive,
+//   isRitual: false,
+//   isStackable: false,
+//   isOneUse: false,
+//   isEnchantment: false,
+// };

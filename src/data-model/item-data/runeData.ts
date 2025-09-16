@@ -52,14 +52,14 @@ export interface RuneDataProperties {
   system: RuneDataPropertiesData;
 }
 
-export const defaultRuneData: RuneDataSourceData = {
-  descriptionRqidLink: undefined,
-  rune: "",
-  chance: 0,
-  canGetExperience: true,
-  hasExperience: false,
-  runeType: defaultRuneType,
-  opposingRuneRqidLink: undefined,
-  minorRuneRqidLinks: [],
-  isMastered: false,
-};
+// export const defaultRuneData: RuneDataSourceData = {
+//   descriptionRqidLink: undefined,
+//   rune: "",
+//   chance: 0,
+//   canGetExperience: true,
+//   hasExperience: false,
+//   runeType: defaultRuneType,
+//   opposingRuneRqidLink: undefined,
+//   minorRuneRqidLinks: [],
+//   isMastered: false,
+// };

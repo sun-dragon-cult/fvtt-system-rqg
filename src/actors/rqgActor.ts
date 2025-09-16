@@ -1,12 +1,15 @@
 import { RqgCalculations } from "../system/rqgCalculations";
-import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
+import {
+  ActorTypeEnum,
+  type CharacterActor,
+  type CharacterDataSource,
+} from "../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum, type PhysicalItem, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
   assertDocumentSubType,
   getTokenFromActor,
-  hasOwnProperty,
   isDocumentSubType,
   localize,
   localizeCharacteristic,
@@ -33,6 +36,10 @@ import type { RqgItem } from "@items/rqgItem.ts";
 
 import Document = foundry.abstract.Document;
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+
+import type { DeepPartial } from "fvtt-types/utils";
+import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
 
 export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Subtype> {
   static init() {
@@ -142,15 +149,15 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   }
 
   private createReputationFakeItem(): PartialAbilityItem {
-    const defaultItemIconSettings: any = game.settings.get(systemId, "defaultItemIconSettings");
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const token = getTokenFromActor(this);
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     return {
       name: "Reputation",
       img: defaultItemIconSettings.reputation,
       system: {
         chance: this.system.background.reputation ?? 0,
       },
-      // @ts-expect-error ownership to make the Ability roll hiding work
       ownership: { default: 0 },
       actingToken: token,
     } as const;
@@ -159,10 +166,13 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   // TODO should use result: SpiritMagicSuccessLevelEnum
   public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
     if (result <= AbilitySuccessLevelEnum.Success) {
+      assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
-      await this.update({ "system.attributes.magicPoints.value": newMp });
+      await this.update(
+        foundry.utils.expandObject({ "system.attributes.magicPoints.value": newMp }),
+      );
       ui.notifications?.info(
-        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount }),
+        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount.toString() }),
       );
     }
   }
@@ -170,19 +180,21 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
-  prepareBaseData(): void {
+  override prepareBaseData(): void {
     super.prepareBaseData();
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     // Set this here before Active effects to allow POW crystals to boost it.
     this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
   }
 
-  prepareEmbeddedDocuments(): void {
+  override prepareEmbeddedDocuments(): void {
     super.prepareEmbeddedDocuments();
-    const actorSystem = this.system;
-    const { con, siz, pow } = this.actorCharacteristics();
-    actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
 
-    this.items.forEach((item) =>
+    const { con, siz, pow } = this.actorCharacteristics();
+    this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+
+    this.items.forEach((item: RqgItem) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item),
     );
   }
@@ -190,15 +202,16 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
-  applyActiveEffects(): void {
+  override applyActiveEffects(): void {
     super.applyActiveEffects();
   }
 
   /**
    * Apply final transformations to the Actor data after all effects have been applied
    */
-  prepareDerivedData(): void {
+  override prepareDerivedData(): void {
     super.prepareDerivedData();
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     const attributes = this.system.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     const skillCategoryModifiers = (this.system.skillCategoryModifiers =
@@ -245,7 +258,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach((item) =>
+    this.items.forEach((item: RqgItem) =>
       ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item),
     );
 
@@ -290,7 +303,9 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
       characteristicName === "power" &&
       !this.system.characteristics.power.hasExperience
     ) {
-      await this.update({ "system.characteristics.power.hasExperience": true });
+      await this.update(
+        foundry.utils.expandObject({ "system.characteristics.power.hasExperience": true }),
+      );
       const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
         actorName: this.name,
         itemName: localizeCharacteristic("power"),
@@ -313,12 +328,14 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     wasDamagedReducedByParry: boolean = false,
     attackSuccessLevel?: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     const damagedHitLocation = this.items.find(
       (i: RqgItem) =>
         isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
         hitLocationRollTotal >= i.system.dieFrom &&
         hitLocationRollTotal <= i.system.dieTo,
-    );
+    ) as HitLocationItem | undefined;
+    assertDocumentSubType<HitLocationItem>(damagedHitLocation, [ItemTypeEnum.HitLocation]);
 
     const hitLocationAP = damagedHitLocation?.system.armorPoints ?? 0;
     const damageAfterAP = ignoreAP ? damageAmount : Math.max(0, damageAmount - hitLocationAP);
@@ -338,31 +355,31 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
       DamageCalculations.addWound(
         damageAfterAP,
         applyToActorHP,
-        damagedHitLocation!,
+        damagedHitLocation,
         this,
         speaker.alias!,
       );
 
     for (const update of uselessLegs) {
-      const leg = this.items.get(update._id);
+      const leg = this.items.get(update._id) as HitLocationItem | undefined;
       assertDocumentSubType<HitLocationItem>(leg, [ItemTypeEnum.HitLocation]);
       await leg.update(update);
     }
 
     if (hitLocationUpdates) {
-      await damagedHitLocation!.update(hitLocationUpdates);
+      await damagedHitLocation.update(hitLocationUpdates);
     }
     if (actorUpdates) {
-      await this.update(actorUpdates as any);
-    } // TODO fix type
+      await this.update(actorUpdates);
+    }
 
     // Incapacitating Rule
     const incapacitatingText = // include crit / special check!
       damageType === "slash" &&
       (attackSuccessLevel ?? Infinity) <= AbilitySuccessLevelEnum.Special &&
-      damageAfterAP >= damagedHitLocation!.system.hitPoints.max
+      damageAfterAP >= (damagedHitLocation.system.hitPoints.max ?? 0)
         ? `<p>${localize("RQG.Item.HitLocation.IncapacitationRule", {
-            damage: damageAfterAP,
+            damage: damageAfterAP.toString(),
           })}</p>`
         : "";
 
@@ -373,7 +390,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
       content:
         localize("RQG.Item.HitLocation.AddWoundChatContent", {
           actorName: this.name,
-          hitLocationName: damagedHitLocation!.name,
+          hitLocationName: damagedHitLocation.name,
           notification: notification,
         }) + incapacitatingText,
       whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
@@ -387,6 +404,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    * from what the actors health is.
    */
   public async updateTokenEffectFromHealth(): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
       new Map([
         ["shock", this.findEffect("shock")],
@@ -415,7 +433,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     }
   }
 
-  private findEffect(health: ActorHealthState): { id: string; label: string; icon: string } {
+  private findEffect(health: ActorHealthState): CONFIG.StatusEffect {
     const effect = CONFIG.statusEffects.find((e) => e.id === health);
     requireValue(effect, `Required statusEffect ${health} is missing`); // TODO translate message
     return effect;
@@ -432,11 +450,11 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     return Math.round(Math.min(str, (str + (con ?? 0)) / 2) * (carryingFactor ?? 1));
   }
 
-  private calcTravelEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
+  private calcTravelEncumbrance(items: Collection<RqgItem>): number {
     return Math.round(
       items.reduce((sum: number, item: RqgItem) => {
         if (
-          hasOwnProperty(item.system, "equippedStatus") &&
+          isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
           ["carried", "equipped"].includes(item.system.equippedStatus)
         ) {
           const enc = (item.system.quantity ?? 1) * (item.system.encumbrance ?? 0);
@@ -447,11 +465,11 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     );
   }
 
-  private calcEquippedEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
+  private calcEquippedEncumbrance(items: Collection<RqgItem>): number {
     return Math.round(
       items.reduce((sum, item: RqgItem) => {
         if (
-          hasOwnProperty(item.system, "physicalItemType") &&
+          isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
           item.system.equippedStatus === "equipped"
         ) {
           const quantity = item.system.quantity ?? 1;
@@ -465,13 +483,16 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
 
   // Entity-specific actions that should occur when the Entity is first created
   protected override _onCreate(
-    actorData: ActorData,
-    options: DocumentModificationOptions,
+    data: Actor.CreateData,
+    options: Actor.Database.OnCreateOperation,
     userId: string,
   ) {
-    super._onCreate(actorData as any, options, userId); // TODO type bug ??
+    super._onCreate(data, options, userId);
 
-    if (!this.prototypeToken.actorLink) {
+    if (
+      !this.prototypeToken.actorLink &&
+      isDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character])
+    ) {
       initializeAllCharacteristics(this).then(void this.updateDexBasedSkills());
     } else {
       void this.updateDexBasedSkills();
@@ -479,13 +500,16 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   }
 
   private async updateDexBasedSkills(): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
+    assertDocumentSubType<SkillItem>(dodgeItem, [ItemTypeEnum.Skill]);
     const dodgeBaseChance = Skill.dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
     if (dodgeItem && dodgeItem.system.baseChance !== dodgeBaseChance) {
       await dodgeItem.update({ system: { baseChance: dodgeBaseChance } });
     }
 
     const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
+    assertDocumentSubType<SkillItem>(jumpItem, [ItemTypeEnum.Skill]);
     const jumpBaseChance = Skill.jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
     if (jumpItem && jumpItem.system.baseChance !== jumpBaseChance) {
       await jumpItem.update({ system: { baseChance: jumpBaseChance } });
@@ -493,19 +517,18 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   }
 
   protected override _onCreateDescendantDocuments(
-    parent: Document.Any,
-    collection: string,
-    documents: Document.Any[],
-    data: object[],
-    options: object,
-    userId: string,
+    ...args: Actor.OnCreateDescendantDocumentsArgs
   ): void {
-    if (parent === this && collection === "items" && game.user?.id === userId) {
-      documents.forEach((d: any) => {
-        // TODO any bailout - fix types!
+    const [parent, collection, documents, data, options, userId] = args;
+    if (
+      isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) &&
+      collection === "items" &&
+      game.user?.id === userId
+    ) {
+      documents.forEach((d) => {
         ResponsibleItemClass.get(d.type)
           ?.onEmbedItem(this, d, options, userId)
-          .then((updateData: any) => {
+          .then((updateData) => {
             if (!foundry.utils.isEmpty(updateData)) {
               this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
             }
@@ -513,22 +536,23 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
       });
     }
 
-    super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
+    super._onCreateDescendantDocuments(...args);
   }
 
   protected override _onDeleteDescendantDocuments(
-    parent: Document.AnyStored,
-    collection: Embedded[Document.Any["documentName"]],
-    documents: Document.Any[],
-    ids: string[],
-    options: Document.Database.DeleteOptionsFor<Document.Any["documentName"]>,
-    userId: string,
+    ...args: Actor.OnDeleteDescendantDocumentsArgs
   ): void {
-    if (parent === this && collection === "item" && game.user?.id === userId) {
+    const [parent, collection, documents, ids, options, userId] = args;
+    if (
+      isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) &&
+      parent === this &&
+      collection === "items" &&
+      game.user?.id === userId
+    ) {
       documents.forEach((d) => {
         const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
           this,
-          d as RqgItem, // TODO type bailout - fixme
+          d as any, // TODO type bailout - fixme
           options,
           userId,
         );
@@ -537,7 +561,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
         }
       });
     }
-    super._onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId);
+    super._onDeleteDescendantDocuments(...args);
   }
 
   // Update the baseChance for Dodge & Jump skills that depend on actor DEX
@@ -546,20 +570,22 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     options: Actor.Database.PreUpdateOptions,
     user: User.Implementation,
   ): Promise<boolean | void> {
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
+
     const actorDex =
-      changes?.system?.characteristics?.dexterity?.value ??
+      (changes as DeepPartial<CharacterDataSource>)?.system?.characteristics?.dexterity?.value ??
       this.system.characteristics.dexterity.value;
+    if (actorDex != null) {
+      const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
+      if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
+        await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+      }
 
-    const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
-    if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
-      await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+      const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
+      if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
+        await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
+      }
     }
-
-    const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
-    if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
-      await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
-    }
-
     return super._preUpdate(changes, options, user);
   }
 
@@ -573,6 +599,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     pow: number | undefined;
     cha: number | undefined;
   } {
+    assertDocumentSubType<CharacterActor>(this, [ActorTypeEnum.Character]);
     const characteristics = this.system.characteristics;
     const str = characteristics.strength.value;
     const con = characteristics.constitution.value;
@@ -584,10 +611,10 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     return { str, con, siz, dex, int, pow, cha };
   }
 
-  // Typeguards
-  isCharacter(): this is CharacterActor {
-    return this.type === ActorTypeEnum.Character.toString();
-  }
+  // // Typeguards
+  // isCharacter(): this is CharacterActor {
+  //   return this.type === ActorTypeEnum.Character.toString();
+  // }
 
   // assertIsCharacter(): this is CharacterActor {
   //   const isCharacter = this.type === ActorTypeEnum.Character.toString();

@@ -1,5 +1,11 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import {
+  assertDocumentSubType,
+  getDomDataset,
+  getRequiredDomDataset,
+  localize,
+  localizeItemType,
+} from "../system/util";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import type { RqgItem } from "./rqgItem";
 import {
@@ -11,6 +17,7 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
   static override get defaultOptions(): ItemSheet.Options {
@@ -52,16 +59,13 @@ export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
             const selectElem = event.currentTarget as HTMLSelectElement;
             const allowDuplicates = getDomDataset(elem, "allow-duplicates");
             const newRqid = selectElem?.value;
-            if (
-              allowDuplicates ||
-              !this.document.system[targetProperty].some((l: RqidLink) => l.rqid === newRqid)
-            ) {
-              const newName = selectElem?.selectedOptions[0]?.innerText;
+            const targetRqidLinks = ((this.document.system as any)[targetProperty] ??
+              []) as RqidLink[];
+
+            if (allowDuplicates || !targetRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
+              const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
               const newHitLocationRqidLink = new RqidLink(newRqid, newName);
-              const updatedLinks = [
-                ...this.document.system[targetProperty],
-                newHitLocationRqidLink,
-              ];
+              const updatedLinks = [...targetRqidLinks, newHitLocationRqidLink];
               await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
             }
           });

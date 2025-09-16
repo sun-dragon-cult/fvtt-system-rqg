@@ -85,15 +85,15 @@ export interface Background {
   clanJournalRqidLinks: RqidLink[];
 }
 
-export const defaultBackground: Background = {
-  species: "Human",
-  speciesRqidLink: undefined,
-  occupation: OccupationEnum.NoOccupation,
-  currentOccupationRqidLink: undefined,
-  homeland: undefined,
-  homelandJournalRqidLink: undefined,
-  regionJournalRqidLink: undefined,
-  cultureJournalRqidLinks: [],
-  tribeJournalRqidLinks: [],
-  clanJournalRqidLinks: [],
-};
+// export const defaultBackground: Background = {
+//   species: "Human",
+//   speciesRqidLink: undefined,
+//   occupation: OccupationEnum.NoOccupation,
+//   currentOccupationRqidLink: undefined,
+//   homeland: undefined,
+//   homelandJournalRqidLink: undefined,
+//   regionJournalRqidLink: undefined,
+//   cultureJournalRqidLinks: [],
+//   tribeJournalRqidLinks: [],
+//   clanJournalRqidLinks: [],
+// };

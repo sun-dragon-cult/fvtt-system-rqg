@@ -8,7 +8,10 @@ import {
 } from "../../system/util";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import {
+  type CharacterActor,
+  type CharacterDataSourceData,
+} from "../../data-model/actor-data/rqgActorData.ts";
 import type { DeepPartial } from "fvtt-types/utils";
 
 export const characteristicMenuOptions = (
@@ -146,7 +149,7 @@ export const characteristicMenuOptions = (
 async function getCharacteristicUpdate(
   characteristic: string,
   formula: string | undefined,
-): Promise<DeepPartial<ActorDataConstructorData & { system: any }>> {
+): Promise<Actor.UpdateData & { system: DeepPartial<CharacterDataSourceData> }> {
   if (!formula || !Roll.validate(formula)) {
     return {
       system: { characteristics: { [characteristic]: { value: "" } } },
@@ -210,12 +213,12 @@ export async function initializeAllCharacteristics(actor: CharacterActor): Promi
 }
 
 /** Sets actor's current hitPoints.value to the hitPoints.max */
-async function initializeCurrentDerivedAttributes(actor: CharacterActor) {
+async function initializeCurrentDerivedAttributes(actor: CharacterActor): Promise<void> {
   if (actor.system.attributes.hitPoints.max != null) {
-    const hpUpdate = {
+    const hpUpdate: Actor.UpdateData = foundry.utils.expandObject({
       "system.attributes.hitPoints.value": actor.system.attributes.hitPoints.max,
       "system.attributes.magicPoints.value": actor.system.attributes.magicPoints.max,
-    };
+    });
     await actor.update(hpUpdate);
   }
 }

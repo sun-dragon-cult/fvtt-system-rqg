@@ -104,20 +104,20 @@ export interface CultDataProperties {
   system: CultDataPropertiesData;
 }
 
-export const defaultCultData: CultDataSourceData = {
-  deity: undefined,
-  joinedCults: [
-    {
-      cultName: "",
-      tagline: "",
-      rank: CultRankEnum.LayMember,
-    },
-  ],
-  commonRuneMagicRqidLinks: defaultCommonRuneMagic,
-  descriptionRqidLink: undefined,
-  runePoints: { value: 0, max: 0 },
-  holyDays: "",
-  gifts: "",
-  geases: "",
-  runeRqidLinks: [],
-};
+// export const defaultCultData: CultDataSourceData = {
+//   deity: undefined,
+//   joinedCults: [
+//     {
+//       cultName: "",
+//       tagline: "",
+//       rank: CultRankEnum.LayMember,
+//     },
+//   ],
+//   commonRuneMagicRqidLinks: defaultCommonRuneMagic,
+//   descriptionRqidLink: undefined,
+//   runePoints: { value: 0, max: 0 },
+//   holyDays: "",
+//   gifts: "",
+//   geases: "",
+//   runeRqidLinks: [],
+// };

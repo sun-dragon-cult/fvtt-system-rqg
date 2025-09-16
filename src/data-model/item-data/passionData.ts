@@ -38,12 +38,12 @@ export interface PassionDataProperties {
   system: PassionDataPropertiesData;
 }
 
-export const defaultPassionData: PassionDataSourceData = {
-  passion: PassionsEnum.Custom,
-  subject: "",
-  description: "",
-  gmNotes: "",
-  chance: 60,
-  canGetExperience: true,
-  hasExperience: false,
-};
+// export const defaultPassionData: PassionDataSourceData = {
+//   passion: PassionsEnum.Custom,
+//   subject: "",
+//   description: "",
+//   gmNotes: "",
+//   chance: 60,
+//   canGetExperience: true,
+//   hasExperience: false,
+// };

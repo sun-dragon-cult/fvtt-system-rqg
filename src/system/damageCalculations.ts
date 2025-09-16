@@ -1,31 +1,25 @@
 import {
-  type HitLocationDataProperties,
   hitLocationHealthStatuses,
   type HitLocationItem,
   HitLocationTypesEnum,
 } from "@item-model/hitLocationData.ts";
-import {
-  ActorTypeEnum,
-  type CharacterActor,
-  type RqgActorDataProperties,
-} from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { type ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, RqgError } from "./util";
 import { RqgItem } from "../items/rqgItem";
 import { RqgActor } from "../actors/rqgActor";
 import { systemId } from "./config";
-import type { DeepPartial } from "fvtt-types/utils";
 
 import Document = foundry.abstract.Document;
 
 export interface DamageEffects {
-  hitLocationUpdates: DeepPartial<HitLocationDataProperties>;
-  actorUpdates: DeepPartial<RqgActorDataProperties>;
+  hitLocationUpdates: Item.UpdateData;
+  actorUpdates: Actor.UpdateData;
   /** info to the user  */
   notification: string;
   /** make limbs useless */
-  uselessLegs: DeepPartial<HitLocationDataProperties>[];
+  uselessLegs: ({ _id: string } & Item.UpdateData)[];
 }
 
 /**
@@ -38,8 +32,8 @@ export class DamageCalculations {
   public static addWound(
     damage: number,
     applyDamageToTotalHp: boolean,
-    hitLocation: RqgItem | undefined,
-    actor: RqgActor,
+    hitLocation: HitLocationItem | undefined,
+    actor: CharacterActor,
     speakerName: string,
   ): DamageEffects {
     assertDocumentSubType<HitLocationItem>(hitLocation, [ItemTypeEnum.HitLocation]);
@@ -218,10 +212,10 @@ export class DamageCalculations {
         (i: RqgItem) =>
           isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
           i.system.connectedTo === hitLocation.flags?.[systemId]?.documentRqidFlags?.id,
-      );
-      damageEffects.uselessLegs = attachedLimbs.map((limb: HitLocationItem) => {
+      ) as HitLocationItem[];
+      damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
-          _id: limb.id,
+          _id: limb.id ?? "",
           system: {
             hitLocationHealthState: "useless",
           },

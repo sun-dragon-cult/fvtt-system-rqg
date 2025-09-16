@@ -1,4 +1,4 @@
-import { defaultPriceData, type IPhysicalItem } from "./IPhysicalItem";
+import type { IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
@@ -66,22 +66,22 @@ export interface ArmorDataProperties {
   system: ArmorDataPropertiesData;
 }
 
-export const defaultArmorData: ArmorDataSourceData = {
-  description: "",
-  gmNotes: "",
-  size: 0,
-  price: defaultPriceData,
-  encumbrance: 1,
-  equippedStatus: "carried",
-  hitLocationRqidLinks: [],
-  namePrefix: "",
-  armorType: "",
-  material: "",
-  absorbs: 0,
-  moveQuietlyPenalty: 0,
-  location: "",
-  isContainer: false,
-  attunedTo: "",
-  physicalItemType: "unique",
-  quantity: 1,
-};
+// export const defaultArmorData: ArmorDataSourceData = {
+//   description: "",
+//   gmNotes: "",
+//   size: 0,
+//   price: defaultPriceData,
+//   encumbrance: 1,
+//   equippedStatus: "carried",
+//   hitLocationRqidLinks: [],
+//   namePrefix: "",
+//   armorType: "",
+//   material: "",
+//   absorbs: 0,
+//   moveQuietlyPenalty: 0,
+//   location: "",
+//   isContainer: false,
+//   attunedTo: "",
+//   physicalItemType: "unique",
+//   quantity: 1,
+// };

@@ -45,16 +45,16 @@ export interface OccupationDataProperties {
   system: OccupationDataSourceData;
 }
 
-export const defaultOccupationData: OccupationDataSourceData = {
-  occupation: "",
-  occupationRqidLink: undefined,
-  specialization: "",
-  homelands: [],
-  occupationalSkills: [],
-  standardOfLiving: StandardOfLivingEnum.Free,
-  baseIncome: 0,
-  baseIncomeNotes: "",
-  cultRqidLinks: [],
-  ransom: 0,
-  startingEquipmentRqidLinks: [],
-};
+// export const defaultOccupationData: OccupationDataSourceData = {
+//   occupation: "",
+//   occupationRqidLink: undefined,
+//   specialization: "",
+//   homelands: [],
+//   occupationalSkills: [],
+//   standardOfLiving: StandardOfLivingEnum.Free,
+//   baseIncome: 0,
+//   baseIncomeNotes: "",
+//   cultRqidLinks: [],
+//   ransom: 0,
+//   startingEquipmentRqidLinks: [],
+// };
