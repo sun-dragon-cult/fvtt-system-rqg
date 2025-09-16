@@ -77,8 +77,6 @@ import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
 import type { OccupationItem } from "@item-model/occupationData.ts";
 import type { ArmorItem } from "@item-model/armorData.ts";
-import type { FormApplication } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/appv1/api/_module";
-import type Application from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/client/appv1/api/application-v1";
 
 // Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
 // export class RqgActorSheet extends ActorSheet<
@@ -88,10 +86,6 @@ import type Application from "@league-of-foundry-developers/foundry-vtt-types/sr
 // TODO where should I add the sheet data?
 export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends foundry
   .appv1.sheets.ActorSheet<Options> {
-  override get object(): RqgActor {
-    return super.object as RqgActor;
-  }
-
   // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];

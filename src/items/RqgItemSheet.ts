@@ -15,10 +15,6 @@ import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
 export class RqgItemSheet<Options extends ItemSheet.Options = ItemSheet.Options> extends foundry
   .appv1.sheets.ItemSheet<Options> {
-  override get object(): RqgItem {
-    return super.object as RqgItem;
-  }
-
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,
