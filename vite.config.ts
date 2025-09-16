@@ -19,8 +19,8 @@ const manifestJSONPath = await findManifestJSON(packageType);
 const filesToCopy = [manifestJSONPath, "CHANGELOG.md", "README.md", "CONTRIBUTING.md"];
 
 const devServerPort = 30001;
-const scriptsEntrypoint = "./src/index.ts";
-const stylesEntrypoint = "./src/index.scss";
+const scriptsEntrypoint = "./src/rqg.ts";
+const stylesEntrypoint = "./src/rqg.scss";
 
 const foundryHostData = await findFoundryHost();
 const foundryHost = foundryHostData.host;
@@ -91,7 +91,7 @@ const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
         // This file is substituted out with the real entrypoint in the foundryEntrypointsPlugin
         entry: "fake-entrypoint.js",
         formats: ["es"],
-        fileName: "index",
+        fileName: "rqg",
       },
       target: "es2023",
       rollupOptions: {
@@ -122,7 +122,7 @@ const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
 
 function foundryEntrypointsPlugin(): Vite.Plugin {
   const manifestPrefix = "\0virtual:foundry/";
-  const jsFile = `${manifestPrefix}index.js`;
+  const jsFile = `${manifestPrefix}rqg.js`;
   const stylesFile = `${manifestPrefix}styles.css?url`;
 
   return {
@@ -132,7 +132,7 @@ function foundryEntrypointsPlugin(): Vite.Plugin {
         return jsFile;
       }
 
-      if (source === "/index.js") {
+      if (source === "/rqg.js") {
         return jsFile;
       }
 

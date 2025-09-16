@@ -24,10 +24,10 @@
     }
   ],
   "esmodules": [
-    "index.js"
+    "rqg.js"
   ],
   "styles": [
-    "index.css"
+    "rqg.css"
   ],
   "socket": true,
   "primaryTokenAttribute": "attributes.hitPoints.value",

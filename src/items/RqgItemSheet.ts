@@ -1,11 +1,5 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import {
-  assertDocumentSubType,
-  getDomDataset,
-  getRequiredDomDataset,
-  localize,
-  localizeItemType,
-} from "../system/util";
+import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import type { RqgItem } from "./rqgItem";
 import {
@@ -17,7 +11,6 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
-import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 export class RqgItemSheet extends foundry.appv1.sheets.ItemSheet {
   static override get defaultOptions(): ItemSheet.Options {

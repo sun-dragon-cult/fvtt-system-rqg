@@ -34,7 +34,6 @@ import type { DamageType } from "@item-model/weaponData.ts";
 import { Skill } from "../items/skill-item/skill";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-import Document = foundry.abstract.Document;
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 
 import type { DeepPartial } from "fvtt-types/utils";
