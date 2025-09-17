@@ -12,7 +12,6 @@ import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
   assertDocumentSubType,
   getSpeakerFromItem,
-  hasOwnProperty,
   isDocumentSubType,
   localize,
   requireValue,
@@ -50,6 +49,7 @@ import type { SkillItem } from "@item-model/skillData.ts";
 import type { CultItem } from "@item-model/cultData.ts";
 
 import type { PassionItem } from "@item-model/passionData.ts";
+import { abilityItemTypes } from "../applications/AbilityRollDialog/AbilityTollDialogData.defs.ts";
 
 export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {
   public static init() {
@@ -161,6 +161,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * Open a dialog for an AbilityRoll
    */
   public async abilityRoll(): Promise<void> {
+    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
     await new AbilityRollDialogV2({ abilityItem: this }).render(true);
   }
 
@@ -175,7 +176,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
-    assertDocumentSubType<AbilityItem>(this, ItemTypeEnum.Skill);
+    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
 
     const chance: number = Number(this.system.chance) || 0; // Handle NaN
 
@@ -319,6 +320,9 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     }
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
     const weaponDamage = this.system.usage[usage].damage;
+    const actor = this.parent;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+    const damageBonus = actor.system.attributes.damageBonus ?? "0";
 
     requireValue(
       damageType,
@@ -344,8 +348,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     if (damageDegree === "special") {
       switch (damageType) {
         case "crush": {
-          const db = this.parent?.system.attributes.damageBonus ?? "0";
-          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(damageBonus);
 
           const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
           const specialDamage = formatDamagePart(
@@ -372,8 +375,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
     }
 
     if (damageDegree === "maxSpecial") {
-      const db = this.parent?.system.attributes.damageBonus ?? "0";
-      const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+      const maximisedDamageBonus = this.getMaximisedDamageBonusValue(damageBonus);
       const evaluatedDamageBonus = formatDamagePart(
         maximisedDamageBonus,
         "RQG.Roll.DamageRoll.DamageBonus",
@@ -435,36 +437,31 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * and the item can get experience.
    */
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
-    if (
-      result &&
-      result <= AbilitySuccessLevelEnum.Success &&
-      !(this.system as any).hasExperience
-    ) {
+    assertDocumentSubType<AbilityItem>(
+      this,
+      abilityItemTypes,
+      "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
+    );
+    if (result && result <= AbilitySuccessLevelEnum.Success && !this.system.hasExperience) {
       await this.awardExperience();
     }
   }
 
   public async awardExperience() {
-    if (hasOwnProperty(this.system, "hasExperience")) {
-      if (hasOwnProperty(this.system, "canGetExperience") && this.system.canGetExperience) {
-        if (!this.system.hasExperience) {
-          await this.actor?.updateEmbeddedDocuments("Item", [
-            { _id: this.id, system: { hasExperience: true } },
-          ]);
-          const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-            actorName: this.actor?.name ?? "",
-            itemName: this.name,
-          });
-          ui.notifications?.info(msg);
-        }
-      }
-    } else {
-      const msg = localize("RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError", {
+    assertDocumentSubType<AbilityItem>(
+      this,
+      abilityItemTypes,
+      "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
+    );
+    if (this.system.canGetExperience && !this.system.hasExperience) {
+      await this.actor?.updateEmbeddedDocuments("Item", [
+        { _id: this.id, system: { hasExperience: true } },
+      ]);
+      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+        actorName: this.actor?.name ?? "",
         itemName: this.name,
-        itemId: this.id ?? "",
       });
-      ui.notifications?.error(msg, { console: false });
-      console.error(msg);
+      ui.notifications?.info(msg);
     }
   }
 
