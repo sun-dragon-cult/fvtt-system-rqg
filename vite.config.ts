@@ -81,7 +81,6 @@ const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
   return {
     base: command === "build" ? "./" : `/${foundryPackagePath}`,
     publicDir: "static",
-    // assetsInclude: ["**/*.hbs"], // nej den lägger på hash, och funkar inte?
     build: {
       outDir,
       emptyOutDir: true,
@@ -123,7 +122,7 @@ const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
 function foundryEntrypointsPlugin(): Vite.Plugin {
   const manifestPrefix = "\0virtual:foundry/";
   const jsFile = `${manifestPrefix}rqg.js`;
-  const stylesFile = `${manifestPrefix}styles.css?url`;
+  const stylesFile = `${manifestPrefix}rqg.css?url`;
 
   return {
     name: "manifest",
@@ -136,7 +135,7 @@ function foundryEntrypointsPlugin(): Vite.Plugin {
         return jsFile;
       }
 
-      if (source === "/styles.css") {
+      if (source === "/rqg.css") {
         return stylesFile;
       }
     },
@@ -218,7 +217,7 @@ function foundryHMRPlugin(): Vite.Plugin {
       const extension = path.extname(context.file);
 
       if (baseName === "en.json") {
-        const basePath = context.file.slice(context.file.indexOf("i18n/")); // TODO bytte från lang/ till i18n/
+        const basePath = context.file.slice(context.file.indexOf("i18n/"));
         console.log(`Updating lang file at ${basePath}`);
 
         await fs.copyFile(context.file, `${outDir}/${basePath}`);

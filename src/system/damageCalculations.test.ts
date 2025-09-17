@@ -494,8 +494,8 @@ describe("Inflict Damage", () => {
       );
 
       // --- Assert ---
-      expect(hitLocationUpdates.system?.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.system?.hitLocationHealthState).toBe("wounded");
+      expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
+      expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe("");
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -524,8 +524,8 @@ describe("Inflict Damage", () => {
       );
 
       // --- Assert ---
-      expect(hitLocationUpdates.system?.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.system?.hitLocationHealthState).toBe("wounded");
+      expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
+      expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
         "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.",
       );

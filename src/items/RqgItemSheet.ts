@@ -13,8 +13,9 @@ import {
 } from "../documents/dragDrop";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
-export class RqgItemSheet<Options extends ItemSheet.Options = ItemSheet.Options> extends foundry
-  .appv1.sheets.ItemSheet<Options> {
+export class RqgItemSheet<
+  Options extends foundry.appv1.sheets.ItemSheet.Options = foundry.appv1.sheets.ItemSheet.Options,
+> extends foundry.appv1.sheets.ItemSheet<Options> {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,

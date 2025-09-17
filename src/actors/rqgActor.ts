@@ -542,7 +542,7 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
   protected override _onDeleteDescendantDocuments(
     ...args: Actor.OnDeleteDescendantDocumentsArgs
   ): void {
-    const [parent, collection, documents, ids, options, userId] = args;
+    const [parent, collection, documents, , options, userId] = args;
     if (
       isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) &&
       parent === this &&
