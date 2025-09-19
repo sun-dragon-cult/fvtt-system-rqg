@@ -72,8 +72,8 @@ export enum ItemTypeEnum {
   Skill = "skill",
   SpiritMagic = "spiritMagic",
   Weapon = "weapon",
-  ShamanicAbility = "shamanicAbility",
-  SorceryMagic = "sorceryMagic",
+  // ShamanicAbility = "shamanicAbility",
+  // SorceryMagic = "sorceryMagic",
 }
 
 /**
@@ -123,3 +123,4 @@ export type RqgItemDataProperties =
 export type PhysicalItem = GearItem | WeaponItem | ArmorItem;
 
 export type AbilityItem = PassionItem | RuneItem | SkillItem;
+export const abilityItemTypes = ["skill", "rune", "passion"] as const;

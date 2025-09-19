@@ -1,7 +1,6 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type {
-  AbilityItem,
   AbilityRollDialogContext,
   AbilityRollDialogFormData,
   PartialAbilityItem,
@@ -16,6 +15,7 @@ import {
   RqgError,
 } from "../../system/util";
 import { RqgItem } from "@items/rqgItem.ts";
+import type { AbilityItem } from "@item-model/itemTypes.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 

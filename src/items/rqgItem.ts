@@ -1,5 +1,10 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { type AbilityItem, ItemTypeEnum, ResponsibleItemClass } from "@item-model/itemTypes.ts";
+import {
+  type AbilityItem,
+  abilityItemTypes,
+  ItemTypeEnum,
+  ResponsibleItemClass,
+} from "@item-model/itemTypes.ts";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -31,7 +36,7 @@ import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeM
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
-import { SpellRangeEnum } from "@item-model/spell.ts";
+import { type SpellItem, spellItemTypes, SpellRangeEnum } from "@item-model/spell.ts";
 import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponData.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import {
@@ -49,7 +54,6 @@ import type { SkillItem } from "@item-model/skillData.ts";
 import type { CultItem } from "@item-model/cultData.ts";
 
 import type { PassionItem } from "@item-model/passionData.ts";
-import { abilityItemTypes } from "../applications/AbilityRollDialog/AbilityTollDialogData.defs.ts";
 
 export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {
   public static init() {
@@ -121,8 +125,6 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       types: [ItemTypeEnum.RuneMagic],
       makeDefault: true,
     });
-    // TODO this doesn't compile!? Sheet registration would be better in Item init
-    // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
     Hooks.on("preCreateItem", (document: any) => {
       const isOwnedItem =
@@ -470,15 +472,11 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
    * is used in the books. The "1+" syntax for stackable rune magic is used
    */
   get spellSignature(): string {
-    if (
-      // TODO should be possible to make this check cleaner and check for Spell Item
-      !isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) ||
-      !isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic)
-    ) {
-      // if (!hasOwnProperty(this.system, "points")) {
-      console.error("RQG | Tried to get spellSignature on a non spell item");
-      return "";
-    }
+    assertDocumentSubType<SpellItem>(
+      this,
+      spellItemTypes,
+      "Tried to get spellSignature on a non spell item",
+    );
 
     const descriptionParts = [];
 

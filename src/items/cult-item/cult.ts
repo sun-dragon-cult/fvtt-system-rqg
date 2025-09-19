@@ -11,17 +11,9 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 export class Cult extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", CultSheet, {
-  //     types: [ItemTypeEnum.Cult],
-  //     makeDefault: true,
-  //   });
-  // }
-
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-
   static override onDeleteItem(
     actor: RqgActor,
     cultItem: RqgItem,

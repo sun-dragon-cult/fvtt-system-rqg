@@ -79,7 +79,7 @@ export async function applyDefaultWorldMigrations(
     migrateRuneItemType,
     relabelRuneMagicCommandCultSpiritRqid,
   ];
-  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorDummy];
+  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [];
 
   await applyMigrations(worldItemMigrations, worldActorMigrations);
 }

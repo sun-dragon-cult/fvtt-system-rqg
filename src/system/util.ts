@@ -1,5 +1,5 @@
 import type { RqgActor } from "../actors/rqgActor";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum, type RqgItemDataSource } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
@@ -217,8 +217,10 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
 /**
  * Check if document is defined, has the correct type and narrow to the T type.
  */
-export function isDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
-  document: Document.WithSubTypes | RqgItem | RqgActor | undefined,
+export function isDocumentSubType<
+  T extends Document.WithSubTypes | RqgItemDataSource | RqgItem | RqgActor,
+>(
+  document: Document.WithSubTypes | RqgItemDataSource | RqgItem | RqgActor | undefined,
   documentSubTypes: Readonly<
     | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
     | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
@@ -567,13 +569,7 @@ export class RqgError implements Error {
 }
 
 export function getItemDocumentTypes(): string[] {
-  // @ts-expect-error documentTypes
-  const documentTypes = game.system.documentTypes.Item as any[];
-  if (Array.isArray(documentTypes)) {
-    // v11 format TODO remove when requiring v12
-    return documentTypes;
-  }
-  // v12 version format
+  const documentTypes = game.system?.documentTypes.Item ?? {};
   return Object.keys(documentTypes);
 }
 

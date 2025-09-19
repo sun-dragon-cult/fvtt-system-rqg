@@ -59,24 +59,6 @@ export class RqgCombatant<
     await Combatant._preDeleteOperation(_documents, operation, _user);
   }
 
-  override _preDeleteDescendantDocuments(
-    parent: any,
-    collection: any,
-    ids: any,
-    options: any,
-    userId: any,
-  ): void {
-    console.log(
-      "_preDeleteDescendantDocuments",
-      this.actor,
-      parent,
-      collection,
-      ids,
-      options,
-      userId,
-    );
-  }
-
   /**
    * Rerender any open actorSheets after combatant is deleted to remove the SR button(s).
    * @override

@@ -3,9 +3,6 @@ import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.def
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
 import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
-import type { RuneItem } from "@item-model/runeData.ts";
-import type { PassionItem } from "@item-model/passionData.ts";
 
 /** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {
@@ -39,5 +36,3 @@ export type AbilityRollDialogFormData = {
   abilityItemUuid?: string; // hidden field
   reputationItemJson?: string; // hidden field - backup for uuid
 };
-
-export type AbilityItem = SkillItem | RuneItem | PassionItem;

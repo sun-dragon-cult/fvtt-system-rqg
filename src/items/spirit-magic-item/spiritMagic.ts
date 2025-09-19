@@ -6,13 +6,6 @@ import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export class SpiritMagic extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", SpiritMagicSheet, {
-  //     types: [ItemTypeEnum.SpiritMagic],
-  //     makeDefault: true,
-  //   });
-  // }
-
   /**
    * Check that the actor has enough magic points to cast the spell.
    * Return an error message if not allowed to cast.

@@ -16,7 +16,7 @@ import type { DeepPartial } from "fvtt-types/utils";
 
 export const characteristicMenuOptions = (
   actor: CharacterActor,
-  token: TokenDocument | undefined,
+  token: TokenDocument | undefined | null,
 ): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),

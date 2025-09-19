@@ -6,13 +6,6 @@ import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import type { RuneItem } from "@item-model/runeData.ts";
 
 export class Rune extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", RuneSheet, {
-  //     types: [ItemTypeEnum.ElementalRune],
-  //     makeDefault: true,
-  //   });
-  // }
-
   static override preUpdateItem(
     actor: RqgActor,
     rune: RqgItem,

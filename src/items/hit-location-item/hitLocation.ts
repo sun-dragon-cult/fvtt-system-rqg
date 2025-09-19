@@ -8,13 +8,6 @@ import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export class HitLocation extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", HitLocationSheet, {
-  //     types: [ItemTypeEnum.HitLocation],
-  //     makeDefault: true,
-  //   });
-  // }
-
   public static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");

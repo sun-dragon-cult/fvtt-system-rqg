@@ -14,13 +14,6 @@ import { Rqid } from "../../system/api/rqidApi";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 
 export class Weapon extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", WeaponSheet, {
-  //     types: [ItemTypeEnum.Weapon],
-  //     makeDefault: true,
-  //   });
-  // }
-
   static override preUpdateItem(
     actor: RqgActor,
     weapon: RqgItem,

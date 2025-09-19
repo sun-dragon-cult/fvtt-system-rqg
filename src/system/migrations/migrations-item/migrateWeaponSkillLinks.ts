@@ -8,10 +8,10 @@ import { isDocumentSubType } from "../../util.ts";
 const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
-  itemData: WeaponItem,
+  itemData: RqgItem,
   owningActorData?: CharacterActor,
 ): Promise<Item.UpdateData> {
-  let updateData = {};
+  let updateData: Item.UpdateData = {};
   if (isDocumentSubType<WeaponItem>(itemData, ItemTypeEnum.Weapon)) {
     const oneHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "oneHand");
     const offHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "offHand");

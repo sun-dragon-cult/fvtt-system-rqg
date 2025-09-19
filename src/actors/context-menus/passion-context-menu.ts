@@ -14,7 +14,7 @@ import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts
 
 export const passionMenuOptions = (
   actor: CharacterActor,
-  token: TokenDocument | undefined,
+  token: TokenDocument | undefined | null,
 ): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),

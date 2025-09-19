@@ -260,7 +260,7 @@ async function getActorMigrationUpdates(
 /* -------------------------------------------- */
 
 async function getItemMigrationUpdates(
-  itemData: ItemData, // TODO called with item.toObject(), type better!
+  itemData: Item.InitializedData, // TODO called with item.toObject(), type better! Or call with RqgItem?
   itemMigrations: ItemMigration[],
   owningActorData?: ActorData,
 ): Promise<ItemUpdate> {

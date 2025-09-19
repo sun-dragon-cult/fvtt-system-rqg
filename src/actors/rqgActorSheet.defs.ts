@@ -1,8 +1,8 @@
 import type { RqgItem } from "../items/rqgItem";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
-import { RuneDataSource } from "@item-model/runeData.ts";
-import { LocationItemNodeData } from "../items/shared/locationItemNode";
+import type { RuneDataSource } from "@item-model/runeData.ts";
+import type { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 export interface UiSections {
   health: boolean;
