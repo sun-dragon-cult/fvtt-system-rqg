@@ -169,9 +169,11 @@ export class RqidEditor extends FormApplication {
 
   async _updateObject(event: Event, formData: any): Promise<void> {
     const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
-    formData["flags.rqg.documentRqidFlags.id"] = formData["rqidNamePart"]
-      ? `${documentIdPart}.${documentType}.${formData["rqidNamePart"]}`
-      : undefined;
+    const rqidNamePart = toKebabCase(formData["rqidNamePart"].trim());
+    formData["flags.rqg.documentRqidFlags.id"] =
+      rqidNamePart && (formData["flags.rqg.documentRqidFlags.id"] = rqidNamePart)
+        ? `${documentIdPart}.${documentType}.${rqidNamePart}`
+        : null;
     delete formData["rqidNamePart"];
 
     formData["flags.rqg.documentRqidFlags.priority"] =

@@ -1,5 +1,4 @@
 import { localize } from "../util";
-import { migrateActorDummy } from "./migrations-actor/migrateActorDummy";
 import { type ActorMigration, applyMigrations, type ItemMigration } from "./applyMigrations";
 import { systemId } from "../config";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";

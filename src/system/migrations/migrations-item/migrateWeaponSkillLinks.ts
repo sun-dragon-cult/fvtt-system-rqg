@@ -1,18 +1,22 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
 import type { UsageType, WeaponItem } from "@item-model/weaponData.ts";
-import type { CharacterActor } from "../../../data-model/actor-data/rqgActorData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../../data-model/actor-data/rqgActorData.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import { isDocumentSubType } from "../../util.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
   itemData: RqgItem,
-  owningActorData?: CharacterActor,
+  owningActorData?: RqgActor,
 ): Promise<Item.UpdateData> {
   let updateData: Item.UpdateData = {};
-  if (isDocumentSubType<WeaponItem>(itemData, ItemTypeEnum.Weapon)) {
+  if (
+    isDocumentSubType<WeaponItem>(itemData, ItemTypeEnum.Weapon) &&
+    isDocumentSubType<CharacterActor>(owningActorData, ActorTypeEnum.Character)
+  ) {
     const oneHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "oneHand");
     const offHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "offHand");
     const twoHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "twoHand");
