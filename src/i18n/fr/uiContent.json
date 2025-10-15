@@ -699,7 +699,7 @@
         "NamePrefix": "Préfixe du nom",
         "ArmorTypeLabel": "Type d'armure",
         "Material": "Matériau",
-        "HitLocations": "Localisations de coup",
+        "HitLocations": "Localisations",
         "AddNewCoveredHitLocationPlaceholder": "Ajouter une localisation couverte par l'armure",
         "Absorbs": "Absorbe",
         "MoveQuietlyPenalty": "Pénalité pour se déplacer silencieusement",
@@ -720,7 +720,7 @@
           "Segmented": "Segmenté",
           "Skirt": "Jupe",
           "PantsTrews": "Pantalon",
-          "Greaves": "Grèves"
+          "Greaves": "Jambières"
         },
         "ArmorMaterial": {
           "SoftLeather": "Cuir souple",
@@ -788,7 +788,7 @@
         "Name": "Nom",
         "HealthStatus": "État de santé",
         "HitPoints": "Points de vie",
-        "ActAs": "Pour les calculs de dégâts, agir comme",
+        "ActAs": "Pour les calculs de dégâts, faire comme",
         "ConnectedTo": "Connecté à",
         "HitLocationOn": "Localisation sur",
         "NaturalArmorPoints": "PA naturels",
@@ -875,9 +875,9 @@
         "Specialization": "Spécialisation",
         "Homelands": "Terres natales",
         "AllHomelands": "Toutes les terres natales",
-        "OccupationalSkillLinks": "Liens de compétence occupationnelle",
+        "OccupationalSkillLinks": "Liens de compétence d'occupation",
         "IncomeSkillQ": "Compétence de revenu ?",
-        "OccupationalSkillBonus": "Bonus de compétence occupationnelle",
+        "OccupationalSkillBonus": "Bonus de compétence d'occupation",
         "StandardOfLiving": "Niveau de vie",
         "StandardOfLivingEnum": {
           "destitute": "Indigent",
@@ -1029,8 +1029,8 @@
         },
         "RangeEnum": {
           "undefined": "Aucun",
-          "self": "Soit-même",
-          "touch": "Contact",
+          "self": "Soi-même",
+          "touch": "Au contact",
           "ranged": "À distance",
           "special": "Spécial"
         },
@@ -1064,7 +1064,7 @@
         "Damage": "Dégâts",
         "MinimumStrengthAbbr": "FOR min",
         "MinimumDexterityAbbr": "DEX min",
-        "StrikeRankAbbr": "RF",
+        "StrikeRankAbbr": "RA",
         "CombatManeuversHeader": "Manoeuvres de combat",
         "ActionLabel": "Étiquette d'action",
         "DamageType": "Type de dégâts",
@@ -1093,7 +1093,7 @@
           "Claw": "Griffe",
           "Gore": "Empaler",
           "Hug": "Étouffer",
-          "Bash": "Frapper",
+          "Bash": "Défoncer",
           "Hit": "Frapper",
           "HeadButt": "Coup de tête",
           "Parry": "Parer",
@@ -1124,7 +1124,7 @@
         "Halved": "chance divisée par deux",
         "AimedBlow": "coup précis",
         "OtherModifier": "autre modificateur",
-        "MasterOpponentModifier": "adversaire maître"
+        "MasterOpponentModifier": "adversaire principal"
       },
       "CharacteristicRoll": {
         "Augment": "augmenter",
@@ -1147,14 +1147,14 @@
         "Augment": "augmenter",
         "Meditate": "méditer",
         "Base": "POU*5",
-        "MagicPointCost": "Utilisé {cost} points de magie"
+        "MagicPointCost": "Utilise {cost} points de magie"
       },
       "RuneMagicRoll": {
         "Augment": "augmenter",
         "Meditate": "méditer",
         "Ritual": "rituel",
         "UsageCost": "Utilisé {runePointsCost} points de rune et {magicPointCost} points de magie.",
-        "OneUseUsageCost": "Utilisé {runePointsCost} points de rune permanents et {magicPointCost} points de magie."
+        "OneUseUsageCost": "Utilise {runePointsCost} points de rune permanents et {magicPointCost} points de magie."
       },
       "DamageRoll": {
         "Damage": "Dégâts",
@@ -1212,7 +1212,7 @@
     },
     "Game": {
       "MeleeRoundAbbr": "TR",
-      "SrMeleeRoundAbbr": "RF/TR",
+      "SrMeleeRoundAbbr": "RA/TR",
       "AbilityResultEnum": {
         "0": "Critique",
         "1": "Spécial",
@@ -1232,7 +1232,7 @@
         "twoHand": "2M",
         "missile": "Projectile",
         "oneHand-full": "À une main",
-        "offHand-full": "À une main – main gauche",
+        "offHand-full": "À une main - main gauche",
         "twoHand-full": "À deux mains",
         "missile-full": "Projectile"
       },
@@ -1264,25 +1264,25 @@
         "4-4": "<b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> lance sur la table des Échecs critiques."
       },
       "DodgeResults": {
-        "0-0": "<b>Attaque</b> est esquivée avec succès.",
+        "0-0": "<b>Attaque</b> esquivée avec succès.",
         "0-1": "<b>Attaque</b> inflige des dégâts de succès spécial.",
         "0-2": "<b>Attaque</b> inflige des dégâts de succès spécial, ignore l'armure.",
         "0-3": "<b>Attaque</b> inflige des dégâts de succès spécial maximaux, ignore l'armure.",
         "0-4": "<b>Attaque</b> inflige des dégâts de succès spécial maximaux, ignore l'armure.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
-        "1-0": "<b>Attaque</b> est esquivée avec succès.",
-        "1-1": "<b>Attaque</b> est esquivée avec succès.",
+        "1-0": "<b>Attaque</b> esquivée avec succès.",
+        "1-1": "<b>Attaque</b> esquivée avec succès.",
         "1-2": "<b>Attaque</b> inflige des dégâts de succès spécial.",
         "1-3": "<b>Attaque</b> inflige des dégâts de succès spécial.",
         "1-4": "<b>Attaque</b> inflige des dégâts de succès spécial.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
-        "2-0": "<b>Attaque</b> est esquivée.",
-        "2-1": "<b>Attaque</b> est esquivée.",
-        "2-2": "<b>Attaque</b> est esquivée.",
+        "2-0": "<b>Attaque</b> esquivée.",
+        "2-1": "<b>Attaque</b> esquivée.",
+        "2-2": "<b>Attaque</b> esquivée.",
         "2-3": "<b>Attaque</b> inflige des dégâts normaux.",
         "2-4": "<b>Attaque</b> inflige des dégâts normaux.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
-        "3-0": "<b>Attaque</b> rate.",
-        "3-1": "<b>Attaque</b> rate.",
-        "3-2": "<b>Attaque</b> rate.",
-        "3-3": "<b>Attaque</b> rate.",
+        "3-0": "<b>Attaque</b> ratée.",
+        "3-1": "<b>Attaque</b> ratée.",
+        "3-2": "<b>Attaque</b> ratée.",
+        "3-3": "<b>Attaque</b> ratée.",
         "3-4": "<b>Attaque</b> inflige des dégâts normaux.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
         "4-0": "<b>Attaquant</b> lance sur la table des Échecs critiques.",
         "4-1": "<b>Attaquant</b> lance sur la table des Échecs critiques.",
@@ -1344,8 +1344,8 @@
     },
     "Settings": {
       "SortHitLocationsLowToHigh": {
-        "settingName": "Trier les localisations de coup de bas en haut",
-        "settingHint": "L'activation de ce paramètre trie les localisations de coup du personnage de la même manière que les blocs de statistiques sont triés avec le numéro de dé le plus bas en premier. Le paramètre peut être basculé dans le tableau de santé de la fiche de personnage."
+        "settingName": "Trier les localisations de bas en haut",
+        "settingHint": "L'activation de ce paramètre trie les localisations du personnage de la même manière que les blocs de statistiques sont triés avec le numéro de dé le plus bas en premier. Le paramètre peut être basculé dans le tableau de santé de la fiche de personnage."
       },
       "AutoactivateChatTab": {
         "settingName": "Activer et développer automatiquement l'onglet de discussion",
@@ -1417,7 +1417,7 @@
       "StatusBladesharp": "Lame aiguisée",
       "StatusBludgeon": "Contondant",
       "StatusCoordination": "Coordination",
-      "StatusCountermagic": "Contremagie",
+      "StatusCountermagic": "Contre-magie",
       "StatusDullblade": "Lame émoussée",
       "StatusFanaticism": "Fanatisme",
       "StatusFireblade": "Lame de feu",
