@@ -1,0 +1,1477 @@
+{
+  "TYPES": {
+    "Item": {
+      "armor": "Armure",
+      "cult": "Culte",
+      "gear": "Équipement",
+      "hitLocation": "Localisation",
+      "homeland": "Terre natale",
+      "occupation": "Occupation",
+      "passion": "Passion",
+      "rune": "Rune",
+      "runeMagic": "Sort de magie runique",
+      "shamanicAbility": "Capacité chamanique",
+      "skill": "Compétence",
+      "sorceryMagic": "Sort de sorcellerie",
+      "spiritMagic": "Sort de magie spirituelle",
+      "weapon": "Arme",
+      "reputation": "Réputation"
+    },
+    "Actor": {
+      "character": "Personnage"
+    },
+    "ChatMessage": {
+      "combat": "Combat"
+    },
+    "RegionBehavior": {
+      "clickableScripts": "Cliquer pour exécuter le script"
+    }
+  },
+  "COMBAT": {
+    "InitiativeReset": "Réinitialiser tous les rangs d'action'",
+    "CombatantInitiative": "Rang d'action",
+    "CombatantClear": "Effacer le rang d'action"
+  },
+  "RQG": {
+    "ActorCreation": {
+      "AdventurerCreationWizardTitle": "Assistant de création d'aventurier",
+      "AdventurerCreationHeaderButton": "Création d'aventurier",
+      "AdvancedOptions": "Options avancées",
+      "SkillsTab": "Compétences",
+      "RunesTab": "Runes",
+      "PassionsTab": "Passions",
+      "CultureTab": "Culture",
+      "TribeTab": "Tribe",
+      "ClanTab": "Clan",
+      "CultTab": "Culte",
+      "PassionTab": "Passions",
+      "Nav": {
+        "0-Species": "Étape 0 :\n Espèce",
+        "1-Homeland": "Étape 1 :\n Terre natale",
+        "2-FamilyHistory": "Étape 2 :\n Histoire familiale",
+        "3-RuneAffinities": "Étape 3 :\n Affinités runiques",
+        "4-Characteristics": "Étape 4 :\n Caractéristiques",
+        "5-Occupation": "Étape 5 :\n Occupation",
+        "6-Cult": "Étape 6 :\n Culte",
+        "7-PersonalSkillBonuses": "Étape 7 :\n Bonus de compétence personnels",
+        "8-OtherInformation": "Étape 8 :\n Autres informations",
+        "9-complete-creation": "Étape 9 :\n Finaliser la création"
+      },
+      "Step0": {
+        "ChooseSpecies": "Choisir une espèce",
+        "SpeciesDescription": "Description de l'espèce",
+        "BackgroundAndNotes": "Contexte et notes",
+        "SelectSpeciesSkills": "Sélectionner les compétences de l'espèce",
+        "SelectSpeciesRunes": "Sélectionner les runes de l'espèce",
+        "SelectSpeciesPassions": "Sélectionner les passions de l'espèce"
+      },
+      "Step1": {
+        "ChooseHomeland": "Choisir une terre natale",
+        "HomelandDescription": "Description de la terre natale",
+        "RegionDescription": "Description de la région",
+        "HomelandWizardInstructions": "Instructions pour la terre natale",
+        "SelectHomelandCulture": "Sélectionner la culture de la terre natale",
+        "SelectHomelandTribe": "Sélectionner la tribu de la terre natale",
+        "SelectHomelandClan": "Sélectionner le clan de la terre natale",
+        "SelectHomelandSkills": "Sélectionner les compétences de la terre natale",
+        "SelectHomelandCult": "Sélectionner le culte de la terre natale",
+        "SelectHomelandPassions": "Sélectionner les passions de la terre natale",
+        "SelectHomelandRunes": "Sélectionner les runes de la terre natale",
+        "ImportCultureTitle": "Importer la culture : \"{name}\"",
+        "ImportTribeTitle": "Importer la tribu : \"{name}\"",
+        "ImportClanTitle": "Importer le clan : \"{name}\"",
+        "ImportCultTitle": "Importer le culte : \"{name}\"",
+        "ImportRuneTitle": "Importer la rune : \"{name}\""
+      },
+      "Step9": {
+        "Prompt": "<p>Cliquez sur le bouton ci-dessous pour finaliser la création de l'aventurier. Vous ne verrez plus le bouton \"Création d'aventurier\" dans l'en-tête de la fiche du personnage.</p><p>Bonne aventure et que les dieux et les esprits soient avec vous !</p>",
+        "SetAdventurerCreationCompleteButton": "Création de l'aventurier terminée"
+      }
+    },
+    "Actor": {
+      "Attributes": {
+        "AlliesAndNotes": "Alliés & Notes",
+        "StrikeRank": "Rang d'action",
+        "SizeAbbr": "TAI",
+        "DexterityAbbr": "DEX",
+        "MagicPoints": "Points de magie",
+        "CreatureQ": "Créature ?",
+        "Creature": "Ceci est une créature",
+        "CreatureExplanation": "Les créatures ont zéro pour tous les modificateurs de catégorie de compétence",
+        "MovementAbbr": "MOU",
+        "EncumbranceAbbr": "ENC",
+        "EncumbranceFactor": "Facteur ENC",
+        "HeroPoints": "Points de héros",
+        "Health": {
+          "healthy": "En bonne santé",
+          "wounded": "Blessé",
+          "shock": "Choc",
+          "unconscious": "Inconscient",
+          "dead": "Mort"
+        },
+        "MoveMode": {
+          "walk": "Marche",
+          "swim": "Nage",
+          "fly": "Vol"
+        },
+        "MoveEquipped": "Le MOU Équipé (prêt au combat) est de {equippedMove} et l'ENC total équipé est {equippedEnc}.",
+        "MoveCarried": "Le MOU Porté (en voyage) est de {carriedMove} et l'ENC total porté est {carriedEnc}.",
+        "MaxEnc": "L'ENC maximum sans pénalités est de {maxEnc}.",
+        "OverWeight": "MOU est réduit à cause du surpoids !"
+      },
+      "AwardExperience": {
+        "GainedExperienceInfo": "{actorName} vient de gagner un jet d'expérience en {itemName} !",
+        "ItemDoesntHaveExperienceError": "Tentative d'attribuer de l'expérience à l'élément nommé \"{itemName}\" avec l'ID \"{itemId}\" qui ne possède pas la propriété \"hasExperience\"."
+      },
+      "Background": {
+        "Background": "Historique",
+        "Origin": "Origine",
+        "BaseData": "Données de base",
+        "BirthYear": "Année de naissance",
+        "Age": "Âge",
+        "Gender": "Genre",
+        "Species": "Espèce",
+        "TownHomeArea": "Ville / Zone de résidence",
+        "Tribe": "Tribu",
+        "Clan": "Clan",
+        "Circumstance": "Circonstance",
+        "Reputation": "Réputation",
+        "StandardOfLiving": "Niveau de vie",
+        "BaseIncome": "Revenu de base",
+        "Ransom": "Rançon",
+        "RansomDetails": "Détails de la rançon",
+        "Cultures": "Culture(s)",
+        "Tribes": "Tribu(s)",
+        "Clans": "Clan(s)",
+        "Region": "Région",
+        "Homeland": {
+          "Heading": "Terre natale",
+          "aggar": "Aggar",
+          "balazar": "Balazar",
+          "beastValley": "Vallée des Bêtes",
+          "bilini": "Bilini",
+          "blackHorseCounty": "Comté du Cheval Noir",
+          "dagoriInkarth": "Dagori Inkarth",
+          "dragonPass": "Col du Dragon",
+          "dryadWoods": "Bois des Dryades",
+          "esrolia": "Esrolia",
+          "grazelands": "Plaines de Graze",
+          "hendrikiland": "Hendrikiland",
+          "heortland": "Heortland",
+          "holay": "Holay",
+          "imither": "Imither",
+          "lunarTarsh": "Tarsh Lunaire",
+          "oldTarsh": "Vieux Tarsh",
+          "prax": "Prax",
+          "sartar": "Sartar",
+          "shadowPlateau": "Plateau des Ombres",
+          "stinkingForest": "Forêt Puante",
+          "trollWoods": "Bois des Trolls",
+          "vansh": "Vansh",
+          "habitatChaosArea": "Habitat : Zone de Chaos",
+          "habitatForest": "Habitat : Forêt",
+          "habitatGlacier": "Habitat : Glacier",
+          "habitatMarshSwamp": "Habitat : Marais / Marécage",
+          "habitatMountainsHills": "Habitat : Montagnes / Collines",
+          "habitatPlains": "Habitat : Plaines",
+          "habitatSky": "Habitat : Ciel",
+          "habitatSpiritPlane": "Habitat : Plan spirituel",
+          "habitatUnderground": "Habitat : Sous-terre",
+          "habitatWaterSea": "Habitat : Eau / Mer"
+        },
+        "Occupation": {
+          "Heading": "Occupation actuelle",
+          "none": " ",
+          "assistantShaman": "Assistant chaman",
+          "chariotDriver": "Conducteur de char",
+          "crafter": "Artisan",
+          "bandit": "Bandit",
+          "entertainer": "Amuseur",
+          "farmer": "Fermier",
+          "fisher": "Pêcheur",
+          "healer": "Guérisseur",
+          "herder": "Berger",
+          "hunter": "Chasseur",
+          "merchant": "Marchand",
+          "noble": "Noble",
+          "philosopher": "Philosophe",
+          "priest": "Prêtre",
+          "scribe": "Scribe",
+          "thief": "Voleur",
+          "warriorHeavyInfantry": "Guerrier (infanterie lourde)",
+          "warriorLightInfantry": "Guerrier (infanterie légère)",
+          "warriorHeavyCavalry": "Guerrier (cavalerie lourde)",
+          "warriorLightCavalry": "Guerrier (cavalerie légère)"
+        }
+      },
+      "Characteristics": {
+        "Characteristic": "Caractéristique",
+        "format": "{name} ({abbr})",
+        "strength": "FOR",
+        "strength-full": "Force",
+        "constitution": "CON",
+        "constitution-full": "Constitution",
+        "size": "TAI",
+        "size-full": "Taille",
+        "dexterity": "DEX",
+        "dexterity-full": "Dextérité",
+        "intelligence": "INT",
+        "intelligence-full": "Intelligence",
+        "power": "POU",
+        "power-full": "Pouvoir",
+        "charisma": "CHA",
+        "charisma-full": "Charisme"
+      },
+      "Combat": {
+        "DamageBonus": "Bonus dégâts",
+        "StrDexMinsNotMetTip": "Le personnage ne remplit pas les minimums de FOR et/ou DEX pour cette arme. Utilisez-la avec la moitié de la chance de compétence.",
+        "StrMinNotMetTip": "Le personnage ne remplit pas le minimum de FOR pour cette arme. Utilisez-la avec la moitié de la chance de compétence.",
+        "DexMinNotMetTip": "Le personnage ne remplit pas le minimum de DEX pour cette arme. La FOR au-dessus du minimum de FOR peut compenser à raison de deux points de FOR pour un point de DEX, ou utilisez-la avec la moitié de la chance de compétence.",
+        "Weapon": "Arme",
+        "HP": "PV",
+        "Chance": "Chance",
+        "Damage": "Dégâts",
+        "Range": "Portée :",
+        "Rate": "Cadence :",
+        "SR": "RA",
+        "SRTooltip": "<h3>Modificateurs de rang d'action'</h3><ul><li>Augmentation +0</li><li>Préparer un nouveau sort ou une arme différente +5</li><li>Recharger un projectile +5</li><li>Se relever d'une position allongée +5</li><li>Surpris par un ennemi à moins de 3 m / yards +3</li><li>Surpris par un ennemi à 4-9 m / yards +1</li><li>Mouvement : chaque 3 m / yards +1</li><li>Points de magie utilisés après le premier (qui est gratuit) +1</li></ul>",
+        "Dodge": "Esquive",
+        "SpiritCombat": "Combat spirituel",
+        "SpiritCombatDamage": "Dégâts de combat spirituel",
+        "SetSRInCombatTracker": "Définir le RA dans le suivi de combat",
+        "ProjectileWeaponAmmoNotSelectedAlert": "pas de munition"
+      },
+      "EditMode": {
+        "SwitchToEditMode": "Passer en mode édition",
+        "SwitchToPlayMode": "Passer en mode jeu"
+      },
+      "Gear": {
+        "AddNewGearUniqueTip": "Ajouter un nouvel équipement unique",
+        "AddNewGearCurrencyTip": "Ajouter une nouvelle monnaie",
+        "AddNewGearConsumablesTip": "Ajouter un nouveau consommable",
+        "ViewByItemType": "Tri par type d'objet",
+        "ViewByLocation": "Tri par emplacement",
+        "Gear": "Équipement",
+        "NewGear": "Nouvel équipement",
+        "NewCurrency": "Nouvelle monnaie",
+        "NewConsumable": "Nouveau consommable",
+        "Armor": "Armure",
+        "Consumables": "Consommables",
+        "Currency": "Monnaie",
+        "WeaponsAndShields": "Armes & Boucliers",
+        "CurrencyConversionTipOver1": "Un {name} vaut {value} Lunars.",
+        "CurrencyConversionTipLunar": "Les Lunars sont la base standard de la monnaie.",
+        "CurrencyConversionTipUnder1": "Un Lunar vaut {value} {name}.",
+        "Name": "Nom",
+        "EncumbranceAbbr": "ENC",
+        "MaxEnc": "ENC Max",
+        "OverWeight": "Vous portez plus de poids que votre ENC Max. Votre MOU est réduit.",
+        "Location": "Emplacement",
+        "Price": "Prix",
+        "Total": "Total",
+        "QuantityAbbr": "Qté",
+        "ExtendedAbbr": "Étendu",
+        "Skill": "Compétence",
+        "Damage": "Dégâts",
+        "Range": "Portée",
+        "Rate": "Cadence",
+        "MinimumStrength": "FOR",
+        "MinimumDexterity": "DEX",
+        "HitPointsAbbr": "PV",
+        "Absorbs": "Absorbe",
+        "HitLocations": "Localisations",
+        "MoveQuietlyPenalty": "- Se déplacer silencieusement",
+        "LocationLoop": "Les emplacements des objets forment une boucle impliquant {loopItems}."
+      },
+      "Health": {
+        "Health": "Santé",
+        "TotalHitPoints": "Points de vie totaux",
+        "HealingRatePerWeek": "Taux de guérison {healingRate}/semaine",
+        "HitLocation": "Localisation",
+        "HitPointsAbbr": "PV",
+        "ArmorPointsAbbr": "PA",
+        "Wounds": "Blessures",
+        "HealWound": "Soigner une blessure",
+        "AddWound": "Ajouter une blessure",
+        "NoHitLocations": "Ce personnage n'a aucune localisation, veuillez en ajouter.",
+        "FlipSortOrder": "Inverser l'ordre des localisations",
+        "HitLocationDiceDoNotAddUp": "⚠ Les dés de localisation ne couvrent pas la plage 1-20. Ils couvrent [{dice}]."
+      },
+      "Nav": {
+        "Combat": "Combat",
+        "Runes": "Runes",
+        "SpiritMagic": "Magie spirituelle",
+        "RuneMagic": "Magie runique",
+        "Sorcery": "Sorcellerie",
+        "Skills": "Compétences",
+        "Gear": "Équipement",
+        "Passions": "Passions",
+        "Background": "Contexte",
+        "ActiveEffects": "Effets actifs 🧪"
+      },
+      "Notification": {
+        "NotActorOwnerWarn": "Vous n'êtes pas le propriétaire de {actorName} et ne pouvez pas déposer cet objet sur cette fiche de personnage.",
+        "DraggedItemNotFoundError": "Objet glissé non trouvé depuis la source !",
+        "CantMakeItemDataSourceError": "Impossible de créer ItemDataSource depuis l'objet glissé avec l'ID [{itemId}]",
+        "NoIncomingItemDataSourceError": "Aucune source de données d'objet entrante !",
+        "IncomingItemDataSourceNotPhysicalItemError": "La source de données d'objet entrante ne représente pas un objet physique avec une quantité !",
+        "CantTransferLessThanOneItemError": "Impossible de transférer moins d'un objet !",
+        "CantTransferMoreThanSourceOwnsError": "Impossible de transférer plus de {itemName} que {sourceActorName} n'en possède dans son inventaire."
+      },
+      "Passion": {
+        "Passions": "Passions",
+        "AddNewPassionTip": "Ajouter une nouvelle passion",
+        "BackStory": "Histoire personnelle",
+        "ImportPassionCheckboxTitle": "Importer la passion : \"{passionName}\""
+      },
+      "Rune": {
+        "IncorrectRuneWarning": "Le type de rune n'est pas élément, pouvoir, forme, condition ou technique. Veuillez le mettre à jour.",
+        "TypeDontMatchTranslationTip": "Le nom du type de rune ne correspond pas à la traduction actuelle du système. Pas une erreur, juste une incohérence de traduction.<br>Sélectionner à nouveau le type le réinitialisera à la norme du système.",
+        "Condition": "Condition",
+        "Elemental": "Élémentaire",
+        "Form": "Forme",
+        "Power": "Pouvoir"
+      },
+      "RuneMagic": {
+        "EmbeddingRuneMagicWithoutCultWarning": "{characterName} doit rejoindre un culte avant d'apprendre le sort de magie runique {spellName}",
+        "RunesNotVisibleForLaymembersWarning": "Vous devez devenir un initié dans le culte pour utiliser la magie runique.",
+        "EditRuneMagicSpellTitle": "Modifier le sort de magie runique",
+        "DeleteRuneMagicSpellTitle": "Supprimer le sort de magie runique",
+        "ChooseCultForRuneSpell": "Choisir un culte pour le sort runique {name}",
+        "CommonRuneMagicTooltip": "Magie runique commune du culte",
+        "CultRankLabel": "Rang dans le culte",
+        "RunePoints": "Points de rune",
+        "HolyDays": "Jours sacrés",
+        "Gifts": "Dons",
+        "Geases": "Interdits",
+        "SubCults": "Sous-cultes",
+        "RuneSpell": "Sort runique",
+        "Points": "Points",
+        "Range": "Portée",
+        "Duration": "Durée",
+        "Ritual": "Rituel",
+        "Enchantment": "Enchantement",
+        "Stackable": "Empilable",
+        "OneUse": "Usage unique",
+        "Chance": "Chance",
+        "CultRank": {
+          "layMember": "Membre laïc",
+          "initiate": "Initié",
+          "godTalker": "Chantre sacré",
+          "runePriest": "Prêtre runique",
+          "runeLord": "Seigneur runique",
+          "chiefPriest": "Grand prêtre",
+          "highPriest": "Haut prêtre"
+        }
+      },
+      "Skill": {
+        "UnspecifiedSkillWarning": "⚠ Veuillez préciser la spécialisation manquante de la compétence :",
+        "SkillDescriptionTitle": "Description de la compétence",
+        "ImportSkillCheckboxTitle": "Importer la compétence : \"{skillName}\"",
+        "RequiresTraining": "Ne peut pas gagner d'expérience, nécessite un entraînement pour augmenter.",
+        "SkillCategory": {
+          "agility": "Agilité",
+          "communication": "Communication",
+          "knowledge": "Connaissance",
+          "magic": "Magie",
+          "manipulation": "Manipulation",
+          "perception": "Perception",
+          "stealth": "Discrétion",
+          "otherSkills": "Autres compétences",
+          "meleeWeapons": "Armes de mêlée",
+          "missileWeapons": "Armes de jet",
+          "shields": "Boucliers",
+          "naturalWeapons": "Armes naturelles"
+        }
+      },
+      "Sorcery": {
+        "FreeINT": "INT libre",
+        "Techniques": "Techniques",
+        "MasteredRunes": "Runes maîtrisées"
+      },
+      "SpiritMagic": {
+        "SpiritMagic": "Magie spirituelle",
+        "CHALimitFormula": "La capacité d'apprentissage restante est de {freePoints} points de magie spirituelle ({learnedPoints} points déjà appris).",
+        "Name": "Nom",
+        "SpellFocus": "Focalisation",
+        "Points": "Points",
+        "Variable": "Variable",
+        "Range": "Portée",
+        "Duration": "Durée",
+        "Concentration": "Concentration",
+        "Ritual": "Rituel",
+        "Enchantment": "Enchantement"
+      }
+    },
+    "ContextMenu": {
+      "ImproveItem": "Améliorer {itemType}",
+      "EditItem": "Modifier {itemType}",
+      "DeleteItem": "Supprimer {itemType}",
+      "ToggleExperience": "Basculer l'expérience",
+      "InitializeCharacteristic": "Initialiser la caractéristique",
+      "CharacteristicInitialized": "{characteristicName} initialisé pour {actorName}",
+      "InitializeAllCharacteristics": "Initialiser toutes les caractéristiques",
+      "AllCharacteristicsInitialized": "Toutes les caractéristiques initialisées pour {actorName}",
+      "SetAllCharacteristicsToAverage": "Définir toutes les caractéristiques à la moyenne",
+      "AllCharacteristicsSetToAverage": "Toutes les caractéristiques définies à la moyenne pour {actorName}",
+      "InitializeResultChat": "Initialiser {char}",
+      "OverwriteCharacteristicDialogTitle": "Écraser {characteristicName} sur {actorName} ?",
+      "OverwriteCharacteristicDialog": "Voulez-vous écraser la valeur actuelle de {characteristicName} ? Cela provoquera un re-calcul des attributs dérivés comme les Points de vie, les Points de magie, les Rangs d'action et les catégories de compétence qui dépendent de {characteristicName}.",
+      "OverwriteAllCharacteristicsDialogTitle": "Écraser toutes les caractéristiques sur {actorName} ?",
+      "OverwriteAllCharacteristicsDialog": "Voulez-vous écraser la valeur actuelle de toutes les caractéristiques ? Cela provoquera un re-calcul des attributs dérivés comme les Points de vie, les Points de magie, les Rangs de frappe et les catégories de compétence.",
+      "ViewDescription": "Voir la description",
+      "SetAsNotCarried": "Définir comme non porté",
+      "SetAsCarried": "Définir comme porté",
+      "SetAsEquipped": "Définir comme équipé",
+      "SplitIntoNewLocation": "Diviser en nouvel emplacement",
+      "EditPassionBackstory": "Modifier l'histoire personnelle de la passion",
+      "Notification": {
+        "DatasetNotFound": "Impossible de trouver le jeu de données pour la caractéristique",
+        "CharacteristicNotFound": "Impossible de trouver le nom de la caractéristique \"{characteristicName}\" sur l'acteur {actorName} pour effectuer une action depuis le menu contextuel des caractéristiques.",
+        "CantToggleExperienceError": "Impossible de trouver l'ID d'élément [{itemId}] sur l'acteur {actorName} pour basculer l'expérience depuis le menu contextuel de combat.",
+        "CantShowItemSheetError": "Impossible de trouver l'ID d'élément [{skillItemId}] sur l'acteur {actorName} pour afficher la fiche de compétence depuis le menu contextuel de combat.",
+        "CantShowWeaponSheetError": "Impossible de trouver l'ID d'élément [{weaponItemId}] sur l'acteur {actorName} pour afficher la fiche d'arme depuis le menu contextuel de combat.",
+        "CantDeleteSkillError": "Impossible de trouver l'ID d'élément [{skillItemId}] sur l'acteur {actorName} pour supprimer l'élément de compétence depuis le menu contextuel de combat.",
+        "CantDeleteWeaponError": "Impossible de trouver l'ID d'élément [{weaponItemId}] sur l'acteur {actorName} pour supprimer l'élément d'arme depuis le menu contextuel de combat.",
+        "CantEditCultError": "Impossible de trouver l'ID d'élément [{itemId}] sur l'acteur {actorName} pour modifier l'élément de culte depuis le menu contextuel du culte.",
+        "CantEditGearError": "Impossible de trouver l'équipement avec l'ID d'élément [{itemId}] sur l'acteur {actorName} pour modifier l'élément depuis le menu contextuel de l'équipement.",
+        "CantEditHitLocationError": "Impossible de trouver l'ID d'élément [{itemId}] sur l'acteur {actorName} pour modifier l'élément de localisation depuis le menu contextuel de santé.",
+        "CantDirectRollPassionError": "Impossible de trouver l'ID d'élément [{itemId}] ou la chance de l'élément (item.system.chance) sur l'acteur {actorName} pour effectuer un jet direct pour l'élément de passion depuis le menu contextuel de passion.",
+        "CantToggleExperiencePassionError": "Impossible de trouver l'ID d'élément [{itemId}] sur l'acteur {actorName} pour basculer l'expérience sur l'élément de passion depuis le menu contextuel de passion.",
+        "CantImprovePassionError": "Impossible de trouver l'ID d'élément [{itemId}] sur l'acteur {actorName} pour améliorer l'élément de passion depuis le menu contextuel de passion.",
+        "CantEditPassionError": "Impossible de trouver l'ID d'élément [{itemId}] sur l'acteur {actorName} pour modifier un élément de passion depuis le menu contextuel de passion.",
+        "CantEditRuneError": "Impossible de trouver la fiche d'élément [{itemId}] sur l'acteur {actorName} pour modifier l'élément de rune depuis le menu contextuel de rune.",
+        "CantRollQuickSkillError": "L'élément [{itemId}] sur l'acteur {actorName} n'avait pas de chance pour effectuer un jet direct sur un élément de compétence depuis le menu contextuel de compétence.",
+        "CantEditSpiritMagicError": "Impossible de trouver la fiche d'élément pour [{itemId}] sur l'acteur {actorName} pour modifier l'élément de magie spirituelle depuis le menu contextuel de magie spirituelle."
+      }
+    },
+    "ChatMessage": {
+      "Combat": {
+        "RollDamageAndHitLocation": "Lancer les dégâts et la localisation",
+        "RollDamage": "Lancer les dégâts",
+        "ApplyActorDamage": "Appliquer les dégâts au personnage",
+        "ApplyWeaponDamage": "Appliquer les dégâts à l'arme",
+        "CannotApplyDamageToUnlinkedActor": "Impossible d'appliquer des dégâts à un acteur non lié",
+        "RollAttackerFumble": "Lancer un échec critique de l'attaquant",
+        "RollDefenderFumble": "Lancer un échec critique du défenseur",
+        "AttackerFumble": "Échec critique de l'attaquant",
+        "DefenderFumble": "Échec critique du défenseur",
+        "ApplyNaturalWeaponDamageNotImplemented": "L'application automatique des dégâts aux armes naturelles n'est pas encore prise en charge.<br>Veuillez ajouter manuellement {weaponDamage} dégâts à la localisation appropriée, les PA ne sont pas soustraits de {weaponDamage}.<br>Puis fermez cette notification."
+      }
+    },
+    "Dialog": {
+      "Attack": {
+        "Title": "Attaque",
+        "NoTargetSelected": "Aucune cible sélectionnée",
+        "AttackingWeapon": "Arme d'attaque",
+        "WeaponUsage": "Utilisation",
+        "ReduceAmmoQuantity": "Réduire la quantité de munitions",
+        "ProneTarget": "Cible à terre",
+        "UnawareTarget": "Cible non consciente",
+        "Darkness": "Obscurité",
+        "OtherModifier": "Autre modificateur",
+        "DamageBonusFrom": "Bonus de dégâts de",
+        "ExtraDamage": "Dégâts supplémentaires",
+        "UsedLastOfAmmoWarn": "Vous venez d'utiliser la dernière de vos {projectileName} !",
+        "OutOfAmmoWarn": "Vous n'avez pas de {projectileName} pour {combatManeuverName} !",
+        "OutOfAmmo": "Plus de munitions",
+        "AmmoQuantity": "Quantité de munitions",
+        "AimedBlow": "Coup précis",
+        "HitLocationFormula": "Formule de localisation",
+        "HitLocationFormulaOptions": {
+          "1d20": "Normal (1d20)",
+          "1d10": "Par en dessous (1d10)",
+          "1d10+10": "Par au-dessus (1d10 + 10)"
+        },
+        "NoTokenToAttackWith": "Vous n'avez aucun jeton dans cette scène pour effectuer une attaque",
+        "WeaponNotEmbedded": "Impossible de trouver le propriétaire de l'arme utilisée"
+      },
+      "Defence": {
+        "Title": "Défense",
+        "Defence": "Défense",
+        "Parry": "Parade",
+        "ParryingWeaponUuid": "Arme de parade",
+        "ParryingWeaponUsage": "Utilisation",
+        "OtherModifier": "Autre modificateur",
+        "Ignore": "Ignorer",
+        "Ignored": "Ignoré",
+        "MasterOpponentModifier": "Pénalité de l'adversaire principal",
+        "SubsequentDefenceModifier": "Modificateur de défense ultérieure",
+        "SubsequentDefenceOptions": {
+          "First": "Première -0%",
+          "Second": "Deuxième -20%",
+          "Third": "Troisième -40%",
+          "Fourth": "Quatrième -60%",
+          "Fifth": "Cinquième -80%",
+          "Sixth": "Sixième -100%"
+        },
+        "NoTokenToDefendWith": "Vous n'avez aucun jeton dans cette scène qui puisse défendre contre cette attaque"
+      },
+      "AbilityRoll": {
+        "Title": "Jet de compétence",
+        "Augment": "Augmenter",
+        "Meditate": "Méditer",
+        "OtherModifier": "Autre modificateur"
+      },
+      "CharacteristicRoll": {
+        "Title": "Jet de caractéristique",
+        "Difficulty": "Difficulté",
+        "Augment": "Augmenter",
+        "Meditate": "Méditer",
+        "OtherModifier": "Autre modificateur",
+        "RollDifficultyLevel": {
+          "0": "Presque impossible (/2)",
+          "1": "Très difficile (*1)",
+          "2": "Difficile (*2)",
+          "3": "Modéré (*3)",
+          "4": "Facile (*4)",
+          "5": "Action simple (*5)",
+          "6": "Action très simple (*6)"
+        }
+      },
+      "SpiritMagicRoll": {
+        "Title": "Lancer un sort de magie spirituelle",
+        "LevelUsed": "Niveau",
+        "Boost": "Renforcer",
+        "Augment": "Augmenter",
+        "Meditate": "Méditer",
+        "OtherModifier": "Autre modificateur",
+        "SuccessfullyCastInfo": "Sort de magie spirituelle lancé avec succès, utilisant {amount} points de magie."
+      },
+      "RuneMagicRoll": {
+        "Title": "Lancer un sort de magie runique",
+        "LevelUsed": "Niveau",
+        "RuneUsed": "Utiliser la rune",
+        "Boost": "Renforcer",
+        "Augment": "Augmenter",
+        "MeditateRitual": "Méditer / Rituel",
+        "Ritual": "rituel",
+        "Meditate": "méditer",
+        "OtherModifier": "Autre modificateur",
+        "NotEnoughRunePoints": "Pas assez de points de rune restants pour lancer ce sort.",
+        "OneUseHeader": "Usage unique",
+        "OneUseDescription": "Lancer ce sort réduira vos points de rune actuels et totaux pour le culte !"
+      },
+      "BatchRqidEditor": {
+        "Title": "Définir l'ID système (Rqid) par lot",
+        "ExistingRqidsHeader": "Rqids existants",
+        "NewRqid": "- ID système personnalisé -",
+        "SummaryDefault": "Le système RQG utilise un ID système (Rqid). Cela permet au système d'identifier les documents FoundryVTT comme les compétences et les runes. Cette page vous permet de définir l'ID pour les documents {type} existants qui n'ont pas encore de Rqid. Le Rqid doit utiliser la traduction anglaise du nom pour supporter la localisation dans toutes les langues.",
+        "SummarySkill": "Le système RQG utilise un ID système (Rqid). Cela permet au système d'identifier les documents FoundryVTT, par exemple les compétences. Cette page vous permettra de définir l'ID pour les documents de compétence existants qui n'ont pas encore de Rqid. Le Rqid doit utiliser la traduction anglaise du nom pour supporter la localisation dans toutes les langues.<br><br><b>Actuellement, seules les compétences d'arme et 'Esquive', 'Saut', 'Se déplacer silencieusement' et 'Combat spirituel' nécessitent un Rqid, les autres peuvent être laissées vides.</b>",
+        "SummaryRuneMagic": "Le système RQG utilise un ID système (Rqid). Cela permet au système d'identifier les documents FoundryVTT, par exemple les compétences. Cette page vous permettra de définir l'ID pour les documents de magie runique existants qui n'ont pas encore de Rqid. Le Rqid doit utiliser la traduction anglaise du nom pour supporter la localisation dans toutes les langues.<br><br><b>Actuellement, seuls les sorts de magie runique communs nécessitent un Rqid (Commander l'esprit du culte, Divination, Sanctifier, Invoquer l'esprit du culte, Dissiper la magie, Extension, Multisort, Trouver l'ennemi, Soigner la blessure, Vision spirituelle, Blocage spirituel, et Protection)</b>",
+        "ButtonUpdate": "Mettre à jour"
+      },
+      "Common": {
+        "yes": "oui",
+        "no": "non",
+        "btnCancel": "Annuler",
+        "btnConfirm": "Confirmer",
+        "TargetChance": "Chance cible",
+        "IsAttacking": "attaque {defenderName}",
+        "Halved": "Chance divisée par deux",
+        "Modifiers": "Modificateurs",
+        "Character": "Personnage",
+        "AttackingActor": "Attaquant",
+        "DefendingActor": "Défenseur",
+        "TargetedToken": "jeton ciblé",
+        "Tokens": "jetons",
+        "Actors": "acteurs",
+        "AugmentOptions": {
+          "None": "Aucun",
+          "CriticalSuccess": "Succès critique +50%",
+          "SpecialSuccess": "Succès spécial +30%",
+          "Success": "Succès +20%",
+          "Failure": "Échec -20%",
+          "Fumble": "Échec critique -50%"
+        },
+        "MeditateOptions": {
+          "Title": "Méditation",
+          "None": "Aucune",
+          "1mr": "1 MR +5%",
+          "2mr": "2 MR +10%",
+          "5mr": "5 MR (1 min) +15%",
+          "25mr": "25 MR (5 min) +20%",
+          "50mr": "50 MR (10 min) +25%"
+        },
+        "RitualOptions": {
+          "Title": "Rituel",
+          "30min": "Une demi-heure +30%",
+          "1h": "1 heure +35%",
+          "5h": "5 heures +40%",
+          "10h": "10 heures +45%",
+          "1d": "1 jour +50%",
+          "2d": "2 jours +55%",
+          "1week": "1 semaine +60%",
+          "2weeks": "2 semaines +65%",
+          "4weeks": "4 semaines +70%",
+          "1season": "1 saison +75%",
+          "1year": "1 an +80%",
+          "2years": "2 ans +85%",
+          "5years": "5 ans +90%",
+          "10years": "10 ans +95%",
+          "20years": "20 ans +100%"
+        }
+      },
+      "confirmCopyIntangibleItem": {
+        "title": "Vraiment donner {itemName} à {targetActor} ?",
+        "header": "Vraiment donner {itemName} à {targetActor} ?",
+        "btnCopy": "Copier",
+        "ReallyCopyIntangibleItem": "Vraiment copier {itemName} de {sourceActor} à {targetActor} ?"
+      },
+      "confirmTransferPhysicalItem": {
+        "title": "Vraiment donner {itemName} à {targetActor} ?",
+        "header": "Vraiment donner {itemName} à {targetActor} ?",
+        "btnGive": "Donner",
+        "ReallyGiveItemSingle": "Vraiment donner {itemName} à {targetActor} ? Il sera retiré de l'inventaire de {sourceActor}.",
+        "ReallyGiveItemQuantity": "Vraiment donner {itemName} à {targetActor} ? Il sera retiré de l'inventaire de {sourceActor}, ou la quantité dans l'inventaire de {sourceActor} sera réduite.",
+        "GiveHowMany": "Donner combien de {itemName} à {targetActor} ? L'inventaire de {sourceActor} pour cet objet sera réduit du montant choisi, ou l'objet sera supprimé si vous choisissez de donner la quantité maximale de {maxQty}."
+      },
+      "confirmItemDeleteDialog": {
+        "title": "Supprimer {itemType} : {itemName}",
+        "content": "Êtes-vous sûr de vouloir supprimer {itemType} nommé {itemName} ?",
+        "contentCult": "Êtes-vous sûr de vouloir supprimer {itemType} nommé {itemName} ? Cela supprimera également tous les éléments {runeMagicSpell} associés à ce {itemType}."
+      },
+      "improveAbilityDialog": {
+        "title": "Amélioration pour {typeLocName} \"{name}\"",
+        "titleChar": "Amélioration pour la caractéristique \"{name}\"",
+        "header": "Amélioration de {name}",
+        "fromExperience": "... par l'expérience",
+        "chanceToGain": "{chanceToGain} % de chance de gagner",
+        "experienceGainFixed": "Gagner 3 %",
+        "experienceGainRandom": "Gagner 1d6 %",
+        "noExperienceCheckTitle": "Pas de jet d'expérience",
+        "noExperienceCheckExplanation": "Ce personnage n'a pas de jet d'expérience dans ce {typeLocName} et ne peut pas s'améliorer par l'expérience.",
+        "throughTraining": "... par l'entraînement",
+        "afterTraining": "Après l'entraînement",
+        "gain": "Gagner {gain} %",
+        "gainChar": "Gagner {gain}",
+        "throughResearch": "... par la recherche",
+        "skillOver75Title": "Compétence supérieure à 75 %",
+        "skillOver75Explanation": "Vous ne pouvez pas vous entraîner dans des compétences dont la valeur dépasse 75 %.",
+        "speciesMaxTitle": "Maximum de l'espèce pour {name}",
+        "speciesMaxExplanation": "Vous êtes au maximum ou au-dessus du maximum de l'espèce pour {name} et ne pouvez plus gagner.",
+        "btnDoImprovement": "Effectuer l'amélioration",
+        "btnCancel": "Annuler",
+        "experienceRoll": {
+          "flavor": "{actorName} effectue un jet d'amélioration par expérience pour {typeLocName} \"{name}\"",
+          "contentSkill": "Lancez 1d100 et ajoutez le modificateur de catégorie de compétence ({mod}) et gagnez si le jet modifié est SUPÉRIEUR à la valeur {typeLocName} \"{name}\" {skillChance} % ou 100.",
+          "contentOther": "Lancez 1d100 et gagnez si le jet est SUPÉRIEUR à la valeur {typeLocName} \"{name}\" de {chance} %.",
+          "contentChar": "Lancez 1d100 et gagnez si le jet est INFÉRIEUR OU ÉGAL À {chanceToGain} %. Cela est basé sur le maximum de l'espèce pour la caractéristique de {speciesMax} moins la valeur de la caractéristique \"{name}\" de {chance} multipliée par cinq."
+        },
+        "experienceResultChat": {
+          "flavor": "Amélioration par expérience pour {typeLocName} \"{name}\" réussie",
+          "contentChoseFixed": "Gain fixe de {gain} choisi.",
+          "contentChoseRandom": "Gain de {gain} choisi."
+        },
+        "experienceGainFailed": {
+          "flavor": "Amélioration par expérience pour {typeLocName} \"{name}\" échouée",
+          "content": "{actorName} n'a pas réussi à apprendre par l'expérience et le jet d'expérience a été effacé de {typeLocName} \"{name}\"."
+        },
+        "trainingResultChat": {
+          "flavor": "Amélioration par entraînement pour {typeLocName} \"{name}\"",
+          "contentChoseFixed": "Gain fixe de {gain} choisi.",
+          "contentChoseRandom": "Gain de {gain} choisi."
+        },
+        "researchRoll": {
+          "flavor": "{actorName} effectue un jet d'amélioration par recherche pour {typeLocName} \"{name}\"",
+          "contentChar": "Lancez 1d100 et gagnez si le jet est INFÉRIEUR OU ÉGAL À {chanceToGain} %. Cela est basé sur le maximum de l'espèce pour la caractéristique de {speciesMax} moins la valeur de la caractéristique \"{name}\" de {chance} multipliée par cinq."
+        },
+        "researchResultChat": {
+          "flavor": "Amélioration par recherche pour {typeLocName} \"{name}\"",
+          "contentChoseRandom": "Gain de {gain} choisi."
+        },
+        "researchGainFailed": {
+          "flavor": "Amélioration par recherche pour {typeLocName} \"{name}\" échouée",
+          "content": "{actorName} n'a pas réussi à apprendre en recherchant {typeLocName} \"{name}\"."
+        },
+        "notifications": {
+          "noExperience": "{actorName} n'a pas de jet d'expérience dans {typeLocName} \"{name}\" et ne peut pas gagner par l'expérience maintenant."
+        }
+      },
+      "requestSkillSpecialization": {
+        "title": "Définir la spécialisation de la compétence",
+        "inputRequired": "La spécialisation de la compétence est requise",
+        "btnSetSpecialization": "Définir la spécialisation"
+      }
+    },
+    "Item": {
+      "Armor": {
+        "NamePrefix": "Préfixe du nom",
+        "ArmorTypeLabel": "Type d'armure",
+        "Material": "Matériau",
+        "HitLocations": "Localisations de coup",
+        "AddNewCoveredHitLocationPlaceholder": "Ajouter une localisation couverte par l'armure",
+        "Absorbs": "Absorbe",
+        "MoveQuietlyPenalty": "Pénalité pour se déplacer silencieusement",
+        "FitsSIZ": "Convient à la taille",
+        "ArmorType": {
+          "Hood": "Capuche",
+          "BroadBrimmedHat": "Chapeau à larges bords",
+          "Cap": "Casquette",
+          "CompositeHelm": "Casque composite",
+          "OpenHelm": "Casque ouvert",
+          "ClosedHelm": "Casque fermé",
+          "FullHelm": "Casque intégral",
+          "Sleeves": "Manches",
+          "Vambraces": "Brassards",
+          "Cuirass": "Cuirasse",
+          "Linothorax": "Linothorax",
+          "Hauberk": "Haubert",
+          "Segmented": "Segmenté",
+          "Skirt": "Jupe",
+          "PantsTrews": "Pantalon",
+          "Greaves": "Grèves"
+        },
+        "ArmorMaterial": {
+          "SoftLeather": "Cuir souple",
+          "Leather": "Cuir",
+          "HeavyLeather": "Cuir épais",
+          "StuddedLeather": "Cuir clouté",
+          "Cuirboilli": "Cuir bouilli",
+          "Linen": "Lin",
+          "Quilted": "Matelassé",
+          "BronzeRingMail": "Cotte de mailles en bronze",
+          "TurtleShell": "Carapace de tortue",
+          "LightBronzeScale": "Écailles de bronze légères",
+          "HeavyBronzeScale": "Écailles de bronze lourdes",
+          "SegmentedBronzePlate": "Plaques de bronze segmentées",
+          "BronzeDiskPlate": "Disques de bronze",
+          "BronzePlate": "Plaque de bronze",
+          "IronPlate": "Plaque de fer"
+        }
+      },
+      "Cult": {
+        "AddNewSubCult": "Ajouter un nouveau sous-culte",
+        "AddCultRunePlaceholder": "Ajouter une rune de culte",
+        "Name": "Nom",
+        "Deity": "Divinité",
+        "CultName": "Nom du culte",
+        "CultTagline": "Slogan du culte",
+        "Runes": "Runes",
+        "HolyDays": "Jours sacrés",
+        "RunePoints": "Points de rune",
+        "CultRank": "Rang dans le culte",
+        "ActorsGifts": "Dons de l'acteur",
+        "ActorsGeases": "Interdits de l'acteur",
+        "ActorsSubCults": "Sous-cultes de l'acteur",
+        "CommonRuneMagic": "Magie runique commune"
+      },
+      "EquippedStatus": {
+        "notCarried": "Non porté",
+        "carried": "Porté",
+        "equipped": "Équipé"
+      },
+      "Gear": {
+        "Name": "Nom",
+        "EncumbranceAbbr": "ENC",
+        "EncumbranceAbbrEach": "ENC par unité",
+        "EncumbranceAbbrTotal": "ENC total",
+        "EquippedStatus": "Équipé ?",
+        "PriceReal": "Prix (réel)",
+        "PriceEstimated": "Prix (estimé)",
+        "Location": "Emplacement",
+        "AttunedTo": "Accordé à",
+        "Quantity": "Quantité",
+        "IsContainerQ": "Est un conteneur ?",
+        "LunarsAbbr": "L",
+        "HitPointsAbbr": "PV",
+        "CurrentHitPoints": "Points de vie actuels",
+        "HitPointLocation": "Emplacement des points de vie",
+        "ItemType": "Type d'objet",
+        "PhysicalItemTypeEnum": {
+          "unique": "Unique",
+          "currency": "Monnaie",
+          "consumable": "Consommable"
+        }
+      },
+      "HitLocation": {
+        "Name": "Nom",
+        "HealthStatus": "État de santé",
+        "HitPoints": "Points de vie",
+        "ActAs": "Pour les calculs de dégâts, agir comme",
+        "ConnectedTo": "Connecté à",
+        "HitLocationOn": "Localisation sur",
+        "NaturalArmorPoints": "PA naturels",
+        "BaseHPDelta": "Delta de PV de base (+/- par rapport aux PV de la localisation de base)",
+        "ArmorPoints": "Points d'armure",
+        "Wounds": "Blessures",
+        "AddWound": {
+          "Title": "Appliquer une blessure à {hitLocationName}",
+          "ApplyToTotalHitPointsQ": "Appliquer aux PV totaux ?",
+          "SubtractArmorPointsQ": "Soustraire les PA ?",
+          "btnAddWound": "Ajouter une blessure"
+        },
+        "AddWoundChatContent": "{actorName} subit une blessure à {hitLocationName}. {notification}",
+        "IncapacitationRule": "Lancez en dessous de (CON-{damage})*5 ou perdez connaissance, sauf si déjà inconscient à cause des dégâts. Si le jet échoue, le personnage est inconscient pendant [[/r 1d6]] heures ou jusqu'à ce qu'il soit réveillé.",
+        "HealWound": {
+          "Title": "Soigner une blessure à {hitLocationName}",
+          "SelectWoundToHeal": "Sélectionner la blessure à soigner sur {hitLocationName}",
+          "HitPointsToHeal": "Points de vie à soigner : ",
+          "btnHealWound": "Soigner la blessure"
+        },
+        "HealthStatusEnum": {
+          "healthy": "En bonne santé",
+          "wounded": "Blessé",
+          "useless": "Inutile",
+          "severed": "Sectionné"
+        },
+        "Notification": {
+          "CantFindItem": "Impossible de trouver un objet lors des changements d'emplacement",
+          "CantFindHitLocation": "Impossible de trouver la localisation avec l'ID d'élément [{hitLocationItemId}] sur l'acteur ${actorName} pour afficher la boîte de dialogue d'ajout de blessure.",
+          "HitLocationDoesNotHaveCalculatedArmor": "La localisation {hitLocationName} n'a pas de points d'armure calculés",
+          "NoValueOnHitLocation": "Aucune valeur sur la localisation ${hitLocationName}",
+          "NoMaxOnHitLocation": "Aucun maximum sur la localisation ${hitLocationName}",
+          "NoActorOnTokenWarn": "Aucun acteur sur le jeton",
+          "RqidNeededWarn": "Aucun Rqid attribué. Un Rqid est nécessaire pour que la localisation fonctionne pour la protection de l'armure, etc."
+        }
+      },
+      "HitLocationType": {
+        "limb": "Membre",
+        "head": "Tête",
+        "chest": "Poitrine",
+        "abdomen": "Abdomen"
+      },
+      "Homeland": {
+        "AddHomelandRunePlaceholder": "Ajouter une rune de terre natale",
+        "Homeland": "Terre natale",
+        "Region": "Région ou ville",
+        "CultureJournalEntries": "Entrées de journal de culture",
+        "TribeJournalEntries": "Entrées de journal de tribu",
+        "ClanJournalEntries": "Entrées de journal de clan",
+        "homelandJournalRqidLink": "Terre natale",
+        "regionJournalRqidLink": "Région",
+        "cultureJournalRqidLinks": "Culture",
+        "CultLinks": "Liens de culte",
+        "SkillLinks": "Liens de compétence",
+        "PassionLinks": "Liens de passion",
+        "RuneLinks": "Liens de rune"
+      },
+      "Notification": {
+        "CantFindRuneInAvailableRunesError": "Impossible de trouver la rune \"{rqid}\" dans un compendium",
+        "ItemWasNotHitLocationError": "Appel de hitLocation#onActorPrepareEmbeddedEntities sur un élément qui n'était pas une localisation",
+        "HitLocationDoesNotHaveActorError": "L'élément de localisation n'avait pas d'acteur",
+        "ActorDoesNotHaveMaxHpError": "L'acteur n'a pas de points de vie maximum",
+        "OpposingRuneDoesNotExistWarning": "La rune opposée n'existe pas",
+        "WrongItemTypeRuneMagicError": "RQG | Mauvais type d'élément ou élément non intégré dans Actor PrepareEmbeddedEntities",
+        "ActorDoesNotHaveCultOnRuneMagicWarning": "RQG | Le culte référencé par l'élément de magie runique ${item.name} n'existe pas sur l'acteur ${actor.name}",
+        "PrepareDerivedDataNotSkillError": "Appel de Skill#onActorPrepareDerivedData avec quelque chose d'autre qu'une compétence",
+        "ActorNotCharacterError": "L'acteur n'est pas de type personnage",
+        "CantFindWeaponSkillWarning": "Impossible de trouver la compétence d'arme",
+        "CantCreateActiveEffect": "Impossible de créer un effet actif",
+        "NoIdOnTokenError": "Aucun ID sur le jeton",
+        "NoIdOnActorError": "Aucun ID sur l'acteur",
+        "ItemWithIdDoesNotHaveChanceError": "Impossible de trouver un élément qui a une chance et l'ID {itemId} sur l'acteur nommé {actorName} pour afficher le message de chat de l'élément.",
+        "CanOnlyDropJournalEntryWarning": "Vous ne pouvez déposer qu'une entrée de journal sur une fiche de {itemType}",
+        "CanOnlyDropJournalEntryOnThisTargetWarning": "Vous ne pouvez déposer qu'une entrée de journal sur la cible de journal {target}.",
+        "PleaseDropOnTarget": "Vous ne pouvez pas déposer cela ici. Cherchez une cible appropriée.",
+        "SimpleCalendarNotInstalled": "Cette commande nécessite le module Simple Calendar.",
+        "DroppedWrongDocumentType": "Ce champ attend un document de type(s) {allowedDropTypes} et le document déposé était de type {type}",
+        "DroppedWrongDocumentName": "Ce champ attend un {allowedDocumentNames} et le document déposé était {documentName}",
+        "DroppedDocumentDoesNotHaveRqid": "Le {type} nommé {name} avec l'uuid {uuid} n'a pas de RQID et ne peut pas être déposé sur cette fiche.",
+        "ItemNotUnique": "{actorName} possède déjà un {documentType} '{documentName}' et les doublons ne sont pas autorisés"
+      },
+      "Occupation": {
+        "Occupation": "Occupation",
+        "Specialization": "Spécialisation",
+        "Homelands": "Terres natales",
+        "AllHomelands": "Toutes les terres natales",
+        "OccupationalSkillLinks": "Liens de compétence occupationnelle",
+        "IncomeSkillQ": "Compétence de revenu ?",
+        "OccupationalSkillBonus": "Bonus de compétence occupationnelle",
+        "StandardOfLiving": "Niveau de vie",
+        "StandardOfLivingEnum": {
+          "destitute": "Indigent",
+          "poor": "Pauvre",
+          "free": "Libre",
+          "noble": "Noble",
+          "petty-king": "Petit roi"
+        },
+        "BaseIncome": "Revenu de base",
+        "BaseIncomeNotes": "Notes sur le revenu de base",
+        "CultLinks": "Liens de culte",
+        "Ransom": "Rançon",
+        "StartingEquipmentLinks": "Liens d'équipement de départ"
+      },
+      "Passion": {
+        "Name": "Nom",
+        "NamePlaceholder": "Type de passion",
+        "Passion": "Passion",
+        "Subject": "Sujet",
+        "Chance": "Chance",
+        "HasExperienceQ": "A de l'expérience ?",
+        "BackStory": "Histoire personnelle",
+        "PassionEnum": {
+          "Ambition": "Ambition",
+          "Cowardly": "Lâcheté",
+          "Devotion": "Dévotion",
+          "Fear": "Peur",
+          "Hate": "Haine",
+          "Honor": "Honneur",
+          "Loyalty": "Loyauté",
+          "Love": "Amour",
+          "Gluttony": "Gourmandise",
+          "Vanity": "Vanité"
+        }
+      },
+      "RqgItem": {
+        "ShowInfoCircle": {
+          "DropToConnectJournal": "Déposez une entrée de journal sur ce champ pour connecter.",
+          "DropToReplaceJournal": "Déposez une entrée de journal sur ce champ pour remplacer.",
+          "DropToConnectCult": "Déposez un élément de culte sur ce champ pour connecter.",
+          "DropToReplaceCult": "Déposez un élément de culte sur ce champ pour remplacer.",
+          "DropToConnectPassion": "Déposez un élément de passion sur ce champ pour connecter.",
+          "DropToReplacePassion": "Déposez un élément de passion sur ce champ pour remplacer.",
+          "DropToConnectRune": "Déposez un élément de rune sur ce champ pour connecter.",
+          "DropToReplaceRune": "Déposez un élément de rune sur ce champ pour remplacer.",
+          "DropToConnectRuneMagic": "Déposez un élément de magie runique sur ce champ pour connecter.",
+          "DropToReplaceRuneMagic": "Déposez un élément de magie runique sur ce champ pour remplacer.",
+          "DropToConnectSkill": "Déposez un élément de compétence sur ce champ pour connecter.",
+          "DropToReplaceSkill": "Déposez un élément de compétence sur ce champ pour remplacer.",
+          "DropToConnectOccupation": "Déposez un élément d'occupation sur ce champ pour connecter.",
+          "DropToReplaceOccupation": "Déposez un élément d'occupation sur ce champ pour remplacer.",
+          "DropToConnectHitLocation": "Déposez un élément de localisation sur ce champ pour connecter."
+        }
+      },
+      "Rune": {
+        "AddMinorRunePlaceholder": "Ajouter une rune mineure",
+        "SetOpposingRunePlaceholder": "Définir la rune opposée",
+        "Name": "Nom",
+        "Rune": "Rune",
+        "Type": "Type",
+        "PercentageChance": "Chance",
+        "HasExperienceQ": "A de l'expérience ?",
+        "OpposingRune": "Rune opposée",
+        "MinorRunes": "Runes mineures",
+        "MasteredSorceryQ": "Maîtrisé (sorcellerie) ?",
+        "RuneType": {
+          "element": "élément",
+          "power": "pouvoir",
+          "form": "forme",
+          "condition": "condition",
+          "technique": "technique"
+        },
+        "Notification": {
+          "RqidNeededWarn": "Aucun Rqid attribué. Un Rqid est nécessaire pour rendre la rune disponible pour les cultes, la magie runique, etc."
+        }
+      },
+      "RuneMagic": {
+        "AddRuneMagicRunePlaceholder": "Ajouter une rune de magie runique",
+        "Name": "Nom",
+        "Points": "Points",
+        "Range": "Portée",
+        "Duration": "Durée",
+        "Stackable": "Empilable",
+        "OneUse": "Usage unique",
+        "GrantedByCult": "Accordé par le culte",
+        "Runes": "Runes",
+        "CastingCostInfo": "{actorName} a utilisé {runePointAmount} points de rune et {magicPointAmount} points de magie en lançant un sort de magie runique.",
+        "SpentOneUseRunePoints": "{actorName} a dépensé {runePoints} points de rune à usage unique du culte {cultName} !",
+        "validationNotEnoughRunePoints": "Pas assez de points de rune restants !",
+        "validationNotEnoughMagicPoints": "Pas assez de points de magie restants pour renforcer autant !",
+        "runeMagicCultDialog": {
+          "title": "Quel culte fournit cette magie runique ?",
+          "btnAddRuneMagic": "Ajouter la magie runique",
+          "Actor": "Acteur",
+          "RuneMagic": "Magie runique"
+        }
+      },
+      "SheetTab": {
+        "ActiveEffects": "Effets actifs",
+        "Armor": "Armure",
+        "Cults": "Cultes",
+        "Deity": "Divinité",
+        "Description": "Description",
+        "GMNotes": "Notes MJ",
+        "Gear": "Équipement",
+        "GiftsAndGeases": "Dons & Interdits",
+        "HitLocation": "Localisation",
+        "HitLocationDefinition": "Définition de localisation",
+        "Homeland": "Terre natale",
+        "Occupation": "Occupation",
+        "Passion": "Passion",
+        "Rune": "Rune",
+        "RuneMagic": "Magie runique",
+        "Skill": "Compétence",
+        "SkillDefinition": "Définition de compétence",
+        "SpiritMagic": "Magie spirituelle",
+        "Weapon": "Arme",
+        "WeaponUsage": "Utilisation",
+        "WizardInstructions": "Instructions de l'assistant"
+      },
+      "Skill": {
+        "AddSorceryRunePlaceholder": "Ajouter une rune de sorcellerie",
+        "Name": "Nom",
+        "SkillName": "Nom de la compétence",
+        "Specialization": "Spécialisation",
+        "Category": "Catégorie",
+        "CategoryModifier": "Modificateur de {category}",
+        "BaseChance": "Chance de base",
+        "GainedChance": "Chance acquise",
+        "Chance": "Chance",
+        "CanGainExperienceQ": "Peut gagner de l'expérience ?",
+        "HasExperienceQ": "A de l'expérience ?",
+        "SorceryRunes": "Runes de sorcellerie",
+        "Notification": {
+          "CantFindSkillJournalEntryError": "Impossible de trouver l'entrée de journal que vous essayez de lier à la fiche de compétence pour {skillName}"
+        },
+        "SkillCategory": {}
+      },
+      "Spell": {
+        "Ritual": "Rituel",
+        "Enchantment": "Enchantement",
+        "DurationEnum": {
+          "undefined": "Aucun",
+          "instant": "Instantané",
+          "temporal": "Temporel",
+          "focused": "Focalisé",
+          "permanent": "Permanent",
+          "special": "Spécial"
+        },
+        "RangeEnum": {
+          "undefined": "Aucun",
+          "self": "Soit-même",
+          "touch": "Contact",
+          "ranged": "À distance",
+          "special": "Spécial"
+        },
+        "ConcentrationEnum": {
+          "undefined": "",
+          "active": "Actif",
+          "passive": "Passif"
+        }
+      },
+      "SpiritMagic": {
+        "Name": "Nom",
+        "Points": "Points",
+        "Variable": "Variable",
+        "Range": "Portée",
+        "Duration": "Durée",
+        "Concentration": "Concentration",
+        "SpellFocus": "Focalisation du sort",
+        "MatrixIndicator": "(contenu dans une matrice)",
+        "MatrixQ": "Contenu dans une matrice",
+        "LinkedToCompendium": "Lié à l'entrée de compendium [{compendium}] [{journalName}]",
+        "CantCastSpellAboveLearnedLevel": "Impossible de lancer un sort au-dessus du niveau appris.",
+        "NotEnoughMagicPoints": "Pas assez de points de magie restants pour lancer ce sort."
+      },
+      "Weapon": {
+        "Name": "Nom",
+        "UsesOfWeaponHeader": "Utilisations de l'arme",
+        "DropSkillToChange": "(Déposez une compétence d'arme différente sur cette arme pour la changer)",
+        "DropSkillToAdd": "Déposez une compétence d'arme sur cette arme !",
+        "WrongTypeDropped": "L'élément doit être une compétence d'arme (catégorie mêlée, bouclier ou arme naturelle)",
+        "EnterNewAction": "Ajouter une étiquette d'action",
+        "Damage": "Dégâts",
+        "MinimumStrengthAbbr": "FOR min",
+        "MinimumDexterityAbbr": "DEX min",
+        "StrikeRankAbbr": "RF",
+        "CombatManeuversHeader": "Manoeuvres de combat",
+        "ActionLabel": "Étiquette d'action",
+        "DamageType": "Type de dégâts",
+        "DamageTypeEnum": {
+          "impale": "Empaler",
+          "slash": "Trancher",
+          "crush": "Écraser",
+          "parry": "Parer",
+          "special": "Spécial"
+        },
+        "NaturalWeaponQ": "Arme naturelle",
+        "ThrownWeaponQ": "Arme jetée (diminue la quantité à chaque utilisation)",
+        "ProjectileWeaponQ": "Arme à projectile (diminue la quantité du projectile lié à chaque utilisation)",
+        "RangedWeaponQ": "Arme à distance (ne diminue aucune quantité)",
+        "ProjectileQ": "Projectile (munition - utilisé avec une arme à projectile)",
+        "Projectile": "Projectile",
+        "Range": "Portée",
+        "Rate": "Cadence",
+        "SameDataAsOneHand": "Mêmes données qu'à une main",
+        "combatManeuver": {
+          "Bite": "Mordre",
+          "Throw": "Lancer",
+          "Shoot": "Tirer",
+          "Thrust": "Estoc",
+          "Cut": "Tailler",
+          "Claw": "Griffe",
+          "Gore": "Empaler",
+          "Hug": "Étouffer",
+          "Bash": "Frapper",
+          "Hit": "Frapper",
+          "HeadButt": "Coup de tête",
+          "Parry": "Parer",
+          "Grapple": "Saisir",
+          "Knockback": "Repousser",
+          "Punch": "Coup de poing",
+          "Kick": "Coup de pied",
+          "Trample": "Piétiner"
+        }
+      }
+    },
+    "Roll": {
+      "AbilityRoll": {
+        "Base": "base",
+        "Augment": "augmenter",
+        "Meditate": "méditer",
+        "SubsequentDefenceRoll": {
+          "First": "première défense",
+          "Second": "deuxième défense",
+          "Third": "troisième défense",
+          "Fourth": "quatrième défense",
+          "Fifth": "cinquième défense",
+          "Sixth": "sixième défense"
+        },
+        "ProneTarget": "à terre",
+        "UnawareTarget": "non conscient",
+        "Darkness": "obscurité",
+        "Halved": "chance divisée par deux",
+        "AimedBlow": "coup précis",
+        "OtherModifier": "autre modificateur",
+        "MasterOpponentModifier": "adversaire maître"
+      },
+      "CharacteristicRoll": {
+        "Augment": "augmenter",
+        "Meditate": "méditer",
+        "Other": "autre",
+        "RollDifficultyLevel": {
+          "0": "presque impossible",
+          "1": "très difficile",
+          "2": "difficile",
+          "3": "modéré",
+          "4": "facile",
+          "5": "action simple",
+          "6": "action très simple"
+        }
+      },
+      "HitLocationRoll": {
+        "FallbackHitLocationName": "Localisation"
+      },
+      "SpiritMagicRoll": {
+        "Augment": "augmenter",
+        "Meditate": "méditer",
+        "Base": "POU*5",
+        "MagicPointCost": "Utilisé {cost} points de magie"
+      },
+      "RuneMagicRoll": {
+        "Augment": "augmenter",
+        "Meditate": "méditer",
+        "Ritual": "rituel",
+        "UsageCost": "Utilisé {runePointsCost} points de rune et {magicPointCost} points de magie.",
+        "OneUseUsageCost": "Utilisé {runePointsCost} points de rune permanents et {magicPointCost} points de magie."
+      },
+      "DamageRoll": {
+        "Damage": "Dégâts",
+        "WeaponDamage": "dégâts de l'arme",
+        "DamageBonus": "bonus de dégâts",
+        "SpecialDamage": "dégâts spéciaux",
+        "ExtraDamage": "dégâts supplémentaires"
+      }
+    },
+    "Hotbar": {
+      "MacroName": {
+        "ToChat": "Utiliser {name}",
+        "ToChatEmbedded": "Utiliser {name} ({actor})",
+        "RollTable": "Lancer la table {name}",
+        "ToggleSheet": "Afficher la fiche {name}",
+        "ToggleSheetEmbedded": "Afficher la fiche {name} ({actor})"
+      }
+    },
+    "Foundry": {
+      "ActiveEffect": {
+        "Header": "Effets actifs🧪",
+        "AddEffectTitle": "Ajouter un effet",
+        "Name": "Nom",
+        "Disabled": "Désactivé",
+        "StartTime": "Heure de début",
+        "KeyValueMode": "Clé - Valeur - Mode",
+        "NewActiveEffectName": "Nouvel effet actif",
+        "TargetItemNotFound": "Impossible de trouver un élément intégré avec le rqid {rqid} sur l'acteur {actorName}. Veuillez soit ajouter un élément {itemName} avec ce rqid, soit modifier l'élément qui a cet effet actif"
+      },
+      "CombatTracker": {
+        "DuplicateCombatant": "Combattant en double",
+        "RemoveAllDuplicates": "Supprimer tous les doublons",
+        "CombatantWithoutActor": "Le combattant \"{combatantName}\" référence un acteur qui n'existe plus dans le monde",
+        "UnknownName": "Inconnu"
+      },
+      "ContentLink": {
+        "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>rqid: {rqid}</small>",
+        "RqidLinkDelete": "Supprimer le lien vers \"{name}\"<br><small>rqid: {rqid}</small>",
+        "DropToConnectJournal": "Déposez une entrée de journal sur cet élément pour connecter une description.",
+        "DropToReplaceJournal": "Déposez une entrée de journal sur cet élément pour remplacer la description."
+      },
+      "Settings": {
+        "Links": {
+          "ReleaseNotes": "Notes de version",
+          "Documentation": "Documentation",
+          "BugReports": "Signaler un bug"
+        },
+        "Migrate": {
+          "TriggerButton": "Déclencher la migration du monde",
+          "TriggerTitle": "Déclencher la migration des données du monde",
+          "TriggerContents": "<p>Activez la migration des données du monde et redémarrez</p>",
+          "TriggerRestart": "Enregistrer et redémarrer"
+        }
+      }
+    },
+    "Game": {
+      "MeleeRoundAbbr": "TR",
+      "SrMeleeRoundAbbr": "RF/TR",
+      "AbilityResultEnum": {
+        "0": "Critique",
+        "1": "Spécial",
+        "2": "Succès",
+        "3": "Échec",
+        "4": "Échec critique"
+      },
+      "Roll": "Lancer",
+      "RollChat": "Lancer (clic)",
+      "RollQuick": "Lancer direct (double clic)",
+      "RollCharacteristicQuick": "Lancer direct *5 (double clic)",
+      "RollTitle": "Lancer via dialogue (clic), Lancer direct (double clic)",
+      "InitiateCombat": "Initiation du combat",
+      "WeaponUsage": {
+        "oneHand": "1M",
+        "offHand": "mainG",
+        "twoHand": "2M",
+        "missile": "Projectile",
+        "oneHand-full": "À une main",
+        "offHand-full": "À une main – main gauche",
+        "twoHand-full": "À deux mains",
+        "missile-full": "Projectile"
+      },
+      "AttackParryResults": {
+        "0-0": "<b>Attaquant</b> lance les dégâts normaux.<br><b>Défenseur</b> : l'arme de parade subit 1 PV de dégâts si les dégâts lancés sont supérieurs à ses PV actuels. Tout excédent de dégâts va à la localisation affectée.",
+        "0-1": "<b>Attaquant</b> inflige des dégâts spéciaux maximaux.<br><b>Défenseur</b> : l'arme de parade subit 1 PV de dégâts si les dégâts lancés sont supérieurs à ses PV actuels. Tout excédent de dégâts va à la localisation adjacente, sans protection d'armure.",
+        "0-2": "<b>Attaquant</b> inflige des dégâts spéciaux maximaux.<br><b>Défenseur</b> : les PV de l'arme de parade sont réduits des dégâts lancés. Tout excédent de dégâts va à la localisation adjacente, sans protection d'armure.",
+        "0-3": "<b>Attaquant</b> inflige des dégâts spéciaux maximaux.<br><b>Défenseur</b> subit des dégâts, sans protection d'armure.",
+        "0-4": "<b>Attaquant</b> touche automatiquement, inflige des dégâts spéciaux maximaux.<br><b>Défenseur</b> subit des dégâts, sans protection d'armure, et lance sur la table des Échecs critiques.",
+        "1-0": "<b>Attaque</b> parée ou déviée.<br><b>Défenseur</b> lance les dégâts normaux de l'arme de parade. Les PV de l'arme attaquante sont réduits de 1 PV si les dégâts dépassent ses PV actuels.",
+        "1-1": "<b>Attaquant</b> lance les dégâts normaux.<br><b>Défenseur</b> : l'arme de parade subit 1 PV de dégâts si les dégâts sont supérieurs à ses PV actuels. Tout excédent de dégâts va à la localisation affectée.",
+        "1-2": "<b>Attaquant</b> lance des dégâts spéciaux.<br><b>Défenseur</b> : l'arme de parade subit des dégâts supérieurs à ses PV, avec la même quantité de dégâts allant à la localisation adjacente.",
+        "1-3": "<b>Attaquant</b> lance des dégâts spéciaux.<br><b>Défenseur</b> subit des dégâts.",
+        "1-4": "<b>Attaquant</b> inflige des dégâts spéciaux.<br><b>Défenseur</b> subit des dégâts et lance sur la table des Échecs critiques.",
+        "2-0": "<b>Attaque</b> parée ou déviée.<br><b>Défenseur</b> lance les dégâts spéciaux de l'arme de parade. Les PV de l'arme attaquante sont réduits de tout dégâts dépassant ses PV actuels.",
+        "2-1": "<b>Attaque</b> parée ou déviée.<br><b>Défenseur</b> lance les dégâts normaux de l'arme de parade. Les PV de l'arme attaquante sont réduits de 1 PV si les dégâts dépassent ses PV actuels.",
+        "2-2": "<b>Attaquant</b> lance les dégâts normaux.<br><b>Défenseur</b> : l'arme de parade subit 1 PV de dégâts si les dégâts sont supérieurs à ses PV actuels. Tout excédent de dégâts va à la localisation affectée.",
+        "2-3": "<b>Attaquant</b> lance les dégâts normaux.<br><b>Défenseur</b> subit des dégâts.",
+        "2-4": "<b>Attaquant</b> lance les dégâts normaux.<br><b>Défenseur</b> subit des dégâts et lance sur la table des Échecs critiques.",
+        "3-0": "<b>Attaque</b> parée ou déviée.<br><b>Défenseur</b> lance les dégâts spéciaux de l'arme de parade. Les PV de l'arme attaquante sont réduits des dégâts lancés.",
+        "3-1": "<b>Attaquant</b> paré ou dévié.<br><b>Défenseur</b> lance les dégâts spéciaux de l'arme de parade. Les PV de l'arme attaquante sont réduits de tout dégâts dépassant ses PV actuels.",
+        "3-2": "<b>Attaquant</b> paré ou dévié.<br><b>Défenseur</b> lance les dégâts normaux de l'arme de parade. Les PV de l'arme attaquante sont réduits de 1 PV si les dégâts dépassent ses PV actuels.",
+        "3-3": "<b>Attaquant</b> rate.<br><b>Défenseur</b> rate.",
+        "3-4": "<b>Attaquant</b> lance les dégâts normaux.<br><b>Défenseur</b> subit des dégâts et lance sur la table des Échecs critiques.",
+        "4-0": "<b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> lance les dégâts spéciaux de l'arme de parade. Les PV de l'arme attaquante sont réduits des dégâts lancés.",
+        "4-1": "<b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> lance les dégâts spéciaux de l'arme de parade. Les PV de l'arme attaquante sont réduits des dégâts dépassant ses PV actuels.",
+        "4-2": "<b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> lance les dégâts normaux de l'arme de parade. Les PV de l'arme attaquante sont réduits de 1 PV si les dégâts dépassent ses PV actuels.",
+        "4-3": "<b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> rate.",
+        "4-4": "<b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> lance sur la table des Échecs critiques."
+      },
+      "DodgeResults": {
+        "0-0": "<b>Attaque</b> est esquivée avec succès.",
+        "0-1": "<b>Attaque</b> inflige des dégâts de succès spécial.",
+        "0-2": "<b>Attaque</b> inflige des dégâts de succès spécial, ignore l'armure.",
+        "0-3": "<b>Attaque</b> inflige des dégâts de succès spécial maximaux, ignore l'armure.",
+        "0-4": "<b>Attaque</b> inflige des dégâts de succès spécial maximaux, ignore l'armure.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
+        "1-0": "<b>Attaque</b> est esquivée avec succès.",
+        "1-1": "<b>Attaque</b> est esquivée avec succès.",
+        "1-2": "<b>Attaque</b> inflige des dégâts de succès spécial.",
+        "1-3": "<b>Attaque</b> inflige des dégâts de succès spécial.",
+        "1-4": "<b>Attaque</b> inflige des dégâts de succès spécial.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
+        "2-0": "<b>Attaque</b> est esquivée.",
+        "2-1": "<b>Attaque</b> est esquivée.",
+        "2-2": "<b>Attaque</b> est esquivée.",
+        "2-3": "<b>Attaque</b> inflige des dégâts normaux.",
+        "2-4": "<b>Attaque</b> inflige des dégâts normaux.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
+        "3-0": "<b>Attaque</b> rate.",
+        "3-1": "<b>Attaque</b> rate.",
+        "3-2": "<b>Attaque</b> rate.",
+        "3-3": "<b>Attaque</b> rate.",
+        "3-4": "<b>Attaque</b> inflige des dégâts normaux.<br><b>Défenseur</b> lance sur la table des Échecs critiques.",
+        "4-0": "<b>Attaquant</b> lance sur la table des Échecs critiques.",
+        "4-1": "<b>Attaquant</b> lance sur la table des Échecs critiques.",
+        "4-2": "<b>Attaquant</b> lance sur la table des Échecs critiques.",
+        "4-3": "<b>Attaquant</b> lance sur la table des Échecs critiques.",
+        "4-4": "<b>Attaque</b> échoue et <b>Attaquant</b> lance sur la table des Échecs critiques.<br><b>Défenseur</b> lance sur la table des Échecs critiques."
+      }
+    },
+    "RQGSystem": {
+      "rqid": "ID système RuneQuest (Rqid)",
+      "GenerateDefaultRqid": "Créer un ID système RuneQuest (rqid) basé sur le document actuel. Le rqid doit être basé sur le nom anglais du document.",
+      "rqidPriority": "Priorité Rqid",
+      "rqidLang": "Langue",
+      "Folder": "Dossier",
+      "FoundryId": "ID Foundry",
+      "FoundryUuid": "UUID Foundry",
+      "ParentFoundryId": "ID parent Foundry",
+      "GetThisDocument": "Obtenir ce document",
+      "GetDocumentLikeThis": "Obtenir un document comme celui-ci",
+      "JournalLinkToDocumentLikeThis": "Lien de journal vers des documents comme celui-ci",
+      "CopyInputValue": "Copier cette valeur dans le presse-papiers",
+      "OtherDocumentsHeader": "Documents avec ce rqid et cette langue (à l'exclusion des documents intégrés)",
+      "DocsInWorld": "{count} documents dans le monde",
+      "DocsInCompendiums": "{count} documents dans les compendiums",
+      "DuplicateWarning": "Attention : Plusieurs rqids avec la même priorité !",
+      "CouldNotFindRune": "Impossible de trouver la rune mise en cache avec le rqid {rqid}",
+      "Error": {
+        "NoSheet": "Aucune fiche trouvée pour le document lié par l'ID système RQG (rqid) \"{rqid}\". Voir le journal de la console.",
+        "MoreThanOneRqidMatchInWorld": "Plus d'un document RQG dans le monde (pas dans les packs de compendium) correspond au rqid \"{rqid}\", à la langue \"{lang}\" et à la priorité \"{priority}\". Veuillez revoir vos paramètres système RQG. Voir le journal de la console pour les ID des éléments.",
+        "MoreThanOneRqidMatchInPacks": "Plus d'un document RQG dans les packs de compendium installés correspond au rqid \"{rqid}\", à la langue \"{lang}\" et à la priorité \"{priority}\". Veuillez revoir vos paramètres système RQG. Voir le journal de la console pour les ID des éléments.",
+        "DocumentNotFoundByRqid": "Document introuvable dans le monde ou les packs de compendium correspondant au rqid \"{rqid}\" et à la langue \"{lang}\". Voir le journal de la console.",
+        "FumbleTableMissing": "La table des Échecs critiques \"{fumbleTableName}\" est manquante."
+      }
+    },
+    "Region": {
+      "ClickableScripts": {
+        "ShowPointerOnHover": {
+          "Title": "Pointeur au survol",
+          "Hint": "Décide si le pointeur \"main\" doit être affiché lors du survol de cette région cliquable. Cela améliore l'expérience utilisateur si les utilisateurs doivent découvrir la zone cliquable."
+        },
+        "LeftClick": {
+          "Title": "Script de clic gauche",
+          "Hint": "Les deux scripts ont accès à toutes les variables globales de Foundry, ainsi qu'aux variables 'scene', 'region', 'behavior' et 'event' qui font référence à la scène cliquée, à la région, au comportement et à l'événement de clic."
+        },
+        "RightClick": {
+          "Title": "Script de clic droit"
+        }
+      }
+    },
+    "Notification": {
+      "Error": {
+        "GMOnlyOperation": "Cette opération n'est autorisée que pour les MJ"
+      },
+      "Warn": {
+        "NameGenRqidNotSupported": "Génération de nom : L'ID système RQG \"{rqid}\" n'est pas pris en charge pour la génération de nom.",
+        "NameGenRqidNotFound": "Génération de nom : L'ID système RQG \"{rqid}\" n'a pas été trouvé en tant que table de jet ou entrée de journal, ou l'entrée de journal n'était pas correctement formatée en tant que base de nom.",
+        "NameBaseNotLongEnough": "Génération de nom : L'ID système RQG \"{rqid}\" référence une entrée de journal de base de nom qui n'était pas assez longue pour générer un nom après {attempts} tentatives. Envisagez d'ajouter plus d'entrées."
+      }
+    },
+    "Settings": {
+      "SortHitLocationsLowToHigh": {
+        "settingName": "Trier les localisations de coup de bas en haut",
+        "settingHint": "L'activation de ce paramètre trie les localisations de coup du personnage de la même manière que les blocs de statistiques sont triés avec le numéro de dé le plus bas en premier. Le paramètre peut être basculé dans le tableau de santé de la fiche de personnage."
+      },
+      "AutoactivateChatTab": {
+        "settingName": "Activer et développer automatiquement l'onglet de discussion",
+        "settingHint": "L'activation de ce paramètre ouvre la barre latérale des messages de discussion lorsque les jets envoient des messages au chat."
+      },
+      "DefaultItemIcons": {
+        "dialogTitle": "Paramètres des icônes d'élément par défaut",
+        "settingName": "Icônes d'élément par défaut",
+        "settingLabel": "Configurer les icônes par défaut",
+        "settingHint": "Définissez les icônes par défaut utilisées lors de la création de nouveaux éléments."
+      },
+      "WorldLanguage": {
+        "settingName": "Langue du monde",
+        "settingHint": "Il s'agit de la langue dans laquelle le jeu sera joué. Elle affecte les packs de compendium et les descriptions de journal qui sont affichés. Il est recommandé, mais pas strictement nécessaire, que tous les joueurs aient cette langue sélectionnée comme leur 'Préférence de langue des paramètres principaux'."
+      },
+      "FumbleRollTable": {
+        "settingName": "Table de jet d'échec critique",
+        "settingHint": "Le nom de la table de jet d'échec critique - sera utilisé en combat"
+      },
+      "AllowCombatWithoutToken": {
+        "settingName": "Autoriser le combat sans jeton",
+        "settingHint": "Si activé, le combat peut être lancé sans jeton sur une scène. Cela est utile pour les MJ qui veulent mener des combats de type \"théâtre de l'esprit\". La désactivation réduira la longueur des listes déroulantes des attaquants et défenseurs dans la boîte de dialogue de combat pour n'afficher que les jetons de la scène actuelle."
+      },
+      "ShowHeropoints": {
+        "settingName": "Afficher les points de héros",
+        "settingHint": "Afficher un champ de saisie pour suivre la règle optionnelle des points de héros."
+      },
+      "WorldMigrationVersion": {
+        "settingName": "Version de migration du monde",
+        "settingHint": "La version du système RQG vers laquelle ce monde a été migré."
+      },
+      "ShowCharacteristicRatings": {
+        "settingName": "Afficher les évaluations des caractéristiques",
+        "settingHint": "Afficher une barre d'évaluation colorée sous les caractéristiques qui évalue la valeur par rapport à la formule d'expression de dés pour la caractéristique. Le rouge est inférieur à la moyenne et le vert est supérieur à la moyenne. Cela peut vous aider à juger des forces et des faiblesses d'un acteur d'un coup d'œil."
+      },
+      "TokenRulerSettings": {
+        "dialogTitle": "Paramètres de la règle de jeton",
+        "settingName": "Configuration de la règle de jeton",
+        "settingLabel": "Configurer la règle de jeton",
+        "settingHint": "Paramètres qui affectent les couleurs, etc., pour le système de visualisation de la portée de mouvement du jeton qui visualise la distance qu'un jeton peut parcourir sur la carte pendant un round. Il est basé sur la vitesse de mouvement du jeton et le multiplicateur de sprint.",
+        "LineWidth": {
+          "Name": "Largeur de ligne",
+          "Hint": "Décide de l'épaisseur des lignes qui sont dessinées pour visualiser la portée de mouvement du jeton. La valeur par défaut est 30. Si la largeur est définie sur 0, aucune ligne n'est dessinée."
+        },
+        "Alpha": {
+          "Name": "Alpha",
+          "Hint": "Indique la transparence de la ligne, 1 signifie totalement opaque, 0 signifie totalement transparent. La valeur par défaut est 0,45."
+        },
+        "SprintMultiplier": {
+          "Name": "Multiplicateur de portée de sprint",
+          "Hint": "Ceci est pour la règle optionnelle qui permet de sprinter plus longtemps que le MOU dans certaines situations. Par exemple, un personnage avec un MOU de 8 et un multiplicateur de vitesse de 3 pourrait sprinter 8 MOU * 3m * 3 multiplicateur = 72m. Définissez-le sur 0 pour le désactiver.",
+          "ExampleRange": "m / 12 sec (MOU 8)"
+        },
+        "Ranges": {
+          "Attack": "Couleur pour l'attaque",
+          "Walk": "Couleur pour la marche",
+          "Sprint": "Couleur pour le sprint",
+          "Unreachable": "Couleur pour l'inaccessible"
+        }
+      }
+    },
+    "TokenEffects": {
+      "StatusProtection1": "Protection 1",
+      "StatusProtection2": "Protection 2",
+      "StatusProtection3": "Protection 3",
+      "StatusProtection4": "Protection 4",
+      "StatusStrength": "Force",
+      "StatusBefuddled": "Confus",
+      "StatusBladesharp": "Lame aiguisée",
+      "StatusBludgeon": "Contondant",
+      "StatusCoordination": "Coordination",
+      "StatusCountermagic": "Contremagie",
+      "StatusDullblade": "Lame émoussée",
+      "StatusFanaticism": "Fanatisme",
+      "StatusFireblade": "Lame de feu",
+      "StatusGlamour": "Glamour",
+      "StatusGlue": "Colle",
+      "StatusIronhand": "Main de fer",
+      "StatusLantern": "Lanterne",
+      "StatusLight": "Lumière",
+      "StatusMobility": "Mobilité",
+      "StatusParry": "Parade",
+      "StatusShimmer": "Scintillement",
+      "StatusSlow": "Lent",
+      "StatusSpiritScreen": "Écran spirituel",
+      "StatusVigor": "Vigueur"
+    },
+    "Migration": {
+      "Dialog": {
+        "windowTitle": "Migration des données du monde",
+        "header": "Veuillez sauvegarder votre monde !",
+        "migrationWarning": "La version de ce monde ({worldVersion}) ne correspond pas à celle du système RQG ({systemVersion}). L'exécution de cette migration de monde modifiera les données de votre monde pour qu'elles correspondent à ce que le système attend. Veuillez faire une sauvegarde de votre monde avant de continuer, car vous ne pourrez pas annuler cette migration !",
+        "migrationTime": "La migration peut prendre un certain temps si vous avez un monde volumineux, mais veuillez être patient et ne pas éteindre le système avant qu'elle ne soit terminée.",
+        "btnMigrate": "Migrer le monde \"{worldTitle}\" vers la version {systemVersion}"
+      },
+      "WorldNotUpdated": "Ce monde n'est pas mis à jour pour correspondre à la version actuelle du système ({systemVersion}). Veuillez attendre que votre MJ ait effectué la mise à jour, puis actualisez cette page (F5 ou cmd-R).",
+      "applyingMigration": "Application de la migration du monde vers la version {systemVersion}. Veuillez être patient et ne fermez pas votre jeu ou n'éteignez pas votre serveur.",
+      "migrationFinished": "Migration du monde vers la version {systemVersion} terminée !",
+      "actors": "Étape 1 / 4 - Migration de {count} acteurs",
+      "items": "Étape 2 / 4 - Migration de {count} éléments du monde",
+      "scenes": "Étape 3 / 4 - Migration de {count} scènes",
+      "compendiums": "Étape 4 / 4 - Migration de {count} compendiums"
+    },
+    "UI": {
+      "SortItems": "Trier les éléments par ordre alphabétique",
+      "MultipleCults": "Le personnage a plusieurs cultes,<br> voir l'onglet Magie runique"
+    },
+    "SheetName": {
+      "Actor": {
+        "Character": "Fiche de personnage"
+      },
+      "Item": {
+        "Armor": "Fiche d'objet d'armure",
+        "Cult": "Fiche d'objet de culte",
+        "Gear": "Fiche d'objet d'équipement",
+        "HitLocation": "Fiche d'objet de localisation",
+        "Homeland": "Fiche d'objet de terre natale",
+        "Occupation": "Fiche d'objet d'occupation",
+        "Passion": "Fiche d'objet de passion",
+        "Rune": "Fiche d'objet de rune",
+        "RuneMagicSpell": "Fiche d'objet de sort de magie runique",
+        "Skill": "Fiche d'objet de compétence",
+        "SpiritMagicSpell": "Fiche d'objet de sort de magie spirituelle",
+        "Weapon": "Fiche d'objet d'arme"
+      },
+      "RollTable": "Fiche de table de jet"
+    }
+  }
+}
