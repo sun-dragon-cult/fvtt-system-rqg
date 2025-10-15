@@ -97,6 +97,11 @@
       "lang": "en",
       "name": "English",
       "path": "i18n/en/uiContent.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "i18n/fr/uiContent.json"
     }
   ],
   "url": "https://github.com/sun-dragon-cult/fvtt-system-rqg",
