@@ -198,7 +198,7 @@ describe("ItemTree", () => {
     });
 
     // TODO figure out how to mock localize
-    it.skip("should complain if items contain a simple loop", () => {
+    it("should complain if items contain a simple loop", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
       const horse = items.find((i) => i.name === "Riding Horse") as GearItem;
@@ -211,11 +211,13 @@ describe("ItemTree", () => {
       const itemGraph = new ItemTree(items); // This tree has a loop;
 
       // --- Assert ---
-      expect(itemGraph.loopMessage).toStrictEqual("Backpack and Riding Horse");
+      expect(itemGraph.loopMessage).toStrictEqual(
+        "RQG.Actor.Gear.LocationLoop + loopItems,Backpack and Riding Horse",
+      );
     });
 
     // TODO figure out how to mock localize
-    it.skip("should complain if items contain a multi step loop", () => {
+    it("should complain if items contain a multi step loop", () => {
       // --- Arrange ---
       const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithLoop));
 
@@ -223,7 +225,9 @@ describe("ItemTree", () => {
       const itemGraph = new ItemTree(items); // This tree has a loop A->B->C->D->A;
 
       // --- Assert ---
-      expect(itemGraph.loopMessage).toStrictEqual("B, C, D, and A");
+      expect(itemGraph.loopMessage).toStrictEqual(
+        "RQG.Actor.Gear.LocationLoop + loopItems,B, C, D, and A",
+      );
     });
 
     it("should create a correct list of locations", () => {

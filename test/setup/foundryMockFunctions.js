@@ -23,6 +23,13 @@ globalThis.flattenObject = (obj, _prefix = "") => {
   return out;
 };
 
+globalThis.game = {
+  settings: new Map(),
+  i18n: {
+    format: vi.fn((key, data = {}) => `${key} + ${Object.entries(data).join()}`),
+  },
+};
+
 const mockStatusEffectsConfig = [
   {
     id: "dead",
