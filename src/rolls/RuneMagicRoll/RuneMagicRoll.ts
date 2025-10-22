@@ -12,6 +12,8 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RuneMagicRollOptions } from "./RuneMagicRoll.types";
 import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
 
+import Roll = foundry.dice.Roll;
+
 export class RuneMagicRoll extends Roll {
   public static async rollAndShow(options: RuneMagicRollOptions) {
     const roll = new RuneMagicRoll(undefined, {}, options);

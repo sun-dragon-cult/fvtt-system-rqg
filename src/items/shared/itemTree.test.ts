@@ -1,13 +1,14 @@
 import { RqgItem } from "../rqgItem";
 import { ItemTree } from "./ItemTree";
-import { mockItems } from "../../mocks/mockLocationItems";
+import { mockItems } from "../../../test/mocks/mockLocationItems.ts";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { testItems } from "./itemTree.testdata";
-import { mockItemsWithLoop } from "../../mocks/mockItemsForLocationLoop";
-import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
+import { mockItemsWithLoop } from "../../../test/mocks/mockItemsForLocationLoop.ts";
+import { mockItemsWithVirtualNode } from "../../../test/mocks/mockItemsForVirtualNodes.ts";
 import { isDocumentSubType } from "../../system/util.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("ItemTree", () => {
   beforeEach(() => {});

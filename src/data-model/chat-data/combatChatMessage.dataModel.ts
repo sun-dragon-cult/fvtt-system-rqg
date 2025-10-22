@@ -10,12 +10,12 @@ const {
   StringField,
 } = foundry.data.fields;
 
-export class CombatChatMessageData extends foundry.abstract.TypeDataModel {
+export class CombatChatMessageData extends foundry.abstract.TypeDataModel<any, any> {
   constructor(data = {}, options = {}) {
     super(data, options);
   }
 
-  static defineSchema() {
+  static override defineSchema() {
     return {
       attackState: new StringField({
         blank: false,

@@ -1,11 +1,12 @@
-import { mockItems } from "../../mocks/mockLocationItems";
+import { mockItems } from "../../../test/mocks/mockLocationItems";
 import { getLocationRelatedUpdates } from "./physicalItemUtil";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
-import { mockItemsWithVirtualNode } from "../../mocks/mockItemsForVirtualNodes";
+import { mockItemsWithVirtualNode } from "../../../test/mocks/mockItemsForVirtualNodes";
 import { ItemTree } from "./ItemTree";
 import { isDocumentSubType, mergeArraysById } from "../../system/util";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
+import { describe, it, expect } from "vitest";
 
 describe("getLocationRelatedUpdates", () => {
   describe("equipped status change", () => {

@@ -4,6 +4,8 @@ import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuc
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import type { CharacteristicRollOptions } from "./CharacteristicRoll.types.ts";
 
+import Roll = foundry.dice.Roll;
+
 export class CharacteristicRoll extends Roll {
   public static async rollAndShow(options: CharacteristicRollOptions) {
     const roll = new CharacteristicRoll(undefined, {}, options);

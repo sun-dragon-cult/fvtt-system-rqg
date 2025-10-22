@@ -11,6 +11,8 @@ import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import type { SpiritMagicRollOptions } from "./SpiritMagicRoll.types";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
+import Roll = foundry.dice.Roll;
+
 export class SpiritMagicRoll extends Roll {
   public static async rollAndShow(options: SpiritMagicRollOptions) {
     const roll = new SpiritMagicRoll(undefined, {}, options);

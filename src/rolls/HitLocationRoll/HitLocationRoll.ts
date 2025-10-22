@@ -6,6 +6,8 @@ import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 
+import Roll = foundry.dice.Roll;
+
 /**
  * HitLocationRoll is only displayed as part of the CombatChatMessage,
  * so no "rollAndShow" or flavor is needed.

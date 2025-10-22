@@ -1,5 +1,6 @@
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
+import Roll = foundry.dice.Roll;
 /**
  * DamageRoll is only displayed as part of the CombatChatMessage,
  * so no "rollAndShow" or flavor is needed.

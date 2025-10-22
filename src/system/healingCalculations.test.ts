@@ -1,4 +1,4 @@
-import { mockActor as mockActorOriginal } from "../mocks/mockActor";
+import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
 import { HealingCalculations, type HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
 import { DamageCalculations } from "./damageCalculations";
@@ -8,6 +8,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { RqgItem } from "../items/rqgItem";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("healing", () => {
   let mockActor: CharacterActor;

@@ -21,7 +21,7 @@ export class RqgChatMessage<
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
     CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
-    CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
+    CONFIG.ChatMessage.dataModels["combat"] = CombatChatMessageData;
 
     Hooks.on("ready", () => {
       // one listener for sidebar chat, popped out chat & chat notification

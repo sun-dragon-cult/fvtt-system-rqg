@@ -10,6 +10,8 @@ import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type { AbilityRollOptions } from "./AbilityRoll.types";
 
+import Roll = foundry.dice.Roll;
+
 export class AbilityRoll extends Roll<AbilityRollOptions> {
   // TODO hur deklarerar jag att options är AbilityRollOptions ???
   //   declare options: AbilityRollOptions;

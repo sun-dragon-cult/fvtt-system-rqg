@@ -1,5 +1,6 @@
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 
 describe("Evaluate Ability Roll Success Levels", () => {
   beforeEach(() => {

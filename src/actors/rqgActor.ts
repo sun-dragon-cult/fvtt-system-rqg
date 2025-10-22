@@ -40,6 +40,8 @@ import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
 import type { SkillItem } from "@item-model/skillData.ts";
 
+import Actor = foundry.documents.Actor;
+
 export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Subtype> {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;

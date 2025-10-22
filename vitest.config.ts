@@ -6,6 +6,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "node",
+    setupFiles: ["./test/setup/foundryMockFunctions.js"],
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],

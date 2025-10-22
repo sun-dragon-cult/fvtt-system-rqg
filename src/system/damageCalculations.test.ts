@@ -1,8 +1,9 @@
 import { DamageCalculations } from "./damageCalculations";
-import { mockActor as mockActorOriginal } from "../mocks/mockActor";
+import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
 import { RqgItem } from "../items/rqgItem";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Inflict Damage", () => {
   let mockActor: CharacterActor;

@@ -10,8 +10,6 @@ import { findFoundryHost, findManifestJSON } from "./utils.ts";
 export type PackageType = "module" | "system" | "world";
 
 const packageType: PackageType = "system";
-
-// The package name should be the same as the name in the `module.json`/`system.json` file.
 const packageID: string = "rqg";
 
 const manifestJSONPath = await findManifestJSON(packageType);
