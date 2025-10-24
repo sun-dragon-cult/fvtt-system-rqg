@@ -47,7 +47,9 @@ export async function handleRollDamageAndHitLocation(
     // TODO Warn about missing chat message
     return;
   }
-  const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
+  const hitLocationRoll = HitLocationRoll.fromJSON(
+    attackChatMessage.system.hitLocationRoll ?? "{}",
+  );
 
   const shouldRollHitLocation = attackChatMessage.system.weaponDoingDamage === "attackingWeapon";
 
@@ -62,10 +64,16 @@ export async function handleRollDamageAndHitLocation(
     const userDealingDamage = defenderDamage ? game.user! : attackChatMessage.author;
 
     // DamageRoll is already evaluated in CombatOutcome to calc weaponDamage
-    const damageRoll = DamageRoll.fromData(attackChatMessage.system.damageRoll);
-    void game.dice3d.showForRoll(damageRoll, userDealingDamage, true, null, false);
+    const damageRoll = DamageRoll.fromJSON(attackChatMessage.system.damageRoll ?? "{}");
+    void game.dice3d.showForRoll(damageRoll, userDealingDamage ?? undefined, true, null, false);
     if (shouldRollHitLocation) {
-      await game.dice3d.showForRoll(hitLocationRoll, userDealingDamage, true, null, false);
+      await game.dice3d.showForRoll(
+        hitLocationRoll,
+        userDealingDamage ?? undefined,
+        true,
+        null,
+        false,
+      );
     }
   }
 
@@ -102,7 +110,9 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     return;
   }
 
-  const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
+  const hitLocationRoll = HitLocationRoll.fromJSON(
+    attackChatMessage.system.hitLocationRoll ?? "{}",
+  );
   requireValue(
     hitLocationRoll.total,
     "HitLocation roll was not evaluated before applying to actor",
@@ -137,7 +147,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   }
   const wasDamagedReducedByParry = !!attackChatMessage.system.damagedWeaponUuid;
 
-  const attackRoll = AbilityRoll.fromData(attackChatMessage.system.attackRoll);
+  const attackRoll = AbilityRoll.fromJSON(attackChatMessage.system.attackRoll);
 
   await damagedActor.applyDamage(
     defenderHitLocationDamage,

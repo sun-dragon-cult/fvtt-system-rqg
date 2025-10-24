@@ -60,7 +60,7 @@ export class ItemTree {
         location: "",
         isContainer: true,
       },
-    } as RqgItem;
+    } as PhysicalItem;
 
     return [virtualRootItem, ...physicalItems].reduce((acc: PhysicalItem[], item: PhysicalItem) => {
       if (!physicalItems.some((physicalItem) => physicalItem.name === item.system.location)) {

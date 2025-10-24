@@ -480,10 +480,14 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
 
     const descriptionParts = [];
 
-    const stackableRuneMagic = this.system.isStackable ? "+" : "";
-    const variableSpiritMagic = this.system.isVariable
-      ? " " + localize("RQG.Item.SpiritMagic.Variable")
-      : "";
+    const stackableRuneMagic =
+      isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic) && this.system.isStackable
+        ? "+"
+        : "";
+    const variableSpiritMagic =
+      isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) && this.system.isVariable
+        ? " " + localize("RQG.Item.SpiritMagic.Variable")
+        : "";
     const pointsTranslated = localize("RQG.Item.RuneMagic.Points");
     descriptionParts.push(
       `${this.system.points}${stackableRuneMagic} ${pointsTranslated}${variableSpiritMagic}`,
@@ -530,7 +534,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       );
     }
 
-    if (this.system.isOneUse && isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic)) {
+    if (isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic) && this.system.isOneUse) {
       descriptionParts.push(localize("RQG.Item.RuneMagic.OneUse"));
     }
 

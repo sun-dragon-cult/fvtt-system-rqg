@@ -145,12 +145,12 @@ export class RqgChatMessage<
 
   async #enrichHtmlWithRoll(
     html: HTMLElement,
-    systemDataProp: string,
+    systemDataRollName: string,
     domSelector: string,
   ): Promise<void> {
-    const rollData = (this.system as any)[systemDataProp];
-    if (rollData?.evaluated) {
-      const roll = AbilityRoll.fromData(rollData);
+    const rollJson = (this.system as any)[systemDataRollName];
+    if (rollJson?.evaluated) {
+      const roll = AbilityRoll.fromJSON(rollJson);
       const element = html.querySelector<HTMLElement>(domSelector);
       if (element) {
         element.innerHTML = await roll.render();
@@ -193,16 +193,16 @@ export class RqgChatMessage<
     }
 
     if (this.type === "combat") {
-      const defenceRollData = this.system.defenceRoll;
-      const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
+      const defenceRollJson = this.system.defenceRoll;
+      const defenceRoll = defenceRollJson ? AbilityRoll.fromJSON(defenceRollJson) : undefined;
       if (defenceRoll?.total) {
         content.unshift(
           `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
         );
       }
 
-      const attackRollData = this.system.attackRoll;
-      const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
+      const attackRollJson = this.system.attackRoll;
+      const attackRoll = attackRollJson ? AbilityRoll.fromJSON(attackRollJson) : undefined;
       if (attackRoll?.total) {
         content.unshift(
           `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
@@ -210,8 +210,8 @@ export class RqgChatMessage<
         content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
       }
 
-      const damageRollData = this.system.damageRoll;
-      const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
+      const damageRollJson = this.system.damageRoll;
+      const damageRoll = damageRollJson ? DamageRoll.fromJSON(damageRollJson) : undefined;
       if (damageRoll?.total) {
         content.push(
           `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
@@ -220,7 +220,7 @@ export class RqgChatMessage<
 
       const hitLocationRollData = this.system.hitLocationRoll;
       const hitLocationRoll = hitLocationRollData
-        ? HitLocationRoll.fromData(hitLocationRollData)
+        ? HitLocationRoll.fromJSON(hitLocationRollData)
         : undefined;
       if (hitLocationRoll?.total) {
         content.push(

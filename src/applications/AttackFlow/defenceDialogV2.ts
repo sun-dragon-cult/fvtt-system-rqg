@@ -131,7 +131,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       | RqgActor
       | undefined;
 
-    const attackRoll = AbilityRoll.fromData(this.attackChatMessage?.system.attackRoll as any);
+    const attackRoll = AbilityRoll.fromJSON(this.attackChatMessage?.system.attackRoll);
     if (!attackRoll) {
       const msg = "No attack roll present - cannot defend";
       ui.notifications?.warn(msg);
@@ -394,7 +394,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       }),
     };
 
-    const attackRoll = AbilityRoll.fromData(attackChatMessage.system.attackRoll);
+    const attackRoll = AbilityRoll.fromJSON(attackChatMessage.system.attackRoll);
 
     await attackRoll.evaluate();
     if (attackRoll.successLevel == null) {
@@ -465,10 +465,10 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
 
     // TODO Introduce ability for GM to fudge roll here
 
-    const hitLocationRoll = attackChatMessage?.system.hitLocationRoll;
-    requireValue(hitLocationRoll, "No Hit Location Roll found in chat message");
+    const hitLocationRollJson = attackChatMessage?.system.hitLocationRoll;
+    requireValue(hitLocationRollJson, "No Hit Location Roll found in chat message");
 
-    hitLocationRoll.options.hitLocationNames = HitLocationRoll.tokenToHitLocationNames(
+    (hitLocationRollJson as any).options.hitLocationNames = HitLocationRoll.tokenToHitLocationNames(
       defendingTokenDocumentOrActor,
     );
 
@@ -494,12 +494,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       weaponDamage: weaponDamage,
       weaponDoingDamage: weaponDoingDamage,
       defenderHitLocationDamage: defenderHitLocationDamage,
-      damageRoll: damageRoll,
+      damageRoll: damageRoll?.toJSON(),
       ignoreDefenderAp: ignoreDefenderAp,
       actorDamagedApplied: damageDegree === "none",
       weaponDamageApplied: damageDegree === "none",
       hitLocationRoll: damageRoll // If there is a damageRoll there should also be a hitLocationRoll
-        ? hitLocationRoll
+        ? hitLocationRollJson
         : null,
     };
 
@@ -522,7 +522,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       if (formDataObject.defence !== "ignore") {
         // Wait a tad with the defence roll to separate the animations slightly
         setTimeout(() => {
-          void game.dice3d.showForRoll(defenceRoll, game.user, true, null, false);
+          void game.dice3d?.showForRoll(defenceRoll, game.user, true, null, false);
         }, 300);
       }
 

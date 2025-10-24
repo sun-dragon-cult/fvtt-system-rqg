@@ -12,7 +12,7 @@ export interface CombatDataSourceData {
   attackState: AttackState;
   attackingTokenOrActorUuid: string;
   defendingTokenOrActorUuid: string | undefined;
-  attackRoll: string; // TODO should be the type from Roll.toJson ???
+  attackRoll: string;
   attackCombatManeuver: CombatManeuver;
   attackExtraDamage: string | undefined;
   attackDamageBonus: string | undefined;
