@@ -6,6 +6,7 @@ import {
   activateChatTab,
   assertDocumentSubType,
   getActorLinkDecoration,
+  isButton,
   isDocumentSubType,
   localize,
   requireValue,
@@ -131,7 +132,10 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       | RqgActor
       | undefined;
 
-    const attackRoll = AbilityRoll.fromJSON(this.attackChatMessage?.system.attackRoll);
+    const attackRoll =
+      typeof this.attackChatMessage?.system.attackRoll === "object"
+        ? AbilityRoll.fromData(this.attackChatMessage?.system.attackRoll) // TODO why is it object?
+        : AbilityRoll.fromJSON(this.attackChatMessage?.system.attackRoll);
     if (!attackRoll) {
       const msg = "No attack roll present - cannot defend";
       ui.notifications?.warn(msg);
@@ -271,7 +275,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     const submitter = event.submitter;
     const formDataObject: DefenceDialogFormData = formData.object;
 
-    if (!(submitter instanceof HTMLButtonElement)) {
+    if (!isButton(submitter)) {
       ui.notifications?.warn("Button not working - programming error");
       return;
     }

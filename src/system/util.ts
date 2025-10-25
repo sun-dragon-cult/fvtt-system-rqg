@@ -190,6 +190,12 @@ export function hasOwnProperty<X extends object | undefined, Y extends PropertyK
 }
 
 /**
+ * Type guard: works even for elements from a detached window
+ */
+export function isButton(el: any): el is HTMLButtonElement {
+  return el?.tagName.toUpperCase() === "BUTTON";
+}
+/**
  * Check if item data type if of correct type to narrow type to that itemtype.
  * Modified to with both ItemTypeEnum and string like the `type` property on ItemData.
  * TODO The type Document.WithSubTypes includes ActorDelta that seems to miss subtypes

@@ -73,9 +73,9 @@ Hooks.once("init", async () => {
   CONFIG.fontDefinitions["Norse"] = {
     editor: true,
     fonts: [
-      // @ts-expect-error urls
+      // @ts-expect-error urls, wants url instead?
       { urls: ["systems/rqg/fonts/Norse-KaWl.otf"] },
-      // @ts-expect-error urls
+      // @ts-expect-error urls, wants url instead?
       { urls: ["systems/rqg/fonts/NorseBold-2Kge.otf"], weight: "bold" },
     ],
   };

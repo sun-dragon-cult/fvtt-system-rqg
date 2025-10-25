@@ -8,6 +8,7 @@ import {
   getDomDataset,
   getTokenFromItem,
   getTokenOrActorFromItem,
+  isButton,
   isDocumentSubType,
   isTruthy,
   localize,
@@ -267,7 +268,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const submitter = event.submitter;
     const formDataObject = formData.object as AttackDialogFormData;
 
-    if (!(submitter instanceof HTMLButtonElement)) {
+    if (!isButton(submitter)) {
       ui.notifications?.warn("Button not working - programming error");
       return;
     }
