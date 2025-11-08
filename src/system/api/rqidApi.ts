@@ -13,11 +13,35 @@ import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import Document = foundry.abstract.Document;
 import type { SkillItem } from "@item-model/skillData.ts";
 import type { ArmorItem } from "@item-model/armorData.ts";
+import type { RqidEnabledDocument } from "../../global";
 
 // TODO Look into enhancing typing of rqid strings like this
 export type RqidString =
   | `${string}.${string}.${string}`
   | `${string}.${string}.${string}.${string}.${string}.${string}`;
+
+// Add a map from item-document-type (the second segment of an `i.xxx.yyy` rqid) to concrete TS types.
+// Extend this map with more concrete item types as you add them.
+type ItemTypeMap = {
+  skill: SkillItem;
+  armor: ArmorItem;
+  // add: weapon: WeaponItem; etc.
+};
+
+// Map an rqid literal to a narrower Document type
+type RqidToDocument<R extends string> =
+  // item rqids: i.<itemType>.<id>
+  R extends `i.${infer ItemType}.${string}`
+    ? ItemType extends keyof ItemTypeMap
+      ? ItemTypeMap[ItemType]
+      : Item // fallback to generic Item when specific mapping missing
+    : // actor rqids: a.<...>
+      R extends `a.${string}.${string}`
+      ? Actor
+      : // journal entry / journal page etc
+        R extends `je.${string}.${string}` | `jp.${string}.${string}`
+        ? JournalEntry
+        : Document.Any;
 
 /**
  * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
@@ -46,11 +70,11 @@ export class Rqid {
    * If lang parameter is not supplied the language selected for the world will be used.
    * If no document is found with the specified lang, then "en" will be used as a fallback.
    */
-  public static async fromRqid<T = Document.Any>(
-    rqid: string | undefined,
+  public static async fromRqid<R extends string | undefined>(
+    rqid: R,
     lang?: string,
     silent: boolean = false,
-  ): Promise<T | undefined> {
+  ): Promise<(R extends string ? RqidToDocument<R> : RqidEnabledDocument) | undefined> {
     if (!rqid) {
       return undefined;
     }
@@ -100,13 +124,13 @@ export class Rqid {
     rqidDocumentName: string, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
     scope: "match" | "all" | "world" | "packs" = "match",
-  ): Promise<Document.Any[]> {
+  ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
       return [];
     }
-    const result: Document.Any[] = [];
+    const result: RqidEnabledDocument[] = [];
 
-    let worldDocuments: Document.Any[] = [];
+    let worldDocuments: RqidEnabledDocument[] = [];
     if (["match", "all", "world"].includes(scope)) {
       worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang);
       result.splice(0, 0, ...worldDocuments);
@@ -142,7 +166,7 @@ export class Rqid {
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
-  ): Promise<Document.Any[]> {
+  ): Promise<RqidEnabledDocument[]> {
     const matchingDocuments = await this.fromRqidRegexAll(
       rqidRegex,
       rqidDocumentName,
@@ -157,8 +181,8 @@ export class Rqid {
    * @param documents
    * @returns
    */
-  public static filterBestRqid(documents: Document.Any[]): Document.Any[] {
-    const highestPrioDocuments = new Map<string, Document.Any>();
+  public static filterBestRqid(documents: RqidEnabledDocument[]): RqidEnabledDocument[] {
+    const highestPrioDocuments = new Map<string, RqidEnabledDocument>();
 
     for (const doc of documents) {
       const docPrio: number = doc.getFlag(systemId, documentRqidFlags)?.priority;
@@ -191,7 +215,7 @@ export class Rqid {
     // Check World
     if (["all", "world"].includes(scope)) {
       count = (game as any)[this.getGameProperty(rqid)]?.contents.reduce(
-        (count: number, document: Document.Any) => {
+        (count: number, document: RqidEnabledDocument) => {
           if (
             document.getFlag(systemId, documentRqidFlags)?.id === rqid &&
             document.getFlag(systemId, documentRqidFlags)?.lang === lang
@@ -236,7 +260,7 @@ export class Rqid {
   /**
    * Given a Document, create a valid rqid string for the document.
    */
-  public static getDefaultRqid(document: Document.WithSubTypes): string {
+  public static getDefaultRqid(document: RqidEnabledDocument): string {
     if (!document.name) {
       return "";
     }
@@ -290,7 +314,7 @@ export class Rqid {
    * Returns the new rqid flag
    */
   public static async setRqid(
-    document: Document.Any,
+    document: RqidEnabledDocument,
     newRqid: string,
     lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
@@ -312,7 +336,7 @@ export class Rqid {
    * Returns the new rqid flag
    */
   public static async setDefaultRqid(
-    document: Document.Any,
+    document: RqidEnabledDocument,
     lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
   ): Promise<any> {
@@ -334,18 +358,18 @@ export class Rqid {
   private static async documentFromWorld(
     rqid: string,
     lang: string,
-  ): Promise<Document.Any | undefined> {
+  ): Promise<RqidEnabledDocument | undefined> {
     if (!rqid) {
       return undefined;
     }
     const documentRqid = Rqid.documentRqid(rqid);
     const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
 
-    const candidateDocuments: Document.Any[] = (game as any)[
+    const candidateDocuments: RqidEnabledDocument[] = (game as any)[
       this.getGameProperty(documentRqid)
     ]?.contents
       .filter(
-        (doc: Document.Any) =>
+        (doc: RqidEnabledDocument) =>
           doc.getFlag(systemId, documentRqidFlags)?.id === documentRqid &&
           doc.getFlag(systemId, documentRqidFlags)?.lang === lang,
       )
@@ -393,14 +417,14 @@ export class Rqid {
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string,
     lang: string,
-  ): Promise<Document.Any[]> {
+  ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
       return [];
     }
 
     const gameProperty = Rqid.getGameProperty(`${rqidDocumentName}..`);
     const candidateDocuments = (game as any)[gameProperty]?.filter(
-      (d: Document.Any) =>
+      (d: RqidEnabledDocument) =>
         rqidRegex.test(d.getFlag(systemId, documentRqidFlags)?.id) &&
         d.getFlag(systemId, documentRqidFlags)?.lang === lang,
     );
@@ -420,7 +444,7 @@ export class Rqid {
   private static async documentFromPacks(
     rqid: string,
     lang: string,
-  ): Promise<Document.Any | undefined> {
+  ): Promise<RqidEnabledDocument | undefined> {
     if (!rqid) {
       return undefined;
     }
@@ -464,7 +488,7 @@ export class Rqid {
       // TODO maybe offer to open the duplicates to make it possible for the GM to correct this?
       console.warn(msg + "  Duplicate items: ", result);
     }
-    const highestPrioDocument = await result[0].pack.getDocument(result[0].indexData._id);
+    const highestPrioDocument = await result[0]?.pack.getDocument(result[0].indexData._id);
     return this.getEmbeddedOrProvidedDocument(highestPrioDocument, embeddedDocumentsRqid);
   }
 
@@ -476,12 +500,12 @@ export class Rqid {
     rqidRegex: RegExp,
     rqidDocumentName: string,
     lang: string,
-  ): Promise<Document.Any[]> {
+  ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
       return [];
     }
     const documentName = Rqid.getDocumentName(`${rqidDocumentName}..fake-rqid`);
-    const candidateDocuments: Document.Any[] = [];
+    const candidateDocuments: RqidEnabledDocument[] = [];
 
     for (const pack of game.packs ?? []) {
       if (pack.documentClass.documentName === documentName) {
@@ -505,7 +529,7 @@ export class Rqid {
             console.error("RQG |", msg, index);
             throw new RqgError(msg, index, indexInstances);
           }
-          candidateDocuments.push(document as Document.Any);
+          candidateDocuments.push(document as RqidEnabledDocument);
         }
       }
     }
@@ -517,7 +541,7 @@ export class Rqid {
    * @example
    * aListOfDocuments.sort(Rqid.compareRqidPrio)
    */
-  public static compareRqidPrio<T extends Document.Any>(a: T, b: T): number {
+  public static compareRqidPrio<T extends RqidEnabledDocument>(a: T, b: T): number {
     return (
       b.getFlag(systemId, documentRqidFlags)?.priority -
       a.getFlag(systemId, documentRqidFlags)?.priority
@@ -644,7 +668,7 @@ export class Rqid {
   /**
    * Get the first part of a rqid (like "i") from a Document.
    */
-  private static getRqidDocumentName(document: Document.WithSubTypes): string {
+  private static getRqidDocumentName(document: RqidEnabledDocument): string {
     const documentString = Rqid.rqidDocumentNameLookup[document.documentName];
     if (!documentString) {
       const msg = "Tried to convert a unsupported document to rqid";

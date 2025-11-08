@@ -131,6 +131,16 @@ declare global {
 //   | "scene";
 //
 // // Type for documents that can have RQID flags
-// type RqidEnabledDocument =
-//   | Document.OfType<"actor", Actor.SubType>
-//   | Document.OfType<"item", Item.SubType>;
+type RqidEnabledDocument =
+  | Actor
+  | Card
+  | Item
+  | JournalEntry
+  | JournalEntryPage
+  | Macro
+  | Playlist
+  | RollTable
+  | Scene;
+
+// TODO Using a union type for just the RQID-enabled documents does not allow setFlag calls
+// type RqidEnabledDocument = Document;
