@@ -36,8 +36,8 @@ export class RqidEditor extends FormApplication {
   override async getData(): Promise<any> {
     const appData: any = {};
 
-    const documentRqid: string | undefined = this.document?.flags?.rqg?.documentRqidFlags?.id;
-    const documentLang: string | undefined = this.document?.flags?.rqg?.documentRqidFlags?.lang;
+    const documentRqid: string | undefined = Rqid.getDocumentFlag(this.document)?.id;
+    const documentLang: string | undefined = Rqid.getDocumentFlag(this.document)?.lang;
     if (documentRqid && documentLang) {
       const rqidDocumentPrefix = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
@@ -56,35 +56,35 @@ export class RqidEditor extends FormApplication {
         "packs",
       );
 
-      const worldDocumentInfo: Document.Any[] = [];
+      const worldDocumentInfo: any[] = [];
       for (const d of worldDocuments) {
         const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         worldDocumentInfo.push({
-          priority: d.flags?.rqg.documentRqidFlags.priority,
+          priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
           link: link,
           folder: this.getPath(d),
         });
       }
 
-      const compendiumDocumentInfo: Document.Any[] = [];
+      const compendiumDocumentInfo: any[] = [];
       for (const d of compendiumDocuments) {
         const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
         compendiumDocumentInfo.push({
-          priority: d.flags?.rqg.documentRqidFlags.priority,
+          priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
           link: link,
           compendium: `${d.compendium?.metadata?.label} ⇒ ${d.compendium?.metadata?.packageName}`,
         });
       }
 
       const uniqueWorldPriorityCount = new Set(
-        worldDocuments.map((d) => d.flags?.rqg.documentRqidFlags.priority),
+        worldDocuments.map((d) => Rqid.getDocumentFlag(d)?.priority ?? -Infinity),
       ).size;
       if (uniqueWorldPriorityCount !== worldDocuments.length) {
         appData.warnDuplicateWorldPriority = true;
       }
 
       const uniqueCompendiumPriorityCount = new Set(
-        compendiumDocuments.map((d) => d.flags?.rqg.documentRqidFlags.priority),
+        compendiumDocuments.map((d) => Rqid.getDocumentFlag(d)?.priority ?? -Infinity),
       ).size;
       if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
         appData.warnDuplicateCompendiumPriority = true;
@@ -106,14 +106,14 @@ export class RqidEditor extends FormApplication {
     appData.flags = {
       rqg: {
         documentRqidFlags: {
-          lang: this.document?.flags?.rqg?.documentRqidFlags?.lang ?? CONFIG.RQG.fallbackLanguage,
-          priority: this.document?.flags?.rqg?.documentRqidFlags?.priority ?? 0,
+          lang: Rqid.getDocumentFlag(this.document)?.lang ?? CONFIG.RQG.fallbackLanguage,
+          priority: Rqid.getDocumentFlag(this.document)?.priority ?? 0,
         },
       },
     };
     const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
     appData.rqidPrefix = `${documentIdPart}.${documentType}.`;
-    appData.rqidNamePart = this.document?.flags?.rqg?.documentRqidFlags?.id?.split(".").pop();
+    appData.rqidNamePart = Rqid.getDocumentFlag(this.document)?.id?.split(".").pop();
 
     return appData;
   }
@@ -143,15 +143,13 @@ export class RqidEditor extends FormApplication {
             rqg: {
               documentRqidFlags: {
                 id: Rqid.getDefaultRqid(document),
-                lang:
-                  document.getFlag(systemId, "documentRqidFlags.lang") ??
-                  CONFIG.RQG.fallbackLanguage,
-                priority: document.getFlag(systemId, "documentRqidFlags.priority") ?? 0,
+                lang: Rqid.getDocumentFlag(document)?.lang ?? CONFIG.RQG.fallbackLanguage,
+                priority: Rqid.getDocumentFlag(document)?.priority ?? 0,
               },
             },
           },
         };
-        await this.document.update(flattenObject(updateData));
+        await this.document.update(foundry.utils.flattenObject(updateData), {});
         this.render();
       });
     });
@@ -179,7 +177,7 @@ export class RqidEditor extends FormApplication {
     formData["flags.rqg.documentRqidFlags.priority"] =
       Number(formData["flags.rqg.documentRqidFlags.priority"]) || 0;
 
-    await this.document.update(formData);
+    await this.document.update(formData, {});
     this.render();
   }
 

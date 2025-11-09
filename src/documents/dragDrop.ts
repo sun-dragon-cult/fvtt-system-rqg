@@ -12,6 +12,7 @@ import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";
 
 import Document = foundry.abstract.Document;
+import { Rqid } from "../system/api/rqidApi";
 
 export function onDragEnter(event: DragEvent): void {
   const dropZone = event.currentTarget; // Target the event handler was attached to
@@ -100,13 +101,13 @@ export function isAllowedDocumentType(
 }
 
 export function hasRqid(document: Document.Any | undefined): boolean {
-  const droppedItemRqid = document?.getFlag(systemId, documentRqidFlags)?.id;
+  const droppedItemRqid = Rqid.getDocumentFlag(document)?.id;
 
   if (!droppedItemRqid) {
     const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
-      type: (document as any).type,
-      name: document?.name,
-      uuid: (document as any).uuid,
+      type: (document as any)?.type,
+      name: document?.name ?? "",
+      uuid: (document as any)?.uuid,
     });
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
@@ -126,15 +127,15 @@ export async function updateRqidLink(
   droppedDocument: Document.Any,
   allowDuplicates: boolean = false, // need a version that allows duplicates for cult runes, Orlanth have 2 air for example
 ): Promise<void> {
-  const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
+  const droppedDocumentRqid = Rqid.getDocumentFlag(droppedDocument)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
-    ? (droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? "")
+    ? (Rqid.getDocumentFlag(droppedDocument.parent)?.id ?? "")
     : "";
   const fullDocumentRqid =
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
   const targetProperty = foundry.utils.getProperty(
-    targetDocument?.system,
+    targetDocument?.system ?? {},
     targetPropertyName ?? "",
   );
 
@@ -163,9 +164,12 @@ export async function updateRqidLink(
           },
         ]);
       } else {
-        await targetDocument.update({
-          system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-        });
+        await targetDocument.update(
+          {
+            system: { [targetPropertyName]: targetPropertyRqidLinkArray },
+          },
+          {},
+        );
       }
     }
   } else {

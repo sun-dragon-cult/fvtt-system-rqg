@@ -119,9 +119,9 @@ export class HitLocationSheet extends RqgItemSheet {
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
-    const applyDamageToTotalHp: boolean = !!data.toTotalHp;
-    const ignoreAP: boolean = !data.subtractAP;
-    const damage = Number(data.damage);
+    const applyDamageToTotalHp: boolean = !!data["toTotalHp"];
+    const ignoreAP: boolean = !data["subtractAP"];
+    const damage = Number(data["damage"]);
 
     actor.applyDamage(
       damage,

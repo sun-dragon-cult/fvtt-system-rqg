@@ -68,7 +68,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
   private rollMode: CONST.DICE_ROLL_MODES;
 
   constructor(options: { spellItem: SpellItem }) {
-    super(options);
+    super(options as any);
     this.spellItem = options.spellItem;
     this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
   }

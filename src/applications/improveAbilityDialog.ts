@@ -174,14 +174,14 @@ async function submitImproveAbilityDialog(
       let rollContent;
       if (adapter.abilityType === "skill") {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill", {
-          mod: categoryMod,
-          skillChance: adapter.chance,
+          mod: categoryMod.toString(),
+          skillChance: adapter.chance.toString(),
           name: adapter.name,
           typeLocName: adapter.typeLocName,
         });
       } else {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentOther", {
-          chance: adapter.chance,
+          chance: adapter.chance.toString(),
           name: adapter.name,
           typeLocName: adapter.typeLocName,
         });

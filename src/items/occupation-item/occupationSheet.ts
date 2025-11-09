@@ -86,12 +86,12 @@ export class OccupationSheet extends RqgItemSheet {
           this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "system.occupationalSkills": occSkills,
+              system: { occupationalSkills: occSkills },
             },
           ]);
         } else {
           this.item.update({
-            "system.occupationalSkills": occSkills,
+            system: { occupationalSkills: occSkills },
           });
         }
       }
@@ -111,12 +111,12 @@ export class OccupationSheet extends RqgItemSheet {
           this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "system.occupationalSkills": occSkills,
+              system: { occupationalSkills: occSkills },
             },
           ]);
         } else {
           this.item.update({
-            "system.occupationalSkills": occSkills,
+            system: { occupationalSkills: occSkills },
           });
         }
       }
@@ -159,12 +159,12 @@ export class OccupationSheet extends RqgItemSheet {
             await this.item.actor?.updateEmbeddedDocuments("Item", [
               {
                 _id: this.item.id,
-                "system.occupationalSkills": occSkills,
+                system: { occupationalSkills: occSkills },
               },
             ]);
           } else {
             await this.item.update({
-              "system.occupationalSkills": occSkills,
+              system: { occupationalSkills: occSkills },
             });
           }
         });
@@ -222,12 +222,12 @@ export class OccupationSheet extends RqgItemSheet {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "system.homelands": homelands,
+              system: { homelands: homelands },
             },
           ]);
         } else {
           await this.item.update({
-            "system.homelands": homelands,
+            system: { homelands: homelands },
           });
         }
       }
@@ -256,12 +256,12 @@ export class OccupationSheet extends RqgItemSheet {
           await this.item.actor?.updateEmbeddedDocuments("Item", [
             {
               _id: this.item.id,
-              "system.occupationalSkills": occSkills,
+              system: { occupationalSkills: occSkills },
             },
           ]);
         } else {
           await this.item.update({
-            "system.occupationalSkills": occSkills,
+            system: { occupationalSkills: occSkills },
           });
         }
       } else {

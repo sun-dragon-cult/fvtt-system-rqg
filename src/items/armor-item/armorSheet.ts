@@ -86,7 +86,7 @@ export class ArmorSheet extends RqgItemSheet {
         getAvailableHitLocations().find((l) => l.rqid === event.currentTarget.value)?.name ?? "";
       const newHitLocationRqidLink = new RqidLink(newRqid, newName);
       const updatedLinks = [...this.document.system.hitLocationRqidLinks, newHitLocationRqidLink];
-      await this.document.update({ "system.hitLocationRqidLinks": updatedLinks });
+      await this.document.update({ system: { hitLocationRqidLinks: updatedLinks } });
     }
     this.render();
   }

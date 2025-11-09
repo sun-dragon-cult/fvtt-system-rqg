@@ -1291,7 +1291,7 @@ export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Optio
             ];
           const affectedItems = new ItemTree(
             this.actor.items.contents,
-          ).getOtherItemIdsInSameLocationTree(itemName);
+          ).getOtherItemIdsInSameLocationTree(itemName ?? "");
           const updates = affectedItems.map((id) => ({
             _id: id,
             system: { equippedStatus: newEquippedStatus },
@@ -1640,7 +1640,7 @@ export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Optio
     }
 
     // Handle different data types (document names)
-    switch (data.type) {
+    switch (data?.type) {
       case "ActiveEffect":
         return this._onDropActiveEffect(event, data);
       case "Actor":
@@ -1657,7 +1657,7 @@ export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Optio
         return this._onDropCompendium(event, data);
       default:
         // This will warn about not supported Document Name
-        isAllowedDocumentNames(data.type, [
+        isAllowedDocumentNames(data?.type, [
           "ActiveEffect",
           "Actor",
           "Item",

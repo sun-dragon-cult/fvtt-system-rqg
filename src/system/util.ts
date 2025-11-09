@@ -6,6 +6,7 @@ import type { RqgItem } from "../items/rqgItem";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 
 import Document = foundry.abstract.Document;
+import type { RqidEnabledDocument } from "../global";
 
 export function getRequiredDomDataset(
   el: HTMLElement | Element | Event | JQuery,
@@ -224,12 +225,18 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
  * Check if document is defined, has the correct type and narrow to the T type.
  */
 export function isDocumentSubType<
-  T extends Document.WithSubTypes | RqgItemDataSource | RqgItem | RqgActor,
+  T extends Document.WithSubTypes | RqgItemDataSource | RqgItem | RqgActor | RqidEnabledDocument,
 >(
-  document: Document.WithSubTypes | RqgItemDataSource | RqgItem | RqgActor | undefined,
+  document:
+    | Document.WithSubTypes
+    | RqgItemDataSource
+    | RqgItem
+    | RqgActor
+    | RqidEnabledDocument
+    | undefined,
   documentSubTypes: Readonly<
-    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
-    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
+    | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)
+    | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)[]
   >,
 ): document is T {
   const documentSubTypesArray = Array.isArray(documentSubTypes)
