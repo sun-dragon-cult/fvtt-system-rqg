@@ -383,7 +383,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   // ---
 
   static async findItemsWithMissingRqids(
-    documentType: ItemTypeEnum,
+    documentType: Item.SubType,
     prefixRegex: RegExp,
   ): Promise<{
     sceneChangesMap: Map<string, Map<string, ItemChange[]>>;
@@ -740,7 +740,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   }
 
   // Render the application in sequence for all provided item types
-  static async factory(...itemTypes: ItemTypeEnum[]): Promise<void> {
+  static async factory(...itemTypes: Item.SubType[]): Promise<void> {
     if (!game.user?.isGM) {
       ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
       return;

@@ -3,11 +3,12 @@ import { Resource } from "../shared/resource";
 export const actorHealthStatuses = ["healthy", "wounded", "shock", "unconscious", "dead"] as const;
 export type ActorHealthState = (typeof actorHealthStatuses)[number];
 
-export enum LocomotionEnum {
-  Walk = "walk",
-  Swim = "swim",
-  Fly = "fly",
-}
+export const LocomotionEnum = {
+  Walk: "walk",
+  Swim: "swim",
+  Fly: "fly",
+} as const;
+export type LocomotionEnum = (typeof LocomotionEnum)[keyof typeof LocomotionEnum];
 
 // Values calculated in RqgActor.prepareData with help from RqgCalculations
 export class Attributes {

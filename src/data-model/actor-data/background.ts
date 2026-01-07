@@ -1,28 +1,29 @@
 import { RqidLink } from "../shared/rqidLink";
 
-export enum OccupationEnum {
-  NoOccupation = "",
-  AssistantShaman = "assistantShaman",
-  Bandit = "bandit",
-  ChariotDriver = "chariotDriver",
-  Crafter = "crafter",
-  Entertainer = "entertainer",
-  Farmer = "farmer",
-  Fisher = "fisher",
-  Healer = "healer",
-  Herder = "herder",
-  Hunter = "hunter",
-  Merchant = "merchant",
-  Noble = "noble",
-  Philosopher = "philosopher",
-  Priest = "priest",
-  Scribe = "scribe",
-  Thief = "thief",
-  WarriorHeavyInfantry = "warriorHeavyInfantry",
-  WarriorLightInfantry = "warriorLightInfantry",
-  WarriorHeavyCavalry = "warriorHeavyCavalry",
-  WarriorLightCavalry = "warriorLightCavalry",
-}
+export const OccupationEnum = {
+  NoOccupation: "",
+  AssistantShaman: "assistantShaman",
+  Bandit: "bandit",
+  ChariotDriver: "chariotDriver",
+  Crafter: "crafter",
+  Entertainer: "entertainer",
+  Farmer: "farmer",
+  Fisher: "fisher",
+  Healer: "healer",
+  Herder: "herder",
+  Hunter: "hunter",
+  Merchant: "merchant",
+  Noble: "noble",
+  Philosopher: "philosopher",
+  Priest: "priest",
+  Scribe: "scribe",
+  Thief: "thief",
+  WarriorHeavyInfantry: "warriorHeavyInfantry",
+  WarriorLightInfantry: "warriorLightInfantry",
+  WarriorHeavyCavalry: "warriorHeavyCavalry",
+  WarriorLightCavalry: "warriorLightCavalry",
+} as const;
+export type OccupationEnum = (typeof OccupationEnum)[keyof typeof OccupationEnum];
 
 // This is just the default proposed homelands, it will eventually be replaced by the homeland item
 export enum HomeLandEnum {

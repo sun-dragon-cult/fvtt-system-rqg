@@ -7,8 +7,6 @@ import {
   localizeDocumentName,
   localizeItemType,
 } from "../system/util";
-import { systemId } from "../system/config";
-import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";
 
 import Document = foundry.abstract.Document;

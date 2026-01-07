@@ -1,6 +1,6 @@
 import type { IPhysicalItem } from "./IPhysicalItem";
 import { Resource } from "../shared/resource";
-import { ItemTypeEnum } from "./itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
@@ -79,12 +79,12 @@ export interface WeaponDataSourceData extends IPhysicalItem {
 export interface WeaponDataPropertiesData extends WeaponDataSourceData {}
 
 export interface WeaponDataSource {
-  type: ItemTypeEnum.Weapon;
+  type: typeof ItemTypeEnum.Weapon;
   system: WeaponDataSourceData;
 }
 
 export interface WeaponDataProperties {
-  type: ItemTypeEnum.Weapon;
+  type: typeof ItemTypeEnum.Weapon;
   system: WeaponDataPropertiesData;
 }
 

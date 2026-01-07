@@ -4,19 +4,20 @@ import type { RqgItem } from "@items/rqgItem.ts";
 
 export type PassionItem = RqgItem & { system: PassionDataPropertiesData };
 
-export enum PassionsEnum {
-  Ambition = "Ambition",
-  Cowardly = "Cowardly",
-  Devotion = "Devotion",
-  Fear = "Fear",
-  Hate = "Hate",
-  Honor = "Honor",
-  Loyalty = "Loyalty",
-  Love = "Love",
-  Gluttony = "Gluttony",
-  Vanity = "Vanity",
-  Custom = "",
-}
+export const PassionsEnum = {
+  Ambition: "Ambition",
+  Cowardly: "Cowardly",
+  Devotion: "Devotion",
+  Fear: "Fear",
+  Hate: "Hate",
+  Honor: "Honor",
+  Loyalty: "Loyalty",
+  Love: "Love",
+  Gluttony: "Gluttony",
+  Vanity: "Vanity",
+  Custom: "",
+} as const;
+export type PassionsEnum = (typeof PassionsEnum)[keyof typeof PassionsEnum];
 
 export interface PassionDataSourceData extends IAbility {
   passion: PassionsEnum;
@@ -29,12 +30,12 @@ export interface PassionDataSourceData extends IAbility {
 export interface PassionDataPropertiesData extends PassionDataSourceData {}
 
 export interface PassionDataSource {
-  type: ItemTypeEnum.Passion;
+  type: typeof ItemTypeEnum.Passion;
   system: PassionDataSourceData;
 }
 
 export interface PassionDataProperties {
-  type: ItemTypeEnum.Passion;
+  type: typeof ItemTypeEnum.Passion;
   system: PassionDataPropertiesData;
 }
 

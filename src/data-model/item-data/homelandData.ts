@@ -23,12 +23,12 @@ export interface HomelandDataSourceData {
 export interface HomelandDataPropertiesData extends HomelandDataSourceData {}
 
 export interface HomelandDataSource {
-  type: ItemTypeEnum.Homeland;
+  type: typeof ItemTypeEnum.Homeland;
   system: HomelandDataSourceData;
 }
 
 export interface HomelandDataProperties {
-  type: ItemTypeEnum.Homeland;
+  type: typeof ItemTypeEnum.Homeland;
   system: HomelandDataSourceData;
 }
 

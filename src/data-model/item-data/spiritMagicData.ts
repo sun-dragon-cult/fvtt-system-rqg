@@ -18,12 +18,12 @@ export interface SpiritMagicDataSourceData extends Spell {
 export interface SpiritMagicDataPropertiesData extends SpiritMagicDataSourceData {}
 
 export interface SpiritMagicDataSource {
-  type: ItemTypeEnum.SpiritMagic;
+  type: typeof ItemTypeEnum.SpiritMagic;
   system: SpiritMagicDataSourceData;
 }
 
 export interface SpiritMagicDataProperties {
-  type: ItemTypeEnum.SpiritMagic;
+  type: typeof ItemTypeEnum.SpiritMagic;
   system: SpiritMagicDataPropertiesData;
 }
 

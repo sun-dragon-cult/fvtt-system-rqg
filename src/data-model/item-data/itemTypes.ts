@@ -59,22 +59,23 @@ import { Weapon } from "@items/weapon-item/weapon.ts";
 //   }
 // }
 
-export enum ItemTypeEnum {
-  Armor = "armor",
-  Cult = "cult",
-  Gear = "gear",
-  HitLocation = "hitLocation",
-  Homeland = "homeland",
-  Occupation = "occupation",
-  Passion = "passion",
-  Rune = "rune",
-  RuneMagic = "runeMagic",
-  Skill = "skill",
-  SpiritMagic = "spiritMagic",
-  Weapon = "weapon",
+export const ItemTypeEnum = {
+  Armor: "armor",
+  Cult: "cult",
+  Gear: "gear",
+  HitLocation: "hitLocation",
+  Homeland: "homeland",
+  Occupation: "occupation",
+  Passion: "passion",
+  Rune: "rune",
+  RuneMagic: "runeMagic",
+  Skill: "skill",
+  SpiritMagic: "spiritMagic",
+  Weapon: "weapon",
   // ShamanicAbility = "shamanicAbility",
   // SorceryMagic = "sorceryMagic",
-}
+} as const;
+export type ItemTypeEnum = (typeof ItemTypeEnum)[keyof typeof ItemTypeEnum];
 
 /**
  * Map from ItemTypeEnum to responsible AbstractEmbeddedItem class.

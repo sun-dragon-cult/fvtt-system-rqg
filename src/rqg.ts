@@ -108,11 +108,11 @@ Hooks.once("init", async () => {
   RqgCombatant.init();
   initSockets();
 
-  const sheetsConfig = foundry.applications.apps.DocumentSheetConfig;
+  const DocumentSheetConfig = foundry.applications.apps.DocumentSheetConfig;
   const sheets = foundry.applications.sheets;
 
-  sheetsConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
-  sheetsConfig.registerSheet(RollTable, systemId, RqgRollTableSheet, {
+  DocumentSheetConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
+  DocumentSheetConfig.registerSheet(RollTable, systemId, RqgRollTableSheet, {
     label: "RQG.SheetName.RollTable",
     makeDefault: true,
   });

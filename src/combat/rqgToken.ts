@@ -1,7 +1,9 @@
 import { initializeAllCharacteristics } from "../actors/context-menus/characteristic-context-menu";
 import { getCombatantsSharingToken } from "./combatant-utils";
 
-export class RqgToken extends foundry.canvas.placeables.Token {
+import Token = foundry.canvas.placeables.Token;
+
+export class RqgToken extends Token {
   static init() {
     CONFIG.Token.objectClass = RqgToken;
   }

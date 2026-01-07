@@ -1,18 +1,19 @@
 import type { IAbility } from "../shared/ability";
-import { ItemTypeEnum } from "./itemTypes";
+import type { ItemTypeEnum } from "./itemTypes";
 
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
 export type RuneItem = RqgItem & { system: RuneDataPropertiesData };
 
-export enum RuneTypeEnum {
-  Element = "element",
-  Power = "power",
-  Form = "form",
-  Condition = "condition",
-  Technique = "technique",
-}
+export const RuneTypeEnum = {
+  Element: "element",
+  Power: "power",
+  Form: "form",
+  Condition: "condition",
+  Technique: "technique",
+} as const;
+export type RuneTypeEnum = (typeof RuneTypeEnum)[keyof typeof RuneTypeEnum];
 
 export type RuneType = {
   type: RuneTypeEnum;
@@ -43,12 +44,12 @@ export interface RuneDataSourceData extends IAbility {
 export interface RuneDataPropertiesData extends RuneDataSourceData {}
 
 export interface RuneDataSource {
-  type: ItemTypeEnum.Rune;
+  type: typeof ItemTypeEnum.Rune;
   system: RuneDataSourceData;
 }
 
 export interface RuneDataProperties {
-  type: ItemTypeEnum.Rune;
+  type: typeof ItemTypeEnum.Rune;
   system: RuneDataPropertiesData;
 }
 

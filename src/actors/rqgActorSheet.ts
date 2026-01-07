@@ -89,8 +89,11 @@ import type { OccupationItem } from "@item-model/occupationData.ts";
 import type { ArmorItem } from "@item-model/armorData.ts";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
-export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Options> extends foundry
-  .appv1.sheets.ActorSheet<Options> {
+import ActorSheet = foundry.appv1.sheets.ActorSheet;
+
+export class RqgActorSheet<
+  Options extends ActorSheet.Options = ActorSheet.Options,
+> extends ActorSheet<Options> {
   // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
@@ -1342,7 +1345,7 @@ export class RqgActorSheet<Options extends ActorSheet.Options = ActorSheet.Optio
     htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
       const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
+        const effect = fromUuidSync<RqgActiveEffect>(effectUuid);
         requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
         new foundry.applications.sheets.ActiveEffectConfig(effect).render(true);
       });

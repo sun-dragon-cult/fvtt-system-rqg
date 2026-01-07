@@ -2,7 +2,9 @@ import { getCombatantsSharingToken } from "./combatant-utils";
 import { getDomDataset, getRequiredDomDataset, localize } from "../system/util";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
-export class RqgCombatTracker extends foundry.applications.sidebar.tabs.CombatTracker {
+import CombatTracker = foundry.applications.sidebar.tabs.CombatTracker;
+
+export class RqgCombatTracker extends CombatTracker {
   static init() {
     Hooks.on("ready", () => {
       // one listener for sidebar combat & popped out combat

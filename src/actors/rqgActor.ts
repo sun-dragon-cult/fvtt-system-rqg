@@ -42,16 +42,17 @@ import type { SkillItem } from "@item-model/skillData.ts";
 
 import Actor = foundry.documents.Actor;
 
-export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Subtype> {
+export class RqgActor extends Actor {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
 
-    const sheets = foundry.applications.apps.DocumentSheetConfig;
-    sheets.unregisterSheet(Actor, "core", foundry.appv1.sheets.ActorSheet);
+    const Actors = foundry.documents.collections.Actors;
 
-    sheets.registerSheet(Actor, systemId, RqgActorSheet as any, {
+    Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+
+    Actors.registerSheet(systemId, RqgActorSheet, {
+      types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.Character",
-      types: ["character"],
       makeDefault: true,
     });
   }
@@ -63,7 +64,10 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     if (!rqid) {
       return [];
     }
-    return this.items.filter((i: RqgItem) => i.getFlag(systemId, "documentRqidFlags")?.id === rqid);
+    // Ensure items collection is treated as base Item[]
+    return (this.items as foundry.abstract.EmbeddedCollection<Item>).filter(
+      (i: Item) => (i as RqgItem).getFlag(systemId, "documentRqidFlags")?.id === rqid,
+    ) as RqgItem[];
   }
 
   public getBestEmbeddedDocumentByRqid(rqid: string | undefined): RqgItem | undefined {
@@ -406,12 +410,11 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
    */
   public async updateTokenEffectFromHealth(): Promise<void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-    const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
-      new Map([
-        ["shock", this.findEffect("shock")],
-        ["unconscious", this.findEffect("unconscious")],
-        ["dead", this.findEffect("dead")],
-      ]);
+    const health2Effect: Map<ActorHealthState, CONFIG.StatusEffect> = new Map([
+      ["shock", this.findEffect("shock")],
+      ["unconscious", this.findEffect("unconscious")],
+      ["dead", this.findEffect("dead")],
+    ]);
 
     const newEffect = health2Effect.get(this.system.attributes.health);
 
@@ -613,16 +616,16 @@ export class RqgActor<Subtype extends Actor.SubType = Actor.SubType> extends Act
     return { str, con, siz, dex, int, pow, cha };
   }
 
-  // // Typeguards
-  // isCharacter(): this is CharacterActor {
-  //   return this.type === ActorTypeEnum.Character.toString();
-  // }
+  // Type guards to narrow actor types without SourceConfig/DataConfig
+  isCharacter(): this is RqgActor & { type: "character"; system: CharacterDataPropertiesData } {
+    return this.type === ActorTypeEnum.Character;
+  }
 
-  // assertIsCharacter(): this is CharacterActor {
-  //   const isCharacter = this.type === ActorTypeEnum.Character.toString();
-  //   if (!isCharacter) {
-  //     throw new RqgError("Actor is not a character", this);
-  //   }
-  //   return isCharacter;
-  // }
+  assertIsCharacter(
+    errorMsg?: string,
+  ): asserts this is RqgActor & { type: "character"; system: CharacterDataPropertiesData } {
+    if (this.type !== ActorTypeEnum.Character) {
+      throw new RqgError(errorMsg ?? `Actor is not a character: got type ${this.type}`, this);
+    }
+  }
 }

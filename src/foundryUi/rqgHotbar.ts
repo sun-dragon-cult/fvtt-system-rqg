@@ -1,12 +1,14 @@
 import { localize } from "../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
+import Hotbar = foundry.applications.ui.Hotbar;
+
 /**
  * The kind of macros that can be created by dropping a document onto the Hotbar.
  */
 type MacroAction = "abilityRoll" | "rollTable" | "toggleSheet";
 
-export class RqgHotbar extends foundry.applications.ui.Hotbar {
+export class RqgHotbar extends Hotbar {
   static init() {
     CONFIG.ui.hotbar = RqgHotbar;
   }

@@ -13,9 +13,11 @@ import {
 } from "../documents/dragDrop";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
+import ItemSheet = foundry.appv1.sheets.ItemSheet;
+
 export class RqgItemSheet<
-  Options extends foundry.appv1.sheets.ItemSheet.Options = foundry.appv1.sheets.ItemSheet.Options,
-> extends foundry.appv1.sheets.ItemSheet<Options> {
+  Options extends ItemSheet.Options = ItemSheet.Options,
+> extends ItemSheet<Options> {
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,
@@ -138,9 +140,10 @@ export class RqgItemSheet<
               throw reason;
             });
           if (e[0]?.id) {
-            new foundry.applications.sheets.ActiveEffectConfig(item.effects.get(e[0].id)!).render(
-              true,
-            );
+            const effect = item.effects.get(e[0].id);
+            if (effect) {
+              new foundry.applications.sheets.ActiveEffectConfig(effect).render({ force: true });
+            }
           }
         });
       });

@@ -608,7 +608,7 @@ export function localize(key: string, data?: Record<string, string>): string {
   return result;
 }
 
-export function localizeItemType(itemType: ItemTypeEnum | string | "reputation"): string {
+export function localizeItemType(itemType: Item.SubType | string | "reputation"): string {
   return localize("TYPES.Item." + itemType);
 }
 
@@ -711,7 +711,8 @@ export function getSpeakerFromItem(item: RqgItem | PartialAbilityItem): ChatMess
  * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
  */
 export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
-  const token = getTokenFromActor(item.parent);
+  // Type assertion needed since parent may not have getActiveTokens
+  const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
     return token;
@@ -727,14 +728,15 @@ export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocum
 export function getTokenOrActorFromItem(
   item: RqgItem | PartialAbilityItem,
 ): TokenDocument | RqgActor | undefined {
-  const token = getTokenFromActor(item.parent);
+  // Type assertion needed since parent may not have getActiveTokens
+  const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
     return token;
   } else if ((item as PartialAbilityItem).actingToken) {
     return (item as PartialAbilityItem).actingToken;
   } else {
-    return item.parent ?? undefined;
+    return (item.parent as RqgActor | undefined) ?? undefined;
   }
 }
 

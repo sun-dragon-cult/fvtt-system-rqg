@@ -2,7 +2,9 @@ import { localize } from "../system/util";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
-export class RqgSettings extends foundry.applications.sidebar.tabs.Settings {
+import Settings = foundry.applications.sidebar.tabs.Settings;
+
+export class RqgSettings extends Settings {
   static init() {
     CONFIG.ui.settings = RqgSettings;
   }

@@ -40,12 +40,12 @@ export interface SkillDataPropertiesData extends SkillDataSourceData {
 }
 
 export interface SkillDataSource {
-  type: ItemTypeEnum.Skill;
+  type: typeof ItemTypeEnum.Skill;
   system: SkillDataSourceData;
 }
 
 export interface SkillDataProperties {
-  type: ItemTypeEnum.Skill;
+  type: typeof ItemTypeEnum.Skill;
   system: SkillDataPropertiesData;
 }
 

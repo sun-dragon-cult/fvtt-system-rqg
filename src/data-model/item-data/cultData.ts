@@ -44,12 +44,12 @@ export interface CultDataSourceData {
 export interface CultDataPropertiesData extends CultDataSourceData {}
 
 export interface CultDataSource {
-  type: ItemTypeEnum.Cult;
+  type: typeof ItemTypeEnum.Cult;
   system: CultDataSourceData;
 }
 
 export interface CultDataProperties {
-  type: ItemTypeEnum.Cult;
+  type: typeof ItemTypeEnum.Cult;
   system: CultDataPropertiesData;
 }
 

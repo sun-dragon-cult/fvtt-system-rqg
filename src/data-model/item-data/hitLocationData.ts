@@ -47,12 +47,12 @@ export interface HitLocationDataPropertiesData extends HitLocationDataSourceData
 }
 
 export interface HitLocationDataSource {
-  type: ItemTypeEnum.HitLocation;
+  type: typeof ItemTypeEnum.HitLocation;
   system: HitLocationDataSourceData;
 }
 
 export interface HitLocationDataProperties {
-  type: ItemTypeEnum.HitLocation;
+  type: typeof ItemTypeEnum.HitLocation;
   system: HitLocationDataPropertiesData;
 }
 

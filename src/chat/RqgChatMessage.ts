@@ -14,9 +14,7 @@ import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel.ts";
 
 // TODO how to type this so combat subtype data is typed?
-export class RqgChatMessage<
-  SubType extends ChatMessage.SubType = ChatMessage.SubType,
-> extends ChatMessage<SubType> {
+export class RqgChatMessage extends ChatMessage {
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
     CONFIG.ChatMessage.template = templatePaths.chatMessage;

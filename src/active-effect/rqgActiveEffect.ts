@@ -1,14 +1,18 @@
-import { formatListByWorldLanguage, localize, logMisconfiguration } from "../system/util";
+import {
+  formatListByWorldLanguage,
+  isDocumentSubType,
+  localize,
+  logMisconfiguration,
+} from "../system/util";
 import { Rqid } from "../system/api/rqidApi";
 
 import type { AnyMutableObject } from "fvtt-types/utils";
 import Document = foundry.abstract.Document;
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 
-export class RqgActiveEffect<
-  out SubType extends ActiveEffect.SubType = ActiveEffect.SubType,
-> extends ActiveEffect<SubType> {
+export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   static init() {
-    CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
+    CONFIG.ActiveEffect.documentClass = RqgActiveEffect as any;
     CONFIG.ActiveEffect.legacyTransferral = false;
   }
 
@@ -44,7 +48,10 @@ export class RqgActiveEffect<
       console.warn("RQG | ", msg);
     }
 
-    const item = actor.getBestEmbeddedDocumentByRqid(rqid);
+    const item = isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)
+      ? actor.getBestEmbeddedDocumentByRqid(rqid)
+      : undefined;
+
     if (!item) {
       logMisconfiguration(
         localize("RQG.Foundry.ActiveEffect.TargetItemNotFound", {

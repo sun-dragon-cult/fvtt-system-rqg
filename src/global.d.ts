@@ -1,5 +1,4 @@
 import type { RqgItemDataProperties, RqgItemDataSource } from "@item-model/itemTypes.ts";
-import type { RqgActor } from "./actors/rqgActor";
 import {
   type RqgActorDataProperties,
   type RqgActorDataSource,
@@ -17,17 +16,17 @@ import type {
   SceneFlags,
 } from "./data-model/shared/rqgDocumentFlags";
 import type { IconSettingsData } from "./applications/defaultItemIconSettings";
-import type { RqgItem } from "./items/rqgItem";
 import type { TokenRulerSettingsType } from "./applications/settings/tokenRulerSettings.types";
-import type {
-  RqgChatMessageDataProperties,
-  RqgChatMessageDataSource,
-} from "./data-model/chat-data/combatChatMessage.types.ts";
+import type { RqgChatMessageDataSource } from "./data-model/chat-data/combatChatMessage.types.ts";
 
 import type { RqgChatMessage } from "./chat/RqgChatMessage.ts";
 import type { RqgToken } from "./combat/rqgToken.ts";
 import type { Dice3D } from "./module-integrations/dice-so-nice";
 import type { CombatChatMessageData } from "./data-model/chat-data/combatChatMessage.dataModel.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgCombatant } from "./combat/rqgCombatant.ts";
+import type { RqgActiveEffect } from "./active-effect/rqgActiveEffect.ts";
 
 declare global {
   interface Game {
@@ -48,28 +47,28 @@ declare global {
   type SelectOptionData<T> = { value: T; label: string; group?: string };
 
   interface DocumentClassConfig {
-    Actor: typeof RqgActor<Actor.SubType>;
-    Item: typeof RqgItem<Item.SubType>;
+    Actor: typeof RqgActor;
+    Item: typeof RqgItem;
     ChatMessage: typeof RqgChatMessage;
-    // RegionBehavior: typeof ClickableScriptsRegionBehavior;
+    Combatant: typeof RqgCombatant;
+    ActiveEffect: typeof RqgActiveEffect;
   }
 
+  // Use SourceConfig/DataConfig for Items and Actors (template.json approach)
   interface SourceConfig {
     Item: RqgItemDataSource;
     Actor: RqgActorDataSource;
-    ChatMessage: RqgChatMessageDataSource;
-    // RegionBehavior: typeof ClickableScriptsRegionBehavior;
   }
 
   interface DataConfig {
     Item: RqgItemDataProperties;
     Actor: RqgActorDataProperties;
-    ChatMessage: RqgChatMessageDataProperties;
   }
 
+  // Use DataModelConfig for ChatMessages (DataModel approach)
   interface DataModelConfig {
     ChatMessage: {
-      combat: CombatChatMessageData;
+      combat: typeof CombatChatMessageData;
     };
   }
 
@@ -104,15 +103,9 @@ declare global {
     "rqg.allowCombatWithoutToken": boolean;
   }
 
-  // interface SystemConfig {
-  //   Item: {
-  //     discriminate: "all";
-  //   };
-  //   Actor: {
-  //     moduleSubtype: "ignore";
-  //     base: "ignore";
-  //   };
-  // }
+  interface ConfiguredCombatant<SubType extends Combatant.SubType> {
+    document: RqgCombatant<SubType>;
+  }
 
   interface SystemNameConfig {
     name: "rqg";
@@ -133,14 +126,14 @@ declare global {
 // // Type for documents that can have RQID flags
 type RqidEnabledDocument =
   | Actor
-  | Card
   | Item
   | JournalEntry
   | JournalEntryPage
   | Macro
   | Playlist
   | RollTable
-  | Scene;
-
-// TODO Using a union type for just the RQID-enabled documents does not allow setFlag calls
-// type RqidEnabledDocument = Document;
+  | Scene
+  | Card
+  | ActiveEffect
+  | Combatant
+  | RqgChatMessage;

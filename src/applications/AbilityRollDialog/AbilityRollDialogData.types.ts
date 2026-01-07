@@ -1,4 +1,3 @@
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
@@ -9,7 +8,7 @@ export type PartialAbilityItem = {
   name: string | null;
   img: string | null;
   system: { chance: number };
-  type?: ItemTypeEnum;
+  type?: Item.SubType;
   parent?: RqgActor | null;
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
   /** Special handling for Reputation rolls */

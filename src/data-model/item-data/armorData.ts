@@ -57,12 +57,12 @@ export interface ArmorDataSourceData extends IPhysicalItem {
 export interface ArmorDataPropertiesData extends ArmorDataSourceData {}
 
 export interface ArmorDataSource {
-  type: ItemTypeEnum.Armor;
+  type: typeof ItemTypeEnum.Armor;
   system: ArmorDataSourceData;
 }
 
 export interface ArmorDataProperties {
-  type: ItemTypeEnum.Armor;
+  type: typeof ItemTypeEnum.Armor;
   system: ArmorDataPropertiesData;
 }
 

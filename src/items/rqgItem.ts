@@ -55,74 +55,73 @@ import type { CultItem } from "@item-model/cultData.ts";
 
 import type { PassionItem } from "@item-model/passionData.ts";
 
-export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtype> {
+export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
 
-    const sheets = foundry.applications.apps.DocumentSheetConfig;
-    const items = foundry.documents.collections.Items;
+    const Items = foundry.documents.collections.Items;
 
     // sheets.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
-    items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+    Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 
-    items.registerSheet(systemId, PassionSheet, {
-      label: "RQG.SheetName.Item.Passion",
+    Items.registerSheet(systemId, PassionSheet, {
       types: [ItemTypeEnum.Passion],
+      label: "RQG.SheetName.Item.Passion",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, RuneSheet, {
-      label: "RQG.SheetName.Item.Rune",
+    Items.registerSheet(systemId, RuneSheet, {
       types: [ItemTypeEnum.Rune],
+      label: "RQG.SheetName.Item.Rune",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, SkillSheet, {
-      label: "RQG.SheetName.Item.Skill",
+    Items.registerSheet(systemId, SkillSheet, {
       types: [ItemTypeEnum.Skill],
+      label: "RQG.SheetName.Item.Skill",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, HitLocationSheet, {
-      label: "RQG.SheetName.Item.HitLocation",
+    Items.registerSheet(systemId, HitLocationSheet, {
       types: [ItemTypeEnum.HitLocation],
+      label: "RQG.SheetName.Item.HitLocation",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, HomelandSheet, {
-      label: "RQG.SheetName.Item.Homeland",
+    Items.registerSheet(systemId, HomelandSheet, {
       types: [ItemTypeEnum.Homeland],
+      label: "RQG.SheetName.Item.Homeland",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, OccupationSheet, {
-      label: "RQG.SheetName.Item.Occupation",
+    Items.registerSheet(systemId, OccupationSheet, {
       types: [ItemTypeEnum.Occupation],
+      label: "RQG.SheetName.Item.Occupation",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, GearSheet, {
-      label: "RQG.SheetName.Item.Gear",
+    Items.registerSheet(systemId, GearSheet, {
       types: [ItemTypeEnum.Gear],
+      label: "RQG.SheetName.Item.Gear",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, ArmorSheet, {
-      label: "RQG.SheetName.Item.Armor",
+    Items.registerSheet(systemId, ArmorSheet, {
       types: [ItemTypeEnum.Armor],
+      label: "RQG.SheetName.Item.Armor",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, WeaponSheet, {
-      label: "RQG.SheetName.Item.Weapon",
+    Items.registerSheet(systemId, WeaponSheet, {
       types: [ItemTypeEnum.Weapon],
+      label: "RQG.SheetName.Item.Weapon",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, SpiritMagicSheet, {
-      label: "RQG.SheetName.Item.SpiritMagicSpell",
+    Items.registerSheet(systemId, SpiritMagicSheet, {
       types: [ItemTypeEnum.SpiritMagic],
+      label: "RQG.SheetName.Item.SpiritMagicSpell",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, CultSheet, {
-      label: "RQG.SheetName.Item.Cult",
+    Items.registerSheet(systemId, CultSheet, {
       types: [ItemTypeEnum.Cult],
+      label: "RQG.SheetName.Item.Cult",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, RuneMagicSheet, {
-      label: "RQG.SheetName.Item.RuneMagicSpell",
+    Items.registerSheet(systemId, RuneMagicSheet, {
       types: [ItemTypeEnum.RuneMagic],
+      label: "RQG.SheetName.Item.RuneMagicSpell",
       makeDefault: true,
     });
 
@@ -130,7 +129,7 @@ export class RqgItem<Subtype extends Item.SubType = Item.SubType> extends Item<S
       const isOwnedItem =
         document instanceof RqgItem &&
         document.parent &&
-        Object.values(ItemTypeEnum).includes(document.type);
+        Object.values(ItemTypeEnum).includes(document.type as any);
       if (!isOwnedItem) {
         return true;
       }

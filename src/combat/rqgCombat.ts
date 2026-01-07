@@ -2,7 +2,7 @@ import { RqgCombatTracker } from "./RqgCombatTracker";
 import { assertDocumentSubType } from "../system/util.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
-export class RqgCombat<Subtype extends Combat.SubType = Combat.SubType> extends Combat<Subtype> {
+export class RqgCombat extends Combat {
   public static init() {
     CONFIG.Combat.documentClass = RqgCombat;
     CONFIG.ui.combat = RqgCombatTracker;

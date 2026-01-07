@@ -196,8 +196,8 @@ export class HitLocationSheet extends RqgItemSheet {
         hitLocationName: hitLocation.name,
       }),
     );
-    const healWoundIndex: number = Number(data.wound);
-    const healPoints: number = Number(data.heal);
+    const healWoundIndex: number = Number(data["wound"]);
+    const healPoints: number = Number(data["heal"]);
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,

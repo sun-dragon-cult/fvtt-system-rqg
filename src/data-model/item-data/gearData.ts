@@ -10,12 +10,12 @@ export interface GearDataSourceData extends IPhysicalItem {}
 export interface GearDataPropertiesData extends GearDataSourceData {}
 
 export interface GearDataSource {
-  type: ItemTypeEnum.Gear;
+  type: typeof ItemTypeEnum.Gear;
   system: GearDataSourceData;
 }
 
 export interface GearDataProperties {
-  type: ItemTypeEnum.Gear;
+  type: typeof ItemTypeEnum.Gear;
   system: GearDataPropertiesData;
 }
 
