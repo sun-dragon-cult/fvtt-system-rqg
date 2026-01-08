@@ -95,7 +95,6 @@ export class RqgCombatTracker extends CombatTracker {
           if (!combatant) {
             return;
           }
-          // @ts-expect-error movementHistory
           await combatant.clearMovementHistory();
           ui.notifications?.info("COMBAT.CombatantMovementHistoryCleared", {
             // @ts-expect-error format
