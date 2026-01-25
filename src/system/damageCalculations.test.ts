@@ -1,6 +1,5 @@
 import { DamageCalculations } from "./damageCalculations";
 import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
-import { RqgItem } from "../items/rqgItem";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 import { describe, it, expect, beforeEach } from "vitest";
@@ -14,10 +13,10 @@ describe("Inflict Damage", () => {
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i: RqgItem) => i.name === "Left Leg")!;
-    mockHead = mockActor.items.find((i: RqgItem) => i.name === "Head")!;
-    mockChest = mockActor.items.find((i: RqgItem) => i.name === "Chest")!;
-    mockAbdomen = mockActor.items.find((i: RqgItem) => i.name === "Abdomen")!;
+    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")! as HitLocationItem;
+    mockHead = mockActor.items.find((i) => i.name === "Head")! as HitLocationItem;
+    mockChest = mockActor.items.find((i) => i.name === "Chest")! as HitLocationItem;
+    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")! as HitLocationItem;
     (global as any).ui = {
       notifications: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

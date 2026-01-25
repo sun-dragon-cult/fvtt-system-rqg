@@ -20,8 +20,8 @@ export declare class Dice3D {
    * @returns when resolved true if the animation was displayed, false if not.
    */
   showForRoll(
-    roll: Roll,
-    user?: User,
+    roll: Roll<any>,
+    user?: User | null,
     synchronize?: boolean,
     whisper?: Array<{ id: string } | string> | null,
     blind?: boolean,

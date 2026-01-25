@@ -127,13 +127,15 @@ Hooks.once("init", async () => {
      * Show an application that lets you set rqid for items.
      */
     batchSetRqids: async (...itemTypes: string[]): Promise<void> => {
-      const itemTypeEnums = itemTypes.length
-        ? itemTypes.map((it) => it as ItemTypeEnum)
-        : [
-            ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-            ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-            ItemTypeEnum.Rune, // Future needs
-          ];
+      const itemTypeEnums = (
+        itemTypes.length
+          ? itemTypes.map((it) => it as ItemTypeEnum)
+          : [
+              ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+              ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+              ItemTypeEnum.Rune, // Future needs
+            ]
+      ) as Item.SubType[];
       await RqidBatchEditor.factory(...itemTypeEnums);
     },
     names: nameGeneration,

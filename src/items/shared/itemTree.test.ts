@@ -1,7 +1,6 @@
-import { RqgItem } from "../rqgItem";
 import { ItemTree } from "./ItemTree";
 import { mockItems } from "../../../test/mocks/mockLocationItems.ts";
-import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { testItems } from "./itemTree.testdata";
 import { mockItemsWithLoop } from "../../../test/mocks/mockItemsForLocationLoop.ts";
 import { mockItemsWithVirtualNode } from "../../../test/mocks/mockItemsForVirtualNodes.ts";
@@ -9,6 +8,7 @@ import { isDocumentSubType } from "../../system/util.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
 import { describe, it, expect, beforeEach } from "vitest";
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 describe("ItemTree", () => {
   beforeEach(() => {});
@@ -16,7 +16,7 @@ describe("ItemTree", () => {
   describe("constructor", () => {
     it("should create a correct itemLocationData - with data about each item", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
 
       // --- Act ---
       const itemTree = new ItemTree(items);
@@ -101,7 +101,7 @@ describe("ItemTree", () => {
 
     it("should create a correct itemGraph", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
 
       // --- Act ---
       const itemTree = new ItemTree(items);
@@ -186,7 +186,7 @@ describe("ItemTree", () => {
 
     it("should not complain if items are without loops", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemGraph = new ItemTree(items);
 
       // --- Act ---
@@ -200,7 +200,7 @@ describe("ItemTree", () => {
     // TODO figure out how to mock localize
     it("should complain if items contain a simple loop", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const horse = items.find((i) => i.name === "Riding Horse") as GearItem;
       if (!horse) {
         expect.fail("Arrange error, could not find Riding Horse");
@@ -219,7 +219,7 @@ describe("ItemTree", () => {
     // TODO figure out how to mock localize
     it("should complain if items contain a multi step loop", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithLoop));
+      const items = JSON.parse(JSON.stringify(mockItemsWithLoop)) as RqgActor["items"]["contents"];
 
       // --- Act ---
       const itemGraph = new ItemTree(items); // This tree has a loop A->B->C->D->A;
@@ -232,7 +232,7 @@ describe("ItemTree", () => {
 
     it("should create a correct list of locations", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
 
       // --- Act ---
       const itemTree = new ItemTree(items);
@@ -256,7 +256,7 @@ describe("ItemTree", () => {
   describe("toSheetData", () => {
     it("should create correct sheet data", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemGraph = new ItemTree(items);
 
       // --- Act ---
@@ -268,7 +268,7 @@ describe("ItemTree", () => {
 
     it("should create correct sheet data from items with loop", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithLoop));
+      const items = JSON.parse(JSON.stringify(mockItemsWithLoop)) as RqgActor["items"]["contents"];
       const itemGraph = new ItemTree(items);
 
       // --- Act ---
@@ -300,7 +300,7 @@ describe("ItemTree", () => {
   describe("getContainerNodeOfItem", () => {
     it("should return the container of an item", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -383,7 +383,7 @@ describe("ItemTree", () => {
 
     it("should return undefined if item is not in a container", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -395,7 +395,7 @@ describe("ItemTree", () => {
 
     it("should return the container node of a container", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -407,7 +407,7 @@ describe("ItemTree", () => {
 
     it("should work in a tree corrected for loops", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithLoop));
+      const items = JSON.parse(JSON.stringify(mockItemsWithLoop)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -421,7 +421,7 @@ describe("ItemTree", () => {
   describe("getTopContainerNodeOfItem", () => {
     it("should return the topmost container of an item", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -433,7 +433,7 @@ describe("ItemTree", () => {
 
     it("should return undefined if it is not in a container", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -448,7 +448,7 @@ describe("ItemTree", () => {
   describe("getOtherItemIdsInSameLocationTree", () => {
     it("should return other item ids that are in same location as an item", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -478,7 +478,7 @@ describe("ItemTree", () => {
 
     it("should return other item ids that are in same location for nested items", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -508,7 +508,7 @@ describe("ItemTree", () => {
 
     it("should return an empty array if the item does not have any parents", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -520,7 +520,7 @@ describe("ItemTree", () => {
 
     it("should return work in a tree with corrected loops", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItemsWithLoop));
+      const items = JSON.parse(JSON.stringify(mockItemsWithLoop)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---
@@ -537,8 +537,10 @@ describe("ItemTree", () => {
 
     it("should not return ids of virtual items", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
-      const nestedItems = items.map((i) => {
+      const items = JSON.parse(
+        JSON.stringify(mockItemsWithVirtualNode),
+      ) as RqgActor["items"]["contents"];
+      const nestedItems = items.map((i: any) => {
         if (i.name === "B") {
           i.system.location = "A";
         }
@@ -565,7 +567,7 @@ describe("ItemTree", () => {
   describe("getOtherItemIdsBelowSameLocationTree", () => {
     it("should return other item ids that are below the item in the tree", () => {
       // --- Arrange ---
-      const items: RqgItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(items);
 
       // --- Act ---

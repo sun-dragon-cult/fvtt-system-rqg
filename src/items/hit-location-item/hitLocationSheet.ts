@@ -135,7 +135,7 @@ export class HitLocationSheet extends RqgItemSheet {
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
-    const hitLocation = actor.items.get(hitLocationItemId);
+    const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
@@ -219,9 +219,7 @@ export class HitLocationSheet extends RqgItemSheet {
       const currentScene = game.scenes?.current;
       if (currentScene && activeTokens.length) {
         // TODO could be a bug if the actor has tokens in multiple scenes maybe. then getting activeTokens[0] could be wrong. Should check that the scene match?
-        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
-          | TokenDocument
-          | undefined;
+        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0]?.id ?? "", {});
         if (token) {
           await actor.updateTokenEffectFromHealth();
         }

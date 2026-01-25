@@ -7,12 +7,13 @@ import { isDocumentSubType, mergeArraysById } from "../../system/util";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
 import { describe, it, expect } from "vitest";
+import type { RqgActor } from "@actors/rqgActor";
 
 describe("getLocationRelatedUpdates", () => {
   describe("equipped status change", () => {
     it("should only change equipped status on a single item", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const changedItem = items.find(
         (i) => i.name === "Broad-brimmed Hat  (Leather)",
       ) as PhysicalItem;
@@ -38,7 +39,7 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should change all items contained in the same container tree", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const changedItem = items.find((i) => i.name === "Yellow stone") as PhysicalItem;
       const updates = [
         {
@@ -102,14 +103,16 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should change all items contained in the same virtual container tree", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items = JSON.parse(
+        JSON.stringify(mockItemsWithVirtualNode),
+      ) as RqgActor["items"]["contents"];
       const nestedItems = items.map((i) => {
         // virtual <- A <- B <- C <-  D
         if (i.name === "B") {
-          i.system.location = "A";
+          (i as PhysicalItem).system.location = "A";
         }
         if (i.name === "C") {
-          i.system.location = "B";
+          (i as PhysicalItem).system.location = "B";
         }
         return i;
       });
@@ -150,7 +153,7 @@ describe("getLocationRelatedUpdates", () => {
   describe("location change", () => {
     it("should change a single location to a virtual item", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const changedItem = items.find((i) => i.name === "Broad-brimmed Hat  (Leather)") as GearItem;
       const updates = [
         {
@@ -179,7 +182,7 @@ describe("getLocationRelatedUpdates", () => {
     it("should change equippedStatus to match container item", () => {
       // --- Arrange ---
       const targetContainerName = "Riding Horse";
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const changedItem = items.find(
         (i) => i.name === "Dagger" && isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon),
       ) as WeaponItem;
@@ -213,7 +216,7 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should remove an item from a virtual container", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItems));
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
       const changedItem = items.find(
         (i) => i.name === "Dragon Armor Greaves  (Dragon Hide and Scales)",
       ) as PhysicalItem;
@@ -239,7 +242,9 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should assign correct equippedStatus to the changed item put in a virtual node with other items", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items = JSON.parse(
+        JSON.stringify(mockItemsWithVirtualNode),
+      ) as RqgActor["items"]["contents"];
       const changedItem = items.find((i) => i.name === "C") as PhysicalItem;
       const updates = [
         {
@@ -276,7 +281,9 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should assign correct equippedStatus to the virtual node if it is new", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items = JSON.parse(
+        JSON.stringify(mockItemsWithVirtualNode),
+      ) as RqgActor["items"]["contents"];
       const changedItem = items.find((i) => i.name === "C") as PhysicalItem;
       const updates = [
         {
@@ -288,10 +295,10 @@ describe("getLocationRelatedUpdates", () => {
       // Prepare an updatedItem with the expected updated data
       const updatedItems = items.map((i) => {
         if (i.id === changedItem.id) {
-          i.system.location = "nonExistent";
+          (i as PhysicalItem).system.location = "nonExistent";
         }
         return i;
-      });
+      }) as RqgActor["items"]["contents"];
       const itemTree = new ItemTree(updatedItems);
 
       // --- Act ---
@@ -329,7 +336,7 @@ describe("getLocationRelatedUpdates", () => {
           i.system.location = "B";
         }
         return i;
-      });
+      }) as RqgActor["items"]["contents"];
 
       const itemTree = new ItemTree(nestedItems);
 
@@ -347,7 +354,9 @@ describe("getLocationRelatedUpdates", () => {
 
     it("should work with multiple updates as well (from the itemSheet)", () => {
       // --- Arrange ---
-      const items: PhysicalItem[] = JSON.parse(JSON.stringify(mockItemsWithVirtualNode));
+      const items = JSON.parse(
+        JSON.stringify(mockItemsWithVirtualNode),
+      ) as RqgActor["items"]["contents"];
       const changedItem = items.find((i) => i.name === "B") as PhysicalItem;
 
       const updates = [

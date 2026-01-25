@@ -4,6 +4,7 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 
 export class RqgCombat extends Combat {
   public static init() {
+    // @ts-expect-error type error
     CONFIG.Combat.documentClass = RqgCombat;
     CONFIG.ui.combat = RqgCombatTracker;
     CONFIG.Combat.initiative = {

@@ -37,16 +37,12 @@ export class Skill extends AbstractEmbeddedItem {
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.moveQuietly) {
       // mod is the penalty from equipped armor
-      mod = -Math.max(
-        0,
-        ...actor.items
-          .filter(
-            (i: RqgItem) =>
-              isDocumentSubType<ArmorItem>(i, ItemTypeEnum.Armor) &&
-              i.system.equippedStatus === "equipped",
-          )
-          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty)),
-      );
+      const equippedArmor = actor.items.filter(
+        (i) =>
+          isDocumentSubType<ArmorItem>(i, ItemTypeEnum.Armor) &&
+          i.system.equippedStatus === "equipped",
+      ) as ArmorItem[];
+      mod = -Math.max(0, ...equippedArmor.map((a) => Math.abs(a.system.moveQuietlyPenalty)));
     }
 
     // Calculate the effective skill chance including skill category modifier.

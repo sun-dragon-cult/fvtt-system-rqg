@@ -253,12 +253,13 @@ export class RqgItem extends Item {
     const actor = this.parent;
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
 
-    const cult = actor.items.find((i: RqgItem) => i.id === this.system.cultId);
+    const cult = actor.items.find((i) => i.id === this.system.cultId) as RqgItem | undefined;
     if (!cult) {
       const msg = "Rune Magic item isn't connected to a cult";
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
+    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
 
     const levelUsedOrDefault = options.levelUsed ?? this.system.points;
 

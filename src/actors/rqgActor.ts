@@ -64,9 +64,8 @@ export class RqgActor extends Actor {
     if (!rqid) {
       return [];
     }
-    // Ensure items collection is treated as base Item[]
-    return (this.items as foundry.abstract.EmbeddedCollection<Item>).filter(
-      (i: Item) => (i as RqgItem).getFlag(systemId, "documentRqidFlags")?.id === rqid,
+    return this.items.filter(
+      (i) => i.getFlag(systemId, "documentRqidFlags")?.id === rqid,
     ) as RqgItem[];
   }
 
@@ -199,8 +198,8 @@ export class RqgActor extends Actor {
     const { con, siz, pow } = this.actorCharacteristics();
     this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
 
-    this.items.forEach((item: RqgItem) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item),
+    this.items.forEach((item) =>
+      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item as RqgItem),
     );
   }
 
@@ -263,8 +262,8 @@ export class RqgActor extends Actor {
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach((item: RqgItem) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item),
+    this.items.forEach((item) =>
+      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item as RqgItem),
     );
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
@@ -282,7 +281,7 @@ export class RqgActor extends Actor {
   public getBodyType(): string {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
-      .filter((i: RqgItem) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
+      .filter((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
       .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
     if (
       CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
@@ -335,7 +334,7 @@ export class RqgActor extends Actor {
   ): Promise<void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const damagedHitLocation = this.items.find(
-      (i: RqgItem) =>
+      (i) =>
         isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
         hitLocationRollTotal >= i.system.dieFrom &&
         hitLocationRollTotal <= i.system.dieTo,
@@ -390,7 +389,6 @@ export class RqgActor extends Actor {
 
     // TODO should this be part of the attack chat message? Or should it still only be visible to attacker & defender?
     await ChatMessage.create({
-      user: game.user?.id,
       speaker: speaker,
       content:
         localize("RQG.Item.HitLocation.AddWoundChatContent", {
@@ -454,9 +452,9 @@ export class RqgActor extends Actor {
     return Math.round(Math.min(str, (str + (con ?? 0)) / 2) * (carryingFactor ?? 1));
   }
 
-  private calcTravelEncumbrance(items: Collection<RqgItem>): number {
+  private calcTravelEncumbrance(items: RqgActor["items"]): number {
     return Math.round(
-      items.reduce((sum: number, item: RqgItem) => {
+      items.reduce((sum: number, item) => {
         if (
           isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
           ["carried", "equipped"].includes(item.system.equippedStatus)
@@ -469,9 +467,9 @@ export class RqgActor extends Actor {
     );
   }
 
-  private calcEquippedEncumbrance(items: Collection<RqgItem>): number {
+  private calcEquippedEncumbrance(items: RqgActor["items"]): number {
     return Math.round(
-      items.reduce((sum, item: RqgItem) => {
+      items.reduce((sum, item) => {
         if (
           isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
           item.system.equippedStatus === "equipped"
@@ -532,7 +530,7 @@ export class RqgActor extends Actor {
     ) {
       documents.forEach((d) => {
         ResponsibleItemClass.get(d.type)
-          ?.onEmbedItem(this, d, options, userId)
+          ?.onEmbedItem(this, d as RqgItem, options, userId)
           .then((updateData) => {
             if (!foundry.utils.isEmpty(updateData)) {
               this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
@@ -557,7 +555,7 @@ export class RqgActor extends Actor {
       documents.forEach((d) => {
         const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
           this,
-          d as any, // TODO type bailout - fixme
+          d as RqgItem,
           options,
           userId,
         );
@@ -614,18 +612,5 @@ export class RqgActor extends Actor {
     const pow = characteristics.power.value;
     const cha = characteristics.charisma.value;
     return { str, con, siz, dex, int, pow, cha };
-  }
-
-  // Type guards to narrow actor types without SourceConfig/DataConfig
-  isCharacter(): this is RqgActor & { type: "character"; system: CharacterDataPropertiesData } {
-    return this.type === ActorTypeEnum.Character;
-  }
-
-  assertIsCharacter(
-    errorMsg?: string,
-  ): asserts this is RqgActor & { type: "character"; system: CharacterDataPropertiesData } {
-    if (this.type !== ActorTypeEnum.Character) {
-      throw new RqgError(errorMsg ?? `Actor is not a character: got type ${this.type}`, this);
-    }
   }
 }

@@ -2,6 +2,8 @@ import { initializeAllCharacteristics } from "../actors/context-menus/characteri
 import { getCombatantsSharingToken } from "./combatant-utils";
 
 import Token = foundry.canvas.placeables.Token;
+import { assertDocumentSubType } from "../system/util";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 
 export class RqgToken extends Token {
   static init() {
@@ -29,6 +31,11 @@ export class RqgToken extends Token {
   protected override _onCreate(data: any, options: any, userId: string): void {
     super._onCreate(data, options, userId);
     this.actor?.updateTokenEffectFromHealth();
+    assertDocumentSubType<CharacterActor>(
+      this.actor,
+      ActorTypeEnum.Character,
+      "Expected CharacterActor on Token creation",
+    );
     if (userId === game.user?.id) {
       if (!this.document.actorLink) {
         if (this.actor) {

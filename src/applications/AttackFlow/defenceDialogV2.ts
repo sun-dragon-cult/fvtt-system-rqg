@@ -296,6 +296,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     const selectedParryingWeapon = (await fromUuid(
       formDataObject.parryingWeaponUuid ?? "",
     )) as RqgItem | null;
+    if (selectedParryingWeapon) {
+      assertDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon);
+    }
     const parrySkillRqid =
       selectedParryingWeapon?.system.usage[formDataObject.parryingWeaponUsage ?? "oneHand"]
         ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
@@ -362,8 +365,17 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + formDataObject.parryingWeaponUsage)}</span>`
         : `${defenceHtml} ${defenceName}`;
 
+    if (defendSkillItem) {
+      assertDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill);
+      if (defendSkillItem.system.chance == null) {
+        ui.notifications?.warn(
+          `Defence skill ${defendSkillItem.name} has no chance value, using 0%.`,
+        );
+        return;
+      }
+    }
     const defenceRollOptions: AbilityRollOptions = {
-      naturalSkill: defendSkillItem?.system.chance,
+      naturalSkill: defendSkillItem?.system.chance ?? 0,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -538,6 +550,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     const attackWeapon = (await fromUuid(attackChatMessage.system.attackWeaponUuid)) as
       | RqgItem
       | undefined;
+    if (attackWeapon) {
+      assertDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon);
+    }
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
       const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage;
       const attackSkill = attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
@@ -663,7 +678,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     // get all weapons that can be used for parry
     const parryingWeapons =
       defendingActor?.items.filter(
-        (weapon: RqgItem) =>
+        (weapon) =>
           isDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon) &&
           weapon.system.equippedStatus === "equipped" &&
           (DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.oneHand) ||
@@ -671,8 +686,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
             DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.twoHand) ||
             DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.missile)),
       ) ?? [];
-    const sortedWeapons = parryingWeapons.sort((a: any, b: any) => a.sort - b.sort);
-    return sortedWeapons.map((weapon: RqgItem) => ({
+    const sortedWeapons = parryingWeapons.sort((a, b) => a.sort - b.sort);
+    return sortedWeapons.map((weapon) => ({
       value: weapon.uuid ?? "",
       label: weapon.name ?? "",
     }));

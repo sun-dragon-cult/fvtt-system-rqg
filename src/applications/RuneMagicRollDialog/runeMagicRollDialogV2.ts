@@ -19,6 +19,7 @@ import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogD
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { SpellItem } from "@item-model/spell.ts";
+import type { CultItem } from "@item-model/cultData.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -70,7 +71,9 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
   constructor(options: { spellItem: SpellItem }) {
     super(options as any);
     this.spellItem = options.spellItem;
-    this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -168,7 +171,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
       return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
+    this.rollMode = newRollMode;
 
     this.render();
   }
@@ -203,12 +206,12 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     }
 
     const actor = spellItem.parent as RqgActor | undefined;
-    const cult = actor?.items.find((i) => i.id === spellItem.system.cultId);
+    const cult = actor?.items.find((i) => i.id === spellItem.system.cultId) as RqgItem | undefined;
     if (!cult) {
       const msg = "No cult to cast the rune magic spell";
       throw new RqgError(msg);
     }
-
+    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
     const options: RuneMagicRollOptions = {
       usedRune: usedRune,
       runeMagicItem: spellItem,

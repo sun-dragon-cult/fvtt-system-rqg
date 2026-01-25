@@ -126,12 +126,10 @@ async function findSkillItem(
   if (skillOriginItem) {
     return skillOriginItem;
   }
-  const embeddedSkillData: any = owningActorData?.items.find(
-    (i: RqgItem) => i._id === skillEmbeddedItemId,
-  );
+  const embeddedSkillData = owningActorData?.items.find((i) => i._id === skillEmbeddedItemId);
 
   if (embeddedSkillData && owningActorData) {
-    return owningActorData.items.find((i: RqgItem) => i._id === embeddedSkillData._id);
+    return owningActorData.items.find((i) => i._id === embeddedSkillData._id);
   }
 
   return undefined;

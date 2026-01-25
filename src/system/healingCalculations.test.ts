@@ -21,10 +21,10 @@ describe("healing", () => {
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i: HitLocationItem) => i.name === "Left Leg")!;
-    mockHead = mockActor.items.find((i: HitLocationItem) => i.name === "Head")!;
-    mockChest = mockActor.items.find((i: HitLocationItem) => i.name === "Chest")!;
-    mockAbdomen = mockActor.items.find((i: HitLocationItem) => i.name === "Abdomen")!;
+    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")! as HitLocationItem;
+    mockHead = mockActor.items.find((i) => i.name === "Head")! as HitLocationItem;
+    mockChest = mockActor.items.find((i) => i.name === "Chest")! as HitLocationItem;
+    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")! as HitLocationItem;
   });
 
   it("should be correct for healing smaller wounds", () => {

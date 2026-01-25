@@ -1,7 +1,11 @@
-import type { RqgItemDataProperties, RqgItemDataSource } from "@item-model/itemTypes.ts";
-import {
-  type RqgActorDataProperties,
-  type RqgActorDataSource,
+import type {
+  RqgItemDataProperties,
+  RqgItemDataSource,
+  RqgItemType,
+} from "@item-model/itemTypes.ts";
+import type {
+  RqgActorDataProperties,
+  RqgActorDataSource,
 } from "./data-model/actor-data/rqgActorData";
 import type { RqgConfig, systemId } from "./system/config";
 import type {
@@ -15,7 +19,6 @@ import type {
   RollTableFlags,
   SceneFlags,
 } from "./data-model/shared/rqgDocumentFlags";
-import type { IconSettingsData } from "./applications/defaultItemIconSettings";
 import type { TokenRulerSettingsType } from "./applications/settings/tokenRulerSettings.types";
 import type { RqgChatMessageDataSource } from "./data-model/chat-data/combatChatMessage.types.ts";
 
@@ -41,6 +44,7 @@ declare global {
   interface LenientGlobalVariableTypes {
     game: never;
     socket: never;
+    ui: never;
   }
 
   /** Standard format for data to Foundry SelectOptions handlebar helper */
@@ -95,7 +99,7 @@ declare global {
     "rqg.fumbleRollTable": string;
     "rqg.worldMigrationVersion": string;
     "rqg.sortHitLocationsLowToHigh": boolean;
-    "rqg.defaultItemIconSettings": IconSettingsData;
+    "rqg.defaultItemIconSettings": Record<RqgItemType | "reputation", string>;
     "rqg.actor-wizard-feature-flag": boolean;
     "rqg.showHeropoints": boolean;
     "rqg.showCharacteristicRatings": boolean;
@@ -103,8 +107,8 @@ declare global {
     "rqg.allowCombatWithoutToken": boolean;
   }
 
-  interface ConfiguredCombatant<SubType extends Combatant.SubType> {
-    document: RqgCombatant<SubType>;
+  interface ConfiguredCombatant {
+    document: RqgCombatant;
   }
 
   interface SystemNameConfig {
@@ -112,17 +116,6 @@ declare global {
   }
 }
 
-// TODO how to type which documents that can handle Rqid?
-// type RqidDocumentType =
-//   | "actor"
-//   | "item"
-//   | "journalEntry"
-//   | "cards"
-//   | "macro"
-//   | "playlist"
-//   | "rollTable"
-//   | "scene";
-//
 // // Type for documents that can have RQID flags
 type RqidEnabledDocument =
   | Actor

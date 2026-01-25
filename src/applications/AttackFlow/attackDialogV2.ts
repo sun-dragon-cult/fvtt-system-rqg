@@ -534,8 +534,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     const actor = actorOrToken instanceof TokenDocument ? actorOrToken?.actor : actorOrToken;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry
-    const weaponsWithAttacks: WeaponItem[] = (actor?.items.contents ?? []).filter(
-      (i: RqgItem) =>
+    const weaponsWithAttacks = (actor?.items.contents ?? []).filter(
+      (i) =>
         isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) &&
         (i.system.equippedStatus === "equipped" || i.system.isNatural) &&
         (i.system.usage.oneHand.combatManeuvers.some((cm: CombatManeuver) =>
@@ -550,7 +550,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
           i.system.usage.missile.combatManeuvers.some((cm: CombatManeuver) =>
             offensiveDamageTypes.includes(cm.damageType),
           )),
-    );
+    ) as WeaponItem[];
 
     return weaponsWithAttacks.map((item) => ({
       value: item.uuid ?? "",
@@ -628,7 +628,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     if (weaponItem?.system.isThrownWeapon) {
       return weaponItem;
     } else if (weaponItem?.system.isProjectileWeapon) {
-      return weaponItem.parent?.items.get(weaponItem.system.projectileId);
+      return weaponItem.parent?.items.get(weaponItem.system.projectileId) as WeaponItem | undefined;
     } else if (weaponItem?.system.isRangedWeapon) {
       // Should not decrease any quantity, keep projectileItem undefined
       return undefined;

@@ -3,7 +3,6 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "../rqgItem";
 import type { CultItem } from "@item-model/cultData.ts";
@@ -22,11 +21,11 @@ export class Cult extends AbstractEmbeddedItem {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId: string,
   ): any[] {
-    const cultRuneMagicItems: RuneMagicItem[] = actor.items.filter(
-      (i: RqgItem) =>
+    const cultRuneMagicItems = actor.items.filter(
+      (i) =>
         isDocumentSubType<RuneMagicItem>(i, ItemTypeEnum.RuneMagic) &&
         i.system.cultId === cultItem.id,
-    );
+    ) as RuneMagicItem[];
     return cultRuneMagicItems.map((i) => {
       return { _id: i.id, "system.cultId": "" };
     });
@@ -45,10 +44,10 @@ export class Cult extends AbstractEmbeddedItem {
   ): Promise<any> {
     assertDocumentSubType<CultItem>(child, ItemTypeEnum.Cult);
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
-    const matchingDeityInActorCults: CultItem[] = actor.items.filter(
-      (i: RqgItem) =>
+    const matchingDeityInActorCults = actor.items.filter(
+      (i) =>
         isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) && i.system.deity === child.system.deity,
-    );
+    ) as CultItem[];
 
     switch (matchingDeityInActorCults.length) {
       case 1: {
@@ -103,14 +102,13 @@ export class Cult extends AbstractEmbeddedItem {
     // if (!cult.id) {
     //   const msg = "Bug - tried to embed linked common rune magic with a cult that does not have id";
     //   console.error(`RQG | ${msg}`, cult);
-    //   ui?.notifications?.error(`${msg}`);
+    //   ui.notifications?.error(`${msg}`);
     //   throw new RqgError(msg, [cult]);
     // }
 
     const runeMagicItems = await Promise.all(
       cult.system.commonRuneMagicRqidLinks.map(
-        async (rqidLink: RqidLink) =>
-          (await Rqid.fromRqid(rqidLink.rqid)) as RuneMagicItem | undefined,
+        async (rqidLink) => (await Rqid.fromRqid(rqidLink.rqid)) as RuneMagicItem | undefined,
       ),
     );
 

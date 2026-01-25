@@ -1,7 +1,6 @@
 import type { RqgItem } from "../items/rqgItem";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
-import type { RuneDataSource } from "@item-model/runeData.ts";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 export interface UiSections {
@@ -26,6 +25,14 @@ export interface MainCult {
   hasMultipleCults: boolean;
 }
 
+export interface SheetRuneData {
+  id: string;
+  rune: string;
+  chance: number;
+  img: string | undefined | null;
+  descriptionRqid: string | undefined;
+}
+
 export interface CharacterSheetData {
   uuid: string;
   /** reorganized for presentation TODO type it better */
@@ -45,9 +52,9 @@ export interface CharacterSheetData {
   // Other data needed for the sheet
   mainCult: MainCult;
   /** Array of element runes with > 0% chance */
-  characterElementRunes: RuneDataSource[];
-  characterPowerRunes: RuneDataSource[];
-  characterFormRunes: RuneDataSource[];
+  characterElementRunes: SheetRuneData[];
+  characterPowerRunes: SheetRuneData[];
+  characterFormRunes: SheetRuneData[];
   /** (html) Precalculated missile weapon SRs if loaded at start of round */
   loadedMissileSrDisplay: string[];
   loadedMissileSr: string;

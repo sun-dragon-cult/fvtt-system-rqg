@@ -204,6 +204,9 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     // put choices on selected homeland journal rqidLinks for purposes of sheet
     const selectedHomeland = this.homeland.selectedHomeland;
+    if (selectedHomeland) {
+      assertDocumentSubType<HomelandItem>(selectedHomeland, ItemTypeEnum.Homeland);
+    }
     const homelandRqidLinks: RqidLink[] = (
       selectedHomeland?.system?.cultureJournalRqidLinks ?? []
     ).concat(
@@ -225,6 +228,9 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     if (selectedHomeland?.system?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
         const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
+        if (rune) {
+          assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
+        }
         assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
         rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
         rune.system.hasExperience = false;
@@ -285,7 +291,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     const homelandPassions: RqgItem[] = [];
     if (selectedHomeland?.system?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
-        const passion = await Rqid.fromRqid(passionRqidLink.rqid);
+        const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as RqgItem | undefined;
         assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         passion.system.hasExperience = false;
@@ -328,8 +334,8 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     this.form?.querySelectorAll(".wizard-choice-input").forEach((el) => {
       el.addEventListener("change", async (ev) => {
         const inputTarget = ev.target as HTMLInputElement;
-        const rqid = inputTarget.dataset.rqid;
-        const forChoice = inputTarget.dataset.forChoice;
+        const rqid = inputTarget.dataset["rqid"];
+        const forChoice = inputTarget.dataset["forChoice"];
         if (rqid) {
           const changedChoice = this.choices[rqid];
           if (changedChoice) {
@@ -363,8 +369,8 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         assertHtmlElement(target);
         const wrapper = target?.closest(".collapsible-wrapper");
         assertHtmlElement(wrapper);
-        const wasOpen = wrapper?.dataset.open === "true";
-        const wrapperName = wrapper?.dataset.collapsibleName;
+        const wasOpen = wrapper?.dataset["open"] === "true";
+        const wrapperName = wrapper?.dataset["collapsibleName"];
         if (wrapperName) {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
         }
@@ -417,8 +423,15 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
   }
 
   async setSpeciesTemplate(selectedTemplateUuid: string, checkAll: boolean): Promise<void> {
-    this.species.selectedSpeciesTemplate =
-      await getDocumentFromUuid<RqgActor>(selectedTemplateUuid);
+    this.species.selectedSpeciesTemplate = (await getDocumentFromUuid<RqgActor>(
+      selectedTemplateUuid,
+    )) as RqgActor | undefined;
+    if (this.species.selectedSpeciesTemplate) {
+      assertDocumentSubType<CharacterActor>(
+        this.species.selectedSpeciesTemplate,
+        ActorTypeEnum.Character,
+      );
+    }
 
     await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesUuid");
 
@@ -470,8 +483,8 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     // Delete existing hit locations from actor
     const existingHitLocationIds = this.actor.items
-      .filter((h: RqgItem) => isDocumentSubType<HitLocationItem>(h, ItemTypeEnum.HitLocation))
-      .map((h: HitLocationItem) => h.id)
+      .filter((h) => isDocumentSubType<HitLocationItem>(h, ItemTypeEnum.HitLocation))
+      .map((h) => h.id)
       .filter((h): h is string => h !== null);
     await this.actor.deleteEmbeddedDocuments("Item", existingHitLocationIds);
 
@@ -483,7 +496,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
       await this.actor.createEmbeddedDocuments("Item", addHitLocations);
     }
 
-    this.species.selectedSpeciesTemplate?.items.forEach((i: RqgItem) => {
+    this.species.selectedSpeciesTemplate?.items.forEach((i) => {
       const rqidFlags = i.getFlag(systemId, documentRqidFlags);
       if (!rqidFlags?.id) {
         console.warn("NO RQID!", i);
@@ -492,38 +505,27 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
       if (isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill)) {
         const skillData = i.system;
-        if (!this.choices[rqidFlags.id]) {
-          // Adding a new choice that hasn't existed before so it should be checked.
-          this.choices[rqidFlags.id] = new CreationChoice();
-          this.choices[rqidFlags.id].rqid = rqidFlags.id;
-          this.choices[rqidFlags.id].speciesValue = skillData.baseChance;
-          this.choices[rqidFlags.id].speciesPresent = true;
-        } else {
-          // The old template and the new template both have the same item
-          this.choices[rqidFlags.id].speciesValue = skillData.baseChance;
-          if (checkAll) {
-            this.choices[rqidFlags.id].speciesPresent = true;
-          }
+        const choice = (this.choices[rqidFlags.id] ??= Object.assign(new CreationChoice(), {
+          rqid: rqidFlags.id,
+          speciesPresent: true,
+        }));
+        choice.speciesValue = skillData.baseChance;
+        if (checkAll) {
+          choice.speciesPresent = true;
         }
       }
       if (
         isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) ||
         isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion)
       ) {
-        // Rune or Passion
         const abilityData = i.system;
-        if (this.choices[rqidFlags.id] === undefined) {
-          // Adding a new choice that hasn't existed before so it should be checked.
-          this.choices[rqidFlags.id] = new CreationChoice();
-          this.choices[rqidFlags.id].rqid = rqidFlags.id;
-          this.choices[rqidFlags.id].speciesValue = abilityData.chance || 0;
-          this.choices[rqidFlags.id].speciesPresent = true;
-        } else {
-          // The old template and the new template both have the same item
-          this.choices[rqidFlags.id].speciesValue = abilityData.chance || 0;
-          if (checkAll) {
-            this.choices[rqidFlags.id].speciesPresent = true;
-          }
+        const choice = (this.choices[rqidFlags.id] ??= Object.assign(new CreationChoice(), {
+          rqid: rqidFlags.id,
+          speciesPresent: true,
+        }));
+        choice.speciesValue = abilityData.chance || 0;
+        if (checkAll) {
+          choice.speciesPresent = true;
         }
       }
     });
@@ -552,79 +554,64 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     });
 
     if (selectedHomeland) {
-      selectedHomeland.system.cultureJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
-        if (this.choices[journalRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, but Culture JournalEntries shouldn't be checked by default
-          this.choices[journalRqidLink.rqid] = new CreationChoice();
-          this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
-          this.choices[journalRqidLink.rqid].type = "journal-culture";
-          this.choices[journalRqidLink.rqid].homelandCultureChosen = false;
-        }
+      assertDocumentSubType<HomelandItem>(selectedHomeland, ItemTypeEnum.Homeland);
+      selectedHomeland.system.cultureJournalRqidLinks.forEach((journalRqidLink) => {
+        this.choices[journalRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: journalRqidLink.rqid,
+          type: "journal-culture",
+          homelandCultureChosen: false,
+        });
       });
 
-      selectedHomeland.system.tribeJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
-        if (this.choices[journalRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, but Tribe JournalEntries shouldn't be checked by default
-          this.choices[journalRqidLink.rqid] = new CreationChoice();
-          this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
-          this.choices[journalRqidLink.rqid].type = "journal-tribe";
-          this.choices[journalRqidLink.rqid].homelandTribeChosen = false;
-        }
+      selectedHomeland.system.tribeJournalRqidLinks.forEach((journalRqidLink) => {
+        this.choices[journalRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: journalRqidLink.rqid,
+          type: "journal-tribe",
+          homelandTribeChosen: false,
+        });
       });
 
-      selectedHomeland.system.clanJournalRqidLinks.forEach((journalRqidLink: RqidLink) => {
-        if (this.choices[journalRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, but Clan JournalEntries shouldn't be checked by default
-          this.choices[journalRqidLink.rqid] = new CreationChoice();
-          this.choices[journalRqidLink.rqid].rqid = journalRqidLink.rqid;
-          this.choices[journalRqidLink.rqid].type = "journal-clan";
-          this.choices[journalRqidLink.rqid].homelandClanChosen = false;
-        }
+      selectedHomeland.system.clanJournalRqidLinks.forEach((journalRqidLink) => {
+        this.choices[journalRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: journalRqidLink.rqid,
+          type: "journal-clan",
+          homelandClanChosen: false,
+        });
       });
 
-      selectedHomeland.system.cultRqidLinks.forEach((cultRqidLink: RqidLink) => {
-        if (this.choices[cultRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, but Cult Items shouldn't be checked by default
-          this.choices[cultRqidLink.rqid] = new CreationChoice();
-          this.choices[cultRqidLink.rqid].rqid = cultRqidLink.rqid;
-          this.choices[cultRqidLink.rqid].type = ItemTypeEnum.Cult;
-          this.choices[cultRqidLink.rqid].homelandCultChosen = false;
-        }
+      selectedHomeland.system.cultRqidLinks.forEach((cultRqidLink) => {
+        this.choices[cultRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: cultRqidLink.rqid,
+          type: ItemTypeEnum.Cult,
+          homelandCultChosen: false,
+        });
       });
 
-      selectedHomeland.system.skillRqidLinks.forEach((skillRqidLink: RqidLink) => {
-        if (this.choices[skillRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, check Skill Items by default since MOST of them will be used
-          this.choices[skillRqidLink.rqid] = new CreationChoice();
-          this.choices[skillRqidLink.rqid].rqid = skillRqidLink.rqid;
-          this.choices[skillRqidLink.rqid].type = ItemTypeEnum.Skill;
-          this.choices[skillRqidLink.rqid].homelandPresent = true;
-        }
-        // Homeland always adds +10% to runes.  This is the the real value that gets added.
-        this.choices[skillRqidLink.rqid].homelandValue = skillRqidLink.bonus || 0;
+      selectedHomeland.system.skillRqidLinks.forEach((skillRqidLink) => {
+        const choice = (this.choices[skillRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: skillRqidLink.rqid,
+          type: ItemTypeEnum.Skill,
+          homelandPresent: true,
+        }));
+        choice.homelandValue = skillRqidLink.bonus || 0;
       });
 
-      selectedHomeland.system.runeRqidLinks.forEach((runeRqidLink: RqidLink) => {
-        if (this.choices[runeRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, check Rune Items by default since there's usually only ONE
-          this.choices[runeRqidLink.rqid] = new CreationChoice();
-          this.choices[runeRqidLink.rqid].rqid = runeRqidLink.rqid;
-          this.choices[runeRqidLink.rqid].type = ItemTypeEnum.Rune;
-          this.choices[runeRqidLink.rqid].homelandPresent = true;
-        }
-        // Homeland always adds +10% to runes.  This is the the real value that gets added.
-        this.choices[runeRqidLink.rqid].homelandValue = 10;
+      selectedHomeland.system.runeRqidLinks.forEach((runeRqidLink) => {
+        const choice = (this.choices[runeRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: runeRqidLink.rqid,
+          type: ItemTypeEnum.Rune,
+          homelandPresent: true,
+        }));
+        choice.homelandValue = 10;
       });
 
-      selectedHomeland.system.passionRqidLinks.forEach((passionRqidLink: RqidLink) => {
-        if (this.choices[passionRqidLink.rqid] === undefined) {
-          // adding a new choice that hasn't existed before, check Passion Items by default
-          this.choices[passionRqidLink.rqid] = new CreationChoice();
-          this.choices[passionRqidLink.rqid].rqid = passionRqidLink.rqid;
-          this.choices[passionRqidLink.rqid].type = ItemTypeEnum.Passion;
-          this.choices[passionRqidLink.rqid].homelandPresent = true;
-        }
-        this.choices[passionRqidLink.rqid].homelandValue = 10;
+      selectedHomeland.system.passionRqidLinks.forEach((passionRqidLink) => {
+        const choice = (this.choices[passionRqidLink.rqid] ??= Object.assign(new CreationChoice(), {
+          rqid: passionRqidLink.rqid,
+          type: ItemTypeEnum.Passion,
+          homelandPresent: true,
+        }));
+        choice.homelandValue = 10;
       });
     }
   }
@@ -643,7 +630,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
             isDocumentSubType<RuneItem>(actorItem, ItemTypeEnum.Rune) ||
             isDocumentSubType<PassionItem>(actorItem, ItemTypeEnum.Passion)
           ) {
-            if (this.choices[key].present()) {
+            if (this.choices[key]?.present()) {
               if (isDocumentSubType<SkillItem>(actorItem, ItemTypeEnum.Skill)) {
                 const existingSkillData = actorItem.system;
                 const newBaseChance = this.choices[key].totalValue();
@@ -693,7 +680,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         // did not find an existing item on the actor corresponding to rqid "key"
 
         // Copy Skills, Runes, and Passions from the Actor template
-        if (this.choices[key].speciesPresent) {
+        if (this.choices[key]?.speciesPresent) {
           const item = (await Rqid.fromRqid(key)) as RqgItem | undefined;
           let itemsToAddFromTemplate = item ? [item] : undefined;
           if (!itemsToAddFromTemplate) {
@@ -751,6 +738,10 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         let cultsEligibleToAdd: RqidLink[] = [];
 
         if (this.homeland.selectedHomeland) {
+          assertDocumentSubType<HomelandItem>(
+            this.homeland.selectedHomeland,
+            ItemTypeEnum.Homeland,
+          );
           cultsEligibleToAdd = this.homeland.selectedHomeland?.system.cultRqidLinks;
         }
 
@@ -768,27 +759,28 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     await this.actor.updateEmbeddedDocuments("Item", updates);
     await this.actor.deleteEmbeddedDocuments("Item", deletes);
 
-    const selectedHomelandData = this.homeland.selectedHomeland?.system;
+    const selectedHomeland = this.homeland.selectedHomeland;
 
     const selectedCultureRqidLinks: RqidLink[] = [];
     const selectedTribeRqidLinks: RqidLink[] = [];
     const selectedClanRqidLinks: RqidLink[] = [];
 
-    if (selectedHomelandData) {
-      selectedHomelandData.cultureJournalRqidLinks.forEach((rqidLink: RqidLink) => {
-        if (this.choices[rqidLink.rqid].homelandCultureChosen) {
+    if (selectedHomeland) {
+      assertDocumentSubType<HomelandItem>(selectedHomeland, ItemTypeEnum.Homeland);
+      selectedHomeland.system.cultureJournalRqidLinks.forEach((rqidLink) => {
+        if (this.choices?.[rqidLink.rqid]?.homelandCultureChosen) {
           selectedCultureRqidLinks.push(rqidLink);
         }
       });
 
-      selectedHomelandData.tribeJournalRqidLinks.forEach((rqidLink: RqidLink) => {
-        if (this.choices[rqidLink.rqid].homelandTribeChosen) {
+      selectedHomeland.system.tribeJournalRqidLinks.forEach((rqidLink) => {
+        if (this.choices?.[rqidLink.rqid]?.homelandTribeChosen) {
           selectedTribeRqidLinks.push(rqidLink);
         }
       });
 
-      selectedHomelandData.clanJournalRqidLinks.forEach((rqidLink: RqidLink) => {
-        if (this.choices[rqidLink.rqid].homelandClanChosen) {
+      selectedHomeland.system.clanJournalRqidLinks.forEach((rqidLink) => {
+        if (this.choices?.[rqidLink.rqid]?.homelandClanChosen) {
           selectedClanRqidLinks.push(rqidLink);
         }
       });
@@ -798,8 +790,8 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     await this.actor.update({
       system: {
         background: {
-          homelandJournalRqidLink: selectedHomelandData?.homelandJournalRqidLink,
-          regionJournalRqidLink: selectedHomelandData?.regionJournalRqidLink,
+          homelandJournalRqidLink: selectedHomeland?.system.homelandJournalRqidLink,
+          regionJournalRqidLink: selectedHomeland?.system.regionJournalRqidLink,
           cultureJournalRqidLinks: selectedCultureRqidLinks,
           tribeJournalRqidLinks: selectedTribeRqidLinks,
           clanJournalRqidLinks: selectedClanRqidLinks,

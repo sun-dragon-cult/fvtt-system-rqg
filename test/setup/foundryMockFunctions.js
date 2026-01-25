@@ -30,6 +30,18 @@ globalThis.game = {
   },
 };
 
+globalThis.ui = {
+  notifications: {
+    error: vi.fn(),
+    warn: vi.fn(),
+    info: vi.fn(),
+  },
+  sidebar: {
+    changeTab: vi.fn(),
+    toggleExpanded: vi.fn(),
+  },
+};
+
 const mockStatusEffectsConfig = [
   {
     id: "dead",

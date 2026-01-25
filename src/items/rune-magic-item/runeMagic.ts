@@ -87,7 +87,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     userId: string,
   ): Promise<any> {
     let updateData = {};
-    const actorCults: CultItem[] = actor.items.filter((i: RqgItem) =>
+    const actorCults: CultItem[] = actor.items.filter((i) =>
       isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult),
     );
     assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
@@ -165,7 +165,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
    * Return an error message if not allowed to cast.
    */
   public static hasEnoughToCastSpell(
-    cultItem: RqgItem,
+    cultItem: CultItem,
     runePointCost: number | undefined,
     magicPointsBoost: number = 0,
   ): string | undefined {
@@ -240,7 +240,9 @@ export class RuneMagic extends AbstractEmbeddedItem {
   ): Promise<void> {
     assertDocumentSubType<RuneItem>(runeItem, ItemTypeEnum.Rune);
     assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
-    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "");
+    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "") as
+      | RqgItem
+      | undefined;
     assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
     const isOneUse = runeMagicItem.system?.isOneUse;
 

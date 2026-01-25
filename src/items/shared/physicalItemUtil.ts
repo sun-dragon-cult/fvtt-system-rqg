@@ -1,15 +1,16 @@
 import { RqgItem } from "../rqgItem";
-import { localize, mergeArraysById, RqgError } from "../../system/util";
+import { assertDocumentSubType, localize, mergeArraysById, RqgError } from "../../system/util";
 import { ItemTree } from "./ItemTree";
-import type { EquippedStatus } from "@item-model/IPhysicalItem.ts";
+import { physicalItemTypes, type EquippedStatus } from "@item-model/IPhysicalItem.ts";
 import type { PhysicalItem } from "@item-model/itemTypes.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 /**
  * Only update the content of a bag if the changed item is the bag itself and that change
  * is the equippedStatus.
  */
 export function getLocationRelatedUpdates(
-  actorEmbeddedItems: PhysicalItem[],
+  actorEmbeddedItems: RqgActor["items"]["contents"],
   physicalItem: PhysicalItem,
   updates: object[], // TODO Error what if not all updates have the same location !
 ): any[] {
@@ -57,7 +58,7 @@ export function getLocationRelatedUpdates(
 
 function getChangedEquippedStatusRelatedUpdates(
   physicalItem: RqgItem,
-  actorEmbeddedItems: RqgItem[],
+  actorEmbeddedItems: RqgActor["items"]["contents"],
   equippedStatusUpdateValue: EquippedStatus | undefined,
 ): any[] {
   let containedItemUpdates = [];
@@ -74,20 +75,23 @@ function getChangedEquippedStatusRelatedUpdates(
 }
 
 function getChangedLocationRelatedChanges(
-  actorEmbeddedItems: PhysicalItem[],
+  actorEmbeddedItems: RqgActor["items"]["contents"],
   physicalItem: PhysicalItem,
   locationUpdateValue: string | undefined,
   equippedStatusUpdateValue: EquippedStatus | undefined,
 ): any[] {
   const containedItemUpdates: any[] = [];
 
-  const updatedItem = actorEmbeddedItems.find((i) => i.id === physicalItem.id);
+  const updatedItem = actorEmbeddedItems.find((i) => i.id === physicalItem.id) as
+    | RqgItem
+    | undefined;
 
   if (!updatedItem) {
     const msg = localize("RQG.Item.Notification.CantFindItem");
     ui.notifications?.error(msg);
     throw new RqgError(msg, actorEmbeddedItems);
   }
+  assertDocumentSubType<PhysicalItem>(updatedItem, physicalItemTypes);
   updatedItem.system.location = locationUpdateValue ?? ""; // Mimic the change that is about to happen so the tree can be searched
   const itemTree = new ItemTree(actorEmbeddedItems);
   const container = itemTree.getContainerNodeOfItem(physicalItem.name ?? "");

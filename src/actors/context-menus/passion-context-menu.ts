@@ -84,7 +84,7 @@ export const passionMenuOptions = (
     },
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
+      const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       const speaker = ChatMessage.getSpeaker({ actor, token });
       void showImproveAbilityDialog(item, speaker);

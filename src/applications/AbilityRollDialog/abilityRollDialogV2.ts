@@ -59,7 +59,9 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     }
 
     this.abilityItem = options.abilityItem;
-    this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
   static override DEFAULT_OPTIONS = {

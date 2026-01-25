@@ -2,7 +2,6 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import type { ArmorItem } from "@item-model/armorData.ts";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
@@ -23,12 +22,12 @@ export class HitLocation extends AbstractEmbeddedItem {
     const actorData = actor.system;
 
     // Add equipped armor absorptions for this hit location
-    const armorAbsorption = actor.items.reduce((sum, armorItem: RqgItem) => {
+    const armorAbsorption = actor.items.reduce((sum, armorItem) => {
       if (
         isDocumentSubType<ArmorItem>(armorItem, ItemTypeEnum.Armor) &&
         armorItem.system.equippedStatus === "equipped" &&
         armorItem.system.hitLocationRqidLinks.some(
-          (l: RqidLink) => l.rqid === item.flags?.rqg?.documentRqidFlags?.id,
+          (l) => l.rqid === item.flags?.rqg?.documentRqidFlags?.id,
         )
       ) {
         sum += armorItem.system.absorbs;

@@ -1,14 +1,12 @@
 import { localize } from "../system/util";
 import { systemId } from "../system/config";
 import { defaultItemIconsObject } from "../system/settings/defaultItemIcons";
-import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { ItemTypeEnum, RqgItemType } from "@item-model/itemTypes.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 // Map each ItemTypeEnum value to a string (icon path)
 export type IconSettingsData = {
   [K in ItemTypeEnum | "reputation"]: string;
-} & {
-  [key: string]: string | undefined; // Index signature for Foundry v13
 };
 
 export class DefaultItemIconSettings extends foundry.appv1.api.FormApplication<
@@ -45,7 +43,10 @@ export class DefaultItemIconSettings extends foundry.appv1.api.FormApplication<
     return settings;
   }
 
-  override async _updateObject(event: Event, formData?: IconSettingsData): Promise<void> {
+  override async _updateObject(
+    event: Event,
+    formData?: Record<RqgItemType | "reputation", string>,
+  ): Promise<void> {
     if (formData != null) {
       // const data = foundry.utils.expandObject(formData); // TODO is this needed?
       await game.settings?.set(systemId, "defaultItemIconSettings", formData);

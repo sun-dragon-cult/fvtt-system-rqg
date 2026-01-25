@@ -1,4 +1,3 @@
-import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { LocationItemNode, type LocationItemNodeData } from "./locationItemNode";
 import {
@@ -8,6 +7,8 @@ import {
   localize,
 } from "../../system/util";
 import type { WeaponItem } from "@item-model/weaponData.ts";
+import { physicalItemTypes } from "@item-model/IPhysicalItem";
+import type { RqgActor } from "@actors/rqgActor";
 
 export class ItemTree {
   /** Map container name to a list of content names */
@@ -19,10 +20,10 @@ export class ItemTree {
   /** discovered loops (already broken in constructor) */
   loopNodes: string[] = [];
 
-  constructor(items: RqgItem[]) {
+  constructor(items: RqgActor["items"]["contents"]) {
     const physicalItems = items.filter(
       (item) =>
-        (item.system as any).physicalItemType &&
+        isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
         !(isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural),
     ) as PhysicalItem[];
 

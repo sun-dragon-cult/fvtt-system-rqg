@@ -177,9 +177,12 @@ export async function updateRqidLink(
         { _id: targetDocument.id, system: { [targetPropertyName]: newLink } },
       ]);
     } else {
-      await targetDocument.update({
-        system: { [targetPropertyName]: newLink },
-      });
+      await targetDocument.update(
+        {
+          system: { [targetPropertyName]: newLink },
+        },
+        {},
+      );
     }
   }
 }

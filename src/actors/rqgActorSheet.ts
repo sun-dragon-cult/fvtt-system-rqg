@@ -40,7 +40,7 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
-import { type RuneDataSource, type RuneItem, RuneTypeEnum } from "@item-model/runeData.ts";
+import { type RuneItem, RuneTypeEnum } from "@item-model/runeData.ts";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import {
@@ -71,7 +71,7 @@ import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-import type { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
+import type { CharacterSheetData, MainCult, SheetRuneData, UiSections } from "./rqgActorSheet.defs";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import {
   applyDamageBonusToFormula,
@@ -349,7 +349,7 @@ export class RqgActorSheet<
 
   private calcCurrencyTotals(): any {
     const currency = this.actor.items.filter(
-      (i: RqgItem) =>
+      (i) =>
         isDocumentSubType<GearItem>(i, ItemTypeEnum.Gear) &&
         i.system.physicalItemType === "currency",
     ) as GearItem[];
@@ -383,14 +383,13 @@ export class RqgActorSheet<
 
   private getMainCultInfo(): MainCult {
     const cults = this.actor.items
-      .filter((i: RqgItem) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
+      .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
       .sort(
-        (a: CultItem, b: CultItem) =>
-          (b.system.runePoints.max ?? 0) - (a.system.runePoints.max ?? 0),
+        (a, b) => (b.system.runePoints.max ?? 0) - (a.system.runePoints.max ?? 0),
       ) as CultItem[];
     const mainCultItem = cults[0];
     const mainCultRankTranslation =
-      mainCultItem?.system?.joinedCults.map((c: any) =>
+      mainCultItem?.system?.joinedCults.map((c) =>
         c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : "",
       ) ?? [];
     return {
@@ -403,7 +402,7 @@ export class RqgActorSheet<
   }
 
   private getSpiritMagicPointSum(): number {
-    return this.actor.items.reduce((acc: number, item: RqgItem) => {
+    return this.actor.items.reduce((acc: number, item) => {
       if (
         isDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic) &&
         !item.system.isMatrix
@@ -440,7 +439,7 @@ export class RqgActorSheet<
       (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
       this.actor.items.filter(
-        (i: RqgItem) =>
+        (i) =>
           isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) &&
           i.system.category === SkillCategoryEnum.Magic &&
           !!i.system.runeRqidLinks?.length,
@@ -498,9 +497,9 @@ export class RqgActorSheet<
     );
   }
 
-  private getCharacterElementRuneImgs(): RuneDataSource[] {
+  private getCharacterElementRuneImgs(): SheetRuneData[] {
     return this.actor.items
-      .reduce((acc: any[], i: RqgItem) => {
+      .reduce((acc: SheetRuneData[], i) => {
         if (
           isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Element &&
@@ -516,12 +515,12 @@ export class RqgActorSheet<
         }
         return acc;
       }, [])
-      .sort((a: any, b: any) => b.chance - a.chance);
+      .sort((a, b) => b.chance - a.chance);
   }
 
-  private getCharacterPowerRuneImgs(): RuneDataSource[] {
+  private getCharacterPowerRuneImgs(): SheetRuneData[] {
     return this.actor.items
-      .reduce((acc: any[], i: RqgItem) => {
+      .reduce((acc: SheetRuneData[], i) => {
         if (
           isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Power &&
@@ -537,12 +536,12 @@ export class RqgActorSheet<
         }
         return acc;
       }, [])
-      .sort((a: any, b: any) => b.chance - a.chance);
+      .sort((a, b) => b.chance - a.chance);
   }
 
-  private getCharacterFormRuneImgs(): RuneDataSource[] {
+  private getCharacterFormRuneImgs(): SheetRuneData[] {
     return this.actor.items
-      .reduce((acc: any[], i: RqgItem) => {
+      .reduce((acc: SheetRuneData[], i) => {
         if (
           isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
           i.system.runeType.type === RuneTypeEnum.Form &&
@@ -558,7 +557,7 @@ export class RqgActorSheet<
         }
         return acc;
       }, [])
-      .sort((a: any, b: any) => b.chance - a.chance);
+      .sort((a, b) => b.chance - a.chance);
   }
 
   /**
@@ -594,12 +593,12 @@ export class RqgActorSheet<
     const itemTypes: { [type: string]: RqgItem[] } = Object.fromEntries(
       getItemDocumentTypes().map((t) => [t, []]),
     );
-    actor.items.forEach((item: RqgItem) => {
-      itemTypes[item.type]?.push(item);
+    actor.items.forEach((item) => {
+      itemTypes[item.type]?.push(item as RqgItem);
     });
 
     const currency: any = [];
-    actor.items.forEach((item: RqgItem) => {
+    actor.items.forEach((item) => {
       if (
         isDocumentSubType<GearItem>(item, ItemTypeEnum.Gear) &&
         item.system.physicalItemType === "currency"
@@ -722,8 +721,8 @@ export class RqgActorSheet<
       const usages = weapon.system.usage;
       const actorStr = actor.system.characteristics.strength.value ?? 0;
       const actorDex = actor.system.characteristics.dexterity.value ?? 0;
-      for (const key in usages) {
-        const usage = usages[key];
+      // TODO extra data is added to the Usage object for the sheet, look at typing
+      for (const usage of Object.values(usages) as any) {
         if (!foundry.utils.isEmpty(usage?.skillRqidLink?.rqid)) {
           usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
           usage.unusable = false;
@@ -751,7 +750,7 @@ export class RqgActorSheet<
         }
       }
 
-      const projectile = actor.items.find((i: RqgItem) => i.id === weapon.system.projectileId) as
+      const projectile = actor.items.find((i) => i.id === weapon.system.projectileId) as
         | WeaponItem
         | undefined;
       if (projectile) {
@@ -759,15 +758,17 @@ export class RqgActorSheet<
         weapon.system.projectileName = projectile.name;
       }
     });
-    itemTypes[ItemTypeEnum.Armor]?.sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Gear]?.sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Passion]?.sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.RuneMagic]?.sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.SpiritMagic]?.sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Weapon]?.sort((a: any, b: any) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Armor]?.sort((a, b) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Gear]?.sort((a, b) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Passion]?.sort((a, b) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.RuneMagic]?.sort((a, b) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.SpiritMagic]?.sort((a, b) => a.sort - b.sort);
+    itemTypes[ItemTypeEnum.Weapon]?.sort((a, b) => a.sort - b.sort);
 
     itemTypes[ItemTypeEnum.Cult]?.sort(
-      (a: any, b: any) => b.system.runePoints?.max - a.system.runePoints?.max,
+      (a, b) =>
+        ((b as CultItem).system.runePoints?.max ?? 0) -
+        ((a as CultItem).system.runePoints?.max ?? 0),
     );
 
     return itemTypes;
@@ -779,51 +780,47 @@ export class RqgActorSheet<
       health:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.system.attributes.hitPoints.max != null ||
-        this.actor.items.some((i: RqgItem) =>
+        this.actor.items.some((i) =>
           isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation),
         ),
       combat:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
-          (i: RqgItem) =>
+          (i) =>
             isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) ||
             i.getFlag(systemId, documentRqidFlags)?.id === CONFIG.RQG.skillRqid.dodge,
         ),
       runes:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune)),
+        this.actor.items.some((i) => isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune)),
       spiritMagic:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) =>
+        this.actor.items.some((i) =>
           isDocumentSubType<SpiritMagicItem>(i, ItemTypeEnum.SpiritMagic),
         ),
       runeMagic:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) =>
-          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type),
-        ),
+        this.actor.items.some((i) => [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type)),
       sorcery:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
-          (i: RqgItem) =>
+          (i) =>
             isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
             (i.system.isMastered || i.system.runeType.type === RuneTypeEnum.Technique),
         ),
       skills:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill)),
+        this.actor.items.some((i) => isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill)),
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some(
-          (i: RqgItem) =>
+          (i) =>
             [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type) &&
             !(i.system as any).isNatural, // Don't show gear tab for natural weapons
         ),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) =>
-          isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion),
-        ),
+        this.actor.items.some((i) => isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion)),
       background: true,
       activeEffects: (CONFIG.RQG.debug.showActorActiveEffectsTab && game.user?.isGM) ?? false,
     };
@@ -831,7 +828,7 @@ export class RqgActorSheet<
 
   private async getUnspecifiedSkillText(): Promise<string | undefined> {
     const unspecifiedSkills = this.actor.items.filter(
-      (i: RqgItem) =>
+      (i) =>
         isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) &&
         !!i.name &&
         i.system?.specialization === "...",
@@ -872,8 +869,7 @@ export class RqgActorSheet<
         .map((r: any) => r.id),
     ].flat(Infinity);
     const extraRunes = this.actor.items.filter(
-      (i: RqgItem) =>
-        isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) && !validRuneIds.includes(i.id),
+      (i) => isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) && !validRuneIds.includes(i.id),
     );
     embeddedRunes.invalid = extraRunes;
 
@@ -919,7 +915,6 @@ export class RqgActorSheet<
       }
       if (message) {
         ChatMessage.create({
-          user: game.user?.id,
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
@@ -1592,7 +1587,7 @@ export class RqgActorSheet<
       if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
         const cultId = item.id;
         const runeMagicSpells = actor.items.filter(
-          (i: RqgItem) =>
+          (i) =>
             isDocumentSubType<RuneMagicItem>(i, ItemTypeEnum.RuneMagic) &&
             i.system.cultId === cultId,
         ) as RuneMagicItem[];
@@ -1926,14 +1921,18 @@ export class RqgActorSheet<
     }
 
     const existingItem = this.actor.items.find(
-      (i: RqgItem) =>
-        i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
-    );
+      (i) => i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
+    ) as RqgItem | undefined;
 
     let newTargetQty = quantityToTransfer;
     const newSourceQty = Number(incomingItemDataSource.system.quantity) - quantityToTransfer;
 
     if (existingItem) {
+      assertDocumentSubType<PhysicalItem>(
+        existingItem,
+        physicalItemTypes,
+        "Existing item found when transferring physical item is not a PhysicalItem",
+      );
       // Target actor has an item of this type with the same name
 
       newTargetQty += Number(existingItem.system.quantity);
@@ -2050,16 +2049,16 @@ export class RqgActorSheet<
   }
 
   private static async sortItems(actor: RqgActor, itemType: string): Promise<void> {
-    const itemsToSort = actor.items.filter((i: RqgItem) => i.type === itemType) as RqgItem[];
+    const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
     itemsToSort.sort((a, b) => {
       return (a.name ?? "").localeCompare(b.name ?? "");
     });
 
-    itemsToSort.map((item: RqgItem, index) => {
+    itemsToSort.map((item, index) => {
       if (index === 0) {
         item.sort = CONST.SORT_INTEGER_DENSITY;
       } else {
-        item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY;
+        item.sort = (itemsToSort[index - 1]?.sort ?? 0) + CONST.SORT_INTEGER_DENSITY;
       }
     });
     const updateData = itemsToSort.map((item) => ({

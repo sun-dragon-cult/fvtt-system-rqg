@@ -209,7 +209,7 @@ export class DamageCalculations {
       totalDamage < hpMax * 3
     ) {
       const attachedLimbs = actor.items.filter(
-        (i: RqgItem) =>
+        (i) =>
           isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
           i.system.connectedTo === hitLocation.flags?.[systemId]?.documentRqidFlags?.id,
       ) as HitLocationItem[];
@@ -282,8 +282,8 @@ export class DamageCalculations {
     } else if (totalHitPoints <= 2 || (hasMaxMagicPoints && currentMagicPoints <= 0)) {
       return "unconscious";
     } else {
-      return actor.items.reduce((acc: ActorHealthState, item: HitLocationItem) => {
-        if (item.type !== ItemTypeEnum.HitLocation.toString()) {
+      return actor.items.reduce((acc: ActorHealthState, item) => {
+        if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
           return acc;
         } else {
           const actorHealthImpact = item.system.actorHealthImpact;

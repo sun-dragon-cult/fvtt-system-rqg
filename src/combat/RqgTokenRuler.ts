@@ -1,5 +1,6 @@
 import { systemId } from "../system/config";
 import type { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
+import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
 
 export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   static init() {
@@ -22,7 +23,7 @@ export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
       return;
     }
     const tokenMovementAction = waypoint.action;
-    const actorAttributes = this.token.actor?.system.attributes;
+    const actorAttributes = (this.token.actor?.system as CharacterDataPropertiesData).attributes;
     // TODO Duplicated from RqgActor, make more DRY
     const equippedMovementEncumbrancePenalty = Math.min(
       0,

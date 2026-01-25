@@ -180,7 +180,7 @@ export class nameGeneration {
       return undefined;
     }
 
-    const nameTable = await Rqid.fromRqid<any>(rqid);
+    const nameTable = (await Rqid.fromRqid<any>(rqid)) as RollTable | undefined;
 
     if (!nameTable) {
       const msg = localize("RQG.Notification.Warn.NameGenRqidNotFound", {

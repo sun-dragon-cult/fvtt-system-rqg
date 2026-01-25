@@ -135,7 +135,7 @@ export function logMisconfiguration(msg: string, notify: boolean, ...debugData: 
   // TODO only for GM? game.user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);
   if (notify) {
-    ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
+    ui.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
   }
 }
 
@@ -243,21 +243,6 @@ export function isDocumentSubType<
     ? documentSubTypes
     : [documentSubTypes];
   return !!document && documentSubTypesArray.includes((document as any).type);
-}
-
-/**
- * Check if actor data type if of correct type to narrow type to that actor type.
- * @deprecated use xxx.isCharacter() instead TODO remove when no longer used
- */
-export function assertActorType<T extends ActorTypeEnum>(
-  actorType: string | ActorTypeEnum | undefined,
-  type: T,
-): asserts actorType is T {
-  if (!actorType || actorType !== type) {
-    const msg = `Got unexpected actor type in assert, ${actorType} ≠ ${type}`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
 }
 
 export function assertHtmlElement<T extends HTMLElement>(

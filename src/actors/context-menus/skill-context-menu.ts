@@ -16,7 +16,6 @@ import { showImproveAbilityDialog } from "../../applications/improveAbilityDialo
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import Document = foundry.abstract.Document;
 
 export const skillMenuOptions = (
   actor: RqgActor,
@@ -97,7 +96,7 @@ export const skillMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
-      const item: Document.Any | undefined = actor.items.get(itemId);
+      const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
 
       const speaker = ChatMessage.getSpeaker({ actor, token });
