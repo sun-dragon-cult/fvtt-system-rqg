@@ -38,6 +38,9 @@ export class Rune extends AbstractEmbeddedItem {
     newChance: number,
     updates: object[],
   ) {
+    if (!opposingRune) {
+      return;
+    }
     assertDocumentSubType<RuneItem>(opposingRune, ItemTypeEnum.Rune);
     const opposingRuneChance = opposingRune.system.chance;
     if (newChance + opposingRuneChance !== 100) {

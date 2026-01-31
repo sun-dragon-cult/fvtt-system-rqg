@@ -34,7 +34,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
       if (isDocumentSubType<CultItem>(runeMagicCult, ItemTypeEnum.Cult)) {
         item.system.chance = RuneMagic.calcRuneMagicChance(
-          actor.items.toObject(),
+          actor.items.contents,
           runeMagicCult.system.runeRqidLinks,
           item.system.runeRqidLinks,
         );
@@ -54,7 +54,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   }
 
   private static calcRuneMagicChance(
-    actorItems: RqgItem[], // Item.SystemOfType<Item.SubType>[], // TODO fix typing, called with toObject !?!?
+    actorItems: CharacterActor["items"]["contents"],
     cultRuneRqidLinks: RqidLink[],
     runeMagicRuneRqidLinks: RqidLink[],
   ): number {
