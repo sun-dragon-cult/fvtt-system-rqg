@@ -10,6 +10,10 @@ export class DamageRoll extends Roll {
     super(formula, data, options);
   }
 
+  get isEvaluated(): boolean {
+    return this._evaluated;
+  }
+
   // Html for the "content" of the chat-message
   override async render({ isPrivate = false } = {}) {
     if (!this._evaluated) {

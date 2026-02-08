@@ -33,6 +33,10 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
     super(formula, data, options);
   }
 
+  get isEvaluated(): boolean {
+    return this._evaluated;
+  }
+
   get successLevel(): AbilitySuccessLevelEnum | undefined {
     if (!this._evaluated || this.total == null) {
       return undefined;

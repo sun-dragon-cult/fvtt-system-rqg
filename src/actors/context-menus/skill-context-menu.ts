@@ -94,7 +94,7 @@ export const skillMenuOptions = (
     },
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+      assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);

@@ -1,10 +1,11 @@
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { type AbilityItem, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "../system/config";
 import {
   assertDocumentSubType,
   convertFormValueToString,
+  isDocumentSubType,
   localize,
   localizeItemType,
   RqgError,
@@ -149,10 +150,13 @@ function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
 
 async function submitImproveAbilityDialog(
   html: JQuery,
-  item: RqgItem,
+  item: Actor.Embedded,
   speaker: ChatMessage.SpeakerData,
   adapter: AbilityImprovementData,
 ): Promise<void> {
+  if (!isDocumentSubType<AbilityItem>(item, ItemTypeEnum.Skill)) {
+    throw new RqgError("Tried to improve item that isn't an ability item", item);
+  }
   const abilityData = item.system;
   const actor = item.parent;
   if (!actor) {
@@ -167,7 +171,7 @@ async function submitImproveAbilityDialog(
     if (abilityData.hasExperience) {
       const categoryMod: number = adapter.categoryMod || 0;
       const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.flavor", {
-        actorName: speaker.alias,
+        actorName: speaker.alias as string,
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
@@ -243,7 +247,11 @@ async function submitImproveAbilityDialog(
         );
         const failedContent = localize(
           "RQG.Dialog.improveAbilityDialog.experienceGainFailed.content",
-          { actorName: speaker.alias, name: adapter.name, typeLocName: adapter.typeLocName },
+          {
+            actorName: speaker.alias as string,
+            name: adapter.name,
+            typeLocName: adapter.typeLocName,
+          },
         );
         const failChat = {
           speaker: speaker,
@@ -255,7 +263,7 @@ async function submitImproveAbilityDialog(
       }
     } else {
       const msg = localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
-        actorName: speaker.alias,
+        actorName: speaker.alias as string,
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
@@ -298,6 +306,7 @@ async function submitImproveAbilityDialog(
   }
 
   if (adapter.abilityType === "skill") {
+    // @ts-expect-error TODO item type should contain derived data
     const newGainedChance: number = Number(abilityData.gainedChance) + gain;
     await item.update({
       system: { hasExperience: false, gainedChance: newGainedChance },

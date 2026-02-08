@@ -8,11 +8,14 @@ export type WeaponDesignation = (typeof weaponDesignation)[number];
 
 export type ChatMessageTypes = "combat";
 
+// Narrowed actor type for subtype "combat"
+export type CombatChatMessage = ChatMessage & { system: CombatDataPropertiesData };
+
 export interface CombatDataSourceData {
   attackState: AttackState;
   attackingTokenOrActorUuid: string;
   defendingTokenOrActorUuid: string | undefined;
-  attackRoll: string;
+  attackRoll: string | object; // JSONField can be string or parsed object
   attackCombatManeuver: CombatManeuver;
   attackExtraDamage: string | undefined;
   attackDamageBonus: string | undefined;
@@ -22,11 +25,11 @@ export interface CombatDataSourceData {
   attackWeaponUsage: UsageType;
   defenceWeaponUsage: UsageType | undefined;
   outcomeDescription: string | undefined;
-  defenceRoll: string | undefined;
+  defenceRoll: string | object | undefined; // JSONField can be string or parsed object
   attackerFumbled: boolean;
   defenderFumbled: boolean;
-  damageRoll: string | undefined;
-  hitLocationRoll: string | undefined;
+  damageRoll: string | object | undefined; // JSONField can be string or parsed object
+  hitLocationRoll: string | object | undefined; // JSONField can be string or parsed object
   ignoreDefenderAp: boolean;
   weaponDamage: number | undefined;
   defenderHitLocationDamage: number | undefined;
@@ -40,12 +43,12 @@ export interface CombatDataPropertiesData extends CombatDataSourceData {}
 
 export interface CombatDataSource {
   type: "combat";
-  data: CombatDataSourceData;
+  system: CombatDataSourceData;
 }
 
 export interface CombatDataProperties {
   type: "combat";
-  data: CombatDataPropertiesData;
+  system: CombatDataPropertiesData;
 }
 
 export type RqgChatMessageDataSource = CombatDataSource;

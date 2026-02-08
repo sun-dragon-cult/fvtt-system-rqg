@@ -11,6 +11,7 @@ import {
   localize,
   requireValue,
   RqgError,
+  safeFromJSON,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
@@ -132,10 +133,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       | RqgActor
       | undefined;
 
-    const attackRoll =
-      typeof this.attackChatMessage?.system.attackRoll === "object"
-        ? AbilityRoll.fromData(this.attackChatMessage?.system.attackRoll) // TODO why is it object?
-        : AbilityRoll.fromJSON(this.attackChatMessage?.system.attackRoll);
+    const attackRollData = this.attackChatMessage?.system.attackRoll;
+    const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
     if (!attackRoll) {
       const msg = "No attack roll present - cannot defend";
       ui.notifications?.warn(msg);
@@ -410,10 +409,15 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       }),
     };
 
-    const attackRoll = AbilityRoll.fromJSON(attackChatMessage.system.attackRoll);
+    // JSONField can be either string or object depending on when it's accessed
+    const attackRollData = attackChatMessage.system.attackRoll;
+    const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
 
-    await attackRoll.evaluate();
-    if (attackRoll.successLevel == null) {
+    if (attackRoll && !attackRoll.isEvaluated) {
+      // Don't reevaluate in case the attack roll is already evaluated.
+      await attackRoll.evaluate();
+    }
+    if (attackRoll?.successLevel == null) {
       const msg = "Didn't find an attackRoll in the chatmessage, aborting";
       ui.notifications?.error(msg);
       console.error(`RQG | ${msg}`);
@@ -425,7 +429,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         ? new AbilityRoll(undefined, {}, defenceRollOptions)
         : undefined;
 
-    await defenceRoll?.evaluate();
+    if (defenceRoll && !defenceRoll.isEvaluated) {
+      await defenceRoll.evaluate();
+    }
     if (formDataObject.defence !== "ignore" && defenceRoll?.successLevel == null) {
       throw new RqgError("Evaluated DefenceRoll didn't give successLevel");
     }

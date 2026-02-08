@@ -7,6 +7,7 @@ import {
   logMisconfiguration,
   requireValue,
   RqgError,
+  safeFromJSON,
 } from "../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { DefenceDialogV2 } from "../applications/AttackFlow/defenceDialogV2";
@@ -20,6 +21,7 @@ import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { CombatChatMessage } from "../data-model/chat-data/combatChatMessage.types";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -42,14 +44,18 @@ export async function handleRollDamageAndHitLocation(
 ): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = game.messages?.get(chatMessageId) as RqgChatMessage | undefined;
-  if (!attackChatMessage) {
-    // TODO Warn about missing chat message
-    return;
-  }
-  const hitLocationRoll = HitLocationRoll.fromJSON(
-    attackChatMessage.system.hitLocationRoll ?? "{}",
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to handle roll damage and hitlocation, but did not find a combat chat message",
   );
+
+  const hitLocationRoll = safeFromJSON<HitLocationRoll>(
+    HitLocationRoll,
+    attackChatMessage.system.hitLocationRoll,
+  );
+  requireValue(hitLocationRoll, "Hit location roll not found in chat message");
 
   const shouldRollHitLocation = attackChatMessage.system.weaponDoingDamage === "attackingWeapon";
 
@@ -64,8 +70,10 @@ export async function handleRollDamageAndHitLocation(
     const userDealingDamage = defenderDamage ? game.user! : attackChatMessage.author;
 
     // DamageRoll is already evaluated in CombatOutcome to calc weaponDamage
-    const damageRoll = DamageRoll.fromJSON(attackChatMessage.system.damageRoll ?? "{}");
-    void game.dice3d.showForRoll(damageRoll, userDealingDamage ?? undefined, true, null, false);
+    const damageRoll = safeFromJSON<DamageRoll>(DamageRoll, attackChatMessage.system.damageRoll);
+    if (damageRoll) {
+      void game.dice3d.showForRoll(damageRoll, userDealingDamage ?? undefined, true, null, false);
+    }
     if (shouldRollHitLocation) {
       await game.dice3d.showForRoll(
         hitLocationRoll,
@@ -104,17 +112,19 @@ export async function handleRollDamageAndHitLocation(
 export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = game.messages?.get(chatMessageId);
-  if (!attackChatMessage) {
-    // TODO Warn about missing chat message
-    return;
-  }
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to apply weapon damage but could noit find combat chat message",
+  );
 
-  const hitLocationRoll = HitLocationRoll.fromJSON(
-    attackChatMessage.system.hitLocationRoll ?? "{}",
+  const hitLocationRoll = safeFromJSON<HitLocationRoll>(
+    HitLocationRoll,
+    attackChatMessage.system.hitLocationRoll,
   );
   requireValue(
-    hitLocationRoll.total,
+    hitLocationRoll?.total,
     "HitLocation roll was not evaluated before applying to actor",
   );
 
@@ -147,7 +157,8 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   }
   const wasDamagedReducedByParry = !!attackChatMessage.system.damagedWeaponUuid;
 
-  const attackRoll = AbilityRoll.fromJSON(attackChatMessage.system.attackRoll);
+  const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackChatMessage.system.attackRoll);
+  requireValue(attackRoll, "Attack roll not found in chat message");
 
   await damagedActor.applyDamage(
     defenderHitLocationDamage,
@@ -182,11 +193,12 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
 export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = game.messages?.get(chatMessageId);
-  if (!attackChatMessage) {
-    // TODO Warn about missing chat message
-    return;
-  }
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to apply weapon damage on non-combat chat message",
+  );
 
   const weaponDamage: number | undefined = attackChatMessage.system.weaponDamage;
   const damagedWeaponUuid = attackChatMessage.system.damagedWeaponUuid;
@@ -291,11 +303,16 @@ async function getChatMessageInfo(button: HTMLElement): Promise<{
   attackWeaponUuid: string;
 }> {
   const chatMessageId = getRequiredDomDataset(button, "message-id");
-  const chatMessage = game.messages?.get(chatMessageId) as RqgChatMessage | undefined;
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to get chat info on non-combat chat message",
+  );
 
-  const attackWeaponUuid = chatMessage?.system.attackWeaponUuid as string | undefined;
+  const attackWeaponUuid = attackChatMessage?.system.attackWeaponUuid;
   if (!attackWeaponUuid) {
-    throw new RqgError("No attackWeapon in chat system data", chatMessage);
+    throw new RqgError("No attackWeapon in chat system data", attackChatMessage);
   }
   return {
     chatMessageId: chatMessageId,

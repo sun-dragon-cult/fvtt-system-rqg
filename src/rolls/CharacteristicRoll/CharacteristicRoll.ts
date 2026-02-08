@@ -26,6 +26,10 @@ export class CharacteristicRoll extends Roll {
     super(formula, data, options);
   }
 
+  get isEvaluated(): boolean {
+    return this._evaluated;
+  }
+
   get targetChance(): number {
     const o = this.options as CharacteristicRollOptions;
     const modificationsSum =

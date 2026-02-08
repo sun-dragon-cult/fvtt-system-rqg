@@ -7,6 +7,24 @@ import type { PartialAbilityItem } from "../applications/AbilityRollDialog/Abili
 
 import Document = foundry.abstract.Document;
 import type { RqidEnabledDocument } from "../global";
+import type { RqgChatMessage } from "../chat/RqgChatMessage.ts";
+
+/**
+ * Helper to safely get a Roll from JSONField data that could be string or object.
+ * Foundry's JSONField can return either depending on serialization state
+ * (fresh data returns string from toJSON(), but after database load it's deserialized to object).
+ */
+export function safeFromJSON<T>(
+  RollClass: any,
+  data: string | object | undefined | any,
+): T | undefined {
+  if (!data) {
+    return undefined;
+  }
+  return typeof data === "string"
+    ? (RollClass.fromJSON(data) as T)
+    : (RollClass.fromData(data as any) as T);
+}
 
 export function getRequiredDomDataset(
   el: HTMLElement | Element | Event | JQuery,
@@ -201,8 +219,17 @@ export function isButton(el: any): el is HTMLButtonElement {
  * Modified to with both ItemTypeEnum and string like the `type` property on ItemData.
  * TODO The type Document.WithSubTypes includes ActorDelta that seems to miss subtypes
  */
-export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem | RqgActor>(
-  document: Document.WithSubTypes | RqgItem | RqgActor | undefined | null,
+export function assertDocumentSubType<
+  T extends Document.WithSubTypes | RqgItem | RqgActor | RqgChatMessage | ChatMessage,
+>(
+  document:
+    | Document.WithSubTypes
+    | RqgItem
+    | RqgActor
+    | RqgChatMessage
+    | ChatMessage
+    | undefined
+    | null,
   documentSubTypes: Readonly<
     | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
     | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
@@ -225,7 +252,14 @@ export function assertDocumentSubType<T extends Document.WithSubTypes | RqgItem 
  * Check if document is defined, has the correct type and narrow to the T type.
  */
 export function isDocumentSubType<
-  T extends Document.WithSubTypes | RqgItemDataSource | RqgItem | RqgActor | RqidEnabledDocument,
+  T extends
+    | Document.WithSubTypes
+    | RqgItemDataSource
+    | RqgItem
+    | RqgActor
+    | RqidEnabledDocument
+    | RqgChatMessage
+    | ChatMessage,
 >(
   document:
     | Document.WithSubTypes
@@ -233,6 +267,8 @@ export function isDocumentSubType<
     | RqgItem
     | RqgActor
     | RqidEnabledDocument
+    | RqgChatMessage
+    | ChatMessage
     | undefined,
   documentSubTypes: Readonly<
     | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)
@@ -583,7 +619,11 @@ export function moveCursorToEnd(el: HTMLInputElement) {
   }
 }
 
-export function localize(key: string, data?: Record<string, string>): string {
+export function localize(key: string | undefined, data?: Record<string, string>): string {
+  if (!key) {
+    console.log(`RQG | Attempt to localize an undefined key`);
+    return "";
+  }
   const result = game.i18n?.format(key, data) ?? key;
   if (result === key) {
     console.log(

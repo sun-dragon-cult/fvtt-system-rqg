@@ -6,12 +6,13 @@ import {
   handleRollFumble,
 } from "./attackFlowHandlers";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { localize } from "../system/util";
+import { localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel.ts";
+import type { CombatDataProperties } from "../data-model/chat-data/combatChatMessage.types.ts";
 
 // TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {
@@ -147,8 +148,8 @@ export class RqgChatMessage extends ChatMessage {
     domSelector: string,
   ): Promise<void> {
     const rollJson = (this.system as any)[systemDataRollName];
-    if (rollJson?.evaluated) {
-      const roll = AbilityRoll.fromJSON(rollJson);
+    const roll = safeFromJSON<AbilityRoll>(AbilityRoll, rollJson);
+    if (roll?.isEvaluated) {
       const element = html.querySelector<HTMLElement>(domSelector);
       if (element) {
         element.innerHTML = await roll.render();
@@ -190,37 +191,34 @@ export class RqgChatMessage extends ChatMessage {
       }
     }
 
-    if (this.type === "combat") {
-      const defenceRollJson = this.system.defenceRoll;
-      const defenceRoll = defenceRollJson ? AbilityRoll.fromJSON(defenceRollJson) : undefined;
-      if (defenceRoll?.total) {
+    if (this.isCombatMessage()) {
+      const defenceRoll = safeFromJSON<AbilityRoll>(AbilityRoll, this.system.defenceRoll);
+      if (defenceRoll?.isEvaluated) {
         content.unshift(
           `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
         );
       }
 
-      const attackRollJson = this.system.attackRoll;
-      const attackRoll = attackRollJson ? AbilityRoll.fromJSON(attackRollJson) : undefined;
-      if (attackRoll?.total) {
+      const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, this.system.attackRoll);
+      if (attackRoll?.isEvaluated) {
         content.unshift(
           `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
         );
         content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
       }
 
-      const damageRollJson = this.system.damageRoll;
-      const damageRoll = damageRollJson ? DamageRoll.fromJSON(damageRollJson) : undefined;
-      if (damageRoll?.total) {
+      const damageRoll = safeFromJSON<DamageRoll>(DamageRoll, this.system.damageRoll);
+      if (damageRoll?.isEvaluated) {
         content.push(
           `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
         );
       }
 
-      const hitLocationRollData = this.system.hitLocationRoll;
-      const hitLocationRoll = hitLocationRollData
-        ? HitLocationRoll.fromJSON(hitLocationRollData)
-        : undefined;
-      if (hitLocationRoll?.total) {
+      const hitLocationRoll = safeFromJSON<HitLocationRoll>(
+        HitLocationRoll,
+        this.system.hitLocationRoll,
+      );
+      if (hitLocationRoll?.isEvaluated) {
         content.push(
           `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
         );
@@ -236,5 +234,9 @@ export class RqgChatMessage extends ChatMessage {
 
     // Format logged result
     return `[${time}] ${this.alias}\n${content.filterJoin("\n")}`;
+  }
+
+  isCombatMessage(): this is CombatDataProperties {
+    return this.type === "combat";
   }
 }

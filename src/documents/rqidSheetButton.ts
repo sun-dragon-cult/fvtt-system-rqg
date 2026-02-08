@@ -26,7 +26,7 @@ export async function addRqidLinkToSheetJQuery(
   sheet: DocumentSheet.Any,
 ) {
   const title = jquery.find(".window-title");
-  const rqid: DocumentRqidFlags = sheet.object.getFlag(systemId, documentRqidFlags);
+  const rqid = (sheet.object as any).getFlag(systemId, documentRqidFlags) as DocumentRqidFlags;
   const rqidLink = await createRqidLink(rqid, sheet, "a");
   title.append($(rqidLink));
 }

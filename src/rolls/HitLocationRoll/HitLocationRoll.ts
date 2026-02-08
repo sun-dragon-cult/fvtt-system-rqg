@@ -16,6 +16,10 @@ export class HitLocationRoll extends Roll {
     super(formula, data, options);
   }
 
+  get isEvaluated(): boolean {
+    return this._evaluated;
+  }
+
   get hitLocationName(): string {
     const damagedHitLocation = (this.options as HitLocationRollOptions).hitLocationNames
       .filter((hln) => (this.total ?? 0) >= hln.dieFrom && (this.total ?? 0) <= hln.dieTo)

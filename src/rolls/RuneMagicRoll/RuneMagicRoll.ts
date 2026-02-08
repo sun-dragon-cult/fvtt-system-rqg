@@ -32,6 +32,10 @@ export class RuneMagicRoll extends Roll {
     super(formula, data, options);
   }
 
+  get isEvaluated(): boolean {
+    return this._evaluated;
+  }
+
   get targetChance(): number {
     const o = this.options as RuneMagicRollOptions;
     const modificationsSum =
