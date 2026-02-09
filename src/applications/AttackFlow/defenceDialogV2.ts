@@ -40,6 +40,7 @@ import { updateChatMessage } from "../../sockets/SocketableRequests";
 import { WeaponDesignation } from "../../system/combatCalculations.defs";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { SkillItem } from "@item-model/skillData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -117,8 +118,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
   };
 
   override async _prepareContext(): Promise<DefenceDialogContext> {
-    const formData: DefenceDialogFormData =
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as DefenceDialogFormData;
 
     const defenderOptions = DefenceDialogV2.getDefenderOptions(this.attackChatMessage);
     if (Object.keys(defenderOptions).length === 0) {
@@ -163,9 +165,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     formData.otherModifierDescription ??= localize("RQG.Dialog.Defence.OtherModifier");
     formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid;
 
-    const parryingWeapon = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
+    const parryingWeaponItem = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
       | RqgItem
       | undefined;
+    const parryingWeapon = isDocumentSubType<WeaponItem>(parryingWeaponItem, ItemTypeEnum.Weapon)
+      ? parryingWeaponItem
+      : undefined;
 
     const defenceOptions = DefenceDialogV2.getDefenceOptions(defendingActor, parryingWeapon?.uuid);
     if (
@@ -272,7 +277,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       return; // Should only be called on form submits
     }
     const submitter = event.submitter;
-    const formDataObject: DefenceDialogFormData = formData.object;
+    const formDataObject = formData.object as DefenceDialogFormData;
 
     if (!isButton(submitter)) {
       ui.notifications?.warn("Button not working - programming error");
@@ -316,9 +321,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         ? defendingTokenDocumentOrActor?.actor
         : defendingTokenDocumentOrActor) ?? undefined;
 
+    if (defendingActor) {
+      assertDocumentSubType<CharacterActor>(defendingActor, ActorTypeEnum.Character);
+    }
     // Update the chat with how the defence was done
 
-    const currentFlavor: string = this.attackChatMessage.flavor;
+    const currentFlavor = attackChatMessage.flavor;
 
     const defenderName = defendingTokenDocumentOrActor?.name;
 
@@ -447,12 +455,16 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     const parryWeaponUsageType = formDataObject.parryingWeaponUsage;
     const attackDamageBonus = attackChatMessage?.system.attackDamageBonus ?? "";
     const attackExtraDamage = attackChatMessage?.system.attackExtraDamage ?? "";
-    const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "";
-    const attackingWeaponDamageType: DamageType =
-      attackChatMessage?.system.attackCombatManeuver.damageType ?? "";
-    const parryingWeaponDamageType: DamageType = selectedParryingWeapon?.system.usage[
-      parryWeaponUsageType ?? ""
-    ]?.combatManeuvers.find((cm: CombatManeuver) => cm.damageType !== "parry")?.damageType;
+    const defendDamageBonus = defendingActor?.system?.attributes?.damageBonus ?? "";
+    const attackingWeaponDamageType = (attackChatMessage?.system.attackCombatManeuver.damageType ??
+      "") as DamageType;
+    const parryingWeaponDamageType = (
+      parryWeaponUsageType
+        ? selectedParryingWeapon?.system.usage[parryWeaponUsageType]?.combatManeuvers.find(
+            (cm: CombatManeuver) => cm.damageType !== "parry",
+          )?.damageType
+        : undefined
+    ) as DamageType | undefined;
 
     const {
       damageRoll,
@@ -562,7 +574,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
       const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage;
       const attackSkill = attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
-        attackWeapon.system.usage[attackWeaponUsage].skillRqidLink?.rqid,
+        attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid,
       );
 
       await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
