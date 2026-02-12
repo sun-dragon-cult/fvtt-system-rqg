@@ -165,8 +165,8 @@ export async function updateRqidLink(
         await targetDocument.update(
           {
             system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-          },
-          {},
+          } as never,
+          {} as never,
         );
       }
     }
@@ -180,8 +180,8 @@ export async function updateRqidLink(
       await targetDocument.update(
         {
           system: { [targetPropertyName]: newLink },
-        },
-        {},
+        } as never,
+        {} as never,
       );
     }
   }

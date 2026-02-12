@@ -7,6 +7,7 @@ import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type { CultItem } from "@item-model/cultData.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 interface RuneMagicSheetData {
   allRuneOptions: SelectOptionData<string>[];
@@ -16,6 +17,10 @@ interface RuneMagicSheetData {
 }
 
 export class RuneMagicSheet extends RqgItemSheet {
+  override get document(): RuneMagicItem {
+    return super.document as RuneMagicItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],

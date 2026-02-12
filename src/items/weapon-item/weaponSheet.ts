@@ -23,6 +23,10 @@ interface WeaponSheetData {
 }
 
 export class WeaponSheet extends RqgItemSheet {
+  override get document(): WeaponItem {
+    return super.document as WeaponItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
@@ -80,7 +84,7 @@ export class WeaponSheet extends RqgItemSheet {
   }
 
   private getOwnedProjectileOptions(): SelectOptionData<string>[] {
-    if (this.item.isOwned) {
+    if (this.document.isOwned) {
       return [
         { value: "", label: "---" },
         ...this.actor!.getEmbeddedCollection("Item")
@@ -143,7 +147,7 @@ export class WeaponSheet extends RqgItemSheet {
 
     // Thrown weapons should decrease quantity of themselves
     if (formData["system.isThrownWeapon"]) {
-      formData["system.projectileId"] = this.item.id;
+      formData["system.projectileId"] = this.document.id;
     }
 
     if (formData["system.hitPointLocation"]) {
@@ -246,9 +250,9 @@ export class WeaponSheet extends RqgItemSheet {
     if (!actorItemWithSameRqid) {
       await this.actor?.createEmbeddedDocuments("Item", [droppedItem]);
     }
-    await this.item.update({
+    await this.document.update({
       [`system.usage.${usage}.skillRqidLink`]: new RqidLink(droppedItemRqid, droppedItem.name),
     });
-    return [this.item];
+    return [this.document];
   }
 }

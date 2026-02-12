@@ -11,7 +11,6 @@ import {
   getSelectHitLocationOptions,
   localize,
   requireValue,
-  RqgError,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { HealingCalculations } from "../../system/healingCalculations";
@@ -30,6 +29,10 @@ interface HitLocationSheetData {
 }
 
 export class HitLocationSheet extends RqgItemSheet {
+  override get document(): HitLocationItem {
+    return super.document as HitLocationItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
@@ -71,15 +74,12 @@ export class HitLocationSheet extends RqgItemSheet {
   }
 
   static async showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): Promise<void> {
-    const hitLocation = actor.items.get(hitLocationItemId);
-    if (!hitLocation || hitLocation.type !== ItemTypeEnum.HitLocation) {
-      const msg = localize("RQG.Item.HitLocation.Notification.CantFindHitLocation", {
-        hitLocationItemId: hitLocationItemId,
-        actorName: actor.name,
-      });
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;
+    assertDocumentSubType<HitLocationItem>(
+      hitLocation,
+      ItemTypeEnum.HitLocation,
+      "RQG.Item.HitLocation.Notification.CantFindHitLocation",
+    );
 
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationAddWound,

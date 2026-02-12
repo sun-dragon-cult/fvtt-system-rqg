@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { CultRankEnum } from "@item-model/cultData.ts";
+import { CultRankEnum, type CultItem } from "@item-model/cultData.ts";
 import {
   isTruthy,
   getRequiredDomDataset,
@@ -21,6 +21,10 @@ interface CultSheetData {
 }
 
 export class CultSheet extends RqgItemSheet {
+  override get document(): CultItem {
+    return super.document as CultItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
@@ -105,6 +109,8 @@ export class CultSheet extends RqgItemSheet {
       el.addEventListener("click", async () => {
         this.document.system.joinedCults.push({
           rank: CultRankEnum.LayMember,
+          cultName: undefined,
+          tagline: "",
         });
         await this.document.update({
           system: { joinedCults: this.document.system.joinedCults },
@@ -115,7 +121,7 @@ export class CultSheet extends RqgItemSheet {
     // delete a cult
     html[0]?.querySelectorAll<HTMLElement>("[data-delete-cult]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const indexToDelete = getRequiredDomDataset(el, "delete-cult");
+        const indexToDelete = Number(getRequiredDomDataset(el, "delete-cult"));
 
         this.document.system.joinedCults.splice(indexToDelete, 1);
         const newName = this.deriveItemName();
@@ -129,7 +135,7 @@ export class CultSheet extends RqgItemSheet {
 
   deriveItemName(): string {
     return CultSheet.deriveItemName(
-      this.document.system.deity,
+      this.document.system.deity ?? "",
       this.document.system.joinedCults.map((c: any) => c.cultName),
     );
   }

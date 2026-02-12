@@ -4,6 +4,7 @@ import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 
 interface SpiritMagicSheetData {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];
@@ -12,6 +13,10 @@ interface SpiritMagicSheetData {
 }
 
 export class SpiritMagicSheet extends RqgItemSheet {
+  override get document(): SpiritMagicItem {
+    return super.document as SpiritMagicItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],

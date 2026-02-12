@@ -13,6 +13,10 @@ interface SkillSheetData {
 }
 
 export class SkillSheet extends RqgItemSheet {
+  override get document(): SkillItem {
+    return super.document as SkillItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],

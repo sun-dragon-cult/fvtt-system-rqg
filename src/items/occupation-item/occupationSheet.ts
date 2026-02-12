@@ -1,6 +1,6 @@
 import {
   OccupationalSkill,
-  type OccupationDataSourceData,
+  type OccupationItem,
   StandardOfLivingEnum,
 } from "@item-model/occupationData.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
@@ -23,6 +23,10 @@ export interface OccupationSheetData {
 }
 
 export class OccupationSheet extends RqgItemSheet {
+  override get document(): OccupationItem {
+    return super.document as OccupationItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Occupation],
@@ -75,22 +79,22 @@ export class OccupationSheet extends RqgItemSheet {
       //@ts-expect-error dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
-        const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
+        const occSkills = this.document.system.occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
             //@ts-expect-error value
             skill.bonus = Number(event.currentTarget.value);
           }
         }
-        if (this.item.isEmbedded) {
-          this.item.actor?.updateEmbeddedDocuments("Item", [
+        if (this.document.isEmbedded) {
+          this.document.actor?.updateEmbeddedDocuments("Item", [
             {
-              _id: this.item.id,
+              _id: this.document.id,
               system: { occupationalSkills: occSkills },
             },
           ]);
         } else {
-          this.item.update({
+          this.document.update({
             system: { occupationalSkills: occSkills },
           });
         }
@@ -101,21 +105,21 @@ export class OccupationSheet extends RqgItemSheet {
       //@ts-expect-error dataset
       const targetRqid = event.currentTarget.dataset.skillRqid;
       if (targetRqid) {
-        const occSkills = (this.item.system as OccupationDataSourceData).occupationalSkills;
+        const occSkills = this.document.system.occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
             skill.incomeSkill = event.currentTarget?.checked;
           }
         }
-        if (this.item.isEmbedded) {
-          this.item.actor?.updateEmbeddedDocuments("Item", [
+        if (this.document.isEmbedded) {
+          this.document.actor?.updateEmbeddedDocuments("Item", [
             {
-              _id: this.item.id,
+              _id: this.document.id,
               system: { occupationalSkills: occSkills },
             },
           ]);
         } else {
-          this.item.update({
+          this.document.update({
             system: { occupationalSkills: occSkills },
           });
         }
@@ -138,7 +142,7 @@ export class OccupationSheet extends RqgItemSheet {
     const form = this.form as HTMLFormElement;
 
     form
-      .querySelector("#btn-edit-occupational-skills-" + this.item.id)
+      .querySelector("#btn-edit-occupational-skills-" + this.document.id)
       ?.addEventListener("click", () => {
         this.toggleSkillEdit(false);
       });
@@ -150,20 +154,20 @@ export class OccupationSheet extends RqgItemSheet {
           // Note that if there are duplicate skills, like "Craft (...)",
           // deleting one of them will delete all of them.
           const rqidToDelete = getDomDataset(ev, "delete-occupational-skill-rqid");
-          const thisOccupation = this.item.system as OccupationDataSourceData;
+          const thisOccupation = this.document.system;
           const occSkills = thisOccupation.occupationalSkills.filter(function (skill) {
             return skill.skillRqidLink?.rqid !== rqidToDelete;
           });
 
-          if (this.item.isEmbedded) {
-            await this.item.actor?.updateEmbeddedDocuments("Item", [
+          if (this.document.isEmbedded) {
+            await this.document.actor?.updateEmbeddedDocuments("Item", [
               {
-                _id: this.item.id,
+                _id: this.document.id,
                 system: { occupationalSkills: occSkills },
               },
             ]);
           } else {
-            await this.item.update({
+            await this.document.update({
               system: { occupationalSkills: occSkills },
             });
           }
@@ -173,11 +177,11 @@ export class OccupationSheet extends RqgItemSheet {
 
   private toggleSkillEdit(forceEdit = false) {
     const form = this.form as HTMLFormElement;
-    const displaySkills = form.querySelector("#occupational-skill-display-" + this.item.id);
+    const displaySkills = form.querySelector("#occupational-skill-display-" + this.document.id);
     assertHtmlElement(displaySkills);
-    const editSkills = form.querySelector("#occupational-skill-edit-" + this.item.id);
+    const editSkills = form.querySelector("#occupational-skill-edit-" + this.document.id);
     assertHtmlElement(editSkills);
-    const btnEdit = form.querySelector("#btn-edit-occupational-skills-" + this.item.id);
+    const btnEdit = form.querySelector("#btn-edit-occupational-skills-" + this.document.id);
     assertHtmlElement(btnEdit);
     if (!displaySkills || !editSkills || !btnEdit) {
       console.error(
@@ -214,24 +218,24 @@ export class OccupationSheet extends RqgItemSheet {
     if (isDocumentSubType<HomelandItem>(droppedItem, ItemTypeEnum.Homeland)) {
       // For this one we're just saving the name of the homeland, without the region
       // to an array of strings.
-      const homelands = this.item.system.homelands;
+      const homelands = this.document.system.homelands;
       const newHomeland = droppedItem.system.homeland;
       if (!homelands.includes(newHomeland)) {
         homelands.push(newHomeland);
-        if (this.item.isEmbedded) {
-          await this.item.actor?.updateEmbeddedDocuments("Item", [
+        if (this.document.isEmbedded) {
+          await this.document.actor?.updateEmbeddedDocuments("Item", [
             {
-              _id: this.item.id,
+              _id: this.document.id,
               system: { homelands: homelands },
             },
           ]);
         } else {
-          await this.item.update({
+          await this.document.update({
             system: { homelands: homelands },
           });
         }
       }
-      return [this.item];
+      return [this.document];
     }
 
     if (isDocumentSubType<SkillItem>(droppedItem, ItemTypeEnum.Skill)) {
@@ -245,22 +249,22 @@ export class OccupationSheet extends RqgItemSheet {
         occSkill.incomeSkill = false;
         occSkill.skillRqidLink = new RqidLink(droppedRqid?.id, droppedItem.name || "");
 
-        const occSkills = this.item.system.occupationalSkills;
+        const occSkills = this.document.system.occupationalSkills;
 
         // this is intentionally NOT checking for duplicate skills
         // since an Occupation might have generic skills more than once,
         // for example Craft(...)
         occSkills.push(occSkill);
 
-        if (this.item.isEmbedded) {
-          await this.item.actor?.updateEmbeddedDocuments("Item", [
+        if (this.document.isEmbedded) {
+          await this.document.actor?.updateEmbeddedDocuments("Item", [
             {
-              _id: this.item.id,
+              _id: this.document.id,
               system: { occupationalSkills: occSkills },
             },
           ]);
         } else {
-          await this.item.update({
+          await this.document.update({
             system: { occupationalSkills: occSkills },
           });
         }
@@ -270,7 +274,7 @@ export class OccupationSheet extends RqgItemSheet {
         console.log("Dropped skill did not have an Rqid");
       }
       // Return now so we don't handle his at the RqgItemSheet._onDrop
-      return [this.item];
+      return [this.document];
     }
 
     return await super._onDropItem(event, data);

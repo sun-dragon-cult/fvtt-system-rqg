@@ -1,4 +1,4 @@
-import { PassionsEnum } from "@item-model/passionData.ts";
+import { PassionsEnum, type PassionItem } from "@item-model/passionData.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
@@ -25,6 +25,10 @@ export class PassionSheet extends RqgItemSheet {
     [PassionsEnum.Love, "systems/rqg/assets/images/passion/love.svg"],
     [PassionsEnum.Vanity, "systems/rqg/assets/images/passion/vanity.svg"],
   ]);
+
+  override get document(): PassionItem {
+    return super.document as PassionItem;
+  }
 
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {

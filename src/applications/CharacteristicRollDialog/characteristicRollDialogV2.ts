@@ -98,8 +98,9 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
   override async _prepareContext(): Promise<CharacteristicRollDialogContext> {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
 
-    const formData: CharacteristicRollDialogFormData =
-      (this.element && new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ?? {};
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ??
+      {}) as CharacteristicRollDialogFormData;
 
     formData.difficulty ??= 5;
     formData.augmentModifier ??= "0";
@@ -169,7 +170,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: CharacteristicRollDialogFormData = formData.object;
+    const formDataObject = formData.object as CharacteristicRollDialogFormData;
 
     const rollMode: CONST.DICE_ROLL_MODES =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')

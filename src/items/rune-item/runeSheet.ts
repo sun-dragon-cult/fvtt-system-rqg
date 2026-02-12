@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { RuneTypeEnum } from "@item-model/runeData.ts";
+import { RuneTypeEnum, type RuneItem } from "@item-model/runeData.ts";
 import { localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
@@ -13,6 +13,10 @@ interface RuneSheetData {
   rqid: string;
 }
 export class RuneSheet extends RqgItemSheet {
+  override get document(): RuneItem {
+    return super.document as RuneItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Rune],

@@ -4,6 +4,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { HomelandItem } from "@item-model/homelandData.ts";
 
 export interface HomelandSheetData {
   allRuneOptions: SelectOptionData<string>[];
@@ -11,6 +12,10 @@ export interface HomelandSheetData {
 }
 
 export class HomelandSheet extends RqgItemSheet {
+  override get document(): HomelandItem {
+    return super.document as HomelandItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],

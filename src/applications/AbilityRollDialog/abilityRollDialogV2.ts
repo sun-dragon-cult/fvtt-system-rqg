@@ -163,7 +163,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: AbilityRollDialogFormData = formData.object;
+    const formDataObject = formData.object as AbilityRollDialogFormData;
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
