@@ -94,6 +94,10 @@ import ActorSheet = foundry.appv1.sheets.ActorSheet;
 export class RqgActorSheet<
   Options extends ActorSheet.Options = ActorSheet.Options,
 > extends ActorSheet<Options> {
+  override get actor(): CharacterActor {
+    return super.document as CharacterActor;
+  }
+
   // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
@@ -182,7 +186,6 @@ export class RqgActorSheet<
   }
 
   override async getData(): Promise<CharacterSheetData & ActorSheetData> {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     this.incorrectRunes = [];
     const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
@@ -291,7 +294,6 @@ export class RqgActorSheet<
   }
 
   private async rankCharacteristics(): Promise<any> {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const result = {} as { [key: string]: string };
     for (const characteristic of Object.keys(this.actor.system.characteristics)) {
       const rankClass = "characteristic-rank-";
@@ -434,7 +436,6 @@ export class RqgActorSheet<
   }
 
   private getFreeInt(spiritMagicPointSum: number): number {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     return (
       (this.actor.system.characteristics.intelligence.value ?? 0) -
       spiritMagicPointSum -
@@ -588,8 +589,7 @@ export class RqgActorSheet<
    * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
    * TODO Fix the typing
    */
-  public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+  public async organizeEmbeddedItems(actor: CharacterActor): Promise<any> {
     const itemTypes: { [type: string]: RqgItem[] } = Object.fromEntries(
       getItemDocumentTypes().map((t) => [t, []]),
     );
@@ -775,7 +775,6 @@ export class RqgActorSheet<
   }
 
   private getUiSectionVisibility(): UiSections {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     return {
       health:
         CONFIG.RQG.debug.showAllUiSections ||
@@ -884,7 +883,6 @@ export class RqgActorSheet<
   }
 
   protected override _updateObject(event: Event, formData: any): Promise<unknown> {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -934,7 +932,6 @@ export class RqgActorSheet<
   }
 
   override _contextMenu(html: JQuery): void {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -1047,7 +1044,6 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
       const closestDataCharacteristic = el.closest("[data-characteristic]");
       assertHtmlElement(closestDataCharacteristic);
-      assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
       const characteristicName = closestDataCharacteristic?.dataset["characteristic"] as
         | keyof typeof actorCharacteristics
         | undefined;
@@ -1357,8 +1353,6 @@ export class RqgActorSheet<
 
     // Roll Damage for spirit magic, separate damage bonus and weapon damage
     htmlElement?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
-      assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
-
       const damage = el.dataset["damageRoll"];
       requireValue(damage, "direct damage roll without damage");
       const { damageFormula, damageBonusPlaceholder } =
@@ -1969,7 +1963,6 @@ export class RqgActorSheet<
   }
 
   protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const html = await super._renderOuter();
     await addRqidLinkToSheetJQuery(html, this);
 
@@ -1986,7 +1979,6 @@ export class RqgActorSheet<
 
   protected override _getHeaderButtons(): Application.HeaderButton[] {
     const headerButtons = super._getHeaderButtons();
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
 
     if (
       game.settings?.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
@@ -2025,7 +2017,6 @@ export class RqgActorSheet<
   }
 
   _toggleEditMode(event: any) {
-    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const newMode = !this.actor.system.editMode;
     const link = getHTMLElement(event)?.closest("a");
     if (!link) {
