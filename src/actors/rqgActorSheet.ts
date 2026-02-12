@@ -754,8 +754,8 @@ export class RqgActorSheet<
         | WeaponItem
         | undefined;
       if (projectile) {
-        weapon.system.projectileQuantity = projectile.system.quantity;
-        weapon.system.projectileName = projectile.name;
+        weapon.system.projectileQuantity = projectile.system.quantity; // TODO adds additional data for the sheet
+        weapon.system.projectileName = projectile.name; // TODO adds additional data for the sheet
       }
     });
     itemTypes[ItemTypeEnum.Armor]?.sort((a, b) => a.sort - b.sort);
@@ -883,7 +883,7 @@ export class RqgActorSheet<
     }
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
@@ -1613,11 +1613,13 @@ export class RqgActorSheet<
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData;
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
     if (
-      (data as any)?.type !== "Compendium" &&
-      !isAllowedDocumentNames((data as any)?.type, allowedDropDocumentNames)
+      data?.type !== "Compendium" &&
+      !isAllowedDocumentNames(data?.type, allowedDropDocumentNames)
     ) {
       return false;
     }
@@ -1640,17 +1642,17 @@ export class RqgActorSheet<
     // Handle different data types (document names)
     switch (data?.type) {
       case "ActiveEffect":
-        return this._onDropActiveEffect(event, data);
+        return this._onDropActiveEffect(event, data as ActorSheet.DropData.ActiveEffect);
       case "Actor":
-        return this._onDropActor(event, data);
+        return this._onDropActor(event, data as ActorSheet.DropData.Actor);
       case "Item":
-        return this._onDropItem(event, data);
+        return this._onDropItem(event, data as ActorSheet.DropData.Item);
       case "JournalEntry":
         return this._onDropJournalEntry(event, data);
       case "JournalEntryPage":
         return this._onDropJournalEntryPage(event, data);
       case "Folder":
-        return this._onDropFolder(event, data);
+        return this._onDropFolder(event, data as ActorSheet.DropData.Folder);
       case "Compendium":
         return this._onDropCompendium(event, data);
       default:
@@ -1666,10 +1668,7 @@ export class RqgActorSheet<
     }
   }
 
-  override async _onDropItem(
-    event: DragEvent,
-    data: { type: string; uuid: string },
-  ): Promise<boolean | RqgItem[]> {
+  override async _onDropItem(event: DragEvent, data: ActorSheet.DropData.Item): Promise<unknown> {
     // A player will not be able to copy an item to an Actor sheet
     // unless they are the owner.
     if (!this.actor.isOwner) {
@@ -1733,7 +1732,7 @@ export class RqgActorSheet<
 
   async _onDropJournalEntry(
     event: DragEvent,
-    data: { type: string; uuid: string },
+    data: ActorSheet.DropData,
   ): Promise<boolean | JournalEntry[]> {
     const {
       droppedDocument: droppedJournal,
@@ -1748,7 +1747,7 @@ export class RqgActorSheet<
     return false;
   }
 
-  async _onDropCompendium(event: DragEvent, data: any): Promise<RqgItem[]> {
+  async _onDropCompendium(event: DragEvent, data: ActorSheet.DropData): Promise<RqgItem[]> {
     if (!this.actor.isOwner) {
       return [];
     }
@@ -1758,18 +1757,18 @@ export class RqgActorSheet<
     if (!packIndex) {
       return [];
     }
-    const documents = await Promise.all(
+    const documents = (await Promise.all(
       packIndex.map(async (di) => {
         const doc = await fromUuid(di.uuid);
         return doc?.toObject();
       }),
-    );
+    )) as Item.Implementation["_source"][];
     return this._onDropItemCreate(documents.filter(isTruthy));
   }
 
   async _onDropJournalEntryPage(
     event: DragEvent,
-    data: { type: string; uuid: string },
+    data: ActorSheet.DropData,
   ): Promise<boolean | JournalEntryPage[]> {
     const {
       droppedDocument: droppedPage,
@@ -1785,7 +1784,7 @@ export class RqgActorSheet<
   }
 
   private async confirmCopyIntangibleItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
@@ -1824,20 +1823,20 @@ export class RqgActorSheet<
   }
 
   private async submitConfirmCopyIntangibleItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
   ): Promise<RqgItem[]> {
     return this._onDropItemCreate(incomingItemDataSource);
   }
 
   private async confirmTransferPhysicalItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
       targetActor: this.actor,
-      showQuantity: incomingItemDataSource.system.quantity > 1,
+      showQuantity: (incomingItemDataSource.system as any).quantity > 1,
     };
 
     const content: string = await foundry.applications.handlebars.renderTemplate(
@@ -1878,7 +1877,7 @@ export class RqgActorSheet<
 
   private async submitConfirmTransferPhysicalItem(
     html: JQuery,
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const formData = new FormData(html.find("form")[0]);
@@ -1892,11 +1891,11 @@ export class RqgActorSheet<
   }
 
   private async transferPhysicalItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     quantityToTransfer: number,
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
-    if (!incomingItemDataSource) {
+    if (!incomingItemDataSource || !incomingItemDataSource._id) {
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }

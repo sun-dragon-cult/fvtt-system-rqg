@@ -197,7 +197,7 @@ export function getAllowedDropDocumentNames(event: DragEvent) {
 
 export async function extractDropInfo<T extends Document.Any>(
   event: DragEvent,
-  data: { type: CONST.ALL_DOCUMENT_TYPES; uuid: string },
+  data: ActorSheet.DropData,
 ): Promise<{
   droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
   dropZoneData: string | undefined;
@@ -205,8 +205,8 @@ export async function extractDropInfo<T extends Document.Any>(
   allowDuplicates: boolean;
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-  const cls = getDocumentClass(data.type);
-  const droppedDocument = await cls?.implementation.fromDropData(data as any);
+  const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
+  const droppedDocument = await cls?.implementation.fromDropData(data);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(
     droppedDocument,

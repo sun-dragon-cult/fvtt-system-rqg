@@ -100,8 +100,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
   };
 
   override async _prepareContext(): Promise<AttackDialogContext> {
-    const formData: AttackDialogFormData =
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as AttackDialogFormData;
 
     const attackingTokenOrActor = getTokenOrActorFromItem(this.weaponItem);
     if (!attackingTokenOrActor) {
