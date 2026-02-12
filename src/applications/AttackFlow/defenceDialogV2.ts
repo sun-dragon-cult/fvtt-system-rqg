@@ -191,7 +191,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       !formData.parryingWeaponUsage ||
       !parryingWeaponUsageOptionKeys.includes(formData.parryingWeaponUsage)
     ) {
-      formData.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0] as UsageType; // If nothing is selected, select the first option
+      formData.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0]; // If nothing is selected, select the first option
     }
     const parrySkillRqid =
       parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid;

@@ -94,8 +94,9 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
   };
 
   override async _prepareContext(): Promise<AbilityRollDialogContext> {
-    const formData: AbilityRollDialogFormData =
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as AbilityRollDialogFormData;
 
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";

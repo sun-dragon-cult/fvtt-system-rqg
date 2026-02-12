@@ -111,7 +111,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       this.close();
       throw new RqgError(msg);
     }
-    formData.attackingTokenOrActorUuid = (attackingTokenOrActor as any)?.uuid;
+    formData.attackingTokenOrActorUuid = attackingTokenOrActor?.uuid;
 
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
 
@@ -144,7 +144,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       ui.notifications?.info("Please target one token only");
     }
 
-    const target = game.user?.targets.first() as RqgToken | undefined;
+    const target = game.user?.targets.first();
 
     const damageBonusSourceOptions = AttackDialogV2.getDamageBonusSourceOptions(this.weaponItem);
     formData.attackingWeaponUuid ??= this.weaponItem.uuid;
@@ -159,7 +159,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       isOutOfAmmo: isOutOfAmmo,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
-      attackingWeaponOptions: AttackDialogV2.getWeaponOptions((attackingTokenOrActor as any)?.uuid),
+      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(attackingTokenOrActor?.uuid),
       usageTypeOptions: usageTypeOptions,
       augmentOptions: AttackDialogV2.augmentOptions,
       damageBonusSourceOptions: damageBonusSourceOptions,
@@ -291,7 +291,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const actor =
       tokenDocumentOrRqgActor instanceof TokenDocument
         ? tokenDocumentOrRqgActor?.actor
-        : (tokenDocumentOrRqgActor as RqgActor);
+        : tokenDocumentOrRqgActor;
     if (!actor) {
       ui.notifications?.error("Could not find an attacker actor to do the attack.");
       return;
@@ -384,7 +384,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       ],
       heading: attackRollHeading,
       abilityName: weaponItem?.name ?? undefined,
-      abilityType: (weaponItem as any)?.type ?? undefined,
+      abilityType: weaponItem?.type ?? undefined,
       abilityImg: weaponItem?.img ?? undefined,
       speaker: RqgChatMessage.getSpeaker({
         token: tokenDocument,
@@ -394,7 +394,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
 
-    const target = game.user?.targets.first() as RqgToken | undefined;
+    const target = game.user?.targets.first();
 
     if ((game.user?.targets.size ?? 0) > 1) {
       ui.notifications?.info("Please target one token only");
@@ -418,8 +418,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const chatSystemData: any = {
       attackState: `Attacked`,
       attackingTokenOrActorUuid: tokenDocumentOrRqgActor?.uuid ?? "",
-      defendingTokenOrActorUuid: target?.document?.uuid,
-      attackWeaponUuid: formDataObject.attackingWeaponUuid ?? "", // Checked for existence earlier
+      defendingTokenOrActorUuid: target?.document?.uuid ?? "",
+      attackWeaponUuid: formDataObject.attackingWeaponUuid,
       attackWeaponUsage: formDataObject.usageType,
       attackCombatManeuver: combatManeuver,
       outcomeDescription: "",
