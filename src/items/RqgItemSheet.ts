@@ -97,7 +97,7 @@ export class RqgItemSheet<
         el.addEventListener("click", () => {
           const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
           if (effect) {
-            new foundry.applications.sheets.ActiveEffectConfig(effect).render(true);
+            new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
           }
         });
       });
@@ -139,9 +139,11 @@ export class RqgItemSheet<
               throw reason;
             });
           if (e[0]?.id) {
-            const effect = item.effects.get(e[0].id);
+            const effect = item.effects.get(e[0].id) as RqgActiveEffect | undefined;
             if (effect) {
-              new foundry.applications.sheets.ActiveEffectConfig(effect).render({ force: true });
+              new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
+                force: true,
+              });
             }
           }
         });
@@ -258,11 +260,29 @@ export class RqgItemSheet<
       droppedDocumentData?.type // type is actually documentName
     ) {
       case "Item":
-        return await this._onDropItem(event, droppedDocumentData);
+        if (droppedDocumentData["uuid"]) {
+          return await this._onDropItem(
+            event,
+            droppedDocumentData as { type: string; uuid: string },
+          );
+        }
+        break;
       case "JournalEntry":
-        return await this._onDropJournalEntry(event, droppedDocumentData);
+        if (droppedDocumentData["uuid"]) {
+          return await this._onDropJournalEntry(
+            event,
+            droppedDocumentData as { type: string; uuid: string },
+          );
+        }
+        break;
       case "JournalEntryPage":
-        return await this._onDropJournalEntryPage(event, droppedDocumentData);
+        if (droppedDocumentData["uuid"]) {
+          return await this._onDropJournalEntryPage(
+            event,
+            droppedDocumentData as { type: string; uuid: string },
+          );
+        }
+        break;
       default:
         // This will warn about not supported Document Name
         isAllowedDocumentNames(droppedDocumentData?.type, [
@@ -282,10 +302,15 @@ export class RqgItemSheet<
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
       allowDuplicates,
-    } = await extractDropInfo<RqgItem>(event, data);
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedItem)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedItem, allowDuplicates);
+      await updateRqidLink(
+        this.item as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedItem,
+        allowDuplicates,
+      );
       return [this.item];
     }
     return false;
@@ -299,10 +324,14 @@ export class RqgItemSheet<
       droppedDocument: droppedJournal,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-    } = await extractDropInfo<JournalEntry>(event, data);
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedJournal)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedJournal);
+      await updateRqidLink(
+        this.item as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedJournal,
+      );
       return [this.item];
     }
     return false;
@@ -316,10 +345,14 @@ export class RqgItemSheet<
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-    } = await extractDropInfo<JournalEntryPage>(event, data);
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedPage)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedPage);
+      await updateRqidLink(
+        this.item as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedPage,
+      );
       return [this.item];
     }
     return false;
@@ -327,7 +360,8 @@ export class RqgItemSheet<
 
   protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
     const html = await super._renderOuter();
-    await addRqidLinkToSheetJQuery(html, this);
+    // Cast to compatible document sheet type for rqid link functionality
+    await addRqidLinkToSheetJQuery(html, this as unknown as DocumentSheet);
     return html;
   }
 }

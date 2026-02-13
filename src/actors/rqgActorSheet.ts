@@ -172,7 +172,7 @@ export class RqgActorSheet<
   }
 
   override async close(options: FormApplication.CloseOptions = {}) {
-    if (options.renderContext === "deleteCombatant") {
+    if (hasOwnProperty(options, "renderContext") && options.renderContext === "deleteCombatant") {
       // Don't close the actor sheet even is a combatant linked to it that is deleted,
       // but try to remove the combatant.apps reference.
       // This is is a workaround - can I remove the app reference in a better way?
@@ -1037,7 +1037,7 @@ export class RqgActorSheet<
     });
 
     if (htmlElement) {
-      this._contextMenu(htmlElement); // TODO use html since super _contextMenu is done that way !!!
+      this._contextMenu($(htmlElement)); // TODO use html since super _contextMenu is done that way !!!
     }
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
@@ -1340,7 +1340,7 @@ export class RqgActorSheet<
       el.addEventListener("click", () => {
         const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
         requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
-        new foundry.applications.sheets.ActiveEffectConfig(effect).render(true);
+        new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
       });
     });
 
@@ -1674,27 +1674,29 @@ export class RqgActorSheet<
       return false;
     }
 
-    const { droppedDocument: item, isAllowedToDrop } = await extractDropInfo<RqgItem>(event, data);
+    const { droppedDocument: item, isAllowedToDrop } =
+      await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
-    if (!isAllowedToDrop) {
+    if (!isAllowedToDrop || !item) {
       return false;
     }
 
-    const itemData = item?.toObject();
+    const rqgItem = item as RqgItem;
+    const itemData = rqgItem.toObject();
     // Handle item sorting within the same Actor
-    if (this.actor.uuid === item?.parent?.uuid) {
+    if (this.actor.uuid === rqgItem.parent?.uuid) {
       return this._onSortItem(event, itemData) ?? false;
     }
 
-    if (isDocumentSubType<OccupationItem>(item, ItemTypeEnum.Occupation)) {
-      if (!hasRqid(item)) {
+    if (isDocumentSubType<OccupationItem>(rqgItem, ItemTypeEnum.Occupation)) {
+      if (!hasRqid(rqgItem)) {
         return false;
       }
-      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
-      return [item];
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", rqgItem);
+      return [rqgItem];
     }
 
-    if (!item.parent) {
+    if (!rqgItem.parent) {
       // Dropped from Sidebar
       // if (itemData.type === ItemTypeEnum.RuneMagic) {
       //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
@@ -1704,7 +1706,7 @@ export class RqgActorSheet<
     }
 
     const targetActor = this.actor;
-    const sourceActor = item.parent;
+    const sourceActor = rqgItem.parent;
 
     // Handle item sorting within the same Actor
     if (targetActor.uuid === sourceActor?.uuid) {
@@ -1747,7 +1749,10 @@ export class RqgActorSheet<
     if (!this.actor.isOwner) {
       return [];
     }
-    const compendiumId = data.collection;
+    const compendiumId = hasOwnProperty(data, "collection") ? data.collection : undefined;
+    if (typeof compendiumId !== "string") {
+      return [];
+    }
     const pack = game.packs?.get(compendiumId);
     const packIndex = await pack?.getIndex();
     if (!packIndex) {
@@ -1942,7 +1947,8 @@ export class RqgActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          return true;
         }
       }
     } else {
@@ -1957,7 +1963,8 @@ export class RqgActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          return true;
         }
       }
     }

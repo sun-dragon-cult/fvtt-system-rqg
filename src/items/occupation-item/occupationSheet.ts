@@ -101,14 +101,14 @@ export class OccupationSheet extends RqgItemSheet {
       }
     }
 
-    if (event?.currentTarget?.id.startsWith("income-skill-")) {
-      //@ts-expect-error dataset
-      const targetRqid = event.currentTarget.dataset.skillRqid;
+    const currentTarget = event?.currentTarget as HTMLInputElement | null;
+    if (currentTarget?.id.startsWith("income-skill-")) {
+      const targetRqid = currentTarget.dataset["skillRqid"];
       if (targetRqid) {
         const occSkills = this.document.system.occupationalSkills;
         for (const skill of occSkills) {
           if (skill.skillRqidLink?.rqid === targetRqid) {
-            skill.incomeSkill = event.currentTarget?.checked;
+            skill.incomeSkill = currentTarget.checked;
           }
         }
         if (this.document.isEmbedded) {
@@ -211,7 +211,9 @@ export class OccupationSheet extends RqgItemSheet {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
     const droppedItem = await Item.implementation.fromDropData(data);
 
-    if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
+    if (
+      !isAllowedDocumentType(droppedItem as foundry.abstract.Document.Any, allowedDropDocumentTypes)
+    ) {
       return false;
     }
 
