@@ -155,7 +155,7 @@ export async function updateRqidLink(
       targetPropertyRqidLinkArray.push(newLink);
       targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
       if (targetDocument.isEmbedded) {
-        await targetDocument.parent?.updateEmbeddedDocuments(targetDocument.documentName, [
+        await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
           {
             _id: targetDocument.id,
             system: { [targetPropertyName]: targetPropertyRqidLinkArray },
@@ -173,7 +173,7 @@ export async function updateRqidLink(
   } else {
     // Property is a single RqidLink, not an array
     if (targetDocument.isEmbedded) {
-      await targetDocument.parent?.updateEmbeddedDocuments("Item", [
+      await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
         { _id: targetDocument.id, system: { [targetPropertyName]: newLink } },
       ]);
     } else {
@@ -206,15 +206,15 @@ export async function extractDropInfo<T extends Document.Any>(
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
   const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
-  const droppedDocument = await cls?.implementation.fromDropData(data);
+  const droppedDocument = await cls?.implementation.fromDropData(data as object);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(
-    droppedDocument,
+    droppedDocument as any,
     allowedDropDocumentTypes,
   );
   const allowDuplicates = !!getDomDataset(event, "allow-duplicates");
   return {
-    droppedDocument: droppedDocument,
+    droppedDocument: droppedDocument as any,
     dropZoneData: dropZoneData,
     isAllowedToDrop: !!droppedDocument && isAllowedDropDocumentType,
     allowDuplicates: allowDuplicates,

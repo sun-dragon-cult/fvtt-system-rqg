@@ -1,8 +1,6 @@
 {
   "Actor": {
-    "types": [
-      "character"
-    ],
+    "types": ["character"],
     "character": {
       "characteristics": {
         "strength": {

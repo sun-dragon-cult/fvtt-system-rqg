@@ -1,5 +1,9 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { armorTypeTranslationKeys, materialTranslationKeys } from "@item-model/armorData.ts";
+import {
+  armorTypeTranslationKeys,
+  materialTranslationKeys,
+  type ArmorItem,
+} from "@item-model/armorData.ts";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
@@ -23,6 +27,10 @@ interface ArmorSheetData {
 }
 
 export class ArmorSheet extends RqgItemSheet {
+  override get document(): ArmorItem {
+    return super.document as ArmorItem;
+  }
+
   static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],

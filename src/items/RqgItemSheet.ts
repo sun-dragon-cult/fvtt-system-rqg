@@ -167,7 +167,7 @@ export class RqgItemSheet<
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
           const deleteFromProperty = foundry.utils.getProperty(
-            this.item.system,
+            this.item.system as object,
             deleteFromPropertyName,
           );
           if (Array.isArray(deleteFromProperty)) {
@@ -245,8 +245,9 @@ export class RqgItemSheet<
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Get rid of any remaining drag-hover classes
 
-    const droppedDocumentData =
-      foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData | null; // TODO - ActorSheets.DropData have type, correct here?
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
     if (!isAllowedDocumentNames(droppedDocumentData?.type, allowedDropDocumentNames)) {

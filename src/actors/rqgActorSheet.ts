@@ -378,7 +378,7 @@ export class RqgActorSheet<
           value: (1 / curr.system.price.estimated).toString(),
         });
       }
-      curr.system.price.conversion = conv; // TODO adds additional data for the sheet
+      (curr.system.price as any).conversion = conv; // TODO adds additional data for the sheet
     });
     return result;
   }
@@ -754,8 +754,8 @@ export class RqgActorSheet<
         | WeaponItem
         | undefined;
       if (projectile) {
-        weapon.system.projectileQuantity = projectile.system.quantity; // TODO adds additional data for the sheet
-        weapon.system.projectileName = projectile.name; // TODO adds additional data for the sheet
+        (weapon.system as any).projectileQuantity = projectile.system.quantity; // TODO adds additional data for the sheet
+        (weapon.system as any).projectileName = projectile.name; // TODO adds additional data for the sheet
       }
     });
     itemTypes[ItemTypeEnum.Armor]?.sort((a, b) => a.sort - b.sort);
@@ -1036,7 +1036,9 @@ export class RqgActorSheet<
       });
     });
 
-    this._contextMenu(htmlElement); // TODO use html since super _contextMenu is done that way !!!
+    if (htmlElement) {
+      this._contextMenu(htmlElement); // TODO use html since super _contextMenu is done that way !!!
+    }
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
@@ -1336,7 +1338,7 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
       const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        const effect = fromUuidSync<RqgActiveEffect>(effectUuid);
+        const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
         requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
         new foundry.applications.sheets.ActiveEffectConfig(effect).render(true);
       });

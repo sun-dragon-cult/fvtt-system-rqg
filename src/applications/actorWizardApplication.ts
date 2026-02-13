@@ -190,15 +190,15 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
       const associatedChoice = rqid && this.choices[rqid];
       if (associatedChoice) {
         // TODO Is choice a temporary property?
-        i.system.choice = associatedChoice;
+        (i.system as any).choice = associatedChoice;
       }
     });
 
     // enrich biography for purposes of sheet
-    if (this.species.selectedSpeciesTemplate?.system.background.biography) {
-      this.species.selectedSpeciesTemplate.system.background.biography =
+    if (this.species.selectedSpeciesTemplate?.system?.background?.biography) {
+      (this.species.selectedSpeciesTemplate!.system as any).background.biography =
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.species.selectedSpeciesTemplate?.system.background.biography,
+          (this.species.selectedSpeciesTemplate?.system as any).background.biography,
         );
     }
 
@@ -227,7 +227,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     const homelandRunes: RqgItem[] = [];
     if (selectedHomeland?.system?.runeRqidLinks) {
       for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
-        const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RqgItem | undefined;
+        const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RuneItem | undefined;
         if (rune) {
           assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
         }
@@ -249,7 +249,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     const homelandSkills: RqgItem[] = [];
     if (selectedHomeland?.system?.skillRqidLinks) {
       for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks ?? []) {
-        const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as RqgItem | undefined;
+        const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as SkillItem | undefined;
         assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
         const associatedChoice = this.choices[skillRqidLink.rqid];
         if (associatedChoice) {
@@ -291,7 +291,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     const homelandPassions: RqgItem[] = [];
     if (selectedHomeland?.system?.passionRqidLinks) {
       for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
-        const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as RqgItem | undefined;
+        const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as PassionItem | undefined;
         assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
         const associatedChoice = this.choices[passionRqidLink.rqid];
         passion.system.hasExperience = false;
@@ -375,7 +375,9 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
         }
         const body = $(wrapper as HTMLElement).find(".collapsible-wrapper-body")[0];
-        $(body).slideToggle(300);
+        if (body) {
+          $(body).slideToggle(300);
+        }
         const plus = $(wrapper as HTMLElement).find(".fa-plus-square")[0];
         plus?.classList.toggle("no-display");
         const minus = $(wrapper as HTMLElement).find(".fa-minus-square")[0];

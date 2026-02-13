@@ -23,15 +23,9 @@
     "strict": true,
 
     "paths": {
-      "@actors/*": [
-        "./src/actors/*"
-      ],
-      "@items/*": [
-        "./src/items/*"
-      ],
-      "@item-model/*": [
-        "./src/data-model/item-data/*"
-      ]
+      "@actors/*": ["./src/actors/*"],
+      "@items/*": ["./src/items/*"],
+      "@item-model/*": ["./src/data-model/item-data/*"]
     },
     // See: https://www.typescriptlang.org/tsconfig/#verbatimModuleSyntax
     "verbatimModuleSyntax": true,
