@@ -47,9 +47,12 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
   private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
   private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { abilityItem?: AbilityItem | PartialAbilityItem }) {
+  constructor(
+    abilityItem: AbilityItem | PartialAbilityItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    if (!options.abilityItem) {
+    if (!abilityItem) {
       const msg = "No AbilityItem to roll for";
       ui.notifications?.warn(msg);
       setTimeout(() => {
@@ -58,7 +61,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
       throw new RqgError(msg);
     }
 
-    this.abilityItem = options.abilityItem;
+    this.abilityItem = abilityItem;
     this.rollMode =
       (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
       CONST.DICE_ROLL_MODES.PUBLIC;

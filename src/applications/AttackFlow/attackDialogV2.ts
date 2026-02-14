@@ -54,9 +54,12 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
   private weaponItem: WeaponItem; // The chosen actor might not have any weapon
 
-  constructor(options: { weaponItem: WeaponItem }) {
-    super(options as any);
-    this.weaponItem = options.weaponItem;
+  constructor(
+    weaponItem: WeaponItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
+    super(options);
+    this.weaponItem = weaponItem;
     const attackingToken = getTokenFromItem(this.weaponItem);
     const allowCombatWithoutToken = game.settings?.get(systemId, "allowCombatWithoutToken");
 

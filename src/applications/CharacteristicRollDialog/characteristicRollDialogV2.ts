@@ -56,11 +56,17 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
   ];
 
   private actor: RqgActor;
+  private characteristicName: keyof Characteristics;
   private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { actor: RqgActor; characteristicName: keyof Characteristics }) {
+  constructor(
+    actor: RqgActor,
+    characteristicName: keyof Characteristics,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    this.actor = options.actor;
+    this.actor = actor;
+    this.characteristicName = characteristicName;
     this.rollMode =
       (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
       CONST.DICE_ROLL_MODES.PUBLIC;
@@ -108,9 +114,9 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.CharacteristicRoll.OtherModifier");
     formData.actorUuid ??= this.actor.uuid;
-    formData.characteristicName ??= this.options.characteristicName;
+    formData.characteristicName ??= this.characteristicName;
     formData.characteristicValue ??=
-      (this.actor.system.characteristics as any)[this.options.characteristicName]?.value ?? 0;
+      this.actor.system.characteristics[this.characteristicName]?.value ?? 0;
 
     const speaker = ChatMessage.getSpeaker({
       token: getTokenFromActor(this.actor),

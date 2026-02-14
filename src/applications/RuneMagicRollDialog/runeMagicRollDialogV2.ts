@@ -68,9 +68,12 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
   private spellItem: SpellItem;
   private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { spellItem: SpellItem }) {
-    super(options as any);
-    this.spellItem = options.spellItem;
+  constructor(
+    spellItem: SpellItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
+    super(options);
+    this.spellItem = spellItem;
     this.rollMode =
       (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
       CONST.DICE_ROLL_MODES.PUBLIC;
@@ -106,8 +109,9 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
   };
 
   override async _prepareContext(): Promise<RuneMagicRollDialogContext> {
-    const formData: RuneMagicRollDialogFormData =
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as RuneMagicRollDialogFormData;
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
@@ -167,7 +171,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private onChangeRollMode(event: MouseEvent): void {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode");
+    const newRollMode = getDomDataset(target, "roll-mode") as CONST.DICE_ROLL_MODES | undefined;
     if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
       return; // Clicked outside the buttons, or not a valid roll mode
     }
@@ -181,7 +185,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: RuneMagicRollDialogFormData = formData.object;
+    const formDataObject = formData.object as RuneMagicRollDialogFormData;
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')

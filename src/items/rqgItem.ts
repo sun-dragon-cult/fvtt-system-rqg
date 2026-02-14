@@ -163,7 +163,7 @@ export class RqgItem extends Item {
    */
   public async abilityRoll(): Promise<void> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await new AbilityRollDialogV2({ abilityItem: this }).render(true);
+    await new AbilityRollDialogV2(this).render(true);
   }
 
   /**
@@ -202,7 +202,7 @@ export class RqgItem extends Item {
    */
   public async spiritMagicRoll(): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await new SpiritMagicRollDialogV2({ spellItem: this }).render(true);
+    await new SpiritMagicRollDialogV2(this).render(true);
   }
 
   /**
@@ -241,7 +241,7 @@ export class RqgItem extends Item {
    */
   public async runeMagicRoll(): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await new RuneMagicRollDialogV2({ spellItem: this }).render(true);
+    await new RuneMagicRollDialogV2(this).render(true);
   }
 
   /**
@@ -304,7 +304,7 @@ export class RqgItem extends Item {
    */
   public async attack(): Promise<void> {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
-    await new AttackDialogV2({ weaponItem: this }).render(true);
+    await new AttackDialogV2(this).render(true);
   }
 
   /**
@@ -475,7 +475,7 @@ export class RqgItem extends Item {
     assertDocumentSubType<SpellItem>(
       this,
       spellItemTypes,
-      "Tried to get spellSignature on a non spell item",
+      "Tried to get spellSignature on a non spell item: " + this.type,
     );
 
     const descriptionParts = [];

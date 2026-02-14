@@ -74,10 +74,7 @@ export class RqgActor extends Actor {
   }
 
   public async characteristicRoll(characteristicName: keyof Characteristics): Promise<void> {
-    await new CharacteristicRollDialogV2({
-      actor: this,
-      characteristicName: characteristicName,
-    }).render(true);
+    await new CharacteristicRollDialogV2(this, characteristicName).render(true);
   }
 
   /**
@@ -125,7 +122,7 @@ export class RqgActor extends Actor {
   /**
    * Open an ability roll dialog for reputation   */
   public async reputationRoll(): Promise<void> {
-    await new AbilityRollDialogV2({ abilityItem: this.createReputationFakeItem() }).render(true);
+    await new AbilityRollDialogV2(this.createReputationFakeItem()).render(true);
   }
 
   /**

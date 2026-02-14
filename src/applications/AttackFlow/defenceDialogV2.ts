@@ -71,11 +71,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
 
   private readonly attackChatMessage: RqgChatMessage;
 
-  constructor(options: { chatMessageId: string }) {
+  constructor(
+    chatMessageId: string,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    const attackChatMessage = game.messages?.get(options.chatMessageId ?? "") as
-      | RqgChatMessage
-      | undefined;
+    const attackChatMessage = game.messages?.get(chatMessageId ?? "") as RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
       const msg = "No attackChatMessage to defend";
@@ -193,8 +194,10 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     ) {
       formData.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0]; // If nothing is selected, select the first option
     }
-    const parrySkillRqid =
-      parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid;
+
+    const parrySkillRqid = formData.parryingWeaponUsage
+      ? parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid
+      : undefined;
 
     const { defenceName, defenceChance } = DefenceDialogV2.getDefenceNameAndChance(
       formData.defence,
@@ -573,9 +576,11 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     }
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
       const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage;
-      const attackSkill = attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
-        attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid,
-      );
+      const attackSkill = attackWeaponUsage
+        ? attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
+            attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid,
+          )
+        : undefined;
 
       await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
       await attackSkill?.checkExperience?.(attackRoll.successLevel);

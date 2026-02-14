@@ -4,7 +4,7 @@ import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 /** For now a spell is either Spirit Magic or Rune Magic. Sorcery can be added here later. */
 export type SpellItem = SpiritMagicItem | RuneMagicItem;
-export const spellItemTypes = ["SpiritMagic", "RuneMagic"] as const;
+export const spellItemTypes = ["spiritMagic", "runeMagic"] as const; // Can't use ItemTypeEnum here because it is not initialized yet
 
 export enum SpellRangeEnum {
   None = "",

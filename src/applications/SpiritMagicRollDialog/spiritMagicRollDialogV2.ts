@@ -51,13 +51,16 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
   private powX5: number;
   private rollMode: CONST.DICE_ROLL_MODES | Brand<string, "CONFIG.Dice.RollMode">; // TODO is this the correct way?
 
-  constructor(options: { spellItem: SpiritMagicItem }) {
+  constructor(
+    spellItem: SpiritMagicItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
 
-    const actor = options.spellItem.parent;
+    const actor = spellItem.parent;
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
-    this.spellItem = options.spellItem;
+    this.spellItem = spellItem;
     this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
     this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
   }
@@ -92,8 +95,9 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
   };
 
   override async _prepareContext(): Promise<SpiritMagicRollDialogContext> {
-    const formData: SpiritMagicRollDialogFormData =
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as SpiritMagicRollDialogFormData;
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
@@ -157,7 +161,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: SpiritMagicRollDialogFormData = formData.object;
+    const formDataObject = formData.object as SpiritMagicRollDialogFormData;
 
     const rollMode = (form?.querySelector<HTMLButtonElement>(
       'button[data-action="rollMode"][aria-pressed="true"]',
