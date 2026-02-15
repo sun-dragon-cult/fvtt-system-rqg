@@ -168,7 +168,7 @@ export class RqgActorSheet<
     await super._render(force, options);
     const actorCombatants: Combatant.Implementation[] =
       game.combat?.getCombatantsByActor(this.actor) ?? [];
-    actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
+    actorCombatants?.forEach((c) => (c.apps[this.appId] = this as any));
   }
 
   override async close(options: FormApplication.CloseOptions = {}) {
@@ -931,10 +931,9 @@ export class RqgActorSheet<
     return super._updateObject(event, formData);
   }
 
-  // @ts-expect-error foundry actually is migrating to HTMLElement instead of JQuery
-  override _contextMenu(html: HTMLElement): void {
+  override _contextMenu(html: HTMLElement | JQuery<HTMLElement>): void {
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".characteristic.contextmenu",
       characteristicMenuOptions(this.actor, this.token),
@@ -942,7 +941,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".combat.contextmenu",
       combatMenuOptions(this.actor),
@@ -950,7 +949,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".hit-location.contextmenu",
       hitLocationMenuOptions(this.actor),
@@ -958,7 +957,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".rune.contextmenu",
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
@@ -967,7 +966,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".spirit-magic.contextmenu",
       spiritMagicMenuOptions(this.actor),
@@ -975,7 +974,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".cult.contextmenu",
       cultMenuOptions(this.actor),
@@ -983,7 +982,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".rune-magic.contextmenu",
       runeMagicMenuOptions(this.actor),
@@ -991,7 +990,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".skill.contextmenu",
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
@@ -1000,7 +999,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".gear.contextmenu",
       gearMenuOptions(this.actor),
@@ -1008,7 +1007,7 @@ export class RqgActorSheet<
     );
 
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".passion.contextmenu",
       passionMenuOptions(this.actor, this.token),
@@ -1631,7 +1630,7 @@ export class RqgActorSheet<
      * @param {ActorSheet} sheet The ActorSheet application
      * @param {object} data      The data that has been dropped onto the sheet
      */
-    const allowed = Hooks.call("dropActorSheetData", actor, this, data);
+    const allowed = Hooks.call("dropActorSheetData", actor, this as any, data);
     if (!allowed) {
       return;
     }
@@ -1974,7 +1973,7 @@ export class RqgActorSheet<
 
   protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
     const html = await super._renderOuter();
-    await addRqidLinkToSheetJQuery(html, this);
+    await addRqidLinkToSheetJQuery(html, this as any);
 
     const editModeLink = html.find(".title-edit-mode")[0];
     if (editModeLink) {
