@@ -931,7 +931,8 @@ export class RqgActorSheet<
     return super._updateObject(event, formData);
   }
 
-  override _contextMenu(html: JQuery): void {
+  // @ts-expect-error foundry actually is migrating to HTMLElement instead of JQuery
+  override _contextMenu(html: HTMLElement): void {
     foundry.applications.ux.ContextMenu.implementation.create(
       this,
       html,
@@ -1037,7 +1038,7 @@ export class RqgActorSheet<
     });
 
     if (htmlElement) {
-      this._contextMenu($(htmlElement)); // TODO use html since super _contextMenu is done that way !!!
+      this._contextMenu(htmlElement);
     }
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
