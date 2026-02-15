@@ -28,6 +28,7 @@
     "lint": "run-s lint:scripts lint:styles",
     "lint:scripts": "eslint .",
     "lint:styles": "stylelint **/*.{css,scss}",
+    "lint:styles:fix": "stylelint **/*.{css,scss} --fix",
     "typecheck": "tsc -noEmit",
     "tsgo": "tsgo",
     "check-types": "tsgo --noEmit"

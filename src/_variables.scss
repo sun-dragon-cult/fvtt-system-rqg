@@ -1,11 +1,11 @@
 .theme-dark {
-  --rqg-themed-exp-outline: rgba(0, 0, 0, 0.8);
+  --rqg-themed-exp-outline: rgb(0 0 0 / 80%);
   --rqg-themed-highlight: #f8da10;
   --rqg-svg-invert-param: 0.1;
 }
 
 .theme-light {
-  --rqg-themed-exp-outline: rgba(255, 255, 255, 0.8);
+  --rqg-themed-exp-outline: rgb(255 255 255 / 80%);
   --rqg-themed-highlight: #901010;
   --rqg-svg-invert-param: 0.9;
 }
@@ -13,35 +13,26 @@
 :root {
   --rqg-color-main: #854906;
   --rqg-color-main-bg: #f3a71e;
-
   --rqg-secondary-color: #5c8322;
-  --rqg-table-alternate-background: rgba(0, 0, 0, 0.08);
+  --rqg-table-alternate-background: rgb(0 0 0 / 8%);
   --rqg-highlight: #901010;
-  --rqg-light-outline: rgba(255, 255, 255, 0.8);
-
+  --rqg-light-outline: rgb(255 255 255 / 80%);
   --rqg-background-tab-active:
     linear-gradient(purple 0%, #e60000 90%), linear-gradient(to right, #711771 0%, #d6d63a 90%),
-    url(/systems/rqg/assets/images/ui/stonetexture2.jpg);
-
+    url("/systems/rqg/assets/images/ui/stonetexture2.jpg");
   --rqg-box-shadow-tab-active:
     inset 2px 2px 7px 2px black, 0 0 8px 0 #d9dc17, -3px -3px 7px 2px black;
   --rqg-box-shadow-profile-img: 1px 1px 30px 5px #4c3b1ad6, -1px -1px 9px 5px #e2cb9ded;
   --rqg-box-shadow-grid-header: inset 0 0 20px 7px var(--rqg-color-main-bg);
   --rqg-box-shadow-editor-content: inset 0 0 20px 0 #bd9844, 0 0 3px 2px #bd9844;
-
   --rqg-color-grid-text-shadow: #6f644e;
-
   --rqg-color-enc-bg: #d8b16e;
   --rqg-color-enc-warning: #ff640045;
   --rqg-color-enc-legend: #e4cc9d;
-
-  --rqg-color-invalid-journal: #e4b5ad; //Regular journal in chat message is: #7a7971
-
+  --rqg-color-invalid-journal: #e4b5ad; // Regular journal in chat message is: #7a7971
   --rqg-color-dex-sr-bg: #f2ff009e;
   --rqg-color-siz-sr-bg: #15ff1f5e;
-
   --color-shadow-primary: var(--rqg-color-main); // #ff0000;
-
   --color-border-highlight: var(--rqg-color-main-bg); // #ff6400;
   --color-border-highlight-alt: var(--rqg-color-main-bg); // #ff0000;
 }

@@ -76,7 +76,7 @@
                  id="occupational-skill-edit-{{id}}">
               <div style="display: flex; flex-wrap: wrap;">
                 {{#each system.occupationalSkills}}
-                  <div class="occupationalSkill {{#if this.incomeSkill}}incomeSkill{{/if}}">
+                  <div class="occupational-skill {{#if this.incomeSkill}}income-skill{{/if}}">
                     <i class="fas fa-times icon"
                        data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
                        data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid

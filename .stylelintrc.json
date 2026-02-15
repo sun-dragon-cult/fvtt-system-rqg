@@ -1,4 +1,14 @@
 {
-  "extends": "",
-  "rules": {}
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-prettier-scss"
+  ],
+  "ignoreFiles": [
+    "dist/**/*",
+    "node_modules/**/*"
+  ],
+  "rules": {
+    "no-duplicate-selectors": null,
+    "no-descending-specificity": null
+  }
 }

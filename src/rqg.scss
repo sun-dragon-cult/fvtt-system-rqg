@@ -4,12 +4,6 @@
 @use "./items/itemsheets";
 @use "./actors/actorsheets";
 
-body {
-  background-attachment: fixed !important;
-  background-size: cover !important;
-  background: url("/systems/rqg/assets/images/ui/sacred-time.webp") no-repeat;
-}
-
 // *** Start of theme specific styles ***
 
 .rqg {
@@ -76,7 +70,7 @@ input.readonly {
 }
 
 .norse {
-  font-family: "Norse", "Signika", "Palatino Linotype", serif;
+  font-family: Norse, Signika, "Palatino Linotype", serif;
   font-variant: small-caps;
   letter-spacing: 1.5px;
 }
@@ -147,7 +141,7 @@ input.readonly {
   h4,
   h5,
   h6 {
-    font-family: "Norse", "Signika", "Palatino Linotype", serif;
+    font-family: Norse, Signika, "Palatino Linotype", serif;
     font-variant: small-caps;
     letter-spacing: 1.5px;
     font-weight: bold;
@@ -269,7 +263,6 @@ input.readonly {
   }
 
   .masonry-item {
-    page-break-inside: avoid;
     break-inside: avoid;
   }
 
@@ -294,13 +287,13 @@ input.readonly {
     flex: 0 0 12px;
     width: 12px;
     height: 12px;
-    margin: 3px 3px;
+    margin: 3px;
   }
 
   input[type="submit"] {
     width: 100%;
     margin: 0 1px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgb(0 0 0 / 10%);
     border: 2px groove var(--color-text-light-highlight);
     border-radius: 3px;
     font-size: 14px;
@@ -395,7 +388,7 @@ input.readonly {
     grid-template-rows: [row-start] min-content [row-end];
     grid-auto-rows: auto;
     grid-auto-columns: auto;
-    grid-gap: 0;
+    gap: 0;
 
     > * {
       padding: 2px;
@@ -415,7 +408,6 @@ input.readonly {
     .headings {
       grid-column: 1/-1;
       grid-row: 1/2;
-
       background: var(--rqg-color-main-bg);
       mix-blend-mode: color-burn;
       text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
@@ -712,7 +704,7 @@ input.readonly {
       grid-template-rows: [row-start] auto [row-end];
       grid-auto-rows: auto;
       grid-auto-columns: auto;
-      grid-gap: 0;
+      gap: 0;
       grid-template-columns: [col-start] auto [col-end];
 
       // Alternating row background
@@ -799,15 +791,15 @@ input.readonly {
   [data-passion-add] {
     &:hover {
       box-shadow:
-        12px 12px 16px 0 rgba(0, 0, 0, 0.25),
-        -8px -8px 12px 0 rgba(255, 255, 255, 0.3);
+        12px 12px 16px 0 rgb(0 0 0 / 25%),
+        -8px -8px 12px 0 rgb(255 255 255 / 30%);
     }
 
     &:active {
       box-shadow:
-        -8px -8px 16px 0 rgba(0, 0, 0, 0.25),
-        11px 12px 12px 0 rgba(255, 255, 255, 0.3),
-        inset 4px 4px 5px 0px rgba(0, 0, 0, 0.25);
+        -8px -8px 16px 0 rgb(0 0 0 / 25%),
+        11px 12px 12px 0 rgb(255 255 255 / 30%),
+        inset 4px 4px 5px 0 rgb(0 0 0 / 25%);
     }
   }
 
@@ -825,8 +817,7 @@ input.readonly {
     cursor: default;
     text-align: left;
     text-shadow: initial;
-
-    font-family: "Signika", sans-serif;
+    font-family: Signika, sans-serif;
     font-variant: normal;
     letter-spacing: normal;
     font-weight: normal;
@@ -927,7 +918,7 @@ input.readonly {
     }
 
     .chat-options {
-      background: url(/systems/rqg/assets/images/ui/mainbackground.webp) repeat-y scroll top
+      background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top
         left/100%;
     }
 
@@ -1007,8 +998,7 @@ input.readonly {
 
   .dice-roll {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-flow: row wrap;
     justify-content: space-around;
 
     .damage-formula {
@@ -1048,22 +1038,19 @@ input.readonly {
       flex-wrap: wrap;
       justify-content: space-around;
       mix-blend-mode: multiply;
-
       flex: 0;
       font-size: var(--font-size-20);
       font-weight: bold;
-
       position: relative;
       margin: 0;
       line-height: 24px;
       text-align: center;
-
       word-break: break-all;
 
       .target {
         font-size: var(--font-size-14);
       }
-                
+
       // Crit
       &.success-level-0 {
         background-color: #6fd042cc;
@@ -1126,7 +1113,7 @@ input.readonly {
       mix-blend-mode: overlay;
       display: block;
       width: 100%;
-      filter: invert(0.9) drop-shadow(0px 4px 4px black);
+      filter: invert(0.9) drop-shadow(0 4px 4px black);
     }
   }
 }
@@ -1184,13 +1171,13 @@ input.readonly {
 
 #pause {
   figcaption {
-    font-family: "Norse", "Signika", "Palatino Linotype", serif;
+    font-family: Norse, Signika, "Palatino Linotype", serif;
     font-size: 2rem;
     opacity: 0.7;
   }
 
   img {
-    content: url(/systems/rqg/assets/images/runes/movement_change.svg);
+    content: url("/systems/rqg/assets/images/runes/movement_change.svg");
     opacity: 0.7;
     height: 120px;
     width: 120px;
@@ -1210,7 +1197,7 @@ input.readonly {
 }
 
 // Style the extra line in the settings tab
-.settingLinks {
+.setting-links {
   margin-top: -5px;
   gap: 0.2rem;
   flex-flow: nowrap;
@@ -1222,6 +1209,7 @@ input.readonly {
     text-wrap-style: balance;
   }
 }
+
 // Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
 .rqid-content-link {
   border-radius: 9px;
@@ -1284,10 +1272,9 @@ input.readonly {
 .key-value-grid {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-gap: 0.5em;
-  align-items: center;
-  justify-items: flex-start;
-  padding: 0 0 0.5em 0;
+  gap: 0.5em;
+  place-items: center flex-start;
+  padding: 0 0 0.5em;
 
   & .input-button {
     display: flex;
@@ -1346,7 +1333,7 @@ input.readonly {
   .img-name-grid {
     display: grid;
     grid-template-columns: auto 1fr;
-    grid-gap: 0.5em;
+    gap: 0.5em;
 
     &.bordered {
       border: 1px black solid;
@@ -1410,13 +1397,13 @@ input.readonly {
     text-align: center;
     margin: -1rem -1rem 0.5rem;
     padding: 1rem 1rem 0.9rem;
-    box-shadow: 0px -3px 11px 0px;
+    box-shadow: 0 -3px 11px 0;
     gap: 1rem;
 
     .main-header {
       font:
-        bold 2rem/1rem "Norse",
-        "Signika",
+        bold 2rem/1rem Norse,
+        Signika,
         "Palatino Linotype",
         serif;
       font-variant: small-caps;

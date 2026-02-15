@@ -38,9 +38,9 @@ const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
         lintCommand: "eslint .",
         useFlatConfig: true,
       },
-      // stylelint: {
-      //   lintCommand: "stylelint **/*.{scss,css}",
-      // },
+      stylelint: {
+        lintCommand: "stylelint **/*.{scss,css}",
+      },
     }),
     tsconfigPaths(),
     foundryEntrypointsPlugin(),
