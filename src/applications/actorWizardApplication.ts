@@ -24,6 +24,62 @@ import type { HomelandItem } from "@item-model/homelandData.ts";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { CultItem } from "@item-model/cultData.ts";
 
+/**
+ * Template context types for the Actor Wizard.
+ * These types represent what the Handlebars template receives,
+ * which includes enriched HTML, computed properties, and UI state
+ * that don't belong in the strict data model types.
+ */
+
+/** System data with additional template properties for display */
+interface TemplateSystemData {
+  [key: string]: any;
+  choice?: CreationChoice;
+}
+
+/** Item with template-specific properties */
+interface TemplateItem extends RqgItem {
+  system: TemplateSystemData;
+}
+
+/** RqidLink with choice property for template display */
+interface TemplateRqidLink extends RqidLink {
+  choice?: CreationChoice;
+}
+
+/** Species template context with enriched biography */
+interface TemplateSpeciesContext {
+  selectedSpeciesTemplate:
+    | (RqgActor & {
+        items: TemplateItem[];
+        system: any; // Allows for enriched biography and other template properties
+      })
+    | undefined;
+  speciesTemplateOptions: SelectOptionData<string>[] | undefined;
+}
+
+/** Homeland template context with enriched content and embedded items */
+interface TemplateHomelandContext {
+  selectedHomeland:
+    | (HomelandItem & {
+        system: any; // Allows for enriched wizardInstructions and TemplateRqidLinks
+        runes?: TemplateItem[]; // computed for display
+        embeddedItems?: Record<string, any>; // organized items for display
+      })
+    | undefined;
+  homelandOptions: SelectOptionData<string>[] | undefined;
+}
+
+/** Complete template context returned by getData() */
+interface ActorWizardTemplateContext {
+  actor: RqgActor;
+  species: TemplateSpeciesContext;
+  speciesTemplateItems: Record<string, any> | undefined;
+  homeland: TemplateHomelandContext;
+  choices: Record<string, CreationChoice>;
+  collapsibleOpenStates: Record<string, boolean>;
+}
+
 export class ActorWizard extends foundry.appv1.api.FormApplication {
   actor: RqgActor;
   species: {
@@ -105,7 +161,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     });
   }
 
-  override async getData(): Promise<any> {
+  override async getData(): Promise<ActorWizardTemplateContext> {
     // Set any collapsible sections that need to be open by default
     if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
       this.collapsibleOpenStates["speciesBackground"] = true;
@@ -184,145 +240,202 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     await this.updateChoices();
 
-    // put choices on selected species items for purposes of sheet
-    this.species.selectedSpeciesTemplate?.items.forEach((i) => {
-      const rqid = i.getFlag(systemId, documentRqidFlags)?.id;
-      const associatedChoice = rqid && this.choices[rqid];
-      if (associatedChoice) {
-        // TODO Is choice a temporary property?
-        (i.system as any).choice = associatedChoice;
-      }
-    });
+    // Prepare template species context with choices on items
+    const templateSpecies: TemplateSpeciesContext = {
+      selectedSpeciesTemplate: this.species.selectedSpeciesTemplate
+        ? (Object.assign(this.species.selectedSpeciesTemplate, {
+            items: this.species.selectedSpeciesTemplate.items.map((item) => {
+              const rqid = item.getFlag(systemId, documentRqidFlags)?.id;
+              const associatedChoice = rqid && this.choices[rqid];
+              const templateItem = item as TemplateItem;
+              if (associatedChoice) {
+                templateItem.system.choice = associatedChoice;
+              }
+              return templateItem;
+            }),
+          }) as TemplateSpeciesContext["selectedSpeciesTemplate"])
+        : undefined,
+      speciesTemplateOptions: this.species.speciesTemplateOptions,
+    };
 
-    // enrich biography for purposes of sheet
-    if (this.species.selectedSpeciesTemplate?.system?.background?.biography) {
-      (this.species.selectedSpeciesTemplate!.system as any).background.biography =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          (this.species.selectedSpeciesTemplate?.system as any).background.biography,
-        );
+    // Enrich biography for template display
+    if (
+      templateSpecies.selectedSpeciesTemplate?.system &&
+      "background" in templateSpecies.selectedSpeciesTemplate.system &&
+      (templateSpecies.selectedSpeciesTemplate.system as any).background?.biography
+    ) {
+      const background = (templateSpecies.selectedSpeciesTemplate.system as any).background;
+      background.biography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        background.biography,
+      );
     }
 
-    // put choices on selected homeland journal rqidLinks for purposes of sheet
+    // Prepare template homeland context with enriched content and embedded items
     const selectedHomeland = this.homeland.selectedHomeland;
     if (selectedHomeland) {
       assertDocumentSubType<HomelandItem>(selectedHomeland, ItemTypeEnum.Homeland);
     }
-    const homelandRqidLinks: RqidLink[] = (
-      selectedHomeland?.system?.cultureJournalRqidLinks ?? []
-    ).concat(
-      ...(selectedHomeland?.system?.tribeJournalRqidLinks ?? []),
-      ...(selectedHomeland?.system?.clanJournalRqidLinks ?? []),
-      ...(selectedHomeland?.system?.cultRqidLinks ?? []),
-    );
-    if (homelandRqidLinks.length) {
-      homelandRqidLinks.forEach((rqidLink: RqidLink | CreationChoice) => {
-        const associatedChoice = this.choices[rqidLink.rqid];
+
+    let templateHomelandItem: TemplateHomelandContext["selectedHomeland"];
+
+    if (selectedHomeland) {
+      // Add choices to RqidLinks
+      const cultureJournalRqidLinks = selectedHomeland.system.cultureJournalRqidLinks?.map(
+        (link) => {
+          const templateLink: TemplateRqidLink = { ...link };
+          const associatedChoice = this.choices[link.rqid];
+          if (associatedChoice) {
+            templateLink.choice = associatedChoice;
+          }
+          return templateLink;
+        },
+      );
+
+      const tribeJournalRqidLinks = selectedHomeland.system.tribeJournalRqidLinks?.map((link) => {
+        const templateLink: TemplateRqidLink = { ...link };
+        const associatedChoice = this.choices[link.rqid];
         if (associatedChoice) {
-          //@ts-expect-error choice TODO Is choice a temporary property?
-          rqidLink.choice = associatedChoice;
+          templateLink.choice = associatedChoice;
         }
+        return templateLink;
       });
-    }
 
-    const homelandRunes: RqgItem[] = [];
-    if (selectedHomeland?.system?.runeRqidLinks) {
-      for (const runeRqidLink of selectedHomeland?.system?.runeRqidLinks ?? []) {
-        const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RuneItem | undefined;
-        if (rune) {
-          assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
-        }
-        assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
-        rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
-        rune.system.hasExperience = false;
-        const associatedChoice = this.choices[runeRqidLink.rqid];
+      const clanJournalRqidLinks = selectedHomeland.system.clanJournalRqidLinks?.map((link) => {
+        const templateLink: TemplateRqidLink = { ...link };
+        const associatedChoice = this.choices[link.rqid];
         if (associatedChoice) {
-          // put choice on homeland runes for purposes of sheet
-          rune.system.choice = associatedChoice;
+          templateLink.choice = associatedChoice;
         }
-        homelandRunes.push(rune);
-      }
-      // put runes on homeland for purposes of sheet
-      //@ts-expect-error runes
-      this.homeland.selectedHomeland.runes = homelandRunes;
-    }
+        return templateLink;
+      });
 
-    const homelandSkills: RqgItem[] = [];
-    if (selectedHomeland?.system?.skillRqidLinks) {
-      for (const skillRqidLink of selectedHomeland?.system?.skillRqidLinks ?? []) {
-        const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as SkillItem | undefined;
-        assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
-        const associatedChoice = this.choices[skillRqidLink.rqid];
+      const cultRqidLinks = selectedHomeland.system.cultRqidLinks?.map((link) => {
+        const templateLink: TemplateRqidLink = { ...link };
+        const associatedChoice = this.choices[link.rqid];
         if (associatedChoice) {
-          // put choice on homeland skills for purposes of sheet
-          skill.system.choice = associatedChoice;
+          templateLink.choice = associatedChoice;
         }
-        if (skillRqidLink.bonus) {
-          skill.system.baseChance = 0;
-          skill.system.gainedChance = 0;
-          skill.system.hasExperience = false;
-          skill.system.chance = skillRqidLink.bonus;
-        }
-        homelandSkills.push(skill);
-      }
-    }
+        return templateLink;
+      });
 
-    // enrich homeland wizard instructions for purposes of sheet
-    if (selectedHomeland?.system.wizardInstructions) {
-      selectedHomeland.system.wizardInstructions =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          selectedHomeland.system.wizardInstructions,
+      // Build runes with choices for template display
+      const homelandRunes: TemplateItem[] = [];
+      if (selectedHomeland.system.runeRqidLinks) {
+        for (const runeRqidLink of selectedHomeland.system.runeRqidLinks) {
+          const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RuneItem | undefined;
+          if (rune) {
+            assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
+            rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
+            rune.system.hasExperience = false;
+            const templateRune = rune as TemplateItem;
+            const associatedChoice = this.choices[runeRqidLink.rqid];
+            if (associatedChoice) {
+              templateRune.system.choice = associatedChoice;
+            }
+            homelandRunes.push(templateRune);
+          }
+        }
+      }
+
+      // Build skills with choices and bonuses for template display
+      const homelandSkills: TemplateItem[] = [];
+      if (selectedHomeland.system.skillRqidLinks) {
+        for (const skillRqidLink of selectedHomeland.system.skillRqidLinks) {
+          const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as SkillItem | undefined;
+          if (skill) {
+            assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
+            const templateSkill = skill as TemplateItem;
+            const associatedChoice = this.choices[skillRqidLink.rqid];
+            if (associatedChoice) {
+              templateSkill.system.choice = associatedChoice;
+            }
+            if (skillRqidLink.bonus) {
+              skill.system.baseChance = 0;
+              skill.system.gainedChance = 0;
+              skill.system.hasExperience = false;
+              skill.system.chance = skillRqidLink.bonus;
+            }
+            homelandSkills.push(templateSkill);
+          }
+        }
+      }
+
+      // Build passions with choices for template display
+      const homelandPassions: TemplateItem[] = [];
+      if (selectedHomeland.system.passionRqidLinks) {
+        for (const passionRqidLink of selectedHomeland.system.passionRqidLinks) {
+          const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as PassionItem | undefined;
+          if (passion) {
+            assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
+            passion.system.hasExperience = false;
+            const templatePassion = passion as TemplateItem;
+            const associatedChoice = this.choices[passionRqidLink.rqid];
+            if (associatedChoice) {
+              templatePassion.system.choice = associatedChoice;
+            }
+            homelandPassions.push(templatePassion);
+          }
+        }
+      }
+
+      // Enrich wizard instructions HTML for template display
+      let enrichedInstructions = selectedHomeland.system.wizardInstructions;
+      if (enrichedInstructions) {
+        enrichedInstructions =
+          await foundry.applications.ux.TextEditor.implementation.enrichHTML(enrichedInstructions);
+      }
+
+      // Organize embedded items by type and category (for template display)
+      const itemTypes: Record<string, any> = Object.fromEntries(
+        getItemDocumentTypes().map((t: string) => [t, []]),
+      );
+      const skillsByCategory: Record<string, TemplateItem[]> = {};
+      Object.values(SkillCategoryEnum).forEach((cat: string) => {
+        skillsByCategory[cat] = homelandSkills.filter(
+          (s: TemplateItem) => cat === s.system["category"],
         );
+      });
+      // Sort skills within each category
+      Object.values(skillsByCategory).forEach((skillList) => {
+        skillList.sort((a: RqgItem, b: RqgItem) => ("" + a.name).localeCompare("" + b.name));
+      });
+      itemTypes[ItemTypeEnum.Skill] = skillsByCategory;
+      itemTypes[ItemTypeEnum.Passion] = homelandPassions;
+
+      // Build template homeland item with all enriched/computed properties
+      templateHomelandItem = Object.assign(selectedHomeland, {
+        system: {
+          ...selectedHomeland.system,
+          wizardInstructions: enrichedInstructions,
+          cultureJournalRqidLinks,
+          tribeJournalRqidLinks,
+          clanJournalRqidLinks,
+          cultRqidLinks,
+        },
+        runes: homelandRunes,
+        embeddedItems: itemTypes,
+      }) as TemplateHomelandContext["selectedHomeland"];
     }
 
-    // Create an object similar to the one from ActorSheet organizeEmbeddedItems
-    const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
-    const skills: any = {};
-    Object.values(SkillCategoryEnum).forEach((cat: string) => {
-      skills[cat] = homelandSkills.filter((s: any) => cat === s.system.category);
-    });
-    // Sort the skills inside each category
-    Object.values(skills).forEach((skillList) =>
-      (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
-        ("" + a.name).localeCompare("" + b.name),
-      ),
-    );
-    itemTypes[ItemTypeEnum.Skill] = skills;
-
-    const homelandPassions: RqgItem[] = [];
-    if (selectedHomeland?.system?.passionRqidLinks) {
-      for (const passionRqidLink of selectedHomeland?.system?.passionRqidLinks ?? []) {
-        const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as PassionItem | undefined;
-        assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
-        const associatedChoice = this.choices[passionRqidLink.rqid];
-        passion.system.hasExperience = false;
-        if (associatedChoice) {
-          // put choice on homeland passions for purposes of sheet
-          passion.system.choice = associatedChoice;
-        }
-        homelandPassions.push(passion); // Already asserted
-      }
-    }
-
-    const passions: any = [];
-    homelandPassions.forEach((passion) => {
-      passions.push(passion);
-    });
-    itemTypes[ItemTypeEnum.Passion] = passions;
-
-    if (this.homeland.selectedHomeland) {
-      // put skills and passions on homeland for purposes of sheet
-      this.homeland.selectedHomeland.embeddedItems = itemTypes; //TODO Sort this by category and use the skill tab
-    }
+    const templateHomeland: TemplateHomelandContext = {
+      selectedHomeland: templateHomelandItem,
+      homelandOptions: this.homeland.homelandOptions,
+    };
 
     return {
       actor: this.actor,
-      species: this.species,
-      speciesTemplateItems: this.species.selectedSpeciesTemplate
-        ? await new RqgActorSheet(this.actor).organizeEmbeddedItems(
-            this.species.selectedSpeciesTemplate,
-          )
-        : undefined,
-      homeland: this.homeland,
+      species: templateSpecies,
+      speciesTemplateItems:
+        templateSpecies.selectedSpeciesTemplate &&
+        isDocumentSubType<CharacterActor>(
+          templateSpecies.selectedSpeciesTemplate,
+          ActorTypeEnum.Character,
+        )
+          ? await new RqgActorSheet(this.actor as CharacterActor).organizeEmbeddedItems(
+              templateSpecies.selectedSpeciesTemplate,
+            )
+          : undefined,
+      homeland: templateHomeland,
       choices: this.choices,
       collapsibleOpenStates: this.collapsibleOpenStates,
     };
@@ -435,7 +548,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
       );
     }
 
-    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesUuid");
+    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedSpeciesUuid" as any);
 
     await this.actor.setFlag(systemId, actorWizardFlags, {
       selectedSpeciesUuid: this.species.selectedSpeciesTemplate?.uuid ?? undefined,
@@ -534,12 +647,13 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     // Find any rqids that are in the choices but not on the species template
     // and mark them not present on the species
-    const speciesRqids = this.species.selectedSpeciesTemplate?.items.map(
-      (i) => i.getFlag(systemId, documentRqidFlags)?.id,
-    );
+    const speciesRqids = this.species.selectedSpeciesTemplate?.items
+      .map((i) => i.getFlag(systemId, documentRqidFlags)?.id)
+      .filter((id): id is string => id != null);
     for (const choiceKey in this.choices) {
-      if (!speciesRqids?.includes(choiceKey)) {
-        this.choices[choiceKey].speciesPresent = false;
+      const choice = this.choices[choiceKey];
+      if (choice && speciesRqids && !speciesRqids.includes(choiceKey)) {
+        choice.speciesPresent = false;
       }
     }
   }
@@ -549,7 +663,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
 
     this.homeland.selectedHomeland = selectedHomeland;
 
-    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedHomelandRqid");
+    await this.actor.unsetFlag(systemId, "actorWizardFlags.selectedHomelandRqid" as any);
 
     await this.actor.setFlag(systemId, actorWizardFlags, {
       selectedHomelandRqid: selectedHomelandRqid,
@@ -662,7 +776,9 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
               if (actorItem.id && !deletes.includes(actorItem.id)) {
                 // TODO ???
               }
-              deletes.push(actorItem.id);
+              if (actorItem.id) {
+                deletes.push(actorItem.id);
+              }
             }
           }
           // Handle Cults which use .homelandCultChosen and don't need to get "added up"
@@ -757,7 +873,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         }
       }
     }
-    await this.actor.createEmbeddedDocuments("Item", adds);
+    await this.actor.createEmbeddedDocuments("Item", adds as any);
     await this.actor.updateEmbeddedDocuments("Item", updates);
     await this.actor.deleteEmbeddedDocuments("Item", deletes);
 
@@ -807,7 +923,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
   }
 }
 
-class CreationChoice {
+export class CreationChoice {
   rqid: string = "";
   type: string = "";
   speciesValue: number = 0;
