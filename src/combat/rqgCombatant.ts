@@ -1,5 +1,11 @@
 import type { RqgActor } from "../actors/rqgActor";
 
+// Type helper for accessing appId which exists at runtime but isn't in the type definitions
+interface SheetWithAppId {
+  appId?: number;
+  render: () => void;
+}
+
 export class RqgCombatant extends Combatant {
   public static init() {
     CONFIG.Combatant.documentClass = RqgCombatant;
@@ -21,12 +27,13 @@ export class RqgCombatant extends Combatant {
         return;
       }
 
-      const actorSheet = combatant.actor?.sheet;
+      const actorSheet = combatant.actor?.sheet as SheetWithAppId | undefined;
       if (actorSheet && actorSheet.appId) {
         if (!combatant.apps) {
-          combatant.apps = {};
+          // Cast to allow assignment to readonly property
+          (combatant as any).apps = {};
         }
-        combatant.apps[actorSheet.appId] = actorSheet;
+        combatant.apps[actorSheet.appId] = actorSheet as any;
         actorSheet.render(); // Force rerender to show SR buttons
       }
     });
@@ -45,9 +52,11 @@ export class RqgCombatant extends Combatant {
 
     const combatants: Combatant[] = operation.ids.map((id: string) => combat.combatants.get(id));
     combatants.forEach((combatant) => {
-      const appId = combatant?.actor?.sheet?.appId;
+      const actorSheet = combatant?.actor?.sheet as SheetWithAppId | undefined;
+      const appId = actorSheet?.appId;
       Object.entries(combatant.apps).forEach(([key, app]) => {
-        if (app?.appId === appId) {
+        const currentApp = app as SheetWithAppId | undefined;
+        if (currentApp?.appId === appId) {
           delete combatant.apps[key];
         }
       });
