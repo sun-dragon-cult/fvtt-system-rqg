@@ -18,8 +18,6 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-import type { Brand } from "fvtt-types/utils";
-
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
@@ -49,7 +47,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private spellItem: SpiritMagicItem;
   private powX5: number;
-  private rollMode: CONST.DICE_ROLL_MODES | Brand<string, "CONFIG.Dice.RollMode">; // TODO is this the correct way?
+  private rollMode: CONST.DICE_ROLL_MODES;
 
   constructor(
     spellItem: SpiritMagicItem,
@@ -62,7 +60,9 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
     this.spellItem = spellItem;
     this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
-    this.rollMode = game.settings?.get("core", "rollMode") ?? CONST.DICE_ROLL_MODES.PUBLIC;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
   static override DEFAULT_OPTIONS = {

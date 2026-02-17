@@ -206,10 +206,10 @@ export class HitLocationSheet extends RqgItemSheet {
     );
 
     if (hitLocationUpdates) {
-      await hitLocation.update(hitLocationUpdates);
+      await hitLocation.update(hitLocationUpdates as any);
     }
     if (actorUpdates) {
-      await actor.update(actorUpdates);
+      await actor.update(actorUpdates as any);
     }
 
     if (actor.isToken) {
@@ -231,7 +231,7 @@ export class HitLocationSheet extends RqgItemSheet {
         // TODO make sure usefulLegs only contain real data
         const item = actor.items.get(update._id);
         if (item) {
-          await item.update(update);
+          await item.update(update as any);
         }
       }
     }

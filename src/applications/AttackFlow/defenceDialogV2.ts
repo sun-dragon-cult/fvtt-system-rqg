@@ -144,13 +144,20 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       throw new RqgError(msg);
     }
 
-    formData.defendingTokenOrActorUuid ??=
+    const defendingUuid =
+      (formData.defendingTokenOrActorUuid as string | undefined) ??
       this.attackChatMessage.system.defendingTokenOrActorUuid ??
       Object.values(defenderOptions)[0]?.value;
 
-    const defendingTokenOrActor = (await fromUuid(
-      formData.defendingTokenOrActorUuid,
-    )) as TokenDocument | null;
+    if (!defendingUuid) {
+      const msg = "No defending token or actor UUID available";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+
+    formData.defendingTokenOrActorUuid = defendingUuid;
+
+    const defendingTokenOrActor = (await fromUuid(defendingUuid)) as TokenDocument | null;
     const defendingActor =
       (defendingTokenOrActor instanceof TokenDocument
         ? defendingTokenOrActor?.actor
@@ -489,7 +496,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       selectedParryingWeapon,
       parryWeaponUsageType,
       attackingWeaponDamageType,
-      parryingWeaponDamageType,
+      parryingWeaponDamageType ?? "parry",
     );
 
     const outcomeDescription = getBasicOutcomeDescription(

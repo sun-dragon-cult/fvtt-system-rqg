@@ -341,6 +341,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
           );
         }
         await projectileItem?.update({ system: { quantity: newQuantity } });
+        // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
         await this.render(); // Make sure ammo count is updated in the dialog
       }
     }

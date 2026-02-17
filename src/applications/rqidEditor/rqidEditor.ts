@@ -122,7 +122,9 @@ export class RqidEditor extends FormApplication {
     return `${super.title} ${this.document.documentName}: ${this.document.name}`;
   }
 
-  protected override _getSubmitData(updateData?: object | null): Partial<Record<string, unknown>> {
+  protected override _getSubmitData(
+    updateData?: Record<string, any> | null,
+  ): Partial<Record<string, unknown>> {
     return super._getSubmitData(updateData);
   }
 
@@ -149,7 +151,7 @@ export class RqidEditor extends FormApplication {
             },
           },
         };
-        await this.document.update(foundry.utils.flattenObject(updateData), {});
+        await (this.document as any).update(foundry.utils.flattenObject(updateData));
         this.render();
       });
     });
@@ -177,7 +179,7 @@ export class RqidEditor extends FormApplication {
     formData["flags.rqg.documentRqidFlags.priority"] =
       Number(formData["flags.rqg.documentRqidFlags.priority"]) || 0;
 
-    await this.document.update(formData, {});
+    await (this.document as any).update(formData);
     this.render();
   }
 
