@@ -24,8 +24,8 @@ export class TextEditorHooks {
         documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
         documentType: Rqid.getDocumentType(rqid) ?? "",
       });
-      a.dataset["rqidLink"] = rqid;
-      a.dataset["anchor"] = anchor;
+      a.dataset["rqidLink"] = rqid ?? "";
+      a.dataset["anchor"] = anchor ?? "";
       a.innerHTML = `${linkIcon}${linkName}`;
       return a;
     }

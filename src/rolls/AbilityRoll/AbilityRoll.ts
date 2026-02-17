@@ -13,9 +13,6 @@ import type { AbilityRollOptions } from "./AbilityRoll.types";
 import Roll = foundry.dice.Roll;
 
 export class AbilityRoll extends Roll<AbilityRollOptions> {
-  // TODO hur deklarerar jag att options är AbilityRollOptions ???
-  //   declare options: AbilityRollOptions;
-
   public static async rollAndShow(options: AbilityRollOptions) {
     const roll = new AbilityRoll(undefined, {}, options);
     await roll.evaluate();

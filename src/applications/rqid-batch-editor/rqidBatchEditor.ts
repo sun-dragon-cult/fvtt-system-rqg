@@ -14,6 +14,7 @@ import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "@items/rqgItem.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type {
+  Changes,
   ItemChange,
   ItemNameWithoutRqid,
   RqidBatchEditorData,
@@ -23,7 +24,7 @@ import type {
 import Document = foundry.abstract.Document;
 
 export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
-  RqidBatchEditorData,
+  Changes,
   RqidBatchEditorOptions
 > {
   public resolve: (value: PromiseLike<void> | void) => void = () => {};
@@ -74,7 +75,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       )
       .sort((a: { name: string }, b: { name: string }) => a.name!.localeCompare(b.name!))
       .map((d: { rqid: string | undefined; optionText: string }) => ({
-        value: d.rqid,
+        value: d.rqid ?? "",
         label: d.optionText,
       }));
     existingRqidOptions.unshift({
@@ -251,7 +252,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
             // Only load the actors if we have any changes, and only once per pack
             actors = await pack.getDocuments();
           }
-          const parentActor = actors.find((a) => a._id === actorId);
+          const parentActor = actors.find((a) => a._id === actorId) as RqgActor | undefined;
           await Item.updateDocuments(embeddedItemUpdates, {
             pack: packId,
             parent: parentActor,
@@ -359,7 +360,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     RqidBatchEditor.updateProgress(progress, changesCount, "Update Embedded Items");
 
     for (const [actorId, actorItemChanges] of actorChangesMap) {
-      const actor = game.actors?.get(actorId);
+      const actor = game.actors?.get(actorId) as RqgActor | undefined;
       if (!actor) {
         console.error("RQG | Could not find actor with id", actorId);
         continue;
@@ -372,7 +373,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
       if (!foundry.utils.isEmpty(embeddedItemUpdates)) {
         await Item.updateDocuments(embeddedItemUpdates, {
-          parent: game.actors?.get(actorId),
+          parent: actor,
         });
       }
       RqidBatchEditor.updateProgress(++progress, changesCount, "Update Embedded Items");
@@ -492,45 +493,48 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       const actors: any[] = pack.metadata.type === "Actor" ? await pack.getDocuments() : [];
 
       for (const packIndexData of packIndex) {
-        switch (packIndexData.type) {
-          case documentType:
-            RqidBatchEditor.collectItemPackRqids(
-              pack,
-              prefixRegex,
-              packIndexData,
-              existingRqids,
-              itemNamesWithoutRqid,
-              packItemChangesMap,
-            );
-            RqidBatchEditor.updateProgress(
-              ++progress,
-              scanningCount,
-              "Find Rqids from Item Compendiums",
-            );
-            break;
+        const anyPackIndexData = packIndexData as any;
+        if ("type" in anyPackIndexData) {
+          switch (anyPackIndexData.type) {
+            case documentType:
+              RqidBatchEditor.collectItemPackRqids(
+                pack as any,
+                prefixRegex,
+                packIndexData,
+                existingRqids,
+                itemNamesWithoutRqid,
+                packItemChangesMap,
+              );
+              RqidBatchEditor.updateProgress(
+                ++progress,
+                scanningCount,
+                "Find Rqids from Item Compendiums",
+              );
+              break;
 
-          case ActorTypeEnum.Character:
-            await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
-              pack,
-              actors,
-              documentType,
-              itemNamesWithoutRqid,
-              packActorChangesMap,
-            );
-            RqidBatchEditor.updateProgress(
-              ++progress,
-              scanningCount,
-              "Find Rqids from Actor Compendiums",
-            );
-            break;
+            case ActorTypeEnum.Character:
+              await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
+                pack as any,
+                actors,
+                documentType,
+                itemNamesWithoutRqid,
+                packActorChangesMap,
+              );
+              RqidBatchEditor.updateProgress(
+                ++progress,
+                scanningCount,
+                "Find Rqids from Actor Compendiums",
+              );
+              break;
 
-          default:
-            RqidBatchEditor.updateProgress(
-              ++progress,
-              scanningCount,
-              "Find Rqids from Compendiums",
-            );
-            break;
+            default:
+              RqidBatchEditor.updateProgress(
+                ++progress,
+                scanningCount,
+                "Find Rqids from Compendiums",
+              );
+              break;
+          }
         }
       }
     }
@@ -645,7 +649,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   }
 
   private static collectItemPackRqids(
-    pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    pack: any,
     prefixRegex: RegExp,
     packIndexData: any,
     existingRqids: Map<string, string>,
@@ -653,9 +657,9 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     packItemChangesMap: Map<string, ItemChange[]>,
   ): void {
     if (
-      pack.metadata.packageName === systemId &&
-      pack.metadata.type === "Item" &&
-      pack.metadata.packageType === "system"
+      pack.metadata?.packageName === systemId &&
+      pack.metadata?.type === "Item" &&
+      pack.metadata?.packageType === "system"
     ) {
       // If the pack is a system item compendium then remember the name -> rqid combo in "existingRqids"
       if (
@@ -694,7 +698,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
    * Note that packActorChangesMap and itemNamesWithoutRqid parameters will get modified.
    */
   private static async collectActorPackEmbeddedItemRqids(
-    pack: CompendiumCollection<CompendiumCollection.Metadata>,
+    pack: any,
     actors: RqgActor[],
     documentType: ItemTypeEnum,
     itemNamesWithoutRqid: Map<string, string | undefined>,

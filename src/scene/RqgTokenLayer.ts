@@ -17,7 +17,7 @@ export class RqgTokenLayer extends TokenLayer {
 
   /** @override */
   override _onClickRight(event: any): void {
-    super._onClickLeft(event);
+    super._onClickRight(event);
     RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "rightClickSource");
   }
 

@@ -1,17 +1,4 @@
 import { describe, it, expect, vi } from "vitest";
-
-// needed for DamageRoll class
-// // @ts-expect-error Roll
-// global.Roll = class MockRoll {
-//   constructor() {}
-// };
-
-vi.mock("@/path/to/roll", () => ({
-  Roll: class MockRoll {
-    constructor() {}
-  },
-}));
-
 import {
   __setLocalizeFunction,
   exportedForTesting,

@@ -10,7 +10,8 @@ import { isDocumentSubType } from "../../util.ts";
 export function migrateActorDummy(actorData: RqgActorDataSource): Actor.UpdateData {
   let updateData: Actor.UpdateData = {};
 
-  if (isDocumentSubType<CharacterActor>(actorData as any, ActorTypeEnum.Character)) {
+  // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
+  if (false && isDocumentSubType<CharacterActor>(actorData as any, ActorTypeEnum.Character)) {
     updateData = {
       system: {
         background: {
