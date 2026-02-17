@@ -91,6 +91,38 @@ import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
 import ActorSheet = foundry.appv1.sheets.ActorSheet;
 
+/**
+ * Template context types for the Actor Sheet.
+ * These types represent what the Handlebars template receives,
+ * which includes temporary properties added for display purposes.
+ */
+
+/** Gear item with currency conversion text for template */
+interface TemplateGearItem extends GearItem {
+  system: GearItem["system"] & {
+    price: GearItem["system"]["price"] & {
+      conversion?: string; // Currency conversion tooltip text
+    };
+  };
+}
+
+/** Weapon item with projectile info for template */
+interface TemplateWeaponItem extends WeaponItem {
+  system: WeaponItem["system"] & {
+    projectileQuantity?: number; // Quantity of loaded projectile
+    projectileName?: string; // Name of loaded projectile
+  };
+}
+
+/** Complete template context returned by getData() */
+interface ActorSheetTemplateContext extends CharacterSheetData, ActorSheetData {
+  embeddedItems: {
+    [ItemTypeEnum.Gear]?: TemplateGearItem[];
+    [ItemTypeEnum.Weapon]?: TemplateWeaponItem[];
+    [key: string]: RqgItem[] | Record<string, RqgItem[]> | undefined;
+  };
+}
+
 export class RqgActorSheet<
   Options extends ActorSheet.Options = ActorSheet.Options,
 > extends ActorSheet<Options> {
@@ -185,7 +217,7 @@ export class RqgActorSheet<
     }
   }
 
-  override async getData(): Promise<CharacterSheetData & ActorSheetData> {
+  override async getData(): Promise<ActorSheetTemplateContext> {
     this.incorrectRunes = [];
     const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
     const spiritMagicPointSum = this.getSpiritMagicPointSum();
@@ -378,7 +410,8 @@ export class RqgActorSheet<
           value: (1 / curr.system.price.estimated).toString(),
         });
       }
-      (curr.system.price as any).conversion = conv; // TODO adds additional data for the sheet
+      const templateGear = curr as TemplateGearItem;
+      templateGear.system.price.conversion = conv;
     });
     return result;
   }
@@ -754,8 +787,9 @@ export class RqgActorSheet<
         | WeaponItem
         | undefined;
       if (projectile) {
-        (weapon.system as any).projectileQuantity = projectile.system.quantity; // TODO adds additional data for the sheet
-        (weapon.system as any).projectileName = projectile.name; // TODO adds additional data for the sheet
+        const templateWeapon = weapon as TemplateWeaponItem;
+        templateWeapon.system.projectileQuantity = projectile.system.quantity;
+        templateWeapon.system.projectileName = projectile.name;
       }
     });
     itemTypes[ItemTypeEnum.Armor]?.sort((a, b) => a.sort - b.sort);
@@ -812,11 +846,14 @@ export class RqgActorSheet<
         this.actor.items.some((i) => isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill)),
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some(
-          (i) =>
-            [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type) &&
-            !(i.system as any).isNatural, // Don't show gear tab for natural weapons
-        ),
+        this.actor.items.some((i) => {
+          const isPhysical = [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(
+            i.type,
+          );
+          // Check for isNatural property (exists on some weapons at runtime but not in types)
+          const isNatural = (i.system as any).isNatural;
+          return isPhysical && !isNatural;
+        }),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some((i) => isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion)),
