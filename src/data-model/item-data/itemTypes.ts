@@ -29,36 +29,6 @@ import { Skill } from "@items/skill-item/skill.ts";
 import { SpiritMagic } from "@items/spirit-magic-item/spiritMagic.ts";
 import { Weapon } from "@items/weapon-item/weapon.ts";
 
-// TODO en experiment with removing enums
-// const itemTypes = [
-//   "armor",
-//   "cult",
-//   "gear",
-//   "hitLocation",
-//   "homeland",
-//   "occupation",
-//   "passion",
-//   "rune",
-//   "runeMagic",
-//   "skill",
-//   "spiritMagic",
-//   "weapon",
-//   // "shamanicAbility", future expansion
-//   // "sorceryMagic",    future expansion
-// ] as const;
-//
-// export type ItemType = (typeof itemTypes)[number];
-// export { itemTypes };
-//
-// export function assertDocumentType<T extends { type: ItemType | "type" | "base" | "system"} }>(
-//   obj: { type: ItemType },
-//   itemType: T["type"],
-// ): asserts obj is T {
-//   if (obj.type !== itemType) {
-//     throw new Error(`Expected type ${itemType}, got ${obj.type}`);
-//   }
-// }
-
 // Base item types with literal string values (for type extraction)
 const ItemTypeBase = {
   Armor: "armor",

@@ -847,12 +847,9 @@ export class RqgActorSheet<
       gear:
         CONFIG.RQG.debug.showAllUiSections ||
         this.actor.items.some((i) => {
-          const isPhysical = [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(
-            i.type,
-          );
-          // Check for isNatural property (exists on some weapons at runtime but not in types)
-          const isNatural = (i.system as any).isNatural;
-          return isPhysical && !isNatural;
+          const isPhysical = isDocumentSubType<PhysicalItem>(i, physicalItemTypes);
+          const isNaturalWeapon = (i.system as any).isNatural;
+          return isPhysical && !isNaturalWeapon;
         }),
       passions:
         CONFIG.RQG.debug.showAllUiSections ||
