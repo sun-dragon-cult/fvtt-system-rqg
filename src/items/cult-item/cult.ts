@@ -99,13 +99,6 @@ export class Cult extends AbstractEmbeddedItem {
       "Bug - tried to embed linked common rune magic with a cult that does not have id",
     );
 
-    // if (!cult.id) {
-    //   const msg = "Bug - tried to embed linked common rune magic with a cult that does not have id";
-    //   console.error(`RQG | ${msg}`, cult);
-    //   ui.notifications?.error(`${msg}`);
-    //   throw new RqgError(msg, [cult]);
-    // }
-
     const runeMagicItems = await Promise.all(
       cult.system.commonRuneMagicRqidLinks.map(
         async (rqidLink) => (await Rqid.fromRqid(rqidLink.rqid)) as RuneMagicItem | undefined,

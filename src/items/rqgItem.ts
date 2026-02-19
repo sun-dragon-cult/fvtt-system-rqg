@@ -45,8 +45,6 @@ import {
 } from "../system/combatCalculations";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 import { Skill } from "./skill-item/skill";
-import type { ArmorItem } from "@item-model/armorData.ts";
-import type { GearItem } from "@item-model/gearData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
@@ -61,7 +59,6 @@ export class RqgItem extends Item {
 
     const Items = foundry.documents.collections.Items;
 
-    // sheets.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
     Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 
     Items.registerSheet(systemId, PassionSheet, {
@@ -641,81 +638,4 @@ export class RqgItem extends Item {
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
   }
-
-  // Typeguards
-
-  // assertType<T>(typeEnum: ItemTypeEnum, errorMsg?: string): asserts this is T {
-  //   if (!this.isType<T>(typeEnum)) {
-  //     const msg = errorMsg ? localize(errorMsg) : `Item is not a ${typeEnum}`;
-  //     ui.notifications?.error(msg);
-  //     throw new RqgError(msg, this);
-  //   }
-  // }
-
-  // assertItemType<T extends RqgItem>(
-  //   item: RqgItem | undefined,
-  //   itemType: string | ItemTypeEnum | undefined,
-  // ): asserts item is T {
-  //   if (!item || item.type !== itemType?.toString()) {
-  //     const msg = `Got unexpected item type in assert, ${itemType} ≠ ${item}`;
-  //     ui.notifications?.error(msg);
-  //     throw new RqgError(msg);
-  //   }
-  // }
-
-  isPhysicalItem(): this is GearItem | ArmorItem | WeaponItem {
-    return [
-      ItemTypeEnum.Gear.toString(),
-      ItemTypeEnum.Armor.toString(),
-      ItemTypeEnum.Weapon.toString(),
-    ].includes(this.type);
-  }
-
-  // assertIsArmor(errorMsg?: string): asserts this is ArmorItem {
-  //   this.assertType<ArmorItem>(ItemTypeEnum.Armor, errorMsg);
-  // }
-  //
-  // assertIsCult(errorMsg?: string): asserts this is CultItem {
-  //   this.assertType<CultItem>(ItemTypeEnum.Cult, errorMsg);
-  // }
-  //
-  // assertIsGear(errorMsg?: string): asserts this is GearItem {
-  //   this.assertType<GearItem>(ItemTypeEnum.Gear, errorMsg);
-  // }
-  //
-  // assertIsHitLocation(errorMsg?: string): asserts this is HitLocationItem {
-  //   this.assertType<HitLocationItem>(ItemTypeEnum.HitLocation, errorMsg);
-  // }
-  //
-  // assertIsHomeland(errorMsg?: string): asserts this is HomelandItem {
-  //   this.assertType<HomelandItem>(ItemTypeEnum.Homeland, errorMsg);
-  // }
-  //
-  // assertIsOccupation(errorMsg?: string): asserts this is OccupationItem {
-  //   this.assertType<OccupationItem>(ItemTypeEnum.Occupation, errorMsg);
-  // }
-  //
-  // assertIsPassion(errorMsg?: string): asserts this is PassionItem {
-  //   this.assertType<PassionItem>(ItemTypeEnum.Passion, errorMsg);
-  // }
-  //
-  // assertIsRune(errorMsg?: string): asserts this is RuneItem {
-  //   this.assertType<RuneItem>(ItemTypeEnum.Rune, errorMsg);
-  // }
-  //
-  // assertIsRuneMagic(errorMsg?: string): asserts this is RuneMagicItem {
-  //   this.assertType<RuneMagicItem>(ItemTypeEnum.RuneMagic, errorMsg);
-  // }
-  //
-  // assertIsSkill(errorMsg?: string): asserts this is SkillItem {
-  //   this.assertType<SkillItem>(ItemTypeEnum.Skill, errorMsg);
-  // }
-  //
-  // assertIsSpiritMagic(errorMsg?: string): asserts this is SpiritMagicItem {
-  //   this.assertType<SpiritMagicItem>(ItemTypeEnum.SpiritMagic, errorMsg);
-  // }
-  //
-  // assertIsWeapon(errorMsg?: string): asserts this is WeaponItem {
-  //   this.assertItemType<WeaponItem>(this as RqgItem, ItemTypeEnum.Weapon);
-  // }
 }

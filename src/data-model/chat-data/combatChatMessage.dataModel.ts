@@ -117,10 +117,6 @@ const combatChatMessageSchema = {
 type combatDataType = typeof combatChatMessageSchema;
 
 export class CombatChatMessageData extends foundry.abstract.TypeDataModel<combatDataType, any> {
-  // constructor(data = {}, options = {}) {
-  //   super(data, options);
-  // }
-
   static override defineSchema() {
     return combatChatMessageSchema;
   }
