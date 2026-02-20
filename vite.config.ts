@@ -20,16 +20,17 @@ const devServerPort = 30001;
 const scriptsEntrypoint = "./src/rqg.ts";
 const stylesEntrypoint = "./src/rqg.scss";
 
-const foundryHostData = await findFoundryHost();
-const foundryHost = foundryHostData.host;
-
 const foundryPackagePath = getFoundryPackagePath(packageType, packageID);
 
 // await symlinkFoundryPackage(packageType, packageID, foundryHostData);
 
-const config = Vite.defineConfig(({ command, mode }): Vite.UserConfig => {
+const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserConfig> => {
   const buildMode = mode === "production" ? "production" : "development";
   const outDir = "dist";
+  const foundryHost =
+    command === "serve"
+      ? (await findFoundryHost()).host
+      : `${process.env.FOUNDRY_HOST_NAME ?? "localhost"}:${process.env.FOUNDRY_PORT ?? "30013"}`;
 
   const plugins: Vite.PluginOption[] = [
     checker({

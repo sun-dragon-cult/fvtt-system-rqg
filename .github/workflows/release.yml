@@ -26,7 +26,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20.17.0
+          node-version: 24
           check-latest: true
 
       - name: Init dependencies
@@ -38,12 +38,12 @@ jobs:
       - name: Update version in manifest file
         run: |
           VERSION=${GITHUB_REF_NAME#v}
-          sed -i "s|99999.0.0-localhost|${VERSION}|" "src/${{ env.manifest-file }}"
+          sed -i "s|99999.0.0-localhost|${VERSION}|" "static/${{ env.manifest-file }}"
 
       - name: Create Zip
         run: |
           mv dist /tmp/${{ env.system-name }}
-          cp -f src/${{env.manifest-file}} /tmp/${{ env.system-name }}
+          cp -f static/${{env.manifest-file}} /tmp/${{ env.system-name }}
           cd /tmp/${{ env.system-name }}
           zip -r ../${{ env.system-name }}.zip *
 
@@ -58,6 +58,6 @@ jobs:
           draft: ${{ github.event.release.unpublished }}
           prerelease: ${{ github.event.release.prerelease }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          artifacts: "src/${{env.manifest-file}}, /tmp/${{env.system-name}}.zip"
+          artifacts: "static/${{env.manifest-file}}, /tmp/${{env.system-name}}.zip"
           tag: ${{ github.event.release.tag_name }}
           body: ${{ github.event.release.body }}

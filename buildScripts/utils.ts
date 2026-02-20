@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { config } from "./buildPacks";
+import { config } from "./buildPacks.ts";
 import fs from "fs";
 import path from "path";
 

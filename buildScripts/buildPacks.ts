@@ -2,17 +2,17 @@ import chalk from "chalk";
 import * as path from "path";
 import * as fs from "fs";
 import { cwd } from "process";
-import { CompendiumPack, type PackMetadata } from "./compendium-pack";
-import { tryOrThrow } from "./utils";
-import { PackError } from "./packError";
+import { CompendiumPack, type PackMetadata } from "./compendium-pack.ts";
+import { tryOrThrow } from "./utils.ts";
+import { PackError } from "./packError.ts";
 import { existsSync, promises } from "fs";
 
 export const config = {
-  i18nDir: path.resolve(cwd(), "src", "i18n"),
+  i18nDir: path.resolve(cwd(), "static", "i18n"),
   translationsFileNames: ["uiContent"], // filenames except .json Will be part of the translation key
   distDir: path.resolve(cwd(), "dist"),
   packTemplateDir: path.resolve(cwd(), "src", "assets", "pack-templates"),
-  packageManifest: path.resolve(cwd(), "src", "system.json"),
+  packageManifest: path.resolve(cwd(), "static", "system.json"),
 } as const;
 
 export const getPackOutDir = (): string => path.join(config.distDir, "packs");
