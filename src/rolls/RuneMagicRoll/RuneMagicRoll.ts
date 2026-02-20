@@ -23,8 +23,9 @@ export class RuneMagicRoll extends Roll {
       { flavor: roll.flavor, speaker: options.speaker },
       { rollMode: options.rollMode, create: true },
     );
-    // @ts-expect-error Dice3D (Dice So Nice)
-    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    if (msg?.id != null) {
+      await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    }
     return roll;
   }
 
