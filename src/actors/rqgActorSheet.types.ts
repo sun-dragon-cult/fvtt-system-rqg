@@ -1,8 +1,15 @@
 import type { RqgItem } from "../items/rqgItem";
+import type { ActorSheetData } from "@items/shared/sheetInterfaces.types.ts";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
+import type { GearItem } from "@item-model/gearData.ts";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
+/**
+ * UI section visibility flags for actor sheet tabs and sections.
+ */
 export interface UiSections {
   health: boolean;
   combat: boolean;
@@ -17,6 +24,9 @@ export interface UiSections {
   activeEffects: boolean;
 }
 
+/**
+ * Main cult information for display on actor sheet.
+ */
 export interface MainCult {
   name: string;
   id: string;
@@ -25,6 +35,9 @@ export interface MainCult {
   hasMultipleCults: boolean;
 }
 
+/**
+ * Rune data prepared for sheet display.
+ */
 export interface SheetRuneData {
   id: string;
   rune: string;
@@ -33,6 +46,10 @@ export interface SheetRuneData {
   descriptionRqid: string | undefined;
 }
 
+/**
+ * Complete data structure passed to the actor sheet template.
+ * This represents the getData() return type.
+ */
 export interface CharacterSheetData {
   uuid: string;
   /** reorganized for presentation TODO type it better */
@@ -90,4 +107,37 @@ export interface CharacterSheetData {
   itemLoopMessage: string | undefined;
   enrichedUnspecifiedSkill: string | undefined;
   enrichedIncorrectRunes: string | undefined;
+}
+
+/**
+ * Gear item with currency conversion text added for template display.
+ */
+export interface TemplateGearItem extends GearItem {
+  system: GearItem["system"] & {
+    price: GearItem["system"]["price"] & {
+      conversion?: string; // Currency conversion tooltip text
+    };
+  };
+}
+
+/**
+ * Weapon item with projectile info added for template display.
+ */
+export interface TemplateWeaponItem extends WeaponItem {
+  system: WeaponItem["system"] & {
+    projectileQuantity?: number; // Quantity of loaded projectile
+    projectileName?: string; // Name of loaded projectile
+  };
+}
+
+/**
+ * Complete template context returned by getData().
+ * Combines CharacterSheetData with Foundry's ActorSheetData.
+ */
+export interface ActorSheetTemplateContext extends CharacterSheetData, ActorSheetData {
+  embeddedItems: {
+    [ItemTypeEnum.Gear]?: TemplateGearItem[];
+    [ItemTypeEnum.Weapon]?: TemplateWeaponItem[];
+    [key: string]: RqgItem[] | Record<string, RqgItem[]> | undefined;
+  };
 }
