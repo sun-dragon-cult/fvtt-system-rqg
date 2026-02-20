@@ -114,9 +114,6 @@ importers:
       rimraf:
         specifier: ^6.1.2
         version: 6.1.2
-      run-s:
-        specifier: ^0.0.0
-        version: 0.0.0
       sass:
         specifier: ^1.97.1
         version: 1.97.1
@@ -3312,9 +3309,6 @@ packages:
 
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
-
-  run-s@0.0.0:
-    resolution: {integrity: sha512-KPDNauF2Tpnm3nG0+0LJuJxwBFrhAdthpM8bVdDvjWQA7pWP7QoNwEl1+dJ7WVJj81AQP/i6kl6JUmAk7tg3Og==}
 
   rxjs@7.8.2:
     resolution: {integrity: sha512-dhKf903U/PQZY6boNNtAGdWbG85WAbjT/1xYoZIC7FAY0yWapOBQVsVrDl58W86//e1VpMNBtRV4MaXfdMySFA==}
@@ -7373,8 +7367,6 @@ snapshots:
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
-
-  run-s@0.0.0: {}
 
   rxjs@7.8.2:
     dependencies:
