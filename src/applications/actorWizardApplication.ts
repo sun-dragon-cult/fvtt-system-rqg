@@ -1,4 +1,4 @@
-import { RqgActorSheet } from "../actors/rqgActorSheet";
+import { organizeEmbeddedItems } from "../actors/rqgActorSheetDataPrep";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "../system/config";
 import {
@@ -431,9 +431,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
           templateSpecies.selectedSpeciesTemplate,
           ActorTypeEnum.Character,
         )
-          ? await new RqgActorSheet(this.actor as CharacterActor).organizeEmbeddedItems(
-              templateSpecies.selectedSpeciesTemplate,
-            )
+          ? await organizeEmbeddedItems(templateSpecies.selectedSpeciesTemplate, [])
           : undefined,
       homeland: templateHomeland,
       choices: this.choices,

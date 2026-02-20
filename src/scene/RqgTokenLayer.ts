@@ -1,5 +1,6 @@
 import { ClickableScriptsRegionBehavior } from "./ClickableScriptsRegionBehavior";
-import type { AsyncFunction } from "type-fest/source/async-return-type";
+
+type AsyncFunction = (...args: unknown[]) => Promise<unknown>;
 
 const { AsyncFunction } = foundry.utils;
 const { TokenLayer } = foundry.canvas.layers;
