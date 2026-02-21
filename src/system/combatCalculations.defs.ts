@@ -1,15 +1,17 @@
-export enum WeaponDesignation {
-  None = "none",
-  AttackingWeapon = "attackingWeapon",
-  ParryWeapon = "parryWeapon",
-}
+export const WeaponDesignation = {
+  None: "none",
+  AttackingWeapon: "attackingWeapon",
+  ParryWeapon: "parryWeapon",
+} as const;
+export type WeaponDesignation = (typeof WeaponDesignation)[keyof typeof WeaponDesignation];
 
-export enum DamageDegree {
-  None = "none",
-  Normal = "normal",
-  Special = "special",
-  MaxSpecial = "maxSpecial",
-}
+export const DamageDegree = {
+  None: "none",
+  Normal: "normal",
+  Special: "special",
+  MaxSpecial: "maxSpecial",
+} as const;
+export type DamageDegree = (typeof DamageDegree)[keyof typeof DamageDegree];
 
 /***************************************************
  *** From the rules Attack & Parry Results table ***

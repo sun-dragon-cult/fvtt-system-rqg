@@ -1,28 +1,29 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { RqgActor } from "../rqgActor";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getRequiredDomDataset,
   localize,
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
+import type { PassionItem } from "@item-model/passionData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const passionMenuOptions = (
-  actor: RqgActor,
-  token: TokenDocument | undefined,
-): ContextMenu.Item[] => [
+  actor: CharacterActor,
+  token: TokenDocument | undefined | null,
+): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Passion);
+      const item = actor.items.get(itemId) as PassionItem | undefined;
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       await item.abilityRoll();
     },
   },
@@ -32,8 +33,8 @@ export const passionMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Passion);
+      const item = actor.items.get(itemId) as PassionItem | undefined;
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       if (item.system.chance == null) {
         const msg = localize("RQG.ContextMenu.Notification.CantDirectRollPassionError", {
           itemId: itemId,
@@ -51,8 +52,8 @@ export const passionMenuOptions = (
     condition: () => true,
     callback: async (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      if (!item || item.type !== ItemTypeEnum.Passion) {
+      const item = actor.items.get(itemId) as PassionItem | undefined;
+      if (!item || item.type !== ItemTypeEnum.Passion.toString()) {
         const msg = localize("RQG.ContextMenu.Notification.CantToggleExperiencePassionError", {
           itemId: itemId,
           actorName: actor.name,
@@ -60,7 +61,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await item.update({ "system.hasExperience": !item.system.hasExperience }, {});
+      await item.update({ system: { hasExperience: !item.system.hasExperience } }, {});
     },
   },
   {
@@ -70,8 +71,8 @@ export const passionMenuOptions = (
     icon: contextMenuRunes.Improve,
     condition: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      if (!item || item.type !== ItemTypeEnum.Passion) {
+      const item = actor.items.get(itemId) as PassionItem | undefined;
+      if (!item || item.type !== ItemTypeEnum.Passion.toString()) {
         const msg = localize("RQG.ContextMenu.Notification.CantImprovePassionError", {
           itemId: itemId,
           actorName: actor.name,
@@ -83,10 +84,10 @@ export const passionMenuOptions = (
     },
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      assertItemType(item?.type, ItemTypeEnum.Passion);
+      const item = actor.items.get(itemId) as PassionItem | undefined;
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       const speaker = ChatMessage.getSpeaker({ actor, token });
-      showImproveAbilityDialog(item, speaker);
+      void showImproveAbilityDialog(item, speaker);
     },
   },
   {
@@ -97,7 +98,7 @@ export const passionMenuOptions = (
     condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
+      const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || !item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditPassionError", {
           itemId: itemId,
@@ -117,7 +118,7 @@ export const passionMenuOptions = (
     condition: () => true,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      RqgActorSheet.confirmItemDelete(actor, itemId);
+      void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

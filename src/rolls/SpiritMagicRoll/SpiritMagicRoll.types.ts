@@ -1,16 +1,12 @@
-import EvaluationOptions = RollTerm.EvaluationOptions;
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import type { RollMode } from "../../chat/chatMessage.types";
-
 export type Modifier = { description: string; value: number };
 
-export type SpiritMagicRollOptions = Partial<EvaluationOptions> & {
+export type SpiritMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.EvaluationOptions> & {
   powX5: number;
   levelUsed: number;
   magicPointBoost?: number;
   modifiers?: Modifier[];
   spellName?: string;
   spellImg?: string;
-  speaker?: ChatSpeakerDataProperties;
-  rollMode?: RollMode;
+  speaker?: ChatMessage.SpeakerData;
+  rollMode?: CONST.DICE_ROLL_MODES;
 };

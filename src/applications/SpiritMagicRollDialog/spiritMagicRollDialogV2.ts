@@ -1,27 +1,32 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import {
+import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
-} from "./SpiritMagicRollDialogData.types";
+} from "./SpiritMagicRollDialogData.types.ts";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDataset,
-  getGame,
   getSpeakerFromItem,
   localize,
 } from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
-import { RqgItem } from "../../items/rqgItem";
-import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
-import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { RollMode } from "../../chat/chatMessage.types";
+import { RqgItem } from "@items/rqgItem.ts";
+import { SpiritMagic } from "@items/spirit-magic-item/spiritMagic.ts";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<SpiritMagicRollDialogContext>,
+) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -40,19 +45,27 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     { value: 25, label: "RQG.Dialog.Common.MeditateOptions.50mr" },
   ];
 
-  private spellItem: RqgItem;
+  private spellItem: SpiritMagicItem;
   private powX5: number;
-  private rollMode: RollMode;
+  private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { spellItem: RqgItem }) {
+  constructor(
+    spellItem: SpiritMagicItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
 
-    this.spellItem = options.spellItem;
-    this.powX5 = (this.spellItem.parent?.system?.characteristics?.power?.value ?? 0) * 5;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    const actor = spellItem.parent;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+
+    this.spellItem = spellItem;
+    this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "spirit-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
@@ -62,8 +75,8 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -75,16 +88,16 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.rollHeader },
     form: { template: templatePaths.spiritMagicRollDialogV2, scrollable: [""] },
     footer: { template: templatePaths.rollFooter },
   };
 
-  async _prepareContext(): Promise<SpiritMagicRollDialogContext> {
-    const formData: SpiritMagicRollDialogFormData =
-      // @ts-expect-error object
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+  override async _prepareContext(): Promise<SpiritMagicRollDialogContext> {
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as SpiritMagicRollDialogFormData;
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
@@ -121,41 +134,40 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
-      .querySelector("[data-roll-mode-parent]")
-      .addEventListener("click", this.onChangeRollMode.bind(this));
+      .querySelector<HTMLElement>("[data-roll-mode-parent]")
+      ?.addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
-  private onChangeRollMode(event: SubmitEvent) {
+  private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
-    if (!newRollMode) {
-      return; // Clicked outside the buttons
+    const newRollMode = getDomDataset(target, "roll-mode");
+    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+      return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode;
+    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
 
-    // @ts-expect-error render
     this.render();
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    _event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: SpiritMagicRollDialogFormData = formData.object;
+    const formDataObject = formData.object as SpiritMagicRollDialogFormData;
 
-    const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+    const rollMode = (form?.querySelector<HTMLButtonElement>(
+      'button[data-action="rollMode"][aria-pressed="true"]',
+    )?.dataset["rollMode"] ??
+      game.settings?.get("core", "rollMode") ??
+      CONST.DICE_ROLL_MODES.PUBLIC) as CONST.DICE_ROLL_MODES;
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",
@@ -165,7 +177,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicat
       ui.notifications?.error("Could not find an spirit magic spellItem to roll.");
       return;
     }
-    assertItemType(spellItem.type, ItemTypeEnum.SpiritMagic);
+    assertDocumentSubType<SpiritMagicItem>(spellItem, ItemTypeEnum.SpiritMagic);
 
     const options: SpiritMagicRollOptions = {
       powX5: formDataObject.powX5,

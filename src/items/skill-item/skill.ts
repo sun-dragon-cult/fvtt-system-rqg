@@ -1,25 +1,26 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { localize, RqgError } from "../../system/util";
-import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { systemId } from "../../system/config";
+import type { ArmorItem } from "@item-model/armorData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
 
 export class Skill extends AbstractEmbeddedItem {
-  public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
-    if (skillItem.type !== ItemTypeEnum.Skill) {
-      const msg = localize("RQG.Item.Notification.PrepareDerivedDataNotSkillError");
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, skillItem);
-    }
+  public static override onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+    assertDocumentSubType<SkillItem>(
+      skillItem,
+      ItemTypeEnum.Skill,
+      "RQG.Item.Notification.PrepareDerivedDataNotSkillError",
+    );
     const actor = skillItem.actor!;
-    if (actor.type !== ActorTypeEnum.Character) {
-      const msg = localize("RQG.Item.Notification.ActorNotCharacterError");
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, actor);
-    }
-    // @ts-expect-error system
+    assertDocumentSubType<CharacterActor>(
+      actor,
+      ActorTypeEnum.Character,
+      "RQG.Item.Notification.ActorNotCharacterError",
+    );
     const actorData = actor.toObject(false).system; // TODO Why use toObject ???
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
     skillItem.system.categoryMod = actorData.skillCategoryModifiers![skillItem.system.category];
@@ -36,14 +37,12 @@ export class Skill extends AbstractEmbeddedItem {
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.moveQuietly) {
       // mod is the penalty from equipped armor
-      mod = -Math.max(
-        0,
-        ...actor.items
-          .filter(
-            (i: RqgItem) => i.type === ItemTypeEnum.Armor && i.system.equippedStatus === "equipped",
-          )
-          .map((a: any) => Math.abs(a.system.moveQuietlyPenalty)),
-      );
+      const equippedArmor = actor.items.filter(
+        (i) =>
+          isDocumentSubType<ArmorItem>(i, ItemTypeEnum.Armor) &&
+          i.system.equippedStatus === "equipped",
+      ) as ArmorItem[];
+      mod = -Math.max(0, ...equippedArmor.map((a) => Math.abs(a.system.moveQuietlyPenalty)));
     }
 
     // Calculate the effective skill chance including skill category modifier.

@@ -1,5 +1,5 @@
-import { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import type { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
 export interface ItemChange {
   itemId: string;

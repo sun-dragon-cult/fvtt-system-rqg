@@ -1,10 +1,10 @@
 import {
   defaultPriceData,
-  EquippedStatus,
-  IPhysicalItem,
-  PhysicalItemType,
-} from "../../data-model/item-data/IPhysicalItem";
-import { RqgItem } from "../rqgItem";
+  type EquippedStatus,
+  type IPhysicalItem,
+  type PhysicalItemType,
+} from "@item-model/IPhysicalItem.ts";
+import type { PhysicalItem } from "@item-model/itemTypes.ts";
 
 export interface LocationItemNodeData extends IPhysicalItem {
   name: string | null;
@@ -38,7 +38,7 @@ export class LocationItemNode implements LocationItemNodeData {
   /**
    * Convert an item to a LocationTree or produce an empty locationTree if no input.
    */
-  public static fromItem(item: RqgItem): LocationItemNode {
+  public static fromItem(item: PhysicalItem): LocationItemNode {
     return new LocationItemNode(
       item.name,
       item.id,

@@ -1,13 +1,18 @@
 import chalk from "chalk";
-import { ChainedBatch, ClassicLevel } from "classic-level";
+import classicLevelPkg from "classic-level";
+import type { ChainedBatch } from "classic-level";
 import * as fs from "fs";
 import { existsSync, promises } from "fs";
 import * as path from "path";
 import * as yaml from "js-yaml";
 import * as crypto from "crypto";
-import { config, getPackOutDir, packsMetadata } from "./buildPacks";
-import { doTranslation, isObject, setProperty, tryOrThrow } from "./utils";
-import { PackError } from "./packError";
+import { config, getPackOutDir, packsMetadata } from "./buildPacks.ts";
+import { doTranslation, isObject, setProperty, tryOrThrow } from "./utils.ts";
+import { PackError } from "./packError.ts";
+
+const { ClassicLevel } = classicLevelPkg as {
+  ClassicLevel: typeof import("classic-level").ClassicLevel;
+};
 
 type ImportData = {
   _importExternalDocument: {

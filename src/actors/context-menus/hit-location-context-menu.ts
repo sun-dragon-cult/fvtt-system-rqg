@@ -1,17 +1,19 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   getDomDataset,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { RqgActor } from "../rqgActor";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const hitLocationMenuOptions = (
+  actor: CharacterActor,
+): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.HitLocation),
@@ -20,10 +22,10 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
     callback: (el: JQuery) => {
       const itemId = getDomDataset(el, "item-id");
-      const item = itemId && actor.items.get(itemId);
+      const item = actor.items.get(itemId ?? "") as HitLocationItem | undefined;
       if (!item || !item.sheet) {
         const msg = localize("RQG.ContextMenu.CantEditHitLocationError", {
-          itemId: itemId,
+          itemId: itemId!,
           actorName: actor.name,
         });
         ui.notifications?.error(msg);
@@ -37,10 +39,10 @@ export const hitLocationMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      RqgActorSheet.confirmItemDelete(actor, itemId);
+      void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

@@ -1,8 +1,8 @@
 import { RqgActor } from "../actors/rqgActor";
-import { convertFormValueToString, localize } from "../system/util";
+import { convertFormValueToString, isDocumentSubType, localize } from "../system/util";
 import { systemId } from "../system/config";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { CultRankEnum } from "../data-model/item-data/cultData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { type CultItem, CultRankEnum } from "@item-model/cultData.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 //**Shows a dialog for improving a Characteristic */
@@ -25,14 +25,14 @@ export async function showImproveCharacteristicDialog(
   // Priests & God-talkers get a 20% bonus, p276 & p278
   const cultStandingBonus = actor.items.some(
     (i) =>
-      i.type === ItemTypeEnum.Cult &&
-      i.system.joinedCults.some((c: any) =>
+      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
+      i.system.joinedCults.some((joinedCult) =>
         [
           CultRankEnum.GodTalker,
           CultRankEnum.RunePriest,
           CultRankEnum.ChiefPriest,
           CultRankEnum.HighPriest,
-        ].includes(c.rank),
+        ].includes(joinedCult.rank),
       ),
   )
     ? 20
@@ -82,7 +82,6 @@ export async function showImproveCharacteristicDialog(
     callback: () => null,
   };
 
-  // @ts-expect-error renderTemplate
   const content: string = await foundry.applications.handlebars.renderTemplate(
     templatePaths.dialogImproveAbility,
     {
@@ -136,7 +135,6 @@ export async function submitImproveCharacteristicDialog(
       const expRoll = new Roll("1d100");
       await expRoll.toMessage({
         speaker: { alias: speakerName },
-        // @ts-expect-error CHAT_MESSAGE_STYLES
         style: CONST.CHAT_MESSAGE_STYLES.ROLL,
         flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
       });
@@ -156,7 +154,6 @@ export async function submitImproveCharacteristicDialog(
           const gainRoll = new Roll(String(adapter.experienceGainFixed));
           await gainRoll.toMessage({
             speaker: { alias: speakerName },
-            // @ts-expect-error CHAT_MESSAGE_STYLES
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
           });
@@ -170,7 +167,6 @@ export async function submitImproveCharacteristicDialog(
           const gainRoll = new Roll(adapter.experienceGainRandom);
           await gainRoll.toMessage({
             speaker: { alias: speakerName },
-            // @ts-expect-error CHAT_MESSAGE_STYLES
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
           });
@@ -188,7 +184,6 @@ export async function submitImproveCharacteristicDialog(
           { actorName: actor.name, name: adapter.name, typeLocName: adapter.typeLocName },
         );
         const failChat = {
-          // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: failedFlavor,
           content: failedContent,
@@ -217,7 +212,6 @@ export async function submitImproveCharacteristicDialog(
     const gainRoll = new Roll(adapter.trainingGainRandom);
     await gainRoll.toMessage({
       speaker: { alias: speakerName },
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });
@@ -240,7 +234,6 @@ export async function submitImproveCharacteristicDialog(
     const expRoll = new Roll("1d100");
     await expRoll.toMessage({
       speaker: { alias: speakerName },
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
     });
@@ -257,7 +250,6 @@ export async function submitImproveCharacteristicDialog(
       const gainRoll = new Roll(adapter.researchGainRandom);
       await gainRoll.toMessage({
         speaker: { alias: speakerName },
-        // @ts-expect-error CHAT_MESSAGE_STYLES
         style: CONST.CHAT_MESSAGE_STYLES.ROLL,
         flavor: `<h3>${flavor}</h3><p>${content}</p>`,
       });
@@ -275,7 +267,6 @@ export async function submitImproveCharacteristicDialog(
         typeLocName: adapter.typeLocName,
       });
       const failChat = {
-        // @ts-expect-error CHAT_MESSAGE_STYLES
         style: CONST.CHAT_MESSAGE_STYLES.OTHER,
         flavor: failedFlavor,
         content: failedContent,

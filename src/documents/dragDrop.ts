@@ -7,10 +7,10 @@ import {
   localizeDocumentName,
   localizeItemType,
 } from "../system/util";
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
-import { systemId } from "../system/config";
-import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../data-model/shared/rqidLink";
+
+import Document = foundry.abstract.Document;
+import { Rqid } from "../system/api/rqidApi";
 
 export function onDragEnter(event: DragEvent): void {
   const dropZone = event.currentTarget; // Target the event handler was attached to
@@ -63,7 +63,6 @@ export function isAllowedDocumentNames(
       allowedDocumentNames: allowedDocumentNamesString,
       documentName: translatedDocumentName,
     });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
     return false;
@@ -72,7 +71,7 @@ export function isAllowedDocumentNames(
 }
 
 export function isAllowedDocumentType(
-  document: Document<any, any> | undefined,
+  document: Document.Any | undefined,
   allowedDocumentTypes: string[] | undefined,
 ): boolean {
   if (
@@ -81,7 +80,7 @@ export function isAllowedDocumentType(
     !allowedDocumentTypes.includes(document?.type as string) // Does the type match
   ) {
     const translatedAllowedDocumentTypes = allowedDocumentTypes.map(
-      (d: any) => localizeItemType(d), // TODO assumes the document in a Item. Ok for now?
+      (d: any) => localizeItemType(d), // TODO assumes the document is an Item. Ok for now?
     );
 
     const allowedDocumentTypesString = formatListByUserLanguage(
@@ -92,7 +91,6 @@ export function isAllowedDocumentType(
       allowedDropTypes: allowedDocumentTypesString,
       type: localizeItemType(document?.type as any),
     });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
     return false;
@@ -100,16 +98,15 @@ export function isAllowedDocumentType(
   return true;
 }
 
-export function hasRqid(document: Document<any, any> | undefined): boolean {
-  const droppedItemRqid = document?.getFlag(systemId, documentRqidFlags)?.id;
+export function hasRqid(document: Document.Any | undefined): boolean {
+  const droppedItemRqid = Rqid.getDocumentFlag(document)?.id;
 
   if (!droppedItemRqid) {
     const msg = localize("RQG.Item.Notification.DroppedDocumentDoesNotHaveRqid", {
-      type: (document as any).type,
-      name: document?.name,
-      uuid: (document as any).uuid,
+      type: (document as any)?.type,
+      name: document?.name ?? "",
+      uuid: (document as any)?.uuid,
     });
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn(`RQG | ${msg}`);
     return false;
@@ -123,21 +120,20 @@ export function hasRqid(document: Document<any, any> | undefined): boolean {
  * TODO always construct an embedded rqid?
  */
 export async function updateRqidLink(
-  targetDocument: Document<any, any>,
+  targetDocument: Document.Any,
   targetPropertyName: string | undefined,
-  droppedDocument: Document<any, any>,
+  droppedDocument: Document.Any,
   allowDuplicates: boolean = false, // need a version that allows duplicates for cult runes, Orlanth have 2 air for example
 ): Promise<void> {
-  const droppedDocumentRqid = droppedDocument?.getFlag(systemId, documentRqidFlags)?.id ?? "";
+  const droppedDocumentRqid = Rqid.getDocumentFlag(droppedDocument)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
-    ? (droppedDocument.parent.getFlag(systemId, documentRqidFlags)?.id ?? "")
+    ? (Rqid.getDocumentFlag(droppedDocument.parent)?.id ?? "")
     : "";
   const fullDocumentRqid =
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
   const targetProperty = foundry.utils.getProperty(
-    // @ts-expect-error system
-    targetDocument?.system,
+    targetDocument?.system ?? {},
     targetPropertyName ?? "",
   );
 
@@ -159,28 +155,34 @@ export async function updateRqidLink(
       targetPropertyRqidLinkArray.push(newLink);
       targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));
       if (targetDocument.isEmbedded) {
-        await targetDocument.parent?.updateEmbeddedDocuments(targetDocument.documentName, [
+        await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
           {
             _id: targetDocument.id,
             system: { [targetPropertyName]: targetPropertyRqidLinkArray },
           },
         ]);
       } else {
-        await targetDocument.update({
-          system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-        });
+        await targetDocument.update(
+          {
+            system: { [targetPropertyName]: targetPropertyRqidLinkArray },
+          } as never,
+          {} as never,
+        );
       }
     }
   } else {
     // Property is a single RqidLink, not an array
     if (targetDocument.isEmbedded) {
-      await targetDocument.parent?.updateEmbeddedDocuments("Item", [
+      await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
         { _id: targetDocument.id, system: { [targetPropertyName]: newLink } },
       ]);
     } else {
-      await targetDocument.update({
-        system: { [targetPropertyName]: newLink },
-      });
+      await targetDocument.update(
+        {
+          system: { [targetPropertyName]: newLink },
+        } as never,
+        {} as never,
+      );
     }
   }
 }
@@ -193,9 +195,9 @@ export function getAllowedDropDocumentNames(event: DragEvent) {
   return convertStringToArray(getDomDataset(event, "dropzone-document-names"));
 }
 
-export async function extractDropInfo<T extends Document<any, any>>(
+export async function extractDropInfo<T extends Document.Any>(
   event: DragEvent,
-  data: { type: string; uuid: string },
+  data: ActorSheet.DropData,
 ): Promise<{
   droppedDocument: T; // Can be undefined, but then isAllowedToDrop is false
   dropZoneData: string | undefined;
@@ -203,19 +205,18 @@ export async function extractDropInfo<T extends Document<any, any>>(
   allowDuplicates: boolean;
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-  const cls = getDocumentClass(data.type) as Document<any, any> | undefined;
-  // @ts-expect-error fromDropData
-  const droppedDocument = await cls?.implementation.fromDropData(data as any);
+  const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
+  const droppedDocument = await cls?.implementation.fromDropData(data as object);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(
-    droppedDocument,
+    droppedDocument as any,
     allowedDropDocumentTypes,
   );
   const allowDuplicates = !!getDomDataset(event, "allow-duplicates");
   return {
-    droppedDocument: droppedDocument,
+    droppedDocument: droppedDocument as any,
     dropZoneData: dropZoneData,
-    isAllowedToDrop: droppedDocument && isAllowedDropDocumentType,
+    isAllowedToDrop: !!droppedDocument && isAllowedDropDocumentType,
     allowDuplicates: allowDuplicates,
   };
 }

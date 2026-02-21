@@ -1,41 +1,42 @@
 import { ClickableScriptsRegionBehavior } from "./ClickableScriptsRegionBehavior";
 
-// @ts-expect-error AsyncFunction
+type AsyncFunction = (...args: unknown[]) => Promise<unknown>;
+
 const { AsyncFunction } = foundry.utils;
-// @ts-expect-error TokenLayer
 const { TokenLayer } = foundry.canvas.layers;
 
 export class RqgTokenLayer extends TokenLayer {
   static init() {
-    // @ts-expect-error layerClass
     CONFIG.Canvas.layers.tokens.layerClass = RqgTokenLayer;
   }
 
   /** @override */
-  _onClickLeft(event: any): void {
+  override _onClickLeft(event: any): void {
     super._onClickLeft(event);
     RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "leftClickSource");
   }
 
   /** @override */
-  _onClickRight(event: any): void {
-    super._onClickLeft(event);
+  override _onClickRight(event: any): void {
+    super._onClickRight(event);
     RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "rightClickSource");
   }
 
-  private static handleBehaviorClick(clickedPoint: Point | undefined, sourcePath: string): void {
-    if (!canvas?.activeLayer || !(canvas.activeLayer instanceof RqgTokenLayer)) {
+  private static handleBehaviorClick(
+    clickedPoint: Canvas.Point | undefined,
+    sourcePath: string,
+  ): void {
+    if (!clickedPoint || !canvas?.activeLayer || !(canvas.activeLayer instanceof RqgTokenLayer)) {
       return;
     }
 
-    // @ts-expect-error regions
     canvas.scene?.regions?.forEach((region) => {
       if (region.polygonTree.testPoint(clickedPoint)) {
         region.behaviors
           .filter((b: any) => !b.disabled && b.system instanceof ClickableScriptsRegionBehavior)
           .forEach((behavior: any) => {
             try {
-              const fn = new AsyncFunction(
+              const fn: AsyncFunction = new (AsyncFunction as any)(
                 "scene",
                 "region",
                 "behavior",

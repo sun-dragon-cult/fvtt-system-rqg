@@ -1,10 +1,13 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser, getSelectRuneOptions } from "../../system/util";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { getSelectRuneOptions, isDocumentSubType } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { SpellDurationEnum, SpellRangeEnum } from "../../data-model/item-data/spell";
+import { SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { CultItem } from "@item-model/cultData.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 interface RuneMagicSheetData {
   allRuneOptions: SelectOptionData<string>[];
@@ -13,11 +16,12 @@ interface RuneMagicSheetData {
   actorCultOptions: SelectOptionData<string>[];
 }
 
-export class RuneMagicSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  RuneMagicSheetData | ItemSheet.Data
-> {
-  static get defaultOptions(): ItemSheet.Options {
+export class RuneMagicSheet extends RqgItemSheet {
+  override get document(): RuneMagicItem {
+    return super.document as RuneMagicItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.RuneMagic],
       template: templatePaths.itemRuneMagicSheet,
@@ -33,8 +37,7 @@ export class RuneMagicSheet extends RqgItemSheet<
     });
   }
 
-  getData(): RuneMagicSheetData & EffectsItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override getData(): RuneMagicSheetData & EffectsItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -43,7 +46,7 @@ export class RuneMagicSheet extends RqgItemSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
@@ -65,7 +68,7 @@ export class RuneMagicSheet extends RqgItemSheet<
     return (
       this.actor
         ?.getEmbeddedCollection("Item")
-        .filter((i: any) => i.type === ItemTypeEnum.Cult)
+        .filter((i: RqgItem) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
         .map((c) => ({
           value: c.id ?? "",
           label: c.name ?? "",
@@ -73,7 +76,7 @@ export class RuneMagicSheet extends RqgItemSheet<
     );
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     return super._updateObject(event, formData);
   }
 }

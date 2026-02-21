@@ -1,6 +1,5 @@
 import {
   activateChatTab,
-  getGameUser,
   isTruthy,
   localize,
   localizeItemType,
@@ -10,7 +9,9 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import type { SpiritMagicRollOptions } from "./SpiritMagicRoll.types";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+
+import Roll = foundry.dice.Roll;
 
 export class SpiritMagicRoll extends Roll {
   public static async rollAndShow(options: SpiritMagicRollOptions) {
@@ -21,13 +22,18 @@ export class SpiritMagicRoll extends Roll {
       { flavor: roll.flavor, speaker: options.speaker },
       { rollMode: options.rollMode, create: true },
     );
-    // @ts-expect-error Dice3D (Dice So Nice)
-    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    if (msg?.id != null) {
+      await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    }
     return roll;
   }
 
   constructor(formula: string = "1d100", data: any, options: SpiritMagicRollOptions) {
     super(formula, data, options);
+  }
+
+  get isEvaluated(): boolean {
+    return this._evaluated;
   }
 
   get targetChance(): number {
@@ -45,7 +51,7 @@ export class SpiritMagicRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -53,7 +59,7 @@ export class SpiritMagicRoll extends Roll {
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
-      user: getGameUser().id,
+      user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,
@@ -63,12 +69,11 @@ export class SpiritMagicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRoll, chatData);
   }
 
   // Html for what modifiers are applied and how many mp are used
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const modifiers = (this.options as SpiritMagicRollOptions).modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
@@ -79,9 +84,10 @@ export class SpiritMagicRoll extends Roll {
     const o = this.options as SpiritMagicRollOptions;
     const mpCost = o.levelUsed + (o.magicPointBoost ?? 0);
     const mpDrawn = this.successLevel! <= AbilitySuccessLevelEnum.Success ? mpCost : 0;
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRollTooltip, {
-      magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", { cost: mpDrawn }),
+      magicPointCostText: localize("RQG.Roll.SpiritMagicRoll.MagicPointCost", {
+        cost: mpDrawn.toString(),
+      }),
       powX5: o.powX5,
       modifiers: nonzeroSignedModifiers,
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,

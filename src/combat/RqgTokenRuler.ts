@@ -1,17 +1,13 @@
-import { getGame } from "../system/util";
 import { systemId } from "../system/config";
-import { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
+import type { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
+import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
 
-// @ts-expect-error canvas;
-const placeables = foundry.canvas.placeables;
-
-export class RqgTokenRuler extends placeables.tokens.TokenRuler {
+export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   static init() {
-    // @ts-expect-error rulerClass
     CONFIG.Token.rulerClass = RqgTokenRuler;
   }
 
-  _getSegmentStyle(waypoint: any): any {
+  override _getSegmentStyle(waypoint: any): any {
     const style = super._getSegmentStyle(waypoint);
     this.#rangeValueStyle(style, waypoint);
     return style;
@@ -21,19 +17,17 @@ export class RqgTokenRuler extends placeables.tokens.TokenRuler {
    * Adjusts the grid or segment style based on the token's movement characteristics
    */
   #rangeValueStyle(style: any, waypoint: any) {
-    // @ts-expect-error token
     if (!this.token.combatant) {
       // Only show the waypoints for tokens that are in combat.
       style.width = 0;
       return;
     }
     const tokenMovementAction = waypoint.action;
-    // @ts-expect-error token
-    const actorAttributes = this.token.actor.system.attributes;
+    const actorAttributes = (this.token.actor?.system as CharacterDataPropertiesData).attributes;
     // TODO Duplicated from RqgActor, make more DRY
     const equippedMovementEncumbrancePenalty = Math.min(
       0,
-      (actorAttributes.encumbrance.max || 0) - (actorAttributes.encumbrance.equipped || 0),
+      (actorAttributes.encumbrance?.max || 0) - (actorAttributes.encumbrance?.equipped || 0),
     );
 
     // Start by setting the movement decided on the actorSheet
@@ -57,9 +51,9 @@ export class RqgTokenRuler extends placeables.tokens.TokenRuler {
       }
     }
 
-    const tokenRulerSettings = getGame().settings.get(
+    const tokenRulerSettings = game.settings?.get(
       systemId,
-      "TokenRulerSettings",
+      "tokenRulerSettings",
     ) as TokenRulerSettingsType;
 
     const baseRange = move * 3; // movement in meters (1 MOV = 3 meters), assumes scene grid scale is expressed in meters

@@ -1,27 +1,30 @@
-import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { HealingCalculations, HealingEffects } from "./healingCalculations";
+import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
+import { HealingCalculations, type HealingEffects } from "./healingCalculations";
 import { applyTestDamage } from "./damageCalculations.test";
 import { DamageCalculations } from "./damageCalculations";
-import { assertItemType } from "./util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { assertDocumentSubType } from "./util";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgItem } from "../items/rqgItem";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("healing", () => {
-  let mockActor: RqgActor;
-  let mockLeftLeg: RqgItem;
+  let mockActor: CharacterActor;
+  let mockLeftLeg: HitLocationItem;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let mockHead: RqgItem;
-  let mockChest: RqgItem;
+  let mockHead: HitLocationItem;
+  let mockChest: HitLocationItem;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let mockAbdomen: RqgItem;
+  let mockAbdomen: HitLocationItem;
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")!;
-    mockHead = mockActor.items.find((i) => i.name === "Head")!;
-    mockChest = mockActor.items.find((i) => i.name === "Chest")!;
-    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")!;
+    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")! as HitLocationItem;
+    mockHead = mockActor.items.find((i) => i.name === "Head")! as HitLocationItem;
+    mockChest = mockActor.items.find((i) => i.name === "Chest")! as HitLocationItem;
+    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")! as HitLocationItem;
   });
 
   it("should be correct for healing smaller wounds", () => {
@@ -178,6 +181,9 @@ describe("healing", () => {
     // TODO handle multiple hit locations causing shock
 
     // --- Arrange ---
+    assertDocumentSubType<CharacterActor>(mockActor, ActorTypeEnum.Character);
+    assertDocumentSubType<HitLocationItem>(mockChest, ItemTypeEnum.HitLocation);
+
     const healPoints = 1;
     const chestHP = mockChest.system.hitPoints.max!; // 6
 
@@ -214,6 +220,8 @@ describe("healing", () => {
 
   it("should remove 'useless' state from limb when HP > 0", () => {
     // --- Arrange ---
+    assertDocumentSubType<CharacterActor>(mockActor, ActorTypeEnum.Character);
+    assertDocumentSubType<HitLocationItem>(mockLeftLeg, ItemTypeEnum.HitLocation);
     const legDamage = mockLeftLeg.system.hitPoints.max!; // 5
     const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
 
@@ -257,7 +265,8 @@ export function applyTestHealing(
   hitLocation: RqgItem,
   actor: RqgActor,
 ): HealingEffects {
-  assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+  assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
   const healingEffects = HealingCalculations.healWound(
     healPoints,
     healWoundIndex,

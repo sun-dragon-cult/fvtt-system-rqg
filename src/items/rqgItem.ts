@@ -1,5 +1,10 @@
 import { PassionSheet } from "./passion-item/passionSheet";
-import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import {
+  type AbilityItem,
+  abilityItemTypes,
+  ItemTypeEnum,
+  ResponsibleItemClass,
+} from "@item-model/itemTypes.ts";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
@@ -10,10 +15,9 @@ import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
 import { CultSheet } from "./cult-item/cultSheet";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import {
-  assertItemType,
-  getGame,
+  assertDocumentSubType,
   getSpeakerFromItem,
-  hasOwnProperty,
+  isDocumentSubType,
   localize,
   requireValue,
   RqgError,
@@ -21,20 +25,19 @@ import {
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { systemId } from "../system/config";
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
-import { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
+import type { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { SpiritMagicRoll } from "../rolls/SpiritMagicRoll/SpiritMagicRoll";
 import { SpiritMagicRollDialogV2 } from "../applications/SpiritMagicRollDialog/spiritMagicRollDialogV2";
 import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeMagicRollDialogV2";
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
-import { SpellRangeEnum } from "../data-model/item-data/spell";
-import type { DamageType, UsageType } from "../data-model/item-data/weaponData";
+import { type SpellItem, spellItemTypes, SpellRangeEnum } from "@item-model/spell.ts";
+import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponData.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import {
   formatDamagePart,
@@ -42,85 +45,88 @@ import {
 } from "../system/combatCalculations";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 import { Skill } from "./skill-item/skill";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+import type { CultItem } from "@item-model/cultData.ts";
+
+import type { PassionItem } from "@item-model/passionData.ts";
 
 export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
 
-    // @ts-expect-error applications
-    const sheets = foundry.applications.apps.DocumentSheetConfig;
+    const Items = foundry.documents.collections.Items;
 
-    // @ts-expect-error appv1
-    sheets.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
+    Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 
-    sheets.registerSheet(Item, systemId, PassionSheet, {
-      label: "RQG.SheetName.Item.Passion",
+    Items.registerSheet(systemId, PassionSheet, {
       types: [ItemTypeEnum.Passion],
+      label: "RQG.SheetName.Item.Passion",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, RuneSheet, {
-      label: "RQG.SheetName.Item.Rune",
+    Items.registerSheet(systemId, RuneSheet, {
       types: [ItemTypeEnum.Rune],
+      label: "RQG.SheetName.Item.Rune",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, SkillSheet, {
-      label: "RQG.SheetName.Item.Skill",
+    Items.registerSheet(systemId, SkillSheet, {
       types: [ItemTypeEnum.Skill],
+      label: "RQG.SheetName.Item.Skill",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, HitLocationSheet, {
-      label: "RQG.SheetName.Item.HitLocation",
+    Items.registerSheet(systemId, HitLocationSheet, {
       types: [ItemTypeEnum.HitLocation],
+      label: "RQG.SheetName.Item.HitLocation",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, HomelandSheet, {
-      label: "RQG.SheetName.Item.Homeland",
+    Items.registerSheet(systemId, HomelandSheet, {
       types: [ItemTypeEnum.Homeland],
+      label: "RQG.SheetName.Item.Homeland",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, OccupationSheet, {
-      label: "RQG.SheetName.Item.Occupation",
+    Items.registerSheet(systemId, OccupationSheet, {
       types: [ItemTypeEnum.Occupation],
+      label: "RQG.SheetName.Item.Occupation",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, GearSheet, {
-      label: "RQG.SheetName.Item.Gear",
+    Items.registerSheet(systemId, GearSheet, {
       types: [ItemTypeEnum.Gear],
+      label: "RQG.SheetName.Item.Gear",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, ArmorSheet, {
-      label: "RQG.SheetName.Item.Armor",
+    Items.registerSheet(systemId, ArmorSheet, {
       types: [ItemTypeEnum.Armor],
+      label: "RQG.SheetName.Item.Armor",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, WeaponSheet, {
-      label: "RQG.SheetName.Item.Weapon",
+    Items.registerSheet(systemId, WeaponSheet, {
       types: [ItemTypeEnum.Weapon],
+      label: "RQG.SheetName.Item.Weapon",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, SpiritMagicSheet, {
-      label: "RQG.SheetName.Item.SpiritMagicSpell",
+    Items.registerSheet(systemId, SpiritMagicSheet, {
       types: [ItemTypeEnum.SpiritMagic],
+      label: "RQG.SheetName.Item.SpiritMagicSpell",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, CultSheet, {
-      label: "RQG.SheetName.Item.Cult",
+    Items.registerSheet(systemId, CultSheet, {
       types: [ItemTypeEnum.Cult],
+      label: "RQG.SheetName.Item.Cult",
       makeDefault: true,
     });
-    sheets.registerSheet(Item, systemId, RuneMagicSheet, {
-      label: "RQG.SheetName.Item.RuneMagicSpell",
+    Items.registerSheet(systemId, RuneMagicSheet, {
       types: [ItemTypeEnum.RuneMagic],
+      label: "RQG.SheetName.Item.RuneMagicSpell",
       makeDefault: true,
     });
-    // TODO this doesn't compile!? Sheet registration would be better in Item init
-    // ResponsibleItemClass.forEach((itemClass) => itemClass.init());
 
     Hooks.on("preCreateItem", (document: any) => {
       const isOwnedItem =
         document instanceof RqgItem &&
         document.parent &&
-        Object.values(ItemTypeEnum).includes(document.type);
+        Object.values(ItemTypeEnum).includes(document.type as any);
       if (!isOwnedItem) {
         return true;
       }
@@ -128,7 +134,7 @@ export class RqgItem extends Item {
       if (RqgItem.isDuplicateItem(document)) {
         ui.notifications?.warn(
           localize("RQG.Item.Notification.ItemNotUnique", {
-            actorName: document.parent.name,
+            actorName: document.parent?.name ?? "",
             documentType: document.type,
             documentName: document.name,
           }),
@@ -139,7 +145,7 @@ export class RqgItem extends Item {
       if (RqgItem.isRuneMagicWithoutCult(document)) {
         ui.notifications?.warn(
           localize("RQG.Actor.RuneMagic.EmbeddingRuneMagicWithoutCultWarning", {
-            characterName: document.parent.name,
+            characterName: document.parent?.name ?? "",
             spellName: document.name,
           }),
         );
@@ -149,15 +155,12 @@ export class RqgItem extends Item {
     });
   }
 
-  declare system: any; // v10 type workaround
-  declare flags: FlagConfig["Item"]; // type workaround
-
   /**
    * Open a dialog for an AbilityRoll
    */
   public async abilityRoll(): Promise<void> {
-    // @ts-expect-error render
-    await new AbilityRollDialogV2({ abilityItem: this }).render(true);
+    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
+    await new AbilityRollDialogV2(this).render(true);
   }
 
   /**
@@ -171,6 +174,7 @@ export class RqgItem extends Item {
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
+    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
 
     const chance: number = Number(this.system.chance) || 0; // Handle NaN
 
@@ -194,25 +198,23 @@ export class RqgItem extends Item {
    * Open a dialog for a SpiritMagicRoll
    */
   public async spiritMagicRoll(): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.SpiritMagic);
-
-    // @ts-expect-error render
-    await new SpiritMagicRollDialogV2({ spellItem: this }).render(true);
+    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
+    await new SpiritMagicRollDialogV2(this).render(true);
   }
 
   /**
    * Do a SpiritMagicRoll and possibly draw magic points afterward
    */
   public async spiritMagicRollImmediate(
-    options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.system.points },
+    options: Omit<SpiritMagicRollOptions, "powX5"> = {
+      levelUsed: (this as SpiritMagicItem).system.points,
+    },
   ): Promise<void> {
-    if (!this.isEmbedded) {
-      const msg = "Item is not embedded";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
-    }
+    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
+    const actor = this.actor;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
 
-    const powX5: number = (Number(this.parent?.system.characteristics.power.value) || 0) * 5; // Handle NaN
+    const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
     const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
       powX5: powX5,
@@ -235,29 +237,26 @@ export class RqgItem extends Item {
    * Open a dialog for a RuneMagicRoll
    */
   public async runeMagicRoll(): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.RuneMagic);
-
-    // @ts-expect-error render
-    await new RuneMagicRollDialogV2({ spellItem: this }).render(true);
+    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
+    await new RuneMagicRollDialogV2(this).render(true);
   }
 
   /**
    * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
    */
   public async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.RuneMagic);
-    if (!this.isEmbedded) {
-      const msg = "Rune Magic item is not embedded";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
-    }
+    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
 
-    const cult = this.parent?.items.find((i) => i.id === this.system.cultId);
+    const actor = this.parent;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+
+    const cult = actor.items.find((i) => i.id === this.system.cultId) as RqgItem | undefined;
     if (!cult) {
       const msg = "Rune Magic item isn't connected to a cult";
       ui.notifications?.error(msg);
       throw new RqgError(msg, this);
     }
+    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
 
     const levelUsedOrDefault = options.levelUsed ?? this.system.points;
 
@@ -301,9 +300,8 @@ export class RqgItem extends Item {
    * Open an attackDialog to initiate an attack sequence
    */
   public async attack(): Promise<void> {
-    assertItemType(this.type, ItemTypeEnum.Weapon);
-    // @ts-expect-error render
-    await new AttackDialogV2({ weaponItem: this }).render(true);
+    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
+    await new AttackDialogV2(this).render(true);
   }
 
   /**
@@ -319,8 +317,11 @@ export class RqgItem extends Item {
     if (!usage) {
       return undefined;
     }
-    assertItemType(this.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
     const weaponDamage = this.system.usage[usage].damage;
+    const actor = this.parent;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+    const damageBonus = actor.system.attributes.damageBonus ?? "0";
 
     requireValue(
       damageType,
@@ -346,8 +347,7 @@ export class RqgItem extends Item {
     if (damageDegree === "special") {
       switch (damageType) {
         case "crush": {
-          const db = this.parent?.system.attributes.damageBonus ?? "0";
-          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(damageBonus);
 
           const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
           const specialDamage = formatDamagePart(
@@ -374,8 +374,7 @@ export class RqgItem extends Item {
     }
 
     if (damageDegree === "maxSpecial") {
-      const db = this.parent?.system.attributes.damageBonus ?? "0";
-      const maximisedDamageBonus = this.getMaximisedDamageBonusValue(db);
+      const maximisedDamageBonus = this.getMaximisedDamageBonusValue(damageBonus);
       const evaluatedDamageBonus = formatDamagePart(
         maximisedDamageBonus,
         "RQG.Roll.DamageRoll.DamageBonus",
@@ -383,7 +382,6 @@ export class RqgItem extends Item {
       );
 
       const damageFormulaRoll = new Roll(damageFormula);
-      // @ts-expect-error evaluateSync
       damageFormulaRoll.evaluateSync({ maximize: true });
       const evaluatedWeaponDamage = formatDamagePart(
         damageFormulaRoll.total?.toString() ?? "",
@@ -426,10 +424,8 @@ export class RqgItem extends Item {
     const dbRoll = new Roll(dbFormula);
     if (dbFormula.startsWith("-")) {
       // TODO Actors with negative db will actually do less damage with special success! Rule inconsistency.
-      // @ts-expect-error evaluateSync
       dbRoll.evaluateSync({ minimize: true });
     } else {
-      // @ts-expect-error evaluateSync
       dbRoll.evaluateSync({ maximize: true });
     }
     return dbRoll.total?.toString() ?? "";
@@ -440,37 +436,31 @@ export class RqgItem extends Item {
    * and the item can get experience.
    */
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
-    if (
-      result &&
-      result <= AbilitySuccessLevelEnum.Success &&
-      !(this.system as any).hasExperience
-    ) {
+    assertDocumentSubType<AbilityItem>(
+      this,
+      abilityItemTypes,
+      "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
+    );
+    if (result && result <= AbilitySuccessLevelEnum.Success && !this.system.hasExperience) {
       await this.awardExperience();
     }
   }
 
   public async awardExperience() {
-    if (hasOwnProperty(this.system, "hasExperience")) {
-      if (hasOwnProperty(this.system, "canGetExperience") && this.system.canGetExperience) {
-        if (!this.system.hasExperience) {
-          await this.actor?.updateEmbeddedDocuments("Item", [
-            { _id: this.id, system: { hasExperience: true } },
-          ]);
-          const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-            actorName: this.actor?.name,
-            itemName: this.name,
-          });
-          ui.notifications?.info(msg);
-        }
-      }
-    } else {
-      const msg = localize("RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError", {
+    assertDocumentSubType<AbilityItem>(
+      this,
+      abilityItemTypes,
+      "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
+    );
+    if (this.system.canGetExperience && !this.system.hasExperience) {
+      await this.actor?.updateEmbeddedDocuments("Item", [
+        { _id: this.id, system: { hasExperience: true } },
+      ]);
+      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+        actorName: this.actor?.name ?? "",
         itemName: this.name,
-        itemId: this.id,
       });
-      // @ts-expect-error console
-      ui.notifications?.error(msg, { console: false });
-      console.error(msg);
+      ui.notifications?.info(msg);
     }
   }
 
@@ -479,17 +469,22 @@ export class RqgItem extends Item {
    * is used in the books. The "1+" syntax for stackable rune magic is used
    */
   get spellSignature(): string {
-    if (!hasOwnProperty(this.system, "points")) {
-      console.error("RQG | Tried to get spellSignature on a non spell item");
-      return "";
-    }
+    assertDocumentSubType<SpellItem>(
+      this,
+      spellItemTypes,
+      "Tried to get spellSignature on a non spell item: " + this.type,
+    );
 
     const descriptionParts = [];
 
-    const stackableRuneMagic = this.system.isStackable ? "+" : "";
-    const variableSpiritMagic = this.system.isVariable
-      ? " " + localize("RQG.Item.SpiritMagic.Variable")
-      : "";
+    const stackableRuneMagic =
+      isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic) && this.system.isStackable
+        ? "+"
+        : "";
+    const variableSpiritMagic =
+      isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) && this.system.isVariable
+        ? " " + localize("RQG.Item.SpiritMagic.Variable")
+        : "";
     const pointsTranslated = localize("RQG.Item.RuneMagic.Points");
     descriptionParts.push(
       `${this.system.points}${stackableRuneMagic} ${pointsTranslated}${variableSpiritMagic}`,
@@ -521,27 +516,31 @@ export class RqgItem extends Item {
       );
       const durationTranslation = localize("RQG.Item.SpiritMagic.Duration");
       const translation =
-        this.system.duration === SpellRangeEnum.Special
+        this.system.duration === SpellRangeEnum.Special.toString() // TODO bug??? compares duration with range
           ? `${durationTranslation} (${durationValueTranslation.toLowerCase()})`
           : durationValueTranslation;
       descriptionParts.push(translation);
     }
 
-    if (this.system.concentration && this.type === ItemTypeEnum.SpiritMagic) {
+    if (
+      isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) &&
+      this.system.concentration
+    ) {
       descriptionParts.push(
         localize("RQG.Item.Spell.ConcentrationEnum." + this.system.concentration),
       );
     }
 
-    if (this.system.isOneUse && this.type === ItemTypeEnum.RuneMagic) {
+    if (isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic) && this.system.isOneUse) {
       descriptionParts.push(localize("RQG.Item.RuneMagic.OneUse"));
     }
 
     return descriptionParts.join(", ");
   }
 
-  async _preCreate(data: any, options: any, user: User): Promise<void> {
-    if (this.parent && this.type === ItemTypeEnum.Skill) {
+  override async _preCreate(data: any, options: any, user: User): Promise<void> {
+    if (this.parent && isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill)) {
+      assertDocumentSubType<CharacterActor>(this.parent, ActorTypeEnum.Character);
       // Update the baseChance for Dodge & Jump skills that depend on actor DEX
       const itemRqid = this.getFlag(systemId, "documentRqidFlags")?.id;
       const actorDex = this.parent.system.characteristics.dexterity.value ?? 0;
@@ -552,25 +551,16 @@ export class RqgItem extends Item {
             ? Skill.jumpBaseChance(actorDex)
             : undefined;
       if (newBaseChance) {
-        // @ts-expect-error updateSource
         this.updateSource({ system: { baseChance: newBaseChance } });
       }
     }
 
-    return super._preCreate(data, options, user);
+    await super._preCreate(data, options, user);
   }
 
-  protected _onCreate(
-    itemData: RqgItem["system"]["_source"],
-    options: DocumentModificationOptions,
-    userId: string,
-  ): void {
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
-    const item = itemData._id ? getGame().items?.get(itemData._id) : undefined;
-    // @ts-expect-errors Foundry v10
+  protected override _onCreate(itemData: any, options: never, userId: string): void {
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
+    const item = itemData._id ? game.items?.get(itemData._id) : undefined;
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
     if (item?.img === defaultIcon) {
@@ -589,7 +579,7 @@ export class RqgItem extends Item {
         },
       };
 
-      if (itemData.type === ItemTypeEnum.Passion) {
+      if (isDocumentSubType<PassionItem>(itemData, ItemTypeEnum.Passion)) {
         updateData.system = { subject: itemData.name };
       }
 
@@ -598,8 +588,7 @@ export class RqgItem extends Item {
     return super._onCreate(itemData, options, userId);
   }
 
-  static async updateDocuments(updates: any[], context: any): Promise<any> {
-    // @ts-expect-error isEmpty
+  static override async updateDocuments(updates: any[], context: any): Promise<any> {
     if (foundry.utils.isEmpty(updates)) {
       return [];
     }
@@ -608,7 +597,6 @@ export class RqgItem extends Item {
     const { parent, pack, ...options } = context;
     if (parent?.documentName === "Actor") {
       updates.forEach((u) => {
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
@@ -643,8 +631,10 @@ export class RqgItem extends Item {
 
   // Validate that embedded runeMagic can be connected to a cult
   private static isRuneMagicWithoutCult(document: any): boolean {
-    const isRuneMagic = document.type === ItemTypeEnum.RuneMagic;
-    const actorHasCult = document.parent.items.some((i: RqgItem) => i.type === ItemTypeEnum.Cult);
+    const isRuneMagic = isDocumentSubType<RuneMagicItem>(document, ItemTypeEnum.RuneMagic);
+    const actorHasCult: boolean = document.parent.items.some((i: RqgItem) =>
+      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult),
+    );
     const okToAdd = !isRuneMagic || !(isRuneMagic && !actorHasCult);
     return !okToAdd;
   }

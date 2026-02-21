@@ -1,4 +1,6 @@
 // Mock contains derived values
+import { ActorTypeEnum } from "../../src/data-model/actor-data/rqgActorData.ts";
+
 const embeddedItems = [
   {
     name: "Abdomen",
@@ -388,7 +390,7 @@ const embeddedItems = [
 
 export const mockActor: any = {
   name: "Crash Test Dummy",
-  type: "character",
+  type: ActorTypeEnum.Character,
   img: "icons/svg/mystery-man.svg",
   system: {
     characteristics: {

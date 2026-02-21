@@ -1,7 +1,4 @@
-import { getGameUser } from "../system/util";
 import { socketSend } from "./RqgSocket";
-import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
-import type { ChatMessageDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatMessageData";
 
 /**
  * Update a chat message. If the user is the author of the message, update it directly.
@@ -9,12 +6,11 @@ import type { ChatMessageDataProperties } from "@league-of-foundry-developers/fo
  */
 export async function updateChatMessage(
   attackChatMessage: ChatMessage,
-  messageData: PropertiesToSource<ChatMessageDataProperties>,
+  messageData: ChatMessage.UpdateData,
 ): Promise<void> {
-  // @ts-expect-error author
-  const chatMessageAuthorId = attackChatMessage.author.id;
+  const chatMessageAuthorId = attackChatMessage.author?.id ?? "";
 
-  if (getGameUser().id === chatMessageAuthorId) {
+  if (game.user?.id === chatMessageAuthorId) {
     await attackChatMessage.update(messageData);
   } else {
     socketSend({

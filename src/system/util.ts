@@ -1,11 +1,30 @@
 import type { RqgActor } from "../actors/rqgActor";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum, type RqgItemDataSource } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
-import type { PropertiesToSource } from "@league-of-foundry-developers/foundry-vtt-types/src/types/helperTypes";
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
+
+import Document = foundry.abstract.Document;
+import type { RqidEnabledDocument } from "../global";
+import type { RqgChatMessage } from "../chat/RqgChatMessage.ts";
+
+/**
+ * Helper to safely get a Roll from JSONField data that could be string or object.
+ * Foundry's JSONField can return either depending on serialization state
+ * (fresh data returns string from toJSON(), but after database load it's deserialized to object).
+ */
+export function safeFromJSON<T>(
+  RollClass: any,
+  data: string | object | undefined | any,
+): T | undefined {
+  if (!data) {
+    return undefined;
+  }
+  return typeof data === "string"
+    ? (RollClass.fromJSON(data) as T)
+    : (RollClass.fromData(data as any) as T);
+}
 
 export function getRequiredDomDataset(
   el: HTMLElement | Element | Event | JQuery,
@@ -23,7 +42,8 @@ export function getRequiredDomDataset(
 /**
  * Get the dataset value of the first DOM element where it is set, searching
  * in parents until found.
- * @param dataset Should be formatted as kebab case without the `data-`
+ *
+ * `dataset` Should be formatted as kebab case without the `data-`
  * (`my-value` searches for `data-my-value`)
  */
 export function getDomDataset(
@@ -57,12 +77,12 @@ export function getDomDatasetAmongSiblings(
     throw new RqgError(msg, el);
   }
   // Get the itemId on the provided DOM element
-  const itemId = elem.dataset.itemId;
+  const itemId = elem.dataset["itemId"];
 
   // Follow the siblings above the provided DOM element til the first with the same itemId
   while (
     firstItemEl?.previousElementSibling instanceof HTMLElement &&
-    firstItemEl?.previousElementSibling?.dataset?.itemId === itemId
+    firstItemEl?.previousElementSibling?.dataset?.["itemId"] === itemId
   ) {
     firstItemEl = firstItemEl.previousElementSibling;
   }
@@ -79,52 +99,13 @@ export function getHTMLElement(
       : (el as JQuery).get(0);
 }
 
-/**
- * Gets game and Throws RqgExceptions if not initialized yet.
- */
-export function getGame(): Game {
-  // @ts-expect-error data
-  if (Object.keys(game?.data ?? {}).length === 0) {
-    const msg = `game is not initialized yet! (Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
-  return game as Game;
-}
-
-/**
- * Gets game.users and Throws RqgExceptions if not initialized yet.
- */
-export function getGameUsers(): Users {
-  const users = getGame().users;
-  if (!users) {
-    const msg = `game.users is not initialized yet! ( Initialized between the 'setup' and 'ready' hook events.)`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
-  return users;
-}
-
 export function getSocket(): io.Socket {
-  if (!getGame().socket) {
+  if (!game.socket) {
     const msg = `socket is not initialized yet! ( Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;
     ui.notifications?.error(msg);
     throw new RqgError(msg);
   }
-  return getGame().socket!;
-}
-
-/**
- * Gets game.user and Throws RqgExceptions if not initialized yet.
- */
-export function getGameUser(): User {
-  const user = getGame().user;
-  if (!(user instanceof User)) {
-    const msg = `game.user is not initialized yet!`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
-  return user;
+  return game.socket!;
 }
 
 /**
@@ -169,11 +150,10 @@ export function escapeRegex(string: string): string {
 }
 
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
-  // TODO only for GM? getGame().user.isGM &&
+  // TODO only for GM? game.user.isGM &&
   console.warn(`RQG | ${msg}`, debugData);
   if (notify) {
-    // @ts-expect-error console
-    ui?.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
+    ui.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
   }
 }
 
@@ -203,6 +183,12 @@ export function isDefined<T>(argument: T | undefined | null): argument is T {
   return argument != null;
 }
 
+export function assertDefined<T>(argument: T | undefined | null): asserts argument is T {
+  if (argument == null) {
+    throw new RqgError("Expected value to be defined", argument);
+  }
+}
+
 /**
  * Type guard used for filtering arrays to remove falsy values.
  *
@@ -223,31 +209,76 @@ export function hasOwnProperty<X extends object | undefined, Y extends PropertyK
 }
 
 /**
- * Check if item data type if of correct type to narrow type to that itemtype.
+ * Type guard: works even for elements from a detached window
  */
-export function assertItemType<T extends ItemTypeEnum>(
-  itemType: ItemTypeEnum | undefined,
-  type: T,
-): asserts itemType is T {
-  if (!itemType || itemType !== type) {
-    const msg = `Got unexpected item type in assert, ${itemType} ≠ ${type}`;
+export function isButton(el: any): el is HTMLButtonElement {
+  return el?.tagName.toUpperCase() === "BUTTON";
+}
+/**
+ * Check if item data type if of correct type to narrow type to that itemtype.
+ * Modified to with both ItemTypeEnum and string like the `type` property on ItemData.
+ * TODO The type Document.WithSubTypes includes ActorDelta that seems to miss subtypes
+ */
+export function assertDocumentSubType<
+  T extends Document.WithSubTypes | RqgItem | RqgActor | RqgChatMessage | ChatMessage,
+>(
+  document:
+    | Document.WithSubTypes
+    | RqgItem
+    | RqgActor
+    | RqgChatMessage
+    | ChatMessage
+    | undefined
+    | null,
+  documentSubTypes: Readonly<
+    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
+    | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
+  >,
+  errorMsg?: string,
+): asserts document is T {
+  const documentSubTypesArray = Array.isArray(documentSubTypes)
+    ? documentSubTypes
+    : [documentSubTypes];
+  if (!document || !documentSubTypesArray.includes((document as any).type)) {
+    const msg = errorMsg
+      ? localize(errorMsg)
+      : `Got unexpected document type in assert, [${documentSubTypesArray.join(", ")}] ≠ ${(document as any).type}`;
     ui.notifications?.error(msg);
-    throw new RqgError(msg);
+    throw new RqgError(msg, document);
   }
 }
 
 /**
- * Check if actor data type if of correct type to narrow type to that actor type.
+ * Check if document is defined, has the correct type and narrow to the T type.
  */
-export function assertActorType<T extends ActorTypeEnum>(
-  actorType: ActorTypeEnum | undefined,
-  type: T,
-): asserts actorType is T {
-  if (!actorType || actorType !== type) {
-    const msg = `Got unexpected actor type in assert, ${actorType} ≠ ${type}`;
-    ui.notifications?.error(msg);
-    throw new RqgError(msg);
-  }
+export function isDocumentSubType<
+  T extends
+    | Document.WithSubTypes
+    | RqgItemDataSource
+    | RqgItem
+    | RqgActor
+    | RqidEnabledDocument
+    | RqgChatMessage
+    | ChatMessage,
+>(
+  document:
+    | Document.WithSubTypes
+    | RqgItemDataSource
+    | RqgItem
+    | RqgActor
+    | RqidEnabledDocument
+    | RqgChatMessage
+    | ChatMessage
+    | undefined,
+  documentSubTypes: Readonly<
+    | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)
+    | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)[]
+  >,
+): document is T {
+  const documentSubTypesArray = Array.isArray(documentSubTypes)
+    ? documentSubTypes
+    : [documentSubTypes];
+  return !!document && documentSubTypesArray.includes((document as any).type);
 }
 
 export function assertHtmlElement<T extends HTMLElement>(
@@ -273,12 +304,13 @@ export function requireValue<T>(
 
 export function usersIdsThatOwnActor(actor: RqgActor | null): string[] {
   if (actor) {
-    return getGameUsers()
-      .filter((user: User) =>
-        // @ts-expect-error DOCUMENT_OWNERSHIP_LEVELS
-        actor.testUserPermission(user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER),
-      )
-      .map((user) => user.id);
+    return (
+      game.users
+        ?.filter((user: User) =>
+          actor.testUserPermission(user, CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER),
+        )
+        .map((user) => user.id) ?? []
+    );
   }
   return [];
 }
@@ -443,18 +475,18 @@ export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]
 export async function getItemsToCache(rqidStart: string): Promise<AvailableItemCache[]> {
   const compendiumItemIndexData = (
     await Promise.all(
-      getGame().packs.map(async (pack: CompendiumCollection<CompendiumCollection.Metadata>) => {
-        // @ts-expect-error indexed
+      game.packs?.map(async (pack: CompendiumCollection<CompendiumCollection.DocumentName>) => {
         if (!pack.indexed) {
           await pack.getIndex();
         }
         return getIndexData(rqidStart, pack);
-      }),
+      }) ?? [],
     )
   ).flat();
 
   const worldLanguage =
-    (getGame().settings.get(systemId, "worldLanguage") as string) ?? CONFIG.RQG.fallbackLanguage;
+    (game.settings?.get(systemId, "worldLanguage") as unknown as string) ??
+    CONFIG.RQG.fallbackLanguage;
 
   // Only keep one of each rqid, the one with the highest priority, taking account of world & fallback language
   const highestPriorityItemData = compendiumItemIndexData.reduce(
@@ -535,22 +567,16 @@ function getSelectOptions(
 
 function getIndexData(
   rqidStart: string,
-  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+  pack: CompendiumCollection<CompendiumCollection.DocumentName>,
 ): AvailableItemCache[] {
-  return pack.index.reduce((acc: AvailableItemCache[], indexData) => {
-    // @ts-expect-error flags
-    if (indexData?.flags?.rqg?.documentRqidFlags?.id?.startsWith(rqidStart)) {
+  return pack.index.reduce((acc: AvailableItemCache[], indexEntry: any) => {
+    if (indexEntry?.flags?.rqg?.documentRqidFlags?.id?.startsWith(rqidStart)) {
       acc.push({
-        // @ts-expect-error name
-        name: indexData.name ?? "",
-        // @ts-expect-error img
-        img: indexData.img ?? "",
-        // @ts-expect-error flags
-        rqid: indexData?.flags?.rqg?.documentRqidFlags?.id ?? "",
-        // @ts-expect-error flags
-        priority: indexData?.flags?.rqg?.documentRqidFlags?.priority ?? "",
-        // @ts-expect-error flags
-        lang: indexData?.flags?.rqg?.documentRqidFlags?.lang ?? "",
+        name: indexEntry.name ?? "",
+        img: indexEntry.img ?? "",
+        rqid: indexEntry?.flags?.rqg?.documentRqidFlags?.id ?? "",
+        priority: indexEntry?.flags?.rqg?.documentRqidFlags?.priority ?? "",
+        lang: indexEntry?.flags?.rqg?.documentRqidFlags?.lang ?? "",
       });
     }
     return acc;
@@ -577,13 +603,7 @@ export class RqgError implements Error {
 }
 
 export function getItemDocumentTypes(): string[] {
-  // @ts-expect-error documentTypes
-  const documentTypes = getGame().system.documentTypes.Item as any[];
-  if (Array.isArray(documentTypes)) {
-    // v11 format TODO remove when requiring v12
-    return documentTypes;
-  }
-  // v12 version format
+  const documentTypes = game.system?.documentTypes.Item ?? {};
   return Object.keys(documentTypes);
 }
 
@@ -599,8 +619,12 @@ export function moveCursorToEnd(el: HTMLInputElement) {
   }
 }
 
-export function localize(key: string, data?: Record<string, unknown>): string {
-  const result = getGame().i18n.format(key, data);
+export function localize(key: string | undefined, data?: Record<string, string>): string {
+  if (!key) {
+    console.log(`RQG | Attempt to localize an undefined key`);
+    return "";
+  }
+  const result = game.i18n?.format(key, data) ?? key;
   if (result === key) {
     console.log(
       `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/uiContent.json).`,
@@ -609,7 +633,7 @@ export function localize(key: string, data?: Record<string, unknown>): string {
   return result;
 }
 
-export function localizeItemType(itemType: ItemTypeEnum | "reputation"): string {
+export function localizeItemType(itemType: Item.SubType | string | "reputation"): string {
   return localize("TYPES.Item." + itemType);
 }
 
@@ -632,12 +656,9 @@ export function localizeCharacteristic(characteristic: string): string {
  * Sets the Chat sidebar tab to active and expands the sidebar is collapsed.
  */
 export function activateChatTab() {
-  if (getGame().settings.get(systemId, "autoActivateChatTab")) {
-    // @ts-expect-error changeTab
-    ui.sidebar.changeTab("chat", "primary");
-
-    // @ts-expect-error toggleExpanded
-    ui.sidebar.toggleExpanded(true);
+  if (game.settings?.get(systemId, "autoActivateChatTab")) {
+    ui.sidebar?.changeTab("chat", "primary");
+    ui.sidebar?.toggleExpanded(true);
   }
 }
 
@@ -656,7 +677,8 @@ export function formatListByWorldLanguage(
   concatType: ListFormatType = "conjunction",
 ): string {
   const worldLanguage =
-    (getGame().settings.get(systemId, "worldLanguage") as string) ?? CONFIG.RQG.fallbackLanguage;
+    (game.settings?.get(systemId, "worldLanguage") as unknown as string) ??
+    CONFIG.RQG.fallbackLanguage;
   return formatListByLanguage(worldLanguage, list, concatType);
 }
 
@@ -670,7 +692,7 @@ export function formatListByUserLanguage(
   concatType: ListFormatType = "conjunction",
 ): string {
   const userLanguage =
-    (getGame().settings.get("core", "language") as string) ?? CONFIG.RQG.fallbackLanguage;
+    (game.settings?.get("core", "language") as unknown as string) ?? CONFIG.RQG.fallbackLanguage;
   return formatListByLanguage(userLanguage, list, concatType);
 }
 
@@ -700,9 +722,7 @@ export function* range(start: number | undefined, end: number | undefined): Gene
   yield* range(start + 1, end);
 }
 
-export function getSpeakerFromItem(
-  item: RqgItem | PartialAbilityItem,
-): PropertiesToSource<ChatSpeakerDataProperties> {
+export function getSpeakerFromItem(item: RqgItem | PartialAbilityItem): ChatMessage.SpeakerData {
   const tokenOrActor = getTokenOrActorFromItem(item);
   const token = tokenOrActor instanceof TokenDocument ? tokenOrActor : undefined;
   const actor = tokenOrActor instanceof Actor ? tokenOrActor : undefined;
@@ -716,7 +736,8 @@ export function getSpeakerFromItem(
  * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
  */
 export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
-  const token = getTokenFromActor(item.parent);
+  // Type assertion needed since parent may not have getActiveTokens
+  const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
     return token;
@@ -732,14 +753,15 @@ export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocum
 export function getTokenOrActorFromItem(
   item: RqgItem | PartialAbilityItem,
 ): TokenDocument | RqgActor | undefined {
-  const token = getTokenFromActor(item.parent);
+  // Type assertion needed since parent may not have getActiveTokens
+  const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
     return token;
   } else if ((item as PartialAbilityItem).actingToken) {
     return (item as PartialAbilityItem).actingToken;
   } else {
-    return item.parent ?? undefined;
+    return (item.parent as RqgActor | undefined) ?? undefined;
   }
 }
 
@@ -757,8 +779,7 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
   const owningActorTokens: TokenDocument[] =
     actor?.getActiveTokens()?.map((t: any) => t.document) ?? [];
   const attackingToken =
-    owningActorTokens[0] ??
-    getGame().scenes?.current?.tokens.find((t) => t.actor?.id === actor?.id);
+    owningActorTokens[0] ?? game.scenes?.current?.tokens.find((t) => t.actorId === actor?.id); // TODO t.actor.id => t.actorId
   return attackingToken;
 }
 
@@ -767,7 +788,7 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocu
  * to do a Number(x) on the resulting string to revert into number again.
  */
 export function toSignedString(num: number) {
-  const n = num.toLocaleString(getGame().i18n.lang);
+  const n = num.toLocaleString(game.i18n?.lang);
 
   if (num === 0) {
     return n;
@@ -782,8 +803,8 @@ export function toSignedString(num: number) {
 /**
  * Get the actor name with a link if the actor has a prototype token that is linked and the user is GM.
  */
-export function getActorLinkDecoration(actor: RqgActor | null | undefined): string {
-  if (getGameUser().isGM) {
+export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefined): string {
+  if (game.user?.isGM) {
     return actor?.prototypeToken.actorLink ? " 🔗" : "";
   } else {
     return "";

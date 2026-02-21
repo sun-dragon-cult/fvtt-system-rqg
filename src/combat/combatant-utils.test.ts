@@ -1,5 +1,7 @@
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "./combatant-utils";
 
+import { describe, it, expect } from "vitest";
+
 describe("Combatant to add calculations are correct", () => {
   it("should return a missing sr", () => {
     // Arrange

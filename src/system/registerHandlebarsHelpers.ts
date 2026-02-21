@@ -1,18 +1,19 @@
-import { EquippedStatus } from "../data-model/item-data/IPhysicalItem";
+import type { EquippedStatus } from "@item-model/IPhysicalItem.ts";
 import {
+  assertDocumentSubType,
   formatListByUserLanguage,
   getAvailableRunes,
-  getGame,
-  getGameUser,
   localize,
   localizeItemType,
   toCamelCase,
 } from "./util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
 import type { RqgItem } from "../items/rqgItem";
+import type { SkillItem } from "@item-model/skillData.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes";
 
 export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("concat", (...strs) =>
@@ -71,26 +72,31 @@ export const registerHandlebarsHelpers = function () {
 
   Handlebars.registerHelper("skillname", (...args) => {
     return applyFnToDocumentFromHandlebarsArgs(args, (item) => {
-      const specialization = item?.system.specialization ? ` (${item.system.specialization})` : "";
-      return `${item?.system.skillName}${specialization}`;
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      const specialization = item?.system?.specialization ? ` (${item.system.specialization})` : "";
+      return `${item?.system?.skillName}${specialization}`;
     });
   });
 
   Handlebars.registerHelper("skillchance", (...args) =>
-    applyFnToDocumentFromHandlebarsArgs(args, (item) => (item ? item.system.chance : "---")),
+    applyFnToDocumentFromHandlebarsArgs(args, (item) => {
+      assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
+      return item?.system?.chance ? item.system.chance.toString() : "---";
+    }),
   );
 
   Handlebars.registerHelper("experiencedclass", (...args) =>
-    applyFnToDocumentFromHandlebarsArgs(args, (item) =>
-      item?.system.hasExperience ? "experienced" : "",
-    ),
+    applyFnToDocumentFromHandlebarsArgs(args, (item: any) => {
+      return item?.system?.hasExperience ? "experienced" : "";
+    }),
   );
 
   Handlebars.registerHelper("toAnchor", (...args) => {
-    const documentLink = applyFnToDocumentFromHandlebarsArgs<Document<any, any>>(
+    const documentLink = applyFnToDocumentFromHandlebarsArgs<RqgItem | RqgActor>(
       args,
-      // @ts-expect-error toAnchor
-      (document) => (document ? document.toAnchor({ classes: ["content-link"] }).outerHTML : "🐛"),
+      (
+        document: any, // TODO fix typing
+      ) => (document ? document.toAnchor({ classes: ["content-link"] }).outerHTML : "🐛"),
       ["Item", "Actor"],
     );
     return new Handlebars.SafeString(documentLink ?? "🐛");
@@ -110,7 +116,6 @@ export const registerHandlebarsHelpers = function () {
       const msg = localize("RQG.Item.Notification.CantFindRuneInAvailableRunesError", {
         rqid: rqid,
       });
-      // @ts-expect-error console
       ui.notifications?.error(msg, { console: false });
       console.error("RQG |", msg);
       return "";
@@ -119,10 +124,7 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("defaultItemIconSrc", (itemType: string): string | undefined => {
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     return defaultItemIconSettings[itemType];
   });
 
@@ -189,12 +191,11 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("isEmptyObject", function (value) {
-    // @ts-expect-error isEmpty
     return foundry.utils.isEmpty(value);
   });
 
   Handlebars.registerHelper("ifIn", (elem, list, options) =>
-    // @ts-expect-error this is any
+    // @ts-expect-error this is maybe wrong TODO verify how to do this properly
     list.includes(elem) ? options.fn(this) : options.inverse(this),
   );
 
@@ -206,7 +207,7 @@ export const registerHandlebarsHelpers = function () {
       | undefined;
     return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
       rqid: rqid,
-      documentName: getGame().i18n.localize(`DOCUMENT.${documentName}`),
+      documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
       documentType: itemType ? localizeItemType(itemType) : "",
     });
   });
@@ -224,13 +225,13 @@ export const registerHandlebarsHelpers = function () {
       return options.fn();
     }
 
-    const user = getGameUser();
+    const user = game.user;
 
-    if (user.isGM && forUserTypes.toLowerCase().includes("gm")) {
+    if (user?.isGM && forUserTypes.toLowerCase().includes("gm")) {
       return options.fn();
     }
 
-    if (user.isTrusted && forUserTypes.toLowerCase().includes("trusted")) {
+    if (user?.isTrusted && forUserTypes.toLowerCase().includes("trusted")) {
       return options.fn();
     }
 
@@ -249,7 +250,7 @@ export const registerHandlebarsHelpers = function () {
  * The expectedDocumentNames is a guard against unexpected returns, and should be a list if documentNames that is
  * expected to be returned.
  */
-function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgItem>(
+function applyFnToDocumentFromHandlebarsArgs<T extends RqgItem | RqgActor = RqgItem>(
   handlebarsArgs: any[],
   fn: (document: T | undefined) => string,
   expectedDocumentNames: string[] = ["Item"],
@@ -259,7 +260,6 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
 
   if (!uuid) {
     const msg = `Handlebars helper called with an empty uuid`;
-    // @ts-expect-error console
     ui.notifications?.error(msg, { console: false });
     // eslint-disable-next-line prefer-rest-params
     console.error("RQG | ", msg, arguments);
@@ -268,8 +268,7 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
 
   let itemActorOrToken;
   try {
-    // @ts-expect-error fromUuidSync
-    itemActorOrToken = fromUuidSync(uuid) as Document<any, any> | undefined;
+    itemActorOrToken = fromUuidSync(uuid);
   } catch {
     // This uuid can't be retrieved synchronously (it's in a compendium) Fail gracefully.
     return "�";
@@ -282,13 +281,11 @@ function applyFnToDocumentFromHandlebarsArgs<T extends Document<any, any> = RqgI
   }
 
   const itemOrActor =
-    itemActorOrToken.documentName === "Token"
-      ? (itemActorOrToken as TokenDocument).actor
-      : itemActorOrToken;
+    itemActorOrToken instanceof TokenDocument ? itemActorOrToken.actor : itemActorOrToken;
 
   const document =
-    embeddedItemId && itemOrActor?.documentName === "Actor"
-      ? itemOrActor.getEmbeddedDocument("Item", embeddedItemId)
+    embeddedItemId && itemOrActor instanceof Actor
+      ? itemOrActor.getEmbeddedDocument("Item", embeddedItemId, {})
       : itemOrActor;
 
   if (embeddedItemId && document?.documentName !== "Item") {

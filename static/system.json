@@ -61,6 +61,9 @@
     }
   ],
   "documentTypes": {
+    "Actor": {
+      "character": {}
+    },
     "ChatMessage": {
       "combat": {}
     },

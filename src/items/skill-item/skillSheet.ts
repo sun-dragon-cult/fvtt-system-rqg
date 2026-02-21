@@ -1,11 +1,10 @@
-import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser, getSelectRuneOptions } from "../../system/util";
-import { RqgItem } from "../rqgItem";
+import { assertDocumentSubType, getSelectRuneOptions } from "../../system/util";
 import { systemId } from "../../system/config";
 import { concatenateSkillName } from "./concatenateSkillName";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface SkillSheetData {
@@ -13,8 +12,12 @@ interface SkillSheetData {
   allRuneOptions: SelectOptionData<string>[];
 }
 
-export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class SkillSheet extends RqgItemSheet {
+  override get document(): SkillItem {
+    return super.document as SkillItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Skill],
       template: templatePaths.itemSkillSheet,
@@ -30,11 +33,12 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     });
   }
 
-  getData(): SkillSheetData & ItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override getData(): SkillSheetData & ItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
-    system.categoryMod = this.document.system.categoryMod; // Use the actor derived value
-    system.chance = this.document.system.chance; // Use the actor derived value
+    const skillItem = this.document;
+    assertDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill);
+    system.categoryMod = skillItem.system?.categoryMod; // Use the actor derived value
+    system.chance = skillItem.system?.chance; // Use the actor derived value
 
     if (!system.skillName) {
       system.skillName = system.name;
@@ -46,7 +50,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
 
@@ -58,7 +62,7 @@ export class SkillSheet extends RqgItemSheet<ItemSheet.Options, SkillSheetData |
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     formData["name"] = concatenateSkillName(
       formData["system.skillName"],
       formData["system.specialization"],

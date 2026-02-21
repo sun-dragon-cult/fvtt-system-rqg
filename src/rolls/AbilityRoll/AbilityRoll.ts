@@ -1,8 +1,6 @@
-import type { AbilityRollOptions } from "./AbilityRoll.types";
 import { calculateAbilitySuccessLevel } from "./calculateAbilitySuccessLevel";
 import {
   activateChatTab,
-  getGameUser,
   isTruthy,
   localize,
   localizeItemType,
@@ -10,8 +8,11 @@ import {
 } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { AbilityRollOptions } from "./AbilityRoll.types";
 
-export class AbilityRoll extends Roll {
+import Roll = foundry.dice.Roll;
+
+export class AbilityRoll extends Roll<AbilityRollOptions> {
   public static async rollAndShow(options: AbilityRollOptions) {
     const roll = new AbilityRoll(undefined, {}, options);
     await roll.evaluate();
@@ -20,13 +21,18 @@ export class AbilityRoll extends Roll {
       { flavor: roll.flavor, speaker: options.speaker },
       { rollMode: options.rollMode, create: true },
     );
-    // @ts-expect-error Dice3D (Dice So Nice)
-    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    if (msg?.id != null) {
+      await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    }
     return roll;
   }
 
   constructor(formula: string = "1d100", data: any, options: AbilityRollOptions) {
     super(formula, data, options);
+  }
+
+  get isEvaluated(): boolean {
+    return this._evaluated;
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
@@ -37,14 +43,14 @@ export class AbilityRoll extends Roll {
   }
 
   get targetChance(): number {
-    const o = this.options as AbilityRollOptions;
+    const o = this.options as AbilityRollOptions; //TODO fix type as AbilityRollOptions;
     const modificationsSum =
-      o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
+      o?.modifiers?.reduce((acc: number, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
     return Math.max(0, o.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work;
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -52,7 +58,7 @@ export class AbilityRoll extends Roll {
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
-      user: getGameUser().id,
+      user: game.user!.id,
       heading: o?.heading,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
@@ -63,12 +69,11 @@ export class AbilityRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRoll, chatData);
   }
 
   // Html for what modifiers are applied
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const o = this.options as AbilityRollOptions;
     const modifiers = o.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
@@ -77,7 +82,6 @@ export class AbilityRoll extends Roll {
         m.value = toSignedString(m.value);
         return m;
       });
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRollTooltip, {
       naturalSkill: (this.options as AbilityRollOptions).naturalSkill,
       modifiers: nonzeroSignedModifiers,

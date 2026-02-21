@@ -1,16 +1,14 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { CultRankEnum } from "../../data-model/item-data/cultData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { CultRankEnum, type CultItem } from "@item-model/cultData.ts";
 import {
-  getGameUser,
   isTruthy,
   getRequiredDomDataset,
   formatListByWorldLanguage,
   getSelectRuneOptions,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
-import type { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface CultSheetData {
@@ -22,8 +20,12 @@ interface CultSheetData {
   enrichedHolyDays: string;
 }
 
-export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class CultSheet extends RqgItemSheet {
+  override get document(): CultItem {
+    return super.document as CultItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
       template: templatePaths.itemCultSheet,
@@ -39,8 +41,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     });
   }
 
-  async getData(): Promise<CultSheetData & ItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<CultSheetData & ItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     // To improve UX of creating a new item, set deity to name if empty
@@ -55,21 +56,17 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       img: this.document.img ?? "",
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
-      // @ts-expect-error applications
       enrichedGifts: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gifts,
       ),
-      // @ts-expect-error applications
       enrichedGeases: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.geases,
       ),
-      // @ts-expect-error applications
       enrichedSubCults: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.subCults,
       ),
-      // @ts-expect-error applications
       enrichedHolyDays: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.holyDays,
       ),
@@ -81,7 +78,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     const formCultName = formData["system.joinedCults.cultName"];
     const formTagLine = formData["system.joinedCults.tagline"];
     const formrank = formData["system.joinedCults.rank"];
@@ -104,7 +101,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     return super._updateObject(event, formData);
   }
 
-  activateListeners(html: JQuery) {
+  override activateListeners(html: JQuery) {
     super.activateListeners(html);
 
     // add another cult
@@ -112,6 +109,8 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
       el.addEventListener("click", async () => {
         this.document.system.joinedCults.push({
           rank: CultRankEnum.LayMember,
+          cultName: undefined,
+          tagline: "",
         });
         await this.document.update({
           system: { joinedCults: this.document.system.joinedCults },
@@ -122,7 +121,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
     // delete a cult
     html[0]?.querySelectorAll<HTMLElement>("[data-delete-cult]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const indexToDelete = getRequiredDomDataset(el, "delete-cult");
+        const indexToDelete = Number(getRequiredDomDataset(el, "delete-cult"));
 
         this.document.system.joinedCults.splice(indexToDelete, 1);
         const newName = this.deriveItemName();
@@ -136,7 +135,7 @@ export class CultSheet extends RqgItemSheet<ItemSheet.Options, CultSheetData | I
 
   deriveItemName(): string {
     return CultSheet.deriveItemName(
-      this.document.system.deity,
+      this.document.system.deity ?? "",
       this.document.system.joinedCults.map((c: any) => c.cultName),
     );
   }

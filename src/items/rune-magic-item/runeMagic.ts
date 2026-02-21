@@ -1,42 +1,44 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { RqgActor } from "../../actors/rqgActor";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import {
-  assertActorType,
-  assertItemType,
-  getGame,
+  assertDocumentSubType,
+  isDocumentSubType,
   isTruthy,
   localize,
   RqgError,
 } from "../../system/util";
-import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
-import { RuneDataPropertiesData } from "../../data-model/item-data/runeData";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
+import type { RuneItem } from "@item-model/runeData.ts";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { CultItem } from "@item-model/cultData.ts";
 
 type RpAndMpCost = { mp: number; rp: number; exp: boolean };
 
 export class RuneMagic extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", RuneMagicSheet, {
-  //     types: [ItemTypeEnum.RuneMagic],
-  //     makeDefault: true,
-  //   });
-  // }
-
-  static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
-    if (item.type !== ItemTypeEnum.RuneMagic || !item.actor) {
-      const msg = localize("RQG.Item.Notification.WrongItemTypeRuneMagicError");
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, item);
-    }
+  static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     const actor = item.actor;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    assertDocumentSubType<RuneMagicItem>(
+      item,
+      ItemTypeEnum.RuneMagic,
+      "RQG.Item.Notification.WrongItemTypeRuneMagicError",
+    );
+
     if (item.system.cultId) {
-      const runeMagicCult = actor.items.get(item.system.cultId);
-      if (!runeMagicCult || runeMagicCult.type !== ItemTypeEnum.Cult) {
+      const runeMagicCult = actor.items.get(item.system.cultId) as RqgItem | undefined;
+
+      if (isDocumentSubType<CultItem>(runeMagicCult, ItemTypeEnum.Cult)) {
+        item.system.chance = RuneMagic.calcRuneMagicChance(
+          actor.items.contents,
+          runeMagicCult.system.runeRqidLinks,
+          item.system.runeRqidLinks,
+        );
+      } else {
         // This warning can happen when drag-dropping a rune spell from one Actor to another,
         // but the notification happens a lot of times and doesn't really matter since the system immediately,
         // displays the "Which cult provides this Rune Magic?" dialog allowing the player to fix it.
@@ -47,19 +49,12 @@ export class RuneMagic extends AbstractEmbeddedItem {
 
         item.system.cultId = ""; // remove the mismatched link to make it appear in the GUI
       }
-      if (runeMagicCult && runeMagicCult.type === ItemTypeEnum.Cult) {
-        item.system.chance = RuneMagic.calcRuneMagicChance(
-          actor.items.toObject(),
-          runeMagicCult.system.runeRqidLinks,
-          item.system.runeRqidLinks,
-        );
-      }
     }
     return item;
   }
 
   private static calcRuneMagicChance(
-    actorItems: ItemDataSource[],
+    actorItems: CharacterActor["items"]["contents"],
     cultRuneRqidLinks: RqidLink[],
     runeMagicRuneRqidLinks: RqidLink[],
   ): number {
@@ -67,7 +62,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
     const cultRqids = cultRuneRqidLinks.map((r) => r.rqid);
     const runeChances = actorItems.reduce((acc: number[], item) => {
       if (
-        item.type === ItemTypeEnum.Rune &&
+        isDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune) &&
         (runeMagicRqids.includes(item.flags.rqg?.documentRqidFlags?.id ?? "") ||
           (runeMagicRqids.includes(CONFIG.RQG.runeRqid.magic) &&
             cultRqids.includes(item.flags.rqg?.documentRqidFlags?.id ?? "")))
@@ -83,7 +78,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   /*
    * Connect runeMagic item to a cult.
    */
-  static async onEmbedItem(
+  static override async onEmbedItem(
     actor: RqgActor,
     runeMagicItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -92,8 +87,10 @@ export class RuneMagic extends AbstractEmbeddedItem {
     userId: string,
   ): Promise<any> {
     let updateData = {};
-    const actorCults = actor.items.filter((i) => i.type === ItemTypeEnum.Cult);
-    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
+    const actorCults: CultItem[] = actor.items.filter((i) =>
+      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult),
+    );
+    assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
 
     // Do not ask what cult should get the RuneMagic item if it is already attached to a cult from the actor
     // (used in Cult Item for attaching common rune magic automatically)
@@ -103,8 +100,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
     ) {
       let cultId;
       // If the actor only has one cult then attach this runeMagic to that Cult
-      if (actorCults.length === 1 && actorCults[0].id) {
-        cultId = actorCults[0].id;
+      if (actorCults.length === 1 && actorCults[0]!.id) {
+        cultId = actorCults[0]!.id;
       } else {
         // else ask which one
         cultId = await RuneMagic.chooseCultDialog(
@@ -128,7 +125,6 @@ export class RuneMagic extends AbstractEmbeddedItem {
     runeMagicName: string,
     actorName: string,
   ): Promise<string> {
-    // @ts-expect-error applications
     const htmlContent = await foundry.applications.handlebars.renderTemplate(
       templatePaths.dialogRuneMagicCult,
       {
@@ -169,15 +165,16 @@ export class RuneMagic extends AbstractEmbeddedItem {
    * Return an error message if not allowed to cast.
    */
   public static hasEnoughToCastSpell(
-    cultItem: RqgItem,
+    cultItem: CultItem,
     runePointCost: number | undefined,
     magicPointsBoost: number = 0,
   ): string | undefined {
-    assertItemType(cultItem?.type, ItemTypeEnum.Cult);
+    assertDocumentSubType<CultItem>(cultItem, ItemTypeEnum.Cult);
     if (runePointCost == null || runePointCost > (Number(cultItem.system.runePoints.value) || 0)) {
-      return getGame().i18n.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
+      return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     } else if (
-      magicPointsBoost > (Number(cultItem.actor?.system.attributes?.magicPoints?.value) || 0)
+      magicPointsBoost >
+      (Number((cultItem.actor as CharacterActor)?.system.attributes?.magicPoints?.value) || 0)
     ) {
       return localize("RQG.Item.RuneMagic.RuneMagic.validationNotEnoughMagicPoints");
     } else {
@@ -188,12 +185,18 @@ export class RuneMagic extends AbstractEmbeddedItem {
   /**
    * Given a rune spell and an actor, returns the runes that are possible to use for casting that spell.
    */
-  static getEligibleRunes(runeMagicItem: RqgItem): RqgItem[] {
-    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
+  static getEligibleRunes(runeMagicItem: RqgItem): RuneItem[] {
+    assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
 
     // The cult from where the spell was learned
-    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId);
-    assertItemType(cult?.type, ItemTypeEnum.Cult);
+    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId) as
+      | CultItem
+      | undefined;
+    assertDocumentSubType<CultItem>(
+      cult,
+      ItemTypeEnum.Cult,
+      "RQG.Item.RuneMagic.validationNoCultAssigned",
+    );
 
     let usableRuneRqids: string[];
     const runeMagicRuneRqids = [
@@ -211,19 +214,19 @@ export class RuneMagic extends AbstractEmbeddedItem {
     }
     // Get the actor's versions of the runes, which will have their "chance"
     const runesForCasting = usableRuneRqids
-      .map((runeRqid) => runeMagicItem.actor?.getBestEmbeddedDocumentByRqid(runeRqid))
+      .map((runeRqid) => runeMagicItem.actor?.getBestEmbeddedDocumentByRqid(runeRqid) as RuneItem)
       .filter(isTruthy);
 
     return runesForCasting;
   }
 
-  static getStrongestRune(runeItems: RqgItem[]): RqgItem | undefined {
+  static getStrongestRune(runeItems: RuneItem[]): RuneItem | undefined {
     if (runeItems.length === 0) {
       return undefined;
     }
-    return runeItems.reduce((strongest: RqgItem, current: RqgItem) => {
-      const strongestRuneChance = (strongest.system as RuneDataPropertiesData).chance ?? 0;
-      const currentRuneChance = (current.system as RuneDataPropertiesData).chance ?? 0;
+    return runeItems.reduce((strongest, current) => {
+      const strongestRuneChance = strongest.system.chance ?? 0;
+      const currentRuneChance = current.system.chance ?? 0;
       return strongestRuneChance > currentRuneChance ? strongest : current;
     });
   }
@@ -232,14 +235,16 @@ export class RuneMagic extends AbstractEmbeddedItem {
     result: AbilitySuccessLevelEnum,
     runePointCost: number,
     magicPointsUsed: number,
-    runeItem: RqgItem,
-    runeMagicItem: RqgItem,
+    runeItem: RuneItem,
+    runeMagicItem: RuneMagicItem,
   ): Promise<void> {
-    assertItemType(runeItem.type, ItemTypeEnum.Rune);
-    assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
-    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "");
-    assertItemType(cult?.type, ItemTypeEnum.Cult);
-    const isOneUse = runeMagicItem.system.isOneUse;
+    assertDocumentSubType<RuneItem>(runeItem, ItemTypeEnum.Rune);
+    assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
+    const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "") as
+      | RqgItem
+      | undefined;
+    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
+    const isOneUse = runeMagicItem.system?.isOneUse;
 
     const costs = RuneMagic.calcRuneAndMagicPointCost(result, runePointCost, magicPointsUsed);
 
@@ -257,9 +262,9 @@ export class RuneMagic extends AbstractEmbeddedItem {
     if (costs.mp > 0 || costs.rp > 0) {
       ui.notifications?.info(
         localize("RQG.Item.RuneMagic.CastingCostInfo", {
-          actorName: runeMagicItem.parent?.name,
-          runePointAmount: costs.rp,
-          magicPointAmount: costs.mp,
+          actorName: runeMagicItem.parent?.name ?? "",
+          runePointAmount: costs.rp.toString(),
+          magicPointAmount: costs.mp.toString(),
         }),
       );
     }
@@ -323,8 +328,8 @@ export class RuneMagic extends AbstractEmbeddedItem {
     cult: RqgItem,
     isOneUse: boolean,
   ) {
-    assertItemType(cult.type, ItemTypeEnum.Cult);
-    assertActorType(actor?.type, ActorTypeEnum.Character);
+    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     // At this point if the current Rune Points or Magic Points are zero
     // it's too late. That validation happened earlier.
     const newRunePointTotal = (cult.system.runePoints.value || 0) - runePoints;
@@ -336,13 +341,13 @@ export class RuneMagic extends AbstractEmbeddedItem {
         ui.notifications?.info(
           localize("RQG.Item.RuneMagic.SpentOneUseRunePoints", {
             actorName: actor?.name,
-            runePoints: runePoints,
+            runePoints: runePoints.toString(),
             cultName: cult.name,
           }),
         );
       }
     }
-    const updateCultItemRunePoints: DeepPartial<ItemDataSource> = {
+    const updateCultItemRunePoints: Actor.UpdateData = {
       _id: cult?.id,
       system: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
     };

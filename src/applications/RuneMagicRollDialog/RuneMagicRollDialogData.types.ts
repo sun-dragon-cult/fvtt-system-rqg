@@ -1,6 +1,16 @@
-import type { RqgItem } from "../../items/rqgItem";
-import type { RollHeaderData } from "../app-parts/rollHeader.types";
-import type { RollFooterData } from "../app-parts/rollFooter.types";
+import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
+import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
+
+/** Minimal rune data needed for the roll rune dialog to avoid complex type recursion */
+export type PartialRuneItem = {
+  id: string | null;
+  name: string | null;
+  img: string | null;
+  system: {
+    chance: number;
+    hasExperience?: boolean;
+  };
+};
 
 export type RuneMagicRollDialogContext = RollHeaderData &
   RollFooterData & {
@@ -8,7 +18,7 @@ export type RuneMagicRollDialogContext = RollHeaderData &
 
     speakerName: string;
 
-    usedRune: RqgItem | undefined;
+    usedRune: PartialRuneItem | undefined;
     eligibleRuneOptions: SelectOptionData<string>[];
     augmentOptions: SelectOptionData<number>[];
     meditateOptions: SelectOptionData<number>[];

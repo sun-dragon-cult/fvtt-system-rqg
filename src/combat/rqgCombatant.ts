@@ -1,5 +1,11 @@
 import type { RqgActor } from "../actors/rqgActor";
 
+// Type helper for accessing appId which exists at runtime but isn't in the type definitions
+interface SheetWithAppId {
+  appId?: number;
+  render: () => void;
+}
+
 export class RqgCombatant extends Combatant {
   public static init() {
     CONFIG.Combatant.documentClass = RqgCombatant;
@@ -9,8 +15,11 @@ export class RqgCombatant extends Combatant {
    * Add any open actorSheets when combatant is created, and re-render them to show the SR buttons.
    * @override
    **/
-  static async _onCreateOperation(documents: any[], operation: any, user: any) {
-    // @ts-expect-error _onCreateOperation
+  static override async _onCreateOperation(
+    documents: any[],
+    operation: any,
+    user: any,
+  ): Promise<void> {
     await Combatant._onCreateOperation(documents, operation, user);
 
     documents.forEach((combatant: Combatant) => {
@@ -18,12 +27,13 @@ export class RqgCombatant extends Combatant {
         return;
       }
 
-      const actorSheet = combatant.actor?.sheet;
+      const actorSheet = combatant.actor?.sheet as SheetWithAppId | undefined;
       if (actorSheet && actorSheet.appId) {
         if (!combatant.apps) {
-          combatant.apps = {};
+          // Cast to allow assignment to readonly property
+          (combatant as any).apps = {};
         }
-        combatant.apps[actorSheet.appId] = actorSheet;
+        combatant.apps[actorSheet.appId] = actorSheet as any;
         actorSheet.render(); // Force rerender to show SR buttons
       }
     });
@@ -33,42 +43,38 @@ export class RqgCombatant extends Combatant {
    * Remove actorSheet links before delete to prevent them closing
    */
   /** @override */
-  static async _preDeleteOperation(_documents: any, operation: any, _user: any) {
+  static override async _preDeleteOperation(
+    _documents: any,
+    operation: any,
+    _user: any,
+  ): Promise<void> {
     const combat = operation.parent;
 
     const combatants: Combatant[] = operation.ids.map((id: string) => combat.combatants.get(id));
     combatants.forEach((combatant) => {
-      const appId = combatant?.actor?.sheet?.appId;
+      const actorSheet = combatant?.actor?.sheet as SheetWithAppId | undefined;
+      const appId = actorSheet?.appId;
       Object.entries(combatant.apps).forEach(([key, app]) => {
-        if (app?.appId === appId) {
+        const currentApp = app as SheetWithAppId | undefined;
+        if (currentApp?.appId === appId) {
           delete combatant.apps[key];
         }
       });
     });
 
     // Do it after removing combatant apps to avoid closing then sheets
-    // @ts-expect-error _preDeleteOperation
     await Combatant._preDeleteOperation(_documents, operation, _user);
-  }
-
-  _preDeleteDescendantDocuments(parent: any, collection: any, ids: any, options: any, userId: any) {
-    console.log(
-      "_preDeleteDescendantDocuments",
-      this.actor,
-      parent,
-      collection,
-      ids,
-      options,
-      userId,
-    );
   }
 
   /**
    * Rerender any open actorSheets after combatant is deleted to remove the SR button(s).
    * @override
    **/
-  static async _onDeleteOperation(documents: any[], operation: any, user: any): Promise<void> {
-    // @ts-expect-error _onDeleteOperation
+  static override async _onDeleteOperation(
+    documents: any[],
+    operation: any,
+    user: any,
+  ): Promise<void> {
     await Combatant._onDeleteOperation(documents, operation, user);
     const actors = new Set<RqgActor>();
     documents.forEach((combatant) => {

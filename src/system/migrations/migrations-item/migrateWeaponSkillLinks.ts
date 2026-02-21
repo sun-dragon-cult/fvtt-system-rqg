@@ -1,18 +1,22 @@
-import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import { ItemUpdate } from "../applyMigrations";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
-import { UsageType } from "../../../data-model/item-data/weaponData";
-import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
+import type { UsageType, WeaponItem } from "@item-model/weaponData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../../data-model/actor-data/rqgActorData.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
+import { isDocumentSubType } from "../../util.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 const notFoundString = "NOT-FOUND";
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
-  itemData: ItemData,
-  owningActorData?: ActorData,
-): Promise<ItemUpdate> {
-  let updateData = {};
-  if (itemData.type === ItemTypeEnum.Weapon) {
+  itemData: RqgItem,
+  owningActorData?: RqgActor,
+): Promise<Item.UpdateData> {
+  let updateData: Item.UpdateData = {};
+  if (
+    isDocumentSubType<WeaponItem>(itemData, ItemTypeEnum.Weapon) &&
+    isDocumentSubType<CharacterActor>(owningActorData, ActorTypeEnum.Character)
+  ) {
     const oneHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "oneHand");
     const offHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "offHand");
     const twoHandSkillRqidLink = await getSkillRqidLink(itemData, owningActorData, "twoHand");
@@ -49,14 +53,13 @@ export async function migrateWeaponSkillLinks(
 }
 
 async function getSkillRqidLink(
-  itemData: ItemData,
-  owningActorData: ActorData | undefined,
+  itemData: WeaponItem,
+  owningActorData: CharacterActor | undefined,
   usageType: UsageType,
 ): Promise<RqidLink | undefined> {
   if (
-    itemData.type !== ItemTypeEnum.Weapon ||
-    // @ts-expect-error skillOrigin
-    (foundry.utils.isEmpty(itemData.system.usage[usageType].skillOrigin) &&
+    itemData.type !== ItemTypeEnum.Weapon.toString() ||
+    (foundry.utils.isEmpty((itemData.system.usage[usageType] as any).skillOrigin) &&
       itemData.system.usage[usageType].skillRqidLink?.name !== notFoundString)
   ) {
     return;
@@ -79,7 +82,6 @@ async function getSkillRqidLink(
         }] has a linked skill item for ${usageType} use that does not have a rqid. Old link was [${
           (itemData.system as any).usage[usageType].skillOrigin
         }]`;
-    // @ts-expect-error console
     ui.notifications?.warn(msg, { console: false });
     console.warn("RQG |", msg);
   }
@@ -94,11 +96,11 @@ async function getSkillRqidLink(
 }
 
 async function findSkillItem(
-  itemData: ItemData,
-  owningActorData: ActorData | undefined,
+  itemData: WeaponItem,
+  owningActorData: CharacterActor | undefined,
   usageType: UsageType,
 ): Promise<any | undefined> {
-  if (itemData.type !== ItemTypeEnum.Weapon) {
+  if (itemData.type !== ItemTypeEnum.Weapon.toString()) {
     return;
   }
 
@@ -124,7 +126,7 @@ async function findSkillItem(
   if (skillOriginItem) {
     return skillOriginItem;
   }
-  const embeddedSkillData = owningActorData?.items.find((i: any) => i._id === skillEmbeddedItemId);
+  const embeddedSkillData = owningActorData?.items.find((i) => i._id === skillEmbeddedItemId);
 
   if (embeddedSkillData && owningActorData) {
     return owningActorData.items.find((i) => i._id === embeddedSkillData._id);

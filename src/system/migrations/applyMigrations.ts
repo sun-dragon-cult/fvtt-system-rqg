@@ -1,26 +1,14 @@
-import { getGame, localize } from "../util";
-import { RqgItem } from "../../items/rqgItem";
-import type {
-  ActorData,
-  ActorDataConstructorData,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { localize } from "../util";
+import { RqgItem } from "@items/rqgItem.ts";
 import { systemId } from "../config";
-
-export type ItemUpdate = object &
-  DeepPartial<ItemDataConstructorData | (ItemDataConstructorData & Record<string, unknown>)> & {
-    system?: any;
-  };
-
-export type ActorUpdate = object &
-  DeepPartial<ActorDataConstructorData | (ActorDataConstructorData & Record<string, unknown>)>;
+import { type RqgActorDataSource } from "../../data-model/actor-data/rqgActorData.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 export type ItemMigration = (
-  itemData: ItemData,
-  owningActorData?: ActorData,
-) => Promise<ItemUpdate>;
-export type ActorMigration = (actorData: ActorData) => ActorUpdate;
+  itemData: RqgItem,
+  owningActorData?: RqgActor,
+) => Promise<Item.UpdateData>;
+export type ActorMigration = (actorData: RqgActorDataSource) => Actor.UpdateData;
 
 export async function applyMigrations(
   itemMigrations: ItemMigration[],
@@ -38,10 +26,10 @@ async function migrateWorldActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  const actorArray = getGame().actors?.contents;
+  const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.actors", {
-    count: actorCount,
+    count: actorCount.toString(),
   });
   if (!actorArray || actorCount === 0) {
     return;
@@ -56,9 +44,9 @@ async function migrateWorldActors(
         itemMigrations,
         actorMigrations,
       );
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(updates)) {
         console.log(`RQG | Migrating Actor document ${actor.name}`, updates);
+        // @ts-expect-error enforceTypes TODO it does exists
         await actor.update(updates, { enforceTypes: false });
       }
       updateProgressBar(++progress, actorCount, migrationMsg);
@@ -71,10 +59,10 @@ async function migrateWorldActors(
 }
 
 async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void> {
-  const itemArray = getGame().items?.contents as RqgItem[] | undefined;
+  const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.items", {
-    count: itemCount,
+    count: itemCount.toString(),
   });
   if (!itemArray || itemCount === 0) {
     return;
@@ -85,9 +73,9 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
   for (const item of itemArray) {
     try {
       const updateData = await getItemMigrationUpdates((item as any).toObject(), itemMigrations);
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Item document ${item.name}`, updateData);
+        // @ts-expect-error enforceTypes TODO it does exists
         await item.update(updateData, { enforceTypes: false });
         updateProgressBar(++progress, itemArray.length, migrationMsg);
       }
@@ -103,10 +91,10 @@ async function migrateWorldScenes(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  const scenes = getGame()?.scenes?.contents;
+  const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.scenes", {
-    count: scenesCount,
+    count: scenesCount.toString(),
   });
   if (!scenes || scenesCount === 0) {
     return;
@@ -117,9 +105,9 @@ async function migrateWorldScenes(
   for (const scene of scenes) {
     try {
       const updateData = await getSceneMigrationUpdates(scene, itemMigrations, actorMigrations);
-      // @ts-expect-error isEmpty
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Scene document ${scene.name}`, updateData);
+        // @ts-expect-error enforceTypes TODO it does exists
         await scene.update(updateData, { enforceTypes: false });
 
         // If we do not do this, then synthetic token actors remain in cache
@@ -139,24 +127,21 @@ async function migrateWorldCompendiumPacks(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  // @ts-expect-error packageName
-  const packs = getGame().packs.contents.filter((p) => p.metadata.packageName !== systemId); // Exclude system packs
-  const packsCount = packs?.length ?? 0;
+  const packs = game.packs?.contents.filter((p) => p.metadata.packageName !== systemId) ?? []; // Exclude system packs
+  const packsCount = packs.length;
   const migrationMsg = localize("RQG.Migration.compendiums", {
-    count: packsCount,
+    count: packsCount.toString(),
   });
-  if (!packs || packsCount === 0) {
+  if (packsCount === 0) {
     return;
   }
   let progress = 0;
   updateProgressBar(progress, packsCount, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const pack of packs) {
-    // @ts-expect-error packageType
     if (pack.metadata.packageType !== "world") {
       continue;
     }
-    // @ts-expect-error type
     if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
       continue;
     }
@@ -172,11 +157,10 @@ async function migrateWorldCompendiumPacks(
  * Apply migration rules to all Documents within a single Compendium pack
  */
 async function migrateCompendium(
-  pack: CompendiumCollection<CompendiumCollection.Metadata>,
+  pack: CompendiumCollection.Any,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
 ): Promise<void> {
-  // @ts-expect-error type
   const documentType: string = pack.metadata.type;
   if (!["Actor", "Item", "Scene"].includes(documentType)) {
     return;
@@ -187,7 +171,7 @@ async function migrateCompendium(
   await pack.configure({ locked: false });
 
   // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate({});
+  await pack.migrate();
   const documents = await pack.getDocuments();
 
   // Iterate over compendium entries - applying fine-tuned migration functions
@@ -197,13 +181,13 @@ async function migrateCompendium(
       switch (documentType) {
         case "Actor":
           updateData = await getActorMigrationUpdates(
-            doc.toObject(),
+            doc as RqgActor,
             itemMigrations,
             actorMigrations,
           );
           break;
         case "Item":
-          updateData = await getItemMigrationUpdates(doc.toObject(), itemMigrations);
+          updateData = await getItemMigrationUpdates(doc as RqgItem, itemMigrations);
           break;
         case "Scene":
           updateData = await getSceneMigrationUpdates(
@@ -215,7 +199,6 @@ async function migrateCompendium(
       }
 
       // Save the entry, if data was changed
-      // @ts-expect-error isEmpty
       if (foundry.utils.isEmpty(updateData)) {
         continue;
       }
@@ -238,18 +221,17 @@ async function migrateCompendium(
 /*  Document Type Migration Helpers             */
 /* -------------------------------------------- */
 async function getActorMigrationUpdates(
-  actorData: ActorData,
+  actorData: RqgActor,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
-): Promise<ActorUpdate> {
-  let updateData: ActorUpdate = {};
-  actorMigrations.forEach(
-    (fn: (actorData: ActorData) => ActorUpdate) =>
-      (updateData = foundry.utils.mergeObject(updateData, fn(actorData), {
-        // @ts-expect-error performDeletions
-        performDeletions: false,
-      })),
-  );
+): Promise<Actor.UpdateData> {
+  let updateData: Actor.UpdateData = {};
+  actorMigrations.forEach((fn: (actorData: RqgActorDataSource) => Actor.UpdateData) => {
+    // Merge in the updates
+    updateData = updateData = foundry.utils.mergeObject(updateData, fn(actorData as any), {
+      performDeletions: false,
+    }) as Actor.UpdateData;
+  });
 
   // Migrate Owned Items
   if (actorData.items) {
@@ -259,7 +241,6 @@ async function getActorMigrationUpdates(
         const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData); // item is already `item.toObject()`
 
         // Update the Owned Item
-        // @ts-expect-error isEmpty
         if (!foundry.utils.isEmpty(itemUpdate)) {
           hasItemUpdates = true;
           return foundry.utils.mergeObject(item, itemUpdate, {
@@ -282,16 +263,15 @@ async function getActorMigrationUpdates(
 /* -------------------------------------------- */
 
 async function getItemMigrationUpdates(
-  itemData: ItemData, // TODO called with item.toObject(), type better!
+  item: RqgItem,
   itemMigrations: ItemMigration[],
-  owningActorData?: ActorData,
-): Promise<ItemUpdate> {
-  let updateData: ItemUpdate = {};
+  owningActor?: RqgActor,
+): Promise<Item.UpdateData> {
+  let updateData: Item.UpdateData = {};
   for (const fn of itemMigrations) {
-    updateData = foundry.utils.mergeObject(updateData, await fn(itemData, owningActorData), {
-      // @ts-expect-error performDeletions
+    updateData = foundry.utils.mergeObject(updateData, await fn(item, owningActor), {
       performDeletions: false,
-    });
+    }) as Item.UpdateData; // TODO can mergeObject be made to return the correct type?
   }
   return updateData;
 }
@@ -300,47 +280,49 @@ async function getItemMigrationUpdates(
 
 async function getSceneMigrationUpdates(
   scene: Scene,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   itemMigrations: ItemMigration[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actorMigrations: ActorMigration[],
 ): Promise<object> {
   const tokens = await Promise.all(
     scene.tokens.map(async (token) => {
       const t = token.toJSON();
-      if (!t.actorId || t.actorLink) {
-        t.actorData = {};
-      } else if (!getGame().actors!.has(t.actorId)) {
-        t.actorId = null;
-        t.actorData = {};
-      } else if (!t.actorLink) {
-        const actorData = foundry.utils.duplicate(t.actorData);
-        actorData.type = token.actor?.type;
-        const update = await getActorMigrationUpdates(
-          actorData as any,
-          itemMigrations,
-          actorMigrations,
-        ); // TODO fix type
-        ["items", "effects"].forEach((embeddedName: string) => {
-          if (!(update as any)[embeddedName]?.length) {
-            // TODO fix type
-            return;
-          }
-          const updates = new Map((update as any)[embeddedName].map((u: any) => [u._id, u])); // TODO fix type
-          (t.actorData as any)[embeddedName].forEach((original: any) => {
-            // TODO fix type
-            const update: any = updates.get(original._id);
-            if (update) {
-              // @ts-expect-error performDeletions
-              foundry.utils.mergeObject(original, update, { performDeletions: false });
-            }
-          });
+      // TODO fix it
 
-          delete (update as any)[embeddedName]; // TODO fix type
-        });
-
-        // TODO implement AE Delete for scene Actors as well?
-        // @ts-expect-error performDeletions
-        foundry.utils.mergeObject(t.actorData, update, { performDeletions: false });
-      }
+      // if (!t.actorId || t.actorLink) {
+      //   t.actorData = {}; // TODO what is actorData? does not seem to exist, use token.actor instead?
+      // } else if (!game.actors!.has(t.actorId)) {
+      //   t.actorId = null;
+      //   t.actorData = {};
+      // } else if (!t.actorLink) {
+      //   const actorData = foundry.utils.duplicate(t.actorData);
+      //   actorData.type = token.actor?.type;
+      //   const update = await getActorMigrationUpdates(
+      //     actorData as any,
+      //     itemMigrations,
+      //     actorMigrations,
+      //   ); // TODO fix type
+      //   ["items", "effects"].forEach((embeddedName: string) => {
+      //     if (!(update as any)[embeddedName]?.length) {
+      //       // TODO fix type
+      //       return;
+      //     }
+      //     const updates = new Map((update as any)[embeddedName].map((u: any) => [u._id, u])); // TODO fix type
+      //     (t.actorData as any)[embeddedName].forEach((original: any) => {
+      //       // TODO fix type
+      //       const update: any = updates.get(original._id);
+      //       if (update) {
+      //         foundry.utils.mergeObject(original, update, { performDeletions: false });
+      //       }
+      //     });
+      //
+      //     delete (update as any)[embeddedName]; // TODO fix type
+      //   });
+      //
+      //   // TODO implement AE Delete for scene Actors as well?
+      //   foundry.utils.mergeObject(t.actorData, update, { performDeletions: false });
+      // }
       return t;
     }),
   );
@@ -356,7 +338,6 @@ function updateProgressBar(index: number, totalCount: number, prefix: string = "
   const message = `${prefix} ${index} / ${totalCount}`;
 
   if (!progressBar?.active) {
-    // @ts-expect-error progress
     progressBar = ui.notifications?.info(message, { progress: true });
   }
   progressBar.update({ message, pct });

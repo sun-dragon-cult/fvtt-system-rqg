@@ -1,20 +1,22 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser, getSelectRuneOptions } from "../../system/util";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { HomelandItem } from "@item-model/homelandData.ts";
 
 export interface HomelandSheetData {
   allRuneOptions: SelectOptionData<string>[];
   enrichedWizardInstructions: string;
 }
 
-export class HomelandSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  HomelandSheetData | ItemSheet.Data
-> {
-  static get defaultOptions(): ItemSheet.Options {
+export class HomelandSheet extends RqgItemSheet {
+  override get document(): HomelandItem {
+    return super.document as HomelandItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Homeland],
       template: templatePaths.itemHomelandSheet,
@@ -30,8 +32,7 @@ export class HomelandSheet extends RqgItemSheet<
     });
   }
 
-  async getData(): Promise<HomelandSheetData & ItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<HomelandSheetData & ItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -40,11 +41,10 @@ export class HomelandSheet extends RqgItemSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
       enrichedWizardInstructions:
-        // @ts-expect-error applications
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(
           system.wizardInstructions,
         ),
@@ -52,7 +52,7 @@ export class HomelandSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     const region = formData["system.region"] ? ` (${formData["system.region"]})` : "";
     const newName = formData["system.homeland"] + region;
     if (newName) {

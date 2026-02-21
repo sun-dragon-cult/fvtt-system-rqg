@@ -1,29 +1,35 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDataset,
-  getGame,
   getSpeakerFromItem,
   localize,
   RqgError,
 } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
-import { RqgItem } from "../../items/rqgItem";
-import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import { RqgItem } from "@items/rqgItem.ts";
+import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
 import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
-} from "./RuneMagicRollDialogData.types";
-import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { RollMode } from "../../chat/chatMessage.types";
+} from "./RuneMagicRollDialogData.types.ts";
+import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import type { CultItem } from "@item-model/cultData.ts";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<RuneMagicRollDialogContext>,
+) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -59,16 +65,21 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     { value: 100, label: "RQG.Dialog.Common.RitualOptions.20years" },
   ];
 
-  private spellItem: RqgItem;
-  private rollMode: RollMode;
+  private spellItem: SpellItem;
+  private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { spellItem: RqgItem }) {
+  constructor(
+    spellItem: SpellItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    this.spellItem = options.spellItem;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    this.spellItem = spellItem;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "rune-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "rune-magic-roll-dialog"],
@@ -78,8 +89,8 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -91,22 +102,22 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.rollHeader },
     form: { template: templatePaths.runeMagicRollDialogV2, scrollable: [""] },
     footer: { template: templatePaths.rollFooter },
   };
 
-  async _prepareContext(): Promise<RuneMagicRollDialogContext> {
-    const formData: RuneMagicRollDialogFormData =
-      // @ts-expect-error object
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+  override async _prepareContext(): Promise<RuneMagicRollDialogContext> {
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as RuneMagicRollDialogFormData;
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
     const eligibleRunes = RuneMagic.getEligibleRunes(this.spellItem);
 
-    const eligibleRuneOptions = eligibleRunes.map((rune: RqgItem) => ({
+    const eligibleRuneOptions = eligibleRunes.map((rune) => ({
       value: rune.id ?? "",
       label: rune.name ?? "",
     }));
@@ -147,41 +158,38 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
-      .querySelector("[data-roll-mode-parent]")
-      .addEventListener("click", this.onChangeRollMode.bind(this));
+      .querySelector<HTMLElement>("[data-roll-mode-parent]")
+      ?.addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
-  private onChangeRollMode(event: SubmitEvent) {
+  private onChangeRollMode(event: MouseEvent): void {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
-    if (!newRollMode) {
-      return; // Clicked outside the buttons
+    const newRollMode = getDomDataset(target, "roll-mode") as CONST.DICE_ROLL_MODES | undefined;
+    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+      return; // Clicked outside the buttons, or not a valid roll mode
     }
     this.rollMode = newRollMode;
 
-    // @ts-expect-error render
     this.render();
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: RuneMagicRollDialogFormData = formData.object;
+    const formDataObject = formData.object as RuneMagicRollDialogFormData;
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+        ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ?? game.settings?.get("core", "rollMode");
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",
@@ -191,7 +199,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
       ui.notifications?.error("Could not find an rune magic spellItem to roll.");
       return;
     }
-    assertItemType(spellItem.type, ItemTypeEnum.RuneMagic);
+    assertDocumentSubType<RuneMagicItem>(spellItem, ItemTypeEnum.RuneMagic);
 
     const eligibleRunes = RuneMagic.getEligibleRunes(spellItem);
 
@@ -202,12 +210,12 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(Applicatio
     }
 
     const actor = spellItem.parent as RqgActor | undefined;
-    const cult = actor?.items.find((i) => i.id === spellItem.system.cultId);
+    const cult = actor?.items.find((i) => i.id === spellItem.system.cultId) as RqgItem | undefined;
     if (!cult) {
       const msg = "No cult to cast the rune magic spell";
       throw new RqgError(msg);
     }
-
+    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
     const options: RuneMagicRollOptions = {
       usedRune: usedRune,
       runeMagicItem: spellItem,

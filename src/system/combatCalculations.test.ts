@@ -1,9 +1,4 @@
-// needed for DamageRoll class
-// @ts-expect-error Roll
-global.Roll = class MockRoll {
-  constructor() {}
-};
-
+import { describe, it, expect, vi } from "vitest";
 import {
   __setLocalizeFunction,
   exportedForTesting,
@@ -215,7 +210,7 @@ describe("getDamagedWeapon", () => {
 const applyDamageBonusToFormula = exportedForTesting.applyDamageBonusToFormula;
 
 describe("applyDamageBonusToFormula", () => {
-  const mockLocalize = jest.fn((key) => key);
+  const mockLocalize = vi.fn((key) => key);
   __setLocalizeFunction(mockLocalize);
 
   it("should return the formula without db if damageBonus is 0", () => {

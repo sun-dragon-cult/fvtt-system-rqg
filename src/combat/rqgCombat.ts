@@ -1,9 +1,11 @@
 import { RqgCombatTracker } from "./RqgCombatTracker";
+import { assertDocumentSubType } from "../system/util.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 export class RqgCombat extends Combat {
   public static init() {
+    // @ts-expect-error type error
     CONFIG.Combat.documentClass = RqgCombat;
-    // @ts-expect-error number of arguments v13
     CONFIG.ui.combat = RqgCombatTracker;
     CONFIG.Combat.initiative = {
       formula: null,
@@ -14,21 +16,18 @@ export class RqgCombat extends Combat {
   /**
    * Reset all combatant SR, remove duplicate combatants and set the turn back to zero
    */
-  async resetAll({ updateTurn = true } = {}): Promise<any> {
+  override async resetAll({ updateTurn = true } = {}): Promise<any> {
     const currentId = this.combatant?.id;
     const tokenIds = new Set(); // --- RQG code
     const combatantIdsToDelete = []; // --- RQG code
     for (const c of this.combatants) {
-      // @ts-expect-error updateSource
       c.updateSource({ initiative: null });
 
       // --- start RQG code --- find duplicated combatants
-      // @ts-expect-error tokenId
       if (tokenIds.has(c.tokenId)) {
         // There is more than one token connected to this combatant
         combatantIdsToDelete.push(c.id ?? "");
       } else {
-        // @ts-expect-error tokenId
         tokenIds.add(c.tokenId);
       }
       // --- end RQG code ---
@@ -37,16 +36,17 @@ export class RqgCombat extends Combat {
     if (updateTurn && currentId) {
       update.turn = this.turns.findIndex((t) => t.id === currentId);
     }
-    // @ts-expect-error turnEvents
     await this.update(update, { turnEvents: false, diff: false });
     await this.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
     // --- RQG code
   }
 
-  _sortCombatants(a: Combatant, b: Combatant): number {
+  override _sortCombatants(a: Combatant, b: Combatant): number {
+    assertDocumentSubType<CharacterActor>(a.actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(b.actor, ActorTypeEnum.Character);
     const ia = Number.isNumeric(a.initiative) ? a.initiative : Infinity;
     const ib = Number.isNumeric(b.initiative) ? b.initiative : Infinity;
-    const ci = ia - ib;
+    const ci = (ia ?? 0) - (ib ?? 0);
     if (!isNaN(ci) && ci !== 0) {
       return ci; // Sort on lowest Strike Rank (initiative)
     }

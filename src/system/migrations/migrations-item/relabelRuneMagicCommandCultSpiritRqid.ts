@@ -1,7 +1,10 @@
-import { ItemTypeEnum } from "../../../data-model/item-data/itemTypes";
-import type { ItemData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import { ItemUpdate } from "../applyMigrations";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+
 import { RqidLink } from "../../../data-model/shared/rqidLink";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import { isDocumentSubType } from "../../util.ts";
+import type { CultItem } from "@item-model/cultData.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 
 const oldRqid = "i.rune-magic.command-cult-spirit-elemental";
 const newRqid = "i.rune-magic.command-cult-spirit";
@@ -10,12 +13,13 @@ const newEnglishName = "Command Cult Spirit";
 const newCommandCultSpiritDescriptionRqid = "je..command-cult-spirit";
 
 export async function relabelRuneMagicCommandCultSpiritRqid(
-  itemData: ItemData,
-): Promise<ItemUpdate> {
-  const updateData: any = {};
+  itemData: RqgItem,
+): Promise<Item.UpdateData> {
+  const updateData: Item.UpdateData = {};
 
   if (
-    itemData.type === ItemTypeEnum.RuneMagic &&
+    (isDocumentSubType<RuneMagicItem>(itemData, ItemTypeEnum.RuneMagic) ||
+      isDocumentSubType<CultItem>(itemData, ItemTypeEnum.Cult)) &&
     itemData?.flags?.rqg?.documentRqidFlags?.id === oldRqid
   ) {
     if (itemData.name === oldEnglishName) {
@@ -45,7 +49,7 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
     });
   }
 
-  if (itemData.type === ItemTypeEnum.Cult) {
+  if (isDocumentSubType<CultItem>(itemData, ItemTypeEnum.Cult)) {
     const commandCultSpiritLink = itemData.system.commonRuneMagicRqidLinks.find(
       (link) => link.rqid === oldRqid,
     );

@@ -1,5 +1,5 @@
-import { RqgItem } from "src/items/rqgItem";
-import { LocationItemNodeData } from "../items/shared/locationItemNode";
+import type { RqgItem } from "@items/rqgItem.ts";
+import type { LocationItemNodeData } from "@items/shared/locationItemNode.ts";
 
 // Mock contains derived values
 export const mockItems = [
@@ -309,7 +309,7 @@ export const mockItems = [
     name: "Man (form)",
     type: "rune",
     sort: 2400000,
-    img: "systems/rqg/assets/images/runes/man.svg",
+    img: "/assets/images/runes/man.svg",
     effects: [],
     folder: null,
     system: {
@@ -369,7 +369,7 @@ export const mockItems = [
     name: "Movement (power)",
     type: "rune",
     sort: 2700000,
-    img: "systems/rqg/assets/images/runes/movement_change.svg",
+    img: "/assets/images/runes/movement_change.svg",
     effects: [],
     folder: null,
     system: {
@@ -786,7 +786,7 @@ export const mockItems = [
     name: "Listen",
     type: "skill",
     sort: 200000,
-    img: "systems/rqg/assets/images/skills/listen.svg",
+    img: "systems/rqg/images/skills/listen.svg",
     effects: [],
     folder: null,
     system: {
@@ -816,7 +816,7 @@ export const mockItems = [
     name: "Scan",
     type: "skill",
     sort: 150000,
-    img: "systems/rqg/assets/images/skills/scan.svg",
+    img: "systems/rqg/images/skills/scan.svg",
     effects: [],
     folder: null,
     system: {

@@ -1,20 +1,20 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import type { RqgActor } from "../../actors/rqgActor";
-import type { RollHeaderData } from "../app-parts/rollHeader.types";
-import type { RollFooterData } from "../app-parts/rollFooter.types";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
+import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
 
 /** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {
   name: string | null;
   img: string | null;
   system: { chance: number };
-  type?: ItemTypeEnum;
+  type?: Item.SubType;
   parent?: RqgActor | null;
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
   /** Special handling for Reputation rolls */
   actingToken?: TokenDocument;
   uuid?: string;
+  ownership?: { default: number }; // TODO should probably ber something like foundry.applications.apps.DocumentOwnershipConfig;
 };
 
 export type AbilityRollDialogContext = RollHeaderData &

@@ -1,20 +1,32 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import {
+import type {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
-} from "./CharacteristicRollDialogData.types";
-import { getDomDataset, getGame, getTokenFromActor, localize, RqgError } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
+} from "./CharacteristicRollDialogData.types.ts";
+import {
+  assertDocumentSubType,
+  getDomDataset,
+  getTokenFromActor,
+  localize,
+  RqgError,
+} from "../../system/util";
+import type { RqgActor } from "@actors/rqgActor.ts";
 import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
-import { Characteristics } from "../../data-model/actor-data/characteristics";
-import type { RollMode } from "../../chat/chatMessage.types";
+import type { Characteristics } from "../../data-model/actor-data/characteristics";
+import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<CharacteristicRollDialogContext>,
+) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -44,15 +56,23 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
   ];
 
   private actor: RqgActor;
-  private rollMode: RollMode;
+  private characteristicName: keyof Characteristics;
+  private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { actor: RqgActor; characteristicName: keyof Characteristics }) {
+  constructor(
+    actor: RqgActor,
+    characteristicName: keyof Characteristics,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    this.actor = options.actor;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    this.actor = actor;
+    this.characteristicName = characteristicName;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: `characteristic-{id}`,
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
@@ -62,8 +82,8 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -75,16 +95,18 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.rollHeader },
     form: { template: templatePaths.characteristicRollDialogV2, scrollable: [""] },
     footer: { template: templatePaths.rollFooter },
   };
 
-  async _prepareContext(): Promise<CharacteristicRollDialogContext> {
-    const formData: CharacteristicRollDialogFormData =
-      // @ts-expect-error object
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+  override async _prepareContext(): Promise<CharacteristicRollDialogContext> {
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
+
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ??
+      {}) as CharacteristicRollDialogFormData;
 
     formData.difficulty ??= 5;
     formData.augmentModifier ??= "0";
@@ -92,11 +114,9 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.CharacteristicRoll.OtherModifier");
     formData.actorUuid ??= this.actor.uuid;
-    // @ts-expect-error options
-    formData.characteristicName ??= this.options.characteristicName;
+    formData.characteristicName ??= this.characteristicName;
     formData.characteristicValue ??=
-      // @ts-expect-error options
-      (this.actor.system.characteristics as any)[this.options.characteristicName]?.value ?? 0;
+      this.actor.system.characteristics[this.characteristicName]?.value ?? 0;
 
     const speaker = ChatMessage.getSpeaker({
       token: getTokenFromActor(this.actor),
@@ -129,41 +149,40 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(Appli
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
-      .querySelector("[data-roll-mode-parent]")
-      .addEventListener("click", this.onChangeRollMode.bind(this));
+      .querySelector<HTMLElement>("[data-roll-mode-parent]")
+      ?.addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
-  private onChangeRollMode(event: SubmitEvent) {
+  private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
-    if (!newRollMode) {
-      return; // Clicked outside the buttons
+    const newRollMode = getDomDataset(target, "roll-mode");
+    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+      return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode;
+    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
 
-    // @ts-expect-error render
     this.render();
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: CharacteristicRollDialogFormData = formData.object;
+    const formDataObject = formData.object as CharacteristicRollDialogFormData;
 
-    const rollMode =
+    const rollMode: CONST.DICE_ROLL_MODES =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+        ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ??
+      game.settings?.get("core", "rollMode") ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
 
     const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
     if (!actor || !formDataObject.characteristicName) {

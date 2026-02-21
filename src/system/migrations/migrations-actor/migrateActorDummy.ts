@@ -1,17 +1,21 @@
-import type { ActorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/actorData";
-import { ActorTypeEnum } from "../../../data-model/actor-data/rqgActorData";
-import { ActorUpdate } from "../applyMigrations";
+import {
+  ActorTypeEnum,
+  type CharacterActor,
+  type RqgActorDataSource,
+} from "../../../data-model/actor-data/rqgActorData";
+import { isDocumentSubType } from "../../util.ts";
 
 // Dummy Actor Migrator
-export function migrateActorDummy(actorData: ActorData): ActorUpdate {
-  let updateData = {};
-  // eslint-disable-next-line
-  if (false && actorData.type === ActorTypeEnum.Character) {
+
+export function migrateActorDummy(actorData: RqgActorDataSource): Actor.UpdateData {
+  let updateData: Actor.UpdateData = {};
+
+  // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
+  if (false && isDocumentSubType<CharacterActor>(actorData as any, ActorTypeEnum.Character)) {
     updateData = {
       system: {
         background: {
-          // @ts-expect-errors system ???
-          species: (actorData.background as any).race,
+          species: (actorData.system.background as any).race,
           [`-=race`]: null,
         },
       },

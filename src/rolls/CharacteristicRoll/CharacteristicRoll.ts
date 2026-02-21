@@ -1,14 +1,10 @@
-import {
-  activateChatTab,
-  getGameUser,
-  isTruthy,
-  localize,
-  toSignedString,
-} from "../../system/util";
+import { activateChatTab, isTruthy, localize, toSignedString } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
-import type { CharacteristicRollOptions } from "./CharacteristicRoll.types";
+import type { CharacteristicRollOptions } from "./CharacteristicRoll.types.ts";
+
+import Roll = foundry.dice.Roll;
 
 export class CharacteristicRoll extends Roll {
   public static async rollAndShow(options: CharacteristicRollOptions) {
@@ -19,13 +15,19 @@ export class CharacteristicRoll extends Roll {
       { flavor: roll.flavor, speaker: options.speaker },
       { rollMode: options.rollMode, create: true },
     );
-    // @ts-expect-error Dice3D (Dice So Nice)
-    await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+
+    if (msg?.id != null) {
+      await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
+    }
     return roll;
   }
 
   constructor(formula: string = "1d100", data: any, options: CharacteristicRollOptions) {
     super(formula, data, options);
+  }
+
+  get isEvaluated(): boolean {
+    return this._evaluated;
   }
 
   get targetChance(): number {
@@ -43,7 +45,7 @@ export class CharacteristicRoll extends Roll {
   }
 
   // Html for the "content" of the chat-message
-  async render({ flavor = this.flavor, isPrivate = false } = {}) {
+  override async render({ flavor = this.flavor, isPrivate = false } = {}) {
     if (!this._evaluated) {
       await this.evaluate();
     }
@@ -51,7 +53,7 @@ export class CharacteristicRoll extends Roll {
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
-      user: getGameUser().id,
+      user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,
@@ -61,7 +63,6 @@ export class CharacteristicRoll extends Roll {
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
       speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
     };
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(
       templatePaths.characteristicRoll,
       chatData,
@@ -69,7 +70,7 @@ export class CharacteristicRoll extends Roll {
   }
 
   // Html for what modifiers are applied
-  async getTooltip(): Promise<string> {
+  override async getTooltip(): Promise<string> {
     const modifiers = (this.options as CharacteristicRollOptions).modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
@@ -78,7 +79,6 @@ export class CharacteristicRoll extends Roll {
         return m;
       });
     const o = this.options as CharacteristicRollOptions;
-    // @ts-expect-error applications
     return foundry.applications.handlebars.renderTemplate(templatePaths.characteristicRollTooltip, {
       characteristicName: localize(`RQG.Actor.Characteristics.${o.characteristicName}`),
       characteristicValue: o.characteristicValue,

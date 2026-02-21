@@ -1,7 +1,14 @@
-import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { LocationItemNode, LocationItemNodeData } from "./locationItemNode";
-import { formatListByUserLanguage, isDefined, localize } from "../../system/util";
+import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
+import { LocationItemNode, type LocationItemNodeData } from "./locationItemNode";
+import {
+  formatListByUserLanguage,
+  isDefined,
+  isDocumentSubType,
+  localize,
+} from "../../system/util";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import { physicalItemTypes } from "@item-model/IPhysicalItem";
+import type { RqgActor } from "@actors/rqgActor";
 
 export class ItemTree {
   /** Map container name to a list of content names */
@@ -13,12 +20,12 @@ export class ItemTree {
   /** discovered loops (already broken in constructor) */
   loopNodes: string[] = [];
 
-  constructor(items: RqgItem[]) {
+  constructor(items: RqgActor["items"]["contents"]) {
     const physicalItems = items.filter(
       (item) =>
-        item.system.physicalItemType &&
-        !(item.type === ItemTypeEnum.Weapon && item.system.isNatural),
-    );
+        isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
+        !(isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural),
+    ) as PhysicalItem[];
 
     // Items that only exist because another item has a location that references it
     const virtualItems = this.createVirtualItems(physicalItems);
@@ -28,8 +35,8 @@ export class ItemTree {
   }
 
   private populateItemGraphAndItemLocationData(
-    virtualItems: RqgItem[],
-    physicalItems: RqgItem[],
+    virtualItems: PhysicalItem[],
+    physicalItems: PhysicalItem[],
   ): void {
     [...virtualItems, ...physicalItems]
       // Add data to itemGraph & itemLocationData
@@ -46,7 +53,7 @@ export class ItemTree {
       });
   }
 
-  private createVirtualItems(physicalItems: RqgItem[]): RqgItem[] {
+  private createVirtualItems(physicalItems: PhysicalItem[]): PhysicalItem[] {
     // Root item that everything will be put into
     const virtualRootItem = {
       name: "",
@@ -54,9 +61,9 @@ export class ItemTree {
         location: "",
         isContainer: true,
       },
-    } as RqgItem;
+    } as PhysicalItem;
 
-    return [virtualRootItem, ...physicalItems].reduce((acc: RqgItem[], item: RqgItem) => {
+    return [virtualRootItem, ...physicalItems].reduce((acc: PhysicalItem[], item: PhysicalItem) => {
       if (!physicalItems.some((physicalItem) => physicalItem.name === item.system.location)) {
         const existingVirtualItem = acc.find((v) => v.name === item.system.location);
         if (existingVirtualItem) {
@@ -71,7 +78,7 @@ export class ItemTree {
             isContainer: true,
             equippedStatus: item.system.equippedStatus,
           },
-        } as RqgItem;
+        } as PhysicalItem;
 
         acc.push(newVirtualItem);
       }
@@ -190,7 +197,7 @@ export class ItemTree {
     if (loopNodes.size) {
       this.loopNodes = [...loopNodes]; // Store the affected nodes
       // Break loop to make the graph a tree
-      const loopNodeName1 = [...loopNodes][0];
+      const loopNodeName1 = [...loopNodes][0] ?? "";
       // const loopNodeName2 = [...loopNodes][1]; // Has to be at least 2 nodes to make a loop
       const loopNodeItemGraph = this.itemGraph.get(loopNodeName1);
       const removedLoop = loopNodeItemGraph?.filter((n) => !loopNodes.has(n)) ?? [];
@@ -288,7 +295,7 @@ export class ItemTree {
     // visit neighbors
     const nodeContents = this.itemGraph.get(nodeName) ?? [];
     for (let i = 0; i < nodeContents.length; i++) {
-      const adjVertex = nodeContents[i];
+      const adjVertex = nodeContents[i] ?? "";
 
       //check if this node is present in "processing" set, means cycle is found
       if (processing.has(adjVertex)) {

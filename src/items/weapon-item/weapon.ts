@@ -1,22 +1,27 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
-import { assertItemType, localize, logMisconfiguration, mergeArraysById } from "../../system/util";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { RqgActor } from "@actors/rqgActor.ts";
+import {
+  assertDocumentSubType,
+  isDocumentSubType,
+  localize,
+  logMisconfiguration,
+  mergeArraysById,
+} from "../../system/util";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { Rqid } from "../../system/api/rqidApi";
+import type { WeaponItem } from "@item-model/weaponData.ts";
 
 export class Weapon extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", WeaponSheet, {
-  //     types: [ItemTypeEnum.Weapon],
-  //     makeDefault: true,
-  //   });
-  // }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static preUpdateItem(actor: RqgActor, weapon: RqgItem, updates: object[], options: any): void {
-    if (weapon.type === ItemTypeEnum.Weapon) {
+  static override preUpdateItem(
+    actor: RqgActor,
+    weapon: RqgItem,
+    updates: object[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options: any,
+  ): void {
+    if (isDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon)) {
       mergeArraysById(updates, getLocationRelatedUpdates(actor.items.contents, weapon, updates));
     }
   }
@@ -25,14 +30,14 @@ export class Weapon extends AbstractEmbeddedItem {
    * Add the skills specified in the weapon to the actor (if not already there)
    * and connect the weapons with the embedded item skill id.
    */
-  static async onEmbedItem(
+  static override async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
     options: any,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     userId: string,
   ): Promise<any> {
-    assertItemType(child.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(child, ItemTypeEnum.Weapon);
 
     const actorHasRightArm = !!actor.getBestEmbeddedDocumentByRqid("i.hit-location.right-arm");
 
@@ -43,10 +48,10 @@ export class Weapon extends AbstractEmbeddedItem {
     }
 
     const succeeded = await Promise.all([
-      Weapon.embedLinkedSkill(child.system.usage.oneHand.skillRqidLink.rqid, actor),
-      Weapon.embedLinkedSkill(child.system.usage.offHand.skillRqidLink.rqid, actor),
-      Weapon.embedLinkedSkill(child.system.usage.twoHand.skillRqidLink.rqid, actor),
-      Weapon.embedLinkedSkill(child.system.usage.missile.skillRqidLink.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.oneHand.skillRqidLink?.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.offHand.skillRqidLink?.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.twoHand.skillRqidLink?.rqid, actor),
+      Weapon.embedLinkedSkill(child.system.usage.missile.skillRqidLink?.rqid, actor),
     ]);
     if (succeeded.includes(false)) {
       // Didn't find one of the weapon skills - open the item sheet to let the user select one
@@ -69,14 +74,17 @@ export class Weapon extends AbstractEmbeddedItem {
    * If not it embeds the referenced skill.
    * Returns false if the linked skill could not be found.
    */
-  public static async embedLinkedSkill(skillRqid: string, actor: RqgActor): Promise<boolean> {
+  public static async embedLinkedSkill(
+    skillRqid: string | undefined,
+    actor: RqgActor,
+  ): Promise<boolean> {
     if (!skillRqid) {
       return true; // No rqid (no linked skill) so count this as a success.
     }
     const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(skillRqid);
 
     if (!embeddedSkill) {
-      const skill = (await Rqid.fromRqid(skillRqid)) as RqgItem;
+      const skill = await Rqid.fromRqid(skillRqid);
       if (!skill) {
         logMisconfiguration(
           localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
@@ -85,8 +93,7 @@ export class Weapon extends AbstractEmbeddedItem {
         );
         return false;
       }
-      // @ts-expect-error skill
-      await actor.createEmbeddedDocuments("Item", [skill]);
+      await actor.createEmbeddedDocuments("Item", [skill as any]);
     }
     return true;
   }

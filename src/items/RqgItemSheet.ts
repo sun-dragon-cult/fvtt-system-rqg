@@ -1,7 +1,7 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
-import { RqgItem } from "./rqgItem";
+import type { RqgItem } from "./rqgItem";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -11,12 +11,14 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
+import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
+
+import ItemSheet = foundry.appv1.sheets.ItemSheet;
 
 export class RqgItemSheet<
-  Options extends ItemSheet.Options,
-  Data extends object = ItemSheet.Data<Options>,
-> extends ItemSheet<Options, Data> {
-  static get defaultOptions(): ItemSheet.Options {
+  Options extends ItemSheet.Options = ItemSheet.Options,
+> extends ItemSheet<Options> {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       width: 960,
       height: 800,
@@ -29,24 +31,24 @@ export class RqgItemSheet<
     });
   }
 
-  get title(): string {
+  override get title(): string {
     const parentName = this.object?.parent?.name;
     const parentAddition = parentName ? ` @ ${parentName}` : "";
     return `${localizeItemType(this.object.type)}: ${this.object.name}${parentAddition}`;
   }
 
-  public activateListeners(html: JQuery): void {
+  public override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
     // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
-    html[0].querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+    html[0]?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
       elem.addEventListener("dragenter", this._onDragEnter);
       elem.addEventListener("dragleave", this._onDragLeave);
     });
 
     // Handle adding rqidLink via dropdown to an array of links
     html[0]
-      .querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]")
+      ?.querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]")
       .forEach((elem: HTMLElement) => {
         const targetProperty = getDomDataset(elem, "dropzone");
 
@@ -55,16 +57,13 @@ export class RqgItemSheet<
             const selectElem = event.currentTarget as HTMLSelectElement;
             const allowDuplicates = getDomDataset(elem, "allow-duplicates");
             const newRqid = selectElem?.value;
-            if (
-              allowDuplicates ||
-              !this.document.system[targetProperty].some((l: RqidLink) => l.rqid === newRqid)
-            ) {
-              const newName = selectElem?.selectedOptions[0]?.innerText;
+            const targetRqidLinks = ((this.document.system as any)[targetProperty] ??
+              []) as RqidLink[];
+
+            if (allowDuplicates || !targetRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
+              const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
               const newHitLocationRqidLink = new RqidLink(newRqid, newName);
-              const updatedLinks = [
-                ...this.document.system[targetProperty],
-                newHitLocationRqidLink,
-              ];
+              const updatedLinks = [...targetRqidLinks, newHitLocationRqidLink];
               await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
             }
           });
@@ -73,7 +72,7 @@ export class RqgItemSheet<
 
     // Handle setting a single rqidLink via dropdown
     html[0]
-      .querySelectorAll<HTMLElement>("[data-replace-rqid-link]")
+      ?.querySelectorAll<HTMLElement>("[data-replace-rqid-link]")
       .forEach((elem: HTMLElement) => {
         const targetProperty = getDomDataset(elem, "dropzone");
 
@@ -81,8 +80,8 @@ export class RqgItemSheet<
           elem.addEventListener("change", async (event) => {
             const selectElem = event.currentTarget as HTMLSelectElement;
             const newRqid = selectElem?.value;
-            if (this.document.system[targetProperty].rqid !== newRqid) {
-              const newName = selectElem?.selectedOptions[0]?.innerText;
+            if ((this.document as any).system[targetProperty].rqid !== newRqid) {
+              const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
               const newHitLocationRqidLink = new RqidLink(newRqid, newName);
               await this.document.update({ [`system.${targetProperty}`]: newHitLocationRqidLink });
             }
@@ -96,10 +95,9 @@ export class RqgItemSheet<
       .each((i: number, el: HTMLElement) => {
         const effectUuid = getRequiredDomDataset($(el), "effect-uuid");
         el.addEventListener("click", () => {
-          // @ts-expect-error fromUuidSync
-          const effect = fromUuidSync(effectUuid);
+          const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
           if (effect) {
-            new ActiveEffectConfig(effect).render(true);
+            new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
           }
         });
       });
@@ -109,24 +107,21 @@ export class RqgItemSheet<
       .find("[data-item-effect-add]")
       .each((i: number, el: HTMLElement) => {
         const itemUuid = getRequiredDomDataset($(el), "item-uuid");
-        // @ts-expect-error fromUuidSync
-        const item = fromUuidSync(itemUuid);
+        const item = fromUuidSync(itemUuid) as RqgItem | undefined;
         if (!item) {
           return; // The item is not in the world (ie it's in a compendium)
         }
         el.addEventListener("click", async () => {
           const effect = new ActiveEffect(
             {
-              // @ts-expect-error name
-              name: "new effect",
-              icon: "icons/svg/aura.svg",
+              name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
+              img: "icons/svg/aura.svg",
               changes: [
                 {
                   key: "",
                   value: "",
                 },
               ],
-              label: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
               transfer: true,
               disabled: false,
             },
@@ -143,8 +138,13 @@ export class RqgItemSheet<
               );
               throw reason;
             });
-          if (e[0].id) {
-            new ActiveEffectConfig(item.effects.get(e[0].id)!).render(true);
+          if (e[0]?.id) {
+            const effect = item.effects.get(e[0].id) as RqgActiveEffect | undefined;
+            if (effect) {
+              new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
+                force: true,
+              });
+            }
           }
         });
       });
@@ -169,7 +169,7 @@ export class RqgItemSheet<
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
           const deleteFromProperty = foundry.utils.getProperty(
-            this.item.system,
+            this.item.system as object,
             deleteFromPropertyName,
           );
           if (Array.isArray(deleteFromProperty)) {
@@ -203,7 +203,10 @@ export class RqgItemSheet<
         const editRqid = getRequiredDomDataset($(el), "rqid");
         const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
         el.addEventListener("change", async () => {
-          const updateProperty = foundry.utils.getProperty(this.item.system, editPropertyName);
+          const updateProperty = foundry.utils.getProperty(
+            this.item.system as object,
+            editPropertyName,
+          );
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
               (rqidLink) => rqidLink.rqid === editRqid,
@@ -240,31 +243,49 @@ export class RqgItemSheet<
     onDragLeave(event);
   }
 
-  protected async _onDrop(event: DragEvent): Promise<unknown> {
+  protected override async _onDrop(event: DragEvent): Promise<unknown> {
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Get rid of any remaining drag-hover classes
 
-    const droppedDocumentData =
-      // @ts-expect-error getDragEventData
-      foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData | null; // TODO - ActorSheets.DropData have type, correct here?
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
-    if (!isAllowedDocumentNames(droppedDocumentData.type, allowedDropDocumentNames)) {
+    if (!isAllowedDocumentNames(droppedDocumentData?.type, allowedDropDocumentNames)) {
       return;
     }
 
     switch (
-      droppedDocumentData.type // type is actually documentName
+      droppedDocumentData?.type // type is actually documentName
     ) {
       case "Item":
-        return await this._onDropItem(event, droppedDocumentData);
+        if (droppedDocumentData["uuid"]) {
+          return await this._onDropItem(
+            event,
+            droppedDocumentData as { type: string; uuid: string },
+          );
+        }
+        break;
       case "JournalEntry":
-        return await this._onDropJournalEntry(event, droppedDocumentData);
+        if (droppedDocumentData["uuid"]) {
+          return await this._onDropJournalEntry(
+            event,
+            droppedDocumentData as { type: string; uuid: string },
+          );
+        }
+        break;
       case "JournalEntryPage":
-        return await this._onDropJournalEntryPage(event, droppedDocumentData);
+        if (droppedDocumentData["uuid"]) {
+          return await this._onDropJournalEntryPage(
+            event,
+            droppedDocumentData as { type: string; uuid: string },
+          );
+        }
+        break;
       default:
         // This will warn about not supported Document Name
-        isAllowedDocumentNames(droppedDocumentData.type, [
+        isAllowedDocumentNames(droppedDocumentData?.type, [
           "Item",
           "JournalEntry",
           "JournalEntryPage",
@@ -281,10 +302,15 @@ export class RqgItemSheet<
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
       allowDuplicates,
-    } = await extractDropInfo<RqgItem>(event, data);
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedItem)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedItem, allowDuplicates);
+      await updateRqidLink(
+        this.item as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedItem,
+        allowDuplicates,
+      );
       return [this.item];
     }
     return false;
@@ -298,10 +324,14 @@ export class RqgItemSheet<
       droppedDocument: droppedJournal,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-    } = await extractDropInfo<JournalEntry>(event, data);
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedJournal)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedJournal);
+      await updateRqidLink(
+        this.item as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedJournal,
+      );
       return [this.item];
     }
     return false;
@@ -315,19 +345,23 @@ export class RqgItemSheet<
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      // @ts-expect-error JournalEntryPage
-    } = await extractDropInfo<JournalEntryPage>(event, data);
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedPage)) {
-      await updateRqidLink(this.item, targetPropertyName, droppedPage);
+      await updateRqidLink(
+        this.item as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedPage,
+      );
       return [this.item];
     }
     return false;
   }
 
-  protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
-    const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
-    await addRqidLinkToSheetJQuery(html, this);
+  protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
+    const html = await super._renderOuter();
+    // Cast to compatible document sheet type for rqid link functionality
+    await addRqidLinkToSheetJQuery(html, this as unknown as DocumentSheet);
     return html;
   }
 }

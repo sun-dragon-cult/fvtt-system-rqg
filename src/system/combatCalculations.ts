@@ -1,11 +1,11 @@
-import type { AttackDamages, CombatOutcome } from "./combatCalculations.types";
+import type { AttackDamages, CombatOutcome } from "./combatCalculations.types.ts";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
-import { assertItemType, localize as realLocalize, requireValue, RqgError } from "./util";
+import { assertDocumentSubType, localize as realLocalize, requireValue, RqgError } from "./util";
 import { attackParryMap } from "./attackParryTable";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { RqgItem } from "../items/rqgItem";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import type { DamageType, UsageType } from "../data-model/item-data/weaponData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponData.ts";
 import {
   DamageDegree,
   dodgeDamageDegreeTable,
@@ -18,7 +18,7 @@ import {
 } from "./combatCalculations.defs";
 import { attackDodgeMap } from "./attackDodgeTable";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
-import type { DefenceType } from "../applications/AttackFlow/DefenceDialogData.types";
+import type { DefenceType } from "../applications/AttackFlow/DefenceDialogData.types.ts";
 
 export const exportedForTesting = {
   calculateDamages,
@@ -57,6 +57,12 @@ export async function combatOutcome(
     attackSuccessLevel,
     "Tried to calculate combat outcome without an evaluated attack roll",
   );
+
+  assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
+  if (parryingWeapon != null) {
+    assertDocumentSubType<WeaponItem>(parryingWeapon, ItemTypeEnum.Weapon);
+  }
+
   const defenceSuccessLevel = defenceRoll?.successLevel ?? AbilitySuccessLevelEnum.Failure;
   const defenceUsed = defence ?? "ignore";
 
@@ -94,7 +100,7 @@ export async function combatOutcome(
     return createEmptyCombatOutcome();
   }
   requireValue(usage, "No weapon usage for combatOutcome calculations");
-  assertItemType(weaponDoingDamage?.type, ItemTypeEnum.Weapon);
+  assertDocumentSubType<WeaponItem>(weaponDoingDamage, ItemTypeEnum.Weapon);
 
   const weaponDoingDamageDamageType =
     weaponDoingDamageDesignation === "attackingWeapon"
@@ -298,14 +304,14 @@ function getIgnoreArmor(
 
   switch (defence) {
     case "parry": {
-      const damageDegree = parryIgnoreApTable[attackSuccessLevel][defenceSuccessLevel];
+      const damageDegree = parryIgnoreApTable[attackSuccessLevel]?.[defenceSuccessLevel];
       requireValue(damageDegree, errorMsg);
       return damageDegree;
     }
 
     case "dodge":
     case "ignore": {
-      const damageDegree = dodgeIgnoreApTable[attackSuccessLevel][defenceSuccessLevel];
+      const damageDegree = dodgeIgnoreApTable[attackSuccessLevel]?.[defenceSuccessLevel];
       requireValue(damageDegree, errorMsg);
       return damageDegree;
     }
@@ -327,7 +333,7 @@ function getDamagedWeapon(
     return WeaponDesignation.None;
   }
 
-  const damageDegree = parryDamagedWeaponTable[attackSuccessLevel][defenceSuccessLevel];
+  const damageDegree = parryDamagedWeaponTable[attackSuccessLevel]?.[defenceSuccessLevel];
   requireValue(damageDegree, "Tried to get damaged weapon for unsupported AbilitySuccessLevel");
   return damageDegree;
 }
@@ -340,7 +346,7 @@ function getWeaponDoingDamage(
   if ([undefined, "dodge", "ignore"].includes(defence)) {
     return WeaponDesignation.AttackingWeapon;
   }
-  return weaponForDamageTable[attackSuccessLevel][defenceSuccessLevel];
+  return weaponForDamageTable[attackSuccessLevel]?.[defenceSuccessLevel];
 }
 
 export function getDamageDegree(
@@ -352,14 +358,14 @@ export function getDamageDegree(
 
   switch (defence) {
     case "parry": {
-      const damageDegree = parryDamageDegreeTable[attackSuccessLevel][defenceSuccessLevel];
+      const damageDegree = parryDamageDegreeTable[attackSuccessLevel]?.[defenceSuccessLevel];
       requireValue(damageDegree, errorMsg);
       return damageDegree;
     }
 
     case "dodge":
     case "ignore": {
-      const damageDegree = dodgeDamageDegreeTable[attackSuccessLevel][defenceSuccessLevel];
+      const damageDegree = dodgeDamageDegreeTable[attackSuccessLevel]?.[defenceSuccessLevel];
       requireValue(damageDegree, errorMsg);
       return damageDegree;
     }
@@ -438,6 +444,13 @@ export function applyDamageBonusToFormula(
       .trim()
       .split("d")
       .map((n) => Number(n));
+    if (!dice || !sides) {
+      // Invalid damage bonus format. Warn and ignore damage bonus
+      const msg = `Invalid damage bonus format "${damageBonus}", expected XdY`;
+      ui.notifications?.warn(msg);
+      console.warn("RQG | ", msg, damageBonus);
+      return damageFormula.replace(/\s*\+\s*db(\/2)?/g, "");
+    }
     if (Math.abs(dice) === 1) {
       sides = sides / 2;
     } else {

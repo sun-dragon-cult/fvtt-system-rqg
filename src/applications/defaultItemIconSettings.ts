@@ -1,35 +1,23 @@
-import { getGame, localize } from "../system/util";
-import Options = FormApplication.Options;
+import { localize } from "../system/util";
 import { systemId } from "../system/config";
 import { defaultItemIconsObject } from "../system/settings/defaultItemIcons";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import type { ItemTypeEnum, RqgItemType } from "@item-model/itemTypes.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
-export interface IconSettingsData {
-  [ItemTypeEnum.Armor]: string;
-  [ItemTypeEnum.Cult]: string;
-  [ItemTypeEnum.Gear]: string;
-  [ItemTypeEnum.HitLocation]: string;
-  [ItemTypeEnum.Homeland]: string;
-  [ItemTypeEnum.Occupation]: string;
-  [ItemTypeEnum.Passion]: string;
-  [ItemTypeEnum.Rune]: string;
-  [ItemTypeEnum.RuneMagic]: string;
-  [ItemTypeEnum.Skill]: string;
-  [ItemTypeEnum.SpiritMagic]: string;
-  [ItemTypeEnum.Weapon]: string;
-  reputation: string;
-}
+// Map each ItemTypeEnum value to a string (icon path)
+export type IconSettingsData = {
+  [K in ItemTypeEnum | "reputation"]: string;
+};
 
-export class DefaultItemIconSettings extends FormApplication<
-  FormApplication.Options,
-  IconSettingsData
+export class DefaultItemIconSettings extends foundry.appv1.api.FormApplication<
+  IconSettingsData,
+  IconSettingsData & FormApplication.Options
 > {
-  constructor(object: any, options?: Partial<Options>) {
-    super(object, options);
-  }
+  // constructor(object: any, options?: Partial<FormApplication.Options>) {
+  //   super(object, options);
+  // }
 
-  static get defaultOptions(): Options {
+  static override get defaultOptions(): FormApplication.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "default-icons-settings-dialog",
       title: localize("RQG.Settings.DefaultItemIcons.dialogTitle"),
@@ -41,13 +29,13 @@ export class DefaultItemIconSettings extends FormApplication<
     });
   }
 
-  protected _onSelectFile(selection: string, filePicker: FilePicker): void {
+  protected override _onSelectFile(selection: string, filePicker: FilePicker): void {
     super._onSelectFile(selection, filePicker);
     this.submit();
   }
 
-  getData(): IconSettingsData {
-    const currentSettings: any = getGame().settings.get(systemId, "defaultItemIconSettings");
+  override getData(): IconSettingsData {
+    const currentSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const settings = Object.entries(defaultItemIconsObject).reduce((acc: any, [key, value]) => {
       acc[key] = currentSettings[key] ?? value;
       return acc;
@@ -55,10 +43,13 @@ export class DefaultItemIconSettings extends FormApplication<
     return settings;
   }
 
-  async _updateObject(event: Event, formData?: object): Promise<void> {
+  override async _updateObject(
+    event: Event,
+    formData?: Record<RqgItemType | "reputation", string>,
+  ): Promise<void> {
     if (formData != null) {
-      const data = expandObject(formData);
-      await getGame().settings.set(systemId, "defaultItemIconSettings", data);
+      // const data = foundry.utils.expandObject(formData); // TODO is this needed?
+      await game.settings?.set(systemId, "defaultItemIconSettings", formData);
       this.render();
     }
   }

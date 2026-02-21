@@ -1,4 +1,5 @@
 import { AbilitySuccessLevelEnum } from "./AbilityRoll.defs";
+import { RqgError } from "../../system/util.ts";
 
 export function calculateAbilitySuccessLevel(
   rawChance: number,
@@ -20,5 +21,13 @@ export function calculateAbilitySuccessLevel(
     { limit: fail, result: AbilitySuccessLevelEnum.Failure },
     { limit: Infinity, result: AbilitySuccessLevelEnum.Fumble },
   ];
-  return lookup.find((v) => roll <= v.limit)!.result;
+  const successLevel = lookup.find((v) => roll <= v.limit);
+  if (!successLevel) {
+    throw new RqgError(
+      "calculateAbilitySuccessLevel did not find a success level",
+      rawChance,
+      roll,
+    );
+  }
+  return successLevel.result;
 }

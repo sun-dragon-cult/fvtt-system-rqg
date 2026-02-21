@@ -1,20 +1,19 @@
 import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { assertItemType } from "../../system/util";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
+import type { RuneItem } from "@item-model/runeData.ts";
 
 export class Rune extends AbstractEmbeddedItem {
-  // public static init() {
-  //   Items.registerSheet("rqg", RuneSheet, {
-  //     types: [ItemTypeEnum.ElementalRune],
-  //     makeDefault: true,
-  //   });
-  // }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static preUpdateItem(actor: RqgActor, rune: RqgItem, updates: any[], options: any): void {
-    if (rune.type === ItemTypeEnum.Rune) {
+  static override preUpdateItem(
+    actor: RqgActor,
+    rune: RqgItem,
+    updates: any[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    options: any,
+  ): void {
+    if (isDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune)) {
       const chanceResult = updates.find(
         (r) => r["system.chance"] != null || r?.system?.chance != null,
       );
@@ -39,7 +38,10 @@ export class Rune extends AbstractEmbeddedItem {
     newChance: number,
     updates: object[],
   ) {
-    assertItemType(opposingRune?.type, ItemTypeEnum.Rune);
+    if (!opposingRune) {
+      return;
+    }
+    assertDocumentSubType<RuneItem>(opposingRune, ItemTypeEnum.Rune);
     const opposingRuneChance = opposingRune.system.chance;
     if (newChance + opposingRuneChance !== 100) {
       updates.push({

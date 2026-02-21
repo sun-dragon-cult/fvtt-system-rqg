@@ -1,10 +1,11 @@
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { IAbility } from "../data-model/shared/ability";
+import { type AbilityItem, ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "../system/config";
 import {
-  assertItemType,
+  assertDocumentSubType,
   convertFormValueToString,
+  isDocumentSubType,
   localize,
   localizeItemType,
   RqgError,
@@ -12,12 +13,15 @@ import {
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { AbilityImprovementData } from "./improveAbilityDialog.types";
 import { RqgCalculations } from "../system/rqgCalculations";
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
+import type { PassionItem } from "@item-model/passionData.ts";
+import type { RuneItem } from "@item-model/runeData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 /** Shows a dialog for improving a Passion, Rune, or Skill */
 export async function showImproveAbilityDialog(
   item: RqgItem | undefined,
-  speaker: ChatSpeakerDataProperties,
+  speaker: ChatMessage.SpeakerData,
 ): Promise<void> {
   if (!item) {
     throw new RqgError("Tried to show improve ability dialog without ability item");
@@ -40,21 +44,21 @@ export async function showImproveAbilityDialog(
   };
 
   switch (item.type) {
-    case ItemTypeEnum.Skill: {
+    case ItemTypeEnum.Skill.toString(): {
       updateAdaptorForSkill(adapter, item);
       break;
     }
 
-    case ItemTypeEnum.Passion: {
-      assertItemType(item?.type, ItemTypeEnum.Passion);
+    case ItemTypeEnum.Passion.toString(): {
+      assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
       adapter.abilityType = "passion";
       // Cannot train passions
       adapter.showTraining = false;
       break;
     }
 
-    case ItemTypeEnum.Rune: {
-      assertItemType(item?.type, ItemTypeEnum.Rune);
+    case ItemTypeEnum.Rune.toString(): {
+      assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
       adapter.abilityType = "rune";
       adapter.name = item.system.rune;
       break;
@@ -90,7 +94,6 @@ export async function showImproveAbilityDialog(
     name: adapter.name,
     typeLocName: adapter.typeLocName,
   });
-  // @ts-expect-error renderTemplate
   const content: string = await foundry.applications.handlebars.renderTemplate(
     templatePaths.dialogImproveAbility,
     {
@@ -112,12 +115,13 @@ export async function showImproveAbilityDialog(
 }
 
 function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
-  assertItemType(item?.type, ItemTypeEnum.Skill);
+  assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
   adapter.abilityType = "skill";
   const actor = item.parent;
   if (!actor) {
     throw new RqgError("Tried to improve a skill item that isn't embedded on an actor", item);
   }
+  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
   const pureCategoryMods = RqgCalculations.skillCategoryModifiers(
     actor.system.characteristics.strength.value,
     actor.system.characteristics.size.value,
@@ -140,17 +144,19 @@ function updateAdaptorForSkill(adapter: AbilityImprovementData, item: RqgItem) {
   }
 
   adapter.chance =
-    // @ts-expect-error _source
     adapter.categoryMod + item._source.system.baseChance + item._source.system.gainedChance;
   adapter.chanceToGain = Math.max(100 - Number(adapter.chance), 1);
 }
 
 async function submitImproveAbilityDialog(
   html: JQuery,
-  item: RqgItem,
-  speaker: ChatSpeakerDataProperties,
+  item: Actor.Embedded,
+  speaker: ChatMessage.SpeakerData,
   adapter: AbilityImprovementData,
 ): Promise<void> {
+  if (!isDocumentSubType<AbilityItem>(item, ItemTypeEnum.Skill)) {
+    throw new RqgError("Tried to improve item that isn't an ability item", item);
+  }
   const abilityData = item.system;
   const actor = item.parent;
   if (!actor) {
@@ -165,21 +171,21 @@ async function submitImproveAbilityDialog(
     if (abilityData.hasExperience) {
       const categoryMod: number = adapter.categoryMod || 0;
       const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.flavor", {
-        actorName: speaker.alias,
+        actorName: speaker.alias as string,
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
       let rollContent;
       if (adapter.abilityType === "skill") {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill", {
-          mod: categoryMod,
-          skillChance: adapter.chance,
+          mod: categoryMod.toString(),
+          skillChance: adapter.chance.toString(),
           name: adapter.name,
           typeLocName: adapter.typeLocName,
         });
       } else {
         rollContent = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentOther", {
-          chance: adapter.chance,
+          chance: adapter.chance.toString(),
           name: adapter.name,
           typeLocName: adapter.typeLocName,
         });
@@ -192,7 +198,6 @@ async function submitImproveAbilityDialog(
       const expRoll = new Roll("1d100" + maybeSkillCategoryMod);
       await expRoll.toMessage({
         speaker: speaker,
-        // @ts-expect-error CHAT_MESSAGE_STYLES
         style: CONST.CHAT_MESSAGE_STYLES.ROLL,
         flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
       });
@@ -215,7 +220,6 @@ async function submitImproveAbilityDialog(
           const gainRoll = new Roll(String(adapter.experienceGainFixed));
           await gainRoll.toMessage({
             speaker: speaker,
-            // @ts-expect-error CHAT_MESSAGE_STYLES
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
           });
@@ -229,7 +233,6 @@ async function submitImproveAbilityDialog(
           const gainRoll = new Roll(adapter.experienceGainRandom);
           await gainRoll.toMessage({
             speaker: speaker,
-            // @ts-expect-error CHAT_MESSAGE_STYLES
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
             flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
           });
@@ -244,11 +247,14 @@ async function submitImproveAbilityDialog(
         );
         const failedContent = localize(
           "RQG.Dialog.improveAbilityDialog.experienceGainFailed.content",
-          { actorName: speaker.alias, name: adapter.name, typeLocName: adapter.typeLocName },
+          {
+            actorName: speaker.alias as string,
+            name: adapter.name,
+            typeLocName: adapter.typeLocName,
+          },
         );
         const failChat = {
           speaker: speaker,
-          // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.OTHER,
           flavor: failedFlavor,
           content: failedContent,
@@ -257,7 +263,7 @@ async function submitImproveAbilityDialog(
       }
     } else {
       const msg = localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
-        actorName: speaker.alias,
+        actorName: speaker.alias as string,
         name: adapter.name,
         typeLocName: adapter.typeLocName,
       });
@@ -276,7 +282,6 @@ async function submitImproveAbilityDialog(
     const roll = new Roll(String(adapter.trainingGainFixed));
     await roll.toMessage({
       speaker: speaker,
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });
@@ -294,7 +299,6 @@ async function submitImproveAbilityDialog(
     const gainRoll = new Roll(adapter.trainingGainRandom);
     await gainRoll.toMessage({
       speaker: speaker,
-      // @ts-expect-error CHAT_MESSAGE_STYLES
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
       flavor: `<h3>${flavor}</h3><p>${content}</p>`,
     });
@@ -302,6 +306,7 @@ async function submitImproveAbilityDialog(
   }
 
   if (adapter.abilityType === "skill") {
+    // @ts-expect-error TODO item type should contain derived data
     const newGainedChance: number = Number(abilityData.gainedChance) + gain;
     await item.update({
       system: { hasExperience: false, gainedChance: newGainedChance },

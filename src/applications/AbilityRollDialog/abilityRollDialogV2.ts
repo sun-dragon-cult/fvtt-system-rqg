@@ -9,19 +9,23 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   getDomDataset,
-  getGame,
   getSpeakerFromItem,
   localize,
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { RqgItem } from "../../items/rqgItem";
-import type { RollMode } from "../../chat/chatMessage.types";
+import { RqgItem } from "@items/rqgItem.ts";
+import type { AbilityItem } from "@item-model/itemTypes.ts";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<AbilityRollDialogContext>,
+) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
@@ -40,27 +44,31 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     { value: 25, label: "RQG.Dialog.Common.MeditateOptions.50mr" },
   ];
 
-  private abilityItem: RqgItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
-  private rollMode: RollMode;
+  private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
+  private rollMode: CONST.DICE_ROLL_MODES;
 
-  constructor(options: { abilityItem?: RqgItem | PartialAbilityItem }) {
+  constructor(
+    abilityItem: AbilityItem | PartialAbilityItem,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    if (!options.abilityItem) {
+    if (!abilityItem) {
       const msg = "No AbilityItem to roll for";
       ui.notifications?.warn(msg);
       setTimeout(() => {
-        // @ts-expect-error close
         void this.close();
       }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
       throw new RqgError(msg);
     }
 
-    this.abilityItem = options.abilityItem;
-    this.rollMode = getGame().settings.get("core", "rollMode");
+    this.abilityItem = abilityItem;
+    this.rollMode =
+      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
+      CONST.DICE_ROLL_MODES.PUBLIC;
   }
 
-  static DEFAULT_OPTIONS = {
-    id: "ability-{id}",
+  static override DEFAULT_OPTIONS = {
+    id: "{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "ability-roll-dialog"],
     form: {
@@ -69,8 +77,8 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -82,16 +90,16 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.rollHeader },
     form: { template: templatePaths.abilityRollDialogV2, scrollable: [""] },
     footer: { template: templatePaths.rollFooter },
   };
 
-  async _prepareContext(): Promise<AbilityRollDialogContext> {
-    const formData: AbilityRollDialogFormData =
-      // @ts-expect-error object
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+  override async _prepareContext(): Promise<AbilityRollDialogContext> {
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as AbilityRollDialogFormData;
 
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
@@ -131,45 +139,43 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     };
   }
 
-  _onRender(context: any, options: any) {
+  override async _onRender(context: any, options: any): Promise<void> {
     super._onRender(context, options);
-    // @ts-expect-error element
     this.element
-      .querySelector("[data-roll-mode-parent]")
-      .addEventListener("click", this.onChangeRollMode.bind(this));
+      .querySelector<HTMLElement>("[data-roll-mode-parent]")
+      ?.addEventListener("click", this.onChangeRollMode.bind(this));
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
-  private onChangeRollMode(event: SubmitEvent) {
+  private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode") as RollMode | undefined;
-    if (!newRollMode) {
-      return; // Clicked outside the buttons
+    const newRollMode = getDomDataset(target, "roll-mode");
+    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+      return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode;
+    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
 
-    // @ts-expect-error render
     this.render();
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    const formDataObject: AbilityRollDialogFormData = formData.object;
+    const formDataObject = formData.object as AbilityRollDialogFormData;
 
     const rollMode =
       (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset.rollMode as RollMode) ?? getGame().settings.get("core", "rollMode");
+        ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ?? game.settings?.get("core", "rollMode");
 
-    let abilityItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
-      formDataObject.abilityItemUuid ?? "",
-    )) as RqgItem | undefined;
+    let abilityItem = (await fromUuid(formDataObject.abilityItemUuid ?? "")) as
+      | AbilityItem
+      | PartialAbilityItem
+      | undefined;
 
     if (!abilityItem) {
       abilityItem = JSON.parse(formDataObject.reputationItemJson ?? "");
@@ -181,7 +187,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
     }
 
     const options: AbilityRollOptions = {
-      naturalSkill: abilityItem?.system.chance,
+      naturalSkill: abilityItem?.system.chance ?? 0,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -197,7 +203,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(ApplicationV
         },
       ],
       abilityName: abilityItem?.name ?? undefined,
-      abilityType: abilityItem?.type ?? undefined,
+      abilityType: (abilityItem as any)?.type ?? undefined,
       abilityImg: abilityItem?.img ?? undefined,
       speaker: getSpeakerFromItem(abilityItem),
       rollMode: rollMode,

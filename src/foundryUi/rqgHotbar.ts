@@ -1,5 +1,7 @@
 import { localize } from "../system/util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+
+import Hotbar = foundry.applications.ui.Hotbar;
 
 /**
  * The kind of macros that can be created by dropping a document onto the Hotbar.
@@ -24,7 +26,7 @@ export class RqgHotbar extends Hotbar {
    * Create a Macro document that with a macroAction depending on what document is dropped.
    *
    */
-  async _createDocumentSheetToggle(doc: any): Promise<Macro> {
+  override async _createDocumentSheetToggle(doc: any): Promise<Macro> {
     const { command, name } = this.getMacroCommandAndName(doc);
 
     // @ts-expect-error create

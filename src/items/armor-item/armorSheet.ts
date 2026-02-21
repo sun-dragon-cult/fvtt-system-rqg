@@ -1,20 +1,19 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
   armorTypeTranslationKeys,
   materialTranslationKeys,
-} from "../../data-model/item-data/armorData";
-import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
+  type ArmorItem,
+} from "@item-model/armorData.ts";
+import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {
   convertFormValueToString,
   getAvailableHitLocations,
-  getGameUser,
   getSelectHitLocationOptions,
   localize,
 } from "../../system/util";
-import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -27,8 +26,12 @@ interface ArmorSheetData {
   enrichedGmNotes: string;
 }
 
-export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class ArmorSheet extends RqgItemSheet {
+  override get document(): ArmorItem {
+    return super.document as ArmorItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Armor],
       template: templatePaths.itemArmorSheet,
@@ -44,8 +47,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
     });
   }
 
-  async getData(): Promise<ArmorSheetData & EffectsItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<ArmorSheetData & EffectsItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -55,7 +57,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       img: this.document.img ?? "",
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       effects: this.document.effects,
       allHitLocationOptions: getSelectHitLocationOptions(
@@ -64,23 +66,21 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
       equippedStatusOptions: equippedStatusOptions,
       armorTypeNames: armorTypeTranslationKeys.map((key) => localize(key)),
       materialNames: materialTranslationKeys.map((key) => localize(key)),
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
     };
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
     html.find("[data-add-hit-location]").change(this.onAddHitLocation.bind(this));
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     formData["name"] =
       `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
     return super._updateObject(event, formData);
@@ -94,7 +94,7 @@ export class ArmorSheet extends RqgItemSheet<ItemSheet.Options, ArmorSheetData |
         getAvailableHitLocations().find((l) => l.rqid === event.currentTarget.value)?.name ?? "";
       const newHitLocationRqidLink = new RqidLink(newRqid, newName);
       const updatedLinks = [...this.document.system.hitLocationRqidLinks, newHitLocationRqidLink];
-      await this.document.update({ "system.hitLocationRqidLinks": updatedLinks });
+      await this.document.update({ system: { hitLocationRqidLinks: updatedLinks } });
     }
     this.render();
   }

@@ -1,7 +1,10 @@
-import { defaultPriceData, IPhysicalItem } from "./IPhysicalItem";
-import { defaultResource, Resource } from "../shared/resource";
-import { ItemTypeEnum } from "./itemTypes";
+import type { IPhysicalItem } from "./IPhysicalItem";
+import { Resource } from "../shared/resource";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type WeaponItem = RqgItem & { system: WeaponDataPropertiesData };
 
 export const damageType = {
   Crush: "crush",
@@ -76,69 +79,69 @@ export interface WeaponDataSourceData extends IPhysicalItem {
 export interface WeaponDataPropertiesData extends WeaponDataSourceData {}
 
 export interface WeaponDataSource {
-  type: ItemTypeEnum.Weapon;
+  type: typeof ItemTypeEnum.Weapon;
   system: WeaponDataSourceData;
 }
 
 export interface WeaponDataProperties {
-  type: ItemTypeEnum.Weapon;
+  type: typeof ItemTypeEnum.Weapon;
   system: WeaponDataPropertiesData;
 }
 
-export const defaultWeaponData: WeaponDataSourceData = {
-  usage: {
-    oneHand: {
-      skillRqidLink: undefined,
-      combatManeuvers: [],
-      damage: "",
-      minStrength: 0,
-      minDexterity: 0,
-      strikeRank: 0,
-    },
-    offHand: {
-      // All but skillRqidLink should normally be equal to oneHand
-      skillRqidLink: undefined,
-      combatManeuvers: [],
-      damage: "",
-      minStrength: 0,
-      minDexterity: 0,
-      strikeRank: 0,
-    },
-    twoHand: {
-      skillRqidLink: undefined,
-      combatManeuvers: [],
-      damage: "",
-      minStrength: 0,
-      minDexterity: 0,
-      strikeRank: 0,
-    },
-    missile: {
-      skillRqidLink: undefined,
-      combatManeuvers: [],
-      damage: "",
-      minStrength: 0,
-      minDexterity: 0,
-    },
-  },
-  defaultUsage: undefined,
-  description: "",
-  gmNotes: "",
-  hitPoints: defaultResource,
-  hitPointLocation: "",
-  encumbrance: 0,
-  location: "",
-  attunedTo: "",
-  physicalItemType: "unique",
-  quantity: 1,
-  isContainer: false,
-  price: defaultPriceData,
-  isNatural: false,
-  equippedStatus: "carried",
-  rate: 0,
-  range: 0,
-  isProjectile: false,
-  isProjectileWeapon: false,
-  isThrownWeapon: false,
-  isRangedWeapon: false,
-  projectileId: "",
-};
+// export const defaultWeaponData: WeaponDataSourceData = {
+//   usage: {
+//     oneHand: {
+//       skillRqidLink: undefined,
+//       combatManeuvers: [],
+//       damage: "",
+//       minStrength: 0,
+//       minDexterity: 0,
+//       strikeRank: 0,
+//     },
+//     offHand: {
+//       // All but skillRqidLink should normally be equal to oneHand
+//       skillRqidLink: undefined,
+//       combatManeuvers: [],
+//       damage: "",
+//       minStrength: 0,
+//       minDexterity: 0,
+//       strikeRank: 0,
+//     },
+//     twoHand: {
+//       skillRqidLink: undefined,
+//       combatManeuvers: [],
+//       damage: "",
+//       minStrength: 0,
+//       minDexterity: 0,
+//       strikeRank: 0,
+//     },
+//     missile: {
+//       skillRqidLink: undefined,
+//       combatManeuvers: [],
+//       damage: "",
+//       minStrength: 0,
+//       minDexterity: 0,
+//     },
+//   },
+//   defaultUsage: undefined,
+//   description: "",
+//   gmNotes: "",
+//   hitPoints: defaultResource,
+//   hitPointLocation: "",
+//   encumbrance: 0,
+//   location: "",
+//   attunedTo: "",
+//   physicalItemType: "unique",
+//   quantity: 1,
+//   isContainer: false,
+//   price: defaultPriceData,
+//   isNatural: false,
+//   equippedStatus: "carried",
+//   rate: 0,
+//   range: 0,
+//   isProjectile: false,
+//   isProjectileWeapon: false,
+//   isThrownWeapon: false,
+//   isRangedWeapon: false,
+//   projectileId: "",
+// };

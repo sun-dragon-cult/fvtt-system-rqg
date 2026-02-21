@@ -1,14 +1,13 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
-  EquippedStatus,
+  type EquippedStatus,
   equippedStatusOptions,
-  PhysicalItemType,
+  type PhysicalItemType,
   physicalItemTypeOptions,
-} from "../../data-model/item-data/IPhysicalItem";
+} from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface GearSheetData {
@@ -18,8 +17,8 @@ interface GearSheetData {
   physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[];
 }
 
-export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class GearSheet extends RqgItemSheet {
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Gear],
       template: templatePaths.itemGearSheet,
@@ -35,8 +34,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     });
   }
 
-  async getData(): Promise<GearSheetData & EffectsItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<GearSheetData & EffectsItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -44,16 +42,14 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
       uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEmbedded: this.document.isEmbedded,
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
@@ -62,7 +58,7 @@ export class GearSheet extends RqgItemSheet<ItemSheet.Options, GearSheetData | I
     };
   }
 
-  protected async _updateObject(event: Event, formData: any): Promise<any> {
+  protected override async _updateObject(event: Event, formData: any): Promise<any> {
     if (formData[`system.physicalItemType`] === "unique") {
       formData[`system.quantity`] = 1;
     }

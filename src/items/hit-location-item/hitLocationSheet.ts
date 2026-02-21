@@ -1,26 +1,25 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
-  HitLocationHealthState,
+  type HitLocationHealthState,
   hitLocationHealthStatusOptions,
+  type HitLocationItem,
   HitLocationTypesEnum,
-} from "../../data-model/item-data/hitLocationData";
-import { RqgActor } from "../../actors/rqgActor";
+} from "@item-model/hitLocationData.ts";
+import { RqgActor } from "@actors/rqgActor.ts";
 import {
-  assertItemType,
-  getGame,
-  getGameUser,
+  assertDocumentSubType,
   getSelectHitLocationOptions,
   localize,
   requireValue,
-  RqgError,
 } from "../../system/util";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { damageType } from "../../data-model/item-data/weaponData";
+import { damageType } from "@item-model/weaponData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 interface HitLocationSheetData {
   allHitLocationOptions: SelectOptionData<string>[];
@@ -29,11 +28,12 @@ interface HitLocationSheetData {
   rqid: string;
 }
 
-export class HitLocationSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  HitLocationSheetData | ItemSheet.Data
-> {
-  static get defaultOptions(): ItemSheet.Options {
+export class HitLocationSheet extends RqgItemSheet {
+  override get document(): HitLocationItem {
+    return super.document as HitLocationItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.HitLocation],
       template: templatePaths.itemHitLocationSheet,
@@ -49,8 +49,7 @@ export class HitLocationSheet extends RqgItemSheet<
     });
   }
 
-  getData(): HitLocationSheetData & ItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override getData(): HitLocationSheetData & ItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
     system.hitPoints = this.document.system.hitPoints; // Use the actor derived values
     system.armorPoints = this.document.system.armorPoints; // Use the actor derived value
@@ -61,7 +60,7 @@ export class HitLocationSheet extends RqgItemSheet<
       rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEmbedded: this.document.isEmbedded,
       system: system,
 
@@ -75,17 +74,13 @@ export class HitLocationSheet extends RqgItemSheet<
   }
 
   static async showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): Promise<void> {
-    const hitLocation = actor.items.get(hitLocationItemId);
-    if (!hitLocation || hitLocation.type !== ItemTypeEnum.HitLocation) {
-      const msg = localize("RQG.Item.HitLocation.Notification.CantFindHitLocation", {
-        hitLocationItemId: hitLocationItemId,
-        actorName: actor.name,
-      });
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
-    }
+    const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;
+    assertDocumentSubType<HitLocationItem>(
+      hitLocation,
+      ItemTypeEnum.HitLocation,
+      "RQG.Item.HitLocation.Notification.CantFindHitLocation",
+    );
 
-    // @ts-expect-error renderTemplate
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationAddWound,
       {},
@@ -121,12 +116,12 @@ export class HitLocationSheet extends RqgItemSheet<
   }
 
   private static async submitAddWoundDialog(html: JQuery, actor: RqgActor, hitLocation: RqgItem) {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
-    const applyDamageToTotalHp: boolean = !!data.toTotalHp;
-    const ignoreAP: boolean = !data.subtractAP;
-    const damage = Number(data.damage);
+    const applyDamageToTotalHp: boolean = !!data["toTotalHp"];
+    const ignoreAP: boolean = !data["subtractAP"];
+    const damage = Number(data["damage"]);
 
     actor.applyDamage(
       damage,
@@ -139,10 +134,10 @@ export class HitLocationSheet extends RqgItemSheet<
   }
 
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
-    const hitLocation = actor.items.get(hitLocationItemId);
-    assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
-    // @ts-expect-error renderTemplate
     const dialogContentHtml = await foundry.applications.handlebars.renderTemplate(
       templatePaths.hitLocationHealWound,
       {
@@ -186,7 +181,7 @@ export class HitLocationSheet extends RqgItemSheet<
     actor: RqgActor,
     hitLocation: RqgItem,
   ): Promise<void> {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
     requireValue(
@@ -201,8 +196,8 @@ export class HitLocationSheet extends RqgItemSheet<
         hitLocationName: hitLocation.name,
       }),
     );
-    const healWoundIndex: number = Number(data.wound);
-    const healPoints: number = Number(data.heal);
+    const healWoundIndex: number = Number(data["wound"]);
+    const healPoints: number = Number(data["heal"]);
     const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
       healPoints,
       healWoundIndex,
@@ -211,22 +206,20 @@ export class HitLocationSheet extends RqgItemSheet<
     );
 
     if (hitLocationUpdates) {
-      await hitLocation.update(hitLocationUpdates);
+      await hitLocation.update(hitLocationUpdates as any);
     }
     if (actorUpdates) {
-      await actor.update(actorUpdates);
+      await actor.update(actorUpdates as any);
     }
 
     if (actor.isToken) {
       await actor.updateTokenEffectFromHealth();
     } else {
       const activeTokens = actor.getActiveTokens(true, false);
-      const currentScene = getGame().scenes?.current;
+      const currentScene = game.scenes?.current;
       if (currentScene && activeTokens.length) {
         // TODO could be a bug if the actor has tokens in multiple scenes maybe. then getting activeTokens[0] could be wrong. Should check that the scene match?
-        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0].id ?? "") as
-          | TokenDocument
-          | undefined;
+        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0]?.id ?? "", {});
         if (token) {
           await actor.updateTokenEffectFromHealth();
         }
@@ -238,7 +231,7 @@ export class HitLocationSheet extends RqgItemSheet<
         // TODO make sure usefulLegs only contain real data
         const item = actor.items.get(update._id);
         if (item) {
-          await item.update(update);
+          await item.update(update as any);
         }
       }
     }

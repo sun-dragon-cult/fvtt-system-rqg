@@ -1,49 +1,65 @@
-import { Skill } from "../../items/skill-item/skill";
-import { AbstractEmbeddedItem } from "../../items/abstractEmbeddedItem";
-import { HitLocation } from "../../items/hit-location-item/hitLocation";
-import { Gear } from "../../items/gear-item/gear";
-import { Armor } from "../../items/armor-item/armor";
-import { SpiritMagic } from "../../items/spirit-magic-item/spiritMagic";
-import { Cult } from "../../items/cult-item/cult";
-import { RuneMagic } from "../../items/rune-magic-item/runeMagic";
-import { Passion } from "../../items/passion-item/passion";
-import { Rune } from "../../items/rune-item/rune";
-import { ArmorDataProperties, ArmorDataSource } from "./armorData";
-import { PassionDataProperties, PassionDataSource } from "./passionData";
-import { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
-import { GearDataProperties, GearDataSource } from "./gearData";
-import { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
-import { CultDataProperties, CultDataSource } from "./cultData";
-import { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
-import { SkillDataProperties, SkillDataSource } from "./skillData";
-import { RuneDataProperties, RuneDataSource } from "./runeData";
-import { WeaponDataProperties, WeaponDataSource } from "./weaponData";
-import { Weapon } from "../../items/weapon-item/weapon";
-import {
+import type { ArmorDataProperties, ArmorDataSource, ArmorItem } from "./armorData";
+import type { PassionDataProperties, PassionDataSource, PassionItem } from "./passionData";
+import type { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
+import type { GearDataProperties, GearDataSource, GearItem } from "./gearData";
+import type { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
+import type { CultDataProperties, CultDataSource } from "./cultData";
+import type { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
+import type { SkillDataProperties, SkillDataSource, SkillItem } from "./skillData";
+import type { RuneDataProperties, RuneDataSource, RuneItem } from "./runeData";
+import type { WeaponDataProperties, WeaponDataSource, WeaponItem } from "./weaponData";
+import type {
   HomelandDataProperties as HomelandDataProperties,
   HomelandDataSource,
 } from "./homelandData";
-import {
+import type {
   OccupationDataProperties as OccupationDataProperties,
   OccupationDataSource,
 } from "./occupationData";
+import type { AbstractEmbeddedItem } from "@items/abstractEmbeddedItem.ts";
 
-export enum ItemTypeEnum {
-  Armor = "armor",
-  Cult = "cult",
-  Gear = "gear",
-  HitLocation = "hitLocation",
-  Homeland = "homeland",
-  Occupation = "occupation",
-  Passion = "passion",
-  Rune = "rune",
-  RuneMagic = "runeMagic",
-  Skill = "skill",
-  SpiritMagic = "spiritMagic",
-  Weapon = "weapon",
-  ShamanicAbility = "shamanicAbility",
-  SorceryMagic = "sorceryMagic",
+import { Armor } from "@items/armor-item/armor.ts";
+import { Cult } from "@items/cult-item/cult.ts";
+import { Gear } from "@items/gear-item/gear.ts";
+import { HitLocation } from "@items/hit-location-item/hitLocation.ts";
+import { Passion } from "@items/passion-item/passion.ts";
+import { Rune } from "@items/rune-item/rune.ts";
+import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
+import { Skill } from "@items/skill-item/skill.ts";
+import { SpiritMagic } from "@items/spirit-magic-item/spiritMagic.ts";
+import { Weapon } from "@items/weapon-item/weapon.ts";
+
+// Base item types with literal string values (for type extraction)
+const ItemTypeBase = {
+  Armor: "armor",
+  Cult: "cult",
+  Gear: "gear",
+  HitLocation: "hitLocation",
+  Homeland: "homeland",
+  Occupation: "occupation",
+  Passion: "passion",
+  Rune: "rune",
+  RuneMagic: "runeMagic",
+  Skill: "skill",
+  SpiritMagic: "spiritMagic",
+  Weapon: "weapon",
+  // ShamanicAbility: "shamanicAbility",
+  // SorceryMagic: "sorceryMagic",
+} as const;
+
+// Export union type of RQG item types (without Foundry internal types)
+export type RqgItemType = (typeof ItemTypeBase)[keyof typeof ItemTypeBase];
+
+// Helper to cast object values to Item.SubType
+function asItemSubTypes<T extends Record<string, string>>(
+  obj: T,
+): { [K in keyof T]: Item.SubType } {
+  return obj as any;
 }
+
+// ItemTypeEnum with values cast to Item.SubType for Foundry compatibility
+export const ItemTypeEnum = asItemSubTypes(ItemTypeBase);
+export type ItemTypeEnum = (typeof ItemTypeEnum)[keyof typeof ItemTypeEnum];
 
 /**
  * Map from ItemTypeEnum to responsible AbstractEmbeddedItem class.
@@ -88,3 +104,8 @@ export type RqgItemDataProperties =
   | SkillDataProperties
   | SpiritMagicDataProperties
   | WeaponDataProperties;
+
+export type PhysicalItem = GearItem | WeaponItem | ArmorItem;
+
+export type AbilityItem = PassionItem | RuneItem | SkillItem;
+export const abilityItemTypes = ["skill", "rune", "passion"] as const;

@@ -1,20 +1,20 @@
 import { systemId } from "../../system/config";
-import { getGame } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { defaultTokenRulerSettings } from "../../system/settings/defaultTokenRulerSettings";
-import type { TokenRulerSettingsType } from "./tokenRulerSettings.types";
+import type { TokenRulerSettingsContext } from "./tokenRulerSettings.types.ts";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 /**
  * The application responsible for configuring RqgTokenRuler.
  */
-export default class TokenRulerSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+export default class TokenRulerSettings extends HandlebarsApplicationMixin(
+  ApplicationV2<TokenRulerSettingsContext>,
+) {
   static exampleMov = 8;
 
   /** @inheritDoc */
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "token-ruler-config",
     tag: "form",
     window: {
@@ -32,7 +32,7 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(Appli
   };
 
   /** @override */
-  static PARTS = {
+  static override PARTS = {
     body: {
       template: templatePaths.tokenRulerSettings,
       root: true,
@@ -48,11 +48,8 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(Appli
   /*  Application                                 */
   /* -------------------------------------------- */
 
-  /** @override */
-  async _prepareContext() {
-    const config =
-      (getGame().settings.get(systemId, "TokenRulerSettings") as TokenRulerSettingsType) ||
-      defaultTokenRulerSettings;
+  override async _prepareContext(): Promise<TokenRulerSettingsContext> {
+    const config = game.settings?.get(systemId, "tokenRulerSettings") || defaultTokenRulerSettings;
     const sprintMultiplier = config.sprintMultiplier ?? 0;
     return {
       sprintMultiplier: sprintMultiplier,
@@ -75,15 +72,13 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(Appli
 
   // add a listener and do DOM manipulation to update the calculated sprint range in meters
   /** @override */
-  _onRender() {
-    // @ts-expect-error element
+  override async _onRender(): Promise<void> {
     const sprintMultiplier = (this.element as Element).querySelector<HTMLInputElement>(
       '[name="sprintMultiplier"]',
     );
     sprintMultiplier?.addEventListener("input", (e: Event): void => {
       e.preventDefault();
       e.stopImmediatePropagation();
-      // @ts-expect-error element
       const html = this.element as HTMLElement;
       const sprintInput = html.querySelector<HTMLInputElement>('input[name="sprintMultiplier"]');
 
@@ -102,9 +97,13 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(Appli
   /* -------------------------------------------- */
 
   /** @override */
-  private static async onSubmit(_event: any, _form: any, formData: any) {
-    const config: object = getGame().settings.get(systemId, "TokenRulerSettings") as object;
+  private static async onSubmit(
+    _event: SubmitEvent | Event,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ) {
+    const config = game.settings?.get(systemId, "tokenRulerSettings") ?? defaultTokenRulerSettings;
     foundry.utils.mergeObject(config, formData.object);
-    await getGame().settings.set(systemId, "TokenRulerSettings", config);
+    await game.settings?.set(systemId, "tokenRulerSettings", config);
   }
 }

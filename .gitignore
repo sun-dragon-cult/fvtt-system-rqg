@@ -2,12 +2,14 @@
 .run/
 # Project exclude paths
 dist/
+build/
 node_modules/
 coverage/
 
 package-lock.json
 yarn-error.log
 yarn.lock
+/.typescript-build/
 
 # Ignore Editor settings
 .nova/

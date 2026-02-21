@@ -6,22 +6,21 @@ import {
   handleRollFumble,
 } from "./attackFlowHandlers";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { getGameUser, localize } from "../system/util";
+import { localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
-import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel";
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
+
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel.ts";
+import type { CombatDataProperties } from "../data-model/chat-data/combatChatMessage.types.ts";
 
+// TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {
-  declare system: any; // TODO type workaround, should be the type of RqgChatMessageData
-
   public static init() {
     CONFIG.ChatMessage.documentClass = RqgChatMessage;
     CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
-    // @ts-expect-error dataModels
-    CONFIG.ChatMessage.dataModels.combat = CombatChatMessageData;
+    CONFIG.ChatMessage.dataModels["combat"] = CombatChatMessageData;
 
     Hooks.on("ready", () => {
       // one listener for sidebar chat, popped out chat & chat notification
@@ -29,25 +28,19 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  _onUpdate(
-    data: DeepPartial<foundry.data.ChatMessageData["_source"]>,
-    options: DocumentModificationOptions,
-    userId: string,
-  ) {
-    // @ts-expect-error isAtBottom
-    if (ui?.chat?.isAtBottom) {
+  override _onUpdate(data: any, options: any, userId: string) {
+    if ((ui?.chat as any)?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?
       // @ts-expect-error scrollBottom
-      setTimeout(() => ui?.chat.scrollBottom(), 0);
+      setTimeout(() => ui?.chat?.scrollBottom(), 0);
     }
 
     super._onUpdate(data, options, userId);
   }
 
   /** @inheritDoc */
-  async renderHTML(...args: any): Promise<HTMLElement> {
-    // @ts-expect-error renderHTML
-    const element = await super.renderHTML(args);
+  override async renderHTML(...args: any[]): Promise<HTMLElement> {
+    const element = await super.renderHTML(...args);
     await this.#enrichChatCard(element);
     return element;
   }
@@ -58,27 +51,27 @@ export class RqgChatMessage extends ChatMessage {
     // *** START - Attack Flow ***
     // ***************************
 
-    if (clickedButton?.dataset.defence != null) {
+    if (clickedButton?.dataset["defence"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleDefence(clickedButton); // Open Defence Dialog (roll defence)
     }
 
-    if (clickedButton?.dataset.rollDamageAndHitlocation != null) {
+    if (clickedButton?.dataset["rollDamageAndHitlocation"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollDamageAndHitLocation(clickedButton); // Roll damage & hit location
     }
 
-    if (clickedButton?.dataset.applyDamageToActor != null) {
+    if (clickedButton?.dataset["applyDamageToActor"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyActorDamage(clickedButton); // Inflict damage to actor
     }
 
-    if (clickedButton?.dataset.applyDamageToWeapon != null) {
+    if (clickedButton?.dataset["applyDamageToWeapon"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleApplyWeaponDamage(clickedButton); // Damage weapon HP
     }
 
-    if (clickedButton?.dataset.fumble != null) {
+    if (clickedButton?.dataset["fumble"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollFumble(clickedButton); // Roll the Fumble table
     }
@@ -131,7 +124,7 @@ export class RqgChatMessage extends ChatMessage {
    * The data-only-owner-visible-uuid value should be a document uuid that can be checked for ownership.
    */
   #hideHtmlElementsByOwnership(html: HTMLElement | undefined): void {
-    if (getGameUser().isGM) {
+    if (game.user?.isGM) {
       return; // Do not hide anything from GM
     }
 
@@ -142,9 +135,8 @@ export class RqgChatMessage extends ChatMessage {
       if (!(el instanceof HTMLElement)) {
         return;
       }
-      // @ts-expect-error fromUuidSync
-      const document = fromUuidSync(el.dataset.onlyOwnerVisibleUuid);
-      if (el.dataset.onlyOwnerVisibleUuid && !document?.isOwner) {
+      const document = fromUuidSync(el.dataset["onlyOwnerVisibleUuid"]);
+      if (el.dataset["onlyOwnerVisibleUuid"] && !(document as any)?.isOwner) {
         el.classList.add("dont-display");
       }
     });
@@ -152,12 +144,12 @@ export class RqgChatMessage extends ChatMessage {
 
   async #enrichHtmlWithRoll(
     html: HTMLElement,
-    systemDataProp: string,
+    systemDataRollName: string,
     domSelector: string,
   ): Promise<void> {
-    const rollData = this.system[systemDataProp];
-    if (rollData?.evaluated) {
-      const roll = AbilityRoll.fromData(rollData);
+    const rollJson = (this.system as any)[systemDataRollName];
+    const roll = safeFromJSON<AbilityRoll>(AbilityRoll, rollJson);
+    if (roll?.isEvaluated) {
       const element = html.querySelector<HTMLElement>(domSelector);
       if (element) {
         element.innerHTML = await roll.render();
@@ -168,15 +160,12 @@ export class RqgChatMessage extends ChatMessage {
   /**
    * Export the content of the chat message into a standardized log format
    */
-  export(): string {
-    let content = [];
+  override export(): string {
+    let content: string[] = [];
 
     // Handle HTML content
-    // @ts-expect-error content
     if (this.content) {
-      // @ts-expect-error content
       const html = $("<article>").html(this.content.replace(/<\/div>/g, "</div>|n"));
-      // @ts-expect-error content
       const text = html.length ? html.text() : this.content;
       const lines = text
         .replace(/\n/g, "")
@@ -187,7 +176,6 @@ export class RqgChatMessage extends ChatMessage {
     }
 
     // Add Roll content
-    // @ts-expect-error rolls
     for (const roll of this.rolls) {
       if (roll instanceof AbilityRoll) {
         content.push(
@@ -203,39 +191,34 @@ export class RqgChatMessage extends ChatMessage {
       }
     }
 
-    // @ts-expect-error type
-    if (this.type === "combat") {
-      const defenceRollData = this.system.defenceRoll;
-      const defenceRoll = defenceRollData ? AbilityRoll.fromData(defenceRollData) : undefined;
-      if (defenceRoll?.total) {
+    if (this.isCombatMessage()) {
+      const defenceRoll = safeFromJSON<AbilityRoll>(AbilityRoll, this.system.defenceRoll);
+      if (defenceRoll?.isEvaluated) {
         content.unshift(
           `DefenceRoll: ${defenceRoll.total} / ${defenceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${defenceRoll.successLevel}`)}`,
         );
       }
 
-      const attackRollData = this.system.attackRoll;
-      const attackRoll = attackRollData ? AbilityRoll.fromData(attackRollData) : undefined;
-      if (attackRoll?.total) {
+      const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, this.system.attackRoll);
+      if (attackRoll?.isEvaluated) {
         content.unshift(
           `AttackRoll: ${attackRoll.total} / ${attackRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${attackRoll.successLevel}`)}`,
         );
-        // @ts-expect-error content
         content.unshift(this.flavor.replaceAll(/\n|<[^>]*>/gm, "")); // Make sure the target of the attack also is exported
       }
 
-      const damageRollData = this.system.damageRoll;
-      const damageRoll = damageRollData ? DamageRoll.fromData(damageRollData) : undefined;
-      if (damageRoll?.total) {
+      const damageRoll = safeFromJSON<DamageRoll>(DamageRoll, this.system.damageRoll);
+      if (damageRoll?.isEvaluated) {
         content.push(
           `DamageRoll: ${damageRoll.originalFormula} = ${damageRoll.result} = ${damageRoll.total}`,
         );
       }
 
-      const hitLocationRollData = this.system.hitLocationRoll;
-      const hitLocationRoll = hitLocationRollData
-        ? HitLocationRoll.fromData(hitLocationRollData)
-        : undefined;
-      if (hitLocationRoll?.total) {
+      const hitLocationRoll = safeFromJSON<HitLocationRoll>(
+        HitLocationRoll,
+        this.system.hitLocationRoll,
+      );
+      if (hitLocationRoll?.isEvaluated) {
         content.push(
           `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
         );
@@ -243,7 +226,6 @@ export class RqgChatMessage extends ChatMessage {
     }
 
     // Author and timestamp TODO users locale (don't have that), or maybe Gloranthan time formatting?
-    // @ts-expect-error timestamp
     const time = new Date(this.timestamp).toLocaleDateString("en-US", {
       hour: "numeric",
       minute: "numeric",
@@ -252,5 +234,9 @@ export class RqgChatMessage extends ChatMessage {
 
     // Format logged result
     return `[${time}] ${this.alias}\n${content.filterJoin("\n")}`;
+  }
+
+  isCombatMessage(): this is CombatDataProperties {
+    return this.type === "combat";
   }
 }

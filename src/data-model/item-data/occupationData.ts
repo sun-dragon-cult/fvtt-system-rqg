@@ -1,13 +1,17 @@
 import { RqidLink } from "../shared/rqidLink";
 import { ItemTypeEnum } from "./itemTypes";
+import type { RqgItem } from "@items/rqgItem.ts";
 
-export enum StandardOfLivingEnum {
-  Destitute = "destitute",
-  Poor = "poor",
-  Free = "free",
-  Noble = "noble",
-  PettyKing = "petty-king",
-}
+export type OccupationItem = RqgItem & { system: OccupationDataPropertiesData };
+
+export const StandardOfLivingEnum = {
+  Destitute: "destitute",
+  Poor: "poor",
+  Free: "free",
+  Noble: "noble",
+  PettyKing: "petty-king",
+} as const;
+export type StandardOfLivingEnum = (typeof StandardOfLivingEnum)[keyof typeof StandardOfLivingEnum];
 
 export class OccupationalSkill {
   incomeSkill: boolean = false;
@@ -33,25 +37,25 @@ export interface OccupationDataSourceData {
 export interface OccupationDataPropertiesData extends OccupationDataSourceData {}
 
 export interface OccupationDataSource {
-  type: ItemTypeEnum.Occupation;
+  type: typeof ItemTypeEnum.Occupation;
   system: OccupationDataSourceData;
 }
 
 export interface OccupationDataProperties {
-  type: ItemTypeEnum.Occupation;
+  type: typeof ItemTypeEnum.Occupation;
   system: OccupationDataSourceData;
 }
 
-export const defaultOccupationData: OccupationDataSourceData = {
-  occupation: "",
-  occupationRqidLink: undefined,
-  specialization: "",
-  homelands: [],
-  occupationalSkills: [],
-  standardOfLiving: StandardOfLivingEnum.Free,
-  baseIncome: 0,
-  baseIncomeNotes: "",
-  cultRqidLinks: [],
-  ransom: 0,
-  startingEquipmentRqidLinks: [],
-};
+// export const defaultOccupationData: OccupationDataSourceData = {
+//   occupation: "",
+//   occupationRqidLink: undefined,
+//   specialization: "",
+//   homelands: [],
+//   occupationalSkills: [],
+//   standardOfLiving: StandardOfLivingEnum.Free,
+//   baseIncome: 0,
+//   baseIncomeNotes: "",
+//   cultRqidLinks: [],
+//   ransom: 0,
+//   startingEquipmentRqidLinks: [],
+// };

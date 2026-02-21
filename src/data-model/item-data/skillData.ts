@@ -1,6 +1,9 @@
-import { IAbility } from "../shared/ability";
+import type { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type SkillItem = RqgItem & { system: SkillDataPropertiesData };
 
 export enum SkillCategoryEnum {
   Agility = "agility",
@@ -37,23 +40,23 @@ export interface SkillDataPropertiesData extends SkillDataSourceData {
 }
 
 export interface SkillDataSource {
-  type: ItemTypeEnum.Skill;
+  type: typeof ItemTypeEnum.Skill;
   system: SkillDataSourceData;
 }
 
 export interface SkillDataProperties {
-  type: ItemTypeEnum.Skill;
+  type: typeof ItemTypeEnum.Skill;
   system: SkillDataPropertiesData;
 }
 
-export const defaultSkillData: SkillDataSourceData = {
-  descriptionRqidLink: undefined,
-  category: SkillCategoryEnum.Magic,
-  skillName: "",
-  specialization: "",
-  baseChance: 0,
-  gainedChance: 0,
-  canGetExperience: true,
-  hasExperience: false,
-  runeRqidLinks: [],
-};
+// export const defaultSkillData: SkillDataSourceData = {
+//   descriptionRqidLink: undefined,
+//   category: SkillCategoryEnum.Magic,
+//   skillName: "",
+//   specialization: "",
+//   baseChance: 0,
+//   gainedChance: 0,
+//   canGetExperience: true,
+//   hasExperience: false,
+//   runeRqidLinks: [],
+// };

@@ -1,4 +1,5 @@
 import { RqgCalculations } from "./rqgCalculations";
+import { describe, it, expect } from "vitest";
 
 describe("Skill Category Modifiers are correct for", () => {
   it("average character with normal rules", () => {

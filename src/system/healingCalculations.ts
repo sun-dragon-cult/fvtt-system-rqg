@@ -1,14 +1,20 @@
-import { ActorHealthState } from "../data-model/actor-data/attributes";
-import { assertItemType, RqgError } from "./util";
-import {
+import type { ActorHealthState } from "../data-model/actor-data/attributes";
+import { assertDocumentSubType, RqgError } from "./util";
+import type {
   HitLocationDataSource,
   HitLocationHealthState,
-} from "../data-model/item-data/hitLocationData";
-import { CharacterDataSource } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import type { ItemDataConstructorData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
-import { RqgActor } from "../actors/rqgActor";
-import { RqgItem } from "../items/rqgItem";
+  HitLocationItem,
+} from "@item-model/hitLocationData.ts";
+import {
+  ActorTypeEnum,
+  type CharacterActor,
+  type CharacterDataSource,
+} from "../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RqgActor } from "../actors/rqgActor";
+import type { RqgItem } from "../items/rqgItem";
+
+import type { DeepPartial } from "fvtt-types/utils";
 
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */
@@ -16,7 +22,7 @@ export interface HealingEffects {
   /** Updates to the actor health */
   actorUpdates: DeepPartial<CharacterDataSource>;
   /** Updates to make limbs useful again */
-  usefulLegs: DeepPartial<ItemDataConstructorData>[];
+  usefulLegs: DeepPartial<Item.Source>[];
 }
 
 /**
@@ -29,7 +35,8 @@ export class HealingCalculations {
     hitLocation: RqgItem,
     actor: RqgActor,
   ): HealingEffects {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const healingEffects: HealingEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},
@@ -52,8 +59,10 @@ export class HealingCalculations {
       hitLocationHealthState = "wounded"; // Remove the "severed" state, but the actual state will be calculated below
     }
 
-    healPoints = Math.min(wounds[healWoundIndex], healPoints); // Don't heal more than wound damage
-    wounds[healWoundIndex] -= healPoints;
+    if (wounds[healWoundIndex]) {
+      healPoints = Math.min(wounds[healWoundIndex], healPoints); // Don't heal more than wound damage
+      wounds[healWoundIndex] -= healPoints;
+    }
 
     const woundsSumAfter = wounds.reduce((acc: number, w: number) => acc + w, 0);
     if (woundsSumAfter === 0) {

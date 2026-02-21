@@ -1,13 +1,14 @@
-import { defaultResource, Resource } from "../shared/resource";
+import { Resource } from "../shared/resource";
 
 export const actorHealthStatuses = ["healthy", "wounded", "shock", "unconscious", "dead"] as const;
 export type ActorHealthState = (typeof actorHealthStatuses)[number];
 
-export enum LocomotionEnum {
-  Walk = "walk",
-  Swim = "swim",
-  Fly = "fly",
-}
+export const LocomotionEnum = {
+  Walk: "walk",
+  Swim: "swim",
+  Fly: "fly",
+} as const;
+export type LocomotionEnum = (typeof LocomotionEnum)[keyof typeof LocomotionEnum];
 
 // Values calculated in RqgActor.prepareData with help from RqgCalculations
 export class Attributes {
@@ -44,25 +45,25 @@ export class Attributes {
   ) {}
 }
 
-export const defaultAttributes = new Attributes(
-  defaultResource,
-  defaultResource,
-  {
-    currentLocomotion: LocomotionEnum.Walk,
-    [LocomotionEnum.Walk]: {
-      value: 8,
-      carryingFactor: 1,
-    },
-    [LocomotionEnum.Swim]: {
-      value: 2,
-      carryingFactor: 0.5,
-    },
-    [LocomotionEnum.Fly]: {
-      value: undefined,
-      carryingFactor: undefined,
-    },
-  },
-  0,
-  false,
-  "healthy",
-);
+// export const defaultAttributes = new Attributes(
+//   defaultResource,
+//   defaultResource,
+//   {
+//     currentLocomotion: LocomotionEnum.Walk,
+//     [LocomotionEnum.Walk]: {
+//       value: 8,
+//       carryingFactor: 1,
+//     },
+//     [LocomotionEnum.Swim]: {
+//       value: 2,
+//       carryingFactor: 0.5,
+//     },
+//     [LocomotionEnum.Fly]: {
+//       value: undefined,
+//       carryingFactor: undefined,
+//     },
+//   },
+//   0,
+//   false,
+//   "healthy",
+// );

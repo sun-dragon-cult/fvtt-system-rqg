@@ -1,24 +1,25 @@
 import {
-  HitLocationDataProperties,
   hitLocationHealthStatuses,
+  type HitLocationItem,
   HitLocationTypesEnum,
-} from "../data-model/item-data/hitLocationData";
-import { RqgActorDataProperties } from "../data-model/actor-data/rqgActorData";
-import { ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
-import { DeepPartial } from "snowpack";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
-import { assertItemType, RqgError } from "./util";
+} from "@item-model/hitLocationData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
+import { type ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { assertDocumentSubType, isDocumentSubType, RqgError } from "./util";
 import { RqgItem } from "../items/rqgItem";
 import { RqgActor } from "../actors/rqgActor";
 import { systemId } from "./config";
 
+import Document = foundry.abstract.Document;
+
 export interface DamageEffects {
-  hitLocationUpdates: DeepPartial<HitLocationDataProperties>;
-  actorUpdates: DeepPartial<RqgActorDataProperties>;
+  hitLocationUpdates: Item.UpdateData;
+  actorUpdates: Actor.UpdateData;
   /** info to the user  */
   notification: string;
   /** make limbs useless */
-  uselessLegs: DeepPartial<HitLocationDataProperties>[];
+  uselessLegs: ({ _id: string } & Item.UpdateData)[];
 }
 
 /**
@@ -31,11 +32,11 @@ export class DamageCalculations {
   public static addWound(
     damage: number,
     applyDamageToTotalHp: boolean,
-    hitLocation: RqgItem | undefined,
-    actor: RqgActor,
+    hitLocation: HitLocationItem | undefined,
+    actor: CharacterActor,
     speakerName: string,
   ): DamageEffects {
-    assertItemType(hitLocation?.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
     if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Limb) {
       return DamageCalculations.calcLimbDamageEffects(
@@ -56,10 +57,15 @@ export class DamageCalculations {
     }
   }
 
-  private static applyDamageToActorTotalHp(damage: number, actor: RqgActor): DeepPartial<RqgActor> {
+  private static applyDamageToActorTotalHp(
+    damage: number,
+    actor: RqgActor,
+  ): Document.UpdateDataForName<"Actor"> {
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+
     if (actor.system.attributes.hitPoints.max != null) {
       const currentTotalHp = actor.system.attributes.hitPoints.value;
-      const actorUpdateData: DeepPartial<RqgActor> = {
+      const actorUpdateData: Document.UpdateDataForName<"Actor"> = {
         system: { attributes: { hitPoints: { value: 0 } } },
       };
       if (currentTotalHp == null) {
@@ -67,11 +73,13 @@ export class DamageCalculations {
         ui.notifications?.error(msg);
         throw new RqgError(msg, actorUpdateData);
       }
-      actorUpdateData.system!.attributes!.hitPoints!.value = currentTotalHp - damage;
+
+      (actorUpdateData as Partial<CharacterActor>).system!.attributes!.hitPoints!.value =
+        currentTotalHp - damage;
       return actorUpdateData;
     }
 
-    return {} as DeepPartial<RqgActor>;
+    return {} as Document.UpdateDataForName<"Actor">;
   }
 
   private static calcLimbDamageEffects(
@@ -81,7 +89,7 @@ export class DamageCalculations {
     applyDamageToTotalHp: boolean,
     speakerName: string,
   ): DamageEffects {
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const damageEffects: DamageEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},
@@ -169,7 +177,7 @@ export class DamageCalculations {
       notification: "",
       uselessLegs: [],
     };
-    assertItemType(hitLocation.type, ItemTypeEnum.HitLocation);
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
     const hpValue = hitLocation.system.hitPoints.value;
     const hpMax = hitLocation.system.hitPoints.max;
     if (!hitLocation.system.hitLocationType) {
@@ -201,13 +209,13 @@ export class DamageCalculations {
       totalDamage < hpMax * 3
     ) {
       const attachedLimbs = actor.items.filter(
-        (i: RqgItem) =>
-          i.type === ItemTypeEnum.HitLocation &&
+        (i) =>
+          isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
           i.system.connectedTo === hitLocation.flags?.[systemId]?.documentRqidFlags?.id,
-      );
+      ) as HitLocationItem[];
       damageEffects.uselessLegs = attachedLimbs.map((limb) => {
         return {
-          _id: limb.id,
+          _id: limb.id ?? "",
           system: {
             hitLocationHealthState: "useless",
           },
@@ -251,6 +259,8 @@ export class DamageCalculations {
   }
 
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+
     const maxHitPoints = actor.system.attributes.hitPoints.max;
 
     const hasMaxMagicPoints = !!actor.system.attributes.magicPoints.max;
@@ -272,8 +282,8 @@ export class DamageCalculations {
     } else if (totalHitPoints <= 2 || (hasMaxMagicPoints && currentMagicPoints <= 0)) {
       return "unconscious";
     } else {
-      return actor.items.reduce((acc: ActorHealthState, item: RqgItem) => {
-        if (item.type !== ItemTypeEnum.HitLocation) {
+      return actor.items.reduce((acc: ActorHealthState, item) => {
+        if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
           return acc;
         } else {
           const actorHealthImpact = item.system.actorHealthImpact;

@@ -1,6 +1,9 @@
-import { defaultResource, Resource } from "../shared/resource";
+import { Resource } from "../shared/resource";
 import { ItemTypeEnum } from "./itemTypes";
-import { ActorHealthState } from "../actor-data/attributes";
+import type { ActorHealthState } from "../actor-data/attributes";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type HitLocationItem = RqgItem & { system: HitLocationDataPropertiesData };
 
 // TODO differentiate between severed & maimed? slash / crush or impale
 export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
@@ -44,24 +47,24 @@ export interface HitLocationDataPropertiesData extends HitLocationDataSourceData
 }
 
 export interface HitLocationDataSource {
-  type: ItemTypeEnum.HitLocation;
+  type: typeof ItemTypeEnum.HitLocation;
   system: HitLocationDataSourceData;
 }
 
 export interface HitLocationDataProperties {
-  type: ItemTypeEnum.HitLocation;
+  type: typeof ItemTypeEnum.HitLocation;
   system: HitLocationDataPropertiesData;
 }
 
-export const defaultHitLocationData: HitLocationDataSourceData = {
-  dieFrom: 0,
-  dieTo: 0,
-  hitPoints: defaultResource,
-  baseHpDelta: 0,
-  naturalAp: 0,
-  wounds: [],
-  hitLocationHealthState: "healthy",
-  actorHealthImpact: "healthy",
-  hitLocationType: HitLocationTypesEnum.Limb,
-  connectedTo: "",
-};
+// export const defaultHitLocationData: HitLocationDataSourceData = {
+//   dieFrom: 0,
+//   dieTo: 0,
+//   hitPoints: defaultResource,
+//   baseHpDelta: 0,
+//   naturalAp: 0,
+//   wounds: [],
+//   hitLocationHealthState: "healthy",
+//   actorHealthImpact: "healthy",
+//   hitLocationType: HitLocationTypesEnum.Limb,
+//   connectedTo: "",
+// };

@@ -1,14 +1,13 @@
-import { getGame, localize } from "../system/util";
+import { localize } from "../system/util";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 export async function migrateWorldDialog(systemVersion: string): Promise<void> {
   return await new Promise((resolve) => {
     const title = localize("RQG.Migration.Dialog.windowTitle");
-    // @ts-expect-error renderTemplate
     foundry.applications.handlebars
       .renderTemplate(templatePaths.dialogMigrateWorld, {
-        worldVersion: getGame().settings.get(systemId, "worldMigrationVersion"),
+        worldVersion: game.settings?.get(systemId, "worldMigrationVersion"),
         systemVersion: systemVersion,
       })
       .then((contentHtml: string) => {
@@ -20,8 +19,7 @@ export async function migrateWorldDialog(systemVersion: string): Promise<void> {
             buttons: {
               submit: {
                 label: localize("RQG.Migration.Dialog.btnMigrate", {
-                  // @ts-expect-error title
-                  worldTitle: getGame().world.title,
+                  worldTitle: game.world?.title ?? "",
                   systemVersion: systemVersion,
                 }),
                 icon: '<i class="fas fa-wrench"></i>',

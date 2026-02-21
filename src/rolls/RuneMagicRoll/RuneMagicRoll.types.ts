@@ -1,16 +1,14 @@
-import EvaluationOptions = RollTerm.EvaluationOptions;
-import type { ChatSpeakerDataProperties } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/chatSpeakerData";
-import type { RqgItem } from "../../items/rqgItem";
-import type { RollMode } from "../../chat/chatMessage.types";
+import type { RuneItem } from "@item-model/runeData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 export type Modifier = { description: string; value: number };
 
-export type RuneMagicRollOptions = Partial<EvaluationOptions> & {
-  usedRune: RqgItem;
-  runeMagicItem: RqgItem;
+export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.EvaluationOptions> & {
+  usedRune: RuneItem;
+  runeMagicItem: RuneMagicItem;
   levelUsed: number;
   magicPointBoost: number;
   modifiers: Modifier[];
-  speaker: ChatSpeakerDataProperties;
-  rollMode?: RollMode;
+  speaker: ChatMessage.SpeakerData;
+  rollMode?: CONST.DICE_ROLL_MODES;
 };

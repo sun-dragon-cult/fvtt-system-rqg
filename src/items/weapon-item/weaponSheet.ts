@@ -1,12 +1,12 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { SkillCategoryEnum } from "../../data-model/item-data/skillData";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
 import { RqgItem } from "../rqgItem";
-import { EquippedStatus, equippedStatusOptions } from "../../data-model/item-data/IPhysicalItem";
+import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getDomDataset, getGameUser, localize } from "../../system/util";
-import { DamageType, damageTypeOptions } from "../../data-model/item-data/weaponData";
+import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
+import { type DamageType, damageTypeOptions, type WeaponItem } from "@item-model/weaponData.ts";
 import { systemId } from "../../system/config";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { RqidLink } from "../../data-model/shared/rqidLink";
@@ -22,8 +22,12 @@ interface WeaponSheetData {
   enrichedGmNotes: string;
 }
 
-export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData | ItemSheet.Data> {
-  static get defaultOptions(): ItemSheet.Options {
+export class WeaponSheet extends RqgItemSheet {
+  override get document(): WeaponItem {
+    return super.document as WeaponItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Weapon],
       template: templatePaths.itemWeaponSheet,
@@ -39,8 +43,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     });
   }
 
-  async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<WeaponSheetData & EffectsItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     if (isNaN(Number(system.quantity))) {
@@ -52,16 +55,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEmbedded: this.document.isEmbedded,
       isEditable: this.isEditable,
       system: system,
       effects: this.document.effects,
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
@@ -83,13 +84,12 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
   }
 
   private getOwnedProjectileOptions(): SelectOptionData<string>[] {
-    if (this.item.isOwned) {
+    if (this.document.isOwned) {
       return [
         { value: "", label: "---" },
         ...this.actor!.getEmbeddedCollection("Item")
           .filter(
-            // @ts-expect-error system
-            (i) => i.type === ItemTypeEnum.Weapon && i.system.isProjectile,
+            (i) => isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) && i.system.isProjectile,
           )
           .map((i) => ({ value: i.id ?? "", label: i.name ?? "" })),
       ];
@@ -97,7 +97,7 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
     return [];
   }
 
-  protected async _updateObject(event: Event, formData: any): Promise<any> {
+  protected override async _updateObject(event: Event, formData: any): Promise<any> {
     formData["system.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "oneHand",
       formData,
@@ -140,14 +140,14 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
       formData["system.quantity"] = 1;
     }
 
-    // Non projectile weapons should not decrease any projectile quantity (remove link)
+    // Non-projectile weapons should not decrease any projectile quantity (remove link)
     if (!formData["system.isProjectileWeapon"] && !formData["system.isThrownWeapon"]) {
       formData["system.projectileId"] = "";
     }
 
     // Thrown weapons should decrease quantity of themselves
     if (formData["system.isThrownWeapon"]) {
-      formData["system.projectileId"] = this.item.id;
+      formData["system.projectileId"] = this.document.id;
     }
 
     if (formData["system.hitPointLocation"]) {
@@ -207,13 +207,12 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
    * Update the weapon skill link and if the weapon is embedded in an actor
    * embed the dropped skill items if the actor does not yet have it.
    */
-  async _onDropItem(
+  override async _onDropItem(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
-    // @ts-expect-error fromDropData
-    const droppedItem = await Item.implementation.fromDropData(data);
+    const droppedItem = (await Item.implementation.fromDropData(data)) as SkillItem;
     const usage = getDomDataset(event, "dropzone");
 
     if (!isAllowedDocumentType(droppedItem, allowedDropDocumentTypes)) {
@@ -225,23 +224,35 @@ export class WeaponSheet extends RqgItemSheet<ItemSheet.Options, WeaponSheetData
         SkillCategoryEnum.MissileWeapons,
         SkillCategoryEnum.NaturalWeapons,
         SkillCategoryEnum.Shields,
-      ].includes(droppedItem.system.category)
+      ].includes(droppedItem?.system?.category)
     ) {
       const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn(`RQG | ${msg}`);
       return false;
     }
-    const droppedItemRqid = droppedItem.getFlag(systemId, documentRqidFlags)?.id;
+    const droppedItemRqid = droppedItem?.getFlag(systemId, documentRqidFlags)?.id;
+    if (!droppedItemRqid) {
+      const msg = "No Rqid on dropped skill"; // TODO localize
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return false;
+    }
+
+    if (!usage || !["oneHand", "twoHand", "offHand", "missile"].includes(usage)) {
+      const msg = localize("RQG.Item.Weapon.WrongDropzone");
+      ui.notifications?.warn(msg, { console: false });
+      console.error(`RQG | ${msg}`);
+      return false;
+    }
     const actorItemWithSameRqid = this.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
 
     if (!actorItemWithSameRqid) {
       await this.actor?.createEmbeddedDocuments("Item", [droppedItem]);
     }
-    await this.item.update({
+    await this.document.update({
       [`system.usage.${usage}.skillRqidLink`]: new RqidLink(droppedItemRqid, droppedItem.name),
     });
-    return [this.item];
+    return [this.document];
   }
 }

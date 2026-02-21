@@ -1,5 +1,5 @@
-import type { RollHeaderData } from "../app-parts/rollHeader.types";
-import type { RollFooterData } from "../app-parts/rollFooter.types";
+import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
+import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
 
 export type SpiritMagicRollDialogContext = RollHeaderData &
   RollFooterData & {

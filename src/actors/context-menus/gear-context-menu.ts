@@ -8,17 +8,18 @@ import {
   RqgError,
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 
-export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.ContextMenu.SetAsNotCarried"),
     icon: contextMenuRunes.SetNotCarried,
     condition: () => true,
     callback: async (el): Promise<void> => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      await item?.update({ "system.equippedStatus": "notCarried" }, {});
+      const item = actor.items.get(itemId) as GearItem | undefined;
+      await item?.update({ system: { equippedStatus: "notCarried" } }, {});
     },
   },
   {
@@ -27,8 +28,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: () => true,
     callback: async (el): Promise<void> => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      await item?.update({ "system.equippedStatus": "carried" }, {});
+      const item = actor.items.get(itemId) as GearItem | undefined;
+      await item?.update({ system: { equippedStatus: "carried" } }, {});
     },
   },
   {
@@ -37,8 +38,8 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: () => true,
     callback: async (el): Promise<void> => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
-      await item?.update({ "system.equippedStatus": "equipped" }, {});
+      const item = actor.items.get(itemId) as GearItem | undefined;
+      await item?.update({ system: { equippedStatus: "equipped" } }, {});
     },
   },
   {
@@ -46,7 +47,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     icon: contextMenuRunes.Split,
     condition: (el: JQuery): boolean => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
+      const item = actor.items.get(itemId) as GearItem | undefined;
       return (
         hasOwnProperty(item?.system, "physicalItemType") &&
         item?.system.physicalItemType !== "unique"
@@ -64,7 +65,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: () => true,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId);
+      const item = actor.items.get(itemId) as GearItem | undefined;
       if (!item) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditGearError", {
           itemId: itemId,
@@ -84,7 +85,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: () => true,
     callback: (el: JQuery): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      RqgActorSheet.confirmItemDelete(actor, itemId);
+      void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
   },
 ];

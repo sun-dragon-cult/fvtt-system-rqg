@@ -8,15 +8,20 @@ export const equippedStatusOptions: SelectOptionData<EquippedStatus>[] = equippe
   }),
 );
 
-export const physicalItemTypes = ["unique", "currency", "consumable"];
-export type PhysicalItemType = (typeof physicalItemTypes)[number];
+export const physicalItemTypes = [
+  "gear", // ItemTypeEnum.Gear,
+  "armor", // ItemTypeEnum.Armor,
+  "weapon", // ItemTypeEnum.Weapon,
+] as const;
 
-export const physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[] = physicalItemTypes.map(
-  (type) => ({
+export const physicalItemProperties = ["unique", "currency", "consumable"];
+export type PhysicalItemType = (typeof physicalItemProperties)[number];
+
+export const physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[] =
+  physicalItemProperties.map((type) => ({
     value: type,
     label: "RQG.Item.Gear.PhysicalItemTypeEnum." + type,
-  }),
-);
+  }));
 
 interface Price {
   real: number;

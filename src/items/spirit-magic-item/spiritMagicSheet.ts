@@ -1,15 +1,10 @@
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import { getGameUser } from "../../system/util";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import {
-  SpellConcentrationEnum,
-  SpellDurationEnum,
-  SpellRangeEnum,
-} from "../../data-model/item-data/spell";
+import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
-import { RqgItem } from "../rqgItem";
-import { EffectsItemSheetData } from "../shared/sheetInterfaces";
+import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 
 interface SpiritMagicSheetData {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];
@@ -17,11 +12,12 @@ interface SpiritMagicSheetData {
   concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
 }
 
-export class SpiritMagicSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  SpiritMagicSheetData | ItemSheet.Data
-> {
-  static get defaultOptions(): ItemSheet.Options {
+export class SpiritMagicSheet extends RqgItemSheet {
+  override get document(): SpiritMagicItem {
+    return super.document as SpiritMagicItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.SpiritMagic],
       template: templatePaths.itemSpiritMagicSheet,
@@ -37,8 +33,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
     });
   }
 
-  getData(): SpiritMagicSheetData & EffectsItemSheetData {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override getData(): SpiritMagicSheetData & EffectsItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -47,7 +42,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
@@ -67,7 +62,7 @@ export class SpiritMagicSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<RqgItem | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     // Set a concentration value if there isn't one already
     if (formData["system.duration"] === SpellDurationEnum.Temporal) {
       formData["system.concentration"] = formData["system.concentration"]

@@ -9,12 +9,7 @@ import { RQG_CONFIG, systemId } from "./system/config";
 import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrateWorld";
 import { RqgCombatTracker } from "./combat/RqgCombatTracker";
 import { RqgToken } from "./combat/rqgToken";
-import {
-  cacheAvailableHitLocations,
-  cacheAvailableRunes,
-  getGame,
-  getGameUser,
-} from "./system/util";
+import { cacheAvailableHitLocations, cacheAvailableRunes } from "./system/util";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
 import { Rqid } from "./system/api/rqidApi.js";
@@ -24,7 +19,7 @@ import { RqgJournalEntry } from "./journals/rqgJournalEntry";
 import { getTokenStatusEffects } from "./system/tokenStatusEffects";
 import { RqgSettings } from "./foundryUi/RqgSettings";
 import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqidBatchEditor";
-import { ItemTypeEnum } from "./data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { initSockets } from "./sockets/RqgSocket";
 import { AbilityRoll } from "./rolls/AbilityRoll/AbilityRoll";
 import { CharacteristicRoll } from "./rolls/CharacteristicRoll/CharacteristicRoll";
@@ -75,12 +70,11 @@ Hooks.once("init", async () => {
 
   CONFIG.statusEffects = getTokenStatusEffects();
 
-  // @ts-expect-error fontDefinitions
   CONFIG.fontDefinitions["Norse"] = {
     editor: true,
     fonts: [
-      { urls: ["systems/rqg/assets/fonts/Norse-KaWl.otf"] },
-      { urls: ["systems/rqg/assets/fonts/NorseBold-2Kge.otf"], weight: "bold" },
+      { urls: ["systems/rqg/fonts/Norse-KaWl.otf"] },
+      { urls: ["systems/rqg/fonts/NorseBold-2Kge.otf"], weight: "bold" },
     ],
   };
 
@@ -112,13 +106,11 @@ Hooks.once("init", async () => {
   RqgCombatant.init();
   initSockets();
 
-  // @ts-expect-error applications
-  const sheetsConfig = foundry.applications.apps.DocumentSheetConfig;
-  // @ts-expect-error applications
+  const DocumentSheetConfig = foundry.applications.apps.DocumentSheetConfig;
   const sheets = foundry.applications.sheets;
 
-  sheetsConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
-  sheetsConfig.registerSheet(RollTable, systemId, RqgRollTableSheet, {
+  DocumentSheetConfig.unregisterSheet(RollTable, "core", sheets.RollTableSheet);
+  DocumentSheetConfig.registerSheet(RollTable, systemId, RqgRollTableSheet, {
     label: "RQG.SheetName.RollTable",
     makeDefault: true,
   });
@@ -128,20 +120,22 @@ Hooks.once("init", async () => {
   registerRqgSystemSettings();
 
   // Define the system.api
-  (getGame().system as any).api = {
+  (game.system as any).api = {
     migrate: applyDefaultWorldMigrations,
     rqid: Rqid,
     /**
      * Show an application that lets you set rqid for items.
      */
     batchSetRqids: async (...itemTypes: string[]): Promise<void> => {
-      const itemTypeEnums = itemTypes.length
-        ? itemTypes.map((it) => it as ItemTypeEnum)
-        : [
-            ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-            ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-            ItemTypeEnum.Rune, // Future needs
-          ];
+      const itemTypeEnums = (
+        itemTypes.length
+          ? itemTypes.map((it) => it as ItemTypeEnum)
+          : [
+              ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+              ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+              ItemTypeEnum.Rune, // Future needs
+            ]
+      ) as Item.SubType[];
       await RqidBatchEditor.factory(...itemTypeEnums);
     },
     names: nameGeneration,
@@ -158,10 +152,8 @@ Hooks.once("ready", async () => {
 
   // Verify that at least one wiki module is activated
   if (
-    getGameUser().isGM &&
-    ![...getGame().modules.entries()].some(
-      ([name, mod]) => /wiki-[a-z]{2}-rqg/.test(name) && mod.active,
-    )
+    game.user?.isGM &&
+    ![...game.modules.entries()].some(([name, mod]) => /wiki-[a-z]{2}-rqg/.test(name) && mod.active)
   ) {
     await Rqid.renderRqidDocument("je..quick-start");
   }

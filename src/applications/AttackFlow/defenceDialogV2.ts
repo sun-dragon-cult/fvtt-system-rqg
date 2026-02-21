@@ -4,29 +4,31 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions, Modifier } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import {
   activateChatTab,
-  assertItemType,
+  assertDocumentSubType,
   getActorLinkDecoration,
-  getGame,
-  getGameUser,
+  isButton,
+  isDocumentSubType,
   localize,
   requireValue,
   RqgError,
+  safeFromJSON,
 } from "../../system/util";
-import type { RqgActor } from "../../actors/rqgActor";
-import type { RqgItem } from "../../items/rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import type {
   DefenceDialogContext,
   DefenceDialogFormData,
   DefenceType,
-} from "./DefenceDialogData.types";
+} from "./DefenceDialogData.types.ts";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import {
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type {
   CombatManeuver,
   DamageType,
   Usage,
   UsageType,
-} from "../../data-model/item-data/weaponData";
+  WeaponItem,
+} from "@item-model/weaponData.ts";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import {
   combatOutcome,
@@ -37,12 +39,18 @@ import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.def
 import { updateChatMessage } from "../../sockets/SocketableRequests";
 import { WeaponDesignation } from "../../system/combatCalculations.defs";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
-import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
+import type { SkillItem } from "@item-model/skillData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-// @ts-expect-error application v2
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
+export class DefenceDialogV2 extends HandlebarsApplicationMixin(
+  ApplicationV2<DefenceDialogContext>,
+) {
+  override get element(): HTMLFormElement {
+    return super.element as HTMLFormElement;
+  }
+
   private static augmentOptions: SelectOptionData<number>[] = [
     { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
     { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
@@ -63,17 +71,17 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   private readonly attackChatMessage: RqgChatMessage;
 
-  constructor(options: { chatMessageId: string }) {
+  constructor(
+    chatMessageId: string,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
     super(options);
-    const attackChatMessage = getGame().messages?.get(options.chatMessageId ?? "") as
-      | RqgChatMessage
-      | undefined;
+    const attackChatMessage = game.messages?.get(chatMessageId ?? "") as RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
       const msg = "No attackChatMessage to defend";
       ui.notifications?.warn(msg);
       setTimeout(() => {
-        // @ts-expect-error close
         void this.close();
       }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
       throw new RqgError(msg);
@@ -81,7 +89,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     this.attackChatMessage = attackChatMessage;
   }
 
-  static DEFAULT_OPTIONS = {
+  static override DEFAULT_OPTIONS = {
     id: "combat-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "defence-dialog"],
@@ -91,8 +99,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       closeOnSubmit: true,
     },
     position: {
-      width: "auto",
-      height: "auto",
+      width: "auto" as const,
+      height: "auto" as const,
       left: 100,
       top: 10,
     },
@@ -104,46 +112,52 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     },
   };
 
-  static PARTS = {
+  static override PARTS = {
     header: { template: templatePaths.combatRollHeader },
     form: { template: templatePaths.defenceDialogV2, scrollable: [""] },
     footer: { template: templatePaths.defenceFooter },
   };
 
-  async _prepareContext(): Promise<DefenceDialogContext> {
-    const formData: DefenceDialogFormData =
-      // @ts-expect-error object
-      (this.element && new foundry.applications.ux.FormDataExtended(this.element, {}).object) ?? {};
+  override async _prepareContext(): Promise<DefenceDialogContext> {
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
+      {}) as DefenceDialogFormData;
 
     const defenderOptions = DefenceDialogV2.getDefenderOptions(this.attackChatMessage);
     if (Object.keys(defenderOptions).length === 0) {
       const msg = localize("RQG.Dialog.Defence.NoTokenToDefendWith");
       ui.notifications?.warn(msg);
-      // @ts-expect-error close
       this.close();
     }
 
     const attackingTokenOrActorUuid = this.attackChatMessage?.system.attackingTokenOrActorUuid;
-    // @ts-expect-error fromUuidSync
     const attackingTokenOrActor = fromUuidSync(attackingTokenOrActorUuid ?? "") as
       | TokenDocument
       | RqgActor
       | undefined;
 
-    const attackRoll = AbilityRoll.fromData(this.attackChatMessage?.system.attackRoll as any);
+    const attackRollData = this.attackChatMessage?.system.attackRoll;
+    const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
     if (!attackRoll) {
       const msg = "No attack roll present - cannot defend";
       ui.notifications?.warn(msg);
       throw new RqgError(msg);
     }
 
-    formData.defendingTokenOrActorUuid ??=
+    const defendingUuid =
+      (formData.defendingTokenOrActorUuid as string | undefined) ??
       this.attackChatMessage.system.defendingTokenOrActorUuid ??
-      Object.values(defenderOptions)[0].value;
+      Object.values(defenderOptions)[0]?.value;
 
-    const defendingTokenOrActor = (await fromUuid(
-      formData.defendingTokenOrActorUuid,
-    )) as TokenDocument | null;
+    if (!defendingUuid) {
+      const msg = "No defending token or actor UUID available";
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+
+    formData.defendingTokenOrActorUuid = defendingUuid;
+
+    const defendingTokenOrActor = (await fromUuid(defendingUuid)) as TokenDocument | null;
     const defendingActor =
       (defendingTokenOrActor instanceof TokenDocument
         ? defendingTokenOrActor?.actor
@@ -159,9 +173,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     formData.otherModifierDescription ??= localize("RQG.Dialog.Defence.OtherModifier");
     formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid;
 
-    const parryingWeapon = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
+    const parryingWeaponItem = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
       | RqgItem
       | undefined;
+    const parryingWeapon = isDocumentSubType<WeaponItem>(parryingWeaponItem, ItemTypeEnum.Weapon)
+      ? parryingWeaponItem
+      : undefined;
 
     const defenceOptions = DefenceDialogV2.getDefenceOptions(defendingActor, parryingWeapon?.uuid);
     if (
@@ -182,10 +199,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       !formData.parryingWeaponUsage ||
       !parryingWeaponUsageOptionKeys.includes(formData.parryingWeaponUsage)
     ) {
-      formData.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0] as UsageType; // If nothing is selected, select the first option
+      formData.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0]; // If nothing is selected, select the first option
     }
-    const parrySkillRqid =
-      parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid;
+
+    const parrySkillRqid = formData.parryingWeaponUsage
+      ? parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid
+      : undefined;
 
     const { defenceName, defenceChance } = DefenceDialogV2.getDefenceNameAndChance(
       formData.defence,
@@ -255,20 +274,22 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     };
   }
 
-  _onChangeForm(): void {
-    // @ts-expect-error render
+  override _onChangeForm(): void {
     this.render();
   }
 
   private static async onSubmit(
-    event: SubmitEvent,
+    event: SubmitEvent | Event,
     form: HTMLFormElement,
-    formData: any,
+    formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
+    if (!(event instanceof SubmitEvent)) {
+      return; // Should only be called on form submits
+    }
     const submitter = event.submitter;
-    const formDataObject: DefenceDialogFormData = formData.object;
+    const formDataObject = formData.object as DefenceDialogFormData;
 
-    if (!(submitter instanceof HTMLButtonElement)) {
+    if (!isButton(submitter)) {
       ui.notifications?.warn("Button not working - programming error");
       return;
     }
@@ -289,6 +310,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const selectedParryingWeapon = (await fromUuid(
       formDataObject.parryingWeaponUuid ?? "",
     )) as RqgItem | null;
+    if (selectedParryingWeapon) {
+      assertDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon);
+    }
     const parrySkillRqid =
       selectedParryingWeapon?.system.usage[formDataObject.parryingWeaponUsage ?? "oneHand"]
         ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
@@ -307,10 +331,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         ? defendingTokenDocumentOrActor?.actor
         : defendingTokenDocumentOrActor) ?? undefined;
 
+    if (defendingActor) {
+      assertDocumentSubType<CharacterActor>(defendingActor, ActorTypeEnum.Character);
+    }
     // Update the chat with how the defence was done
 
-    // @ts-expect-error flavor
-    const currentFlavor: string = this.attackChatMessage.flavor;
+    const currentFlavor = attackChatMessage.flavor;
 
     const defenderName = defendingTokenDocumentOrActor?.name;
 
@@ -356,8 +382,17 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + formDataObject.parryingWeaponUsage)}</span>`
         : `${defenceHtml} ${defenceName}`;
 
+    if (defendSkillItem) {
+      assertDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill);
+      if (defendSkillItem.system.chance == null) {
+        ui.notifications?.warn(
+          `Defence skill ${defendSkillItem.name} has no chance value, using 0%.`,
+        );
+        return;
+      }
+    }
     const defenceRollOptions: AbilityRollOptions = {
-      naturalSkill: defendSkillItem?.system.chance,
+      naturalSkill: defendSkillItem?.system.chance ?? 0,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -392,10 +427,15 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       }),
     };
 
-    const attackRoll = AbilityRoll.fromData(attackChatMessage.system.attackRoll);
+    // JSONField can be either string or object depending on when it's accessed
+    const attackRollData = attackChatMessage.system.attackRoll;
+    const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
 
-    await attackRoll.evaluate();
-    if (attackRoll.successLevel == null) {
+    if (attackRoll && !attackRoll.isEvaluated) {
+      // Don't reevaluate in case the attack roll is already evaluated.
+      await attackRoll.evaluate();
+    }
+    if (attackRoll?.successLevel == null) {
       const msg = "Didn't find an attackRoll in the chatmessage, aborting";
       ui.notifications?.error(msg);
       console.error(`RQG | ${msg}`);
@@ -407,7 +447,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         ? new AbilityRoll(undefined, {}, defenceRollOptions)
         : undefined;
 
-    await defenceRoll?.evaluate();
+    if (defenceRoll && !defenceRoll.isEvaluated) {
+      await defenceRoll.evaluate();
+    }
     if (formDataObject.defence !== "ignore" && defenceRoll?.successLevel == null) {
       throw new RqgError("Evaluated DefenceRoll didn't give successLevel");
     }
@@ -415,7 +457,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const attackingWeapon = (await fromUuid(
       attackChatMessage?.system.attackWeaponUuid,
     )) as RqgItem | null;
-    assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
+    assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
 
     const attackWeaponUsageType = attackChatMessage?.system.attackWeaponUsage;
     requireValue(attackWeaponUsageType, "No attacking weapon usage found in attack chat message");
@@ -423,12 +465,16 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const parryWeaponUsageType = formDataObject.parryingWeaponUsage;
     const attackDamageBonus = attackChatMessage?.system.attackDamageBonus ?? "";
     const attackExtraDamage = attackChatMessage?.system.attackExtraDamage ?? "";
-    const defendDamageBonus = defendingActor?.system.attributes.damageBonus ?? "";
-    const attackingWeaponDamageType: DamageType =
-      attackChatMessage?.system.attackCombatManeuver.damageType ?? "";
-    const parryingWeaponDamageType: DamageType = selectedParryingWeapon?.system.usage[
-      parryWeaponUsageType ?? ""
-    ]?.combatManeuvers.find((cm: CombatManeuver) => cm.damageType !== "parry")?.damageType;
+    const defendDamageBonus = defendingActor?.system?.attributes?.damageBonus ?? "";
+    const attackingWeaponDamageType = (attackChatMessage?.system.attackCombatManeuver.damageType ??
+      "") as DamageType;
+    const parryingWeaponDamageType = (
+      parryWeaponUsageType
+        ? selectedParryingWeapon?.system.usage[parryWeaponUsageType]?.combatManeuvers.find(
+            (cm: CombatManeuver) => cm.damageType !== "parry",
+          )?.damageType
+        : undefined
+    ) as DamageType | undefined;
 
     const {
       damageRoll,
@@ -450,7 +496,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       selectedParryingWeapon,
       parryWeaponUsageType,
       attackingWeaponDamageType,
-      parryingWeaponDamageType,
+      parryingWeaponDamageType ?? "parry",
     );
 
     const outcomeDescription = getBasicOutcomeDescription(
@@ -463,11 +509,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
     // TODO Introduce ability for GM to fudge roll here
 
-    const hitLocationRoll = attackChatMessage?.system.hitLocationRoll;
-    requireValue(hitLocationRoll, "No Hit Location Roll found in chat message");
+    const hitLocationRollJson = attackChatMessage?.system.hitLocationRoll;
+    requireValue(hitLocationRollJson, "No Hit Location Roll found in chat message");
 
-    (hitLocationRoll.options as HitLocationRollOptions).hitLocationNames =
-      HitLocationRoll.tokenToHitLocationNames(defendingTokenDocumentOrActor);
+    (hitLocationRollJson as any).options.hitLocationNames = HitLocationRoll.tokenToHitLocationNames(
+      defendingTokenDocumentOrActor,
+    );
 
     const damageDegree = getDamageDegree(
       formDataObject.defence ?? "ignore", // TODO correct?
@@ -491,12 +538,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       weaponDamage: weaponDamage,
       weaponDoingDamage: weaponDoingDamage,
       defenderHitLocationDamage: defenderHitLocationDamage,
-      damageRoll: damageRoll,
+      damageRoll: damageRoll?.toJSON(),
       ignoreDefenderAp: ignoreDefenderAp,
       actorDamagedApplied: damageDegree === "none",
       weaponDamageApplied: damageDegree === "none",
       hitLocationRoll: damageRoll // If there is a damageRoll there should also be a hitLocationRoll
-        ? hitLocationRoll
+        ? hitLocationRollJson
         : null,
     };
 
@@ -509,33 +556,21 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
       { overwrite: true },
     );
 
-    // @ts-expect-error applications
     messageData.content = await foundry.applications.handlebars.renderTemplate(
       templatePaths.attackChatMessage,
-      // @ts-expect-error system
       messageData.system,
     );
 
-    // @ts-expect-error dice3d
-    if (game.dice3d) {
+    if (game.dice3d && attackRoll && defenceRoll) {
       // Don't try to roll for ignore defence
       if (formDataObject.defence !== "ignore") {
         // Wait a tad with the defence roll to separate the animations slightly
         setTimeout(() => {
-          // @ts-expect-error dice3d
-          void game.dice3d.showForRoll(defenceRoll, getGameUser(), true, null, false);
+          void game.dice3d?.showForRoll(defenceRoll, game.user, true, null, false);
         }, 300);
       }
 
-      // @ts-expect-error dice3d
-      await game.dice3d.showForRoll(
-        attackRoll,
-        // @ts-expect-error author
-        attackChatMessage.author,
-        true,
-        null,
-        false,
-      );
+      await game.dice3d.showForRoll(attackRoll, attackChatMessage.author, true, null, false);
     }
 
     activateChatTab();
@@ -543,13 +578,20 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     const attackWeapon = (await fromUuid(attackChatMessage.system.attackWeaponUuid)) as
       | RqgItem
       | undefined;
-    const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage;
-    const attackSkill = attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
-      attackWeapon.system.usage[attackWeaponUsage].skillRqidLink.rqid,
-    );
+    if (attackWeapon) {
+      assertDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon);
+    }
+    if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
+      const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage;
+      const attackSkill = attackWeaponUsage
+        ? attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
+            attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid,
+          )
+        : undefined;
 
-    await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
-    await attackSkill?.checkExperience?.(attackRoll.successLevel);
+      await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
+      await attackSkill?.checkExperience?.(attackRoll.successLevel);
+    }
   }
 
   private static getDefenceNameAndChance(
@@ -558,17 +600,21 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     parrySkillRqid: string | undefined,
   ): { defenceName: string; defenceChance: number } {
     if (defence === "parry") {
-      const parryWeapon = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid);
+      const parrySkill = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid) as
+        | SkillItem
+        | undefined;
       return {
-        defenceName: parryWeapon?.name ?? "",
-        defenceChance: parryWeapon?.system.chance ?? 0,
+        defenceName: parrySkill?.name ?? "",
+        defenceChance: parrySkill?.system.chance ?? 0,
       };
     }
     if (defence === "dodge") {
-      const dodgeSkill = defendingActor?.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge);
+      const dodgeSkill = defendingActor?.getBestEmbeddedDocumentByRqid(
+        CONFIG.RQG.skillRqid.dodge,
+      ) as SkillItem | undefined;
       return {
         defenceName: dodgeSkill?.name ?? "No dodge skill found!",
-        defenceChance: dodgeSkill?.system.chance,
+        defenceChance: dodgeSkill?.system.chance ?? 0,
       };
     }
 
@@ -596,7 +642,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     // case 1 - defendingTokenOrActorUuid is set (attacker has set a target)
     const initialDefendingTokenUuid = attackChatMessage.system.defendingTokenOrActorUuid;
     if (initialDefendingTokenUuid) {
-      // @ts-expect-error fromUuidSync
       const defendingToken = fromUuidSync(initialDefendingTokenUuid) as TokenDocument | null;
       return [
         {
@@ -610,26 +655,24 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     // case 2 - show a list of token the user owns and are present on the active scene,
     //  and include the owned actors that do not have tokens.
     const ownedTokens =
-      getGame()
-        .scenes?.current?.tokens.filter((t) => t.isOwner)
+      game.scenes?.current?.tokens
+        .filter((t) => t.isOwner)
         ?.map((tokenDocument) => ({
           value: tokenDocument?.uuid ?? "",
           label: (tokenDocument?.name ?? "") + getActorLinkDecoration(tokenDocument.actor),
           group: localize("RQG.Dialog.Common.Tokens"),
         })) ?? [];
 
-    const allowCombatWithoutToken = getGame().settings.get(systemId, "allowCombatWithoutToken");
+    const allowCombatWithoutToken = game.settings?.get(systemId, "allowCombatWithoutToken");
     let ownedActorsWithoutTokens: any[] = [];
 
     if (allowCombatWithoutToken) {
       const ownedTokenActorIds =
-        getGame()
-          .scenes?.current?.tokens.filter((t) => t.isOwner)
-          ?.map((t) => t.actor?.id) ?? [];
+        game.scenes?.current?.tokens.filter((t) => t.isOwner)?.map((t) => t.actor?.id) ?? [];
 
       ownedActorsWithoutTokens =
-        getGame()
-          .actors?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
+        game.actors
+          ?.filter((a) => a.isOwner && !ownedTokenActorIds.includes(a.id))
           .map((actor) => ({
             value: actor.uuid ?? "",
             label: (actor.name ?? "") + getActorLinkDecoration(actor),
@@ -665,16 +708,16 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     // get all weapons that can be used for parry
     const parryingWeapons =
       defendingActor?.items.filter(
-        (i: RqgItem) =>
-          i.type === ItemTypeEnum.Weapon &&
-          i.system.equippedStatus === "equipped" &&
-          (DefenceDialogV2.usageHasParryManeuver(i.system.usage.oneHand) ||
-            DefenceDialogV2.usageHasParryManeuver(i.system.usage.offHand) ||
-            DefenceDialogV2.usageHasParryManeuver(i.system.usage.twoHand) ||
-            DefenceDialogV2.usageHasParryManeuver(i.system.usage.missile)),
+        (weapon) =>
+          isDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon) &&
+          weapon.system.equippedStatus === "equipped" &&
+          (DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.oneHand) ||
+            DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.offHand) ||
+            DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.twoHand) ||
+            DefenceDialogV2.usageHasParryManeuver(weapon.system.usage.missile)),
       ) ?? [];
-    const sortedWeapons = parryingWeapons.sort((a: any, b: any) => a.sort - b.sort);
-    return sortedWeapons.map((weapon: RqgItem) => ({
+    const sortedWeapons = parryingWeapons.sort((a, b) => a.sort - b.sort);
+    return sortedWeapons.map((weapon) => ({
       value: weapon.uuid ?? "",
       label: weapon.name ?? "",
     }));
@@ -685,7 +728,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(ApplicationV2) {
   ): SelectOptionData<UsageType>[] {
     const usages: SelectOptionData<UsageType>[] = [];
 
-    if (!parryingWeapon) {
+    if (!isDocumentSubType<WeaponItem>(parryingWeapon, ItemTypeEnum.Weapon)) {
       const msg = "No parrying weapon selected";
       console.error("RQG | ", msg);
       return usages;

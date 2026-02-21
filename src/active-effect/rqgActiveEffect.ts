@@ -1,30 +1,42 @@
-import { formatListByWorldLanguage, localize, logMisconfiguration } from "../system/util";
+import {
+  formatListByWorldLanguage,
+  isDocumentSubType,
+  localize,
+  logMisconfiguration,
+} from "../system/util";
 import { Rqid } from "../system/api/rqidApi";
-import type { EffectChangeData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/effectChangeData";
-import type { RqgActor } from "../actors/rqgActor";
 
-export class RqgActiveEffect extends ActiveEffect {
+import type { AnyMutableObject } from "fvtt-types/utils";
+import Document = foundry.abstract.Document;
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
+
+export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   static init() {
-    CONFIG.ActiveEffect.documentClass = RqgActiveEffect;
-    // @ts-expect-error legacyTransferral
+    CONFIG.ActiveEffect.documentClass = RqgActiveEffect as any;
     CONFIG.ActiveEffect.legacyTransferral = false;
   }
-
-  declare changes: any; // type workaround
 
   /**
    * CUSTOM application mode will apply an ADD effect to a specified item.
    * The format of the key should be "<rqid>:<propertyPath>" like "i.skill.dodge:system.baseChance"
    * The effect will try to find an embedded item with the specified rqid.
    */
-  _applyCustom(actor: RqgActor, change: EffectChangeData): void {
+  override _applyCustom(
+    actor: Actor.Implementation,
+    change: ActiveEffect.ChangeData,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    currentP: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    deltaP: unknown,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    changes: AnyMutableObject,
+  ): void {
     const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
         actor.appliedEffects.map((e) => {
           try {
-            // @ts-expect-error fromUuidSync
-            return fromUuidSync(e.origin)?.name ?? "❓no name";
+            return (fromUuidSync(e.origin) as Document.Any)?.name ?? "❓no name";
           } catch {
             return "❓embedded item in compendium"; // origin was in a compendium and could not be read synchronously
           }
@@ -32,20 +44,21 @@ export class RqgActiveEffect extends ActiveEffect {
         "disjunction",
       );
       const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG | ", msg);
     }
 
-    const item = actor.getBestEmbeddedDocumentByRqid(rqid);
+    const item = isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)
+      ? actor.getBestEmbeddedDocumentByRqid(rqid)
+      : undefined;
+
     if (!item) {
       logMisconfiguration(
         localize("RQG.Foundry.ActiveEffect.TargetItemNotFound", {
-          rqid: rqid,
+          rqid: rqid ?? "",
           actorName: actor.name,
           itemName: Rqid.getDocumentName(rqid),
         }),
-        // @ts-expect-error system
         !this.disabled,
         change,
         this,
@@ -54,12 +67,11 @@ export class RqgActiveEffect extends ActiveEffect {
     }
 
     // Determine the data type of the target field
-    const current = foundry.utils.getProperty(item, path) ?? null;
+    const current: unknown = foundry.utils.getProperty(item, path as any) ?? null;
     let target = current;
     if (current === null) {
-      // @ts-expect-error game.model
-      const model = game.model.Item[item.type] || {};
-      target = foundry.utils.getProperty(model, path) ?? null;
+      const model = (game.model?.Item as any)[item.type] || {};
+      target = foundry.utils.getProperty(model, path as any) ?? null;
     }
     const targetType = foundry.utils.getType(target);
 
@@ -67,7 +79,9 @@ export class RqgActiveEffect extends ActiveEffect {
     let delta;
     try {
       if (targetType === "Array") {
-        const innerType = target.length ? foundry.utils.getType(target[0]) : "string";
+        const innerType = (target as unknown[]).length
+          ? foundry.utils.getType((target as unknown[])[0])
+          : "string";
         delta = this.#castArray(change.value, innerType);
       } else {
         delta = this.#castDelta(change.value, targetType);
@@ -89,7 +103,7 @@ export class RqgActiveEffect extends ActiveEffect {
         update = delta;
         break;
       case "Array":
-        update = current.concat(delta);
+        update = (current as unknown[]).concat(delta);
         break;
       default:
         update = current + delta;
@@ -97,10 +111,9 @@ export class RqgActiveEffect extends ActiveEffect {
     }
 
     try {
-      foundry.utils.setProperty(item, path, update);
+      foundry.utils.setProperty(item, path as any, update);
     } catch (e) {
       const msg = `Active Effect on item [${item.name}] in actor [${actor.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
-      // @ts-expect-error console
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG |", msg, change, e);
     }
@@ -115,7 +128,6 @@ export class RqgActiveEffect extends ActiveEffect {
         delta = Boolean(this.#parseOrString(raw));
         break;
       case "number":
-        // @ts-expect-error fromString
         delta = Number.fromString(raw);
         if (Number.isNaN(delta)) {
           delta = 0;
@@ -135,7 +147,7 @@ export class RqgActiveEffect extends ActiveEffect {
     try {
       delta = this.#parseOrString(raw);
       delta = delta instanceof Array ? delta : [delta];
-    } catch (e) {
+    } catch {
       delta = [raw];
     }
     return delta.map((d) => this.#castDelta(d, type));
@@ -144,7 +156,7 @@ export class RqgActiveEffect extends ActiveEffect {
   #parseOrString(raw: any) {
     try {
       return JSON.parse(raw);
-    } catch (err) {
+    } catch {
       return raw;
     }
   }

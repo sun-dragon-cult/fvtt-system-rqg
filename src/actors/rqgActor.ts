@@ -1,14 +1,16 @@
 import { RqgCalculations } from "../system/rqgCalculations";
-import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, ResponsibleItemClass } from "../data-model/item-data/itemTypes";
+import {
+  ActorTypeEnum,
+  type CharacterActor,
+  type CharacterDataSource,
+} from "../data-model/actor-data/rqgActorData";
+import { ItemTypeEnum, type PhysicalItem, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
-  assertItemType,
-  getGame,
+  assertDocumentSubType,
   getTokenFromActor,
-  hasOwnProperty,
+  isDocumentSubType,
   localize,
   localizeCharacteristic,
   requireValue,
@@ -18,49 +20,42 @@ import {
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { RQG_CONFIG, systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
-import type { AnyDocumentData } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/data.mjs";
-import type EmbeddedCollection from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/embedded-collection.mjs";
-import type { Document } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/module.mjs";
-import type { DocumentModificationOptions } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/abstract/document.mjs";
-import type {
-  ActorData,
-  PrototypeTokenData,
-} from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs";
-import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect";
-import type { RqgItem } from "../items/rqgItem";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import type { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
-import { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
+import type { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
 import { CharacteristicRollDialogV2 } from "../applications/CharacteristicRollDialog/characteristicRollDialogV2";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
 import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types";
+import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
-import type { DamageType } from "../data-model/item-data/weaponData";
+import type { DamageType } from "@item-model/weaponData.ts";
 import { Skill } from "../items/skill-item/skill";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+
+import type { DeepPartial } from "fvtt-types/utils";
+import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
+
+import Actor = foundry.documents.Actor;
 
 export class RqgActor extends Actor {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
 
-    // @ts-expect-error applications
-    const sheets = foundry.applications.apps.DocumentSheetConfig;
+    const Actors = foundry.documents.collections.Actors;
 
-    // @ts-expect-error appv1
-    sheets.unregisterSheet(Actor, "core", foundry.appv1.sheets.ActorSheet);
+    Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
 
-    sheets.registerSheet(Actor, systemId, RqgActorSheet as any, {
-      label: "RQG.SheetName.Actor.Character",
+    Actors.registerSheet(systemId, RqgActorSheet, {
       types: [ActorTypeEnum.Character],
+      label: "RQG.SheetName.Actor.Character",
       makeDefault: true,
     });
   }
-  declare system: CharacterDataPropertiesData; // v10 type workaround
-  declare prototypeToken: PrototypeTokenData; // v10 type workaround
-  declare statuses: Set<string>; // v11 type workaround
-  declare appliedEffects: RqgActiveEffect[]; // v11 type workaround
 
   /**
    * Only handles embedded Items
@@ -69,7 +64,9 @@ export class RqgActor extends Actor {
     if (!rqid) {
       return [];
     }
-    return this.items.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
+    return this.items.filter(
+      (i) => i.getFlag(systemId, "documentRqidFlags")?.id === rqid,
+    ) as RqgItem[];
   }
 
   public getBestEmbeddedDocumentByRqid(rqid: string | undefined): RqgItem | undefined {
@@ -77,12 +74,9 @@ export class RqgActor extends Actor {
   }
 
   public async characteristicRoll(characteristicName: keyof Characteristics): Promise<void> {
-    await new CharacteristicRollDialogV2({
-      actor: this,
-      characteristicName: characteristicName,
-      // @ts-expect-error render
-    }).render(true);
+    await new CharacteristicRollDialogV2(this, characteristicName).render(true);
   }
+
   /**
    * Do a characteristic roll and handle possible POW experience check afterward.
    */
@@ -99,7 +93,9 @@ export class RqgActor extends Actor {
     characteristicName: keyof Characteristics,
     options: Partial<CharacteristicRollOptions>,
   ): CharacteristicRollOptions {
-    const actorCharacteristics: any = this.system.characteristics;
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+
+    const actorCharacteristics = this.system.characteristics;
     const rollCharacteristic = actorCharacteristics[characteristicName] as
       | Characteristic
       | undefined;
@@ -126,8 +122,7 @@ export class RqgActor extends Actor {
   /**
    * Open an ability roll dialog for reputation   */
   public async reputationRoll(): Promise<void> {
-    // @ts-expect-error render
-    await new AbilityRollDialogV2({ abilityItem: this.createReputationFakeItem() }).render(true);
+    await new AbilityRollDialogV2(this.createReputationFakeItem()).render(true);
   }
 
   /**
@@ -155,18 +150,15 @@ export class RqgActor extends Actor {
   }
 
   private createReputationFakeItem(): PartialAbilityItem {
-    const defaultItemIconSettings: any = getGame().settings.get(
-      systemId,
-      "defaultItemIconSettings",
-    );
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const token = getTokenFromActor(this);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     return {
       name: "Reputation",
       img: defaultItemIconSettings.reputation,
       system: {
         chance: this.system.background.reputation ?? 0,
       },
-      // @ts-expect-error ownership to make the Ability roll hiding work
       ownership: { default: 0 },
       actingToken: token,
     } as const;
@@ -175,10 +167,13 @@ export class RqgActor extends Actor {
   // TODO should use result: SpiritMagicSuccessLevelEnum
   public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
     if (result <= AbilitySuccessLevelEnum.Success) {
+      assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
       const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
-      await this.update({ "system.attributes.magicPoints.value": newMp });
+      await this.update(
+        foundry.utils.expandObject({ "system.attributes.magicPoints.value": newMp }),
+      );
       ui.notifications?.info(
-        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount }),
+        localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount.toString() }),
       );
     }
   }
@@ -186,36 +181,38 @@ export class RqgActor extends Actor {
   /**
    * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
    */
-  prepareBaseData(): void {
+  override prepareBaseData(): void {
     super.prepareBaseData();
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     // Set this here before Active effects to allow POW crystals to boost it.
     this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
   }
 
-  prepareEmbeddedDocuments(): void {
-    // @ts-expect-error Foundry 9
+  override prepareEmbeddedDocuments(): void {
     super.prepareEmbeddedDocuments();
-    const actorSystem = this.system;
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+
     const { con, siz, pow } = this.actorCharacteristics();
-    actorSystem.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
+    this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
 
     this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item),
+      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item as RqgItem),
     );
   }
 
   /**
    * Apply any transformations to the Actor data which are caused by ActiveEffects.
    */
-  applyActiveEffects(): void {
+  override applyActiveEffects(): void {
     super.applyActiveEffects();
   }
 
   /**
    * Apply final transformations to the Actor data after all effects have been applied
    */
-  prepareDerivedData(): void {
+  override prepareDerivedData(): void {
     super.prepareDerivedData();
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
     const skillCategoryModifiers = (this.system.skillCategoryModifiers =
@@ -263,7 +260,7 @@ export class RqgActor extends Actor {
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
     this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item),
+      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item as RqgItem),
     );
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
@@ -279,9 +276,10 @@ export class RqgActor extends Actor {
    * Return the bodyType of an actor. Currently only "humanoid" or "other"
    */
   public getBodyType(): string {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
-      .filter((i) => i.type === ItemTypeEnum.HitLocation)
-      .map((hl) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
+      .filter((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
+      .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
     if (
       CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
       CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
@@ -299,13 +297,16 @@ export class RqgActor extends Actor {
     characteristicName: string,
     result: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     if (
       result != null &&
       result <= AbilitySuccessLevelEnum.Success &&
       characteristicName === "power" &&
       !this.system.characteristics.power.hasExperience
     ) {
-      await this.update({ "system.characteristics.power.hasExperience": true });
+      await this.update(
+        foundry.utils.expandObject({ "system.characteristics.power.hasExperience": true }),
+      );
       const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
         actorName: this.name,
         itemName: localizeCharacteristic("power"),
@@ -328,12 +329,14 @@ export class RqgActor extends Actor {
     wasDamagedReducedByParry: boolean = false,
     attackSuccessLevel?: AbilitySuccessLevelEnum | undefined,
   ): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const damagedHitLocation = this.items.find(
       (i) =>
-        i.type === ItemTypeEnum.HitLocation &&
+        isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
         hitLocationRollTotal >= i.system.dieFrom &&
         hitLocationRollTotal <= i.system.dieTo,
-    );
+    ) as HitLocationItem | undefined;
+    assertDocumentSubType<HitLocationItem>(damagedHitLocation, ItemTypeEnum.HitLocation);
 
     const hitLocationAP = damagedHitLocation?.system.armorPoints ?? 0;
     const damageAfterAP = ignoreAP ? damageAmount : Math.max(0, damageAmount - hitLocationAP);
@@ -353,43 +356,41 @@ export class RqgActor extends Actor {
       DamageCalculations.addWound(
         damageAfterAP,
         applyToActorHP,
-        damagedHitLocation!,
+        damagedHitLocation,
         this,
         speaker.alias!,
       );
 
     for (const update of uselessLegs) {
-      // @ts-expect-error _id
-      const leg = this.items.get(update._id);
-      assertItemType(leg?.type, ItemTypeEnum.HitLocation);
+      const leg = this.items.get(update._id) as HitLocationItem | undefined;
+      assertDocumentSubType<HitLocationItem>(leg, ItemTypeEnum.HitLocation);
       await leg.update(update);
     }
 
     if (hitLocationUpdates) {
-      await damagedHitLocation!.update(hitLocationUpdates);
+      await damagedHitLocation.update(hitLocationUpdates);
     }
     if (actorUpdates) {
-      await this.update(actorUpdates as any);
-    } // TODO fix type
+      await this.update(actorUpdates);
+    }
 
     // Incapacitating Rule
     const incapacitatingText = // include crit / special check!
       damageType === "slash" &&
       (attackSuccessLevel ?? Infinity) <= AbilitySuccessLevelEnum.Special &&
-      damageAfterAP >= damagedHitLocation!.system.hitPoints.max
+      damageAfterAP >= (damagedHitLocation.system.hitPoints.max ?? 0)
         ? `<p>${localize("RQG.Item.HitLocation.IncapacitationRule", {
-            damage: damageAfterAP,
+            damage: damageAfterAP.toString(),
           })}</p>`
         : "";
 
     // TODO should this be part of the attack chat message? Or should it still only be visible to attacker & defender?
     await ChatMessage.create({
-      user: getGame().user?.id,
       speaker: speaker,
       content:
         localize("RQG.Item.HitLocation.AddWoundChatContent", {
           actorName: this.name,
-          hitLocationName: damagedHitLocation!.name,
+          hitLocationName: damagedHitLocation.name,
           notification: notification,
         }) + incapacitatingText,
       whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
@@ -403,12 +404,12 @@ export class RqgActor extends Actor {
    * from what the actors health is.
    */
   public async updateTokenEffectFromHealth(): Promise<void> {
-    const health2Effect: Map<ActorHealthState, { id: string; label: string; icon: string }> =
-      new Map([
-        ["shock", this.findEffect("shock")],
-        ["unconscious", this.findEffect("unconscious")],
-        ["dead", this.findEffect("dead")],
-      ]);
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    const health2Effect: Map<ActorHealthState, CONFIG.StatusEffect> = new Map([
+      ["shock", this.findEffect("shock")],
+      ["unconscious", this.findEffect("unconscious")],
+      ["dead", this.findEffect("dead")],
+    ]);
 
     const newEffect = health2Effect.get(this.system.attributes.health);
 
@@ -417,14 +418,12 @@ export class RqgActor extends Actor {
       if (newEffect?.id === status.id && !actorHasEffectAlready) {
         const asOverlay = status.id === "dead";
         // Turn on the new effect
-        // @ts-expect-error toggleStatusEffect
         await this.toggleStatusEffect(status.id, {
           overlay: asOverlay,
           active: true,
         });
       } else if (newEffect?.id !== status.id && actorHasEffectAlready) {
         // This is not the effect we're applying, but it is on, so we need to turn it off
-        // @ts-expect-error toggleStatusEffect
         await this.toggleStatusEffect(status.id, {
           overlay: false,
           active: false,
@@ -433,7 +432,7 @@ export class RqgActor extends Actor {
     }
   }
 
-  private findEffect(health: ActorHealthState): { id: string; label: string; icon: string } {
+  private findEffect(health: ActorHealthState): CONFIG.StatusEffect {
     const effect = CONFIG.statusEffects.find((e) => e.id === health);
     requireValue(effect, `Required statusEffect ${health} is missing`); // TODO translate message
     return effect;
@@ -450,11 +449,11 @@ export class RqgActor extends Actor {
     return Math.round(Math.min(str, (str + (con ?? 0)) / 2) * (carryingFactor ?? 1));
   }
 
-  private calcTravelEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
+  private calcTravelEncumbrance(items: RqgActor["items"]): number {
     return Math.round(
-      items.reduce((sum: number, item: RqgItem) => {
+      items.reduce((sum: number, item) => {
         if (
-          hasOwnProperty(item.system, "equippedStatus") &&
+          isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
           ["carried", "equipped"].includes(item.system.equippedStatus)
         ) {
           const enc = (item.system.quantity ?? 1) * (item.system.encumbrance ?? 0);
@@ -465,11 +464,11 @@ export class RqgActor extends Actor {
     );
   }
 
-  private calcEquippedEncumbrance(items: EmbeddedCollection<typeof RqgItem, ActorData>): number {
+  private calcEquippedEncumbrance(items: RqgActor["items"]): number {
     return Math.round(
-      items.reduce((sum, item: RqgItem) => {
+      items.reduce((sum, item) => {
         if (
-          hasOwnProperty(item.system, "physicalItemType") &&
+          isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
           item.system.equippedStatus === "equipped"
         ) {
           const quantity = item.system.quantity ?? 1;
@@ -482,11 +481,17 @@ export class RqgActor extends Actor {
   }
 
   // Entity-specific actions that should occur when the Entity is first created
-  // @ts-expect-error _onCreate
-  protected _onCreate(actorData: ActorData, options: DocumentModificationOptions, userId: string) {
-    super._onCreate(actorData as any, options, userId); // TODO type bug ??
+  protected override _onCreate(
+    data: Actor.CreateData,
+    options: Actor.Database.OnCreateOperation,
+    userId: string,
+  ) {
+    super._onCreate(data, options, userId);
 
-    if (!this.prototypeToken.actorLink) {
+    if (
+      !this.prototypeToken.actorLink &&
+      isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)
+    ) {
       initializeAllCharacteristics(this).then(void this.updateDexBasedSkills());
     } else {
       void this.updateDexBasedSkills();
@@ -494,73 +499,60 @@ export class RqgActor extends Actor {
   }
 
   private async updateDexBasedSkills(): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
+    assertDocumentSubType<SkillItem>(dodgeItem, ItemTypeEnum.Skill);
     const dodgeBaseChance = Skill.dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
     if (dodgeItem && dodgeItem.system.baseChance !== dodgeBaseChance) {
       await dodgeItem.update({ system: { baseChance: dodgeBaseChance } });
     }
 
     const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
+    assertDocumentSubType<SkillItem>(jumpItem, ItemTypeEnum.Skill);
     const jumpBaseChance = Skill.jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
     if (jumpItem && jumpItem.system.baseChance !== jumpBaseChance) {
       await jumpItem.update({ system: { baseChance: jumpBaseChance } });
     }
   }
 
-  protected _preCreateDescendantDocuments(
-    parent: Document<any, any>,
-    collection: string,
-    data: AnyDocumentData[],
-    options: object,
-    userId: string,
+  protected override _onCreateDescendantDocuments(
+    ...args: Actor.OnCreateDescendantDocumentsArgs
   ): void {
-    if (parent === this && collection === "items" && getGame().user?.id === userId) {
-      data.forEach((d) => {
-        // @ts-expect-error d.type
-        ResponsibleItemClass.get(d.type)?.preEmbedItem(this, d, options, userId);
-      });
-    }
-  }
-
-  protected _onCreateDescendantDocuments(
-    parent: Document<any, any>,
-    collection: string,
-    documents: Document<any, any>[],
-    data: object[],
-    options: object,
-    userId: string,
-  ): void {
-    if (parent === this && collection === "items" && getGame().user?.id === userId) {
-      documents.forEach((d: any) => {
-        // TODO any bailout - fix types!
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [parent, collection, documents, data, options, userId] = args;
+    if (
+      isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) &&
+      collection === "items" &&
+      game.user?.id === userId
+    ) {
+      documents.forEach((d) => {
         ResponsibleItemClass.get(d.type)
-          ?.onEmbedItem(this, d, options, userId)
-          .then((updateData: any) => {
-            // @ts-expect-error isEmpty
+          ?.onEmbedItem(this, d as RqgItem, options, userId)
+          .then((updateData) => {
             if (!foundry.utils.isEmpty(updateData)) {
               this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
             }
           });
       });
     }
-    // @ts-expect-error _onCreateDescendantDocuments
-    super._onCreateDescendantDocuments(parent, collection, documents, data, options, userId);
+
+    super._onCreateDescendantDocuments(...args);
   }
 
-  protected _onDeleteDescendantDocuments(
-    parent: Document<any, any>,
-    collection: string,
-    documents: Document<any, any>[],
-    ids: string[],
-    options: object,
-    userId: string,
+  protected override _onDeleteDescendantDocuments(
+    ...args: Actor.OnDeleteDescendantDocumentsArgs
   ): void {
-    if (parent === this && collection === "item" && getGame().user?.id === userId) {
+    const [parent, collection, documents, , options, userId] = args;
+    if (
+      isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) &&
+      parent === this &&
+      collection === "items" &&
+      game.user?.id === userId
+    ) {
       documents.forEach((d) => {
-        // @ts-expect-error type
         const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
           this,
-          d as RqgItem, // TODO type bailout - fixme
+          d as RqgItem,
           options,
           userId,
         );
@@ -569,28 +561,31 @@ export class RqgActor extends Actor {
         }
       });
     }
-    // @ts-expect-error _onDeleteDescendantDocuments
-    super._onDeleteDescendantDocuments(parent, collection, documents, ids, options, userId);
+    super._onDeleteDescendantDocuments(...args);
   }
 
   // Update the baseChance for Dodge & Jump skills that depend on actor DEX
-  async _preUpdate(changes: any, options: any, user: User): Promise<void> {
+  override async _preUpdate(
+    changes: Actor.UpdateData,
+    options: Actor.Database.PreUpdateOptions,
+    user: User.Implementation,
+  ): Promise<boolean | void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+
     const actorDex =
-      changes?.system?.characteristics?.dexterity?.value ??
+      (changes as DeepPartial<CharacterDataSource>)?.system?.characteristics?.dexterity?.value ??
       this.system.characteristics.dexterity.value;
+    if (actorDex != null) {
+      const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
+      if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
+        await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+      }
 
-    const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
-    // @ts-expect-error _source
-    if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
-      await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+      const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
+      if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
+        await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
+      }
     }
-
-    const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
-    // @ts-expect-error _source
-    if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
-      await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
-    }
-
     return super._preUpdate(changes, options, user);
   }
 
@@ -604,6 +599,7 @@ export class RqgActor extends Actor {
     pow: number | undefined;
     cha: number | undefined;
   } {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const characteristics = this.system.characteristics;
     const str = characteristics.strength.value;
     const con = characteristics.constitution.value;

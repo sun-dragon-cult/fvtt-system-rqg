@@ -1,28 +1,30 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import { RqgActor } from "../rqgActor";
 import {
-  assertItemType,
+  assertDocumentSubType,
   getDomDataset,
-  getGame,
   getRequiredDomDataset,
   localize,
   localizeItemType,
   RqgError,
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
-import type { RqgItem } from "../../items/rqgItem";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { SkillItem } from "@item-model/skillData.ts";
 
-export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
+export const combatMenuOptions = (
+  actor: CharacterActor,
+): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
   {
     name: localize("RQG.Game.InitiateCombat"),
     icon: contextMenuRunes.RollViaChat,
     condition: (el: JQuery) => !!getDomDataset(el, "weapon-item-id"),
     callback: async (el: JQuery) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
-      const weapon = actor.getEmbeddedDocument("Item", weaponItemId) as RqgItem | undefined;
-      assertItemType(weapon?.type, ItemTypeEnum.Weapon);
-      await weapon.attack();
+      const weapon = actor.getEmbeddedDocument("Item", weaponItemId, {});
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
+      await weapon?.attack();
     },
   },
   {
@@ -31,17 +33,17 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
     condition: (el: JQuery) => !!getDomDataset(el, "skill-id"),
     callback: async (el: JQuery) => {
       const itemId = getDomDataset(el, "skill-id");
-      const item = itemId && actor.items.get(itemId);
+      const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
       if (!item || !("hasExperience" in item.system)) {
         const msg = localize("RQG.ContextMenu.Notification.CantToggleExperienceError", {
-          itemId: itemId,
+          itemId: itemId!,
           actorName: actor.name,
         });
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
       const toggledExperience = !item.system.hasExperience;
-      await item.update({ "system.hasExperience": toggledExperience }, {});
+      await item.update({ system: { hasExperience: toggledExperience } }, {});
     },
   },
   {
@@ -49,13 +51,13 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
+    condition: (el: JQuery) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
-      const skillItem = skillItemId && actor.items.get(skillItemId);
+      const skillItem = actor.items.get(skillItemId ?? "") as SkillItem | undefined;
       if (!skillItem || !skillItem.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantShowItemSheetError", {
-          skillItemId: skillItemId,
+          skillItemId: skillItemId!,
           actorName: actor.name,
         });
         ui.notifications?.error(msg);
@@ -70,13 +72,13 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Weapon),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
-      const item = weaponItemId && actor.items.get(weaponItemId);
+      const item = actor.items.get(weaponItemId ?? "") as WeaponItem | undefined;
       if (!item || !item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantShowWeaponSheetError", {
-          weaponItemId: weaponItemId,
+          weaponItemId: weaponItemId!,
           actorName: actor.name,
         });
         ui.notifications?.error(msg);
@@ -90,14 +92,14 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Delete,
-    condition: (el: JQuery) => !!getGame().user?.isGM && !!getDomDataset(el, "skill-id"),
+    condition: (el: JQuery) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
     callback: (el: JQuery) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
         void RqgActorSheet.confirmItemDelete(actor, skillItemId);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantDeleteSkillError", {
-          weaponItemId: skillItemId,
+          weaponItemId: skillItemId ?? "",
           actorName: actor.name,
         });
         ui.notifications?.error(msg);
@@ -110,14 +112,14 @@ export const combatMenuOptions = (actor: RqgActor): ContextMenu.Item[] => [
       itemType: localizeItemType(ItemTypeEnum.Weapon),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!getGame().user?.isGM,
+    condition: () => !!game.user?.isGM,
     callback: (el: JQuery) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
       if (weaponItemId) {
         void RqgActorSheet.confirmItemDelete(actor, weaponItemId);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantDeleteWeaponError", {
-          weaponItemId: weaponItemId,
+          weaponItemId: weaponItemId ?? "",
           actorName: actor.name,
         });
         ui.notifications?.error(msg);

@@ -1,9 +1,8 @@
-import { PassionsEnum } from "../../data-model/item-data/passionData";
-import { ItemTypeEnum } from "../../data-model/item-data/itemTypes";
+import { PassionsEnum, type PassionItem } from "@item-model/passionData.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
-import { getGameUser } from "../../system/util";
 import { systemId } from "../../system/config";
-import { ItemSheetData } from "../shared/sheetInterfaces";
+import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 export interface PassionSheetData {
@@ -12,10 +11,7 @@ export interface PassionSheetData {
   passionTypes: PassionsEnum[];
 }
 
-export class PassionSheet extends RqgItemSheet<
-  ItemSheet.Options,
-  PassionSheetData | ItemSheet.Data
-> {
+export class PassionSheet extends RqgItemSheet {
   // TODO move to config?
   static passionImgUrl = new Map([
     [PassionsEnum.Ambition, "systems/rqg/assets/images/passion/ambition.svg"],
@@ -30,7 +26,11 @@ export class PassionSheet extends RqgItemSheet<
     [PassionsEnum.Vanity, "systems/rqg/assets/images/passion/vanity.svg"],
   ]);
 
-  static get defaultOptions(): ItemSheet.Options {
+  override get document(): PassionItem {
+    return super.document as PassionItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Passion],
       template: templatePaths.itemPassionSheet,
@@ -46,8 +46,7 @@ export class PassionSheet extends RqgItemSheet<
     });
   }
 
-  async getData(): Promise<PassionSheetData & ItemSheetData> {
-    // @ts-expect-error _source Read from the original data unaffected by any AEs
+  override async getData(): Promise<PassionSheetData & ItemSheetData> {
     const system = foundry.utils.duplicate(this.document._source.system);
 
     return {
@@ -55,15 +54,13 @@ export class PassionSheet extends RqgItemSheet<
       uuid: this.document.uuid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
       system: system,
-      // @ts-expect-error applications
       enrichedDescription: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.description,
       ),
-      // @ts-expect-error applications
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
@@ -71,7 +68,7 @@ export class PassionSheet extends RqgItemSheet<
     };
   }
 
-  protected _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: any): Promise<any> {
     const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
     formData["name"] = formData["system.passion"] + subject;
 

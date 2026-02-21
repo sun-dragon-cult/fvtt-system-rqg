@@ -1,16 +1,15 @@
 import type { RqgItem } from "../items/rqgItem";
 import {
   activateChatTab,
-  assertItemType,
-  getGame,
-  getGameUser,
+  assertDocumentSubType,
   getRequiredDomDataset,
   localize,
   logMisconfiguration,
   requireValue,
   RqgError,
+  safeFromJSON,
 } from "../system/util";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { DefenceDialogV2 } from "../applications/AttackFlow/defenceDialogV2";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
@@ -21,6 +20,8 @@ import { updateChatMessage } from "../sockets/SocketableRequests";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { CombatChatMessage } from "../data-model/chat-data/combatChatMessage.types";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
@@ -29,11 +30,8 @@ export async function handleDefence(clickedButton: HTMLButtonElement): Promise<v
   const { chatMessageId, attackWeaponUuid } = await getChatMessageInfo(clickedButton);
 
   const attackingWeapon = (await fromUuid(attackWeaponUuid)) as RqgItem | undefined;
-  assertItemType(attackingWeapon?.type, ItemTypeEnum.Weapon);
-  await new DefenceDialogV2({
-    chatMessageId: chatMessageId,
-    // @ts-expect-error render
-  }).render(true);
+  assertDocumentSubType<WeaponItem>(attackingWeapon, ItemTypeEnum.Weapon);
+  await new DefenceDialogV2(chatMessageId).render(true);
 }
 
 /**
@@ -44,12 +42,18 @@ export async function handleRollDamageAndHitLocation(
 ): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
-  if (!attackChatMessage) {
-    // TODO Warn about missing chat message
-    return;
-  }
-  const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to handle roll damage and hitlocation, but did not find a combat chat message",
+  );
+
+  const hitLocationRoll = safeFromJSON<HitLocationRoll>(
+    HitLocationRoll,
+    attackChatMessage.system.hitLocationRoll,
+  );
+  requireValue(hitLocationRoll, "Hit location roll not found in chat message");
 
   const shouldRollHitLocation = attackChatMessage.system.weaponDoingDamage === "attackingWeapon";
 
@@ -57,21 +61,25 @@ export async function handleRollDamageAndHitLocation(
     await hitLocationRoll.evaluate();
   }
 
-  // @ts-expect-error dice3d
   if (game.dice3d) {
     // TODO figure out if it's attacker or defender that deals damage - hardcoded true now
     const defenderDamage = true;
 
-    // @ts-expect-error author
-    const userDealingDamage = defenderDamage ? getGameUser() : attackChatMessage.author;
+    const userDealingDamage = defenderDamage ? game.user! : attackChatMessage.author;
 
     // DamageRoll is already evaluated in CombatOutcome to calc weaponDamage
-    const damageRoll = DamageRoll.fromData(attackChatMessage.system.damageRoll);
-    // @ts-expect-error dice3d
-    void game.dice3d.showForRoll(damageRoll, userDealingDamage, true, null, false);
+    const damageRoll = safeFromJSON<DamageRoll>(DamageRoll, attackChatMessage.system.damageRoll);
+    if (damageRoll) {
+      void game.dice3d.showForRoll(damageRoll, userDealingDamage ?? undefined, true, null, false);
+    }
     if (shouldRollHitLocation) {
-      // @ts-expect-error dice3d
-      await game.dice3d.showForRoll(hitLocationRoll, userDealingDamage, true, null, false);
+      await game.dice3d.showForRoll(
+        hitLocationRoll,
+        userDealingDamage ?? undefined,
+        true,
+        null,
+        false,
+      );
     }
   }
 
@@ -87,10 +95,8 @@ export async function handleRollDamageAndHitLocation(
     { overwrite: true },
   );
 
-  // @ts-expect-error renderTemplate
   messageData.content = await foundry.applications.handlebars.renderTemplate(
     templatePaths.attackChatMessage,
-    // @ts-expect-error system
     messageData.system,
   );
 
@@ -104,17 +110,19 @@ export async function handleRollDamageAndHitLocation(
 export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = getGame().messages?.get(chatMessageId) as
-    | StoredDocument<RqgChatMessage>
-    | undefined;
-  if (!attackChatMessage) {
-    // TODO Warn about missing chat message
-    return;
-  }
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to apply weapon damage but could noit find combat chat message",
+  );
 
-  const hitLocationRoll = HitLocationRoll.fromData(attackChatMessage.system.hitLocationRoll);
+  const hitLocationRoll = safeFromJSON<HitLocationRoll>(
+    HitLocationRoll,
+    attackChatMessage.system.hitLocationRoll,
+  );
   requireValue(
-    hitLocationRoll.total,
+    hitLocationRoll?.total,
     "HitLocation roll was not evaluated before applying to actor",
   );
 
@@ -147,7 +155,8 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   }
   const wasDamagedReducedByParry = !!attackChatMessage.system.damagedWeaponUuid;
 
-  const attackRoll = AbilityRoll.fromData(attackChatMessage.system.attackRoll);
+  const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackChatMessage.system.attackRoll);
+  requireValue(attackRoll, "Attack roll not found in chat message");
 
   await damagedActor.applyDamage(
     defenderHitLocationDamage,
@@ -167,10 +176,8 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   };
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  // @ts-expect-error renderTemplate
   messageData.content = await foundry.applications.handlebars.renderTemplate(
     templatePaths.attackChatMessage,
-    // @ts-expect-error system
     messageData.system,
   );
 
@@ -184,28 +191,26 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
 export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement): Promise<void> {
   const { chatMessageId } = await getChatMessageInfo(clickedButton);
 
-  const attackChatMessage = getGame().messages?.get(chatMessageId);
-  if (!attackChatMessage) {
-    // TODO Warn about missing chat message
-    return;
-  }
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to apply weapon damage on non-combat chat message",
+  );
 
-  // @ts-expect-error system
   const weaponDamage: number | undefined = attackChatMessage.system.weaponDamage;
-  // @ts-expect-error system
-  const damagedWeaponUuid: string = attackChatMessage.system.damagedWeaponUuid;
-  const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as RqgItem | undefined;
+  const damagedWeaponUuid = attackChatMessage.system.damagedWeaponUuid;
+  const damagedWeapon = (await fromUuid(damagedWeaponUuid)) as WeaponItem | undefined;
 
   if (damagedWeapon?.system.isNatural) {
     const msg = localize("RQG.ChatMessage.Combat.ApplyNaturalWeaponDamageNotImplemented", {
-      weaponDamage: weaponDamage,
+      weaponDamage: weaponDamage?.toString() ?? "",
     });
     // TODO inflict damage to the correct hit location - how to know where?
-    // @ts-expect-error console
     ui.notifications?.info(msg, { permanent: true, console: false });
   } else {
     const currentWeaponHp = damagedWeapon?.system.hitPoints.value;
-    const newWeaponHp = currentWeaponHp - (weaponDamage ?? 0);
+    const newWeaponHp = (currentWeaponHp ?? 0) - (weaponDamage ?? 0);
 
     await damagedWeapon?.update({ system: { hitPoints: { value: newWeaponHp } } });
   }
@@ -219,10 +224,8 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
   };
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  // @ts-expect-error renderTemplate
   messageData.content = await foundry.applications.handlebars.renderTemplate(
     templatePaths.attackChatMessage,
-    // @ts-expect-error system
     messageData.system,
   );
   await updateChatMessage(attackChatMessage, messageData);
@@ -234,7 +237,7 @@ export async function handleApplyWeaponDamage(clickedButton: HTMLButtonElement):
 export async function handleRollFumble(clickedButton: HTMLButtonElement): Promise<void> {
   const chatMessageId = getRequiredDomDataset(clickedButton, "message-id");
   const fumblingActor = getRequiredDomDataset(clickedButton, "fumble");
-  const attackChatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
+  const attackChatMessage = game.messages?.get(chatMessageId) as RqgChatMessage | undefined;
   if (!attackChatMessage) {
     throw new RqgError("Couldn't find attack chat message");
   }
@@ -263,10 +266,8 @@ export async function handleRollFumble(clickedButton: HTMLButtonElement): Promis
   }
   foundry.utils.mergeObject(messageData, messageDataUpdate, { overwrite: true });
 
-  // @ts-expect-error renderTemplate
   messageData.content = await foundry.applications.handlebars.renderTemplate(
     templatePaths.attackChatMessage,
-    // @ts-expect-error system
     messageData.system,
   );
 
@@ -274,8 +275,8 @@ export async function handleRollFumble(clickedButton: HTMLButtonElement): Promis
 }
 
 async function fumbleRoll(): Promise<string> {
-  const fumbleTableName = getGame().settings.get(systemId, "fumbleRollTable");
-  const fumbleTable = getGame().tables?.getName(fumbleTableName);
+  const fumbleTableName = game.settings?.get(systemId, "fumbleRollTable") ?? "Fumble";
+  const fumbleTable = game.tables?.getName(fumbleTableName);
   if (!fumbleTable) {
     logMisconfiguration(
       localize("RQG.RQGSystem.Error.FumbleTableMissing", {
@@ -285,12 +286,10 @@ async function fumbleRoll(): Promise<string> {
     );
     return "";
   }
-  // @ts-expect-error draw
-  const draw = await fumbleTable.draw({ displayChat: false });
-  const text = draw.results.map((r: any) => `${r.text}<br>`); // TODO is TableResult
 
-  // @ts-expect-error applications
-  return await foundry.applications.ux.TextEditor.implementation.enrichHTML(text);
+  const draw = await fumbleTable.draw({ displayChat: false } as RollTable.DrawOptions); // TODO typings wrong? should not have to define all options
+  const text = draw.results.map((r: any) => `${r.text}<br>`);
+  return await foundry.applications.ux.TextEditor.implementation.enrichHTML(text.join());
 }
 
 /**
@@ -302,11 +301,16 @@ async function getChatMessageInfo(button: HTMLElement): Promise<{
   attackWeaponUuid: string;
 }> {
   const chatMessageId = getRequiredDomDataset(button, "message-id");
-  const chatMessage = getGame().messages?.get(chatMessageId) as RqgChatMessage | undefined;
+  const attackChatMessage = game.messages?.get(chatMessageId) as CombatChatMessage | undefined;
+  assertDocumentSubType<CombatChatMessage>(
+    attackChatMessage,
+    "combat",
+    "Trying to get chat info on non-combat chat message",
+  );
 
-  const attackWeaponUuid = chatMessage?.system.attackWeaponUuid as string | undefined;
+  const attackWeaponUuid = attackChatMessage?.system.attackWeaponUuid;
   if (!attackWeaponUuid) {
-    throw new RqgError("No attackWeapon in chat system data", chatMessage);
+    throw new RqgError("No attackWeapon in chat system data", attackChatMessage);
   }
   return {
     chatMessageId: chatMessageId,

@@ -1,89 +1,132 @@
-import { RqgItem } from "./items/rqgItem";
-import { RqgItemDataProperties, RqgItemDataSource } from "./data-model/item-data/itemTypes";
-import { RqgActor } from "./actors/rqgActor";
-import { RqgActorDataProperties, RqgActorDataSource } from "./data-model/actor-data/rqgActorData";
-import { RqgConfig, systemId } from "./system/config";
-import {
+import type {
+  RqgItemDataProperties,
+  RqgItemDataSource,
+  RqgItemType,
+} from "@item-model/itemTypes.ts";
+import type {
+  RqgActorDataProperties,
+  RqgActorDataSource,
+} from "./data-model/actor-data/rqgActorData";
+import type { RqgConfig, systemId } from "./system/config";
+import type {
+  CardFlags,
+  MacroFlags,
+  PlaylistFlags,
   RqgActorFlags,
   RqgItemFlags,
   RqgJournalEntryFlags,
-  RqgRollTableFlags,
+  RqgJournalEntryPageFlags,
+  RollTableFlags,
+  SceneFlags,
 } from "./data-model/shared/rqgDocumentFlags";
-import { IconSettingsData } from "./applications/defaultItemIconSettings";
+import type { TokenRulerSettingsType } from "./applications/settings/tokenRulerSettings.types";
+import type { RqgChatMessageDataSource } from "./data-model/chat-data/combatChatMessage.types.ts";
+
+import type { RqgChatMessage } from "./chat/RqgChatMessage.ts";
+import type { RqgToken } from "./combat/rqgToken.ts";
+import type { Dice3D } from "./module-integrations/dice-so-nice";
+import type { CombatChatMessageData } from "./data-model/chat-data/combatChatMessage.dataModel.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgCombatant } from "./combat/rqgCombatant.ts";
+import type { RqgActiveEffect } from "./active-effect/rqgActiveEffect.ts";
 
 declare global {
+  interface Game {
+    dice3d?: Dice3D;
+  }
+
+  interface CONFIG {
+    RQG: RqgConfig;
+  }
+
+  // Since we never use these before `init` tell league types that they are never undefined
+  interface LenientGlobalVariableTypes {
+    game: never;
+    socket: never;
+    ui: never;
+  }
+
   /** Standard format for data to Foundry SelectOptions handlebar helper */
   type SelectOptionData<T> = { value: T; label: string; group?: string };
-}
 
-declare global {
   interface DocumentClassConfig {
-    Item: typeof RqgItem;
     Actor: typeof RqgActor;
+    Item: typeof RqgItem;
+    ChatMessage: typeof RqgChatMessage;
+    Combatant: typeof RqgCombatant;
+    ActiveEffect: typeof RqgActiveEffect;
   }
-}
 
-declare global {
+  // Use SourceConfig/DataConfig for Items and Actors (template.json approach)
   interface SourceConfig {
     Item: RqgItemDataSource;
     Actor: RqgActorDataSource;
   }
-}
 
-declare global {
   interface DataConfig {
     Item: RqgItemDataProperties;
     Actor: RqgActorDataProperties;
   }
-}
 
-declare global {
-  interface FlagConfig {
-    Item: { [systemId]?: RqgItemFlags };
-    Actor: { [systemId]?: RqgActorFlags };
-    JournalEntry: { [systemId]?: RqgJournalEntryFlags };
-    RollTable: { [systemId]?: RqgRollTableFlags };
-  }
-}
-
-declare global {
-  namespace ClientSettings {
-    interface Values {
-      "rqg.worldLanguage": string;
-      "rqg.fumbleRollTable": string;
-      "rqg.worldMigrationVersion": string;
-      "rqg.hitLocations": object;
-      "rqg.sortHitLocationsLowToHigh": boolean;
-      "rqg.defaultItemIconSettings": IconSettingsData;
-      "rqg.actor-wizard-feature-flag": boolean;
-      "rqg.showHeropoints": boolean;
-      "rqg.showCharacteristicRatings": boolean;
-      "rqg.tokenRulerSettings": TokenRulerSettings;
-    }
-  }
-}
-
-declare global {
-  interface CONFIG {
-    RQG: RqgConfig;
-  }
-}
-
-declare global {
-  const CONST: {
-    CHAT_MESSAGE_STYLES: {
-      OTHER: 0;
-      OOC: 1;
-      IC: 2;
-      EMOTE: 3;
-      WHISPER: 4;
-      ROLL: 5;
+  // Use DataModelConfig for ChatMessages (DataModel approach)
+  interface DataModelConfig {
+    ChatMessage: {
+      combat: typeof CombatChatMessageData;
     };
-  };
-}
+  }
 
-declare global {
-  interface TokenDocument {
-    delta: any;
+  interface FlagConfig {
+    Actor: { [systemId]?: RqgActorFlags };
+    Card: { [systemId]?: CardFlags };
+    Item: { [systemId]?: RqgItemFlags };
+    JournalEntry: { [systemId]?: RqgJournalEntryFlags };
+    JournalEntryPage: { [systemId]?: RqgJournalEntryPageFlags };
+    Macro: { [systemId]?: MacroFlags };
+    Playlist: { [systemId]?: PlaylistFlags };
+    RollTable: { [systemId]?: RollTableFlags };
+    Scene: { [systemId]?: SceneFlags };
+    ChatMessage: { [systemId]?: RqgChatMessageDataSource };
+  }
+
+  interface PlaceableObjectClassConfig {
+    Token: typeof RqgToken;
+  }
+
+  interface SettingConfig {
+    "rqg.autoActivateChatTab": boolean;
+    "rqg.worldLanguage": string;
+    "rqg.fumbleRollTable": string;
+    "rqg.worldMigrationVersion": string;
+    "rqg.sortHitLocationsLowToHigh": boolean;
+    "rqg.defaultItemIconSettings": Record<RqgItemType | "reputation", string>;
+    "rqg.actor-wizard-feature-flag": boolean;
+    "rqg.showHeropoints": boolean;
+    "rqg.showCharacteristicRatings": boolean;
+    "rqg.tokenRulerSettings": TokenRulerSettingsType;
+    "rqg.allowCombatWithoutToken": boolean;
+  }
+
+  interface ConfiguredCombatant {
+    document: RqgCombatant;
+  }
+
+  interface SystemNameConfig {
+    name: "rqg";
   }
 }
+
+// // Type for documents that can have RQID flags
+type RqidEnabledDocument =
+  | Actor
+  | Item
+  | JournalEntry
+  | JournalEntryPage
+  | Macro
+  | Playlist
+  | RollTable
+  | Scene
+  | Card
+  | ActiveEffect
+  | Combatant
+  | RqgChatMessage;

@@ -1,21 +1,22 @@
 import { DamageCalculations } from "./damageCalculations";
-import { mockActor as mockActorOriginal } from "../mocks/mockActor";
-import { RqgActor } from "../actors/rqgActor";
-import { RqgItem } from "../items/rqgItem";
+import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
+import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Inflict Damage", () => {
-  let mockActor: RqgActor;
-  let mockLeftLeg: RqgItem;
-  let mockHead: RqgItem;
-  let mockChest: RqgItem;
-  let mockAbdomen: RqgItem;
+  let mockActor: CharacterActor;
+  let mockLeftLeg: HitLocationItem;
+  let mockHead: HitLocationItem;
+  let mockChest: HitLocationItem;
+  let mockAbdomen: HitLocationItem;
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
-    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")!;
-    mockHead = mockActor.items.find((i) => i.name === "Head")!;
-    mockChest = mockActor.items.find((i) => i.name === "Chest")!;
-    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")!;
+    mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")! as HitLocationItem;
+    mockHead = mockActor.items.find((i) => i.name === "Head")! as HitLocationItem;
+    mockChest = mockActor.items.find((i) => i.name === "Chest")! as HitLocationItem;
+    mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")! as HitLocationItem;
     (global as any).ui = {
       notifications: {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -493,8 +494,8 @@ describe("Inflict Damage", () => {
       );
 
       // --- Assert ---
-      expect(hitLocationUpdates.system?.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.system?.hitLocationHealthState).toBe("wounded");
+      expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
+      expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe("");
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -523,8 +524,8 @@ describe("Inflict Damage", () => {
       );
 
       // --- Assert ---
-      expect(hitLocationUpdates.system?.wounds).toStrictEqual([appliedDamage]);
-      expect(hitLocationUpdates.system?.hitLocationHealthState).toBe("wounded");
+      expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
+      expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
         "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.",
       );
@@ -692,8 +693,8 @@ describe("Inflict Damage", () => {
 export function applyTestDamage(
   damage: number,
   applyDamageToTotalHp: boolean,
-  hitLocation: RqgItem,
-  actor: RqgActor,
+  hitLocation: HitLocationItem,
+  actor: CharacterActor,
 ) {
   const damageEffects = DamageCalculations.addWound(
     damage,

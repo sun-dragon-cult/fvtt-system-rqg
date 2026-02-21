@@ -1,6 +1,10 @@
-import { SkillCategoryEnum } from "../data-model/item-data/skillData";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
-import { ItemTypeEnum } from "../data-model/item-data/itemTypes";
+import {
+  type AbilityItem,
+  abilityItemTypes,
+  ItemTypeEnum,
+  type PhysicalItem,
+} from "@item-model/itemTypes.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
@@ -11,22 +15,22 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { cultMenuOptions } from "./context-menus/cult-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
+import type { ActorSheetTemplateContext } from "./rqgActorSheet.types";
+import * as DataPrep from "./rqgActorSheetDataPrep";
 import {
-  EquippedStatus,
+  type EquippedStatus,
   equippedStatuses,
-  PhysicalItemType,
-} from "../data-model/item-data/IPhysicalItem";
+  type PhysicalItemType,
+  physicalItemTypes,
+} from "@item-model/IPhysicalItem.ts";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import {
+  assertDocumentSubType,
   assertHtmlElement,
-  assertItemType,
-  formatListByWorldLanguage,
-  getGame,
-  getGameUser,
   getHTMLElement,
-  getItemDocumentTypes,
   getRequiredDomDataset,
   hasOwnProperty,
+  isDocumentSubType,
   isTruthy,
   localize,
   localizeItemType,
@@ -35,18 +39,19 @@ import {
   RqgError,
   usersIdsThatOwnActor,
 } from "../system/util";
-import { RuneDataSource, RuneTypeEnum } from "../data-model/item-data/runeData";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import {
+  ActorTypeEnum,
+  type CharacterActor,
+  type CharacterDataPropertiesData,
+} from "../data-model/actor-data/rqgActorData";
 import { ActorWizard } from "../applications/actorWizardApplication";
-import { systemId } from "../system/config";
+import { RQG_CONFIG, systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
+import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
-import { ActorSheetData } from "../items/shared/sheetInterfaces";
-import { Characteristics } from "src/data-model/actor-data/characteristics";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -57,31 +62,40 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
-import { CultRankEnum } from "../data-model/item-data/cultData";
-import type { ItemDataSource } from "@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/data/data.mjs/itemData";
+import { type CultItem } from "@item-model/cultData.ts";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-import { CharacterSheetData, MainCult, UiSections } from "./rqgActorSheet.defs";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import {
   applyDamageBonusToFormula,
   formatDamagePart,
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../system/combatCalculations";
-import { NewCombatant } from "../combat/rqgCombatant.types";
+import type { NewCombatant } from "../combat/rqgCombatant.types";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { OccupationItem } from "@item-model/occupationData.ts";
+import type { ArmorItem } from "@item-model/armorData.ts";
+import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
-// Half prepared for introducing more actor types. this would then be split into CharacterSheet & RqgActorSheet
-export class RqgActorSheet extends ActorSheet<
-  ActorSheet.Options,
-  CharacterSheetData | ActorSheet.Data
-> {
+import ActorSheet = foundry.appv1.sheets.ActorSheet;
+
+export class RqgActorSheet<
+  Options extends ActorSheet.Options = ActorSheet.Options,
+> extends ActorSheet<Options> {
+  override get actor(): CharacterActor {
+    return super.document as CharacterActor;
+  }
+
   // What SRs is this actor doing things in. Not persisted data, controlling active combat.
   private activeInSR: Set<number> = new Set<number>();
   private incorrectRunes: RqgItem[] = [];
 
-  get title(): string {
+  override get title(): string {
     const linked = this.actor.prototypeToken?.actorLink;
     const isToken = this.actor.isToken;
 
@@ -95,7 +109,7 @@ export class RqgActorSheet extends ActorSheet<
     return prefix + speakerName + postfix;
   }
 
-  static get defaultOptions(): ActorSheet.Options {
+  static override get defaultOptions(): ActorSheet.Options {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: [systemId, "sheet", ActorTypeEnum.Character],
       template: templatePaths.rqgActorSheet,
@@ -126,7 +140,7 @@ export class RqgActorSheet extends ActorSheet<
   //   await super._onFirstRender(context, options);
   //
   //   // @ts-expect-error getCombatantByActor
-  //   const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+  //   const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
   //     this.actor,
   //   );
   //   actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
@@ -137,31 +151,25 @@ export class RqgActorSheet extends ActorSheet<
   //   // @ts-expect-error _onPreClose
   //   super._onPreClose(options);
   //   // @ts-expect-error getCombatantByActor
-  //   const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+  //   const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
   //     this.actor,
   //   );
   //   actorCombatants?.forEach((c) => delete c.apps[this.appId]);
   // }
 
-  /** @override */
-  async _render(force = false, options = {}) {
+  override async _render(force = false, options: Application.RenderOptions<Options> = {}) {
     await super._render(force, options);
-    // @ts-expect-error getCombatantByActor
-    const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
-      this.actor,
-    );
-    actorCombatants?.forEach((c) => (c.apps[this.appId] = this));
+    const actorCombatants: Combatant.Implementation[] =
+      game.combat?.getCombatantsByActor(this.actor) ?? [];
+    actorCombatants?.forEach((c) => (c.apps[this.appId] = this as any));
   }
 
-  /** @override */
-  async close(options = {}) {
-    // @ts-expect-error rnderContext
-    if (options.renderContext === "deleteCombatant") {
+  override async close(options: FormApplication.CloseOptions = {}) {
+    if (hasOwnProperty(options, "renderContext") && options.renderContext === "deleteCombatant") {
       // Don't close the actor sheet even is a combatant linked to it that is deleted,
       // but try to remove the combatant.apps reference.
       // This is is a workaround - can I remove the app reference in a better way?
-      // @ts-expect-error getCombatantByActor
-      const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
+      const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
         this.actor,
       );
       actorCombatants?.forEach((c) => delete c.apps[this.appId]);
@@ -170,17 +178,14 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  async getData(): Promise<CharacterSheetData & ActorSheetData> {
+  override async getData(): Promise<ActorSheetTemplateContext> {
     this.incorrectRunes = [];
-    const system = foundry.utils.duplicate(this.document.system);
-    const spiritMagicPointSum = this.getSpiritMagicPointSum();
+    const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
+    const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
-    // @ts-expect-error getCombatantByActor
-    const actorCombatants: Combatant[] | undefined = getGame().combat?.getCombatantsByActor(
-      this.actor,
-    );
+    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
 
     this.activeInSR = new Set(
       actorCombatants
@@ -189,47 +194,43 @@ export class RqgActorSheet extends ActorSheet<
         .filter((sr: number) => sr >= 1 && sr <= 12),
     );
 
-    const embeddedItems = await this.organizeEmbeddedItems(this.actor);
+    const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, this.incorrectRunes);
 
     return {
-      id: this.document.id ?? "",
-      uuid: this.document.uuid,
-      name: this.document.name ?? "",
-      img: this.document.img ?? "",
+      id: this.actor.id ?? "",
+      uuid: this.actor.uuid,
+      name: this.actor.name ?? "",
+      img: this.actor.img ?? "",
       isEditable: this.isEditable,
-      isGM: getGameUser().isGM,
+      isGM: game.user?.isGM ?? false,
       isPC: this.actor.hasPlayerOwner,
-      showCharacteristicRatings:
-        getGame().settings.get(systemId, "showCharacteristicRatings") || false,
+      showCharacteristicRatings: game.settings?.get(systemId, "showCharacteristicRatings") || false,
       system: system,
-      // @ts-expect-error allApplicableEffects
       effects: [...this.actor.allApplicableEffects()],
 
       embeddedItems: embeddedItems,
 
       spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
-        CONFIG.RQG.skillRqid.spiritCombat,
+        RQG_CONFIG.skillRqid.spiritCombat,
       ),
-      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge),
+      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge),
 
-      mainCult: this.getMainCultInfo(),
-      characterElementRunes: this.getCharacterElementRuneImgs(), // Sorted array of element runes with > 0% chance
-      characterPowerRunes: this.getCharacterPowerRuneImgs(), // Sorted array of power runes with > 50% chance
-      characterFormRunes: this.getCharacterFormRuneImgs(), // Sorted array of form runes that define the character
-      loadedMissileSrDisplay: this.getLoadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
-      loadedMissileSr: this.getLoadedMissileSr(dexStrikeRank),
-      unloadedMissileSrDisplay: this.getUnloadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
-      unloadedMissileSr: this.getUnloadedMissileSr(dexStrikeRank),
+      mainCult: DataPrep.getMainCultInfo(this.actor),
+      characterElementRunes: DataPrep.getCharacterElementRuneImgs(this.actor), // Sorted array of element runes with > 0% chance
+      characterPowerRunes: DataPrep.getCharacterPowerRuneImgs(this.actor), // Sorted array of power runes with > 50% chance
+      characterFormRunes: DataPrep.getCharacterFormRuneImgs(this.actor), // Sorted array of form runes that define the character
+      loadedMissileSrDisplay: DataPrep.getLoadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if loaded at start of round
+      loadedMissileSr: DataPrep.getLoadedMissileSr(dexStrikeRank),
+      unloadedMissileSrDisplay: DataPrep.getUnloadedMissileSrDisplay(dexStrikeRank), // (html) Precalculated missile weapon SRs if not loaded at start of round
+      unloadedMissileSr: DataPrep.getUnloadedMissileSr(dexStrikeRank),
       itemLocationTree: itemTree.toSheetData(),
-      powCrystals: this.getPowCrystals(),
+      powCrystals: DataPrep.getPowCrystals(this.actor),
       spiritMagicPointSum: spiritMagicPointSum,
-      freeInt: this.getFreeInt(spiritMagicPointSum),
-      baseStrikeRank: this.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
-      // @ts-expect-error applications
+      freeInt: DataPrep.getFreeInt(this.actor, spiritMagicPointSum),
+      baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
       enrichedAllies: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.allies,
       ),
-      // @ts-expect-error applications
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
       ),
@@ -242,15 +243,14 @@ export class RqgActorSheet extends ActorSheet<
       homelands: Object.values(HomeLandEnum),
       locations: itemTree.getPhysicalItemLocations(),
       healthStatuses: [...actorHealthStatuses],
-      ownedProjectileOptions: this.getEquippedProjectileOptions(),
+      ownedProjectileOptions: DataPrep.getEquippedProjectileOptions(this.actor),
       locomotionModes: {
         [LocomotionEnum.Walk]: "Walk",
         [LocomotionEnum.Swim]: "Swim",
         [LocomotionEnum.Fly]: "Fly",
       },
 
-      currencyTotals: this.calcCurrencyTotals(),
-      // @ts-expect-error inCombat
+      currencyTotals: DataPrep.calcCurrencyTotals(this.actor),
       isInCombat: this.actor.inCombat,
 
       dexSR: [...range(1, this.actor.system.attributes.dexStrikeRank ?? 0)],
@@ -272,594 +272,25 @@ export class RqgActorSheet extends ActorSheet<
       ],
       activeInSR: [...this.activeInSR],
 
-      characteristicRanks: await this.rankCharacteristics(),
+      characteristicRanks: await DataPrep.rankCharacteristics(this.actor),
       bodyType: this.actor.getBodyType(),
-      hitLocationDiceRangeError: this.getHitLocationDiceRangeError(),
+      hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
 
       // UI toggles
-      showHeropoints: getGame().settings.get(systemId, "showHeropoints"),
-      showUiSection: this.getUiSectionVisibility(),
-      actorWizardFeatureFlag: getGame().settings.get(systemId, "actor-wizard-feature-flag"),
+      showHeropoints: game.settings?.get(systemId, "showHeropoints") ?? false,
+      showUiSection: DataPrep.getUiSectionVisibility(this.actor),
+      actorWizardFeatureFlag: game.settings?.get(systemId, "actor-wizard-feature-flag") ?? false,
       itemLoopMessage: itemTree.loopMessage,
-      enrichedUnspecifiedSkill: await this.getUnspecifiedSkillText(),
-      enrichedIncorrectRunes: await this.getIncorrectRunesText(embeddedItems?.rune),
-    };
-  }
-
-  private async rankCharacteristics(): Promise<any> {
-    const result = {} as { [key: string]: string };
-    for (const characteristic of Object.keys(this.actor.system.characteristics)) {
-      const rankClass = "characteristic-rank-";
-      const char = this.actor.system.characteristics[characteristic as keyof Characteristics];
-
-      if (char == null || char.value == null || char.formula == null || char.formula == "") {
-        // cannot evaluate
-        result.characteristic = "";
-        continue;
-      }
-
-      if (Number.isNumeric(char.formula)) {
-        // formula is a literal number and does not need evaluation
-        result.characteristic = "";
-        continue;
-      }
-
-      if (!Roll.validate(char.formula)) {
-        // formula is not valid and cannnot be evaluated
-        result.characteristic = "";
-        continue;
-      }
-
-      const minRoll = new Roll(char.formula || "");
-      await minRoll.evaluate({ minimize: true });
-      const minTotal = minRoll.total;
-      const maxRoll = new Roll(char.formula || "");
-      await maxRoll.evaluate({ maximize: true });
-      const maxTotal = maxRoll.total;
-
-      if (minTotal == null || maxTotal == null) {
-        // cannot evaluate
-        result.characteristic = "";
-        continue;
-      }
-
-      if (char.value < minTotal) {
-        result[characteristic] = rankClass + "low";
-        continue;
-      }
-
-      if (char.value > maxTotal) {
-        result[characteristic] = rankClass + "high";
-        continue;
-      }
-
-      // the tens value of the percentage of the value compared to the maxTotal
-      const rank = Math.floor(((char.value - minTotal) / (maxTotal - minTotal)) * 10);
-
-      result[characteristic] = rankClass + rank;
-    }
-    return result;
-  }
-
-  private calcCurrencyTotals(): any {
-    const currency: RqgItem[] = this.actor.items.filter(
-      (i: RqgItem) => i.type === ItemTypeEnum.Gear && i.system.physicalItemType === "currency",
-    );
-    const result = { quantity: 0, price: { real: 0, estimated: 0 }, encumbrance: 0 };
-    currency.forEach((curr) => {
-      assertItemType(curr.type, ItemTypeEnum.Gear);
-      result.quantity += Number(curr.system.quantity);
-      result.price.real += curr.system.price.real * curr.system.quantity;
-      result.price.estimated += curr.system.price.estimated * curr.system.quantity;
-      if (curr.system.equippedStatus !== "notCarried") {
-        result.encumbrance += curr.system.encumbrance * curr.system.quantity;
-      }
-      let conv;
-      if (curr.system.price.estimated > 1) {
-        conv = localize("RQG.Actor.Gear.CurrencyConversionTipOver1", {
-          name: curr.name,
-          value: curr.system.price.estimated,
-        });
-      } else if (curr.system.price.estimated === 1) {
-        conv = localize("RQG.Actor.Gear.CurrencyConversionTipLunar");
-      } else {
-        conv = localize("RQG.Actor.Gear.CurrencyConversionTipUnder1", {
-          name: curr.name,
-          value: 1 / curr.system.price.estimated,
-        });
-      }
-      curr.system.price.conversion = conv;
-    });
-    return result;
-  }
-
-  private getMainCultInfo(): MainCult {
-    const cults = this.actor.items
-      .filter((i) => i.type === ItemTypeEnum.Cult)
-      .sort((a: RqgItem, b: RqgItem) => b.system.runePoints.max - a.system.runePoints.max);
-    const mainCultItem: RqgItem | undefined = cults[0];
-    const mainCultRankTranslation = mainCultItem?.system?.joinedCults.map((c: any) =>
-      c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : "",
-    );
-    return {
-      name: mainCultItem?.name ?? "",
-      id: mainCultItem?.id ?? "",
-      rank: formatListByWorldLanguage(mainCultRankTranslation),
-      descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
-      hasMultipleCults: cults.length > 1,
-    };
-  }
-
-  private getSpiritMagicPointSum(): number {
-    return this.actor.items.reduce((acc: number, item: RqgItem) => {
-      if (item.type === ItemTypeEnum.SpiritMagic && !item.system.isMatrix) {
-        return acc + item.system.points;
-      } else {
-        return acc;
-      }
-    }, 0);
-  }
-
-  private getPowCrystals(): { name: string; size: number }[] {
-    return (
-      this.actor.appliedEffects &&
-      this.actor.appliedEffects
-        .filter(
-          (e) =>
-            e.changes.find((e: any) => e.key === "system.attributes.magicPoints.max") != undefined,
-        )
-        .map((e) => {
-          return {
-            name: e.name ?? "",
-            size: e.changes
-              .filter((c: any) => c.key === "system.attributes.magicPoints.max")
-              .reduce((acc: number, c: any) => acc + Number(c.value), 0),
-          };
-        })
-    );
-  }
-
-  private getFreeInt(spiritMagicPointSum: number): number {
-    return (
-      (this.actor.system.characteristics.intelligence.value ?? 0) -
-      spiritMagicPointSum -
-      this.actor.items.filter(
-        (i: RqgItem) =>
-          i.type === ItemTypeEnum.Skill &&
-          i.system.category === SkillCategoryEnum.Magic &&
-          !!i.system.runeRqidLinks?.length,
-      ).length
-    );
-  }
-
-  private getLoadedMissileSrDisplay(dexSr: number | undefined): string[] {
-    const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
-    const loadedMissileSr = [
-      ["1", reloadIcon, "6", reloadIcon, "11"],
-      ["1", reloadIcon, "7", reloadIcon],
-      ["2", reloadIcon, "9"],
-      ["3", reloadIcon, "11"],
-      ["4", reloadIcon],
-      ["5", reloadIcon],
-    ];
-    return dexSr != null ? loadedMissileSr[dexSr] : [];
-  }
-
-  private getLoadedMissileSr(dexSr: number | undefined): string {
-    const loadedMissileSr = ["1,6,11", "1,7", "2,9", "3,11", "4", "5"];
-    return dexSr != null ? loadedMissileSr[dexSr] : "";
-  }
-
-  private getUnloadedMissileSrDisplay(dexSr: number | undefined): string[] {
-    const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
-    const unloadedMissileSr = [
-      [reloadIcon, "5", reloadIcon, "10"],
-      [reloadIcon, "6", reloadIcon, "12"],
-      [reloadIcon, "7", reloadIcon],
-      [reloadIcon, "8"],
-      [reloadIcon, "9"],
-      [reloadIcon, "10"],
-    ];
-    return dexSr != null ? unloadedMissileSr[dexSr] : [];
-  }
-
-  private getUnloadedMissileSr(dexSr: number | undefined): string {
-    const unloadedMissileSr = ["5,10", "6,12", "7", "8", "9", "10"];
-    return dexSr != null ? unloadedMissileSr[dexSr] : "";
-  }
-
-  private getBaseStrikeRank(
-    dexStrikeRank: number | undefined,
-    sizStrikeRank: number | undefined,
-  ): number | undefined {
-    if (dexStrikeRank == null && sizStrikeRank == null) {
-      return undefined;
-    }
-
-    return [dexStrikeRank, sizStrikeRank].reduce(
-      (acc: number, value: number | undefined) => (Number(value) ? acc + Number(value) : acc),
-      0,
-    );
-  }
-
-  private getCharacterElementRuneImgs(): RuneDataSource[] {
-    return this.actor.items
-      .reduce((acc: any[], i: RqgItem) => {
-        if (
-          i.type === ItemTypeEnum.Rune &&
-          i.system.runeType.type === RuneTypeEnum.Element &&
-          !!i.system.chance
-        ) {
-          acc.push({
-            id: i.id,
-            img: i.img,
-            rune: i.system.rune,
-            chance: i.system.chance,
-            descriptionRqid: i.system.descriptionRqidLink?.rqid,
-          });
-        }
-        return acc;
-      }, [])
-      .sort((a: any, b: any) => b.chance - a.chance);
-  }
-
-  private getCharacterPowerRuneImgs(): RuneDataSource[] {
-    return this.actor.items
-      .reduce((acc: any[], i: RqgItem) => {
-        if (
-          i.type === ItemTypeEnum.Rune &&
-          i.system.runeType.type === RuneTypeEnum.Power &&
-          i.system.chance > 50
-        ) {
-          acc.push({
-            id: i.id,
-            img: i.img,
-            rune: i.system.rune,
-            chance: i.system.chance,
-            descriptionRqid: i.system.descriptionRqidLink?.rqid,
-          });
-        }
-        return acc;
-      }, [])
-      .sort((a: any, b: any) => b.chance - a.chance);
-  }
-
-  private getCharacterFormRuneImgs(): RuneDataSource[] {
-    return this.actor.items
-      .reduce((acc: any[], i: RqgItem) => {
-        if (
-          i.type === ItemTypeEnum.Rune &&
-          i.system.runeType.type === RuneTypeEnum.Form &&
-          (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
-        ) {
-          acc.push({
-            id: i.id,
-            img: i.img,
-            rune: i.system.rune,
-            chance: i.system.chance,
-            descriptionRqid: i.system.descriptionRqidLink?.rqid,
-          });
-        }
-        return acc;
-      }, [])
-      .sort((a: any, b: any) => b.chance - a.chance);
-  }
-
-  /**
-   * Return a translated error string if the hit location dice do not cover the range 1-20
-   * once and only once.
-   * If there is no error, it returns an empty string.
-   */
-  private getHitLocationDiceRangeError(): string {
-    const hitLocations = this.actor.items.filter((i) => i.type === ItemTypeEnum.HitLocation);
-    if (hitLocations.length === 0) {
-      return ""; // No hit locations is a valid state
-    }
-    const ranges = hitLocations.flatMap((hl) => [...range(hl.system.dieFrom, hl.system.dieTo)]);
-    if (ranges.length === 20 && [...range(1, 20)].every((die) => ranges.includes(die))) {
-      return "";
-    } else {
-      const sortedRanges = ranges.sort((a, b) => a - b);
-      return localize("RQG.Actor.Health.HitLocationDiceDoNotAddUp", {
-        dice: sortedRanges.join(", "),
-      });
-    }
-  }
-
-  /**
-   * Take the embedded items of the actor and rearrange them for presentation.
-   * returns something like this {armor: [RqgItem], elementalRune: [RqgItem], ... }
-   * TODO Fix the typing
-   */
-  public async organizeEmbeddedItems(actor: RqgActor): Promise<any> {
-    const itemTypes: any = Object.fromEntries(getItemDocumentTypes().map((t: string) => [t, []]));
-    actor.items.forEach((item) => {
-      itemTypes[item.type].push(item);
-    });
-
-    const currency: any = [];
-    actor.items.forEach((item) => {
-      if (item.type === ItemTypeEnum.Gear) {
-        //TODO: Assert that this is Gear or something else that has physicalItemType??
-        if (item.system.physicalItemType === "currency") {
-          currency.push(item);
-        }
-      }
-    });
-
-    currency.sort(
-      (a: any, b: any) =>
-        (Number(a.system.price.estimated) < Number(b.system.price.estimated) ? 1 : -1) - 1,
-    );
-
-    itemTypes.currency = currency;
-
-    // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
-    const skills: any = {};
-    Object.values(SkillCategoryEnum).forEach((cat: string) => {
-      skills[cat] = itemTypes[ItemTypeEnum.Skill].filter((s: any) => cat === s.system.category);
-    });
-    // Sort the skills inside each category
-    Object.values(skills).forEach((skillList) =>
-      (skillList as RqgItem[]).sort((a: RqgItem, b: RqgItem) =>
-        ("" + a.name).localeCompare("" + b.name),
+      enrichedUnspecifiedSkill: await DataPrep.getUnspecifiedSkillText(this.actor),
+      enrichedIncorrectRunes: await DataPrep.getIncorrectRunesText(
+        this.actor,
+        embeddedItems?.rune,
+        this.incorrectRunes,
       ),
-    );
-    itemTypes[ItemTypeEnum.Skill] = skills;
-
-    // Prepare the object to hold the runes per runeType
-    const resultObject = {
-      [RuneTypeEnum.Element]: {},
-      [RuneTypeEnum.Power]: {},
-      [RuneTypeEnum.Form]: {},
-      [RuneTypeEnum.Condition]: {},
-      [RuneTypeEnum.Technique]: {},
-    };
-
-    // Separate runes into types (elemental, power, form, technique)
-    itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune].reduce((acc: any, rune: any) => {
-      const runeRqidName = rune.flags?.rqg?.documentRqidFlags?.id
-        ?.split(".")
-        .pop()
-        .split("-")
-        .shift();
-      const runeType = rune?.system.runeType.type;
-      if (Object.values(RuneTypeEnum).includes(runeType)) {
-        acc[runeType][runeRqidName] = rune;
-      } else {
-        this.incorrectRunes.push(rune);
-      }
-      return acc;
-    }, resultObject);
-
-    // Sort the hit locations
-    if (getGame().settings.get(systemId, "sortHitLocationsLowToHigh")) {
-      itemTypes[ItemTypeEnum.HitLocation].sort(
-        (a: any, b: any) => a.system.dieFrom - b.system.dieFrom,
-      );
-    } else {
-      itemTypes[ItemTypeEnum.HitLocation].sort(
-        (a: any, b: any) => b.system.dieFrom - a.system.dieFrom,
-      );
-    }
-
-    // Arrange wounds for display & add last rqid part
-    itemTypes[ItemTypeEnum.HitLocation] = itemTypes[ItemTypeEnum.HitLocation].map(
-      (hitLocation: any) => {
-        hitLocation.system.woundsString = hitLocation.system.wounds.join("+");
-        hitLocation.rqidName = hitLocation.flags?.rqg?.documentRqidFlags?.id?.split(".")[2] ?? "";
-        return hitLocation;
-      },
-    );
-
-    // Enrich Cult texts for holyDays, gifts & geases
-    await Promise.all(
-      itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-        cult.system.enrichedHolyDays =
-          // @ts-expect-error applications
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.holyDays);
-        cult.system.enrichedGifts =
-          // @ts-expect-error applications
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.gifts);
-        cult.system.enrichedGeases =
-          // @ts-expect-error applications
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.geases);
-      }),
-    );
-
-    // Extract hasAccessToRuneMagic info from subCults
-    itemTypes[ItemTypeEnum.Cult].map(async (cult: any) => {
-      cult.hasAccessToRuneMagic = cult.system.joinedCults.some(
-        (subCult: any) => subCult.rank !== CultRankEnum.LayMember,
-      );
-      return cult;
-    });
-
-    // Enrich passion description texts
-    await Promise.all(
-      itemTypes[ItemTypeEnum.Passion].map(async (passion: any) => {
-        passion.system.enrichedDescription =
-          // @ts-expect-error applications
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            passion.system.description,
-          );
-      }),
-    );
-
-    // Add extra info for Rune Magic Spells
-    itemTypes[ItemTypeEnum.RuneMagic].forEach((runeMagic: RqgItem) => {
-      const spellCult: RqgItem | undefined = actor.items.get(runeMagic.system.cultId);
-      const cultCommonRuneMagicRqids =
-        spellCult?.system.commonRuneMagicRqidLinks.map((r: RqidLink) => r.rqid) ?? [];
-
-      runeMagic.system.isCommon = cultCommonRuneMagicRqids.includes(
-        runeMagic?.flags?.rqg?.documentRqidFlags?.id ?? "",
-      );
-    });
-
-    // Add weapon data
-    itemTypes[ItemTypeEnum.Weapon].forEach((weapon: RqgItem) => {
-      assertItemType(weapon.type, ItemTypeEnum.Weapon);
-
-      const usages = weapon.system.usage;
-      const actorStr = actor.system.characteristics.strength.value ?? 0;
-      const actorDex = actor.system.characteristics.dexterity.value ?? 0;
-      for (const key in usages) {
-        const usage = usages[key];
-        // @ts-expect-error isEmpty
-        if (!foundry.utils.isEmpty(usage?.skillRqidLink?.rqid)) {
-          usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
-          usage.unusable = false;
-          usage.underMinSTR = false;
-          usage.underMinDEX = false;
-          if (actorStr < usage.minStrength) {
-            usage.underMinSTR = true;
-          }
-          if (actorDex < usage.minDexterity) {
-            usage.underMinDEX = true;
-          }
-          if (usage.underMinSTR) {
-            usage.unusable = true;
-          }
-          if (usage.underMinDEX) {
-            // STR can compensate for being under DEX min on 2 for 1 basis
-            const deficiency = usage.minDexterity - actorDex;
-            const strover = Math.floor((actorStr - usage.minStrength) / 2);
-            if (usage.minStrength == null) {
-              usage.unusable = true;
-            } else {
-              usage.unusable = deficiency > strover;
-            }
-          }
-        }
-      }
-
-      const projectile = actor.items.find((i) => i.id === weapon.system.projectileId);
-      if (projectile) {
-        weapon.system.projectileQuantity = projectile.system.quantity;
-        weapon.system.projectileName = projectile.name;
-      }
-    });
-    itemTypes[ItemTypeEnum.Armor].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Gear].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Passion].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.RuneMagic].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.SpiritMagic].sort((a: any, b: any) => a.sort - b.sort);
-    itemTypes[ItemTypeEnum.Weapon].sort((a: any, b: any) => a.sort - b.sort);
-
-    itemTypes[ItemTypeEnum.Cult].sort(
-      (a: any, b: any) => b.system.runePoints?.max - a.system.runePoints?.max,
-    );
-
-    return itemTypes;
-  }
-
-  private getUiSectionVisibility(): UiSections {
-    return {
-      health:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.system.attributes.hitPoints.max != null ||
-        this.actor.items.some((i) => i.type === ItemTypeEnum.HitLocation),
-      combat:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some(
-          (i: RqgItem) =>
-            i.getFlag(systemId, documentRqidFlags)?.id === CONFIG.RQG.skillRqid.dodge ||
-            i.type === ItemTypeEnum.Weapon,
-        ),
-      runes:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Rune),
-      spiritMagic:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.SpiritMagic),
-      runeMagic:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) =>
-          [ItemTypeEnum.Cult, ItemTypeEnum.RuneMagic].includes(i.type),
-        ),
-      sorcery:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some(
-          (i: RqgItem) =>
-            i.type === ItemTypeEnum.Rune &&
-            (i.system.isMastered || i.system.runeType.type === RuneTypeEnum.Technique),
-        ),
-      skills:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Skill),
-      gear:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some(
-          (i: RqgItem) =>
-            [ItemTypeEnum.Gear, ItemTypeEnum.Weapon, ItemTypeEnum.Armor].includes(i.type) &&
-            !(i.system as any).isNatural, // Don't show gear tab for natural weapons
-        ),
-      passions:
-        CONFIG.RQG.debug.showAllUiSections ||
-        this.actor.items.some((i: RqgItem) => i.type === ItemTypeEnum.Passion),
-      background: true,
-      activeEffects: CONFIG.RQG.debug.showActorActiveEffectsTab && getGameUser().isGM,
     };
   }
 
-  private async getUnspecifiedSkillText(): Promise<string | undefined> {
-    const unspecifiedSkills = this.actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Skill && !!i.name && i.system?.specialization === "...",
-    );
-    if (unspecifiedSkills.length) {
-      const itemLinks = unspecifiedSkills.map((s) => s.link).join(" ");
-      const warningText = localize("RQG.Actor.Skill.UnspecifiedSkillWarning");
-      // @ts-expect-error applications
-      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        `${warningText} ${itemLinks}`,
-      );
-    }
-  }
-
-  private async getIncorrectRunesText(embeddedRunes: any): Promise<string | undefined> {
-    const validRuneIds = [
-      ...Object.values(embeddedRunes.element).map((r: any) => r.id),
-      Object.values(embeddedRunes.form).map((r: any) => r.id),
-      Object.values(embeddedRunes.condition).map((r: any) => r.id),
-      Object.values(embeddedRunes.technique).map((r: any) => r.id),
-      Object.values(embeddedRunes.power)
-        .filter((r: any) => {
-          const runeRqidName = r?.flags?.rqg?.documentRqidFlags?.id
-            ?.split(".")
-            .pop()
-            .split("-")
-            .shift();
-          return [
-            "fertility",
-            "death",
-            "harmony",
-            "disorder",
-            "truth",
-            "illusion",
-            "stasis",
-            "movement",
-          ].includes(runeRqidName);
-        })
-        .map((r: any) => r.id),
-    ].flat(Infinity);
-    const extraRunes = this.actor.items.filter(
-      (i) => i.type === ItemTypeEnum.Rune && !validRuneIds.includes(i.id),
-    );
-    embeddedRunes.invalid = extraRunes;
-
-    if (this.incorrectRunes.length) {
-      // incorrectRunes is initialised as a side effect in the organizeEmbeddedItems method
-      const itemLinks = this.incorrectRunes.map((s) => s.link).join(" ");
-      const warningText = localize("RQG.Actor.Rune.IncorrectRuneWarning");
-      // @ts-expect-error applications
-      return await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        `${warningText} ${itemLinks}`,
-      );
-    }
-  }
-
-  protected _updateObject(event: Event, formData: any): Promise<RqgActor | undefined> {
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -879,31 +310,20 @@ export class RqgActorSheet extends ActorSheet<
 
     const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
     if (newHealth !== this.actor.system.attributes.health) {
-      // @ts-expect-error this.token should be TokenDocument, but is typed as Token
       const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
       const speakerName = speaker.alias;
       let message;
-      if (
-        newHealth === "dead" &&
-        // @ts-expect-error token.actor
-        !this.token?.actor.statuses.has("dead")
-      ) {
+      if (newHealth === "dead" && !this.token?.actor?.statuses.has("dead")) {
         message = `${speakerName} runs out of hitpoints and dies here and now!`;
       }
-      if (
-        newHealth === "unconscious" &&
-        // @ts-expect-error token?.actor
-        !this.token?.actor.statuses.has("unconscious")
-      ) {
+      if (newHealth === "unconscious" && !this.token?.actor?.statuses.has("unconscious")) {
         message = `${speakerName} faints from lack of hitpoints!`;
       }
       if (message) {
         ChatMessage.create({
-          user: getGameUser().id,
           speaker: speaker,
           content: message,
           whisper: usersIdsThatOwnActor(this.actor),
-          // @ts-expect-error CHAT_MESSAGE_STYLES
           style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
         });
       }
@@ -919,38 +339,33 @@ export class RqgActorSheet extends ActorSheet<
     return super._updateObject(event, formData);
   }
 
-  _contextMenu(html: HTMLElement): void {
-    // @ts-expect-error applications
+  override _contextMenu(html: HTMLElement | JQuery<HTMLElement>): void {
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".characteristic.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       characteristicMenuOptions(this.actor, this.token),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".combat.contextmenu",
       combatMenuOptions(this.actor),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".hit-location.contextmenu",
       hitLocationMenuOptions(this.actor),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".rune.contextmenu",
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
@@ -958,36 +373,32 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".spirit-magic.contextmenu",
       spiritMagicMenuOptions(this.actor),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".cult.contextmenu",
       cultMenuOptions(this.actor),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".rune-magic.contextmenu",
       runeMagicMenuOptions(this.actor),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".skill.contextmenu",
       // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
@@ -995,27 +406,24 @@ export class RqgActorSheet extends ActorSheet<
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".gear.contextmenu",
       gearMenuOptions(this.actor),
       { jQuery: false },
     );
 
-    // @ts-expect-error applications
     foundry.applications.ux.ContextMenu.implementation.create(
-      this,
+      this as any,
       html,
       ".passion.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
       passionMenuOptions(this.actor, this.token),
       { jQuery: false },
     );
   }
 
-  activateListeners(html: JQuery): void {
+  override activateListeners(html: JQuery): void {
     super.activateListeners(html);
     if (!this.actor.isOwner) {
       // Only owners are allowed to interact
@@ -1023,29 +431,30 @@ export class RqgActorSheet extends ActorSheet<
     }
     const htmlElement = html[0];
     // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
-    htmlElement.parentElement?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+    htmlElement?.parentElement?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
       elem.addEventListener("dragenter", this._onDragEnter);
       elem.addEventListener("dragleave", this._onDragLeave);
     });
 
     // This is a hack to prevent activating button click listeners when typing return in input boxes
     // This invisible button at the start of the form will catch the event and do nothing.
-    htmlElement.querySelectorAll<HTMLElement>("[data-return-sink]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-return-sink]").forEach((el) => {
       el.addEventListener("click", async () => {
         (document.activeElement as HTMLElement)?.blur();
       });
     });
 
-    this._contextMenu(htmlElement);
+    if (htmlElement) {
+      this._contextMenu(htmlElement);
+    }
 
     // Use attributes data-item-edit, data-item-delete & data-item-roll to specify what should be clicked to perform the action
     // Set data-item-edit=actor.items._id on the same or an outer element to specify what item the action should be performed on.
-
     // Roll actor Characteristic
-    htmlElement.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
+    htmlElement?.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
       const closestDataCharacteristic = el.closest("[data-characteristic]");
       assertHtmlElement(closestDataCharacteristic);
-      const characteristicName = closestDataCharacteristic?.dataset.characteristic as
+      const characteristicName = closestDataCharacteristic?.dataset["characteristic"] as
         | keyof typeof actorCharacteristics
         | undefined;
 
@@ -1097,8 +506,12 @@ export class RqgActorSheet extends ActorSheet<
     // Roll Item (Rune, Skill, Passion)
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId);
-      requireValue(item, "AbilityChance roll couldn't find skillItem");
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      assertDocumentSubType<AbilityItem>(
+        item,
+        abilityItemTypes,
+        "AbilityChance roll couldn't find skillItem",
+      );
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
@@ -1120,12 +533,12 @@ export class RqgActorSheet extends ActorSheet<
     // Roll Rune Magic
     htmlElement?.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId) as RqgItem | undefined;
-      assertItemType(runeMagicItem?.type, ItemTypeEnum.RuneMagic);
+      const runeMagicItem = this.actor.getEmbeddedDocument("Item", itemId, {});
+      assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
-        assertItemType(runeMagicItem.type, ItemTypeEnum.RuneMagic);
+        assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
@@ -1149,20 +562,15 @@ export class RqgActorSheet extends ActorSheet<
     // Roll Spirit Magic
     htmlElement?.querySelectorAll<HTMLElement>("[data-spirit-magic-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId);
-      if (!item) {
-        const msg = `Couldn't find item [${itemId}] to roll Spirit Magic against`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg, el);
-      }
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      assertDocumentSubType<SpiritMagicItem>(
+        item,
+        ItemTypeEnum.SpiritMagic,
+        "Couldn't find item [${itemId}] to roll Spirit Magic against",
+      );
       let clickCount = 0;
 
       el.addEventListener("click", async (ev: MouseEvent) => {
-        if (item.type !== ItemTypeEnum.SpiritMagic) {
-          const msg = "Tried to roll a Spirit Magic Roll against some other Item";
-          ui.notifications?.error(msg);
-          throw new RqgError(msg, item);
-        }
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.system.isVariable && item.system.points > 1) {
@@ -1186,8 +594,8 @@ export class RqgActorSheet extends ActorSheet<
     // Roll Weapon Ability (send to chat)
     htmlElement?.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
-      const weapon = this.actor.items.get(weaponItemId);
-      assertItemType(weapon?.type, ItemTypeEnum.Weapon);
+      const weapon = this.actor.items.get(weaponItemId) as RqgItem | undefined;
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
       let clickCount = 0;
       el.addEventListener("click", async (ev: MouseEvent) => {
@@ -1203,7 +611,7 @@ export class RqgActorSheet extends ActorSheet<
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              weapon.attack();
+              void weapon.attack();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -1216,11 +624,11 @@ export class RqgActorSheet extends ActorSheet<
       ?.querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
       .forEach((el) => {
         el.addEventListener("click", async () => {
-          const currentValue = getGame().settings.get(systemId, "sortHitLocationsLowToHigh");
-          await getGame().settings.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
+          const currentValue = game.settings?.get(systemId, "sortHitLocationsLowToHigh");
+          await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
           // Rerender all actor sheets the user has open
           Object.values(ui.windows).forEach((a: any) => {
-            if (a?.document?.type === ActorTypeEnum.Character) {
+            if (isDocumentSubType<CharacterActor>(a?.document, ActorTypeEnum.Character)) {
               a.render();
             }
           });
@@ -1253,7 +661,7 @@ export class RqgActorSheet extends ActorSheet<
     // Edit Item (open the item sheet)
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId);
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
       if (!item || !item.sheet) {
         const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
         ui.notifications?.error(msg);
@@ -1287,7 +695,7 @@ export class RqgActorSheet extends ActorSheet<
             ];
           const affectedItems = new ItemTree(
             this.actor.items.contents,
-          ).getOtherItemIdsInSameLocationTree(itemName);
+          ).getOtherItemIdsInSameLocationTree(itemName ?? "");
           const updates = affectedItems.map((id) => ({
             _id: id,
             system: { equippedStatus: newEquippedStatus },
@@ -1295,18 +703,19 @@ export class RqgActorSheet extends ActorSheet<
           await this.actor.updateEmbeddedDocuments("Item", updates);
           return;
         }
-        const item = this.actor.items.get(itemId);
-        if (!item || !("equippedStatus" in item.system)) {
-          const msg = `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`;
-          ui.notifications?.error(msg);
-          throw new RqgError(msg);
-        }
+        const item = this.actor.items.get(itemId) as RqgItem | undefined;
+        assertDocumentSubType<PhysicalItem>(
+          item,
+          physicalItemTypes,
+          `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`,
+        );
+
         const newStatus =
           equippedStatuses[
             (equippedStatuses.indexOf(item.system.equippedStatus) + 1) % equippedStatuses.length
           ];
-        // Will trigger a Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
-        await item.update({ "system.equippedStatus": newStatus });
+        // Will trigger an Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
+        await item.update({ system: { equippedStatus: newStatus } });
       });
     });
 
@@ -1315,7 +724,7 @@ export class RqgActorSheet extends ActorSheet<
       const path = getRequiredDomDataset(el, "item-edit-value");
       const itemId = getRequiredDomDataset(el, "item-id");
       el.addEventListener("change", async (event) => {
-        const item = this.actor.items.get(itemId);
+        const item = this.actor.items.get(itemId) as RqgItem | undefined;
         requireValue(item, `Couldn't find itemId [${itemId}] to edit an item (when clicked).`);
         await item.update({ [path]: (event.target as HTMLInputElement)?.value }, {});
       });
@@ -1337,10 +746,9 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-actor-effect-edit]").forEach((el) => {
       const effectUuid = getRequiredDomDataset(el, "effect-uuid");
       el.addEventListener("click", () => {
-        // @ts-expect-error fromUuidSync
-        const effect = fromUuidSync(effectUuid);
+        const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
         requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
-        new ActiveEffectConfig(effect).render(true);
+        new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
       });
     });
 
@@ -1355,7 +763,7 @@ export class RqgActorSheet extends ActorSheet<
 
     // Roll Damage for spirit magic, separate damage bonus and weapon damage
     htmlElement?.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
-      const damage = el.dataset.damageRoll;
+      const damage = el.dataset["damageRoll"];
       requireValue(damage, "direct damage roll without damage");
       const { damageFormula, damageBonusPlaceholder } =
         getNormalizedDamageFormulaAndDamageBonus(damage);
@@ -1369,7 +777,7 @@ export class RqgActorSheet extends ActorSheet<
         );
       }
 
-      const heading = el.dataset.damageRollHeading ?? "";
+      const heading = el.dataset["damageRollHeading"] ?? "";
       el.addEventListener("click", async () => {
         const r = new DamageRoll(damageFormulaWithDb);
         await r.evaluate();
@@ -1408,7 +816,7 @@ export class RqgActorSheet extends ActorSheet<
     // Add Passion button
     htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = getGame().settings.get(
+        const defaultItemIconSettings: any = game.settings?.get(
           systemId,
           "defaultItemIconSettings",
         );
@@ -1461,7 +869,7 @@ export class RqgActorSheet extends ActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
       const physicalItemType = getRequiredDomDataset(el, "gear-add");
       el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = getGame().settings.get(
+        const defaultItemIconSettings: any = game.settings?.get(
           systemId,
           "defaultItemIconSettings",
         );
@@ -1489,14 +897,13 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private async updateActiveCombatWithSR(activeInSR: Set<number>) {
-    const combat = getGame().combat;
+    const combat = game.combat;
     if (!combat) {
       throw new RqgError(
         "Programming error: updateActiveCombatWithSR should not be run if there are no combats.",
       );
     }
 
-    // @ts-expect-error getCombatantsByActor
     const currentCombatants = combat.getCombatantsByActor(this.actor);
 
     // Delete combatants that don't match activeInSR
@@ -1504,7 +911,7 @@ export class RqgActorSheet extends ActorSheet<
     await combat.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
 
     if (activeInSR.size === 0) {
-      await currentCombatants[0].update({ initiative: null });
+      await currentCombatants[0]?.update({ initiative: null });
     }
 
     // Create new Combatants for missing SR
@@ -1521,26 +928,8 @@ export class RqgActorSheet extends ActorSheet<
     await combat.createEmbeddedDocuments("Combatant", newCombatants);
   }
 
-  private getEquippedProjectileOptions(): SelectOptionData<string>[] {
-    return [
-      { value: "", label: localize("RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert") },
-      ...this.actor
-        .getEmbeddedCollection("Item")
-        .filter(
-          (i: any) =>
-            i.type === ItemTypeEnum.Weapon &&
-            i.system.isProjectile &&
-            i.system.equippedStatus === "equipped",
-        )
-        .map((i: any) => ({
-          value: i.id ?? "",
-          label: `${i.name ?? ""} (${i.system.quantity})`,
-        })),
-    ];
-  }
-
   static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
-    const item = actor.items.get(itemId);
+    const item = actor.items.get(itemId) as RqgItem | undefined;
     requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
 
     const itemTypeLoc: string = localizeItemType(item.type);
@@ -1551,7 +940,7 @@ export class RqgActorSheet extends ActorSheet<
     });
 
     let content: string;
-    if (item.type === ItemTypeEnum.Cult) {
+    if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
       content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
         itemType: itemTypeLoc,
         itemName: item.name,
@@ -1581,11 +970,13 @@ export class RqgActorSheet extends ActorSheet<
 
     if (await confirmDialog.setButtons(buttons, "cancel").show()) {
       const idsToDelete = [];
-      if (item.type === ItemTypeEnum.Cult) {
+      if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
         const cultId = item.id;
         const runeMagicSpells = actor.items.filter(
-          (i) => i.type === ItemTypeEnum.RuneMagic && i.system.cultId === cultId,
-        );
+          (i) =>
+            isDocumentSubType<RuneMagicItem>(i, ItemTypeEnum.RuneMagic) &&
+            i.system.cultId === cultId,
+        ) as RuneMagicItem[];
         runeMagicSpells.forEach((s) => {
           idsToDelete.push(s.id);
         });
@@ -1604,16 +995,17 @@ export class RqgActorSheet extends ActorSheet<
     onDragLeave(event);
   }
 
-  protected async _onDrop(event: DragEvent): Promise<unknown> {
+  protected override async _onDrop(event: DragEvent): Promise<unknown> {
     event.preventDefault(); // Allow the drag to be dropped
     this.render(true); // Rerender instead of calling removeDragHoverClass to get rid of any dragHover classes. They are nested in the actorSheet.
 
-    // @ts-expect-error getDragEventData
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData;
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
     if (
-      data.type !== "Compendium" &&
-      !isAllowedDocumentNames(data.type, allowedDropDocumentNames)
+      data?.type !== "Compendium" &&
+      !isAllowedDocumentNames(data?.type, allowedDropDocumentNames)
     ) {
       return false;
     }
@@ -1628,30 +1020,30 @@ export class RqgActorSheet extends ActorSheet<
      * @param {ActorSheet} sheet The ActorSheet application
      * @param {object} data      The data that has been dropped onto the sheet
      */
-    const allowed = Hooks.call("dropActorSheetData", actor, this, data);
-    if (allowed === false) {
+    const allowed = Hooks.call("dropActorSheetData", actor, this as any, data);
+    if (!allowed) {
       return;
     }
 
     // Handle different data types (document names)
-    switch (data.type) {
+    switch (data?.type) {
       case "ActiveEffect":
-        return this._onDropActiveEffect(event, data);
+        return this._onDropActiveEffect(event, data as ActorSheet.DropData.ActiveEffect);
       case "Actor":
-        return this._onDropActor(event, data);
+        return this._onDropActor(event, data as ActorSheet.DropData.Actor);
       case "Item":
-        return this._onDropItem(event, data);
+        return this._onDropItem(event, data as ActorSheet.DropData.Item);
       case "JournalEntry":
         return this._onDropJournalEntry(event, data);
       case "JournalEntryPage":
         return this._onDropJournalEntryPage(event, data);
       case "Folder":
-        return this._onDropFolder(event, data);
+        return this._onDropFolder(event, data as ActorSheet.DropData.Folder);
       case "Compendium":
         return this._onDropCompendium(event, data);
       default:
         // This will warn about not supported Document Name
-        isAllowedDocumentNames(data.type, [
+        isAllowedDocumentNames(data?.type, [
           "ActiveEffect",
           "Actor",
           "Item",
@@ -1662,11 +1054,7 @@ export class RqgActorSheet extends ActorSheet<
     }
   }
 
-  // @ts-expect-error parameter types
-  async _onDropItem(
-    event: DragEvent,
-    data: { type: string; uuid: string },
-  ): Promise<boolean | RqgItem[]> {
+  override async _onDropItem(event: DragEvent, data: ActorSheet.DropData.Item): Promise<unknown> {
     // A player will not be able to copy an item to an Actor sheet
     // unless they are the owner.
     if (!this.actor.isOwner) {
@@ -1676,27 +1064,29 @@ export class RqgActorSheet extends ActorSheet<
       return false;
     }
 
-    const { droppedDocument: item, isAllowedToDrop } = await extractDropInfo<RqgItem>(event, data);
+    const { droppedDocument: item, isAllowedToDrop } =
+      await extractDropInfo<foundry.abstract.Document.Any>(event, data);
 
-    if (!isAllowedToDrop) {
+    if (!isAllowedToDrop || !item) {
       return false;
     }
 
-    const itemData = item?.toObject();
+    const rqgItem = item as RqgItem;
+    const itemData = rqgItem.toObject();
     // Handle item sorting within the same Actor
-    if (this.actor.uuid === item?.parent?.uuid) {
+    if (this.actor.uuid === rqgItem.parent?.uuid) {
       return this._onSortItem(event, itemData) ?? false;
     }
 
-    if (item.type === ItemTypeEnum.Occupation) {
-      if (!hasRqid(item)) {
+    if (isDocumentSubType<OccupationItem>(rqgItem, ItemTypeEnum.Occupation)) {
+      if (!hasRqid(rqgItem)) {
         return false;
       }
-      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
-      return [item];
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", rqgItem);
+      return [rqgItem];
     }
 
-    if (!item.parent) {
+    if (!rqgItem.parent) {
       // Dropped from Sidebar
       // if (itemData.type === ItemTypeEnum.RuneMagic) {
       //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
@@ -1706,7 +1096,7 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     const targetActor = this.actor;
-    const sourceActor = item.parent;
+    const sourceActor = rqgItem.parent;
 
     // Handle item sorting within the same Actor
     if (targetActor.uuid === sourceActor?.uuid) {
@@ -1714,9 +1104,9 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     if (
-      itemData.type === ItemTypeEnum.Armor ||
-      itemData.type === ItemTypeEnum.Gear ||
-      itemData.type === ItemTypeEnum.Weapon
+      isDocumentSubType<ArmorItem>(itemData as any, ItemTypeEnum.Armor) ||
+      isDocumentSubType<GearItem>(itemData as any, ItemTypeEnum.Gear) ||
+      isDocumentSubType<WeaponItem>(itemData as any, ItemTypeEnum.Weapon)
     ) {
       // Prompt to confirm giving physical item from one Actor to another,
       // and ask how many if it has a quantity of more than one.
@@ -1730,7 +1120,7 @@ export class RqgActorSheet extends ActorSheet<
 
   async _onDropJournalEntry(
     event: DragEvent,
-    data: { type: string; uuid: string },
+    data: ActorSheet.DropData,
   ): Promise<boolean | JournalEntry[]> {
     const {
       droppedDocument: droppedJournal,
@@ -1745,36 +1135,36 @@ export class RqgActorSheet extends ActorSheet<
     return false;
   }
 
-  async _onDropCompendium(event: DragEvent, data: any): Promise<RqgItem[]> {
+  async _onDropCompendium(event: DragEvent, data: ActorSheet.DropData): Promise<RqgItem[]> {
     if (!this.actor.isOwner) {
       return [];
     }
-    const compendiumId = data.collection;
-    const pack = getGame().packs.get(compendiumId);
+    const compendiumId = hasOwnProperty(data, "collection") ? data.collection : undefined;
+    if (typeof compendiumId !== "string") {
+      return [];
+    }
+    const pack = game.packs?.get(compendiumId);
     const packIndex = await pack?.getIndex();
     if (!packIndex) {
       return [];
     }
-    const documents = await Promise.all(
+    const documents = (await Promise.all(
       packIndex.map(async (di) => {
-        // @ts-expect-error uuid
         const doc = await fromUuid(di.uuid);
         return doc?.toObject();
       }),
-    );
+    )) as Item.Implementation["_source"][];
     return this._onDropItemCreate(documents.filter(isTruthy));
   }
 
   async _onDropJournalEntryPage(
     event: DragEvent,
-    data: { type: string; uuid: string },
-    // @ts-expect-error JournalEntryPage
+    data: ActorSheet.DropData,
   ): Promise<boolean | JournalEntryPage[]> {
     const {
       droppedDocument: droppedPage,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
-      // @ts-expect-error JournalEntryPage
     } = await extractDropInfo<JournalEntryPage>(event, data);
 
     if (isAllowedToDrop && hasRqid(droppedPage)) {
@@ -1785,7 +1175,7 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private async confirmCopyIntangibleItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
@@ -1793,7 +1183,6 @@ export class RqgActorSheet extends ActorSheet<
       sourceActor: sourceActor,
       targetActor: this.actor,
     };
-    // @ts-expect-error renderTemplate
     const content: string = await foundry.applications.handlebars.renderTemplate(
       templatePaths.confirmCopyIntangibleItem,
       {
@@ -1825,24 +1214,22 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private async submitConfirmCopyIntangibleItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
   ): Promise<RqgItem[]> {
     return this._onDropItemCreate(incomingItemDataSource);
   }
 
   private async confirmTransferPhysicalItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
       targetActor: this.actor,
-      // @ts-expect-error quantity
-      showQuantity: incomingItemDataSource.system.quantity > 1,
+      showQuantity: (incomingItemDataSource.system as any).quantity > 1,
     };
 
-    // @ts-expect-error renderTemplate
     const content: string = await foundry.applications.handlebars.renderTemplate(
       templatePaths.confirmTransferPhysicalItem,
       {
@@ -1881,25 +1268,25 @@ export class RqgActorSheet extends ActorSheet<
 
   private async submitConfirmTransferPhysicalItem(
     html: JQuery,
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
     const formData = new FormData(html.find("form")[0]);
     const data = Object.fromEntries(formData.entries());
 
     let quantityToTransfer: number = 1;
-    if (data.numtotransfer) {
-      quantityToTransfer = Number(data.numtotransfer);
+    if (data["numtotransfer"]) {
+      quantityToTransfer = Number(data["numtotransfer"]);
     }
     return await this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
   }
 
   private async transferPhysicalItem(
-    incomingItemDataSource: ItemDataSource,
+    incomingItemDataSource: Item.Implementation["_source"],
     quantityToTransfer: number,
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
-    if (!incomingItemDataSource) {
+    if (!incomingItemDataSource || !incomingItemDataSource._id) {
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
       return false;
     }
@@ -1913,7 +1300,6 @@ export class RqgActorSheet extends ActorSheet<
       ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
       return false;
     }
-    // @ts-expect-error quantity
     if (quantityToTransfer > incomingItemDataSource.system.quantity) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
@@ -1925,14 +1311,18 @@ export class RqgActorSheet extends ActorSheet<
     }
 
     const existingItem = this.actor.items.find(
-      (i: RqgItem) =>
-        i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
-    );
+      (i) => i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
+    ) as RqgItem | undefined;
 
     let newTargetQty = quantityToTransfer;
     const newSourceQty = Number(incomingItemDataSource.system.quantity) - quantityToTransfer;
 
     if (existingItem) {
+      assertDocumentSubType<PhysicalItem>(
+        existingItem,
+        physicalItemTypes,
+        "Existing item found when transferring physical item is not a PhysicalItem",
+      );
       // Target actor has an item of this type with the same name
 
       newTargetQty += Number(existingItem.system.quantity);
@@ -1947,8 +1337,8 @@ export class RqgActorSheet extends ActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          // @ts-expect-error _id
-          return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          return true;
         }
       }
     } else {
@@ -1963,22 +1353,22 @@ export class RqgActorSheet extends ActorSheet<
           ])) as RqgItem[];
         } else {
           // delete source item
-          // @ts-expect-error _id
-          return sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+          return true;
         }
       }
     }
     return false;
   }
 
-  protected async _renderOuter(): Promise<JQuery<JQuery.Node>> {
-    const html = (await super._renderOuter()) as JQuery<JQuery.Node>;
-    await addRqidLinkToSheetJQuery(html, this);
+  protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
+    const html = await super._renderOuter();
+    await addRqidLinkToSheetJQuery(html, this as any);
 
     const editModeLink = html.find(".title-edit-mode")[0];
     if (editModeLink) {
-      editModeLink.dataset.tooltipDirection = "UP";
-      editModeLink.dataset.tooltip = this.actor.system.editMode
+      editModeLink.dataset["tooltipDirection"] = "UP";
+      editModeLink.dataset["tooltip"] = this.actor.system.editMode
         ? localize("RQG.Actor.EditMode.SwitchToPlayMode")
         : localize("RQG.Actor.EditMode.SwitchToEditMode");
     }
@@ -1986,11 +1376,11 @@ export class RqgActorSheet extends ActorSheet<
     return html;
   }
 
-  protected _getHeaderButtons(): Application.HeaderButton[] {
+  protected override _getHeaderButtons(): Application.HeaderButton[] {
     const headerButtons = super._getHeaderButtons();
 
     if (
-      getGame().settings.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
+      game.settings?.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
       !this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete &&
       !this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
     ) {
@@ -2002,9 +1392,9 @@ export class RqgActorSheet extends ActorSheet<
       });
     }
 
-    const user = getGameUser();
+    const user = game.user;
 
-    if (user.isGM || user.isTrusted) {
+    if (user?.isGM || user?.isTrusted) {
       if (this.actor.system.editMode) {
         headerButtons.splice(0, 0, {
           class: "title-edit-mode",
@@ -2035,10 +1425,10 @@ export class RqgActorSheet extends ActorSheet<
 
     if (newMode) {
       link.innerHTML = `<i class="edit-mode-icon"></i>`;
-      link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToPlayMode");
+      link.dataset["tooltip"] = localize("RQG.Actor.EditMode.SwitchToPlayMode");
     } else {
       link.innerHTML = `<i class="play-mode-icon"></i>`;
-      link.dataset.tooltip = localize("RQG.Actor.EditMode.SwitchToEditMode");
+      link.dataset["tooltip"] = localize("RQG.Actor.EditMode.SwitchToEditMode");
     }
     this.actor.update({ system: { editMode: newMode } });
   }
@@ -2048,23 +1438,20 @@ export class RqgActorSheet extends ActorSheet<
   }
 
   private static async sortItems(actor: RqgActor, itemType: string): Promise<void> {
-    const itemsToSort = actor.items.filter((i) => i.type === itemType);
-    itemsToSort.sort((a: RqgItem, b: RqgItem) => {
+    const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
+    itemsToSort.sort((a, b) => {
       return (a.name ?? "").localeCompare(b.name ?? "");
     });
 
-    itemsToSort.map((item: RqgItem, index) => {
+    itemsToSort.map((item, index) => {
       if (index === 0) {
-        // @ts-expect-error sort
         item.sort = CONST.SORT_INTEGER_DENSITY;
       } else {
-        // @ts-expect-error sort
-        item.sort = itemsToSort[index - 1].sort + CONST.SORT_INTEGER_DENSITY;
+        item.sort = (itemsToSort[index - 1]?.sort ?? 0) + CONST.SORT_INTEGER_DENSITY;
       }
     });
     const updateData = itemsToSort.map((item) => ({
       _id: item.id,
-      // @ts-expect-error sort
       sort: item.sort,
     }));
     await actor.updateEmbeddedDocuments("Item", updateData);

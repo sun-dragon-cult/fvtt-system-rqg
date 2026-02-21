@@ -1,5 +1,8 @@
 import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type HomelandItem = RqgItem & { system: HomelandDataPropertiesData };
 
 export interface HomelandDataSourceData {
   homeland: string;
@@ -20,26 +23,26 @@ export interface HomelandDataSourceData {
 export interface HomelandDataPropertiesData extends HomelandDataSourceData {}
 
 export interface HomelandDataSource {
-  type: ItemTypeEnum.Homeland;
+  type: typeof ItemTypeEnum.Homeland;
   system: HomelandDataSourceData;
 }
 
 export interface HomelandDataProperties {
-  type: ItemTypeEnum.Homeland;
+  type: typeof ItemTypeEnum.Homeland;
   system: HomelandDataSourceData;
 }
 
-export const defaultHomelandData: HomelandDataSourceData = {
-  homeland: "",
-  homelandJournalRqidLink: undefined,
-  region: "",
-  regionJournalRqidLink: undefined,
-  cultureJournalRqidLinks: [],
-  tribeJournalRqidLinks: [],
-  clanJournalRqidLinks: [],
-  cultRqidLinks: [],
-  skillRqidLinks: [],
-  runeRqidLinks: [],
-  passionRqidLinks: [],
-  wizardInstructions: "",
-};
+// export const defaultHomelandData: HomelandDataSourceData = {
+//   homeland: "",
+//   homelandJournalRqidLink: undefined,
+//   region: "",
+//   regionJournalRqidLink: undefined,
+//   cultureJournalRqidLinks: [],
+//   tribeJournalRqidLinks: [],
+//   clanJournalRqidLinks: [],
+//   cultRqidLinks: [],
+//   skillRqidLinks: [],
+//   runeRqidLinks: [],
+//   passionRqidLinks: [],
+//   wizardInstructions: "",
+// };

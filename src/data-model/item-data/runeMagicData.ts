@@ -1,6 +1,9 @@
 import { ItemTypeEnum } from "./itemTypes";
-import { Spell, SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "./spell";
+import type { Spell } from "./spell";
 import { RqidLink } from "../shared/rqidLink";
+import type { RqgItem } from "@items/rqgItem.ts";
+
+export type RuneMagicItem = RqgItem & { system: RuneMagicDataPropertiesData };
 
 export interface RuneMagicDataSourceData extends Spell {
   /** The cult this rune magic is learned from and where to draw rune points */
@@ -20,25 +23,25 @@ export interface RuneMagicDataPropertiesData extends RuneMagicDataSourceData {
 }
 
 export interface RuneMagicDataSource {
-  type: ItemTypeEnum.RuneMagic;
+  type: typeof ItemTypeEnum.RuneMagic;
   system: RuneMagicDataSourceData;
 }
 
 export interface RuneMagicDataProperties {
-  type: ItemTypeEnum.RuneMagic;
+  type: typeof ItemTypeEnum.RuneMagic;
   system: RuneMagicDataPropertiesData;
 }
 
-export const defaultRuneMagicData: RuneMagicDataSourceData = {
-  descriptionRqidLink: undefined,
-  cultId: "",
-  runeRqidLinks: [],
-  points: 0,
-  castingRange: SpellRangeEnum.Ranged,
-  duration: SpellDurationEnum.Temporal,
-  concentration: SpellConcentrationEnum.Passive,
-  isRitual: false,
-  isStackable: false,
-  isOneUse: false,
-  isEnchantment: false,
-};
+// export const defaultRuneMagicData: RuneMagicDataSourceData = {
+//   descriptionRqidLink: undefined,
+//   cultId: "",
+//   runeRqidLinks: [],
+//   points: 0,
+//   castingRange: SpellRangeEnum.Ranged,
+//   duration: SpellDurationEnum.Temporal,
+//   concentration: SpellConcentrationEnum.Passive,
+//   isRitual: false,
+//   isStackable: false,
+//   isOneUse: false,
+//   isEnchantment: false,
+// };

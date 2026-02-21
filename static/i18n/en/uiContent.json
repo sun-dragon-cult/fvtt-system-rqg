@@ -470,7 +470,7 @@
         "UnawareTarget": "Unaware Target",
         "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",
-        "DamageBonusFrom":"Damage Bonus from",
+        "DamageBonusFrom": "Damage Bonus from",
         "ExtraDamage": "Extra Damage",
         "UsedLastOfAmmoWarn": "You just used the last of your {projectileName}!",
         "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
