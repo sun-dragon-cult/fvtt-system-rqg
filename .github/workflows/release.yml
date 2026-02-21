@@ -30,7 +30,7 @@ jobs:
           check-latest: true
 
       - name: Init dependencies
-        run: pnpm i
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Build project
         run: pnpm build
