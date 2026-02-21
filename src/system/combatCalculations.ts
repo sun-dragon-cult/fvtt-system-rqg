@@ -446,7 +446,7 @@ export function applyDamageBonusToFormula(
       .map((n) => Number(n));
     if (!dice || !sides) {
       // Invalid damage bonus format. Warn and ignore damage bonus
-      const msg = "Invalid damage bonus format, expected XdY";
+      const msg = `Invalid damage bonus format "${damageBonus}", expected XdY`;
       ui.notifications?.warn(msg);
       console.warn("RQG | ", msg, damageBonus);
       return damageFormula.replace(/\s*\+\s*db(\/2)?/g, "");
