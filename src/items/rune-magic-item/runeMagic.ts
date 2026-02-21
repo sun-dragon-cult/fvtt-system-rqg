@@ -255,7 +255,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       cult,
       isOneUse,
     );
-    if (costs.exp) {
+    if (result <= AbilitySuccessLevelEnum.Success) {
       await runeItem.awardExperience();
     }
 
