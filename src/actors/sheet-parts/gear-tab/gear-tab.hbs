@@ -352,13 +352,17 @@
 
   {{!-- Encumbrance totals --}}
   <div class="enc-totals">
-        <div>{{localize "RQG.Actor.Gear.MaxEnc"}} {{system.attributes.encumbrance.max}}</div>
+    <div>
+      <img class="equipped-status" src="systems/rqg/assets/images/ui/max-enc.svg">
+      {{localize "RQG.Actor.Gear.MaxEnc"}} 
+      {{system.attributes.encumbrance.max}}
+    </div>
 
-        <div {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}class="warning" data-tooltip="{{localize "RQG.Actor.Gear.OverWeight"}}"{{/if}}>
-          <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg">
-          {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}
-          {{system.attributes.encumbrance.equipped}}
-        </div>
+    <div {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}class="warning" data-tooltip="{{localize "RQG.Actor.Gear.OverWeight"}}"{{/if}}>
+      <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg">
+      {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}
+      {{system.attributes.encumbrance.equipped}}
+    </div>
 
     <div {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}class="warning" data-tooltip="{{localize "RQG.Actor.Gear.OverWeight"}}"{{/if}}>
       <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg">
