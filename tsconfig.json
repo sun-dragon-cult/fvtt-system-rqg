@@ -5,18 +5,13 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "noEmit": true,
-    "outDir": ".typescript-build",
-    "removeComments": true,
-    "sourceMap": true,
     "allowImportingTsExtensions": true,
     // Vite does interop with ESM and CommonJS modules so this option matches the runtime.
     "esModuleInterop": true,
     // `@pixi/utils/lib/index.d.mts` still depends on `allowSyntheticDefaultImports`.
     "allowSyntheticDefaultImports": true,
-    // The files this tsconfig.json includes won't even have `fvtt-types`.
-    // See `src/tsconfig.json` for how it sets up its type.
-    // You can add types here if necessary. It'll only be scoped to the root files though.
-    "types": ["fvtt-types"],
+    // Include global type packages used by the project.
+    "types": ["fvtt-types", "vitest/globals"],
 
     // Strict is _highly_ recommended. It's a whole suite of options in tsc that help you catch bugs early.
     // If you want to disable it for some reason, you must add "strictNullChecks": true or else foundry-vtt-types may not function correctly.
@@ -49,7 +44,7 @@
     // 3.
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitOverride": true,
-    "allowJs": true,
+    "allowJs": false,
     // You might think that this option is useful to have on either for performance or to ignore errors.
     // However due to how many types in fvtt-types are global this doesn't usually significantly help performance.
     // Fortunately for performance, this template already builds practically instantly using Vite and incremental typechecking runs in the background.
@@ -65,7 +60,8 @@
     // Note that occassionally an incremental build might cause "ghost errors." That is an error that only occurs due to recompilation occuring in a different order than
     // the original compilation. Given that the ordering of compilation is not guaranteed anywhere this is only uncovering already existing, legitimate, issues but this can
     // still be rather frustrating as tracking them down can be difficult.
-    "incremental": true
+    "incremental": true,
+    "tsBuildInfoFile": ".typescript-build/tsconfig.tsbuildinfo"
 
     // Consider enabling this if you have JS files and want TypeScript to lint them.
     // Most starting projects will probably want to simply write in TypeScript and most existing projects will probably not have JS files that pass typechecking so this is disabled.
@@ -83,10 +79,9 @@
     // "isolatedModules": true,
   },
   // Exclude the src directory from the root project to avoid double type checking and causing an error due to mismatched `compilerOptions.types`.
-  //  "exclude": ["dist", "src/**", "node_modules"], TODO why is it excluding???
+  // "exclude": ["dist", "node_modules"],
   "include": [
-    "node_modules/.pnpm/vitest@3.2.4_@types+node@22.17.0_jiti@2.4.2_sass-embedded@1.89.2_sass@1.85.1_yaml@2.7.0/node_modules/vitest/globals.d.ts",
-    "global.d.ts",
+    "src/global.d.ts",
     "src/**/*.ts"
   ]
 }
