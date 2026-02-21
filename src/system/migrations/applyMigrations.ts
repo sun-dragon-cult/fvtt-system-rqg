@@ -280,7 +280,9 @@ async function getItemMigrationUpdates(
 
 async function getSceneMigrationUpdates(
   scene: Scene,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   itemMigrations: ItemMigration[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actorMigrations: ActorMigration[],
 ): Promise<object> {
   const tokens = await Promise.all(
