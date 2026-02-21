@@ -430,7 +430,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       actorDamagedApplied: false,
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
-      attackDamageBonus: formDataObject.attackDamageBonus,
+      attackDamageBonus: formDataObject.attackDamageBonus.split("|").slice(1).join("|"),
       attackRoll: attackRoll.toJSON(),
       defenceRoll: undefined,
       damageRoll: undefined,
@@ -604,12 +604,12 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
             t.actor?.getBodyType() !== "humanoid",
         )
         ?.map((token: TokenDocument) => ({
-          value: (token.actor as CharacterActor)?.system.attributes?.damageBonus ?? "",
+          value: `${token.id}|${(token.actor as CharacterActor)?.system.attributes?.damageBonus ?? ""}`,
           label: token.name ?? "",
         })) ?? [];
 
     nonHumanoids.unshift({
-      value: weaponOwner.system.attributes?.damageBonus ?? "",
+      value: `${weaponOwner.id}|${weaponOwner.system.attributes?.damageBonus ?? ""}`,
       label: weaponOwner.name ?? "",
     });
 
