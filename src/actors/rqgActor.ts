@@ -12,7 +12,6 @@ import {
   getTokenFromActor,
   isDocumentSubType,
   localize,
-  localizeCharacteristic,
   requireValue,
   RqgError,
   usersIdsThatOwnActor,
@@ -78,7 +77,7 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Do a characteristic roll and handle possible POW experience check afterward.
+   * Do a characteristic roll and notify the user if POW experience rules apply.
    */
   public async characteristicRollImmediate(
     characteristicName: keyof Characteristics,
@@ -292,7 +291,8 @@ export class RqgActor extends Actor {
     }
   }
 
-  // Currently only marks POW experience
+  // POW experience is not awarded automatically on a successful roll.
+  // It can only be gained through specific activities (see RQG rules p.417-418).
   public async checkExperience(
     characteristicName: string,
     result: AbilitySuccessLevelEnum | undefined,
@@ -301,17 +301,9 @@ export class RqgActor extends Actor {
     if (
       result != null &&
       result <= AbilitySuccessLevelEnum.Success &&
-      characteristicName === "power" &&
-      !this.system.characteristics.power.hasExperience
+      characteristicName === "power"
     ) {
-      await this.update(
-        foundry.utils.expandObject({ "system.characteristics.power.hasExperience": true }),
-      );
-      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-        actorName: this.name,
-        itemName: localizeCharacteristic("power"),
-      });
-      ui.notifications?.info(msg);
+      ui.notifications?.info(localize("RQG.Actor.AwardExperience.PowExperienceInfo"));
     }
   }
 
