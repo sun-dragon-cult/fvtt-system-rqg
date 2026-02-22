@@ -53,6 +53,8 @@ import type { CultItem } from "@item-model/cultData.ts";
 
 import type { PassionItem } from "@item-model/passionData.ts";
 
+const worshipSkillName = "Worship";
+
 export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
@@ -434,6 +436,7 @@ export class RqgItem extends Item {
   /**
    * Give an experience check to this item if the result is a success or greater
    * and the item can get experience.
+   * A successful Worship skill roll also awards the actor a POW experience check.
    */
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
     assertDocumentSubType<AbilityItem>(
@@ -441,8 +444,19 @@ export class RqgItem extends Item {
       abilityItemTypes,
       "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
     );
-    if (result && result <= AbilitySuccessLevelEnum.Success && !this.system.hasExperience) {
+    const isSuccess = result != null && result <= AbilitySuccessLevelEnum.Success;
+    if (isSuccess && !this.system.hasExperience) {
       await this.awardExperience();
+    }
+    if (
+      isSuccess &&
+      isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill) &&
+      this.system.skillName === worshipSkillName
+    ) {
+      const actor = this.actor;
+      if (isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+        await actor.awardPowExperience();
+      }
     }
   }
 

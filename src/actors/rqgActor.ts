@@ -12,6 +12,7 @@ import {
   getTokenFromActor,
   isDocumentSubType,
   localize,
+  localizeCharacteristic,
   requireValue,
   RqgError,
   usersIdsThatOwnActor,
@@ -304,6 +305,23 @@ export class RqgActor extends Actor {
       characteristicName === "power"
     ) {
       ui.notifications?.info(localize("RQG.Actor.AwardExperience.PowExperienceInfo"));
+    }
+  }
+
+  /**
+   * Award a POW experience check if the actor doesn't already have one this session.
+   */
+  public async awardPowExperience(): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    if (!this.system.characteristics.power.hasExperience) {
+      await this.update(
+        foundry.utils.expandObject({ "system.characteristics.power.hasExperience": true }),
+      );
+      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
+        actorName: this.name,
+        itemName: localizeCharacteristic("power"),
+      });
+      ui.notifications?.info(msg);
     }
   }
 
