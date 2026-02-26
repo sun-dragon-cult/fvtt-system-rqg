@@ -17,12 +17,12 @@ import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts
 export const runeMenuOptions = (
   actor: CharacterActor,
   token: TokenDocument | undefined,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -33,7 +33,7 @@ export const runeMenuOptions = (
     name: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -44,7 +44,7 @@ export const runeMenuOptions = (
     name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -57,7 +57,7 @@ export const runeMenuOptions = (
     }),
     icon: contextMenuRunes.Improve,
     condition: () => true,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -68,11 +68,11 @@ export const runeMenuOptions = (
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
@@ -85,7 +85,7 @@ export const runeMenuOptions = (
     }),
     icon: contextMenuRunes.Edit,
     condition: () => !!game.user?.isGM || actor.system.editMode,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -106,7 +106,7 @@ export const runeMenuOptions = (
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

@@ -11,7 +11,7 @@ import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { GearItem } from "@item-model/gearData.ts";
 
-export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.ContextMenu.SetAsNotCarried"),
     icon: contextMenuRunes.SetNotCarried,
@@ -45,7 +45,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLE
   {
     name: localize("RQG.ContextMenu.SplitIntoNewLocation"),
     icon: contextMenuRunes.Split,
-    condition: (el: JQuery): boolean => {
+    condition: (el: HTMLElement): boolean => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as GearItem | undefined;
       return (
@@ -63,7 +63,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLE
     }),
     icon: contextMenuRunes.Edit,
     condition: () => true,
-    callback: (el: JQuery): void => {
+    callback: (el: HTMLElement): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as GearItem | undefined;
       if (!item) {
@@ -83,7 +83,7 @@ export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLE
     }),
     icon: contextMenuRunes.Delete,
     condition: () => true,
-    callback: (el: JQuery): void => {
+    callback: (el: HTMLElement): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
