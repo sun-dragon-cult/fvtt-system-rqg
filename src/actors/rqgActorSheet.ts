@@ -51,6 +51,7 @@ import { RQG_CONFIG, systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
+import { RqgContextMenu } from "../foundryUi/RqgContextMenu";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import {
   extractDropInfo,
@@ -340,86 +341,59 @@ export class RqgActorSheet<
   }
 
   override _contextMenu(html: HTMLElement | JQuery<HTMLElement>): void {
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
+    const htmlElement = html instanceof HTMLElement ? html : html[0];
+    if (!htmlElement) {
+      return;
+    }
+
+    new RqgContextMenu(
+      htmlElement,
       ".characteristic.contextmenu",
       characteristicMenuOptions(this.actor, this.token),
-      { jQuery: false },
     );
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
-      ".combat.contextmenu",
-      combatMenuOptions(this.actor),
-      { jQuery: false },
-    );
+    new RqgContextMenu(htmlElement, ".combat.contextmenu", combatMenuOptions(this.actor));
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
+    new RqgContextMenu(
+      htmlElement,
       ".hit-location.contextmenu",
       hitLocationMenuOptions(this.actor),
-      { jQuery: false },
     );
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
+    new RqgContextMenu(
+      htmlElement,
       ".rune.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      runeMenuOptions(this.actor, this.token),
-      { jQuery: false },
+      runeMenuOptions(this.actor, this.token ?? undefined),
     );
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
+    new RqgContextMenu(
+      htmlElement,
       ".spirit-magic.contextmenu",
       spiritMagicMenuOptions(this.actor),
-      { jQuery: false },
     );
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
-      ".cult.contextmenu",
-      cultMenuOptions(this.actor),
-      { jQuery: false },
-    );
+    new RqgContextMenu(htmlElement, ".cult.contextmenu", cultMenuOptions(this.actor));
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
-      ".rune-magic.contextmenu",
-      runeMagicMenuOptions(this.actor),
-      { jQuery: false },
-    );
+    new RqgContextMenu(htmlElement, ".cult-tab.contextmenu", cultMenuOptions(this.actor), {
+      fixed: true,
+      onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
+      onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
+    });
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
+    new RqgContextMenu(htmlElement, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
+
+    new RqgContextMenu(
+      htmlElement,
       ".skill.contextmenu",
-      // @ts-expect-error wait for foundry-vtt-types issue #1165 #1166
-      skillMenuOptions(this.actor, this.token),
-      { jQuery: false },
+      skillMenuOptions(this.actor, this.token ?? undefined),
     );
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
-      ".gear.contextmenu",
-      gearMenuOptions(this.actor),
-      { jQuery: false },
-    );
+    new RqgContextMenu(htmlElement, ".gear.contextmenu", gearMenuOptions(this.actor));
 
-    foundry.applications.ux.ContextMenu.implementation.create(
-      this as any,
-      html,
+    new RqgContextMenu(
+      htmlElement,
       ".passion.contextmenu",
-      passionMenuOptions(this.actor, this.token),
-      { jQuery: false },
+      passionMenuOptions(this.actor, this.token ?? undefined),
     );
   }
 
