@@ -102,6 +102,7 @@ export const loadHandlebarsTemplates = async function () {
     actorSpiritMagicTab: "systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs",
 
     actorRuneMagicTab: "systems/rqg/actors/sheet-parts/rune-magic-tab.hbs",
+    actorRuneMagicCultSection: "systems/rqg/actors/sheet-parts/rune-magic-cult-section.hbs",
 
     actorSorceryTab: "systems/rqg/actors/sheet-parts/sorcery-tab.hbs",
 

@@ -320,7 +320,8 @@
       }
     }
 
-    nav.gear-tabs {
+    nav.gear-tabs,
+    nav.cult-tabs {
       margin-bottom: 10px;
 
       img {
@@ -343,6 +344,13 @@
           margin-bottom: 1px;
         }
       }
+    }
+
+    // Artificially increase the css specificity. Look into layers in the future
+    .context.context.context-highlight.context-highlight {
+      mix-blend-mode: normal;
+      background: #d9d8c8; // Should be the themed css variable --background-color matching the context menu
+      border-color: #999; // Should be the themed css variable --border-color matching the context menu
     }
 
     .sheet-body {

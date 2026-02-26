@@ -133,6 +133,44 @@ export function calcCurrencyTotals(actor: CharacterActor): any {
 }
 
 /**
+ * Rank order for cult sorting (High Priest = 7 highest, Lay Member = 1 lowest).
+ */
+const cultRankOrder: Record<string, number> = {
+  [CultRankEnum.HighPriest]: 7,
+  [CultRankEnum.ChiefPriest]: 6,
+  [CultRankEnum.RuneLord]: 5,
+  [CultRankEnum.RunePriest]: 4,
+  [CultRankEnum.GodTalker]: 3,
+  [CultRankEnum.Initiate]: 2,
+  [CultRankEnum.LayMember]: 1,
+} as const;
+
+/**
+ * Compare two cult items for sorting: highest rank first, then rune points, then alphabetical.
+ */
+function compareCults(a: CultItem, b: CultItem): number {
+  // 1. Highest cult rank (High Priest first, Lay Member last)
+  const bestRankA = Math.max(
+    0,
+    ...(a.system.joinedCults?.map((c) => cultRankOrder[c.rank] ?? 0) ?? []),
+  );
+  const bestRankB = Math.max(
+    0,
+    ...(b.system.joinedCults?.map((c) => cultRankOrder[c.rank] ?? 0) ?? []),
+  );
+  if (bestRankB !== bestRankA) {
+    return bestRankB - bestRankA;
+  }
+  // 2. Rune Points (higher first)
+  const rpDiff = (b.system.runePoints?.max ?? 0) - (a.system.runePoints?.max ?? 0);
+  if (rpDiff !== 0) {
+    return rpDiff;
+  }
+  // 3. Alphabetical by deity name
+  return (a.system.deity ?? "").localeCompare(b.system.deity ?? "");
+}
+
+/**
  * Gets information about the actor's main cult.
  * @param actor - The character actor
  * @returns MainCult information
@@ -140,7 +178,7 @@ export function calcCurrencyTotals(actor: CharacterActor): any {
 export function getMainCultInfo(actor: CharacterActor): MainCult {
   const cults = actor.items
     .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
-    .sort((a, b) => (b.system.runePoints.max ?? 0) - (a.system.runePoints.max ?? 0)) as CultItem[];
+    .sort((a, b) => compareCults(a as CultItem, b as CultItem)) as CultItem[];
   const mainCultItem = cults[0];
   const mainCultRankTranslation =
     mainCultItem?.system?.joinedCults.map((c) =>
@@ -579,10 +617,7 @@ export async function organizeEmbeddedItems(
   itemTypes[ItemTypeEnum.SpiritMagic]?.sort((a, b) => a.sort - b.sort);
   itemTypes[ItemTypeEnum.Weapon]?.sort((a, b) => a.sort - b.sort);
 
-  itemTypes[ItemTypeEnum.Cult]?.sort(
-    (a, b) =>
-      ((b as CultItem).system.runePoints?.max ?? 0) - ((a as CultItem).system.runePoints?.max ?? 0),
-  );
+  itemTypes[ItemTypeEnum.Cult]?.sort((a, b) => compareCults(a as CultItem, b as CultItem));
 
   return itemTypes;
 }

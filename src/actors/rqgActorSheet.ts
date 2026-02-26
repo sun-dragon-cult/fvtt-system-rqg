@@ -127,6 +127,11 @@ export class RqgActorSheet<
           contentSelector: ".gear-body",
           initial: "by-item-type",
         },
+        {
+          navSelector: ".cult-tabs",
+          contentSelector: ".cult-body",
+          initial: "",
+        },
       ],
       dragDrop: [{ dragSelector: ".item-list .item", dropSelector: "[data-dropzone]" }],
     });
