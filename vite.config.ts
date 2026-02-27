@@ -74,7 +74,23 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
       }),
     );
   } else {
-    plugins.push(foundryHMRPlugin());
+    plugins.push(
+      viteStaticCopy({
+        structured: false,
+        targets: [
+          {
+            src: "src/**/*.hbs",
+            dest: "",
+            rename: (name, extension, fullPath) => {
+              const relativePath = path.relative(process.cwd(), fullPath);
+              return relativePath.replace(/^src\//, "");
+            },
+          },
+        ],
+        silent: true,
+      }),
+      foundryHMRPlugin(),
+    );
   }
 
   return {
@@ -230,12 +246,18 @@ function foundryHMRPlugin(): Vite.Plugin {
         return;
       }
 
-      // TODO det här är inte gjort för utspridda hbs-filer
       if (extension === ".hbs") {
-        const basePath = context.file.slice(context.file.indexOf("templates/"));
+        const srcIndex = context.file.indexOf("/src/");
+        if (srcIndex === -1) {
+          return;
+        }
+        // Strip the leading "src/" to match the static copy rename logic
+        const basePath = context.file.slice(srcIndex + "/src/".length);
         console.log(`Updating template file at ${basePath}`);
 
-        await fs.copyFile(context.file, `${outDir}/${basePath}`);
+        const destPath = `${outDir}/${basePath}`;
+        await fs.mkdir(path.dirname(destPath), { recursive: true });
+        await fs.copyFile(context.file, destPath);
 
         context.server.ws.send({
           type: "custom",
