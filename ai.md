@@ -13,6 +13,10 @@ This file is the default guidance for AI-assisted changes in this repository.
 - System: RuneQuest Glorantha (`rqg`) for Foundry VTT.
 - Runtime target: Foundry v13.
 - Main stack: TypeScript, Handlebars templates, SCSS.
+- Foundry v13 source code is available at `~/foundry/foundry-13/FoundryVTT/` for
+  reference when investigating Foundry internals (e.g. client APIs, application
+  lifecycle, context menus).
+- A short version of the rules for the roleplaying game this system is for are available at `https://rqwiki.chaosium.com/rules/`
 
 ## Default Engineering Rules
 
