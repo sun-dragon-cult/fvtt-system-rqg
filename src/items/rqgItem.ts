@@ -24,7 +24,7 @@ import {
 } from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
-import { systemId } from "../system/config";
+import { RQG_CONFIG, systemId } from "../system/config";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
@@ -434,6 +434,8 @@ export class RqgItem extends Item {
   /**
    * Give an experience check to this item if the result is a success or greater
    * and the item can get experience.
+   * A successful Worship skill roll also awards the actor a POW experience check.
+   * A successful Spirit Combat skill roll with a chance below 95% also awards POW experience.
    */
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
     assertDocumentSubType<AbilityItem>(
@@ -441,8 +443,20 @@ export class RqgItem extends Item {
       abilityItemTypes,
       "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
     );
-    if (result && result <= AbilitySuccessLevelEnum.Success && !this.system.hasExperience) {
+    const isSuccess = result != null && result <= AbilitySuccessLevelEnum.Success;
+    if (isSuccess && !this.system.hasExperience) {
       await this.awardExperience();
+    }
+    const rqid = this.getFlag(systemId, "documentRqidFlags")?.id;
+    if (
+      isSuccess &&
+      isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill) &&
+      (rqid?.startsWith(RQG_CONFIG.skillRqid.worship) || rqid === RQG_CONFIG.skillRqid.spiritCombat)
+    ) {
+      const actor = this.actor;
+      if (actor && isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+        await actor.awardPowExperience();
+      }
     }
   }
 
