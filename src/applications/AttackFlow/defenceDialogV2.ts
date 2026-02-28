@@ -226,9 +226,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       "RQG.Roll.AbilityRoll.MasterOpponentModifier",
     );
 
-    // Remove any previously pushed master opponent modifier before computing the new one.
-    // Roll.fromData passes options by reference, so the push below mutates the stored chat
-    // message data; filtering first ensures targetChance reflects the original attack chance.
+    // Remove any previously saved master opponent modifier before computing the new one,
+    // so that targetChance reflects the base attack chance without it.
     attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
       (m: Modifier) => m.description !== masterOpponentModifierDescription,
     );
