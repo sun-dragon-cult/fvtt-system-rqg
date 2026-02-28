@@ -311,7 +311,7 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Award a POW experience check if the actor doesn't already have one this session.
+   * Award a POW experience check if the actor doesn't already have one.
    */
   public async awardPowExperience(): Promise<void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
