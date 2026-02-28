@@ -121,7 +121,8 @@
       },
       "AwardExperience": {
         "GainedExperienceInfo": "{actorName} just gained an experience check in {itemName}!",
-        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property."
+        "ItemDoesntHaveExperienceError": "Attempt to AwardExperience to the item named \"{itemName}\" with id \"{itemId}\" that does not have the \"hasExperience\" property.",
+        "PowExperienceInfo": "Succeeded with a POW roll. Experience can only be gained through: a successful opposed spell roll, successful spirit combat, a worship ceremony, or training. Add experience manually if applicable."
       },
       "Background": {
         "Background": "Background",
