@@ -11,16 +11,14 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export const hitLocationMenuOptions = (
-  actor: CharacterActor,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+export const hitLocationMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: JQuery) => !!getDomDataset(el, "item-id"),
-    callback: (el: JQuery) => {
+    condition: (el: HTMLElement) => !!getDomDataset(el, "item-id"),
+    callback: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as HitLocationItem | undefined;
       if (!item || !item.sheet) {
@@ -40,7 +38,7 @@ export const hitLocationMenuOptions = (
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

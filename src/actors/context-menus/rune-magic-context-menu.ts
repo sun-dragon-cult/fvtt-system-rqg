@@ -14,12 +14,12 @@ import { Rqid } from "../../system/api/rqidApi";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RqgItem | undefined;
       assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
@@ -29,13 +29,13 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
   {
     name: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RqgItem | undefined;
       assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
       return item.system.points === 1;
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RqgItem | undefined;
       assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
@@ -45,11 +45,11 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
@@ -62,7 +62,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
     }),
     icon: contextMenuRunes.Edit,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RqgItem | undefined;
       assertDocumentSubType<RuneMagicItem>(item, ItemTypeEnum.RuneMagic);
@@ -80,7 +80,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<JQuery<
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       RqgActorSheet.confirmItemDelete(actor, itemId);
     },

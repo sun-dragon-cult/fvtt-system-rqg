@@ -20,11 +20,11 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 export const skillMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | undefined,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -32,7 +32,7 @@ export const skillMenuOptions = (
         item.system.category,
       );
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -42,7 +42,7 @@ export const skillMenuOptions = (
   {
     name: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -50,7 +50,7 @@ export const skillMenuOptions = (
         item.system.category,
       );
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -69,13 +69,13 @@ export const skillMenuOptions = (
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return item.system.canGetExperience;
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -87,12 +87,12 @@ export const skillMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Improve,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
       return isDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
@@ -106,11 +106,11 @@ export const skillMenuOptions = (
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       return !!rqid;
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
@@ -122,8 +122,8 @@ export const skillMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: JQuery) => !!getRequiredDomDataset(el, "item-id"),
-    callback: (el: JQuery) => {
+    condition: (el: HTMLElement) => !!getRequiredDomDataset(el, "item-id"),
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -141,7 +141,7 @@ export const skillMenuOptions = (
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

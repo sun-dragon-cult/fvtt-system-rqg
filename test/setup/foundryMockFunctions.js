@@ -677,6 +677,21 @@ const DataMockFields = (() => {
   };
 })();
 
+class MockContextMenu {
+  static implementation = {
+    create: vi.fn(),
+  };
+
+  constructor(container, selector, menuItems, options = {}) {
+    this.container = container;
+    this.selector = selector;
+    this.menuItems = menuItems;
+    this.options = options;
+  }
+
+  _setPosition(_menu, _target, _options) {}
+}
+
 // --------------------------------------
 // ---      Foundry global mocks      ---
 // ------------------------------
@@ -717,6 +732,7 @@ globalThis.foundry = {
     },
 
     ux: {
+      ContextMenu: MockContextMenu,
       TextEditor: {
         implementation: {
           enrichHTML: vi.fn((...args) => mockEnrichHTML(...args)),
