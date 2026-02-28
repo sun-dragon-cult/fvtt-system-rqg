@@ -437,6 +437,7 @@ export class RqgItem extends Item {
    * Give an experience check to this item if the result is a success or greater
    * and the item can get experience.
    * A successful Worship skill roll also awards the actor a POW experience check.
+   * A successful Spirit Combat skill roll with a chance below 95% also awards POW experience.
    */
   public async checkExperience(result: AbilitySuccessLevelEnum | undefined): Promise<void> {
     assertDocumentSubType<AbilityItem>(

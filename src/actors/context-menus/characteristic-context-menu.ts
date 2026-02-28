@@ -17,12 +17,12 @@ import type { DeepPartial } from "fvtt-types/utils";
 export const characteristicMenuOptions = (
   actor: CharacterActor,
   token: TokenDocument | undefined | null,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       await actor.characteristicRoll(characteristicName);
     },
@@ -31,7 +31,7 @@ export const characteristicMenuOptions = (
     name: localize("RQG.Game.RollCharacteristicQuick"),
     icon: contextMenuRunes.RollQuick,
     condition: () => true,
-    callback: async (el: JQuery): Promise<void> => {
+    callback: async (el: HTMLElement): Promise<void> => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       await actor.characteristicRollImmediate(characteristicName);
     },
@@ -39,7 +39,7 @@ export const characteristicMenuOptions = (
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
     },
@@ -59,7 +59,7 @@ export const characteristicMenuOptions = (
       itemType: localize("RQG.Actor.Characteristics.Characteristic"),
     }),
     icon: contextMenuRunes.Improve,
-    condition: (el: JQuery): boolean => {
+    condition: (el: HTMLElement): boolean => {
       const { name: characteristicName, value: char } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
       // You cannot train INT or increase it via experience
@@ -71,7 +71,7 @@ export const characteristicMenuOptions = (
       const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
       return trainable.includes(characteristicName);
     },
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
@@ -90,7 +90,7 @@ export const characteristicMenuOptions = (
   {
     name: localize("RQG.ContextMenu.InitializeCharacteristic"),
     icon: contextMenuRunes.InitializeCharacteristics,
-    condition: (el: JQuery): boolean => {
+    condition: (el: HTMLElement): boolean => {
       if (actor.system.editMode) {
         const { value: char } = getCharacteristic(actor, el);
         return char.formula != null && Roll.validate(char.formula);
@@ -98,7 +98,7 @@ export const characteristicMenuOptions = (
         return false;
       }
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const characteristic = getDomDataset(el, "characteristic") as
         | keyof Characteristics
         | undefined;

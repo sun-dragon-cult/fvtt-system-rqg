@@ -15,12 +15,12 @@ import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts
 export const passionMenuOptions = (
   actor: CharacterActor,
   token: TokenDocument | undefined | null,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
@@ -31,7 +31,7 @@ export const passionMenuOptions = (
     name: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
@@ -50,7 +50,7 @@ export const passionMenuOptions = (
     name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
     condition: () => true,
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || item.type !== ItemTypeEnum.Passion.toString()) {
@@ -69,7 +69,7 @@ export const passionMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: contextMenuRunes.Improve,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || item.type !== ItemTypeEnum.Passion.toString()) {
@@ -82,7 +82,7 @@ export const passionMenuOptions = (
       }
       return !!item.system.hasExperience;
     },
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
@@ -96,7 +96,7 @@ export const passionMenuOptions = (
     }),
     icon: contextMenuRunes.Edit,
     condition: () => true,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || !item.sheet) {
@@ -116,7 +116,7 @@ export const passionMenuOptions = (
     }),
     icon: contextMenuRunes.Delete,
     condition: () => true,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

@@ -12,17 +12,15 @@ import { Rqid } from "../../system/api/rqidApi";
 import type { CultItem } from "@item-model/cultData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export const cultMenuOptions = (
-  actor: CharacterActor,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+export const cultMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: JQuery) => {
+    condition: (el: HTMLElement) => {
       const rqid = getDomDataset(el, "rqid-link");
       return !!rqid;
     },
-    callback: async (el: JQuery) => {
+    callback: async (el: HTMLElement) => {
       const rqid = getDomDataset(el, "rqid-link");
       if (rqid) {
         await Rqid.renderRqidDocument(rqid);
@@ -34,8 +32,8 @@ export const cultMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: JQuery) => !!getRequiredDomDataset(el, "item-id"),
-    callback: (el: JQuery) => {
+    condition: (el: HTMLElement) => !!getRequiredDomDataset(el, "item-id"),
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as CultItem | undefined;
       if (!item || !item.sheet) {
@@ -55,7 +53,7 @@ export const cultMenuOptions = (
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!game.user?.isGM || actor.system.editMode,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

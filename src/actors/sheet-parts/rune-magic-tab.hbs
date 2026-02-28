@@ -8,130 +8,33 @@
     </div>
   {{/unless}}
 {{/each}}
+
+{{#if mainCult.hasMultipleCults}}
+  <nav class="cult-tabs tabs" data-group="cult-view">
+    {{#each embeddedItems.cult}}
+      <h3 class="item cult-tab contextmenu" data-item-id="{{id}}" data-group="cult-view" data-tab="cult-{{id}}">
+        {{system.deity}}
+        {{#each system.runeRqidLinks}}
+          <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+        {{/each}}
+      </h3>
+    {{/each}}
+  </nav>
+{{/if}}
+
 <div class="item-list">
-  {{#each embeddedItems.cult}}
-    <section class="item" style="margin-bottom: 1.5rem" data-item-id="{{id}}">
-      <header {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-        <h2 class="cult contextmenu">
-          {{system.deity}}
-          {{#each system.runeRqidLinks}}
-            <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
-          {{/each}}
-        </h2>
-        <div class="flex-row gap1rem cult contextmenu">
-          <span>
-            {{#if hasAccessToRuneMagic}}
-              <b>{{localize "RQG.Actor.RuneMagic.RunePoints"}}</b>
-              <input type="number" min="0" max="99"
-                   data-item-edit-value="system.runePoints.value"
-                   value="{{system.runePoints.value}}">/{{system.runePoints.max}}
-            {{/if}}
-          </span>
-          {{#if system.enrichedHolyDays}}
-            <span><b>{{localize "RQG.Actor.RuneMagic.HolyDays"}}</b>{{{system.enrichedHolyDays}}}</span>
-          {{/if}}
-          {{#if system.enrichedGeases}}
-            <span><b>{{localize "RQG.Actor.RuneMagic.Gifts"}}</b>{{{system.enrichedGifts}}}</span>
-          {{/if}}
-          {{#if system.enrichedGeases}}
-            <span><b>{{localize "RQG.Actor.RuneMagic.Geases"}}</b>{{{system.enrichedGeases}}}</span>
-          {{/if}}
-          <div class="flex-column"
-               {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-            {{#each system.joinedCults}}
-              <div><b>{{cultName}} – {{localize (concat "RQG.Actor.RuneMagic.CultRank." rank)}}</b>
-                {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}
-              </div>
-            {{/each}}
-          </div>
+  {{#if mainCult.hasMultipleCults}}
+    <section class="cult-body">
+      {{#each embeddedItems.cult}}
+        <div class="tab" data-group="cult-view" data-tab="cult-{{id}}">
+          {{> actorRuneMagicCultSection}}
         </div>
-      </header>
-      {{#if hasAccessToRuneMagic}}
-        <div class="grid rune-magic item-list">
-          <div class="headings"></div>
-          <div class="head1">
-            <button class="sort" data-sort-items="runeMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i
-              class="fas fa-arrow-down-a-z"></i></button>
-          </div>
-          <div class="head2">{{localize "RQG.Actor.RuneMagic.RuneSpell"}}</div>
-          <div class="head3">{{localize "RQG.Actor.RuneMagic.Points"}}</div>
-          <div class="head4"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Range"}}</span></div>
-          <div class="head5"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Duration"}}</span></div>
-          <div class="head6">{{localize "RQG.Actor.RuneMagic.Ritual"}}</div>
-          <div class="head7">{{localize "RQG.Actor.RuneMagic.Enchantment"}}</div>
-          <div class="head8">{{localize "RQG.Actor.RuneMagic.Stackable"}}</div>
-          <div class="head9">{{localize "RQG.Actor.RuneMagic.OneUse"}}</div>
-          <div class="head10">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
-          {{#each @root.embeddedItems.runeMagic}}
-            {{#if (eq ../id system.cultId)}}
-              <div class="rune-magic contextmenu item"
-                   data-item-id="{{id}}"
-                   {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-                <img class="item" src="{{img}}">
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                {{name}}&nbsp;
-                {{#if system.isCommon}}
-                  <img class="common" src="systems/rqg/assets/images/items/cult.svg"
-                       data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
-                {{/if}}
-                {{#each system.runeRqidLinks}}
-                  <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
-                {{/each}}
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                <span class="text-center">{{system.points}}</span>
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                {{#unless system.isRitual}}<span class="text-center">{{localize
-                  (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>{{/unless}}
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                {{#unless system.isRitual}}<span class="text-center">{{localize
-                  (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>{{/unless}}
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                <span class="text-center">{{yes-no system.isRitual}}</span>
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="Roll"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                <span class="text-center">{{yes-no system.isEnchantment}}</span>
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                <span class="text-center">{{yes-no system.isStackable}}</span>
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                <span class="text-center">{{yes-no system.isOneUse}}</span>
-              </div>
-              <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
-                   data-item-id="{{id}}"
-                   data-rune-magic-roll>
-                <span class="text-right">{{system.chance}}%</span>
-              </div>
-            {{/if}}
-          {{/each}}
-        </div>
-      {{else}}
-        <div class="warning p-5 flex-row">
-          <div class="text-center">{{localize "RQG.Actor.RuneMagic.RunesNotVisibleForLaymembersWarning"}}</div>
-        </div>
-      {{/if}}
+      {{/each}}
     </section>
-  {{/each}}
+  {{else}}
+    {{#each embeddedItems.cult}}
+      {{> actorRuneMagicCultSection}}
+    {{/each}}
+  {{/if}}
 </div>
 

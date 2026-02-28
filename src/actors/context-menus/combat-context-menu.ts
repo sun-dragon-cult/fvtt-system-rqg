@@ -13,14 +13,12 @@ import type { WeaponItem } from "@item-model/weaponData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { SkillItem } from "@item-model/skillData.ts";
 
-export const combatMenuOptions = (
-  actor: CharacterActor,
-): ContextMenu.Entry<JQuery<HTMLElement>>[] => [
+export const combatMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
   {
     name: localize("RQG.Game.InitiateCombat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: (el: JQuery) => !!getDomDataset(el, "weapon-item-id"),
-    callback: async (el: JQuery) => {
+    condition: (el: HTMLElement) => !!getDomDataset(el, "weapon-item-id"),
+    callback: async (el: HTMLElement) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = actor.getEmbeddedDocument("Item", weaponItemId, {});
       assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
@@ -30,8 +28,8 @@ export const combatMenuOptions = (
   {
     name: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: (el: JQuery) => !!getDomDataset(el, "skill-id"),
-    callback: async (el: JQuery) => {
+    condition: (el: HTMLElement) => !!getDomDataset(el, "skill-id"),
+    callback: async (el: HTMLElement) => {
       const itemId = getDomDataset(el, "skill-id");
       const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
       if (!item || !("hasExperience" in item.system)) {
@@ -51,8 +49,8 @@ export const combatMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: JQuery) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
-    callback: (el: JQuery) => {
+    condition: (el: HTMLElement) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
+    callback: (el: HTMLElement) => {
       const skillItemId = getDomDataset(el, "skill-id");
       const skillItem = actor.items.get(skillItemId ?? "") as SkillItem | undefined;
       if (!skillItem || !skillItem.sheet) {
@@ -73,7 +71,7 @@ export const combatMenuOptions = (
     }),
     icon: contextMenuRunes.Edit,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
       const item = actor.items.get(weaponItemId ?? "") as WeaponItem | undefined;
       if (!item || !item.sheet) {
@@ -92,8 +90,8 @@ export const combatMenuOptions = (
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Delete,
-    condition: (el: JQuery) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
-    callback: (el: JQuery) => {
+    condition: (el: HTMLElement) => !!game.user?.isGM && !!getDomDataset(el, "skill-id"),
+    callback: (el: HTMLElement) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
         void RqgActorSheet.confirmItemDelete(actor, skillItemId);
@@ -113,7 +111,7 @@ export const combatMenuOptions = (
     }),
     icon: contextMenuRunes.Delete,
     condition: () => !!game.user?.isGM,
-    callback: (el: JQuery) => {
+    callback: (el: HTMLElement) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
       if (weaponItemId) {
         void RqgActorSheet.confirmItemDelete(actor, weaponItemId);
