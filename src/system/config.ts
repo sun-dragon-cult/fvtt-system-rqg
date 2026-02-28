@@ -8,6 +8,7 @@ export const RQG_CONFIG = {
   skillRqid: {
     dodge: "i.skill.dodge",
     jump: "i.skill.jump",
+    worship: "i.skill.worship",
     moveQuietly: "i.skill.move-quietly",
     spiritCombat: "i.skill.spirit-combat",
   },

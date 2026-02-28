@@ -24,7 +24,7 @@ import {
 } from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
-import { systemId } from "../system/config";
+import { RQG_CONFIG, systemId } from "../system/config";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
@@ -448,13 +448,14 @@ export class RqgItem extends Item {
     if (isSuccess && !this.system.hasExperience) {
       await this.awardExperience();
     }
+    const rqid = this.getFlag(systemId, "documentRqidFlags")?.id;
     if (
       isSuccess &&
       isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill) &&
-      this.system.skillName === worshipSkillName
+      (rqid?.startsWith(RQG_CONFIG.skillRqid.worship) || rqid === RQG_CONFIG.skillRqid.spiritCombat)
     ) {
       const actor = this.actor;
-      if (isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+      if (actor && isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
         await actor.awardPowExperience();
       }
     }

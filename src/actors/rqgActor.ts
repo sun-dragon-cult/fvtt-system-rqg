@@ -304,7 +304,9 @@ export class RqgActor extends Actor {
       result <= AbilitySuccessLevelEnum.Success &&
       characteristicName === "power"
     ) {
-      ui.notifications?.info(localize("RQG.Actor.AwardExperience.PowExperienceInfo"));
+      ui.notifications?.info(localize("RQG.Actor.AwardExperience.PowExperienceInfo"), {
+        permanent: true,
+      });
     }
   }
 
