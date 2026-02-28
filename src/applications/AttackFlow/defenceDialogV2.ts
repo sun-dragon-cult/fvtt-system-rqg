@@ -222,18 +222,22 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         Number(formData.otherModifier ?? 0),
     );
 
+    const masterOpponentModifierDescription = localize(
+      "RQG.Roll.AbilityRoll.MasterOpponentModifier",
+    );
+
+    // Remove any previously pushed master opponent modifier before computing the new one.
+    // Roll.fromData passes options by reference, so the push below mutates the stored chat
+    // message data; filtering first ensures targetChance reflects the original attack chance.
+    attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
+      (m: Modifier) => m.description !== masterOpponentModifierDescription,
+    );
+
     const { attackModifier, defenceModifier } = getMasterOpponentModifier(
       attackRoll.targetChance ?? 0,
       totalChanceExclMasterOpponent,
     );
 
-    const masterOpponentModifierDescription = localize(
-      "RQG.Roll.AbilityRoll.MasterOpponentModifier",
-    );
-
-    attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
-      (m: Modifier) => m.description !== masterOpponentModifierDescription,
-    );
     formData.masterOpponentModifier = defenceModifier;
 
     if (attackModifier !== 0) {
