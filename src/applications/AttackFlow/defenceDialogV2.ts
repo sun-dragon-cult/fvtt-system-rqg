@@ -237,14 +237,8 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       totalChanceExclMasterOpponent,
     );
 
-    formData.masterOpponentModifier = defenceModifier;
-
-    if (attackModifier !== 0) {
-      attackRoll.options.modifiers.push({
-        value: attackModifier,
-        description: masterOpponentModifierDescription,
-      });
-    }
+    formData.defenceMasterOpponentModifier = defenceModifier;
+    formData.attackMasterOpponentModifier = attackModifier;
 
     const defenceButtonText =
       formData.defence === "parry" ? localize("RQG.Dialog.Defence.Parry") : defenceName;
@@ -269,7 +263,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       skillChance: defenceChance,
 
       // defenceFooter
-      totalChance: totalChanceExclMasterOpponent + Number(formData.masterOpponentModifier),
+      totalChance: totalChanceExclMasterOpponent + formData.defenceMasterOpponentModifier,
       defenceButtonText: defenceButtonText,
     };
   }
@@ -413,7 +407,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
           description: formDataObject.otherModifierDescription,
         },
         {
-          value: Number(formDataObject.masterOpponentModifier),
+          value: formDataObject.defenceMasterOpponentModifier,
           description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
         },
       ],
@@ -427,9 +421,22 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       }),
     };
 
-    // JSONField can be either string or object depending on when it's accessed
     const attackRollData = attackChatMessage.system.attackRoll;
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
+
+    // Apply the master opponent modifier to the attack roll if needed
+    const masterOpponentModifierDescription = localize(
+      "RQG.Roll.AbilityRoll.MasterOpponentModifier",
+    );
+    if (attackRoll && formDataObject.attackMasterOpponentModifier !== 0) {
+      attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
+        (m: Modifier) => m.description !== masterOpponentModifierDescription,
+      );
+      attackRoll.options.modifiers.push({
+        value: formDataObject.attackMasterOpponentModifier,
+        description: masterOpponentModifierDescription,
+      });
+    }
 
     if (attackRoll && !attackRoll.isEvaluated) {
       // Don't reevaluate in case the attack roll is already evaluated.
