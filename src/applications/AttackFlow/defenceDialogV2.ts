@@ -37,7 +37,6 @@ import {
 } from "../../system/combatCalculations";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../../sockets/SocketableRequests";
-import { WeaponDesignation } from "../../system/combatCalculations.defs";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { SkillItem } from "@item-model/skillData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
@@ -223,27 +222,27 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         Number(formData.otherModifier ?? 0),
     );
 
-    const { modifier, modifiedWeapon } = getMasterOpponentModifier(
+    const { attackModifier, defenceModifier } = getMasterOpponentModifier(
       attackRoll.targetChance ?? 0,
       totalChanceExclMasterOpponent,
     );
 
-    const newMasterOpponentModifier: Modifier = {
-      value: modifier,
-      description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
-    };
+    const masterOpponentModifierDescription = localize(
+      "RQG.Roll.AbilityRoll.MasterOpponentModifier",
+    );
 
     // @ts-expect-error modifiers
     attackRoll.options.modifiers = attackRoll.options.modifiers.filter(
-      (m: Modifier) => m.description !== newMasterOpponentModifier.description,
+      (m: Modifier) => m.description !== masterOpponentModifierDescription,
     );
-    formData.masterOpponentModifier = 0;
+    formData.masterOpponentModifier = defenceModifier;
 
-    if (modifiedWeapon === WeaponDesignation.ParryWeapon) {
-      formData.masterOpponentModifier = modifier;
-    } else if (modifiedWeapon === WeaponDesignation.AttackingWeapon) {
+    if (attackModifier !== 0) {
       // @ts-expect-error modifiers
-      attackRoll.options.modifiers.push(newMasterOpponentModifier);
+      attackRoll.options.modifiers.push({
+        value: attackModifier,
+        description: masterOpponentModifierDescription,
+      });
     }
 
     const defenceButtonText =
