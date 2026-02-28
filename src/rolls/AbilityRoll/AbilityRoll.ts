@@ -13,6 +13,8 @@ import type { AbilityRollOptions } from "./AbilityRoll.types";
 import Roll = foundry.dice.Roll;
 
 export class AbilityRoll extends Roll<AbilityRollOptions> {
+  declare options: AbilityRollOptions;
+
   public static async rollAndShow(options: AbilityRollOptions) {
     const roll = new AbilityRoll(undefined, {}, options);
     await roll.evaluate();
@@ -43,10 +45,9 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
   }
 
   get targetChance(): number {
-    const o = this.options as AbilityRollOptions; //TODO fix type as AbilityRollOptions;
     const modificationsSum =
-      o?.modifiers?.reduce((acc: number, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    return Math.max(0, o.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work;
+      this.options.modifiers?.reduce((acc: number, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
+    return Math.max(0, this.options.naturalSkill! + modificationsSum); // -50% => 0% to make the calculations work;
   }
 
   // Html for the "content" of the chat-message
@@ -54,12 +55,11 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
     if (!this._evaluated) {
       await this.evaluate();
     }
-    const o = this.options as AbilityRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
       user: game.user!.id,
-      heading: o?.heading,
+      heading: this.options.heading,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,
@@ -67,15 +67,14 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
       successLevelText: isPrivate
         ? undefined
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid, // Used for hiding parts
     };
     return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRoll, chatData);
   }
 
   // Html for what modifiers are applied
   override async getTooltip(): Promise<string> {
-    const o = this.options as AbilityRollOptions;
-    const modifiers = o.modifiers ?? [];
+    const modifiers = this.options.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
@@ -83,21 +82,20 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
         return m;
       });
     return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRollTooltip, {
-      naturalSkill: (this.options as AbilityRollOptions).naturalSkill,
+      naturalSkill: this.options.naturalSkill,
       modifiers: nonzeroSignedModifiers,
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid,
     });
   }
 
   // Html for what ability the roll is about
   get flavor(): string {
-    const o = this.options as AbilityRollOptions;
-    const resultMsgHtml = o.resultMessages?.get(this.successLevel) ?? "";
-    const flavorImg = o.abilityImg ? `<img src="${o.abilityImg}">` : "";
-    const itemType = o.abilityType ? localizeItemType(o.abilityType) : "";
+    const resultMsgHtml = this.options.resultMessages?.get(this.successLevel) ?? "";
+    const flavorImg = this.options.abilityImg ? `<img src="${this.options.abilityImg}">` : "";
+    const itemType = this.options.abilityType ? localizeItemType(this.options.abilityType) : "";
     return `
 <div class="rqg flavor">${flavorImg}</div>
-<span class="roll-action">${o.abilityName ?? ""}</span>
+<span class="roll-action">${this.options.abilityName ?? ""}</span>
 <span>${itemType}</span><br>
 <div>${resultMsgHtml}</div>`;
   }

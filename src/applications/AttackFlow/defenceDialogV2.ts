@@ -231,14 +231,12 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       "RQG.Roll.AbilityRoll.MasterOpponentModifier",
     );
 
-    // @ts-expect-error modifiers
-    attackRoll.options.modifiers = attackRoll.options.modifiers.filter(
+    attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
       (m: Modifier) => m.description !== masterOpponentModifierDescription,
     );
     formData.masterOpponentModifier = defenceModifier;
 
     if (attackModifier !== 0) {
-      // @ts-expect-error modifiers
       attackRoll.options.modifiers.push({
         value: attackModifier,
         description: masterOpponentModifierDescription,
