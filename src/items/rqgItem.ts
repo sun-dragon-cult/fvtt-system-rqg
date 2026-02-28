@@ -53,8 +53,6 @@ import type { CultItem } from "@item-model/cultData.ts";
 
 import type { PassionItem } from "@item-model/passionData.ts";
 
-const worshipSkillName = "Worship";
-
 export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
