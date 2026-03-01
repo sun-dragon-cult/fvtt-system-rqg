@@ -172,29 +172,27 @@ export function formatDamagePart(
 export function getMasterOpponentModifier(
   modifiedAttackChance: number,
   modifiedDefenceChance: number,
-): { modifier: number; modifiedWeapon: WeaponDesignation } {
+): { attackModifier: number; defenceModifier: number } {
   const attackOverHundred = Math.max(0, modifiedAttackChance - 100);
   const defenceOverHundred = Math.max(0, modifiedDefenceChance - 100);
 
-  let modifier = 0;
-  if (attackOverHundred > 0 && defenceOverHundred > 0 && attackOverHundred !== defenceOverHundred) {
-    const sign = attackOverHundred > defenceOverHundred ? 1 : -1;
-    modifier = sign * Math.max(attackOverHundred, defenceOverHundred);
-  } else {
-    modifier = attackOverHundred - defenceOverHundred;
+  if (attackOverHundred > 0 && defenceOverHundred > 0) {
+    // Both above 100: reduce both by the highest over-100 amount
+    const reduction = -Math.max(attackOverHundred, defenceOverHundred);
+    return { attackModifier: reduction, defenceModifier: reduction };
   }
 
-  const weapon =
-    modifier === 0
-      ? WeaponDesignation.None
-      : modifier > 0
-        ? WeaponDesignation.ParryWeapon
-        : WeaponDesignation.AttackingWeapon;
+  // Only attack above 100: reduce defender
+  if (attackOverHundred > 0) {
+    return { attackModifier: 0, defenceModifier: -attackOverHundred };
+  }
 
-  return {
-    modifier: modifier === 0 ? 0 : -Math.abs(modifier),
-    modifiedWeapon: weapon,
-  };
+  // Only defence above 100: reduce attacker
+  if (defenceOverHundred > 0) {
+    return { attackModifier: -defenceOverHundred, defenceModifier: 0 };
+  }
+
+  return { attackModifier: 0, defenceModifier: 0 };
 }
 
 // *** Helper functions ***

@@ -27,7 +27,8 @@ export type DefenceDialogFormData = {
   halved: boolean;
   otherModifier: string;
   otherModifierDescription: string;
-  masterOpponentModifier: number;
+  defenceMasterOpponentModifier: number;
+  attackMasterOpponentModifier: number;
 
   halvedModifier: number; // hidden field
   attackChatMessageUuid: string | undefined; // hidden field

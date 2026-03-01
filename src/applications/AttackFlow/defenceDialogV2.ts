@@ -37,7 +37,6 @@ import {
 } from "../../system/combatCalculations";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../../sockets/SocketableRequests";
-import { WeaponDesignation } from "../../system/combatCalculations.defs";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { SkillItem } from "@item-model/skillData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
@@ -223,28 +222,23 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         Number(formData.otherModifier ?? 0),
     );
 
-    const { modifier, modifiedWeapon } = getMasterOpponentModifier(
+    const masterOpponentModifierDescription = localize(
+      "RQG.Roll.AbilityRoll.MasterOpponentModifier",
+    );
+
+    // Remove any previously saved master opponent modifier before computing the new one,
+    // so that targetChance reflects the base attack chance without it.
+    attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
+      (m: Modifier) => m.description !== masterOpponentModifierDescription,
+    );
+
+    const { attackModifier, defenceModifier } = getMasterOpponentModifier(
       attackRoll.targetChance ?? 0,
       totalChanceExclMasterOpponent,
     );
 
-    const newMasterOpponentModifier: Modifier = {
-      value: modifier,
-      description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
-    };
-
-    // @ts-expect-error modifiers
-    attackRoll.options.modifiers = attackRoll.options.modifiers.filter(
-      (m: Modifier) => m.description !== newMasterOpponentModifier.description,
-    );
-    formData.masterOpponentModifier = 0;
-
-    if (modifiedWeapon === WeaponDesignation.ParryWeapon) {
-      formData.masterOpponentModifier = modifier;
-    } else if (modifiedWeapon === WeaponDesignation.AttackingWeapon) {
-      // @ts-expect-error modifiers
-      attackRoll.options.modifiers.push(newMasterOpponentModifier);
-    }
+    formData.defenceMasterOpponentModifier = defenceModifier;
+    formData.attackMasterOpponentModifier = attackModifier;
 
     const defenceButtonText =
       formData.defence === "parry" ? localize("RQG.Dialog.Defence.Parry") : defenceName;
@@ -269,7 +263,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       skillChance: defenceChance,
 
       // defenceFooter
-      totalChance: totalChanceExclMasterOpponent + Number(formData.masterOpponentModifier),
+      totalChance: totalChanceExclMasterOpponent + formData.defenceMasterOpponentModifier,
       defenceButtonText: defenceButtonText,
     };
   }
@@ -413,7 +407,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
           description: formDataObject.otherModifierDescription,
         },
         {
-          value: Number(formDataObject.masterOpponentModifier),
+          value: formDataObject.defenceMasterOpponentModifier,
           description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
         },
       ],
@@ -427,9 +421,24 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       }),
     };
 
-    // JSONField can be either string or object depending on when it's accessed
     const attackRollData = attackChatMessage.system.attackRoll;
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
+
+    // Apply the master opponent modifier to the attack roll if needed
+    const masterOpponentModifierDescription = localize(
+      "RQG.Roll.AbilityRoll.MasterOpponentModifier",
+    );
+    if (attackRoll) {
+      attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
+        (m: Modifier) => m.description !== masterOpponentModifierDescription,
+      );
+      if (formDataObject.attackMasterOpponentModifier !== 0) {
+        attackRoll.options.modifiers.push({
+          value: formDataObject.attackMasterOpponentModifier,
+          description: masterOpponentModifierDescription,
+        });
+      }
+    }
 
     if (attackRoll && !attackRoll.isEvaluated) {
       // Don't reevaluate in case the attack roll is already evaluated.

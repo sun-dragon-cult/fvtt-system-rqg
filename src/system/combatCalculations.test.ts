@@ -7,7 +7,6 @@ import {
 } from "./combatCalculations";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { RqgError } from "./util";
-import { WeaponDesignation } from "./combatCalculations.defs";
 
 describe("getDamageDegree", () => {
   it("should return the correct damage degree for parry", () => {
@@ -265,48 +264,48 @@ describe("applyDamageBonusToFormula", () => {
 });
 
 describe("getMasterOpponentModifier", () => {
-  it("should return a modifier of 0 and WeaponDesignation.None when both chances are 100", () => {
+  it("should return a modifier of 0 for both when both chances are 100", () => {
     const result = getMasterOpponentModifier(100, 100);
-    expect(result).toEqual({ modifier: 0, modifiedWeapon: WeaponDesignation.None });
+    expect(result).toEqual({ attackModifier: 0, defenceModifier: 0 });
   });
 
-  it("should return a modifier of 0 and WeaponDesignation.None when both chances are equal above 100", () => {
+  it("should return a modifier of -50 for both when both chances are equal above 100", () => {
     const result = getMasterOpponentModifier(150, 150);
-    expect(result).toEqual({ modifier: 0, modifiedWeapon: WeaponDesignation.None });
+    expect(result).toEqual({ attackModifier: -50, defenceModifier: -50 });
   });
 
-  it("should return a positive modifier and WeaponDesignation.ParryWeapon when attack chance is greater than defence chance", () => {
+  it("should return a defenceModifier of -50 when attack chance is greater than defence chance (only attack above 100)", () => {
     const result = getMasterOpponentModifier(150, 100);
-    expect(result).toEqual({ modifier: -50, modifiedWeapon: WeaponDesignation.ParryWeapon });
+    expect(result).toEqual({ attackModifier: 0, defenceModifier: -50 });
   });
 
-  it("should return a negative modifier and WeaponDesignation.AttackingWeapon when defence chance is greater than attack chance", () => {
+  it("should return an attackModifier of -50 when defence chance is greater than attack chance (only defence above 100)", () => {
     const result = getMasterOpponentModifier(100, 150);
-    expect(result).toEqual({ modifier: -50, modifiedWeapon: WeaponDesignation.AttackingWeapon });
+    expect(result).toEqual({ attackModifier: -50, defenceModifier: 0 });
   });
 
-  it("should return a modifier of 0 and WeaponDesignation.None when both chances are less than 100", () => {
+  it("should return a modifier of 0 for both when both chances are less than 100", () => {
     const result = getMasterOpponentModifier(50, 50);
-    expect(result).toEqual({ modifier: 0, modifiedWeapon: WeaponDesignation.None });
+    expect(result).toEqual({ attackModifier: 0, defenceModifier: 0 });
   });
 
   it("should handle cases where attack chance is over 100 and defence chance is less than 100", () => {
     const result = getMasterOpponentModifier(150, 50);
-    expect(result).toEqual({ modifier: -50, modifiedWeapon: WeaponDesignation.ParryWeapon });
+    expect(result).toEqual({ attackModifier: 0, defenceModifier: -50 });
   });
 
   it("should handle cases where defence chance is over 100 and attack chance is less than 100", () => {
     const result = getMasterOpponentModifier(50, 150);
-    expect(result).toEqual({ modifier: -50, modifiedWeapon: WeaponDesignation.AttackingWeapon });
+    expect(result).toEqual({ attackModifier: -50, defenceModifier: 0 });
   });
 
-  it("should handle cases where the attack chance is over 100 and the defence chance is lower, but over 100", () => {
+  it("should apply -50 to both when the attack chance is over 100 and the defence chance is lower, but over 100", () => {
     const result = getMasterOpponentModifier(150, 130);
-    expect(result).toEqual({ modifier: -50, modifiedWeapon: WeaponDesignation.ParryWeapon });
+    expect(result).toEqual({ attackModifier: -50, defenceModifier: -50 });
   });
 
-  it("should handle cases where the attack chance is over 100 and the defence chance is higher, and over 100", () => {
+  it("should apply -40 to both when the attack chance is over 100 and the defence chance is higher, and over 100", () => {
     const result = getMasterOpponentModifier(110, 140);
-    expect(result).toEqual({ modifier: -40, modifiedWeapon: WeaponDesignation.AttackingWeapon });
+    expect(result).toEqual({ attackModifier: -40, defenceModifier: -40 });
   });
 });

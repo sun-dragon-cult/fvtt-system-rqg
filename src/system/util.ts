@@ -23,7 +23,7 @@ export function safeFromJSON<T>(
   }
   return typeof data === "string"
     ? (RollClass.fromJSON(data) as T)
-    : (RollClass.fromData(data as any) as T);
+    : (RollClass.fromData(foundry.utils.deepClone(data) as any) as T);
 }
 
 export function getRequiredDomDataset(
