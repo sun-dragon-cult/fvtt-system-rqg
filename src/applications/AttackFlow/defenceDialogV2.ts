@@ -428,14 +428,16 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     const masterOpponentModifierDescription = localize(
       "RQG.Roll.AbilityRoll.MasterOpponentModifier",
     );
-    if (attackRoll && formDataObject.attackMasterOpponentModifier !== 0) {
+    if (attackRoll) {
       attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
         (m: Modifier) => m.description !== masterOpponentModifierDescription,
       );
-      attackRoll.options.modifiers.push({
-        value: formDataObject.attackMasterOpponentModifier,
-        description: masterOpponentModifierDescription,
-      });
+      if (formDataObject.attackMasterOpponentModifier !== 0) {
+        attackRoll.options.modifiers.push({
+          value: formDataObject.attackMasterOpponentModifier,
+          description: masterOpponentModifierDescription,
+        });
+      }
     }
 
     if (attackRoll && !attackRoll.isEvaluated) {
