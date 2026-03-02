@@ -220,7 +220,7 @@
         "intelligence-full": "Intelligence",
         "power": "POW",
         "power-full": "Power",
-        "PowWarningTip": "POW is below 18. God-Talkers, Rune Priests, and Rune Lords require a minimum POW of 18.",
+        "PowWarningTip": "POW is below 18. God-Talkers, Rune Priests, Chief Priests and High Priests require a minimum POW of 18.",
         "charisma": "CHA",
         "charisma-full": "Charisma"
       },
