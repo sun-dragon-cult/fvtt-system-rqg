@@ -71,10 +71,8 @@
       <div class="characteristics">
         {{#each system.characteristics as | characteristic key |}}
           <div data-characteristic="{{key}}"
-               class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}
-                          {{#if @root.showCharacteristicRatings}}
-                            {{lookup @root.characteristicRanks key}}
-                          {{/if}}{{#if (and (eq key "power") @root.powWarning)}} warning{{/if}}"
+               class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}{{#if @root.showCharacteristicRatings}}
+                           {{lookup @root.characteristicRanks key}}{{/if}}{{#if (and (eq key "power") @root.powWarning)}} warning{{/if}}"
                {{#if (and (eq key "power") @root.powWarning)}}
                data-tooltip="{{localize "RQG.Actor.Characteristics.PowWarningTip"}}"
                {{/if}}>
