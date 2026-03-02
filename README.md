@@ -79,6 +79,31 @@ Open a yaml file and click "No JSON Schema" at the bottom left. Choose "+ New Sc
 into the "Schema file or URL" input field. Name the schema to for example Rqg Item and set the schema
 version to 7.
 
+### Releasing
+
+## Prepare
+
+1. Prepare a new documentation for the relase in the sun-dragon-cult repo
+2. Draft a new release on Github
+3. Select a new tag like "v7.3.2" and click "Create new tag"
+4. Set Release title to "7.3.2 (2028-01-02)"
+5. Add Releaase notes: "See release notes https://sun-dragon-cult.github.io/release-notes/rqg-v7.3.2"
+6. Check "Set as a pre-release"
+7. Click Publich release (The release github action runs, adding release artifacts)
+
+## Verify
+
+1. Install the system from the release link
+2. Manually test that it works
+
+## Publish
+
+1. Push the documentation in the sun-dragon-cult repo
+2. Set the release as "latest"
+3. Fill in the information on the admin Foundry page
+4. Notify in Discord
+5. Mark the milestone in Github as [done] and close it
+
 ## Project Status
 
 Still very much work in progress. 🚧 But closing in on a release version...
