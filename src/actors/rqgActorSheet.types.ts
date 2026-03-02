@@ -98,6 +98,8 @@ export interface CharacterSheetData {
   activeInSR: number[]; // Store the SR (initiative) where this actor should have a combatant
 
   characteristicRanks: any;
+  /** True when actor has GodTalker+ rank but POW < 18 */
+  powWarning: boolean;
   bodyType: string;
   hitLocationDiceRangeError: string;
 

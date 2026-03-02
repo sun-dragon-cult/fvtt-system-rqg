@@ -279,6 +279,7 @@ export class RqgActorSheet<
       activeInSR: [...this.activeInSR],
 
       characteristicRanks: await DataPrep.rankCharacteristics(this.actor),
+      powWarning: DataPrep.getPowWarning(this.actor),
       bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
 
