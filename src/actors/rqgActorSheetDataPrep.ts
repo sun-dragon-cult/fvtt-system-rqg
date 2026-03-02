@@ -236,6 +236,28 @@ export function getPowCrystals(actor: CharacterActor): { name: string; size: num
 }
 
 /**
+ * Returns true if the actor has a cult rank of GodTalker or higher (excluding Rune Lord) and POW < 18.
+ * God-Talkers, Rune Priests, Chief Priests and High Priests require POW 18. Rune Lords do not.
+ * @param actor - The character actor
+ * @returns Whether a POW warning should be shown
+ */
+export function getPowWarning(actor: CharacterActor): boolean {
+  const hasHighRank = actor.items.some(
+    (i) =>
+      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
+      i.system.joinedCults.some(
+        (c) =>
+          (cultRankOrder[c.rank] ?? 0) >= cultRankOrder[CultRankEnum.GodTalker] &&
+          c.rank !== CultRankEnum.RuneLord,
+      ),
+  );
+  if (!hasHighRank) {
+    return false;
+  }
+  return (actor.system.characteristics.power.value ?? 0) < 18;
+}
+
+/**
  * Calculates free INT (INT - spirit magic points - sorcery spells).
  * @param actor - The character actor  * @param spiritMagicPointSum - Total spirit magic points invested
  * @returns Free INT available
