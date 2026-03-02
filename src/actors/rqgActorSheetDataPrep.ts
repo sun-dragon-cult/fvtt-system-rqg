@@ -242,17 +242,10 @@ export function getPowCrystals(actor: CharacterActor): { name: string; size: num
  * @returns Whether a POW warning should be shown
  */
 export function getPowWarning(actor: CharacterActor): boolean {
-  const requiresPow18Ranks = [
-    CultRankEnum.GodTalker,
-    CultRankEnum.RunePriest,
-    CultRankEnum.RuneLord,
-    CultRankEnum.ChiefPriest,
-    CultRankEnum.HighPriest,
-  ];
   const hasHighRank = actor.items.some(
     (i) =>
       isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
-      i.system.joinedCults.some((c) => requiresPow18Ranks.includes(c.rank)),
+      i.system.joinedCults.some((c) => (cultRankOrder[c.rank] ?? 0) >= cultRankOrder[CultRankEnum.GodTalker]),
   );
   if (!hasHighRank) {
     return false;
