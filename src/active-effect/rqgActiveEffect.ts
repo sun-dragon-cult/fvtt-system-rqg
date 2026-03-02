@@ -20,6 +20,8 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
    * CUSTOM application mode will apply an ADD effect to a specified item.
    * The format of the key should be "<rqid>:<propertyPath>" like "i.skill.dodge:system.baseChance"
    * The effect will try to find an embedded item with the specified rqid.
+   * Prefix the rqid with ~ to use it as a regex and apply the effect to all matching items,
+   * like "~i.hit-location:system.naturalAp" to affect all hit location items on the actor.
    */
   override _applyCustom(
     actor: Actor.Implementation,
@@ -31,7 +33,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     changes: AnyMutableObject,
   ): void {
-    const [rqid, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
+    const [rqidOrPattern, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
         actor.appliedEffects.map((e) => {
@@ -48,11 +50,18 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       console.warn("RQG | ", msg);
     }
 
-    const item = isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)
-      ? actor.getBestEmbeddedDocumentByRqid(rqid)
-      : undefined;
+    const isMultiMatch = rqidOrPattern !== undefined && rqidOrPattern.startsWith("~");
+    const rqid = isMultiMatch ? rqidOrPattern.slice(1) : rqidOrPattern;
 
-    if (!item) {
+    const items = isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)
+      ? isMultiMatch
+        ? actor.getEmbeddedDocumentsByRqidRegex(rqid ?? "")
+        : ([actor.getBestEmbeddedDocumentByRqid(rqid)].filter(Boolean) as NonNullable<
+            ReturnType<typeof actor.getBestEmbeddedDocumentByRqid>
+          >[])
+      : [];
+
+    if (items.length === 0) {
       logMisconfiguration(
         localize("RQG.Foundry.ActiveEffect.TargetItemNotFound", {
           rqid: rqid ?? "",
@@ -66,56 +75,59 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return;
     }
 
-    // Determine the data type of the target field
-    const current: unknown = foundry.utils.getProperty(item, path as any) ?? null;
-    let target = current;
-    if (current === null) {
-      const model = (game.model?.Item as any)[item.type] || {};
-      target = foundry.utils.getProperty(model, path as any) ?? null;
-    }
-    const targetType = foundry.utils.getType(target);
-
-    // Cast the effect change value to the correct type
-    let delta;
-    try {
-      if (targetType === "Array") {
-        const innerType = (target as unknown[]).length
-          ? foundry.utils.getType((target as unknown[])[0])
-          : "string";
-        delta = this.#castArray(change.value, innerType);
-      } else {
-        delta = this.#castDelta(change.value, targetType);
+    for (const item of items) {
+      // Determine the data type of the target field
+      const current: unknown = foundry.utils.getProperty(item, path as any) ?? null;
+      let target = current;
+      if (current === null) {
+        const model = (game.model?.Item as any)[item.type] || {};
+        target = foundry.utils.getProperty(model, path as any) ?? null;
       }
-    } catch {
-      console.warn(
-        `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
-      );
-      return;
-    }
+      const targetType = foundry.utils.getType(target);
 
-    let update;
-    const ct = foundry.utils.getType(current);
-    switch (ct) {
-      case "boolean":
-        update = current || delta;
-        break;
-      case "null":
-        update = delta;
-        break;
-      case "Array":
-        update = (current as unknown[]).concat(delta);
-        break;
-      default:
-        update = current + delta;
-        break;
-    }
+      // Cast the effect change value to the correct type
+      let delta;
+      try {
+        if (targetType === "Array") {
+          const innerType = (target as unknown[]).length
+            ? foundry.utils.getType((target as unknown[])[0])
+            : "string";
+          delta = this.#castArray(change.value, innerType);
+        } else {
+          delta = this.#castDelta(change.value, targetType);
+        }
+      } catch (e) {
+        console.warn(
+          `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
+          e,
+        );
+        continue;
+      }
 
-    try {
-      foundry.utils.setProperty(item, path as any, update);
-    } catch (e) {
-      const msg = `Active Effect on item [${item.name}] in actor [${actor.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
-      ui.notifications?.warn(msg, { console: false });
-      console.warn("RQG |", msg, change, e);
+      let update;
+      const ct = foundry.utils.getType(current);
+      switch (ct) {
+        case "boolean":
+          update = current || delta;
+          break;
+        case "null":
+          update = delta;
+          break;
+        case "Array":
+          update = (current as unknown[]).concat(delta);
+          break;
+        default:
+          update = current + delta;
+          break;
+      }
+
+      try {
+        foundry.utils.setProperty(item, path as any, update);
+      } catch (e) {
+        const msg = `Active Effect on item [${item.name}] in actor [${actor.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
+        ui.notifications?.warn(msg, { console: false });
+        console.warn("RQG |", msg, change, e);
+      }
     }
   }
 
