@@ -53,13 +53,17 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const isMultiMatch = rqidOrPattern !== undefined && rqidOrPattern.startsWith("~");
     const rqid = isMultiMatch ? rqidOrPattern.slice(1) : rqidOrPattern;
 
-    const items = isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)
-      ? isMultiMatch
-        ? actor.getEmbeddedDocumentsByRqidRegex(rqid ?? "")
-        : ([actor.getBestEmbeddedDocumentByRqid(rqid)].filter(Boolean) as NonNullable<
-            ReturnType<typeof actor.getBestEmbeddedDocumentByRqid>
-          >[])
-      : [];
+    const items = [];
+    if (isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+      if (isMultiMatch) {
+        items.push(...actor.getEmbeddedDocumentsByRqidRegex(rqid ?? ""));
+      } else {
+        const bestMatch = actor.getBestEmbeddedDocumentByRqid(rqid);
+        if (bestMatch) {
+          items.push(bestMatch);
+        }
+      }
+    }
 
     if (items.length === 0) {
       logMisconfiguration(
