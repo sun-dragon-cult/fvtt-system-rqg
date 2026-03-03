@@ -64,7 +64,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     if (items.length === 0) {
       logMisconfiguration(
         localize("RQG.Foundry.ActiveEffect.TargetItemNotFound", {
-          rqid: rqid ?? "",
+          rqid: rqidOrPattern ?? "",
           actorName: actor.name,
           itemName: Rqid.getDocumentName(rqid),
         }),
