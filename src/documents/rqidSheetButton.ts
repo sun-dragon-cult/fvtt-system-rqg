@@ -40,7 +40,8 @@ async function createRqidLink(
   rqidLink.setAttribute("type", "button");
   rqidLink.setAttribute("aria-label", "Edit / Copy document rqid");
   rqidLink.classList.add("header-control", "fa-solid", "fa-fingerprint", "icon");
-  if (!rqid?.id) {
+  const lastpartOfId = rqid?.id?.split(".")[2]?.trim();
+  if (!lastpartOfId) {
     rqidLink.classList.add("rqid-missing");
   }
   rqidLink.dataset["tooltipDirection"] = "UP";
