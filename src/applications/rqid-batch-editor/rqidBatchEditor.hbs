@@ -8,7 +8,7 @@
       <li class="item flexrow header gap1rem">
         <span class="name">{{localizeitemtype itemType}}</span>
         <div class="value">{{localize 'RQG.Dialog.BatchRqidEditor.ExistingRqidsHeader'}}</div>
-        <div class="value">{{localize 'RQG.RQGSystem.rqid'}}</div>
+        <div class="value">{{localize 'RQG.RQGSystem.Rqid.Id'}}</div>
       </li>
 
       {{#each itemNamesWithoutRqid}}
@@ -22,7 +22,7 @@
           <div class="value flexrow">
             <span class="rqid-prefix">{{../idPrefix}}</span>
           <input class="rqid-input {{#unless selectedRqidSuffix}}missing{{/unless}}" type="text" value="{{selectedRqidSuffix}}">
-            <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}">
+            <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}">
               <i class="fas fa-wand-magic-sparkles"></i>
             </a>
           </div>

@@ -73,6 +73,26 @@ export class RqgActor extends Actor {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 
+  /**
+   * Get all embedded items whose rqid matches the given regex pattern.
+   */
+  public getEmbeddedDocumentsByRqidRegex(rqidPattern: string): RqgItem[] {
+    let regex: RegExp;
+    try {
+      regex = new RegExp(rqidPattern);
+    } catch {
+      const msg = localize("RQG.RQGSystem.Rqid.InvalidRegexPattern", {
+        rqidPattern,
+      });
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
+      return [];
+    }
+    return this.items.filter((i) =>
+      regex.test(i.getFlag(systemId, "documentRqidFlags")?.id ?? ""),
+    ) as RqgItem[];
+  }
+
   public async characteristicRoll(characteristicName: keyof Characteristics): Promise<void> {
     await new CharacteristicRollDialogV2(this, characteristicName).render(true);
   }
