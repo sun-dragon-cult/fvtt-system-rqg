@@ -1196,6 +1196,10 @@ input.readonly {
   }
 }
 
+.application .window-header .header-control.rqid-missing {
+  color: red;
+}
+
 // Style the extra line in the settings tab
 .setting-links {
   margin-top: -5px;

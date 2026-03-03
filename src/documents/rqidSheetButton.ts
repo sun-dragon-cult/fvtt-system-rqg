@@ -40,6 +40,9 @@ async function createRqidLink(
   rqidLink.setAttribute("type", "button");
   rqidLink.setAttribute("aria-label", "Edit / Copy document rqid");
   rqidLink.classList.add("header-control", "fa-solid", "fa-fingerprint", "icon");
+  if (!rqid?.id) {
+    rqidLink.classList.add("rqid-missing");
+  }
   rqidLink.dataset["tooltipDirection"] = "UP";
   // @ts-expect-error renderTemplate
   rqidLink.dataset.tooltip = await foundry.applications.handlebars.renderTemplate(
