@@ -81,7 +81,11 @@ export class RqgActor extends Actor {
     try {
       regex = new RegExp(rqidPattern);
     } catch {
-      console.warn(`RQG | Invalid rqid regex pattern: "${rqidPattern}"`);
+      const msg = localize("RQG.RQGSystem.Rqid.InvalidRegexPattern", {
+        rqidPattern,
+      });
+      ui.notifications?.warn(msg, { console: false });
+      console.warn(`RQG | ${msg}`);
       return [];
     }
     return this.items.filter((i) =>

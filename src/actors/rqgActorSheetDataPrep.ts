@@ -135,7 +135,7 @@ export function calcCurrencyTotals(actor: CharacterActor): any {
 /**
  * Rank order for cult sorting (High Priest = 7 highest, Lay Member = 1 lowest).
  */
-const cultRankOrder: Record<string, number> = {
+const cultRankOrder: Record<CultRankEnum, number> = {
   [CultRankEnum.HighPriest]: 7,
   [CultRankEnum.ChiefPriest]: 6,
   [CultRankEnum.RuneLord]: 5,
@@ -247,7 +247,7 @@ export function getPowWarning(actor: CharacterActor): boolean {
       isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
       i.system.joinedCults.some(
         (c) =>
-          (cultRankOrder[c.rank] ?? 0) >= cultRankOrder[CultRankEnum.GodTalker] &&
+          cultRankOrder[c.rank] >= cultRankOrder[CultRankEnum.GodTalker] &&
           c.rank !== CultRankEnum.RuneLord,
       ),
   );

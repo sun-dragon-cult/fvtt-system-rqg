@@ -1,19 +1,19 @@
 <form data-document-uuid="{{uuid}}">
   <div class="key-value-grid">
-    <label for="rqid-editor">{{localize "RQG.RQGSystem.rqid"}}</label>
+    <label for="rqid-editor">{{localize "RQG.RQGSystem.Rqid.Id"}}</label>
     <div class="input-button">
       <span>{{rqidPrefix}}</span>
       <input type="text" id="rqid-editor" name="rqidNamePart" value="{{rqidNamePart}}" />
-      <a data-tooltip="{{localize "RQG.RQGSystem.GenerateDefaultRqid"}}" data-generate-default-rqid><i
+      <a data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-generate-default-rqid><i
         class="fas fa-wand-magic-sparkles"></i></a>
     </div>
 
-    <label for="rqidLang-editor">{{localize "RQG.RQGSystem.rqidLang"}}</label>
+    <label for="rqidLang-editor">{{localize "RQG.RQGSystem.Rqid.Language"}}</label>
     <select id="rqidLang-editor" name="flags.rqg.documentRqidFlags.lang">
       {{selectOptions supportedLanguagesOptions selected=flags.rqg.documentRqidFlags.lang}}
     </select>
 
-    <label for="rqidPriority-editor">{{localize "RQG.RQGSystem.rqidPriority"}}</label>
+    <label for="rqidPriority-editor">{{localize "RQG.RQGSystem.Rqid.rqidPriority"}}</label>
     <input
       type="number"
       id="rqidPriority-editor"

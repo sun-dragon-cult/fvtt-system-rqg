@@ -1294,10 +1294,13 @@
       }
     },
     "RQGSystem": {
-      "rqid": "RuneQuest System ID (Rqid)",
-      "GenerateDefaultRqid": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
-      "rqidPriority": "Rqid Priority",
-      "rqidLang": "Language",
+      "Rqid": {
+        "Id": "RuneQuest System ID (Rqid)",
+        "GenerateDefault": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
+        "rqidPriority": "Rqid Priority",
+        "Language": "Language",
+        "InvalidRegexPattern": "Invalid rqid regex pattern: \"{rqidPattern}\""
+      },
       "Folder": "Folder",
       "FoundryId": "Foundry ID",
       "FoundryUuid": "Foundry UUID",

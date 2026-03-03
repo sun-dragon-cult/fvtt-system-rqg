@@ -275,7 +275,7 @@ export async function setAllCharacteristicsToAverage(actor: CharacterActor): Pro
 
 function getCharacteristic(
   actor: CharacterActor,
-  el: JQuery,
+  el: HTMLElement,
 ): { name: keyof Characteristics; value: Characteristic } {
   const characteristicName = getDomDataset(el, "characteristic");
   const actorCharacteristics: Characteristics = actor.system.characteristics;
