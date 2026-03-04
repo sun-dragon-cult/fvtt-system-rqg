@@ -1,5 +1,4 @@
 **/.DS_Store
-pnpm-workspace.yaml
 .run/
 # Project exclude paths
 dist/
