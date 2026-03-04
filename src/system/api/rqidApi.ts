@@ -303,7 +303,7 @@ export class Rqid {
     const document: any = await Rqid.fromRqid(rqid);
     if (document != null && rqid.split(".")?.[3] === "jp") {
       const journal: any = document.parent;
-      await journal?.sheet?._render(true, { focus: true });
+      await journal?.sheet?.render({ force: true, focus: true });
       journal?.sheet.goToPage(document.id, anchor);
     } else {
       document?.sheet?.render(true, { focus: true });

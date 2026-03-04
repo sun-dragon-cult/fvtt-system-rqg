@@ -1,0 +1,8 @@
+onlyBuiltDependencies:
+  - '@league-of-foundry-developers/foundry-vtt-types'
+  - '@parcel/watcher'
+  - bufferutil
+  - classic-level
+  - esbuild
+  - unrs-resolver
+  - utf-8-validate
