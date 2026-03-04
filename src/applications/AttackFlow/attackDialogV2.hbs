@@ -99,6 +99,17 @@
     </div>
 
     <label>
+      {{localize "RQG.Dialog.Attack.ProneAttacker"}}
+    </label>
+    <div>
+      <input type="checkbox" name="proneAttacker" {{checked formData.proneAttacker}}>
+      {{#if formData.proneAttacker}}
+        <span class="ml-5">{{formData.halvedModifier}}%</span>
+        {{#unless weaponIsNatural}}<span class="ml-5">{{localize "RQG.Dialog.Attack.ProneAttackerNoDamageBonus"}}</span>{{/unless}}
+      {{/if}}
+    </div>
+
+    <label>
       {{localize "RQG.Dialog.Attack.UnawareTarget"}}
     </label>
     <div>

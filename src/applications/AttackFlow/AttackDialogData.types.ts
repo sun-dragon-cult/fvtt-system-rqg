@@ -16,6 +16,7 @@ export type AttackDialogContext = CombatRollHeaderPartData &
     damageBonusSourceOptions: SelectOptionData<string>[];
     hitLocationFormulaOptions: SelectOptionData<string>[];
     aimedBlowOptions: SelectOptionData<number>[];
+    weaponIsNatural: boolean;
   };
 
 export type AttackDialogFormData = {
@@ -28,6 +29,7 @@ export type AttackDialogFormData = {
   hitLocationFormula: string;
   aimedBlow: number;
   augmentModifier: string;
+  proneAttacker: boolean;
   proneTarget: boolean;
   unawareTarget: boolean;
   darkness: boolean;

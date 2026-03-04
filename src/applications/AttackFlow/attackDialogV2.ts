@@ -156,6 +156,11 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     formData.reduceAmmoQuantity ??= true;
     formData.aimedBlow = formData.aimedBlow ? Number(formData.aimedBlow) : 0;
 
+    // When attacking from prone with no aimed blow, default hit location to 1d10 (low)
+    if (formData.proneAttacker && formData.aimedBlow === 0) {
+      formData.hitLocationFormula = "1d10";
+    }
+
     return {
       formData: formData,
       ammoQuantity: ammoQuantity,
@@ -168,6 +173,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       damageBonusSourceOptions: damageBonusSourceOptions,
       hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(formData.aimedBlow),
       aimedBlowOptions: AttackDialogV2.getAimedBlowOptions(target),
+      weaponIsNatural: this.weaponItem.system.isNatural,
 
       // combatRollHeader
       skillName: usedSkill?.name ?? "",
@@ -183,7 +189,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
           (formData.unawareTarget ? unawareTargetModifier : 0) +
           (formData.darkness ? darknessModifier : 0) +
           (formData.halved ? formData.halvedModifier : 0) +
-          (formData.aimedBlow > 0 ? formData.halvedModifier : 0),
+          (formData.aimedBlow > 0 ? formData.halvedModifier : 0) +
+          (formData.proneAttacker ? formData.halvedModifier : 0),
       ),
       combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
         .filter((cm: CombatManeuver) => cm.damageType !== "parry")
@@ -382,6 +389,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
           description: localize("RQG.Roll.AbilityRoll.AimedBlow"),
         },
         {
+          value: formDataObject.proneAttacker ? Number(formDataObject.halvedModifier) : 0,
+          description: localize("RQG.Roll.AbilityRoll.ProneAttacker"),
+        },
+        {
           value: Number(formDataObject.otherModifier),
           description: formDataObject.otherModifierDescription,
         },
@@ -419,6 +430,11 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     const hitLocationRoll = new HitLocationRoll(hitLocationFormula, {}, hitLocationRollOptions);
 
+    const selectedDamageBonus = formDataObject.attackDamageBonus.split("|").slice(1).join("|");
+    // When attacking from prone with a non-natural weapon, damage bonus is not added
+    const attackDamageBonusForChat =
+      formDataObject.proneAttacker && !weaponItem.system.isNatural ? "" : selectedDamageBonus;
+
     const chatSystemData: any = {
       attackState: `Attacked`,
       attackingTokenOrActorUuid: tokenDocumentOrRqgActor?.uuid ?? "",
@@ -430,7 +446,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       actorDamagedApplied: false,
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
-      attackDamageBonus: formDataObject.attackDamageBonus.split("|").slice(1).join("|"),
+      attackDamageBonus: attackDamageBonusForChat,
       attackRoll: attackRoll.toJSON(),
       defenceRoll: undefined,
       damageRoll: undefined,

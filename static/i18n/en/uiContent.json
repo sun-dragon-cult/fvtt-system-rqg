@@ -469,6 +469,8 @@
         "WeaponUsage": "Usage",
         "ReduceAmmoQuantity": "Reduce Ammo Quantity",
         "ProneTarget": "Prone Target",
+        "ProneAttacker": "Prone Attacker",
+        "ProneAttackerNoDamageBonus": "(no damage bonus)",
         "UnawareTarget": "Unaware Target",
         "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",
@@ -1121,6 +1123,7 @@
           "Sixth": "sixth defence"
         },
         "ProneTarget": "prone",
+        "ProneAttacker": "prone attacker",
         "UnawareTarget": "unaware",
         "Darkness": "darkness",
         "Halved": "halved",
