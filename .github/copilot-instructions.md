@@ -23,6 +23,7 @@ When instructions conflict, use the most specific file in the current folder sub
 - Use `document.system` for system data.
 - Use `localize()` from `src/system/util.ts` for player-facing UI text.
 - Do not perform unrelated refactors in the same change.
+- Do not modify `.gitignore` unless explicitly requested.
 
 ## Validation
 

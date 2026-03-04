@@ -13,6 +13,44 @@ export class RqidEditor extends FormApplication {
     this.document = document;
   }
 
+  private async syncRqidHeaderIconState(): Promise<void> {
+    const rqid = Rqid.getDocumentFlag(this.document);
+    const lastPartOfId = rqid?.id?.split(".")[2]?.trim();
+    const rqidMissing = !lastPartOfId;
+
+    const tooltip = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.rqidTooltip,
+      {
+        rqid: rqid,
+      },
+    );
+
+    const apps = Object.values((this.document as any)?.apps ?? {}) as Array<{
+      window?: { header?: HTMLElement };
+      element?: JQuery<HTMLElement> | HTMLElement;
+    }>;
+
+    for (const app of apps) {
+      const elementRoot =
+        app.element instanceof HTMLElement
+          ? app.element
+          : ((app.element?.[0] as HTMLElement | undefined) ?? undefined);
+
+      const icon =
+        app.window?.header?.querySelector<HTMLElement>(".fa-fingerprint") ??
+        elementRoot?.querySelector<HTMLElement>(".fa-fingerprint") ??
+        undefined;
+
+      if (!icon) {
+        continue;
+      }
+
+      icon.classList.toggle("rqid-missing", rqidMissing);
+      icon.dataset["tooltipDirection"] = "UP";
+      icon.dataset["tooltip"] = tooltip;
+    }
+  }
+
   override get id() {
     return `${this.constructor.name}-${trimChars(toKebabCase(this.document.uuid ?? ""), "-")}`;
   }
@@ -152,6 +190,7 @@ export class RqidEditor extends FormApplication {
           },
         };
         await (this.document as any).update(foundry.utils.flattenObject(updateData));
+        await this.syncRqidHeaderIconState();
         this.render();
       });
     });
@@ -180,6 +219,7 @@ export class RqidEditor extends FormApplication {
       Number(formData["flags.rqg.documentRqidFlags.priority"]) || 0;
 
     await (this.document as any).update(formData);
+    await this.syncRqidHeaderIconState();
     this.render();
   }
 

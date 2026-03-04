@@ -1196,6 +1196,11 @@ input.readonly {
   }
 }
 
+.header-control.rqid-missing,
+.header-control.rqid-missing i {
+  color: var(--color-level-error);
+}
+
 // Style the extra line in the settings tab
 .setting-links {
   margin-top: -5px;
