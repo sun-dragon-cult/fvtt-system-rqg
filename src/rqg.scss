@@ -1196,8 +1196,9 @@ input.readonly {
   }
 }
 
-.window-app .header-control.rqid-missing {
-  color: var(--color-border-highlight-alt);
+.header-control.rqid-missing,
+.header-control.rqid-missing i {
+  color: var(--color-level-error);
 }
 
 // Style the extra line in the settings tab
