@@ -15,6 +15,7 @@ export type DefenceDialogContext = CombatRollHeaderPartData &
     parryingWeaponUsageOptions: SelectOptionData<string>[];
     augmentOptions: SelectOptionData<number>[];
     subsequentDefenceOptions: SelectOptionData<number>[];
+    isSelectedParryWeaponBroken: boolean;
   };
 
 export type DefenceDialogFormData = {

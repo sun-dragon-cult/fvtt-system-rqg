@@ -470,7 +470,8 @@
         "ReduceAmmoQuantity": "Reduce Ammo Quantity",
         "ProneTarget": "Prone Target",
         "ProneAttacker": "Prone Attacker",
-        "ProneAttackerNoDamageBonus": "(no damage bonus)",
+        "ProneAttackerHitLocationFromBelow": "Hit location is set to From Below (1d10).",
+        "ProneAttackerNoDamageBonus": "No damage bonus when attacking from prone",
         "UnawareTarget": "Unaware Target",
         "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",
@@ -488,6 +489,8 @@
           "1d10+10": "From Above (1d10 + 10)"
         },
         "NoTokenToAttackWith": "You don't have any token in this scene to do an attack",
+        "NoValidSkillForWeaponUsage": "No valid skill found for selected weapon usage.",
+        "NoValidSkillForWeaponUsageWarn": "No valid skill found for selected weapon usage. Ask the GM to fix the weapon usage skill link.",
         "WeaponNotEmbedded": "Could not find the owner of the used weapon"
       },
       "Defence": {
@@ -509,6 +512,8 @@
           "Fifth": "Fifth -80%",
           "Sixth": "Sixth -100%"
         },
+        "NoValidParrySkillForWeaponUsage": "No valid parry skill found for selected weapon usage.",
+        "NoValidParrySkillForWeaponUsageWarn": "No valid parry skill found for selected weapon usage. Ask the GM to fix the weapon usage skill link.",
         "NoTokenToDefendWith": "You don't have any token in this scene that can defend this attack"
       },
       "AbilityRoll": {
@@ -1122,7 +1127,7 @@
           "Fifth": "fifth defence",
           "Sixth": "sixth defence"
         },
-        "ProneTarget": "prone",
+        "ProneTarget": "prone defender",
         "ProneAttacker": "prone attacker",
         "UnawareTarget": "unaware",
         "Darkness": "darkness",

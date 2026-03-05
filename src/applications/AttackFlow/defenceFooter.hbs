@@ -1,8 +1,22 @@
-<div class="flexrow flex-wrap gap1rem">
-  <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
-    <i class="fa-solid fa-bullseye"></i><br>
-    {{totalChance}}%
+<footer class="form-footer">
+  <div class="flexrow flex-wrap gap1rem">
+    <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+      <i class="fa-solid fa-bullseye"></i><br>
+      {{totalChance}}%
+    </div>
+
+    {{#if isSelectedParryWeaponBroken}}
+      <button data-defend disabled>{{defenceButtonText}}</button>
+    {{else}}
+      <button data-defend>{{defenceButtonText}}</button>
+    {{/if}}
   </div>
 
-  <button data-defend>{{defenceButtonText}}</button>
-</div>
+  {{#if isSelectedParryWeaponBroken}}
+    <div class="footer-message-stack" aria-live="polite">
+      <div class="footer-message footer-message-error" role="alert">
+        {{localize "RQG.Dialog.Defence.NoValidParrySkillForWeaponUsage"}}
+      </div>
+    </div>
+  {{/if}}
+</footer>

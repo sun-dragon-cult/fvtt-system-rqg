@@ -15,9 +15,11 @@
     <label>
       {{localize "RQG.Dialog.Attack.AttackingWeapon"}}
     </label>
-    <select name="attackingWeaponUuid">
-      {{selectOptions attackingWeaponOptions selected=formData.attackingWeaponUuid localize=false}}
-    </select>
+    <div class="fullwidth">
+      <select name="attackingWeaponUuid">
+        {{selectOptions attackingWeaponOptions selected=formData.attackingWeaponUuid localize=false}}
+      </select>
+    </div>
 
     <label>
       {{localize "RQG.Dialog.Attack.WeaponUsage"}}
@@ -26,6 +28,9 @@
       <select name="usageType">
         {{selectOptions usageTypeOptions selected=formData.usageType localize=true}}
       </select>
+      {{#if isSelectedWeaponBroken}}
+        <span class="invalid-selection-warning">{{localize "RQG.Dialog.Attack.NoValidSkillForWeaponUsage"}}</span>
+      {{/if}}
       {{#if (eq formData.usageType "missile")}}
         {{#if isOutOfAmmo}}
           <span>{{localize "RQG.Dialog.Attack.OutOfAmmo"}}</span>
@@ -46,9 +51,14 @@
     <label>
       {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
     </label>
-    <select name="attackDamageBonus">
-      {{selectOptions damageBonusSourceOptions selected=formData.attackDamageBonus}}
-    </select>
+    {{#if (and formData.proneAttacker (not weaponIsNatural))}}
+      <input type="hidden" name="attackDamageBonus" value="">
+      <input type="text" readonly value="{{localize "RQG.Dialog.Attack.ProneAttackerNoDamageBonus"}}">
+    {{else}}
+      <select name="attackDamageBonus">
+        {{selectOptions damageBonusSourceOptions selected=formData.attackDamageBonus}}
+      </select>
+    {{/if}}
 
     <label>
       {{localize "RQG.Dialog.Attack.ExtraDamage"}}
@@ -91,22 +101,22 @@
     </select>
 
     <label>
-      {{localize "RQG.Dialog.Attack.ProneTarget"}}
-    </label>
-    <div>
-      <input type="checkbox" name="proneTarget" {{checked formData.proneTarget}}>
-      {{#if formData.proneTarget}}<span class="ml-5">+40%</span>{{/if}}
-    </div>
-
-    <label>
       {{localize "RQG.Dialog.Attack.ProneAttacker"}}
     </label>
     <div>
       <input type="checkbox" name="proneAttacker" {{checked formData.proneAttacker}}>
       {{#if formData.proneAttacker}}
         <span class="ml-5">{{formData.halvedModifier}}%</span>
-        {{#unless weaponIsNatural}}<span class="ml-5">{{localize "RQG.Dialog.Attack.ProneAttackerNoDamageBonus"}}</span>{{/unless}}
+        {{#if isHitLocationAutoFromBelow}}<span class="ml-5">{{localize "RQG.Dialog.Attack.ProneAttackerHitLocationFromBelow"}}</span>{{/if}}
       {{/if}}
+    </div>
+
+    <label>
+      {{localize "RQG.Dialog.Attack.ProneTarget"}}
+    </label>
+    <div>
+      <input type="checkbox" name="proneTarget" {{checked formData.proneTarget}}>
+      {{#if formData.proneTarget}}<span class="ml-5">+40%</span>{{/if}}
     </div>
 
     <label>
@@ -139,5 +149,7 @@
       <input type="number" value="{{formData.otherModifier}}" name="otherModifier"><span class="ml-5">%</span>
     </div>
   </div>
+  <input name="hitLocationFormulaBeforeProne" value="{{formData.hitLocationFormulaBeforeProne}}" type="hidden">
+  <input name="proneAttackerPrev" value="{{formData.proneAttackerPrev}}" type="hidden">
   <input name="halvedModifier" value="{{formData.halvedModifier}}" type="hidden">
 </div>

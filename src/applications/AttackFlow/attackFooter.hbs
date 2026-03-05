@@ -5,9 +5,22 @@
       {{totalChance}}%
     </div>
     {{#each combatManeuverNames}}
-      <button data-combat-maneuver-name="{{this}}" name="combatManeuverRoll">
-        {{this}}
-      </button>
+      {{#if ../isSelectedWeaponBroken}}
+        <button data-combat-maneuver-name="{{this}}" name="combatManeuverRoll" disabled>
+          {{this}}
+        </button>
+      {{else}}
+        <button data-combat-maneuver-name="{{this}}" name="combatManeuverRoll">
+          {{this}}
+        </button>
+      {{/if}}
     {{/each}}
   </div>
+  {{#if isSelectedWeaponBroken}}
+    <div class="footer-message-stack" aria-live="polite">
+      <div class="footer-message footer-message-error" role="alert">
+        {{localize "RQG.Dialog.Attack.NoValidSkillForWeaponUsage"}}
+      </div>
+    </div>
+  {{/if}}
 </footer>
