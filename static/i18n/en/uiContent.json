@@ -489,6 +489,7 @@
           "1d10+10": "From Above (1d10 + 10)"
         },
         "NoTokenToAttackWith": "You don't have any token in this scene to do an attack",
+        "NoWeaponToAttackWith": "You don't have any weapon to attack with",
         "NoValidSkillForWeaponUsage": "No valid skill found for selected weapon usage.",
         "NoValidSkillForWeaponUsageWarn": "No valid skill found for selected weapon usage. Ask the GM to fix the weapon usage skill link.",
         "WeaponNotEmbedded": "Could not find the owner of the used weapon"
