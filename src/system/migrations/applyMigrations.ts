@@ -90,14 +90,15 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
         console.log(`RQG | Migrating Item document ${item.name}`, updateData);
         // @ts-expect-error enforceTypes TODO it does exists
         await item.update(updateData, { enforceTypes: false });
-        updateProgressBar(++progress, itemArray.length, migrationMsg);
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
       console.error(err, item);
+    } finally {
+      updateProgressBar(++progress, itemCount, migrationMsg);
     }
   }
-  updateProgressBar(itemArray.length, itemArray.length, migrationMsg);
+  updateProgressBar(itemCount, itemCount, migrationMsg);
 }
 
 async function migrateWorldScenes(
@@ -386,12 +387,14 @@ function updateProgressBar(index: number, totalCount: number, prefix: string = "
   const pct = Math.round(progress) / 100;
   const message = `${prefix} ${index} / ${totalCount}`;
 
-  if (!progressBar?.active) {
+  if (!progressBar) {
     progressBar = ui.notifications?.info(message, { progress: true });
   }
-  progressBar.update({ message, pct });
+
+  progressBar?.update?.({ message, pct });
 
   if (index === totalCount) {
     progressBar?.remove();
+    progressBar = undefined;
   }
 }
