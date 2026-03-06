@@ -298,14 +298,9 @@ async function getActorMigrationUpdates(
   const itemUpdateData: Item.UpdateData[] = [];
 
   actorMigrations.forEach((fn: (actorData: RqgActorDataSource) => Actor.UpdateData) => {
-    // Merge in the updates
-    actorUpdateData = foundry.utils.mergeObject(
-      actorUpdateData,
-      fn(actorData as any),
-      {
-        performDeletions: false,
-      },
-    ) as Actor.UpdateData;
+    actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fn(actorData as any), {
+      performDeletions: false,
+    }) as Actor.UpdateData;
   });
 
   if ("items" in (actorUpdateData as Record<string, unknown>)) {
