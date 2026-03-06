@@ -259,7 +259,13 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     }
     RqidBatchEditor.updateProgress(++progress, changesCount, "Update World Items");
 
-    await RqidBatchEditor.updateScenes(sceneChangesMap, itemNames2Rqid, progress, changesCount);
+    progress = await RqidBatchEditor.updateScenes(
+      sceneChangesMap,
+      itemNames2Rqid,
+      progress,
+      changesCount,
+    );
+    RqidBatchEditor.updateProgress(progress, changesCount, "Update Scenes", true);
   }
 
   private static async updateActorPackCompendiums(
@@ -678,6 +684,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       }
     }
 
+    RqidBatchEditor.updateProgress(scanningCount, scanningCount, "Find Rqids", true);
+
     return {
       sceneChangesMap,
       actorChangesMap,
@@ -867,7 +875,12 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     };
   }
 
-  private static updateProgress(index: number, totalCount: number, prefix: string = ""): void {
+  private static updateProgress(
+    index: number,
+    totalCount: number,
+    prefix: string = "",
+    closeOnComplete = false,
+  ): void {
     const total = totalCount || 1; // Avoid division by zero
     const progress = Math.ceil((100 * index) / total);
     const pct = Math.round(progress) / 100;
@@ -888,6 +901,11 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     }
     if (shouldUpdateUi) {
       RqidBatchEditor.updateProgressBar.update({ message, pct });
+    }
+
+    if (closeOnComplete && index >= totalCount) {
+      RqidBatchEditor.updateProgressBar?.remove?.();
+      RqidBatchEditor.updateProgressBar = undefined;
     }
   }
 }
