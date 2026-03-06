@@ -1,5 +1,10 @@
 import { localize } from "../util";
-import { type ActorMigration, applyMigrations, type ItemMigration } from "./applyMigrations";
+import {
+  type ActorMigration,
+  applyMigrations,
+  type ItemMigration,
+  type MigrationResult,
+} from "./applyMigrations";
 import { systemId } from "../config";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tagSkillNameSkillsWithRqid";
 import { migrateWorldDialog } from "../../applications/migrateWorldDialog";
@@ -41,21 +46,49 @@ export async function migrateWorld(): Promise<void> {
   );
 
   await migrateWorldDialog(systemVersion);
-  ui.notifications?.info(
+  const migrationNotification = ui.notifications?.info(
     localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
-    { permanent: true, console: false },
+    { permanent: true, console: false, progress: true },
   );
   console.log(`RQG | Starting world migration to version ${systemVersion}`);
+  try {
+    const migrationResult = await applyDefaultWorldMigrations(
+      undefined,
+      undefined,
+      migrationNotification,
+    );
+    if (migrationResult.errorCount === 0) {
+      // *** Set the migration as complete ***
+      await game.settings.set(systemId, "worldMigrationVersion", systemVersion);
 
-  await applyDefaultWorldMigrations();
-  // *** Set the migration as complete ***
-  await game.settings.set(systemId, "worldMigrationVersion", systemVersion);
-
-  ui.notifications?.info(
-    localize("RQG.Migration.migrationFinished", { systemVersion: systemVersion }),
-    { permanent: true, console: false },
-  );
-  console.log(`RQG | Finished world migration`);
+      migrationNotification?.update?.({
+        message: localize("RQG.Migration.migrationFinished", {
+          systemVersion: systemVersion,
+        }),
+      });
+      console.log(`RQG | Finished world migration`);
+    } else {
+      migrationNotification?.update?.({
+        message: localize("RQG.Migration.migrationFinishedWithErrors", {
+          systemVersion: systemVersion,
+          errorCount: migrationResult.errorCount.toString(),
+        }),
+      });
+      console.warn(
+        `RQG | World migration completed with ${migrationResult.errorCount} errors. worldMigrationVersion was not updated.`,
+      );
+    }
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    migrationNotification?.update?.({
+      message: localize("RQG.Migration.migrationFailed", {
+        systemVersion: systemVersion,
+        error: errorMessage,
+      }),
+    });
+    console.error("RQG | World migration failed", err);
+    throw err;
+  }
 }
 
 /**
@@ -67,10 +100,11 @@ export async function migrateWorld(): Promise<void> {
 export async function applyDefaultWorldMigrations(
   itemMigrations: ItemMigration[] | undefined = undefined,
   actorMigrations: ActorMigration[] | undefined = undefined,
-): Promise<void> {
+  migrationNotification?: any,
+): Promise<MigrationResult> {
   if (!game.user?.isGM) {
     ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
-    return;
+    return { errorCount: 1 };
   }
   const worldItemMigrations: ItemMigration[] = itemMigrations ?? [
     tagSkillNameSkillsWithRqid,
@@ -80,5 +114,5 @@ export async function applyDefaultWorldMigrations(
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [];
 
-  await applyMigrations(worldItemMigrations, worldActorMigrations);
+  return await applyMigrations(worldItemMigrations, worldActorMigrations, migrationNotification);
 }
