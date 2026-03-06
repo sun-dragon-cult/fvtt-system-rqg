@@ -1322,6 +1322,7 @@
       "DocsInWorld": "{count} documents in the world",
       "DocsInCompendiums": "{count} documents in the compendiums",
       "DuplicateWarning": "Warning: Multiple rqids with same priority!",
+      "EmbeddedDocumentParentMissingRqid": "Warning: The parent document does not have an RQID set. The link to this embedded document will not work until the parent has an RQID.",
       "CouldNotFindRune": "Could not find cached rune with rqid {rqid}",
       "Error": {
         "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
