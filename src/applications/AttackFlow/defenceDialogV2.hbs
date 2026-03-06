@@ -30,9 +30,14 @@
       <label>
         {{localize "RQG.Dialog.Defence.ParryingWeaponUsage"}}
       </label>
-      <select name="parryingWeaponUsage">
-        {{selectOptions parryingWeaponUsageOptions selected=formData.parryingWeaponUsage localize=true}}
-      </select>
+      <div>
+        <select name="parryingWeaponUsage">
+          {{selectOptions parryingWeaponUsageOptions selected=formData.parryingWeaponUsage localize=true}}
+        </select>
+        {{#if isSelectedParryWeaponBroken}}
+          <span class="invalid-selection-warning">{{localize "RQG.Dialog.Defence.NoValidParrySkillForWeaponUsage"}}</span>
+        {{/if}}
+      </div>
     {{/if}}
 
     {{#unless (eq formData.defence "ignore")}}

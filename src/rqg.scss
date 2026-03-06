@@ -1440,3 +1440,38 @@ input.readonly {
     }
   }
 }
+
+.rqg.form.roll-dialog.attack-dialog,
+.rqg.form.roll-dialog.defence-dialog {
+  .invalid-selection-warning {
+    display: block;
+    color: var(--color-level-error);
+    font-size: 0.9rem;
+  }
+
+  .footer-message-stack {
+    width: 100%;
+    margin-top: 0.3rem;
+  }
+
+  .footer-message {
+    display: block;
+    text-align: center;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .footer-message-error {
+    color: var(--color-level-error);
+    border: 1px solid var(--color-level-error);
+    background-color: transparent;
+  }
+}
+
+.rqg.form.roll-dialog.defence-dialog {
+  .footer-message-stack,
+  .footer-message {
+    text-align: center;
+  }
+}
