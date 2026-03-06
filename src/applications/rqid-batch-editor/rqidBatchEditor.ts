@@ -32,6 +32,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
   /** Keep a single progress object. */
   private static updateProgressBar: any;
+  private readonly inputDebounceTimers = new WeakMap<HTMLInputElement, number>();
+  private static readonly rqidInputDebounceMs = 120;
 
   static override get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -126,29 +128,64 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     super.activateListeners(html);
     html.find(".existing").change(this.onSetExistingName.bind(this));
     html.find(".generate-rqid").click(this.onClickGuess.bind(this));
-    html.find("input").change(this.onTypeRqid.bind(this));
+    html.find(".rqid-input").on("input", this.onTypeRqidInput.bind(this));
+    html.find(".rqid-input").change(this.onTypeRqid.bind(this));
+  }
+
+  onTypeRqidInput(event: any): void {
+    const input = event.currentTarget as HTMLInputElement | undefined;
+    if (!input) {
+      return;
+    }
+
+    const existingTimer = this.inputDebounceTimers.get(input);
+    if (existingTimer != null) {
+      window.clearTimeout(existingTimer);
+    }
+
+    const timer = window.setTimeout(() => {
+      this.onTypeRqid(event);
+      this.inputDebounceTimers.delete(input);
+    }, RqidBatchEditor.rqidInputDebounceMs);
+
+    this.inputDebounceTimers.set(input, timer);
   }
 
   onSetExistingName(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
-    const newRqid = convertFormValueToString(event.currentTarget?.value);
+    const selectedRqid = convertFormValueToString(event.currentTarget?.value);
+    const newRqid = selectedRqid || undefined;
     this.object.itemName2Rqid.set(name, newRqid);
-    this.render();
+
+    const rqidSuffix = selectedRqid ? selectedRqid.replace(this.options.prefixRegex ?? "", "") : "";
+    this.updateRowInput(event, rqidSuffix);
   }
 
   onClickGuess(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
-    const newRqid = this.options.idPrefix + toKebabCase(name);
+    const rqidSuffix = toKebabCase(name);
+    const newRqid = rqidSuffix ? this.options.idPrefix + rqidSuffix : undefined;
     this.object.itemName2Rqid.set(name, newRqid);
-    this.render();
+    this.updateRowInput(event, rqidSuffix);
   }
 
   onTypeRqid(event: any): void {
     const name = getDomDataset(event, "name") ?? "";
-    const newRqid =
-      this.options.idPrefix + toKebabCase(convertFormValueToString(event.currentTarget.value));
+    const rqidSuffix = toKebabCase(convertFormValueToString(event.currentTarget.value));
+    const newRqid = rqidSuffix ? this.options.idPrefix + rqidSuffix : undefined;
     this.object.itemName2Rqid.set(name, newRqid);
-    this.render();
+    this.updateRowInput(event, rqidSuffix);
+  }
+
+  private updateRowInput(event: any, rqidSuffix: string): void {
+    const rowElement = (event.currentTarget as HTMLElement | undefined)?.closest(".document-row");
+    const rowInput = rowElement?.querySelector(".rqid-input") as HTMLInputElement | null;
+    if (!rowInput) {
+      return;
+    }
+
+    rowInput.value = rqidSuffix;
+    rowInput.classList.toggle("missing", !rqidSuffix);
   }
 
   async _updateObject(event: Event): Promise<void> {
@@ -487,6 +524,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     // Collect Rqids from system compendium packs
     const worldItemPacks = game.packs;
     RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from Compendiums");
+    const processedActorCompendiumPacks = new Set<string>();
 
     for (const pack of worldItemPacks ?? []) {
       const packIndex = await pack.getIndex();
@@ -513,13 +551,16 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
               break;
 
             case ActorTypeEnum.Character:
-              await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
-                pack as any,
-                actors,
-                documentType,
-                itemNamesWithoutRqid,
-                packActorChangesMap,
-              );
+              if (!processedActorCompendiumPacks.has(pack.metadata.id)) {
+                await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
+                  pack as any,
+                  actors,
+                  documentType,
+                  itemNamesWithoutRqid,
+                  packActorChangesMap,
+                );
+                processedActorCompendiumPacks.add(pack.metadata.id);
+              }
               RqidBatchEditor.updateProgress(
                 ++progress,
                 scanningCount,
@@ -831,6 +872,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     const progress = Math.ceil((100 * index) / total);
     const pct = Math.round(progress) / 100;
     const message = `${prefix} ${index} / ${totalCount}`;
+    const step = Math.max(1, Math.ceil(total / 100));
+    const shouldUpdateUi = index === 0 || index === totalCount || index % step === 0;
 
     // Reduce the number of console messages to avoid clutter
     if (index % Math.ceil(totalCount / 10) === 0 || index === totalCount) {
@@ -843,6 +886,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         console: false,
       });
     }
-    RqidBatchEditor.updateProgressBar.update({ message, pct });
+    if (shouldUpdateUi) {
+      RqidBatchEditor.updateProgressBar.update({ message, pct });
+    }
   }
 }

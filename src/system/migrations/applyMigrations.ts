@@ -62,10 +62,11 @@ async function migrateWorldActors(
         );
         await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
-      updateProgressBar(++progress, actorCount, migrationMsg);
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
       console.error(err, actor);
+    } finally {
+      updateProgressBar(++progress, actorCount, migrationMsg);
     }
   }
   updateProgressBar(actorCount, actorCount, migrationMsg);
@@ -127,11 +128,12 @@ async function migrateWorldScenes(
         // If we do not do this, then synthetic token actors remain in cache
         // with the un-updated actorData.
         scene.tokens.contents.forEach((t: any) => (t._actor = null));
-        updateProgressBar(++progress, scenesCount, migrationMsg);
       }
     } catch (err: any) {
       err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
       console.error(err, scene);
+    } finally {
+      updateProgressBar(++progress, scenesCount, migrationMsg);
     }
   }
   updateProgressBar(scenesCount, scenesCount, migrationMsg);
@@ -153,14 +155,20 @@ async function migrateWorldCompendiumPacks(
   updateProgressBar(progress, packsCount, migrationMsg);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const pack of packs) {
-    if (pack.metadata.packageType !== "world") {
-      continue;
+    try {
+      if (pack.metadata.packageType !== "world") {
+        continue;
+      }
+      if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
+        continue;
+      }
+      await migrateCompendium(pack, itemMigrations, actorMigrations);
+    } catch (err: any) {
+      err.message = `RQG | Failed migration for Compendium ${pack.collection}: ${err.message}`;
+      console.error(err, pack);
+    } finally {
+      updateProgressBar(++progress, packsCount, migrationMsg);
     }
-    if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
-      continue;
-    }
-    await migrateCompendium(pack, itemMigrations, actorMigrations);
-    updateProgressBar(++progress, packsCount, migrationMsg);
   }
   updateProgressBar(packsCount, packsCount, migrationMsg);
 }
