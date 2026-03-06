@@ -15,21 +15,38 @@ interface ActorMigrationResult {
   itemUpdateData: Item.UpdateData[];
 }
 
+export interface MigrationResult {
+  errorCount: number;
+}
+
 export async function applyMigrations(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
-): Promise<void> {
+  migrationNotification?: any,
+): Promise<MigrationResult> {
+  const migrationResult: MigrationResult = {
+    errorCount: 0,
+  };
+  progressBar = migrationNotification;
+  removeProgressBarOnComplete = !migrationNotification;
   console.time("RQG | ⏱ World Migrations took (ms)");
-  await migrateWorldActors(itemMigrations, actorMigrations);
-  await migrateWorldItems(itemMigrations);
-  await migrateWorldScenes(itemMigrations, actorMigrations);
-  await migrateWorldCompendiumPacks(itemMigrations, actorMigrations);
+  await migrateWorldActors(itemMigrations, actorMigrations, migrationResult);
+  await migrateWorldItems(itemMigrations, migrationResult);
+  await migrateWorldScenes(itemMigrations, actorMigrations, migrationResult);
+  await migrateWorldCompendiumPacks(itemMigrations, actorMigrations, migrationResult);
   console.timeEnd("RQG | ⏱ World Migrations took (ms)");
+
+  if (!migrationNotification) {
+    progressBar = undefined;
+  }
+
+  return migrationResult;
 }
 
 async function migrateWorldActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  migrationResult: MigrationResult,
 ): Promise<void> {
   const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
@@ -40,7 +57,7 @@ async function migrateWorldActors(
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, actorCount, migrationMsg);
+  updateProgressBar(progress, actorCount, migrationMsg, 0, 0.25, 120);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const actor of actorArray) {
     try {
@@ -63,16 +80,20 @@ async function migrateWorldActors(
         await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
     } catch (err: any) {
+      migrationResult.errorCount += 1;
       err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
       console.error(err, actor);
     } finally {
-      updateProgressBar(++progress, actorCount, migrationMsg);
+      updateProgressBar(++progress, actorCount, migrationMsg, 0, 0.25, 120);
     }
   }
-  updateProgressBar(actorCount, actorCount, migrationMsg);
+  updateProgressBar(actorCount, actorCount, migrationMsg, 0, 0.25, 120);
 }
 
-async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void> {
+async function migrateWorldItems(
+  itemMigrations: ItemMigration[],
+  migrationResult: MigrationResult,
+): Promise<void> {
   const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
   const migrationMsg = localize("RQG.Migration.items", {
@@ -82,7 +103,7 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, itemArray.length, migrationMsg);
+  updateProgressBar(progress, itemArray.length, migrationMsg, 0.25, 0.5, 45);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const item of itemArray) {
     try {
@@ -93,18 +114,20 @@ async function migrateWorldItems(itemMigrations: ItemMigration[]): Promise<void>
         await item.update(updateData, { enforceTypes: false });
       }
     } catch (err: any) {
+      migrationResult.errorCount += 1;
       err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
       console.error(err, item);
     } finally {
-      updateProgressBar(++progress, itemCount, migrationMsg);
+      updateProgressBar(++progress, itemCount, migrationMsg, 0.25, 0.5, 45);
     }
   }
-  updateProgressBar(itemCount, itemCount, migrationMsg);
+  updateProgressBar(itemCount, itemCount, migrationMsg, 0.25, 0.5, 45);
 }
 
 async function migrateWorldScenes(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  migrationResult: MigrationResult,
 ): Promise<void> {
   const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
@@ -115,7 +138,7 @@ async function migrateWorldScenes(
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, scenesCount, migrationMsg);
+  updateProgressBar(progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const scene of scenes) {
     try {
@@ -130,18 +153,20 @@ async function migrateWorldScenes(
         scene.tokens.contents.forEach((t: any) => (t._actor = null));
       }
     } catch (err: any) {
+      migrationResult.errorCount += 1;
       err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
       console.error(err, scene);
     } finally {
-      updateProgressBar(++progress, scenesCount, migrationMsg);
+      updateProgressBar(++progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
     }
   }
-  updateProgressBar(scenesCount, scenesCount, migrationMsg);
+  updateProgressBar(scenesCount, scenesCount, migrationMsg, 0.5, 0.75, 180);
 }
 
 async function migrateWorldCompendiumPacks(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  migrationResult: MigrationResult,
 ): Promise<void> {
   const packs = game.packs?.contents.filter((p) => p.metadata.packageName !== systemId) ?? []; // Exclude system packs
   const packsCount = packs.length;
@@ -152,7 +177,7 @@ async function migrateWorldCompendiumPacks(
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, packsCount, migrationMsg);
+  updateProgressBar(progress, packsCount, migrationMsg, 0.75, 1, 350);
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const pack of packs) {
     try {
@@ -162,15 +187,16 @@ async function migrateWorldCompendiumPacks(
       if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
         continue;
       }
-      await migrateCompendium(pack, itemMigrations, actorMigrations);
+      await migrateCompendium(pack, itemMigrations, actorMigrations, migrationResult);
     } catch (err: any) {
+      migrationResult.errorCount += 1;
       err.message = `RQG | Failed migration for Compendium ${pack.collection}: ${err.message}`;
       console.error(err, pack);
     } finally {
-      updateProgressBar(++progress, packsCount, migrationMsg);
+      updateProgressBar(++progress, packsCount, migrationMsg, 0.75, 1, 350);
     }
   }
-  updateProgressBar(packsCount, packsCount, migrationMsg);
+  updateProgressBar(packsCount, packsCount, migrationMsg, 0.75, 1, 350);
 }
 
 /* -------------------------------------------- */
@@ -182,6 +208,7 @@ async function migrateCompendium(
   pack: CompendiumCollection.Any,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  migrationResult: MigrationResult,
 ): Promise<void> {
   const documentType: string = pack.metadata.type;
   if (!["Actor", "Item", "Scene"].includes(documentType)) {
@@ -193,7 +220,7 @@ async function migrateCompendium(
   await pack.configure({ locked: false });
 
   // Begin by requesting server-side data model migration and get the migrated content
-  await pack.migrate();
+  await pack.migrate({ notify: false });
   const documents = await pack.getDocuments();
 
   // Iterate over compendium entries - applying fine-tuned migration functions
@@ -249,6 +276,7 @@ async function migrateCompendium(
       );
       await doc.update(updateData);
     } catch (err: any) {
+      migrationResult.errorCount += 1;
       err.message = `RQG | Failed system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
       console.error(err, doc);
     }
@@ -388,11 +416,33 @@ async function getSceneMigrationUpdates(
 }
 
 let progressBar: any;
+let removeProgressBarOnComplete = true;
+let phaseTimingKey = "";
+let phaseTimingStart = 0;
 
-function updateProgressBar(index: number, totalCount: number, prefix: string = ""): void {
+function updateProgressBar(
+  index: number,
+  totalCount: number,
+  prefix: string = "",
+  phaseStartPct = 0,
+  phaseEndPct = 1,
+  expectedUnitMs = 100,
+): void {
   const total = totalCount || 1; // Avoid division by zero
-  const progress = Math.ceil((100 * index) / total);
-  const pct = Math.round(progress) / 100;
+  const now = Date.now();
+  const currentPhaseKey = `${prefix}|${phaseStartPct}|${phaseEndPct}`;
+  if (phaseTimingKey !== currentPhaseKey) {
+    phaseTimingKey = currentPhaseKey;
+    phaseTimingStart = now;
+  }
+
+  const countProgress = Math.max(0, Math.min(1, index / total));
+  const expectedPhaseMs = Math.max(1000, total * expectedUnitMs);
+  const elapsedPhaseMs = Math.max(0, now - phaseTimingStart);
+  const rawTimeProgress = Math.max(0, Math.min(1, elapsedPhaseMs / expectedPhaseMs));
+  const timeProgress = index >= total ? 1 : Math.min(rawTimeProgress, 0.98);
+  const phaseProgress = Math.max(countProgress, timeProgress);
+  const pct = phaseStartPct + (phaseEndPct - phaseStartPct) * phaseProgress;
   const message = `${prefix} ${index} / ${totalCount}`;
 
   if (!progressBar) {
@@ -401,7 +451,7 @@ function updateProgressBar(index: number, totalCount: number, prefix: string = "
 
   progressBar?.update?.({ message, pct });
 
-  if (index === totalCount) {
+  if (index === totalCount && removeProgressBarOnComplete) {
     progressBar?.remove();
     progressBar = undefined;
   }
