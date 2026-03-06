@@ -299,7 +299,7 @@ async function getActorMigrationUpdates(
 
   actorMigrations.forEach((fn: (actorData: RqgActorDataSource) => Actor.UpdateData) => {
     // Merge in the updates
-    actorUpdateData = actorUpdateData = foundry.utils.mergeObject(
+    actorUpdateData = foundry.utils.mergeObject(
       actorUpdateData,
       fn(actorData as any),
       {
