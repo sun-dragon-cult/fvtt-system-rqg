@@ -10,6 +10,11 @@ export type ItemMigration = (
 ) => Promise<Item.UpdateData>;
 export type ActorMigration = (actorData: RqgActorDataSource) => Actor.UpdateData;
 
+interface ActorMigrationResult {
+  actorUpdateData: Actor.UpdateData;
+  itemUpdateData: Item.UpdateData[];
+}
+
 export async function applyMigrations(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
@@ -39,15 +44,23 @@ async function migrateWorldActors(
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const actor of actorArray) {
     try {
-      const updates = await getActorMigrationUpdates(
+      const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
         actor.toObject() as any,
         itemMigrations,
         actorMigrations,
       );
-      if (!foundry.utils.isEmpty(updates)) {
-        console.log(`RQG | Migrating Actor document ${actor.name}`, updates);
+      if (!foundry.utils.isEmpty(actorUpdateData)) {
+        console.log(`RQG | Migrating Actor document ${actor.name}`, actorUpdateData);
         // @ts-expect-error enforceTypes TODO it does exists
-        await actor.update(updates, { enforceTypes: false });
+        await actor.update(actorUpdateData, { enforceTypes: false });
+      }
+
+      if (itemUpdateData.length > 0) {
+        console.log(
+          `RQG | Migrating embedded Items for Actor document ${actor.name}`,
+          itemUpdateData,
+        );
+        await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
       updateProgressBar(++progress, actorCount, migrationMsg);
     } catch (err: any) {
@@ -179,13 +192,32 @@ async function migrateCompendium(
     let updateData = {};
     try {
       switch (documentType) {
-        case "Actor":
-          updateData = await getActorMigrationUpdates(
+        case "Actor": {
+          const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
             doc as RqgActor,
             itemMigrations,
             actorMigrations,
           );
+
+          if (!foundry.utils.isEmpty(actorUpdateData)) {
+            console.log(
+              `RQG | Migrating Actor document ${doc.name} in Compendium ${pack.collection}`,
+              actorUpdateData,
+            );
+            await (doc as any).update(actorUpdateData as any);
+          }
+
+          if (itemUpdateData.length > 0) {
+            console.log(
+              `RQG | Migrating embedded Items for Actor document ${doc.name} in Compendium ${pack.collection}`,
+              itemUpdateData,
+            );
+            await (doc as RqgActor).updateEmbeddedDocuments("Item", itemUpdateData);
+          }
+
+          updateData = {};
           break;
+        }
         case "Item":
           updateData = await getItemMigrationUpdates(doc as RqgItem, itemMigrations);
           break;
@@ -224,40 +256,57 @@ async function getActorMigrationUpdates(
   actorData: RqgActor,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
-): Promise<Actor.UpdateData> {
-  let updateData: Actor.UpdateData = {};
+): Promise<ActorMigrationResult> {
+  let actorUpdateData: Actor.UpdateData = {};
+  const itemUpdateData: Item.UpdateData[] = [];
+
   actorMigrations.forEach((fn: (actorData: RqgActorDataSource) => Actor.UpdateData) => {
     // Merge in the updates
-    updateData = updateData = foundry.utils.mergeObject(updateData, fn(actorData as any), {
-      performDeletions: false,
-    }) as Actor.UpdateData;
+    actorUpdateData = actorUpdateData = foundry.utils.mergeObject(
+      actorUpdateData,
+      fn(actorData as any),
+      {
+        performDeletions: false,
+      },
+    ) as Actor.UpdateData;
   });
+
+  if ("items" in (actorUpdateData as Record<string, unknown>)) {
+    console.warn(
+      `RQG | Actor migration returned actor-level items update for ${actorData.name}; ignoring items and using embedded item migrations instead.`,
+    );
+    delete (actorUpdateData as Record<string, unknown>)["items"];
+  }
 
   // Migrate Owned Items
   if (actorData.items) {
-    let hasItemUpdates = false;
-    const items = await Promise.all(
-      actorData.items.map(async (item: any) => {
-        const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData); // item is already `item.toObject()`
+    const rawActorItems = (actorData as any).items;
+    const actorItems: any[] = Array.isArray(rawActorItems)
+      ? rawActorItems
+      : Array.from(rawActorItems?.values?.() ?? []);
 
-        // Update the Owned Item
-        if (!foundry.utils.isEmpty(itemUpdate)) {
-          hasItemUpdates = true;
-          return foundry.utils.mergeObject(item, itemUpdate, {
-            performDeletions: false,
-            enforceTypes: false,
-            inplace: false,
-          });
-        } else {
-          return item;
-        }
-      }),
-    );
-    if (hasItemUpdates) {
-      updateData.items = items;
+    for (const item of actorItems) {
+      const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData);
+      if (foundry.utils.isEmpty(itemUpdate)) {
+        continue;
+      }
+
+      const itemId = item._id ?? item.id;
+      if (!itemId) {
+        continue;
+      }
+
+      itemUpdateData.push({
+        _id: itemId,
+        ...itemUpdate,
+      });
     }
   }
-  return updateData;
+
+  return {
+    actorUpdateData,
+    itemUpdateData,
+  };
 }
 
 /* -------------------------------------------- */
