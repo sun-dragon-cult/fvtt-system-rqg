@@ -89,7 +89,7 @@ version to 7.
 4. Set Release title to "7.3.2 (2028-01-02)"
 5. Add Releaase notes: "See release notes https://sun-dragon-cult.github.io/release-notes/rqg-v7.3.2"
 6. Check "Set as a pre-release"
-7. Click Publich release (The release github action runs, adding release artifacts)
+7. Click Publish release (The release github action runs, adding release artifacts)
 
 ## Verify
 
