@@ -68,8 +68,10 @@ export class Rqid {
   }
 
   /**
-   * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
-   * found return the highest priority Document matching the supplied rqid and lang from the installed Compendium packs.
+   * Return the highest priority Document matching the supplied rqid and lang, searching both
+   * World documents and installed Compendium packs. The document with the highest priority is
+   * returned regardless of whether it comes from the World or a Compendium pack. When priorities
+   * are equal, the World document takes precedence.
    * If lang parameter is not supplied the language selected for the world will be used.
    * If no document is found with the specified lang, then "en" will be used as a fallback.
    */
@@ -85,13 +87,16 @@ export class Rqid {
     lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
 
     const worldItem = await Rqid.documentFromWorld(rqid, lang);
-    if (worldItem) {
-      return worldItem;
+    const packItem = await Rqid.documentFromPacks(rqid, lang);
+
+    if (worldItem && packItem) {
+      const worldPriority = Rqid.getDocumentFlag(worldItem)?.priority ?? -Infinity;
+      const packPriority = Rqid.getDocumentFlag(packItem)?.priority ?? -Infinity;
+      return packPriority > worldPriority ? packItem : worldItem;
     }
 
-    const packItem = await Rqid.documentFromPacks(rqid, lang);
-    if (packItem) {
-      return packItem;
+    if (worldItem || packItem) {
+      return worldItem ?? packItem;
     }
 
     if (lang?.toLowerCase() !== CONFIG.RQG.fallbackLanguage) {
@@ -140,16 +145,11 @@ export class Rqid {
     }
 
     if (["match", "all", "packs"].includes(scope)) {
-      let packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
+      const packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
 
       if (scope === "match") {
-        const worldDocumentRqids = [
-          ...new Set(worldDocuments.map((d) => Rqid.getDocumentFlag(d)?.id)),
-        ];
-        // Remove any rqid matches that exists in the world
-        packDocuments = packDocuments.filter(
-          (d) => !worldDocumentRqids.includes(Rqid.getDocumentFlag(d)?.id),
-        );
+        // Return the highest priority document per rqid regardless of world or pack source
+        return Rqid.filterBestRqid([...worldDocuments, ...packDocuments]);
       }
       result.splice(result.length, 0, ...packDocuments);
     }
@@ -159,8 +159,9 @@ export class Rqid {
 
   /**
    * Gets only the highest priority documents for each rqid that matches the Regex and
-   * language, with the highest priority documents in the World taking precedence over
-   * any documents in compendium packs.
+   * language. The highest priority document is returned regardless of whether it comes
+   * from the World or a Compendium pack. When priorities are equal, the World document
+   * takes precedence.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
