@@ -8,9 +8,46 @@ import FormApplication = foundry.appv1.api.FormApplication;
 
 export class RqidEditor extends FormApplication {
   private document: Document.Any;
+  private parentAppLinked = false;
+
   constructor(document: Document.Any, options: any) {
     super(document, options);
     this.document = document;
+  }
+
+  private isAppAwareDocument(
+    document: unknown,
+  ): document is Document.Any & { apps: Record<string, unknown> } {
+    return !!document && typeof document === "object" && "apps" in document;
+  }
+
+  private linkToParentDocumentApps(): void {
+    if (this.parentAppLinked || !this.document.isEmbedded) {
+      return;
+    }
+
+    const parentDocument = (this.document as any).parent as Document.Any | undefined;
+    if (!this.isAppAwareDocument(parentDocument)) {
+      return;
+    }
+
+    parentDocument.apps[String(this.appId)] = this;
+    this.parentAppLinked = true;
+  }
+
+  private unlinkFromParentDocumentApps(): void {
+    if (!this.parentAppLinked || !this.document.isEmbedded) {
+      return;
+    }
+
+    const parentDocument = (this.document as any).parent as Document.Any | undefined;
+    if (
+      this.isAppAwareDocument(parentDocument) &&
+      parentDocument.apps[String(this.appId)] === this
+    ) {
+      delete parentDocument.apps[String(this.appId)];
+    }
+    this.parentAppLinked = false;
   }
 
   private async syncRqidHeaderIconState(): Promise<void> {
@@ -151,6 +188,7 @@ export class RqidEditor extends FormApplication {
     appData.supportedLanguagesOptions = CONFIG.supportedLanguages;
     appData.id = this.document.id;
     appData.parentId = this.document?.parent?.id ?? "";
+    appData.parentUuid = this.document?.parent?.uuid ?? "";
     appData.uuid = this.document.uuid;
 
     appData.folder = this.getPath(this.document);
@@ -182,6 +220,8 @@ export class RqidEditor extends FormApplication {
   }
 
   override activateListeners(html: JQuery) {
+    this.linkToParentDocumentApps();
+
     // update the document with a default rqid
     html[0]?.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
       const uuid = getRequiredDomDataset(el, "document-uuid");
@@ -218,7 +258,25 @@ export class RqidEditor extends FormApplication {
       });
     });
 
+    html[0]?.querySelectorAll<HTMLElement>("[data-open-parent-rqid-editor]").forEach((el) => {
+      el.addEventListener("click", async (event) => {
+        event.preventDefault();
+        const parentUuid = getRequiredDomDataset(el, "parent-document-uuid");
+        const parentDocument = await fromUuid(parentUuid);
+        if (!parentDocument) {
+          console.warn("RQG | Could not find parent document from uuid", parentUuid);
+          return;
+        }
+        new RqidEditor(parentDocument as Document.Any, {}).render(true, { focus: true });
+      });
+    });
+
     super.activateListeners(html);
+  }
+
+  override async close(options?: FormApplication.CloseOptions): Promise<void> {
+    this.unlinkFromParentDocumentApps();
+    return await super.close(options);
   }
 
   async _updateObject(event: Event, formData: any): Promise<void> {

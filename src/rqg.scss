@@ -1281,6 +1281,10 @@ input.readonly {
   place-items: center flex-start;
   padding: 0 0 0.5em;
 
+  & .fullrow {
+    grid-column: 1 / -1;
+  }
+
   & .input-button {
     display: flex;
     align-items: center;

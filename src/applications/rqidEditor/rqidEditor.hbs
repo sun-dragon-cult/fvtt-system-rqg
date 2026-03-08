@@ -9,6 +9,23 @@
         class="fas fa-wand-magic-sparkles"></i></a>
     </div>
 
+            {{#if parentMissingRqid}}
+      <div class="fullrow warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{localize "RQG.RQGSystem.EmbeddedDocumentParentMissingRqid"}}
+                {{#if parentUuid}}
+                  <a
+                    class="open-parent-rqid-link"
+                    data-open-parent-rqid-editor
+                    data-parent-document-uuid="{{parentUuid}}"
+                  >
+                    <i class="fas fa-fingerprint"></i>
+                    {{localize "RQG.RQGSystem.OpenParentRqidEditor"}}
+                  </a>
+                {{/if}}
+      </div>
+    {{/if}}
+
     <label for="rqidLang-editor">{{localize "RQG.RQGSystem.Rqid.Language"}}</label>
     <select id="rqidLang-editor" name="flags.rqg.documentRqidFlags.lang">
       {{selectOptions supportedLanguagesOptions selected=flags.rqg.documentRqidFlags.lang}}
@@ -25,12 +42,6 @@
 
   <fieldset class="key-value-grid">
     <legend>Info</legend>
-    {{#if parentMissingRqid}}
-      <div class="fullwidth warning">
-        <i class="fas fa-exclamation-triangle"></i>
-        {{localize "RQG.RQGSystem.EmbeddedDocumentParentMissingRqid"}}
-      </div>
-    {{/if}}
     {{#if rqidNamePart}}
       <label class="max-w-10rem">{{localize "RQG.RQGSystem.OtherDocumentsHeader"}}</label>
       <div class="fullwidth">
