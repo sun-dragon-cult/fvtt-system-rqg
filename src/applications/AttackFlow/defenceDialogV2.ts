@@ -117,6 +117,22 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     footer: { template: templatePaths.defenceFooter },
   };
 
+  override async _onRender(context: any, options: any): Promise<void> {
+    super._onRender(context, options);
+
+    this.element
+      .querySelector("select[name=defence]")
+      ?.addEventListener("change", this.onDefenceSelectionChange.bind(this));
+
+    this.element
+      .querySelector("select[name=parryingWeaponUuid]")
+      ?.addEventListener("change", this.onDefenceSelectionChange.bind(this));
+
+    this.element
+      .querySelector("select[name=parryingWeaponUsage]")
+      ?.addEventListener("change", this.onDefenceSelectionChange.bind(this));
+  }
+
   override async _prepareContext(): Promise<DefenceDialogContext> {
     const formData = ((this.element &&
       new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
@@ -163,7 +179,14 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         : defendingTokenOrActor) ?? undefined;
     const parryingWeaponOptions = DefenceDialogV2.getParryingWeaponOptions(defendingActor);
 
-    formData.parryingWeaponUuid ??= Object.values(parryingWeaponOptions)?.map((o) => o.value)[0];
+    const parryingWeaponOptionValues = parryingWeaponOptions.map((option) => option.value);
+    if (
+      !formData.parryingWeaponUuid ||
+      !parryingWeaponOptionValues.includes(formData.parryingWeaponUuid)
+    ) {
+      formData.parryingWeaponUuid = parryingWeaponOptionValues[0];
+    }
+
     formData.defence ??= "parry";
     formData.augmentModifier ??= "0";
     formData.subsequentDefenceModifier ??= "0";
@@ -211,6 +234,14 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       parrySkillRqid,
     );
 
+    const selectedParrySkill =
+      formData.defence === "parry"
+        ? defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid)
+        : undefined;
+    const isSelectedParryWeaponBroken =
+      formData.defence === "parry" &&
+      !isDocumentSubType<SkillItem>(selectedParrySkill, ItemTypeEnum.Skill);
+
     formData.halvedModifier = -Math.floor(defenceChance / 2);
 
     const totalChanceExclMasterOpponent = Math.max(
@@ -257,6 +288,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       parryingWeaponUsageOptions: parryingWeaponUsageOptions,
       augmentOptions: DefenceDialogV2.augmentOptions,
       subsequentDefenceOptions: DefenceDialogV2.subsequentDefenceOptions,
+      isSelectedParryWeaponBroken: isSelectedParryWeaponBroken,
 
       // combatRollHeader
       skillName: defenceName,
@@ -270,6 +302,50 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
 
   override _onChangeForm(): void {
     this.render();
+  }
+
+  private onDefenceSelectionChange(): void {
+    this.warnIfSelectedParrySkillBroken();
+  }
+
+  private warnIfSelectedParrySkillBroken(): void {
+    if (!this.element) {
+      return;
+    }
+
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as DefenceDialogFormData;
+
+    if (formData.defence !== "parry") {
+      return;
+    }
+
+    const parryingWeaponItem = fromUuidSync(formData.parryingWeaponUuid ?? "") as
+      | RqgItem
+      | undefined;
+
+    if (!isDocumentSubType<WeaponItem>(parryingWeaponItem, ItemTypeEnum.Weapon)) {
+      return;
+    }
+
+    const usageOptions = DefenceDialogV2.getParryingWeaponUsageOptions(parryingWeaponItem);
+    const availableUsageTypes = usageOptions.map((option) => option.value);
+
+    const selectedUsage =
+      formData.parryingWeaponUsage && availableUsageTypes.includes(formData.parryingWeaponUsage)
+        ? formData.parryingWeaponUsage
+        : availableUsageTypes[0];
+
+    if (!selectedUsage) {
+      return;
+    }
+
+    const parrySkillRqid = parryingWeaponItem.system.usage[selectedUsage]?.skillRqidLink?.rqid;
+    const parrySkill = parryingWeaponItem.actor?.getBestEmbeddedDocumentByRqid(parrySkillRqid);
+
+    if (!isDocumentSubType<SkillItem>(parrySkill, ItemTypeEnum.Skill)) {
+      ui.notifications?.warn(localize("RQG.Dialog.Defence.NoValidParrySkillForWeaponUsageWarn"));
+    }
   }
 
   private static async onSubmit(
@@ -356,6 +432,13 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
         defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid) as
           | RqgItem
           | undefined;
+
+        if (!isDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill)) {
+          ui.notifications?.warn(
+            localize("RQG.Dialog.Defence.NoValidParrySkillForWeaponUsageWarn"),
+          );
+          return;
+        }
         break;
       }
 

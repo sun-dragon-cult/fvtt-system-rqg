@@ -117,9 +117,22 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     formData.attackingTokenOrActorUuid = attackingTokenOrActor?.uuid;
 
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
+    const availableUsageTypes = usageTypeOptions.map((option) => option.value);
 
-    formData.usageType =
-      this.weaponItem.system.defaultUsage ?? Object.values(usageTypeOptions)[0]!.value; // TODO should always have at least one usageType
+    const defaultUsage = this.weaponItem.system.defaultUsage;
+    const selectedUsageType =
+      defaultUsage && availableUsageTypes.includes(defaultUsage)
+        ? defaultUsage
+        : availableUsageTypes[0];
+
+    if (!selectedUsageType) {
+      const msg = localize("RQG.Dialog.Attack.NoWeaponToAttackWith");
+      ui.notifications?.warn(msg);
+      this.close();
+      throw new RqgError(msg);
+    }
+
+    formData.usageType = selectedUsageType;
 
     if (this.weaponItem.system.defaultUsage !== formData.usageType) {
       await this.weaponItem.update({
@@ -140,8 +153,13 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       this.weaponItem?.system.usage[formData.usageType].skillRqidLink?.rqid;
     const usedSkill: RqgItem | undefined =
       this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
-    assertDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill);
-    formData.halvedModifier = -Math.floor(usedSkill?.system.chance / 2);
+    const validUsedSkill = isDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill)
+      ? usedSkill
+      : undefined;
+    const hasValidSkillForSelectedUsage = !!validUsedSkill;
+    formData.halvedModifier = hasValidSkillForSelectedUsage
+      ? -Math.floor(validUsedSkill.system.chance / 2)
+      : 0;
 
     if ((game.user?.targets.size ?? 0) > 1) {
       ui.notifications?.info("Please target one token only");
@@ -154,7 +172,28 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     formData.attackDamageBonus ??= damageBonusSourceOptions[0]?.value ?? "";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Attack.OtherModifier");
     formData.reduceAmmoQuantity ??= true;
+    const rawProneAttackerPrev = foundry.utils.getProperty(formData as object, "proneAttackerPrev");
+    formData.proneAttackerPrev = rawProneAttackerPrev === true || rawProneAttackerPrev === "true";
+    formData.hitLocationFormulaBeforeProne ??= "1d20";
     formData.aimedBlow = formData.aimedBlow ? Number(formData.aimedBlow) : 0;
+
+    const proneAttacker = !!formData.proneAttacker;
+
+    let isHitLocationAutoFromBelow = false;
+    if (formData.aimedBlow === 0) {
+      if (proneAttacker && !formData.proneAttackerPrev) {
+        formData.hitLocationFormulaBeforeProne = formData.hitLocationFormula ?? "1d20";
+        formData.hitLocationFormula = "1d10";
+      } else if (!proneAttacker && formData.proneAttackerPrev) {
+        formData.hitLocationFormula = formData.hitLocationFormulaBeforeProne ?? "1d20";
+      } else if (!formData.hitLocationFormula) {
+        formData.hitLocationFormula = proneAttacker ? "1d10" : "1d20";
+      }
+
+      isHitLocationAutoFromBelow = proneAttacker && formData.hitLocationFormula === "1d10";
+    }
+
+    formData.proneAttackerPrev = proneAttacker;
 
     return {
       formData: formData,
@@ -168,22 +207,26 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       damageBonusSourceOptions: damageBonusSourceOptions,
       hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(formData.aimedBlow),
       aimedBlowOptions: AttackDialogV2.getAimedBlowOptions(target),
+      weaponIsNatural: this.weaponItem.system.isNatural,
+      isSelectedWeaponBroken: !hasValidSkillForSelectedUsage,
+      isHitLocationAutoFromBelow: isHitLocationAutoFromBelow,
 
       // combatRollHeader
-      skillName: usedSkill?.name ?? "",
-      skillChance: usedSkill?.system.chance,
+      skillName: validUsedSkill?.name ?? "",
+      skillChance: validUsedSkill?.system.chance ?? 0,
 
       // attackFooter
       totalChance: Math.max(
         0,
-        Number(usedSkill?.system.chance ?? 0) +
+        Number(validUsedSkill?.system.chance ?? 0) +
           Number(formData.augmentModifier ?? 0) +
           Number(formData.otherModifier ?? 0) +
           (formData.proneTarget ? proneTargetModifier : 0) +
           (formData.unawareTarget ? unawareTargetModifier : 0) +
           (formData.darkness ? darknessModifier : 0) +
           (formData.halved ? formData.halvedModifier : 0) +
-          (formData.aimedBlow > 0 ? formData.halvedModifier : 0),
+          (formData.aimedBlow > 0 ? formData.halvedModifier : 0) +
+          (formData.proneAttacker ? formData.halvedModifier : 0),
       ),
       combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
         .filter((cm: CombatManeuver) => cm.damageType !== "parry")
@@ -227,6 +270,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
     this.weaponItem = weaponItem;
+    this.warnIfSelectedWeaponHasBrokenSkill(weaponItem);
 
     this.render();
   }
@@ -243,7 +287,30 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     );
 
     this.weaponItem = weaponItem;
+    this.warnIfSelectedWeaponHasBrokenSkill(weaponItem);
     this.render();
+  }
+
+  private warnIfSelectedWeaponHasBrokenSkill(weaponItem: WeaponItem): void {
+    const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(weaponItem);
+    const availableUsageTypes = usageTypeOptions.map((option) => option.value);
+
+    const defaultUsage = weaponItem.system.defaultUsage;
+    const selectedUsageType =
+      defaultUsage && availableUsageTypes.includes(defaultUsage)
+        ? defaultUsage
+        : availableUsageTypes[0];
+
+    if (!selectedUsageType) {
+      return;
+    }
+
+    const skillRqid = weaponItem.system.usage[selectedUsageType].skillRqidLink?.rqid;
+    const usedSkill = weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+
+    if (!isDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill)) {
+      ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
+    }
   }
 
   private async onUsageChange(event: Event): Promise<void> {
@@ -254,6 +321,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     await this.weaponItem.update({
       system: { defaultUsage: usageSelectElement.value },
     });
+
+    this.warnIfSelectedWeaponHasBrokenSkill(this.weaponItem);
 
     this.render();
   }
@@ -303,7 +372,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const skillItem = actor?.getBestEmbeddedDocumentByRqid(
       weaponItem.system.usage[formDataObject.usageType].skillRqidLink?.rqid,
     );
-    assertDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill, "Missing skillItem för attack");
+    if (!isDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill)) {
+      ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
+      return;
+    }
 
     const combatManeuverName = getDomDataset(submitter, "combat-maneuver-name");
 
@@ -382,6 +454,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
           description: localize("RQG.Roll.AbilityRoll.AimedBlow"),
         },
         {
+          value: formDataObject.proneAttacker ? Number(formDataObject.halvedModifier) : 0,
+          description: localize("RQG.Roll.AbilityRoll.ProneAttacker"),
+        },
+        {
           value: Number(formDataObject.otherModifier),
           description: formDataObject.otherModifierDescription,
         },
@@ -415,9 +491,17 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const hitLocationFormula =
       formDataObject.aimedBlow > 0
         ? formDataObject.aimedBlow.toString()
-        : formDataObject.hitLocationFormula;
+        : (formDataObject.hitLocationFormula ?? "1d20");
 
     const hitLocationRoll = new HitLocationRoll(hitLocationFormula, {}, hitLocationRollOptions);
+
+    const selectedDamageBonus = (formDataObject.attackDamageBonus ?? "")
+      .split("|")
+      .slice(1)
+      .join("|");
+    // When attacking from prone with a non-natural weapon, damage bonus is not added
+    const attackDamageBonusForChat =
+      formDataObject.proneAttacker && !weaponItem.system.isNatural ? "" : selectedDamageBonus;
 
     const chatSystemData: any = {
       attackState: `Attacked`,
@@ -430,7 +514,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       actorDamagedApplied: false,
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
-      attackDamageBonus: formDataObject.attackDamageBonus.split("|").slice(1).join("|"),
+      attackDamageBonus: attackDamageBonusForChat,
       attackRoll: attackRoll.toJSON(),
       defenceRoll: undefined,
       damageRoll: undefined,
