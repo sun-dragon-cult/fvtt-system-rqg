@@ -8,9 +8,46 @@ import FormApplication = foundry.appv1.api.FormApplication;
 
 export class RqidEditor extends FormApplication {
   private document: Document.Any;
+  private parentAppLinked = false;
+
   constructor(document: Document.Any, options: any) {
     super(document, options);
     this.document = document;
+  }
+
+  private isAppAwareDocument(
+    document: unknown,
+  ): document is Document.Any & { apps: Record<string, unknown> } {
+    return !!document && typeof document === "object" && "apps" in document;
+  }
+
+  private linkToParentDocumentApps(): void {
+    if (this.parentAppLinked || !this.document.isEmbedded) {
+      return;
+    }
+
+    const parentDocument = (this.document as any).parent as Document.Any | undefined;
+    if (!this.isAppAwareDocument(parentDocument)) {
+      return;
+    }
+
+    parentDocument.apps[String(this.appId)] = this;
+    this.parentAppLinked = true;
+  }
+
+  private unlinkFromParentDocumentApps(): void {
+    if (!this.parentAppLinked || !this.document.isEmbedded) {
+      return;
+    }
+
+    const parentDocument = (this.document as any).parent as Document.Any | undefined;
+    if (
+      this.isAppAwareDocument(parentDocument) &&
+      parentDocument.apps[String(this.appId)] === this
+    ) {
+      delete parentDocument.apps[String(this.appId)];
+    }
+    this.parentAppLinked = false;
   }
 
   private async syncRqidHeaderIconState(): Promise<void> {
@@ -76,68 +113,82 @@ export class RqidEditor extends FormApplication {
 
     const documentRqid: string | undefined = Rqid.getDocumentFlag(this.document)?.id;
     const documentLang: string | undefined = Rqid.getDocumentFlag(this.document)?.lang;
+
+    // For embedded documents (e.g. JournalEntryPage inside a JournalEntry), get the parent rqid for display context
+    const parentRqid: string = this.document.isEmbedded
+      ? (Rqid.getDocumentFlag((this.document as any).parent)?.id ?? "")
+      : "";
+
     if (documentRqid && documentLang) {
       const rqidDocumentPrefix = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
-      // Find out if there exists a duplicate rqid already and propose a
-      const worldDocuments = await Rqid.fromRqidRegexAll(
-        rqidSearchRegex,
-        rqidDocumentPrefix,
-        documentLang,
-        "world",
-      );
-      const compendiumDocuments = await Rqid.fromRqidRegexAll(
-        rqidSearchRegex,
-        rqidDocumentPrefix,
-        documentLang,
-        "packs",
-      );
+      // Embedded documents (like JournalEntryPage with "jp" prefix) have no top-level game collection,
+      // so skip the duplicate search to avoid errors from getGameProperty("jp")
+      if (!this.document.isEmbedded) {
+        const worldDocuments = await Rqid.fromRqidRegexAll(
+          rqidSearchRegex,
+          rqidDocumentPrefix,
+          documentLang,
+          "world",
+        );
+        const compendiumDocuments = await Rqid.fromRqidRegexAll(
+          rqidSearchRegex,
+          rqidDocumentPrefix,
+          documentLang,
+          "packs",
+        );
 
-      const worldDocumentInfo: any[] = [];
-      for (const d of worldDocuments) {
-        const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
-        worldDocumentInfo.push({
-          priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
-          link: link,
-          folder: this.getPath(d),
-        });
+        const worldDocumentInfo: any[] = [];
+        for (const d of worldDocuments) {
+          const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
+          worldDocumentInfo.push({
+            priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
+            link: link,
+            folder: this.getPath(d),
+          });
+        }
+
+        const compendiumDocumentInfo: any[] = [];
+        for (const d of compendiumDocuments) {
+          const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
+          compendiumDocumentInfo.push({
+            priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
+            link: link,
+            compendium: `${d.compendium?.metadata?.label} ⇒ ${d.compendium?.metadata?.packageName}`,
+          });
+        }
+
+        const uniqueWorldPriorityCount = new Set(
+          worldDocuments.map((d) => Rqid.getDocumentFlag(d)?.priority ?? -Infinity),
+        ).size;
+        if (uniqueWorldPriorityCount !== worldDocuments.length) {
+          appData.warnDuplicateWorldPriority = true;
+        }
+
+        const uniqueCompendiumPriorityCount = new Set(
+          compendiumDocuments.map((d) => Rqid.getDocumentFlag(d)?.priority ?? -Infinity),
+        ).size;
+        if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
+          appData.warnDuplicateCompendiumPriority = true;
+        }
+
+        appData.worldDuplicates = worldDocuments.length ?? 0;
+        appData.compendiumDuplicates = compendiumDocuments.length ?? 0;
+        appData.worldDocumentInfo = worldDocumentInfo;
+        appData.compendiumDocumentInfo = compendiumDocumentInfo;
       }
 
-      const compendiumDocumentInfo: any[] = [];
-      for (const d of compendiumDocuments) {
-        const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
-        compendiumDocumentInfo.push({
-          priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
-          link: link,
-          compendium: `${d.compendium?.metadata?.label} ⇒ ${d.compendium?.metadata?.packageName}`,
-        });
-      }
-
-      const uniqueWorldPriorityCount = new Set(
-        worldDocuments.map((d) => Rqid.getDocumentFlag(d)?.priority ?? -Infinity),
-      ).size;
-      if (uniqueWorldPriorityCount !== worldDocuments.length) {
-        appData.warnDuplicateWorldPriority = true;
-      }
-
-      const uniqueCompendiumPriorityCount = new Set(
-        compendiumDocuments.map((d) => Rqid.getDocumentFlag(d)?.priority ?? -Infinity),
-      ).size;
-      if (uniqueCompendiumPriorityCount !== compendiumDocuments.length) {
-        appData.warnDuplicateCompendiumPriority = true;
-      }
-
-      appData.worldDuplicates = worldDocuments.length ?? 0;
-      appData.compendiumDuplicates = compendiumDocuments.length ?? 0;
-      appData.worldDocumentInfo = worldDocumentInfo;
-      appData.compendiumDocumentInfo = compendiumDocumentInfo;
-      appData.rqidLink = `@RQID[${documentRqid}]{${this.document.name}}`;
+      // For embedded documents, construct the full rqid including the parent's rqid
+      const fullRqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
+      appData.rqidLink = `@RQID[${fullRqid}]{${this.document.name}}`;
+      appData.fullRqid = fullRqid;
     }
 
     appData.supportedLanguagesOptions = CONFIG.supportedLanguages;
     appData.id = this.document.id;
     appData.parentId = this.document?.parent?.id ?? "";
+    appData.parentUuid = this.document?.parent?.uuid ?? "";
     appData.uuid = this.document.uuid;
 
     appData.folder = this.getPath(this.document);
@@ -152,6 +203,8 @@ export class RqidEditor extends FormApplication {
     const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
     appData.rqidPrefix = `${documentIdPart}.${documentType}.`;
     appData.rqidNamePart = Rqid.getDocumentFlag(this.document)?.id?.split(".").pop();
+    appData.parentRqid = parentRqid;
+    appData.parentMissingRqid = this.document.isEmbedded && !parentRqid;
 
     return appData;
   }
@@ -167,6 +220,8 @@ export class RqidEditor extends FormApplication {
   }
 
   override activateListeners(html: JQuery) {
+    this.linkToParentDocumentApps();
+
     // update the document with a default rqid
     html[0]?.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
       const uuid = getRequiredDomDataset(el, "document-uuid");
@@ -203,7 +258,25 @@ export class RqidEditor extends FormApplication {
       });
     });
 
+    html[0]?.querySelectorAll<HTMLElement>("[data-open-parent-rqid-editor]").forEach((el) => {
+      el.addEventListener("click", async (event) => {
+        event.preventDefault();
+        const parentUuid = getRequiredDomDataset(el, "parent-document-uuid");
+        const parentDocument = await fromUuid(parentUuid);
+        if (!parentDocument) {
+          console.warn("RQG | Could not find parent document from uuid", parentUuid);
+          return;
+        }
+        new RqidEditor(parentDocument as Document.Any, {}).render(true, { focus: true });
+      });
+    });
+
     super.activateListeners(html);
+  }
+
+  override async close(options?: FormApplication.CloseOptions): Promise<void> {
+    this.unlinkFromParentDocumentApps();
+    return await super.close(options);
   }
 
   async _updateObject(event: Event, formData: any): Promise<void> {

@@ -2,11 +2,29 @@
   <div class="key-value-grid">
     <label for="rqid-editor">{{localize "RQG.RQGSystem.Rqid.Id"}}</label>
     <div class="input-button">
+      {{#if parentRqid}}<span class="parent-rqid">{{parentRqid}}.</span>{{/if}}
       <span>{{rqidPrefix}}</span>
       <input type="text" id="rqid-editor" name="rqidNamePart" value="{{rqidNamePart}}" />
       <a data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-generate-default-rqid><i
         class="fas fa-wand-magic-sparkles"></i></a>
     </div>
+
+    {{#if parentMissingRqid}}
+      <div class="fullrow warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        {{localize "RQG.RQGSystem.EmbeddedDocumentParentMissingRqid"}}
+      {{#if parentUuid}}
+        <a
+          class="open-parent-rqid-link"
+          data-open-parent-rqid-editor
+          data-parent-document-uuid="{{parentUuid}}"
+        >
+          <i class="fas fa-fingerprint"></i>
+          {{localize "RQG.RQGSystem.OpenParentRqidEditor"}}
+        </a>
+      {{/if}}
+      </div>
+    {{/if}}
 
     <label for="rqidLang-editor">{{localize "RQG.RQGSystem.Rqid.Language"}}</label>
     <select id="rqidLang-editor" name="flags.rqg.documentRqidFlags.lang">
@@ -114,7 +132,7 @@
       <label>{{localize "RQG.RQGSystem.GetDocumentLikeThis"}}</label>
       <div class="input-button">
         <input type="text"
-               value='await game.system.api.rqid.fromRqid("{{rqidPrefix}}{{rqidNamePart}}","{{flags.rqg.documentRqidFlags.lang}}")'
+               value='await game.system.api.rqid.fromRqid("{{fullRqid}}","{{flags.rqg.documentRqidFlags.lang}}")'
                readonly>
         <a data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}" data-item-copy-input>
           <i class="fas fa-copy"></i>

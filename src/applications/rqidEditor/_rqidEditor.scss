@@ -1,18 +1,22 @@
-#rqid-editor-application {
+.rqid-editor {
   .key-value-grid {
     input[type="text"],
     select {
       width: 15rem;
     }
 
-    .input-button {
+    .open-parent-rqid-link {
+      margin-left: 0.5rem;
+      display: inline-flex;
       align-items: center;
-      width: 100%;
+      gap: 0.25rem;
+      font-weight: 600;
+      text-decoration: underline;
     }
   }
 
   fieldset {
-    margin-top: 12rem;
+    margin-top: 3rem;
 
     .input-button input[type="text"] {
       width: 28rem;
