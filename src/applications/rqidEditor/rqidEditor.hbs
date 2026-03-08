@@ -9,20 +9,20 @@
         class="fas fa-wand-magic-sparkles"></i></a>
     </div>
 
-            {{#if parentMissingRqid}}
+    {{#if parentMissingRqid}}
       <div class="fullrow warning">
         <i class="fas fa-exclamation-triangle"></i>
         {{localize "RQG.RQGSystem.EmbeddedDocumentParentMissingRqid"}}
-                {{#if parentUuid}}
-                  <a
-                    class="open-parent-rqid-link"
-                    data-open-parent-rqid-editor
-                    data-parent-document-uuid="{{parentUuid}}"
-                  >
-                    <i class="fas fa-fingerprint"></i>
-                    {{localize "RQG.RQGSystem.OpenParentRqidEditor"}}
-                  </a>
-                {{/if}}
+      {{#if parentUuid}}
+        <a
+          class="open-parent-rqid-link"
+          data-open-parent-rqid-editor
+          data-parent-document-uuid="{{parentUuid}}"
+        >
+          <i class="fas fa-fingerprint"></i>
+          {{localize "RQG.RQGSystem.OpenParentRqidEditor"}}
+        </a>
+      {{/if}}
       </div>
     {{/if}}
 
