@@ -32,37 +32,7 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "i.hit-location.head:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-        },
-        {
-          key: "i.hit-location.left-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-        },
-        {
-          key: "i.hit-location.right-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-        },
-        {
-          key: "i.hit-location.chest:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-        },
-        {
-          key: "i.hit-location.abdomen:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-        },
-        {
-          key: "i.hit-location.left-leg:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "1",
-        },
-        {
-          key: "i.hit-location.right-leg:system.naturalAp",
+          key: "~i.hit-location:system.naturalAp",
           mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "1",
         },
@@ -77,37 +47,7 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "i.hit-location.head:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "2",
-        },
-        {
-          key: "i.hit-location.left-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "2",
-        },
-        {
-          key: "i.hit-location.right-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "2",
-        },
-        {
-          key: "i.hit-location.chest:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "2",
-        },
-        {
-          key: "i.hit-location.abdomen:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "2",
-        },
-        {
-          key: "i.hit-location.left-leg:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "2",
-        },
-        {
-          key: "i.hit-location.right-leg:system.naturalAp",
+          key: "~i.hit-location:system.naturalAp",
           mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "2",
         },
@@ -122,37 +62,7 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "i.hit-location.head:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "3",
-        },
-        {
-          key: "i.hit-location.left-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "3",
-        },
-        {
-          key: "i.hit-location.right-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "3",
-        },
-        {
-          key: "i.hit-location.chest:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "3",
-        },
-        {
-          key: "i.hit-location.abdomen:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "3",
-        },
-        {
-          key: "i.hit-location.left-leg:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "3",
-        },
-        {
-          key: "i.hit-location.right-leg:system.naturalAp",
+          key: "~i.hit-location:system.naturalAp",
           mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "3",
         },
@@ -167,37 +77,7 @@ export function getTokenStatusEffects(): any[] {
       },
       changes: [
         {
-          key: "i.hit-location.head:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "4",
-        },
-        {
-          key: "i.hit-location.left-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "4",
-        },
-        {
-          key: "i.hit-location.right-arm:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "4",
-        },
-        {
-          key: "i.hit-location.chest:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "4",
-        },
-        {
-          key: "i.hit-location.abdomen:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "4",
-        },
-        {
-          key: "i.hit-location.left-leg:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
-          value: "4",
-        },
-        {
-          key: "i.hit-location.right-leg:system.naturalAp",
+          key: "~i.hit-location:system.naturalAp",
           mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
           value: "4",
         },
