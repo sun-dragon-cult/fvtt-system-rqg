@@ -54,6 +54,12 @@ type RqidRegexSearchOptions = {
   mode?: RqidRegexSearchMode;
 };
 
+type RqidCountOptions = {
+  source?: RqidRegexSearchSource;
+};
+
+type TaggedRqidDocument = { doc: RqidEnabledDocument; source: "world" | "packs" };
+
 /**
  * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
  * The first part (rqidDocumentName) is a shorthand to the foundry Document names (like Item, Actor) for the supported documents. See Rqid.documentNameLookup
@@ -153,21 +159,16 @@ export class Rqid {
       packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
     }
 
-    const result: { doc: RqidEnabledDocument; source: "world" | "packs" }[] = [
+    const result: TaggedRqidDocument[] = [
       ...worldDocuments.map((doc) => ({ doc, source: "world" as const })),
       ...packDocuments.map((doc) => ({ doc, source: "packs" as const })),
     ];
 
-    result.sort((a, b) => {
-      const byPrio = Rqid.compareRqidPrio(a.doc, b.doc);
-      return byPrio || Number(a.source === "packs") - Number(b.source === "packs");
-    });
-
-    const sortedDocuments = result.map((entry) => entry.doc);
+    const sortedEntries = result.sort(Rqid.compareTaggedByPriorityAndSource);
     if (mode === "best") {
-      return Rqid.filterBestRqid(sortedDocuments);
+      return Rqid.filterBestTaggedRqid(sortedEntries).map((entry) => entry.doc);
     }
-    return sortedDocuments;
+    return sortedEntries.map((entry) => entry.doc);
   }
 
   /**
@@ -217,16 +218,17 @@ export class Rqid {
   public static async fromRqidCount(
     rqid: string | undefined,
     lang: string = CONFIG.RQG.fallbackLanguage,
-    scope: "all" | "world" | "packs" = "all",
+    options: RqidCountOptions = {},
   ): Promise<number> {
     if (!rqid) {
       return 0;
     }
+    const source = options.source ?? "all";
 
     let count = 0;
 
     // Check World
-    if (["all", "world"].includes(scope)) {
+    if (["all", "world"].includes(source)) {
       count = (game as any)[this.getGameProperty(rqid)]?.contents.reduce(
         (count: number, document: RqidEnabledDocument) => {
           if (
@@ -246,7 +248,7 @@ export class Rqid {
     }
 
     // Check compendium packs
-    if (["all", "packs"].includes(scope)) {
+    if (["all", "packs"].includes(source)) {
       const documentName = Rqid.getDocumentName(rqid);
       for (const pack of game.packs ?? []) {
         if (pack.documentClass.documentName === documentName) {
@@ -268,6 +270,42 @@ export class Rqid {
       }
     }
     return count;
+  }
+
+  private static compareTaggedByPriorityAndSource(a: TaggedRqidDocument, b: TaggedRqidDocument) {
+    const byPrio = Rqid.compareRqidPrio(a.doc, b.doc);
+    if (byPrio !== 0) {
+      return byPrio;
+    }
+    return Number(a.source === "packs") - Number(b.source === "packs");
+  }
+
+  private static filterBestTaggedRqid(entries: TaggedRqidDocument[]): TaggedRqidDocument[] {
+    const bestByRqid = new Map<string, TaggedRqidDocument>();
+
+    for (const entry of entries) {
+      const rqid = Rqid.getDocumentFlag(entry.doc)?.id ?? "";
+      const existing = bestByRqid.get(rqid);
+      if (!existing) {
+        bestByRqid.set(rqid, entry);
+        continue;
+      }
+
+      const byPrio = Rqid.compareRqidPrio(entry.doc, existing.doc);
+      if (byPrio < 0) {
+        bestByRqid.set(rqid, entry);
+        continue;
+      }
+      if (byPrio > 0) {
+        continue;
+      }
+
+      if (existing.source === "packs" && entry.source === "world") {
+        bestByRqid.set(rqid, entry);
+      }
+    }
+
+    return [...bestByRqid.values()].sort(Rqid.compareTaggedByPriorityAndSource);
   }
 
   /**

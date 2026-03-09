@@ -354,7 +354,7 @@ describe("Rqid", () => {
         items: { contents: worldDocs },
       } as any;
 
-      await expect(Rqid.fromRqidCount("i.skill.jump", "en", "world")).resolves.toBe(2);
+      await expect(Rqid.fromRqidCount("i.skill.jump", "en", { source: "world" })).resolves.toBe(2);
     });
 
     it("counts matching pack index entries when world has no match", async () => {
@@ -376,7 +376,7 @@ describe("Rqid", () => {
         packs: [itemPack],
       } as any;
 
-      await expect(Rqid.fromRqidCount("i.skill.jump", "en", "all")).resolves.toBe(2);
+      await expect(Rqid.fromRqidCount("i.skill.jump", "en", { source: "all" })).resolves.toBe(2);
     });
   });
 
