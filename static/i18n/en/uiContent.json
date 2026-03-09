@@ -342,6 +342,7 @@
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
         "CommonRuneMagicTooltip": "Cult Common Rune Magic",
         "CultRankLabel": "Cult Rank",
+        "CHALimitFormula": "Remaining learning capacity is {freePoints} points of Rune Magic ({learnedPoints} points already learned).",
         "RunePoints": "Rune Points",
         "HolyDays": "Holy Days",
         "Gifts": "Gifts",

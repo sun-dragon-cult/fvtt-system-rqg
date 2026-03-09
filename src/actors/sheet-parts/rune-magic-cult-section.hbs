@@ -5,6 +5,11 @@
       {{#each system.runeRqidLinks}}
         <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
       {{/each}}
+      {{#if hasAccessToRuneMagic}}
+        <span class="small-size">{{localize "RQG.Actor.RuneMagic.CHALimitFormula"
+            learnedPoints=runeMagicPointSum
+            freePoints=(difference @root.system.characteristics.charisma.value runeMagicPointSum)}}</span>
+      {{/if}}
     </h2>
     <div class="flex-row gap1rem cult contextmenu">
       <span>

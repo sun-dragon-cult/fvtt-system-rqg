@@ -558,11 +558,15 @@ export async function organizeEmbeddedItems(
     }) ?? [],
   );
 
-  // Extract hasAccessToRuneMagic info from subCults
+  // Extract hasAccessToRuneMagic info from subCults and sum up learned rune magic points per cult
   itemTypes[ItemTypeEnum.Cult]?.map(async (cult: any) => {
     cult.hasAccessToRuneMagic = cult.system.joinedCults.some(
       (subCult: any) => subCult.rank !== CultRankEnum.LayMember,
     );
+    cult.runeMagicPointSum =
+      itemTypes[ItemTypeEnum.RuneMagic]
+        ?.filter((runeMagicItem: any) => runeMagicItem.system.cultId === cult.id)
+        .reduce((acc: number, spell: any) => acc + (spell.system.points ?? 0), 0) ?? 0;
     return cult;
   });
 
