@@ -73,9 +73,9 @@ command: |-
      * Also assumes english only rqids.
      * As a side effect update the `alreadyAddedRqids` array with the "base" rqid without the count postfix part.
      **/
-    async function generateRqid(je, scope, alreadyAddedRqids = []) {
+    async function generateRqid(je, source, alreadyAddedRqids = []) {
       const proposedRqid = game.system.api.rqid.getDefaultRqid(je);
-      const count = await game.system.api.rqid.fromRqidCount(proposedRqid, "en", scope);
+      const count = await game.system.api.rqid.fromRqidCount(proposedRqid, "en", { source });
       const alreadyAddedCount = alreadyAddedRqids.filter(
         (alreadyAddedRqid) => alreadyAddedRqid === proposedRqid
       ).length;
