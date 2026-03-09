@@ -46,6 +46,14 @@ type RqidToDocument<R extends string> =
         ? JournalEntry
         : Document.Any;
 
+type RqidRegexSearchSource = "all" | "world" | "packs";
+type RqidRegexSearchMode = "all" | "best";
+
+type RqidRegexSearchOptions = {
+  source?: RqidRegexSearchSource;
+  mode?: RqidRegexSearchMode;
+};
+
 /**
  * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
  * The first part (rqidDocumentName) is a shorthand to the foundry Document names (like Item, Actor) for the supported documents. See Rqid.documentNameLookup
@@ -115,46 +123,51 @@ export class Rqid {
   }
 
   /**
-   * Returns all documents with an rqid matching the regex and matching the document type
-   * and language, from the specified scope. The valid values for scope are:
-   *
-   * * **match**: same logic as fromRqid function,
-   * * **all**: find in both world & compendium packs,
-   * * **world**: only search in world,
-   * * **packs**: only search in compendium packs
+   * Returns documents matching an rqid regex and document type.
+   * `source` chooses where to search: world, packs, or both.
+   * `mode` chooses whether to return all matches or only the best (highest priority) per rqid.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
-   * @param scope defines where it will look
+   * @param options search source and result mode
    */
-  public static async fromRqidRegexAll(
+  public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string | undefined, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
-    scope: "match" | "all" | "world" | "packs" = "match",
+    options: RqidRegexSearchOptions = {},
   ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex || !rqidDocumentName) {
       return [];
     }
-    const result: RqidEnabledDocument[] = [];
+    const source = options.source ?? "all";
+    const mode = options.mode ?? "best";
 
     let worldDocuments: RqidEnabledDocument[] = [];
-    if (["match", "all", "world"].includes(scope)) {
+    if (["all", "world"].includes(source)) {
       worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang);
-      result.splice(0, 0, ...worldDocuments);
     }
 
-    if (["match", "all", "packs"].includes(scope)) {
-      const packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
-
-      if (scope === "match") {
-        // Return the highest priority document per rqid regardless of world or pack source
-        return Rqid.filterBestRqid([...worldDocuments, ...packDocuments]);
-      }
-      result.splice(result.length, 0, ...packDocuments);
+    let packDocuments: RqidEnabledDocument[] = [];
+    if (["all", "packs"].includes(source)) {
+      packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
     }
 
-    return result;
+    const result: { doc: RqidEnabledDocument; source: "world" | "packs" }[] = [
+      ...worldDocuments.map((doc) => ({ doc, source: "world" as const })),
+      ...packDocuments.map((doc) => ({ doc, source: "packs" as const })),
+    ];
+
+    result.sort((a, b) => {
+      const byPrio = Rqid.compareRqidPrio(a.doc, b.doc);
+      return byPrio || Number(a.source === "packs") - Number(b.source === "packs");
+    });
+
+    const sortedDocuments = result.map((entry) => entry.doc);
+    if (mode === "best") {
+      return Rqid.filterBestRqid(sortedDocuments);
+    }
+    return sortedDocuments;
   }
 
   /**
@@ -171,13 +184,10 @@ export class Rqid {
     rqidDocumentName: string, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
   ): Promise<RqidEnabledDocument[]> {
-    const matchingDocuments = await this.fromRqidRegexAll(
-      rqidRegex,
-      rqidDocumentName,
-      lang,
-      "match",
-    );
-    return this.filterBestRqid(matchingDocuments);
+    return this.fromRqidRegex(rqidRegex, rqidDocumentName, lang, {
+      source: "all",
+      mode: "best",
+    });
   }
 
   /**
@@ -664,7 +674,8 @@ export class Rqid {
    * Does not check if the type is valid in the system.
    */
   public static getDocumentType(rqid: string | undefined): string | undefined {
-    return rqid?.split(".")[1];
+    const documentType = rqid?.split(".")[1];
+    return documentType ? documentType : undefined;
   }
 
   /**
