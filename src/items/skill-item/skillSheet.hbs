@@ -47,7 +47,7 @@
 
     <section class="sheet-body">
       {{! Skill Tab }}
-      <div class="tab" data-group="primary" data-tab="skill">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="skill">
 
         <div class="skill-sheet-grid">
 
@@ -83,7 +83,7 @@
       </div>
 
       {{!-- Skill Definition Tab --}}
-      <div class="tab" data-group="primary" data-tab="skill-definition">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="skill-definition">
         <div class="key-value-grid">
 
           <label for="category-{{id}}">{{localize "RQG.Item.Skill.Category"}}</label>

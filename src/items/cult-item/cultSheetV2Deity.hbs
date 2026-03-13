@@ -1,0 +1,49 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid fullheight" style="grid-template-rows: repeat(3, min-content) 1fr;">
+    <label for="rune-points-value-{{id}}">{{localize "RQG.Item.Cult.RunePoints"}}</label>
+    <div>
+      <input
+        id="rune-points-value-{{id}}"
+        name="system.runePoints.value"
+        value="{{system.runePoints.value}}"
+        type="number"
+        min="0"
+        max="99"
+      /> / <input
+      id="rune-points-max-{{id}}"
+      name="system.runePoints.max"
+      value="{{system.runePoints.max}}"
+      type="number"
+      min="0"
+      max="99"
+    />
+    </div>
+
+    <label for="runes-{{id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.runeRqidLinks
+      dropzoneData="runeRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="rune"
+      allowDuplicates="true"
+      showDeleteFromPropertyName="runeRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+      dropdownOptions=allRuneOptions
+    }}
+
+    <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.commonRuneMagicRqidLinks
+      dropzoneData="commonRuneMagicRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="runeMagic"
+      showDeleteFromPropertyName="commonRuneMagicRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRuneMagic"
+    }}
+
+    <label class="editor-label">{{localize "RQG.Item.Cult.HolyDays"}}</label>
+    <div class="editor-container">
+      <prose-mirror name="system.holyDays" value="{{system.holyDays}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}" class="self-stretch">{{{enrichedHolyDays}}}</prose-mirror>
+    </div>
+  </div>
+</div>

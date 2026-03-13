@@ -8,7 +8,7 @@
 />
 
 <label>{{localize "RQG.Item.Gear.EncumbranceAbbrTotal"}}</label>
-<span class="number">{{decimalMultiply system.quantity system.encumbrance}}</span>
+<input type="number" value="{{decimalMultiply system.quantity system.encumbrance}}" readonly tabindex="-1">
 
 <label for="equipped-status-{{id}}">{{localize "RQG.Item.Gear.EquippedStatus"}}</label>
 <select id="equipped-status-{{id}}" name="system.equippedStatus">

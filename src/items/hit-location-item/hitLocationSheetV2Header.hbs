@@ -1,0 +1,17 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-edit="img" data-tooltip="{{name}}">
+  {{#if isGM}}
+    <div class="label-above">
+      <label for="name-{{id}}">{{localize "RQG.Item.HitLocation.Name"}}</label>
+      <input type="text" name="name" value="{{name}}" id="name-{{id}}" list="allHitLocations">
+    </div>
+  {{else}}
+    {{name}}
+  {{/if}}
+
+  <datalist id="allHitLocations">
+    {{#each allHitLocationOptions}}
+      <option value="{{label}}">{{label}}</option>
+    {{/each}}
+  </datalist>
+</header>

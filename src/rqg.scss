@@ -7,6 +7,12 @@
 // *** Start of theme specific styles ***
 
 .rqg {
+  input[readonly],
+  select[readonly],
+  textarea[readonly] {
+    cursor: default;
+  }
+
   .experienced {
     text-shadow:
       -1px 1px 1px var(--rqg-themed-exp-outline),
@@ -30,12 +36,6 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
 }
 
 // *** End of theme specific styles ***
-
-// adding attribute readonly to the input excludes it from the form application?
-input.readonly {
-  border: none;
-  pointer-events: none;
-}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -304,6 +304,10 @@ input.readonly {
   input:read-only {
     border: none;
     color: var(--color-text-dark-secondary);
+  }
+
+  input:read-only:not([type="checkbox"], [type="radio"]) {
+    pointer-events: none;
   }
 
   .mb-1-5rem {
@@ -1121,7 +1125,6 @@ input.readonly {
 .rqg.sheet {
   input {
     width: inherit;
-    background-color: #ffffff2b;
   }
 }
 
@@ -1311,7 +1314,12 @@ input.readonly {
   }
 
   input {
-    background-color: #ffffff10;
+    &[type="checkbox"] {
+      margin-left: 0;
+      width: var(--checkbox-size, var(--font-size-20));
+      height: var(--checkbox-size, var(--font-size-20));
+      background: transparent;
+    }
 
     &[type="number"] {
       width: 75px;

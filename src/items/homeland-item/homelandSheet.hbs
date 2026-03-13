@@ -54,7 +54,7 @@
 
     <section class="sheet-body flex-1">
       {{!-- Homeland Tab --}}
-      <div class="tab" data-group="primary" data-tab="homeland">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="homeland">
 
         <div class="key-value-grid">
 
@@ -131,14 +131,12 @@
       </div>
 
       {{!-- Description Tab --}}
-      <div class="tab" data-group="primary" data-tab="wizardInstructions">
-        {{editor
-          enrichedWizardInstructions
-          target="system.wizardInstructions"
-          button=true
-          engine="prosemirror"
-          editable=isEditable
-        }}
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="wizardInstructions">
+        {{#if isV2}}
+          <prose-mirror name="system.wizardInstructions" value="{{system.wizardInstructions}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}">{{{enrichedWizardInstructions}}}</prose-mirror>
+        {{else}}
+          {{editor enrichedWizardInstructions target="system.wizardInstructions" button=true engine="prosemirror" editable=isEditable}}
+        {{/if}}
       </div>
     </section>
   </main>

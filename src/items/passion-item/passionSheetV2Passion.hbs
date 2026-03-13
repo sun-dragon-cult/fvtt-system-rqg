@@ -1,0 +1,22 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid">
+    <label for="chance-{{id}}">{{localize "RQG.Item.Passion.Chance"}}</label>
+    <div>
+      <input
+        id="chance-{{id}}"
+        name="system.chance"
+        value="{{system.chance}}"
+        type="number"
+        min="0"
+        max="999"
+        class="{{experiencedclass uuid}}"> %
+    </div>
+
+    <label for="has-experience-{{id}}">{{localize "RQG.Item.Passion.HasExperienceQ"}}</label>
+    <input
+      id="has-experience-{{id}}"
+      name="system.hasExperience"
+      {{checked system.hasExperience}}
+      type="checkbox">
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="key-value-grid">
+
+    <label for="health-status-{{id}}">{{localize "RQG.Item.HitLocation.HealthStatus"}}</label>
+    <select id="health-status-{{id}}" name="system.hitLocationHealthState">
+      {{selectOptions hitLocationHealthStatusOptions selected=system.hitLocationHealthState localize=true}}
+    </select>
+
+    <label for="hit-points-value-{{id}}">{{localize "RQG.Item.HitLocation.HitPoints"}}</label>
+    <div>{{system.hitPoints.value}} / {{system.hitPoints.max}}</div>
+
+    <label>{{localize "RQG.Item.HitLocation.ArmorPoints"}}</label>
+    {{system.armorPoints}}
+
+    <label>{{localize "RQG.Item.HitLocation.Wounds"}}</label>
+    <div data-item-heal-wound data-tooltip="{{localize "RQG.Actor.Health.HealWound"}}">
+    {{#each system.wounds}}
+      <i class="fas fa-notes-medical"></i> {{this}}
+    {{/each}}
+    </div>
+
+  </div>
+</div>

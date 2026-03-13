@@ -1,0 +1,35 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
+
+  <div class="flex-column gap03rem">
+    <div class="property-line">
+
+      <div class="label-above long">
+        <label for="name-{{id}}">{{localize "RQG.Item.RuneMagic.Name"}}</label>
+        <input type="text" id="name-{{id}}" name="name" value="{{name}}" />
+      </div>
+
+      <div class="label-above parens short">
+        <label for="points-{{id}}">{{localize "RQG.Item.RuneMagic.Points"}}</label>
+        <div>
+          ( <input
+          id="points-{{id}}"
+          name="system.points"
+          value="{{system.points}}"
+          type="number"
+        > )
+        </div>
+      </div>
+
+    </div>
+
+    {{> rqidLinkDropzone
+      rqidLink=system.descriptionRqidLink
+      dropzoneData="descriptionRqidLink"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="descriptionRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+    }}
+  </div>
+</header>

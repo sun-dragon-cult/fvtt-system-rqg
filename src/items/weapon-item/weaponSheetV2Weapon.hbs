@@ -1,0 +1,44 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="key-value-grid">
+    {{#unless system.hitPointLocation}}
+      <label for="hit-points-max-{{id}}">{{localize "RQG.Item.Gear.HitPointsAbbr"}}</label>
+      <input
+        id="hit-points-max-{{id}}"
+        name="system.hitPoints.max"
+        value="{{system.hitPoints.max}}"
+        type="number"
+        min="0"
+        max="99"
+      >
+
+      <label for="hit-points-value-{{id}}">{{localize "RQG.Item.Gear.CurrentHitPoints"}}</label>
+      <input
+        id="hit-points-value-{{id}}"
+        name="system.hitPoints.value"
+        value="{{system.hitPoints.value}}"
+        type="number"
+        min="0"
+        max="99"
+      >
+    {{/unless}}
+
+    <label for="hit-point-location-{{id}}">{{localize "RQG.Item.Gear.HitPointLocation"}}</label>
+    <input
+      id="hit-point-location-{{id}}"
+      name="system.hitPointLocation"
+      value="{{system.hitPointLocation}}"
+      type="text"
+    >
+
+    <label for="isNatural-{{id}}">{{localize "RQG.Item.Weapon.NaturalWeaponQ"}}</label>
+    <input
+      id="isNatural-{{id}}"
+      name="system.isNatural"
+      {{checked system.isNatural}}
+      type="checkbox"
+    >
+
+    {{> itemCommonPhysical}}
+  </div>
+</div>

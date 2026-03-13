@@ -45,7 +45,7 @@
 
     <section class="sheet-body">
       {{! Rune Tab }}
-      <div class="tab" data-group="primary" data-tab="rune">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="rune">
 
         <div class="key-value-grid">
           <label {{#unless rqid}}class="warning" data-tooltip="{{localize 'RQG.Item.Rune.Notification.RqidNeededWarn'}}"{{/unless}}><i class="fas fa-fingerprint"></i> Rqid</label>

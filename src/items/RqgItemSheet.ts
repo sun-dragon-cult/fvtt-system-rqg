@@ -40,6 +40,19 @@ export class RqgItemSheet<
   public override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
+    // Fallback: persist checkbox changes directly in case delegated form-change
+    // submission misses checkbox events in some runtimes.
+    html[0]?.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name]').forEach((el) => {
+      el.addEventListener("change", (event) => {
+        const checkbox = event.currentTarget as HTMLInputElement;
+        const path = checkbox.name;
+        if (!path.startsWith("system.")) {
+          return;
+        }
+        void this.document.update({ [path]: checkbox.checked });
+      });
+    });
+
     // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
     html[0]?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
       elem.addEventListener("dragenter", this._onDragEnter);

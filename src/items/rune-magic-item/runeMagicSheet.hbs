@@ -46,7 +46,7 @@
 
     <section class="sheet-body">
       {{! Rune Magic Tab }}
-      <div class="tab" data-group="primary" data-tab="rune-magic">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="rune-magic">
 
         <div class="key-value-grid">
           {{#unless system.isRitual}}
@@ -97,7 +97,7 @@
       </div>
 
       {{!-- Active Effects Tab --}}
-      <div class="tab" data-group="primary" data-tab="active-effects">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="active-effects">
         {{> itemActiveEffects}}
 
       </div>

@@ -26,7 +26,7 @@
 
     <section class="sheet-body">
       {{!-- Hit Location Tab --}}
-      <div class="tab" data-group="primary" data-tab="hit-location">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="hit-location">
 
           <div class="key-value-grid">
 
@@ -52,7 +52,7 @@
       </div>
 
       {{!-- Hit Location Definition Tab --}}
-      <div class="tab" data-group="primary" data-tab="hit-location-definition">
+      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="hit-location-definition">
         <div class="key-value-grid">
           <label {{#unless rqid}}class="warning" data-tooltip="{{localize 'RQG.Item.HitLocation.Notification.RqidNeededWarn'}}"{{/unless}}><i class="fas fa-fingerprint"></i> Rqid</label>
           <div class="fullwidth fullheight {{#unless rqid}}warning{{/unless}}" {{#unless rqid}}data-tooltip="{{localize 'RQG.Item.HitLocation.Notification.RqidNeededWarn'}}"{{/unless}}>{{rqid}}</div>
@@ -107,11 +107,11 @@
         </div>
       </div>
     </section>
+
+    <datalist id="allHitLocations">
+      {{#each allHitLocationOptions}}
+        <option value="{{label}}">{{label}}</option>
+      {{/each}}
+    </datalist>
   </main>
 </form>
-
-<datalist id="allHitLocations">
-  {{#each allHitLocationOptions}}
-    <option value="{{label}}">{{label}}</option>
-  {{/each}}
-</datalist>

@@ -1,0 +1,24 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-edit="img" data-tooltip="{{name}}" />
+  <div class="property-line">
+    <div class="label-above">
+      <label for="passion-{{id}}">{{localize "RQG.Item.Passion.Name"}}</label><br>
+      <input type="text" id="passion-{{id}}" name="system.passion" value="{{system.passion}}"
+          list="passionTypes"
+          placeholder="{{localize "RQG.Item.Passion.NamePlaceholder"}}">
+    </div>
+
+    <div class="label-above parens">
+      <label for="subject-{{id}}">{{localize "RQG.Item.Passion.Subject"}}</label>
+      <div>
+        (<input type="text" id="subject-{{id}}" name="system.subject" value="{{system.subject}}">)
+      </div>
+    </div>
+  </div>
+
+  <datalist id="passionTypes">
+    {{#each passionTypes}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+</header>

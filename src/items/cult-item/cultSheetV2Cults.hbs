@@ -1,0 +1,34 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="flex-column gap1rem">
+    {{#each system.joinedCults}}
+      <div class="flex-row flex-align-center joined-cult">
+        <div class="key-value-grid fullwidth">
+          <label for="cultName-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultName"}}</label>
+          <input
+            id="tagline-{{@index}}-{{id}}"
+            type="text"
+            name="system.joinedCults.cultName"
+            value="{{this.cultName}}"
+            placeholder="{{../system.deity}}"
+          />
+
+          <label for="tagline-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultTagline"}}</label>
+          <input
+            id="tagline-{{@index}}-{{id}}"
+            type="text"
+            name="system.joinedCults.tagline"
+            value="{{this.tagline}}"
+          />
+
+          <label for="cult-rank-{{@index}}-{{id}}">{{localize "RQG.Item.Cult.CultRank"}}</label>
+          <select name="system.joinedCults.rank" id="cult-rank-{{@index}}-{{id}}">
+            {{selectOptions @root.rankOptions selected=this.rank localize=true}}
+          </select>
+        </div>
+        <a data-tooltip="Delete Cult" data-delete-cult="{{@index}}"><i class="fas fa-trash"></i></a>
+      </div>
+    {{/each}}
+  </div>
+
+  <button class="add-cult" data-add-cult>{{localize "RQG.Item.Cult.AddNewSubCult"}}</button>
+</div>

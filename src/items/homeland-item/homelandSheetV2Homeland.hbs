@@ -1,0 +1,75 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="key-value-grid">
+
+    <label>{{localize "RQG.Item.Homeland.CultureJournalEntries"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.cultureJournalRqidLinks
+      dropzoneData="cultureJournalRqidLinks"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="cultureJournalRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+    }}
+
+    <label>{{localize "RQG.Item.Homeland.TribeJournalEntries"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.tribeJournalRqidLinks
+      dropzoneData="tribeJournalRqidLinks"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="tribeJournalRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+    }}
+
+    <label>{{localize "RQG.Item.Homeland.ClanJournalEntries"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.clanJournalRqidLinks
+      dropzoneData="clanJournalRqidLinks"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="clanJournalRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+    }}
+
+    <label>{{localize "RQG.Item.Homeland.CultLinks"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.cultRqidLinks
+      dropzoneData="cultRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="cult"
+      showDeleteFromPropertyName="cultRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+    }}
+
+    <label>{{localize "RQG.Item.Homeland.SkillLinks"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.skillRqidLinks
+      dropzoneData="skillRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="skill"
+      showDeleteFromPropertyName="skillRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+      showBonus=true
+      editBonusPropertyName="skillRqidLinks"
+    }}
+
+    <label>{{localize "RQG.Item.Homeland.RuneLinks"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.runeRqidLinks
+      dropzoneData="runeRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="rune"
+      showDeleteFromPropertyName="runeRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+      dropdownOptions=allRuneOptions
+    }}
+
+    <label>{{localize "RQG.Item.Homeland.PassionLinks"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.passionRqidLinks
+      dropzoneData="passionRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="passion"
+      showDeleteFromPropertyName="passionRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectPassion"
+    }}
+  </div>
+</div>

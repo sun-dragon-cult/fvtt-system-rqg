@@ -1,4 +1,5 @@
 import { PassionSheet } from "./passion-item/passionSheet";
+import { PassionSheetV2 } from "./passion-item/passionSheetV2";
 import {
   type AbilityItem,
   abilityItemTypes,
@@ -6,14 +7,23 @@ import {
   ResponsibleItemClass,
 } from "@item-model/itemTypes.ts";
 import { RuneSheet } from "./rune-item/runeSheet";
+import { RuneSheetV2 } from "./rune-item/runeSheetV2";
 import { SkillSheet } from "./skill-item/skillSheet";
+import { SkillSheetV2 } from "./skill-item/skillSheetV2";
 import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
+import { HitLocationSheetV2 } from "./hit-location-item/hitLocationSheetV2";
 import { GearSheet } from "./gear-item/gearSheet";
+import { GearSheetV2 } from "./gear-item/gearSheetV2";
 import { ArmorSheet } from "./armor-item/armorSheet";
+import { ArmorSheetV2 } from "./armor-item/armorSheetV2";
 import { WeaponSheet } from "./weapon-item/weaponSheet";
+import { WeaponSheetV2 } from "./weapon-item/weaponSheetV2";
 import { SpiritMagicSheet } from "./spirit-magic-item/spiritMagicSheet";
+import { SpiritMagicSheetV2 } from "./spirit-magic-item/spiritMagicSheetV2";
 import { CultSheet } from "./cult-item/cultSheet";
+import { CultSheetV2 } from "./cult-item/cultSheetV2";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
+import { RuneMagicSheetV2 } from "./rune-magic-item/runeMagicSheetV2";
 import {
   assertDocumentSubType,
   getSpeakerFromItem,
@@ -23,7 +33,9 @@ import {
   RqgError,
 } from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
+import { HomelandSheetV2 } from "./homeland-item/homelandSheetV2";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
+import { OccupationSheetV2 } from "./occupation-item/occupationSheetV2";
 import { RQG_CONFIG, systemId } from "../system/config";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
@@ -120,6 +132,68 @@ export class RqgItem extends Item {
       types: [ItemTypeEnum.RuneMagic],
       label: "RQG.SheetName.Item.RuneMagicSpell",
       makeDefault: true,
+    });
+
+    // AppV2 sheets — available as alternatives; users can switch via sheet config
+    Items.registerSheet(systemId, PassionSheetV2, {
+      types: [ItemTypeEnum.Passion],
+      label: "RQG.SheetName.Item.PassionV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, RuneSheetV2, {
+      types: [ItemTypeEnum.Rune],
+      label: "RQG.SheetName.Item.RuneV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, SkillSheetV2, {
+      types: [ItemTypeEnum.Skill],
+      label: "RQG.SheetName.Item.SkillV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, HitLocationSheetV2, {
+      types: [ItemTypeEnum.HitLocation],
+      label: "RQG.SheetName.Item.HitLocationV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, HomelandSheetV2, {
+      types: [ItemTypeEnum.Homeland],
+      label: "RQG.SheetName.Item.HomelandV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, OccupationSheetV2, {
+      types: [ItemTypeEnum.Occupation],
+      label: "RQG.SheetName.Item.OccupationV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, GearSheetV2, {
+      types: [ItemTypeEnum.Gear],
+      label: "RQG.SheetName.Item.GearV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, ArmorSheetV2, {
+      types: [ItemTypeEnum.Armor],
+      label: "RQG.SheetName.Item.ArmorV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, WeaponSheetV2, {
+      types: [ItemTypeEnum.Weapon],
+      label: "RQG.SheetName.Item.WeaponV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, SpiritMagicSheetV2, {
+      types: [ItemTypeEnum.SpiritMagic],
+      label: "RQG.SheetName.Item.SpiritMagicSpellV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, CultSheetV2, {
+      types: [ItemTypeEnum.Cult],
+      label: "RQG.SheetName.Item.CultV2",
+      makeDefault: false,
+    });
+    Items.registerSheet(systemId, RuneMagicSheetV2, {
+      types: [ItemTypeEnum.RuneMagic],
+      label: "RQG.SheetName.Item.RuneMagicSpellV2",
+      makeDefault: false,
     });
 
     Hooks.on("preCreateItem", (document: any) => {

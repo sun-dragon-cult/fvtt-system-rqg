@@ -15,6 +15,22 @@ export class Gear extends AbstractEmbeddedItem {
     options: any,
   ): void {
     if (isDocumentSubType<GearItem>(gear, ItemTypeEnum.Gear)) {
+      const currentUpdate = updates.find((u: any) => u._id === gear.id) as
+        | Record<string, unknown>
+        | undefined;
+      if (currentUpdate) {
+        if ("system.isContainer" in currentUpdate) {
+          const raw = currentUpdate["system.isContainer"];
+          currentUpdate["system.isContainer"] = raw === true || raw === "true";
+        }
+
+        const systemData = currentUpdate.system as Record<string, unknown> | undefined;
+        if (systemData && "isContainer" in systemData) {
+          const raw = systemData.isContainer;
+          systemData.isContainer = raw === true || raw === "true";
+        }
+      }
+
       updates.push(...getLocationRelatedUpdates(actor.items.contents, gear, updates));
     }
   }

@@ -1,0 +1,36 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-edit="img" data-tooltip="{{name}}">
+
+  <div class="flex-column gap03rem">
+    <div class="property-line">
+
+      <div class="label-above long">
+        <label for="rune-{{id}}">{{localize "RQG.Item.Rune.Name"}}</label>
+        <input type="text" id="rune-{{id}}" name="system.rune" value="{{system.rune}}" />
+      </div>
+
+      <div class="label-above parens">
+        <label for="rune-type-{{id}}">{{localize "RQG.Item.Rune.Type"}}</label>
+        <div class="nowrap">
+          (
+          <select id="rune-type-{{id}}" name="system.runeType.type">
+            {{selectOptions runeTypeOption selected=system.runeType.type localize=false}}
+          </select>
+          {{#unless  (eq system.runeType.name (localize (concat "RQG.Item.Rune.RuneType." system.runeType.type)))}}
+            <span data-tooltip="{{localize "RQG.Actor.Rune.TypeDontMatchTranslationTip"}}">⚠ {{system.runeType.name}}</span>
+          {{/unless}}
+          )
+        </div>
+      </div>
+    </div>
+
+    {{> rqidLinkDropzone
+      rqidLink=system.descriptionRqidLink
+      dropzoneData="descriptionRqidLink"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="descriptionRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+    }}
+  </div>
+</header>
