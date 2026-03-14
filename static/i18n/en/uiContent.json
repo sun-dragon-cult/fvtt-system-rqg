@@ -1093,7 +1093,7 @@
         "Projectile": "Projectile",
         "Range": "Range",
         "Rate": "Rate",
-        "SameDataAsOneHand": "Same Data as One Hand",
+        "SameDataAsOneHand": "Same data as One-handed use",
         "combatManeuver": {
           "Bite": "Bite",
           "Throw": "Throw",

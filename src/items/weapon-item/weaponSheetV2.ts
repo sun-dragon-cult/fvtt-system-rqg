@@ -29,7 +29,7 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "weapon"],
     position: { width: 960, height: 800 },
-    form: { handler: WeaponSheetV2.onSubmit, submitOnChange: false, closeOnSubmit: false },
+    form: { handler: WeaponSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
     window: { resizable: true },
   };
 
@@ -47,7 +47,7 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     sheet: {
       tabs: [
         { id: "weapon", label: "RQG.Item.SheetTab.Weapon" },
-        { id: "usage", label: "RQG.Item.SheetTab.Usage" },
+        { id: "usage", label: "RQG.Item.SheetTab.WeaponUsage" },
         { id: "description", label: "RQG.Item.SheetTab.Description" },
         { id: "gm", label: "RQG.Item.SheetTab.GMNotes" },
         { id: "effects", label: "RQG.Item.SheetTab.ActiveEffects" },
@@ -89,6 +89,10 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
       ],
     };
 
+    if (!context.isGM && ["gm", "effects"].includes(this.tabGroups?.["sheet"] ?? "")) {
+      this.tabGroups["sheet"] = WeaponSheetV2.TABS["sheet"].initial;
+    }
+
     (context as any).tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
@@ -96,14 +100,6 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
       delete (context as any).tabs.effects;
     }
 
-    return context;
-  }
-
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
     return context;
   }
 

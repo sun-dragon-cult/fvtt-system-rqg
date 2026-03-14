@@ -71,19 +71,12 @@
     select {
       // Use themed header variables; these directly override Foundry's input CSS
       // cascade so both AppV1 and AppV2 get correct colors in each theme.
-      background-color: var(--rqg-color-header-input-bg);
       color: var(--rqg-color-header-input-text);
       border-color: var(--rqg-color-header-input-border);
     }
 
     input {
       width: 100%;
-
-      &[list] {
-        // Chrome anchors the datalist dropdown arrow based on line-height;
-        // setting it explicitly centres the arrow vertically in the input.
-        line-height: 1rem;
-      }
     }
   }
 
@@ -177,6 +170,12 @@
 // and nav tabs need larger negative margins to bleed flush to the window edges.
 // All color/theme concerns are handled by --rqg-color-header-* variables above.
 .application.rqg.item-sheet {
+  // Chrome anchors the datalist dropdown arrow based on line-height;
+  // setting it explicitly centres the arrow vertically in any input with a list.
+  input[list] {
+    line-height: 1rem;
+  }
+
   header.item-sheet-header {
     margin: -1rem -1rem 0;
     padding: 0.5rem 1rem;

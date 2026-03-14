@@ -59,20 +59,16 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
       })),
     };
 
+    if (!context.isGM && this.tabGroups?.["sheet"] === "effects") {
+      this.tabGroups["sheet"] = SpiritMagicSheetV2.TABS["sheet"].initial;
+    }
+
     (context as any).tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
       delete (context as any).tabs.effects;
     }
 
-    return context;
-  }
-
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
     return context;
   }
 

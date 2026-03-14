@@ -84,14 +84,6 @@ export class CultSheetV2 extends RqgItemSheetV2 {
     return context;
   }
 
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
-    return context;
-  }
-
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
 

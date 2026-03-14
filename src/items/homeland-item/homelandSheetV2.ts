@@ -60,14 +60,6 @@ export class HomelandSheetV2 extends RqgItemSheetV2 {
     return context;
   }
 
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
-    return context;
-  }
-
   protected static override async onSubmit(
     _event: SubmitEvent | Event,
     _form: HTMLFormElement,

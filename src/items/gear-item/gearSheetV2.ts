@@ -61,6 +61,10 @@ export class GearSheetV2 extends RqgItemSheetV2 {
       physicalItemTypeOptions: physicalItemTypeOptions,
     };
 
+    if (!context.isGM && ["gm", "effects"].includes(this.tabGroups?.["sheet"] ?? "")) {
+      this.tabGroups["sheet"] = GearSheetV2.TABS["sheet"].initial;
+    }
+
     (context as any).tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
@@ -68,14 +72,6 @@ export class GearSheetV2 extends RqgItemSheetV2 {
       delete (context as any).tabs.effects;
     }
 
-    return context;
-  }
-
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
     return context;
   }
 

@@ -181,6 +181,11 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
 
   .flex-wrap {
     flex-wrap: wrap;
+    align-items: flex-start;
+
+    > * {
+      height: auto;
+    }
   }
 
   .flex-nowrap {
@@ -1193,10 +1198,6 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
 .rqidlink {
   vertical-align: middle;
   margin: 0.5rem;
-
-  & .icon {
-    color: var(--color-text-dark-inactive);
-  }
 }
 
 .header-control.rqid-missing,
@@ -1340,6 +1341,10 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
     &.maxcontentwidth {
       width: max-content;
     }
+  }
+
+  select {
+    width: fit-content;
   }
 
   span.number {

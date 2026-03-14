@@ -95,14 +95,6 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
     return context;
   }
 
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
-    return context;
-  }
-
   /** Static helpers preserved verbatim from the AppV1 sheet */
   static async showAddWoundDialog(actor: RqgActor, hitLocationItemId: string): Promise<void> {
     const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;

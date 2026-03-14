@@ -78,6 +78,13 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
     };
   }
 
+  // Always set context.tab — if left unset, hidden parts inherit the previous part's active tab.
+  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
+    context = await super._preparePartContext(partId, context, options);
+    context.tab = context.tabs?.[partId] ?? { active: false, id: partId, group: "sheet" };
+    return context;
+  }
+
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
 

@@ -70,20 +70,16 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
       passionTypes: Object.values(PassionsEnum),
     };
 
+    if (!context.isGM && this.tabGroups?.["sheet"] === "gm") {
+      this.tabGroups["sheet"] = PassionSheetV2.TABS["sheet"].initial;
+    }
+
     (context as any).tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
       delete (context as any).tabs.gm;
     }
 
-    return context;
-  }
-
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
-    if (partId in context.tabs) {
-      context.tab = context.tabs[partId];
-    }
     return context;
   }
 
