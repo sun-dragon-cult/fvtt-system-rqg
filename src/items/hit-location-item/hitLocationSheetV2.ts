@@ -36,7 +36,7 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
     classes: [systemId, "item-sheet", "sheet", "hitLocation"],
     position: { width: 600, height: 500 },
     window: { resizable: true },
-    form: { submitOnChange: false, closeOnSubmit: false },
+    form: { handler: HitLocationSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };
 
   static override PARTS: Record<string, any> = {
@@ -259,5 +259,14 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
     if (hitLocation.system.wounds.length) {
       await this.showHealWoundDialog(actor, hitLocation.id!);
     }
+  }
+
+  protected static override async onSubmit(
+    _event: SubmitEvent | Event,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ): Promise<void> {
+    const sheet = this as unknown as HitLocationSheetV2;
+    await sheet.document.update(formData.object);
   }
 }

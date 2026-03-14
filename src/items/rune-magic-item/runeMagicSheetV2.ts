@@ -24,7 +24,7 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
     classes: [systemId, "item-sheet", "sheet", "runeMagic"],
     position: { width: 600, height: 500 },
     window: { resizable: true },
-    form: { submitOnChange: false, closeOnSubmit: false },
+    form: { handler: RuneMagicSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };
 
   static override PARTS: Record<string, any> = {
@@ -82,5 +82,14 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
         .filter((i: RqgItem) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
         .map((c) => ({ value: c.id ?? "", label: c.name ?? "" })) ?? []
     );
+  }
+
+  protected static override async onSubmit(
+    _event: SubmitEvent | Event,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ): Promise<void> {
+    const sheet = this as unknown as RuneMagicSheetV2;
+    await sheet.document.update(formData.object);
   }
 }

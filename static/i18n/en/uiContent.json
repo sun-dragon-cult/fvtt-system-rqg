@@ -1191,6 +1191,7 @@
       "ActiveEffect": {
         "Header": "Active Effects🧪",
         "AddEffectTitle": "Add Effect",
+        "Label": "Label",
         "Name": "Name",
         "Disabled": "Disabled",
         "StartTime": "Start Time",
