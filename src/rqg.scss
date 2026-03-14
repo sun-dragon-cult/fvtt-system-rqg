@@ -308,11 +308,6 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
     font-family: var(--font-primary);
   }
 
-  input:read-only {
-    border: none;
-    color: var(--color-text-dark-secondary);
-  }
-
   input:read-only:not([type="checkbox"], [type="radio"]) {
     pointer-events: none;
   }
