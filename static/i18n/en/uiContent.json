@@ -764,7 +764,10 @@
         "ActorsGifts": "Actor's Gifts",
         "ActorsGeases": "Actor's Geases",
         "ActorsSubCults": "Actor's Sub-Cults",
-        "CommonRuneMagic": "Common Rune Magic"
+        "CommonRuneMagic": "Common Rune Magic",
+        "Notification": {
+          "NoRunesWarn": "No runes linked. At least one rune is needed for the cult to work correctly."
+        }
       },
       "EquippedStatus": {
         "notCarried": "Not Carried",

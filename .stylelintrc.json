@@ -3,6 +3,7 @@
   "ignoreFiles": ["dist/**/*", "node_modules/**/*"],
   "rules": {
     "no-duplicate-selectors": null,
-    "no-descending-specificity": null
+    "no-descending-specificity": null,
+    "rule-empty-line-before": null
   }
 }

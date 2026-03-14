@@ -19,17 +19,19 @@
     />
     </div>
 
-    <label for="runes-{{id}}">{{localize "RQG.Item.Cult.Runes"}}</label>
-    {{> rqidLinkArrayDropzone
-      rqidLinkArray=system.runeRqidLinks
-      dropzoneData="runeRqidLinks"
-      dropDocumentNames="Item"
-      dropDocumentTypes="rune"
-      allowDuplicates="true"
-      showDeleteFromPropertyName="runeRqidLinks"
-      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
-      dropdownOptions=allRuneOptions
-    }}
+    <label for="runes-{{id}}" {{#unless system.runeRqidLinks.length}}class="warning" data-tooltip="{{localize 'RQG.Item.Cult.Notification.NoRunesWarn'}}"{{/unless}}>{{localize "RQG.Item.Cult.Runes"}}</label>
+    <div {{#unless system.runeRqidLinks.length}}class="warning" data-tooltip="{{localize 'RQG.Item.Cult.Notification.NoRunesWarn'}}"{{/unless}}>
+      {{> rqidLinkArrayDropzone
+        rqidLinkArray=system.runeRqidLinks
+        dropzoneData="runeRqidLinks"
+        dropDocumentNames="Item"
+        dropDocumentTypes="rune"
+        allowDuplicates="true"
+        showDeleteFromPropertyName="runeRqidLinks"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+        dropdownOptions=allRuneOptions
+      }}
+    </div>
 
     <label>{{localize "RQG.Item.Cult.CommonRuneMagic"}}</label>
     {{> rqidLinkArrayDropzone

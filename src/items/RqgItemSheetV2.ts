@@ -109,9 +109,11 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
     // RQID link click handlers in the sheet body
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
 
-    // Drag-drop
-    this.element.addEventListener("dragover", (event) => event.preventDefault());
-    this.element.addEventListener("drop", (event) => void this._onDrop(event));
+    // Drag-drop (register element-level listeners only on first render to avoid duplicates)
+    if (options.isFirstRender) {
+      this.element.addEventListener("dragover", (event) => event.preventDefault());
+      this.element.addEventListener("drop", (event) => void this._onDrop(event));
+    }
     this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
       elem.addEventListener("dragenter", (event) => this._onDragEnter(event as DragEvent));
       elem.addEventListener("dragleave", (event) => this._onDragLeave(event as DragEvent));
