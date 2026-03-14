@@ -4,6 +4,7 @@
   "rules": {
     "no-duplicate-selectors": null,
     "no-descending-specificity": null,
-    "rule-empty-line-before": null
+    "rule-empty-line-before": null,
+    "scss/double-slash-comment-empty-line-before": null
   }
 }

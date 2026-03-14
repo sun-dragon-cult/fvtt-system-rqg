@@ -1,4 +1,5 @@
 .rqg.item-sheet {
+
   // Tabbed Navigation for Item Sheets
   .item-sheet-nav-tabs {
     border-top: 1px solid var(--rqg-color-header-border);
@@ -49,7 +50,7 @@
       flex-direction: row;
       gap: 0.5rem;
 
-      > * {
+      >* {
         width: fit-content;
       }
 
@@ -116,6 +117,13 @@
     & .skill {
       font-weight: bold;
       font-size: xx-large;
+
+      & input[type="checkbox"] {
+        --checkbox-size: 16px;
+
+        font-size: initial;
+        vertical-align: middle;
+      }
     }
   }
 
@@ -170,6 +178,7 @@
 // and nav tabs need larger negative margins to bleed flush to the window edges.
 // All color/theme concerns are handled by --rqg-color-header-* variables above.
 .application.rqg.item-sheet {
+
   // Chrome anchors the datalist dropdown arrow based on line-height;
   // setting it explicitly centres the arrow vertically in any input with a list.
   input[list] {
@@ -239,7 +248,7 @@
     padding-top: 0.5rem;
     min-height: 0;
 
-    > .tab.active {
+    >.tab.active {
       flex: 1;
       min-height: 0;
       display: flex;
@@ -248,11 +257,11 @@
   }
 
   // PARTS-based sheets: tabs are direct children of .window-content (no .sheet-body wrapper).
-  > .window-content > .tab {
+  >.window-content>.tab {
     padding-top: 1rem;
   }
 
-  > .window-content > .tab.active {
+  >.window-content>.tab.active {
     flex: 1;
     min-height: 0;
     display: flex;
