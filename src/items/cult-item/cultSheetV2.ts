@@ -79,7 +79,11 @@ export class CultSheetV2 extends RqgItemSheetV2 {
       allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),
     };
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    const tabs = this._prepareTabs("sheet");
+    if (!this.document.isEmbedded) {
+      delete tabs["giftsandgeases"];
+    }
+    (context as any).tabs = tabs;
 
     return context;
   }
