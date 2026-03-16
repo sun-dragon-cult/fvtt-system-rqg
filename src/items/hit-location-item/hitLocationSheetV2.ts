@@ -261,6 +261,27 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
     }
   }
 
+  override async _onRender(context: any, options: any): Promise<void> {
+    await super._onRender(context, options);
+
+    // Register hook to re-render when item updates (for wound changes)
+    if (options.isFirstRender) {
+      Hooks.on("updateItem", (item: any) => {
+        if (item.id === this.document.id) {
+          this.render();
+        }
+      });
+    }
+
+    // Add event listener for healing wounds
+    const healWoundElement = this.element?.querySelector<HTMLElement>("[data-item-heal-wound]");
+    if (healWoundElement && this.document.isEmbedded && this.document.actor) {
+      healWoundElement.addEventListener("click", () => {
+        HitLocationSheetV2.showHealWoundDialog(this.document.actor as RqgActor, this.document.id!);
+      });
+    }
+  }
+
   protected static override async onSubmit(
     _event: SubmitEvent | Event,
     _form: HTMLFormElement,

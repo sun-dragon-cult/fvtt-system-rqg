@@ -24,10 +24,10 @@ export class Gear extends AbstractEmbeddedItem {
           currentUpdate["system.isContainer"] = raw === true || raw === "true";
         }
 
-        const systemData = currentUpdate.system as Record<string, unknown> | undefined;
+        const systemData = currentUpdate["system"] as Record<string, unknown> | undefined;
         if (systemData && "isContainer" in systemData) {
-          const raw = systemData.isContainer;
-          systemData.isContainer = raw === true || raw === "true";
+          const raw = systemData["isContainer"];
+          systemData["isContainer"] = raw === true || raw === "true";
         }
       }
 
