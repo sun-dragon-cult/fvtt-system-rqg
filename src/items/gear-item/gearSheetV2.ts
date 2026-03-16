@@ -18,7 +18,7 @@ interface GearSheetContext extends RqgItemSheetContext {
 export class GearSheetV2 extends RqgItemSheetV2 {
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "gear"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 575 },
     form: { handler: GearSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
     window: { resizable: true },
   };

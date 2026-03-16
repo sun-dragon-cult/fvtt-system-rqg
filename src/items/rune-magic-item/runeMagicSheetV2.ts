@@ -22,7 +22,7 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "runeMagic"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 530 },
     window: { resizable: true },
     form: { handler: RuneMagicSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };

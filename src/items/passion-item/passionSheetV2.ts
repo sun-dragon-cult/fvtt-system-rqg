@@ -30,7 +30,7 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "passion"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 310 },
     form: { handler: PassionSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
     window: { resizable: true },
   };

@@ -25,7 +25,7 @@ export class CultSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "cult"],
-    position: { width: 700, height: 500 },
+    position: { width: 700, height: 560 },
     form: { handler: CultSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
     window: { resizable: true },
   };

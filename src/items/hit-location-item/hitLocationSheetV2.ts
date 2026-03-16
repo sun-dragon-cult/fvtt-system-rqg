@@ -34,7 +34,7 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "hitLocation"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 410 },
     window: { resizable: true },
     form: { handler: HitLocationSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };

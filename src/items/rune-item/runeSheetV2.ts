@@ -18,7 +18,7 @@ export class RuneSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "rune"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 450 },
     form: { handler: RuneSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
     window: { resizable: true },
   };

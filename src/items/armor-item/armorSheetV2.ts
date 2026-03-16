@@ -31,7 +31,7 @@ export class ArmorSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "armor"],
-    position: { width: 600, height: 600 },
+    position: { width: 600, height: 640 },
     form: {
       handler: ArmorSheetV2.onSubmit,
       submitOnChange: true,

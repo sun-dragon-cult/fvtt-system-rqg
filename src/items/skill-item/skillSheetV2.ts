@@ -18,7 +18,7 @@ export class SkillSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "skill"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 420 },
     form: { handler: SkillSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
     window: { resizable: true },
   };

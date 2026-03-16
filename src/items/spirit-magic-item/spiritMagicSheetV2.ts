@@ -17,7 +17,7 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "spiritMagic"],
-    position: { width: 600, height: 500 },
+    position: { width: 600, height: 510 },
     form: { handler: SpiritMagicSheetV2.onSubmit, submitOnChange: false, closeOnSubmit: false },
     window: { resizable: true },
   };
