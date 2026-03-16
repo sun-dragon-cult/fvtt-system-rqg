@@ -292,24 +292,10 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
 
     switch (droppedDocumentData?.type) {
       case "Item":
-        if (droppedDocumentData.uuid) {
-          return await this._onDropItem(event, {
-            type: droppedDocumentData.type,
-            uuid: droppedDocumentData.uuid,
-          });
-        }
-        break;
       case "JournalEntry":
-        if (droppedDocumentData.uuid) {
-          return await this._onDropJournalEntry(event, {
-            type: droppedDocumentData.type,
-            uuid: droppedDocumentData.uuid,
-          });
-        }
-        break;
       case "JournalEntryPage":
         if (droppedDocumentData.uuid) {
-          return await this._onDropJournalEntryPage(event, {
+          return await this._onDropDocument(event, {
             type: droppedDocumentData.type,
             uuid: droppedDocumentData.uuid,
           });
@@ -324,62 +310,22 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
     }
   }
 
-  async _onDropItem(
+  protected async _onDropDocument(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
     const {
-      droppedDocument: droppedItem,
+      droppedDocument,
       dropZoneData: targetPropertyName,
       isAllowedToDrop,
       allowDuplicates,
     } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
-    if (isAllowedToDrop && hasRqid(droppedItem)) {
+    if (isAllowedToDrop && hasRqid(droppedDocument)) {
       await updateRqidLink(
         this.document as foundry.abstract.Document.Any,
         targetPropertyName,
-        droppedItem,
+        droppedDocument,
         allowDuplicates,
-      );
-      return [this.document];
-    }
-    return false;
-  }
-
-  async _onDropJournalEntry(
-    event: DragEvent,
-    data: { type: string; uuid: string },
-  ): Promise<boolean | RqgItem[]> {
-    const {
-      droppedDocument: droppedJournal,
-      dropZoneData: targetPropertyName,
-      isAllowedToDrop,
-    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
-    if (isAllowedToDrop && hasRqid(droppedJournal)) {
-      await updateRqidLink(
-        this.document as foundry.abstract.Document.Any,
-        targetPropertyName,
-        droppedJournal,
-      );
-      return [this.document];
-    }
-    return false;
-  }
-
-  async _onDropJournalEntryPage(
-    event: DragEvent,
-    data: { type: string; uuid: string },
-  ): Promise<boolean | RqgItem[]> {
-    const {
-      droppedDocument: droppedPage,
-      dropZoneData: targetPropertyName,
-      isAllowedToDrop,
-    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
-    if (isAllowedToDrop && hasRqid(droppedPage)) {
-      await updateRqidLink(
-        this.document as foundry.abstract.Document.Any,
-        targetPropertyName,
-        droppedPage,
       );
       return [this.document];
     }

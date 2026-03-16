@@ -118,10 +118,13 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     return [];
   }
 
-  override async _onDropItem(
+  protected override async _onDropDocument(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
+    if (data.type !== "Item") {
+      return super._onDropDocument(event, data);
+    }
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
     const droppedItem = (await Item.implementation.fromDropData(data)) as SkillItem;
     const usage = getDomDataset(event, "dropzone");
@@ -144,7 +147,7 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     }
     const droppedItemRqid = droppedItem?.getFlag(systemId, documentRqidFlags)?.id;
     if (!droppedItemRqid) {
-      const msg = "No Rqid on dropped skill";
+      const msg = localize("RQG.Item.Weapon.DropSkillMissingRqid");
       ui.notifications?.warn(msg, { console: false });
       console.warn(`RQG | ${msg}`);
       return false;
