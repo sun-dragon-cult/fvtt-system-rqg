@@ -1402,7 +1402,7 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
   }
 }
 
-// .rqidlink has equal specificity to .key-value-grid — placing it after ensures the 35px wins.
+// .rqidlink has equal specificity to .key-value-grid — placing it after ensures this wins.
 .rqidlink input[type="number"] {
   width: 2rem;
 }
