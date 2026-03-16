@@ -97,6 +97,10 @@
       gap: 0.25rem;
     }
 
+    .text-value {
+      line-height: var(--input-height);
+    }
+
     select {
       display: block;
     }
