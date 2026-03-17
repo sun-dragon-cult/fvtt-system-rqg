@@ -1,0 +1,35 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-action="editImage" data-edit="img" data-tooltip="{{name}}">
+
+  <div class="property-line">
+    <div class="label-above">
+      <label for="name-{{id}}">{{localize "RQG.Item.Armor.NamePrefix"}}</label>
+      <input type="text" id="name-{{id}}" name="system.namePrefix" value="{{system.namePrefix}}">
+    </div>
+
+    <div class="label-above">
+      <label for="armor-type-{{id}}">{{localize "RQG.Item.Armor.ArmorTypeLabel"}}</label>
+      <input type="text" id="armor-type-{{id}}" name="system.armorType" value="{{system.armorType}}"
+             list="armorTypeNames">
+    </div>
+
+    <div class="label-above parens long">
+      <label for="material-{{id}}">{{localize "RQG.Item.Armor.Material"}}</label>
+      <div>
+        (<input type="text" id="material-{{id}}" name="system.material" value="{{system.material}}"
+                 list="materialNames">)
+      </div>
+    </div>
+  </div>
+
+  <datalist id="armorTypeNames">
+    {{#each armorTypeNames}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+  <datalist id="materialNames">
+    {{#each materialNames}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+</header>

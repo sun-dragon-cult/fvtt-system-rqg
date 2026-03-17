@@ -149,6 +149,7 @@ export async function updateRqidLink(
   }
 
   const newLink = new RqidLink(fullDocumentRqid, droppedDocument.name ?? "");
+  const updateKey = `system.${targetPropertyName}`;
   if (Array.isArray(targetProperty)) {
     const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
     if (allowDuplicates || !targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
@@ -158,14 +159,12 @@ export async function updateRqidLink(
         await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
           {
             _id: targetDocument.id,
-            system: { [targetPropertyName]: targetPropertyRqidLinkArray },
+            [updateKey]: targetPropertyRqidLinkArray,
           },
         ]);
       } else {
         await targetDocument.update(
-          {
-            system: { [targetPropertyName]: targetPropertyRqidLinkArray },
-          } as never,
+          { [updateKey]: targetPropertyRqidLinkArray } as never,
           {} as never,
         );
       }
@@ -174,15 +173,10 @@ export async function updateRqidLink(
     // Property is a single RqidLink, not an array
     if (targetDocument.isEmbedded) {
       await (targetDocument.parent as any)?.updateEmbeddedDocuments(targetDocument.documentName, [
-        { _id: targetDocument.id, system: { [targetPropertyName]: newLink } },
+        { _id: targetDocument.id, [updateKey]: newLink },
       ]);
     } else {
-      await targetDocument.update(
-        {
-          system: { [targetPropertyName]: newLink },
-        } as never,
-        {} as never,
-      );
+      await targetDocument.update({ [updateKey]: newLink } as never, {} as never);
     }
   }
 }

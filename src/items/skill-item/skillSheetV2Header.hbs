@@ -1,0 +1,34 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-action="editImage" data-edit="img" data-tooltip="{{name}}" />
+
+  <div class="flex-column gap03rem">
+    <div class="property-line">
+
+      <div class="label-above">
+        <label for="name-{{id}}">{{localize "RQG.Item.Skill.Name"}}</label>
+        <input type="text" id="name-{{id}}" name="system.skillName" value="{{system.skillName}}">
+      </div>
+
+      <div class="label-above parens">
+        <label for="specialization-{{id}}">{{localize "RQG.Item.Skill.Specialization"}}</label>
+        <div>
+          ( <input
+              id="specialization-{{id}}"
+              name="system.specialization"
+              value="{{system.specialization}}"
+              type="text"
+        > )
+        </div>
+      </div>
+    </div>
+
+    {{> rqidLinkDropzone
+      rqidLink=system.descriptionRqidLink
+      dropzoneData="descriptionRqidLink"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="descriptionRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+    }}
+  </div>
+</header>

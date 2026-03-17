@@ -1,0 +1,348 @@
+import { RqidLink } from "../data-model/shared/rqidLink";
+import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
+import type { RqgItem } from "./rqgItem";
+import {
+  extractDropInfo,
+  getAllowedDropDocumentNames,
+  hasRqid,
+  isAllowedDocumentNames,
+  onDragEnter,
+  onDragLeave,
+  updateRqidLink,
+} from "../documents/dragDrop";
+import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
+
+const { HandlebarsApplicationMixin } = foundry.applications.api;
+const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+
+export interface RqgItemSheetContext {
+  id: string;
+  uuid: string;
+  name: string;
+  img: string;
+  isGM: boolean;
+  system: unknown;
+  isEditable: boolean;
+  isEmbedded: boolean;
+  /** The item's active effects collection, used by the Active Effects tab partial. */
+  effects: unknown;
+  /** True when rendered by an AppV2 sheet — templates use this to choose `<prose-mirror>` over `{{editor}}`. */
+  isV2: boolean;
+}
+
+export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<any>) {
+  /** Remembers the currently active tab across re-renders */
+  protected _currentTab: string | undefined;
+
+  static override DEFAULT_OPTIONS: Record<string, any> = {
+    id: "{id}",
+    classes: ["rqg", "item-sheet", "sheet"],
+    position: {
+      width: 960,
+      height: 800,
+    },
+    form: {
+      handler: RqgItemSheetV2.onSubmit,
+      submitOnChange: true,
+      closeOnSubmit: false,
+    },
+    window: {
+      resizable: true,
+    },
+  };
+
+  // Subclasses must define PARTS with their template
+
+  static override PARTS: Record<string, any> = {};
+
+  override get title(): string {
+    const parentName = this.document?.parent?.name;
+    const parentAddition = parentName ? ` @ ${parentName}` : "";
+    return `${localizeItemType(this.document.type)}: ${this.document.name}${parentAddition}`;
+  }
+
+  // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
+  override async _prepareContext(): Promise<RqgItemSheetContext> {
+    return {
+      id: this.document.id ?? "",
+      uuid: this.document.uuid,
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isGM: game.user?.isGM ?? false,
+      isEditable: this.isEditable,
+      isEmbedded: this.document.isEmbedded,
+      isV2: true,
+      effects: this.document.effects,
+      system: foundry.utils.duplicate(this.document._source.system),
+    };
+  }
+
+  // Always set context.tab — if left unset, hidden parts inherit the previous part's active tab.
+  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
+    context = await super._preparePartContext(partId, context, options);
+    context.tab = context.tabs?.[partId] ?? { active: false, id: partId, group: "sheet" };
+    return context;
+  }
+
+  override async _onRender(context: any, options: any): Promise<void> {
+    await super._onRender(context, options);
+
+    // Tab navigation (preserves active tab across re-renders)
+    if (this.element.querySelector(".item-sheet-nav-tabs")) {
+      const tabs = new foundry.applications.ux.Tabs({
+        navSelector: ".item-sheet-nav-tabs",
+        contentSelector: ".sheet-body",
+        initial: this._currentTab,
+        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
+          if (name) {
+            this._currentTab = name;
+          }
+        },
+      });
+      tabs.bind(this.element);
+    }
+
+    // RQID header button (AppV2 version)
+    await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
+
+    // RQID link click handlers in the sheet body
+    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
+
+    // Drag-drop (register element-level listeners only on first render to avoid duplicates)
+    if (options.isFirstRender) {
+      this.element.addEventListener("dragover", (event) => event.preventDefault());
+      this.element.addEventListener("drop", (event) => void this._onDrop(event));
+    }
+    this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      elem.addEventListener("dragenter", (event) => this._onDragEnter(event as DragEvent));
+      elem.addEventListener("dragleave", (event) => this._onDragLeave(event as DragEvent));
+    });
+
+    // Add rqidLink via dropdown to an array of links
+    this.element.querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]").forEach((elem) => {
+      const targetProperty = getDomDataset(elem, "dropzone");
+      if (!targetProperty) {
+        return;
+      }
+      elem.addEventListener("change", async (event) => {
+        const selectElem = event.currentTarget as HTMLSelectElement;
+        const allowDuplicates = getDomDataset(elem, "allow-duplicates");
+        const newRqid = selectElem?.value;
+        const targetRqidLinks = ((this.document.system as any)[targetProperty] ?? []) as RqidLink[];
+        if (allowDuplicates || !targetRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
+          const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
+          const newRqidLink = new RqidLink(newRqid, newName);
+          const updatedLinks = [...targetRqidLinks, newRqidLink];
+          await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
+        }
+      });
+    });
+
+    // Set a single rqidLink via dropdown
+    this.element.querySelectorAll<HTMLElement>("[data-replace-rqid-link]").forEach((elem) => {
+      const targetProperty = getDomDataset(elem, "dropzone");
+      if (!targetProperty) {
+        return;
+      }
+      elem.addEventListener("change", async (event) => {
+        const selectElem = event.currentTarget as HTMLSelectElement;
+        const newRqid = selectElem?.value;
+        if ((this.document.system as any)[targetProperty]?.rqid !== newRqid) {
+          const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
+          const newRqidLink = new RqidLink(newRqid, newName);
+          await this.document.update({ [`system.${targetProperty}`]: newRqidLink });
+        }
+      });
+    });
+
+    // Edit Active Effect
+    this.element.querySelectorAll<HTMLElement>("[data-item-effect-edit]").forEach((el) => {
+      const effectUuid = getRequiredDomDataset(el, "effect-uuid");
+      el.addEventListener("click", () => {
+        const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
+        if (effect) {
+          new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
+        }
+      });
+    });
+
+    // Add Active Effect
+    this.element.querySelectorAll<HTMLElement>("[data-item-effect-add]").forEach((el) => {
+      const itemUuid = getRequiredDomDataset(el, "item-uuid");
+      const item = fromUuidSync(itemUuid) as RqgItem | undefined;
+      if (!item) {
+        return;
+      }
+      el.addEventListener("click", async () => {
+        const effect = new ActiveEffect(
+          {
+            name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
+            img: "icons/svg/aura.svg",
+            changes: [{ key: "", value: "" }],
+            transfer: true,
+            disabled: false,
+          },
+          item,
+        );
+        const created = await item
+          .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
+          .catch((reason: unknown) => {
+            ui.notifications?.error(
+              localize("RQG.Item.Notification.CantCreateActiveEffect", {
+                itemType: localizeItemType(item.type),
+              }),
+            );
+            throw reason;
+          });
+        if (created[0]?.id) {
+          const createdEffect = item.effects.get(created[0].id) as RqgActiveEffect | undefined;
+          if (createdEffect) {
+            new foundry.applications.sheets.ActiveEffectConfig({
+              document: createdEffect,
+            }).render({ force: true });
+          }
+        }
+      });
+    });
+
+    // Delete Active Effect
+    this.element.querySelectorAll<HTMLElement>("[data-item-effect-delete]").forEach((el) => {
+      const effectUuid = getRequiredDomDataset(el, "effect-uuid");
+      el.addEventListener("click", () => {
+        (fromUuidSync(effectUuid) as any)?.delete();
+      });
+    });
+
+    // Delete an entry from an RqidLink array property
+    this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
+      const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
+      const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
+      el.addEventListener("click", async () => {
+        const deleteFromProperty = foundry.utils.getProperty(
+          this.document.system as object,
+          deleteFromPropertyName,
+        );
+        const isArray = Array.isArray(deleteFromProperty);
+        const newValue = isArray
+          ? (deleteFromProperty as RqidLink[]).filter((r) => r.rqid !== deleteRqid)
+          : "";
+        const updateKey = `system.${deleteFromPropertyName}`;
+        if (this.document.isEmbedded) {
+          await this.document.actor?.updateEmbeddedDocuments("Item", [
+            { _id: this.document.id, [updateKey]: newValue },
+          ]);
+        } else {
+          await this.document.update({ [updateKey]: newValue });
+        }
+      });
+    });
+
+    // Edit the bonus field on an RqidLink
+    this.element
+      .querySelectorAll<HTMLInputElement>("[data-edit-bonus-property-name]")
+      .forEach((el) => {
+        const editRqid = getRequiredDomDataset(el, "rqid");
+        const editPropertyName = getRequiredDomDataset(el, "edit-bonus-property-name");
+        el.addEventListener("change", async () => {
+          const updateProperty = foundry.utils.getProperty(
+            this.document.system as object,
+            editPropertyName,
+          );
+          if (Array.isArray(updateProperty)) {
+            const linkToEdit = (updateProperty as RqidLink[]).find(
+              (rqidLink) => rqidLink.rqid === editRqid,
+            );
+            if (linkToEdit) {
+              linkToEdit.bonus = Number(el.value);
+            }
+          } else {
+            (updateProperty as RqidLink).bonus = Number(el.value);
+          }
+          const updateKey = `system.${editPropertyName}`;
+          if (this.document.isEmbedded) {
+            await this.document.actor?.updateEmbeddedDocuments("Item", [
+              { _id: this.document.id, [updateKey]: updateProperty },
+            ]);
+          } else {
+            await this.document.update({ [updateKey]: updateProperty });
+          }
+        });
+      });
+  }
+
+  _onDragEnter(event: DragEvent): void {
+    onDragEnter(event);
+  }
+
+  _onDragLeave(event: DragEvent): void {
+    onDragLeave(event);
+  }
+
+  protected async _onDrop(event: DragEvent): Promise<unknown> {
+    event.preventDefault();
+    this.render();
+
+    const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as { type?: string; uuid?: string } | null;
+    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
+
+    if (!isAllowedDocumentNames(droppedDocumentData?.type, allowedDropDocumentNames)) {
+      return;
+    }
+
+    switch (droppedDocumentData?.type) {
+      case "Item":
+      case "JournalEntry":
+      case "JournalEntryPage":
+        if (droppedDocumentData.uuid) {
+          return await this._onDropDocument(event, {
+            type: droppedDocumentData.type,
+            uuid: droppedDocumentData.uuid,
+          });
+        }
+        break;
+      default:
+        isAllowedDocumentNames(droppedDocumentData?.type, [
+          "Item",
+          "JournalEntry",
+          "JournalEntryPage",
+        ]);
+    }
+  }
+
+  protected async _onDropDocument(
+    event: DragEvent,
+    data: { type: string; uuid: string },
+  ): Promise<boolean | RqgItem[]> {
+    const {
+      droppedDocument,
+      dropZoneData: targetPropertyName,
+      isAllowedToDrop,
+      allowDuplicates,
+    } = await extractDropInfo<foundry.abstract.Document.Any>(event, data);
+    if (isAllowedToDrop && hasRqid(droppedDocument)) {
+      await updateRqidLink(
+        this.document as foundry.abstract.Document.Any,
+        targetPropertyName,
+        droppedDocument,
+        allowDuplicates,
+      );
+      return [this.document];
+    }
+    return false;
+  }
+
+  /**
+   * Default form submit handler — saves the document.
+   * Subclasses needing custom pre-processing override DEFAULT_OPTIONS.form.handler.
+   */
+  protected static async onSubmit(
+    _event: SubmitEvent | Event,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ): Promise<void> {
+    await (this as unknown as RqgItemSheetV2).document.update(formData.object);
+  }
+}

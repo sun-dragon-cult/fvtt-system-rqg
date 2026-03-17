@@ -1,0 +1,49 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="key-value-grid">
+    {{#unless system.isRitual}}
+
+      <label for="range-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.Range"}}</label>
+      <select id="range-{{id}}" name="system.castingRange">
+        {{selectOptions rangeOptions selected=system.castingRange localize=true}}
+      </select>
+
+      <label for="duration-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.Duration"}} </label>
+      <select id="duration-{{id}}" name="system.duration">
+        {{selectOptions durationOptions selected=system.duration localize=true}}
+      </select>
+
+    {{/unless}}
+
+    <label for="is-ritual-{{id}}">{{localize "RQG.Item.Spell.Ritual"}}</label>
+    <input type="checkbox" id="is-ritual-{{id}}" name="system.isRitual" {{checked system.isRitual}}>
+
+    <label for="is-enchantment-{{id}}">{{localize "RQG.Item.Spell.Enchantment"}}</label>
+    <input type="checkbox" id="is-enchantment-{{id}}" name="system.isEnchantment" {{checked
+      system.isEnchantment}}>
+
+    <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.Stackable"}}</label>
+    <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
+
+    <label for="is-one-use-{{id}}">{{localize "RQG.Item.RuneMagic.OneUse"}}</label>
+    <input type="checkbox" id="is-one-use-{{id}}" name="system.isOneUse" {{checked system.isOneUse}}>
+
+    {{#if isEmbedded}}
+      <label for="cult-id-{{id}}" class="mp">{{localize "RQG.Item.RuneMagic.GrantedByCult"}}</label>
+      <select id="cult-id-{{id}}" name="system.cultId">
+        {{selectOptions actorCultOptions selected=system.cultId localize=false}}
+      </select>
+    {{/if}}
+
+    <label for="runes-{{id}}">{{localize "RQG.Item.RuneMagic.Runes"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.runeRqidLinks
+      dropzoneData="runeRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="rune"
+      showDeleteFromPropertyName="runeRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+      dropdownOptions=allRuneOptions
+    }}
+  </div>
+</div>

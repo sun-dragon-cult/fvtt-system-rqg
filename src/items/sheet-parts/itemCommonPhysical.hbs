@@ -5,10 +5,17 @@
        value="{{system.encumbrance}}"
        min="0"
        max="999999"
-/>
+>
 
-<label>{{localize "RQG.Item.Gear.EncumbranceAbbrTotal"}}</label>
-<span class="number">{{decimalMultiply system.quantity system.encumbrance}}</span>
+<label for="encumbrance-total-{{id}}">{{localize "RQG.Item.Gear.EncumbranceAbbrTotal"}}</label>
+<input id="encumbrance-total-{{id}}" 
+       type="number" 
+       value="{{decimalMultiply system.quantity system.encumbrance}}"
+       min="0"
+       max="999999"
+       readonly
+       tabindex="-1"
+>
 
 <label for="equipped-status-{{id}}">{{localize "RQG.Item.Gear.EquippedStatus"}}</label>
 <select id="equipped-status-{{id}}" name="system.equippedStatus">

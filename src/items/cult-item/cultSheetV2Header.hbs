@@ -1,0 +1,33 @@
+<header class="item-sheet-header">
+  <img src="{{img}}" data-action="editImage" data-edit="img" data-tooltip="{{name}}">
+
+  <div class="flex-column gap03rem">
+
+    <div class="property-line">
+      <div class="label-above">
+        <label for="deity-{{id}}">{{localize "RQG.Item.Cult.Deity"}}</label>
+        <input
+          id="deity-{{id}}"
+          type="text"
+          name="system.deity"
+          value="{{system.deity}}"
+          placeholder="{{localize "RQG.Item.Cult.Deity"}}"
+        />
+      </div>
+
+      <div class="label-above">
+        <label for="name-{{id}}">{{localize "RQG.Item.Cult.Name"}}</label>
+        <div class="text-value">{{name}}</div>
+      </div>
+    </div>
+
+    {{> rqidLinkDropzone
+      rqidLink=system.descriptionRqidLink
+      dropzoneData="descriptionRqidLink"
+      dropDocumentNames="JournalEntry, JournalEntryPage"
+      showDeleteFromPropertyName="descriptionRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+    }}
+  </div>
+</header>

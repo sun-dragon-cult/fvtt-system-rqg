@@ -1,0 +1,3 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <prose-mirror name="system.wizardInstructions" value="{{system.wizardInstructions}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}">{{{enrichedWizardInstructions}}}</prose-mirror>
+</div>

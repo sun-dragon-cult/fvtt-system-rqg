@@ -36,6 +36,14 @@ Run the smallest relevant checks first:
 3. `pnpm typecheck`
 4. `pnpm build` only when needed for integration/build verification
 
+## CSS & Theming
+
+Foundry v13 has two themes (`body.theme-dark` / `body.theme-light`). Prefer theme-adaptive CSS variables over static ones:
+
+- **Text**: use `--color-text-secondary`, `--color-text-primary` etc. (theme-aware) — **not** `--color-text-dark-secondary` or `--color-text-light-*` (static, dark-mode only).
+- **Inputs**: Foundry automatically sets `--input-background-color`, `--input-border-color`, `--input-text-color` per theme, including a distinct rule for `input[readonly]`. Avoid overriding these with hard-coded `border`/`color`/`background` properties unless there is a specific reason.
+- **Icon click (AppV2 sheets)**: `img[data-edit="img"]` triggers a FilePicker only when `data-action="editImage"` is also present (AppV2 routes clicks via `data-action`; `data-edit` alone was the AppV1 convention).
+
 ## Handoff Checklist
 
 Before finishing, ensure:

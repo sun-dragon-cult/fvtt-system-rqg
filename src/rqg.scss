@@ -7,6 +7,12 @@
 // *** Start of theme specific styles ***
 
 .rqg {
+  input[readonly],
+  select[readonly],
+  textarea[readonly] {
+    cursor: default;
+  }
+
   .experienced {
     text-shadow:
       -1px 1px 1px var(--rqg-themed-exp-outline),
@@ -30,12 +36,6 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
 }
 
 // *** End of theme specific styles ***
-
-// adding attribute readonly to the input excludes it from the form application?
-input.readonly {
-  border: none;
-  pointer-events: none;
-}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -181,6 +181,11 @@ input.readonly {
 
   .flex-wrap {
     flex-wrap: wrap;
+    align-items: flex-start;
+
+    > * {
+      height: auto;
+    }
   }
 
   .flex-nowrap {
@@ -301,9 +306,8 @@ input.readonly {
     font-family: var(--font-primary);
   }
 
-  input:read-only {
-    border: none;
-    color: var(--color-text-dark-secondary);
+  input:read-only:not([type="checkbox"], [type="radio"]) {
+    pointer-events: none;
   }
 
   .mb-1-5rem {
@@ -1121,7 +1125,6 @@ input.readonly {
 .rqg.sheet {
   input {
     width: inherit;
-    background-color: #ffffff2b;
   }
 }
 
@@ -1190,10 +1193,6 @@ input.readonly {
 .rqidlink {
   vertical-align: middle;
   margin: 0.5rem;
-
-  & .icon {
-    color: var(--color-text-dark-inactive);
-  }
 }
 
 .header-control.rqid-missing,
@@ -1311,10 +1310,11 @@ input.readonly {
   }
 
   input {
-    background-color: #ffffff10;
-
-    &[type="number"] {
-      width: 75px;
+    &[type="checkbox"] {
+      margin-left: 0;
+      width: var(--checkbox-size, var(--font-size-20));
+      height: var(--checkbox-size, var(--font-size-20));
+      background: transparent;
     }
 
     &[type="text"] {
@@ -1332,6 +1332,10 @@ input.readonly {
     &.maxcontentwidth {
       width: max-content;
     }
+  }
+
+  select {
+    width: fit-content;
   }
 
   span.number {
@@ -1399,6 +1403,11 @@ input.readonly {
   }
 }
 
+// .rqidlink has equal specificity to .key-value-grid — placing it after ensures this wins.
+.rqidlink input[type="number"] {
+  width: 2rem;
+}
+
 .rqg.form.roll-dialog {
   .roll-header {
     display: flex;
@@ -1456,6 +1465,7 @@ input.readonly {
   .footer-message-stack {
     width: 100%;
     margin-top: 0.3rem;
+    text-align: center;
   }
 
   .footer-message {
@@ -1470,12 +1480,5 @@ input.readonly {
     color: var(--color-level-error);
     border: 1px solid var(--color-level-error);
     background-color: transparent;
-  }
-}
-
-.rqg.form.roll-dialog.defence-dialog {
-  .footer-message-stack,
-  .footer-message {
-    text-align: center;
   }
 }
