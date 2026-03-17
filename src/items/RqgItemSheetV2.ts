@@ -227,12 +227,13 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
         const newValue = isArray
           ? (deleteFromProperty as RqidLink[]).filter((r) => r.rqid !== deleteRqid)
           : "";
+        const updateKey = `system.${deleteFromPropertyName}`;
         if (this.document.isEmbedded) {
           await this.document.actor?.updateEmbeddedDocuments("Item", [
-            { _id: this.document.id, system: { [deleteFromPropertyName]: newValue } },
+            { _id: this.document.id, [updateKey]: newValue },
           ]);
         } else {
-          await this.document.update({ system: { [deleteFromPropertyName]: newValue } });
+          await this.document.update({ [updateKey]: newValue });
         }
       });
     });
@@ -258,12 +259,13 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
           } else {
             (updateProperty as RqidLink).bonus = Number(el.value);
           }
+          const updateKey = `system.${editPropertyName}`;
           if (this.document.isEmbedded) {
             await this.document.actor?.updateEmbeddedDocuments("Item", [
-              { _id: this.document.id, system: { [editPropertyName]: updateProperty } },
+              { _id: this.document.id, [updateKey]: updateProperty },
             ]);
           } else {
-            await this.document.update({ system: { [editPropertyName]: updateProperty } });
+            await this.document.update({ [updateKey]: updateProperty });
           }
         });
       });
