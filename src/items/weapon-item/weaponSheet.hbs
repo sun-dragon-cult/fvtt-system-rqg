@@ -21,7 +21,7 @@
 
     <section class="sheet-body flex-1">
       {{!-- Weapon Tab --}}
-      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="weapon">
+      <div class="tab" data-group="primary" data-tab="weapon">
 
         <div class="key-value-grid">
           {{#unless system.hitPointLocation}}
@@ -67,7 +67,7 @@
       </div>
 
       {{!-- Weapon Usage Tab --}}
-      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="usage">
+      <div class="tab" data-group="primary" data-tab="usage">
 
         <div class="flex-row flex-wrap">
           {{#each system.usage}}
@@ -200,25 +200,17 @@
       </div>
 
       {{!-- Description Tab --}}
-      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="description">
-        {{#if isV2}}
-          <prose-mirror name="system.description" value="{{system.description}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}">{{{enrichedDescription}}}</prose-mirror>
-        {{else}}
-          {{editor enrichedDescription target="system.description" button=true engine="prosemirror" editable=isEditable}}
-        {{/if}}
+      <div class="tab" data-group="primary" data-tab="description">
+        {{editor enrichedDescription target="system.description" button=true engine="prosemirror" editable=isEditable}}
       </div>
 
       {{!-- GM Tab --}}
-      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="gm">
-        {{#if isV2}}
-          <prose-mirror name="system.gmNotes" value="{{system.gmNotes}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}">{{{enrichedGmNotes}}}</prose-mirror>
-        {{else}}
-          {{editor enrichedGmNotes target="system.gmNotes" button=true engine="prosemirror" editable=isEditable}}
-        {{/if}}
+      <div class="tab" data-group="primary" data-tab="gm">
+        {{editor enrichedGmNotes target="system.gmNotes" button=true engine="prosemirror" editable=isEditable}}
       </div>
 
       {{!-- Active Effects Tab --}}
-      <div class="tab{{#if isV2}} scrollable{{/if}}" data-group="primary" data-tab="active-effects">
+      <div class="tab" data-group="primary" data-tab="active-effects">
         {{> itemActiveEffects}}
       </div>
     </section>
