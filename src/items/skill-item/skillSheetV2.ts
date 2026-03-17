@@ -51,9 +51,7 @@ export class SkillSheetV2 extends RqgItemSheetV2 {
     system.categoryMod = skillItem.system?.categoryMod;
     system.chance = skillItem.system?.chance;
 
-    if (!system.skillName) {
-      system.skillName = system.name;
-    }
+    system.skillName ||= base.name;
 
     const context: SkillSheetContext = {
       ...base,
