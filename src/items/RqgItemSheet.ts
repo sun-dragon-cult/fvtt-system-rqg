@@ -40,6 +40,19 @@ export class RqgItemSheet<
   public override activateListeners(html: JQuery): void {
     super.activateListeners(html);
 
+    // Fallback: persist checkbox changes directly in case delegated form-change
+    // submission misses checkbox events in some runtimes.
+    html[0]?.querySelectorAll<HTMLInputElement>('input[type="checkbox"][name]').forEach((el) => {
+      el.addEventListener("change", (event) => {
+        const checkbox = event.currentTarget as HTMLInputElement;
+        const path = checkbox.name;
+        if (!path.startsWith("system.")) {
+          return;
+        }
+        void this.document.update({ [path]: checkbox.checked });
+      });
+    });
+
     // Foundry doesn't provide dragenter & dragleave in its DragDrop handling
     html[0]?.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
       elem.addEventListener("dragenter", this._onDragEnter);
@@ -172,6 +185,7 @@ export class RqgItemSheet<
             this.item.system as object,
             deleteFromPropertyName,
           );
+          const updateKey = `system.${deleteFromPropertyName}`;
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid,
@@ -179,19 +193,19 @@ export class RqgItemSheet<
             // @ts-expect-error isEmbedded
             if (this.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [deleteFromPropertyName]: newValueArray } },
+                { _id: this.item.id, [updateKey]: newValueArray },
               ]);
             } else {
-              await this.item.update({ system: { [deleteFromPropertyName]: newValueArray } });
+              await this.item.update({ [updateKey]: newValueArray });
             }
           } else {
             // @ts-expect-error isEmbedded
             if (this.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [deleteFromPropertyName]: "" } },
+                { _id: this.item.id, [updateKey]: "" },
               ]);
             } else {
-              await this.item.update({ system: { [deleteFromPropertyName]: "" } });
+              await this.item.update({ [updateKey]: "" });
             }
           }
         });
@@ -207,6 +221,7 @@ export class RqgItemSheet<
             this.item.system as object,
             editPropertyName,
           );
+          const updateKey = `system.${editPropertyName}`;
           if (Array.isArray(updateProperty)) {
             const updateRqidLink = (updateProperty as RqidLink[]).find(
               (rqidLink) => rqidLink.rqid === editRqid,
@@ -216,19 +231,19 @@ export class RqgItemSheet<
             }
             if (this.item.isEmbedded) {
               await this.item.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [editPropertyName]: updateProperty } },
+                { _id: this.item.id, [updateKey]: updateProperty },
               ]);
             } else {
-              await this.item.update({ system: { [editPropertyName]: updateProperty } });
+              await this.item.update({ [updateKey]: updateProperty });
             }
           } else {
             (updateProperty as RqidLink).bonus = Number((el as HTMLInputElement).value);
             if (this.item.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, system: { [editPropertyName]: updateProperty } },
+                { _id: this.item.id, [updateKey]: updateProperty },
               ]);
             } else {
-              await this.item.update({ system: { [editPropertyName]: updateProperty } });
+              await this.item.update({ [updateKey]: updateProperty });
             }
           }
         });

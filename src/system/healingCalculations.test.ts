@@ -48,10 +48,7 @@ describe("healing", () => {
       system: {
         actorHealthImpact: "wounded",
         hitLocationHealthState: "wounded",
-        wounds: [
-          1,
-          0, // 2-2
-        ],
+        wounds: [1],
       },
     });
     expect(actorUpdates).toStrictEqual({
@@ -160,7 +157,7 @@ describe("healing", () => {
       system: {
         actorHealthImpact: "healthy",
         hitLocationHealthState: "healthy",
-        wounds: [0], // chestDamage - chestDamage
+        wounds: [], // chestDamage - chestDamage
       },
     });
     mockActor.system.attributes.health = DamageCalculations.getCombinedActorHealth(mockActor);

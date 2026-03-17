@@ -765,7 +765,10 @@
         "ActorsGifts": "Actor's Gifts",
         "ActorsGeases": "Actor's Geases",
         "ActorsSubCults": "Actor's Sub-Cults",
-        "CommonRuneMagic": "Common Rune Magic"
+        "CommonRuneMagic": "Common Rune Magic",
+        "Notification": {
+          "NoRunesWarn": "No runes linked. At least one rune is needed for the cult to work correctly."
+        }
       },
       "EquippedStatus": {
         "notCarried": "Not Carried",
@@ -1071,6 +1074,7 @@
         "DropSkillToChange": "(Drop a different weapon skill on this weapon to change)",
         "DropSkillToAdd": "Drop a weapon skill on this weapon!",
         "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
+        "DropSkillMissingRqid": "The dropped skill has no RQID and cannot be linked to this weapon",
         "EnterNewAction": "Add Action Label",
         "Damage": "Damage",
         "MinimumStrengthAbbr": "Min STR",
@@ -1094,7 +1098,7 @@
         "Projectile": "Projectile",
         "Range": "Range",
         "Rate": "Rate",
-        "SameDataAsOneHand": "Same Data as One Hand",
+        "SameDataAsOneHand": "Same data as One-handed use",
         "combatManeuver": {
           "Bite": "Bite",
           "Throw": "Throw",
@@ -1189,6 +1193,7 @@
       "ActiveEffect": {
         "Header": "Active Effects🧪",
         "AddEffectTitle": "Add Effect",
+        "Label": "Label",
         "Name": "Name",
         "Disabled": "Disabled",
         "StartTime": "Start Time",
@@ -1479,17 +1484,29 @@
       },
       "Item": {
         "Armor": "Armor Item Sheet",
+        "ArmorV2": "Armor Item Sheet V2",
         "Cult": "Cult Item Sheet",
+        "CultV2": "Cult Item Sheet V2",
         "Gear": "Gear Item Sheet",
+        "GearV2": "Gear Item Sheet V2",
         "HitLocation": "Hit Location Item Sheet",
+        "HitLocationV2": "Hit Location Item Sheet V2",
         "Homeland": "Homeland Item Sheet",
+        "HomelandV2": "Homeland Item Sheet V2",
         "Occupation": "Occupation Item Sheet",
+        "OccupationV2": "Occupation Item Sheet V2",
         "Passion": "Passion Item Sheet",
+        "PassionV2": "Passion Item Sheet V2",
         "Rune": "Rune Item Sheet",
+        "RuneV2": "Rune Item Sheet V2",
         "RuneMagicSpell": "Rune Magic Item Sheet",
+        "RuneMagicSpellV2": "Rune Magic Item Sheet V2",
         "Skill": "Skill Item Sheet",
+        "SkillV2": "Skill Item Sheet V2",
         "SpiritMagicSpell": "Spirit Magic Item Sheet",
-        "Weapon": "Weapon Item Sheet"
+        "SpiritMagicSpellV2": "Spirit Magic Item Sheet V2",
+        "Weapon": "Weapon Item Sheet",
+        "WeaponV2": "Weapon Item Sheet V2"
       },
       "RollTable": "Rollable Table Sheet"
     }

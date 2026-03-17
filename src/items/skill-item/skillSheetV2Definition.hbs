@@ -1,0 +1,39 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid">
+
+    <label for="category-{{id}}">{{localize "RQG.Item.Skill.Category"}}</label>
+    <select id="category-{{id}}" name="system.category">
+      {{selectOptions skillCategoryOptions selected=system.category localize=true}}
+    </select>
+
+    <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
+    <input
+      id="base-chance-{{id}}"
+      name="system.baseChance"
+      value="{{system.baseChance}}"
+      type="number"
+      min="0"
+      max="999"
+    >
+
+    <label for="can-gain-experience-{{id}}">{{localize "RQG.Item.Skill.CanGainExperienceQ"}}</label>
+    <input
+      id="can-gain-experience-{{id}}"
+      name="system.canGetExperience"
+      {{checked system.canGetExperience}}
+      type="checkbox"
+    >
+
+    <label for="runes-{{id}}">{{localize "RQG.Item.Skill.SorceryRunes"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.runeRqidLinks
+      dropzoneData="runeRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="rune"
+      showDeleteFromPropertyName="runeRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+      dropdownOptions=allRuneOptions
+    }}
+
+  </div>
+</div>

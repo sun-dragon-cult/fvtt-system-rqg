@@ -89,14 +89,7 @@
 
           <label class="editor-label">{{localize "RQG.Item.Cult.HolyDays"}}</label>
           <div class="editor-container">
-            {{editor
-              enrichedHolyDays
-              target="system.holyDays"
-              button=true
-              engine="prosemirror"
-              editable=isEditable
-              class="self-stretch"
-            }}
+            {{editor enrichedHolyDays target="system.holyDays" button=true engine="prosemirror" editable=isEditable class="self-stretch"}}
           </div>
         </div>
       </div>
@@ -106,24 +99,12 @@
         <div class="key-value-grid fullheight" style="grid-template-rows: 1fr 1fr">
           <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGifts"}}</label>
           <div class="editor-container">
-            {{editor
-              enrichedGifts
-              target="system.gifts"
-              button=true
-              engine="prosemirror"
-              editable=isEditable
-            }}
+            {{editor enrichedGifts target="system.gifts" button=true engine="prosemirror" editable=isEditable}}
           </div>
 
           <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGeases"}}</label>
           <div class="editor-container">
-            {{editor
-              enrichedGeases
-              target="system.geases"
-              button=true
-              engine="prosemirror"
-              editable=isEditable
-            }}
+            {{editor enrichedGeases target="system.geases" button=true engine="prosemirror" editable=isEditable}}
           </div>
         </div>
       </div>
