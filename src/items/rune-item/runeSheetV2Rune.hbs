@@ -1,0 +1,65 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="key-value-grid">
+    <label {{#unless rqid}}class="warning" data-tooltip="{{localize 'RQG.Item.Rune.Notification.RqidNeededWarn'}}"{{/unless}}><i class="fas fa-fingerprint"></i> Rqid</label>
+    <div class="fullwidth fullheight {{#unless rqid}}warning{{/unless}}" {{#unless rqid}}data-tooltip="{{localize 'RQG.Item.Rune.Notification.RqidNeededWarn'}}"{{/unless}}>{{rqid}}</div>
+
+    <label for="chance-{{id}}">{{localize "RQG.Item.Rune.PercentageChance"}}</label>
+    <div>
+      <input
+        id="chance-{{id}}"
+        name="system.chance"
+        value="{{system.chance}}"
+        type="number"
+        min="0"
+        max="999"
+        class="{{experiencedclass uuid}}"
+      > %
+    </div>
+
+    <label for="has-experience-{{id}}">{{localize "RQG.Item.Rune.HasExperienceQ"}}</label>
+    <input
+      id="has-experience-{{id}}"
+      name="system.hasExperience"
+      {{checked system.hasExperience}}
+      type="checkbox"
+    >
+
+    {{#if (or (eq system.runeType.type "power") (eq system.runeType.type "form"))}}
+    <label for="opposing-rune-{{id}}">{{localize "RQG.Item.Rune.OpposingRune"}}</label>
+    {{> rqidLinkDropzone
+      rqidLink=system.opposingRuneRqidLink
+      dropzoneData="opposingRuneRqidLink"
+      dropDocumentNames="Item"
+      dropDocumentTypes="rune"
+      showDeleteFromPropertyName="opposingRuneRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceRune"
+      dropdownOptions=opposingRuneOptions
+    }}
+    {{/if}}
+
+
+    <label for="is-mastered-{{id}}">{{localize "RQG.Item.Rune.MasteredSorceryQ"}}</label>
+    <input
+      id="is-mastered-{{id}}"
+      name="system.isMastered"
+      {{checked system.isMastered}}
+      type="checkbox"
+    >
+
+    {{#if (or (eq system.runeType.type "element") (eq system.runeType.type "technique"))}}
+    <label for="minor-runes-{{id}}">{{localize "RQG.Item.Rune.MinorRunes"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.minorRuneRqidLinks
+      dropzoneData="minorRuneRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="rune"
+      showDeleteFromPropertyName="minorRuneRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectRune"
+      dropdownOptions=minorRuneOptions
+    }}
+    {{/if}}
+
+  </div>
+</div>

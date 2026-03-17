@@ -7,13 +7,7 @@ import { isDocumentSubType } from "../../system/util.ts";
 import type { GearItem } from "@item-model/gearData.ts";
 
 export class Gear extends AbstractEmbeddedItem {
-  static override preUpdateItem(
-    actor: RqgActor,
-    gear: RqgItem,
-    updates: object[],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    options: any,
-  ): void {
+  static override preUpdateItem(actor: RqgActor, gear: RqgItem, updates: object[]): void {
     if (isDocumentSubType<GearItem>(gear, ItemTypeEnum.Gear)) {
       updates.push(...getLocationRelatedUpdates(actor.items.contents, gear, updates));
     }

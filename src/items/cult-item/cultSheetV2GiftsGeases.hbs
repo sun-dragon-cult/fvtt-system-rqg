@@ -1,0 +1,13 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid fullheight" style="grid-template-rows: 1fr 1fr">
+    <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGifts"}}</label>
+    <div class="editor-container">
+      <prose-mirror name="system.gifts" value="{{system.gifts}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}">{{{enrichedGifts}}}</prose-mirror>
+    </div>
+
+    <label class="editor-label">{{localize "RQG.Item.Cult.ActorsGeases"}}</label>
+    <div class="editor-container">
+      <prose-mirror name="system.geases" value="{{system.geases}}" toggled {{disabled (not isEditable)}} data-document-uuid="{{uuid}}">{{{enrichedGeases}}}</prose-mirror>
+    </div>
+  </div>
+</div>

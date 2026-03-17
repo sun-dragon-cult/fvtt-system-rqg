@@ -64,7 +64,10 @@ export class HealingCalculations {
       wounds[healWoundIndex] -= healPoints;
     }
 
-    const woundsSumAfter = wounds.reduce((acc: number, w: number) => acc + w, 0);
+    // Remove healed-out wounds so arrays do not accumulate 0 entries.
+    const prunedWounds = wounds.filter((w) => w > 0);
+
+    const woundsSumAfter = prunedWounds.reduce((acc: number, w: number) => acc + w, 0);
     if (woundsSumAfter === 0) {
       actorHealthImpact = "healthy";
       if (hitLocationHealthState !== "severed") {
@@ -79,7 +82,7 @@ export class HealingCalculations {
 
     foundry.utils.mergeObject(healingEffects.hitLocationUpdates, {
       system: {
-        wounds: wounds,
+        wounds: prunedWounds,
         actorHealthImpact: actorHealthImpact,
         hitLocationHealthState: hitLocationHealthState,
       },

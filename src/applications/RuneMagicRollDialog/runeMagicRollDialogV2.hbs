@@ -9,7 +9,7 @@
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}
     </label>
     <div>
-      <input type="number" data-dtype="Number" {{#unless spell.system.isStackable}}class="readonly"{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
+      <input type="number" data-dtype="Number" {{#unless spell.system.isStackable}}readonly{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
       {{localize "RQG.Actor.RuneMagic.RunePoints"}}
     </div>
 

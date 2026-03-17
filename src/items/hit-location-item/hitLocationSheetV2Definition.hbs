@@ -1,0 +1,54 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid">
+    <label {{#unless rqid}}class="warning" data-tooltip="{{localize 'RQG.Item.HitLocation.Notification.RqidNeededWarn'}}"{{/unless}}><i class="fas fa-fingerprint"></i> Rqid</label>
+    <div class="fullwidth fullheight {{#unless rqid}}warning{{/unless}}" {{#unless rqid}}data-tooltip="{{localize 'RQG.Item.HitLocation.Notification.RqidNeededWarn'}}"{{/unless}}>{{rqid}}</div>
+
+    <label for="act-as-{{id}}">{{localize "RQG.Item.HitLocation.ActAs"}}</label>
+    <select id="act-as-{{id}}" name="system.hitLocationType">
+      {{selectOptions hitLocationTypeOptions selected=system.hitLocationType localize=true}}
+    </select>
+
+    {{#if (eq system.hitLocationType "limb")}}
+    <label for="connected-to-{{id}}">{{localize "RQG.Item.HitLocation.ConnectedTo"}}</label>
+    <select id="connected-to-{{id}}" name="system.connectedTo">
+      {{selectOptions allHitLocationOptions selected=system.connectedTo localize=false}}
+    </select>
+    {{/if}}
+
+    <label for="hit-location-on-from-{{id}}">{{localize "RQG.Item.HitLocation.HitLocationOn"}}</label>
+    <div>
+      <input
+        id="hit-location-on-from-{{id}}"
+        name="system.dieFrom"
+        value="{{system.dieFrom}}"
+        type="number"
+        min="1"
+        max="20">
+      -
+      <input
+        name="system.dieTo"
+        value="{{system.dieTo}}"
+        type="number"
+        min="1"
+        max="20">
+    </div>
+
+    <label for="natural-armor-points-{{id}}">{{localize "RQG.Item.HitLocation.NaturalArmorPoints"}}</label>
+    <input
+      id="natural-armor-points-{{id}}"
+      name="system.naturalAp"
+      value="{{system.naturalAp}}"
+      type="number"
+      min="0"
+      max="99">
+
+    <label for="base-hp-delta-{{id}}">{{localize "RQG.Item.HitLocation.BaseHPDelta"}}</label>
+    <input
+      id="base-hp-delta-{{id}}"
+      name="system.baseHpDelta"
+      value="{{system.baseHpDelta}}"
+      type="number"
+      min="-9"
+      max="9">
+  </div>
+</div>

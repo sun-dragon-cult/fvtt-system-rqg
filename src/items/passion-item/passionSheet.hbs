@@ -55,23 +55,12 @@
 
       {{!-- Backstory Tab --}}
       <div class="tab" data-group="primary" data-tab="backstory">
-        {{editor
-          enrichedDescription
-          target="system.description"
-          button=true
-          engine="prosemirror"
-          editable=isEditable
-        }}
+        {{editor enrichedDescription target="system.description" button=true engine="prosemirror" editable=isEditable}}
       </div>
 
       {{!-- GM Tab --}}
       <div class="tab" data-group="primary" data-tab="gm">
-        {{editor
-          enrichedGmNotes
-          target="system.gmNotes"
-          button=true
-          engine="prosemirror"
-          editable=isEditable}}
+        {{editor enrichedGmNotes target="system.gmNotes" button=true engine="prosemirror" editable=isEditable}}
       </div>
     </section>
   </main>

@@ -133,6 +133,17 @@ export class HitLocationSheet extends RqgItemSheet {
     );
   }
 
+  override activateListeners(html: JQuery): void {
+    super.activateListeners(html);
+
+    // Add event listener for healing wounds
+    html.find("[data-item-heal-wound]").on("click", () => {
+      if (this.document.isEmbedded && this.document.actor) {
+        HitLocationSheet.showHealWoundDialog(this.document.actor as RqgActor, this.document.id!);
+      }
+    });
+  }
+
   static async showHealWoundDialog(actor: RqgActor, hitLocationItemId: string) {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     const hitLocation = actor.items.get(hitLocationItemId) as RqgItem | undefined;
