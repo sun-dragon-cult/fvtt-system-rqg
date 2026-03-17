@@ -1,0 +1,30 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid">
+    <label for="hitlocations-{{id}}">{{localize "RQG.Item.Armor.HitLocations"}}</label>
+
+    <div>
+      {{> rqidLinkArrayDropzone
+        rqidLinkArray=system.hitLocationRqidLinks
+        dropzoneData="hitLocationRqidLinks"
+        dropDocumentNames="Item"
+        dropDocumentTypes="hitLocation"
+        showDeleteFromPropertyName="hitLocationRqidLinks"
+        showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectHitLocation"
+        dropdownOptions=allHitLocationOptions
+    }}
+
+  </div>
+
+    <label for="absorbs-{{id}}">{{localize "RQG.Item.Armor.Absorbs"}}</label>
+    <input type="number" id="absorbs-{{id}}" name="system.absorbs" min="0" max="99" value="{{system.absorbs}}">
+
+    <label for="move-quietly-penalty-{{id}}">{{localize "RQG.Item.Armor.MoveQuietlyPenalty"}}</label>
+    <input type="number" id="move-quietly-penalty-{{id}}" name="system.moveQuietlyPenalty" min="0" max="99"
+           value="{{system.moveQuietlyPenalty}}">
+
+    <label for="fits-size-{{id}}">{{localize "RQG.Item.Armor.FitsSIZ"}}</label>
+    <input type="number" id="fits-size-{{id}}" name="system.size" min="1" max="99" value="{{system.size}}">
+
+    {{> itemCommonPhysical}}
+  </div>
+</div>

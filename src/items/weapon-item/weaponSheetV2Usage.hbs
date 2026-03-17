@@ -1,0 +1,137 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="flex-row flex-wrap">
+    {{#each system.usage}}
+      <fieldset data-dropzone="{{@key}}"
+                data-dropzone-document-names="Item"
+                data-dropzone-document-types="skill">
+        <legend>{{localize (concat "RQG.Game.WeaponUsage." @key "-full")}}</legend>
+        <div> {{!-- Make dragenter work despite flex--}}
+
+        {{#if combatManeuvers}}
+          <div class="flex-row-start flex-align-center">
+            <label class="mp">{{localize "TYPES.Item.skill"}}</label>
+
+            {{> rqidLink
+              rqidLink=skillRqidLink
+              showDeleteFromPropertyName=(concat "usage." @key ".skillRqidLink")
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectSkill"
+              showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceSkill"
+            }}
+          </div>
+          <br>
+          {{#unless (eq @key "offHand")}}
+            <div class="flex-row">
+              <label>{{localize "RQG.Item.Weapon.Damage"}}
+                <input type="text" name="system.usage.{{@key}}.damage" value="{{damage}}"></label>
+              <label>{{localize "RQG.Item.Weapon.MinimumStrengthAbbr"}}
+                <input type="number" min="0" max="99" name="system.usage.{{@key}}.minStrength" value="{{minStrength}}"></label>
+              <label>{{localize "RQG.Item.Weapon.MinimumDexterityAbbr"}}
+                <input type="number" min="0" max="99" name="system.usage.{{@key}}.minDexterity" value="{{minDexterity}}"></label>
+              {{#unless (eq @key "missile")}}
+                <label>{{localize "RQG.Item.Weapon.StrikeRankAbbr"}}
+                  <input type="number" min="0" max="99" name="system.usage.{{@key}}.strikeRank" value="{{strikeRank}}"></label>
+              {{/unless}}
+            </div>
+            <br>
+          {{/unless}}
+        {{/if}}
+        {{#unless (eq @key "offHand")}}
+          <div>
+            <h3>{{localize "RQG.Item.Weapon.CombatManeuversHeader"}}</h3>
+            <table>
+              <tr>
+                <th>{{localize "RQG.Item.Weapon.ActionLabel"}}</th>
+                <th>{{localize "RQG.Item.Weapon.DamageType"}}</th>
+              </tr>
+              {{setVar 'usage' @key this}}
+              {{#each combatManeuvers}}
+                <tr>
+                  <td><input type="text" list="defaultCombatManeuverNames"
+                             placeholder="{{localize "RQG.Item.Weapon.EnterNewAction"}}"
+                              name="system.usage.{{../usage}}.combatManeuvers.name" value="{{name}}"></td>
+                  <td>
+                    {{#if name}}
+                      <select name="system.usage.{{../usage}}.combatManeuvers.damageTypes">
+                        {{selectOptions @root.damageTypeOptions selected=damageType localize=true}}
+                      </select>
+                    {{/if}}
+                  </td>
+                  <td>
+              <textarea{{#unless (eq damageType "special" )}} class="no-display" {{/unless}} rows="1"
+                                                              name="system.usage.{{../usage}}.combatManeuvers.description"
+                                                              placeholder="{{placeholder}}">
+                {{description}}</textarea>
+                  </td>
+                </tr>
+              {{/each}}
+              <tr>
+                <td><input type="text" list="defaultCombatManeuverNames"
+                           placeholder="{{localize "RQG.Item.Weapon.EnterNewAction"}}"
+                           name="system.usage.{{usage}}.combatManeuvers.name"></td>
+              </tr>
+            </table>
+          </div>
+
+          {{#if (eq @key "missile")}}
+            {{#with @root}}
+              <label><input type="checkbox" name="system.isThrownWeapon" {{checked system.isThrownWeapon}}>
+                {{localize "RQG.Item.Weapon.ThrownWeaponQ"}}
+              </label><br>
+              <label><input type="checkbox" name="system.isProjectileWeapon" {{checked
+                system.isProjectileWeapon}}>
+                {{localize "RQG.Item.Weapon.ProjectileWeaponQ"}}
+              </label><br>
+              <label><input type="checkbox" name="system.isRangedWeapon" {{checked system.isRangedWeapon}}>
+                {{localize "RQG.Item.Weapon.RangedWeaponQ"}}
+              </label><br>
+              <label><input type="checkbox" name="system.isProjectile" {{checked system.isProjectile}}>
+                {{localize "RQG.Item.Weapon.ProjectileQ"}}
+              </label><br>
+              <hr>
+              <div class="flex-row">
+                {{#if (or system.isThrownWeapon system.isProjectileWeapon system.isRangedWeapon)}}
+                  <div>
+                    {{#if system.isProjectileWeapon}}
+                      {{#if @root.isEmbedded}}
+                        <label class="mp">{{localize "RQG.Item.Weapon.Projectile"}}
+                          <select name="system.projectileId">
+                            {{selectOptions ownedProjectileOptions selected=system.projectileId localize=false}}
+                          </select>
+                        </label><br>
+                      {{/if}}
+                    {{/if}}
+                    <label>{{localize "RQG.Item.Weapon.Range"}} <input type="number" min="0" max="999"
+                                                                       name="system.range"
+                                                                       value="{{system.range}}"></label><br>
+                    <label>{{localize "RQG.Item.Weapon.Rate"}}
+                      <select name="system.rate">
+                        {{selectOptions rateOfFireOptions selected=system.rate localize=false}}
+                      </select>
+                    </label><br>
+                  </div>
+                {{/if}}
+                {{#unless (eq system.physicalItemType "unique")}}
+                  <label>{{localize "RQG.Item.Gear.Quantity"}}<br><input type="number" name="system.quantity"
+                                                                         value="{{system.quantity}}"></label>
+                {{/unless}}
+              </div>
+            {{/with}}
+          {{/if}}
+        {{/unless}}
+        {{#if (eq @key "offHand")}}
+          <p>{{localize "RQG.Item.Weapon.SameDataAsOneHand"}}</p>
+
+        {{/if}}
+        </div>
+      </fieldset>
+    {{/each}}
+
+  </div>
+
+  <datalist id="defaultCombatManeuverNames">
+    {{#each defaultCombatManeuverNames}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+</div>

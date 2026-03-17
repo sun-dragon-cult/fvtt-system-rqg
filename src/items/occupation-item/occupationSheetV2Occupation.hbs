@@ -1,0 +1,110 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="key-value-grid">
+
+    <label>{{localize "RQG.Item.Occupation.Homelands"}}</label>
+    <div class="drop-target"
+         data-dropzone="homelandRqidLinks"
+         data-dropzone-document-types="homeland">
+      <div style="display: flex; flex-wrap: wrap;">
+        {{#if homelandsJoined}}
+          {{homelandsJoined}}
+        {{else}}
+          {{localize "RQG.Item.Occupation.AllHomelands"}}
+        {{/if}}
+      </div>
+    </div>
+
+    <label>{{localize "RQG.Item.Occupation.OccupationalSkillLinks"}} <i
+      id="btn-edit-occupational-skills-{{id}}" class="fas fa-edit"></i></label>
+    <div class="drop-target"
+         data-dropzone="occupationalSkillRqidLinks"
+         data-dropzone-document-types="skill">
+      <div id="occupational-skill-display-{{id}}" style="display: block;">
+        {{{skillsJoined}}}
+      </div>
+      <div
+           style="display: none;"
+           id="occupational-skill-edit-{{id}}">
+        <div style="display: flex; flex-wrap: wrap;">
+          {{#each system.occupationalSkills}}
+            <div class="occupational-skill {{#if this.incomeSkill}}income-skill{{/if}}">
+              <i class="fas fa-times icon"
+                 data-delete-occupational-skill-rqid="{{this.skillRqidLink.rqid}}"
+                 data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=this.skillRqidLink.rqid
+                                   name=this.skillRqidLink.name}}"></i>
+
+              {{> rqidLink
+                rqidLink=this.skillRqidLink
+              }}
+              <div>
+                <input
+                  type="number"
+                  min="-100"
+                  max="100"
+                  id="bonus-{{@index}}"
+                  data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                  data-tooltip="{{localize 'RQG.Item.Occupation.OccupationalSkillBonus'}}"
+                  value="{{this.bonus}}">%
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  id="income-skill-{{@index}}"
+                  data-skill-rqid="{{this.skillRqidLink.rqid}}"
+                  data-tooltip="{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}"
+                  {{checked this.incomeSkill}}>
+                <label for="income-skill-{{@index}}">{{localize 'RQG.Item.Occupation.IncomeSkillQ'}}</label>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    </div>
+
+
+    <label for="standard-of-living-{{id}}">{{localize "RQG.Item.Occupation.StandardOfLiving"}}</label>
+    <select id="standard-of-living-{{id}}" name="system.standardOfLiving">
+      {{selectOptions standardsOfLivingOptions selected=system.standardOfLiving localize=true}}
+    </select>
+
+    <label for="base-income-{{id}}">{{localize "RQG.Item.Occupation.BaseIncome"}}</label>
+    <div>
+      <input type="number" id="base-income-{{id}}" name="system.baseIncome" min="0"
+             value="{{system.baseIncome}}">
+      &nbsp;
+      {{localize "RQG.Item.Gear.LunarsAbbr"}}
+    </div>
+
+    <label for="base-income-notes-{{id}}">{{localize "RQG.Item.Occupation.BaseIncomeNotes"}}</label>
+    <input type="text" id="base-income-notes-{{id}}" name="system.baseIncomeNotes"
+           value="{{system.baseIncomeNotes}}">
+
+    <label>{{localize "RQG.Item.Occupation.CultLinks"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.cultRqidLinks
+      dropzoneData="cultRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="cult"
+      showDeleteFromPropertyName="cultRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+    }}
+
+    <label for="ransom-{{id}}">{{localize "RQG.Item.Occupation.Ransom"}}</label>
+    <div>
+      <input type="number" id="ransom-{{id}}" name="system.ransom" min="0" value="{{system.ransom}}">
+      &nbsp;
+      {{localize "RQG.Item.Gear.LunarsAbbr"}}
+    </div>
+
+    <label>{{localize "RQG.Item.Occupation.StartingEquipmentLinks"}}</label>
+    {{> rqidLinkArrayDropzone
+      rqidLinkArray=system.startingEquipmentRqidLinks
+      dropzoneData="startingEquipmentRqidLinks"
+      dropDocumentNames="Item"
+      dropDocumentTypes="armor,gear,weapon"
+      showDeleteFromPropertyName="startingEquipmentRqidLinks"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectCult"
+    }}
+  </div>
+</div>

@@ -728,6 +728,7 @@ globalThis.foundry = {
   applications: {
     api: {
       ApplicationV2: MockFormApplication,
+      DocumentSheetV2: MockFormApplication,
       HandlebarsApplicationMixin: HandlebarsApplicationMixin,
     },
 

@@ -782,13 +782,14 @@ export class RqgActorSheet<
             this.actor.system,
             deleteFromPropertyName,
           );
+          const updateKey = `system.${deleteFromPropertyName}`;
           if (Array.isArray(deleteFromProperty)) {
             const newValueArray = (deleteFromProperty as RqidLink[]).filter(
               (r) => r.rqid !== deleteRqid,
             );
-            await this.actor.update({ system: { [deleteFromPropertyName]: newValueArray } });
+            await this.actor.update({ [updateKey]: newValueArray });
           } else {
-            await this.actor.update({ system: { [deleteFromPropertyName]: "" } });
+            await this.actor.update({ [updateKey]: "" });
           }
         });
       });

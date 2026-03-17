@@ -1,0 +1,34 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+
+  <div class="skill-sheet-grid">
+
+    <label>{{localize "RQG.Item.Skill.Chance"}}</label>
+    &nbsp;
+    <label for="gained-chance-{{id}}">{{localize "RQG.Item.Skill.GainedChance"}}</label>
+    <label>{{localize "RQG.Item.Skill.CategoryModifier" category=(localize (concat 'RQG.Actor.Skill.SkillCategory.' system.category) ) }}</label>
+    <label for="base-chance-{{id}}">{{localize "RQG.Item.Skill.BaseChance"}}</label>
+
+    <span class="skill {{experiencedclass uuid}}">
+      {{system.chance}}%
+      {{#if system.canGetExperience}}
+        <input
+          id="has-experience-{{id}}"
+          name="system.hasExperience"
+          {{checked system.hasExperience}}
+          type="checkbox"
+          data-tooltip="{{localize 'RQG.Item.Skill.HasExperienceQ'}}"
+        >
+      {{/if}}
+    </span>
+    =
+    <input
+      type="number"
+      id="gained-chance-{{id}}"
+      name="system.gainedChance"
+      min="0"
+      max="999"
+      value="{{system.gainedChance}}">
+    <span>{{system.categoryMod}}</span>
+    <span>{{system.baseChance}}</span>
+  </div>
+</div>

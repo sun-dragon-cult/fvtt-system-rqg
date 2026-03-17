@@ -41,12 +41,14 @@
           <label>{{localize "RQG.Item.HitLocation.ArmorPoints"}}</label>
           {{system.armorPoints}}
 
+          {{#if system.wounds.length}}
           <label>{{localize "RQG.Item.HitLocation.Wounds"}}</label>
           <div data-item-heal-wound data-tooltip="{{localize "RQG.Actor.Health.HealWound"}}">
           {{#each system.wounds}}
             <i class="fas fa-notes-medical"></i> {{this}}
           {{/each}}
           </div>
+          {{/if}}
 
         </div>
       </div>
@@ -107,11 +109,11 @@
         </div>
       </div>
     </section>
+
+    <datalist id="allHitLocations">
+      {{#each allHitLocationOptions}}
+        <option value="{{label}}">{{label}}</option>
+      {{/each}}
+    </datalist>
   </main>
 </form>
-
-<datalist id="allHitLocations">
-  {{#each allHitLocationOptions}}
-    <option value="{{label}}">{{label}}</option>
-  {{/each}}
-</datalist>

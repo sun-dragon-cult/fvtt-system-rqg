@@ -1,0 +1,19 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="key-value-grid">
+
+    <label for="isContainer-{{id}}">{{localize "RQG.Item.Gear.IsContainerQ"}}</label>
+    <input type="checkbox" id="isContainer-{{id}}" name="system.isContainer" {{checked system.isContainer}}>
+
+    <label for="physicalItemType-{{id}}">{{localize "RQG.Item.Gear.ItemType"}}</label>
+    <select name="system.physicalItemType" id="physicalItemType-{{id}}">
+      {{selectOptions physicalItemTypeOptions selected=system.physicalItemType localize=true}}
+    </select>
+
+    {{#unless (eq system.physicalItemType "unique")}}
+    <label for="quantity-{{id}}">{{localize "RQG.Item.Gear.Quantity"}}</label>
+    <input id="quantity-{{id}}" name="system.quantity" type="number" min="0" max="9999999" value="{{system.quantity}}">
+    {{/unless}}
+
+    {{> itemCommonPhysical}}
+  </div>
+</div>
