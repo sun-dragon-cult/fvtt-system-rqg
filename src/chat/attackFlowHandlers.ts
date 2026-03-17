@@ -288,7 +288,7 @@ async function fumbleRoll(): Promise<string> {
   }
 
   const draw = await fumbleTable.draw({ displayChat: false } as RollTable.DrawOptions); // TODO typings wrong? should not have to define all options
-  const text = draw.results.map((r: any) => `${r.text}<br>`);
+  const text = draw.results.map((r: any) => `${r.description}<br>`);
   return await foundry.applications.ux.TextEditor.implementation.enrichHTML(text.join());
 }
 
