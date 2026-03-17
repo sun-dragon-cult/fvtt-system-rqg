@@ -166,10 +166,14 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
     }
   }
 
-  override async _onDropItem(
+  protected override async _onDropDocument(
     event: DragEvent,
     data: { type: string; uuid: string },
   ): Promise<boolean | RqgItem[]> {
+    if (data.type !== "Item") {
+      return super._onDropDocument(event, data);
+    }
+
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
     const droppedItem = await Item.implementation.fromDropData(data);
 
@@ -211,7 +215,7 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
       return [this.document];
     }
 
-    return await super._onDropItem(event, data);
+    return super._onDropDocument(event, data);
   }
 
   protected static override async onSubmit(
