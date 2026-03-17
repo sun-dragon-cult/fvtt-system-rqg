@@ -12,7 +12,7 @@ import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 interface WeaponSheetContext extends RqgItemSheetContext {
-  defaultCombatManeuverNames: string[];
+  defaultCombatManeuverNames: Record<string, string>;
   damageTypeOptions: SelectOptionData<DamageType>[];
   equippedStatusOptions: SelectOptionData<EquippedStatus>[];
   rateOfFireOptions: SelectOptionData<number>[];
@@ -73,8 +73,12 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
       enrichedGmNotes: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.gmNotes,
       ),
-      defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).map((cm) =>
-        localize(`RQG.Item.Weapon.combatManeuver.${cm}`),
+      defaultCombatManeuverNames: Array.from(CONFIG.RQG.combatManeuvers.keys()).reduce(
+        (acc: Record<string, string>, cm) => {
+          acc[cm] = localize(`RQG.Item.Weapon.combatManeuver.${cm}`);
+          return acc;
+        },
+        {},
       ),
       damageTypeOptions: damageTypeOptions,
       equippedStatusOptions: equippedStatusOptions,
@@ -243,24 +247,46 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     data["system.usage.offHand.strikeRank"] = data["system.usage.oneHand.strikeRank"];
   }
 
+  private static getCombatManeuverInfo(nameInput: unknown): { name: string; configKey?: string } {
+    const name = `${nameInput ?? ""}`.trim();
+    if (!name) {
+      return { name: "" };
+    }
+
+    if (CONFIG.RQG.combatManeuvers.has(name)) {
+      return {
+        name: localize(`RQG.Item.Weapon.combatManeuver.${name}`),
+        configKey: name,
+      };
+    }
+
+    const keyFromLocalizedLabel = Array.from(CONFIG.RQG.combatManeuvers.keys()).find(
+      (key) => localize(`RQG.Item.Weapon.combatManeuver.${key}`) === name,
+    );
+
+    return {
+      name,
+      configKey: keyFromLocalizedLabel,
+    };
+  }
+
   private static getUsageCombatManeuvers(usage: string, data: Record<string, unknown>): any[] {
     const usageNames = data[`system.usage.${usage}.combatManeuvers.name`];
     const usageCombatManeuversNames = Array.isArray(usageNames) ? usageNames : [usageNames];
 
     return foundry.utils.duplicate(
-      usageCombatManeuversNames.reduce((acc: any[], name: any, i: number) => {
+      usageCombatManeuversNames.reduce((acc: any[], storedNameOrKey: any, i: number) => {
+        const { name, configKey } = WeaponSheetV2.getCombatManeuverInfo(storedNameOrKey);
         if (name) {
+          const configManeuver = configKey ? CONFIG.RQG.combatManeuvers.get(configKey) : undefined;
           const dmgType =
             data[`system.usage.${usage}.combatManeuvers.damageTypes`] ??
-            CONFIG.RQG.combatManeuvers.get(name)?.defaultDamageType;
+            configManeuver?.defaultDamageType;
 
           const damageTypes = Array.isArray(dmgType) ? dmgType : [dmgType];
-          const defaultDamageTypeDescription =
-            CONFIG.RQG.combatManeuvers.get(name)?.specialDescriptionHtml;
+          const defaultDamageTypeDescription = configManeuver?.specialDescriptionHtml;
           const damageType =
-            damageTypes.length > i
-              ? damageTypes[i]
-              : CONFIG.RQG.combatManeuvers.get(name)?.defaultDamageType;
+            damageTypes.length > i ? damageTypes[i] : configManeuver?.defaultDamageType;
 
           const desc = data[`system.usage.${usage}.combatManeuvers.description`];
           const descriptions = Array.isArray(desc) ? desc : [desc];
