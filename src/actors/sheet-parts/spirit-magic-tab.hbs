@@ -5,10 +5,10 @@
           data-tooltip="{{localize 'RQG.Actor.SpiritMagic.CHALimitExceeded'
               learnedPoints=spiritMagicPointSum
               intValue=system.characteristics.intelligence.value
-              exceededBy=(difference spiritMagicPointSum system.characteristics.intelligence.value)}}">{{localize "RQG.Actor.SpiritMagic.CHALimitExceeded"
+              exceededBy=(difference 0 freeInt)}}">{{localize "RQG.Actor.SpiritMagic.CHALimitExceeded"
         learnedPoints=spiritMagicPointSum
         intValue=system.characteristics.intelligence.value
-        exceededBy=(difference spiritMagicPointSum system.characteristics.intelligence.value)}}</span>
+        exceededBy=(difference 0 freeInt)}}</span>
   {{else if (eq freeInt 0)}}
     <span class="small-size warning">{{localize "RQG.Actor.SpiritMagic.CHALimitReached"
         learnedPoints=spiritMagicPointSum}}</span>
