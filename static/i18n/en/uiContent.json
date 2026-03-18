@@ -410,6 +410,14 @@
         "Concentration": "Concentration",
         "Ritual": "Ritual",
         "Enchantment": "Enchantment"
+      },
+      "SheetTab": {
+        "Characteristics": "Characteristics",
+        "Combat": "Combat",
+        "Skills": "Skills",
+        "Magic": "Magic",
+        "Background": "Background",
+        "ActiveEffects": "Active Effects"
       }
     },
     "ContextMenu": {
@@ -1486,7 +1494,8 @@
     },
     "SheetName": {
       "Actor": {
-        "Character": "Character Sheet"
+        "Character": "Character Sheet",
+        "CharacterV2": "Character Sheet V2"
       },
       "Item": {
         "Armor": "Armor Item Sheet",

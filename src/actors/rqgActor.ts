@@ -6,6 +6,7 @@ import {
 } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum, type PhysicalItem, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
+import { RqgActorSheetV2 } from "./rqgActorSheetV2";
 import { DamageCalculations } from "../system/damageCalculations";
 import {
   assertDocumentSubType,
@@ -54,6 +55,12 @@ export class RqgActor extends Actor {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.Character",
       makeDefault: true,
+    });
+
+    Actors.registerSheet(systemId, RqgActorSheetV2, {
+      types: [ActorTypeEnum.Character],
+      label: "RQG.SheetName.Actor.CharacterV2",
+      makeDefault: false,
     });
   }
 

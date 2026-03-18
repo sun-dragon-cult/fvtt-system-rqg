@@ -1,0 +1,55 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  <div class="characteristics-grid">
+    {{#each system.characteristics as | characteristic key |}}
+      <div class="characteristic-block">
+        <label class="resource-label">{{localize (concat "RQG.Actor.Characteristics." key)}}</label>
+        <div class="value">{{characteristic.value}}</div>
+        <input type="text" name="system.characteristics.{{key}}.formula" value="{{characteristic.formula}}"
+               class="formula"{{#unless @root.isEditable}} disabled{{/unless}}>
+      </div>
+    {{/each}}
+  </div>
+
+  <div class="attributes-section">
+    <fieldset>
+      <legend>{{localize "RQG.Actor.Health.TotalHitPoints"}}</legend>
+      <div class="key-value-grid">
+        {{#if system.attributes.hitPoints.max}}
+          <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}</label>
+          <span>
+            <input type="number" min="-99" max="99" name="system.attributes.hitPoints.value"
+                   value="{{system.attributes.hitPoints.value}}" size="2"> / {{system.attributes.hitPoints.max}}
+          </span>
+        {{/if}}
+
+        {{#if system.attributes.magicPoints.max}}
+          <label>{{localize "RQG.Actor.Attributes.MagicPoints"}}</label>
+          <span>
+            <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
+                   value="{{system.attributes.magicPoints.value}}" size="2"> / {{system.attributes.magicPoints.max}}
+          </span>
+        {{/if}}
+
+        {{#if baseStrikeRank includeZero=true}}
+          <label>{{localize "RQG.Actor.Attributes.StrikeRank"}}</label>
+          <span>{{baseStrikeRank}}</span>
+        {{/if}}
+
+        {{#if system.attributes.spiritCombatDamage}}
+          <label>{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}</label>
+          <span>{{system.attributes.spiritCombatDamage}}</span>
+        {{/if}}
+
+        {{#if system.attributes.damageBonus}}
+          <label>{{localize "RQG.Actor.Combat.DamageBonus"}}</label>
+          <span>{{system.attributes.damageBonus}}</span>
+        {{/if}}
+
+        {{#if system.attributes.healingRate}}
+          <label>{{localize "RQG.Actor.Health.HealingRatePerWeek" healingRate=system.attributes.healingRate}}</label>
+          <span>{{system.attributes.healingRate}}</span>
+        {{/if}}
+      </div>
+    </fieldset>
+  </div>
+</div>

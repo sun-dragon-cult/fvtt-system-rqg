@@ -1,0 +1,7 @@
+<div class="tab scrollable{{#if tab.active}} active{{/if}}" data-group="{{tab.group}}" data-tab="{{tab.id}}">
+  {{> actorHealth }}
+  {{#if embeddedItems.weapon}}
+    {{> actorCombat }}
+  {{/if}}
+  {{> actorSpiritCombat }}
+</div>

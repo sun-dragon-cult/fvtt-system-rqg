@@ -1,0 +1,46 @@
+<header class="actor-sheet-header">
+  <img src="{{img}}" data-action="editImage" data-edit="img" data-tooltip="{{name}}">
+
+  <div class="header-content">
+    <div class="name-line">
+      <input type="text" name="name" value="{{name}}" placeholder="{{localize "DOCUMENT.Actor"}}">
+      <input type="text" name="system.extendedName" value="{{system.extendedName}}">
+    </div>
+
+    <div class="runes-cult-line">
+      {{#if characterElementRunes}}
+        <div class="flex-row gap01rem">
+          {{#each characterElementRunes}}
+            <div class="rune" data-tooltip="{{rune}}: {{chance}}%">
+              <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if characterPowerRunes}}
+        <div class="flex-row gap01rem">
+          {{#each characterPowerRunes}}
+            <div class="rune" data-tooltip="{{rune}}: {{chance}}%">
+              <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if characterFormRunes}}
+        <div class="flex-row gap01rem">
+          {{#each characterFormRunes}}
+            <div class="rune" data-tooltip="{{rune}}: {{chance}}%">
+              <img class="rune" src="{{img}}"{{#if descriptionRqid}} data-rqid-link="{{descriptionRqid}}"{{/if}}>
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+      {{#if mainCult.id}}
+        <div class="cult"{{#if mainCult.descriptionRqid}} data-rqid-link="{{mainCult.descriptionRqid}}"{{/if}}>
+          {{mainCult.name}}
+          <span class="x-small-size">{{mainCult.rank}}</span>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+</header>
