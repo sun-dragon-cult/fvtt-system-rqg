@@ -1,0 +1,366 @@
+// V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed.
+// Reuses --rqg-* CSS variables from _variables.scss and global utility classes from rqg.scss.
+
+// Dark-mode overrides scoped to V2 actor sheet only (don't affect V1)
+.theme-dark .rqg.character.actor-sheet-v2 {
+    --rqg-color-enc-bg: #3d2e14;
+    --rqg-color-enc-legend: #4a3820;
+    --rqg-color-dex-sr-bg: #4a4a0060;
+    --rqg-color-siz-sr-bg: #0a4a0a60;
+
+    img.rune {
+        mix-blend-mode: luminosity;
+    }
+}
+
+// Restore light-mode enc colors at same specificity
+.theme-light .rqg.character.actor-sheet-v2 {
+    --rqg-color-enc-bg: #d8b16e;
+    --rqg-color-enc-legend: #e4cc9d;
+    --rqg-color-dex-sr-bg: #f2ff009e;
+    --rqg-color-siz-sr-bg: #15ff1f5e;
+}
+
+.rqg.character.actor-sheet-v2 {
+    // Dark fill visible behind both nav and parchment transparent areas
+    background: rgb(0 0 0 / 60%);
+
+    // --- Layout: .window-content IS the form in AppV2, PARTS are its direct children ---
+    // Foundry sets display:flex on .window-content; override to grid for side-tab layout.
+    // Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats Foundry's
+    // single-class .window-content rule without needing !important.
+    >.window-content {
+        position: relative;
+        padding: 0;
+        background: none;
+        display: grid;
+        grid-template:
+            "nav header" min-content "nav main" 1fr
+            / min-content auto;
+        overflow: hidden auto;
+        isolation: isolate; // contain the negative z-index pseudo-element
+
+        // Parchment background — placed as a grid child spanning header+main columns (skipping nav)
+        &::after {
+            content: "";
+            grid-row: 1 / -1;
+            grid-column: 2 / -1;
+            background: var(--rqg-parchment-url) repeat-y scroll top left / 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        >* {
+            position: relative;
+        }
+    }
+
+    // --- Header ---
+    .sheet-header {
+        grid-area: header;
+        padding: 4px 4%;
+        align-items: start;
+        height: fit-content;
+
+        .header-grid {
+            display: grid;
+            grid-template-columns: [profile-start full-start] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
+            gap: 0;
+
+            .profile {
+                grid-row: 1 / 3;
+                grid-column: profile-start / profile-end;
+                margin-right: 5px;
+
+                img {
+                    height: 100px;
+                    transform: rotate(5deg);
+                    box-shadow: var(--rqg-box-shadow-profile-img);
+                    border-radius: 10px;
+                    cursor: pointer;
+
+                    &.unset {
+                        height: 20px;
+                        flex: 0 0 20px;
+                    }
+                }
+            }
+
+            .name-runes-cults {
+                grid-row: 1;
+                grid-column: name-rune-start / name-rune-end;
+
+                .charname {
+                    background-color: transparent;
+                    font-weight: bold;
+                    flex: 1;
+                    min-width: 0;
+
+                    input[name="name"] {
+                        font-size: 35px;
+                        border: none;
+                        width: 100%;
+                        height: 39px;
+                        padding-top: 0;
+                        padding-bottom: 0;
+                        margin-top: -8px;
+
+                        &:hover {
+                            outline: 1px solid var(--color-border-light-2);
+                        }
+                    }
+
+                    input[name="system.extendedName"] {
+                        font-size: 16px;
+                        font-style: italic;
+                        border: none;
+                        width: 100%;
+                        color: var(--color-text-secondary);
+
+                        &:hover {
+                            outline: 1px solid var(--color-border-light-2);
+                        }
+                    }
+                }
+
+                .rune {
+                    height: 24px;
+                }
+            }
+
+            .characteristics {
+                grid-row: 2;
+                grid-column: name-rune-start / name-rune-end;
+                margin-top: -2px;
+                display: flex;
+                justify-content: space-between;
+
+                div {
+                    text-align: center;
+                }
+
+                label {
+                    font-size: min(20px, 2.5cqw);
+                    font-weight: bold;
+                }
+
+                .value {
+                    font-size: min(22px, 3cqw);
+                    font-weight: bold;
+                    margin-top: -4px;
+                    // Rank color bar sits between value and formula input
+                    border-bottom: 7px solid var(--rank-color, transparent);
+                    border-left: 5px solid transparent;
+                    border-right: 5px solid transparent;
+                }
+
+                input {
+                    background-color: transparent;
+                    font-size: 12px;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: -4px;
+
+                    &:focus {
+                        border: 1px solid grey;
+                        background-color: var(--color-text-light-highlight);
+                    }
+                }
+            }
+
+            .bottom-line {
+                grid-row: 3;
+                grid-column: full-start / full-end;
+                display: flex;
+                justify-content: space-between;
+                align-items: end;
+                margin-top: -4px;
+
+                .dex-sr {
+                    background-color: var(--rqg-color-dex-sr-bg);
+                }
+
+                .siz-sr {
+                    background-color: var(--rqg-color-siz-sr-bg);
+                }
+            }
+
+            .mov-enc {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 2px 5px;
+                background-color: var(--rqg-color-enc-bg);
+                border-radius: 3px;
+                font-size: 14px;
+
+                .locomotion-picker {
+                    display: flex;
+                    align-items: center;
+
+                    >i {
+                        font-size: 1rem;
+                    }
+                }
+
+                .locomotion-select {
+                    border: none;
+                    background-color: var(--rqg-color-enc-bg);
+                    color: inherit;
+                    font-size: 13px;
+                    padding: 0 2px;
+                    width: auto;
+
+                    option {
+                        background-color: var(--rqg-color-enc-bg);
+                        color: inherit;
+                    }
+                }
+
+                .equipped-status {
+                    height: 1rem;
+                }
+
+                // Icon + move value pairs (equipped / carried)
+                >span {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 2px;
+                }
+            }
+        }
+    }
+
+    // --- Vertical tab navigation (rotated left edge, matching V1) ---
+    .nav-wrapper {
+        grid-area: nav;
+        position: relative;
+    }
+
+    .navbackground {
+        position: absolute;
+        inset: 0;
+    }
+
+    nav.sheet-tabs {
+        position: relative;
+        flex-direction: row;
+        border: none;
+        padding: 8px 0;
+        margin: 0;
+        display: block;
+        line-height: 20px;
+
+        .item {
+            white-space: nowrap;
+            color: white;
+            writing-mode: vertical-rl;
+            transform: rotate(180deg) translateX(-4px);
+            padding: 10px 0;
+            font-size: 13px;
+            font-variant-caps: normal;
+
+            &.active {
+                text-shadow:
+                    0 0 3px black,
+                    -2px -2px 3px black;
+                color: white;
+                font-weight: bold;
+            }
+
+            &.active::before {
+                content: "";
+                position: absolute;
+                inset: 0 -6px;
+                z-index: -1;
+                border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
+                box-shadow: var(--rqg-box-shadow-tab-active);
+                background: var(--rqg-background-tab-active);
+                background-blend-mode: screen, difference;
+            }
+        }
+    }
+
+    // --- Sheet body ---
+    .sheet-body {
+        grid-area: main;
+        padding: 8px 4%;
+    }
+
+    .tab-placeholder {
+        padding: 2rem;
+        opacity: 0.7;
+    }
+
+    // --- Common element styles ---
+    img {
+        border: none;
+    }
+
+    input {
+        width: initial;
+        border: none;
+
+        &:hover {
+            outline: 1px solid var(--color-border-light-2);
+        }
+    }
+
+    // --- Characteristic ranking indicators — set --rank-color, bar rendered on .value ---
+    // Reset the global border-bottom from V1 rank classes; V2 uses --rank-color on .value instead
+    [class*="characteristic-rank"] {
+        border-bottom: none !important;
+    }
+
+    .characteristic-rank-high {
+        --rank-color: rgb(1 107 38);
+    }
+
+    .characteristic-rank-10 {
+        --rank-color: #018a31d6;
+    }
+
+    .characteristic-rank-9 {
+        --rank-color: #018a31ad;
+    }
+
+    .characteristic-rank-8 {
+        --rank-color: #018a3182;
+    }
+
+    .characteristic-rank-7 {
+        --rank-color: #018a3159;
+    }
+
+    .characteristic-rank-6 {
+        --rank-color: #018a3130;
+    }
+
+    .characteristic-rank-5 {
+        --rank-color: #018a310d;
+    }
+
+    .characteristic-rank-4 {
+        --rank-color: #8a01010d;
+    }
+
+    .characteristic-rank-3 {
+        --rank-color: #8a010130;
+    }
+
+    .characteristic-rank-2 {
+        --rank-color: #8a010659;
+    }
+
+    .characteristic-rank-1 {
+        --rank-color: #8a010182;
+    }
+
+    .characteristic-rank-0 {
+        --rank-color: #8a0101ad;
+    }
+
+    .characteristic-rank-low {
+        --rank-color: #8a0101ff;
+    }
+}

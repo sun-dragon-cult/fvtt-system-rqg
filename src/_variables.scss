@@ -10,6 +10,9 @@
   --rqg-themed-highlight: #f8da10;
   --rqg-svg-invert-param: 0.1;
 
+  // V2 actor sheet parchment — dark variant image (replace placeholder with properly authored dark parchment)
+  --rqg-parchment-url: url("/systems/rqg/assets/images/ui/mainbackground-dark.webp");
+
   // Item sheet header — dark brown bg, warm cream text, orange active-tab accent
   // Header bg is an RQG-specific deep brown (#3e2723); no Foundry equivalent.
   --rqg-color-header-bg: #3e2723;
@@ -26,6 +29,9 @@
   --rqg-themed-exp-outline: rgb(255 255 255 / 80%);
   --rqg-themed-highlight: #901010;
   --rqg-svg-invert-param: 0.9;
+
+  // V2 actor sheet parchment — light variant (original image)
+  --rqg-parchment-url: url("/systems/rqg/assets/images/ui/mainbackground.webp");
 
   // Item sheet header — orange bg, dark text, brown active-tab accent
   --rqg-color-header-bg: var(--rqg-color-main-bg); // #f3a71e — the RQG brand orange

@@ -4,6 +4,9 @@
 export const templatePaths = {
   // Actor sheets
   rqgActorSheet: "systems/rqg/actors/rqgActorSheet.hbs",
+  actorSheetV2Header: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Header.hbs",
+  actorSheetV2Nav: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Nav.hbs",
+  actorSheetV2Placeholder: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Placeholder.hbs",
 
   // Item Sheets
   itemArmorSheet: "systems/rqg/items/armor-item/armorSheet.hbs",

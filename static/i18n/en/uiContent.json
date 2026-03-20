@@ -1486,7 +1486,8 @@
     },
     "SheetName": {
       "Actor": {
-        "Character": "Character Sheet"
+        "Character": "Character Sheet",
+        "CharacterV2": "Character Sheet V2"
       },
       "Item": {
         "Armor": "Armor Item Sheet",

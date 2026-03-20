@@ -1,0 +1,163 @@
+<header class="sheet-header">
+  <div class="header-grid">
+
+    <div class="profile">
+      <img class="profile-img {{#if (eq img 'icons/svg/mystery-man.svg')}}unset{{/if}}"
+           src="{{img}}" data-action="editImage" data-tooltip="{{name}}">
+    </div>
+
+    <div class="name-runes-cults">
+      <div class="flex-row">
+        <div class="charname">
+          <input name="name" type="text" value="{{name}}">
+          <input name="system.extendedName" type="text" value="{{system.extendedName}}">
+        </div>
+        <div class="runes-cult">
+          <div class="flex-row-end gap1rem">
+            {{#if characterElementRunes}}
+              <div class="flex-row gap01rem">
+                {{#each characterElementRunes}}
+                  <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
+                    <img class="rune" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  </div>
+                {{/each}}
+              </div>
+            {{/if}}
+            {{#if characterPowerRunes}}
+              <div class="flex-row gap01rem">
+                {{#each characterPowerRunes}}
+                  <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
+                    <img class="rune" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  </div>
+                {{/each}}
+              </div>
+            {{/if}}
+            {{#if characterFormRunes}}
+              <div class="flex-row gap01rem">
+                {{#each characterFormRunes}}
+                  <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
+                    <img class="rune" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                  </div>
+                {{/each}}
+              </div>
+            {{/if}}
+          </div>
+          {{#if mainCult.id}}
+            <div class="cult contextmenu item" data-item-id="{{mainCult.id}}"
+                 {{#if mainCult.descriptionRqid}}data-rqid-link="{{mainCult.descriptionRqid}}"{{/if}}>
+              {{mainCult.name}}
+              {{#if mainCult.hasMultipleCults}}
+                <i class="fa fa-plus-circle small-size" aria-hidden="true"
+                   data-tooltip="{{localize 'RQG.UI.MultipleCults'}}"></i>
+              {{/if}}
+              <span class="x-small-size">{{mainCult.rank}}</span>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+
+    <div class="characteristics">
+      {{#each system.characteristics as | characteristic key |}}
+        <div data-characteristic="{{key}}"
+             class="flex-column{{#if characteristic.hasExperience}} experienced{{/if}}{{#if @root.showCharacteristicRatings}} {{lookup @root.characteristicRanks key}}{{/if}}{{#if (and (eq key 'power') @root.powWarning)}} warning{{/if}}"
+             {{#if (and (eq key "power") @root.powWarning)}}
+               data-tooltip="{{localize 'RQG.Actor.Characteristics.PowWarningTip'}}"
+             {{/if}}>
+          <label class="resource-label norse characteristic contextmenu">
+            {{localize (concat 'RQG.Actor.Characteristics.' key)}}
+          </label>
+          <div class="value characteristic contextmenu">{{characteristic.value}}</div>
+          <input type="text" name="system.characteristics.{{key}}.formula"
+                 class="characteristic contextmenu"
+                 value="{{characteristic.formula}}" disabled>
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="bottom-line">
+      {{#if baseStrikeRank includeZero=true}}
+        <div>
+          <div class="norse text-center">{{localize "RQG.Actor.Attributes.StrikeRank"}}
+            <span class="large-font">{{baseStrikeRank}}</span>
+          </div>
+          <div class="flex-row gap0">
+            {{#if system.attributes.dexStrikeRank includeZero=true}}
+              <span class="norse text-center dex-sr">{{localize "RQG.Actor.Attributes.DexterityAbbr"}} {{system.attributes.dexStrikeRank}}</span>
+            {{/if}}
+            {{#if system.attributes.sizStrikeRank includeZero=true}}
+              <span class="norse text-center siz-sr">{{localize "RQG.Actor.Attributes.SizeAbbr"}} {{system.attributes.sizStrikeRank}}</span>
+            {{/if}}
+          </div>
+        </div>
+      {{/if}}
+
+      <div>
+        {{#if system.attributes.magicPoints.max}}
+          <label class="flex-row flex-align-center">
+            <span>{{localize "RQG.Actor.Attributes.MagicPoints"}}</span>
+            <span class="nowrap">
+              <input type="number" min="0" max="99" name="system.attributes.magicPoints.value"
+                     value="{{system.attributes.magicPoints.value}}" size="2">
+              / {{system.attributes.magicPoints.max}}
+            </span>
+          </label>
+        {{/if}}
+        <i class="norse flex-row flex-align-center">{{#each powCrystals}}
+          <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
+      </div>
+
+      <div class="mov-enc">
+
+        <span class="locomotion-picker">{{#if (eq system.attributes.move.currentLocomotion "walk")}}<i class="fas fa-walking"></i>
+        {{else if (eq system.attributes.move.currentLocomotion "swim")}}<i class="fas fa-swimmer fa-flip-horizontal"></i>
+        {{else if (eq system.attributes.move.currentLocomotion "fly")}}<i class="fas fa-dove"></i>
+        {{/if}}<select name="system.attributes.move.currentLocomotion" class="locomotion-select">
+          {{#if (or isGM system.attributes.move.walk.value)}}
+            <option value="walk" {{#if (eq "walk" system.attributes.move.currentLocomotion)}}selected{{/if}}>
+              {{localize "RQG.Actor.Attributes.MoveMode.walk"}}
+            </option>
+          {{/if}}
+          {{#if (or isGM system.attributes.move.swim.value)}}
+            <option value="swim" {{#if (eq "swim" system.attributes.move.currentLocomotion)}}selected{{/if}}>
+              {{localize "RQG.Actor.Attributes.MoveMode.swim"}}
+            </option>
+          {{/if}}
+          {{#if (or isGM system.attributes.move.fly.value)}}
+            <option value="fly" {{#if (eq "fly" system.attributes.move.currentLocomotion)}}selected{{/if}}>
+              {{localize "RQG.Actor.Attributes.MoveMode.fly"}}
+            </option>
+          {{/if}}
+        </select></span>
+
+        <span class="norse"
+              data-tooltip="<div class='text-left'>{{localize 'RQG.Actor.Attributes.MoveEquipped'
+                                                             equippedMove=system.attributes.move.equipped
+                                                             equippedEnc=system.attributes.encumbrance.equipped}}
+               {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}<br>{{localize
+                 'RQG.Actor.Attributes.OverWeight'}}{{/if}}
+               <br><br>
+               {{localize 'RQG.Actor.Attributes.MoveCarried' carriedMove=system.attributes.move.travel
+                          carriedEnc=system.attributes.encumbrance.travel}}
+               {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}<br>{{localize
+                 'RQG.Actor.Attributes.OverWeight'}}{{/if}}
+               <br><br>
+               {{localize 'RQG.Actor.Attributes.MaxEnc' maxEnc=system.attributes.encumbrance.max}}</div>"
+        >{{localize "RQG.Actor.Attributes.MovementAbbr"}}</span>
+
+        <span{{#if
+          (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}} class="warning"{{/if}}>
+          <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg">
+          {{system.attributes.move.equipped}}
+        </span>
+
+        <span{{#if
+          (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}} class="warning"{{/if}}>
+          <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg">
+          {{system.attributes.move.travel}}
+        </span>
+      </div>
+    </div>
+
+  </div>
+</header>

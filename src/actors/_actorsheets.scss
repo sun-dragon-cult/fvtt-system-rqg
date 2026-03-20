@@ -8,8 +8,7 @@
 .rqg.character {
   .mainbackground {
     grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-    background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top
-      left/100%;
+    background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top left/100%;
   }
 
   .play-mode-icon {
@@ -224,6 +223,7 @@
 
         // Make the header more compact if the sheet is narrow
         @container sheet-container (max-width: 560px) {
+
           .profile,
           .hero-points-container {
             display: none;
@@ -240,8 +240,9 @@
         max-width: 20rem;
         line-height: 1rem;
         text-align: end;
-        margin-bottom: 5px;
+        margin: 5px 0 3px;
         font-size: var(--font-size-16);
+        text-wrap-style: balance;
       }
     }
 
@@ -466,8 +467,7 @@
   .wounded {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-        brightness(99%) contrast(105%);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
     }
   }
 
@@ -476,8 +476,7 @@
   .dead {
     .health .humanoid::before {
       mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-        brightness(99%) contrast(105%) blur(1.5px);
+      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
     }
   }
 
@@ -539,8 +538,7 @@
 
         img {
           height: 5rem;
-          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-            brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
         }
       }
     }
