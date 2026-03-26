@@ -9,8 +9,13 @@
     <div class="name-runes-cults">
       <div class="flex-row">
         <div class="charname">
-          <input name="name" type="text" value="{{name}}">
-          <input name="system.extendedName" type="text" value="{{system.extendedName}}">
+          {{#if @root.editMode}}
+            <input name="name" type="text" value="{{name}}">
+            <input name="system.extendedName" type="text" value="{{system.extendedName}}">
+          {{else}}
+            <span class="name-display">{{name}}</span>
+            {{#if system.extendedName}}<span class="extended-name-display">{{system.extendedName}}</span>{{/if}}
+          {{/if}}
         </div>
         <div class="runes-cult">
           <div class="flex-row-end gap1rem">
@@ -67,10 +72,18 @@
           <label class="resource-label norse characteristic contextmenu">
             {{localize (concat 'RQG.Actor.Characteristics.' key)}}
           </label>
-          <div class="value characteristic contextmenu">{{characteristic.value}}</div>
+          {{#if @root.editMode}}
+            <input type="number" name="system.characteristics.{{key}}.value"
+                   class="value characteristic contextmenu"
+                   min="0" max="99"
+                   value="{{characteristic.value}}">
+          {{else}}
+            <div class="value characteristic contextmenu">{{characteristic.value}}</div>
+          {{/if}}
           <input type="text" name="system.characteristics.{{key}}.formula"
                  class="characteristic contextmenu"
-                 value="{{characteristic.formula}}" disabled>
+                 value="{{characteristic.formula}}"
+                 {{#unless @root.editMode}}disabled{{/unless}}>
         </div>
       {{/each}}
     </div>

@@ -1,8 +1,5 @@
 <section class="sheet-body">
-  <div class="tab tab-placeholder" data-group="primary" data-tab="combat">
-    <p class="norse text-center">{{localize "RQG.Actor.Nav.Combat"}}</p>
-    <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
-  </div>
+  {{> actorSheetV2Combat}}
   <div class="tab tab-placeholder" data-group="primary" data-tab="runes">
     <p class="norse text-center">{{localize "RQG.Actor.Nav.Runes"}}</p>
     <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
@@ -31,4 +28,9 @@
     <p class="norse text-center">{{localize "RQG.Actor.Nav.Background"}}</p>
     <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
   </div>
+  {{#if showUiSection.activeEffects}}
+    <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
+      {{> actorActiveEffectsTab }}
+    </div>
+  {{/if}}
 </section>

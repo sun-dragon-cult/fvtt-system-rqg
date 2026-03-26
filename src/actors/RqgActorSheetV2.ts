@@ -4,17 +4,46 @@ import type {
   CharacterDataPropertiesData,
 } from "../data-model/actor-data/rqgActorData";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
-import { systemId } from "../system/config";
-import { assertDocumentSubType } from "../system/util";
+import { actorHealthStatuses } from "../data-model/actor-data/attributes";
+import { RQG_CONFIG, systemId } from "../system/config";
+import {
+  assertDocumentSubType,
+  getRequiredDomDataset,
+  isTruthy,
+  localize,
+  range,
+  requireValue,
+  RqgError,
+} from "../system/util";
+
+import type { RqgItem } from "../items/rqgItem";
+import type { AbilityItem } from "@item-model/itemTypes.ts";
+import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { WeaponItem } from "@item-model/weaponData.ts";
+import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
+import {
+  applyDamageBonusToFormula,
+  formatDamagePart,
+  getNormalizedDamageFormulaAndDamageBonus,
+} from "../system/combatCalculations";
+import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import * as DataPrep from "./rqgActorSheetDataPrep";
 import { RqidLink } from "../data-model/shared/rqidLink";
+import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
+import { RqgContextMenu } from "../foundryUi/RqgContextMenu";
+import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
+import { combatMenuOptions } from "./context-menus/combat-context-menu";
+import { cultMenuOptions } from "./context-menus/cult-context-menu";
+import { hitLocationMenuOptions } from "./context-menus/hit-location-context-menu";
+import { runeMenuOptions } from "./context-menus/rune-context-menu";
+import { skillMenuOptions } from "./context-menus/skill-context-menu";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
-const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
-export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<any>) {
-  get actor(): CharacterActor {
+export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
+  override get actor(): CharacterActor {
     return this.document as CharacterActor;
   }
 
@@ -38,7 +67,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
   static override PARTS: Record<string, any> = {
     header: { template: templatePaths.actorSheetV2Header },
     nav: { template: templatePaths.actorSheetV2Nav },
-    placeholder: { template: templatePaths.actorSheetV2Placeholder, scrollable: [""] },
+    body: { template: templatePaths.actorSheetV2Body, scrollable: [""] },
   };
 
   override get title(): string {
@@ -55,12 +84,42 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
     return prefix + speakerName + postfix;
   }
 
+  override _getHeaderControls(): any[] {
+    const controls = super._getHeaderControls();
+    const user = game.user;
+    if (user?.isGM || user?.isTrusted) {
+      const isEditMode = this.actor.system.editMode;
+      controls.unshift({
+        icon: isEditMode ? "play-mode-icon" : "edit-mode-icon",
+        label: isEditMode
+          ? localize("RQG.Actor.EditMode.SwitchToPlayMode")
+          : localize("RQG.Actor.EditMode.SwitchToEditMode"),
+        action: "toggleEditMode",
+        // onClick is supported at runtime but not in the type definition
+        onClick: () => {
+          this.actor.update({ system: { editMode: !this.actor.system.editMode } });
+        },
+      } as any);
+    }
+    return controls;
+  }
+
   // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
   override async _prepareContext(): Promise<RqgActorSheetV2Context> {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, []);
+    const dexStrikeRank = system.attributes.dexStrikeRank;
+
+    // Compute active SRs from combat tracker
+    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
+    this._activeInSR = new Set(
+      actorCombatants
+        ?.map((c) => c.initiative)
+        .filter(isTruthy)
+        .filter((sr: number) => sr >= 1 && sr <= 12),
+    );
 
     return {
       id: this.actor.id ?? "",
@@ -81,10 +140,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
       characterPowerRunes: DataPrep.getCharacterPowerRuneImgs(this.actor),
       characterFormRunes: DataPrep.getCharacterFormRuneImgs(this.actor),
 
-      baseStrikeRank: DataPrep.getBaseStrikeRank(
-        system.attributes.dexStrikeRank,
-        system.attributes.sizStrikeRank,
-      ),
+      baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
 
       spiritMagicPointSum: spiritMagicPointSum,
       freeInt: DataPrep.getFreeInt(this.actor, spiritMagicPointSum),
@@ -103,6 +159,30 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
       characteristicRanks: await DataPrep.rankCharacteristics(this.actor),
       powWarning: DataPrep.getPowWarning(this.actor),
       editMode: system.editMode,
+
+      // Combat tab data
+      spiritCombatSkillData: this.actor.getBestEmbeddedDocumentByRqid(
+        RQG_CONFIG.skillRqid.spiritCombat,
+      ),
+      dodgeSkillData: this.actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge),
+      loadedMissileSrDisplay: DataPrep.getLoadedMissileSrDisplay(dexStrikeRank),
+      loadedMissileSr: DataPrep.getLoadedMissileSr(dexStrikeRank),
+      unloadedMissileSrDisplay: DataPrep.getUnloadedMissileSrDisplay(dexStrikeRank),
+      unloadedMissileSr: DataPrep.getUnloadedMissileSr(dexStrikeRank),
+      ownedProjectileOptions: DataPrep.getEquippedProjectileOptions(this.actor),
+      isInCombat: this.actor.inCombat,
+      dexSR: [...range(1, dexStrikeRank ?? 0)],
+      sizSR: [
+        ...range(
+          (dexStrikeRank ?? 0) + 1,
+          (system.attributes.sizStrikeRank ?? 0) + (dexStrikeRank ?? 0),
+        ),
+      ],
+      otherSR: [...range((dexStrikeRank ?? 0) + (system.attributes.sizStrikeRank ?? 0) + 1, 12)],
+      activeInSR: [...this._activeInSR],
+      bodyType: this.actor.getBodyType(),
+      hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
+      showUiSection: DataPrep.getUiSectionVisibility(this.actor),
     };
   }
 
@@ -115,8 +195,54 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
   /** Remembers the currently active tab across re-renders */
   protected _currentTab: string | undefined;
 
+  /** Tracks which SRs are active in combat for this actor */
+  private _activeInSR: Set<number> = new Set<number>();
+
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
+
+    // Toggle edit-mode class for styling
+    const isEditMode = !!this.actor.system.editMode;
+    this.element.classList.toggle("edit-mode", isEditMode);
+
+    // Toggle health state class (wounded, shock, unconscious, dead)
+    const health = this.actor.system.attributes.health;
+    for (const state of actorHealthStatuses) {
+      this.element.classList.toggle(state, health === state);
+    }
+
+    // RQID header button (AppV2 version)
+    await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
+
+    // Update edit-mode header control icon and label
+    const editControl = this.element.querySelector<HTMLElement>("[data-action='toggleEditMode']");
+    if (editControl) {
+      const icon = editControl.querySelector<HTMLElement>(".control-icon");
+      const label = editControl.querySelector<HTMLElement>(".control-label");
+      if (icon) {
+        icon.className = `control-icon fa-fw ${isEditMode ? "play-mode-icon" : "edit-mode-icon"}`;
+      }
+      if (label) {
+        label.textContent = isEditMode
+          ? localize("RQG.Actor.EditMode.SwitchToPlayMode")
+          : localize("RQG.Actor.EditMode.SwitchToEditMode");
+      }
+    }
+
+    // Edit mode indicator in window header
+    const header = this.element.querySelector(".window-header");
+    let badge = header?.querySelector<HTMLElement>(".edit-mode-badge");
+    if (isEditMode) {
+      if (!badge && header) {
+        badge = document.createElement("span");
+        badge.className = "edit-mode-badge";
+        badge.textContent = localize("RQG.Actor.EditMode.Badge");
+        const toggleBtn = header.querySelector("[data-action='toggleControls']");
+        toggleBtn?.insertAdjacentElement("beforebegin", badge);
+      }
+    } else {
+      badge?.remove();
+    }
 
     // Tab navigation (preserves active tab across re-renders)
     const navEl = this.element.querySelector("nav.sheet-tabs");
@@ -133,6 +259,30 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
       });
       tabs.bind(this.element);
     }
+
+    // Context menus
+    new RqgContextMenu(
+      this.element,
+      ".characteristic.contextmenu",
+      characteristicMenuOptions(this.actor, this.document.token),
+    );
+    new RqgContextMenu(this.element, ".combat.contextmenu", combatMenuOptions(this.actor));
+    new RqgContextMenu(
+      this.element,
+      ".hit-location.contextmenu",
+      hitLocationMenuOptions(this.actor),
+    );
+    new RqgContextMenu(
+      this.element,
+      ".rune.contextmenu",
+      runeMenuOptions(this.actor, this.document.token ?? undefined),
+    );
+    new RqgContextMenu(this.element, ".cult.contextmenu", cultMenuOptions(this.actor));
+    new RqgContextMenu(
+      this.element,
+      ".skill.contextmenu",
+      skillMenuOptions(this.actor, this.document.token ?? undefined),
+    );
 
     // RQID link click handlers
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
@@ -152,6 +302,226 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<
           fp.browse();
         });
       });
+    }
+
+    // --- Combat tab event handlers ---
+
+    // Set comma-separated Token SRs in Combat Tracker
+    this.element.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el) => {
+      const srValue = getRequiredDomDataset(el, "set-sr");
+      const srToAdd = srValue.split(",").map((v) => Number(v.trim()));
+      el.addEventListener("click", async () => {
+        this._activeInSR = new Set(srToAdd);
+        await this._updateActiveCombatWithSR(this._activeInSR);
+      });
+    });
+
+    // Toggle individual SR buttons
+    this.element.querySelectorAll<HTMLElement>("[data-toggle-sr]").forEach((el) => {
+      const sr = Number(getRequiredDomDataset(el, "toggle-sr"));
+      el.addEventListener("click", async () => {
+        if (this._activeInSR.has(sr)) {
+          this._activeInSR.delete(sr);
+        } else {
+          this._activeInSR.add(sr);
+        }
+        await this._updateActiveCombatWithSR(this._activeInSR);
+      });
+    });
+
+    // Roll Item (Skill, Rune, Passion)
+    this.element.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      assertDocumentSubType<AbilityItem>(
+        item,
+        abilityItemTypes,
+        "AbilityChance roll couldn't find skillItem",
+      );
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+        if (clickCount >= 2) {
+          await item.abilityRollImmediate();
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await item.abilityRoll();
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
+    // Roll Weapon (initiate combat/attack)
+    this.element.querySelectorAll<HTMLElement>("[data-weapon-roll]").forEach((el) => {
+      const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
+      const weapon = this.actor.items.get(weaponItemId) as RqgItem | undefined;
+      assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        if ((ev.target as HTMLElement)?.tagName === "SELECT") {
+          return;
+        }
+        clickCount = Math.max(clickCount, ev.detail);
+        if (clickCount >= 2) {
+          await weapon.attack();
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              void weapon.attack();
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
+    // Edit item value (projectile select, quantity inputs)
+    this.element.querySelectorAll<HTMLInputElement>("[data-item-edit-value]").forEach((el) => {
+      const path = getRequiredDomDataset(el, "item-edit-value");
+      const itemId = getRequiredDomDataset(el, "item-id");
+      el.addEventListener("change", async (event) => {
+        const item = this.actor.items.get(itemId) as RqgItem | undefined;
+        requireValue(item, `Couldn't find itemId [${itemId}] to edit an item (when clicked).`);
+        await item.update({ [path]: (event.target as HTMLInputElement)?.value }, {});
+      });
+    });
+
+    // Add wound to hit location
+    this.element.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
+    });
+
+    // Heal wounds on hit location
+    this.element.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
+    });
+
+    // Roll Damage
+    this.element.querySelectorAll<HTMLElement>("[data-damage-roll]").forEach((el) => {
+      const damage = el.dataset["damageRoll"];
+      requireValue(damage, "direct damage roll without damage");
+      const { damageFormula, damageBonusPlaceholder } =
+        getNormalizedDamageFormulaAndDamageBonus(damage);
+
+      let damageFormulaWithDb = damage;
+      if (damageBonusPlaceholder) {
+        const formattedDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
+        damageFormulaWithDb = applyDamageBonusToFormula(
+          formattedDamage + damageBonusPlaceholder,
+          this.actor.system.attributes.damageBonus,
+        );
+      }
+
+      const heading = el.dataset["damageRollHeading"] ?? "";
+      el.addEventListener("click", async () => {
+        const r = new DamageRoll(damageFormulaWithDb);
+        await r.evaluate();
+        await r.toMessage({
+          speaker: ChatMessage.getSpeaker(),
+          flavor: `<div class="roll-action">${localize(heading)}</div>`,
+        });
+      });
+    });
+
+    // Flip hit location sort order
+    this.element
+      .querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
+      .forEach((el) => {
+        el.addEventListener("click", async () => {
+          const currentValue = game.settings?.get(systemId, "sortHitLocationsLowToHigh");
+          await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
+          this.render();
+        });
+      });
+  }
+
+  /**
+   * Sync combatants to match the desired set of active SRs.
+   * Reuses existing combatants by updating their initiative to minimise
+   * document operations (and therefore re-renders).
+   */
+  private async _updateActiveCombatWithSR(activeInSR: Set<number>): Promise<void> {
+    const combat = game.combat;
+    if (!combat) {
+      throw new RqgError(
+        "Programming error: _updateActiveCombatWithSR should not be run if there are no combats.",
+      );
+    }
+
+    const currentCombatants = combat.getCombatantsByActor(this.actor);
+    if (currentCombatants.length === 0) {
+      return;
+    }
+
+    const desiredSRs = [...activeInSR];
+
+    // No SRs selected — keep one combatant with null initiative, delete the rest
+    if (desiredSRs.length === 0) {
+      const extras = currentCombatants
+        .slice(1)
+        .map((c) => c.id)
+        .filter(isTruthy);
+      if (extras.length > 0) {
+        await combat.deleteEmbeddedDocuments("Combatant", extras);
+      }
+      await currentCombatants[0]?.update({ initiative: null });
+      return;
+    }
+
+    // Find combatants that already have a matching SR — no change needed
+    const keepAsIs = new Set<string>();
+    const needAssignment: number[] = [];
+    for (const sr of desiredSRs) {
+      const match = currentCombatants.find(
+        (c) => c.initiative === sr && c.id != null && !keepAsIs.has(c.id),
+      );
+      if (match) {
+        keepAsIs.add(match.id!);
+      } else {
+        needAssignment.push(sr);
+      }
+    }
+
+    // Combatants not kept can be reassigned to a new SR or deleted
+    const reusable = currentCombatants.filter((c) => c.id != null && !keepAsIs.has(c.id!));
+
+    // Reassign as many reusable combatants as possible
+    const updates: { _id: string; initiative: number }[] = [];
+    for (let i = 0; i < Math.min(needAssignment.length, reusable.length); i++) {
+      updates.push({ _id: reusable[i]!.id!, initiative: needAssignment[i]! });
+    }
+
+    // Delete leftover reusable combatants
+    const idsToDelete = reusable
+      .slice(needAssignment.length)
+      .map((c) => c.id)
+      .filter(isTruthy);
+
+    // Create combatants for any SRs that couldn't be covered by reuse
+    const template = currentCombatants[0]!;
+    const toCreate = needAssignment.slice(reusable.length).map((sr) => ({
+      actorId: template.actorId,
+      tokenId: template.tokenId,
+      sceneId: template.sceneId,
+      initiative: sr,
+    }));
+
+    // Execute — typically only 1 of these 3 branches fires
+    if (idsToDelete.length > 0) {
+      await combat.deleteEmbeddedDocuments("Combatant", idsToDelete);
+    }
+    if (updates.length > 0) {
+      await combat.updateEmbeddedDocuments("Combatant", updates);
+    }
+    if (toCreate.length > 0) {
+      await combat.createEmbeddedDocuments("Combatant", toCreate);
     }
   }
 

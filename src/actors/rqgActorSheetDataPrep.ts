@@ -600,7 +600,10 @@ export async function organizeEmbeddedItems(
     // TODO extra data is added to the Usage object for the sheet, look at typing
     for (const usage of Object.values(usages) as any) {
       if (!foundry.utils.isEmpty(usage?.skillRqidLink?.rqid)) {
-        usage.skillId = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid)?.id;
+        const skillItem = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid);
+        usage.skillId = skillItem?.id;
+        usage.skillChance = (skillItem as any)?.system?.chance ?? 0;
+        usage.skillHasExperience = !!(skillItem as any)?.system?.hasExperience;
         usage.unusable = false;
         usage.underMinSTR = false;
         usage.underMinDEX = false;

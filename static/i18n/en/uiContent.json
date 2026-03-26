@@ -245,7 +245,8 @@
       },
       "EditMode": {
         "SwitchToEditMode": "Switch to Edit Mode",
-        "SwitchToPlayMode": "Switch to Play Mode"
+        "SwitchToPlayMode": "Switch to Play Mode",
+        "Badge": "✦ edit mode ✦"
       },
       "Gear": {
         "AddNewGearUniqueTip": "Add New Gear",

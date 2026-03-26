@@ -1,4 +1,4 @@
-import type { SheetRuneData, MainCult } from "./rqgActorSheet.types";
+import type { SheetRuneData, MainCult, UiSections } from "./rqgActorSheet.types";
 import type { RqgItem } from "../items/rqgItem";
 import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
@@ -57,4 +57,42 @@ export interface RqgActorSheetV2Context {
   powWarning: boolean;
   /** Whether the sheet is in edit mode. */
   editMode: boolean;
+
+  // --- Combat tab data ---
+
+  /** Spirit combat skill item. */
+  spiritCombatSkillData: RqgItem | undefined;
+  /** Dodge skill item. */
+  dodgeSkillData: RqgItem | undefined;
+
+  /** Precalculated missile weapon SRs if loaded at start of round (HTML fragments). */
+  loadedMissileSrDisplay: string[];
+  /** Comma-separated loaded missile SR values for data-set-sr. */
+  loadedMissileSr: string;
+  /** Precalculated missile weapon SRs if not loaded (HTML fragments). */
+  unloadedMissileSrDisplay: string[];
+  /** Comma-separated unloaded missile SR values for data-set-sr. */
+  unloadedMissileSr: string;
+
+  /** Equipped projectile options for weapon ammo dropdown. */
+  ownedProjectileOptions: SelectOptionData<string>[];
+
+  /** Whether this actor is currently in combat. */
+  isInCombat: boolean;
+  /** DEX component SR buttons (1..dexSR). */
+  dexSR: number[];
+  /** SIZ component SR buttons (dexSR+1..dexSR+sizSR). */
+  sizSR: number[];
+  /** Remaining SR buttons (dexSR+sizSR+1..12). */
+  otherSR: number[];
+  /** Currently active SR values in combat tracker. */
+  activeInSR: number[];
+
+  /** Body type for hit location layout (e.g. "humanoid"). */
+  bodyType: string;
+  /** Error message if hit location dice ranges are invalid. */
+  hitLocationDiceRangeError: string;
+
+  /** Visibility flags for UI sections. */
+  showUiSection: UiSections;
 }

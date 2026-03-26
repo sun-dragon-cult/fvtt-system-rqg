@@ -6,7 +6,7 @@ export const templatePaths = {
   rqgActorSheet: "systems/rqg/actors/rqgActorSheet.hbs",
   actorSheetV2Header: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Header.hbs",
   actorSheetV2Nav: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Nav.hbs",
-  actorSheetV2Placeholder: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Placeholder.hbs",
+  actorSheetV2Body: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Body.hbs",
 
   // Item Sheets
   itemArmorSheet: "systems/rqg/items/armor-item/armorSheet.hbs",
@@ -143,6 +143,9 @@ export const loadHandlebarsTemplates = async function () {
       "systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs",
     actorCombat: "systems/rqg/actors/sheet-parts/combat-tab/combat.hbs",
     actorSpiritCombat: "systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs",
+
+    // V2 Actor Sheet tab partials
+    actorSheetV2Combat: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Combat.hbs",
 
     actorRuneTab: "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
     actorRuneElements: "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",

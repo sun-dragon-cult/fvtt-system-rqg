@@ -14,7 +14,7 @@ import {
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
-const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+const ItemSheetV2 = foundry.applications.sheets.ItemSheetV2;
 
 export interface RqgItemSheetContext {
   id: string;
@@ -31,7 +31,7 @@ export interface RqgItemSheetContext {
   isV2: boolean;
 }
 
-export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<any>) {
+export class RqgItemSheetV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
   /** Remembers the currently active tab across re-renders */
   protected _currentTab: string | undefined;
 

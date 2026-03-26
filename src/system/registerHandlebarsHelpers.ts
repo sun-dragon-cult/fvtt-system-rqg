@@ -81,7 +81,7 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("skillchance", (...args) =>
     applyFnToDocumentFromHandlebarsArgs(args, (item) => {
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
-      return item?.system?.chance ? item.system.chance.toString() : "---";
+      return item?.system?.chance != null ? item.system.chance.toString() : "---";
     }),
   );
 

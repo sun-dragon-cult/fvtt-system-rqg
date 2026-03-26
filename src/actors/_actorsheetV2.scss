@@ -5,11 +5,54 @@
 .theme-dark .rqg.character.actor-sheet-v2 {
     --rqg-color-enc-bg: #3d2e14;
     --rqg-color-enc-legend: #4a3820;
-    --rqg-color-dex-sr-bg: #4a4a0060;
-    --rqg-color-siz-sr-bg: #0a4a0a60;
+    --rqg-color-dex-sr-bg: #ffe34190;
+    --rqg-color-siz-sr-bg: #2bd72b90;
+    --rqg-color-hl-stats-bg: #1a1a1ab3;
+    --rqg-color-hl-stats-severed-bg: #3a3a3a;
+    --rqg-color-wounded-bg: #ff400030;
+    --rqg-color-wounded-border: #cc8060;
+    --rqg-color-health-state: #ff6b6b;
+    --rqg-color-sr-button-bg: #4a3820;
+    --rqg-table-alternate-background: rgb(255 255 255 / 5%);
+    --rqg-box-shadow-editor-content: inset 0 0 20px 0 #3a2a10, 0 0 3px 2px #3a2a10;
+
+    .dex-sr,
+    .siz-sr,
+    .sr-buttons .dex,
+    .sr-buttons .siz {
+        text-shadow: 0 0 3px #000, 0 0 3px #000;
+    }
 
     img.rune {
         mix-blend-mode: luminosity;
+    }
+
+    .grid .headings {
+        mix-blend-mode: soft-light;
+    }
+
+    // Override Foundry's opaque dark-mode application background
+    // so wounded/edit-mode transparency shows through
+    &.dead,
+    &.unconscious,
+    &.shock,
+    &.wounded,
+    &.edit-mode {
+        --background: transparent;
+
+        backdrop-filter: none;
+
+        // Also disable the dark-mode backdrop-filter on .window-content
+        // so the content edges match the header transparency
+        >.window-content {
+            backdrop-filter: none;
+        }
+
+        // Restore opaque background on the controls dropdown menu
+        .controls-dropdown {
+            background: var(--color-cool-5-90);
+            backdrop-filter: blur(4px);
+        }
     }
 }
 
@@ -19,11 +62,43 @@
     --rqg-color-enc-legend: #e4cc9d;
     --rqg-color-dex-sr-bg: #f2ff009e;
     --rqg-color-siz-sr-bg: #15ff1f5e;
+    --rqg-color-hl-stats-bg: #ffffffb3;
+    --rqg-color-hl-stats-severed-bg: #afafaf;
+    --rqg-color-wounded-bg: var(--rqg-color-enc-warning);
+    --rqg-color-wounded-border: var(--rqg-highlight);
+    --rqg-color-health-state: var(--rqg-highlight);
+    --rqg-color-sr-button-bg: #e1c794;
+
+    .window-header {
+        background-color: rgb(0 0 0 / 60%);
+    }
+
+    .play-mode-icon,
+    .edit-mode-icon {
+        filter: invert(var(--rqg-svg-invert-param));
+    }
 }
 
 .rqg.character.actor-sheet-v2 {
+    // Width of the vertical nav sidebar — used to align header parchment with content
+    --rqg-window-header-height: 40px;
+    --rqg-nav-width: 20px;
+
     // Dark fill visible behind both nav and parchment transparent areas
     background: rgb(0 0 0 / 60%);
+
+    // Resize handle sits over dark background — always invert to light
+    .window-resize-handle {
+        filter: invert(1);
+    }
+
+    // Window header — shows app background to dim scrolled content behind it
+    .window-header {
+        position: relative;
+        border-bottom: none;
+        z-index: 1;
+        background-color: rgb(0 0 0 / 60%);
+    }
 
     // --- Layout: .window-content IS the form in AppV2, PARTS are its direct children ---
     // Foundry sets display:flex on .window-content; override to grid for side-tab layout.
@@ -32,23 +107,23 @@
     >.window-content {
         position: relative;
         padding: 0;
-        background: none;
         display: grid;
         grid-template:
             "nav header" min-content "nav main" 1fr
             / min-content auto;
         overflow: hidden auto;
-        isolation: isolate; // contain the negative z-index pseudo-element
+        scrollbar-gutter: stable;
 
-        // Parchment background — placed as a grid child spanning header+main columns (skipping nav)
-        &::after {
-            content: "";
-            grid-row: 1 / -1;
-            grid-column: 2 / -1;
-            background: var(--rqg-parchment-url) repeat-y scroll top left / 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
+        // Pull content up behind the window header so parchment extends into it
+        margin-top: calc(-1 * var(--rqg-window-header-height));
+        padding-top: var(--rqg-window-header-height);
+
+        // Parchment as window-content background — offset past the nav so jagged edges show
+        background-image: var(--rqg-parchment-url);
+        background-repeat: repeat-y;
+        background-attachment: local;
+        background-position: top left var(--rqg-nav-width);
+        background-size: calc(100% - var(--rqg-nav-width));
 
         >* {
             position: relative;
@@ -70,7 +145,7 @@
             .profile {
                 grid-row: 1 / 3;
                 grid-column: profile-start / profile-end;
-                margin-right: 5px;
+                margin-right: 15px;
 
                 img {
                     height: 100px;
@@ -95,6 +170,7 @@
                     font-weight: bold;
                     flex: 1;
                     min-width: 0;
+                    margin-left: 1rem;
 
                     input[name="name"] {
                         font-size: 35px;
@@ -104,6 +180,7 @@
                         padding-top: 0;
                         padding-bottom: 0;
                         margin-top: -8px;
+                        margin-left: -0.8rem;
 
                         &:hover {
                             outline: 1px solid var(--color-border-light-2);
@@ -116,10 +193,22 @@
                         border: none;
                         width: 100%;
                         color: var(--color-text-secondary);
+                        margin-left: -0.8rem;
 
                         &:hover {
                             outline: 1px solid var(--color-border-light-2);
                         }
+                    }
+
+                    .name-display {
+                        font-size: 35px;
+                        line-height: 1;
+                    }
+
+                    .extended-name-display {
+                        font-size: 16px;
+                        font-style: italic;
+                        color: var(--color-text-secondary);
                     }
                 }
 
@@ -132,7 +221,8 @@
                 grid-row: 2;
                 grid-column: name-rune-start / name-rune-end;
                 margin-top: -2px;
-                display: flex;
+                display: grid;
+                grid-template-columns: repeat(7, auto);
                 justify-content: space-between;
 
                 div {
@@ -148,16 +238,22 @@
                     font-size: min(22px, 3cqw);
                     font-weight: bold;
                     margin-top: -4px;
-                    // Rank color bar sits between value and formula input
+                    text-align: center;
+                }
+
+                // Rank color bar only when characteristic ratings are shown
+                [class*="characteristic-rank"] .value {
+                    display: inline-block;
                     border-bottom: 7px solid var(--rank-color, transparent);
                     border-left: 5px solid transparent;
                     border-right: 5px solid transparent;
                 }
 
-                input {
+                input:not(.value) {
                     background-color: transparent;
                     font-size: 12px;
-                    width: 100%;
+                    width: 8ch;
+                    min-width: 0;
                     text-align: center;
                     margin-top: -4px;
 
@@ -176,12 +272,26 @@
                 align-items: end;
                 margin-top: -4px;
 
+                .dex-sr,
+                .siz-sr {
+                    border-radius: 6px;
+                    border: 1px inset #999;
+                    padding: 6px;
+                    line-height: 1;
+                    text-box: trim-both cap alphabetic;
+                }
+
                 .dex-sr {
                     background-color: var(--rqg-color-dex-sr-bg);
                 }
 
                 .siz-sr {
                     background-color: var(--rqg-color-siz-sr-bg);
+                }
+
+                input[type="number"] {
+                    width: 4ch;
+                    text-align: center;
                 }
             }
 
@@ -293,6 +403,36 @@
     }
 
     // --- Common element styles ---
+    // Foundry's heading & text styles (border, font-size, margins) are scoped to
+    // `body.game .app` (V1 apps).  V2 apps use `.application` and don't inherit
+    // those rules, so we replicate the essentials inside .window-content only
+    // to avoid affecting the window title bar.
+    .window-content {
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            margin: 0 0 0.5rem;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 2em;
+            border-bottom: 2px solid #782e22;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            border-bottom: 1px solid #782e22;
+        }
+
+        h3 {
+            font-size: 1.25em;
+            border-bottom: 1px solid #782e22;
+        }
+    }
+
     img {
         border: none;
     }
@@ -362,5 +502,370 @@
 
     .characteristic-rank-low {
         --rank-color: #8a0101ff;
+    }
+
+    // --- Combat tab ---
+    .combat-tab {
+        input[type="number"] {
+            width: 4ch;
+            text-align: center;
+        }
+
+        [data-item-heal-wound] {
+            cursor: pointer;
+
+            .fa-heart-pulse {
+                color: #20802e;
+            }
+        }
+
+        .combat-tab-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 3rem;
+
+            >.health-section {
+                flex: 0 1 auto;
+            }
+
+            >.combat-weapons-column {
+                flex: 1 1 0;
+                min-width: 20rem;
+            }
+        }
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .health-state {
+            color: var(--rqg-color-health-state);
+        }
+
+        .total-hp-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .hit-location-dice-error {
+            width: 22rem;
+            padding: 0.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .wounded {
+            background-color: var(--rqg-color-wounded-bg);
+            border-color: #901010;
+        }
+
+        .strike {
+            text-decoration: none;
+            position: relative;
+
+            &::before {
+                top: 45%;
+                background: var(--rqg-highlight);
+                opacity: 0.42;
+                content: "";
+                width: 150%;
+                position: absolute;
+                height: 0.2em;
+                border-radius: 1em;
+                left: -30%;
+                white-space: nowrap;
+                display: block;
+                transform: rotate(-45deg);
+            }
+        }
+
+        // --- Humanoid hit location layout ---
+        .humanoid {
+            position: relative;
+            width: 18rem;
+            height: 21rem;
+
+            &::before {
+                content: "";
+                background: center/contain no-repeat url("/systems/rqg/assets/images/runes/man.svg");
+                width: inherit;
+                height: inherit;
+                position: absolute;
+                filter: invert(1);
+                mix-blend-mode: overlay;
+            }
+
+            .actor-state {
+                position: absolute;
+                top: 0;
+                right: 0;
+
+                img {
+                    height: 5rem;
+                    filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+                }
+            }
+
+            .stats {
+                position: absolute !important;
+                border: 1px solid #666;
+                border-radius: 10px;
+                padding: 5px;
+                width: fit-content;
+                min-width: 5rem;
+                max-width: 7rem;
+                background-color: var(--rqg-color-hl-stats-bg);
+
+                &.useless,
+                &.severed {
+                    background-color: var(--rqg-color-hl-stats-severed-bg);
+                }
+
+                &:not(.healthy) {
+                    border-color: #901010;
+                    border-width: 2px;
+                }
+
+                .roll-range {
+                    font-size: 80%;
+                }
+
+                .hl-header-row {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: baseline;
+                    gap: 0.5rem;
+                }
+
+                .hl-stat-row {
+                    display: flex;
+                }
+
+                .hl-wounds-row {
+                    display: flex;
+                    justify-content: space-between;
+
+                    [data-item-add-wound] {
+                        cursor: pointer;
+                    }
+                }
+
+                &.head {
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    margin: 0 auto;
+                }
+
+                &.left-arm {
+                    top: 7rem;
+                    right: 0;
+                }
+
+                &.right-arm {
+                    top: 7rem;
+                    left: 0;
+                }
+
+                &.chest {
+                    top: 6.5rem;
+                    left: 0;
+                    right: 0;
+                    margin: 0 auto;
+                }
+
+                &.abdomen {
+                    top: 13rem;
+                    left: 0;
+                    right: 0;
+                    margin: 0 auto;
+                }
+
+                &.left-leg {
+                    top: 16rem;
+                    right: 0;
+                }
+
+                &.right-leg {
+                    top: 16rem;
+                    left: 0;
+                }
+            }
+        }
+
+        // --- SR buttons ---
+        .sr-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            margin-bottom: 0.4rem;
+
+            button {
+                width: 1.7rem;
+                padding: 0;
+                border-style: outset;
+                background-color: var(--rqg-color-sr-button-bg);
+            }
+
+            .active {
+                border-style: inset;
+                background-color: var(--color-border-highlight);
+                color: #000;
+            }
+
+            .dex,
+            .siz {
+                display: flex;
+                align-items: center;
+                gap: 0.55rem;
+                border-radius: 6px;
+                border: 1px inset #999;
+                padding: 5px calc(0.55rem / 2);
+                margin: 0 calc(-0.55rem / 2);
+                line-height: 1;
+                text-box: trim-both cap alphabetic;
+            }
+
+            .dex {
+                background-color: var(--rqg-color-dex-sr-bg);
+            }
+
+            .siz {
+                background-color: var(--rqg-color-siz-sr-bg);
+            }
+        }
+
+        .damage-bonus-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .rate-range {
+            color: var(--color-text-dark-secondary);
+        }
+
+        select.projectile {
+            border: none;
+            font-size: small;
+            font-style: italic;
+            padding: 4px 0;
+            background-color: #ffffff2b;
+
+            &:hover {
+                outline: 1px solid var(--color-border-light-2);
+            }
+        }
+
+        input.quantity {
+            text-align: center;
+        }
+
+        // Set-token-SR-in-combat button
+        button.sr {
+            height: 1.5rem;
+            line-height: unset;
+            width: unset;
+            text-align: left;
+            background-color: var(--rqg-color-sr-button-bg);
+        }
+
+        .usage {
+            line-height: 1.5rem;
+
+            &.missile {
+                line-height: 3rem;
+            }
+
+            &.default-usage {
+                font-weight: bold;
+            }
+        }
+
+        .allies-section {
+            margin-top: 1rem;
+        }
+    }
+
+    // --- Wounded / injured overall sheet background ---
+    &.dead {
+        filter: grayscale(0.8);
+    }
+
+    &.unconscious {
+        filter: grayscale(0.5);
+    }
+
+    &.dead,
+    &.unconscious,
+    &.shock,
+    &.wounded {
+        background: #620000d0;
+
+        >.window-content {
+            scrollbar-color: rgb(255 255 255 / 70%) transparent;
+            background-image: linear-gradient(#62000028, #62000028), var(--rqg-parchment-url);
+            background-repeat: repeat-y;
+            background-attachment: scroll, local;
+            background-position: top left, top left var(--rqg-nav-width);
+            background-size: 100%, calc(100% - var(--rqg-nav-width));
+        }
+
+        .window-header {
+            background-color: #620000d0;
+        }
+    }
+
+    &.wounded {
+        .health .humanoid::before {
+            mix-blend-mode: revert;
+            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
+        }
+    }
+
+    &.shock,
+    &.unconscious,
+    &.dead {
+        .health .humanoid::before {
+            mix-blend-mode: revert;
+            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
+        }
+    }
+
+    // --- Edit mode badge in window header ---
+    .edit-mode-badge {
+        font-size: 10px;
+        color: #4cff4c;
+        opacity: 0.7;
+        padding: 1px 6px;
+        white-space: nowrap;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    // --- Edit mode ---
+    // When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`)
+    &.edit-mode {
+        background: #007300d0;
+
+        .window-header {
+            background-color: #007300d0;
+        }
+
+        >.window-content {
+            background-image: linear-gradient(#00730028, #00730028), var(--rqg-parchment-url);
+            background-repeat: repeat-y;
+            background-attachment: scroll, local;
+            background-position: top left, top left var(--rqg-nav-width);
+            background-size: 100%, calc(100% - var(--rqg-nav-width));
+        }
+
+        .characteristics input {
+            background-color: rgb(255 255 255 / 15%);
+        }
     }
 }

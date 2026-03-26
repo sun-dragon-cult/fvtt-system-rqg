@@ -1,0 +1,402 @@
+<section class="tab combat-tab" data-group="primary" data-tab="combat">
+  <div class="combat-tab-row">
+  {{!-- Health Section --}}
+  {{#if showUiSection.health}}
+    <div class="health-section">
+      <h2 class="section-heading">
+        <span>{{localize "RQG.Actor.Health.Health"}}</span>
+        {{#unless (eq system.attributes.health "healthy")}}
+          <span class="health-state">{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</span>
+        {{/unless}}
+      </h2>
+
+      {{#if system.characteristics.constitution.value}}
+        {{#if hitLocationDiceRangeError}}
+          <div class="warning hit-location-dice-error">{{hitLocationDiceRangeError}}</div>
+        {{/if}}
+        <div class="total-hp-row">
+          <label>{{localize "RQG.Actor.Health.TotalHitPoints"}}
+            <input
+              {{#unless (eq system.attributes.hitPoints.value system.attributes.hitPoints.max)}}class="wounded"{{/unless}}
+              type="number"
+              min="-99"
+              max="99"
+              name="system.attributes.hitPoints.value"
+              value="{{system.attributes.hitPoints.value}}"
+            > / {{system.attributes.hitPoints.max}}
+          </label>
+          <label class="text-right">
+            {{localize "RQG.Actor.Health.HealingRatePerWeek" healingRate=system.attributes.healingRate}}
+          </label>
+        </div>
+      {{/if}}
+
+      {{#if embeddedItems.hitLocation}}
+        {{#if (eq bodyType "humanoid")}}
+          <div class="humanoid">
+            {{#each embeddedItems.hitLocation}}
+              <div class="hit-location contextmenu item stats {{rqidName}} {{system.hitLocationHealthState}}" data-item-id="{{id}}">
+                <div class="hl-header-row">
+                  <div>
+                    {{#unless (eq system.hitLocationHealthState "healthy")}}
+                      {{#unless (eq system.hitLocationHealthState "wounded")}}
+                        <i class="health-state">{{toLowerCase
+                          (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
+                      {{/unless}}
+                    {{/unless}}
+                  </div>
+                  <div class="roll-range"><i class="fa-solid fa-dice-d20"></i> {{#if (eq system.dieFrom system.dieTo)}}{{system.dieFrom}}{{else}}{{system.dieFrom}}-{{system.dieTo}}{{/if}}</div>
+                </div>
+                <b>{{name}}</b>
+                <div class="hl-stat-row">
+                  <div>
+                    {{localize "RQG.Actor.Health.ArmorPointsAbbr"}}<br>
+                    {{localize "RQG.Actor.Health.HitPointsAbbr"}}
+                  </div>
+                  <div class="flex-1">
+                    &nbsp;{{system.armorPoints}}<br>
+                    <span class="nowrap{{#unless (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">
+                      &nbsp;{{system.hitPoints.max}}&nbsp;
+                    </span>
+                    {{#unless (eq system.hitPoints.value system.hitPoints.max)}} <span class="ml-5">{{system.hitPoints.value}}</span>{{/unless}}
+                  </div>
+                </div>
+                <div class="hl-wounds-row">
+                  <div class="health-state break-word" data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}">{{#if system.woundsString}}<i class="fas fa-heart-pulse"></i> {{system.woundsString}}{{/if}}</div>
+                  <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-burst"></i></div>
+                </div>
+              </div>
+            {{/each}}
+            <div class="actor-state">
+              {{#if (eq system.attributes.health "shock")}}<img src="systems/rqg/assets/images/token-effects/shock.svg">{{/if}}
+              {{#if (eq system.attributes.health "dead")}}<img src="systems/rqg/assets/images/token-effects/dead.svg">{{/if}}
+              {{#if (eq system.attributes.health "unconscious")}}<img src="systems/rqg/assets/images/token-effects/unconscious.svg">{{/if}}
+            </div>
+          </div>
+        {{else}}
+          {{!-- Default (non-humanoid) hit locations grid --}}
+          <div class="grid hit-location item-list">
+            <div class="headings"></div>
+            <div class="head1-4">
+              <button class="sort" data-flip-sort-hitlocation-setting
+                      data-tooltip="{{localize "RQG.Actor.Health.FlipSortOrder"}}"
+                      style="width: 1.3rem; padding-top: 2px; margin-top: -2px;">
+                <i class="fas fa-sort"></i>
+              </button>
+              {{localize "RQG.Actor.Health.HitLocation"}}
+            </div>
+            <div class="head5"><span>{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span></div>
+            <div class="head6 pad-left"><span>{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
+            <div class="head7">{{localize "RQG.Actor.Health.Wounds"}}</div>
+            {{#each embeddedItems.hitLocation}}
+              <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieFrom}}</span></div>
+              <div class="hit-location contextmenu item" data-item-id="{{id}}">-</div>
+              <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieTo}}</span></div>
+              <div class="hit-location contextmenu item" data-item-id="{{id}}">
+                {{name}}
+                {{#unless (eq system.hitLocationHealthState "healthy")}}
+                  {{#unless (eq system.hitLocationHealthState "wounded")}}
+                    <i class="health-state">&nbsp;{{toLowerCase
+                      (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
+                  {{/unless}}
+                {{/unless}}
+              </div>
+              <div class="hit-location contextmenu item" data-item-id="{{id}}"><span>{{system.armorPoints}}</span></div>
+              <div class="hit-location contextmenu item pad-left" data-item-id="{{id}}">
+                <span class="nowrap{{#unless (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">{{system.hitPoints.max}}</span>
+                {{#unless (eq system.hitPoints.value system.hitPoints.max)}}
+                  <span class="ml-5">{{system.hitPoints.value}}</span>
+                {{/unless}}
+              </div>
+              <div class="hit-location contextmenu item flex-row" data-item-id="{{id}}">
+                <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="flex-1 nowrap health-state">
+                  {{#if system.woundsString}}<i class="fas fa-heart-pulse"></i> {{system.woundsString}}{{/if}}
+                </div>
+                <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-burst"></i></div>
+              </div>
+            {{/each}}
+          </div>
+        {{/if}}
+      {{else}}
+        <p class="warning">{{localize "RQG.Actor.Health.NoHitLocations"}}</p>
+      {{/if}}
+    </div>
+  {{/if}}
+
+  <div class="combat-weapons-column">
+  {{!-- Combat Section --}}
+  {{#if showUiSection.combat}}
+    <div class="combat-section">
+      <h2 class="section-heading">{{localize "RQG.Actor.Nav.Combat"}}</h2>
+
+      {{!-- SR Buttons (only visible when in combat) --}}
+      {{#if isInCombat}}
+        <div class="sr-buttons">
+          <div class="mr-5">{{localize "RQG.Actor.Combat.SR"}}</div>
+          {{#if dexSR}}
+            <div class="dex">
+              {{#each dexSR}}
+                <button type="button" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
+              {{/each}}
+            </div>
+          {{/if}}
+          {{#if sizSR}}
+            <div class="siz">
+              {{#each sizSR}}
+                <button type="button" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
+              {{/each}}
+            </div>
+          {{/if}}
+          {{#each otherSR}}
+            <button type="button" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
+          {{/each}}
+          <i class="ml-5 fa-solid fa-circle-info"
+             data-tooltip="<div class='sr-help'>{{localize "RQG.Actor.Combat.SRTooltip"}}</div>"></i>
+        </div>
+      {{/if}}
+
+      {{!-- Damage Bonus --}}
+      <div class="damage-bonus-row">
+        <label data-damage-roll="{{system.attributes.damageBonus}}" data-damage-roll-heading="RQG.Actor.Combat.DamageBonus">{{localize "RQG.Actor.Combat.DamageBonus"}} {{system.attributes.damageBonus}}</label>
+      </div>
+
+      {{!-- Weapons Grid --}}
+      <div class="grid combat item-list">
+        <div class="headings"></div>
+        <div class="head1"><button class="sort" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+        <div class="head2">{{localize "RQG.Actor.Combat.Weapon"}}</div>
+        <div class="head3">{{localize "RQG.Actor.Combat.HP"}}</div>
+        <div class="head4 text-right">{{localize "RQG.Actor.Combat.Chance"}}</div>
+        <div class="head5">{{localize "RQG.Actor.Combat.Damage"}}</div>
+        <div class="head6 text-right mr-5">{{localize "RQG.Actor.Combat.SR"}}</div>
+
+        {{!-- Equipped (non-natural) weapons --}}
+        {{#each embeddedItems.weapon}}
+          {{#if (eq system.equippedStatus "equipped")}}
+            {{#unless system.isNatural}}
+              <div data-weapon-item-id="{{id}}"
+                   data-weapon-roll
+                   data-tooltip="{{localize "RQG.Game.InitiateCombat"}}"
+                   class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-weapon-item-id="{{id}}"
+                   data-item-id="{{id}}"
+                   data-weapon-roll
+                   data-tooltip="{{localize "RQG.Game.InitiateCombat"}}"
+                   class="combat contextmenu item">
+                <div>{{name}}
+                  {{#if system.isProjectileWeapon}}
+                    <br>
+                    <select class="projectile{{#unless system.projectileId}} invalid{{/unless}}" data-item-edit-value="system.projectileId">
+                      {{selectOptions @root.ownedProjectileOptions selected=system.projectileId localize=false}}
+                    </select>
+                  {{else if system.isThrownWeapon}}
+                    (<input class="quantity" type="number" min="0" max="99" data-item-edit-value="system.quantity" value="{{system.quantity}}">)
+                  {{else if system.isProjectile}}
+                    (<input class="quantity" type="number" min="0" max="99" data-item-edit-value="system.quantity" value="{{system.quantity}}">)
+                  {{/if}}
+                  {{#if system.range}}{{#if system.rate includeZero=true}}
+                    <br>
+                    <div class="rate-range">{{localize "RQG.Actor.Combat.Range"}} {{system.range}} {{localize "RQG.Actor.Combat.Rate"}} {{missileRate system.rate}}</div>
+                  {{/if}}{{/if}}
+                </div>
+              </div>
+              <div class="combat contextmenu item" data-weapon-item-id="{{id}}" data-item-id="{{id}}">
+                {{#if system.hitPointLocation}}
+                  {{system.hitPointLocation}}
+                {{else}}
+                  <label><input type="number" min="-99" max="99" data-item-edit-value="system.hitPoints.value"
+                                value="{{system.hitPoints.value}}"> / {{system.hitPoints.max}}</label>
+                {{/if}}
+              </div>
+              <div class="item" data-weapon-item-id="{{id}}">
+                <span class="flex-column text-right">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <div class="combat contextmenu usage
+                            {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}} {{#if unusable}}warning{{/if}}
+                            {{#if (eq ../system.defaultUsage @key)}}default-usage{{/if}}"
+                            {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                            data-skill-id="{{skillId}}"
+                            data-item-id="{{skillId}}"
+                            data-item-roll
+                            data-tooltip="{{localize "RQG.Game.RollTitle"}}">
+                        {{localize (concat "RQG.Game.WeaponUsage." @key)}}
+                        <span class="{{#if skillHasExperience}}experienced{{/if}}">{{skillChance}}%</span>
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div class="item" data-weapon-item-id="{{id}}" data-item-id="{{id}}">
+                <span class="flex-column">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
+                            data-skill-id="{{skillId}}"
+                            data-damage-roll="{{damage}}"
+                            data-damage-roll-heading="{{../name}} – {{localize (concat "RQG.Game.WeaponUsage." @key)}}"
+                            data-tooltip="{{localize "RQG.Game.RollChat"}}"
+                            >{{damage}}&nbsp;</span>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div class="item" data-weapon-item-id="{{id}}" data-item-id="{{id}}">
+                <span class="flex-column text-right">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      {{#if (eq @key "missile")}}
+                        {{#if ../system.rate}}
+                          <div class="usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}">
+                            <button type="button" class="sr" data-set-sr="{{max 1 @root.system.attributes.dexStrikeRank}}">{{max 1 @root.system.attributes.dexStrikeRank}}</button>
+                          </div>
+                        {{else}}
+                          <div class="flex-column">
+                            <button type="button" class="sr" data-set-sr="{{@root.unloadedMissileSr}}">
+                              {{#each @root.unloadedMissileSrDisplay}}{{{this}}}{{/each}}
+                            </button>
+                            <button type="button" class="sr" data-set-sr="{{@root.loadedMissileSr}}">
+                              {{#each @root.loadedMissileSrDisplay}}{{{this}}}{{/each}}
+                            </button>
+                          </div>
+                        {{/if}}
+                      {{else}}
+                        <span><button type="button" class="combat sr contextmenu"
+                                      data-tooltip="{{localize "RQG.Actor.Combat.SetSRInCombatTracker"}}"
+                                      data-set-sr="{{sum @root.system.attributes.sizStrikeRank
+                                                         @root.system.attributes.dexStrikeRank
+                                                         strikeRank}}">
+                          {{sum @root.system.attributes.sizStrikeRank @root.system.attributes.dexStrikeRank strikeRank}}
+                        </button></span>
+                      {{/if}}
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+            {{/unless}}
+          {{/if}}
+        {{/each}}
+
+        {{!-- Natural weapons --}}
+        {{#each embeddedItems.weapon}}
+          {{#if system.isNatural}}
+            <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+            <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item">{{name}}</div>
+            <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item"></div>
+            <div data-weapon-item-id="{{id}}" data-item-id="{{id}}">
+              <span class="flex-column text-right">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}} {{#if skillHasExperience}}experienced{{/if}}"
+                          data-tooltip="{{localize "RQG.Game.RollTitle"}}"
+                          data-skill-id="{{skillId}}"
+                          data-item-id="{{skillId}}"
+                          data-item-roll>
+                          {{skillChance}}%
+                    </span>
+                  {{/if}}
+                {{/each}}
+              </span>
+            </div>
+            <div data-weapon-item-id="{{id}}" data-item-id="{{id}}">
+              <span class="flex-column">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
+                          data-tooltip="{{localize "RQG.Game.RollChat"}}"
+                          data-skill-id="{{skillId}}"
+                          data-damage-roll="{{damage}}"
+                          data-damage-roll-heading="{{../name}}"
+                          >{{damage}}&nbsp;</span>
+                  {{/if}}
+                {{/each}}
+              </span>
+            </div>
+            <div data-weapon-item-id="{{id}}" data-item-id="{{id}}">
+              <span class="flex-column text-right">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    {{#if (eq @key "missile")}}
+                      {{#if ../system.rate}}
+                        <div class="text-right usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}">1/{{#unless (eq 1 ../system.rate)}}{{../system.rate}}{{/unless}}{{localize "RQG.Game.MeleeRoundAbbr"}}</div>
+                      {{else}}
+                        <div class="flex-column">
+                          <div>{{#each @root.unloadedMissileSr}}{{{this}}}{{/each}}</div>
+                          <div><i>{{#each @root.loadedMissileSr}}{{{this}}}{{/each}}</i></div>
+                        </div>
+                      {{/if}}
+                    {{else}}
+                      <span><button type="button" class="combat sr contextmenu"
+                                    data-tooltip="{{localize "RQG.Actor.Combat.SetSRInCombatTracker"}}"
+                                    data-set-sr="{{sum @root.system.attributes.sizStrikeRank
+                                                       @root.system.attributes.dexStrikeRank
+                                                       strikeRank}}">
+                        {{sum @root.system.attributes.sizStrikeRank @root.system.attributes.dexStrikeRank strikeRank}}
+                      </button></span>
+                    {{/if}}
+                  {{/if}}
+                {{/each}}
+              </span>
+            </div>
+          {{/if}}
+        {{/each}}
+
+        {{!-- Dodge --}}
+        {{#if dodgeSkillData}}
+          <div data-item-id="{{dodgeSkillData.id}}"
+               class="skill contextmenu"
+               {{#if dodgeSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{dodgeSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
+            <img class="item" src="{{dodgeSkillData.img}}">
+          </div>
+          <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
+          <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+          <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu {{#if dodgeSkillData.system.hasExperience}}experienced{{/if}}">
+            <span class="text-right">{{dodgeSkillData.system.chance}}%</span>
+          </div>
+          <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+          <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+        {{/if}}
+      </div>
+    </div>
+  {{/if}}
+
+  {{!-- Spirit Combat Section --}}
+  {{#if (and spiritCombatSkillData (ne system.attributes.spiritCombatDamage "0"))}}
+    <div class="spirit-combat-section">
+      <h2 class="section-heading">{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
+      {{#if (ne system.attributes.spiritCombatDamage "0")}}
+        <div class="damage-bonus-row">
+          <label data-damage-roll="{{system.attributes.spiritCombatDamage}}" data-damage-roll-heading="RQG.Actor.Combat.SpiritCombatDamage">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
+            {{system.attributes.spiritCombatDamage}}</label>
+        </div>
+      {{/if}}
+      {{#if spiritCombatSkillData}}
+        <div class="grid spirit-combat">
+          <div data-item-id="{{spiritCombatSkillData.id}}"
+               class="skill contextmenu"
+               {{#if spiritCombatSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{spiritCombatSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
+            <img class="item" src="{{spiritCombatSkillData.img}}">
+          </div>
+          <div data-item-id="{{spiritCombatSkillData.id}}"
+               class="skill contextmenu"
+               data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">
+            {{localize "RQG.Actor.Combat.SpiritCombat"}}
+          </div>
+          <div data-item-id="{{spiritCombatSkillData.id}}"
+               class="skill contextmenu"
+               data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">
+            <span class="text-right {{#if spiritCombatSkillData.system.hasExperience}}experienced{{/if}}">{{spiritCombatSkillData.system.chance}}%</span>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  {{/if}}
+  </div>{{!-- /.combat-weapons-column --}}
+  </div>{{!-- /.combat-tab-row --}}
+
+  {{!-- Allies & Notes --}}
+  <div class="allies-section fullwidth">
+    <h2 class="section-heading">{{localize "RQG.Actor.Attributes.AlliesAndNotes"}}</h2>
+    <prose-mirror name="system.allies" value="{{system.allies}}" toggled>{{{enrichedAllies}}}</prose-mirror>
+  </div>
+</section>
