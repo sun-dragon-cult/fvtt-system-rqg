@@ -87,6 +87,44 @@
     // Dark fill visible behind both nav and parchment transparent areas
     background: rgb(0 0 0 / 60%);
 
+    // Suppress V1 neumorphic hover/active shadow in V2
+    [data-characteristic-roll],
+    [data-damage-roll],
+    [data-item-roll],
+    [data-item-equipped-toggle],
+    [data-item-heal-wound],
+    [data-item-add-wound],
+    [data-rqid-link],
+    [data-weapon-roll],
+    [data-reputation-roll],
+    [data-rune-magic-roll],
+    [data-spirit-magic-roll],
+    [data-gear-add],
+    [data-passion-add] {
+
+        &:hover,
+        &:active {
+            box-shadow: none;
+        }
+    }
+
+    // Journal entry links: help cursor on the element itself (V1 targets children only)
+    [data-rqid-link^="je"] {
+        cursor: help;
+    }
+
+    // Item tooltip elements are informational (icon hover = show description)
+    [data-item-tooltip] {
+        cursor: help;
+    }
+
+    // Weapon and damage rolls are interactive
+    [data-weapon-roll],
+    [data-item-roll],
+    [data-damage-roll] {
+        cursor: pointer;
+    }
+
     // Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest).
     // Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1.
     @for $i from 0 through 10 {
@@ -272,6 +310,19 @@
                     &:focus {
                         border: 1px solid grey;
                         background-color: var(--color-text-light-highlight);
+                    }
+                }
+
+                [data-characteristic] {
+                    border-radius: 4px;
+                    padding: 2px 4px;
+
+                    &:hover {
+                        background: rgb(139 90 43 / 18%);
+                    }
+
+                    &:active {
+                        background: rgb(139 90 43 / 30%);
                     }
                 }
             }
@@ -519,6 +570,17 @@
     // --- Runes tab (V2 visual layout) ---
     .runes-tab-v2 {
 
+        // Highlight entire rune card when any clickable child is hovered/active
+        .rune-card:has([data-item-roll]:hover) {
+            background: rgb(139 90 43 / 18%);
+            border-radius: 4px;
+        }
+
+        .rune-card:has([data-item-roll]:active) {
+            background: rgb(139 90 43 / 30%);
+            border-radius: 4px;
+        }
+
         .rune-sections {
             display: flex;
             flex-wrap: wrap;
@@ -717,6 +779,99 @@
             flex-wrap: wrap;
             justify-content: center;
             gap: 0.25rem;
+        }
+    }
+
+    // --- Passions tab ---
+    .passions-tab-v2 {
+
+        h2 {
+            display: grid;
+            grid-template-columns: 28px 1fr auto;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0 6px;
+
+            .passion-add-btn {
+                cursor: pointer;
+            }
+        }
+
+        .passions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .passion-row {
+            display: grid;
+            grid-template-columns: 28px 1fr auto;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 4px 6px;
+            border-radius: 4px;
+
+            &:nth-child(odd) {
+                background: var(--rqg-table-alternate-background);
+            }
+
+            &:hover {
+                background: rgb(139 90 43 / 18%);
+            }
+
+            &:active {
+                background: rgb(139 90 43 / 30%);
+            }
+
+            .passion-icon {
+                cursor: pointer;
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 24px;
+                    height: 24px;
+                    object-fit: contain;
+                }
+            }
+
+            .passion-name {
+                cursor: pointer;
+                font-weight: 500;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+            }
+
+            .passion-chance {
+                cursor: pointer;
+                font-weight: bold;
+                align-self: stretch;
+                display: flex;
+                align-items: center;
+                text-align: right;
+                min-width: 4ch;
+            }
+
+            .passion-chance-edit {
+                display: flex;
+                align-items: center;
+                gap: 2px;
+
+                input[type="number"] {
+                    width: 5ch;
+                    text-align: center;
+                    font-size: 12px;
+                }
+            }
+        }
+
+        .empty-hint {
+            opacity: 0.6;
         }
     }
 
@@ -961,6 +1116,131 @@
             align-items: center;
         }
 
+        // Weapon row hover: light warm tint across all 6 grid cells
+        .grid.combat.item-list .weapon-row,
+        .grid.spirit-combat .weapon-row {
+            display: contents;
+
+            // Restore padding lost because display:contents bypasses .grid > * selector
+            >* {
+                padding: 2px;
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                // Cells containing flex-column (chance, damage, SR) must stretch
+                // so usage subrows can fill the full row height (not just content height)
+                &:has(>.flex-column) {
+                    align-items: stretch;
+                }
+
+                // flex-column wrappers must fill the cell so usage subrows divide
+                // the full row height equally for proper hover coverage
+                >.flex-column {
+                    width: 100%;
+                    height: 100%;
+
+                    >.usage,
+                    >div.usage {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                    }
+
+                    // SR column: right-align buttons inside each usage subrow
+                    &.text-right>.usage,
+                    &.text-right>div.usage {
+                        justify-content: flex-end;
+                    }
+
+                    // Melee SR wraps button in a bare <span>, not .usage — push right
+                    >span>button.sr {
+                        margin-left: auto;
+                    }
+                }
+            }
+
+            // Restore alternating row background (V1 nth-child rule targets weapon-row
+            // elements themselves which have display:contents, so it has no visual effect)
+            &:nth-child(odd)>* {
+                background: var(--rqg-table-alternate-background);
+            }
+
+            &:hover>* {
+                background: rgb(139 90 43 / 18%);
+            }
+
+            &:active>* {
+                background: rgb(139 90 43 / 30%);
+            }
+
+            // Dodge: single-action row — whole row gets the brighter tint
+            &.dodge-row:hover>* {
+                background: rgb(139 90 43 / 32%) !important;
+            }
+
+            &.dodge-row:active>* {
+                background: rgb(139 90 43 / 50%) !important;
+            }
+
+            // Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together
+            // only when one of those roll cells is hovered, not the damage cell
+            &.spirit-combat-row:has(>[data-item-roll]:hover) {
+
+                > :nth-child(2),
+                > :nth-child(3),
+                > :nth-child(4) {
+                    background: rgb(139 90 43 / 32%) !important;
+                }
+            }
+
+            &.spirit-combat-row:has(>[data-item-roll]:active) {
+
+                > :nth-child(2),
+                > :nth-child(3),
+                > :nth-child(4) {
+                    background: rgb(139 90 43 / 50%) !important;
+                }
+            }
+
+            // Brighter tint on the specific cell being clicked.
+            // Nested here so SCSS child combinators escape the IE-hack misparse.
+            // Use descendant .usage selector (not :has) so multi-usage weapons
+            // only highlight the hovered subrow, not the whole column cell.
+            .usage[data-item-roll]:hover,
+            .usage[data-damage-roll]:hover,
+            // :not(:empty) excludes natural-weapon / dodge empty placeholder cells
+            >[data-weapon-roll]:not(:empty):hover,
+            >[data-item-roll]:hover,
+            >[data-damage-roll]:hover {
+                background: rgb(139 90 43 / 32%) !important;
+            }
+
+            .usage[data-item-roll]:active,
+            .usage[data-damage-roll]:active,
+            >[data-weapon-roll]:not(:empty):active,
+            >[data-item-roll]:active,
+            >[data-damage-roll]:active {
+                background: rgb(139 90 43 / 50%) !important;
+            }
+        }
+
+        // V2 spirit-combat grid: match 6-column weapons grid (icon | name | HP | chance | damage | SR)
+        .grid.spirit-combat {
+            grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+        }
+
+        // Extra breathing room before the damage column
+        .grid.combat.item-list .head5,
+        .grid.combat.item-list .weapon-row> :nth-child(5),
+        .grid.spirit-combat .weapon-row> :nth-child(5) {
+            padding-left: 0.75rem;
+        }
+
+        .spirit-combat-section {
+            margin-top: 1.5rem;
+        }
+
         .rate-range {
             color: var(--color-text-dark-secondary);
         }
@@ -1084,4 +1364,12 @@
             background-color: rgb(255 255 255 / 15%);
         }
     }
+}
+
+// Item description tooltip — applied via data-tooltip-class on the element,
+// Foundry adds this class to the #tooltip element.
+#tooltip.item-description-tooltip,
+.locked-tooltip.item-description-tooltip {
+    max-width: 600px;
+    text-align: left;
 }

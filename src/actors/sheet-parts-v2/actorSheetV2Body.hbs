@@ -17,10 +17,7 @@
     <p class="norse text-center">{{localize "RQG.Actor.Nav.Gear"}}</p>
     <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
   </div>
-  <div class="tab tab-placeholder" data-group="primary" data-tab="passions">
-    <p class="norse text-center">{{localize "RQG.Actor.Nav.Passions"}}</p>
-    <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
-  </div>
+  {{#if showUiSection.passions}}{{> actorSheetV2Passions}}{{/if}}
   <div class="tab tab-placeholder" data-group="primary" data-tab="background">
     <p class="norse text-center">{{localize "RQG.Actor.Nav.Background"}}</p>
     <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>

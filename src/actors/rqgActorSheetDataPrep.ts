@@ -708,15 +708,18 @@ export async function organizeEmbeddedItems(
         .reduce((acc: number, spell: any) => acc + (spell.system.points ?? 0), 0) ?? 0;
   });
 
-  // Enrich passion description texts
-  await Promise.all(
-    itemTypes[ItemTypeEnum.Passion]?.map(async (passion: any) => {
-      passion.system.enrichedDescription =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          passion.system.description,
-        );
-    }) ?? [],
-  );
+  // Enrich item description and GM notes texts for tooltip display
+  const enrichItem = async (item: any) => {
+    item.system.enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description);
+    item.system.enrichedGmNotes =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.gmNotes);
+  };
+  await Promise.all([
+    ...(itemTypes[ItemTypeEnum.Passion]?.map(enrichItem) ?? []),
+    ...(itemTypes[ItemTypeEnum.Weapon]?.map(enrichItem) ?? []),
+    ...(itemTypes[ItemTypeEnum.Armor]?.map(enrichItem) ?? []),
+  ]);
 
   // Add extra info for Rune Magic Spells
   itemTypes[ItemTypeEnum.RuneMagic]?.forEach((runeMagic: any) => {

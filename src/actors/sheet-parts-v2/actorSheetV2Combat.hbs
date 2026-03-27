@@ -174,9 +174,11 @@
         {{#each embeddedItems.weapon}}
           {{#if (eq system.equippedStatus "equipped")}}
             {{#unless system.isNatural}}
+              <div class="weapon-row">
               <div data-weapon-item-id="{{id}}"
-                   data-weapon-roll
-                   data-tooltip="{{localize "RQG.Game.InitiateCombat"}}"
+                   data-item-id="{{id}}"
+                   data-item-tooltip
+                   data-tooltip-class="item-description-tooltip"
                    class="combat contextmenu item"><img class="item" src="{{img}}"></div>
               <div data-weapon-item-id="{{id}}"
                    data-item-id="{{id}}"
@@ -273,6 +275,7 @@
                   {{/each}}
                 </span>
               </div>
+              </div>
             {{/unless}}
           {{/if}}
         {{/each}}
@@ -280,9 +283,10 @@
         {{!-- Natural weapons --}}
         {{#each embeddedItems.weapon}}
           {{#if system.isNatural}}
-            <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+            <div class="weapon-row">
+            <div data-weapon-item-id="{{id}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="combat contextmenu item"><img class="item" src="{{img}}"></div>
             <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item">{{name}}</div>
-            <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item"></div>
+            <div data-weapon-item-id="{{id}}" class="combat contextmenu item"></div>
             <div data-weapon-item-id="{{id}}" data-item-id="{{id}}">
               <span class="flex-column text-right">
                 {{#each system.usage}}
@@ -338,12 +342,12 @@
                 {{/each}}
               </span>
             </div>
+            </div>
           {{/if}}
         {{/each}}
-
-        {{!-- Dodge --}}
         {{#if dodgeSkillData}}
-          <div data-item-id="{{dodgeSkillData.id}}"
+          <div class="weapon-row dodge-row">
+          <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                class="skill contextmenu"
                {{#if dodgeSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{dodgeSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
             <img class="item" src="{{dodgeSkillData.img}}">
@@ -355,6 +359,7 @@
           </div>
           <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
           <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
+          </div>
         {{/if}}
       </div>
     </div>
@@ -364,14 +369,9 @@
   {{#if (and spiritCombatSkillData (ne system.attributes.spiritCombatDamage "0"))}}
     <div class="spirit-combat-section">
       <h2 class="section-heading">{{localize "RQG.Actor.Combat.SpiritCombat"}}</h2>
-      {{#if (ne system.attributes.spiritCombatDamage "0")}}
-        <div class="damage-bonus-row">
-          <label data-damage-roll="{{system.attributes.spiritCombatDamage}}" data-damage-roll-heading="RQG.Actor.Combat.SpiritCombatDamage">{{localize "RQG.Actor.Combat.SpiritCombatDamage"}}
-            {{system.attributes.spiritCombatDamage}}</label>
-        </div>
-      {{/if}}
       {{#if spiritCombatSkillData}}
         <div class="grid spirit-combat">
+          <div class="weapon-row spirit-combat-row">
           <div data-item-id="{{spiritCombatSkillData.id}}"
                class="skill contextmenu"
                {{#if spiritCombatSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{spiritCombatSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
@@ -384,8 +384,22 @@
           </div>
           <div data-item-id="{{spiritCombatSkillData.id}}"
                class="skill contextmenu"
+               data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"></div>{{!-- HP column placeholder --}}
+          <div data-item-id="{{spiritCombatSkillData.id}}"
+               class="skill contextmenu"
                data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">
             <span class="text-right {{#if spiritCombatSkillData.system.hasExperience}}experienced{{/if}}">{{spiritCombatSkillData.system.chance}}%</span>
+          </div>
+          {{#if (ne system.attributes.spiritCombatDamage "0")}}
+          <div data-damage-roll="{{system.attributes.spiritCombatDamage}}"
+               data-damage-roll-heading="RQG.Actor.Combat.SpiritCombatDamage"
+               data-tooltip="{{localize "RQG.Game.RollChat"}}">
+            {{system.attributes.spiritCombatDamage}}
+          </div>
+          {{else}}
+          <div></div>
+          {{/if}}
+          <div></div>{{!-- SR column placeholder --}}
           </div>
         </div>
       {{/if}}

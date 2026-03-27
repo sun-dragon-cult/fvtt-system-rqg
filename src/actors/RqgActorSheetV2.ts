@@ -36,6 +36,7 @@ import { characteristicMenuOptions } from "./context-menus/characteristic-contex
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
 import { cultMenuOptions } from "./context-menus/cult-context-menu";
 import { hitLocationMenuOptions } from "./context-menus/hit-location-context-menu";
+import { passionMenuOptions } from "./context-menus/passion-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 
@@ -294,6 +295,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       ".skill.contextmenu",
       skillMenuOptions(this.actor, this.document.token ?? undefined),
     );
+    new RqgContextMenu(
+      this.element,
+      ".passion.contextmenu",
+      passionMenuOptions(this.actor, this.document.token ?? undefined),
+    );
 
     // RQID link click handlers
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
@@ -349,6 +355,65 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           { _id: updateId, system: { chance: newChance } },
         ]);
       });
+    });
+
+    // Handle in-grid editing of passions
+    this.element.querySelectorAll<HTMLElement>("[data-passion-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset(el, "item-id");
+        const newChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { chance: newChance } },
+        ]);
+      });
+    });
+
+    // Sort Items alphabetically
+    this.element.querySelectorAll<HTMLElement>("[data-sort-items]").forEach((el) => {
+      const itemType = getRequiredDomDataset(el, "sort-items");
+      el.addEventListener("click", () => RqgActorSheetV2.sortItems(this.actor, itemType));
+    });
+
+    // Add Passion button
+    this.element.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        const defaultItemIconSettings: any = game.settings?.get(
+          systemId,
+          "defaultItemIconSettings",
+        );
+        const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
+        const passion = {
+          name: newPassionName,
+          type: ItemTypeEnum.Passion,
+          img: defaultItemIconSettings[ItemTypeEnum.Passion],
+          system: { passion: newPassionName },
+        };
+        const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
+        (createdItems[0] as RqgItem)?.sheet?.render(true);
+      });
+    });
+
+    // Set rich HTML tooltips on item icons (description + GM notes)
+    const allItems: any[] = Object.values(context.embeddedItems ?? {}).flat();
+    const isGM = context.isGM;
+    this.element.querySelectorAll<HTMLElement>("[data-item-tooltip]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = allItems.find((i: any) => i.id === itemId);
+      if (!item) {
+        return;
+      }
+      const parts: string[] = [];
+      if (item.system.enrichedDescription) {
+        parts.push(item.system.enrichedDescription);
+      }
+      if (isGM && item.system.enrichedGmNotes) {
+        parts.push(
+          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${item.system.enrichedGmNotes}`,
+        );
+      }
+      if (parts.length) {
+        el.dataset["tooltip"] = `<div class="item-description-tooltip">${parts.join("")}</div>`;
+      }
     });
 
     // Roll Item (Skill, Rune, Passion)
@@ -555,5 +620,18 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const sheet = this as unknown as RqgActorSheetV2;
     const data = formData.object as Record<string, unknown>;
     await sheet.actor.update(data);
+  }
+
+  private static async sortItems(actor: CharacterActor, itemType: string): Promise<void> {
+    const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
+    itemsToSort.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+    itemsToSort.forEach((item, index) => {
+      item.sort =
+        index === 0
+          ? CONST.SORT_INTEGER_DENSITY
+          : (itemsToSort[index - 1]?.sort ?? 0) + CONST.SORT_INTEGER_DENSITY;
+    });
+    const updateData = itemsToSort.map((item) => ({ _id: item.id, sort: item.sort }));
+    await actor.updateEmbeddedDocuments("Item", updateData);
   }
 }
