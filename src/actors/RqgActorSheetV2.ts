@@ -39,6 +39,8 @@ import { hitLocationMenuOptions } from "./context-menus/hit-location-context-men
 import { passionMenuOptions } from "./context-menus/passion-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
+import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
+import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -300,6 +302,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       ".passion.contextmenu",
       passionMenuOptions(this.actor, this.document.token ?? undefined),
     );
+    new RqgContextMenu(
+      this.element,
+      ".spirit-magic.contextmenu",
+      spiritMagicMenuOptions(this.actor),
+    );
 
     // RQID link click handlers
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
@@ -435,6 +442,36 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           setTimeout(async () => {
             if (clickCount === 1) {
               await item.abilityRoll();
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
+    // Roll Spirit Magic
+    this.element.querySelectorAll<HTMLElement>("[data-spirit-magic-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = this.actor.items.get(itemId) as SpiritMagicItem | undefined;
+      assertDocumentSubType<SpiritMagicItem>(
+        item,
+        ItemTypeEnum.SpiritMagic,
+        `Couldn't find item [${itemId}] to roll Spirit Magic`,
+      );
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+        if (clickCount >= 2) {
+          if (item.system.isVariable && item.system.points > 1) {
+            await item.spiritMagicRoll();
+          } else {
+            await item.spiritMagicRollImmediate();
+          }
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await item.spiritMagicRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

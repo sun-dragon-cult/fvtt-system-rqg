@@ -2,8 +2,8 @@
   <div class="navbackground"></div>
   <nav class="sheet-tabs tabs" data-group="primary">
     <a class="item norse" data-group="primary" data-tab="combat">{{localize "RQG.Actor.Nav.Combat"}}</a>
-    <a class="item norse" data-group="primary" data-tab="runes">{{localize "RQG.Actor.Nav.Runes"}}</a>
-    <a class="item norse" data-group="primary" data-tab="spiritmagic">{{localize "RQG.Actor.Nav.SpiritMagic"}}</a>
+    {{#if showUiSection.runes}}<a class="item norse" data-group="primary" data-tab="runes">{{localize "RQG.Actor.Nav.Runes"}}</a>{{/if}}
+    {{#if showUiSection.spiritMagic}}<a class="item norse" data-group="primary" data-tab="spiritmagic">{{localize "RQG.Actor.Nav.SpiritMagic"}}</a>{{/if}}
     <a class="item norse" data-group="primary" data-tab="runemagic">{{localize "RQG.Actor.Nav.RuneMagic"}}</a>
     <a class="item norse" data-group="primary" data-tab="skills">{{localize "RQG.Actor.Nav.Skills"}}</a>
     <a class="item norse" data-group="primary" data-tab="gear">{{localize "RQG.Actor.Nav.Gear"}}</a>

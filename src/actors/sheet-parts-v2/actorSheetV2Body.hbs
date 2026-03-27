@@ -1,10 +1,7 @@
 <section class="sheet-body">
   {{> actorSheetV2Combat}}
-  {{> actorSheetV2Runes}}
-  <div class="tab tab-placeholder" data-group="primary" data-tab="spiritmagic">
-    <p class="norse text-center">{{localize "RQG.Actor.Nav.SpiritMagic"}}</p>
-    <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
-  </div>
+  {{#if showUiSection.runes}}{{> actorSheetV2Runes}}{{/if}}
+  {{#if showUiSection.spiritMagic}}{{> actorSheetV2SpiritMagic}}{{/if}}
   <div class="tab tab-placeholder" data-group="primary" data-tab="runemagic">
     <p class="norse text-center">{{localize "RQG.Actor.Nav.RuneMagic"}}</p>
     <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>

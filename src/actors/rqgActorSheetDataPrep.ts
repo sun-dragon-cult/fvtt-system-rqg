@@ -719,6 +719,7 @@ export async function organizeEmbeddedItems(
     ...(itemTypes[ItemTypeEnum.Passion]?.map(enrichItem) ?? []),
     ...(itemTypes[ItemTypeEnum.Weapon]?.map(enrichItem) ?? []),
     ...(itemTypes[ItemTypeEnum.Armor]?.map(enrichItem) ?? []),
+    ...(itemTypes[ItemTypeEnum.SpiritMagic]?.map(enrichItem) ?? []),
   ]);
 
   // Add extra info for Rune Magic Spells

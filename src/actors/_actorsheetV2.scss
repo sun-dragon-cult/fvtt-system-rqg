@@ -1287,6 +1287,80 @@
         }
     }
 
+    // --- Spirit Magic tab ---
+    .spirit-magic-tab-v2 {
+        h2 {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            padding: 0 6px;
+            flex-wrap: wrap;
+
+            .small-size {
+                font-size: 0.75em;
+                font-weight: normal;
+                margin-left: auto;
+            }
+
+            .warning {
+                color: var(--color-text-dark-warn, #a00);
+            }
+        }
+
+        .grid.spiritmagic.item-list {
+            grid-template-columns: [col-start] 30px auto auto repeat(7, auto) [col-end];
+        }
+
+        .spirit-magic-row {
+            display: contents;
+
+            >* {
+                padding: 2px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 100%;
+
+                &.text-center {
+                    justify-content: center;
+                }
+            }
+
+            &:nth-child(odd)>* {
+                background: var(--rqg-table-alternate-background);
+            }
+
+            &:hover>* {
+                background: rgb(139 90 43 / 18%);
+            }
+
+            &:active>* {
+                background: rgb(139 90 43 / 30%);
+            }
+        }
+
+        input[type="text"] {
+            font-size: 12px;
+            border: 1px solid transparent;
+            border-radius: 3px;
+            width: 100%;
+            background: transparent;
+            box-shadow: none;
+            transition: none;
+
+            &:hover {
+                border-color: rgb(255 255 255 / 20%);
+                box-shadow: none;
+            }
+
+            &:focus {
+                outline: none;
+                border-color: rgb(255 255 255 / 40%);
+                box-shadow: none;
+            }
+        }
+    }
+
     // --- Wounded / injured overall sheet background ---
     &.dead {
         filter: grayscale(0.8);
