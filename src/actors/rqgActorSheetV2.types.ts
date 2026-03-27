@@ -72,6 +72,9 @@ export interface RqgActorSheetV2Context {
   /** Warning text for incorrect/duplicate runes. */
   enrichedIncorrectRunes: string | undefined;
 
+  /** Warning text for skills needing specialization. */
+  enrichedUnspecifiedSkill: string | undefined;
+
   // --- Combat tab data ---
 
   /** Spirit combat skill item. */

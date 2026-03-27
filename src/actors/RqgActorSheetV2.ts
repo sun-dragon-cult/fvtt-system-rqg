@@ -197,6 +197,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         embeddedItems?.rune,
         incorrectRunes,
       ),
+      enrichedUnspecifiedSkill: await DataPrep.getUnspecifiedSkillText(this.actor),
     };
   }
 
@@ -446,6 +447,31 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
         }
+      });
+    });
+
+    // Skills filter
+    this.element.querySelectorAll<HTMLInputElement>(".skill-filter").forEach((input) => {
+      input.addEventListener("input", () => {
+        const query = input.value.trim().toLowerCase();
+        const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
+        masonry?.querySelectorAll<HTMLElement>(".masonry-item").forEach((category) => {
+          let anyVisible = false;
+          category.querySelectorAll<HTMLElement>(".skill-row").forEach((row) => {
+            const nameEl = row.querySelector<HTMLElement>("[data-item-roll]");
+            const text = nameEl?.textContent?.toLowerCase() ?? "";
+            const visible = !query || text.includes(query);
+            row.style.display = visible ? "" : "contents"; // keep display:contents for visible rows
+            // Use a data flag instead — hide all cells when filtered out
+            row.querySelectorAll<HTMLElement>(":scope > *").forEach((cell) => {
+              cell.style.display = visible ? "" : "none";
+            });
+            if (visible) {
+              anyVisible = true;
+            }
+          });
+          (category as HTMLElement).style.display = anyVisible ? "" : "none";
+        });
       });
     });
 

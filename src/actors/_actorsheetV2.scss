@@ -1287,6 +1287,112 @@
         }
     }
 
+    // --- Skills tab ---
+    .skills-tab-v2 {
+        .specialization.warning {
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-filter-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 4px 6px 6px;
+
+            i {
+                opacity: 0.5;
+                font-size: 0.85em;
+            }
+
+            .skill-filter {
+                flex: 1;
+                background: transparent;
+                border: 1px solid transparent;
+                border-radius: 3px;
+                font-size: 12px;
+                padding: 2px 4px;
+                box-shadow: none;
+                transition: none;
+
+                &::placeholder {
+                    opacity: 0.5;
+                }
+
+                &:hover {
+                    border-color: rgb(255 255 255 / 20%);
+                    box-shadow: none;
+                }
+
+                &:focus {
+                    outline: none;
+                    border-color: rgb(255 255 255 / 40%);
+                    box-shadow: none;
+                }
+            }
+        }
+
+        h2 {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            padding: 0 6px;
+
+            .category-modifier {
+                font-size: 0.8em;
+                font-weight: normal;
+                opacity: 0.8;
+            }
+        }
+
+        .grid.skill.item-list,
+        .grid.skill-edit-mode.item-list {
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-row {
+            display: contents;
+
+            >* {
+                padding: 2px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 100%;
+            }
+
+            &:nth-child(odd)>* {
+                background: var(--rqg-table-alternate-background);
+            }
+
+            &:hover>* {
+                background: rgb(139 90 43 / 18%);
+            }
+
+            &:active>* {
+                background: rgb(139 90 43 / 30%);
+            }
+        }
+
+        img.requires-training {
+            width: 18px;
+            height: 18px;
+            margin-left: auto;
+            opacity: 0.85;
+        }
+
+        .skill-gained-edit {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+
+            input[type="number"] {
+                width: 5ch;
+                text-align: center;
+                font-size: 12px;
+            }
+        }
+    }
+
     // --- Spirit Magic tab ---
     .spirit-magic-tab-v2 {
         h2 {
