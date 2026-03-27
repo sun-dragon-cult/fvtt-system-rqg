@@ -847,7 +847,7 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
         position: relative;
         left: -3px;
         bottom: -4px;
-        filter: invert(1);
+        filter: invert(var(--rqg-svg-invert-param));
       }
 
       .context-icon-img {

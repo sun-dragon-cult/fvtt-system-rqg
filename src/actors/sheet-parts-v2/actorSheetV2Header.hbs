@@ -23,7 +23,7 @@
               <div class="flex-row gap01rem">
                 {{#each characterElementRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
-                    <img class="rune" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                    <img class="rune {{cls}}" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
                   </div>
                 {{/each}}
               </div>
@@ -32,7 +32,7 @@
               <div class="flex-row gap01rem">
                 {{#each characterPowerRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
-                    <img class="rune" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                    <img class="rune {{cls}}" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
                   </div>
                 {{/each}}
               </div>
@@ -41,7 +41,7 @@
               <div class="flex-row gap01rem">
                 {{#each characterFormRunes}}
                   <div class="rune contextmenu item" data-item-id="{{id}}" data-tooltip="{{rune}}: {{chance}}%">
-                    <img class="rune" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
+                    <img class="rune {{cls}}" src="{{img}}" {{#if descriptionRqid}}data-rqid-link="{{descriptionRqid}}"{{/if}}>
                   </div>
                 {{/each}}
               </div>

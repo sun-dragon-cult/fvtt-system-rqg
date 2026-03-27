@@ -1,4 +1,5 @@
 import type { SheetRuneData, MainCult, UiSections } from "./rqgActorSheet.types";
+import type { RuneOpposedPair } from "./rqgActorSheetDataPrep";
 import type { RqgItem } from "../items/rqgItem";
 import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
@@ -33,6 +34,16 @@ export interface RqgActorSheetV2Context {
   /** Form runes that define the character. */
   characterFormRunes: SheetRuneData[];
 
+  /** CSS strength class per element rune key (e.g. fire, air). */
+  elementRuneVisuals: Record<string, { cls: string }>;
+
+  /** Dynamically paired power runes (from opposingRuneRqidLink). */
+  powerRunePairs: RuneOpposedPair[];
+  /** Dynamically paired form runes (from opposingRuneRqidLink). */
+  formRunePairs: RuneOpposedPair[];
+  /** Form runes without an opposing rune. */
+  formRuneStandalone: any[];
+
   /** Base strike rank (DEX SR + SIZ SR). */
   baseStrikeRank: number | undefined;
 
@@ -57,6 +68,9 @@ export interface RqgActorSheetV2Context {
   powWarning: boolean;
   /** Whether the sheet is in edit mode. */
   editMode: boolean;
+
+  /** Warning text for incorrect/duplicate runes. */
+  enrichedIncorrectRunes: string | undefined;
 
   // --- Combat tab data ---
 

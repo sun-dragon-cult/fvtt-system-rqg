@@ -109,8 +109,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
-    const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, []);
+    const incorrectRunes: any[] = [];
+    const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const dexStrikeRank = system.attributes.dexStrikeRank;
+    const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
 
     // Compute active SRs from combat tracker
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
@@ -139,6 +141,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       characterElementRunes: DataPrep.getCharacterElementRuneImgs(this.actor),
       characterPowerRunes: DataPrep.getCharacterPowerRuneImgs(this.actor),
       characterFormRunes: DataPrep.getCharacterFormRuneImgs(this.actor),
+      elementRuneVisuals: DataPrep.getRuneVisualsMap(embeddedItems?.rune?.element ?? {}),
+      powerRunePairs: DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.power ?? {}).pairs,
+      formRunePairs: formRuneGroups.pairs,
+      formRuneStandalone: formRuneGroups.standalone,
 
       baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
 
@@ -183,6 +189,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
       showUiSection: DataPrep.getUiSectionVisibility(this.actor),
+      enrichedIncorrectRunes: await DataPrep.getIncorrectRunesText(
+        this.actor,
+        embeddedItems?.rune,
+        incorrectRunes,
+      ),
     };
   }
 
@@ -326,6 +337,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           this._activeInSR.add(sr);
         }
         await this._updateActiveCombatWithSR(this._activeInSR);
+      });
+    });
+
+    // Handle in-grid editing of runes
+    this.element.querySelectorAll<HTMLElement>("[data-rune-grid-edit]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const updateId = getRequiredDomDataset(el, "item-id");
+        const newChance = parseInt((event.target as HTMLInputElement).value);
+        await this.actor.updateEmbeddedDocuments("Item", [
+          { _id: updateId, system: { chance: newChance } },
+        ]);
       });
     });
 

@@ -370,6 +370,7 @@ export function getCharacterElementRuneImgs(actor: CharacterActor): SheetRuneDat
           rune: i.system.rune,
           chance: i.system.chance,
           descriptionRqid: i.system.descriptionRqidLink?.rqid,
+          cls: runeStrengthClass(i.system.chance),
         });
       }
       return acc;
@@ -396,6 +397,7 @@ export function getCharacterPowerRuneImgs(actor: CharacterActor): SheetRuneData[
           rune: i.system.rune,
           chance: i.system.chance,
           descriptionRqid: i.system.descriptionRqidLink?.rqid,
+          cls: runeStrengthClass(i.system.chance),
         });
       }
       return acc;
@@ -422,11 +424,148 @@ export function getCharacterFormRuneImgs(actor: CharacterActor): SheetRuneData[]
           rune: i.system.rune,
           chance: i.system.chance,
           descriptionRqid: i.system.descriptionRqidLink?.rqid,
+          cls: runeStrengthClass(i.system.chance),
         });
       }
       return acc;
     }, [])
     .sort((a, b) => b.chance - a.chance);
+}
+
+/**
+ * A pair of opposing runes (e.g. Fertility ↔ Death) for template display.
+ */
+export interface RuneOpposedPair {
+  left: any;
+  right: any | null;
+  /** Marker position (0-100). 0% = left edge, 100% = right edge. Slides toward the dominant rune. */
+  markerPercent: number;
+  /** CSS strength class for the left rune icon (e.g. "rune-str-7"). */
+  leftCls: string;
+  /** CSS strength class for the right rune icon (e.g. "rune-str-3"). */
+  rightCls: string;
+}
+
+/**
+ * Preferred display order for the left rune of each opposed pair,
+ * matching the traditional RuneQuest paper character sheet.
+ * Runes not in this list sort after known ones in their original order.
+ */
+const preferredPairOrder: string[] = ["fertility", "harmony", "truth", "stasis", "man"];
+
+/**
+ * Compute a CSS strength class for a rune based on its chance.
+ * Returns `"rune-str-N"` where N is 0–10 (chance rounded to nearest 10).
+ * The corresponding SCSS classes define opacity and scale.
+ */
+function runeStrengthClass(chance: number): string {
+  const tier = Math.round(Math.max(0, Math.min(100, chance)) / 10);
+  return `rune-str-${tier}`;
+}
+
+/**
+ * Compute a CSS strength class for each rune in a keyed map.
+ * Returns a Record with the same keys, each containing a `cls` string.
+ */
+export function getRuneVisualsMap(
+  runesByName: Record<string, any>,
+): Record<string, { cls: string }> {
+  const result: Record<string, { cls: string }> = {};
+  for (const [key, rune] of Object.entries(runesByName)) {
+    result[key] = { cls: runeStrengthClass(rune.system?.chance ?? 0) };
+  }
+  return result;
+}
+
+/**
+ * Builds opposed pairs and standalone runes from a category's rune map.
+ * Uses each rune's `opposingRuneRqidLink` to find its pair dynamically.
+ * Pairs are sorted to match the traditional paper character sheet order
+ * when possible.
+ * @param runesByName - Object keyed by rune short name, values are rune items
+ * @returns Object with `pairs` array and `standalone` array
+ */
+export function getRuneOpposedPairs(runesByName: Record<string, any>): {
+  pairs: RuneOpposedPair[];
+  standalone: any[];
+} {
+  const paired = new Set<string>();
+  const pairs: RuneOpposedPair[] = [];
+  const standalone: any[] = [];
+
+  const entries = Object.entries(runesByName);
+
+  for (const [key, rune] of entries) {
+    if (paired.has(key)) {
+      continue;
+    }
+
+    const opposingRqid = rune.system?.opposingRuneRqidLink?.rqid;
+    if (opposingRqid) {
+      const opposingEntry = entries.find(
+        ([k, r]) => k !== key && r.flags?.rqg?.documentRqidFlags?.id === opposingRqid,
+      );
+      paired.add(key);
+      if (opposingEntry) {
+        const [opposingKey, opposingRune] = opposingEntry;
+        paired.add(opposingKey);
+        // Place the rune with preferred order on the left side
+        const leftIdx = preferredPairOrder.indexOf(key);
+        const rightIdx = preferredPairOrder.indexOf(opposingKey);
+        if (rightIdx !== -1 && (leftIdx === -1 || rightIdx < leftIdx)) {
+          const chance = opposingRune.system?.chance ?? 50;
+          pairs.push({
+            left: opposingRune,
+            right: rune,
+            markerPercent: 100 - chance,
+            leftCls: runeStrengthClass(chance),
+            rightCls: runeStrengthClass(100 - chance),
+          });
+        } else {
+          const chance = rune.system?.chance ?? 50;
+          pairs.push({
+            left: rune,
+            right: opposingRune,
+            markerPercent: 100 - chance,
+            leftCls: runeStrengthClass(chance),
+            rightCls: runeStrengthClass(100 - chance),
+          });
+        }
+      } else {
+        // Opposing rune not on this actor — show with empty right slot
+        const chance = rune.system?.chance ?? 50;
+        pairs.push({
+          left: rune,
+          right: null,
+          markerPercent: 100 - chance,
+          leftCls: runeStrengthClass(chance),
+          rightCls: runeStrengthClass(100 - chance),
+        });
+      }
+    } else {
+      standalone.push(rune);
+    }
+  }
+
+  // Sort pairs by preferred order (left rune key), unknowns sort last
+  pairs.sort((a, b) => {
+    const aKey = entries.find(([, r]) => r === a.left)?.[0] ?? "";
+    const bKey = entries.find(([, r]) => r === b.left)?.[0] ?? "";
+    const aIdx = preferredPairOrder.indexOf(aKey);
+    const bIdx = preferredPairOrder.indexOf(bKey);
+    if (aIdx !== -1 && bIdx !== -1) {
+      return aIdx - bIdx;
+    }
+    if (aIdx !== -1) {
+      return -1;
+    }
+    if (bIdx !== -1) {
+      return 1;
+    }
+    return 0;
+  });
+
+  return { pairs, standalone };
 }
 
 /**

@@ -9,6 +9,7 @@
   --rqg-themed-exp-outline: rgb(0 0 0 / 80%);
   --rqg-themed-highlight: #f8da10;
   --rqg-svg-invert-param: 0.1;
+  --rqg-rune-min-opacity: 0.05;
 
   // V2 actor sheet parchment — dark variant image (replace placeholder with properly authored dark parchment)
   --rqg-parchment-url: url("/systems/rqg/assets/images/ui/mainbackground-dark.webp");
@@ -29,6 +30,7 @@
   --rqg-themed-exp-outline: rgb(255 255 255 / 80%);
   --rqg-themed-highlight: #901010;
   --rqg-svg-invert-param: 0.9;
+  --rqg-rune-min-opacity: 0.2;
 
   // V2 actor sheet parchment — light variant (original image)
   --rqg-parchment-url: url("/systems/rqg/assets/images/ui/mainbackground.webp");

@@ -146,6 +146,7 @@ export const loadHandlebarsTemplates = async function () {
 
     // V2 Actor Sheet tab partials
     actorSheetV2Combat: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Combat.hbs",
+    actorSheetV2Runes: "systems/rqg/actors/sheet-parts-v2/actorSheetV2Runes.hbs",
 
     actorRuneTab: "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
     actorRuneElements: "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",

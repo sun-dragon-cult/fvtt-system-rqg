@@ -87,6 +87,18 @@
     // Dark fill visible behind both nav and parchment transparent areas
     background: rgb(0 0 0 / 60%);
 
+    // Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest).
+    // Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1.
+    @for $i from 0 through 10 {
+        img.rune.rune-str-#{$i} {
+            $t: calc($i / 10);
+            $raw-opacity: 0.05 + $t * 0.95;
+
+            opacity: max(#{$raw-opacity}, var(--rqg-rune-min-opacity, 0.05));
+            transform: scale(#{0.55 + $t * 0.55});
+        }
+    }
+
     // Resize handle sits over dark background — always invert to light
     .window-resize-handle {
         filter: invert(1);
@@ -502,6 +514,210 @@
 
     .characteristic-rank-low {
         --rank-color: #8a0101ff;
+    }
+
+    // --- Runes tab (V2 visual layout) ---
+    .runes-tab-v2 {
+
+        .rune-sections {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .rune-section {
+            flex: 0 1 auto;
+
+            h2 {
+                text-align: center;
+                margin-bottom: 0.75rem;
+            }
+        }
+
+        // --- Rune card: icon + name + chance% ---
+        .rune-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            cursor: pointer;
+
+            img.rune {
+                height: 32px;
+                width: 32px;
+                object-fit: contain;
+            }
+
+            .rune-name {
+                font-size: 11px;
+                line-height: 1;
+                white-space: nowrap;
+            }
+
+            .rune-chance {
+                font-size: 14px;
+                font-weight: bold;
+                line-height: 1;
+            }
+
+            input[type="number"] {
+                width: 5ch;
+                text-align: center;
+                font-size: 12px;
+            }
+
+            &.standalone {
+                display: inline-flex;
+                margin: 0.25rem 0.5rem;
+            }
+        }
+
+        // --- Elemental wheel: pentagonal layout with arrows ---
+        .elemental-wheel {
+            position: relative;
+            width: 20rem;
+            height: 20rem;
+
+            .rune-card img.rune {
+                height: 42px;
+                width: 42px;
+            }
+        }
+
+        .wheel-slot {
+            position: absolute;
+
+            // Center on the anchor point using a zero-size container approach.
+            // The slot itself is zero-sized at the anchor, and the rune-card
+            // overflows equally via negative margins.
+            // This avoids translate/transform which create stacking contexts
+            // and break mix-blend-mode on descendant images.
+            .rune-card {
+                // Pull the card back by half its rendered size
+                // Cards are roughly 50px wide × 70px tall (42px icon + text)
+                margin: -35px 0 0 -25px;
+            }
+        }
+
+        // Regular pentagon inscribed in a circle of radius 35%,
+        // centered at (50%, 50%) in the 20rem × 20rem square container.
+        // Clockwise from top: Fire, Darkness, Water, Earth, Air.
+        .wheel-fire {
+            left: 50%;
+            top: 15%;
+        }
+
+        .wheel-darkness {
+            left: 83%;
+            top: 39%;
+        }
+
+        .wheel-water {
+            left: 71%;
+            top: 78%;
+        }
+
+        .wheel-earth {
+            left: 29%;
+            top: 78%;
+        }
+
+        .wheel-air {
+            left: 17%;
+            top: 39%;
+        }
+
+        .wheel-moon {
+            left: 50%;
+            top: 50%;
+        }
+
+        .wheel-connectors {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+
+            .wheel-star {
+                stroke: var(--rqg-color-main);
+                stroke-width: 0.75;
+                opacity: 0.25;
+            }
+
+            .wheel-arrows {
+                fill: none;
+                stroke: var(--rqg-color-main);
+                stroke-width: 1.5;
+            }
+
+            #rune-arrow path {
+                fill: var(--rqg-color-main);
+            }
+        }
+
+        // --- Opposed pairs (power & form runes) ---
+        .opposed-pairs {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .opposed-row {
+            display: grid;
+            grid-template-columns: 1fr 6rem 1fr;
+            align-items: center;
+            gap: 0.5rem;
+
+            // Left rune aligns right, right rune aligns left
+            >.rune-slot:first-child {
+                justify-self: end;
+            }
+
+            >.rune-slot:last-child {
+                justify-self: start;
+            }
+        }
+
+        // --- Balance track with sliding marker ---
+        .balance-bar {
+            height: 9px;
+            position: relative;
+
+            &::before {
+                content: "";
+                position: absolute;
+                top: 50%;
+                left: 0;
+                right: 0;
+                height: 1px;
+                background: var(--rqg-color-main);
+                opacity: 0.35;
+                transform: translateY(-50%);
+            }
+        }
+
+        .balance-marker {
+            position: absolute;
+            top: 50%;
+            width: 9px;
+            height: 9px;
+            background: var(--rqg-color-main-bg);
+            border: 1px solid var(--rqg-color-main);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: left 0.3s ease;
+        }
+
+        // --- Standalone card row (condition runes) ---
+        .rune-card-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.25rem;
+        }
     }
 
     // --- Combat tab ---
