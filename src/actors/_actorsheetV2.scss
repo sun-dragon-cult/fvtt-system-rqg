@@ -54,10 +54,39 @@
             backdrop-filter: blur(4px);
         }
     }
+
+    // Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark mode
+    // Specificity: 0,7,0 beats V1's 0,6,0
+    .contextmenu.context.context-highlight {
+        mix-blend-mode: normal;
+        background: rgb(139 90 43 / 60%) !important;
+        border-color: rgb(200 150 80 / 60%) !important;
+    }
 }
 
 // Restore light-mode enc colors at same specificity
 .theme-light .rqg.character.actor-sheet-v2 {
+
+    // Override V1's context-highlight for ALL V2 context menus — light mode
+    // Specificity: 0,7,0 beats V1's 0,6,0
+    .contextmenu.context.context-highlight {
+        mix-blend-mode: normal;
+        background: rgb(180 130 60 / 30%) !important;
+        border-color: rgb(140 100 40 / 60%) !important;
+    }
+
+    .rune-magic-tab-v2 nav.cult-tabs .item img.rune {
+        filter: brightness(0) invert(20%) !important; // active tab icons → dark #333
+    }
+
+    .rune-magic-tab-v2 nav.cult-tabs .item:not(.active) img.rune {
+        filter: brightness(0) invert(40%) !important; // inactive icons → darker gray, clearly visible
+    }
+
+    .rune-magic-tab-v2 nav.cult-tabs .item:hover:not(.active) img.rune {
+        filter: brightness(0) invert(20%) !important; // hover matches active (light bg, 0,9,2 beats dark-mode hover)
+    }
+
     --rqg-color-enc-bg: #d8b16e;
     --rqg-color-enc-legend: #e4cc9d;
     --rqg-color-dex-sr-bg: #f2ff009e;
@@ -1463,6 +1492,239 @@
                 outline: none;
                 border-color: rgb(255 255 255 / 40%);
                 box-shadow: none;
+            }
+        }
+    }
+
+    // --- Rune Magic tab ---
+    .rune-magic-tab-v2 {
+        nav.cult-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            margin-bottom: 0;
+            border: none;
+
+            .item {
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                padding: 4px 10px;
+                border: 1px solid var(--color-border-dark-secondary, #7b6245);
+                border-radius: 6px 6px 0 0;
+                border-bottom: none;
+                cursor: pointer;
+                background: rgb(139 90 43 / 30%);
+                font-family: var(--font-primary);
+                font-size: 0.9em;
+
+                img.rune {
+                    height: 16px;
+                    width: 16px;
+                    border: none;
+                    mix-blend-mode: normal;
+                }
+
+                &:not(.active) img.rune {
+                    filter: brightness(0.65) sepia(1) !important; // white SVG → darker warm tan
+                }
+
+                &:hover:not(.active) img.rune {
+                    filter: none !important; // match active tab on hover
+                }
+
+                &.active {
+                    background: transparent;
+                    border-bottom: none;
+                    font-weight: bold;
+                    margin-bottom: 0;
+                }
+
+                &:hover:not(.active) {
+                    background: transparent;
+                }
+            }
+        }
+
+
+        .unassigned-rune-magic {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            background: var(--color-bg-option, #f0e8d0);
+            border: 1px solid var(--color-border-dark-tertiary, #a8926b);
+            border-radius: 3px;
+            padding: 4px 8px;
+            margin-bottom: 4px;
+        }
+
+        .cult-section {
+            margin-bottom: 1.5rem;
+
+            .cult-header {
+                padding: 4px 6px;
+                cursor: pointer;
+
+                h2 {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+
+                    img.rune {
+                        height: 20px;
+                        width: 20px;
+                        object-fit: contain;
+                        vertical-align: middle;
+                    }
+
+                    .small-size {
+                        font-size: 0.75em;
+                        font-weight: normal;
+                        margin-left: auto;
+                    }
+
+                    .warning {
+                        color: var(--color-text-dark-warn, #a00);
+                    }
+                }
+
+                .cult-meta {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.25rem;
+                    font-size: 0.85em;
+                    padding: 2px 0;
+
+                    .cult-meta-row {
+                        display: flex;
+                        flex-wrap: nowrap;
+                        gap: 0.5rem 1.5rem;
+                        justify-content: space-between;
+                        min-width: 0;
+
+                        >span,
+                        >div {
+                            flex: 1 1 auto;
+                            min-width: 0;
+                            overflow: hidden;
+                            display: -webkit-box;
+                            -webkit-box-orient: vertical;
+                            -webkit-line-clamp: 2;
+                            line-clamp: 2;
+
+                            // Bold label on its own line, content follows below
+                            >b:first-child {
+                                display: block;
+                            }
+
+                            // Flatten block elements inside enriched HTML content
+                            p,
+                            div,
+                            br {
+                                display: inline;
+                                margin: 0;
+                            }
+                        }
+
+                        >span.rune-points {
+                            flex: 0 0 auto;
+                            display: block; // override line-clamp display
+                        }
+
+                        >div.joined-cults {
+                            flex: 0 0 auto;
+                            min-width: 8em;
+                        }
+                    }
+
+                    input[type="number"] {
+                        width: 3em;
+                        text-align: center;
+                        font-size: 12px;
+                        border: 1px solid transparent;
+                        border-radius: 3px;
+                        background: transparent;
+                        box-shadow: none;
+                        transition: none;
+
+                        &:hover {
+                            border-color: rgb(255 255 255 / 20%);
+                            box-shadow: none;
+                        }
+
+                        &:focus {
+                            outline: none;
+                            border-color: rgb(255 255 255 / 40%);
+                            box-shadow: none;
+                        }
+                    }
+                }
+            }
+        }
+
+        .cult-cha-limit {
+            text-align: right;
+            font-size: 0.85em;
+            padding: 2px 0;
+        }
+
+        .grid.runemagic.item-list {
+            grid-template-columns: 30px auto repeat(8, auto);
+        }
+
+        .rune-magic-row {
+            display: contents;
+
+            >* {
+                padding: 2px;
+                position: relative;
+                display: flex;
+                align-items: center;
+                width: 100%;
+
+                img {
+                    max-width: 26px;
+                    max-height: 26px;
+                    object-fit: contain;
+                }
+
+                img.rune {
+                    height: 16px;
+                    width: 16px;
+                    mix-blend-mode: overlay;
+                    border: none;
+                    margin: 0 1px;
+                }
+
+                img.common {
+                    height: 16px;
+                    width: 16px;
+                    border: none;
+                    margin: 0 1px;
+                    opacity: 0.4;
+                    filter: grayscale(1);
+                }
+
+                &.text-center {
+                    justify-content: center;
+                }
+
+                &.text-right {
+                    justify-content: flex-end;
+                }
+            }
+
+            &:nth-child(odd)>* {
+                background: var(--rqg-table-alternate-background);
+            }
+
+            &:hover>* {
+                background: rgb(139 90 43 / 18%);
+            }
+
+            &:active>* {
+                background: rgb(139 90 43 / 30%);
             }
         }
     }

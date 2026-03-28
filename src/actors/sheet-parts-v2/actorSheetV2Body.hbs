@@ -2,10 +2,7 @@
   {{> actorSheetV2Combat}}
   {{#if showUiSection.runes}}{{> actorSheetV2Runes}}{{/if}}
   {{#if showUiSection.spiritMagic}}{{> actorSheetV2SpiritMagic}}{{/if}}
-  <div class="tab tab-placeholder" data-group="primary" data-tab="runemagic">
-    <p class="norse text-center">{{localize "RQG.Actor.Nav.RuneMagic"}}</p>
-    <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
-  </div>
+  {{#if showUiSection.runeMagic}}{{> actorSheetV2RuneMagic}}{{/if}}
   {{#if showUiSection.skills}}{{> actorSheetV2Skills}}{{/if}}
   <div class="tab tab-placeholder" data-group="primary" data-tab="gear">
     <p class="norse text-center">{{localize "RQG.Actor.Nav.Gear"}}</p>

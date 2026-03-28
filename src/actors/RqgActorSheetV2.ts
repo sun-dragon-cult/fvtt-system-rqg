@@ -40,7 +40,9 @@ import { passionMenuOptions } from "./context-menus/passion-context-menu";
 import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
+import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -275,38 +277,76 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       tabs.bind(this.element);
     }
 
-    // Context menus
+    // Cult tab navigation (rune magic tab, only present when multiple cults)
+    const cultNavEl = this.element.querySelector("nav.cult-tabs");
+    if (cultNavEl) {
+      const cultTabs = new foundry.applications.ux.Tabs({
+        navSelector: ".cult-tabs",
+        contentSelector: ".cult-body",
+        initial: "",
+      });
+      cultTabs.bind(this.element);
+    }
+
+    // Context menus — all V2 menus use fixed (mouse-position) positioning
+    const ctxMenuOptions = {
+      fixed: true,
+      onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
+      onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
+    };
     new RqgContextMenu(
       this.element,
       ".characteristic.contextmenu",
       characteristicMenuOptions(this.actor, this.document.token),
+      ctxMenuOptions,
     );
-    new RqgContextMenu(this.element, ".combat.contextmenu", combatMenuOptions(this.actor));
+    new RqgContextMenu(
+      this.element,
+      ".combat.contextmenu",
+      combatMenuOptions(this.actor),
+      ctxMenuOptions,
+    );
     new RqgContextMenu(
       this.element,
       ".hit-location.contextmenu",
       hitLocationMenuOptions(this.actor),
+      ctxMenuOptions,
     );
     new RqgContextMenu(
       this.element,
       ".rune.contextmenu",
       runeMenuOptions(this.actor, this.document.token ?? undefined),
+      ctxMenuOptions,
     );
-    new RqgContextMenu(this.element, ".cult.contextmenu", cultMenuOptions(this.actor));
+    new RqgContextMenu(
+      this.element,
+      ".cult.contextmenu",
+      cultMenuOptions(this.actor),
+      ctxMenuOptions,
+    );
     new RqgContextMenu(
       this.element,
       ".skill.contextmenu",
       skillMenuOptions(this.actor, this.document.token ?? undefined),
+      ctxMenuOptions,
     );
     new RqgContextMenu(
       this.element,
       ".passion.contextmenu",
       passionMenuOptions(this.actor, this.document.token ?? undefined),
+      ctxMenuOptions,
     );
     new RqgContextMenu(
       this.element,
       ".spirit-magic.contextmenu",
       spiritMagicMenuOptions(this.actor),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".rune-magic.contextmenu",
+      runeMagicMenuOptions(this.actor),
+      ctxMenuOptions,
     );
 
     // RQID link click handlers
@@ -498,6 +538,36 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           setTimeout(async () => {
             if (clickCount === 1) {
               await item.spiritMagicRoll();
+            }
+            clickCount = 0;
+          }, CONFIG.RQG.dblClickTimeout);
+        }
+      });
+    });
+
+    // Roll Rune Magic
+    this.element.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = this.actor.items.get(itemId) as RuneMagicItem | undefined;
+      assertDocumentSubType<RuneMagicItem>(
+        item,
+        ItemTypeEnum.RuneMagic,
+        `Couldn't find item [${itemId}] to roll Rune Magic`,
+      );
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+        if (clickCount >= 2) {
+          if (item.system.points === 1) {
+            await item.runeMagicRollImmediate();
+          } else {
+            await item.runeMagicRoll();
+          }
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await item.runeMagicRoll();
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

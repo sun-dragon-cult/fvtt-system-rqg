@@ -72,7 +72,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
       return acc;
     }, []);
 
-    return Math.max(...runeChances);
+    return runeChances.length > 0 ? Math.max(...runeChances) : 0;
   }
 
   /*
