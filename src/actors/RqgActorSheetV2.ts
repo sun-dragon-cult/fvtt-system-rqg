@@ -32,6 +32,7 @@ import * as DataPrep from "./rqgActorSheetDataPrep";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
 import { RqgContextMenu } from "../foundryUi/RqgContextMenu";
+import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
 import { cultMenuOptions } from "./context-menus/cult-context-menu";
@@ -200,6 +201,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         incorrectRunes,
       ),
       enrichedUnspecifiedSkill: await DataPrep.getUnspecifiedSkillText(this.actor),
+
+      // Background tab
+      homelands: Object.values(HomeLandEnum),
+      occupationOptions: Object.values(OccupationEnum).map((o) => ({
+        value: o,
+        label: o ? localize(`RQG.Actor.Background.Occupation.${o}`) : "",
+      })),
+      actorWizardFeatureFlag: game.settings?.get(systemId, "actor-wizard-feature-flag") ?? false,
     };
   }
 
@@ -438,6 +447,25 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
         (createdItems[0] as RqgItem)?.sheet?.render(true);
+      });
+    });
+
+    // Reputation roll — single click opens dialog, double click rolls immediately
+    this.element.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
+      let clickCount = 0;
+      el.addEventListener("click", async (ev: MouseEvent) => {
+        clickCount = Math.max(clickCount, ev.detail);
+        if (clickCount >= 2) {
+          await this.actor.reputationRollImmediate();
+          clickCount = 0;
+        } else if (clickCount === 1) {
+          setTimeout(async () => {
+            if (clickCount === 1) {
+              await this.actor.reputationRoll();
+            }
+            clickCount = 0;
+          }, 250);
+        }
       });
     });
 

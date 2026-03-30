@@ -9,6 +9,11 @@
 
 .rqg {
 
+  // Chrome anchors the datalist dropdown arrow on line-height; fix vertical centering
+  input[list] {
+    line-height: 1rem;
+  }
+
   input[readonly],
   select[readonly],
   textarea[readonly] {

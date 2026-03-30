@@ -183,12 +183,6 @@
 // All color/theme concerns are handled by --rqg-color-header-* variables above.
 .application.rqg.item-sheet {
 
-  // Chrome anchors the datalist dropdown arrow based on line-height;
-  // setting it explicitly centres the arrow vertically in any input with a list.
-  input[list] {
-    line-height: 1rem;
-  }
-
   header.item-sheet-header {
     margin: -1rem -1rem 0;
     padding: 0.5rem 1rem;
