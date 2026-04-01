@@ -44,22 +44,38 @@
           <input id="species-{{id}}" name="system.background.species"
             value="{{system.background.species}}" type="text" />
         {{else}}
-          {{#if system.background.species}}
-            <label>{{localize "RQG.Actor.Background.Species"}}</label>
-            <span>{{system.background.species}}</span>
+          {{#if actorWizardFeatureFlag}}
+            {{#unless system.background.speciesRqidLink.rqid}}
+              {{#if system.background.species}}
+                <label>{{localize "RQG.Actor.Background.Species"}}</label>
+                <span>{{system.background.species}}</span>
+              {{/if}}
+            {{/unless}}
+          {{else}}
+            {{#if system.background.species}}
+              <label>{{localize "RQG.Actor.Background.Species"}}</label>
+              <span>{{system.background.species}}</span>
+            {{/if}}
           {{/if}}
         {{/edit-mode}}
 
         {{#if actorWizardFeatureFlag}}
-          <label></label>
-          {{> rqidLinkDropzone
-            rqidLink=system.background.speciesRqidLink
-            dropzoneData="background.speciesRqidLink"
-            dropDocumentNames="JournalEntry, JournalEntryPage"
-            showDeleteFromPropertyName="background.speciesRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
-          }}
+          {{#edit-mode system.editMode "all"}}
+            <label></label>
+            {{> rqidLinkDropzone
+              rqidLink=system.background.speciesRqidLink
+              dropzoneData="background.speciesRqidLink"
+              dropDocumentNames="JournalEntry, JournalEntryPage"
+              showDeleteFromPropertyName="background.speciesRqidLink"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceJournal"
+            }}
+          {{else}}
+            {{#if system.background.speciesRqidLink.rqid}}
+              <label>{{localize "RQG.Actor.Background.Species"}}</label>
+              {{> rqidLink rqidLink=system.background.speciesRqidLink}}
+            {{/if}}
+          {{/edit-mode}}
         {{/if}}
       </div>
     </fieldset>
@@ -163,20 +179,39 @@
             {{selectOptions occupationOptions selected=system.background.occupation}}
           </select>
         {{else}}
-          {{#if system.background.occupation}}
-            <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
-            <span>{{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}</span>
+          {{#if actorWizardFeatureFlag}}
+            {{#unless system.background.currentOccupationRqidLink.rqid}}
+              {{#if system.background.occupation}}
+                <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
+                <span>{{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}</span>
+              {{/if}}
+            {{/unless}}
+          {{else}}
+            {{#if system.background.occupation}}
+              <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
+              <span>{{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}</span>
+            {{/if}}
           {{/if}}
         {{/edit-mode}}
 
         {{#if actorWizardFeatureFlag}}
-          <label></label>
-          {{> rqidLink
-            rqidLink=system.background.currentOccupationRqidLink
-            showDeleteFromPropertyName="background.currentOccupationRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
-            showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOccupation"
-          }}
+          {{#edit-mode system.editMode "all"}}
+            <label></label>
+            {{> rqidLinkDropzone
+              rqidLink=system.background.currentOccupationRqidLink
+              dropzoneData="background.currentOccupationRqidLink"
+              dropDocumentNames="Item"
+              dropDocumentTypes="occupation"
+              showDeleteFromPropertyName="background.currentOccupationRqidLink"
+              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectOccupation"
+              showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceOccupation"
+            }}
+          {{else}}
+            {{#if system.background.currentOccupationRqidLink.rqid}}
+              <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
+              {{> rqidLink rqidLink=system.background.currentOccupationRqidLink}}
+            {{/if}}
+          {{/edit-mode}}
         {{/if}}
 
         {{#edit-mode system.editMode "all"}}
@@ -219,69 +254,142 @@
         <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
         <div class="key-value-grid">
           <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-          <div>
-            {{> rqidLinkDropzone
-              rqidLink=system.background.homelandJournalRqidLink
-              dropzoneData="background.homelandJournalRqidLink"
-              dropDocumentNames="JournalEntry, JournalEntryPage"
-              showDeleteFromPropertyName="background.homelandJournalRqidLink"
-              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            }}
-            {{#unless system.background.homelandJournalRqidLink.rqid}}
-              {{#if system.background.homeland}}
-                <span class="rqid-fallback-text">{{system.background.homeland}}</span>
+          <div class="rqid-dropzone-wrap">
+            {{#edit-mode system.editMode "all"}}
+              {{> rqidLinkDropzone
+                rqidLink=system.background.homelandJournalRqidLink
+                dropzoneData="background.homelandJournalRqidLink"
+                dropDocumentNames="JournalEntry, JournalEntryPage"
+                showDeleteFromPropertyName="background.homelandJournalRqidLink"
+                showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              }}
+              {{#unless system.background.homelandJournalRqidLink.rqid}}
+                <input
+                  name="system.background.homeland"
+                  value="{{system.background.homeland}}"
+                  type="text"
+                />
+              {{/unless}}
+            {{else}}
+              {{#if system.background.homelandJournalRqidLink.rqid}}
+                {{> rqidLink rqidLink=system.background.homelandJournalRqidLink}}
+              {{else}}
+                {{#if system.background.homeland}}
+                  <span class="rqid-fallback-text">{{system.background.homeland}}</span>
+                {{/if}}
               {{/if}}
-            {{/unless}}
+            {{/edit-mode}}
           </div>
 
           <label>{{localize "RQG.Actor.Background.Region"}}</label>
-          {{> rqidLinkDropzone
-            rqidLink=system.background.regionJournalRqidLink
-            dropzoneData="background.regionJournalRqidLink"
-            dropDocumentNames="JournalEntry, JournalEntryPage"
-            showDeleteFromPropertyName="background.regionJournalRqidLink"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
+          <div class="rqid-dropzone-wrap">
+            {{#edit-mode system.editMode "all"}}
+              {{> rqidLinkDropzone
+                rqidLink=system.background.regionJournalRqidLink
+                dropzoneData="background.regionJournalRqidLink"
+                dropDocumentNames="JournalEntry, JournalEntryPage"
+                showDeleteFromPropertyName="background.regionJournalRqidLink"
+                showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              }}
+              {{#unless system.background.regionJournalRqidLink.rqid}}
+                <input
+                  name="system.background.town"
+                  value="{{system.background.town}}"
+                  type="text"
+                />
+              {{/unless}}
+            {{else}}
+              {{#if system.background.regionJournalRqidLink.rqid}}
+                {{> rqidLink rqidLink=system.background.regionJournalRqidLink}}
+              {{else}}
+                {{#if system.background.town}}
+                  <span class="rqid-fallback-text">{{system.background.town}}</span>
+                {{/if}}
+              {{/if}}
+            {{/edit-mode}}
+          </div>
 
           <label>{{localize "RQG.Actor.Background.Cultures"}}</label>
-          {{> rqidLinkArrayDropzone
-            rqidLinkArray=system.background.cultureJournalRqidLinks
-            dropzoneData="background.cultureJournalRqidLinks"
-            dropDocumentNames="JournalEntry, JournalEntryPage"
-            showDeleteFromPropertyName="background.cultureJournalRqidLinks"
-            showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-          }}
-
-          <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
-          <div>
+          {{#edit-mode system.editMode "all"}}
             {{> rqidLinkArrayDropzone
-              rqidLinkArray=system.background.tribeJournalRqidLinks
-              dropzoneData="background.tribeJournalRqidLinks"
+              rqidLinkArray=system.background.cultureJournalRqidLinks
+              dropzoneData="background.cultureJournalRqidLinks"
               dropDocumentNames="JournalEntry, JournalEntryPage"
-              showDeleteFromPropertyName="background.tribeJournalRqidLinks"
+              showDeleteFromPropertyName="background.cultureJournalRqidLinks"
               showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
             }}
-            {{#unless system.background.tribeJournalRqidLinks}}
-              {{#if system.background.tribe}}
-                <span class="rqid-fallback-text">{{system.background.tribe}}</span>
+          {{else}}
+            {{#if system.background.cultureJournalRqidLinks.length}}
+              <div class="rqid-area">
+                {{#each system.background.cultureJournalRqidLinks}}
+                  {{> rqidLink rqidLink=this}}
+                {{/each}}
+              </div>
+            {{/if}}
+          {{/edit-mode}}
+
+          <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
+          <div class="rqid-dropzone-wrap">
+            {{#edit-mode system.editMode "all"}}
+              {{> rqidLinkArrayDropzone
+                rqidLinkArray=system.background.tribeJournalRqidLinks
+                dropzoneData="background.tribeJournalRqidLinks"
+                dropDocumentNames="JournalEntry, JournalEntryPage"
+                showDeleteFromPropertyName="background.tribeJournalRqidLinks"
+                showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              }}
+              {{#unless system.background.tribeJournalRqidLinks.length}}
+                <input
+                  name="system.background.tribe"
+                  value="{{system.background.tribe}}"
+                  type="text"
+                />
+              {{/unless}}
+            {{else}}
+              {{#if system.background.tribeJournalRqidLinks.length}}
+                <div class="rqid-area">
+                  {{#each system.background.tribeJournalRqidLinks}}
+                    {{> rqidLink rqidLink=this}}
+                  {{/each}}
+                </div>
+              {{else}}
+                {{#if system.background.tribe}}
+                  <span class="rqid-fallback-text">{{system.background.tribe}}</span>
+                {{/if}}
               {{/if}}
-            {{/unless}}
+            {{/edit-mode}}
           </div>
 
           <label>{{localize "RQG.Actor.Background.Clans"}}</label>
-          <div>
-            {{> rqidLinkArrayDropzone
-              rqidLinkArray=system.background.clanJournalRqidLinks
-              dropzoneData="background.clanJournalRqidLinks"
-              dropDocumentNames="JournalEntry, JournalEntryPage"
-              showDeleteFromPropertyName="background.clanJournalRqidLinks"
-              showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
-            }}
-            {{#unless system.background.clanJournalRqidLinks}}
-              {{#if system.background.clan}}
-                <span class="rqid-fallback-text">{{system.background.clan}}</span>
+          <div class="rqid-dropzone-wrap">
+            {{#edit-mode system.editMode "all"}}
+              {{> rqidLinkArrayDropzone
+                rqidLinkArray=system.background.clanJournalRqidLinks
+                dropzoneData="background.clanJournalRqidLinks"
+                dropDocumentNames="JournalEntry, JournalEntryPage"
+                showDeleteFromPropertyName="background.clanJournalRqidLinks"
+                showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectJournal"
+              }}
+              {{#unless system.background.clanJournalRqidLinks.length}}
+                <input
+                  name="system.background.clan"
+                  value="{{system.background.clan}}"
+                  type="text"
+                />
+              {{/unless}}
+            {{else}}
+              {{#if system.background.clanJournalRqidLinks.length}}
+                <div class="rqid-area">
+                  {{#each system.background.clanJournalRqidLinks}}
+                    {{> rqidLink rqidLink=this}}
+                  {{/each}}
+                </div>
+              {{else}}
+                {{#if system.background.clan}}
+                  <span class="rqid-fallback-text">{{system.background.clan}}</span>
+                {{/if}}
               {{/if}}
-            {{/unless}}
+            {{/edit-mode}}
           </div>
         </div>
       </fieldset>
@@ -290,12 +398,10 @@
   </div>{{!-- .background-fieldsets --}}
 
   {{!-- Biography rich text editor --}}
-  {{editor
-    enrichedBiography
-    target="system.background.biography"
-    button=true
-    engine="prosemirror"
-    editable=isEditable
-  }}
+  <prose-mirror
+    name="system.background.biography"
+    value="{{system.background.biography}}"
+    toggled
+  >{{{enrichedBiography}}}</prose-mirror>
 
 </section>

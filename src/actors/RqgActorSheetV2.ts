@@ -42,8 +42,19 @@ import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
+import {
+  extractDropInfo,
+  getAllowedDropDocumentNames,
+  hasRqid,
+  isAllowedDocumentNames,
+  onDragEnter,
+  onDragLeave,
+  updateRqidLink,
+} from "../documents/dragDrop";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import { ActorWizard } from "../applications/actorWizardApplication";
+import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -104,6 +115,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         // onClick is supported at runtime but not in the type definition
         onClick: () => {
           this.actor.update({ system: { editMode: !this.actor.system.editMode } });
+        },
+      } as any);
+    }
+    if (
+      game.settings?.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
+      !this.actor.getFlag(systemId, actorWizardFlags)?.actorWizardComplete &&
+      !this.actor.getFlag(systemId, actorWizardFlags)?.isActorTemplate
+    ) {
+      controls.unshift({
+        icon: "fas fa-user-edit",
+        label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
+        action: "openActorWizard",
+        onClick: () => {
+          new ActorWizard(this.actor, {}).render(true);
         },
       } as any);
     }
@@ -360,6 +385,41 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // RQID link click handlers
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
+
+    // Delete handlers for RQID links (single link and link arrays)
+    this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
+      const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
+      const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
+      el.addEventListener("click", async () => {
+        const deleteFromProperty = foundry.utils.getProperty(
+          this.actor.system as object,
+          deleteFromPropertyName,
+        );
+        const updateKey = `system.${deleteFromPropertyName}`;
+        if (Array.isArray(deleteFromProperty)) {
+          const newValueArray = (deleteFromProperty as RqidLink[]).filter(
+            (r) => r.rqid !== deleteRqid,
+          );
+          await this.actor.update({ [updateKey]: newValueArray });
+        } else {
+          await this.actor.update({ [updateKey]: "" });
+        }
+      });
+    });
+
+    // RQID dropzones (wizard background tab and any other dropzone-enabled fields)
+    this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
+      if (elem.dataset["rqidDropzoneBound"] === "true") {
+        return;
+      }
+      elem.dataset["rqidDropzoneBound"] = "true";
+      elem.addEventListener("dragenter", (event) => onDragEnter(event as DragEvent));
+      elem.addEventListener("dragleave", (event) => onDragLeave(event as DragEvent));
+      elem.addEventListener("dragover", (event) => event.preventDefault());
+      elem.addEventListener("drop", (event) => {
+        void this._onDropRqidDocument(event as DragEvent);
+      });
+    });
 
     // Profile image click to open FilePicker (AppV2 convention: data-action)
     if (options.isFirstRender) {
@@ -794,5 +854,53 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
     const updateData = itemsToSort.map((item) => ({ _id: item.id, sort: item.sort }));
     await actor.updateEmbeddedDocuments("Item", updateData);
+  }
+
+  private async _onDropRqidDocument(event: DragEvent): Promise<boolean> {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as {
+      type?: string;
+      uuid?: string;
+    } | null;
+    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
+    if (!isAllowedDocumentNames(data?.type, allowedDropDocumentNames)) {
+      return false;
+    }
+
+    switch (data?.type) {
+      case "Item":
+      case "JournalEntry":
+      case "JournalEntryPage": {
+        if (!data.uuid) {
+          return false;
+        }
+        const {
+          droppedDocument,
+          dropZoneData: targetPropertyName,
+          isAllowedToDrop,
+          allowDuplicates,
+        } = await extractDropInfo<foundry.abstract.Document.Any>(event, {
+          type: data.type,
+          uuid: data.uuid,
+        } as any);
+
+        if (!isAllowedToDrop || !hasRqid(droppedDocument)) {
+          return false;
+        }
+
+        await updateRqidLink(
+          this.actor as foundry.abstract.Document.Any,
+          targetPropertyName,
+          droppedDocument,
+          allowDuplicates,
+        );
+        return true;
+      }
+      default:
+        isAllowedDocumentNames(data?.type, ["Item", "JournalEntry", "JournalEntryPage"]);
+        return false;
+    }
   }
 }

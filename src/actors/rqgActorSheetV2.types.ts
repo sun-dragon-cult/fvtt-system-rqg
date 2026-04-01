@@ -112,4 +112,13 @@ export interface RqgActorSheetV2Context {
 
   /** Visibility flags for UI sections. */
   showUiSection: UiSections;
+
+  // --- Background tab data ---
+
+  /** List of homeland enum values for legacy fallback selectors. */
+  homelands: string[];
+  /** Localized occupation options for the select input. */
+  occupationOptions: SelectOptionData<string>[];
+  /** Feature flag controlling actor wizard-specific UI in background tab. */
+  actorWizardFeatureFlag: boolean;
 }

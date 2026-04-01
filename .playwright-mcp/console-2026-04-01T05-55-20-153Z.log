@@ -1,0 +1,298 @@
+[44355950ms] [WARNING] Error: The V1 Application framework is deprecated, and will be removed in a later core software version. Please use the V2 version of the Application framework available under foundry.applications.api.ApplicationV2.
+Deprecated since Version 13
+Backwards-compatible support will be removed in Version 16
+    at Object.logCompatibilityWarning (http://localhost:30001/scripts/foundry.mjs:6715:17)
+    at new Application (http://localhost:30001/scripts/foundry.mjs:37008:21)
+    at new FormApplication (http://localhost:30001/scripts/foundry.mjs:38040:5)
+    at new DocumentSheet (http://localhost:30001/scripts/foundry.mjs:38592:5)
+    at new RqgActorSheet (http://localhost:30001/systems/rqg/src/actors/rqgActorSheet.ts:69:8)
+    at get sheet (http://localhost:30001/scripts/foundry.mjs:32507:25)
+    at RqgActor._onSheetChange (http://localhost:30001/scripts/foundry.mjs:33068:26)
+    at RqgActor._onUpdate (http://localhost:30001/scripts/foundry.mjs:32825:52)
+    at RqgActor._onUpdate (http://localhost:30001/scripts/foundry.mjs:41784:11)
+    at http://localhost:30001/scripts/foundry.mjs:58815:13 @ http://localhost:30001/scripts/foundry.mjs:6726
+[44697719ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:30001/systems/rqg/@vite/client:864
+[44697725ms] [ERROR] You have lost connection to the server, attempting to re-establish.  @ http://localhost:30001/scripts/foundry.mjs:115131
+[44699148ms] [LOG] Foundry VTT | Attempting to re-connect: 1.42 seconds @ http://localhost:30001/scripts/foundry.mjs:168872
+[44701482ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:30001/systems/rqg/rqg.css:0
+[44702475ms] [LOG] _______________________________________________________________
+ _____ ___  _   _ _   _ ____  ______   __ __     _______ _____
+|  ___/ _ \| | | | \ | |  _ \|  _ \ \ / / \ \   / |_   _|_   _|
+| |_ | | | | | | |  \| | | | | |_) \ V /   \ \ / /  | |   | |
+|  _|| |_| | |_| | |\  | |_| |  _ < | |     \ V /   | |   | |
+|_|   \___/ \___/|_| \_|____/|_| \_\|_|      \_/    |_|   |_|
+=============================================================== @ http://localhost:30001/scripts/foundry.mjs:181071
+[44702476ms] [LOG] Foundry VTT | Foundry Virtual Tabletop ESModule loaded @ http://localhost:30001/scripts/foundry.mjs:181072
+[44702491ms] [LOG] Foundry VTT | Reestablishing existing session 38079dc0c40e3c1e8d4d89d9 @ http://localhost:30001/scripts/foundry.mjs:181084
+[44702546ms] [LOG] Foundry VTT | Connected to server socket using session 38079dc0c40e3c1e8d4d89d9 @ http://localhost:30001/scripts/foundry.mjs:168846
+[44703227ms] [LOG] Foundry VTT | Initializing Foundry Virtual Tabletop Game @ http://localhost:30001/scripts/foundry.mjs:169002
+[44703227ms] [LOG] %c                                                                                            
+                                                                                            
+`7MM"""Mq.                                   .g8""8q.                                 mm    
+  MM   `MM.                                .dP'    `YM.                               MM    
+  MM   ,M9 `7MM  `7MM  `7MMpMMMb.  .gP"Ya  dM'      `MM `7MM  `7MM  .gP"Ya  ,pP"Ybd mmMMmm  
+  MMmmdM9    MM    MM    MM    MM ,M'   Yb MM        MM   MM    MM ,M'   Yb 8I   `"   MM    
+  MM  YM.    MM    MM    MM    MM 8M"""""" MM.      ,MP   MM    MM 8M"""""" `YMMMa.   MM    
+  MM   `Mb.  MM    MM    MM    MM YM.    , `Mb.    ,dP'   MM    MM YM.    , L.   I8   MM    
+.JMML. .JMM. `Mbod"YML..JMML  JMML.`Mbmmd'   `"bmmd"'     `Mbod"YML.`Mbmmd' M9mmmP'   `Mbmo 
+                                                 MMb                                        
+                                                  `bood'                                    
+              ,,                                             ,,                 
+  .g8"""bgd `7MM                                      mm   `7MM                 
+.dP'     `M   MM                                      MM     MM                 
+dM'       `   MM  ,pW"Wq.`7Mb,od8 ,6"Yb.  `7MMpMMMb.mmMMmm   MMpMMMb.   ,6"Yb.  
+MM            MM 6W'   `Wb MM' "'8)   MM    MM    MM  MM     MM    MM  8)   MM  
+MM.    `7MMF' MM 8M     M8 MM     ,pm9MM    MM    MM  MM     MM    MM   ,pm9MM  
+`Mb.     MM   MM YA.   ,A9 MM    8M   MM    MM    MM  MM     MM    MM  8M   MM  
+  `"bmmmdPY .JMML.`Ybmd9'.JMML.  `Moo9^Yo..JMML  JMML.`Mbmo.JMML  JMML.`Moo9^Yo.
+                                                                                
+                                                                                
+ color: #F3A71E @ http://localhost:30001/systems/rqg/src/rqg.ts:35
+[44703227ms] [LOG] RQG | Initializing the Runequest Glorantha Game System @ http://localhost:30001/systems/rqg/src/rqg.ts:39
+[44703244ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/combat-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703245ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/health/health.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703246ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/health/humanoid-hit-locations.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703246ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/health/default-hit-locations.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703247ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/health/hit-location-stats.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703248ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/combat.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703248ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703253ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2Combat.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703254ms] [LOG] Foundry VTT | Loaded localization file systems/rqg/i18n/en/uiContent.json @ http://localhost:30001/scripts/foundry.mjs:167816
+[44703258ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2Runes.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703259ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2Passions.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703260ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2SpiritMagic.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703263ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2RuneMagic.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703264ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2Skills.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703265ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts-v2/actorSheetV2Background.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703266ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703267ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703268ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/runes-tab/runes-power.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703268ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/runes-tab/runes-form.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703270ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/runes-tab/runes-condition.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703275ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/runes-tab/grid-rune.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703276ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/spirit-magic-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703276ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/rune-magic-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703277ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/rune-magic-cult-section.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703277ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/sorcery-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703278ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703278ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703280ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/gear-tab/gear-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703281ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/gear-tab/physical-item-location.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703281ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/passions-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703282ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/background-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703282ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/actors/sheet-parts/activeeffects-debug-tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703283ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/applications/actor-wizard-sheet-parts/creation-species.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703283ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/applications/actor-wizard-sheet-parts/creation-homeland.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703284ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/items/sheet-parts/itemActiveEffects.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703284ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/items/sheet-parts/itemCommonPhysical.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703284ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/applications/app-parts/rollModes.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703284ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/sheet-partials/rqidLink.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703285ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/sheet-partials/rqidLinkDropzone.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703286ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/sheet-partials/rqidLinkArrayDropzone.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703287ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/sheet-partials/rqidLinkSelector.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44703288ms] [LOG] Foundry VTT | Loaded localization file lang/en.json @ http://localhost:30001/scripts/foundry.mjs:167816
+[44703455ms] [LOG] Foundry VTT | Synchronized official game time in 4ms @ http://localhost:30001/scripts/foundry.mjs:167465
+[44704969ms] [LOG] Foundry VTT | Retrieved and compiled template templates/ui/scene-navigation.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44704997ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44704997ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tab.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705010ms] [LOG] Foundry VTT | Retrieved and compiled template templates/ui/players.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705037ms] [LOG] Foundry VTT | Retrieved and compiled template templates/ui/hotbar.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705050ms] [LOG] Foundry VTT | Retrieved and compiled template templates/ui/scene-controls-layers.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705051ms] [LOG] Foundry VTT | Retrieved and compiled template templates/ui/scene-controls-tools.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705065ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/chat/log.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705066ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/chat/notifications.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705066ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/chat/input.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705087ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/combat/header.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705098ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/combat/tracker.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705099ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/combat/footer.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705130ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:30001/systems/rqg/assets/images/token-effects/bearsskin.svg:0
+[44705131ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/directory/header.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705132ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/directory/directory.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705132ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/partials/document-partial.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705132ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/partials/folder-partial.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705135ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/directory/footer.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705164ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/playlist/controls.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705165ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/playlist/playlist-partial.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705165ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/playlist/playing.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705166ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/playlist/sound-partial.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705178ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/tabs/compendiums.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705179ms] [LOG] Foundry VTT | Retrieved and compiled template templates/sidebar/partials/pack-partial.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705206ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/foundryUi/settings.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705224ms] [LOG] Foundry VTT | Retrieved and compiled template templates/dice/tooltip.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705243ms] [LOG] Foundry VTT | Retrieved and compiled template templates/dice/roll.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705263ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/chat/chat-message.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705313ms] [LOG] Foundry VTT | Fonts loaded and ready. @ http://localhost:30001/scripts/foundry.mjs:75113
+[44705426ms] [WARNING] Your web browser does not have hardware acceleration enabled. This will severely impair the performance of Foundry Virtual Tabletop and cause graphical errors and anomalies. Be sure to enable hardware acceleration in your browser settings.  @ http://localhost:30001/scripts/foundry.mjs:115131
+[44705444ms] [LOG] Foundry VTT | Viewing Scene Scene @ http://localhost:30001/scripts/foundry.mjs:46162
+[44705601ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/rolls/AbilityRoll/abilityRollTooltip.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705680ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/rolls/AbilityRoll/abilityRoll.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705791ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/rolls/DamageRoll/damageRollTooltip.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44705794ms] [LOG] Foundry VTT | Drawing game canvas for scene Scene @ http://localhost:30001/scripts/foundry.mjs:94309
+[44705962ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/rolls/DamageRoll/damageRoll.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44706043ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/rolls/CharacteristicRoll/characteristicRollTooltip.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44706138ms] [LOG] Foundry VTT | Retrieved and compiled template systems/rqg/rolls/CharacteristicRoll/characteristicRoll.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44706326ms] [LOG] Loaded icons/svg/combat.svg (1.52%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706330ms] [LOG] Loaded icons/svg/cowled.svg (3.03%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706333ms] [LOG] Loaded icons/svg/aura.svg (4.55%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706340ms] [LOG] Loaded icons/svg/padlock.svg (6.06%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706345ms] [LOG] Loaded icons/svg/up.svg (7.58%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706351ms] [LOG] Loaded icons/svg/down.svg (9.09%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706355ms] [LOG] Loaded icons/svg/skull.svg (10.61%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706359ms] [LOG] Loaded icons/svg/light.svg (12.12%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706377ms] [LOG] Loaded icons/svg/light-off.svg (13.64%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706382ms] [LOG] Loaded icons/svg/explosion.svg (15.15%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706386ms] [LOG] Loaded icons/svg/sound.svg (16.67%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706391ms] [LOG] Loaded icons/svg/sound-off.svg (18.18%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706395ms] [LOG] Loaded icons/svg/door-closed-outline.svg (19.70%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706400ms] [LOG] Loaded icons/svg/door-open-outline.svg (21.21%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706405ms] [LOG] Loaded icons/svg/door-secret-outline.svg (22.73%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706410ms] [LOG] Loaded systems/rqg/assets/images/token-effects/dead.svg (24.24%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706415ms] [LOG] Loaded icons/svg/door-locked-outline.svg (25.76%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706466ms] [LOG] Loaded icons/svg/wall-direction.svg (27.27%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706494ms] [LOG] Loaded systems/rqg/assets/images/token-effects/unconscious.svg (28.79%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706497ms] [LOG] Loaded systems/rqg/assets/images/token-effects/shock.svg (30.30%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706499ms] [LOG] Loaded systems/rqg/assets/images/token-effects/bleeding.svg (31.82%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706505ms] [LOG] Loaded systems/rqg/assets/images/token-effects/protection1.svg (33.33%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706510ms] [LOG] Loaded systems/rqg/assets/images/token-effects/protection2.svg (34.85%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706512ms] [LOG] Loaded systems/rqg/assets/images/token-effects/protection3.svg (36.36%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706514ms] [LOG] Loaded systems/rqg/assets/images/token-effects/protection4.svg (37.88%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706557ms] [LOG] Loaded systems/rqg/assets/images/token-effects/strength.svg (39.39%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706564ms] [LOG] Loaded systems/rqg/assets/images/token-effects/befuddled.svg (40.91%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706611ms] [LOG] Loaded systems/rqg/assets/images/token-effects/bladesharp.svg (42.42%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706613ms] [LOG] Loaded systems/rqg/assets/images/token-effects/bludgeon.svg (43.94%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706622ms] [LOG] Loaded systems/rqg/assets/images/token-effects/coordination.svg (45.45%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706624ms] [LOG] Loaded systems/rqg/assets/images/token-effects/countermagic.svg (46.97%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706630ms] [LOG] Loaded systems/rqg/assets/images/token-effects/demoralize.svg (48.48%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706651ms] [LOG] Loaded systems/rqg/assets/images/token-effects/dullblade.svg (50.00%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706653ms] [LOG] Loaded systems/rqg/assets/images/token-effects/fanaticism.svg (51.52%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706696ms] [LOG] Loaded systems/rqg/assets/images/token-effects/fireblade.svg (53.03%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706699ms] [LOG] Loaded systems/rqg/assets/images/token-effects/glamour.svg (54.55%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706701ms] [LOG] Loaded systems/rqg/assets/images/token-effects/glue.svg (56.06%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706703ms] [LOG] Loaded systems/rqg/assets/images/token-effects/ironhand.svg (57.58%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706705ms] [LOG] Loaded systems/rqg/assets/images/token-effects/lantern.svg (59.09%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706708ms] [LOG] Loaded systems/rqg/assets/images/token-effects/light.svg (60.61%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706711ms] [LOG] Loaded systems/rqg/assets/images/token-effects/mobility.svg (62.12%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706714ms] [LOG] Loaded systems/rqg/assets/images/token-effects/parry.svg (63.64%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706717ms] [LOG] Loaded systems/rqg/assets/images/token-effects/shimmer.svg (65.15%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706719ms] [LOG] Loaded systems/rqg/assets/images/token-effects/slow.svg (66.67%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706723ms] [LOG] Loaded systems/rqg/assets/images/token-effects/spirit-screen.svg (68.18%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706727ms] [LOG] Loaded systems/rqg/assets/images/token-effects/vigor.svg (69.70%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706734ms] [LOG] Loaded systems/rqg/assets/images/token-effects/asleep.svg (71.21%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706736ms] [LOG] Loaded systems/rqg/assets/images/token-effects/prone.svg (72.73%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706739ms] [LOG] Loaded icons/svg/deaf.svg (74.24%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706748ms] [LOG] Loaded icons/svg/blind.svg (75.76%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706757ms] [LOG] Loaded icons/svg/terror.svg (77.27%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706762ms] [LOG] Loaded icons/svg/silenced.svg (78.79%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706766ms] [LOG] Loaded icons/svg/biohazard.svg (80.30%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706772ms] [LOG] Loaded icons/svg/poison.svg (81.82%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706776ms] [LOG] Loaded icons/svg/sun.svg (83.33%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706778ms] [LOG] Loaded systems/rqg/assets/images/token-effects/one.svg (84.85%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706780ms] [LOG] Loaded systems/rqg/assets/images/token-effects/two.svg (86.36%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706782ms] [LOG] Loaded systems/rqg/assets/images/token-effects/three.svg (87.88%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706816ms] [LOG] Loaded systems/rqg/assets/images/token-effects/four.svg (89.39%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706825ms] [LOG] Loaded icons/svg/net.svg (90.91%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706828ms] [LOG] Loaded systems/rqg/assets/images/token-effects/five.svg (92.42%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706830ms] [LOG] Loaded systems/rqg/assets/images/token-effects/six.svg (93.94%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706865ms] [LOG] Loaded modules/wiki-en-rqg/tokens/vasana-actor.webp (95.45%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706866ms] [LOG] Loaded modules/wiki-en-rqg/tokens/trolls-dark-token.webp (96.97%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44706868ms] [LOG] Loaded https://assets.forge-vtt.com/5eb950a53f01206d53f01e9a/sandene_dismas.Token.webp?1700391060651 (98.48%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44707150ms] [LOG] Loaded canvas/tokens/rings-steel.json (100.00%) @ http://localhost:30001/scripts/foundry.mjs:84287
+[44707168ms] [LOG] Foundry VTT | Drawing the HiddenCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707168ms] [LOG] Foundry VTT | Drawing the RenderedCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707169ms] [LOG] Foundry VTT | Drawing the EnvironmentCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707172ms] [LOG] Foundry VTT | Drawing the PrimaryCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707185ms] [LOG] Foundry VTT | Drawing the WeatherEffects canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707186ms] [LOG] Foundry VTT | Drawing the EffectsCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707186ms] [LOG] Foundry VTT | Drawing the CanvasBackgroundAlterationEffects canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707187ms] [LOG] Foundry VTT | Drawing the CanvasIlluminationEffects canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707187ms] [LOG] Foundry VTT | Drawing the CanvasColorationEffects canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707188ms] [LOG] Foundry VTT | Drawing the CanvasDarknessEffects canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707189ms] [LOG] Foundry VTT | Drawing the CanvasVisibility canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707199ms] [LOG] Foundry VTT | Drawing the InterfaceCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707204ms] [LOG] Foundry VTT | Drawing the GridLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707206ms] [LOG] Foundry VTT | Drawing the RegionLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707207ms] [LOG] Foundry VTT | Drawing the DrawingsLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707208ms] [LOG] Foundry VTT | Drawing the TemplateLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707300ms] [LOG] Foundry VTT | Drawing the TilesLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707301ms] [LOG] Foundry VTT | Drawing the WallsLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707303ms] [LOG] Foundry VTT | Drawing the RqgTokenLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707365ms] [LOG] Foundry VTT | Retrieved and compiled template templates/hud/waypoint-label.hbs @ http://localhost:30001/scripts/foundry.mjs:65844
+[44707417ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:30001/systems/rqg/assets/images/token-effects/bearsskin.svg:0
+[44707457ms] [ERROR] Error: Invalid Asset systems/rqg/assets/images/token-effects/bearsskin.svg
+    at loadTexture (http://localhost:30001/scripts/foundry.mjs:84679:42)
+    at async RqgToken._drawEffect (http://localhost:30001/scripts/foundry.mjs:140716:17)
+    at async Promise.allSettled (index 2)
+    at async RqgToken._drawEffects (http://localhost:30001/scripts/foundry.mjs:140698:5)
+    at async RqgToken._draw (http://localhost:30001/scripts/foundry.mjs:140105:5)
+    at async http://localhost:30001/scripts/foundry.mjs:82207:7
+    at async Promise.all (index 0)
+    at async RqgTokenLayer._draw (http://localhost:30001/scripts/foundry.mjs:91914:5)
+    at async RqgTokenLayer._draw (http://localhost:30001/scripts/foundry.mjs:147835:5)
+    at async http://localhost:30001/scripts/foundry.mjs:90024:7 @ http://localhost:30001/scripts/foundry.mjs:84686
+[44707529ms] [LOG] Worker TextureCompressor of FogExtractor | Initialized Worker @ http://localhost:30001/scripts/worker.js:71
+[44707637ms] [LOG] Foundry VTT | Drawing the SoundsLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707638ms] [LOG] Foundry VTT | Drawing the LightingLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707638ms] [LOG] Foundry VTT | Drawing the NotesLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707639ms] [LOG] Foundry VTT | Drawing the ControlsLayer canvas layer @ http://localhost:30001/scripts/foundry.mjs:90021
+[44707655ms] [LOG] Foundry VTT | Drawing the OverlayCanvasGroup canvas group @ http://localhost:30001/scripts/foundry.mjs:85136
+[44707673ms] [LOG] Applying buffered socket event: userActivity @ http://localhost:30001/scripts/foundry.mjs:168910
+[44707674ms] [LOG] Applying buffered socket event: userActivity @ http://localhost:30001/scripts/foundry.mjs:168910
+[44709745ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:30001/systems/rqg/assets/images/token-effects/bearsskin.svg:0
+[44710379ms] [LOG] Foundry VTT | Constructed index of rqg.documentation Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710379ms] [LOG] Foundry VTT | Constructed index of rqg.rqid-macros Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710380ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.clan-descriptions Compendium containing 2 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710381ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.combat-fumble Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710382ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.cult-descriptions Compendium containing 21 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710383ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.cults Compendium containing 25 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710383ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.culture-descriptions Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710384ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.adventurers Compendium containing 3 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710384ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.bestiary-animals Compendium containing 4 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710384ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.bestiary-chaos-monsters Compendium containing 3 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710385ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.bestiary-elder-races Compendium containing 3 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710386ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.bestiary-elementals Compendium containing 6 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710387ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.bestiary-mounts Compendium containing 2 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710388ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.bestiary-spirits Compendium containing 2 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710389ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.equipment-armor Compendium containing 38 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710391ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.equipment-gear Compendium containing 29 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710392ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.name-bases Compendium containing 3 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710393ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.name-tables Compendium containing 4 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710394ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.equipment-weapons Compendium containing 66 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710395ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.homeland-descriptions Compendium containing 6 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710396ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.homelands Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710396ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-beetles Compendium containing 9 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710397ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-birds-flying Compendium containing 8 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710398ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-birds-running Compendium containing 7 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710398ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-centaurs Compendium containing 10 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710399ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-dragons-manticores Compendium containing 10 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710400ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-dragonsnails-one-headed Compendium containing 3 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710401ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-dragonsnails-two-headed Compendium containing 4 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710402ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-four-legged-animals Compendium containing 7 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710403ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-four-legged-animals-winged Compendium containing 9 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710403ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-gorp Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710404ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-harpies Compendium containing 7 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710405ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-humanoids Compendium containing 7 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710406ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-humanoids-winged Compendium containing 9 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710407ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-mammoths-mastodons Compendium containing 8 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710408ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-scorpion-men Compendium containing 12 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710408ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-serpents Compendium containing 3 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710409ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-serpents-winged Compendium containing 6 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710409ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-spiders-giant Compendium containing 10 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710409ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-walktapi Compendium containing 15 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710410ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.hit-locations-wyverns Compendium containing 8 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710410ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.passions Compendium containing 4 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710411ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.passions-base Compendium containing 10 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710411ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.pc-runes Compendium containing 16 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710411ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.region-descriptions Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710412ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.rune-descriptions Compendium containing 33 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710414ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.runes Compendium containing 33 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710912ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.rune-magic-descriptions Compendium containing 97 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710915ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.rune-magic-spells Compendium containing 107 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710918ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.skill-descriptions Compendium containing 76 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710921ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.skills Compendium containing 119 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710924ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.skills-weapons Compendium containing 64 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710925ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.species-descriptions Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710927ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.spirit-magic-spells Compendium containing 40 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710928ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.spirit-magic-descriptions Compendium containing 40 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710929ms] [LOG] Foundry VTT | Constructed index of wiki-en-rqg.tribe-descriptions Compendium containing 1 entries @ http://localhost:30001/scripts/foundry.mjs:24936
+[44710930ms] [TIMEEND] RQG | Caching Runes took: 3254.4169921875 ms @ http://localhost:30001/systems/rqg/src/system/util.ts:229
+[44710932ms] [TIMEEND] RQG | Caching Hit Locations took: 1.4189453125 ms @ http://localhost:30001/systems/rqg/src/system/util.ts:242
