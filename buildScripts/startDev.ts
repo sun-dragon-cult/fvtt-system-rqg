@@ -1,0 +1,48 @@
+/**
+ * Thin wrapper around `vite` that resolves the Foundry port before starting.
+ *
+ * Usage:
+ *   pnpm dev        — use FOUNDRY_PORT from .env.local (or auto-detect)
+ *   pnpm dev 13     — use Foundry v13 (port 30013)
+ *   pnpm dev 30013  — same, explicit port
+ */
+
+import { spawn } from "child_process";
+import * as fs from "fs/promises";
+
+async function loadEnvLocal(): Promise<Record<string, string>> {
+  try {
+    const envLocalPath = new URL("../.env.local", import.meta.url).pathname;
+    const content = await fs.readFile(envLocalPath, "utf-8");
+    return Object.fromEntries(
+      content
+        .split("\n")
+        .map((line) => line.replace(/#.*$/, "").trim())
+        .filter((line) => /^[A-Z_][A-Z0-9_]*=/.test(line))
+        .map((line) => {
+          const eq = line.indexOf("=");
+          return [line.slice(0, eq), line.slice(eq + 1).trim()];
+        }),
+    );
+  } catch {
+    return {};
+  }
+}
+
+const env = await loadEnvLocal();
+
+const arg = process.argv[2];
+let foundryPort: string | undefined;
+
+if (arg != null) {
+  // Version shorthand (e.g. 13) or explicit port (e.g. 30013)
+  const n = Number(arg);
+  foundryPort = String(n < 1000 ? 30000 + n : n);
+} else {
+  foundryPort = process.env.FOUNDRY_PORT ?? env["FOUNDRY_PORT"];
+}
+
+spawn("vite", {
+  stdio: "inherit",
+  env: { ...process.env, ...env, ...(foundryPort ? { FOUNDRY_PORT: foundryPort } : {}) },
+}).on("exit", (code) => process.exit(code ?? 0));

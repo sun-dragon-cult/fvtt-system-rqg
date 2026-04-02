@@ -44,15 +44,38 @@ type HostData = {
   host: string;
 };
 
+async function loadEnvLocal(): Promise<Partial<Record<string, string>>> {
+  try {
+    const envLocalPath = new URL(".env.local", import.meta.url).pathname;
+    const content = await fs.readFile(envLocalPath, "utf-8");
+    return Object.fromEntries(
+      content
+        .split("\n")
+        .map((line) => line.replace(/#.*$/, "").trim())
+        .filter((line) => /^[A-Z_][A-Z0-9_]*=/.test(line))
+        .map((line) => {
+          const eq = line.indexOf("=");
+          return [line.slice(0, eq), line.slice(eq + 1).trim()];
+        }),
+    );
+  } catch {
+    return {};
+  }
+}
+
 export async function findFoundryHost(): Promise<HostData> {
-  const foundryHostNameEnv = process.env.FOUNDRY_HOST_NAME;
+  const localEnv = await loadEnvLocal();
+
+  const foundryHostNameEnv = process.env.FOUNDRY_HOST_NAME ?? localEnv.FOUNDRY_HOST_NAME;
   const hasHostEnv = foundryHostNameEnv != null;
   const foundryHost = foundryHostNameEnv ?? "localhost";
 
-  let foundryPort: number;
-  const envPortString = process.env.FOUNDRY_PORT;
+  const envPortString = process.env.FOUNDRY_PORT ?? localEnv.FOUNDRY_PORT;
 
   const isHostConfigured = hasHostEnv || envPortString != null;
+
+  const foundryNotRunning =
+    "If Foundry is not running please start it. Otherwise if Foundry is running on a custom address set FOUNDRY_HOST_NAME and FOUNDRY_PORT.";
 
   if (envPortString != null) {
     if (!/[0-9]+/.test(envPortString)) {
@@ -61,47 +84,72 @@ export async function findFoundryHost(): Promise<HostData> {
       );
     }
 
-    foundryPort = Number.parseInt(envPortString, 10);
-  } else {
-    foundryPort = 30013;
-  }
+    const foundryPort = Number.parseInt(envPortString, 10);
 
-  const pingResult = await ping(foundryHost, foundryPort);
-  if (pingResult.error == null) {
-    return { isWSLToWindows: false, isHostConfigured, host: pingResult.host };
-  }
+    const pingResult = await ping(foundryHost, foundryPort);
+    if (pingResult.error == null) {
+      return { isWSLToWindows: false, isHostConfigured, host: pingResult.host };
+    }
 
-  const foundryNotRuning =
-    "If Foundry is not running please start it. Otherwise if Foundry is running on a custom address set FOUNDRY_HOST_NAME and FOUNDRY_PORT.";
+    // If the environment variable in WSL isn't set also try reaching the host through Windows.
+    if (!hasHostEnv && (await isWSL())) {
+      const hostname = os.hostname();
+      const wslToWindowsPingResult = await ping(`${hostname}.local`, foundryPort);
+      if (wslToWindowsPingResult.error == null) {
+        return {
+          isWSLToWindows: true,
+          isHostConfigured,
+          host: wslToWindowsPingResult.host,
+        };
+      }
 
-  // If the environment variable in WSL isn't set also try reaching the host through Windows.
-  if (!hasHostEnv && (await isWSL())) {
-    // The default host of localhost won't work on WSL if the server is running on Windows.
-    // Reaching Windows is possible through `${hostname}.local`.
-    const hostname = os.hostname();
-
-    const wslToWindowsPingResult = await ping(`${hostname}.local`, foundryPort);
-    if (wslToWindowsPingResult.error == null) {
-      return {
-        isWSLToWindows: true,
-        isHostConfigured,
-        host: wslToWindowsPingResult.host,
-      };
+      throw new Error(
+        `Could not ping localhost:${foundryPort} (WSL) or ${hostname}.local:${foundryPort} (Windows)
+  ${foundryNotRunning}
+  WSL Error - ${formatError(pingResult.error)}
+  Windows Error - ${formatError(wslToWindowsPingResult.error)}`,
+      );
     }
 
     throw new Error(
-      `Could not ping localhost:${foundryHost} (WSL) or ${hostname}.local (Windows)
-  ${foundryNotRuning}
-  WSL Error - ${formatError(pingResult.error)}
-  Windows Error - ${formatError(wslToWindowsPingResult.error)}`,
+      `Could not ping localhost:${foundryPort}
+  ${foundryNotRunning}
+  Error: ${pingResult.error.message}`,
     );
   }
 
-  throw new Error(
-    `Could not ping localhost:${foundryHost}
-  ${foundryNotRuning}
-  Error: ${pingResult.error.message}`,
+  // No FOUNDRY_PORT specified — scan ports 30013..30025 and pick the highest responding one
+  // (convention: port 3001X = Foundry vX, e.g. 30013 = v13, 30014 = v14)
+  const scanPorts = Array.from({ length: 13 }, (_, i) => 30013 + i);
+  const wslHostname = !hasHostEnv && (await isWSL()) ? os.hostname() : null;
+
+  const results = await Promise.all(
+    scanPorts.map(async (port) => {
+      const local = await ping(foundryHost, port);
+      if (local.error == null) {
+        return { port, isWSL: false, host: local.host };
+      }
+      if (wslHostname) {
+        const wsl = await ping(`${wslHostname}.local`, port);
+        if (wsl.error == null) {
+          return { port, isWSL: true, host: wsl.host };
+        }
+      }
+      return null;
+    }),
   );
+
+  const responding = results.filter((r) => r != null);
+  if (responding.length === 0) {
+    throw new Error(
+      `Could not find a running Foundry instance on ports ${scanPorts[0]}–${scanPorts.at(-1)}.
+  ${foundryNotRunning}`,
+    );
+  }
+
+  // Pick the highest port (= latest Foundry version)
+  const best = responding.reduce((a, b) => (b.port > a.port ? b : a));
+  return { isWSLToWindows: best.isWSL, isHostConfigured, host: best.host };
 }
 
 type PingResult = { host: string; error?: never } | { host?: never; error: Error };
