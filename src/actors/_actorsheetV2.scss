@@ -13,6 +13,11 @@
   --rqg-color-wounded-border: #cc8060;
   --rqg-color-health-state: #ff6b6b;
   --rqg-color-sr-button-bg: #4a3820;
+  --rqg-unassigned-rm-bg: #d9c8aa;
+  --rqg-unassigned-rm-border: #7b6245;
+  --rqg-unassigned-rm-text: #1f1204;
+  --rqg-unassigned-rm-action: #3a2208;
+  --rqg-tree-border-strong: #8f6a32;
   --rqg-table-alternate-background: rgb(255 255 255 / 5%);
   --rqg-box-shadow-editor-content: inset 0 0 20px 0 #3a2a10, 0 0 3px 2px #3a2a10;
 
@@ -98,6 +103,11 @@
   --rqg-color-wounded-border: var(--rqg-highlight);
   --rqg-color-health-state: var(--rqg-highlight);
   --rqg-color-sr-button-bg: #e1c794;
+  --rqg-unassigned-rm-bg: #f0e8d0;
+  --rqg-unassigned-rm-border: #a8926b;
+  --rqg-unassigned-rm-text: #2f1f07;
+  --rqg-unassigned-rm-action: #5a3a10;
+  --rqg-tree-border-strong: #7b5a29;
 
   .window-header {
     background-color: rgb(0 0 0 / 60%);
@@ -152,6 +162,13 @@
   [data-item-roll],
   [data-damage-roll] {
     cursor: pointer;
+  }
+
+  // V2 gear tree should keep V1's pronounced container edge in location view.
+  .tab.gear .location ul.container {
+    border-top: 4px solid var(--rqg-tree-border-strong);
+    border-left: 4px solid var(--rqg-tree-border-strong);
+    background-color: rgb(255 255 255 / 10%);
   }
 
   // Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest).
@@ -227,7 +244,7 @@
         margin-right: 15px;
 
         img {
-          height: 100px;
+          height: 125px;
           transform: rotate(5deg);
           box-shadow: var(--rqg-box-shadow-profile-img);
           border-radius: 10px;
@@ -1546,11 +1563,30 @@
       display: flex;
       gap: 0.5rem;
       align-items: center;
-      background: var(--color-bg-option, #f0e8d0);
-      border: 1px solid var(--color-border-dark-tertiary, #a8926b);
+      color: var(--rqg-unassigned-rm-text);
+      background: var(--rqg-unassigned-rm-bg);
+      border: 1px solid var(--rqg-unassigned-rm-border);
       border-radius: 3px;
       padding: 4px 8px;
       margin-bottom: 4px;
+
+      a {
+        color: var(--rqg-unassigned-rm-action);
+        text-shadow: none;
+      }
+
+      [data-item-edit] {
+        flex: 1 1 auto;
+        font-weight: 600;
+
+        i {
+          margin-right: 0.35rem;
+        }
+      }
+
+      [data-item-delete] {
+        flex: 0 0 auto;
+      }
     }
 
     .cult-section {

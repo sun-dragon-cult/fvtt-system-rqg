@@ -96,13 +96,15 @@
     // Ensure only the active tab is shown for main tabs and nested wizard tabs.
     .sheet-body > .tab,
     .species-body > .tab,
-    .homeland-body > .tab {
+    .homeland-body > .tab,
+    .gear-body > .tab {
       display: none;
     }
 
     .sheet-body > .tab.active,
     .species-body > .tab.active,
-    .homeland-body > .tab.active {
+    .homeland-body > .tab.active,
+    .gear-body > .tab.active {
       display: block;
     }
 

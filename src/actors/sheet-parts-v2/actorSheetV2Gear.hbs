@@ -1,0 +1,366 @@
+<div class="tab gear" data-group="primary" data-tab="gear">
+  <nav class="gear-tabs tabs" data-group="gear-view">
+    <h3 class="item" data-tooltip="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type">
+      <img src="{{gearViewIcon 'byItemType'}}"> {{localize "RQG.Actor.Gear.ViewByItemType"}}
+    </h3>
+    <h3 class="item" data-tooltip="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location">
+      <img src="{{gearViewIcon 'byLocation'}}"> {{localize "RQG.Actor.Gear.ViewByLocation"}}
+    </h3>
+  </nav>
+
+  {{#if itemLoopMessage}}<h2 class="warning">{{itemLoopMessage}}</h2>{{/if}}
+
+  <section class="gear-body">
+    <div class="tab by-location" data-group="gear-view" data-tab="by-location">
+      <article>
+        <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
+        <div class="grid location-row">
+          <div class="headings"></div>
+          <div class="head1">{{localize "RQG.Actor.Gear.Name"}}</div>
+          <div class="head2" style="width:45px">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</div>
+          <div class="head3"></div>
+          <div class="head4" style="width:85px">{{localize "RQG.Actor.Gear.Location"}}</div>
+        </div>
+        <ul class="location virtual item-list">
+          {{#each itemLocationTree.contains}}
+            {{> actorGearPhysicalItemLocation}}
+          {{/each}}
+        </ul>
+      </article>
+    </div>
+
+    <div class="tab by-item-type" data-group="gear-view" data-tab="by-item-type">
+      <div class="gear-wrapper flex-row">
+        {{#if gearView.hasUnique}}
+          <article class="flex-1">
+            <h2 class="flex-row">
+              <span>{{localize "RQG.Actor.Gear.Gear"}}</span>
+              <a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearUniqueTip'}}" data-gear-add="unique"><i class="fas fa-plus"></i></a>
+            </h2>
+            <div class="grid gear item-list">
+              <div class="headings"></div>
+              <div class="head1"><button class="sort" data-sort-items="gear" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+              <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+              <div class="head3"></div>
+              <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+              <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+              <div class="head6"></div>
+              <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
+              {{#each gearView.unique}}
+                <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
+                <div data-item-id="{{id}}" class="gear contextmenu item"></div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                  <span class="text-right">
+                    {{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}
+                  </span>
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                  <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+                </div>
+                <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                  <img class="equipped-status text-center"
+                       data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                       src="{{equippedIcon system.equippedStatus}}">
+                </div>
+                <div data-item-id="{{id}}" class="gear contextmenu item">
+                  <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}" size="10">
+                </div>
+              {{/each}}
+            </div>
+          </article>
+        {{/if}}
+
+        <div class="flex-1">
+          {{#if gearView.hasCurrency}}
+            <article>
+              <h2 class="flex-row">
+                <span>{{localize "RQG.Actor.Gear.Currency"}}</span>
+                <a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearCurrencyTip'}}" data-gear-add="currency"><i class="fas fa-plus"></i></a>
+              </h2>
+              <div class="grid gear item-list">
+                <div class="headings"></div>
+                <div class="head1"></div>
+                <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+                <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.QuantityAbbr"}}</span></div>
+                <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.ExtendedAbbr"}}</span></div>
+                <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+                <div class="head6"></div>
+                <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
+                {{#each gearView.currency}}
+                  <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item" data-tooltip="{{system.price.conversion}}">{{name}}</div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <input type="number" min="0" max="999999" data-item-edit-value="system.quantity" value="{{system.quantity}}">
+                  </div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <span class="text-right">{{#if system.price.estimated}}
+                      {{multiplyCurrency system.quantity system.price.estimated 'L'}}
+                    {{/if}}</span>
+                  </div>
+                  <div data-item-id="{{id}}" class="gear contextmenu pad-left item">
+                    <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+                  </div>
+                  <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                    <img class="equipped-status text-center"
+                         data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                         src="{{equippedIcon system.equippedStatus}}">
+                  </div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}" size="10">
+                  </div>
+                {{/each}}
+                <div class="no-background"></div>
+                <div class="no-background">{{localize "RQG.Actor.Gear.Total"}}</div>
+                <div class="no-background"><span class="text-right"></span></div>
+                <div class="no-background"><span class="text-right">{{currency currencyTotals.price.estimated 'L'}}</span></div>
+                <div class="no-background"><span class="text-right">{{decimalMultiply 1 currencyTotals.encumbrance}}</span></div>
+                <div class="no-background"></div>
+                <div class="no-background"></div>
+                <div class="footer"></div>
+              </div>
+            </article>
+          {{/if}}
+
+          {{#if gearView.hasConsumable}}
+            <article>
+              <h2 class="flex-row">
+                <span>{{localize "RQG.Actor.Gear.Consumables"}}</span>
+                <a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearConsumablesTip'}}" data-gear-add="consumable"><i class="fas fa-plus"></i></a>
+              </h2>
+              <div class="grid gear item-list">
+                <div class="headings"></div>
+                <div class="head1"></div>
+                <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+                <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.QuantityAbbr"}}</span></div>
+                <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+                <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+                <div class="head6"></div>
+                <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
+                {{#each gearView.consumable}}
+                  <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <input type="number" min="0" max="999999" data-item-edit-value="system.quantity" value="{{system.quantity}}">
+                  </div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <span class="text-right">{{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}</span>
+                  </div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+                  </div>
+                  <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                    <img class="equipped-status text-center"
+                         data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                         src="{{equippedIcon system.equippedStatus}}">
+                  </div>
+                  <div data-item-id="{{id}}" class="gear contextmenu item">
+                    <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}" size="10">
+                  </div>
+                {{/each}}
+              </div>
+            </article>
+          {{/if}}
+        </div>
+      </div>
+
+      {{#if gearView.hasWeapon}}
+        <article>
+          <h2>{{localize "RQG.Actor.Gear.WeaponsAndShields"}}</h2>
+          <div class="grid weapon item-list">
+            <div class="headings"></div>
+            <div class="head1"><button class="sort" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+            <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+            <div class="head3">{{localize "RQG.Actor.Gear.Skill"}}</div>
+            <div class="head4"><span class="text-center">{{localize "RQG.Actor.Gear.Range"}}</span></div>
+            <div class="head5"><span class="text-center">{{localize "RQG.Actor.Gear.Rate"}}</span></div>
+            <div class="head6"><span class="text-center">{{localize "RQG.Actor.Gear.Damage"}}</span></div>
+            <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumStrength"}}</span></div>
+            <div class="head8"><span class="text-right">{{localize "RQG.Actor.Gear.MinimumDexterity"}}</span></div>
+            <div class="head9"><span class="text-right">{{localize "RQG.Actor.Gear.HitPointsAbbr"}}</span></div>
+            <div class="head10"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+            <div class="head11"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+            <div class="head12"></div>
+            <div class="head13">{{localize "RQG.Actor.Gear.Location"}}</div>
+
+            {{#each gearView.weapon}}
+              <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}
+                {{#if (eq system.physicalItemType "consumable")}} ({{system.quantity}}){{/if}}
+              </div>
+              <div data-item-id="{{id}}" class="gear usagecontainer contextmenu nowrap item">
+                {{#each system.usage}}
+                  {{#if skillId}}
+                    <div class="usagecell {{#if unusable}} warning{{/if}}"
+                         {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
+                         data-skill-id="{{skillId}}">
+                      <span class="usage {{#if (eq @key "missile")}}missile{{/if}} {{experiencedclass @root.uuid skillId}}">
+                            {{skillchance @root.uuid skillId}}%
+                      </span>
+                      &nbsp; {{skillname @root.uuid skillId}}
+                    </div>
+                  {{/if}}
+                {{/each}}
+              </div>
+              <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+                <span class="text-center">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <div class="usagecell">
+                        {{#if (eq @key "missile")}}
+                          {{../system.range}}
+                        {{else}}
+                          &nbsp;
+                        {{/if}}
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+                <span class="text-center">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <div class="usagecell">
+                        {{#if (eq @key "missile")}}
+                          {{missileRate ../system.rate}}
+                        {{else}}
+                          &nbsp;
+                        {{/if}}
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+                <span class="text-center">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <div class="usagecell">
+                        {{damage}}
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+                <span class="text-right">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <div class="usagecell {{#if underMinSTR}} warning{{/if}}"
+                           {{#if underMinSTR}}data-tooltip="{{localize "RQG.Actor.Combat.StrMinNotMetTip"}}"{{/if}}>
+                        {{#if minStrength}}{{minStrength}}{{else}}—{{/if}}
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div data-item-id="{{id}}" class="gear usagecontainer contextmenu item">
+                <span class="text-right">
+                  {{#each system.usage}}
+                    {{#if skillId}}
+                      <div class="usagecell {{#if underMinDEX}} warning{{/if}}"
+                           {{#if underMinDEX}}data-tooltip="{{localize "RQG.Actor.Combat.DexMinNotMetTip"}}"{{/if}}>
+                        {{#if minDexterity}}{{minDexterity}}{{else}}—{{/if}}
+                      </div>
+                    {{/if}}
+                  {{/each}}
+                </span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{system.hitPoints.value}}</span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}</span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+              </div>
+              <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                <img class="equipped-status text-center"
+                     data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                     src="{{equippedIcon system.equippedStatus}}">
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}" size="10">
+              </div>
+            {{/each}}
+          </div>
+        </article>
+      {{/if}}
+
+      {{#if gearView.hasArmor}}
+        <article>
+          <h2>{{localize "RQG.Actor.Gear.Armor"}}</h2>
+          <div class="grid armor item-list">
+            <div class="headings"></div>
+            <div class="head1"><button class="sort" data-sort-items="armor" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+            <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
+            <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.Absorbs"}}</span></div>
+            <div class="head4">{{localize "RQG.Actor.Gear.HitLocations"}}</div>
+            <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.MoveQuietlyPenalty"}}</span></div>
+            <div class="head6"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
+            <div class="head7"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+            <div class="head8"></div>
+            <div class="head9">{{localize "RQG.Actor.Gear.Location"}}</div>
+            {{#each gearView.armor}}
+              <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{system.absorbs}}</span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item small-size flex-wrap">
+                {{#each system.hitLocationRqidLinks}}
+                  <span>{{name}}{{#unless @last}},&nbsp;{{/unless}}</span>
+                {{/each}}
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{system.moveQuietlyPenalty}}</span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}</span>
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
+              </div>
+              <div data-item-id="{{id}}" data-item-equipped-toggle class="gear contextmenu item">
+                <img class="equipped-status text-center"
+                     data-tooltip="{{localize (concat "RQG.Item.EquippedStatus." system.equippedStatus)}}"
+                     src="{{equippedIcon system.equippedStatus}}">
+              </div>
+              <div data-item-id="{{id}}" class="gear contextmenu item">
+                <input type="text" list="locations" data-item-edit-value="system.location" value="{{system.location}}" size="10">
+              </div>
+            {{/each}}
+          </div>
+        </article>
+      {{/if}}
+    </div>
+
+    <div class="enc-totals">
+      <div>
+        <img class="equipped-status" src="systems/rqg/assets/images/ui/max-enc.svg">
+        {{localize "RQG.Actor.Gear.MaxEnc"}}
+        {{system.attributes.encumbrance.max}}
+      </div>
+
+      <div {{#if (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}}class="warning" data-tooltip="{{localize "RQG.Actor.Gear.OverWeight"}}"{{/if}}>
+        <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg">
+        {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}
+        {{system.attributes.encumbrance.equipped}}
+      </div>
+
+      <div {{#if (gt system.attributes.encumbrance.travel system.attributes.encumbrance.max)}}class="warning" data-tooltip="{{localize "RQG.Actor.Gear.OverWeight"}}"{{/if}}>
+        <img class="equipped-status" src="systems/rqg/assets/images/equipped/carried.svg">
+        {{localize "RQG.Actor.Attributes.EncumbranceAbbr"}}
+        {{system.attributes.encumbrance.travel}}
+      </div>
+    </div>
+  </section>
+
+  <datalist id="locations">
+    {{#each locations}}
+      <option value="{{this}}">{{this}}</option>
+    {{/each}}
+  </datalist>
+</div>

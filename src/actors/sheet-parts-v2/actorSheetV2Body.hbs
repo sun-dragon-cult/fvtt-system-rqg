@@ -4,10 +4,7 @@
   {{#if showUiSection.spiritMagic}}{{> actorSheetV2SpiritMagic}}{{/if}}
   {{#if showUiSection.runeMagic}}{{> actorSheetV2RuneMagic}}{{/if}}
   {{#if showUiSection.skills}}{{> actorSheetV2Skills}}{{/if}}
-  <div class="tab tab-placeholder" data-group="primary" data-tab="gear">
-    <p class="norse text-center">{{localize "RQG.Actor.Nav.Gear"}}</p>
-    <p class="text-center"><em>Tab content will be implemented in upcoming milestones.</em></p>
-  </div>
+  {{#if showUiSection.gear}}{{> actorSheetV2Gear}}{{/if}}
   {{#if showUiSection.passions}}{{> actorSheetV2Passions}}{{/if}}
   {{> actorSheetV2Background}}
   {{#if showUiSection.activeEffects}}

@@ -139,7 +139,7 @@ export class ActorWizard extends HandlebarsApplicationMixin(
   static override DEFAULT_OPTIONS: Record<string, any> = {
     id: "actor-wizard-application",
     tag: "form",
-    classes: [systemId, "sheet", ActorTypeEnum.Character],
+    classes: [systemId, "sheet", "character"],
     position: {
       width: 850,
       height: 650,

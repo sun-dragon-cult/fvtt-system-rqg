@@ -17,7 +17,7 @@ import {
 } from "../system/util";
 
 import type { RqgItem } from "../items/rqgItem";
-import type { AbilityItem } from "@item-model/itemTypes.ts";
+import type { AbilityItem, PhysicalItem } from "@item-model/itemTypes.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
@@ -42,6 +42,7 @@ import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
+import { gearMenuOptions } from "./context-menus/gear-context-menu";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -53,8 +54,15 @@ import {
 } from "../documents/dragDrop";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
+import {
+  equippedStatuses,
+  type EquippedStatus,
+  physicalItemTypes,
+} from "../data-model/item-data/IPhysicalItem";
+import { ItemTree } from "../items/shared/ItemTree";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -142,6 +150,18 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const incorrectRunes: any[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
+    const itemTree = new ItemTree(this.actor.items.contents);
+    const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[]).filter(
+      (item) => foundry.utils.getProperty(item, "system.physicalItemType") === "unique",
+    );
+    const consumableGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[]).filter(
+      (item) => foundry.utils.getProperty(item, "system.physicalItemType") === "consumable",
+    );
+    const currencyItems = (embeddedItems["currency"] ?? []) as GearItem[];
+    const weaponItems = ((embeddedItems[ItemTypeEnum.Weapon] ?? []) as WeaponItem[]).filter(
+      (item) => !foundry.utils.getProperty(item, "system.isNatural"),
+    );
+    const armorItems = (embeddedItems[ItemTypeEnum.Armor] ?? []) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
 
@@ -167,6 +187,22 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       effects: [...this.actor.allApplicableEffects()],
 
       embeddedItems: embeddedItems,
+      itemLocationTree: itemTree.toSheetData(),
+      locations: itemTree.getPhysicalItemLocations(),
+      currencyTotals: DataPrep.calcCurrencyTotals(this.actor),
+      itemLoopMessage: itemTree.loopMessage,
+      gearView: {
+        unique: uniqueGearItems,
+        consumable: consumableGearItems,
+        currency: currencyItems,
+        weapon: weaponItems,
+        armor: armorItems,
+        hasUnique: uniqueGearItems.length > 0,
+        hasConsumable: consumableGearItems.length > 0,
+        hasCurrency: currencyItems.length > 0,
+        hasWeapon: weaponItems.length > 0,
+        hasArmor: armorItems.length > 0,
+      },
 
       mainCult: DataPrep.getMainCultInfo(this.actor),
       characterElementRunes: DataPrep.getCharacterElementRuneImgs(this.actor),
@@ -246,6 +282,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** Remembers the currently active tab across re-renders */
   protected _currentTab: string | undefined;
 
+  /** Remembers the currently active gear sub-tab across re-renders */
+  protected _currentGearView: string | undefined;
+
   /** Tracks which SRs are active in combat for this actor */
   private _activeInSR: Set<number> = new Set<number>();
 
@@ -322,6 +361,22 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       cultTabs.bind(this.element);
     }
 
+    // Gear tab sub-navigation (by item type / by location)
+    const gearNavEl = this.element.querySelector("nav.gear-tabs");
+    if (gearNavEl) {
+      const gearTabs = new foundry.applications.ux.Tabs({
+        navSelector: "nav.gear-tabs",
+        contentSelector: ".gear-body",
+        initial: this._currentGearView ?? "by-item-type",
+        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
+          if (name) {
+            this._currentGearView = name;
+          }
+        },
+      });
+      gearTabs.bind(this.element);
+    }
+
     // Context menus — all V2 menus use fixed (mouse-position) positioning
     const ctxMenuOptions = {
       fixed: true,
@@ -380,6 +435,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       this.element,
       ".rune-magic.contextmenu",
       runeMagicMenuOptions(this.actor),
+      ctxMenuOptions,
+    );
+    new RqgContextMenu(
+      this.element,
+      ".gear.contextmenu",
+      gearMenuOptions(this.actor),
       ctxMenuOptions,
     );
 
@@ -491,6 +552,44 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       el.addEventListener("click", () => RqgActorSheetV2.sortItems(this.actor, itemType));
     });
 
+    // Cycle the equipped state of a physical item
+    this.element.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      el.addEventListener("click", async () => {
+        if (itemId.startsWith("virtual:")) {
+          const [, itemEquippedStatus, itemName] = itemId.split(":");
+          const newEquippedStatus =
+            equippedStatuses[
+              (equippedStatuses.indexOf(itemEquippedStatus as EquippedStatus) + 1) %
+                equippedStatuses.length
+            ];
+          const affectedItems = new ItemTree(
+            this.actor.items.contents,
+          ).getOtherItemIdsInSameLocationTree(itemName ?? "");
+          const updates = affectedItems.map((id) => ({
+            _id: id,
+            system: { equippedStatus: newEquippedStatus },
+          }));
+          await this.actor.updateEmbeddedDocuments("Item", updates);
+          return;
+        }
+
+        const item = this.actor.items.get(itemId) as RqgItem | undefined;
+        assertDocumentSubType<PhysicalItem>(
+          item,
+          physicalItemTypes,
+          `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`,
+        );
+
+        const newStatus =
+          equippedStatuses[
+            (equippedStatuses.indexOf(item.system.equippedStatus as EquippedStatus) + 1) %
+              equippedStatuses.length
+          ];
+        await item.update({ system: { equippedStatus: newStatus } });
+      });
+    });
+
     // Add Passion button
     this.element.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
@@ -506,6 +605,36 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           system: { passion: newPassionName },
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
+        (createdItems[0] as RqgItem)?.sheet?.render(true);
+      });
+    });
+
+    // Add Gear buttons
+    this.element.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
+      const physicalItemType = getRequiredDomDataset(el, "gear-add");
+      el.addEventListener("click", async () => {
+        const defaultItemIconSettings: any = game.settings?.get(
+          systemId,
+          "defaultItemIconSettings",
+        );
+
+        const physicalItemType2ItemName = new Map<string, string>([
+          ["unique", "RQG.Actor.Gear.NewGear"],
+          ["currency", "RQG.Actor.Gear.NewCurrency"],
+          ["consumable", "RQG.Actor.Gear.NewConsumable"],
+        ]);
+
+        const name = localize(
+          physicalItemType2ItemName.get(physicalItemType) ?? "RQG.Actor.Gear.NewGear",
+        );
+
+        const newGear = {
+          name: name,
+          type: ItemTypeEnum.Gear,
+          img: defaultItemIconSettings[ItemTypeEnum.Gear],
+          system: { physicalItemType: physicalItemType },
+        };
+        const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
         (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
