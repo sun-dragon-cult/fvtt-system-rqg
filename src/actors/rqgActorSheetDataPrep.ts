@@ -717,9 +717,9 @@ export async function organizeEmbeddedItems(
   };
   await Promise.all([
     ...(itemTypes[ItemTypeEnum.Passion]?.map(enrichItem) ?? []),
+    ...(itemTypes[ItemTypeEnum.Gear]?.map(enrichItem) ?? []),
     ...(itemTypes[ItemTypeEnum.Weapon]?.map(enrichItem) ?? []),
     ...(itemTypes[ItemTypeEnum.Armor]?.map(enrichItem) ?? []),
-    ...(itemTypes[ItemTypeEnum.SpiritMagic]?.map(enrichItem) ?? []),
     ...Object.values(skills).flat().map(enrichItem),
   ]);
 

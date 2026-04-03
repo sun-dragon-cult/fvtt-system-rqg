@@ -47,7 +47,7 @@
               <div class="head6"></div>
               <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
               {{#each gearView.unique}}
-                <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                <div data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
                 <div data-item-id="{{id}}" class="gear contextmenu item"></div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">
@@ -88,7 +88,7 @@
                 <div class="head6"></div>
                 <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
                 {{#each gearView.currency}}
-                  <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                  <div data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
                   <div data-item-id="{{id}}" class="gear contextmenu item" data-tooltip="{{system.price.conversion}}">{{name}}</div>
                   <div data-item-id="{{id}}" class="gear contextmenu item">
                     <input type="number" min="0" max="999999" data-item-edit-value="system.quantity" value="{{system.quantity}}">
@@ -138,7 +138,7 @@
                 <div class="head6"></div>
                 <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
                 {{#each gearView.consumable}}
-                  <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+                  <div data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
                   <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
                   <div data-item-id="{{id}}" class="gear contextmenu item">
                     <input type="number" min="0" max="999999" data-item-edit-value="system.quantity" value="{{system.quantity}}">
@@ -184,7 +184,7 @@
             <div class="head13">{{localize "RQG.Actor.Gear.Location"}}</div>
 
             {{#each gearView.weapon}}
-              <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
               <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}
                 {{#if (eq system.physicalItemType "consumable")}} ({{system.quantity}}){{/if}}
               </div>
@@ -304,7 +304,7 @@
             <div class="head8"></div>
             <div class="head9">{{localize "RQG.Actor.Gear.Location"}}</div>
             {{#each gearView.armor}}
-              <div data-item-id="{{id}}" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
+              <div data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="gear contextmenu item"><img class="item" src="{{img}}"></div>
               <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
               <div data-item-id="{{id}}" class="gear contextmenu item">
                 <span class="text-right">{{system.absorbs}}</span>

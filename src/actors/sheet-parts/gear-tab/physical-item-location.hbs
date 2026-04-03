@@ -1,4 +1,4 @@
-<li class="{{#if isVirtual}}virtual{{else}}gear contextmenu{{/if}} item" data-item-id="{{id}}">
+<li class="{{#if isVirtual}}virtual{{else}}gear contextmenu{{/if}} item" data-item-id="{{id}}" {{#unless isVirtual}}data-item-tooltip data-tooltip-class="item-description-tooltip"{{/unless}}>
   <div class="grid location-row">
     <div>
       {{#if isContainer}}<i class="fas fa-folder-open"> </i>{{/if}}
