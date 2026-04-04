@@ -1335,11 +1335,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      margin: 0 6px 8px;
-
-      .specialization.warning {
-        flex: 1;
-      }
+      margin-bottom: 8px;
 
       .skill-filter-input {
         position: relative;
@@ -1364,6 +1360,15 @@
             opacity: 0.65;
           }
         }
+      }
+
+      .specialization.warning {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 4px 8px;
+        gap: 0.4rem;
       }
     }
 
