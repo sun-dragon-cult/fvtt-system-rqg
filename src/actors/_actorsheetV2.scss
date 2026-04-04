@@ -1342,45 +1342,26 @@
       }
 
       .skill-filter-input {
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
+        position: relative;
         width: 25%;
         flex-shrink: 0;
-        padding: 2px 6px;
-        border-radius: 4px;
-        border: 1px solid rgb(255 255 255 / 12%);
-        background: rgb(20 14 20 / 55%);
 
         i {
+          position: absolute;
+          right: 0.45rem;
+          top: 50%;
+          transform: translateY(-50%);
+          pointer-events: none;
           opacity: 0.65;
           font-size: 0.8em;
-          order: 2;
         }
 
         .skill-filter {
-          flex: 1;
-          background: transparent;
-          border: 0;
-          border-radius: 0;
-          font-size: 13px;
-          padding: 2px 0;
-          box-shadow: none;
-          transition: none;
+          width: 100%;
+          padding-right: 1.25rem;
 
           &::placeholder {
             opacity: 0.65;
-          }
-
-          &:hover {
-            border-color: transparent;
-            box-shadow: none;
-          }
-
-          &:focus {
-            outline: none;
-            border-color: rgb(255 255 255 / 40%);
-            box-shadow: none;
           }
         }
       }
