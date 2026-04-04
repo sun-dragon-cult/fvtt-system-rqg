@@ -55,10 +55,6 @@ import {
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
-import { ArmorSheetV2 } from "../items/armor-item/armorSheetV2";
-import { GearSheetV2 } from "../items/gear-item/gearSheetV2";
-import { PassionSheetV2 } from "../items/passion-item/passionSheetV2";
-import { WeaponSheetV2 } from "../items/weapon-item/weaponSheetV2";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import {
@@ -683,9 +679,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         el.dataset["tooltip"] = `<div class="item-description-tooltip">${parts.join("")}</div>`;
       }
 
-      // Open item sheet on description-like tab when clicking the icon.
-      el.addEventListener("click", async () => {
-        await this._openTooltipItemSheet(item);
+      // Open item sheet on the description-like tab when the icon is clicked.
+      el.addEventListener("click", () => {
+        const tooltipTabMap: Partial<Record<ItemTypeEnum, string>> = {
+          [ItemTypeEnum.Passion]: "backstory",
+          [ItemTypeEnum.Gear]: "description",
+          [ItemTypeEnum.Armor]: "description",
+          [ItemTypeEnum.Weapon]: "description",
+        };
+        const sheet = item.sheet as any;
+        const tab = tooltipTabMap[item.type as ItemTypeEnum];
+        if (tab) {
+          sheet.tabGroups = { ...(sheet.tabGroups ?? {}), sheet: tab };
+        }
+        sheet?.render(true);
       });
     });
 
@@ -885,53 +892,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           this.render();
         });
       });
-  }
-
-  private async _openTooltipItemSheet(item: RqgItem): Promise<void> {
-    const openPolicy = new Map<
-      string,
-      {
-        targetTab: string;
-        // AppV2 sheet class constructor signature
-        sheetClass: new (config: { document: RqgItem }) => any;
-      }
-    >([
-      [ItemTypeEnum.Passion, { targetTab: "backstory", sheetClass: PassionSheetV2 as any }],
-      [ItemTypeEnum.Gear, { targetTab: "description", sheetClass: GearSheetV2 as any }],
-      [ItemTypeEnum.Armor, { targetTab: "description", sheetClass: ArmorSheetV2 as any }],
-      [ItemTypeEnum.Weapon, { targetTab: "description", sheetClass: WeaponSheetV2 as any }],
-    ]);
-
-    const policy = openPolicy.get(item.type);
-    if (!policy) {
-      await (item.sheet as any)?.render(true);
-      return;
-    }
-
-    const forcedSheet = new policy.sheetClass({ document: item });
-    forcedSheet._currentTab = policy.targetTab;
-    forcedSheet.tabGroups = { ...(forcedSheet.tabGroups ?? {}), sheet: policy.targetTab };
-    await forcedSheet.render(true);
-
-    if (typeof forcedSheet.activateTab === "function") {
-      forcedSheet.activateTab(policy.targetTab);
-    } else if (forcedSheet._tabs?.[0]?.activate) {
-      forcedSheet._tabs[0].activate(policy.targetTab, { triggerCallback: true });
-    }
-
-    const activateViaDom = (triesLeft: number) => {
-      const tabEl = forcedSheet.element?.querySelector(
-        `.item-sheet-nav-tabs [data-tab="${policy.targetTab}"]`,
-      ) as HTMLElement | null;
-      if (tabEl) {
-        tabEl.click();
-        return;
-      }
-      if (triesLeft > 0) {
-        setTimeout(() => activateViaDom(triesLeft - 1), 20);
-      }
-    };
-    activateViaDom(20);
   }
 
   /**
