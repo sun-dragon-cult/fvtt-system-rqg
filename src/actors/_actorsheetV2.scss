@@ -157,6 +157,11 @@
     cursor: help;
   }
 
+  // Embedded item journal links use help cursor.
+  [data-item-id][data-rqid-link] {
+    cursor: help;
+  }
+
   // Weapon and damage rolls are interactive
   [data-weapon-roll],
   [data-item-roll],
@@ -867,7 +872,6 @@
       }
 
       .passion-icon {
-        cursor: pointer;
         align-self: stretch;
         display: flex;
         align-items: center;
