@@ -1,10 +1,11 @@
 <section class="tab skills-tab-v2" data-group="primary" data-tab="skills">
 
-  {{#if enrichedUnspecifiedSkill}}<div class="specialization warning">{{{enrichedUnspecifiedSkill}}}</div>{{/if}}
-
   <div class="skill-filter-row">
-    <i class="fas fa-magnifying-glass"></i>
-    <input class="skill-filter" type="search" placeholder="{{localize 'RQG.Actor.Skill.FilterPlaceholder'}}">
+    <div class="skill-filter-input">
+      <i class="fas fa-magnifying-glass"></i>
+      <input class="skill-filter" type="search" placeholder="{{localize 'RQG.Actor.Skill.FilterPlaceholder'}}">
+    </div>
+    {{#if enrichedUnspecifiedSkill}}<div class="specialization warning">{{{enrichedUnspecifiedSkill}}}</div>{{/if}}
   </div>
 
   <div class="masonry">

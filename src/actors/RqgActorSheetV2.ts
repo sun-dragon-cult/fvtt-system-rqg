@@ -68,6 +68,8 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
+  #skillFilterQuery = "";
+
   override get actor(): CharacterActor {
     return this.document as CharacterActor;
   }
@@ -734,8 +736,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         count: String(skillCount),
       });
 
-      input.addEventListener("input", () => {
-        const query = input.value.trim().toLowerCase();
+      const applyFilter = (query: string) => {
         const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
         masonry?.querySelectorAll<HTMLElement>(".masonry-item").forEach((category) => {
           let anyVisible = false;
@@ -754,6 +755,18 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           });
           (category as HTMLElement).style.display = anyVisible ? "" : "none";
         });
+      };
+
+      // Restore filter from previous render
+      if (this.#skillFilterQuery) {
+        input.value = this.#skillFilterQuery;
+        applyFilter(this.#skillFilterQuery);
+      }
+
+      input.addEventListener("input", () => {
+        const query = input.value.trim().toLowerCase();
+        this.#skillFilterQuery = query;
+        applyFilter(query);
       });
     });
 
