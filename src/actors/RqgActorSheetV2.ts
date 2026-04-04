@@ -730,12 +730,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Skills filter
     this.element.querySelectorAll<HTMLInputElement>(".skill-filter").forEach((input) => {
-      const skillCount =
-        input.closest(".skills-tab-v2")?.querySelectorAll(".skill-row").length ?? 0;
-      input.placeholder = localize("RQG.Actor.Skill.FilterPlaceholderCount", {
-        count: String(skillCount),
-      });
-
       const applyFilter = (query: string) => {
         const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
         masonry?.querySelectorAll<HTMLElement>(".masonry-item").forEach((category) => {
