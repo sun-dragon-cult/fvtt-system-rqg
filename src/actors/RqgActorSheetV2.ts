@@ -666,13 +666,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       if (!item) {
         return;
       }
+      const itemSystem = item.system as {
+        enrichedDescription?: string;
+        enrichedGmNotes?: string;
+      };
       const parts: string[] = [];
-      if (item.system.enrichedDescription) {
-        parts.push(item.system.enrichedDescription);
+      if (itemSystem.enrichedDescription) {
+        parts.push(itemSystem.enrichedDescription);
       }
-      if (isGM && item.system.enrichedGmNotes) {
+      if (isGM && itemSystem.enrichedGmNotes) {
         parts.push(
-          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${item.system.enrichedGmNotes}`,
+          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${itemSystem.enrichedGmNotes}`,
         );
       }
       if (parts.length) {
@@ -724,6 +728,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Skills filter
     this.element.querySelectorAll<HTMLInputElement>(".skill-filter").forEach((input) => {
+      const skillCount =
+        input.closest(".skills-tab-v2")?.querySelectorAll(".skill-row").length ?? 0;
+      input.placeholder = localize("RQG.Actor.Skill.FilterPlaceholderCount", {
+        count: String(skillCount),
+      });
+
       input.addEventListener("input", () => {
         const query = input.value.trim().toLowerCase();
         const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
