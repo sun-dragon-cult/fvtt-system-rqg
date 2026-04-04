@@ -237,7 +237,7 @@
                             data-skill-id="{{skillId}}"
                             data-damage-roll="{{damage}}"
                             data-damage-roll-heading="{{../name}} – {{localize (concat "RQG.Game.WeaponUsage." @key)}}"
-                            data-tooltip="{{localize "RQG.Game.RollChat"}}"
+                            data-tooltip="{{localize "RQG.Game.RollDirect"}}"
                             >{{damage}}&nbsp;</span>
                     {{/if}}
                   {{/each}}
@@ -307,7 +307,7 @@
                 {{#each system.usage}}
                   {{#if skillId}}
                     <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
-                          data-tooltip="{{localize "RQG.Game.RollChat"}}"
+                          data-tooltip="{{localize "RQG.Game.RollDirect"}}"
                           data-skill-id="{{skillId}}"
                           data-damage-roll="{{damage}}"
                           data-damage-roll-heading="{{../name}}"

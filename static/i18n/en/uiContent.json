@@ -1246,6 +1246,7 @@
       },
       "Roll": "Roll",
       "RollChat": "Roll (click)",
+      "RollDirect": "Direct Roll (click)",
       "RollQuick": "Direct Roll (dbl click)",
       "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",
       "RollTitle": "Roll via Dialog (click), Direct Roll (dbl click)",
