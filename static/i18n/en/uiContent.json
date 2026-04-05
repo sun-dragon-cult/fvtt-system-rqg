@@ -393,7 +393,8 @@
         }
       },
       "Sorcery": {
-        "FreeINT": "Free INT",
+        "INTLimitTooltip": "Maximum learnable Sorcery is limited by INT ({intValue}). Spirit Magic points also count against this limit.",
+        "Spells": "Spells",
         "Techniques": "Techniques",
         "MasteredRunes": "Mastered Runes"
       },

@@ -757,7 +757,7 @@
       .wheel-pentagram {
         stroke: var(--rqg-color-main);
         stroke-width: 0.75;
-        opacity: 0.25;
+        opacity: 0.6;
       }
 
       .wheel-arrows {
@@ -1436,6 +1436,59 @@
         width: 5ch;
         text-align: center;
         font-size: 12px;
+      }
+    }
+  }
+
+  // --- Sorcery tab (V2): match skills-row hover/active highlight ---
+  .sorcery-tab-v2 {
+    .power.flex-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      align-items: start;
+      gap: 0.75rem;
+      width: 100%;
+
+      > div {
+        min-width: 0;
+      }
+    }
+
+    .int-capacity-row {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 6px;
+      margin-bottom: 0.25rem;
+      text-align: right;
+      font-size: 0.75em;
+      font-weight: normal;
+
+      .warning {
+        color: var(--color-text-dark-warn, #a00);
+      }
+    }
+
+    .skill-row {
+      display: contents;
+
+      > * {
+        padding: 2px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+      }
+
+      &:nth-child(odd) > * {
+        background: var(--rqg-table-alternate-background);
+      }
+
+      &:hover > * {
+        background: rgb(139 90 43 / 18%);
+      }
+
+      &:active > * {
+        background: rgb(139 90 43 / 30%);
       }
     }
   }

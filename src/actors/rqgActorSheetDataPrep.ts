@@ -268,9 +268,7 @@ export function getFreeInt(actor: CharacterActor, spiritMagicPointSum: number): 
     spiritMagicPointSum -
     actor.items.filter(
       (i) =>
-        isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) &&
-        i.system.category === SkillCategoryEnum.Magic &&
-        !!i.system.runeRqidLinks?.length,
+        isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) && !!i.system.runeRqidLinks?.length,
     ).length
   );
 }

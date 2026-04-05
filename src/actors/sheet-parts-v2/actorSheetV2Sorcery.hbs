@@ -1,0 +1,92 @@
+<section class="tab sorcery-tab-v2" data-group="primary" data-tab="sorcery">
+  <div class="int-capacity-row small-size">
+    {{#if (lt freeInt 0)}}
+      <span class="warning"
+            data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitExceeded'
+                learnedPoints=spiritMagicPointSum
+                intValue=system.characteristics.intelligence.value
+                exceededBy=(difference 0 freeInt)}}">{{localize "RQG.Actor.SpiritMagic.INTLimitExceeded"
+          learnedPoints=spiritMagicPointSum
+          intValue=system.characteristics.intelligence.value
+          exceededBy=(difference 0 freeInt)}}</span>
+    {{else if (eq freeInt 0)}}
+      <span class="warning">{{localize "RQG.Actor.SpiritMagic.INTLimitReached"
+          learnedPoints=spiritMagicPointSum}}</span>
+    {{else}}
+      <span data-tooltip="{{localize 'RQG.Actor.Sorcery.INTLimitTooltip'
+          intValue=system.characteristics.intelligence.value}}">{{localize "RQG.Actor.SpiritMagic.INTLimitFormula"
+          learnedPoints=spiritMagicPointSum
+          freePoints=freeInt}}</span>
+    {{/if}}
+  </div>
+
+  <div class="power flex-row">
+    <div>
+      <h2>{{localize "RQG.Actor.Sorcery.Spells"}}</h2>
+      <div class="grid skill">
+        {{#each embeddedItems.skill}}
+          {{#each this}}
+            {{#if system.runeRqidLinks.length}}
+              <div class="skill-row">
+                {{> actorSkillsGrid
+                  skill=this
+                  wizard=../../../wizard
+                  forChoice=../../../forChoice
+                  checkedProperty=../../../checkedProperty
+                  asBonus=../../../asBonus}}
+              </div>
+            {{/if}}
+          {{/each}}
+        {{/each}}
+      </div>
+    </div>
+
+    <div>
+      <h2>{{localize "RQG.Actor.Sorcery.Techniques"}}</h2>
+      <div class="grid rune">
+        {{#each embeddedItems.rune.technique}}
+          {{> actorRuneGrid
+            rune=this
+            sorcery=true
+            forChoice=../forChoice
+            checkedProperty=../checkedProperty}}
+        {{/each}}
+      </div>
+    </div>
+
+    <div>
+      <h2>{{localize "RQG.Actor.Sorcery.MasteredRunes"}}</h2>
+      <div class="grid rune">
+        {{#each embeddedItems.rune.element}}
+          {{#if system.isMastered}}
+            {{> actorRuneGrid
+              rune=this
+              sorcery=true
+              forChoice=../forChoice
+              checkedProperty=../checkedProperty}}
+          {{/if}}
+        {{/each}}
+
+        {{#each embeddedItems.rune.power}}
+          {{#if system.isMastered}}
+            {{> actorRuneGrid
+              rune=this
+              sorcery=true
+              forChoice=../forChoice
+              checkedProperty=../checkedProperty}}
+          {{/if}}
+        {{/each}}
+
+        {{#each embeddedItems.rune.form}}
+          {{#if system.isMastered}}
+            {{> actorRuneGrid
+              rune=this
+              sorcery=true
+              forChoice=../forChoice
+              checkedProperty=../checkedProperty}}
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+  </div>
+</section>

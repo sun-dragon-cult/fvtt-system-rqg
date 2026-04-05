@@ -206,7 +206,7 @@ describe("spirit magic and free INT", () => {
       },
     ]);
 
-    expect(getFreeInt(actor, 4)).toBe(7);
+    expect(getFreeInt(actor, 4)).toBe(6);
   });
 });
 
