@@ -689,6 +689,7 @@
       position: relative;
       width: 20rem;
       height: 20rem;
+      top: -0.8rem;
 
       .rune-card img.rune {
         height: 42px;
@@ -699,15 +700,16 @@
     .wheel-slot {
       position: absolute;
 
-      // Center on the anchor point using a zero-size container approach.
-      // The slot itself is zero-sized at the anchor, and the rune-card
-      // overflows equally via negative margins.
-      // This avoids translate/transform which create stacking contexts
-      // and break mix-blend-mode on descendant images.
+      // Center the icon on the slot anchor via absolute positioning.
+      // Fixed width matches the 42px icon so centering is exact regardless
+      // of rune-name text width. Text overflows symmetrically via align-items: center.
+      // Do NOT use transform — it creates a stacking context and breaks
+      // mix-blend-mode on descendant images.
       .rune-card {
-        // Pull the card back by half its rendered size
-        // Cards are roughly 50px wide × 70px tall (42px icon + text)
-        margin: -35px 0 0 -25px;
+        position: absolute;
+        width: 42px;
+        left: -21px;
+        top: -21px;
       }
     }
 
@@ -752,7 +754,7 @@
       pointer-events: none;
       overflow: visible;
 
-      .wheel-star {
+      .wheel-pentagram {
         stroke: var(--rqg-color-main);
         stroke-width: 0.75;
         opacity: 0.25;

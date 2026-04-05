@@ -166,6 +166,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const armorItems = (embeddedItems[ItemTypeEnum.Armor] ?? []) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
+    const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
+    // V2 does not currently render a Sorcery tab, so keep this flag aligned with
+    // actual tab visibility for V2 template conditionals (e.g. rune-wheel pentagram).
+    showUiSection.sorcery = false;
 
     // Compute active SRs from combat tracker
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
@@ -257,7 +261,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       activeInSR: [...this._activeInSR],
       bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
-      showUiSection: DataPrep.getUiSectionVisibility(this.actor),
+      showUiSection: showUiSection,
       enrichedIncorrectRunes: await DataPrep.getIncorrectRunesText(
         this.actor,
         embeddedItems?.rune,
