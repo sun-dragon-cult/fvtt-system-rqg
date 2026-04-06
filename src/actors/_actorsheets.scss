@@ -1,855 +1,858 @@
-#tooltip {
-  .sr-help {
-    line-height: 1.7rem;
-    text-align: left;
-  }
-}
-
-.rqg.character {
-  .mainbackground {
-    grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-    background: var(--rqg-parchment-url) repeat-y scroll top left/100%;
-  }
-
-  .play-mode-icon {
-    content: url("/systems/rqg/assets/images/ui/play-mode.svg");
-    margin-top: 6px;
-    height: 0.9rem;
-
-    &:hover {
-      content: url("/systems/rqg/assets/images/ui/edit-mode.svg");
-      filter: brightness(0.5);
+@layer system.actor-v1 {
+  #tooltip {
+    .sr-help {
+      line-height: 1.7rem;
+      text-align: left;
     }
   }
 
-  .edit-mode-icon {
-    content: url("/systems/rqg/assets/images/ui/edit-mode.svg");
-    margin-top: 6px;
-    height: 0.9rem;
+  // Scope v1 styles to legacy actor sheets only; v2 has class `.actor-sheet-v2`.
+  .rqg.character:not(.actor-sheet-v2) {
+    .mainbackground {
+      grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
+      background: var(--rqg-parchment-url) repeat-y scroll top left/100%;
+    }
 
-    &:hover {
+    .play-mode-icon {
       content: url("/systems/rqg/assets/images/ui/play-mode.svg");
-      filter: brightness(0.5);
-    }
-  }
+      margin-top: 6px;
+      height: 0.9rem;
 
-  .edit-mode {
-    background-color: #007300;
-
-    --rqg-color-main-bg: #007300;
-    --rqg-box-shadow-grid-header: inset 0 0 20px 7px #00983c;
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    .norse,
-    label {
-      color: #007300;
+      &:hover {
+        content: url("/systems/rqg/assets/images/ui/edit-mode.svg");
+        filter: brightness(0.5);
+      }
     }
 
-    .head1,
-    .head1-4,
-    .head2,
-    .head3,
-    .head4,
-    .head5,
-    .head6,
-    .head7,
-    .head8,
-    .head9,
-    .head10,
-    .head11,
-    .head12,
-    .head13 {
-      color: white;
-    }
-  }
+    .edit-mode-icon {
+      content: url("/systems/rqg/assets/images/ui/edit-mode.svg");
+      margin-top: 6px;
+      height: 0.9rem;
 
-  .dead {
-    filter: grayscale(0.8);
-  }
-
-  .unconscious {
-    filter: grayscale(0.5);
-  }
-
-  form {
-    container-type: inline-size; // make it possible to use container relative units
-    container-name: sheet-container;
-
-    &.dead,
-    &.unconscious,
-    &.shock,
-    &.wounded {
-      background-color: #901010b0;
-    }
-  }
-
-  .window-content {
-    padding: 0;
-    background: none;
-
-    // V2 apps do not inherit V1 .app tab visibility rules in all contexts.
-    // Ensure only the active tab is shown for main tabs and nested wizard tabs.
-    .sheet-body > .tab,
-    .species-body > .tab,
-    .homeland-body > .tab,
-    .gear-body > .tab {
-      display: none;
+      &:hover {
+        content: url("/systems/rqg/assets/images/ui/play-mode.svg");
+        filter: brightness(0.5);
+      }
     }
 
-    .sheet-body > .tab.active,
-    .species-body > .tab.active,
-    .homeland-body > .tab.active,
-    .gear-body > .tab.active {
-      display: block;
+    .edit-mode {
+      background-color: #007300;
+
+      --rqg-color-main-bg: #007300;
+      --rqg-box-shadow-grid-header: inset 0 0 20px 7px #00983c;
+
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      .norse,
+      label {
+        color: #007300;
+      }
+
+      .head1,
+      .head1-4,
+      .head2,
+      .head3,
+      .head4,
+      .head5,
+      .head6,
+      .head7,
+      .head8,
+      .head9,
+      .head10,
+      .head11,
+      .head12,
+      .head13 {
+        color: white;
+      }
+    }
+
+    .dead {
+      filter: grayscale(0.8);
+    }
+
+    .unconscious {
+      filter: grayscale(0.5);
     }
 
     form {
-      display: grid;
-      grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
-    }
-
-    // AppV2 actor wizard uses a wrapper div as the single template root.
-    // Mirror the legacy form grid so V1 wizard GUI layout still applies.
-    .wizard-app-root {
-      display: grid;
-      grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
-      container-type: inline-size;
+      container-type: inline-size; // make it possible to use container relative units
       container-name: sheet-container;
-      min-height: 100%;
+
+      &.dead,
+      &.unconscious,
+      &.shock,
+      &.wounded {
+        background-color: #901010b0;
+      }
     }
 
-    .sheet-header {
-      grid-area: header;
-      padding: 8px 4%;
-      align-items: start;
-      height: fit-content;
+    .window-content {
+      padding: 0;
+      background: none;
 
-      .header-grid {
+      // V2 apps do not inherit V1 .app tab visibility rules in all contexts.
+      // Ensure only the active tab is shown for main tabs and nested wizard tabs.
+      .sheet-body > .tab,
+      .species-body > .tab,
+      .homeland-body > .tab,
+      .gear-body > .tab {
+        display: none;
+      }
+
+      .sheet-body > .tab.active,
+      .species-body > .tab.active,
+      .homeland-body > .tab.active,
+      .gear-body > .tab.active {
+        display: block;
+      }
+
+      form {
         display: grid;
-        grid-template-columns: [profile-start full-start] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
-        gap: 0;
+        grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
+      }
 
-        .text-center {
-          text-align: center !important;
-        }
+      // AppV2 actor wizard uses a wrapper div as the single template root.
+      // Mirror the legacy form grid so V1 wizard GUI layout still applies.
+      .wizard-app-root {
+        display: grid;
+        grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
+        container-type: inline-size;
+        container-name: sheet-container;
+        min-height: 100%;
+      }
 
-        .profile {
-          grid-row: 1 / 3;
-          grid-column: profile-start / profile-end;
-          margin-right: 5px;
+      .sheet-header {
+        grid-area: header;
+        padding: 8px 4%;
+        align-items: start;
+        height: fit-content;
 
-          img {
-            height: 125px;
-            transform: rotate(5deg);
-            box-shadow: var(--rqg-box-shadow-profile-img);
-            border-radius: 10px;
+        .header-grid {
+          display: grid;
+          grid-template-columns: [profile-start full-start] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
+          gap: 0;
 
-            &.unset {
-              height: 20px;
-              flex: 0 0 20px;
-            }
+          .text-center {
+            text-align: center !important;
           }
-        }
 
-        .name-runes-cults {
-          grid-row: 1;
-          grid-column: name-rune-start / name-rune-end;
+          .profile {
+            grid-row: 1 / 3;
+            grid-column: profile-start / profile-end;
+            margin-right: 5px;
 
-          .charname {
-            background-color: transparent;
-            font-weight: bold;
-            width: 100%;
+            img {
+              height: 125px;
+              transform: rotate(5deg);
+              box-shadow: var(--rqg-box-shadow-profile-img);
+              border-radius: 10px;
 
-            input[name="name"] {
-              font-size: 35px;
-              border: none;
-              height: 39px;
-              padding-top: 0;
-              padding-bottom: 0;
-              margin-top: -8px;
-
-              &:hover {
-                outline: 1px solid var(--color-border-light-2);
-              }
-            }
-
-            input[name="system.extendedName"] {
-              font-size: 20px;
-              font-style: italic;
-              border: none;
-              color: var(--color-text-dark-secondary);
-
-              &:hover {
-                outline: 1px solid var(--color-border-light-2);
+              &.unset {
+                height: 20px;
+                flex: 0 0 20px;
               }
             }
           }
 
-          .rune {
-            height: 30px;
+          .name-runes-cults {
+            grid-row: 1;
+            grid-column: name-rune-start / name-rune-end;
+
+            .charname {
+              background-color: transparent;
+              font-weight: bold;
+              width: 100%;
+
+              input[name="name"] {
+                font-size: 35px;
+                border: none;
+                height: 39px;
+                padding-top: 0;
+                padding-bottom: 0;
+                margin-top: -8px;
+
+                &:hover {
+                  outline: 1px solid var(--color-border-light-2);
+                }
+              }
+
+              input[name="system.extendedName"] {
+                font-size: 20px;
+                font-style: italic;
+                border: none;
+                color: var(--color-text-dark-secondary);
+
+                &:hover {
+                  outline: 1px solid var(--color-border-light-2);
+                }
+              }
+            }
+
+            .rune {
+              height: 30px;
+            }
           }
-        }
 
-        .characteristics {
-          grid-row: 2;
-          grid-column: name-rune-start / name-rune-end;
-          margin-top: 5px;
-        }
-
-        .bottom-line {
-          grid-row: 3;
-          grid-column: full-start / full-end;
-          display: flex;
-          gap: 1rem;
-          justify-content: space-between;
-          align-items: center;
-          margin-top: 8px;
-
-          .siz-sr {
-            padding: 6px 6px 2px;
-            background-color: var(--rqg-color-siz-sr-bg);
+          .characteristics {
+            grid-row: 2;
+            grid-column: name-rune-start / name-rune-end;
+            margin-top: 5px;
           }
 
-          .dex-sr {
-            padding: 6px 6px 2px;
-            background-color: var(--rqg-color-dex-sr-bg);
-          }
-
-          .norse {
-            font-weight: bold;
-          }
-
-          .mov-enc {
+          .bottom-line {
+            grid-row: 3;
+            grid-column: full-start / full-end;
             display: flex;
+            gap: 1rem;
             justify-content: space-between;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0 5px 2px;
-            margin: -12px 0 0;
-            background-color: var(--rqg-color-enc-bg);
-            border: none;
+            margin-top: 8px;
 
-            legend {
-              background-color: var(--rqg-color-enc-legend);
-              padding: 0 15px;
-              margin: 0 auto -4px;
-              border-radius: 50%;
+            .siz-sr {
+              padding: 6px 6px 2px;
+              background-color: var(--rqg-color-siz-sr-bg);
             }
 
-            .player-mov {
-              font-size: 20px;
+            .dex-sr {
+              padding: 6px 6px 2px;
+              background-color: var(--rqg-color-dex-sr-bg);
+            }
+
+            .norse {
+              font-weight: bold;
+            }
+
+            .mov-enc {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              gap: 0.75rem;
+              padding: 0 5px 2px;
+              margin: -12px 0 0;
+              background-color: var(--rqg-color-enc-bg);
+              border: none;
+
+              legend {
+                background-color: var(--rqg-color-enc-legend);
+                padding: 0 15px;
+                margin: 0 auto -4px;
+                border-radius: 50%;
+              }
+
+              .player-mov {
+                font-size: 20px;
+              }
+            }
+          }
+
+          // Make the header more compact if the sheet is narrow
+          @container sheet-container (max-width: 560px) {
+            .profile,
+            .hero-points-container {
+              display: none;
+            }
+
+            .name-runes-cults,
+            .characteristics {
+              grid-column: full-start / full-end;
             }
           }
         }
 
-        // Make the header more compact if the sheet is narrow
-        @container sheet-container (max-width: 560px) {
-          .profile,
-          .hero-points-container {
-            display: none;
-          }
-
-          .name-runes-cults,
-          .characteristics {
-            grid-column: full-start / full-end;
-          }
+        .cult {
+          max-width: 20rem;
+          line-height: 1rem;
+          text-align: end;
+          margin: 5px 0 3px;
+          font-size: var(--font-size-16);
+          text-wrap-style: balance;
         }
       }
 
-      .cult {
-        max-width: 20rem;
-        line-height: 1rem;
-        text-align: end;
-        margin: 5px 0 3px;
-        font-size: var(--font-size-16);
-        text-wrap-style: balance;
-      }
-    }
-
-    .navbackground {
-      grid-area: nav;
-      height: 100%;
-      width: 100%;
-    }
-
-    nav.sheet-tabs {
-      grid-area: nav;
-      flex-direction: row;
-      border: none;
-      padding: 8px 0;
-      margin: 0;
-      display: block;
-      line-height: 20px;
-
-      .item {
-        white-space: nowrap;
-        color: white;
-        writing-mode: vertical-rl;
-        transform: rotate(180deg) translateX(-4px);
-        padding: 10px 0;
-        font-size: 13px;
-        font-variant-caps: normal;
-
-        &.active {
-          text-shadow:
-            0 0 3px black,
-            -2px -2px 3px black;
-          color: white;
-          font-weight: bold;
-        }
-
-        &.active::before {
-          content: "";
-          position: absolute;
-          inset: 0 -6px;
-          z-index: -1;
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
-        }
-      }
-    }
-
-    nav.creation-sheet-tabs {
-      grid-area: nav;
-      flex-direction: column;
-      padding: 0 0.5rem;
-      min-width: 125px;
-      height: 600px;
-
-      .item {
-        flex-basis: 1fr;
-        color: white;
-        padding: 0.5rem 0;
-        font-size: 13px;
-        font-variant-caps: normal;
-
-        &.active {
-          text-shadow:
-            0 0 3px black,
-            -2px -2px 3px black;
-          color: white;
-          font-weight: bold;
-          inset: 0 -6px;
-          z-index: -1;
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
-        }
-      }
-    }
-
-    nav.gear-tabs,
-    nav.cult-tabs {
-      margin-bottom: 10px;
-
-      img {
-        height: 15px;
+      .navbackground {
+        grid-area: nav;
+        height: 100%;
+        width: 100%;
       }
 
-      .item {
-        flex: min-content;
+      nav.sheet-tabs {
+        grid-area: nav;
+        flex-direction: row;
+        border: none;
+        padding: 8px 0;
         margin: 0;
-        border: 1px solid black;
-        border-radius: 10px 10px 0 0;
-        padding: 5px;
-        background: var(--color-border-dark-5);
-        mix-blend-mode: hard-light;
+        display: block;
+        line-height: 20px;
 
-        &.active,
-        &:hover {
-          background: initial;
-          border-bottom: 0;
-          margin-bottom: 1px;
+        .item {
+          white-space: nowrap;
+          color: white;
+          writing-mode: vertical-rl;
+          transform: rotate(180deg) translateX(-4px);
+          padding: 10px 0;
+          font-size: 13px;
+          font-variant-caps: normal;
+
+          &.active {
+            text-shadow:
+              0 0 3px black,
+              -2px -2px 3px black;
+            color: white;
+            font-weight: bold;
+          }
+
+          &.active::before {
+            content: "";
+            position: absolute;
+            inset: 0 -6px;
+            z-index: -1;
+            border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
+            box-shadow: var(--rqg-box-shadow-tab-active);
+            background: var(--rqg-background-tab-active);
+            background-blend-mode: screen, difference;
+          }
         }
       }
-    }
 
-    // Artificially increase the css specificity. Look into layers in the future
-    .context.context.context-highlight.context-highlight {
-      mix-blend-mode: normal;
-      background: #d9d8c8; // Should be the themed css variable --background-color matching the context menu
-      border-color: #999; // Should be the themed css variable --border-color matching the context menu
-    }
+      nav.creation-sheet-tabs {
+        grid-area: nav;
+        flex-direction: column;
+        padding: 0 0.5rem;
+        min-width: 125px;
+        height: 600px;
 
-    .sheet-body {
-      grid-area: main;
-      padding: 8px 4%;
-    }
-  }
+        .item {
+          flex-basis: 1fr;
+          color: white;
+          padding: 0.5rem 0;
+          font-size: 13px;
+          font-variant-caps: normal;
 
-  .topheaderline {
-    display: flex;
-    justify-content: space-between;
-
-    * {
-      margin: 0;
-    }
-
-    .mp {
-      font-weight: bold;
-
-      input {
-        width: 25px;
-        font-family: Signika, sans-serif;
-      }
-    }
-
-    .mp {
-      margin-left: 40px;
-    }
-
-    .wounded {
-      color: var(--rqg-highlight);
-    }
-  }
-
-  .characteristics {
-    display: flex;
-    justify-content: space-between;
-
-    div {
-      text-align: center;
-    }
-
-    label {
-      font-size: min(26px, 2.5cqw);
-      font-weight: bold;
-    }
-
-    .value {
-      font-size: min(28px, 3cqw);
-      font-weight: bold;
-      margin-top: -5px;
-    }
-
-    input {
-      background-color: transparent;
-      font-size: min(28px, 3cqw);
-      width: 100%;
-      text-align: center;
-
-      &:focus {
-        border: 1px solid grey;
-        background-color: var(--color-text-light-highlight);
+          &.active {
+            text-shadow:
+              0 0 3px black,
+              -2px -2px 3px black;
+            color: white;
+            font-weight: bold;
+            inset: 0 -6px;
+            z-index: -1;
+            border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
+            box-shadow: var(--rqg-box-shadow-tab-active);
+            background: var(--rqg-background-tab-active);
+            background-blend-mode: screen, difference;
+          }
+        }
       }
 
-      &[type="text"] {
-        font-size: 12px;
-        margin-top: -4px;
-      }
-    }
-  }
-
-  img {
-    border: none;
-  }
-
-  input {
-    width: initial;
-    border: none;
-
-    &:hover {
-      outline: 1px solid var(--color-border-light-2);
-    }
-  }
-
-  .background label {
-    line-height: 2rem;
-  }
-
-  ul.location {
-    list-style: none;
-    padding: 0;
-  }
-
-  .location {
-    ul {
-      list-style: none;
-
-      &.container {
-        border-top: 3px solid var(--color-underline-header);
-        border-left: 3px solid var(--color-underline-header);
-        margin-top: 5px;
-        padding-top: 5px;
-        font-style: normal;
-        background-color: var(--rqg-table-alternate-background);
-      }
-    }
-
-    .virtual {
-      font-style: italic;
-    }
-  }
-
-  .wounded {
-    .health .humanoid::before {
-      mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-        brightness(99%) contrast(105%);
-    }
-  }
-
-  .shock,
-  .unconscious,
-  .dead {
-    .health .humanoid::before {
-      mix-blend-mode: revert;
-      filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-        brightness(99%) contrast(105%) blur(1.5px);
-    }
-  }
-
-  .health {
-    .hit-location-dice-error {
-      width: 22rem;
-      padding: 0.3rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .strike {
-      text-decoration: none;
-      position: relative;
-
-      &::before {
-        top: 45%;
-        background: var(--rqg-highlight);
-        opacity: 0.42;
-        content: "";
-        width: 150%;
-        position: absolute;
-        height: 0.2em;
-        border-radius: 1em;
-        left: -30%;
-        white-space: nowrap;
-        display: block;
-        transform: rotate(-45deg);
-      }
-    }
-
-    .health-state {
-      color: var(--rqg-highlight);
-    }
-
-    .wounded {
-      background-color: var(--rqg-color-enc-warning);
-      border-color: var(--rqg-highlight);
-    }
-
-    .humanoid {
-      position: relative;
-      width: 18rem;
-      height: 21rem;
-
-      &::before {
-        content: "";
-        background: center/contain no-repeat url("/systems/rqg/assets/images/runes/man.svg");
-        width: inherit;
-        height: inherit;
-        position: absolute;
-        filter: invert(1);
-        mix-blend-mode: overlay;
-      }
-
-      .actor-state {
-        position: absolute;
-        top: 0;
-        right: 0;
+      nav.gear-tabs,
+      nav.cult-tabs {
+        margin-bottom: 10px;
 
         img {
-          height: 5rem;
-          filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-            brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+          height: 15px;
+        }
+
+        .item {
+          flex: min-content;
+          margin: 0;
+          border: 1px solid black;
+          border-radius: 10px 10px 0 0;
+          padding: 5px;
+          background: var(--color-border-dark-5);
+          mix-blend-mode: hard-light;
+
+          &.active,
+          &:hover {
+            background: initial;
+            border-bottom: 0;
+            margin-bottom: 1px;
+          }
+        }
+      }
+
+      // Artificially increase the css specificity. Look into layers in the future
+      .context.context.context-highlight.context-highlight {
+        mix-blend-mode: normal;
+        background: #d9d8c8; // Should be the themed css variable --background-color matching the context menu
+        border-color: #999; // Should be the themed css variable --border-color matching the context menu
+      }
+
+      .sheet-body {
+        grid-area: main;
+        padding: 8px 4%;
+      }
+    }
+
+    .topheaderline {
+      display: flex;
+      justify-content: space-between;
+
+      * {
+        margin: 0;
+      }
+
+      .mp {
+        font-weight: bold;
+
+        input {
+          width: 25px;
+          font-family: Signika, sans-serif;
+        }
+      }
+
+      .mp {
+        margin-left: 40px;
+      }
+
+      .wounded {
+        color: var(--rqg-highlight);
+      }
+    }
+
+    .characteristics {
+      display: flex;
+      justify-content: space-between;
+
+      div {
+        text-align: center;
+      }
+
+      label {
+        font-size: min(26px, 2.5cqw);
+        font-weight: bold;
+      }
+
+      .value {
+        font-size: min(28px, 3cqw);
+        font-weight: bold;
+        margin-top: -5px;
+      }
+
+      input {
+        background-color: transparent;
+        font-size: min(28px, 3cqw);
+        width: 100%;
+        text-align: center;
+
+        &:focus {
+          border: 1px solid grey;
+          background-color: var(--color-text-light-highlight);
+        }
+
+        &[type="text"] {
+          font-size: 12px;
+          margin-top: -4px;
         }
       }
     }
 
-    .stats {
-      position: absolute !important; // right-click adds a `position: relative` on the element - avoid that
-      border: 1px solid var(--rqg-color-main);
-      border-radius: 10px;
-      padding: 5px;
-      width: fit-content;
-      min-width: 5rem;
-      max-width: 7rem;
-      background-color: #ffffffb3;
-
-      &.useless,
-      &.severed {
-        background-color: #afafaf;
-      }
-
-      .roll-range {
-        font-size: 80%;
-      }
-
-      &.head {
-        top: 0;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-      }
-
-      &.left-arm {
-        top: 7rem;
-        right: 0;
-      }
-
-      &.right-arm {
-        top: 7rem;
-        left: 0;
-      }
-
-      &.chest {
-        top: 6.5rem;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-      }
-
-      &.abdomen {
-        top: 13rem;
-        left: 0;
-        right: 0;
-        margin: 0 auto;
-      }
-
-      &.left-leg {
-        top: 16rem;
-        right: 0;
-      }
-
-      &.right-leg {
-        top: 16rem;
-        left: 0;
-      }
-    }
-  }
-
-  .tab.combat {
-    .rate-range {
-      color: var(--color-text-dark-secondary);
-    }
-
-    .sr-buttons {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.1rem;
-      margin-bottom: 0.4rem;
-
-      button {
-        width: 1.7rem;
-        padding: 0;
-        border-style: outset;
-        background-color: #e1c794;
-      }
-
-      .active {
-        border-style: inset;
-        background-color: var(--color-border-highlight);
-      }
-
-      .dex {
-        display: flex;
-        padding: 5px;
-        background-color: var(--rqg-color-dex-sr-bg);
-      }
-
-      .siz {
-        display: flex;
-        padding: 5px;
-        background-color: var(--rqg-color-siz-sr-bg);
-      }
-    }
-
-    select.projectile {
+    img {
       border: none;
-      font-size: small;
-      font-style: italic;
-      padding: 4px 0;
-      background-color: #ffffff2b;
-
-      &:hover {
-        outline: 1px solid var(--color-border-light-2);
-      }
     }
 
-    input.quantity {
-      text-align: center;
-    }
-  }
-
-  .tab.spiritmagic .spirit-magic {
     input {
-      // noinspection CssInvalidPropertyValue
-      width: -webkit-fill-available;
-
-      // noinspection CssInvalidPropertyValue
-      width: -moz-available;
+      width: initial;
       border: none;
 
       &:hover {
         outline: 1px solid var(--color-border-light-2);
       }
     }
-  }
 
-  .tab.runemagic {
-    .common {
-      height: 20px;
-      margin-right: 0.3rem;
-      opacity: 0.5;
+    .background label {
+      line-height: 2rem;
     }
-  }
 
-  .tab.skills {
-    .specialization.warning {
-      padding: 0.3rem;
-      margin-bottom: 0.5rem;
-      line-height: 1.5rem;
+    ul.location {
+      list-style: none;
+      padding: 0;
     }
-  }
 
-  .tab.gear {
-    .enc-totals {
-      display: flex;
-      position: sticky;
-      bottom: 0;
-      padding: 5px;
-      align-items: flex-end;
-      background-color: var(--rqg-color-enc-bg);
-      border: inset var(--rqg-color-enc-bg);
-      border-radius: 50px;
-      text-align: center;
-      gap: 3rem;
-      justify-content: center;
-      opacity: 0.9;
-      filter: drop-shadow(1px 1px 4px black);
+    .location {
+      ul {
+        list-style: none;
 
-      * {
-        justify-self: center;
+        &.container {
+          border-top: 3px solid var(--color-underline-header);
+          border-left: 3px solid var(--color-underline-header);
+          margin-top: 5px;
+          padding-top: 5px;
+          font-style: normal;
+          background-color: var(--rqg-table-alternate-background);
+        }
+      }
+
+      .virtual {
+        font-style: italic;
       }
     }
-  }
 
-  .tab.activeeffectstesting {
-    .effect-img {
-      height: 2rem;
-      filter: initial;
+    .wounded {
+      .health .humanoid::before {
+        mix-blend-mode: revert;
+        filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+          brightness(99%) contrast(105%);
+      }
     }
-  }
 
-  .grid.location-row {
-    display: grid;
-    grid-template-columns: auto min-content max-content min-content;
-
-    i {
-      color: var(--color-underline-header);
-      margin-right: 5px;
-      position: relative;
-      bottom: -7px;
-      left: -2px;
-      height: 100%;
-      text-align: center;
+    .shock,
+    .unconscious,
+    .dead {
+      .health .humanoid::before {
+        mix-blend-mode: revert;
+        filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+          brightness(99%) contrast(105%) blur(1.5px);
+      }
     }
-  }
 
-  .characteristic-rank-high {
-    border-bottom: 7px solid rgb(1 107 38); // 100%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+    .health {
+      .hit-location-dice-error {
+        width: 22rem;
+        padding: 0.3rem;
+        margin-bottom: 0.5rem;
+      }
 
-  .characteristic-rank-10 {
-    border-bottom: 7px solid #018a31d6; // 84%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+      .strike {
+        text-decoration: none;
+        position: relative;
 
-  .characteristic-rank-9 {
-    border-bottom: 7px solid #018a31ad; // 68%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+        &::before {
+          top: 45%;
+          background: var(--rqg-highlight);
+          opacity: 0.42;
+          content: "";
+          width: 150%;
+          position: absolute;
+          height: 0.2em;
+          border-radius: 1em;
+          left: -30%;
+          white-space: nowrap;
+          display: block;
+          transform: rotate(-45deg);
+        }
+      }
 
-  .characteristic-rank-8 {
-    border-bottom: 7px solid #018a3182; // 51%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+      .health-state {
+        color: var(--rqg-highlight);
+      }
 
-  .characteristic-rank-7 {
-    border-bottom: 7px solid #018a3159; // 35%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+      .wounded {
+        background-color: var(--rqg-color-enc-warning);
+        border-color: var(--rqg-highlight);
+      }
 
-  .characteristic-rank-6 {
-    border-bottom: 7px solid #018a3130; // 19%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+      .humanoid {
+        position: relative;
+        width: 18rem;
+        height: 21rem;
 
-  .characteristic-rank-5 {
-    border-bottom: 7px solid #018a310d; // 5%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+        &::before {
+          content: "";
+          background: center/contain no-repeat url("/systems/rqg/assets/images/runes/man.svg");
+          width: inherit;
+          height: inherit;
+          position: absolute;
+          filter: invert(1);
+          mix-blend-mode: overlay;
+        }
 
-  .characteristic-rank-4 {
-    border-bottom: 7px solid #8a01010d; // 5%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+        .actor-state {
+          position: absolute;
+          top: 0;
+          right: 0;
 
-  .characteristic-rank-3 {
-    border-bottom: 7px solid #8a010130; // 19%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+          img {
+            height: 5rem;
+            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+              brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+          }
+        }
+      }
 
-  .characteristic-rank-2 {
-    border-bottom: 7px solid #8a010659; // 35%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+      .stats {
+        position: absolute !important; // right-click adds a `position: relative` on the element - avoid that
+        border: 1px solid var(--rqg-color-main);
+        border-radius: 10px;
+        padding: 5px;
+        width: fit-content;
+        min-width: 5rem;
+        max-width: 7rem;
+        background-color: #ffffffb3;
 
-  .characteristic-rank-1 {
-    border-bottom: 7px solid #8a010182; // 51%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+        &.useless,
+        &.severed {
+          background-color: #afafaf;
+        }
 
-  .characteristic-rank-0 {
-    border-bottom: 7px solid #8a0101ad; // 68%
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
-  }
+        .roll-range {
+          font-size: 80%;
+        }
 
-  .characteristic-rank-low {
-    border-bottom: 7px solid #8a0101ff;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    width: 100%;
+        &.head {
+          top: 0;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+        }
+
+        &.left-arm {
+          top: 7rem;
+          right: 0;
+        }
+
+        &.right-arm {
+          top: 7rem;
+          left: 0;
+        }
+
+        &.chest {
+          top: 6.5rem;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+        }
+
+        &.abdomen {
+          top: 13rem;
+          left: 0;
+          right: 0;
+          margin: 0 auto;
+        }
+
+        &.left-leg {
+          top: 16rem;
+          right: 0;
+        }
+
+        &.right-leg {
+          top: 16rem;
+          left: 0;
+        }
+      }
+    }
+
+    .tab.combat {
+      .rate-range {
+        color: var(--color-text-dark-secondary);
+      }
+
+      .sr-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.1rem;
+        margin-bottom: 0.4rem;
+
+        button {
+          width: 1.7rem;
+          padding: 0;
+          border-style: outset;
+          background-color: #e1c794;
+        }
+
+        .active {
+          border-style: inset;
+          background-color: var(--color-border-highlight);
+        }
+
+        .dex {
+          display: flex;
+          padding: 5px;
+          background-color: var(--rqg-color-dex-sr-bg);
+        }
+
+        .siz {
+          display: flex;
+          padding: 5px;
+          background-color: var(--rqg-color-siz-sr-bg);
+        }
+      }
+
+      select.projectile {
+        border: none;
+        font-size: small;
+        font-style: italic;
+        padding: 4px 0;
+        background-color: #ffffff2b;
+
+        &:hover {
+          outline: 1px solid var(--color-border-light-2);
+        }
+      }
+
+      input.quantity {
+        text-align: center;
+      }
+    }
+
+    .tab.spiritmagic .spirit-magic {
+      input {
+        // noinspection CssInvalidPropertyValue
+        width: -webkit-fill-available;
+
+        // noinspection CssInvalidPropertyValue
+        width: -moz-available;
+        border: none;
+
+        &:hover {
+          outline: 1px solid var(--color-border-light-2);
+        }
+      }
+    }
+
+    .tab.runemagic {
+      .common {
+        height: 20px;
+        margin-right: 0.3rem;
+        opacity: 0.5;
+      }
+    }
+
+    .tab.skills {
+      .specialization.warning {
+        padding: 0.3rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.5rem;
+      }
+    }
+
+    .tab.gear {
+      .enc-totals {
+        display: flex;
+        position: sticky;
+        bottom: 0;
+        padding: 5px;
+        align-items: flex-end;
+        background-color: var(--rqg-color-enc-bg);
+        border: inset var(--rqg-color-enc-bg);
+        border-radius: 50px;
+        text-align: center;
+        gap: 3rem;
+        justify-content: center;
+        opacity: 0.9;
+        filter: drop-shadow(1px 1px 4px black);
+
+        * {
+          justify-self: center;
+        }
+      }
+    }
+
+    .tab.activeeffectstesting {
+      .effect-img {
+        height: 2rem;
+        filter: initial;
+      }
+    }
+
+    .grid.location-row {
+      display: grid;
+      grid-template-columns: auto min-content max-content min-content;
+
+      i {
+        color: var(--color-underline-header);
+        margin-right: 5px;
+        position: relative;
+        bottom: -7px;
+        left: -2px;
+        height: 100%;
+        text-align: center;
+      }
+    }
+
+    .characteristic-rank-high {
+      border-bottom: 7px solid rgb(1 107 38); // 100%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-10 {
+      border-bottom: 7px solid #018a31d6; // 84%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-9 {
+      border-bottom: 7px solid #018a31ad; // 68%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-8 {
+      border-bottom: 7px solid #018a3182; // 51%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-7 {
+      border-bottom: 7px solid #018a3159; // 35%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-6 {
+      border-bottom: 7px solid #018a3130; // 19%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-5 {
+      border-bottom: 7px solid #018a310d; // 5%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-4 {
+      border-bottom: 7px solid #8a01010d; // 5%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-3 {
+      border-bottom: 7px solid #8a010130; // 19%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-2 {
+      border-bottom: 7px solid #8a010659; // 35%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-1 {
+      border-bottom: 7px solid #8a010182; // 51%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-0 {
+      border-bottom: 7px solid #8a0101ad; // 68%
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
+
+    .characteristic-rank-low {
+      border-bottom: 7px solid #8a0101ff;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      width: 100%;
+    }
   }
 }

@@ -1,0 +1,97 @@
+// AppV2-specific layout overrides for item sheets.
+// AppV2 window-content uses padding: 1rem instead of AppV1's 8px, so the header
+// and nav tabs need larger negative margins to bleed flush to the window edges.
+// All color/theme concerns are handled by --rqg-color-header-* variables above.
+@layer system.item-v2 {
+  .application.rqg.item-sheet {
+    header.item-sheet-header {
+      margin: -1rem -1rem 0;
+      padding: 0.5rem 1rem;
+    }
+
+    // Override V1 custom tab styling with Foundry's native nav.tabs look.
+    // Negative margin + padding bleeds the border lines to the window edges.
+    .item-sheet-nav-tabs {
+      // Reset V1 styles
+      margin: 0 -1rem;
+      padding: 0 1rem;
+      background-color: transparent;
+
+      // Match Foundry's nav.tabs
+      justify-content: space-evenly;
+      gap: 1rem;
+      line-height: 2.5;
+      border-top: 1px solid var(--color-tabs-border);
+      border-bottom: 1px solid var(--color-tabs-border);
+
+      .item {
+        font-weight: normal;
+        padding: 0;
+        color: var(--color-text-secondary);
+        cursor: var(--cursor-pointer);
+
+        &:hover {
+          color: var(--color-text-primary);
+          text-shadow: 0 0 10px var(--color-shadow-primary);
+        }
+
+        &.active {
+          background-color: transparent;
+          color: var(--color-text-emphatic);
+          text-shadow: 0 0 10px var(--color-shadow-primary);
+        }
+      }
+    }
+
+    // AppV2 .window-content is a flex column, so every ancestor between it and the
+    // editor must participate in flex stretching for height to propagate correctly.
+    // (V1 uses percentage heights, which only work with explicit parent heights.)
+    form {
+      flex: 1;
+      min-height: 0;
+    }
+
+    main {
+      min-height: 0;
+    }
+
+    // Foundry's TABS/PARTS pattern: tab nav needs edge-to-edge bleed like our legacy tabs.
+    nav.sheet-tabs.tabs {
+      margin: 0 -1rem;
+      padding: 0 1rem;
+    }
+
+    .sheet-body {
+      display: flex;
+      flex-direction: column;
+      padding-top: 0.5rem;
+      min-height: 0;
+
+      > .tab.active {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+    }
+
+    // PARTS-based sheets: tabs are direct children of .window-content (no .sheet-body wrapper).
+    > .window-content > .tab {
+      padding-top: 1rem;
+    }
+
+    > .window-content > .tab.active {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    // Make the prose-mirror web component fill the tab area the same way the
+    // V1 .editor element does (which gets height: 100% from rqg.scss).
+    prose-mirror {
+      flex: 1;
+      min-height: 100px;
+    }
+  }
+}
