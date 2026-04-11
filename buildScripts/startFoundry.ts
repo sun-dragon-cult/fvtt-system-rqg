@@ -47,7 +47,7 @@ async function main() {
   if (versionArg != null) {
     version = versionArg;
   } else {
-    const port = process.env.FOUNDRY_PORT ?? env["FOUNDRY_PORT"];
+    const port = process.env["FOUNDRY_PORT"] ?? env["FOUNDRY_PORT"];
     if (port == null) {
       console.error(
         "No version specified and FOUNDRY_PORT is not set in .env.local.\n" +
