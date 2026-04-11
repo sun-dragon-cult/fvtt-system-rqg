@@ -165,30 +165,27 @@
       display: contents;
     }
 
-    .skill-row .skill.contextmenu.item:first-child,
-    .passion-row .passion-icon,
-    .rune.rune-card,
-    .spirit-magic-row .spirit-magic.contextmenu.item:first-child,
-    .rune-magic-row .rune-magic.contextmenu.item:first-child,
-    .tab.gear ul.location > li.gear-row > .grid.location-row > div:first-child,
-    .grid.gear.item-list .contextmenu.item:has(.item-drag-handle),
-    .grid.weapon.item-list .contextmenu.item:has(.item-drag-handle),
-    .grid.armor.item-list .contextmenu.item:has(.item-drag-handle),
-    .grid.hit-location.item-list > .contextmenu.item:has(.item-drag-handle) {
+    :has(> .item-drag-handle),
+    .tab.gear .location li.gear-row > .grid.location-row > div:first-child {
       position: relative;
       overflow: visible;
     }
 
-    .skill-row:hover .item-drag-handle,
-    .passion-row:hover .item-drag-handle,
-    .rune.rune-card:hover .item-drag-handle,
-    .spirit-magic-row:hover .item-drag-handle,
-    .rune-magic-row:hover .item-drag-handle,
-    .tab.gear ul.location > li.gear-row:hover .item-drag-handle,
-    .grid.gear.item-list .gear-row:hover .item-drag-handle,
-    .grid.weapon.item-list .gear-row:hover .item-drag-handle,
-    .grid.armor.item-list .gear-row:hover .item-drag-handle,
-    .grid.hit-location.item-list > .contextmenu.item:hover .item-drag-handle {
+    :is(
+        .skill-row,
+        .passion-row,
+        .rune.rune-card,
+        .spirit-magic-row,
+        .rune-magic-row,
+        .tab.gear .location .location-row,
+        .tab.gear .location li.gear-row > .grid.location-row,
+        .grid.gear.item-list .gear-row,
+        .grid.weapon.item-list .gear-row,
+        .grid.armor.item-list .gear-row,
+        .grid.hit-location.item-list > .contextmenu.item
+      ):hover
+      .item-drag-handle,
+    :has(> .item-drag-handle:hover) > .item-drag-handle {
       opacity: 1;
     }
 
@@ -200,6 +197,10 @@
 
     .drop-after {
       box-shadow: inset 0 -2px 0 0 var(--rqg-color-main-bg);
+    }
+
+    .drop-into {
+      box-shadow: inset 0 0 0 2px var(--rqg-color-main-bg);
     }
 
     // Journal entry links: help cursor on the element itself (V1 targets children only)
@@ -236,7 +237,14 @@
       display: grid;
       grid-template-columns: auto min-content max-content min-content;
 
-      i {
+      img.item {
+        width: 24px;
+        height: 24px;
+        object-fit: contain;
+        margin-right: 4px;
+      }
+
+      i.fa-folder-open {
         color: var(--rqg-tree-border-strong);
         margin-right: 5px;
         position: relative;
@@ -265,6 +273,14 @@
           font-style: normal;
           background-color: rgb(255 255 255 / 5%);
         }
+      }
+
+      ul.container.drop-into-container,
+      .location-row.drop-into-container {
+        box-shadow:
+          inset 0 0 0 1px rgb(255 255 255 / 10%),
+          0 0 0 2px var(--rqg-color-main-bg);
+        background-color: rgb(255 255 255 / 9%);
       }
 
       .virtual {

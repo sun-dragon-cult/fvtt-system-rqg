@@ -1096,14 +1096,16 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   protected override _onDragOver(event: DragEvent): void {
     super._onDragOver(event);
 
-    const target = (event.target as HTMLElement | null)?.closest<HTMLElement>(
-      "[data-item-id].contextmenu.item",
-    );
+    const target =
+      (event.target as HTMLElement | null)?.closest<HTMLElement>(".location-row[data-item-id]") ??
+      (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-item-id].contextmenu.item");
 
     // Clear all existing indicators first
-    this.element.querySelectorAll(".drop-before, .drop-after").forEach((el) => {
-      el.classList.remove("drop-before", "drop-after");
-    });
+    this.element
+      .querySelectorAll(".drop-before, .drop-after, .drop-into, .drop-into-container")
+      .forEach((el) => {
+        el.classList.remove("drop-before", "drop-after", "drop-into", "drop-into-container");
+      });
 
     if (!target) {
       return;
@@ -1127,23 +1129,211 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const weaponRow = target.closest<HTMLElement>(
       `.weapon-row[data-item-id="${CSS.escape(itemId)}"]`,
     );
+    const locationRow = target.closest<HTMLElement>(
+      `.location-row[data-item-id="${CSS.escape(itemId)}"]`,
+    );
     const rowCells = weaponRow
       ? weaponRow.querySelectorAll<HTMLElement>(":scope > div")
-      : this.element.querySelectorAll<HTMLElement>(
-          `[data-item-id="${CSS.escape(itemId)}"].contextmenu.item`,
-        );
-    const rect = target.getBoundingClientRect();
-    const cls = event.clientY < rect.top + rect.height / 2 ? "drop-before" : "drop-after";
+      : locationRow
+        ? [locationRow]
+        : this.element.querySelectorAll<HTMLElement>(
+            `[data-item-id="${CSS.escape(itemId)}"].contextmenu.item`,
+          );
+    const targetItem = this.actor.items.get(itemId) as RqgItem | undefined;
+    const dropAction = this._getSameActorDropAction(event, target, targetItem ?? null);
+
+    const targetLocationName = this._getLocationDropTargetName(
+      target,
+      dropAction,
+      targetItem ?? null,
+    );
+    const isLocationContainerTarget =
+      !!target.closest("ul.location") &&
+      !!targetItem &&
+      isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) &&
+      !this._isNaturalWeapon(targetItem) &&
+      targetItem.system.isContainer;
+    const highlightContainer = isLocationContainerTarget
+      ? this._getLocationContainerElement(targetItem.name ?? "")
+      : targetLocationName
+        ? this._getLocationContainerElement(targetLocationName)
+        : null;
+    highlightContainer?.classList.add("drop-into-container");
+
+    let cls = "drop-after";
+    if (dropAction === "before") {
+      cls = "drop-before";
+    }
     rowCells.forEach((cell) => cell.classList.add(cls));
   }
 
   private _clearDropIndicators(): void {
-    this.element.querySelectorAll(".drop-before, .drop-after").forEach((el) => {
-      el.classList.remove("drop-before", "drop-after");
-    });
+    this.element
+      .querySelectorAll(".drop-before, .drop-after, .drop-into, .drop-into-container")
+      .forEach((el) => {
+        el.classList.remove("drop-before", "drop-after", "drop-into", "drop-into-container");
+      });
+  }
+
+  private _getSameActorDropAction(
+    event: DragEvent,
+    dropCell: HTMLElement,
+    targetItem: RqgItem | null,
+  ): "before" | "after" | "into" {
+    if (this._isLocationContainerDropTarget(dropCell, targetItem)) {
+      if (dropCell.matches(".location-row[data-item-id]")) {
+        return "into";
+      }
+
+      const rect = dropCell.getBoundingClientRect();
+      const upperBoundary = rect.top + rect.height / 3;
+      const lowerBoundary = rect.bottom - rect.height / 3;
+      if (event.clientY >= upperBoundary && event.clientY <= lowerBoundary) {
+        return "into";
+      }
+    }
+
+    const rect = dropCell.getBoundingClientRect();
+    return event.clientY < rect.top + rect.height / 2 ? "before" : "after";
+  }
+
+  private _isLocationContainerDropTarget(
+    dropCell: HTMLElement,
+    targetItem: RqgItem | null,
+  ): boolean {
+    return (
+      !!dropCell.closest("ul.location") &&
+      !!targetItem &&
+      isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) &&
+      !this._isNaturalWeapon(targetItem) &&
+      targetItem.system.isContainer
+    );
+  }
+
+  private _getLocationDropTargetName(
+    dropCell: HTMLElement,
+    dropAction: "before" | "after" | "into",
+    targetItem: RqgItem | null,
+  ): string | undefined {
+    if (
+      !dropCell.closest("ul.location") ||
+      !targetItem ||
+      !isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) ||
+      this._isNaturalWeapon(targetItem)
+    ) {
+      return undefined;
+    }
+
+    if (dropAction === "into" && targetItem.system.isContainer && targetItem.name) {
+      return targetItem.name;
+    }
+
+    return targetItem.system.location?.trim() ?? "";
+  }
+
+  private _getLocationContainerElement(locationName: string): HTMLElement | null {
+    if (!locationName) {
+      return null;
+    }
+
+    const containerItem = this.actor.items.find(
+      (candidate) =>
+        candidate.name === locationName &&
+        isDocumentSubType<PhysicalItem>(candidate, physicalItemTypes) &&
+        !this._isNaturalWeapon(candidate) &&
+        candidate.system.isContainer,
+    );
+
+    const containerId = containerItem?.id;
+    if (!containerId) {
+      return null;
+    }
+
+    return (
+      this.element.querySelector<HTMLElement>(
+        `li[data-item-id="${CSS.escape(containerId)}"] > ul.container`,
+      ) ??
+      this.element.querySelector<HTMLElement>(
+        `li[data-item-id="${CSS.escape(containerId)}"] > .location-row`,
+      )
+    );
+  }
+
+  private _isNaturalWeapon(item: RqgItem): boolean {
+    return isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural;
+  }
+
+  private async _dropPhysicalItemIntoLocation(
+    item: RqgItem,
+    targetLocationName: string,
+  ): Promise<RqgItem | null> {
+    if (
+      !isDocumentSubType<PhysicalItem>(item, physicalItemTypes) ||
+      this._isNaturalWeapon(item) ||
+      !item.name
+    ) {
+      return null;
+    }
+
+    const targetContainer = targetLocationName
+      ? (this.actor.items.find(
+          (candidate) =>
+            candidate.name === targetLocationName &&
+            isDocumentSubType<PhysicalItem>(candidate, physicalItemTypes) &&
+            !this._isNaturalWeapon(candidate),
+        ) as RqgItem | undefined)
+      : undefined;
+
+    if (targetContainer) {
+      const descendantItemIds = new ItemTree(this.actor.items.contents).getItemIdsBelowNode(
+        item.name,
+      );
+      if (descendantItemIds.includes(targetContainer.id ?? "")) {
+        ui.notifications?.warn(
+          localize("RQG.Actor.Notification.CantCreateLocationLoopWarn", {
+            itemName: item.name,
+            targetItemName: targetLocationName,
+          }),
+        );
+        return null;
+      }
+    }
+
+    await item.update({ system: { location: targetLocationName } });
+    return item;
   }
 
   private static async sortItems(actor: CharacterActor, itemType: string): Promise<void> {
+    if (itemType === "physical-by-location") {
+      const physicalItems = actor.items.filter(
+        (item) =>
+          isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
+          !(isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural),
+      ) as PhysicalItem[];
+
+      const itemsByLocation = new Map<string, PhysicalItem[]>();
+      physicalItems.forEach((item) => {
+        const location = item.system.location ?? "";
+        const itemsInLocation = itemsByLocation.get(location) ?? [];
+        itemsInLocation.push(item);
+        itemsByLocation.set(location, itemsInLocation);
+      });
+
+      const updateData = [...itemsByLocation.values()].flatMap((itemsInLocation) => {
+        const sortedItems = [...itemsInLocation].sort((left, right) =>
+          (left.name ?? "").localeCompare(right.name ?? ""),
+        );
+
+        return sortedItems.map((item, index) => ({
+          _id: item.id,
+          sort: (index + 1) * CONST.SORT_INTEGER_DENSITY,
+        }));
+      });
+
+      await actor.updateEmbeddedDocuments("Item", updateData);
+      return;
+    }
+
     const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
     itemsToSort.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     itemsToSort.forEach((item, index) => {
@@ -1165,13 +1355,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     const sourceActor = item.parent as RqgActor | null;
+    const isActorOwnedItem = !!item.id && this.actor.items.has(item.id);
+    const sameActorDrop = sourceActor?.uuid === this.actor.uuid || isActorOwnedItem;
 
     // Same actor or sidebar/compendium drop — sort within same actor
-    if (!sourceActor || sourceActor.uuid === this.actor.uuid) {
+    if (!sourceActor || sameActorDrop) {
       // Try to determine drag context for position-aware sorting
-      const dropCell = (event.target as HTMLElement | null)?.closest<HTMLElement>(
-        "[data-item-id].contextmenu.item",
-      );
+      const dropCell =
+        (event.target as HTMLElement | null)?.closest<HTMLElement>(".location-row[data-item-id]") ??
+        (event.target as HTMLElement | null)?.closest<HTMLElement>(
+          "[data-item-id].contextmenu.item",
+        );
 
       if (dropCell) {
         const targetItemId = dropCell.dataset["itemId"];
@@ -1180,12 +1374,38 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           : undefined;
 
         if (targetItem && targetItem.id !== item.id) {
-          const rect = dropCell.getBoundingClientRect();
-          const sortBefore = event.clientY < rect.top + rect.height / 2;
+          const dropAction = this._getSameActorDropAction(event, dropCell, targetItem);
+          const targetLocationName = this._getLocationDropTargetName(
+            dropCell,
+            dropAction,
+            targetItem,
+          );
+          if (sameActorDrop && targetLocationName !== undefined) {
+            const currentLocation =
+              isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
+              !this._isNaturalWeapon(item)
+                ? (item.system.location?.trim() ?? "")
+                : undefined;
+
+            const shouldMoveLocation =
+              dropAction === "into" ||
+              (currentLocation !== undefined && currentLocation !== targetLocationName);
+
+            if (shouldMoveLocation) {
+              const droppedItem = await this._dropPhysicalItemIntoLocation(
+                item,
+                targetLocationName,
+              );
+              if (droppedItem) {
+                return droppedItem;
+              }
+            }
+          }
+
           await item.sortRelative({
             target: targetItem,
             siblings: this.actor.items.contents as RqgItem[],
-            sortBefore,
+            sortBefore: dropAction === "before",
           });
           return item;
         }
