@@ -17,10 +17,11 @@
 import { spawn } from "child_process";
 import * as fs from "fs/promises";
 import * as path from "path";
+import { fileURLToPath } from "url";
 
 async function loadEnvLocal(): Promise<Record<string, string>> {
   try {
-    const envLocalPath = new URL("../.env.local", import.meta.url).pathname;
+    const envLocalPath = fileURLToPath(new URL("../.env.local", import.meta.url));
     const content = await fs.readFile(envLocalPath, "utf-8");
     return Object.fromEntries(
       content
