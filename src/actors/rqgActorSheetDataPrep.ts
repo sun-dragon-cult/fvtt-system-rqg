@@ -43,22 +43,21 @@ export async function rankCharacteristics(actor: CharacterActor): Promise<any> {
     const rankClass = "characteristic-rank-";
     const char = actor.system.characteristics[characteristic as keyof Characteristics];
 
-    // TODO bug? should it be `result[characteristic] = ""`
     if (char == null || char.value == null || char.formula == null || char.formula == "") {
       // cannot evaluate
-      result["characteristic"] = "";
+      result[characteristic] = "";
       continue;
     }
 
     if (Number.isNumeric(char.formula)) {
       // formula is a literal number and does not need evaluation
-      result["characteristic"] = "";
+      result[characteristic] = "";
       continue;
     }
 
     if (!Roll.validate(char.formula)) {
       // formula is not valid and cannnot be evaluated
-      result["characteristic"] = "";
+      result[characteristic] = "";
       continue;
     }
 
@@ -71,7 +70,7 @@ export async function rankCharacteristics(actor: CharacterActor): Promise<any> {
 
     if (minTotal == null || maxTotal == null) {
       // cannot evaluate
-      result["characteristic"] = "";
+      result[characteristic] = "";
       continue;
     }
 
