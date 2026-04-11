@@ -396,72 +396,74 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       gearTabs.bind(this.element);
     }
 
-    // Context menus — all V2 menus use fixed (mouse-position) positioning
-    const ctxMenuOptions = {
-      fixed: true,
-      onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
-      onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
-    };
-    new RqgContextMenu(
-      this.element,
-      ".characteristic.contextmenu",
-      characteristicMenuOptions(this.actor, this.document.token),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".combat.contextmenu",
-      combatMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".hit-location.contextmenu",
-      hitLocationMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".rune.contextmenu",
-      runeMenuOptions(this.actor, this.document.token ?? undefined),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".cult.contextmenu",
-      cultMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".skill.contextmenu",
-      skillMenuOptions(this.actor, this.document.token ?? undefined),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".passion.contextmenu",
-      passionMenuOptions(this.actor, this.document.token ?? undefined),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".spirit-magic.contextmenu",
-      spiritMagicMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".rune-magic.contextmenu",
-      runeMagicMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".gear.contextmenu",
-      gearMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
+    // Context menus bind to this.element — create once to avoid accumulating listeners.
+    if (options.isFirstRender) {
+      const ctxMenuOptions = {
+        fixed: true,
+        onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
+        onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
+      };
+      new RqgContextMenu(
+        this.element,
+        ".characteristic.contextmenu",
+        characteristicMenuOptions(this.actor, this.document.token),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".combat.contextmenu",
+        combatMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".hit-location.contextmenu",
+        hitLocationMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".rune.contextmenu",
+        runeMenuOptions(this.actor, this.document.token ?? undefined),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".cult.contextmenu",
+        cultMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".skill.contextmenu",
+        skillMenuOptions(this.actor, this.document.token ?? undefined),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".passion.contextmenu",
+        passionMenuOptions(this.actor, this.document.token ?? undefined),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".spirit-magic.contextmenu",
+        spiritMagicMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".rune-magic.contextmenu",
+        runeMagicMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".gear.contextmenu",
+        gearMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+    }
 
     // RQID link click handlers
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
