@@ -1,8 +1,8 @@
 ![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json)
 [![GitHub Release](https://img.shields.io/github/release/sun-dragon-cult/fvtt-system-rqg)]()
-[![Issues](https://img.shields.io/github/issues-raw/sun-dragon-cult/fvtt-system-rqg?maxAge=25000)](https://github.com/wakeand/fvtt-system-rqg/issues)
+[![Issues](https://img.shields.io/github/issues-raw/sun-dragon-cult/fvtt-system-rqg?maxAge=25000)](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues)
 ![Latest Release Download Count](https://img.shields.io/github/downloads/sun-dragon-cult/fvtt-system-rqg/latest/rqg.zip)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/LICENSE)
+[![License](https://img.shields.io/badge/License-Custom-blue.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/LICENSE)
 [![Tests](https://github.com/sun-dragon-cult/fvtt-system-rqg/actions/workflows/test.yml/badge.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/actions/workflows/test.yml)
 ![Forge Installs](https://img.shields.io/badge/dynamic/json?color=red&label=Forge%20Installs&query=package.installs&suffix=%25&url=https%3A%2F%2Fforge-vtt.com%2Fapi%2Fbazaar%2Fpackage%2Frqg)
 
@@ -27,19 +27,41 @@ See the [Documentation](https://sun-dragon-cult.github.io/) for more details.
 ## Development
 
 Written in typescript wih the help of the fantastic [League of Foundry Developers Foundry VTT Types](https://github.com/League-of-Foundry-Developers/foundry-vtt-types).
-After a `pnpm i` to get the dependencies, do `pnpm build` to build the system and compile the compendium packs into a `dist` folder.
-For easy development make a softlink from `foundrydata/Data/systems/rqg` to that `dist` folder.
 
-To decrease the time it takes to build the system you can skip generating the compendium packs by running `pnpm build:system`.
-This assumes that you previously have compiled the compendium packs with `pnpm build` or `pnpm build:packs`.
-These commands builds the pack db files to `src/assets/packs/` from the yaml file sources under `src/assets/compendiums/`
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (LTS recommended)
+- [pnpm](https://pnpm.io/installation)
+- A local Node.js installation of Foundry VTT (with a valid license), see https://foundryvtt.com/article/installation/
+
+### Quick start
+
+1. Install dependencies: `pnpm i`
+2. Build once: `pnpm build`
+3. Create local config: copy `.env.example` to `.env.local`
+4. Edit `.env.local` and set your local Foundry paths (`FOUNDRY_V13_*` / `FOUNDRY_V14_*`)
+5. Create a symlink from `foundrydata/Data/systems/rqg` to this repository's `dist` folder
+
+Then choose one workflow:
+
+1. Build workflow (compiled/minified output)
+
+- Build the system: `pnpm build`
+- Start Foundry (example v14): `pnpm foundry 14`
+- Open the Foundry localhost URL for the configured port
+
+2. Dev workflow (hot reload + non-minified code)
+
+- Start Foundry (example v14): `pnpm foundry 14`
+- In another terminal, run dev mode (example v13): `pnpm dev 13` (opens your browser automatically, usually at `http://localhost:30001/game`)
+
+If you omit the version argument, the scripts use your default values from `.env.local`.
 
 If you like to remove the system from foundry then remove the file system softlink.
 
 ### Development in Windows
 
-The build scripts make use of [Husky](https://typicode.github.io/husky/) which means that you need to use the
-Git Bash shell that is supplied by the nodejs windows install when you run the pnpm commands to build the system.
+Recommended: use WSL for day-to-day development on Windows.
 
 ### Conventional Commit message standard
 
@@ -83,7 +105,7 @@ version to 7.
 
 ## Prepare
 
-1. Prepare a new documentation for the relase in the sun-dragon-cult repo
+1. Prepare a new documentation for the release in the sun-dragon-cult repo
 2. Draft a new release on Github
 3. Select a new tag like "v7.3.2" and click "Create new tag"
 4. Set Release title to "7.3.2 (2028-01-02)"
@@ -106,6 +128,6 @@ version to 7.
 
 ## Project Status
 
-Still very much work in progress. 🚧 But closing in on a release version...
+Actively maintained, with an official release expected in the future.
 
 ## [Credits and Attributions](docs/credits.md)
