@@ -3,6 +3,7 @@ import type { RuneOpposedPair } from "./rqgActorSheetDataPrep";
 import type { RqgItem } from "../items/rqgItem";
 import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
+import type { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 /**
  * Context passed to all V2 actor sheet parts.
@@ -15,14 +16,34 @@ export interface RqgActorSheetV2Context {
   isGM: boolean;
   isEditable: boolean;
   isEmbedded: boolean;
-  /** Always true — templates use this to choose `<prose-mirror>` over `{{editor}}`. */
-  isV2: boolean;
   system: CharacterDataPropertiesData;
   effects: unknown;
 
   /** Embedded items organized by type (from DataPrep.organizeEmbeddedItems). */
   embeddedItems: {
     [key in ItemTypeEnum]?: RqgItem[] | Record<string, RqgItem[]>;
+  };
+
+  /** Physical items reorganized as a tree of items containing items. */
+  itemLocationTree: LocationItemNodeData;
+  /** Known item location names for datalist suggestions. */
+  locations: string[];
+  /** Currency totalized price and encumbrance values. */
+  currencyTotals: any;
+  /** Warning text when item location tree has loops. */
+  itemLoopMessage: string | undefined;
+  /** Gear tab data split for conditional section rendering. */
+  gearView: {
+    unique: RqgItem[];
+    consumable: RqgItem[];
+    currency: RqgItem[];
+    weapon: RqgItem[];
+    armor: RqgItem[];
+    hasUnique: boolean;
+    hasConsumable: boolean;
+    hasCurrency: boolean;
+    hasWeapon: boolean;
+    hasArmor: boolean;
   };
 
   /** Main cult for display in the header. */

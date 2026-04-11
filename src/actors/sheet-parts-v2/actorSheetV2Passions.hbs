@@ -3,7 +3,7 @@
   <h2>
     <button class="sort" data-sort-items="passion" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>
     {{localize "RQG.Actor.Passion.Passions"}}
-    <a class="passion-add-btn" data-passion-add data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}"><i class="fas fa-plus"></i></a>
+    {{#if @root.isEditable}}<a class="passion-add-btn" data-passion-add data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}"><i class="fas fa-plus"></i></a>{{/if}}
   </h2>
 
   <div class="passions-list">
@@ -12,7 +12,7 @@
       <div class="passion-icon" data-item-id="{{id}}"
            data-item-tooltip
            data-tooltip-class="item-description-tooltip">
-        <img src="{{img}}">
+        {{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img src="{{img}}">
       </div>
       <div class="passion-name" data-item-id="{{id}}" data-item-roll
            data-tooltip="{{localize 'RQG.Game.RollTitle'}}">

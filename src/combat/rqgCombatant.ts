@@ -41,9 +41,12 @@ export class RqgCombatant extends Combatant {
     const combat = operation.parent;
     for (const id of operation.ids as string[]) {
       const combatant: Combatant | undefined = combat.combatants.get(id);
-      if (combatant?.actor?.sheet) {
-        for (const key of Object.keys(combatant.apps)) {
-          delete combatant.apps[key];
+      const actorSheet = combatant?.actor?.sheet;
+      if (actorSheet) {
+        for (const [key, app] of Object.entries(combatant.apps)) {
+          if (app === actorSheet) {
+            delete combatant.apps[key];
+          }
         }
       }
     }

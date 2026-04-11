@@ -13,6 +13,7 @@
      data-tooltip="{{localize "RQG.Actor.Skill.SkillDescriptionTitle" }}"
      class="skill contextmenu item"
      {{#if skill.system.descriptionRqidLink.rqid}}data-rqid-link="{{skill.system.descriptionRqidLink.rqid}}"{{/if}}>
+  {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{skill.id}}"><span class="grip-icon"></span></span>{{/if}}
   <img class="item" src="{{skill.img}}">
 </div>
 <div data-item-id="{{skill.id}}"

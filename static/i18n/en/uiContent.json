@@ -319,7 +319,8 @@
         "NoIncomingItemDataSourceError": "No incoming Item Data Source!",
         "IncomingItemDataSourceNotPhysicalItemError": "Incoming Item Data Source does not represent a physical item with a quantity!",
         "CantTransferLessThanOneItemError": "Can't transfer less than one item!",
-        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than ${sourceActorName} has in inventory."
+        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than {sourceActorName} has in inventory.",
+        "CantCreateLocationLoopWarn": "Can't put {itemName} inside {targetItemName} because that would create a location loop."
       },
       "Passion": {
         "Passions": "Passions",
@@ -373,6 +374,7 @@
       },
       "Skill": {
         "UnspecifiedSkillWarning": "⚠ Please specify the missing skill specialization:",
+        "FilterPlaceholder": "Filter Skills",
         "SkillDescriptionTitle": "Skill Description",
         "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
         "RequiresTraining": "Can not get experience, requires training to raise.",
@@ -392,7 +394,8 @@
         }
       },
       "Sorcery": {
-        "FreeINT": "Free INT",
+        "INTLimitTooltip": "Maximum learnable Sorcery is limited by INT ({intValue}). Spirit Magic points also count against this limit.",
+        "Spells": "Spells",
         "Techniques": "Techniques",
         "MasteredRunes": "Mastered Runes"
       },
@@ -1246,6 +1249,7 @@
       },
       "Roll": "Roll",
       "RollChat": "Roll (click)",
+      "RollDirect": "Direct Roll (click)",
       "RollQuick": "Direct Roll (dbl click)",
       "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",
       "RollTitle": "Roll via Dialog (click), Direct Roll (dbl click)",

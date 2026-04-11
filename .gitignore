@@ -11,8 +11,11 @@ yarn-error.log
 yarn.lock
 /.typescript-build/
 
-# Local environment overrides (not committed — set FOUNDRY_PORT here)
+# Local developer environment overrides
 .env.local
+
+# Local Playwright capture artifacts
+.playwright-mcp/
 
 # Ignore Editor settings
 .nova/

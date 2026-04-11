@@ -1,9 +1,5 @@
-// Item-sheet header is a prominent branded area.
-// In dark mode the orange (#f3a71e) fails WCAG AA with Foundry's light text (~2:1).
-// We invert the roles: dark brown background + orange as the active-tab accent.
-// In light mode we keep the familiar orange header + dark brown accent.
-// Foundry's default theme is dark, so :root defines dark-mode defaults.
-// .theme-light overrides for light; .theme-dark reinforces for per-app overrides.
+// Structural and design system CSS custom properties.
+// Theme-specific variables (dark/light mode) are now in _theme.scss
 
 .theme-dark {
   --rqg-themed-exp-outline: rgb(0 0 0 / 80%);

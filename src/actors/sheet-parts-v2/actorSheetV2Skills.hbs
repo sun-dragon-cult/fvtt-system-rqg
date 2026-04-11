@@ -1,10 +1,11 @@
 <section class="tab skills-tab-v2" data-group="primary" data-tab="skills">
 
-  {{#if enrichedUnspecifiedSkill}}<div class="specialization warning">{{{enrichedUnspecifiedSkill}}}</div>{{/if}}
-
   <div class="skill-filter-row">
-    <i class="fas fa-magnifying-glass"></i>
-    <input class="skill-filter" type="search" placeholder="Filter skills…">
+    <div class="skill-filter-input">
+      <i class="fas fa-magnifying-glass"></i>
+      <input class="skill-filter" type="search" placeholder="{{localize 'RQG.Actor.Skill.FilterPlaceholder'}}">
+    </div>
+    {{#if enrichedUnspecifiedSkill}}<div class="specialization warning">{{{enrichedUnspecifiedSkill}}}</div>{{/if}}
   </div>
 
   <div class="masonry">
@@ -20,10 +21,8 @@
         <div class="skill-row">
           <div class="skill contextmenu item"
                data-item-id="{{id}}"
-               data-item-tooltip
-               data-tooltip-class="item-description-tooltip"
                {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-            <img src="{{img}}">
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img src="{{img}}">
           </div>
           <div class="skill contextmenu item"
                data-item-id="{{id}}"

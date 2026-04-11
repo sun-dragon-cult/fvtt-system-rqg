@@ -9,6 +9,8 @@ import { RQG_CONFIG, systemId } from "../system/config";
 import {
   assertDocumentSubType,
   getRequiredDomDataset,
+  hasOwnProperty,
+  isDocumentSubType,
   isTruthy,
   localize,
   range,
@@ -17,7 +19,10 @@ import {
 } from "../system/util";
 
 import type { RqgItem } from "../items/rqgItem";
-import type { AbilityItem } from "@item-model/itemTypes.ts";
+import type { RqgActor } from "./rqgActor";
+import type { AbilityItem, PhysicalItem } from "@item-model/itemTypes.ts";
+import type { ArmorItem } from "@item-model/armorData.ts";
+import type { OccupationItem } from "@item-model/occupationData.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
@@ -42,6 +47,7 @@ import { runeMenuOptions } from "./context-menus/rune-context-menu";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-menu";
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
+import { gearMenuOptions } from "./context-menus/gear-context-menu";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -53,13 +59,23 @@ import {
 } from "../documents/dragDrop";
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { GearItem } from "@item-model/gearData.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
+import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
+import {
+  equippedStatuses,
+  type EquippedStatus,
+  physicalItemTypes,
+} from "../data-model/item-data/IPhysicalItem";
+import { ItemTree } from "../items/shared/ItemTree";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
+  #skillFilterQuery = "";
+
   override get actor(): CharacterActor {
     return this.document as CharacterActor;
   }
@@ -79,6 +95,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     window: {
       resizable: true,
     },
+    dragDrop: [
+      {
+        dragSelector: "[data-item-drag-handle][data-item-id]",
+        dropSelector: "[data-item-id].contextmenu.item",
+      },
+    ],
   };
 
   static override PARTS: Record<string, any> = {
@@ -140,10 +162,25 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
-    const incorrectRunes: any[] = [];
+    const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
+    const itemTree = new ItemTree(this.actor.items.contents);
+    const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
+      .filter((item) => foundry.utils.getProperty(item, "system.physicalItemType") === "unique")
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+    const consumableGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
+      .filter((item) => foundry.utils.getProperty(item, "system.physicalItemType") === "consumable")
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+    const currencyItems = (embeddedItems["currency"] ?? []) as GearItem[];
+    const weaponItems = ((embeddedItems[ItemTypeEnum.Weapon] ?? []) as WeaponItem[])
+      .filter((item) => !foundry.utils.getProperty(item, "system.isNatural"))
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+    const armorItems = (embeddedItems[ItemTypeEnum.Armor] ?? []).sort(
+      (a: RqgItem, b: RqgItem) => (a.sort ?? 0) - (b.sort ?? 0),
+    ) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
+    const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
 
     // Compute active SRs from combat tracker
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
@@ -162,11 +199,26 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: false,
-      isV2: true,
       system: system,
       effects: [...this.actor.allApplicableEffects()],
 
       embeddedItems: embeddedItems,
+      itemLocationTree: itemTree.toSheetData(),
+      locations: itemTree.getPhysicalItemLocations(),
+      currencyTotals: DataPrep.calcCurrencyTotals(this.actor),
+      itemLoopMessage: itemTree.loopMessage,
+      gearView: {
+        unique: uniqueGearItems,
+        consumable: consumableGearItems,
+        currency: currencyItems,
+        weapon: weaponItems,
+        armor: armorItems,
+        hasUnique: uniqueGearItems.length > 0,
+        hasConsumable: consumableGearItems.length > 0,
+        hasCurrency: currencyItems.length > 0,
+        hasWeapon: weaponItems.length > 0,
+        hasArmor: armorItems.length > 0,
+      },
 
       mainCult: DataPrep.getMainCultInfo(this.actor),
       characterElementRunes: DataPrep.getCharacterElementRuneImgs(this.actor),
@@ -219,7 +271,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       activeInSR: [...this._activeInSR],
       bodyType: this.actor.getBodyType(),
       hitLocationDiceRangeError: DataPrep.getHitLocationDiceRangeError(this.actor),
-      showUiSection: DataPrep.getUiSectionVisibility(this.actor),
+      showUiSection,
       enrichedIncorrectRunes: await DataPrep.getIncorrectRunesText(
         this.actor,
         embeddedItems?.rune,
@@ -246,8 +298,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** Remembers the currently active tab across re-renders */
   protected _currentTab: string | undefined;
 
+  /** Remembers the currently active gear sub-tab across re-renders */
+  protected _currentGearView: string | undefined;
+
   /** Tracks which SRs are active in combat for this actor */
   private _activeInSR: Set<number> = new Set<number>();
+
+  /** Temporary image element used as drag preview */
+  private _activeDragPreview: HTMLImageElement | null = null;
 
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
@@ -322,66 +380,90 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       cultTabs.bind(this.element);
     }
 
-    // Context menus — all V2 menus use fixed (mouse-position) positioning
-    const ctxMenuOptions = {
-      fixed: true,
-      onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
-      onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
-    };
-    new RqgContextMenu(
-      this.element,
-      ".characteristic.contextmenu",
-      characteristicMenuOptions(this.actor, this.document.token),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".combat.contextmenu",
-      combatMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".hit-location.contextmenu",
-      hitLocationMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".rune.contextmenu",
-      runeMenuOptions(this.actor, this.document.token ?? undefined),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".cult.contextmenu",
-      cultMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".skill.contextmenu",
-      skillMenuOptions(this.actor, this.document.token ?? undefined),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".passion.contextmenu",
-      passionMenuOptions(this.actor, this.document.token ?? undefined),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".spirit-magic.contextmenu",
-      spiritMagicMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
-    new RqgContextMenu(
-      this.element,
-      ".rune-magic.contextmenu",
-      runeMagicMenuOptions(this.actor),
-      ctxMenuOptions,
-    );
+    // Gear tab sub-navigation (by item type / by location)
+    const gearNavEl = this.element.querySelector("nav.gear-tabs");
+    if (gearNavEl) {
+      const gearTabs = new foundry.applications.ux.Tabs({
+        navSelector: "nav.gear-tabs",
+        contentSelector: ".gear-body",
+        initial: this._currentGearView ?? "by-item-type",
+        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
+          if (name) {
+            this._currentGearView = name;
+          }
+        },
+      });
+      gearTabs.bind(this.element);
+    }
+
+    // Context menus bind to this.element — create once to avoid accumulating listeners.
+    if (options.isFirstRender) {
+      const ctxMenuOptions = {
+        fixed: true,
+        onOpen: (target: HTMLElement) => target.classList.add("context-highlight"),
+        onClose: (target: HTMLElement) => target.classList.remove("context-highlight"),
+      };
+      new RqgContextMenu(
+        this.element,
+        ".characteristic.contextmenu",
+        characteristicMenuOptions(this.actor, this.document.token),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".combat.contextmenu",
+        combatMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".hit-location.contextmenu",
+        hitLocationMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".rune.contextmenu",
+        runeMenuOptions(this.actor, this.document.token ?? undefined),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".cult.contextmenu",
+        cultMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".skill.contextmenu",
+        skillMenuOptions(this.actor, this.document.token ?? undefined),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".passion.contextmenu",
+        passionMenuOptions(this.actor, this.document.token ?? undefined),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".spirit-magic.contextmenu",
+        spiritMagicMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".rune-magic.contextmenu",
+        runeMagicMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+      new RqgContextMenu(
+        this.element,
+        ".gear.contextmenu",
+        gearMenuOptions(this.actor),
+        ctxMenuOptions,
+      );
+    }
 
     // RQID link click handlers
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
@@ -420,6 +502,24 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         void this._onDropRqidDocument(event as DragEvent);
       });
     });
+
+    // Clear drop indicators and drag preview cleanup.
+    // Bind once per rendered root element so cleanup listeners don't duplicate.
+    if (this.element.dataset["dragImageBound"] !== "true") {
+      this.element.dataset["dragImageBound"] = "true";
+
+      this.element.addEventListener("dragend", () => {
+        this._clearDropIndicators();
+        this._activeDragPreview?.remove();
+        this._activeDragPreview = null;
+      });
+
+      this.element.addEventListener("drop", () => {
+        this._clearDropIndicators();
+        this._activeDragPreview?.remove();
+        this._activeDragPreview = null;
+      });
+    }
 
     // Profile image click to open FilePicker (AppV2 convention: data-action)
     if (options.isFirstRender) {
@@ -491,6 +591,44 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       el.addEventListener("click", () => RqgActorSheetV2.sortItems(this.actor, itemType));
     });
 
+    // Cycle the equipped state of a physical item
+    this.element.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      el.addEventListener("click", async () => {
+        if (itemId.startsWith("virtual:")) {
+          const [, itemEquippedStatus, itemName] = itemId.split(":");
+          const newEquippedStatus =
+            equippedStatuses[
+              (equippedStatuses.indexOf(itemEquippedStatus as EquippedStatus) + 1) %
+                equippedStatuses.length
+            ];
+          const affectedItems = new ItemTree(
+            this.actor.items.contents,
+          ).getOtherItemIdsInSameLocationTree(itemName ?? "");
+          const updates = affectedItems.map((id) => ({
+            _id: id,
+            system: { equippedStatus: newEquippedStatus },
+          }));
+          await this.actor.updateEmbeddedDocuments("Item", updates);
+          return;
+        }
+
+        const item = this.actor.items.get(itemId) as RqgItem | undefined;
+        assertDocumentSubType<PhysicalItem>(
+          item,
+          physicalItemTypes,
+          `Couldn't find itemId [${itemId}] to toggle the equipped state (when clicked).`,
+        );
+
+        const newStatus =
+          equippedStatuses[
+            (equippedStatuses.indexOf(item.system.equippedStatus as EquippedStatus) + 1) %
+              equippedStatuses.length
+          ];
+        await item.update({ system: { equippedStatus: newStatus } });
+      });
+    });
+
     // Add Passion button
     this.element.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
@@ -506,6 +644,36 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           system: { passion: newPassionName },
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
+        (createdItems[0] as RqgItem)?.sheet?.render(true);
+      });
+    });
+
+    // Add Gear buttons
+    this.element.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
+      const physicalItemType = getRequiredDomDataset(el, "gear-add");
+      el.addEventListener("click", async () => {
+        const defaultItemIconSettings: any = game.settings?.get(
+          systemId,
+          "defaultItemIconSettings",
+        );
+
+        const physicalItemType2ItemName = new Map<string, string>([
+          ["unique", "RQG.Actor.Gear.NewGear"],
+          ["currency", "RQG.Actor.Gear.NewCurrency"],
+          ["consumable", "RQG.Actor.Gear.NewConsumable"],
+        ]);
+
+        const name = localize(
+          physicalItemType2ItemName.get(physicalItemType) ?? "RQG.Actor.Gear.NewGear",
+        );
+
+        const newGear = {
+          name: name,
+          type: ItemTypeEnum.Gear,
+          img: defaultItemIconSettings[ItemTypeEnum.Gear],
+          system: { physicalItemType: physicalItemType },
+        };
+        const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
         (createdItems[0] as RqgItem)?.sheet?.render(true);
       });
     });
@@ -530,26 +698,45 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
 
     // Set rich HTML tooltips on item icons (description + GM notes)
-    const allItems: any[] = Object.values(context.embeddedItems ?? {}).flat();
     const isGM = context.isGM;
     this.element.querySelectorAll<HTMLElement>("[data-item-tooltip]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      const item = allItems.find((i: any) => i.id === itemId);
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
       if (!item) {
         return;
       }
+      const itemSystem = item.system as {
+        enrichedDescription?: string;
+        enrichedGmNotes?: string;
+      };
       const parts: string[] = [];
-      if (item.system.enrichedDescription) {
-        parts.push(item.system.enrichedDescription);
+      if (itemSystem.enrichedDescription) {
+        parts.push(itemSystem.enrichedDescription);
       }
-      if (isGM && item.system.enrichedGmNotes) {
+      if (isGM && itemSystem.enrichedGmNotes) {
         parts.push(
-          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${item.system.enrichedGmNotes}`,
+          `<hr><div style="text-align:center"><strong>${localize("RQG.Item.SheetTab.GMNotes")}</strong></div>${itemSystem.enrichedGmNotes}`,
         );
       }
       if (parts.length) {
         el.dataset["tooltip"] = `<div class="item-description-tooltip">${parts.join("")}</div>`;
       }
+
+      // Open item sheet on the description-like tab when the icon is clicked.
+      el.addEventListener("click", () => {
+        const tooltipTabMap: Partial<Record<ItemTypeEnum, string>> = {
+          [ItemTypeEnum.Passion]: "backstory",
+          [ItemTypeEnum.Gear]: "description",
+          [ItemTypeEnum.Armor]: "description",
+          [ItemTypeEnum.Weapon]: "description",
+        };
+        const sheet = item.sheet as any;
+        const tab = tooltipTabMap[item.type as ItemTypeEnum];
+        if (tab) {
+          sheet.tabGroups = { ...(sheet.tabGroups ?? {}), sheet: tab };
+        }
+        sheet?.render(true);
+      });
     });
 
     // Roll Item (Skill, Rune, Passion)
@@ -580,8 +767,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Skills filter
     this.element.querySelectorAll<HTMLInputElement>(".skill-filter").forEach((input) => {
-      input.addEventListener("input", () => {
-        const query = input.value.trim().toLowerCase();
+      const applyFilter = (query: string) => {
         const masonry = input.closest(".skills-tab-v2")?.querySelector(".masonry");
         masonry?.querySelectorAll<HTMLElement>(".masonry-item").forEach((category) => {
           let anyVisible = false;
@@ -600,6 +786,18 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           });
           (category as HTMLElement).style.display = anyVisible ? "" : "none";
         });
+      };
+
+      // Restore filter from previous render
+      if (this.#skillFilterQuery) {
+        input.value = this.#skillFilterQuery;
+        applyFilter(this.#skillFilterQuery);
+      }
+
+      input.addEventListener("input", () => {
+        const query = input.value.trim().toLowerCase();
+        this.#skillFilterQuery = query;
+        applyFilter(query);
       });
     });
 
@@ -843,7 +1041,301 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     await sheet.actor.update(data);
   }
 
+  protected override async _onDragStart(event: DragEvent): Promise<void> {
+    await super._onDragStart(event);
+
+    const dragHandle = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+      "[data-item-drag-handle], [data-weapon-drag-handle]",
+    );
+    if (!dragHandle) {
+      return;
+    }
+
+    const itemContainer = dragHandle.closest<HTMLElement>("[data-item-id]");
+    if (!itemContainer) {
+      return;
+    }
+
+    const itemId = itemContainer.dataset["itemId"];
+    if (!itemId) {
+      return;
+    }
+
+    const item = this.actor.items.get(itemId);
+    // If no item or no image, keep the default grab SVG.
+    if (!item || !item.img) {
+      return;
+    }
+
+    const dataTransfer = event.dataTransfer;
+    if (!dataTransfer) {
+      return;
+    }
+
+    // Use a fixed-size preview so large source art does not produce huge drag ghosts.
+    const iconElement = itemContainer.querySelector<HTMLImageElement>("img[data-item-id], img");
+    const imgSrc = iconElement?.currentSrc || iconElement?.src || item.img;
+    const resolvedSrc = /^(https?:)?\/\//.test(imgSrc) ? imgSrc : foundry.utils.getRoute(imgSrc);
+
+    this._activeDragPreview?.remove();
+    const preview = document.createElement("img");
+    preview.src = resolvedSrc;
+    preview.width = 36;
+    preview.height = 36;
+    preview.style.position = "fixed";
+    preview.style.top = "-1000px";
+    preview.style.left = "-1000px";
+    preview.style.width = "36px";
+    preview.style.height = "36px";
+    preview.style.objectFit = "contain";
+    preview.style.pointerEvents = "none";
+
+    document.body.append(preview);
+    this._activeDragPreview = preview;
+    dataTransfer.setDragImage(preview, 18, 18);
+  }
+
+  protected override _onDragOver(event: DragEvent): void {
+    super._onDragOver(event);
+
+    const target =
+      (event.target as HTMLElement | null)?.closest<HTMLElement>(".location-row[data-item-id]") ??
+      (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-item-id].contextmenu.item");
+
+    // Clear all existing indicators first
+    this.element
+      .querySelectorAll(".drop-before, .drop-after, .drop-into, .drop-into-container")
+      .forEach((el) => {
+        el.classList.remove("drop-before", "drop-after", "drop-into", "drop-into-container");
+      });
+
+    if (!target) {
+      return;
+    }
+    const itemId = target.dataset["itemId"];
+    if (!itemId) {
+      return;
+    }
+
+    // Check if dropping on a skill/rune row (these can't be reordered within same actor)
+    const skillRow = target.closest(".skill-row");
+    const runeRow = target.closest(".rune-card, .rune");
+    if (skillRow || runeRow) {
+      event.dataTransfer!.dropEffect = "none";
+      return;
+    }
+
+    // Set cursor for reorderable items: "move" for same-actor rearrangement
+    event.dataTransfer!.dropEffect = "move";
+
+    const weaponRow = target.closest<HTMLElement>(
+      `.weapon-row[data-item-id="${CSS.escape(itemId)}"]`,
+    );
+    const locationRow = target.closest<HTMLElement>(
+      `.location-row[data-item-id="${CSS.escape(itemId)}"]`,
+    );
+    const rowCells = weaponRow
+      ? weaponRow.querySelectorAll<HTMLElement>(":scope > div")
+      : locationRow
+        ? [locationRow]
+        : this.element.querySelectorAll<HTMLElement>(
+            `[data-item-id="${CSS.escape(itemId)}"].contextmenu.item`,
+          );
+    const targetItem = this.actor.items.get(itemId) as RqgItem | undefined;
+    const dropAction = this._getSameActorDropAction(event, target, targetItem ?? null);
+
+    const targetLocationName = this._getLocationDropTargetName(
+      target,
+      dropAction,
+      targetItem ?? null,
+    );
+    const isLocationContainerTarget =
+      !!target.closest("ul.location") &&
+      !!targetItem &&
+      isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) &&
+      !this._isNaturalWeapon(targetItem) &&
+      targetItem.system.isContainer;
+    const highlightContainer = isLocationContainerTarget
+      ? this._getLocationContainerElement(targetItem.name ?? "")
+      : targetLocationName
+        ? this._getLocationContainerElement(targetLocationName)
+        : null;
+    highlightContainer?.classList.add("drop-into-container");
+
+    let cls = "drop-after";
+    if (dropAction === "before") {
+      cls = "drop-before";
+    }
+    rowCells.forEach((cell) => cell.classList.add(cls));
+  }
+
+  private _clearDropIndicators(): void {
+    this.element
+      .querySelectorAll(".drop-before, .drop-after, .drop-into, .drop-into-container")
+      .forEach((el) => {
+        el.classList.remove("drop-before", "drop-after", "drop-into", "drop-into-container");
+      });
+  }
+
+  private _getSameActorDropAction(
+    event: DragEvent,
+    dropCell: HTMLElement,
+    targetItem: RqgItem | null,
+  ): "before" | "after" | "into" {
+    if (this._isLocationContainerDropTarget(dropCell, targetItem)) {
+      if (dropCell.matches(".location-row[data-item-id]")) {
+        return "into";
+      }
+
+      const rect = dropCell.getBoundingClientRect();
+      const upperBoundary = rect.top + rect.height / 3;
+      const lowerBoundary = rect.bottom - rect.height / 3;
+      if (event.clientY >= upperBoundary && event.clientY <= lowerBoundary) {
+        return "into";
+      }
+    }
+
+    const rect = dropCell.getBoundingClientRect();
+    return event.clientY < rect.top + rect.height / 2 ? "before" : "after";
+  }
+
+  private _isLocationContainerDropTarget(
+    dropCell: HTMLElement,
+    targetItem: RqgItem | null,
+  ): boolean {
+    return (
+      !!dropCell.closest("ul.location") &&
+      !!targetItem &&
+      isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) &&
+      !this._isNaturalWeapon(targetItem) &&
+      targetItem.system.isContainer
+    );
+  }
+
+  private _getLocationDropTargetName(
+    dropCell: HTMLElement,
+    dropAction: "before" | "after" | "into",
+    targetItem: RqgItem | null,
+  ): string | undefined {
+    if (
+      !dropCell.closest("ul.location") ||
+      !targetItem ||
+      !isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) ||
+      this._isNaturalWeapon(targetItem)
+    ) {
+      return undefined;
+    }
+
+    if (dropAction === "into" && targetItem.system.isContainer && targetItem.name) {
+      return targetItem.name;
+    }
+
+    return targetItem.system.location?.trim() ?? "";
+  }
+
+  private _getLocationContainerElement(locationName: string): HTMLElement | null {
+    if (!locationName) {
+      return null;
+    }
+
+    const containerItem = this.actor.items.find(
+      (candidate) =>
+        candidate.name === locationName &&
+        isDocumentSubType<PhysicalItem>(candidate, physicalItemTypes) &&
+        !this._isNaturalWeapon(candidate) &&
+        candidate.system.isContainer,
+    );
+
+    const containerId = containerItem?.id;
+    if (!containerId) {
+      return null;
+    }
+
+    return (
+      this.element.querySelector<HTMLElement>(
+        `li[data-item-id="${CSS.escape(containerId)}"] > ul.container`,
+      ) ??
+      this.element.querySelector<HTMLElement>(
+        `li[data-item-id="${CSS.escape(containerId)}"] > .location-row`,
+      )
+    );
+  }
+
+  private _isNaturalWeapon(item: RqgItem): boolean {
+    return isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural;
+  }
+
+  private async _dropPhysicalItemIntoLocation(
+    item: RqgItem,
+    targetLocationName: string,
+  ): Promise<RqgItem | null> {
+    if (
+      !isDocumentSubType<PhysicalItem>(item, physicalItemTypes) ||
+      this._isNaturalWeapon(item) ||
+      !item.name
+    ) {
+      return null;
+    }
+
+    const targetContainer = targetLocationName
+      ? (this.actor.items.find(
+          (candidate) =>
+            candidate.name === targetLocationName &&
+            isDocumentSubType<PhysicalItem>(candidate, physicalItemTypes) &&
+            !this._isNaturalWeapon(candidate),
+        ) as RqgItem | undefined)
+      : undefined;
+
+    if (targetContainer) {
+      const descendantItemIds = new ItemTree(this.actor.items.contents).getItemIdsBelowNode(
+        item.name,
+      );
+      if (descendantItemIds.includes(targetContainer.id ?? "")) {
+        ui.notifications?.warn(
+          localize("RQG.Actor.Notification.CantCreateLocationLoopWarn", {
+            itemName: item.name,
+            targetItemName: targetLocationName,
+          }),
+        );
+        return null;
+      }
+    }
+
+    await item.update({ system: { location: targetLocationName } });
+    return item;
+  }
+
   private static async sortItems(actor: CharacterActor, itemType: string): Promise<void> {
+    if (itemType === "physical-by-location") {
+      const physicalItems = actor.items.filter(
+        (item) =>
+          isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
+          !(isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isNatural),
+      ) as PhysicalItem[];
+
+      const itemsByLocation = new Map<string, PhysicalItem[]>();
+      physicalItems.forEach((item) => {
+        const location = item.system.location ?? "";
+        const itemsInLocation = itemsByLocation.get(location) ?? [];
+        itemsInLocation.push(item);
+        itemsByLocation.set(location, itemsInLocation);
+      });
+
+      const updateData = [...itemsByLocation.values()].flatMap((itemsInLocation) => {
+        const sortedItems = [...itemsInLocation].sort((left, right) =>
+          (left.name ?? "").localeCompare(right.name ?? ""),
+        );
+
+        return sortedItems.map((item, index) => ({
+          _id: item.id,
+          sort: (index + 1) * CONST.SORT_INTEGER_DENSITY,
+        }));
+      });
+
+      await actor.updateEmbeddedDocuments("Item", updateData);
+      return;
+    }
+
     const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
     itemsToSort.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     itemsToSort.forEach((item, index) => {
@@ -854,6 +1346,268 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
     const updateData = itemsToSort.map((item) => ({ _id: item.id, sort: item.sort }));
     await actor.updateEmbeddedDocuments("Item", updateData);
+  }
+
+  protected override async _onDropItem(event: DragEvent, item: RqgItem): Promise<RqgItem | null> {
+    if (!this.actor.isOwner) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
+      );
+      return null;
+    }
+
+    const sourceActor = item.parent as RqgActor | null;
+    const isActorOwnedItem = !!item.id && this.actor.items.has(item.id);
+    const sameActorDrop = sourceActor?.uuid === this.actor.uuid || isActorOwnedItem;
+
+    // Same actor or sidebar/compendium drop — sort within same actor
+    if (!sourceActor || sameActorDrop) {
+      // Try to determine drag context for position-aware sorting
+      const dropCell =
+        (event.target as HTMLElement | null)?.closest<HTMLElement>(".location-row[data-item-id]") ??
+        (event.target as HTMLElement | null)?.closest<HTMLElement>(
+          "[data-item-id].contextmenu.item",
+        );
+
+      if (dropCell) {
+        const targetItemId = dropCell.dataset["itemId"];
+        const targetItem = targetItemId
+          ? (this.actor.items.get(targetItemId) as RqgItem | undefined)
+          : undefined;
+
+        if (targetItem && targetItem.id !== item.id) {
+          const dropAction = this._getSameActorDropAction(event, dropCell, targetItem);
+          const targetLocationName = this._getLocationDropTargetName(
+            dropCell,
+            dropAction,
+            targetItem,
+          );
+          if (sameActorDrop && targetLocationName !== undefined) {
+            const currentLocation =
+              isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
+              !this._isNaturalWeapon(item)
+                ? (item.system.location?.trim() ?? "")
+                : undefined;
+
+            const shouldMoveLocation =
+              dropAction === "into" ||
+              (currentLocation !== undefined && currentLocation !== targetLocationName);
+
+            if (shouldMoveLocation) {
+              const droppedItem = await this._dropPhysicalItemIntoLocation(
+                item,
+                targetLocationName,
+              );
+              if (droppedItem) {
+                return droppedItem;
+              }
+            }
+          }
+
+          await item.sortRelative({
+            target: targetItem,
+            siblings: this.actor.items.contents as RqgItem[],
+            sortBefore: dropAction === "before",
+          });
+          return item;
+        }
+      }
+
+      // Default: let Foundry handle it (uses item sort order)
+      return super._onDropItem(event, item);
+    }
+
+    // Cross-actor drop
+    const itemData = item.toObject();
+
+    if (isDocumentSubType<OccupationItem>(item, ItemTypeEnum.Occupation)) {
+      if (!hasRqid(item)) {
+        return null;
+      }
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
+      return item;
+    }
+
+    if (
+      isDocumentSubType<ArmorItem>(itemData as any, ItemTypeEnum.Armor) ||
+      isDocumentSubType<GearItem>(itemData as any, ItemTypeEnum.Gear) ||
+      isDocumentSubType<WeaponItem>(itemData as any, ItemTypeEnum.Weapon)
+    ) {
+      const success = await this.confirmTransferPhysicalItem(itemData, sourceActor);
+      return success ? item : null;
+    }
+
+    const success = await this.confirmCopyIntangibleItem(itemData, sourceActor);
+    return success ? item : null;
+  }
+
+  private async confirmTransferPhysicalItem(
+    incomingItemDataSource: Item.Implementation["_source"],
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    const adapter: any = {
+      incomingItemDataSource: incomingItemDataSource,
+      sourceActor: sourceActor,
+      targetActor: this.actor,
+      showQuantity: (incomingItemDataSource.system as any).quantity > 1,
+    };
+
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmTransferPhysicalItem,
+      { adapter },
+    );
+
+    const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+
+    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+        callback: async (html: JQuery | HTMLElement) =>
+          confirmDialog.resolve(
+            this.submitConfirmTransferPhysicalItem(
+              html as JQuery,
+              incomingItemDataSource,
+              sourceActor,
+            ),
+          ),
+      },
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+    return await confirmDialog.setButtons(buttons, "submit").show();
+  }
+
+  private async submitConfirmTransferPhysicalItem(
+    html: JQuery,
+    incomingItemDataSource: Item.Implementation["_source"],
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    const formData = new FormData(html.find("form")[0]);
+    const data = Object.fromEntries(formData.entries());
+    const quantityToTransfer: number = data["numtotransfer"] ? Number(data["numtotransfer"]) : 1;
+    return this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
+  }
+
+  private async transferPhysicalItem(
+    incomingItemDataSource: Item.Implementation["_source"],
+    quantityToTransfer: number,
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    if (!incomingItemDataSource || !incomingItemDataSource._id) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
+      return false;
+    }
+    if (!hasOwnProperty(incomingItemDataSource.system, "quantity")) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError"),
+      );
+      return false;
+    }
+    if (quantityToTransfer < 1) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
+      return false;
+    }
+    if (quantityToTransfer > (incomingItemDataSource.system as any).quantity) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
+          itemName: incomingItemDataSource.name,
+          sourceActorName: sourceActor.name,
+        }),
+      );
+      return false;
+    }
+
+    const existingItem = this.actor.items.find(
+      (i) => i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
+    ) as RqgItem | undefined;
+
+    const newSourceQty =
+      Number((incomingItemDataSource.system as any).quantity) - quantityToTransfer;
+
+    if (existingItem) {
+      assertDocumentSubType<PhysicalItem>(
+        existingItem,
+        physicalItemTypes,
+        "Existing item found when transferring physical item is not a PhysicalItem",
+      );
+      const newTargetQty = quantityToTransfer + Number(existingItem.system.quantity);
+      const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
+        { _id: existingItem.id, system: { quantity: newTargetQty } },
+      ]);
+      if (targetUpdate) {
+        if (newSourceQty > 0) {
+          await sourceActor.updateEmbeddedDocuments("Item", [
+            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
+          ]);
+        } else {
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+        }
+        return true;
+      }
+    } else {
+      (incomingItemDataSource.system as any).quantity = quantityToTransfer;
+      const targetCreate = await this.actor.createEmbeddedDocuments("Item", [
+        incomingItemDataSource,
+      ]);
+      if (targetCreate) {
+        if (newSourceQty > 0) {
+          await sourceActor.updateEmbeddedDocuments("Item", [
+            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
+          ]);
+        } else {
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private async confirmCopyIntangibleItem(
+    incomingItemDataSource: Item.Implementation["_source"],
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    const adapter: any = {
+      incomingItemDataSource,
+      sourceActor,
+      targetActor: this.actor,
+    };
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmCopyIntangibleItem,
+      { adapter },
+    );
+
+    const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+        callback: async () => {
+          const created = await this.actor.createEmbeddedDocuments("Item", [
+            incomingItemDataSource,
+          ]);
+          confirmDialog.resolve(created.length > 0);
+        },
+      },
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+    return await confirmDialog.setButtons(buttons, "submit").show();
   }
 
   private async _onDropRqidDocument(event: DragEvent): Promise<boolean> {

@@ -1,0 +1,4 @@
+// Establish the cascade layer precedence for the RQG system.
+// Layers are listed from lowest to highest specificity.
+// This file should be @use'd FIRST before any other stylesheets.
+@layer system.theme, system.base, system.actor-v1, system.actor-v2, system.item-v1, system.item-v2;

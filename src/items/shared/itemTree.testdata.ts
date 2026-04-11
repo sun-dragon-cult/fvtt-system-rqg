@@ -90,7 +90,7 @@ export const testItems = {
             {
               attunedTo: "",
               contains: [],
-              description: null,
+              description: "",
               encumbrance: 0,
               equippedStatus: "carried",
               gmNotes: "<p>Semi-precious White stone unpowered (69-72)</p>",
@@ -109,7 +109,7 @@ export const testItems = {
             {
               attunedTo: "",
               contains: [],
-              description: null,
+              description: "",
               encumbrance: 0,
               equippedStatus: "carried",
               gmNotes: "<p>Flawed yellow stone unpowered (45-47)</p>",
@@ -223,7 +223,7 @@ export const testItems = {
             {
               attunedTo: "",
               contains: [],
-              description: null,
+              description: "",
               encumbrance: 0,
               equippedStatus: "carried",
               gmNotes: "<p>Semi-precious&nbsp; Red ston (73-76)</p>",
@@ -310,7 +310,7 @@ export const testItems = {
           location: "armor",
           name: "Dragon Armor Greaves  (Dragon Hide and Scales)",
           physicalItemType: "unique",
-          price: null,
+          price: { estimated: 0, real: 0 },
           quantity: 1,
         },
         {
@@ -327,7 +327,7 @@ export const testItems = {
           location: "armor",
           name: "Dragon Armor Hauberk  (Dragon Hide and Bone)",
           physicalItemType: "unique",
-          price: null,
+          price: { estimated: 0, real: 0 },
           quantity: 1,
         },
         {
@@ -343,7 +343,7 @@ export const testItems = {
           location: "armor",
           name: "Dragon Armor Vambraces  (Dragon Hide and Scales)",
           physicalItemType: "unique",
-          price: null,
+          price: { estimated: 0, real: 0 },
           quantity: 1,
         },
       ],
@@ -475,8 +475,8 @@ export const testItems = {
       name: "Dragon Helm  (Dragon Hide and Scales)",
       physicalItemType: "unique",
       price: {
-        estimated: null,
-        real: null,
+        estimated: 0,
+        real: 0,
       },
       quantity: 1,
     },
@@ -535,7 +535,7 @@ export const testItems = {
         estimated: 0,
         real: 4500,
       },
-      quantity: "9",
+      quantity: 9,
     },
     {
       attunedTo: "",
@@ -618,7 +618,7 @@ export const testItems = {
                 estimated: 1,
                 real: 1,
               },
-              quantity: "449",
+              quantity: 449,
             },
             {
               attunedTo: "",
@@ -756,7 +756,7 @@ export const testItems = {
                 estimated: 0.1,
                 real: 0.1,
               },
-              quantity: "0",
+              quantity: 0,
             },
             {
               attunedTo: "",
@@ -775,7 +775,7 @@ export const testItems = {
                 estimated: 0,
                 real: 500,
               },
-              quantity: "2",
+              quantity: 2,
             },
           ],
           description: "",
@@ -928,7 +928,7 @@ export const testItems = {
         estimated: 0,
         real: 5000,
       },
-      quantity: "21",
+      quantity: 21,
     },
     {
       attunedTo: "",
@@ -1029,10 +1029,10 @@ export const testItems = {
     {
       attunedTo: "",
       contains: [],
-      description: null,
+      description: "",
       encumbrance: 1,
       equippedStatus: "equipped",
-      gmNotes: null,
+      gmNotes: "",
       id: "ePfn4kaBDcZdexrW",
       isVirtual: false,
       isContainer: false,

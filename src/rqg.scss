@@ -1,575 +1,595 @@
+@use "./layers";
+@use "./theme";
 @use "./variables";
 @use "./applications/rqidEditor/rqidEditor";
 @use "./applications/rqid-batch-editor/rqidBatchEditor";
 @use "./items/itemsheets";
+@use "./items/itemsheetsV2";
 @use "./actors/actorsheets";
 @use "./actors/actorsheetV2";
 
-// *** Start of theme specific styles ***
+@layer system.base {
+  // *** Start of theme specific styles ***
 
-.rqg {
+  .rqg {
+    // Chrome anchors the datalist dropdown arrow on line-height; fix vertical centering
+    input[list] {
+      line-height: 1rem;
+    }
 
-  // Chrome anchors the datalist dropdown arrow on line-height; fix vertical centering
-  input[list] {
-    line-height: 1rem;
-  }
+    input[readonly],
+    select[readonly],
+    textarea[readonly] {
+      cursor: default;
+    }
 
-  input[readonly],
-  select[readonly],
-  textarea[readonly] {
-    cursor: default;
-  }
-
-  .experienced {
-    text-shadow:
-      -1px 1px 1px var(--rqg-themed-exp-outline),
-      1px -1px 1px var(--rqg-themed-exp-outline),
-      1px 1px 1px var(--rqg-themed-exp-outline),
-      -1px -1px 1px var(--rqg-themed-exp-outline),
-      0 0 1em var(--rqg-themed-highlight),
-      0 0 0.6em var(--rqg-themed-highlight),
-      0 0 0.4em var(--rqg-themed-highlight);
-    font-weight: bold;
-  }
-}
-
-#interface img[src="icons/svg/mystery-man.svg"] {
-  filter: invert(var(--rqg-svg-invert-param));
-}
-
-img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
-  // Make them black for light backgrounds, but exclude the token-hud images
-  filter: invert(var(--rqg-svg-invert-param));
-}
-
-// *** End of theme specific styles ***
-
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-
-::-webkit-scrollbar-track {
-  box-shadow: 0 0 1px #999 inset;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  outline: none;
-  border-radius: 3px;
-  background: var(--rqg-color-main-bg);
-  border: 1px solid var(--rqg-color-main);
-}
-
-:root {
-  scrollbar-width: thin;
-  scrollbar-color: var(--rqg-color-main-bg) #111;
-}
-
-// Hide LastPass input icon
-[data-lastpass-icon-root],
-[data-lastpass-root] {
-  display: none !important;
-}
-
-.combat-sidebar .combat-tracker-header div.encounter-controls .encounter-title {
-  margin-left: calc(3 * var(--control-width)); // Offset "Round 1" to account for removed buttons
-}
-
-.norse {
-  font-family: Norse, Signika, "Palatino Linotype", serif;
-  font-variant: small-caps;
-  letter-spacing: 1.5px;
-}
-
-.pad-left {
-  padding-left: 10px !important;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-  margin-left: auto;
-}
-
-.text-center {
-  text-align: center;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.large-font {
-  font-size: 1.2rem;
-}
-
-.small-size {
-  font-size: small;
-}
-
-.x-small-size {
-  font-size: x-small;
-}
-
-.align-flex-baseline {
-  align-items: baseline;
-}
-
-.title-edit-mode {
-  cursor: pointer;
-}
-
-.dont-display {
-  display: none !important;
-}
-
-.self-stretch {
-  align-self: stretch;
-}
-
-.self-start {
-  align-self: start;
-}
-
-.text-nowrap {
-  text-wrap: nowrap;
-}
-
-.max-w-10rem {
-  max-width: 10rem;
-}
-
-.rqg {
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: Norse, Signika, "Palatino Linotype", serif;
-    font-variant: small-caps;
-    letter-spacing: 1.5px;
-    font-weight: bold;
-
-    &.window-title {
-      font-family: revert;
-      font-variant: revert;
-      letter-spacing: revert;
-      font-weight: revert;
+    .experienced {
+      text-shadow:
+        -1px 1px 1px var(--rqg-themed-exp-outline),
+        1px -1px 1px var(--rqg-themed-exp-outline),
+        1px 1px 1px var(--rqg-themed-exp-outline),
+        -1px -1px 1px var(--rqg-themed-exp-outline),
+        0 0 1em var(--rqg-themed-highlight),
+        0 0 0.6em var(--rqg-themed-highlight),
+        0 0 0.4em var(--rqg-themed-highlight);
+      font-weight: bold;
     }
   }
 
-  .flex-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
+  #interface img[src="icons/svg/mystery-man.svg"] {
+    filter: invert(var(--rqg-svg-invert-param));
+  }
 
+  img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
+    // Make them black for light backgrounds, but exclude the token-hud images
+    filter: invert(var(--rqg-svg-invert-param));
+  }
+
+  // *** End of theme specific styles ***
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    box-shadow: 0 0 1px #999 inset;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    outline: none;
+    border-radius: 3px;
+    background: var(--rqg-color-main-bg);
+    border: 1px solid var(--rqg-color-main);
+  }
+
+  :root {
+    scrollbar-width: thin;
+    scrollbar-color: var(--rqg-color-main-bg) #111;
+  }
+
+  // Hide LastPass input icon
+  [data-lastpass-icon-root],
+  [data-lastpass-root] {
+    display: none !important;
+  }
+
+  .combat-sidebar .combat-tracker-header div.encounter-controls .encounter-title {
+    margin-left: calc(3 * var(--control-width)); // Offset "Round 1" to account for removed buttons
+  }
+
+  .norse {
+    font-family: Norse, Signika, "Palatino Linotype", serif;
+    font-variant: small-caps;
+    letter-spacing: 1.5px;
+  }
+
+  .pad-left {
+    padding-left: 10px !important;
+  }
+
+  .text-left {
+    text-align: left;
+  }
+
+  .text-right {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  .text-center {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .large-font {
+    font-size: 1.2rem;
+  }
+
+  .small-size {
+    font-size: small;
+  }
+
+  .x-small-size {
+    font-size: x-small;
+  }
+
+  .align-flex-baseline {
+    align-items: baseline;
+  }
+
+  .title-edit-mode {
+    cursor: pointer;
+  }
+
+  .dont-display {
+    display: none !important;
+  }
+
+  .self-stretch {
+    align-self: stretch;
+  }
+
+  .self-start {
+    align-self: start;
+  }
+
+  .text-nowrap {
+    text-wrap: nowrap;
+  }
+
+  .max-w-10rem {
+    max-width: 10rem;
+  }
+
+  .rqg {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: Norse, Signika, "Palatino Linotype", serif;
+      font-variant: small-caps;
+      letter-spacing: 1.5px;
+      font-weight: bold;
+
+      &.window-title {
+        font-family: revert;
+        font-variant: revert;
+        letter-spacing: revert;
+        font-weight: revert;
+      }
+    }
+
+    .flex-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+
+      > * {
+        height: 100%;
+      }
+    }
     >* {
       height: 100%;
     }
   }
 
-  .flex-row-start {
-    display: flex;
-    justify-content: flex-start;
-  }
-
-  .flex-row-end {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .flex-column {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .flex-wrap {
-    flex-wrap: wrap;
-    align-items: flex-start;
-
-    >* {
-      height: auto;
-    }
-  }
-
-  .flex-nowrap {
-    flex-wrap: nowrap;
-  }
-
-  .flex-align-center {
-    align-items: center;
-  }
-
-  .flex-align-end {
-    align-items: flex-end;
-  }
-
-  .flex-none {
-    flex: none;
-  }
-
-  .flex-0 {
-    flex: 0;
-  }
-
-  .flex-1 {
-    flex: 1;
-  }
-
-  .no-display {
-    display: none;
-  }
-
-  .drag-hover {
-    box-shadow: inset 0 0 20px 7px var(--rqg-secondary-color);
-  }
-
-  .gap1rem {
-    gap: 1rem;
-  }
-
-  .gap05rem {
-    gap: 0.5rem;
-  }
-
-  .gap03rem {
-    gap: 0.3rem;
-  }
-
-  .gap01rem {
-    gap: 0.1rem;
-  }
-
-  .gap0 {
-    gap: 0;
-  }
-
-  .fullwidth {
-    width: 100%;
-  }
-
-  .fullheight {
-    height: 100%;
-  }
-
-  .warning {
-    outline: 2px dashed var(--rqg-color-enc-warning);
-    background-color: var(--rqg-color-enc-warning);
-  }
-
-  .mp-ellipses {
-    text-overflow: ellipsis;
-    max-width: 7rem;
-    white-space: nowrap;
-    overflow: hidden;
-    display: inline-block;
-  }
-
-  .masonry {
-    display: block;
-    columns: 12rem auto;
-    gap: 1.5rem;
-  }
-
-  .masonry-item {
-    break-inside: avoid;
-  }
-
-  .nowrap {
-    white-space: nowrap;
-  }
-
-  .preserve-wrap {
-    white-space: pre-wrap;
-  }
-
-  .break-word {
-    word-break: break-all;
-  }
-
-  input[type="number"] {
-    width: auto;
-    text-align: right;
-  }
-
-  input[type="checkbox"] {
-    flex: 0 0 12px;
-    width: 12px;
-    height: 12px;
-    margin: 3px;
-  }
-
-  input[type="submit"] {
-    width: 100%;
-    margin: 0 1px;
-    background: rgb(0 0 0 / 10%);
-    border: 2px groove var(--color-text-light-highlight);
-    border-radius: 3px;
-    font-size: 14px;
-    line-height: 28px;
-    font-family: var(--font-primary);
-  }
-
-  input:read-only:not([type="checkbox"], [type="radio"]) {
-    pointer-events: none;
-  }
-
-  .mb-1-5rem {
-    margin-bottom: 1.5rem;
-  }
-
-  .ml-5 {
-    margin-left: 5px;
-  }
-
-  .mr-5 {
-    margin-right: 5px;
-  }
-
-  .mr-0 {
-    margin-right: 0;
-  }
-
-  .p-0 {
-    padding: 0;
-  }
-
-  .p-5 {
-    padding: 5px;
-  }
-
-  .tab.gear {
-    article {
-      margin-bottom: 0.7rem;
+    .flex-row-start {
+      display: flex;
+      justify-content: flex-start;
     }
 
-    .gear-wrapper {
+    .flex-row-end {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .flex-column {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flex-wrap {
       flex-wrap: wrap;
-      margin-left: -16px;
-      margin-right: -16px;
+      align-items: flex-start;
 
-      article {
-        margin-left: 16px;
-        margin-right: 16px;
+      > * {
+        height: auto;
       }
     }
-  }
 
-  img.rune {
-    height: 20px;
-    border: none;
-    margin: 0 1px;
-    mix-blend-mode: overlay;
-    display: inline-block;
-  }
-
-  img.requires-training {
-    height: 20px;
-    border: none;
-    margin: 0 0 0 auto;
-    mix-blend-mode: overlay;
-  }
-
-  img.rune-dark {
-    height: 20px;
-    border: none;
-    margin: 0;
-  }
-
-  img.item {
-    height: 26px;
-    border: none;
-    vertical-align: inherit;
-  }
-
-  button.sort {
-    line-height: unset;
-    width: 1.8em;
-
-    i {
-      margin-left: -2px; // center the icon
+    .flex-nowrap {
+      flex-wrap: nowrap;
     }
-  }
 
-  .grid {
-    display: grid;
-    grid-template-rows: [row-start] min-content [row-end];
-    grid-auto-rows: auto;
-    grid-auto-columns: auto;
-    gap: 0;
-
-    >* {
-      padding: 2px;
-      position: relative;
-      display: flex;
+    .flex-align-center {
       align-items: center;
     }
 
-    .centered {
-      justify-content: center;
+    .flex-align-end {
+      align-items: flex-end;
     }
 
-    .fullrow {
-      grid-column: 1 / -1;
+    .flex-none {
+      flex: none;
     }
 
-    .headings {
-      grid-column: 1/-1;
-      grid-row: 1/2;
-      background: var(--rqg-color-main-bg);
-      mix-blend-mode: color-burn;
-      text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
-      box-shadow: var(--rqg-box-shadow-grid-header);
-      border: 3px double grey;
-      border-radius: 40px;
-      margin-left: -0.4rem;
-      margin-right: -0.4rem;
+    .flex-0 {
+      flex: 0;
     }
 
-    .footer {
-      grid-column: 1/-1;
-      grid-row: auto;
-      margin-top: -1.3rem;
-      background: var(--rqg-color-main-bg);
-      mix-blend-mode: color-burn;
-      text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
-      box-shadow: var(--rqg-box-shadow-grid-header);
-      border: 1px solid grey;
-      border-radius: 40px;
-      margin-left: -0.4rem;
-      margin-right: -0.4rem;
+    .flex-1 {
+      flex: 1;
     }
 
-    .head1 {
-      grid-row: 1;
-      grid-column: 1/2;
+    .no-display {
+      display: none;
     }
 
-    .head2 {
-      grid-row: 1;
-      grid-column: 2/3;
+    .drag-hover {
+      box-shadow: inset 0 0 20px 7px var(--rqg-secondary-color);
     }
 
-    .head3 {
-      grid-row: 1;
-      grid-column: 3/4;
+    .gap1rem {
+      gap: 1rem;
     }
 
-    .head4 {
-      grid-row: 1;
-      grid-column: 4/5;
+    .gap05rem {
+      gap: 0.5rem;
     }
 
-    .head5 {
-      grid-row: 1;
-      grid-column: 5/6;
+    .gap03rem {
+      gap: 0.3rem;
     }
 
-    .head6 {
-      grid-row: 1;
-      grid-column: 6/7;
+    .gap01rem {
+      gap: 0.1rem;
     }
 
-    .head7 {
-      grid-row: 1;
-      grid-column: 7/8;
+    .gap0 {
+      gap: 0;
     }
 
-    .head8 {
-      grid-row: 1;
-      grid-column: 8/9;
+    .fullwidth {
+      width: 100%;
     }
 
-    .head9 {
-      grid-row: 1;
-      grid-column: 9/10;
+    .fullheight {
+      height: 100%;
     }
 
-    .head10 {
-      grid-row: 1;
-      grid-column: 10/11;
+    .warning {
+      outline: 2px dashed var(--rqg-color-enc-warning);
+      background-color: var(--rqg-color-enc-warning);
     }
 
-    .head11 {
-      grid-row: 1;
-      grid-column: 11/12;
+    .mp-ellipses {
+      text-overflow: ellipsis;
+      max-width: 7rem;
+      white-space: nowrap;
+      overflow: hidden;
+      display: inline-block;
     }
 
-    .head12 {
-      grid-row: 1;
-      grid-column: 12/13;
+    .masonry {
+      display: block;
+      columns: 12rem auto;
+      gap: 1.5rem;
     }
 
-    .head13 {
-      grid-row: 1;
-      grid-column: 13/14;
+    .masonry-item {
+      break-inside: avoid;
     }
 
-    .head1-4 {
-      grid-row: 1;
-      grid-column: 1 / span 4;
+    .nowrap {
+      white-space: nowrap;
     }
 
-    .no-background {
-      background-color: transparent !important;
+    .preserve-wrap {
+      white-space: pre-wrap;
     }
 
-    &.spirit-combat {
-      grid-template-columns: [col-start] 30px auto min-content [col-end];
-
-      // Alternating row background
-      >*:nth-child(6n + 1),
-      >*:nth-child(6n + 2),
-      >*:nth-child(6n + 3) {
-        background: var(--rqg-table-alternate-background);
-      }
+    .break-word {
+      word-break: break-all;
     }
 
-    &.combat {
-      grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+    input[type="number"] {
+      width: auto;
+      text-align: right;
+    }
 
-      // Alternating row background for 6 columns
-      >*:nth-child(12n + 14),
-      >*:nth-child(12n + 15),
-      >*:nth-child(12n + 16),
-      >*:nth-child(12n + 17),
-      >*:nth-child(12n + 18),
-      >*:nth-child(12n + 19) {
-        background: var(--rqg-table-alternate-background);
-      }
+    input[type="checkbox"] {
+      flex: 0 0 12px;
+      width: 12px;
+      height: 12px;
+      margin: 3px;
+    }
 
-      .invalid {
-        color: var(--rqg-highlight);
-      }
+    input[type="submit"] {
+      width: 100%;
+      margin: 0 1px;
+      background: rgb(0 0 0 / 10%);
+      border: 2px groove var(--color-text-light-highlight);
+      border-radius: 3px;
+      font-size: 14px;
+      line-height: 28px;
+      font-family: var(--font-primary);
+    }
 
-      // Set-token-SR-in-combat button
-      button.sr {
-        height: 1.5rem;
-        line-height: unset;
-        width: unset;
-        text-align: left;
+    input:read-only:not([type="checkbox"], [type="radio"]) {
+      pointer-events: none;
+    }
+
+    .mb-1-5rem {
+      margin-bottom: 1.5rem;
+    }
+
+    .ml-5 {
+      margin-left: 5px;
+    }
+
+    .mr-5 {
+      margin-right: 5px;
+    }
+
+    .mr-0 {
+      margin-right: 0;
+    }
+
+    .p-0 {
+      padding: 0;
+    }
+
+    .p-5 {
+      padding: 5px;
+    }
+
+    .tab.gear {
+      article {
+        margin-bottom: 0.7rem;
       }
 
-      .usage {
-        line-height: 1.5rem;
+      .gear-wrapper {
+        flex-wrap: wrap;
+        margin-left: -16px;
+        margin-right: -16px;
 
-        &.missile {
-          line-height: 3rem;
-        }
-
-        &.default-usage {
-          font-weight: bold;
+        article {
+          margin-left: 16px;
+          margin-right: 16px;
         }
       }
     }
 
-    &.spiritmagic {
-      grid-template-columns: [col-start] 30px auto auto repeat(7, min-content) [col-end];
+    img.rune {
+      height: 20px;
+      border: none;
+      margin: 0 1px;
+      mix-blend-mode: overlay;
+      display: inline-block;
+    }
 
+    img.requires-training {
+      height: 20px;
+      border: none;
+      margin: 0 0 0 auto;
+      mix-blend-mode: overlay;
+    }
+
+    img.rune-dark {
+      height: 20px;
+      border: none;
+      margin: 0;
+    }
+
+    img.item {
+      height: 26px;
+      border: none;
+      vertical-align: inherit;
+    }
+
+    button.sort {
+      line-height: unset;
+      width: 1.8em;
+
+      i {
+        margin-left: -2px; // center the icon
+      }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-rows: [row-start] min-content [row-end];
+      grid-auto-rows: auto;
+      grid-auto-columns: auto;
+      gap: 0;
+
+      > * {
+        padding: 2px;
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .centered {
+        justify-content: center;
+      }
+
+      .fullrow {
+        grid-column: 1 / -1;
+      }
+
+      .headings {
+        grid-column: 1/-1;
+        grid-row: 1/2;
+        background: var(--rqg-color-main-bg);
+        mix-blend-mode: color-burn;
+        text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
+        box-shadow: var(--rqg-box-shadow-grid-header);
+        border: 3px double grey;
+        border-radius: 40px;
+        margin-left: -0.4rem;
+        margin-right: -0.4rem;
+      }
+
+      .footer {
+        grid-column: 1/-1;
+        grid-row: auto;
+        margin-top: -1.3rem;
+        background: var(--rqg-color-main-bg);
+        mix-blend-mode: color-burn;
+        text-shadow: 3px 4px 4px var(--rqg-color-grid-text-shadow);
+        box-shadow: var(--rqg-box-shadow-grid-header);
+        border: 1px solid grey;
+        border-radius: 40px;
+        margin-left: -0.4rem;
+        margin-right: -0.4rem;
+      }
+
+      .head1 {
+        grid-row: 1;
+        grid-column: 1/2;
+      }
+
+      .head2 {
+        grid-row: 1;
+        grid-column: 2/3;
+      }
+
+      .head3 {
+        grid-row: 1;
+        grid-column: 3/4;
+      }
+
+      .head4 {
+        grid-row: 1;
+        grid-column: 4/5;
+      }
+
+      .head5 {
+        grid-row: 1;
+        grid-column: 5/6;
+      }
+
+      .head6 {
+        grid-row: 1;
+        grid-column: 6/7;
+      }
+
+      .head7 {
+        grid-row: 1;
+        grid-column: 7/8;
+      }
+
+      .head8 {
+        grid-row: 1;
+        grid-column: 8/9;
+      }
+
+      .head9 {
+        grid-row: 1;
+        grid-column: 9/10;
+      }
+
+      .head10 {
+        grid-row: 1;
+        grid-column: 10/11;
+      }
+
+      .head11 {
+        grid-row: 1;
+        grid-column: 11/12;
+      }
+
+      .head12 {
+        grid-row: 1;
+        grid-column: 12/13;
+      }
+
+      .head13 {
+        grid-row: 1;
+        grid-column: 13/14;
+      }
+
+      .head1-4 {
+        grid-row: 1;
+        grid-column: 1 / span 4;
+      }
+
+      .no-background {
+        background-color: transparent !important;
+      }
+
+      &.spirit-combat {
+        grid-template-columns: [col-start] 30px auto min-content [col-end];
+
+        // Alternating row background
+        > *:nth-child(6n + 1),
+        > *:nth-child(6n + 2),
+        > *:nth-child(6n + 3) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.combat {
+        grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+
+        // Alternating row background for 6 columns
+        > *:nth-child(12n + 14),
+        > *:nth-child(12n + 15),
+        > *:nth-child(12n + 16),
+        > *:nth-child(12n + 17),
+        > *:nth-child(12n + 18),
+        > *:nth-child(12n + 19) {
+          background: var(--rqg-table-alternate-background);
+        }
+
+        .invalid {
+          color: var(--rqg-highlight);
+        }
+
+        // Set-token-SR-in-combat button
+        button.sr {
+          height: 1.5rem;
+          line-height: unset;
+          width: unset;
+          text-align: left;
+        }
+
+        .usage {
+          line-height: 1.5rem;
+
+          &.missile {
+            line-height: 3rem;
+          }
+
+          &.default-usage {
+            font-weight: bold;
+          }
+        }
+      }
+
+      &.spiritmagic {
+        grid-template-columns: [col-start] 30px auto auto repeat(7, min-content) [col-end];
+
+        // Alternating row background for 10 columns
+        > *:nth-child(20n + 22),
+        > *:nth-child(20n + 23),
+        > *:nth-child(20n + 24),
+        > *:nth-child(20n + 25),
+        > *:nth-child(20n + 26),
+        > *:nth-child(20n + 27),
+        > *:nth-child(20n + 28),
+        > *:nth-child(20n + 29),
+        > *:nth-child(20n + 30),
+        > *:nth-child(20n + 31) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
       // Alternating row background for 10 columns
       >*:nth-child(20n + 22),
       >*:nth-child(20n + 23),
@@ -585,513 +605,517 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
       }
     }
 
-    &.gear {
-      grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];
+      &.gear {
+        grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];
 
-      // Alternating row background for 7 columns
-      >*:nth-child(14n + 16),
-      >*:nth-child(14n + 17),
-      >*:nth-child(14n + 18),
-      >*:nth-child(14n + 19),
-      >*:nth-child(14n + 20),
-      >*:nth-child(14n + 21),
-      >*:nth-child(14n + 22) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    .usagecontainer {
-      display: block;
-    }
-
-    .usagecell {
-      padding-top: 4px;
-    }
-
-    &.weapon {
-      grid-template-columns: [col-start] 30px auto auto repeat(10, max-content) [col-end];
-
-      // Alternating row background for 13 columns
-      >*:nth-child(26n + 28),
-      >*:nth-child(26n + 29),
-      >*:nth-child(26n + 30),
-      >*:nth-child(26n + 31),
-      >*:nth-child(26n + 32),
-      >*:nth-child(26n + 33),
-      >*:nth-child(26n + 34),
-      >*:nth-child(26n + 35),
-      >*:nth-child(26n + 36),
-      >*:nth-child(26n + 37),
-      >*:nth-child(26n + 38),
-      >*:nth-child(26n + 39),
-      >*:nth-child(26n + 40) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.armor {
-      grid-template-columns: [col-start] 30px auto min-content auto repeat(5, max-content) [col-end];
-
-      >*:nth-child(18n + 20),
-      >*:nth-child(18n + 21),
-      >*:nth-child(18n + 22),
-      >*:nth-child(18n + 23),
-      >*:nth-child(18n + 24),
-      >*:nth-child(18n + 25),
-      >*:nth-child(18n + 26),
-      >*:nth-child(18n + 27),
-      >*:nth-child(18n + 28) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.rune-magic {
-      grid-template-columns: [col-start] 30px auto repeat(8, max-content) [col-end];
-
-      >*:nth-child(20n + 22),
-      >*:nth-child(20n + 23),
-      >*:nth-child(20n + 24),
-      >*:nth-child(20n + 25),
-      >*:nth-child(20n + 26),
-      >*:nth-child(20n + 27),
-      >*:nth-child(20n + 28),
-      >*:nth-child(20n + 29),
-      >*:nth-child(20n + 30),
-      >*:nth-child(20n + 31) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.hit-location {
-      grid-template-columns: [col-start] repeat(3, min-content) repeat(4, auto) [col-end];
-
-      >*:nth-child(14n + 13),
-      >*:nth-child(14n + 14),
-      >*:nth-child(14n + 15),
-      >*:nth-child(14n + 16),
-      >*:nth-child(14n + 17),
-      >*:nth-child(14n + 18),
-      >*:nth-child(14n + 19) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.skill {
-      grid-template-columns: [col-start] 30px auto min-content [col-end];
-
-      // Alternating row background
-      >*:nth-child(6n + 1),
-      >*:nth-child(6n + 2),
-      >*:nth-child(6n + 3) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.skill-select {
-      grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
-
-      // Alternating row background
-      >*:nth-child(8n + 1),
-      >*:nth-child(8n + 2),
-      >*:nth-child(8n + 3),
-      >*:nth-child(8n + 4) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.skill-edit-mode {
-      grid-template-columns: [col-start] 30px auto 50px min-content [col-end];
-
-      // Alternating row background
-      >*:nth-child(8n + 1),
-      >*:nth-child(8n + 2),
-      >*:nth-child(8n + 3),
-      >*:nth-child(8n + 4) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
-
-    &.passions {
-      display: grid;
-      grid-template-rows: [row-start] auto [row-end];
-      grid-auto-rows: auto;
-      grid-auto-columns: auto;
-      gap: 0;
-      grid-template-columns: [col-start] auto [col-end];
-
-      // Alternating row background
-      >*:nth-child(2n + 1) {
-        background: var(--rqg-table-alternate-background);
+        // Alternating row background for 7 columns
+        > *:nth-child(14n + 16),
+        > *:nth-child(14n + 17),
+        > *:nth-child(14n + 18),
+        > *:nth-child(14n + 19),
+        > *:nth-child(14n + 20),
+        > *:nth-child(14n + 21),
+        > *:nth-child(14n + 22) {
+          background: var(--rqg-table-alternate-background);
+        }
       }
 
-      .grid.passion {
+      .usagecontainer {
+        display: block;
+      }
+
+      .usagecell {
+        padding-top: 4px;
+      }
+
+      &.weapon {
+        grid-template-columns: [col-start] 30px auto auto repeat(10, max-content) [col-end];
+
+        // Alternating row background for 13 columns
+        > *:nth-child(26n + 28),
+        > *:nth-child(26n + 29),
+        > *:nth-child(26n + 30),
+        > *:nth-child(26n + 31),
+        > *:nth-child(26n + 32),
+        > *:nth-child(26n + 33),
+        > *:nth-child(26n + 34),
+        > *:nth-child(26n + 35),
+        > *:nth-child(26n + 36),
+        > *:nth-child(26n + 37),
+        > *:nth-child(26n + 38),
+        > *:nth-child(26n + 39),
+        > *:nth-child(26n + 40) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.armor {
+        grid-template-columns:
+          [col-start] 30px auto min-content auto repeat(5, max-content)
+          [col-end];
+
+        > *:nth-child(18n + 20),
+        > *:nth-child(18n + 21),
+        > *:nth-child(18n + 22),
+        > *:nth-child(18n + 23),
+        > *:nth-child(18n + 24),
+        > *:nth-child(18n + 25),
+        > *:nth-child(18n + 26),
+        > *:nth-child(18n + 27),
+        > *:nth-child(18n + 28) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.rune-magic {
+        grid-template-columns: [col-start] 30px auto repeat(8, max-content) [col-end];
+
+        > *:nth-child(20n + 22),
+        > *:nth-child(20n + 23),
+        > *:nth-child(20n + 24),
+        > *:nth-child(20n + 25),
+        > *:nth-child(20n + 26),
+        > *:nth-child(20n + 27),
+        > *:nth-child(20n + 28),
+        > *:nth-child(20n + 29),
+        > *:nth-child(20n + 30),
+        > *:nth-child(20n + 31) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.hit-location {
+        grid-template-columns: [col-start] repeat(3, min-content) repeat(4, auto) [col-end];
+
+        > *:nth-child(14n + 13),
+        > *:nth-child(14n + 14),
+        > *:nth-child(14n + 15),
+        > *:nth-child(14n + 16),
+        > *:nth-child(14n + 17),
+        > *:nth-child(14n + 18),
+        > *:nth-child(14n + 19) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.skill {
+        grid-template-columns: [col-start] 30px auto min-content [col-end];
+
+        // Alternating row background
+        > *:nth-child(6n + 1),
+        > *:nth-child(6n + 2),
+        > *:nth-child(6n + 3) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.skill-select {
+        grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
+
+        // Alternating row background
+        > *:nth-child(8n + 1),
+        > *:nth-child(8n + 2),
+        > *:nth-child(8n + 3),
+        > *:nth-child(8n + 4) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.skill-edit-mode {
+        grid-template-columns: [col-start] 30px auto 50px min-content [col-end];
+
+        // Alternating row background
+        > *:nth-child(8n + 1),
+        > *:nth-child(8n + 2),
+        > *:nth-child(8n + 3),
+        > *:nth-child(8n + 4) {
+          background: var(--rqg-table-alternate-background);
+        }
+      }
+
+      &.passions {
         display: grid;
-        grid-template-columns: [col-start] 45px [description-start] auto min-content [description-end col-end];
-        grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
-      }
+        grid-template-rows: [row-start] auto [row-end];
+        grid-auto-rows: auto;
+        grid-auto-columns: auto;
+        gap: 0;
+        grid-template-columns: [col-start] auto [col-end];
 
-      .grid.passion-edit-mode {
-        display: grid;
-        grid-template-columns: [col-start] 45px [description-start] auto 50px min-content [description-end col-end];
-        grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
-      }
+        // Alternating row background
+        > *:nth-child(2n + 1) {
+          background: var(--rqg-table-alternate-background);
+        }
 
-      .grid.passion-select {
-        display: grid;
-        grid-template-columns: [col-start] 75px [description-start] auto min-content [description-end col-end];
-        grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+        .grid.passion {
+          display: grid;
+          grid-template-columns: [col-start] 45px [description-start] auto min-content [description-end col-end];
+          grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+        }
+
+        .grid.passion-edit-mode {
+          display: grid;
+          grid-template-columns: [col-start] 45px [description-start] auto 50px min-content [description-end col-end];
+          grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+        }
+
+        .grid.passion-select {
+          display: grid;
+          grid-template-columns: [col-start] 75px [description-start] auto min-content [description-end col-end];
+          grid-template-rows: [row-start] auto [row-end description-start] auto [description-end];
+
+          .img {
+            width: 41px;
+          }
+        }
+
+        .description {
+          grid-area: description;
+        }
+
+        details {
+          display: block;
+        }
 
         .img {
-          width: 41px;
+          grid-row: 1 / -1;
+
+          img {
+            mix-blend-mode: soft-light;
+          }
         }
       }
 
-      .description {
-        grid-area: description;
+      &.rune {
+        grid-template-columns: [col-start] max-content auto max-content [col-end];
       }
 
-      details {
-        display: block;
+      &.rune-select {
+        grid-template-columns: [col-start] max-content max-content auto max-content [col-end];
       }
 
-      .img {
-        grid-row: 1 / -1;
+      &.rune-edit-mode {
+        grid-template-columns: [col-start] max-content max-content 50px max-content [col-end];
+      }
 
-        img {
-          mix-blend-mode: soft-light;
+      &.opposed-rune {
+        grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
+      }
+
+      &.opposed-rune-select {
+        grid-template-columns: [col-start] max-content max-content auto max-content min-content max-content max-content auto max-content [col-end];
+      }
+
+      &.opposed-rune-edit-mode {
+        grid-template-columns: [col-start] max-content max-content 50px max-content min-content max-content max-content 50px max-content [col-end];
+      }
+    }
+
+    [data-characteristic-roll],
+    [data-damage-roll],
+    [data-item-roll],
+    [data-item-equipped-toggle],
+    [data-item-heal-wound],
+    [data-item-add-wound],
+    [data-rqid-link],
+    [data-weapon-roll],
+    [data-reputation-roll],
+    [data-rune-magic-roll],
+    [data-spirit-magic-roll],
+    [data-gear-add],
+    [data-passion-add] {
+      &:hover {
+        box-shadow:
+          12px 12px 16px 0 rgb(0 0 0 / 25%),
+          -8px -8px 12px 0 rgb(255 255 255 / 30%);
+      }
+
+      &:active {
+        box-shadow:
+          -8px -8px 16px 0 rgb(0 0 0 / 25%),
+          11px 12px 12px 0 rgb(255 255 255 / 30%),
+          inset 4px 4px 5px 0 rgb(0 0 0 / 25%);
+      }
+    }
+
+    .contextmenu {
+      cursor: context-menu;
+    }
+
+    [data-rqid-link^="je"] * {
+      cursor: help;
+    }
+
+    &#context-menu {
+      width: fit-content;
+      font-size: 14px;
+      cursor: default;
+      text-align: left;
+      text-shadow: initial;
+      font-family: Signika, sans-serif;
+      font-variant: normal;
+      letter-spacing: normal;
+      font-weight: normal;
+
+      ol {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-right: 5px;
+      }
+
+      li.context-item {
+        white-space: nowrap;
+        padding-top: 3px;
+
+        .context-icon {
+          fill: white;
+          width: 30px;
+          display: inline-block;
+          text-align: center;
+          position: relative;
+          left: -3px;
+          bottom: -4px;
+          filter: invert(var(--rqg-svg-invert-param));
+        }
+
+        .context-icon-img {
+          height: 16pt;
         }
       }
     }
 
-    &.rune {
-      grid-template-columns: [col-start] max-content auto max-content [col-end];
+    &.sheet {
+      backdrop-filter: blur(2px);
     }
 
-    &.rune-select {
-      grid-template-columns: [col-start] max-content max-content auto max-content [col-end];
-    }
-
-    &.rune-edit-mode {
-      grid-template-columns: [col-start] max-content max-content 50px max-content [col-end];
-    }
-
-    &.opposed-rune {
-      grid-template-columns: [col-start] max-content auto max-content min-content max-content auto max-content [col-end];
-    }
-
-    &.opposed-rune-select {
-      grid-template-columns: [col-start] max-content max-content auto max-content min-content max-content max-content auto max-content [col-end];
-    }
-
-    &.opposed-rune-edit-mode {
-      grid-template-columns: [col-start] max-content max-content 50px max-content min-content max-content max-content 50px max-content [col-end];
-    }
-  }
-
-  [data-characteristic-roll],
-  [data-damage-roll],
-  [data-item-roll],
-  [data-item-equipped-toggle],
-  [data-item-heal-wound],
-  [data-item-add-wound],
-  [data-rqid-link],
-  [data-weapon-roll],
-  [data-reputation-roll],
-  [data-rune-magic-roll],
-  [data-spirit-magic-roll],
-  [data-gear-add],
-  [data-passion-add] {
-    &:hover {
-      box-shadow:
-        12px 12px 16px 0 rgb(0 0 0 / 25%),
-        -8px -8px 12px 0 rgb(255 255 255 / 30%);
-    }
-
-    &:active {
-      box-shadow:
-        -8px -8px 16px 0 rgb(0 0 0 / 25%),
-        11px 12px 12px 0 rgb(255 255 255 / 30%),
-        inset 4px 4px 5px 0 rgb(0 0 0 / 25%);
-    }
-  }
-
-  .contextmenu {
-    cursor: context-menu;
-  }
-
-  [data-rqid-link^="je"] * {
-    cursor: help;
-  }
-
-  &#context-menu {
-    width: fit-content;
-    font-size: 14px;
-    cursor: default;
-    text-align: left;
-    text-shadow: initial;
-    font-family: Signika, sans-serif;
-    font-variant: normal;
-    letter-spacing: normal;
-    font-weight: normal;
-
-    ol {
-      padding-top: 5px;
-      padding-bottom: 5px;
-      padding-right: 5px;
-    }
-
-    li.context-item {
-      white-space: nowrap;
-      padding-top: 3px;
-
-      .context-icon {
-        fill: white;
-        width: 30px;
-        display: inline-block;
-        text-align: center;
-        position: relative;
-        left: -3px;
-        bottom: -4px;
-        filter: invert(var(--rqg-svg-invert-param));
-      }
-
-      .context-icon-img {
-        height: 16pt;
+    .sheet-body {
+      .tab {
+        height: 100%;
       }
     }
-  }
 
-  &.sheet {
-    backdrop-filter: blur(2px);
-  }
-
-  .sheet-body {
-    .tab {
-      height: 100%;
+    .editor-label {
+      margin-top: 0.5rem;
+      align-self: start;
     }
-  }
 
-  .editor-label {
-    margin-top: 0.5rem;
-    align-self: start;
-  }
-
-  .editor {
-    height: 100%;
-    min-height: 100px;
-    min-width: 100%;
-  }
-
-  &.sheet.character {
     .editor {
-      height: auto; // use auto for character sheet, but 100% for itemSheets
-
-      &.prosemirror {
-        height: 35rem; // Default height for the character sheet editor when editing
-      }
-    }
-  }
-
-  &.character.sheet .editor-content {
-    box-shadow: var(--rqg-box-shadow-editor-content);
-  }
-
-  /* Items List */
-  .item-list {
-    list-style: none;
-    margin: 7px 0;
-    padding: 0;
-  }
-
-  // Default text size in chat
-  &.chat-card {
-    font-size: var(--font-size-12);
-
-    .outcome-description {
-      font-size: var(--font-size-14);
-      margin: 0.3rem -0.2rem;
-      background-color: var(--rqg-color-main-bg);
-      padding: 0.4rem;
-      mix-blend-mode: darken;
-      border-radius: 10px;
-      border: 9px double white;
+      height: 100%;
+      min-height: 100px;
+      min-width: 100%;
     }
 
-    button:disabled {
-      color: var(--color-text-dark-inactive);
-      cursor: progress;
-    }
-  }
+    &.sheet.character {
+      .editor {
+        height: auto; // use auto for character sheet, but 100% for itemSheets
 
-  &.chat-content {
-    &>* {
-      margin-top: 5px;
-      margin-bottom: 5px;
-    }
-
-    .chat-options {
-      background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top left/100%;
-    }
-
-    .chat-option {
-      margin: 5px;
-    }
-
-    &.weapon-chat {
-      .active {
-        box-shadow: 0 0 0.5em red;
-      }
-
-      h3 {
-        margin-bottom: -6px;
-      }
-
-      input[type="submit"] {
-        margin-top: 5px;
-      }
-
-      .damage {
-        writing-mode: tb;
-        transform: rotate(180deg);
-        height: fit-content;
-        margin-right: 3px;
-        margin-left: -4px;
-      }
-
-      [name="combatManeuverRoll"] {
-        width: min-content;
-        flex: 1 1 auto;
+        &.prosemirror {
+          height: 35rem; // Default height for the character sheet editor when editing
+        }
       }
     }
 
-    &.characteristic-chat {
-      .multiplier {
-        font-size: 80%;
-        vertical-align: text-top;
-      }
+    &.character.sheet .editor-content {
+      box-shadow: var(--rqg-box-shadow-editor-content);
     }
 
-    &.rune-magic-chat {
-      .rune-option {
-        margin-right: 5px;
-      }
+    /* Items List */
+    .item-list {
+      list-style: none;
+      margin: 7px 0;
+      padding: 0;
     }
 
-    .chat-select-wide {
-      width: 100%;
-    }
-  }
+    // Default text size in chat
+    &.chat-card {
+      font-size: var(--font-size-12);
 
-  &.dialog.heal-wound {
-    .woundlist label {
-      padding-right: 5px;
-    }
-  }
-
-  .chat-number-input {
-    text-align: right;
-    width: 50px;
-  }
-}
-
-.chat-message {
-  .acting-img {
-    width: 25px;
-    flex: unset;
-    border: none;
-  }
-
-  .roll-action {
-    font-size: var(--font-size-18);
-    font-weight: bold;
-    color: var(--color-text-dark-primary);
-  }
-
-  .dice-roll {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-around;
-
-    .damage-formula {
-      margin-bottom: 0.2rem;
-      padding-bottom: 0.3rem;
-      border-bottom: 3px double var(--color-text-light-6);
-    }
-
-    .dice-result {
-      order: 2;
-    }
-
-    .dice-tooltip {
-      text-align: end;
-      display: none;
-      order: 2;
-      background-color: #e2e2e2;
-      border: 1px inset white;
-      padding: 0.3rem;
-      border-radius: 0 0 6px 6px;
-      margin-top: -1px;
-      border-top: none;
-    }
-
-    &.expanded {
-      .dice-tooltip {
-        display: block;
-      }
-    }
-
-    .roll-level {
-      font-size: var(--font-size-16);
-    }
-
-    .dice-total {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      mix-blend-mode: multiply;
-      flex: 0;
-      font-size: var(--font-size-20);
-      font-weight: bold;
-      position: relative;
-      margin: 0;
-      line-height: 24px;
-      text-align: center;
-      word-break: break-all;
-
-      .target {
+      .outcome-description {
         font-size: var(--font-size-14);
-      }
-
-      // Crit
-      &.success-level-0 {
-        background-color: #6fd042cc;
-        border: 4px outset #ffcf00;
-        border-radius: 14px;
-        box-shadow: inset 3px 5px 12px 3px #ffd800cc;
-      }
-
-      // Special Success
-      &.success-level-1 {
-        background-color: #6fd042cc;
-        border: 4px groove #ffcf00;
+        margin: 0.3rem -0.2rem;
+        background-color: var(--rqg-color-main-bg);
+        padding: 0.4rem;
+        mix-blend-mode: darken;
         border-radius: 10px;
+        border: 9px double white;
       }
 
-      // Success
-      &.success-level-2 {
-        background-color: #6fd042cc;
+      button:disabled {
+        color: var(--color-text-dark-inactive);
+        cursor: progress;
+      }
+    }
+
+    &.chat-content {
+      & > * {
+        margin-top: 5px;
+        margin-bottom: 5px;
       }
 
-      // Fail
-      &.success-level-3 {
-        background-color: #cecbc5cc;
+      .chat-options {
+        background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top
+          left/100%;
       }
 
-      // Fumble
-      &.success-level-4 {
-        background-color: #e23333cc;
-        box-shadow: inset 0 0 3px 0 black;
-        clip-path: polygon(0% 17%,
+      .chat-option {
+        margin: 5px;
+      }
+
+      &.weapon-chat {
+        .active {
+          box-shadow: 0 0 0.5em red;
+        }
+
+        h3 {
+          margin-bottom: -6px;
+        }
+
+        input[type="submit"] {
+          margin-top: 5px;
+        }
+
+        .damage {
+          writing-mode: tb;
+          transform: rotate(180deg);
+          height: fit-content;
+          margin-right: 3px;
+          margin-left: -4px;
+        }
+
+        [name="combatManeuverRoll"] {
+          width: min-content;
+          flex: 1 1 auto;
+        }
+      }
+
+      &.characteristic-chat {
+        .multiplier {
+          font-size: 80%;
+          vertical-align: text-top;
+        }
+      }
+
+      &.rune-magic-chat {
+        .rune-option {
+          margin-right: 5px;
+        }
+      }
+
+      .chat-select-wide {
+        width: 100%;
+      }
+    }
+
+    &.dialog.heal-wound {
+      .woundlist label {
+        padding-right: 5px;
+      }
+    }
+
+    .chat-number-input {
+      text-align: right;
+      width: 50px;
+    }
+  }
+
+  .chat-message {
+    .acting-img {
+      width: 25px;
+      flex: unset;
+      border: none;
+    }
+
+    .roll-action {
+      font-size: var(--font-size-18);
+      font-weight: bold;
+      color: var(--color-text-dark-primary);
+    }
+
+    .dice-roll {
+      display: flex;
+      flex-flow: row wrap;
+      justify-content: space-around;
+
+      .damage-formula {
+        margin-bottom: 0.2rem;
+        padding-bottom: 0.3rem;
+        border-bottom: 3px double var(--color-text-light-6);
+      }
+
+      .dice-result {
+        order: 2;
+      }
+
+      .dice-tooltip {
+        text-align: end;
+        display: none;
+        order: 2;
+        background-color: #e2e2e2;
+        border: 1px inset white;
+        padding: 0.3rem;
+        border-radius: 0 0 6px 6px;
+        margin-top: -1px;
+        border-top: none;
+      }
+
+      &.expanded {
+        .dice-tooltip {
+          display: block;
+        }
+      }
+
+      .roll-level {
+        font-size: var(--font-size-16);
+      }
+
+      .dice-total {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        mix-blend-mode: multiply;
+        flex: 0;
+        font-size: var(--font-size-20);
+        font-weight: bold;
+        position: relative;
+        margin: 0;
+        line-height: 24px;
+        text-align: center;
+        word-break: break-all;
+
+        .target {
+          font-size: var(--font-size-14);
+        }
+
+        // Crit
+        &.success-level-0 {
+          background-color: #6fd042cc;
+          border: 4px outset #ffcf00;
+          border-radius: 14px;
+          box-shadow: inset 3px 5px 12px 3px #ffd800cc;
+        }
+
+        // Special Success
+        &.success-level-1 {
+          background-color: #6fd042cc;
+          border: 4px groove #ffcf00;
+          border-radius: 10px;
+        }
+
+        // Success
+        &.success-level-2 {
+          background-color: #6fd042cc;
+        }
+
+        // Fail
+        &.success-level-3 {
+          background-color: #cecbc5cc;
+        }
+
+        // Fumble
+        &.success-level-4 {
+          background-color: #e23333cc;
+          box-shadow: inset 0 0 3px 0 black;
+          clip-path: polygon(
+            0% 17%,
             7% 17%,
             4% 0%,
             97% 0%,
@@ -1102,388 +1126,390 @@ img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-
             96% 100%,
             4% 100%,
             7% 83%,
-            0% 83%);
+            0% 83%
+          );
+        }
+      }
+    }
+
+    .rqg.flavor {
+      position: relative;
+      width: 100%;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+
+      img {
+        position: absolute;
+        top: -1.6rem;
+        height: 5rem;
+        border: none;
+        mix-blend-mode: overlay;
+        display: block;
+        width: 100%;
+        filter: invert(0.9) drop-shadow(0 4px 4px black);
       }
     }
   }
 
-  .rqg.flavor {
-    position: relative;
-    width: 100%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-
-    img {
-      position: absolute;
-      top: -1.6rem;
-      height: 5rem;
-      border: none;
-      mix-blend-mode: overlay;
-      display: block;
-      width: 100%;
-      filter: invert(0.9) drop-shadow(0 4px 4px black);
-    }
-  }
-}
-
-.rqg.sheet {
-  input {
-    width: inherit;
-  }
-}
-
-.rqg.sheet img.equipped-status {
-  height: 15px;
-  margin: 0;
-}
-
-.app {
-  &.sheet.journal-sheet {
-    font-size: 16px;
-
-    h3,
-    h4 {
-      margin: 0 0 -0.5rem;
-    }
-  }
-
-  input[name="hitLocationItemNames"] {
-    min-width: 10rem;
-  }
-}
-
-.app.default-icons {
-  label {
-    display: flex;
-
-    span {
-      flex: 1;
-    }
-
-    img {
-      height: 26px;
-      border: none;
-      vertical-align: inherit;
-    }
-
-    .file-picker {
-      width: min-content;
-    }
-
+  .rqg.sheet {
     input {
-      width: 22rem;
+      width: inherit;
     }
   }
-}
 
-#pause {
-  figcaption {
-    font-family: Norse, Signika, "Palatino Linotype", serif;
-    font-size: 2rem;
-    opacity: 0.7;
+  .rqg.sheet img.equipped-status {
+    height: 15px;
+    margin: 0;
   }
 
-  img {
-    content: url("/systems/rqg/assets/images/runes/movement_change.svg");
-    opacity: 0.7;
-    height: 120px;
-    width: 120px;
-    filter: brightness(0.7);
-    margin-bottom: 8px;
-    transform-origin: 66px 71px;
-  }
-}
+  .app {
+    &.sheet.journal-sheet {
+      font-size: 16px;
 
-.rqidlink {
-  vertical-align: middle;
-  margin: 0.5rem;
-}
+      h3,
+      h4 {
+        margin: 0 0 -0.5rem;
+      }
+    }
 
-.header-control.rqid-missing,
-.header-control.rqid-missing i {
-  color: var(--color-level-error);
-}
-
-// Style the extra line in the settings tab
-.setting-links {
-  margin-top: -5px;
-  gap: 0.2rem;
-  flex-flow: nowrap;
-  align-items: center;
-  text-align: center;
-
-  a {
-    color: var(--color-text-secondary);
-    text-wrap-style: balance;
-  }
-}
-
-// Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
-.rqid-content-link {
-  border-radius: 9px;
-  background: var(--content-link-background);
-  border: 2px dashed var(--content-link-border-color);
-  color: var(--content-link-text-color);
-  margin: -1px 0;
-  padding: 1px 4px 0;
-  white-space: nowrap;
-  word-break: break-all;
-
-  i {
-    color: var(--content-link-icon-color);
-    font-size: 0.8em;
-    margin-right: 0.25em;
-  }
-
-  img {
-    display: inline-block;
-    margin-right: 0.25em;
-    border: none;
-    height: 0.8rem;
-    position: relative;
-    top: 0.15rem;
-
-    &[src*="systems/rqg/images"][src$=".svg"] {
-      filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
+    input[name="hitLocationItemNames"] {
+      min-width: 10rem;
     }
   }
-}
 
-.rqid-link-selector {
-  display: inline-flex;
+  .app.default-icons {
+    label {
+      display: flex;
 
-  .wizard-choice-input {
-    align-self: center;
-  }
-}
+      span {
+        flex: 1;
+      }
 
-.rune-selector {
-  display: inline-flex;
-  padding: 0.5rem;
-  column-gap: 0.5rem;
-}
+      img {
+        height: 26px;
+        border: none;
+        vertical-align: inherit;
+      }
 
-.skill-selector {
-  display: grid;
-}
+      .file-picker {
+        width: min-content;
+      }
 
-.drop-target {
-  border: 1px dotted black;
-  min-height: 2rem;
-
-  & a {
-    margin: 0.25rem;
-    width: fit-content;
-  }
-}
-
-.key-value-grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 0.5em;
-  place-items: center flex-start;
-  padding: 0 0 0.5em;
-
-  & .fullrow {
-    grid-column: 1 / -1;
+      input {
+        width: 22rem;
+      }
+    }
   }
 
-  & .input-button {
-    display: flex;
+  #pause {
+    figcaption {
+      font-family: Norse, Signika, "Palatino Linotype", serif;
+      font-size: 2rem;
+      opacity: 0.7;
+    }
+
+    img {
+      content: url("/systems/rqg/assets/images/runes/movement_change.svg");
+      opacity: 0.7;
+      height: 120px;
+      width: 120px;
+      filter: brightness(0.7);
+      margin-bottom: 8px;
+      transform-origin: 66px 71px;
+    }
+  }
+
+  .rqidlink {
+    vertical-align: middle;
+    margin: 0.5rem;
+  }
+
+  .header-control.rqid-missing,
+  .header-control.rqid-missing i {
+    color: var(--color-level-error);
+  }
+
+  // Style the extra line in the settings tab
+  .setting-links {
+    margin-top: -5px;
+    gap: 0.2rem;
+    flex-flow: nowrap;
     align-items: center;
-    width: 100%;
+    text-align: center;
 
-    & input {
-      width: 100%;
+    a {
+      color: var(--color-text-secondary);
+      text-wrap-style: balance;
     }
+  }
+
+  // Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy
+  .rqid-content-link {
+    border-radius: 9px;
+    background: var(--content-link-background);
+    border: 2px dashed var(--content-link-border-color);
+    color: var(--content-link-text-color);
+    margin: -1px 0;
+    padding: 1px 4px 0;
+    white-space: nowrap;
+    word-break: break-all;
+
+    i {
+      color: var(--content-link-icon-color);
+      font-size: 0.8em;
+      margin-right: 0.25em;
+    }
+
+    img {
+      display: inline-block;
+      margin-right: 0.25em;
+      border: none;
+      height: 0.8rem;
+      position: relative;
+      top: 0.15rem;
+
+      &[src*="systems/rqg/images"][src$=".svg"] {
+        filter: invert(50%) sepia(6%) saturate(402%) hue-rotate(16deg) brightness(92%) contrast(88%);
+      }
+    }
+  }
+
+  .rqid-link-selector {
+    display: inline-flex;
+
+    .wizard-choice-input {
+      align-self: center;
+    }
+  }
+
+  .rune-selector {
+    display: inline-flex;
+    padding: 0.5rem;
+    column-gap: 0.5rem;
+  }
+
+  .skill-selector {
+    display: grid;
+  }
+
+  .drop-target {
+    border: 1px dotted black;
+    min-height: 2rem;
 
     & a {
-      padding: 5px;
+      margin: 0.25rem;
+      width: fit-content;
     }
   }
 
-  & .drop-target {
-    display: inline-grid;
-    align-content: center;
-  }
-
-  label {
-    font-weight: bold;
-    display: block;
-    justify-self: right;
-  }
-
-  input {
-    &[type="checkbox"] {
-      margin-left: 0;
-      width: var(--checkbox-size, var(--font-size-20));
-      height: var(--checkbox-size, var(--font-size-20));
-      background: transparent;
-    }
-
-    &[type="text"] {
-      width: 100%;
-    }
-
-    &[name="rqidNamePart"] {
-      width: 12rem;
-    }
-
-    &.short {
-      width: 75px;
-    }
-
-    &.maxcontentwidth {
-      width: max-content;
-    }
-  }
-
-  select {
-    width: fit-content;
-  }
-
-  span.number {
-    text-align: right;
-    width: 75px;
-  }
-
-  .img-name-grid {
+  .key-value-grid {
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 0.5em;
+    place-items: center flex-start;
+    padding: 0 0 0.5em;
 
-    &.bordered {
-      border: 1px black solid;
-      padding: 0.5rem;
+    & .fullrow {
+      grid-column: 1 / -1;
     }
 
-    img {
-      mix-blend-mode: normal; // TODO remove when character sheet css is extracted
-      opacity: 0.8;
-    }
-  }
-
-  .submenu-span {
-    place-self: center;
-    text-align: center;
-    grid-column: 1 / 3;
-    width: 80%;
-    border-bottom: 2px dotted grey;
-    border-radius: 10%;
-    margin-top: 1.5rem;
-  }
-
-  div.drop-target {
-    width: 100%;
-  }
-
-  .item-sheet-rqid-link {
-    display: block;
-
-    i.fa-info-circle {
-      padding: 0 0 0 7px;
-      margin: 0.5rem;
-    }
-
-    .rqid-area {
+    & .input-button {
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
+      width: 100%;
+
+      & input {
+        width: 100%;
+      }
+
+      & a {
+        padding: 5px;
+      }
+    }
+
+    & .drop-target {
+      display: inline-grid;
+      align-content: center;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      justify-self: right;
+    }
+
+    input {
+      &[type="checkbox"] {
+        margin-left: 0;
+        width: var(--checkbox-size, var(--font-size-20));
+        height: var(--checkbox-size, var(--font-size-20));
+        background: transparent;
+      }
+
+      &[type="text"] {
+        width: 100%;
+      }
+
+      &[name="rqidNamePart"] {
+        width: 12rem;
+      }
+
+      &.short {
+        width: 75px;
+      }
+
+      &.maxcontentwidth {
+        width: max-content;
+      }
     }
 
     select {
-      margin: 0.5rem;
+      width: fit-content;
+    }
+
+    span.number {
+      text-align: right;
+      width: 75px;
+    }
+
+    .img-name-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.5em;
+
+      &.bordered {
+        border: 1px black solid;
+        padding: 0.5rem;
+      }
+
+      img {
+        mix-blend-mode: normal; // TODO remove when character sheet css is extracted
+        opacity: 0.8;
+      }
+    }
+
+    .submenu-span {
+      place-self: center;
+      text-align: center;
+      grid-column: 1 / 3;
+      width: 80%;
+      border-bottom: 2px dotted grey;
+      border-radius: 10%;
+      margin-top: 1.5rem;
+    }
+
+    div.drop-target {
+      width: 100%;
+    }
+
+    .item-sheet-rqid-link {
+      display: block;
+
+      i.fa-info-circle {
+        padding: 0 0 0 7px;
+        margin: 0.5rem;
+      }
+
+      .rqid-area {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      select {
+        margin: 0.5rem;
+      }
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    .editor-container {
+      width: 100%;
+      height: 100%;
+      align-self: start;
     }
   }
 
-  label {
-    font-weight: bold;
+  // .rqidlink has equal specificity to .key-value-grid — placing it after ensures this wins.
+  .rqidlink input[type="number"] {
+    width: 2rem;
   }
 
-  .editor-container {
-    width: 100%;
-    height: 100%;
-    align-self: start;
-  }
-}
+  .rqg.form.roll-dialog {
+    .roll-header {
+      display: flex;
+      justify-content: space-between;
+      text-align: center;
+      margin: -1rem -1rem 0.5rem;
+      padding: 1rem 1rem 0.9rem;
+      box-shadow: 0 -3px 11px 0;
+      gap: 1rem;
 
-// .rqidlink has equal specificity to .key-value-grid — placing it after ensures this wins.
-.rqidlink input[type="number"] {
-  width: 2rem;
-}
+      .main-header {
+        font:
+          bold 2rem/1rem Norse,
+          Signika,
+          "Palatino Linotype",
+          serif;
+        font-variant: small-caps;
+        letter-spacing: 1.5px;
+      }
 
-.rqg.form.roll-dialog {
-  .roll-header {
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    margin: -1rem -1rem 0.5rem;
-    padding: 1rem 1rem 0.9rem;
-    box-shadow: 0 -3px 11px 0;
-    gap: 1rem;
+      .spell-signature {
+        font-weight: 100;
+        font-style: italic;
+        position: relative;
+        top: 0.5rem;
+      }
 
-    .main-header {
-      font:
-        bold 2rem/1rem Norse,
-        Signika,
-        "Palatino Linotype",
-        serif;
-      font-variant: small-caps;
-      letter-spacing: 1.5px;
+      .sub-header {
+        font-style: italic;
+        line-height: 1;
+        margin-top: -2px;
+      }
     }
 
-    .spell-signature {
-      font-weight: 100;
-      font-style: italic;
-      position: relative;
-      top: 0.5rem;
+    .target-box {
+      flex: none;
+      text-align: center;
     }
 
-    .sub-header {
-      font-style: italic;
-      line-height: 1;
-      margin-top: -2px;
+    button {
+      &:disabled {
+        cursor: progress;
+      }
     }
   }
 
-  .target-box {
-    flex: none;
-    text-align: center;
-  }
-
-  button {
-    &:disabled {
-      cursor: progress;
+  .rqg.form.roll-dialog.attack-dialog,
+  .rqg.form.roll-dialog.defence-dialog {
+    .invalid-selection-warning {
+      display: block;
+      color: var(--color-level-error);
+      font-size: 0.9rem;
     }
-  }
-}
 
-.rqg.form.roll-dialog.attack-dialog,
-.rqg.form.roll-dialog.defence-dialog {
-  .invalid-selection-warning {
-    display: block;
-    color: var(--color-level-error);
-    font-size: 0.9rem;
-  }
+    .footer-message-stack {
+      width: 100%;
+      margin-top: 0.3rem;
+      text-align: center;
+    }
 
-  .footer-message-stack {
-    width: 100%;
-    margin-top: 0.3rem;
-    text-align: center;
-  }
+    .footer-message {
+      display: block;
+      text-align: center;
+      border-radius: 4px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.9rem;
+    }
 
-  .footer-message {
-    display: block;
-    text-align: center;
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.9rem;
-  }
-
-  .footer-message-error {
-    color: var(--color-level-error);
-    border: 1px solid var(--color-level-error);
-    background-color: transparent;
+    .footer-message-error {
+      color: var(--color-level-error);
+      border: 1px solid var(--color-level-error);
+      background-color: transparent;
+    }
   }
 }

@@ -16,44 +16,44 @@
         {{!-- SVG arrows showing the elemental cycle --}}
         <svg class="wheel-connectors" viewBox="0 0 300 300">
           <defs>
-            <marker id="rune-arrow" viewBox="0 0 10 6" refX="9" refY="3"
+            <marker id="rune-arrow" viewBox="0 0 10 6" refX="10" refY="3"
                     markerWidth="8" markerHeight="6" orient="auto-start-reverse">
               <path d="M 0 0 L 10 3 L 0 6 z" />
             </marker>
           </defs>
 
-          {{!-- Pentagram star: minor rune connections (non-adjacent pairs).
-               Rendered first so they sit behind the cycle arrows and below the Moon rune.
-               Vertices: Fire(150,45) Darkness(249,117) Water(216,222) Earth(84,222) Air(51,117) --}}
-          <g class="wheel-star">
-            <line x1="150" y1="45" x2="216" y2="222" />  {{!-- Fire ↔ Water --}}
-            <line x1="150" y1="45" x2="84"  y2="222" />  {{!-- Fire ↔ Earth --}}
-            <line x1="249" y1="117" x2="84" y2="222" />  {{!-- Darkness ↔ Earth --}}
-            <line x1="249" y1="117" x2="51" y2="117" />  {{!-- Darkness ↔ Air --}}
-            <line x1="216" y1="222" x2="51" y2="117" />  {{!-- Water ↔ Air --}}
+          {{!-- Pentagram star: minor rune connections (non-adjacent pairs). --}}
+          {{#if showUiSection.sorcery}}
+          <g class="wheel-pentagram">
+            <line x1="150" y1="66"  x2="199" y2="218" />  {{!-- Fire ↔ Water --}}
+            <line x1="150" y1="66"  x2="101" y2="218" />  {{!-- Fire ↔ Earth --}}
+            <line x1="230" y1="124" x2="101" y2="218" />  {{!-- Darkness ↔ Earth --}}
+            <line x1="230" y1="124" x2="70"  y2="124" />  {{!-- Darkness ↔ Air --}}
+            <line x1="199" y1="218" x2="70"  y2="124" />  {{!-- Water ↔ Air --}}
           </g>
+          {{/if}}
 
-          {{!-- Regular pentagon: center(150,150), radius 105 in 300×300 viewBox.
-               Arrow endpoints offset ±15° from each vertex along the circle.
-               Cycle: Fire → Darkness → Water → Earth → Air → Fire --}}
+          {{!-- Pentagon cycle arrows: 5 arcs all on the same circle (r=105, center 150,150).
+               Arcs are intentionally short: +20° past one vertex to -20° before the next,
+               leaving a wider gap around each rune icon/text. --}}
           <g class="wheel-arrows">
-            {{!-- Fire→Darkness --}}
-            <path d="M 177,49 A 105,105 0 0,1 238,93" marker-end="url(#rune-arrow)" />
-            {{!-- Darkness→Water --}}
-            <path d="M 255,145 A 105,105 0 0,1 232,216" marker-end="url(#rune-arrow)" />
-            {{!-- Water→Earth --}}
-            <path d="M 188,248 A 105,105 0 0,1 112,248" marker-end="url(#rune-arrow)" />
-            {{!-- Earth→Air --}}
-            <path d="M 68,216 A 105,105 0 0,1 45,145" marker-end="url(#rune-arrow)" />
-            {{!-- Air→Fire --}}
-            <path d="M 62,93 A 105,105 0 0,1 123,49" marker-end="url(#rune-arrow)" />
+            {{!-- Fire(-90°) → Darkness(-18°): -75° to -33° --}}
+            <path d="M 177.2,48.6 A 105,105 0 0,1 238.1,92.8" marker-end="url(#rune-arrow)" />
+            {{!-- Darkness(-18°) → Water(54°): 10° to 39° (Darkness-side start kept fixed) --}}
+            <path d="M 253.4,168.2 A 105,105 0 0,1 231.6,216.1" marker-end="url(#rune-arrow)" />
+            {{!-- Water(54°) → Earth(127°): 69° to 112° --}}
+            <path d="M 187.6,248.0 A 105,105 0 0,1 110.7,247.4" marker-end="url(#rune-arrow)" />
+            {{!-- Earth(127°) → Air(198°): 142° to 171° --}}
+            <path d="M 67.3,214.6 A 105,105 0 0,1 46.3,166.4" marker-end="url(#rune-arrow)" />
+            {{!-- Air(198°) → Fire(270°): 213° to 255° --}}
+            <path d="M 61.9,92.8 A 105,105 0 0,1 122.8,48.6" marker-end="url(#rune-arrow)" />
           </g>
         </svg>
 
         <div class="wheel-slot wheel-fire">
           {{#with embeddedItems.rune.element.fire}}
           <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-            <img class="rune {{../elementRuneVisuals.fire.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../elementRuneVisuals.fire.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
             {{#edit-mode ../system.editMode "all"}}
             <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -68,7 +68,7 @@
         <div class="wheel-slot wheel-darkness">
           {{#with embeddedItems.rune.element.darkness}}
           <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-            <img class="rune {{../elementRuneVisuals.darkness.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../elementRuneVisuals.darkness.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
             {{#edit-mode ../system.editMode "all"}}
             <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -83,7 +83,7 @@
         <div class="wheel-slot wheel-water">
           {{#with embeddedItems.rune.element.water}}
           <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-            <img class="rune {{../elementRuneVisuals.water.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../elementRuneVisuals.water.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
             {{#edit-mode ../system.editMode "all"}}
             <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -98,7 +98,7 @@
         <div class="wheel-slot wheel-earth">
           {{#with embeddedItems.rune.element.earth}}
           <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-            <img class="rune {{../elementRuneVisuals.earth.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../elementRuneVisuals.earth.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
             {{#edit-mode ../system.editMode "all"}}
             <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -113,7 +113,7 @@
         <div class="wheel-slot wheel-air">
           {{#with embeddedItems.rune.element.air}}
           <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-            <img class="rune {{../elementRuneVisuals.air.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../elementRuneVisuals.air.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
             {{#edit-mode ../system.editMode "all"}}
             <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -128,7 +128,7 @@
         <div class="wheel-slot wheel-moon">
           {{#with embeddedItems.rune.element.moon}}
           <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-            <img class="rune {{../elementRuneVisuals.moon.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../elementRuneVisuals.moon.cls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
             {{#edit-mode ../system.editMode "all"}}
             <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -154,7 +154,7 @@
           <div class="rune-slot">
             {{#with this.left}}
             <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-              <img class="rune {{../leftCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+              {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../leftCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
               <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
               {{#edit-mode ../../system.editMode "all"}}
               <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -171,7 +171,7 @@
           <div class="rune-slot">
             {{#with this.right}}
             <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-              <img class="rune {{../rightCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+              {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../rightCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
               <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
               {{#edit-mode ../../system.editMode "all"}}
               <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -201,7 +201,7 @@
           <div class="rune-slot">
             {{#with this.left}}
             <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-              <img class="rune {{../leftCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+              {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../leftCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
               <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
               {{#edit-mode ../../system.editMode "all"}}
               <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -218,7 +218,7 @@
           <div class="rune-slot">
             {{#with this.right}}
             <div class="rune rune-card contextmenu item" data-item-id="{{id}}">
-              <img class="rune {{../rightCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+              {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune {{../rightCls}}" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
               <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
               {{#edit-mode ../../system.editMode "all"}}
               <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -237,7 +237,7 @@
       {{!-- Standalone form runes (no opposing rune defined) --}}
       {{#each formRuneStandalone}}
       <div class="rune rune-card standalone contextmenu item" data-item-id="{{id}}">
-        <img class="rune" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+        {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
         <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
         {{#edit-mode ../system.editMode "all"}}
         <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
@@ -257,7 +257,7 @@
       <div class="rune-card-row">
         {{#each embeddedItems.rune.condition}}
         <div class="rune rune-card standalone contextmenu item" data-item-id="{{id}}">
-          <img class="rune" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+          {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
           <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
           {{#edit-mode ../system.editMode "all"}}
           <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">

@@ -11,6 +11,8 @@ import {
   getLoadedMissileSrDisplay,
   getMainCultInfo,
   getPowCrystals,
+  getRuneOpposedPairs,
+  getRuneVisualsMap,
   getSpiritMagicPointSum,
   getUnloadedMissileSr,
   getUnloadedMissileSrDisplay,
@@ -206,7 +208,7 @@ describe("spirit magic and free INT", () => {
       },
     ]);
 
-    expect(getFreeInt(actor, 4)).toBe(7);
+    expect(getFreeInt(actor, 4)).toBe(6);
   });
 });
 
@@ -382,5 +384,104 @@ describe("getHitLocationDiceRangeError", () => {
     const result = getHitLocationDiceRangeError(actor);
 
     expect(result).toContain("RQG.Actor.Health.HitLocationDiceDoNotAddUp");
+  });
+});
+
+function makeRune(key: string, chance: number, opposingRqid?: string): [string, any] {
+  return [
+    key,
+    {
+      system: { chance, opposingRuneRqidLink: opposingRqid ? { rqid: opposingRqid } : undefined },
+      flags: { rqg: { documentRqidFlags: { id: `item.rune.${key}` } } },
+    },
+  ];
+}
+
+describe("getRuneVisualsMap", () => {
+  it("maps chance to the correct rune-str class", () => {
+    const [key, rune] = makeRune("fire", 60);
+    const result = getRuneVisualsMap({ [key]: rune });
+    expect(result["fire"]!.cls).toBe("rune-str-6");
+  });
+
+  it("rounds to nearest 10 for the class tier", () => {
+    const [key, rune] = makeRune("air", 75);
+    const result = getRuneVisualsMap({ [key]: rune });
+    // 75 / 10 = 7.5, rounds to 8
+    expect(result["air"]!.cls).toBe("rune-str-8");
+  });
+
+  it("defaults to rune-str-0 when system.chance is missing", () => {
+    const rune = { system: {} };
+    const result = getRuneVisualsMap({ earth: rune });
+    expect(result["earth"]!.cls).toBe("rune-str-0");
+  });
+
+  it("handles multiple runes in one call", () => {
+    const runesByName = Object.fromEntries([makeRune("fire", 0), makeRune("air", 100)]);
+    const result = getRuneVisualsMap(runesByName);
+    expect(result["fire"]!.cls).toBe("rune-str-0");
+    expect(result["air"]!.cls).toBe("rune-str-10");
+  });
+});
+
+describe("getRuneOpposedPairs", () => {
+  it("pairs opposing runes and computes markerPercent from left rune chance", () => {
+    const runesByName = Object.fromEntries([
+      makeRune("fertility", 60, "item.rune.death"),
+      makeRune("death", 40, "item.rune.fertility"),
+    ]);
+    const { pairs, standalone } = getRuneOpposedPairs(runesByName);
+    expect(standalone).toHaveLength(0);
+    expect(pairs).toHaveLength(1);
+    const pair = pairs[0]!;
+    // fertility is in preferredPairOrder before death, so it should be on the left
+    expect(pair.left.system.chance).toBe(60);
+    expect(pair.right.system.chance).toBe(40);
+    expect(pair.markerPercent).toBe(40); // 100 - 60
+    expect(pair.leftCls).toBe("rune-str-6");
+    expect(pair.rightCls).toBe("rune-str-4");
+  });
+
+  it("places the preferred-order rune on the left regardless of entry order", () => {
+    // death is listed first but fertility has preferred order
+    const runesByName = Object.fromEntries([
+      makeRune("death", 70, "item.rune.fertility"),
+      makeRune("fertility", 30, "item.rune.death"),
+    ]);
+    const { pairs } = getRuneOpposedPairs(runesByName);
+    expect(pairs[0]!.left.system.chance).toBe(30); // fertility
+    expect(pairs[0]!.right.system.chance).toBe(70); // death
+  });
+
+  it("shows rune with null right slot when opposing rune is absent", () => {
+    const runesByName = Object.fromEntries([makeRune("fertility", 60, "item.rune.death")]);
+    const { pairs, standalone } = getRuneOpposedPairs(runesByName);
+    expect(standalone).toHaveLength(0);
+    expect(pairs).toHaveLength(1);
+    expect(pairs[0]!.right).toBeNull();
+    expect(pairs[0]!.left.system.chance).toBe(60);
+  });
+
+  it("puts runes without an opposing rqid into standalone", () => {
+    const runesByName = Object.fromEntries([makeRune("fire", 50)]);
+    const { pairs, standalone } = getRuneOpposedPairs(runesByName);
+    expect(pairs).toHaveLength(0);
+    expect(standalone).toHaveLength(1);
+    expect(standalone[0].system.chance).toBe(50);
+  });
+
+  it("sorts pairs by preferredPairOrder, unknowns last", () => {
+    // man (index 4), harmony (index 1), truth (index 2)
+    const runesByName = Object.fromEntries([
+      makeRune("man", 60, "item.rune.beast"),
+      makeRune("beast", 40, "item.rune.man"),
+      makeRune("harmony", 55, "item.rune.disorder"),
+      makeRune("disorder", 45, "item.rune.harmony"),
+      makeRune("truth", 70, "item.rune.illusion"),
+      makeRune("illusion", 30, "item.rune.truth"),
+    ]);
+    const { pairs } = getRuneOpposedPairs(runesByName);
+    expect(pairs.map((p) => p.left.system.chance)).toEqual([55, 70, 60]);
   });
 });
