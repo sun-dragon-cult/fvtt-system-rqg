@@ -8,7 +8,7 @@
  */
 
 import { spawn } from "child_process";
-import { loadEnvLocal } from "./loadEnvLocal.ts";
+import { loadEnvLocal } from "../utils.ts";
 
 const env = await loadEnvLocal();
 

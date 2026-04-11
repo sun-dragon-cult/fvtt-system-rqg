@@ -5,5 +5,5 @@
     "types": ["node"],
     "tsBuildInfoFile": "../.typescript-build/buildScripts.tsbuildinfo"
   },
-  "include": ["./**/*.ts"]
+  "include": ["./**/*.ts", "../utils.ts", "../vite.config.ts"]
 }

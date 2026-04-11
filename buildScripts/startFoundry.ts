@@ -17,7 +17,7 @@
 import { spawn } from "child_process";
 import * as fs from "fs/promises";
 import * as path from "path";
-import { loadEnvLocal } from "./loadEnvLocal.ts";
+import { loadEnvLocal } from "../utils.ts";
 
 async function main() {
   const env = await loadEnvLocal();

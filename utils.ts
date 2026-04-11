@@ -45,7 +45,7 @@ type HostData = {
   host: string;
 };
 
-async function loadEnvLocal(): Promise<Partial<Record<string, string>>> {
+export async function loadEnvLocal(): Promise<Record<string, string>> {
   try {
     const envLocalPath = fileURLToPath(new URL(".env.local", import.meta.url));
     const content = await fs.readFile(envLocalPath, "utf-8");
@@ -67,11 +67,11 @@ async function loadEnvLocal(): Promise<Partial<Record<string, string>>> {
 export async function findFoundryHost(): Promise<HostData> {
   const localEnv = await loadEnvLocal();
 
-  const foundryHostNameEnv = process.env.FOUNDRY_HOST_NAME ?? localEnv.FOUNDRY_HOST_NAME;
+  const foundryHostNameEnv = process.env.FOUNDRY_HOST_NAME ?? localEnv["FOUNDRY_HOST_NAME"];
   const hasHostEnv = foundryHostNameEnv != null;
   const foundryHost = foundryHostNameEnv ?? "localhost";
 
-  const envPortString = process.env.FOUNDRY_PORT ?? localEnv.FOUNDRY_PORT;
+  const envPortString = process.env.FOUNDRY_PORT ?? localEnv["FOUNDRY_PORT"];
 
   const isHostConfigured = hasHostEnv || envPortString != null;
 
