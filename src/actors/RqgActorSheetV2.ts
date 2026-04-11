@@ -162,7 +162,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
-    const incorrectRunes: any[] = [];
+    const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
     const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
@@ -176,7 +176,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       .filter((item) => !foundry.utils.getProperty(item, "system.isNatural"))
       .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
     const armorItems = (embeddedItems[ItemTypeEnum.Armor] ?? []).sort(
-      (a: any, b: any) => (a.sort ?? 0) - (b.sort ?? 0),
+      (a: RqgItem, b: RqgItem) => (a.sort ?? 0) - (b.sort ?? 0),
     ) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});

@@ -365,7 +365,10 @@ describe("ItemTree", () => {
               location: "armor",
               name: "Dragon Armor Greaves  (Dragon Hide and Scales)",
               physicalItemType: "unique",
-              price: null,
+              price: {
+                estimated: 0,
+                real: 0,
+              },
               quantity: 1,
             },
             {
@@ -382,7 +385,10 @@ describe("ItemTree", () => {
               location: "armor",
               name: "Dragon Armor Hauberk  (Dragon Hide and Bone)",
               physicalItemType: "unique",
-              price: null,
+              price: {
+                estimated: 0,
+                real: 0,
+              },
               quantity: 1,
             },
             {
@@ -398,7 +404,10 @@ describe("ItemTree", () => {
               location: "armor",
               name: "Dragon Armor Vambraces  (Dragon Hide and Scales)",
               physicalItemType: "unique",
-              price: null,
+              price: {
+                estimated: 0,
+                real: 0,
+              },
               quantity: 1,
             },
           ],
@@ -417,7 +426,7 @@ describe("ItemTree", () => {
             real: 0,
           },
           quantity: 1,
-        } as any),
+        }),
       );
     });
 
