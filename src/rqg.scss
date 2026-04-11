@@ -173,10 +173,6 @@
         height: 100%;
       }
     }
-    >* {
-      height: 100%;
-    }
-  }
 
     .flex-row-start {
       display: flex;
@@ -590,20 +586,6 @@
           background: var(--rqg-table-alternate-background);
         }
       }
-      // Alternating row background for 10 columns
-      >*:nth-child(20n + 22),
-      >*:nth-child(20n + 23),
-      >*:nth-child(20n + 24),
-      >*:nth-child(20n + 25),
-      >*:nth-child(20n + 26),
-      >*:nth-child(20n + 27),
-      >*:nth-child(20n + 28),
-      >*:nth-child(20n + 29),
-      >*:nth-child(20n + 30),
-      >*:nth-child(20n + 31) {
-        background: var(--rqg-table-alternate-background);
-      }
-    }
 
       &.gear {
         grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];

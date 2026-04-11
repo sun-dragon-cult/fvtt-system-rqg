@@ -6,11 +6,11 @@
     }
   }
 
-  .rqg.character {
+  // Scope v1 styles to legacy actor sheets only; v2 has class `.actor-sheet-v2`.
+  .rqg.character:not(.actor-sheet-v2) {
     .mainbackground {
       grid-area: -1 / 2 / 1 / -1; // TODO define by area name instead
-      background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top
-        left/100%;
+      background: var(--rqg-parchment-url) repeat-y scroll top left/100%;
     }
 
     .play-mode-icon {
@@ -94,9 +94,35 @@
       padding: 0;
       background: none;
 
+      // V2 apps do not inherit V1 .app tab visibility rules in all contexts.
+      // Ensure only the active tab is shown for main tabs and nested wizard tabs.
+      .sheet-body > .tab,
+      .species-body > .tab,
+      .homeland-body > .tab,
+      .gear-body > .tab {
+        display: none;
+      }
+
+      .sheet-body > .tab.active,
+      .species-body > .tab.active,
+      .homeland-body > .tab.active,
+      .gear-body > .tab.active {
+        display: block;
+      }
+
       form {
         display: grid;
         grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
+      }
+
+      // AppV2 actor wizard uses a wrapper div as the single template root.
+      // Mirror the legacy form grid so V1 wizard GUI layout still applies.
+      .wizard-app-root {
+        display: grid;
+        grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
+        container-type: inline-size;
+        container-name: sheet-container;
+        min-height: 100%;
       }
 
       .sheet-header {
@@ -241,8 +267,9 @@
           max-width: 20rem;
           line-height: 1rem;
           text-align: end;
-          margin-bottom: 5px;
+          margin: 5px 0 3px;
           font-size: var(--font-size-16);
+          text-wrap-style: balance;
         }
       }
 
