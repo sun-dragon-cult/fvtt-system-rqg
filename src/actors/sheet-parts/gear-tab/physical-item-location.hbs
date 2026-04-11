@@ -1,6 +1,7 @@
-<li class="{{#if isVirtual}}virtual{{else}}gear contextmenu{{/if}} item" data-item-id="{{id}}" {{#unless isVirtual}}data-item-tooltip data-tooltip-class="item-description-tooltip"{{/unless}}>
+<li class="{{#if isVirtual}}virtual{{else}}gear contextmenu gear-row{{/if}} item" data-item-id="{{id}}" {{#unless isVirtual}}data-item-tooltip data-tooltip-class="item-description-tooltip"{{/unless}}>
   <div class="grid location-row">
     <div>
+      {{#unless isVirtual}}{{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}{{/unless}}
       {{#if isContainer}}<i class="fas fa-folder-open"> </i>{{/if}}
       {{#unless (eq physicalItemType "unique")}} {{this.quantity}} {{/unless}}
       {{name}}

@@ -38,10 +38,10 @@
 
     {{#each embeddedItems.spiritMagic}}
     <div class="spirit-magic-row">
-      <div class="spirit-magic contextmenu item"
-           data-item-id="{{id}}"
-           {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-        <img src="{{img}}">
+       <div class="spirit-magic contextmenu item"
+         data-item-id="{{id}}"
+         {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+         {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img src="{{img}}">
       </div>
       <div class="spirit-magic contextmenu item"
            data-item-id="{{id}}"

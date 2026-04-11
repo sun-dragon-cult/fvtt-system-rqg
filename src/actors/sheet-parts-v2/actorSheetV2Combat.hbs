@@ -89,7 +89,7 @@
             <div class="head6 pad-left"><span>{{localize "RQG.Actor.Health.HitPointsAbbr"}}</span></div>
             <div class="head7">{{localize "RQG.Actor.Health.Wounds"}}</div>
             {{#each embeddedItems.hitLocation}}
-              <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieFrom}}</span></div>
+              <div class="hit-location contextmenu item" data-item-id="{{id}}">{{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<span class="text-right">{{system.dieFrom}}</span></div>
               <div class="hit-location contextmenu item" data-item-id="{{id}}">-</div>
               <div class="hit-location contextmenu item" data-item-id="{{id}}"><span class="text-right">{{system.dieTo}}</span></div>
               <div class="hit-location contextmenu item" data-item-id="{{id}}">
@@ -174,12 +174,13 @@
         {{#each embeddedItems.weapon}}
           {{#if (eq system.equippedStatus "equipped")}}
             {{#unless system.isNatural}}
-              <div class="weapon-row"> 
+              <div class="weapon-row" data-item-id="{{id}}">
                 <div data-weapon-item-id="{{id}}"
                     data-item-id="{{id}}"
-                    data-item-tooltip
-                    data-tooltip-class="item-description-tooltip"
-                    class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+                  class="combat contextmenu item">{{#if @root.isEditable}}<span class="weapon-drag-handle item draggable"
+                                                         data-weapon-drag-handle
+                                                         data-weapon-item-id="{{id}}"
+                                                         data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="item" src="{{img}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
                 <div data-weapon-item-id="{{id}}"
                     data-item-id="{{id}}"
                     data-weapon-roll
@@ -210,7 +211,7 @@
                                   value="{{system.hitPoints.value}}"> / {{system.hitPoints.max}}</label>
                   {{/if}}
                 </div>
-                <div class="item" data-weapon-item-id="{{id}}">
+                <div class="item" data-weapon-item-id="{{id}}" data-item-id="{{id}}">
                   <span class="flex-column text-right">
                     {{#each system.usage}}
                       {{#if skillId}}
@@ -283,8 +284,8 @@
         {{!-- Natural weapons --}}
         {{#each embeddedItems.weapon}}
           {{#if system.isNatural}}
-            <div class="weapon-row">
-              <div data-weapon-item-id="{{id}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip" class="combat contextmenu item"><img class="item" src="{{img}}"></div>
+            <div class="weapon-row" data-item-id="{{id}}">
+              <div data-weapon-item-id="{{id}}" data-item-id="{{id}}" class="combat contextmenu item">{{#if @root.isEditable}}<span class="weapon-drag-handle item draggable" data-weapon-drag-handle data-weapon-item-id="{{id}}" data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="item" src="{{img}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
               <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item">{{name}}</div>
               <div data-weapon-item-id="{{id}}" class="combat contextmenu item"></div>
               <div data-weapon-item-id="{{id}}" data-item-id="{{id}}">

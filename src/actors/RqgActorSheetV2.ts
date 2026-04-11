@@ -9,6 +9,8 @@ import { RQG_CONFIG, systemId } from "../system/config";
 import {
   assertDocumentSubType,
   getRequiredDomDataset,
+  hasOwnProperty,
+  isDocumentSubType,
   isTruthy,
   localize,
   range,
@@ -17,7 +19,10 @@ import {
 } from "../system/util";
 
 import type { RqgItem } from "../items/rqgItem";
+import type { RqgActor } from "./rqgActor";
 import type { AbilityItem, PhysicalItem } from "@item-model/itemTypes.ts";
+import type { ArmorItem } from "@item-model/armorData.ts";
+import type { OccupationItem } from "@item-model/occupationData.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { WeaponItem } from "@item-model/weaponData.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
@@ -56,6 +61,7 @@ import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
+import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import {
   equippedStatuses,
@@ -89,6 +95,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     window: {
       resizable: true,
     },
+    dragDrop: [
+      {
+        dragSelector: "[data-item-drag-handle][data-item-id]",
+        dropSelector: "[data-item-id].contextmenu.item",
+      },
+    ],
   };
 
   static override PARTS: Record<string, any> = {
@@ -153,17 +165,19 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const incorrectRunes: any[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
-    const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[]).filter(
-      (item) => foundry.utils.getProperty(item, "system.physicalItemType") === "unique",
-    );
-    const consumableGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[]).filter(
-      (item) => foundry.utils.getProperty(item, "system.physicalItemType") === "consumable",
-    );
+    const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
+      .filter((item) => foundry.utils.getProperty(item, "system.physicalItemType") === "unique")
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+    const consumableGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
+      .filter((item) => foundry.utils.getProperty(item, "system.physicalItemType") === "consumable")
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
     const currencyItems = (embeddedItems["currency"] ?? []) as GearItem[];
-    const weaponItems = ((embeddedItems[ItemTypeEnum.Weapon] ?? []) as WeaponItem[]).filter(
-      (item) => !foundry.utils.getProperty(item, "system.isNatural"),
-    );
-    const armorItems = (embeddedItems[ItemTypeEnum.Armor] ?? []) as RqgItem[];
+    const weaponItems = ((embeddedItems[ItemTypeEnum.Weapon] ?? []) as WeaponItem[])
+      .filter((item) => !foundry.utils.getProperty(item, "system.isNatural"))
+      .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+    const armorItems = (embeddedItems[ItemTypeEnum.Armor] ?? []).sort(
+      (a: any, b: any) => (a.sort ?? 0) - (b.sort ?? 0),
+    ) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
     const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
@@ -185,7 +199,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: false,
-      isV2: true,
       system: system,
       effects: [...this.actor.allApplicableEffects()],
 
@@ -290,6 +303,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   /** Tracks which SRs are active in combat for this actor */
   private _activeInSR: Set<number> = new Set<number>();
+
+  /** Temporary image element used as drag preview */
+  private _activeDragPreview: HTMLImageElement | null = null;
 
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
@@ -484,6 +500,24 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         void this._onDropRqidDocument(event as DragEvent);
       });
     });
+
+    // Clear drop indicators and drag preview cleanup.
+    // Bind once per rendered root element so cleanup listeners don't duplicate.
+    if (this.element.dataset["dragImageBound"] !== "true") {
+      this.element.dataset["dragImageBound"] = "true";
+
+      this.element.addEventListener("dragend", () => {
+        this._clearDropIndicators();
+        this._activeDragPreview?.remove();
+        this._activeDragPreview = null;
+      });
+
+      this.element.addEventListener("drop", () => {
+        this._clearDropIndicators();
+        this._activeDragPreview?.remove();
+        this._activeDragPreview = null;
+      });
+    }
 
     // Profile image click to open FilePicker (AppV2 convention: data-action)
     if (options.isFirstRender) {
@@ -1005,6 +1039,110 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     await sheet.actor.update(data);
   }
 
+  protected override async _onDragStart(event: DragEvent): Promise<void> {
+    await super._onDragStart(event);
+
+    const dragHandle = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+      "[data-item-drag-handle], [data-weapon-drag-handle]",
+    );
+    if (!dragHandle) {
+      return;
+    }
+
+    const itemContainer = dragHandle.closest<HTMLElement>("[data-item-id]");
+    if (!itemContainer) {
+      return;
+    }
+
+    const itemId = itemContainer.dataset["itemId"];
+    if (!itemId) {
+      return;
+    }
+
+    const item = this.actor.items.get(itemId);
+    // If no item or no image, keep the default grab SVG.
+    if (!item || !item.img) {
+      return;
+    }
+
+    const dataTransfer = event.dataTransfer;
+    if (!dataTransfer) {
+      return;
+    }
+
+    // Use a fixed-size preview so large source art does not produce huge drag ghosts.
+    const iconElement = itemContainer.querySelector<HTMLImageElement>("img[data-item-id], img");
+    const imgSrc = iconElement?.currentSrc || iconElement?.src || item.img;
+    const resolvedSrc = /^(https?:)?\/\//.test(imgSrc) ? imgSrc : foundry.utils.getRoute(imgSrc);
+
+    this._activeDragPreview?.remove();
+    const preview = document.createElement("img");
+    preview.src = resolvedSrc;
+    preview.width = 36;
+    preview.height = 36;
+    preview.style.position = "fixed";
+    preview.style.top = "-1000px";
+    preview.style.left = "-1000px";
+    preview.style.width = "36px";
+    preview.style.height = "36px";
+    preview.style.objectFit = "contain";
+    preview.style.pointerEvents = "none";
+
+    document.body.append(preview);
+    this._activeDragPreview = preview;
+    dataTransfer.setDragImage(preview, 18, 18);
+  }
+
+  protected override _onDragOver(event: DragEvent): void {
+    super._onDragOver(event);
+
+    const target = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+      "[data-item-id].contextmenu.item",
+    );
+
+    // Clear all existing indicators first
+    this.element.querySelectorAll(".drop-before, .drop-after").forEach((el) => {
+      el.classList.remove("drop-before", "drop-after");
+    });
+
+    if (!target) {
+      return;
+    }
+    const itemId = target.dataset["itemId"];
+    if (!itemId) {
+      return;
+    }
+
+    // Check if dropping on a skill/rune row (these can't be reordered within same actor)
+    const skillRow = target.closest(".skill-row");
+    const runeRow = target.closest(".rune-card, .rune");
+    if (skillRow || runeRow) {
+      event.dataTransfer!.dropEffect = "none";
+      return;
+    }
+
+    // Set cursor for reorderable items: "move" for same-actor rearrangement
+    event.dataTransfer!.dropEffect = "move";
+
+    const weaponRow = target.closest<HTMLElement>(
+      `.weapon-row[data-item-id="${CSS.escape(itemId)}"]`,
+    );
+    const rowCells = weaponRow
+      ? weaponRow.querySelectorAll<HTMLElement>(":scope > div")
+      : this.element.querySelectorAll<HTMLElement>(
+          `[data-item-id="${CSS.escape(itemId)}"].contextmenu.item`,
+        );
+    const rect = target.getBoundingClientRect();
+    const cls = event.clientY < rect.top + rect.height / 2 ? "drop-before" : "drop-after";
+    rowCells.forEach((cell) => cell.classList.add(cls));
+  }
+
+  private _clearDropIndicators(): void {
+    this.element.querySelectorAll(".drop-before, .drop-after").forEach((el) => {
+      el.classList.remove("drop-before", "drop-after");
+    });
+  }
+
   private static async sortItems(actor: CharacterActor, itemType: string): Promise<void> {
     const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
     itemsToSort.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
@@ -1016,6 +1154,238 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
     const updateData = itemsToSort.map((item) => ({ _id: item.id, sort: item.sort }));
     await actor.updateEmbeddedDocuments("Item", updateData);
+  }
+
+  protected override async _onDropItem(event: DragEvent, item: RqgItem): Promise<RqgItem | null> {
+    if (!this.actor.isOwner) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
+      );
+      return null;
+    }
+
+    const sourceActor = item.parent as RqgActor | null;
+
+    // Same actor or sidebar/compendium drop — sort within same actor
+    if (!sourceActor || sourceActor.uuid === this.actor.uuid) {
+      // Try to determine drag context for position-aware sorting
+      const dropCell = (event.target as HTMLElement | null)?.closest<HTMLElement>(
+        "[data-item-id].contextmenu.item",
+      );
+
+      if (dropCell) {
+        const targetItemId = dropCell.dataset["itemId"];
+        const targetItem = targetItemId
+          ? (this.actor.items.get(targetItemId) as RqgItem | undefined)
+          : undefined;
+
+        if (targetItem && targetItem.id !== item.id) {
+          const rect = dropCell.getBoundingClientRect();
+          const sortBefore = event.clientY < rect.top + rect.height / 2;
+          await item.sortRelative({
+            target: targetItem,
+            siblings: this.actor.items.contents as RqgItem[],
+            sortBefore,
+          });
+          return item;
+        }
+      }
+
+      // Default: let Foundry handle it (uses item sort order)
+      return super._onDropItem(event, item);
+    }
+
+    // Cross-actor drop
+    const itemData = item.toObject();
+
+    if (isDocumentSubType<OccupationItem>(item, ItemTypeEnum.Occupation)) {
+      if (!hasRqid(item)) {
+        return null;
+      }
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
+      return item;
+    }
+
+    if (
+      isDocumentSubType<ArmorItem>(itemData as any, ItemTypeEnum.Armor) ||
+      isDocumentSubType<GearItem>(itemData as any, ItemTypeEnum.Gear) ||
+      isDocumentSubType<WeaponItem>(itemData as any, ItemTypeEnum.Weapon)
+    ) {
+      const success = await this.confirmTransferPhysicalItem(itemData, sourceActor);
+      return success ? item : null;
+    }
+
+    const success = await this.confirmCopyIntangibleItem(itemData, sourceActor);
+    return success ? item : null;
+  }
+
+  private async confirmTransferPhysicalItem(
+    incomingItemDataSource: Item.Implementation["_source"],
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    const adapter: any = {
+      incomingItemDataSource: incomingItemDataSource,
+      sourceActor: sourceActor,
+      targetActor: this.actor,
+      showQuantity: (incomingItemDataSource.system as any).quantity > 1,
+    };
+
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmTransferPhysicalItem,
+      { adapter },
+    );
+
+    const title = localize("RQG.Dialog.confirmTransferPhysicalItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+
+    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+        callback: async (html: JQuery | HTMLElement) =>
+          confirmDialog.resolve(
+            this.submitConfirmTransferPhysicalItem(
+              html as JQuery,
+              incomingItemDataSource,
+              sourceActor,
+            ),
+          ),
+      },
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+    return await confirmDialog.setButtons(buttons, "submit").show();
+  }
+
+  private async submitConfirmTransferPhysicalItem(
+    html: JQuery,
+    incomingItemDataSource: Item.Implementation["_source"],
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    const formData = new FormData(html.find("form")[0]);
+    const data = Object.fromEntries(formData.entries());
+    const quantityToTransfer: number = data["numtotransfer"] ? Number(data["numtotransfer"]) : 1;
+    return this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
+  }
+
+  private async transferPhysicalItem(
+    incomingItemDataSource: Item.Implementation["_source"],
+    quantityToTransfer: number,
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    if (!incomingItemDataSource || !incomingItemDataSource._id) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
+      return false;
+    }
+    if (!hasOwnProperty(incomingItemDataSource.system, "quantity")) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError"),
+      );
+      return false;
+    }
+    if (quantityToTransfer < 1) {
+      ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
+      return false;
+    }
+    if (quantityToTransfer > (incomingItemDataSource.system as any).quantity) {
+      ui.notifications?.error(
+        localize("RQG.Actor.Notification.CantTransferMoreThanSourceOwnsError", {
+          itemName: incomingItemDataSource.name,
+          sourceActorName: sourceActor.name,
+        }),
+      );
+      return false;
+    }
+
+    const existingItem = this.actor.items.find(
+      (i) => i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
+    ) as RqgItem | undefined;
+
+    const newSourceQty =
+      Number((incomingItemDataSource.system as any).quantity) - quantityToTransfer;
+
+    if (existingItem) {
+      assertDocumentSubType<PhysicalItem>(
+        existingItem,
+        physicalItemTypes,
+        "Existing item found when transferring physical item is not a PhysicalItem",
+      );
+      const newTargetQty = quantityToTransfer + Number(existingItem.system.quantity);
+      const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
+        { _id: existingItem.id, system: { quantity: newTargetQty } },
+      ]);
+      if (targetUpdate) {
+        if (newSourceQty > 0) {
+          await sourceActor.updateEmbeddedDocuments("Item", [
+            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
+          ]);
+        } else {
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+        }
+        return true;
+      }
+    } else {
+      (incomingItemDataSource.system as any).quantity = quantityToTransfer;
+      const targetCreate = await this.actor.createEmbeddedDocuments("Item", [
+        incomingItemDataSource,
+      ]);
+      if (targetCreate) {
+        if (newSourceQty > 0) {
+          await sourceActor.updateEmbeddedDocuments("Item", [
+            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
+          ]);
+        } else {
+          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
+        }
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private async confirmCopyIntangibleItem(
+    incomingItemDataSource: Item.Implementation["_source"],
+    sourceActor: RqgActor,
+  ): Promise<boolean> {
+    const adapter: any = {
+      incomingItemDataSource,
+      sourceActor,
+      targetActor: this.actor,
+    };
+    const content: string = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.confirmCopyIntangibleItem,
+      { adapter },
+    );
+
+    const title = localize("RQG.Dialog.confirmCopyIntangibleItem.title", {
+      itemName: incomingItemDataSource.name,
+      targetActor: this.actor.name,
+    });
+    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
+    const buttons = {
+      submit: {
+        icon: '<i class="fas fa-check"></i>',
+        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+        callback: async () => {
+          const created = await this.actor.createEmbeddedDocuments("Item", [
+            incomingItemDataSource,
+          ]);
+          confirmDialog.resolve(created.length > 0);
+        },
+      },
+      cancel: {
+        icon: '<i class="fas fa-times"></i>',
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => confirmDialog.resolve(false),
+      },
+    };
+    return await confirmDialog.setButtons(buttons, "submit").show();
   }
 
   private async _onDropRqidDocument(event: DragEvent): Promise<boolean> {

@@ -20,6 +20,18 @@ import type { RqgActor } from "../actors/rqgActor";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
+type ActorWizardBaseCtor = (abstract new (
+  ...args: any[]
+) => foundry.applications.api.ApplicationV2.Any) &
+  typeof ApplicationV2 & {
+    PARTS: Record<
+      string,
+      foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
+    >;
+  };
+
+const ActorWizardBase = HandlebarsApplicationMixin(ApplicationV2) as unknown as ActorWizardBaseCtor;
+
 import type { RuneItem } from "@item-model/runeData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
 import type { HomelandItem } from "@item-model/homelandData.ts";
@@ -73,7 +85,7 @@ interface TemplateHomelandContext {
 }
 
 /** Complete template context returned by getData() */
-interface ActorWizardTemplateContext {
+interface ActorWizardTemplateContext extends foundry.applications.api.ApplicationV2.RenderContext {
   actor: RqgActor;
   species: TemplateSpeciesContext;
   speciesTemplateItems: Record<string, any> | undefined;
@@ -82,9 +94,7 @@ interface ActorWizardTemplateContext {
   collapsibleOpenStates: Record<string, boolean>;
 }
 
-export class ActorWizard extends HandlebarsApplicationMixin(
-  ApplicationV2<ActorWizardTemplateContext>,
-) {
+export class ActorWizard extends ActorWizardBase {
   actor: RqgActor;
   species: {
     selectedSpeciesTemplate: RqgActor | undefined;
@@ -159,7 +169,6 @@ export class ActorWizard extends HandlebarsApplicationMixin(
     form: { template: templatePaths.actorWizardApplication },
   };
 
-  // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
   override async _prepareContext(): Promise<ActorWizardTemplateContext> {
     // Set any collapsible sections that need to be open by default
     if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
@@ -440,7 +449,10 @@ export class ActorWizard extends HandlebarsApplicationMixin(
     };
   }
 
-  override async _onRender(context: ActorWizardTemplateContext, options: any): Promise<void> {
+  override async _onRender(
+    context: foundry.applications.api.ApplicationV2.RenderContext,
+    options: any,
+  ): Promise<void> {
     await super._onRender(context, options);
 
     // Main wizard tab navigation

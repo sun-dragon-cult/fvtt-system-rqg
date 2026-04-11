@@ -16,8 +16,6 @@ export interface RqgActorSheetV2Context {
   isGM: boolean;
   isEditable: boolean;
   isEmbedded: boolean;
-  /** Always true — templates use this to choose `<prose-mirror>` over `{{editor}}`. */
-  isV2: boolean;
   system: CharacterDataPropertiesData;
   effects: unknown;
 

@@ -55,6 +55,10 @@
 
   // Restore light-mode enc colors at same specificity
   .theme-light .rqg.character.actor-sheet-v2 {
+    .item-drag-handle {
+      color: rgb(0 0 0 / 45%); // dark grey for light mode (default is white for dark mode)
+    }
+
     // Override V1's context-highlight for ALL V2 context menus — light mode
     // Specificity: 0,7,0 beats V1's 0,6,0
     .contextmenu.context.context-highlight {
@@ -121,6 +125,81 @@
       &:active {
         box-shadow: none;
       }
+    }
+
+    // Generic drag handle behavior for all V2 item lists.
+    // Hidden by default, positioned outside-left, and revealed on row/cell hover.
+    .item-drag-handle {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translate(-120%, -50%);
+      opacity: 0;
+      pointer-events: auto;
+      cursor: grab;
+      color: rgb(255 255 255 / 70%);
+      z-index: 2;
+      transition: opacity 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
+      &:active {
+        cursor: grabbing;
+      }
+
+      .grip-icon {
+        display: inline-block;
+        height: 0.8rem;
+        aspect-ratio: 284.44 / 512;
+        mask-image: url("/systems/rqg/assets/images/ui/grip-drag-dots.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        background-color: currentcolor;
+        margin-right: 3px;
+        pointer-events: none;
+      }
+    }
+
+    .tab.gear .grid.item-list .gear-row {
+      display: contents;
+    }
+
+    .skill-row .skill.contextmenu.item:first-child,
+    .passion-row .passion-icon,
+    .rune.rune-card,
+    .spirit-magic-row .spirit-magic.contextmenu.item:first-child,
+    .rune-magic-row .rune-magic.contextmenu.item:first-child,
+    .tab.gear ul.location > li.gear-row > .grid.location-row > div:first-child,
+    .grid.gear.item-list .contextmenu.item:has(.item-drag-handle),
+    .grid.weapon.item-list .contextmenu.item:has(.item-drag-handle),
+    .grid.armor.item-list .contextmenu.item:has(.item-drag-handle),
+    .grid.hit-location.item-list > .contextmenu.item:has(.item-drag-handle) {
+      position: relative;
+      overflow: visible;
+    }
+
+    .skill-row:hover .item-drag-handle,
+    .passion-row:hover .item-drag-handle,
+    .rune.rune-card:hover .item-drag-handle,
+    .spirit-magic-row:hover .item-drag-handle,
+    .rune-magic-row:hover .item-drag-handle,
+    .tab.gear ul.location > li.gear-row:hover .item-drag-handle,
+    .grid.gear.item-list .gear-row:hover .item-drag-handle,
+    .grid.weapon.item-list .gear-row:hover .item-drag-handle,
+    .grid.armor.item-list .gear-row:hover .item-drag-handle,
+    .grid.hit-location.item-list > .contextmenu.item:hover .item-drag-handle {
+      opacity: 1;
+    }
+
+    // Drop position indicator — shown while dragging over a sortable item row.
+    // box-shadow avoids layout shift; inset keeps the line inside the cell boundary.
+    .drop-before {
+      box-shadow: inset 0 2px 0 0 var(--rqg-color-main-bg);
+    }
+
+    .drop-after {
+      box-shadow: inset 0 -2px 0 0 var(--rqg-color-main-bg);
     }
 
     // Journal entry links: help cursor on the element itself (V1 targets children only)
@@ -898,7 +977,6 @@
         align-items: center;
         gap: 0.5rem;
         padding: 4px 6px;
-        border-radius: 4px;
 
         &:nth-child(odd) {
           background: var(--rqg-table-alternate-background);
@@ -1209,6 +1287,45 @@
       .grid.combat.item-list .weapon-row,
       .grid.spirit-combat .weapon-row {
         display: contents;
+
+        > :nth-child(1) {
+          position: relative;
+          overflow: visible;
+        }
+
+        .weapon-drag-handle {
+          position: absolute;
+          left: 0;
+          top: 50%;
+          transform: translate(-120%, -50%);
+          opacity: 0;
+          pointer-events: auto;
+          cursor: grab;
+          color: rgb(255 255 255 / 70%);
+          z-index: 2;
+
+          .grip-icon {
+            display: inline-block;
+            height: 0.8rem;
+            aspect-ratio: 284.44 / 512;
+            mask-image: url("/systems/rqg/assets/images/ui/grip-drag-dots.svg");
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            background-color: currentcolor;
+            margin-right: 2px;
+            pointer-events: none;
+          }
+        }
+
+        &:hover > :nth-child(1) .weapon-drag-handle,
+        &:has(> *:hover) > :nth-child(1) .weapon-drag-handle,
+        &:has(.weapon-drag-handle:hover) > :nth-child(1) .weapon-drag-handle {
+          opacity: 1;
+        }
+
+        .weapon-drag-handle:active {
+          cursor: grabbing;
+        }
 
         // Restore padding lost because display:contents bypasses .grid > * selector
         > * {
