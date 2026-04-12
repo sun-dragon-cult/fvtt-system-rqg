@@ -53,7 +53,7 @@ describe("getLocationRelatedUpdates", () => {
       mergeArraysById(updates, relatedUpdates);
 
       // --- Assert ---
-      expect(JSON.parse(JSON.stringify(updates))).toStrictEqual([
+      const expected = [
         {
           _id: "StPcfMyAsE5XBXvZ", // Yellow stone
           "system.equippedStatus": "equipped",
@@ -98,7 +98,14 @@ describe("getLocationRelatedUpdates", () => {
           _id: "NiGVLYhLusGq1YJh", // Costume Jewelery
           "system.equippedStatus": "equipped",
         },
-      ]);
+      ];
+      const actual = JSON.parse(JSON.stringify(updates));
+      // Sort by ID to make comparison order-independent (ItemTree now sorts by sort field)
+      expect(
+        structuredClone(actual).sort((a: { _id: string }, b: { _id: string }) =>
+          a._id.localeCompare(b._id),
+        ),
+      ).toStrictEqual(expected.sort((a, b) => a._id.localeCompare(b._id)));
     });
 
     it("should change all items contained in the same virtual container tree", () => {
