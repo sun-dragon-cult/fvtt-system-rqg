@@ -45,9 +45,6 @@ export interface RqgItemSheetContext {
 }
 
 export class RqgItemSheetV2 extends RqgItemSheetV2Base {
-  /** Remembers the currently active tab across re-renders */
-  protected _currentTab: string | undefined;
-
   static override DEFAULT_OPTIONS: Record<string, any> = {
     id: "{id}",
     classes: ["rqg", "item-sheet", "sheet"],
@@ -99,21 +96,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
-
-    // Tab navigation (preserves active tab across re-renders)
-    if (this.element.querySelector(".item-sheet-nav-tabs")) {
-      const tabs = new foundry.applications.ux.Tabs({
-        navSelector: ".item-sheet-nav-tabs",
-        contentSelector: ".sheet-body",
-        initial: this._currentTab,
-        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
-          if (name) {
-            this._currentTab = name;
-          }
-        },
-      });
-      tabs.bind(this.element);
-    }
 
     // RQID header button (AppV2 version)
     await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
