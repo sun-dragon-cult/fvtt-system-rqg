@@ -14,7 +14,22 @@ import {
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
-const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+const ItemSheetV2 = foundry.applications.sheets.ItemSheetV2;
+
+type ItemSheetV2HandlebarsBaseCtor = (abstract new (
+  ...args: any[]
+) => foundry.applications.sheets.ItemSheetV2.Any &
+  foundry.applications.api.HandlebarsApplicationMixin.AnyMixed) &
+  typeof ItemSheetV2 & {
+    PARTS: Record<
+      string,
+      foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
+    >;
+  };
+
+const RqgItemSheetV2Base = HandlebarsApplicationMixin(
+  ItemSheetV2,
+) as unknown as ItemSheetV2HandlebarsBaseCtor;
 
 export interface RqgItemSheetContext {
   id: string;
@@ -27,11 +42,10 @@ export interface RqgItemSheetContext {
   isEmbedded: boolean;
   /** The item's active effects collection, used by the Active Effects tab partial. */
   effects: unknown;
-  /** True when rendered by an AppV2 sheet — templates use this to choose `<prose-mirror>` over `{{editor}}`. */
-  isV2: boolean;
 }
 
-export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<any>) {
+export class RqgItemSheetV2 extends RqgItemSheetV2Base {
+
   static override DEFAULT_OPTIONS: Record<string, any> = {
     id: "{id}",
     classes: ["rqg", "item-sheet", "sheet"],
@@ -69,7 +83,6 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
       isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      isV2: true,
       effects: this.document.effects,
       system: foundry.utils.duplicate(this.document._source.system),
     };

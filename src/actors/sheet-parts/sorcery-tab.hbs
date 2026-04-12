@@ -1,16 +1,38 @@
 <div class="power flex-row">
   <div>
-    <div class="small-size">{{localize "RQG.Actor.Sorcery.FreeINT"}} {{freeInt}}</div>
+    <div class="small-size">
+      {{#if (lt freeInt 0)}}
+        <span class="warning"
+              data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitExceeded'
+                  learnedPoints=spiritMagicPointSum
+                  intValue=system.characteristics.intelligence.value
+                  exceededBy=(difference 0 freeInt)}}">{{localize "RQG.Actor.SpiritMagic.INTLimitExceeded"
+            learnedPoints=spiritMagicPointSum
+            intValue=system.characteristics.intelligence.value
+            exceededBy=(difference 0 freeInt)}}</span>
+      {{else if (eq freeInt 0)}}
+        <span class="warning">{{localize "RQG.Actor.SpiritMagic.INTLimitReached"
+            learnedPoints=spiritMagicPointSum}}</span>
+      {{else}}
+        <span data-tooltip="{{localize 'RQG.Actor.Sorcery.INTLimitTooltip'
+            intValue=system.characteristics.intelligence.value}}">{{localize "RQG.Actor.SpiritMagic.INTLimitFormula"
+            learnedPoints=spiritMagicPointSum
+            freePoints=freeInt}}</span>
+      {{/if}}
+    </div>
+    <h2>{{localize "RQG.Actor.Sorcery.Spells"}}</h2>
     <div class="grid skill">
-    {{#each embeddedItems.skill.magic}}
-    {{#if system.runeRqidLinks}}
-    {{> actorSkillsGrid
-      skill=this
-      wizard=../../wizard
-      forChoice=../../forChoice
-      checkedProperty=../../checkedProperty
-      asBonus=../../asBonus}}
-    {{/if}}
+    {{#each embeddedItems.skill}}
+      {{#each this}}
+        {{#if system.runeRqidLinks.length}}
+          {{> actorSkillsGrid
+            skill=this
+            wizard=../../../wizard
+            forChoice=../../../forChoice
+            checkedProperty=../../../checkedProperty
+            asBonus=../../../asBonus}}
+        {{/if}}
+      {{/each}}
     {{/each}}
     </div>
   </div>

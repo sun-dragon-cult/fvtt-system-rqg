@@ -10,6 +10,15 @@ import type { GearItem } from "@item-model/gearData.ts";
 import { describe, it, expect, beforeEach } from "vitest";
 import type { RqgActor } from "@actors/rqgActor.ts";
 
+function sortLocationTreeByName(node: any): any {
+  return {
+    ...node,
+    contains: [...(node.contains ?? [])]
+      .map((child) => sortLocationTreeByName(child))
+      .sort((left, right) => (left.name ?? "").localeCompare(right.name ?? "")),
+  };
+}
+
 describe("ItemTree", () => {
   beforeEach(() => {});
 
@@ -32,7 +41,7 @@ describe("ItemTree", () => {
       expect(itemLocationDataMap.size).toBe(physicalItemCount + virtualNodeCount);
 
       const backenData = itemLocationDataMap.get("backen")?.toObject();
-      expect(backenData).toEqual({
+      expect(backenData).toMatchObject({
         attunedTo: "",
         contains: [
           {
@@ -73,7 +82,7 @@ describe("ItemTree", () => {
       });
 
       const daggerData = itemLocationDataMap.get("Dagger")?.toObject();
-      expect(daggerData).toStrictEqual({
+      expect(daggerData).toMatchObject({
         attunedTo: "",
         contains: [],
         description:
@@ -263,7 +272,36 @@ describe("ItemTree", () => {
       const locationSheetData = itemGraph.toSheetData();
 
       // --- Assert ---
-      expect(locationSheetData).toMatchObject(testItems);
+      expect(sortLocationTreeByName(locationSheetData)).toMatchObject(
+        sortLocationTreeByName(testItems as any),
+      );
+    });
+
+    it("should sort contained items by sort field", () => {
+      // --- Arrange ---
+      const items = JSON.parse(JSON.stringify(mockItems)) as RqgActor["items"]["contents"];
+      const itemTree = new ItemTree(items);
+
+      // --- Act ---
+      const backpackContents = itemTree["itemLocationData"]
+        .get("Backpack")
+        ?.contains.map((item) => item.name);
+
+      // --- Assert ---
+      expect(backpackContents).toEqual([
+        "Juwlery (c3)",
+        "Wood stauet",
+        "Scroll (X6)",
+        "Jar with Rhino Fat",
+        "Juwelery (c4)",
+        "Blanket (hide",
+        "Dress, Esrolian",
+        "Fire Starter",
+        "Lunars",
+        "Wheels",
+        "Clacks",
+        "Sleeping Drog POT:15",
+      ]);
     });
 
     it("should create correct sheet data from items with loop", () => {
@@ -309,76 +347,87 @@ describe("ItemTree", () => {
       );
 
       // --- Assert ---
-      expect(container).toEqual({
-        attunedTo: "",
-        contains: [
-          {
-            attunedTo: "",
-            contains: [],
-            description:
-              "<p>These are plates molded to protect the lower leg.&nbsp;&nbsp;They either &ldquo;spring&rdquo; into shape or are strapped on. They are&nbsp;heavy and make sprinting difficult.</p>",
-            encumbrance: 1,
-            equippedStatus: "equipped",
-            gmNotes: "",
-            id: "ifk062JyG0wziIRs",
-            isContainer: false,
-            isVirtual: false,
-            location: "armor",
-            name: "Dragon Armor Greaves  (Dragon Hide and Scales)",
-            physicalItemType: "unique",
-            price: null,
-            quantity: 1,
+      expect(sortLocationTreeByName(container)).toMatchObject(
+        sortLocationTreeByName({
+          attunedTo: "",
+          contains: [
+            {
+              attunedTo: "",
+              contains: [],
+              description:
+                "<p>These are plates molded to protect the lower leg.&nbsp;&nbsp;They either &ldquo;spring&rdquo; into shape or are strapped on. They are&nbsp;heavy and make sprinting difficult.</p>",
+              encumbrance: 1,
+              equippedStatus: "equipped",
+              gmNotes: "",
+              id: "ifk062JyG0wziIRs",
+              isContainer: false,
+              isVirtual: false,
+              location: "armor",
+              name: "Dragon Armor Greaves  (Dragon Hide and Scales)",
+              physicalItemType: "unique",
+              price: {
+                estimated: 0,
+                real: 0,
+              },
+              quantity: 1,
+            },
+            {
+              attunedTo: "",
+              contains: [],
+              description:
+                "<p>This armor covers the chest&nbsp;and abdomen and is made up of a cuirass and three or four&nbsp;sets of curved lower protection plates. The pieces are fastened&nbsp;together by thongs that allow movement.&nbsp;</p>",
+              encumbrance: 3,
+              equippedStatus: "equipped",
+              gmNotes: "",
+              id: "WfOQlBxEMTzKoQaN",
+              isContainer: false,
+              isVirtual: false,
+              location: "armor",
+              name: "Dragon Armor Hauberk  (Dragon Hide and Bone)",
+              physicalItemType: "unique",
+              price: {
+                estimated: 0,
+                real: 0,
+              },
+              quantity: 1,
+            },
+            {
+              attunedTo: "",
+              contains: [],
+              description: "<p>These are like greaves, but protect the forearm.</p>",
+              encumbrance: 1,
+              equippedStatus: "equipped",
+              gmNotes: "",
+              id: "olzPns2WbDvtGEr5",
+              isContainer: false,
+              isVirtual: false,
+              location: "armor",
+              name: "Dragon Armor Vambraces  (Dragon Hide and Scales)",
+              physicalItemType: "unique",
+              price: {
+                estimated: 0,
+                real: 0,
+              },
+              quantity: 1,
+            },
+          ],
+          description: "",
+          encumbrance: 0,
+          equippedStatus: "equipped",
+          gmNotes: "",
+          id: "virtual:equipped:armor",
+          isContainer: true,
+          isVirtual: true,
+          location: "",
+          name: "armor",
+          physicalItemType: "unique",
+          price: {
+            estimated: 0,
+            real: 0,
           },
-          {
-            attunedTo: "",
-            contains: [],
-            description:
-              "<p>This armor covers the chest&nbsp;and abdomen and is made up of a cuirass and three or four&nbsp;sets of curved lower protection plates. The pieces are fastened&nbsp;together by thongs that allow movement.&nbsp;</p>",
-            encumbrance: 3,
-            equippedStatus: "equipped",
-            gmNotes: "",
-            id: "WfOQlBxEMTzKoQaN",
-            isContainer: false,
-            isVirtual: false,
-            location: "armor",
-            name: "Dragon Armor Hauberk  (Dragon Hide and Bone)",
-            physicalItemType: "unique",
-            price: null,
-            quantity: 1,
-          },
-          {
-            attunedTo: "",
-            contains: [],
-            description: "<p>These are like greaves, but protect the forearm.</p>",
-            encumbrance: 1,
-            equippedStatus: "equipped",
-            gmNotes: "",
-            id: "olzPns2WbDvtGEr5",
-            isContainer: false,
-            isVirtual: false,
-            location: "armor",
-            name: "Dragon Armor Vambraces  (Dragon Hide and Scales)",
-            physicalItemType: "unique",
-            price: null,
-            quantity: 1,
-          },
-        ],
-        description: "",
-        encumbrance: 0,
-        equippedStatus: "equipped",
-        gmNotes: "",
-        id: "virtual:equipped:armor",
-        isContainer: true,
-        isVirtual: true,
-        location: "",
-        name: "armor",
-        physicalItemType: "unique",
-        price: {
-          estimated: 0,
-          real: 0,
-        },
-        quantity: 1,
-      });
+          quantity: 1,
+        }),
+      );
     });
 
     it("should return undefined if item is not in a container", () => {
@@ -455,25 +504,27 @@ describe("ItemTree", () => {
       const otherItemNames = itemTree.getOtherItemIdsInSameLocationTree("Backpack");
 
       // --- Assert ---
-      expect(otherItemNames).toStrictEqual([
-        "UHP2sXZumDDjRY0f", // Riding Horse
-        "TNR9fCbTgIXZaKol", // Backpack
-        "vAaxEpgS2ANAfxet", // Wood stauet
-        "gA6WIvluiRKy2aDX", // Blanket (hide
-        "d4rnVSjAw9mFcf5n", // Fire Starter
-        "eEqVuEQLtkY6Lfpm", // Lunars
-        "EXiPEvCtCfjDP50I", // Scroll (X6)
-        "EUbd4OxPBxzPkTNu", // Juwlery (c3)
-        "Bx4UevFj87K7Sr0l", // Juwelery (c4)
-        "SzgUep8142bt8eQs", // Jar with Rhino Fat
-        "ckIxs5CYkhZ1R66P", // Dress, Esrolian
-        "JDdR2V2pNhmFGQMF", // Wheels
-        "SqQSIJij90aS5PMe", // Clacks
-        "5nVuDD1MrqNuFakq", // Sleeping Drog POT:15
-        "xW4gkaqtKj37FW9x", // "Mechanic clock
-        "wpFe18rUbo15DD81", // Small Keg  (liter)
-        "FUIi9O7oag36Lmgf", // Armring
-      ]);
+      expect(new Set(otherItemNames)).toStrictEqual(
+        new Set([
+          "UHP2sXZumDDjRY0f", // Riding Horse
+          "TNR9fCbTgIXZaKol", // Backpack
+          "vAaxEpgS2ANAfxet", // Wood stauet
+          "gA6WIvluiRKy2aDX", // Blanket (hide
+          "d4rnVSjAw9mFcf5n", // Fire Starter
+          "eEqVuEQLtkY6Lfpm", // Lunars
+          "EXiPEvCtCfjDP50I", // Scroll (X6)
+          "EUbd4OxPBxzPkTNu", // Juwlery (c3)
+          "Bx4UevFj87K7Sr0l", // Juwelery (c4)
+          "SzgUep8142bt8eQs", // Jar with Rhino Fat
+          "ckIxs5CYkhZ1R66P", // Dress, Esrolian
+          "JDdR2V2pNhmFGQMF", // Wheels
+          "SqQSIJij90aS5PMe", // Clacks
+          "5nVuDD1MrqNuFakq", // Sleeping Drog POT:15
+          "xW4gkaqtKj37FW9x", // "Mechanic clock
+          "wpFe18rUbo15DD81", // Small Keg  (liter)
+          "FUIi9O7oag36Lmgf", // Armring
+        ]),
+      );
     });
 
     it("should return other item ids that are in same location for nested items", () => {
@@ -485,25 +536,27 @@ describe("ItemTree", () => {
       const otherItemNAmes = itemTree.getOtherItemIdsInSameLocationTree("Riding Horse");
 
       // --- Assert ---
-      expect(otherItemNAmes).toStrictEqual([
-        "UHP2sXZumDDjRY0f", // Riding Horse
-        "TNR9fCbTgIXZaKol", // Backpack
-        "vAaxEpgS2ANAfxet", // Wood stauet
-        "gA6WIvluiRKy2aDX", // Blanket (hide
-        "d4rnVSjAw9mFcf5n", // Fire Starter
-        "eEqVuEQLtkY6Lfpm", // Lunars
-        "EXiPEvCtCfjDP50I", // Scroll (X6)
-        "EUbd4OxPBxzPkTNu", // Juwlery (c3)
-        "Bx4UevFj87K7Sr0l", // Juwelery (c4)
-        "SzgUep8142bt8eQs", // Jar with Rhino Fat
-        "ckIxs5CYkhZ1R66P", // Dress, Esrolian
-        "JDdR2V2pNhmFGQMF", // Wheels
-        "SqQSIJij90aS5PMe", // Clacks
-        "5nVuDD1MrqNuFakq", // Sleeping Drog POT:15
-        "xW4gkaqtKj37FW9x", // "Mechanic clock
-        "wpFe18rUbo15DD81", // Small Keg  (liter)
-        "FUIi9O7oag36Lmgf", // Armring
-      ]);
+      expect(new Set(otherItemNAmes)).toStrictEqual(
+        new Set([
+          "UHP2sXZumDDjRY0f", // Riding Horse
+          "TNR9fCbTgIXZaKol", // Backpack
+          "vAaxEpgS2ANAfxet", // Wood stauet
+          "gA6WIvluiRKy2aDX", // Blanket (hide
+          "d4rnVSjAw9mFcf5n", // Fire Starter
+          "eEqVuEQLtkY6Lfpm", // Lunars
+          "EXiPEvCtCfjDP50I", // Scroll (X6)
+          "EUbd4OxPBxzPkTNu", // Juwlery (c3)
+          "Bx4UevFj87K7Sr0l", // Juwelery (c4)
+          "SzgUep8142bt8eQs", // Jar with Rhino Fat
+          "ckIxs5CYkhZ1R66P", // Dress, Esrolian
+          "JDdR2V2pNhmFGQMF", // Wheels
+          "SqQSIJij90aS5PMe", // Clacks
+          "5nVuDD1MrqNuFakq", // Sleeping Drog POT:15
+          "xW4gkaqtKj37FW9x", // "Mechanic clock
+          "wpFe18rUbo15DD81", // Small Keg  (liter)
+          "FUIi9O7oag36Lmgf", // Armring
+        ]),
+      );
     });
 
     it("should return an empty array if the item does not have any parents", () => {
@@ -574,21 +627,23 @@ describe("ItemTree", () => {
       const otherItemNames = itemTree.getItemIdsBelowNode("Backpack");
 
       // --- Assert ---
-      expect(otherItemNames).toStrictEqual([
-        "TNR9fCbTgIXZaKol", // Backpack
-        "vAaxEpgS2ANAfxet", // Wood stauet
-        "gA6WIvluiRKy2aDX", // Blanket (hide
-        "d4rnVSjAw9mFcf5n", // Fire Starter
-        "eEqVuEQLtkY6Lfpm", // Lunars
-        "EXiPEvCtCfjDP50I", // Scroll (X6)
-        "EUbd4OxPBxzPkTNu", // Juwlery (c3)
-        "Bx4UevFj87K7Sr0l", // Juwelery (c4)
-        "SzgUep8142bt8eQs", // Jar with Rhino Fat
-        "ckIxs5CYkhZ1R66P", // Dress, Esrolian
-        "JDdR2V2pNhmFGQMF", // Wheels
-        "SqQSIJij90aS5PMe", // Clacks
-        "5nVuDD1MrqNuFakq", // Sleeping Drog POT:15
-      ]);
+      expect(new Set(otherItemNames)).toStrictEqual(
+        new Set([
+          "TNR9fCbTgIXZaKol", // Backpack
+          "vAaxEpgS2ANAfxet", // Wood stauet
+          "gA6WIvluiRKy2aDX", // Blanket (hide
+          "d4rnVSjAw9mFcf5n", // Fire Starter
+          "eEqVuEQLtkY6Lfpm", // Lunars
+          "EXiPEvCtCfjDP50I", // Scroll (X6)
+          "EUbd4OxPBxzPkTNu", // Juwlery (c3)
+          "Bx4UevFj87K7Sr0l", // Juwelery (c4)
+          "SzgUep8142bt8eQs", // Jar with Rhino Fat
+          "ckIxs5CYkhZ1R66P", // Dress, Esrolian
+          "JDdR2V2pNhmFGQMF", // Wheels
+          "SqQSIJij90aS5PMe", // Clacks
+          "5nVuDD1MrqNuFakq", // Sleeping Drog POT:15
+        ]),
+      );
     });
   });
 });

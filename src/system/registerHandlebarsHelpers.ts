@@ -81,7 +81,7 @@ export const registerHandlebarsHelpers = function () {
   Handlebars.registerHelper("skillchance", (...args) =>
     applyFnToDocumentFromHandlebarsArgs(args, (item) => {
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
-      return item?.system?.chance ? item.system.chance.toString() : "---";
+      return item?.system?.chance != null ? item.system.chance.toString() : "---";
     }),
   );
 
@@ -216,30 +216,32 @@ export const registerHandlebarsHelpers = function () {
     return Rqid.getRqidIcon(rqid) || "";
   });
 
-  Handlebars.registerHelper("edit-mode", function (editMode, forUserTypes, options) {
+  Handlebars.registerHelper("edit-mode", function (this: any, editMode, forUserTypes, options) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const context: unknown = this;
     if (!editMode) {
-      return options.inverse();
+      return options.inverse(context);
     }
 
     if (forUserTypes.toLowerCase().includes("all")) {
-      return options.fn();
+      return options.fn(context);
     }
 
     const user = game.user;
 
     if (user?.isGM && forUserTypes.toLowerCase().includes("gm")) {
-      return options.fn();
+      return options.fn(context);
     }
 
     if (user?.isTrusted && forUserTypes.toLowerCase().includes("trusted")) {
-      return options.fn();
+      return options.fn(context);
     }
 
     if (forUserTypes.toLowerCase().includes("player")) {
-      return options.fn();
+      return options.fn(context);
     }
 
-    return options.inverse();
+    return options.inverse(context);
   });
 };
 

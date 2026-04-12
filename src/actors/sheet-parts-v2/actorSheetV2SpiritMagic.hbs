@@ -1,0 +1,94 @@
+<section class="tab spirit-magic-tab-v2" data-group="primary" data-tab="spiritmagic">
+
+  <h2>
+    {{localize "RQG.Actor.SpiritMagic.SpiritMagic"}}
+    {{#if (lt freeInt 0)}}
+      <span class="small-size warning"
+            data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitExceeded'
+                learnedPoints=spiritMagicPointSum
+                intValue=system.characteristics.intelligence.value
+                exceededBy=(difference 0 freeInt)}}">{{localize "RQG.Actor.SpiritMagic.INTLimitExceeded"
+          learnedPoints=spiritMagicPointSum
+          intValue=system.characteristics.intelligence.value
+          exceededBy=(difference 0 freeInt)}}</span>
+    {{else if (eq freeInt 0)}}
+      <span class="small-size warning">{{localize "RQG.Actor.SpiritMagic.INTLimitReached"
+          learnedPoints=spiritMagicPointSum}}</span>
+    {{else}}
+      <span class="small-size"
+            data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitTooltip'
+                intValue=system.characteristics.intelligence.value}}">{{localize "RQG.Actor.SpiritMagic.INTLimitFormula"
+          learnedPoints=spiritMagicPointSum
+          freePoints=freeInt}}</span>
+    {{/if}}
+  </h2>
+
+  <div class="grid spiritmagic item-list">
+    <div class="headings"></div>
+    <div class="head1"><button class="sort" data-sort-items="spiritMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+    <div class="head2">{{localize "RQG.Actor.SpiritMagic.Name"}}</div>
+    <div class="head3">{{localize "RQG.Actor.SpiritMagic.SpellFocus"}}</div>
+    <div class="head4">{{localize "RQG.Actor.SpiritMagic.Points"}}</div>
+    <div class="head5">{{localize "RQG.Actor.SpiritMagic.Variable"}}</div>
+    <div class="head6">{{localize "RQG.Actor.SpiritMagic.Range"}}</div>
+    <div class="head7">{{localize "RQG.Actor.SpiritMagic.Duration"}}</div>
+    <div class="head8">{{localize "RQG.Actor.SpiritMagic.Concentration"}}</div>
+    <div class="head9">{{localize "RQG.Actor.SpiritMagic.Ritual"}}</div>
+    <div class="head10">{{localize "RQG.Actor.SpiritMagic.Enchantment"}}</div>
+
+    {{#each embeddedItems.spiritMagic}}
+    <div class="spirit-magic-row">
+       <div class="spirit-magic contextmenu item"
+         data-item-id="{{id}}"
+         {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+         {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img src="{{img}}">
+      </div>
+      <div class="spirit-magic contextmenu item"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll
+           data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+        {{name}}{{#if system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+      </div>
+      <div class="spirit-magic contextmenu item" data-item-id="{{id}}">
+        <input type="text" data-item-edit-value="system.spellFocus" data-item-id="{{id}}" value="{{system.spellFocus}}" placeholder="—">
+      </div>
+      <div class="spirit-magic contextmenu item text-center"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{system.points}}
+      </div>
+      <div class="spirit-magic contextmenu item text-center"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{yes-no system.isVariable}}
+      </div>
+      <div class="spirit-magic contextmenu item"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{localize (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}
+      </div>
+      <div class="spirit-magic contextmenu item"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{localize (concat "RQG.Item.Spell.DurationEnum." system.duration)}}
+      </div>
+      <div class="spirit-magic contextmenu item"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{localize (concat "RQG.Item.Spell.ConcentrationEnum." system.concentration)}}
+      </div>
+      <div class="spirit-magic contextmenu item text-center"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{yes-no system.isRitual}}
+      </div>
+      <div class="spirit-magic contextmenu item text-center"
+           data-item-id="{{id}}"
+           data-spirit-magic-roll>
+        {{yes-no system.isEnchantment}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+
+</section>
