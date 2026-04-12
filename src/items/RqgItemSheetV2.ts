@@ -45,7 +45,6 @@ export interface RqgItemSheetContext {
 }
 
 export class RqgItemSheetV2 extends RqgItemSheetV2Base {
-
   static override DEFAULT_OPTIONS: Record<string, any> = {
     id: "{id}",
     classes: ["rqg", "item-sheet", "sheet"],
