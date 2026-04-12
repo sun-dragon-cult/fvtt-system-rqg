@@ -60,6 +60,7 @@ import {
 import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 import type { GearItem } from "@item-model/gearData.ts";
+import { RqgActorSheet } from "./rqgActorSheet";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -583,6 +584,24 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           { _id: updateId, system: { chance: newChance } },
         ]);
       });
+    });
+
+    // Edit Item (open the item sheet)
+    this.element.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      if (!item?.sheet) {
+        const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg);
+      }
+      el.addEventListener("click", () => item.sheet!.render(true));
+    });
+
+    // Delete Item (remove item from actor)
+    this.element.querySelectorAll<HTMLElement>("[data-item-delete]").forEach((el) => {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
     });
 
     // Sort Items alphabetically
