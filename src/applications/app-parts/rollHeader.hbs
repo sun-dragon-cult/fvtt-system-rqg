@@ -1,8 +1,8 @@
 <header class="roll-header">
   <div class="sub-header">{{rollType}}</div>
-  <div>
+  <div{{#if spellSummaryTooltip}} data-tooltip="{{spellSummaryTooltip}}"{{/if}}>
     <div class="main-header">{{rollName}}</div>
-    <div class="spell-signature">{{spellSignature}}</div>
+    <div class="spell-summary">{{spellSummary}}</div>
   </div>
   <div class="sub-header">{{baseChance}}</div>
 </header>

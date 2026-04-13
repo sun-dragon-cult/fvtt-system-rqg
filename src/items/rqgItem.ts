@@ -48,7 +48,13 @@ import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeM
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
-import { type SpellItem, spellItemTypes, SpellRangeEnum } from "@item-model/spell.ts";
+import {
+  type SpellItem,
+  SpellConcentrationEnum,
+  spellItemTypes,
+  SpellDurationEnum,
+  SpellRangeEnum,
+} from "@item-model/spell.ts";
 import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponData.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import {
@@ -556,24 +562,26 @@ export class RqgItem extends Item {
    * Used for Rune & Spirit Magic items to construct a descriptions close to what as
    * is used in the books. The "1+" syntax for stackable rune magic is used
    */
-  get spellSignature(): string {
+  get spellSummary(): string {
     assertDocumentSubType<SpellItem>(
       this,
       spellItemTypes,
-      "Tried to get spellSignature on a non spell item: " + this.type,
+      "Tried to get spellSummary on a non spell item: " + this.type,
     );
 
     const descriptionParts = [];
+    const isSpiritMagic = isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
+    const isRuneMagic = isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
 
-    const stackableRuneMagic =
-      isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic) && this.system.isStackable
-        ? "+"
-        : "";
+    const stackableRuneMagic = isRuneMagic && this.system.isStackable ? "+" : "";
     const variableSpiritMagic =
-      isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) && this.system.isVariable
+      isSpiritMagic && this.system.isVariable
         ? " " + localize("RQG.Item.SpiritMagic.Variable")
         : "";
-    const pointsTranslated = localize("RQG.Item.RuneMagic.Points");
+    const pointsTranslated =
+      this.system.points === 1
+        ? localize("RQG.Item.Spell.Point")
+        : localize("RQG.Item.Spell.Points");
     descriptionParts.push(
       `${this.system.points}${stackableRuneMagic} ${pointsTranslated}${variableSpiritMagic}`,
     );
@@ -586,44 +594,89 @@ export class RqgItem extends Item {
       descriptionParts.push(localize("RQG.Item.Spell.Enchantment"));
     }
 
-    if (this.system.castingRange) {
+    const isDefaultRange = this.system.castingRange === SpellRangeEnum.Ranged;
+    if (this.system.castingRange && !isDefaultRange) {
       const rangeValueTranslation = localize(
         "RQG.Item.Spell.RangeEnum." + (this.system.castingRange || "undefined"),
       );
       const rangeTranslation = localize("RQG.Item.SpiritMagic.Range");
       const translation =
         this.system.castingRange === SpellRangeEnum.Special
-          ? `${rangeTranslation} (${rangeValueTranslation.toLowerCase()})`
+          ? `${rangeTranslation}(${rangeValueTranslation.toLowerCase()})`
           : rangeValueTranslation;
       descriptionParts.push(translation);
     }
 
-    if (this.system.duration) {
+    const isDefaultDuration = this.system.duration === SpellDurationEnum.Temporal;
+    if (this.system.duration && !isDefaultDuration) {
       const durationValueTranslation = localize(
         "RQG.Item.Spell.DurationEnum." + this.system.duration,
       );
       const durationTranslation = localize("RQG.Item.SpiritMagic.Duration");
       const translation =
-        this.system.duration === SpellRangeEnum.Special.toString() // TODO bug??? compares duration with range
-          ? `${durationTranslation} (${durationValueTranslation.toLowerCase()})`
+        this.system.duration === SpellDurationEnum.Special
+          ? `${durationTranslation}(${durationValueTranslation.toLowerCase()})`
           : durationValueTranslation;
       descriptionParts.push(translation);
     }
 
-    if (
-      isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic) &&
-      this.system.concentration
-    ) {
+    if (this.system.concentration === SpellConcentrationEnum.Active) {
       descriptionParts.push(
         localize("RQG.Item.Spell.ConcentrationEnum." + this.system.concentration),
       );
     }
 
-    if (isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic) && this.system.isOneUse) {
+    if (isRuneMagic && this.system.isOneUse) {
       descriptionParts.push(localize("RQG.Item.RuneMagic.OneUse"));
     }
 
     return descriptionParts.join(", ");
+  }
+
+  /**
+   * Compact tooltip listing all values that feed spellSummary formatting.
+   */
+  get spellSummaryTooltip(): string {
+    assertDocumentSubType<SpellItem>(
+      this,
+      spellItemTypes,
+      "Tried to get spellSummaryTooltip on a non spell item: " + this.type,
+    );
+
+    const yes = localize("RQG.Dialog.Common.yes");
+
+    const isRuneMagic = isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
+
+    const range =
+      isRuneMagic && this.system.castingRange === SpellRangeEnum.Ranged
+        ? "160m"
+        : this.system.castingRange === SpellRangeEnum.Ranged
+          ? "50m"
+          : localize("RQG.Item.Spell.RangeEnum." + (this.system.castingRange || "undefined"));
+    const duration =
+      isRuneMagic && this.system.duration === SpellDurationEnum.Temporal
+        ? "15 minutes"
+        : this.system.duration === SpellDurationEnum.Temporal
+          ? "2 minutes"
+          : localize("RQG.Item.Spell.DurationEnum." + (this.system.duration || "undefined"));
+    const concentration = localize(
+      "RQG.Item.Spell.ConcentrationEnum." + (this.system.concentration || "undefined"),
+    );
+
+    const descriptionParts = [`Range: ${range}`, `Duration: ${duration}`];
+
+    if (this.system.duration !== SpellDurationEnum.Instant) {
+      descriptionParts.push(concentration);
+    }
+
+    if (isRuneMagic && this.system.isStackable) {
+      descriptionParts.push(localize("RQG.Item.RuneMagic.Stackable"));
+    }
+    if (isRuneMagic && this.system.isEnchantment) {
+      descriptionParts.push(`Enchantment: ${yes}`);
+    }
+
+    return descriptionParts.join(" | ");
   }
 
   override async _preCreate(data: any, options: any, user: User): Promise<void> {

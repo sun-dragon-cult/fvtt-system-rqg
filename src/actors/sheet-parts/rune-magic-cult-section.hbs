@@ -98,14 +98,14 @@
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"
                data-rune-magic-roll>
-            {{#unless system.isRitual}}<span class="text-center">{{localize
-              (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>{{/unless}}
+            {{#if system.castingRange}}<span class="text-center">{{localize
+              (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>{{/if}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"
                data-rune-magic-roll>
-            {{#unless system.isRitual}}<span class="text-center">{{localize
-              (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>{{/unless}}
+            {{#if system.duration}}<span class="text-center">{{localize
+              (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>{{/if}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"

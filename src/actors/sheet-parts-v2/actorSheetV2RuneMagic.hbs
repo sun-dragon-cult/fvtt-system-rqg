@@ -106,14 +106,8 @@
           <div class="headings"></div>
           <div class="head1"><button class="sort" data-sort-items="runeMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
           <div class="head2">{{localize "RQG.Actor.RuneMagic.RuneSpell"}}</div>
-          <div class="head3">{{localize "RQG.Actor.RuneMagic.Points"}}</div>
-          <div class="head4"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Range"}}</span></div>
-          <div class="head5"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Duration"}}</span></div>
-          <div class="head6">{{localize "RQG.Actor.RuneMagic.Ritual"}}</div>
-          <div class="head7">{{localize "RQG.Actor.RuneMagic.Enchantment"}}</div>
-          <div class="head8">{{localize "RQG.Actor.RuneMagic.Stackable"}}</div>
-          <div class="head9">{{localize "RQG.Actor.RuneMagic.OneUse"}}</div>
-          <div class="head10">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
+          <div class="head3">{{localize "RQG.Actor.RuneMagic.SpellSummary"}}</div>
+          <div class="head4">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
           {{#each @root.embeddedItems.runeMagic}}
             {{#if (eq ../id system.cultId)}}
               <div class="rune-magic-row">
@@ -135,31 +129,10 @@
                     <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
                   {{/each}}
                 </div>
-                <div class="rune-magic contextmenu item text-center"
+                   <div class="rune-magic contextmenu item"
                      data-item-id="{{id}}"
-                     data-rune-magic-roll>{{system.points}}</div>
-                <div class="rune-magic contextmenu item text-center"
-                     data-item-id="{{id}}"
-                     data-rune-magic-roll>
-                  {{#unless system.isRitual}}{{localize (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}{{/unless}}
-                </div>
-                <div class="rune-magic contextmenu item text-center"
-                     data-item-id="{{id}}"
-                     data-rune-magic-roll>
-                  {{#unless system.isRitual}}{{localize (concat "RQG.Item.Spell.DurationEnum." system.duration)}}{{/unless}}
-                </div>
-                <div class="rune-magic contextmenu item text-center"
-                     data-item-id="{{id}}"
-                     data-rune-magic-roll>{{yes-no system.isRitual}}</div>
-                <div class="rune-magic contextmenu item text-center"
-                     data-item-id="{{id}}"
-                     data-rune-magic-roll>{{yes-no system.isEnchantment}}</div>
-                <div class="rune-magic contextmenu item text-center"
-                     data-item-id="{{id}}"
-                     data-rune-magic-roll>{{yes-no system.isStackable}}</div>
-                <div class="rune-magic contextmenu item text-center"
-                     data-item-id="{{id}}"
-                     data-rune-magic-roll>{{yes-no system.isOneUse}}</div>
+                     data-tooltip="{{spellSummaryTooltip}}"
+                     data-rune-magic-roll>{{spellSummary}}</div>
                 <div class="rune-magic contextmenu item text-right"
                      data-item-id="{{id}}"
                      data-rune-magic-roll>{{system.chance}}%</div>

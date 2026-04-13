@@ -145,7 +145,8 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
       // RollHeader
       rollType: localize("TYPES.Item.runeMagic"),
       rollName: this.spellItem.name ?? "",
-      spellSignature: this.spellItem.spellSignature ?? "",
+      spellSummary: this.spellItem.spellSummary ?? "",
+      spellSummaryTooltip: this.spellItem.spellSummaryTooltip ?? "",
       baseChance: (usedRune?.system.chance ?? 0) + "%",
 
       // RollFooter

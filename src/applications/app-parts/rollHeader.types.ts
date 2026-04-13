@@ -1,6 +1,7 @@
 export type RollHeaderData = {
   rollType: string | undefined;
   rollName: string;
-  spellSignature?: string;
+  spellSummary?: string;
+  spellSummaryTooltip?: string;
   baseChance: string;
 };
