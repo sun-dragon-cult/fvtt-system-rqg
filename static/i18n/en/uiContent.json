@@ -354,11 +354,10 @@
         "Geases": "Geases",
         "SubCults": "Sub Cults",
         "RuneSpell": "Rune Spell",
+        "SpellSummary": "Spell Summary",
         "Points": "Points",
         "Range": "Range",
         "Duration": "Duration",
-        "Ritual": "Ritual",
-        "Enchantment": "Enchantment",
         "Stackable": "Stackable",
         "OneUse": "One Use",
         "Chance": "Chance",
@@ -407,13 +406,13 @@
         "INTLimitExceeded": "Learning capacity exceeded by {exceededBy} points! ({learnedPoints} points learned, INT limit is {intValue}).",
         "Name": "Name",
         "SpellFocus": "Focus",
+        "SpellSummary": "Spell Summary",
+        "Chance": "Chance",
         "Points": "Points",
         "Variable": "Variable",
         "Range": "Range",
         "Duration": "Duration",
-        "Concentration": "Concentration",
-        "Ritual": "Ritual",
-        "Enchantment": "Enchantment"
+        "Concentration": "Concentration"
       }
     },
     "ContextMenu": {
@@ -1041,6 +1040,8 @@
         "SkillCategory": {}
       },
       "Spell": {
+        "Point": "Point",
+        "Points": "Points",
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
         "DurationEnum": {

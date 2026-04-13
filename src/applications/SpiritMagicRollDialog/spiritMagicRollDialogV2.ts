@@ -121,7 +121,8 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
       // RollHeader
       rollType: localize("TYPES.Item.spiritMagic"),
       rollName: this.spellItem.name ?? "",
-      spellSignature: this.spellItem.spellSignature ?? "",
+      spellSummary: this.spellItem.spellSummary ?? "",
+      spellSummaryTooltip: this.spellItem.spellSummaryTooltip ?? "",
       baseChance: (this.powX5 ?? 0) + "%",
 
       // RollFooter

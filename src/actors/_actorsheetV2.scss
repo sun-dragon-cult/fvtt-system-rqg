@@ -1687,7 +1687,7 @@
       }
 
       .grid.spiritmagic.item-list {
-        grid-template-columns: [col-start] 30px auto auto repeat(7, auto) [col-end];
+        grid-template-columns: [col-start] 30px auto auto 1fr [col-end];
       }
 
       .spirit-magic-row {
@@ -1932,7 +1932,7 @@
       }
 
       .grid.runemagic.item-list {
-        grid-template-columns: 30px auto repeat(8, auto);
+        grid-template-columns: 30px auto 1fr auto;
       }
 
       .rune-magic-row {
