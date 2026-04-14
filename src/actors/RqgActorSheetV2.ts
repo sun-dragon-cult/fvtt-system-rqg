@@ -8,6 +8,7 @@ import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
 import {
   assertDocumentSubType,
+  getDomDataset,
   getRequiredDomDataset,
   hasOwnProperty,
   isDocumentSubType,
@@ -472,6 +473,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Delete handlers for RQID links (single link and link arrays)
     this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
       const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
+      const deleteIndexRaw = getDomDataset(el, "delete-index");
+      const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
       const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
       el.addEventListener("click", async () => {
         const deleteFromProperty = foundry.utils.getProperty(
@@ -480,9 +483,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         );
         const updateKey = `system.${deleteFromPropertyName}`;
         if (Array.isArray(deleteFromProperty)) {
-          const newValueArray = (deleteFromProperty as RqidLink[]).filter(
-            (r) => r.rqid !== deleteRqid,
-          );
+          const links = [...(deleteFromProperty as RqidLink[])];
+          const newValueArray =
+            Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length
+              ? (links.splice(deleteIndex, 1), links)
+              : links.filter((r) => r.rqid !== deleteRqid);
           await this.actor.update({ [updateKey]: newValueArray });
         } else {
           await this.actor.update({ [updateKey]: "" });

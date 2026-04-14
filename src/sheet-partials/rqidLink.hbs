@@ -35,6 +35,7 @@ editBonusPropertyName: string - example "skillRqidLinks"
         <i
           class="fas fa-times icon"
           data-delete-rqid="{{rqidLink.rqid}}"
+          {{#if (or (eq rqidLinkIndex 0) rqidLinkIndex)}}data-delete-index="{{rqidLinkIndex}}"{{/if}}
           data-delete-from-property="{{showDeleteFromPropertyName}}"
           data-tooltip="{{localize 'RQG.Foundry.ContentLink.RqidLinkDelete' rqid=rqidLink.rqid name=rqidLink.name}}"
         ></i>

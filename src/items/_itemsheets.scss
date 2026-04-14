@@ -153,7 +153,9 @@
     .income-skill {
       font-weight: bold;
       font-style: italic;
-      background-image: linear-gradient(to bottom right, #bcc6cc, #eee, #bcc6cc);
+      background-color: var(--rqg-income-skill-bg);
+      color: var(--rqg-income-skill-text);
+      border: 1px solid var(--rqg-income-skill-border);
     }
 
     .income-skill-text {

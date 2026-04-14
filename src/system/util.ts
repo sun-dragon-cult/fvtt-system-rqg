@@ -26,6 +26,43 @@ export function safeFromJSON<T>(
     : (RollClass.fromData(foundry.utils.deepClone(data) as any) as T);
 }
 
+export type SourceRqidLink = {
+  rqid?: unknown;
+  name?: unknown;
+  bonus?: unknown;
+};
+
+export type NormalizedRqidLink = {
+  rqid: string;
+  name: string;
+  bonus?: number;
+};
+
+export function normalizeSourceRqidLinks(sourceLinks: unknown): NormalizedRqidLink[] {
+  if (!Array.isArray(sourceLinks)) {
+    return [];
+  }
+  return sourceLinks
+    .map((link: unknown): NormalizedRqidLink | undefined => {
+      const sourceRqidLink = link as SourceRqidLink;
+      const rqid = String(sourceRqidLink?.rqid ?? "").trim();
+      if (!rqid) {
+        return undefined;
+      }
+      const name = String(sourceRqidLink?.name ?? "").trim();
+      const normalizedLink: NormalizedRqidLink = {
+        rqid: rqid,
+        name: name,
+      };
+      const bonus = Number(sourceRqidLink?.bonus);
+      if (Number.isFinite(bonus)) {
+        normalizedLink.bonus = bonus;
+      }
+      return normalizedLink;
+    })
+    .filter((link): link is NormalizedRqidLink => link !== undefined);
+}
+
 export function getRequiredDomDataset(
   el: HTMLElement | Element | Event | JQuery,
   dataset: string,
