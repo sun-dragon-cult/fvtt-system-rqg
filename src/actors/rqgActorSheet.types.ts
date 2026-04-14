@@ -44,6 +44,7 @@ export interface SheetRuneData {
   chance: number;
   img: string | undefined | null;
   descriptionRqid: string | undefined;
+  cls: string;
 }
 
 /**

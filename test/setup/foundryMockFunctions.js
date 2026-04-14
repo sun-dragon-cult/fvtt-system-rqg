@@ -732,6 +732,12 @@ globalThis.foundry = {
       HandlebarsApplicationMixin: HandlebarsApplicationMixin,
     },
 
+    sheets: {
+      ItemSheetV2: MockFormApplication,
+      ActorSheetV2: MockFormApplication,
+      ActiveEffectConfig: MockFormApplication,
+    },
+
     ux: {
       ContextMenu: MockContextMenu,
       TextEditor: {

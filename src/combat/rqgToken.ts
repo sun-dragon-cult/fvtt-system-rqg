@@ -14,8 +14,10 @@ export class RqgToken extends Token {
     super._onHoverIn(event, options);
     if (this.combatant) {
       getCombatantsSharingToken(this.combatant).forEach((combatant) => {
-        // @ts-expect-error _isTokenVisible is private & combatant type issue
-        ui.combat?.hoverCombatant(combatant, ui.combat._isTokenVisible(this));
+        if (typeof combatant.id === "string") {
+          // @ts-expect-error _isTokenVisible is private & combatant type issue
+          ui.combat?.hoverCombatant(combatant, ui.combat._isTokenVisible(this));
+        }
       });
     }
   }

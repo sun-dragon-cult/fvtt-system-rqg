@@ -6,8 +6,9 @@ import {
   localize,
   localizeDocumentName,
   localizeItemType,
+  normalizeSourceRqidLinks,
+  type SourceRqidLink,
 } from "../system/util";
-import { RqidLink } from "../data-model/shared/rqidLink";
 
 import Document = foundry.abstract.Document;
 import { Rqid } from "../system/api/rqidApi";
@@ -125,6 +126,8 @@ export async function updateRqidLink(
   droppedDocument: Document.Any,
   allowDuplicates: boolean = false, // need a version that allows duplicates for cult runes, Orlanth have 2 air for example
 ): Promise<void> {
+  type SourceSystemDocument = { _source?: { system?: object } };
+
   const droppedDocumentRqid = Rqid.getDocumentFlag(droppedDocument)?.id ?? "";
   const parentDocumentRqid = droppedDocument.isEmbedded
     ? (Rqid.getDocumentFlag(droppedDocument.parent)?.id ?? "")
@@ -133,7 +136,9 @@ export async function updateRqidLink(
     (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
   const targetProperty = foundry.utils.getProperty(
-    targetDocument?.system ?? {},
+    ((targetDocument as SourceSystemDocument)?._source?.system ??
+      targetDocument?.system ??
+      {}) as object,
     targetPropertyName ?? "",
   );
 
@@ -148,10 +153,15 @@ export async function updateRqidLink(
     return;
   }
 
-  const newLink = new RqidLink(fullDocumentRqid, droppedDocument.name ?? "");
+  const newLink = {
+    rqid: fullDocumentRqid,
+    name: droppedDocument.name ?? "",
+  };
   const updateKey = `system.${targetPropertyName}`;
   if (Array.isArray(targetProperty)) {
-    const targetPropertyRqidLinkArray = targetProperty as RqidLink[];
+    const targetPropertyRqidLinkArray = normalizeSourceRqidLinks(
+      targetProperty as SourceRqidLink[],
+    );
     if (allowDuplicates || !targetPropertyRqidLinkArray.map((j) => j.rqid).includes(newLink.rqid)) {
       targetPropertyRqidLinkArray.push(newLink);
       targetPropertyRqidLinkArray.sort((a, b) => a.name.localeCompare(b.name));

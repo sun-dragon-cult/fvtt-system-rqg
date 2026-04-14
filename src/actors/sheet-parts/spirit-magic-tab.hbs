@@ -1,8 +1,24 @@
 <h2>
   {{localize "RQG.Actor.SpiritMagic.SpiritMagic"}}
-  <span class="small-size">{{localize "RQG.Actor.SpiritMagic.CHALimitFormula"
-      learnedPoints=spiritMagicPointSum
-      freePoints=(difference system.characteristics.charisma.value spiritMagicPointSum)}}</span>
+  {{#if (lt freeInt 0)}}
+    <span class="small-size warning"
+          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitExceeded'
+              learnedPoints=spiritMagicPointSum
+              intValue=system.characteristics.intelligence.value
+              exceededBy=(difference 0 freeInt)}}">{{localize "RQG.Actor.SpiritMagic.INTLimitExceeded"
+        learnedPoints=spiritMagicPointSum
+        intValue=system.characteristics.intelligence.value
+        exceededBy=(difference 0 freeInt)}}</span>
+  {{else if (eq freeInt 0)}}
+    <span class="small-size warning">{{localize "RQG.Actor.SpiritMagic.INTLimitReached"
+        learnedPoints=spiritMagicPointSum}}</span>
+  {{else}}
+    <span class="small-size"
+          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitTooltip'
+              intValue=system.characteristics.intelligence.value}}">{{localize "RQG.Actor.SpiritMagic.INTLimitFormula"
+        learnedPoints=spiritMagicPointSum
+        freePoints=freeInt}}</span>
+  {{/if}}
 </h2>
 <div class="grid spiritmagic item-list">
   <div class="headings"></div>

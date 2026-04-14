@@ -1,5 +1,11 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import {
+  getDomDataset,
+  getRequiredDomDataset,
+  localize,
+  localizeItemType,
+  normalizeSourceRqidLinks,
+} from "../system/util";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import type { RqgItem } from "./rqgItem";
 import {
@@ -67,15 +73,23 @@ export class RqgItemSheet<
 
         if (targetProperty) {
           elem.addEventListener("change", async (event) => {
+            event.stopPropagation();
             const selectElem = event.currentTarget as HTMLSelectElement;
             const allowDuplicates = getDomDataset(elem, "allow-duplicates");
-            const newRqid = selectElem?.value;
-            const targetRqidLinks = ((this.document.system as any)[targetProperty] ??
-              []) as RqidLink[];
+            const newRqid = selectElem?.value?.trim() ?? "";
+            if (!newRqid || newRqid === "empty") {
+              return;
+            }
 
-            if (allowDuplicates || !targetRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
-              const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
-              const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+            const sourceLinks = foundry.utils.getProperty(
+              this.document._source.system as object,
+              targetProperty,
+            );
+            const targetRqidLinks = normalizeSourceRqidLinks(sourceLinks);
+
+            if (allowDuplicates || !targetRqidLinks.some((l) => l.rqid === newRqid)) {
+              const newName = selectElem?.selectedOptions[0]?.innerText?.trim() || newRqid;
+              const newHitLocationRqidLink = { rqid: newRqid, name: newName };
               const updatedLinks = [...targetRqidLinks, newHitLocationRqidLink];
               await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
             }
@@ -179,6 +193,8 @@ export class RqgItemSheet<
       .find("[data-delete-from-property]")
       .each((i: number, el: HTMLElement) => {
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
+        const deleteIndexRaw = getDomDataset($(el), "delete-index");
+        const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
           const deleteFromProperty = foundry.utils.getProperty(
@@ -187,9 +203,11 @@ export class RqgItemSheet<
           );
           const updateKey = `system.${deleteFromPropertyName}`;
           if (Array.isArray(deleteFromProperty)) {
-            const newValueArray = (deleteFromProperty as RqidLink[]).filter(
-              (r) => r.rqid !== deleteRqid,
-            );
+            const links = [...(deleteFromProperty as RqidLink[])];
+            const newValueArray =
+              Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length
+                ? (links.splice(deleteIndex, 1), links)
+                : links.filter((r) => r.rqid !== deleteRqid);
             // @ts-expect-error isEmbedded
             if (this.isEmbedded) {
               await this.actor?.updateEmbeddedDocuments("Item", [

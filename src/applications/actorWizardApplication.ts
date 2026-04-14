@@ -18,6 +18,20 @@ import { Rqid } from "../system/api/rqidApi";
 import type { IAbility } from "../data-model/shared/ability";
 import type { RqgActor } from "../actors/rqgActor";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+type ActorWizardBaseCtor = (abstract new (
+  ...args: any[]
+) => foundry.applications.api.ApplicationV2.Any) &
+  typeof ApplicationV2 & {
+    PARTS: Record<
+      string,
+      foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
+    >;
+  };
+
+const ActorWizardBase = HandlebarsApplicationMixin(ApplicationV2) as unknown as ActorWizardBaseCtor;
+
 import type { RuneItem } from "@item-model/runeData.ts";
 import type { PassionItem } from "@item-model/passionData.ts";
 import type { HomelandItem } from "@item-model/homelandData.ts";
@@ -71,7 +85,7 @@ interface TemplateHomelandContext {
 }
 
 /** Complete template context returned by getData() */
-interface ActorWizardTemplateContext {
+interface ActorWizardTemplateContext extends foundry.applications.api.ApplicationV2.RenderContext {
   actor: RqgActor;
   species: TemplateSpeciesContext;
   speciesTemplateItems: Record<string, any> | undefined;
@@ -80,7 +94,7 @@ interface ActorWizardTemplateContext {
   collapsibleOpenStates: Record<string, boolean>;
 }
 
-export class ActorWizard extends foundry.appv1.api.FormApplication {
+export class ActorWizard extends ActorWizardBase {
   actor: RqgActor;
   species: {
     selectedSpeciesTemplate: RqgActor | undefined;
@@ -93,9 +107,14 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
   collapsibleOpenStates: Record<string, boolean> = {};
   choices: Record<string, CreationChoice> = {};
 
-  constructor(object: RqgActor, options: any) {
-    super(object, options);
-    this.actor = object;
+  private _currentTab: string = "0-species";
+
+  constructor(
+    actor: RqgActor,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
+    super(options);
+    this.actor = actor;
     const previouslySelectedTemplateUuid = this.actor.getFlag(
       systemId,
       actorWizardFlags,
@@ -127,41 +146,30 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     }
   }
 
-  static override get defaultOptions(): FormApplication.Options {
-    return foundry.utils.mergeObject(FormApplication.defaultOptions, {
-      classes: [systemId, "sheet", ActorTypeEnum.Character],
-      popOut: true,
-      template: templatePaths.actorWizardApplication,
-      id: "actor-wizard-application",
-      title: localize("RQG.ActorCreation.AdventurerCreationWizardTitle"),
+  static override DEFAULT_OPTIONS: Record<string, any> = {
+    id: "actor-wizard-application",
+    tag: "form",
+    classes: [systemId, "sheet", "character"],
+    position: {
       width: 850,
       height: 650,
-      closeOnSubmit: false,
-      submitOnClose: true,
-      submitOnChange: true,
+    },
+    window: {
       resizable: true,
-      tabs: [
-        {
-          navSelector: ".creation-sheet-tabs",
-          contentSelector: ".sheet-body",
-          initial: "0-species",
-        },
-        {
-          navSelector: ".species-tabs",
-          contentSelector: ".species-body",
-          initial: "skills",
-        },
-        {
-          navSelector: ".homeland-tabs",
-          contentSelector: ".homeland-body",
-          initial: "cultures",
-        },
-      ],
-      dragDrop: [{ dragSelector: ".item-list .item", dropSelector: null }],
-    });
-  }
+      title: "RQG.ActorCreation.AdventurerCreationWizardTitle",
+    },
+    form: {
+      handler: ActorWizard.onSubmit,
+      submitOnChange: true,
+      closeOnSubmit: false,
+    },
+  };
 
-  override async getData(): Promise<ActorWizardTemplateContext> {
+  static override PARTS: Record<string, any> = {
+    form: { template: templatePaths.actorWizardApplication },
+  };
+
+  override async _prepareContext(): Promise<ActorWizardTemplateContext> {
     // Set any collapsible sections that need to be open by default
     if (this.collapsibleOpenStates["speciesBackground"] === undefined) {
       this.collapsibleOpenStates["speciesBackground"] = true;
@@ -243,7 +251,8 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     // Prepare template species context with choices on items
     const templateSpecies: TemplateSpeciesContext = {
       selectedSpeciesTemplate: this.species.selectedSpeciesTemplate
-        ? (Object.assign(this.species.selectedSpeciesTemplate, {
+        ? ({
+            ...this.species.selectedSpeciesTemplate,
             items: this.species.selectedSpeciesTemplate.items.map((item) => {
               const rqid = item.getFlag(systemId, documentRqidFlags)?.id;
               const associatedChoice = rqid && this.choices[rqid];
@@ -253,7 +262,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
               }
               return templateItem;
             }),
-          }) as TemplateSpeciesContext["selectedSpeciesTemplate"])
+          } as unknown as TemplateSpeciesContext["selectedSpeciesTemplate"])
         : undefined,
       speciesTemplateOptions: this.species.speciesTemplateOptions,
     };
@@ -403,7 +412,8 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
       itemTypes[ItemTypeEnum.Passion] = homelandPassions;
 
       // Build template homeland item with all enriched/computed properties
-      templateHomelandItem = Object.assign(selectedHomeland, {
+      templateHomelandItem = {
+        ...selectedHomeland,
         system: {
           ...selectedHomeland.system,
           wizardInstructions: enrichedInstructions,
@@ -414,7 +424,7 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         },
         runes: homelandRunes,
         embeddedItems: itemTypes,
-      }) as TemplateHomelandContext["selectedHomeland"];
+      } as unknown as TemplateHomelandContext["selectedHomeland"];
     }
 
     const templateHomeland: TemplateHomelandContext = {
@@ -426,12 +436,12 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
       actor: this.actor,
       species: templateSpecies,
       speciesTemplateItems:
-        templateSpecies.selectedSpeciesTemplate &&
+        this.species.selectedSpeciesTemplate &&
         isDocumentSubType<CharacterActor>(
-          templateSpecies.selectedSpeciesTemplate,
+          this.species.selectedSpeciesTemplate,
           ActorTypeEnum.Character,
         )
-          ? await organizeEmbeddedItems(templateSpecies.selectedSpeciesTemplate, [])
+          ? await organizeEmbeddedItems(this.species.selectedSpeciesTemplate, [])
           : undefined,
       homeland: templateHomeland,
       choices: this.choices,
@@ -439,42 +449,54 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
     };
   }
 
-  override activateListeners(html: JQuery): void {
-    super.activateListeners(html);
+  override async _onRender(
+    context: foundry.applications.api.ApplicationV2.RenderContext,
+    options: any,
+  ): Promise<void> {
+    await super._onRender(context, options);
 
-    this.form?.querySelectorAll(".wizard-choice-input").forEach((el) => {
-      el.addEventListener("change", async (ev) => {
-        const inputTarget = ev.target as HTMLInputElement;
-        const rqid = inputTarget.dataset["rqid"];
-        const forChoice = inputTarget.dataset["forChoice"];
-        if (rqid) {
-          const changedChoice = this.choices[rqid];
-          if (changedChoice) {
-            if (forChoice === "species") {
-              changedChoice.speciesPresent = inputTarget.checked;
-            }
-            if (forChoice === "homeland") {
-              changedChoice.homelandPresent = inputTarget.checked;
-            }
-            if (forChoice === "homelandCultures") {
-              changedChoice.homelandCultureChosen = inputTarget.checked;
-            }
-            if (forChoice === "homelandTribes") {
-              changedChoice.homelandTribeChosen = inputTarget.checked;
-            }
-            if (forChoice === "homelandClans") {
-              changedChoice.homelandClanChosen = inputTarget.checked;
-            }
-            if (forChoice === "homelandCult") {
-              changedChoice.homelandCultChosen = inputTarget.checked;
-            }
+    // Main wizard tab navigation
+    if (this.element.querySelector(".creation-sheet-tabs")) {
+      const tabs = new foundry.applications.ux.Tabs({
+        navSelector: ".creation-sheet-tabs",
+        contentSelector: ".sheet-body",
+        initial: this._currentTab,
+        callback: (_e: any, _t: any, name: string) => {
+          if (name) {
+            this._currentTab = name;
           }
-        }
-        this.render();
+        },
       });
+      tabs.bind(this.element);
+    }
+
+    // Species sub-tabs
+    if (this.element.querySelector(".species-tabs")) {
+      const speciesTabs = new foundry.applications.ux.Tabs({
+        navSelector: ".species-tabs",
+        contentSelector: ".species-body",
+        initial: "skills",
+      });
+      speciesTabs.bind(this.element);
+    }
+
+    // Homeland sub-tabs
+    if (this.element.querySelector(".homeland-tabs")) {
+      const homelandTabs = new foundry.applications.ux.Tabs({
+        navSelector: ".homeland-tabs",
+        contentSelector: ".homeland-body",
+        initial: "cultures",
+      });
+      homelandTabs.bind(this.element);
+    }
+
+    // Complete creation button
+    this.element.querySelectorAll("[data-actor-creation-complete]").forEach((el) => {
+      el.addEventListener("click", () => this._setActorCreationComplete());
     });
 
-    this.form?.querySelectorAll(".collapsible-header").forEach((el) => {
+    // Collapsible sections
+    this.element.querySelectorAll(".collapsible-header").forEach((el) => {
       el.addEventListener("click", (ev) => {
         const target = ev.target;
         assertHtmlElement(target);
@@ -485,54 +507,76 @@ export class ActorWizard extends foundry.appv1.api.FormApplication {
         if (wrapperName) {
           this.collapsibleOpenStates[wrapperName] = !wasOpen;
         }
-        const body = $(wrapper as HTMLElement).find(".collapsible-wrapper-body")[0];
+        const body = wrapper?.querySelector<HTMLElement>(".collapsible-wrapper-body");
         if (body) {
           $(body).slideToggle(300);
         }
-        const plus = $(wrapper as HTMLElement).find(".fa-plus-square")[0];
-        plus?.classList.toggle("no-display");
-        const minus = $(wrapper as HTMLElement).find(".fa-minus-square")[0];
-        minus?.classList.toggle("no-display");
-
+        wrapper?.querySelector(".fa-plus-square")?.classList.toggle("no-display");
+        wrapper?.querySelector(".fa-minus-square")?.classList.toggle("no-display");
         this.render();
       });
     });
 
-    this.form?.querySelectorAll("[data-actor-creation-complete]").forEach((el) => {
-      el.addEventListener("click", () => {
-        this._setActorCreationComplete();
-      });
-    });
-
-    // Handle rqid links
-    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.form!));
+    // RQID link click handlers
+    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
   }
 
   _setActorCreationComplete() {
     void this.actor.setFlag(systemId, actorWizardFlags, { actorWizardComplete: true });
-    document.querySelectorAll(`.actor-wizard-button-${this.actor.id}`).forEach((el) => {
-      el.remove();
-    });
     void this.close();
   }
 
-  async _updateObject(event: Event, formData?: object): Promise<unknown> {
+  private static async onSubmit(
+    this: unknown,
+    event: Event,
+    _form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ): Promise<void> {
+    const wizard = this as ActorWizard;
     const target = event.target;
     if (target instanceof HTMLSelectElement) {
-      const select = target as HTMLSelectElement;
-      if (select.name === "selectedSpeciesTemplateUuid") {
-        // @ts-expect-error selectedSpeciesTemplateUuid
-        const selectedTemplateUuid = formData?.selectedSpeciesTemplateUuid;
-        await this.setSpeciesTemplate(selectedTemplateUuid, true);
+      if (target.name === "selectedSpeciesTemplateUuid") {
+        await wizard.setSpeciesTemplate(
+          formData.object["selectedSpeciesTemplateUuid"] as string,
+          true,
+        );
       }
-      if (select.name === "selectedHomelandRqid") {
-        // @ts-expect-error selectedHomelandRqid
-        const selectedHomelandRqid = formData?.selectedHomelandRqid;
-        await this.setHomeland(selectedHomelandRqid);
+      if (target.name === "selectedHomelandRqid") {
+        await wizard.setHomeland(formData.object["selectedHomelandRqid"] as string);
       }
     }
-    this.render();
-    return;
+    if (target instanceof HTMLInputElement && target.classList.contains("wizard-choice-input")) {
+      const rqid = target.dataset["rqid"];
+      const forChoice = target.dataset["forChoice"];
+      if (rqid) {
+        const changedChoice = wizard.choices[rqid];
+        if (changedChoice) {
+          if (forChoice === "species") {
+            changedChoice.speciesPresent = target.checked;
+          }
+          if (forChoice === "homeland") {
+            changedChoice.homelandPresent = target.checked;
+          }
+          if (forChoice === "homelandCultures") {
+            changedChoice.homelandCultureChosen = target.checked;
+          }
+          if (forChoice === "homelandTribes") {
+            changedChoice.homelandTribeChosen = target.checked;
+          }
+          if (forChoice === "homelandClans") {
+            changedChoice.homelandClanChosen = target.checked;
+          }
+          if (forChoice === "homelandCult") {
+            changedChoice.homelandCultChosen = target.checked;
+          }
+        }
+      }
+    }
+    if (target instanceof HTMLInputElement && target.name === "name") {
+      await wizard.actor.update({ name: formData.object["name"] as string });
+    }
+
+    wizard.render();
   }
 
   async setSpeciesTemplate(selectedTemplateUuid: string, checkAll: boolean): Promise<void> {

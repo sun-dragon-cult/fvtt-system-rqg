@@ -27,6 +27,7 @@ import { characteristicMenuOptions } from "./context-menus/characteristic-contex
 import {
   assertDocumentSubType,
   assertHtmlElement,
+  getDomDataset,
   getHTMLElement,
   getRequiredDomDataset,
   hasOwnProperty,
@@ -776,6 +777,8 @@ export class RqgActorSheet<
       .find("[data-delete-from-property]")
       .each((i: number, el: HTMLElement) => {
         const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
+        const deleteIndexRaw = getDomDataset($(el), "delete-index");
+        const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
         const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
         el.addEventListener("click", async () => {
           const deleteFromProperty = foundry.utils.getProperty(
@@ -784,9 +787,11 @@ export class RqgActorSheet<
           );
           const updateKey = `system.${deleteFromPropertyName}`;
           if (Array.isArray(deleteFromProperty)) {
-            const newValueArray = (deleteFromProperty as RqidLink[]).filter(
-              (r) => r.rqid !== deleteRqid,
-            );
+            const links = [...(deleteFromProperty as RqidLink[])];
+            const newValueArray =
+              Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length
+                ? (links.splice(deleteIndex, 1), links)
+                : links.filter((r) => r.rqid !== deleteRqid);
             await this.actor.update({ [updateKey]: newValueArray });
           } else {
             await this.actor.update({ [updateKey]: "" });

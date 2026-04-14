@@ -92,13 +92,17 @@ export class ItemTree {
       if (!containerLocation) {
         throw Error("couldn't find container name");
       }
-      contents.forEach((contentItemName) => {
-        const locData = this.itemLocationData.get(contentItemName);
-        if (!locData) {
-          throw Error("couldn't find contained name");
-        }
-        containerLocation.contains.push(locData);
-      });
+      // Sort contents by sort field before adding
+      const sortedContents = contents
+        .map((contentItemName) => {
+          const locData = this.itemLocationData.get(contentItemName);
+          if (!locData) {
+            throw Error("couldn't find contained name");
+          }
+          return locData;
+        })
+        .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+      containerLocation.contains.push(...sortedContents);
     });
   }
 

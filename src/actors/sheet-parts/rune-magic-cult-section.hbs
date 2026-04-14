@@ -5,6 +5,27 @@
       {{#each system.runeRqidLinks}}
         <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
       {{/each}}
+      {{#if hasAccessToRuneMagic}}
+        {{#if (lte (difference @root.system.characteristics.charisma.value runeMagicPointSum) -1)}}
+          <span class="small-size warning"
+                data-tooltip="{{localize 'RQG.Actor.RuneMagic.CHALimitExceeded'
+                    learnedPoints=runeMagicPointSum
+                    chaValue=@root.system.characteristics.charisma.value
+                    exceededBy=(difference runeMagicPointSum @root.system.characteristics.charisma.value)}}">{{localize "RQG.Actor.RuneMagic.CHALimitExceeded"
+              learnedPoints=runeMagicPointSum
+              chaValue=@root.system.characteristics.charisma.value
+              exceededBy=(difference runeMagicPointSum @root.system.characteristics.charisma.value)}}</span>
+        {{else if (lte (difference @root.system.characteristics.charisma.value runeMagicPointSum) 0)}}
+          <span class="small-size warning">{{localize "RQG.Actor.RuneMagic.CHALimitReached"
+              learnedPoints=runeMagicPointSum}}</span>
+        {{else}}
+          <span class="small-size"
+                data-tooltip="{{localize 'RQG.Actor.RuneMagic.CHALimitTooltip'
+                    chaValue=@root.system.characteristics.charisma.value}}">{{localize "RQG.Actor.RuneMagic.CHALimitFormula"
+              learnedPoints=runeMagicPointSum
+              freePoints=(difference @root.system.characteristics.charisma.value runeMagicPointSum)}}</span>
+        {{/if}}
+      {{/if}}
     </h2>
     <div class="flex-row gap1rem cult contextmenu">
       <span>
@@ -77,14 +98,14 @@
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"
                data-rune-magic-roll>
-            {{#unless system.isRitual}}<span class="text-center">{{localize
-              (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>{{/unless}}
+            {{#if system.castingRange}}<span class="text-center">{{localize
+              (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>{{/if}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"
                data-rune-magic-roll>
-            {{#unless system.isRitual}}<span class="text-center">{{localize
-              (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>{{/unless}}
+            {{#if system.duration}}<span class="text-center">{{localize
+              (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>{{/if}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"

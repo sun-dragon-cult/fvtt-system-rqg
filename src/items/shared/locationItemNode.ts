@@ -9,6 +9,8 @@ import type { PhysicalItem } from "@item-model/itemTypes.ts";
 export interface LocationItemNodeData extends IPhysicalItem {
   name: string | null;
   id: string | null;
+  img: string;
+  sort: number | null;
   contains: LocationItemNodeData[];
   isVirtual: boolean;
 }
@@ -20,6 +22,8 @@ export class LocationItemNode implements LocationItemNodeData {
   constructor(
     public name: string | null = null,
     public id: string | null = null,
+    public img: string = "",
+    public sort: number | null = null,
     public contains: LocationItemNode[] = [],
     public physicalItemType: PhysicalItemType = "unique",
     public quantity: number = 1,
@@ -42,6 +46,8 @@ export class LocationItemNode implements LocationItemNodeData {
     return new LocationItemNode(
       item.name,
       item.id,
+      item.img ?? "",
+      item.sort,
       [],
       item.system.physicalItemType,
       item.system.quantity,

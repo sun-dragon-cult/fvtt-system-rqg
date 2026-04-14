@@ -9,7 +9,6 @@ import { RqgItem } from "../rqgItem";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type { HomelandItem } from "@item-model/homelandData.ts";
@@ -19,6 +18,42 @@ interface OccupationSheetContext extends RqgItemSheetContext {
   homelandsJoined: string;
   standardsOfLivingOptions: SelectOptionData<StandardOfLivingEnum>[];
   skillsJoined: string;
+}
+
+type OccupationalSkillLike = {
+  incomeSkill?: unknown;
+  bonus?: unknown;
+  skillRqidLink?: { rqid?: unknown; name?: unknown };
+  rqid?: unknown;
+  name?: unknown;
+};
+
+function normalizeOccupationalSkills(skills: unknown): OccupationalSkill[] {
+  if (!Array.isArray(skills)) {
+    return [];
+  }
+
+  return skills
+    .map((skill: unknown): OccupationalSkill | undefined => {
+      const occupationalSkill = skill as OccupationalSkillLike;
+      const rqid = String(
+        occupationalSkill.skillRqidLink?.rqid ?? occupationalSkill.rqid ?? "",
+      ).trim();
+      if (!rqid) {
+        return undefined;
+      }
+      const name =
+        String(occupationalSkill.skillRqidLink?.name ?? occupationalSkill.name ?? "").trim() ||
+        rqid;
+      const bonusValue = Number(occupationalSkill.bonus ?? 0);
+
+      return {
+        incomeSkill: Boolean(occupationalSkill.incomeSkill),
+        bonus: Number.isFinite(bonusValue) ? bonusValue : 0,
+        skillRqidLink: { rqid, name },
+      };
+    })
+    .filter((skill): skill is OccupationalSkill => skill !== undefined);
 }
 
 export class OccupationSheetV2 extends RqgItemSheetV2 {
@@ -50,6 +85,8 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
   override async _prepareContext(): Promise<OccupationSheetContext> {
     const base = await super._prepareContext();
     const system = base.system as any;
+    const occupationalSkills = normalizeOccupationalSkills(system.occupationalSkills);
+    system.occupationalSkills = occupationalSkills;
 
     const context: OccupationSheetContext = {
       ...base,
@@ -58,9 +95,9 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
         value: standard,
         label: localize("RQG.Item.Occupation.StandardOfLivingEnum." + standard),
       })),
-      skillsJoined: system.occupationalSkills
-        .map((skill: any) => {
-          const bonus = `${skill.bonus >= 0 ? "+" : "-"}${skill.bonus}%`;
+      skillsJoined: occupationalSkills
+        .map((skill: OccupationalSkill) => {
+          const bonus = `${skill.bonus >= 0 ? "+" : ""}${skill.bonus}%`;
           if (skill.incomeSkill) {
             return `<span class="income-skill-text">${skill.skillRqidLink?.name} ${bonus}</span>`;
           } else {
@@ -202,11 +239,15 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
     if (isDocumentSubType<SkillItem>(droppedItem, ItemTypeEnum.Skill)) {
       const droppedRqid = (droppedItem as SkillItem).getFlag(systemId, documentRqidFlags);
       if (droppedRqid && droppedRqid.id) {
-        const occSkill = new OccupationalSkill();
-        occSkill.bonus = 0;
-        occSkill.incomeSkill = false;
-        occSkill.skillRqidLink = new RqidLink(droppedRqid.id, droppedItem.name || "");
-        const occSkills = this.document.system.occupationalSkills;
+        const occSkill: OccupationalSkill = {
+          bonus: 0,
+          incomeSkill: false,
+          skillRqidLink: {
+            rqid: droppedRqid.id,
+            name: droppedItem.name || "",
+          },
+        };
+        const occSkills = normalizeOccupationalSkills(this.document.system.occupationalSkills);
         occSkills.push(occSkill);
         await this.updateOccupationalSkills(occSkills);
       } else {

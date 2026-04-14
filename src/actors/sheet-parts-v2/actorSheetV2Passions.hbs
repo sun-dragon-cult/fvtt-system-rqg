@@ -1,0 +1,35 @@
+<section class="tab passions-tab-v2" data-group="primary" data-tab="passions">
+
+  <h2>
+    <button class="sort" data-sort-items="passion" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>
+    {{localize "RQG.Actor.Passion.Passions"}}
+    {{#if @root.isEditable}}<a class="passion-add-btn" data-passion-add data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}"><i class="fas fa-plus"></i></a>{{/if}}
+  </h2>
+
+  <div class="passions-list">
+    {{#each embeddedItems.passion}}
+    <div class="passion-row contextmenu passion item draggable" data-item-id="{{id}}">
+      <div class="passion-icon" data-item-id="{{id}}"
+           data-item-tooltip
+           data-tooltip-class="item-description-tooltip">
+        {{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img src="{{img}}">
+      </div>
+      <div class="passion-name" data-item-id="{{id}}" data-item-roll
+           data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+        {{name}}
+      </div>
+      {{#edit-mode ../system.editMode "all"}}
+      <div class="passion-chance-edit">
+        <input type="number" data-passion-grid-edit data-item-id="{{id}}" value="{{system.chance}}">%
+      </div>
+      {{else}}
+      <div class="passion-chance {{experiencedclass uuid}}" data-item-id="{{id}}" data-item-roll
+           data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+        {{system.chance}}%
+      </div>
+      {{/edit-mode}}
+    </div>
+    {{/each}}
+  </div>
+
+</section>

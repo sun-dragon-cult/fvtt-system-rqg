@@ -245,7 +245,8 @@
       },
       "EditMode": {
         "SwitchToEditMode": "Switch to Edit Mode",
-        "SwitchToPlayMode": "Switch to Play Mode"
+        "SwitchToPlayMode": "Switch to Play Mode",
+        "Badge": "✦ edit mode ✦"
       },
       "Gear": {
         "AddNewGearUniqueTip": "Add New Gear",
@@ -318,7 +319,8 @@
         "NoIncomingItemDataSourceError": "No incoming Item Data Source!",
         "IncomingItemDataSourceNotPhysicalItemError": "Incoming Item Data Source does not represent a physical item with a quantity!",
         "CantTransferLessThanOneItemError": "Can't transfer less than one item!",
-        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than ${sourceActorName} has in inventory."
+        "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than {sourceActorName} has in inventory.",
+        "CantCreateLocationLoopWarn": "Can't put {itemName} inside {targetItemName} because that would create a location loop."
       },
       "Passion": {
         "Passions": "Passions",
@@ -342,17 +344,20 @@
         "ChooseCultForRuneSpell": "Choose cult for Rune Spell {name}",
         "CommonRuneMagicTooltip": "Cult Common Rune Magic",
         "CultRankLabel": "Cult Rank",
+        "CHALimitFormula": "Remaining learning capacity is {freePoints} points of Rune Magic ({learnedPoints} points already learned).",
+        "CHALimitTooltip": "Maximum learnable Rune Magic is limited by CHA ({chaValue}).",
+        "CHALimitReached": "Learning capacity reached — {learnedPoints} points of Rune Magic learned (CHA limit).",
+        "CHALimitExceeded": "Learning capacity exceeded by {exceededBy} points! ({learnedPoints} points learned, CHA limit is {chaValue}).",
         "RunePoints": "Rune Points",
         "HolyDays": "Holy Days",
         "Gifts": "Gifts",
         "Geases": "Geases",
         "SubCults": "Sub Cults",
         "RuneSpell": "Rune Spell",
+        "SpellSummary": "Spell Summary",
         "Points": "Points",
         "Range": "Range",
         "Duration": "Duration",
-        "Ritual": "Ritual",
-        "Enchantment": "Enchantment",
         "Stackable": "Stackable",
         "OneUse": "One Use",
         "Chance": "Chance",
@@ -368,6 +373,7 @@
       },
       "Skill": {
         "UnspecifiedSkillWarning": "⚠ Please specify the missing skill specialization:",
+        "FilterPlaceholder": "Filter Skills",
         "SkillDescriptionTitle": "Skill Description",
         "ImportSkillCheckboxTitle": "Import Skill: \"{skillName}\"",
         "RequiresTraining": "Can not get experience, requires training to raise.",
@@ -387,22 +393,26 @@
         }
       },
       "Sorcery": {
-        "FreeINT": "Free INT",
+        "INTLimitTooltip": "Maximum learnable Sorcery is limited by INT ({intValue}). Spirit Magic points also count against this limit.",
+        "Spells": "Spells",
         "Techniques": "Techniques",
         "MasteredRunes": "Mastered Runes"
       },
       "SpiritMagic": {
         "SpiritMagic": "Spirit Magic",
-        "CHALimitFormula": "Remaining learning capacity is {freePoints} points of Spirit Magic ({learnedPoints} points already learned).",
+        "INTLimitFormula": "Remaining learning capacity is {freePoints} points of Spirit Magic ({learnedPoints} points already learned).",
+        "INTLimitTooltip": "Maximum learnable Spirit Magic is limited by INT ({intValue}). Sorcery spells also count against this limit.",
+        "INTLimitReached": "Learning capacity reached — {learnedPoints} points of Spirit Magic learned (INT limit).",
+        "INTLimitExceeded": "Learning capacity exceeded by {exceededBy} points! ({learnedPoints} points learned, INT limit is {intValue}).",
         "Name": "Name",
         "SpellFocus": "Focus",
+        "SpellSummary": "Spell Summary",
+        "Chance": "Chance",
         "Points": "Points",
         "Variable": "Variable",
         "Range": "Range",
         "Duration": "Duration",
-        "Concentration": "Concentration",
-        "Ritual": "Ritual",
-        "Enchantment": "Enchantment"
+        "Concentration": "Concentration"
       }
     },
     "ContextMenu": {
@@ -1030,6 +1040,8 @@
         "SkillCategory": {}
       },
       "Spell": {
+        "Point": "Point",
+        "Points": "Points",
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
         "DurationEnum": {
@@ -1238,6 +1250,7 @@
       },
       "Roll": "Roll",
       "RollChat": "Roll (click)",
+      "RollDirect": "Direct Roll (click)",
       "RollQuick": "Direct Roll (dbl click)",
       "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",
       "RollTitle": "Roll via Dialog (click), Direct Roll (dbl click)",
@@ -1479,7 +1492,8 @@
     },
     "SheetName": {
       "Actor": {
-        "Character": "Character Sheet"
+        "Character": "Character Sheet",
+        "CharacterV2": "Character Sheet V2"
       },
       "Item": {
         "Armor": "Armor Item Sheet",

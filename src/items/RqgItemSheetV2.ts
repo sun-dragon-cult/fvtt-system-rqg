@@ -1,5 +1,11 @@
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { getDomDataset, getRequiredDomDataset, localize, localizeItemType } from "../system/util";
+import {
+  getDomDataset,
+  getRequiredDomDataset,
+  localize,
+  localizeItemType,
+  normalizeSourceRqidLinks,
+} from "../system/util";
 import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
 import type { RqgItem } from "./rqgItem";
 import {
@@ -14,7 +20,22 @@ import {
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
-const DocumentSheetV2 = foundry.applications.api.DocumentSheetV2;
+const ItemSheetV2 = foundry.applications.sheets.ItemSheetV2;
+
+type ItemSheetV2HandlebarsBaseCtor = (abstract new (
+  ...args: any[]
+) => foundry.applications.sheets.ItemSheetV2.Any &
+  foundry.applications.api.HandlebarsApplicationMixin.AnyMixed) &
+  typeof ItemSheetV2 & {
+    PARTS: Record<
+      string,
+      foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
+    >;
+  };
+
+const RqgItemSheetV2Base = HandlebarsApplicationMixin(
+  ItemSheetV2,
+) as unknown as ItemSheetV2HandlebarsBaseCtor;
 
 export interface RqgItemSheetContext {
   id: string;
@@ -27,14 +48,9 @@ export interface RqgItemSheetContext {
   isEmbedded: boolean;
   /** The item's active effects collection, used by the Active Effects tab partial. */
   effects: unknown;
-  /** True when rendered by an AppV2 sheet — templates use this to choose `<prose-mirror>` over `{{editor}}`. */
-  isV2: boolean;
 }
 
-export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<any>) {
-  /** Remembers the currently active tab across re-renders */
-  protected _currentTab: string | undefined;
-
+export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   static override DEFAULT_OPTIONS: Record<string, any> = {
     id: "{id}",
     classes: ["rqg", "item-sheet", "sheet"],
@@ -72,7 +88,6 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
       isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
-      isV2: true,
       effects: this.document.effects,
       system: foundry.utils.duplicate(this.document._source.system),
     };
@@ -87,21 +102,6 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
 
   override async _onRender(context: any, options: any): Promise<void> {
     await super._onRender(context, options);
-
-    // Tab navigation (preserves active tab across re-renders)
-    if (this.element.querySelector(".item-sheet-nav-tabs")) {
-      const tabs = new foundry.applications.ux.Tabs({
-        navSelector: ".item-sheet-nav-tabs",
-        contentSelector: ".sheet-body",
-        initial: this._currentTab,
-        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
-          if (name) {
-            this._currentTab = name;
-          }
-        },
-      });
-      tabs.bind(this.element);
-    }
 
     // RQID header button (AppV2 version)
     await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
@@ -126,13 +126,23 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
         return;
       }
       elem.addEventListener("change", async (event) => {
+        event.stopPropagation();
         const selectElem = event.currentTarget as HTMLSelectElement;
         const allowDuplicates = getDomDataset(elem, "allow-duplicates");
-        const newRqid = selectElem?.value;
-        const targetRqidLinks = ((this.document.system as any)[targetProperty] ?? []) as RqidLink[];
-        if (allowDuplicates || !targetRqidLinks.some((l: RqidLink) => l.rqid === newRqid)) {
-          const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
-          const newRqidLink = new RqidLink(newRqid, newName);
+        const newRqid = selectElem?.value?.trim() ?? "";
+        if (!newRqid || newRqid === "empty") {
+          return;
+        }
+
+        const sourceLinks = foundry.utils.getProperty(
+          this.document._source.system as object,
+          targetProperty,
+        );
+        const targetRqidLinks = normalizeSourceRqidLinks(sourceLinks);
+
+        if (allowDuplicates || !targetRqidLinks.some((l) => l.rqid === newRqid)) {
+          const newName = selectElem?.selectedOptions[0]?.innerText?.trim() || newRqid;
+          const newRqidLink = { rqid: newRqid, name: newName };
           const updatedLinks = [...targetRqidLinks, newRqidLink];
           await this.document.update({ [`system.${targetProperty}`]: updatedLinks });
         }
@@ -217,6 +227,8 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
     // Delete an entry from an RqidLink array property
     this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
       const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
+      const deleteIndexRaw = getDomDataset(el, "delete-index");
+      const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
       const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
       el.addEventListener("click", async () => {
         const deleteFromProperty = foundry.utils.getProperty(
@@ -224,9 +236,16 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
           deleteFromPropertyName,
         );
         const isArray = Array.isArray(deleteFromProperty);
-        const newValue = isArray
-          ? (deleteFromProperty as RqidLink[]).filter((r) => r.rqid !== deleteRqid)
-          : "";
+        let newValue: RqidLink[] | string = "";
+        if (isArray) {
+          const links = [...(deleteFromProperty as RqidLink[])];
+          if (Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length) {
+            links.splice(deleteIndex, 1);
+            newValue = links;
+          } else {
+            newValue = links.filter((r) => r.rqid !== deleteRqid);
+          }
+        }
         const updateKey = `system.${deleteFromPropertyName}`;
         if (this.document.isEmbedded) {
           await this.document.actor?.updateEmbeddedDocuments("Item", [
@@ -280,7 +299,15 @@ export class RqgItemSheetV2 extends HandlebarsApplicationMixin(DocumentSheetV2<a
   }
 
   protected async _onDrop(event: DragEvent): Promise<unknown> {
+    type HandledDropEvent = DragEvent & { _rqgDropHandled?: boolean };
+    const handledEvent = event as HandledDropEvent;
+    if (handledEvent._rqgDropHandled) {
+      return;
+    }
+    handledEvent._rqgDropHandled = true;
+
     event.preventDefault();
+    event.stopPropagation();
     this.render();
 
     const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
