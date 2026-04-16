@@ -152,12 +152,8 @@ export class Rqid {
     const mode = options.mode ?? "best";
 
     const [worldDocuments, packDocuments] = await Promise.all([
-      ["all", "world"].includes(source)
-        ? Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang)
-        : Promise.resolve([] as RqidEnabledDocument[]),
-      ["all", "packs"].includes(source)
-        ? Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang)
-        : Promise.resolve([] as RqidEnabledDocument[]),
+      source !== "packs" ? Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang) : [],
+      source !== "world" ? Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang) : [],
     ]);
 
     const result: TaggedRqidDocument[] = [
