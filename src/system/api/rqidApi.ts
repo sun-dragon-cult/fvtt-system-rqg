@@ -100,8 +100,10 @@ export class Rqid {
 
     lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
 
-    const worldItem = await Rqid.documentFromWorld(rqid, lang);
-    const packItem = await Rqid.documentFromPacks(rqid, lang);
+    const [worldItem, packItem] = await Promise.all([
+      Rqid.documentFromWorld(rqid, lang),
+      Rqid.documentFromPacks(rqid, lang),
+    ]);
 
     if (worldItem && packItem) {
       const worldPriority = Rqid.getDocumentFlag(worldItem)?.priority ?? -Infinity;
@@ -149,15 +151,14 @@ export class Rqid {
     const source = options.source ?? "all";
     const mode = options.mode ?? "best";
 
-    let worldDocuments: RqidEnabledDocument[] = [];
-    if (["all", "world"].includes(source)) {
-      worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang);
-    }
-
-    let packDocuments: RqidEnabledDocument[] = [];
-    if (["all", "packs"].includes(source)) {
-      packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
-    }
+    const [worldDocuments, packDocuments] = await Promise.all([
+      ["all", "world"].includes(source)
+        ? Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang)
+        : Promise.resolve([] as RqidEnabledDocument[]),
+      ["all", "packs"].includes(source)
+        ? Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang)
+        : Promise.resolve([] as RqidEnabledDocument[]),
+    ]);
 
     const result: TaggedRqidDocument[] = [
       ...worldDocuments.map((doc) => ({ doc, source: "world" as const })),
