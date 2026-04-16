@@ -19,6 +19,42 @@ export class OccupationalSkill {
   skillRqidLink: RqidLink | undefined = undefined;
 }
 
+type OccupationalSkillLike = {
+  incomeSkill?: unknown;
+  bonus?: unknown;
+  skillRqidLink?: { rqid?: unknown; name?: unknown };
+  rqid?: unknown;
+  name?: unknown;
+};
+
+export function normalizeOccupationalSkills(skills: unknown): OccupationalSkill[] {
+  if (!Array.isArray(skills)) {
+    return [];
+  }
+
+  return skills
+    .map((skill: unknown): OccupationalSkill | undefined => {
+      const occupationalSkill = skill as OccupationalSkillLike;
+      const rqid = String(
+        occupationalSkill.skillRqidLink?.rqid ?? occupationalSkill.rqid ?? "",
+      ).trim();
+      if (!rqid) {
+        return undefined;
+      }
+      const name =
+        String(occupationalSkill.skillRqidLink?.name ?? occupationalSkill.name ?? "").trim() ||
+        rqid;
+      const bonusValue = Number(occupationalSkill.bonus ?? 0);
+
+      return {
+        incomeSkill: Boolean(occupationalSkill.incomeSkill),
+        bonus: Number.isFinite(bonusValue) ? bonusValue : 0,
+        skillRqidLink: { rqid, name },
+      };
+    })
+    .filter((skill): skill is OccupationalSkill => skill !== undefined);
+}
+
 export interface OccupationDataSourceData {
   occupation: string;
   occupationRqidLink: RqidLink | undefined;

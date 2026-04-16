@@ -49,7 +49,7 @@ export function normalizeSourceRqidLinks(sourceLinks: unknown): NormalizedRqidLi
       if (!rqid) {
         return undefined;
       }
-      const name = String(sourceRqidLink?.name ?? "").trim();
+      const name = String(sourceRqidLink?.name ?? "").trim() || rqid;
       const normalizedLink: NormalizedRqidLink = {
         rqid: rqid,
         name: name,
