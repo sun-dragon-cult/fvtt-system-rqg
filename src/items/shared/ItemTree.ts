@@ -101,7 +101,16 @@ export class ItemTree {
           }
           return locData;
         })
-        .sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+        .sort((a, b) => {
+          // Virtual containers (no real sort value) sort alphabetically before real items
+          if (a.isVirtual && b.isVirtual) {
+            return (a.name ?? "").localeCompare(b.name ?? "");
+          }
+          if (a.isVirtual !== b.isVirtual) {
+            return a.isVirtual ? -1 : 1;
+          }
+          return (a.sort ?? 0) - (b.sort ?? 0);
+        });
       containerLocation.contains.push(...sortedContents);
     });
   }

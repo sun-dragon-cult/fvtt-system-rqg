@@ -4,6 +4,7 @@
 
   // Dark-mode overrides scoped to V2 actor sheet only (don't affect V1)
   .theme-dark .rqg.character.actor-sheet-v2 {
+
     .dex-sr,
     .siz-sr,
     .sr-buttons .dex,
@@ -33,7 +34,7 @@
 
       // Also disable the dark-mode backdrop-filter on .window-content
       // so the content edges match the header transparency
-      > .window-content {
+      >.window-content {
         backdrop-filter: none;
       }
 
@@ -121,6 +122,7 @@
     [data-spirit-magic-roll],
     [data-gear-add],
     [data-passion-add] {
+
       &:hover,
       &:active {
         box-shadow: none;
@@ -161,31 +163,63 @@
       }
     }
 
+    .tab.gear .gear-wrapper {
+      flex-wrap: wrap;
+      align-items: flex-start;
+
+      > * {
+        flex: 1 1 18rem;
+      }
+    }
+
+    .tab.gear article {
+      min-width: 0;
+    }
+
     .tab.gear .grid.item-list .gear-row {
       display: contents;
     }
 
+    // gear-row children are not direct children of .grid so the base > * flex rule
+    // doesn't reach them — apply the same flex layout here.
+    .tab.gear .grid.item-list .gear-row > * {
+      padding: 2px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+
+    .tab.gear .grid.item-list .gear-row > .usagecontainer {
+      display: block;
+    }
+
+
+    .tab.gear .grid.item-list {
+      column-gap: 5px;
+    }
+
+    .tab.gear .grid.gear.gear-no-price.item-list {
+      grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
+    }
+
     :has(> .item-drag-handle),
-    .tab.gear .location li.gear-row > .grid.location-row > div:first-child {
+    .tab.gear .location li.gear-row>.grid.location-row>div:first-child {
       position: relative;
       overflow: visible;
     }
 
-    :is(
-        .skill-row,
-        .passion-row,
-        .rune.rune-card,
-        .spirit-magic-row,
-        .rune-magic-row,
-        .tab.gear .location .location-row,
-        .tab.gear .location li.gear-row > .grid.location-row,
-        .grid.gear.item-list .gear-row,
-        .grid.weapon.item-list .gear-row,
-        .grid.armor.item-list .gear-row,
-        .grid.hit-location.item-list > .contextmenu.item
-      ):hover
-      .item-drag-handle,
-    :has(> .item-drag-handle:hover) > .item-drag-handle {
+    :is(.skill-row,
+      .passion-row,
+      .rune.rune-card,
+      .spirit-magic-row,
+      .rune-magic-row,
+      .tab.gear .location li.gear-row > .grid.location-row,
+      .grid.gear.item-list .gear-row,
+      .grid.weapon.item-list .gear-row,
+      .grid.armor.item-list .gear-row,
+      .grid.hit-location.item-list > .contextmenu.item):hover .item-drag-handle,
+    :has(> .item-drag-handle:hover)>.item-drag-handle {
       opacity: 1;
     }
 
@@ -339,7 +373,7 @@
     // Foundry sets display:flex on .window-content; override to grid for side-tab layout.
     // Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats Foundry's
     // single-class .window-content rule without needing !important.
-    > .window-content {
+    >.window-content {
       position: relative;
       padding: 0;
       display: grid;
@@ -360,7 +394,7 @@
       background-position: top left var(--rqg-nav-width);
       background-size: calc(100% - var(--rqg-nav-width));
 
-      > * {
+      >* {
         position: relative;
       }
     }
@@ -556,7 +590,7 @@
             display: flex;
             align-items: center;
 
-            > i {
+            >i {
               font-size: 1rem;
             }
           }
@@ -580,7 +614,7 @@
           }
 
           // Icon + move value pairs (equipped / carried)
-          > span {
+          >span {
             display: inline-flex;
             align-items: center;
             gap: 2px;
@@ -656,6 +690,7 @@
     // those rules, so we replicate the essentials inside .window-content only
     // to avoid affecting the window title bar.
     .window-content {
+
       h1,
       h2,
       h3,
@@ -753,6 +788,7 @@
 
     // --- Runes tab (V2 visual layout) ---
     .runes-tab-v2 {
+
       // Highlight entire rune card when any clickable child is hovered/active
       .rune-card:has([data-item-roll]:hover) {
         background: rgb(139 90 43 / 18%);
@@ -919,11 +955,11 @@
         gap: 0.5rem;
 
         // Left rune aligns right, right rune aligns left
-        > .rune-slot:first-child {
+        >.rune-slot:first-child {
           justify-self: end;
         }
 
-        > .rune-slot:last-child {
+        >.rune-slot:last-child {
           justify-self: start;
         }
       }
@@ -1078,11 +1114,11 @@
         justify-content: space-between;
         gap: 3rem;
 
-        > .health-section {
+        >.health-section {
           flex: 0 1 auto;
         }
 
-        > .combat-weapons-column {
+        >.combat-weapons-column {
           flex: 1 1 0;
           min-width: 20rem;
         }
@@ -1160,8 +1196,7 @@
 
           img {
             height: 5rem;
-            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-              brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
           }
         }
 
@@ -1333,9 +1368,9 @@
           }
         }
 
-        &:hover > :nth-child(1) .weapon-drag-handle,
-        &:has(> *:hover) > :nth-child(1) .weapon-drag-handle,
-        &:has(.weapon-drag-handle:hover) > :nth-child(1) .weapon-drag-handle {
+        &:hover> :nth-child(1) .weapon-drag-handle,
+        &:has(> *:hover)> :nth-child(1) .weapon-drag-handle,
+        &:has(.weapon-drag-handle:hover)> :nth-child(1) .weapon-drag-handle {
           opacity: 1;
         }
 
@@ -1344,7 +1379,7 @@
         }
 
         // Restore padding lost because display:contents bypasses .grid > * selector
-        > * {
+        >* {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1358,25 +1393,25 @@
 
           // flex-column wrappers must fill the cell so usage subrows divide
           // the full row height equally for proper hover coverage
-          > .flex-column {
+          >.flex-column {
             width: 100%;
             height: 100%;
 
-            > .usage,
-            > div.usage {
+            >.usage,
+            >div.usage {
               flex: 1;
               display: flex;
               align-items: center;
             }
 
             // SR column: right-align buttons inside each usage subrow
-            &.text-right > .usage,
-            &.text-right > div.usage {
+            &.text-right>.usage,
+            &.text-right>div.usage {
               justify-content: flex-end;
             }
 
             // Melee SR wraps button in a bare <span>, not .usage — push right
-            > span > button.sr {
+            >span>button.sr {
               margin-left: auto;
             }
           }
@@ -1384,30 +1419,31 @@
 
         // Restore alternating row background (V1 nth-child rule targets weapon-row
         // elements themselves which have display:contents, so it has no visual effect)
-        &:nth-child(odd) > * {
+        &:nth-child(odd)>* {
           background: var(--rqg-table-alternate-background);
         }
 
-        &:hover > * {
+        &:hover>* {
           background: rgb(139 90 43 / 18%);
         }
 
-        &:active > * {
+        &:active>* {
           background: rgb(139 90 43 / 30%);
         }
 
         // Dodge: single-action row — whole row gets the brighter tint
-        &.dodge-row:hover > * {
+        &.dodge-row:hover>* {
           background: rgb(139 90 43 / 32%) !important;
         }
 
-        &.dodge-row:active > * {
+        &.dodge-row:active>* {
           background: rgb(139 90 43 / 50%) !important;
         }
 
         // Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together
         // only when one of those roll cells is hovered, not the damage cell
         &.spirit-combat-row:has(> [data-item-roll]:hover) {
+
           > :nth-child(2),
           > :nth-child(3),
           > :nth-child(4) {
@@ -1416,6 +1452,7 @@
         }
 
         &.spirit-combat-row:has(> [data-item-roll]:active) {
+
           > :nth-child(2),
           > :nth-child(3),
           > :nth-child(4) {
@@ -1428,19 +1465,19 @@
         // Use descendant .usage selector (not :has) so multi-usage weapons
         // only highlight the hovered subrow, not the whole column cell.
         .usage[data-item-roll]:hover,
-            .usage[data-damage-roll]:hover,
-            // :not(:empty) excludes natural-weapon / dodge empty placeholder cells
-            >[data-weapon-roll]:not(:empty):hover,
-            >[data-item-roll]:hover,
-            >[data-damage-roll]:hover {
+        .usage[data-damage-roll]:hover,
+        // :not(:empty) excludes natural-weapon / dodge empty placeholder cells
+        >[data-weapon-roll]:not(:empty):hover,
+        >[data-item-roll]:hover,
+        >[data-damage-roll]:hover {
           background: rgb(139 90 43 / 32%) !important;
         }
 
         .usage[data-item-roll]:active,
         .usage[data-damage-roll]:active,
-        > [data-weapon-roll]:not(:empty):active,
-        > [data-item-roll]:active,
-        > [data-damage-roll]:active {
+        >[data-weapon-roll]:not(:empty):active,
+        >[data-item-roll]:active,
+        >[data-damage-roll]:active {
           background: rgb(139 90 43 / 50%) !important;
         }
       }
@@ -1452,8 +1489,8 @@
 
       // Extra breathing room before the damage column
       .grid.combat.item-list .head5,
-      .grid.combat.item-list .weapon-row > :nth-child(5),
-      .grid.spirit-combat .weapon-row > :nth-child(5) {
+      .grid.combat.item-list .weapon-row> :nth-child(5),
+      .grid.spirit-combat .weapon-row> :nth-child(5) {
         padding-left: 0.75rem;
       }
 
@@ -1572,7 +1609,7 @@
       .skill-row {
         display: contents;
 
-        > * {
+        >* {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1580,15 +1617,15 @@
           width: 100%;
         }
 
-        &:nth-child(odd) > * {
+        &:nth-child(odd)>* {
           background: var(--rqg-table-alternate-background);
         }
 
-        &:hover > * {
+        &:hover>* {
           background: rgb(139 90 43 / 18%);
         }
 
-        &:active > * {
+        &:active>* {
           background: rgb(139 90 43 / 30%);
         }
       }
@@ -1622,7 +1659,7 @@
         gap: 0.75rem;
         width: 100%;
 
-        > div {
+        >div {
           min-width: 0;
         }
       }
@@ -1644,7 +1681,7 @@
       .skill-row {
         display: contents;
 
-        > * {
+        >* {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1652,15 +1689,15 @@
           width: 100%;
         }
 
-        &:nth-child(odd) > * {
+        &:nth-child(odd)>* {
           background: var(--rqg-table-alternate-background);
         }
 
-        &:hover > * {
+        &:hover>* {
           background: rgb(139 90 43 / 18%);
         }
 
-        &:active > * {
+        &:active>* {
           background: rgb(139 90 43 / 30%);
         }
       }
@@ -1693,7 +1730,7 @@
       .spirit-magic-row {
         display: contents;
 
-        > * {
+        >* {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1705,15 +1742,15 @@
           }
         }
 
-        &:nth-child(odd) > * {
+        &:nth-child(odd)>* {
           background: var(--rqg-table-alternate-background);
         }
 
-        &:hover > * {
+        &:hover>* {
           background: rgb(139 90 43 / 18%);
         }
 
-        &:active > * {
+        &:active>* {
           background: rgb(139 90 43 / 30%);
         }
       }
@@ -1865,8 +1902,8 @@
               justify-content: space-between;
               min-width: 0;
 
-              > span,
-              > div {
+              >span,
+              >div {
                 flex: 1 1 auto;
                 min-width: 0;
                 overflow: hidden;
@@ -1876,7 +1913,7 @@
                 line-clamp: 2;
 
                 // Bold label on its own line, content follows below
-                > b:first-child {
+                >b:first-child {
                   display: block;
                 }
 
@@ -1889,12 +1926,12 @@
                 }
               }
 
-              > span.rune-points {
+              >span.rune-points {
                 flex: 0 0 auto;
                 display: block; // override line-clamp display
               }
 
-              > div.joined-cults {
+              >div.joined-cults {
                 flex: 0 0 auto;
                 min-width: 8em;
               }
@@ -1938,7 +1975,7 @@
       .rune-magic-row {
         display: contents;
 
-        > * {
+        >* {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1977,15 +2014,15 @@
           }
         }
 
-        &:nth-child(odd) > * {
+        &:nth-child(odd)>* {
           background: var(--rqg-table-alternate-background);
         }
 
-        &:hover > * {
+        &:hover>* {
           background: rgb(139 90 43 / 18%);
         }
 
-        &:active > * {
+        &:active>* {
           background: rgb(139 90 43 / 30%);
         }
       }
@@ -2006,7 +2043,7 @@
     &.wounded {
       background: #620000d0;
 
-      > .window-content {
+      >.window-content {
         scrollbar-color: rgb(255 255 255 / 70%) transparent;
         background-image: linear-gradient(#62000028, #62000028), var(--rqg-parchment-url);
         background-repeat: repeat-y;
@@ -2025,8 +2062,7 @@
     &.wounded {
       .health .humanoid::before {
         mix-blend-mode: revert;
-        filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-          brightness(99%) contrast(105%);
+        filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
       }
     }
 
@@ -2035,8 +2071,7 @@
     &.dead {
       .health .humanoid::before {
         mix-blend-mode: revert;
-        filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
-          brightness(99%) contrast(105%) blur(1.5px);
+        filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
       }
     }
 
@@ -2125,7 +2160,7 @@
             width: 100%;
           }
 
-          .rqid-dropzone-wrap > .drop-target.item-sheet-rqid-link {
+          .rqid-dropzone-wrap>.drop-target.item-sheet-rqid-link {
             width: 100%;
           }
         }
@@ -2170,7 +2205,7 @@
         background-color: #007300d0;
       }
 
-      > .window-content {
+      >.window-content {
         background-image: linear-gradient(#00730028, #00730028), var(--rqg-parchment-url);
         background-repeat: repeat-y;
         background-attachment: scroll, local;

@@ -37,25 +37,19 @@
               <span>{{localize "RQG.Actor.Gear.Gear"}}</span>
               {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearUniqueTip'}}" data-gear-add="unique"><i class="fas fa-plus"></i></a>{{/if}}
             </h2>
-            <div class="grid gear item-list">
+            <div class="grid gear gear-no-price item-list">
               <div class="headings"></div>
               <div class="head1"><button class="sort" data-sort-items="gear" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
               <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
               <div class="head3"></div>
-              <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
-              <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
-              <div class="head6"></div>
-              <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
+              <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+              <div class="head5"></div>
+              <div class="head6">{{localize "RQG.Actor.Gear.Location"}}</div>
               {{#each gearView.unique}}
                 <div class="gear-row">
                 <div data-item-id="{{id}}" class="gear contextmenu item">{{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="item" src="{{img}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
                 <div data-item-id="{{id}}" class="gear contextmenu item"></div>
-                <div data-item-id="{{id}}" class="gear contextmenu item">
-                  <span class="text-right">
-                    {{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}
-                  </span>
-                </div>
                 <div data-item-id="{{id}}" class="gear contextmenu item">
                   <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>
                 </div>
@@ -132,24 +126,20 @@
                 <span>{{localize "RQG.Actor.Gear.Consumables"}}</span>
                 {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearConsumablesTip'}}" data-gear-add="consumable"><i class="fas fa-plus"></i></a>{{/if}}
               </h2>
-              <div class="grid gear item-list">
+              <div class="grid gear gear-no-price item-list">
                 <div class="headings"></div>
                 <div class="head1"></div>
                 <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
                 <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.QuantityAbbr"}}</span></div>
-                <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.Price"}}</span></div>
-                <div class="head5"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
-                <div class="head6"></div>
-                <div class="head7">{{localize "RQG.Actor.Gear.Location"}}</div>
+                <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
+                <div class="head5"></div>
+                <div class="head6">{{localize "RQG.Actor.Gear.Location"}}</div>
                 {{#each gearView.consumable}}
                   <div class="gear-row">
                   <div data-item-id="{{id}}" class="gear contextmenu item">{{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="item" src="{{img}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
                   <div data-item-id="{{id}}" class="gear contextmenu item">{{name}}</div>
                   <div data-item-id="{{id}}" class="gear contextmenu item">
                     <input type="number" min="0" max="999999" data-item-edit-value="system.quantity" value="{{system.quantity}}">
-                  </div>
-                  <div data-item-id="{{id}}" class="gear contextmenu item">
-                    <span class="text-right">{{#if system.price.estimated}}{{currency system.price.estimated 'L'}}{{/if}}</span>
                   </div>
                   <div data-item-id="{{id}}" class="gear contextmenu item">
                     <span class="text-right">{{decimalMultiply system.quantity system.encumbrance}}</span>

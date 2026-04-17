@@ -666,7 +666,8 @@ export class RqgActorSheet<
     // Cycle the equipped state of a physical Item
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-equipped-toggle]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", async () => {
+      el.addEventListener("click", async (event) => {
+        event.stopPropagation();
         if (itemId.startsWith("virtual:")) {
           const [, itemEquippedStatus, itemName] = itemId.split(":");
           const newEquippedStatus =
@@ -695,8 +696,20 @@ export class RqgActorSheet<
           equippedStatuses[
             (equippedStatuses.indexOf(item.system.equippedStatus) + 1) % equippedStatuses.length
           ];
-        // Will trigger an Actor#_onModifyEmbeddedEntity that will update the other physical items in the same location tree
-        await item.update({ system: { equippedStatus: newStatus } });
+
+        // Update the item and all items in the same location tree (e.g., container contents)
+        const affectedItems = new ItemTree(
+          this.actor.items.contents,
+        ).getOtherItemIdsInSameLocationTree(item.name ?? "");
+        const updates = [
+          { _id: itemId, system: { equippedStatus: newStatus } },
+          ...affectedItems.map((id) => ({
+            _id: id,
+            system: { equippedStatus: newStatus },
+          })),
+        ];
+
+        await this.actor.updateEmbeddedDocuments("Item", updates);
       });
     });
 
@@ -708,6 +721,9 @@ export class RqgActorSheet<
         const item = this.actor.items.get(itemId) as RqgItem | undefined;
         requireValue(item, `Couldn't find itemId [${itemId}] to edit an item (when clicked).`);
         await item.update({ [path]: (event.target as HTMLInputElement)?.value }, {});
+      });
+      el.addEventListener("click", (event) => {
+        event.stopPropagation();
       });
     });
 

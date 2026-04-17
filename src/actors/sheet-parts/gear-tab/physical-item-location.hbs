@@ -1,9 +1,9 @@
-<li class="{{#if isVirtual}}virtual{{else}}gear contextmenu gear-row{{/if}} item" data-item-id="{{id}}" {{#unless isVirtual}}data-item-tooltip data-tooltip-class="item-description-tooltip"{{/unless}}>
-  <div class="grid location-row contextmenu item" data-item-id="{{id}}">
+<li class="{{#if isVirtual}}virtual{{else}}gear contextmenu gear-row{{/if}} item" data-item-id="{{id}}">
+  {{#if (or (not isVirtual) name)}}<div class="grid location-row contextmenu item" data-item-id="{{id}}">
     <div>
       {{#unless isVirtual}}{{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}{{/unless}}
       {{#if isContainer}}<i class="fas fa-folder-open"> </i>{{/if}}
-      {{#unless isVirtual}}<img class="item" src="{{img}}">{{/unless}}
+      {{#unless isVirtual}}<img class="item" src="{{img}}" data-item-tooltip data-tooltip-class="item-description-tooltip">{{/unless}}
       {{#unless (eq physicalItemType "unique")}} {{this.quantity}} {{/unless}}
       {{name}}
     </div>
@@ -11,18 +11,18 @@
     <div>{{#unless isVirtual}}{{decimalMultiply quantity encumbrance}}{{/unless}}</div>
 
       <div>
-        <img data-item-equipped-toggle class="equipped-status text-center" data-tooltip="{{equippedStatus}}"
+        <img data-item-equipped-toggle data-item-id="{{id}}" class="equipped-status text-center" data-tooltip="{{equippedStatus}}"
              src="{{equippedIcon equippedStatus}}">
       </div>
 
     <div>
       {{#if isVirtual}}
-        <div style="width:5rem"></div>
+        <div style="width:97px"></div>
       {{else}}
         <input type="text" list="locations" data-item-edit-value="system.location" value="{{location}}" size="10">
       {{/if}}
     </div>
-  </div>
+  </div>{{/if}}
   <ul class="{{#if contains}}container{{/if}}">
     {{#each contains}}
       {{> actorGearPhysicalItemLocation}}
