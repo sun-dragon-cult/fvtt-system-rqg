@@ -105,23 +105,23 @@ export class Rqid {
     ]);
     const worldPriority = Rqid.getDocumentFlag(worldItem)?.priority ?? -Infinity;
 
-    // If world priority is high enough, return it without fetching pack documents
-    if (worldPriority >= maxPackPriority) {
-      if (worldItem) {
-        return worldItem;
-      }
-    } else {
-      // Pack priority is higher, so fetch the pack document
-      const packItem = await Rqid.documentFromPacks(rqid, lang);
-      if (packItem) {
-        return packItem;
-      }
-      // Pack fetch failed, fall back to world if available
-      if (worldItem) {
-        return worldItem;
-      }
+    // If a world document exists and its priority is high enough, return it
+    // without fetching pack documents.
+    if (worldItem && worldPriority >= maxPackPriority) {
+      return worldItem;
     }
 
+    // Otherwise, try fetching the pack document. This also covers the case
+    // where no world document exists but a matching pack entry does.
+    const packItem = await Rqid.documentFromPacks(rqid, lang);
+    if (packItem) {
+      return packItem;
+    }
+
+    // Pack fetch failed, fall back to world if available.
+    if (worldItem) {
+      return worldItem;
+    }
     if (lang?.toLowerCase() !== CONFIG.RQG.fallbackLanguage) {
       return Rqid.fromRqid(rqid, CONFIG.RQG.fallbackLanguage, silent);
     }
