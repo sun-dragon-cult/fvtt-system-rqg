@@ -126,17 +126,17 @@ export class RqidEditor extends FormApplication {
       // Embedded documents (like JournalEntryPage with "jp" prefix) have no top-level game collection,
       // so skip the duplicate search to avoid errors from getGameProperty("jp")
       if (!this.document.isEmbedded) {
-        const worldDocuments = await Rqid.fromRqidRegexAll(
+        const worldDocuments = await Rqid.fromRqidRegex(
           rqidSearchRegex,
           rqidDocumentPrefix,
           documentLang,
-          "world",
+          { source: "world", mode: "all" },
         );
-        const compendiumDocuments = await Rqid.fromRqidRegexAll(
+        const compendiumDocuments = await Rqid.fromRqidRegex(
           rqidSearchRegex,
           rqidDocumentPrefix,
           documentLang,
-          "packs",
+          { source: "packs", mode: "all" },
         );
 
         const worldDocumentInfo: any[] = [];

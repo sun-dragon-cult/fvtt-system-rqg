@@ -31,20 +31,33 @@ type ItemTypeMap = {
   // add: weapon: WeaponItem; etc.
 };
 
+// Resolve an item rqid's ItemType segment to a concrete Item subtype
+type ItemRqidToDocument<ItemType extends string> = ItemType extends keyof ItemTypeMap
+  ? ItemTypeMap[ItemType]
+  : Item; // fallback to generic Item when specific mapping missing
+
 // Map an rqid literal to a narrower Document type
-type RqidToDocument<R extends string> =
-  // item rqids: i.<itemType>.<id>
-  R extends `i.${infer ItemType}.${string}`
-    ? ItemType extends keyof ItemTypeMap
-      ? ItemTypeMap[ItemType]
-      : Item // fallback to generic Item when specific mapping missing
-    : // actor rqids: a.<...>
-      R extends `a.${string}.${string}`
-      ? Actor
-      : // journal entry / journal page etc
-        R extends `je.${string}.${string}` | `jp.${string}.${string}`
-        ? JournalEntry
-        : Document.Any;
+type RqidToDocument<R extends string> = R extends `i.${infer ItemType}.${string}`
+  ? ItemRqidToDocument<ItemType> // item rqids: i.<itemType>.<id>
+  : R extends `a.${string}.${string}`
+    ? Actor // actor rqids: a.<...>
+    : R extends `je.${string}.${string}` | `jp.${string}.${string}`
+      ? JournalEntry // journal entry / page rqids
+      : Document.Any;
+
+type RqidRegexSearchSource = "all" | "world" | "packs";
+type RqidRegexSearchMode = "all" | "best";
+
+type RqidRegexSearchOptions = {
+  source?: RqidRegexSearchSource;
+  mode?: RqidRegexSearchMode;
+};
+
+type RqidCountOptions = {
+  source?: RqidRegexSearchSource;
+};
+
+type TaggedRqidDocument = { doc: RqidEnabledDocument; source: "world" | "packs" };
 
 /**
  * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
@@ -68,8 +81,10 @@ export class Rqid {
   }
 
   /**
-   * Return the highest priority Document matching the supplied rqid and lang from the Documents in the World. If not
-   * found return the highest priority Document matching the supplied rqid and lang from the installed Compendium packs.
+   * Return the highest priority Document matching the supplied rqid and lang, searching both
+   * World documents and installed Compendium packs. The document with the highest priority is
+   * returned regardless of whether it comes from the World or a Compendium pack. When priorities
+   * are equal, the World document takes precedence.
    * If lang parameter is not supplied the language selected for the world will be used.
    * If no document is found with the specified lang, then "en" will be used as a fallback.
    */
@@ -84,16 +99,29 @@ export class Rqid {
 
     lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
 
-    const worldItem = await Rqid.documentFromWorld(rqid, lang);
-    if (worldItem) {
+    const [worldItem, maxPackPriority] = await Promise.all([
+      Rqid.documentFromWorld(rqid, lang),
+      Rqid.getMaxPackDocumentPriority(rqid, lang),
+    ]);
+    const worldPriority = Rqid.getDocumentFlag(worldItem)?.priority ?? -Infinity;
+
+    // If a world document exists and its priority is high enough, return it
+    // without fetching pack documents.
+    if (worldItem && worldPriority >= maxPackPriority) {
       return worldItem;
     }
 
+    // Otherwise, try fetching the pack document. This also covers the case
+    // where no world document exists but a matching pack entry does.
     const packItem = await Rqid.documentFromPacks(rqid, lang);
     if (packItem) {
       return packItem;
     }
 
+    // Pack fetch failed, fall back to world if available.
+    if (worldItem) {
+      return worldItem;
+    }
     if (lang?.toLowerCase() !== CONFIG.RQG.fallbackLanguage) {
       return Rqid.fromRqid(rqid, CONFIG.RQG.fallbackLanguage, silent);
     }
@@ -110,57 +138,48 @@ export class Rqid {
   }
 
   /**
-   * Returns all documents with an rqid matching the regex and matching the document type
-   * and language, from the specified scope. The valid values for scope are:
-   *
-   * * **match**: same logic as fromRqid function,
-   * * **all**: find in both world & compendium packs,
-   * * **world**: only search in world,
-   * * **packs**: only search in compendium packs
+   * Returns documents matching an rqid regex and document type.
+   * `source` chooses where to search: world, packs, or both.
+   * `mode` chooses whether to return all matches or only the best (highest priority) per rqid.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
-   * @param scope defines where it will look
+   * @param options search source and result mode
    */
-  public static async fromRqidRegexAll(
+  public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
     rqidDocumentName: string | undefined, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
-    scope: "match" | "all" | "world" | "packs" = "match",
+    options: RqidRegexSearchOptions = {},
   ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex || !rqidDocumentName) {
       return [];
     }
-    const result: RqidEnabledDocument[] = [];
+    const source = options.source ?? "all";
+    const mode = options.mode ?? "best";
 
-    let worldDocuments: RqidEnabledDocument[] = [];
-    if (["match", "all", "world"].includes(scope)) {
-      worldDocuments = await Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang);
-      result.splice(0, 0, ...worldDocuments);
+    const [worldDocuments, packDocuments] = await Promise.all([
+      source !== "packs" ? Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang) : [],
+      source !== "world" ? Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang) : [],
+    ]);
+
+    const result: TaggedRqidDocument[] = [
+      ...worldDocuments.map((doc) => ({ doc, source: "world" as const })),
+      ...packDocuments.map((doc) => ({ doc, source: "packs" as const })),
+    ];
+
+    const sortedEntries = result.sort(Rqid.compareTaggedByPriorityAndSource);
+    if (mode === "best") {
+      return Rqid.filterBestTaggedRqid(sortedEntries).map((entry) => entry.doc);
     }
-
-    if (["match", "all", "packs"].includes(scope)) {
-      let packDocuments = await Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang);
-
-      if (scope === "match") {
-        const worldDocumentRqids = [
-          ...new Set(worldDocuments.map((d) => Rqid.getDocumentFlag(d)?.id)),
-        ];
-        // Remove any rqid matches that exists in the world
-        packDocuments = packDocuments.filter(
-          (d) => !worldDocumentRqids.includes(Rqid.getDocumentFlag(d)?.id),
-        );
-      }
-      result.splice(result.length, 0, ...packDocuments);
-    }
-
-    return result;
+    return sortedEntries.map((entry) => entry.doc);
   }
 
   /**
    * Gets only the highest priority documents for each rqid that matches the Regex and
-   * language, with the highest priority documents in the World taking precedence over
-   * any documents in compendium packs.
+   * language. The highest priority document is returned regardless of whether it comes
+   * from the World or a Compendium pack. When priorities are equal, the World document
+   * takes precedence.
    * @param rqidRegex regex used on the rqid
    * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
@@ -170,13 +189,10 @@ export class Rqid {
     rqidDocumentName: string, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
   ): Promise<RqidEnabledDocument[]> {
-    const matchingDocuments = await this.fromRqidRegexAll(
-      rqidRegex,
-      rqidDocumentName,
-      lang,
-      "match",
-    );
-    return this.filterBestRqid(matchingDocuments);
+    return this.fromRqidRegex(rqidRegex, rqidDocumentName, lang, {
+      source: "all",
+      mode: "best",
+    });
   }
 
   /**
@@ -206,16 +222,17 @@ export class Rqid {
   public static async fromRqidCount(
     rqid: string | undefined,
     lang: string = CONFIG.RQG.fallbackLanguage,
-    scope: "all" | "world" | "packs" = "all",
+    options: RqidCountOptions = {},
   ): Promise<number> {
     if (!rqid) {
       return 0;
     }
+    const source = options.source ?? "all";
 
     let count = 0;
 
     // Check World
-    if (["all", "world"].includes(scope)) {
+    if (["all", "world"].includes(source)) {
       count = (game as any)[this.getGameProperty(rqid)]?.contents.reduce(
         (count: number, document: RqidEnabledDocument) => {
           if (
@@ -235,7 +252,7 @@ export class Rqid {
     }
 
     // Check compendium packs
-    if (["all", "packs"].includes(scope)) {
+    if (["all", "packs"].includes(source)) {
       const documentName = Rqid.getDocumentName(rqid);
       for (const pack of game.packs ?? []) {
         if (pack.documentClass.documentName === documentName) {
@@ -257,6 +274,42 @@ export class Rqid {
       }
     }
     return count;
+  }
+
+  private static compareTaggedByPriorityAndSource(a: TaggedRqidDocument, b: TaggedRqidDocument) {
+    const byPrio = Rqid.compareRqidPrio(a.doc, b.doc);
+    if (byPrio !== 0) {
+      return byPrio;
+    }
+    return Number(a.source === "packs") - Number(b.source === "packs");
+  }
+
+  private static filterBestTaggedRqid(entries: TaggedRqidDocument[]): TaggedRqidDocument[] {
+    const bestByRqid = new Map<string, TaggedRqidDocument>();
+
+    for (const entry of entries) {
+      const rqid = Rqid.getDocumentFlag(entry.doc)?.id ?? "";
+      const existing = bestByRqid.get(rqid);
+      if (!existing) {
+        bestByRqid.set(rqid, entry);
+        continue;
+      }
+
+      const byPrio = Rqid.compareRqidPrio(entry.doc, existing.doc);
+      if (byPrio < 0) {
+        bestByRqid.set(rqid, entry);
+        continue;
+      }
+      if (byPrio > 0) {
+        continue;
+      }
+
+      if (existing.source === "packs" && entry.source === "world") {
+        bestByRqid.set(rqid, entry);
+      }
+    }
+
+    return [...bestByRqid.values()].sort(Rqid.compareTaggedByPriorityAndSource);
   }
 
   /**
@@ -435,6 +488,45 @@ export class Rqid {
     }
 
     return candidateDocuments.sort(Rqid.compareRqidPrio);
+  }
+
+  /**
+   * Scans pack indexes to find the highest priority matching the rqid.
+   * Only examines pack indexes without loading documents.
+   * Returns -Infinity if no matching rqid is found in any pack.
+   */
+  private static async getMaxPackDocumentPriority(
+    rqid: string | undefined,
+    lang: string,
+  ): Promise<number> {
+    if (!rqid) {
+      return -Infinity;
+    }
+
+    const documentRqid = Rqid.documentRqid(rqid);
+    const documentName = Rqid.getDocumentName(documentRqid);
+    let maxPriority = -Infinity;
+
+    for (const pack of game.packs ?? []) {
+      if (pack.documentClass.documentName === documentName) {
+        if (!pack.indexed) {
+          await pack.getIndex();
+        }
+        // Scan index for matching rqids, extract priority without calling getDocument
+        const indexInstances: any[] = (pack.index as any).filter(
+          (i: any) =>
+            i?.flags?.rqg?.documentRqidFlags?.id === documentRqid &&
+            i?.flags?.rqg?.documentRqidFlags?.lang === lang,
+        );
+
+        for (const indexEntry of indexInstances) {
+          const priority = indexEntry?.flags?.rqg?.documentRqidFlags?.priority ?? -Infinity;
+          maxPriority = Math.max(maxPriority, priority);
+        }
+      }
+    }
+
+    return maxPriority;
   }
 
   /**
@@ -663,7 +755,8 @@ export class Rqid {
    * Does not check if the type is valid in the system.
    */
   public static getDocumentType(rqid: string | undefined): string | undefined {
-    return rqid?.split(".")[1];
+    const documentType = rqid?.split(".")[1];
+    return documentType ? documentType : undefined;
   }
 
   /**

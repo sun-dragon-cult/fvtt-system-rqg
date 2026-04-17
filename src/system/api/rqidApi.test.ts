@@ -45,6 +45,10 @@ describe("Rqid", () => {
       expect(Rqid.getDocumentType("i.skill.jump")).toBe("skill");
     });
 
+    it("returns undefined when document subtype is missing", () => {
+      expect(Rqid.getDocumentType("je..my-journal")).toBeUndefined();
+    });
+
     it("returns undefined when rqid is undefined", () => {
       expect(Rqid.getDocumentType(undefined)).toBeUndefined();
     });
@@ -86,16 +90,15 @@ describe("Rqid", () => {
 
   describe("fromRqidRegexBest", () => {
     it("returns only the highest priority match for each rqid", async () => {
-      const docs = [
-        mockDoc("i.skill.jump", 1),
-        mockDoc("i.skill.jump", 3),
-        mockDoc("i.skill.swim", 2),
-      ];
-      const allSpy = vi.spyOn(Rqid, "fromRqidRegexAll").mockResolvedValue(docs as any);
+      const docs = [mockDoc("i.skill.jump", 3), mockDoc("i.skill.swim", 2)];
+      const allSpy = vi.spyOn(Rqid, "fromRqidRegex").mockResolvedValue(docs as any);
 
       const result = await Rqid.fromRqidRegexBest(/i\.skill\..*/, "i", "en");
 
-      expect(allSpy).toHaveBeenCalledWith(/i\.skill\..*/, "i", "en", "match");
+      expect(allSpy).toHaveBeenCalledWith(/i\.skill\..*/, "i", "en", {
+        source: "all",
+        mode: "best",
+      });
       expect(result).toHaveLength(2);
       expect(result.find((d) => Rqid.getDocumentFlag(d)?.id === "i.skill.jump")).toBeDefined();
       expect(
@@ -106,22 +109,66 @@ describe("Rqid", () => {
   });
 
   describe("fromRqid", () => {
+    it("returns pack document when it has higher priority than world document", async () => {
+      const worldDoc = mockDoc("i.skill.jump", 3, "en");
+      const packDoc = mockDoc("i.skill.jump", 7, "en");
+      vi.spyOn(Rqid as any, "documentFromWorld").mockResolvedValue(worldDoc as any);
+      vi.spyOn(Rqid as any, "documentFromPacks").mockResolvedValue(packDoc as any);
+      vi.spyOn(Rqid as any, "getMaxPackDocumentPriority").mockResolvedValue(7);
+
+      const result = await Rqid.fromRqid("i.skill.jump", "en");
+
+      expect(result).toBe(packDoc);
+      expect(Rqid.getDocumentFlag(result as any)?.priority).toBe(7);
+    });
+
+    it("returns world document when it has higher priority than pack document", async () => {
+      const worldDoc = mockDoc("i.skill.jump", 7, "en");
+      const packDoc = mockDoc("i.skill.jump", 3, "en");
+      vi.spyOn(Rqid as any, "documentFromWorld").mockResolvedValue(worldDoc as any);
+      vi.spyOn(Rqid as any, "documentFromPacks").mockResolvedValue(packDoc as any);
+      vi.spyOn(Rqid as any, "getMaxPackDocumentPriority").mockResolvedValue(3);
+
+      const result = await Rqid.fromRqid("i.skill.jump", "en");
+
+      expect(result).toBe(worldDoc);
+      expect(Rqid.getDocumentFlag(result as any)?.priority).toBe(7);
+    });
+
+    it("returns world document when priorities are equal (world takes precedence)", async () => {
+      const worldDoc = mockDoc("i.skill.jump", 5, "en");
+      const packDoc = mockDoc("i.skill.jump", 5, "en");
+      vi.spyOn(Rqid as any, "documentFromWorld").mockResolvedValue(worldDoc as any);
+      vi.spyOn(Rqid as any, "documentFromPacks").mockResolvedValue(packDoc as any);
+      vi.spyOn(Rqid as any, "getMaxPackDocumentPriority").mockResolvedValue(5);
+
+      const result = await Rqid.fromRqid("i.skill.jump", "en");
+
+      expect(result).toBe(worldDoc);
+    });
+
     it("falls back to fallbackLanguage when requested language has no match", async () => {
       const foundDoc = mockDoc("i.skill.jump", 5, "en");
       const worldSpy = vi
         .spyOn(Rqid as any, "documentFromWorld")
         .mockResolvedValueOnce(undefined)
         .mockResolvedValueOnce(undefined);
+      // documentFromPacks is called for "sv" (returns undefined - no sv docs)
+      // and then for "en" when the pack priority beats the world priority
       const packSpy = vi
         .spyOn(Rqid as any, "documentFromPacks")
-        .mockResolvedValueOnce(undefined)
-        .mockResolvedValueOnce(foundDoc as any);
+        .mockResolvedValueOnce(undefined) // "sv" - no docs in packs
+        .mockResolvedValueOnce(foundDoc as any); // "en" - found
+      vi.spyOn(Rqid as any, "getMaxPackDocumentPriority")
+        .mockResolvedValueOnce(-Infinity) // no "sv" docs in pack index
+        .mockResolvedValueOnce(5); // "en" docs exist in packs with priority 5
 
       const result = await Rqid.fromRqid("i.skill.jump", "sv");
 
       expect(worldSpy).toHaveBeenNthCalledWith(1, "i.skill.jump", "sv");
-      expect(packSpy).toHaveBeenNthCalledWith(1, "i.skill.jump", "sv");
       expect(worldSpy).toHaveBeenNthCalledWith(2, "i.skill.jump", "en");
+      expect(packSpy).toHaveBeenCalledTimes(2);
+      expect(packSpy).toHaveBeenNthCalledWith(1, "i.skill.jump", "sv");
       expect(packSpy).toHaveBeenNthCalledWith(2, "i.skill.jump", "en");
       expect(result).toBe(foundDoc);
     });
@@ -129,6 +176,7 @@ describe("Rqid", () => {
     it("warns and returns undefined when no document exists in fallback language", async () => {
       vi.spyOn(Rqid as any, "documentFromWorld").mockResolvedValue(undefined);
       vi.spyOn(Rqid as any, "documentFromPacks").mockResolvedValue(undefined);
+      vi.spyOn(Rqid as any, "getMaxPackDocumentPriority").mockResolvedValue(-Infinity);
 
       const warnSpy = vi.spyOn(ui.notifications!, "warn");
       const result = await Rqid.fromRqid("i.skill.missing", "en", false);
@@ -138,13 +186,13 @@ describe("Rqid", () => {
     });
   });
 
-  describe("fromRqidRegexAll", () => {
+  describe("fromRqidRegex", () => {
     it("returns empty array when regex or document name is missing", async () => {
-      await expect(Rqid.fromRqidRegexAll(undefined, "i")).resolves.toEqual([]);
-      await expect(Rqid.fromRqidRegexAll(/.*/, undefined as any)).resolves.toEqual([]);
+      await expect(Rqid.fromRqidRegex(undefined, "i")).resolves.toEqual([]);
+      await expect(Rqid.fromRqidRegex(/.*/, undefined as any)).resolves.toEqual([]);
     });
 
-    it("uses only world scope for world", async () => {
+    it("uses only world source", async () => {
       const worldDocs = [mockDoc("i.skill.jump", 2)];
       const worldSpy = vi
         .spyOn(Rqid as any, "documentsFromWorld")
@@ -153,14 +201,17 @@ describe("Rqid", () => {
         .spyOn(Rqid as any, "documentsFromPacks")
         .mockResolvedValue([mockDoc("i.skill.swim", 1)] as any);
 
-      const result = await Rqid.fromRqidRegexAll(/i\.skill\..*/, "i", "en", "world");
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "world",
+        mode: "all",
+      });
 
       expect(worldSpy).toHaveBeenCalledTimes(1);
       expect(packsSpy).not.toHaveBeenCalled();
       expect(result).toEqual(worldDocs);
     });
 
-    it("uses only pack scope for packs", async () => {
+    it("uses only pack source", async () => {
       const packDocs = [mockDoc("i.skill.swim", 1)];
       const worldSpy = vi
         .spyOn(Rqid as any, "documentsFromWorld")
@@ -169,37 +220,129 @@ describe("Rqid", () => {
         .spyOn(Rqid as any, "documentsFromPacks")
         .mockResolvedValue(packDocs as any);
 
-      const result = await Rqid.fromRqidRegexAll(/i\.skill\..*/, "i", "en", "packs");
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "packs",
+        mode: "all",
+      });
 
       expect(worldSpy).not.toHaveBeenCalled();
       expect(packsSpy).toHaveBeenCalledTimes(1);
       expect(result).toEqual(packDocs);
     });
 
-    it("concatenates world and packs for all", async () => {
+    it("returns global priority sort for source=all mode=all", async () => {
       const worldDocs = [mockDoc("i.skill.jump", 5)];
-      const packDocs = [mockDoc("i.skill.swim", 3)];
+      const packDocs = [mockDoc("i.skill.swim", 10)];
 
       vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue(worldDocs as any);
       vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue(packDocs as any);
 
-      const result = await Rqid.fromRqidRegexAll(/i\.skill\..*/, "i", "en", "all");
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "all",
+        mode: "all",
+      });
 
-      expect(result).toEqual([...worldDocs, ...packDocs]);
+      expect(result).toEqual([packDocs[0], worldDocs[0]]);
     });
 
-    it("deduplicates pack documents already present in world for match", async () => {
+    it("puts world document before pack document when priorities are equal for source=all mode=all", async () => {
+      const worldDocs = [mockDoc("i.skill.low", 10)];
+      const packDocs = [mockDoc("i.skill.high", 10)];
+
+      vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue(worldDocs as any);
+      vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue(packDocs as any);
+
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "all",
+        mode: "all",
+      });
+
+      expect(result).toHaveLength(2);
+      expect(result[0]).toBe(worldDocs[0]);
+      expect(result[1]).toBe(packDocs[0]);
+      expect(Rqid.getDocumentFlag(result[0])?.priority).toBe(10);
+      expect(Rqid.getDocumentFlag(result[1])?.priority).toBe(10);
+    });
+
+    it("returns highest priority document per rqid for source=all mode=best (world wins when higher priority)", async () => {
       const worldDocs = [mockDoc("i.skill.jump", 5)];
       const packDocs = [mockDoc("i.skill.jump", 1), mockDoc("i.skill.swim", 3)];
 
       vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue(worldDocs as any);
       vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue(packDocs as any);
 
-      const result = await Rqid.fromRqidRegexAll(/i\.skill\..*/, "i", "en", "match");
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "all",
+        mode: "best",
+      });
 
       expect(result).toHaveLength(2);
       expect(result[0]).toBe(worldDocs[0]);
       expect(Rqid.getDocumentFlag(result[1])?.id).toBe("i.skill.swim");
+    });
+
+    it("returns pack document when it has higher priority than world for source=all mode=best", async () => {
+      const worldDocs = [mockDoc("i.skill.jump", 1)];
+      const packDocs = [mockDoc("i.skill.jump", 5), mockDoc("i.skill.swim", 3)];
+
+      vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue(worldDocs as any);
+      vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue(packDocs as any);
+
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "all",
+        mode: "best",
+      });
+
+      expect(result).toHaveLength(2);
+      expect(Rqid.getDocumentFlag(result[0])?.priority).toBe(5);
+      expect(Rqid.getDocumentFlag(result[1])?.id).toBe("i.skill.swim");
+    });
+
+    it("prefers world document when world and pack priorities are equal for source=all mode=best", async () => {
+      const worldDoc = mockDoc("i.skill.jump", 5);
+      const packDoc = mockDoc("i.skill.jump", 5);
+
+      vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue([worldDoc] as any);
+      vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue([packDoc] as any);
+
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "all",
+        mode: "best",
+      });
+
+      expect(result).toHaveLength(1);
+      expect(result[0]).toBe(worldDoc);
+      expect(Rqid.getDocumentFlag(result[0])?.priority).toBe(5);
+    });
+
+    it("deduplicates within world when source=world mode=best", async () => {
+      const worldDocs = [mockDoc("i.skill.jump", 1), mockDoc("i.skill.jump", 5)];
+
+      vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue(worldDocs as any);
+      vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue([] as any);
+
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "world",
+        mode: "best",
+      });
+
+      expect(result).toHaveLength(1);
+      expect(Rqid.getDocumentFlag(result[0])?.priority).toBe(5);
+    });
+
+    it("deduplicates within packs when source=packs mode=best", async () => {
+      const packDocs = [mockDoc("i.skill.jump", 1), mockDoc("i.skill.jump", 5)];
+
+      vi.spyOn(Rqid as any, "documentsFromWorld").mockResolvedValue([] as any);
+      vi.spyOn(Rqid as any, "documentsFromPacks").mockResolvedValue(packDocs as any);
+
+      const result = await Rqid.fromRqidRegex(/i\.skill\..*/, "i", "en", {
+        source: "packs",
+        mode: "best",
+      });
+
+      expect(result).toHaveLength(1);
+      expect(Rqid.getDocumentFlag(result[0])?.priority).toBe(5);
     });
   });
 
@@ -221,7 +364,7 @@ describe("Rqid", () => {
         items: { contents: worldDocs },
       } as any;
 
-      await expect(Rqid.fromRqidCount("i.skill.jump", "en", "world")).resolves.toBe(2);
+      await expect(Rqid.fromRqidCount("i.skill.jump", "en", { source: "world" })).resolves.toBe(2);
     });
 
     it("counts matching pack index entries when world has no match", async () => {
@@ -243,7 +386,7 @@ describe("Rqid", () => {
         packs: [itemPack],
       } as any;
 
-      await expect(Rqid.fromRqidCount("i.skill.jump", "en", "all")).resolves.toBe(2);
+      await expect(Rqid.fromRqidCount("i.skill.jump", "en", { source: "all" })).resolves.toBe(2);
     });
   });
 
