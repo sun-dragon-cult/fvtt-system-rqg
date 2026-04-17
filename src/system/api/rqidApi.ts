@@ -31,20 +31,19 @@ type ItemTypeMap = {
   // add: weapon: WeaponItem; etc.
 };
 
+// Resolve an item rqid's ItemType segment to a concrete Item subtype
+type ItemRqidToDocument<ItemType extends string> = ItemType extends keyof ItemTypeMap
+  ? ItemTypeMap[ItemType]
+  : Item; // fallback to generic Item when specific mapping missing
+
 // Map an rqid literal to a narrower Document type
-type RqidToDocument<R extends string> =
-  // item rqids: i.<itemType>.<id>
-  R extends `i.${infer ItemType}.${string}`
-    ? ItemType extends keyof ItemTypeMap
-      ? ItemTypeMap[ItemType]
-      : Item // fallback to generic Item when specific mapping missing
-    : // actor rqids: a.<...>
-      R extends `a.${string}.${string}`
-      ? Actor
-      : // journal entry / journal page etc
-        R extends `je.${string}.${string}` | `jp.${string}.${string}`
-        ? JournalEntry
-        : Document.Any;
+type RqidToDocument<R extends string> = R extends `i.${infer ItemType}.${string}`
+  ? ItemRqidToDocument<ItemType> // item rqids: i.<itemType>.<id>
+  : R extends `a.${string}.${string}`
+    ? Actor // actor rqids: a.<...>
+    : R extends `je.${string}.${string}` | `jp.${string}.${string}`
+      ? JournalEntry // journal entry / page rqids
+      : Document.Any;
 
 type RqidRegexSearchSource = "all" | "world" | "packs";
 type RqidRegexSearchMode = "all" | "best";
@@ -100,19 +99,27 @@ export class Rqid {
 
     lang ??= game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
 
-    const [worldItem, packItem] = await Promise.all([
+    const [worldItem, maxPackPriority] = await Promise.all([
       Rqid.documentFromWorld(rqid, lang),
-      Rqid.documentFromPacks(rqid, lang),
+      Rqid.getMaxPackDocumentPriority(rqid, lang),
     ]);
+    const worldPriority = Rqid.getDocumentFlag(worldItem)?.priority ?? -Infinity;
 
-    if (worldItem && packItem) {
-      const worldPriority = Rqid.getDocumentFlag(worldItem)?.priority ?? -Infinity;
-      const packPriority = Rqid.getDocumentFlag(packItem)?.priority ?? -Infinity;
-      return packPriority > worldPriority ? packItem : worldItem;
-    }
-
-    if (worldItem || packItem) {
-      return worldItem ?? packItem;
+    // If world priority is high enough, return it without fetching pack documents
+    if (worldPriority >= maxPackPriority) {
+      if (worldItem) {
+        return worldItem;
+      }
+    } else {
+      // Pack priority is higher, so fetch the pack document
+      const packItem = await Rqid.documentFromPacks(rqid, lang);
+      if (packItem) {
+        return packItem;
+      }
+      // Pack fetch failed, fall back to world if available
+      if (worldItem) {
+        return worldItem;
+      }
     }
 
     if (lang?.toLowerCase() !== CONFIG.RQG.fallbackLanguage) {
@@ -481,6 +488,45 @@ export class Rqid {
     }
 
     return candidateDocuments.sort(Rqid.compareRqidPrio);
+  }
+
+  /**
+   * Scans pack indexes to find the highest priority matching the rqid.
+   * Only examines pack indexes without loading documents.
+   * Returns -Infinity if no matching rqid is found in any pack.
+   */
+  private static async getMaxPackDocumentPriority(
+    rqid: string | undefined,
+    lang: string,
+  ): Promise<number> {
+    if (!rqid) {
+      return -Infinity;
+    }
+
+    const documentRqid = Rqid.documentRqid(rqid);
+    const documentName = Rqid.getDocumentName(documentRqid);
+    let maxPriority = -Infinity;
+
+    for (const pack of game.packs ?? []) {
+      if (pack.documentClass.documentName === documentName) {
+        if (!pack.indexed) {
+          await pack.getIndex();
+        }
+        // Scan index for matching rqids, extract priority without calling getDocument
+        const indexInstances: any[] = (pack.index as any).filter(
+          (i: any) =>
+            i?.flags?.rqg?.documentRqidFlags?.id === documentRqid &&
+            i?.flags?.rqg?.documentRqidFlags?.lang === lang,
+        );
+
+        for (const indexEntry of indexInstances) {
+          const priority = indexEntry?.flags?.rqg?.documentRqidFlags?.priority ?? -Infinity;
+          maxPriority = Math.max(maxPriority, priority);
+        }
+      }
+    }
+
+    return maxPriority;
   }
 
   /**
