@@ -153,21 +153,23 @@ describe("Rqid", () => {
         .spyOn(Rqid as any, "documentFromWorld")
         .mockResolvedValueOnce(undefined)
         .mockResolvedValueOnce(undefined);
-      // documentFromPacks is NOT called for "sv" (index scan shows no sv docs)
-      // it is only called for "en" when the pack priority beats the world priority
+      // documentFromPacks is called for "sv" (returns undefined - no sv docs)
+      // and then for "en" when the pack priority beats the world priority
       const packSpy = vi
         .spyOn(Rqid as any, "documentFromPacks")
-        .mockResolvedValueOnce(foundDoc as any);
+        .mockResolvedValueOnce(undefined) // "sv" - no docs in packs
+        .mockResolvedValueOnce(foundDoc as any); // "en" - found
       vi.spyOn(Rqid as any, "getMaxPackDocumentPriority")
-        .mockResolvedValueOnce(-Infinity) // no "sv" docs in packs
+        .mockResolvedValueOnce(-Infinity) // no "sv" docs in pack index
         .mockResolvedValueOnce(5); // "en" docs exist in packs with priority 5
 
       const result = await Rqid.fromRqid("i.skill.jump", "sv");
 
       expect(worldSpy).toHaveBeenNthCalledWith(1, "i.skill.jump", "sv");
       expect(worldSpy).toHaveBeenNthCalledWith(2, "i.skill.jump", "en");
-      expect(packSpy).toHaveBeenCalledTimes(1);
-      expect(packSpy).toHaveBeenCalledWith("i.skill.jump", "en");
+      expect(packSpy).toHaveBeenCalledTimes(2);
+      expect(packSpy).toHaveBeenNthCalledWith(1, "i.skill.jump", "sv");
+      expect(packSpy).toHaveBeenNthCalledWith(2, "i.skill.jump", "en");
       expect(result).toBe(foundDoc);
     });
 
