@@ -48,6 +48,18 @@ import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeM
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
+import { GearDataModel } from "@item-model/gearDataModel";
+import { ArmorDataModel } from "@item-model/armorDataModel";
+import { WeaponDataModel } from "@item-model/weaponDataModel";
+import { SkillDataModel } from "@item-model/skillDataModel";
+import { PassionDataModel } from "@item-model/passionDataModel";
+import { RuneDataModel } from "@item-model/runeDataModel";
+import { RuneMagicDataModel } from "@item-model/runeMagicDataModel";
+import { SpiritMagicDataModel } from "@item-model/spiritMagicDataModel";
+import { CultDataModel } from "@item-model/cultDataModel";
+import { HitLocationDataModel } from "@item-model/hitLocationDataModel";
+import { HomelandDataModel } from "@item-model/homelandDataModel";
+import { OccupationDataModel } from "@item-model/occupationDataModel";
 import {
   type SpellItem,
   SpellConcentrationEnum,
@@ -74,6 +86,20 @@ import type { PassionItem } from "@item-model/passionData.ts";
 export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
+
+    // Register DataModels for item subtypes
+    CONFIG.Item.dataModels["gear"] = GearDataModel as any;
+    CONFIG.Item.dataModels["armor"] = ArmorDataModel as any;
+    CONFIG.Item.dataModels["weapon"] = WeaponDataModel as any;
+    CONFIG.Item.dataModels["skill"] = SkillDataModel as any;
+    CONFIG.Item.dataModels["passion"] = PassionDataModel as any;
+    CONFIG.Item.dataModels["rune"] = RuneDataModel as any;
+    CONFIG.Item.dataModels["runeMagic"] = RuneMagicDataModel as any;
+    CONFIG.Item.dataModels["spiritMagic"] = SpiritMagicDataModel as any;
+    CONFIG.Item.dataModels["cult"] = CultDataModel as any;
+    CONFIG.Item.dataModels["hitLocation"] = HitLocationDataModel as any;
+    CONFIG.Item.dataModels["homeland"] = HomelandDataModel as any;
+    CONFIG.Item.dataModels["occupation"] = OccupationDataModel as any;
 
     const Items = foundry.documents.collections.Items;
 
