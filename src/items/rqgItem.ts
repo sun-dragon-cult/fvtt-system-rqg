@@ -767,9 +767,7 @@ export class RqgItem extends Item {
         if (!foundry.utils.isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
-            const msg = "couldn't find item document from result";
-            ui.notifications?.error(msg);
-            throw new RqgError(msg, updates);
+            return; // Skip preUpdateItem for invalid documents not in the collection
           }
           // Will update "updates" as a side effect
           ResponsibleItemClass.get(document.type)?.preUpdateItem(

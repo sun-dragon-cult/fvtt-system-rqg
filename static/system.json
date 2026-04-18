@@ -55,7 +55,7 @@
           "name": "Macros",
           "sorting": "a",
           "color": "#269261",
-          "packs": ["rqid-macros"]
+          "packs": ["system-macros"]
         }
       ]
     }
@@ -84,10 +84,10 @@
       "type": "JournalEntry"
     },
     {
-      "name": "rqid-macros",
-      "label": "Rqid Macros",
+      "name": "system-macros",
+      "label": "System Macros",
       "system": "rqg",
-      "path": "packs/rqid-macros",
+      "path": "packs/system-macros",
       "ownership": {
         "PLAYER": "NONE",
         "ASSISTANT": "OWNER"
