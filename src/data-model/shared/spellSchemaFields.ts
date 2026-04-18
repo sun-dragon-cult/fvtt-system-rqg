@@ -14,19 +14,31 @@ export function spellSchemaFields() {
       blank: true,
       nullable: false,
       initial: SpellRangeEnum.Ranged,
-      choices: Object.values(SpellRangeEnum),
+      choices: Object.fromEntries(
+        Object.values(SpellRangeEnum).map((v) => [v, `RQG.Item.Spell.RangeEnum.${v || "None"}`]),
+      ),
     }),
     duration: new StringField({
       blank: true,
       nullable: false,
       initial: SpellDurationEnum.Temporal,
-      choices: Object.values(SpellDurationEnum),
+      choices: Object.fromEntries(
+        Object.values(SpellDurationEnum).map((v) => [
+          v,
+          `RQG.Item.Spell.DurationEnum.${v || "None"}`,
+        ]),
+      ),
     }),
     concentration: new StringField({
       blank: false,
       nullable: false,
       initial: SpellConcentrationEnum.Passive,
-      choices: Object.values(SpellConcentrationEnum),
+      choices: Object.fromEntries(
+        Object.values(SpellConcentrationEnum).map((v) => [
+          v,
+          `RQG.Item.Spell.ConcentrationEnum.${v}`,
+        ]),
+      ),
     }),
     isRitual: new BooleanField({ nullable: false, initial: false }),
     isEnchantment: new BooleanField({ nullable: false, initial: false }),

@@ -21,9 +21,9 @@ export class Skill extends AbstractEmbeddedItem {
       ActorTypeEnum.Character,
       "RQG.Item.Notification.ActorNotCharacterError",
     );
-    const actorData = actor.toObject(false).system; // TODO Why use toObject ???
+    const actorSystem = actor.system;
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
-    skillItem.system.categoryMod = actorData.skillCategoryModifiers![skillItem.system.category];
+    skillItem.system.categoryMod = actorSystem.skillCategoryModifiers![skillItem.system.category];
 
     let mod = 0;
 
@@ -32,8 +32,8 @@ export class Skill extends AbstractEmbeddedItem {
     if (skillRqid === CONFIG.RQG.skillRqid.dodge) {
       mod = -Math.min(
         // mod is equipped ENC modifier
-        actorData.attributes.encumbrance?.equipped || 0,
-        actorData.attributes.encumbrance?.max || 0,
+        actorSystem.attributes.encumbrance?.equipped || 0,
+        actorSystem.attributes.encumbrance?.max || 0,
       );
     } else if (skillRqid === CONFIG.RQG.skillRqid.moveQuietly) {
       // mod is the penalty from equipped armor

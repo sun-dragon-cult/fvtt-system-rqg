@@ -16,7 +16,9 @@ export class SkillDataModel extends RqgItemDataModel<SkillSchema> {
         blank: false,
         nullable: false,
         initial: SkillCategoryEnum.Magic,
-        choices: Object.values(SkillCategoryEnum),
+        choices: Object.fromEntries(
+          Object.values(SkillCategoryEnum).map((v) => [v, `RQG.Actor.Skill.SkillCategory.${v}`]),
+        ),
       }),
       skillName: new StringField({ blank: true, nullable: false, initial: "" }),
       specialization: new StringField({ blank: true, nullable: false, initial: "" }),

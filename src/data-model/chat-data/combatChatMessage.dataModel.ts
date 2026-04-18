@@ -15,7 +15,9 @@ const combatChatMessageSchema = {
     blank: false,
     nullable: false,
     initial: attackState[0],
-    choices: attackState,
+    choices: Object.fromEntries(
+      [...attackState].map((v) => [v, `RQG.Chat.Combat.AttackState.${v}`]),
+    ),
   }),
   attackingTokenOrActorUuid: new DocumentUUIDField({
     blank: false,
@@ -47,14 +49,18 @@ const combatChatMessageSchema = {
   attackWeaponUuid: new DocumentUUIDField({ blank: false, nullable: true, required: true }),
 
   // TODO should be a reference to the weapon usageType dataModel eventually
-  attackWeaponUsage: new StringField({ blank: false, nullable: false, choices: usageType }),
+  attackWeaponUsage: new StringField({
+    blank: false,
+    nullable: false,
+    choices: Object.fromEntries([...usageType].map((v) => [v, `RQG.Game.WeaponUsage.${v}-full`])),
+  }),
 
   // TODO should be a reference to the weapon usageType dataModel eventually
   defenceWeaponUsage: new StringField({
     blank: false,
     nullable: true,
     initial: undefined,
-    choices: usageType,
+    choices: Object.fromEntries([...usageType].map((v) => [v, `RQG.Game.WeaponUsage.${v}-full`])),
   }),
   outcomeDescription: new HTMLField({
     blank: false,
@@ -110,7 +116,9 @@ const combatChatMessageSchema = {
     blank: false,
     nullable: true,
     initial: undefined,
-    choices: weaponDesignation,
+    choices: Object.fromEntries(
+      [...weaponDesignation].map((v) => [v, `RQG.Chat.Combat.WeaponDesignation.${v}`]),
+    ),
   }),
 } as const;
 

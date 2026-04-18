@@ -247,6 +247,21 @@ if (game.actors.invalidDocumentIds?.size) {
   }
 }
 
+/* Collect from unlinked token actors */
+for (const scene of game.scenes) {
+  for (const token of scene.tokens) {
+    if (token.actorLink) {
+      continue; /* linked tokens share the world actor — already scanned */
+    }
+    const synthActor = token.actor;
+    if (!synthActor) {
+      continue;
+    }
+    const ctx = `Token: ${token.name} (Scene: ${scene.name})`;
+    collectFromCollection(synthActor.items, ctx);
+  }
+}
+
 /**
  * Group errors by (itemType, fieldPath, invalidValue, errorType) so identical
  * errors across multiple documents can be fixed with a single selection.
@@ -322,8 +337,11 @@ if (repairs.length === 0) {
         const group = this._errorGroups[g];
 
         const fieldset = document.createElement("fieldset");
-        fieldset.style.cssText =
-          "margin-bottom:8px;padding:6px;border:1px solid var(--color-border-light-2,#888)";
+        fieldset.dataset.groupIndex = g;
+        fieldset.classList.add("repair-group");
+        if (group.errorType !== "choice") {
+          fieldset.classList.add("will-fix");
+        }
 
         const legend = document.createElement("legend");
         const countBadge =
@@ -432,6 +450,15 @@ if (repairs.length === 0) {
           overflow-y: auto;
           padding: 8px;
         }
+        .repair-group {
+          margin-bottom: 8px;
+          padding: 6px;
+          border: 2px solid var(--color-border-light-2, #888);
+          transition: border-color 0.2s;
+        }
+        .repair-group.will-fix {
+          border-color: #2a2;
+        }
         .datamodel-repair-footer {
           flex: 0 0 auto;
           display: flex;
@@ -460,6 +487,15 @@ if (repairs.length === 0) {
       this.element
         .querySelector('[data-action="cancel"]')
         ?.addEventListener("click", () => this.close());
+      this.element.querySelectorAll("select[data-error-type='choice']").forEach((select) => {
+        select.addEventListener("change", () => {
+          const fieldset = select.closest(".repair-group");
+          if (!fieldset) {
+            return;
+          }
+          fieldset.classList.toggle("will-fix", select.value !== "__skip__");
+        });
+      });
     }
 
     async _applyFixes() {

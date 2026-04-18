@@ -22,19 +22,28 @@ export class HitLocationDataModel extends RqgItemDataModel<HitLocationSchema> {
         blank: false,
         nullable: false,
         initial: "healthy",
-        choices: [...hitLocationHealthStatuses],
+        choices: Object.fromEntries(
+          [...hitLocationHealthStatuses].map((v) => [
+            v,
+            `RQG.Item.HitLocation.HealthStatusEnum.${v}`,
+          ]),
+        ),
       }),
       actorHealthImpact: new StringField({
         blank: false,
         nullable: false,
         initial: "healthy",
-        choices: [...actorHealthStatuses],
+        choices: Object.fromEntries(
+          [...actorHealthStatuses].map((v) => [v, `RQG.Actor.Attributes.Health.${v}`]),
+        ),
       }),
       hitLocationType: new StringField({
         blank: false,
         nullable: false,
         initial: HitLocationTypesEnum.Limb,
-        choices: Object.values(HitLocationTypesEnum),
+        choices: Object.fromEntries(
+          Object.values(HitLocationTypesEnum).map((v) => [v, `RQG.Item.HitLocationType.${v}`]),
+        ),
       }),
       connectedTo: new StringField({ blank: true, nullable: false, initial: "" }),
     } as const;

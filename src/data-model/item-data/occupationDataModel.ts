@@ -24,7 +24,12 @@ export class OccupationDataModel extends RqgItemDataModel<OccupationSchema> {
         blank: false,
         nullable: false,
         initial: StandardOfLivingEnum.Free,
-        choices: Object.values(StandardOfLivingEnum),
+        choices: Object.fromEntries(
+          Object.values(StandardOfLivingEnum).map((v) => [
+            v,
+            `RQG.Item.Occupation.StandardOfLivingEnum.${v}`,
+          ]),
+        ),
       }),
       baseIncome: new NumberField({ min: 0, nullable: false, initial: 0 }),
       baseIncomeNotes: new StringField({ blank: true, nullable: false, initial: "" }),

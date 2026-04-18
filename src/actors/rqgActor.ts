@@ -36,6 +36,7 @@ import { Skill } from "../items/skill-item/skill";
 import type { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
 
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
@@ -46,6 +47,7 @@ import Actor = foundry.documents.Actor;
 export class RqgActor extends Actor {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
+    CONFIG.Actor.dataModels["character"] = CharacterDataModel as any;
 
     const Actors = foundry.documents.collections.Actors;
 

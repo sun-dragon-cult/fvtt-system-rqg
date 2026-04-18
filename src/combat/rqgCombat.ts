@@ -42,8 +42,6 @@ export class RqgCombat extends Combat {
   }
 
   override _sortCombatants(a: Combatant, b: Combatant): number {
-    assertDocumentSubType<CharacterActor>(a.actor, ActorTypeEnum.Character);
-    assertDocumentSubType<CharacterActor>(b.actor, ActorTypeEnum.Character);
     const ia = Number.isNumeric(a.initiative) ? a.initiative : Infinity;
     const ib = Number.isNumeric(b.initiative) ? b.initiative : Infinity;
     const ci = (ia ?? 0) - (ib ?? 0);
@@ -59,6 +57,8 @@ export class RqgCombat extends Combat {
       return a2.id!.localeCompare(b2.id!);
     }
 
+    assertDocumentSubType<CharacterActor>(a.actor, ActorTypeEnum.Character);
+    assertDocumentSubType<CharacterActor>(b.actor, ActorTypeEnum.Character);
     const actorADex = a.actor.system.characteristics.dexterity.value ?? 0;
     const actorBDex = b.actor.system.characteristics.dexterity.value ?? 0;
     const cDex = actorBDex - actorADex;

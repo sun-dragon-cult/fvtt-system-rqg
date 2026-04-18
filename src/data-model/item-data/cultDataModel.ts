@@ -26,7 +26,9 @@ export class CultDataModel extends RqgItemDataModel<CultSchema> {
             blank: false,
             nullable: false,
             initial: CultRankEnum.LayMember,
-            choices: Object.values(CultRankEnum),
+            choices: Object.fromEntries(
+              Object.values(CultRankEnum).map((v) => [v, `RQG.Actor.RuneMagic.CultRank.${v}`]),
+            ),
           }),
         }),
       ),

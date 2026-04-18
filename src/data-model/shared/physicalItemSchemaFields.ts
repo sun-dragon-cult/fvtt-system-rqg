@@ -13,7 +13,9 @@ export function physicalItemSchemaFields() {
       blank: false,
       nullable: false,
       initial: "unique",
-      choices: physicalItemProperties,
+      choices: Object.fromEntries(
+        physicalItemProperties.map((v) => [v, `RQG.Item.Gear.PhysicalItemTypeEnum.${v}`]),
+      ),
     }),
     quantity: new NumberField({ integer: true, min: 0, nullable: false, initial: 1 }),
     description: new StringField({ blank: true, nullable: false, initial: "" }),
@@ -26,7 +28,9 @@ export function physicalItemSchemaFields() {
       blank: false,
       nullable: false,
       initial: "carried",
-      choices: equippedStatuses,
+      choices: Object.fromEntries(
+        [...equippedStatuses].map((v) => [v, `RQG.Item.EquippedStatus.${v}`]),
+      ),
     }),
     price: new SchemaField({
       real: new NumberField({ min: 0, integer: false, nullable: false, initial: 0 }),

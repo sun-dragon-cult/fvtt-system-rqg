@@ -7,6 +7,8 @@ const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fie
 
 type RuneSchema = ReturnType<typeof RuneDataModel.defineSchema>;
 
+const runeTypeValues = new Set<string>(Object.values(RuneTypeEnum));
+
 export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
   static override defineSchema() {
     return {
@@ -18,7 +20,9 @@ export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
           blank: false,
           nullable: false,
           initial: defaultRuneType.type,
-          choices: Object.values(RuneTypeEnum),
+          choices: Object.fromEntries(
+            Object.values(RuneTypeEnum).map((v) => [v, `RQG.Item.Rune.RuneType.${v}`]),
+          ),
         }),
         name: new StringField({ blank: true, nullable: false, initial: defaultRuneType.name }),
       }),
@@ -27,5 +31,17 @@ export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
       minorRuneRqidLinks: rqidLinkArraySchemaField(),
       isMastered: new BooleanField({ nullable: false, initial: false }),
     } as const;
+  }
+
+  static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    // Legacy data stored runeType as a plain string (e.g. "power") instead of {type, name}
+    if (typeof source.runeType === "string") {
+      const legacy = source.runeType.toLowerCase();
+      source.runeType = {
+        type: runeTypeValues.has(legacy) ? legacy : defaultRuneType.type,
+        name: source.runeType,
+      };
+    }
+    return super.migrateData(source);
   }
 }

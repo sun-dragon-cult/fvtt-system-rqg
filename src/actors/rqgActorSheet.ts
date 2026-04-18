@@ -187,7 +187,9 @@ export class RqgActorSheet<
 
   override async getData(): Promise<ActorSheetTemplateContext> {
     this.incorrectRunes = [];
-    const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
+    // Spread the DataModel into a plain object to capture live (prepared) data.
+    // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
+    const system = { ...this.actor.system } as CharacterDataPropertiesData;
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items

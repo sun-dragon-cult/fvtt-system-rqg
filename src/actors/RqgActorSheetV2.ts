@@ -162,7 +162,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
   override async _prepareContext(): Promise<RqgActorSheetV2Context> {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
-    const system = foundry.utils.duplicate(this.actor.system) as CharacterDataPropertiesData;
+    // Spread the DataModel into a plain object to capture live (prepared) data.
+    // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
+    const system = { ...this.actor.system } as CharacterDataPropertiesData;
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
