@@ -696,8 +696,7 @@ export class RqgActorSheet<
 
         const newStatus =
           equippedStatuses[
-            (equippedStatuses.indexOf(item.system.equippedStatus as EquippedStatus) + 1) %
-              equippedStatuses.length
+            (equippedStatuses.indexOf(item.system.equippedStatus) + 1) % equippedStatuses.length
           ];
 
         // Update the item and all items in the same location tree (e.g., container contents)
@@ -872,7 +871,7 @@ export class RqgActorSheet<
 
     // Add Gear buttons
     htmlElement?.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
-      const physicalItemType = getRequiredDomDataset(el, "gear-add");
+      const physicalItemType = getRequiredDomDataset(el, "gear-add") as PhysicalItemType;
       el.addEventListener("click", async () => {
         const defaultItemIconSettings: any = game.settings?.get(
           systemId,

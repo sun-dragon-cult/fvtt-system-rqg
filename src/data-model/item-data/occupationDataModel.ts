@@ -1,6 +1,7 @@
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { StandardOfLivingEnum } from "./occupationData";
+import { enumChoices } from "../shared/enumChoices";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -24,12 +25,7 @@ export class OccupationDataModel extends RqgItemDataModel<OccupationSchema> {
         blank: false,
         nullable: false,
         initial: StandardOfLivingEnum.Free,
-        choices: Object.fromEntries(
-          Object.values(StandardOfLivingEnum).map((v) => [
-            v,
-            `RQG.Item.Occupation.StandardOfLivingEnum.${v}`,
-          ]),
-        ),
+        choices: enumChoices(StandardOfLivingEnum, "RQG.Item.Occupation.StandardOfLivingEnum."),
       }),
       baseIncome: new NumberField({ min: 0, nullable: false, initial: 0 }),
       baseIncomeNotes: new StringField({ blank: true, nullable: false, initial: "" }),

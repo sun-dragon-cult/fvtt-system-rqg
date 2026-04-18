@@ -2,6 +2,7 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { hitLocationHealthStatuses, HitLocationTypesEnum } from "./hitLocationData";
 import { actorHealthStatuses } from "../actor-data/attributes";
+import { enumChoices } from "../shared/enumChoices";
 
 const { ArrayField, NumberField, StringField } = foundry.data.fields;
 
@@ -25,28 +26,19 @@ export class HitLocationDataModel extends RqgItemDataModel<
         blank: false,
         nullable: false,
         initial: "healthy",
-        choices: Object.fromEntries(
-          [...hitLocationHealthStatuses].map((v) => [
-            v,
-            `RQG.Item.HitLocation.HealthStatusEnum.${v}`,
-          ]),
-        ),
+        choices: enumChoices(hitLocationHealthStatuses, "RQG.Item.HitLocation.HealthStatusEnum."),
       }),
       actorHealthImpact: new StringField({
         blank: false,
         nullable: false,
         initial: "healthy",
-        choices: Object.fromEntries(
-          [...actorHealthStatuses].map((v) => [v, `RQG.Actor.Attributes.Health.${v}`]),
-        ),
+        choices: enumChoices(actorHealthStatuses, "RQG.Actor.Attributes.Health."),
       }),
       hitLocationType: new StringField({
         blank: false,
         nullable: false,
         initial: HitLocationTypesEnum.Limb,
-        choices: Object.fromEntries(
-          Object.values(HitLocationTypesEnum).map((v) => [v, `RQG.Item.HitLocationType.${v}`]),
-        ),
+        choices: enumChoices(HitLocationTypesEnum, "RQG.Item.HitLocationType."),
       }),
       connectedTo: new StringField({ blank: true, nullable: false, initial: "" }),
     } as const;

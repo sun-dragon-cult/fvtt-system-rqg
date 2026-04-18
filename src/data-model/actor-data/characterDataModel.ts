@@ -2,6 +2,7 @@ import { RqgActorDataModel } from "./RqgActorDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
+import { enumChoices } from "../shared/enumChoices";
 import type { SkillCategories } from "./skillCategories";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
@@ -79,9 +80,7 @@ export class CharacterDataModel extends RqgActorDataModel<
             blank: false,
             nullable: false,
             initial: LocomotionEnum.Walk,
-            choices: Object.fromEntries(
-              Object.values(LocomotionEnum).map((v) => [v, `RQG.Actor.Attributes.MoveMode.${v}`]),
-            ),
+            choices: enumChoices(LocomotionEnum, "RQG.Actor.Attributes.MoveMode."),
           }),
           [LocomotionEnum.Walk]: locomotionSchemaField(8, 1),
           [LocomotionEnum.Swim]: locomotionSchemaField(2, 0.5),
@@ -93,9 +92,7 @@ export class CharacterDataModel extends RqgActorDataModel<
           blank: false,
           nullable: false,
           initial: "healthy",
-          choices: Object.fromEntries(
-            [...actorHealthStatuses].map((v) => [v, `RQG.Actor.Attributes.Health.${v}`]),
-          ),
+          choices: enumChoices(actorHealthStatuses, "RQG.Actor.Attributes.Health."),
         }),
       }),
     } as const;

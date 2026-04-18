@@ -2,6 +2,7 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { SkillCategoryEnum } from "./skillData";
+import { enumChoices } from "../shared/enumChoices";
 
 const { NumberField, StringField } = foundry.data.fields;
 
@@ -19,9 +20,7 @@ export class SkillDataModel extends RqgItemDataModel<
         blank: false,
         nullable: false,
         initial: SkillCategoryEnum.Magic,
-        choices: Object.fromEntries(
-          Object.values(SkillCategoryEnum).map((v) => [v, `RQG.Actor.Skill.SkillCategory.${v}`]),
-        ),
+        choices: enumChoices(SkillCategoryEnum, "RQG.Actor.Skill.SkillCategory."),
       }),
       skillName: new StringField({ blank: true, nullable: false, initial: "" }),
       specialization: new StringField({ blank: true, nullable: false, initial: "" }),

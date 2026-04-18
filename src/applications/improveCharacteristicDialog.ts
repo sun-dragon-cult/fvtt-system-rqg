@@ -34,7 +34,7 @@ export async function showImproveCharacteristicDialog(
             CultRankEnum.ChiefPriest,
             CultRankEnum.HighPriest,
           ] as CultRankEnum[]
-        ).includes(joinedCult.rank as CultRankEnum),
+        ).includes(joinedCult.rank),
       ),
   )
     ? 20

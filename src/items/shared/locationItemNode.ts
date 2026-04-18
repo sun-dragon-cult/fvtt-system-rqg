@@ -57,7 +57,7 @@ export class LocationItemNode implements LocationItemNodeData {
       item.system.isContainer,
       item.system.attunedTo,
       item.system.encumbrance,
-      item.system.equippedStatus as EquippedStatus,
+      item.system.equippedStatus,
       item.system.price,
     );
   }

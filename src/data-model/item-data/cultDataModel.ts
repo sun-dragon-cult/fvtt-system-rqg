@@ -2,6 +2,7 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { CultRankEnum } from "./cultData";
+import { enumChoices } from "../shared/enumChoices";
 
 const { ArrayField, SchemaField, StringField } = foundry.data.fields;
 
@@ -26,9 +27,7 @@ export class CultDataModel extends RqgItemDataModel<CultSchema> {
             blank: false,
             nullable: false,
             initial: CultRankEnum.LayMember,
-            choices: Object.fromEntries(
-              Object.values(CultRankEnum).map((v) => [v, `RQG.Actor.RuneMagic.CultRank.${v}`]),
-            ),
+            choices: enumChoices(CultRankEnum, "RQG.Actor.RuneMagic.CultRank."),
           }),
         }),
       ),

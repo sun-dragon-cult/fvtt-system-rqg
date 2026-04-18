@@ -14,7 +14,7 @@ export const physicalItemTypes = [
   "weapon", // ItemTypeEnum.Weapon,
 ] as const;
 
-export const physicalItemProperties = ["unique", "currency", "consumable"];
+export const physicalItemProperties = ["unique", "currency", "consumable"] as const;
 export type PhysicalItemType = (typeof physicalItemProperties)[number];
 
 export const physicalItemTypeOptions: SelectOptionData<PhysicalItemType>[] =

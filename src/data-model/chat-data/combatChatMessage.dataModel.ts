@@ -1,4 +1,5 @@
 import { attackState, usageType, weaponDesignation } from "./combatChatMessage.defs.ts";
+import { enumChoices } from "../shared/enumChoices";
 
 const {
   BooleanField,
@@ -15,9 +16,7 @@ const combatChatMessageSchema = {
     blank: false,
     nullable: false,
     initial: attackState[0],
-    choices: Object.fromEntries(
-      [...attackState].map((v) => [v, `RQG.Chat.Combat.AttackState.${v}`]),
-    ),
+    choices: enumChoices(attackState, "RQG.Chat.Combat.AttackState."),
   }),
   attackingTokenOrActorUuid: new DocumentUUIDField({
     blank: false,
@@ -52,7 +51,7 @@ const combatChatMessageSchema = {
   attackWeaponUsage: new StringField({
     blank: false,
     nullable: false,
-    choices: Object.fromEntries([...usageType].map((v) => [v, `RQG.Game.WeaponUsage.${v}-full`])),
+    choices: enumChoices(usageType, (v) => `RQG.Game.WeaponUsage.${v}-full`),
   }),
 
   // TODO should be a reference to the weapon usageType dataModel eventually
@@ -60,7 +59,7 @@ const combatChatMessageSchema = {
     blank: false,
     nullable: true,
     initial: undefined,
-    choices: Object.fromEntries([...usageType].map((v) => [v, `RQG.Game.WeaponUsage.${v}-full`])),
+    choices: enumChoices(usageType, (v) => `RQG.Game.WeaponUsage.${v}-full`),
   }),
   outcomeDescription: new HTMLField({
     blank: false,
@@ -116,9 +115,7 @@ const combatChatMessageSchema = {
     blank: false,
     nullable: true,
     initial: undefined,
-    choices: Object.fromEntries(
-      [...weaponDesignation].map((v) => [v, `RQG.Chat.Combat.WeaponDesignation.${v}`]),
-    ),
+    choices: enumChoices(weaponDesignation, "RQG.Chat.Combat.WeaponDesignation."),
   }),
 } as const;
 

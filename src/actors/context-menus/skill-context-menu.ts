@@ -30,7 +30,7 @@ export const skillMenuOptions = (
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return !(
         [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons] as SkillCategoryEnum[]
-      ).includes(item.system.category as SkillCategoryEnum);
+      ).includes(item.system.category);
     },
     callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -48,7 +48,7 @@ export const skillMenuOptions = (
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return !(
         [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons] as SkillCategoryEnum[]
-      ).includes(item.system.category as SkillCategoryEnum);
+      ).includes(item.system.category);
     },
     callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");

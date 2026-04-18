@@ -68,6 +68,7 @@ import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import {
   equippedStatuses,
   type EquippedStatus,
+  type PhysicalItemType,
   physicalItemTypes,
 } from "../data-model/item-data/IPhysicalItem";
 import { ItemTree } from "../items/shared/ItemTree";
@@ -649,8 +650,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
         const newStatus =
           equippedStatuses[
-            (equippedStatuses.indexOf(item.system.equippedStatus as EquippedStatus) + 1) %
-              equippedStatuses.length
+            (equippedStatuses.indexOf(item.system.equippedStatus) + 1) % equippedStatuses.length
           ];
 
         // Update the item and all items in the same location tree (e.g., container contents)
@@ -690,7 +690,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Add Gear buttons
     this.element.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
-      const physicalItemType = getRequiredDomDataset(el, "gear-add");
+      const physicalItemType = getRequiredDomDataset(el, "gear-add") as PhysicalItemType;
       el.addEventListener("click", async () => {
         const defaultItemIconSettings: any = game.settings?.get(
           systemId,

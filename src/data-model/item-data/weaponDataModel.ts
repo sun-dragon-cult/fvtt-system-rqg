@@ -3,6 +3,7 @@ import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { damageType } from "./weaponData";
+import { enumChoices } from "../shared/enumChoices";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -16,9 +17,7 @@ function usageSchemaField() {
           blank: false,
           nullable: false,
           initial: damageType.Crush,
-          choices: Object.fromEntries(
-            Object.values(damageType).map((v) => [v, `RQG.Item.Weapon.DamageTypeEnum.${v}`]),
-          ),
+          choices: enumChoices(damageType, "RQG.Item.Weapon.DamageTypeEnum."),
         }),
         description: new StringField({ blank: true, nullable: true, initial: "" }),
       }),

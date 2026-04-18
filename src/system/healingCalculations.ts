@@ -52,9 +52,8 @@ export class HealingCalculations {
     const hpMax = hitLocation.system.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
     const wounds = hitLocation.system.wounds.slice();
     let hitLocationHealthState: HitLocationHealthState =
-      (hitLocation.system.hitLocationHealthState as HitLocationHealthState) || "healthy";
-    let actorHealthImpact: ActorHealthState =
-      (hitLocation.system.actorHealthImpact as ActorHealthState) || "healthy";
+      hitLocation.system.hitLocationHealthState || "healthy";
+    let actorHealthImpact: ActorHealthState = hitLocation.system.actorHealthImpact || "healthy";
 
     if (healPoints >= 6 && hitLocationHealthState === "severed") {
       hitLocationHealthState = "wounded"; // Remove the "severed" state, but the actual state will be calculated below

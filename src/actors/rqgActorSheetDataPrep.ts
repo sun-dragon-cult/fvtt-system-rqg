@@ -151,7 +151,7 @@ function compareCults(a: CultItem, b: CultItem): number {
   // 1. Highest cult rank (High Priest first, Lay Member last)
   const bestRankA = Math.max(
     0,
-    ...(a.system.joinedCults?.map((c) => cultRankOrder[c.rank as CultRankEnum] ?? 0) ?? []),
+    ...(a.system.joinedCults?.map((c) => cultRankOrder[c.rank] ?? 0) ?? []),
   );
   const bestRankB = Math.max(
     0,
@@ -246,7 +246,7 @@ export function getPowWarning(actor: CharacterActor): boolean {
       isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
       i.system.joinedCults.some(
         (c) =>
-          cultRankOrder[c.rank as CultRankEnum] >= cultRankOrder[CultRankEnum.GodTalker] &&
+          cultRankOrder[c.rank] >= cultRankOrder[CultRankEnum.GodTalker] &&
           c.rank !== CultRankEnum.RuneLord,
       ),
   );

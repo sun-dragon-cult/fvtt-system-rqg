@@ -2,6 +2,7 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { RuneTypeEnum, defaultRuneType } from "./runeData";
+import { enumChoices } from "../shared/enumChoices";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -20,9 +21,7 @@ export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
           blank: false,
           nullable: false,
           initial: defaultRuneType.type,
-          choices: Object.fromEntries(
-            Object.values(RuneTypeEnum).map((v) => [v, `RQG.Item.Rune.RuneType.${v}`]),
-          ),
+          choices: enumChoices(RuneTypeEnum, "RQG.Item.Rune.RuneType."),
         }),
         name: new StringField({ blank: true, nullable: false, initial: defaultRuneType.name }),
       }),

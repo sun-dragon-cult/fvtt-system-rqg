@@ -1,5 +1,6 @@
 import { rqidLinkSchemaField } from "./rqidLinkField";
 import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "../item-data/spell";
+import { enumChoices } from "./enumChoices";
 
 const { BooleanField, NumberField, StringField } = foundry.data.fields;
 
@@ -14,31 +15,19 @@ export function spellSchemaFields() {
       blank: true,
       nullable: false,
       initial: SpellRangeEnum.Ranged,
-      choices: Object.fromEntries(
-        Object.values(SpellRangeEnum).map((v) => [v, `RQG.Item.Spell.RangeEnum.${v || "None"}`]),
-      ),
+      choices: enumChoices(SpellRangeEnum, (v) => `RQG.Item.Spell.RangeEnum.${v || "None"}`),
     }),
     duration: new StringField({
       blank: true,
       nullable: false,
       initial: SpellDurationEnum.Temporal,
-      choices: Object.fromEntries(
-        Object.values(SpellDurationEnum).map((v) => [
-          v,
-          `RQG.Item.Spell.DurationEnum.${v || "None"}`,
-        ]),
-      ),
+      choices: enumChoices(SpellDurationEnum, (v) => `RQG.Item.Spell.DurationEnum.${v || "None"}`),
     }),
     concentration: new StringField({
       blank: false,
       nullable: false,
       initial: SpellConcentrationEnum.Passive,
-      choices: Object.fromEntries(
-        Object.values(SpellConcentrationEnum).map((v) => [
-          v,
-          `RQG.Item.Spell.ConcentrationEnum.${v}`,
-        ]),
-      ),
+      choices: enumChoices(SpellConcentrationEnum, "RQG.Item.Spell.ConcentrationEnum."),
     }),
     isRitual: new BooleanField({ nullable: false, initial: false }),
     isEnchantment: new BooleanField({ nullable: false, initial: false }),
