@@ -58,8 +58,13 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
         commandCultSpiritLink.name === oldEnglishName ? newEnglishName : commandCultSpiritLink.name;
 
       const newCommandCultSpiritLink = new RqidLink(newRqid, newName);
+      newCommandCultSpiritLink.bonus = undefined;
       const index = itemData.system.commonRuneMagicRqidLinks.indexOf(commandCultSpiritLink);
-      itemData.system.commonRuneMagicRqidLinks.splice(index, 1, newCommandCultSpiritLink);
+      itemData.system.commonRuneMagicRqidLinks.splice(
+        index,
+        1,
+        newCommandCultSpiritLink as typeof commandCultSpiritLink,
+      );
 
       foundry.utils.mergeObject(updateData, {
         system: { commonRuneMagicRqidLinks: itemData.system.commonRuneMagicRqidLinks },

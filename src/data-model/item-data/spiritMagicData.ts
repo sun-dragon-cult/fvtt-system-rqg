@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "./itemTypes";
 import type { Spell } from "./spell";
 import type { RqgItem } from "@items/rqgItem.ts";
-export type SpiritMagicItem = RqgItem & { system: SpiritMagicDataPropertiesData };
+export type SpiritMagicItem = RqgItem & { system: Item.SystemOfType<"spiritMagic"> };
 
 export interface SpiritMagicDataSourceData extends Spell {
   /** Can the caster decide the number of magic points used */

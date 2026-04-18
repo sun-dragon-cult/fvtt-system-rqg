@@ -27,12 +27,14 @@ export async function showImproveCharacteristicDialog(
     (i) =>
       isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
       i.system.joinedCults.some((joinedCult) =>
-        [
-          CultRankEnum.GodTalker,
-          CultRankEnum.RunePriest,
-          CultRankEnum.ChiefPriest,
-          CultRankEnum.HighPriest,
-        ].includes(joinedCult.rank),
+        (
+          [
+            CultRankEnum.GodTalker,
+            CultRankEnum.RunePriest,
+            CultRankEnum.ChiefPriest,
+            CultRankEnum.HighPriest,
+          ] as CultRankEnum[]
+        ).includes(joinedCult.rank as CultRankEnum),
       ),
   )
     ? 20

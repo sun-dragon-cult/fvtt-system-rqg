@@ -1,4 +1,5 @@
 import {
+  type HitLocationHealthState,
   hitLocationHealthStatuses,
   type HitLocationItem,
   HitLocationTypesEnum,
@@ -120,8 +121,9 @@ export class DamageCalculations {
     // TODO simplify if-structure!
     if (
       totalDamage > 0 &&
-      hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
-        hitLocationHealthStatuses.indexOf("wounded")
+      hitLocationHealthStatuses.indexOf(
+        hitLocation.system.hitLocationHealthState as HitLocationHealthState,
+      ) < hitLocationHealthStatuses.indexOf("wounded")
     ) {
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "wounded", actorHealthImpact: "wounded" },
@@ -129,8 +131,9 @@ export class DamageCalculations {
     }
     if (
       totalDamage >= hpMax &&
-      hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
-        hitLocationHealthStatuses.indexOf("useless")
+      hitLocationHealthStatuses.indexOf(
+        hitLocation.system.hitLocationHealthState as HitLocationHealthState,
+      ) < hitLocationHealthStatuses.indexOf("useless")
     ) {
       damageEffects.notification = `${speakerName}'s ${hitLocation.name} is useless and cannot hold anything / support standing. ${speakerName} can still fight with whatever limbs are still functional.`;
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
@@ -286,7 +289,7 @@ export class DamageCalculations {
         if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
           return acc;
         } else {
-          const actorHealthImpact = item.system.actorHealthImpact;
+          const actorHealthImpact = item.system.actorHealthImpact as ActorHealthState;
           return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
             ? actorHealthImpact
             : acc;

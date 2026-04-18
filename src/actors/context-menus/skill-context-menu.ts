@@ -28,9 +28,9 @@ export const skillMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
-      return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
-        item.system.category,
-      );
+      return !(
+        [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons] as SkillCategoryEnum[]
+      ).includes(item.system.category as SkillCategoryEnum);
     },
     callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -46,9 +46,9 @@ export const skillMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
-      return ![SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons].includes(
-        item.system.category,
-      );
+      return !(
+        [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons] as SkillCategoryEnum[]
+      ).includes(item.system.category as SkillCategoryEnum);
     },
     callback: async (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");

@@ -2,7 +2,7 @@ import { type IPhysicalItem } from "./IPhysicalItem";
 import { ItemTypeEnum } from "./itemTypes";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type GearItem = RqgItem & { system: GearDataPropertiesData };
+export type GearItem = RqgItem & { system: Item.SystemOfType<"gear"> };
 
 export interface GearDataSourceData extends IPhysicalItem {}
 

@@ -3,7 +3,7 @@ import type { Spell } from "./spell";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type RuneMagicItem = RqgItem & { system: RuneMagicDataPropertiesData };
+export type RuneMagicItem = RqgItem & { system: Item.SystemOfType<"runeMagic"> };
 
 export interface RuneMagicDataSourceData extends Spell {
   /** The cult this rune magic is learned from and where to draw rune points */

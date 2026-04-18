@@ -3,7 +3,7 @@ import { ItemTypeEnum } from "./itemTypes";
 import type { ActorHealthState } from "../actor-data/attributes";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type HitLocationItem = RqgItem & { system: HitLocationDataPropertiesData };
+export type HitLocationItem = RqgItem & { system: Item.SystemOfType<"hitLocation"> };
 
 // TODO differentiate between severed & maimed? slash / crush or impale
 export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
@@ -15,12 +15,13 @@ export const hitLocationHealthStatusOptions: SelectOptionData<HitLocationHealthS
     label: "RQG.Item.HitLocation.HealthStatusEnum." + status,
   }));
 
-export enum HitLocationTypesEnum {
-  Limb = "limb",
-  Head = "head",
-  Chest = "chest",
-  Abdomen = "abdomen",
-}
+export const HitLocationTypesEnum = {
+  Limb: "limb",
+  Head: "head",
+  Chest: "chest",
+  Abdomen: "abdomen",
+} as const;
+export type HitLocationTypesEnum = (typeof HitLocationTypesEnum)[keyof typeof HitLocationTypesEnum];
 
 export interface HitLocationDataSourceData {
   dieFrom: number;

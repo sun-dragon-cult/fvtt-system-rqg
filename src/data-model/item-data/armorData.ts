@@ -3,7 +3,7 @@ import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type ArmorItem = RqgItem & { system: ArmorDataPropertiesData };
+export type ArmorItem = RqgItem & { system: Item.SystemOfType<"armor"> };
 
 export const armorTypeTranslationKeys = [
   "RQG.Item.Armor.ArmorType.Hood",

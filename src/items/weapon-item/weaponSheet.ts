@@ -219,12 +219,14 @@ export class WeaponSheet extends RqgItemSheet {
       return false;
     }
     if (
-      ![
-        SkillCategoryEnum.MeleeWeapons,
-        SkillCategoryEnum.MissileWeapons,
-        SkillCategoryEnum.NaturalWeapons,
-        SkillCategoryEnum.Shields,
-      ].includes(droppedItem?.system?.category)
+      !(
+        [
+          SkillCategoryEnum.MeleeWeapons,
+          SkillCategoryEnum.MissileWeapons,
+          SkillCategoryEnum.NaturalWeapons,
+          SkillCategoryEnum.Shields,
+        ] as SkillCategoryEnum[]
+      ).includes(droppedItem?.system?.category as SkillCategoryEnum)
     ) {
       const msg = localize("RQG.Item.Weapon.WrongTypeDropped");
       ui.notifications?.warn(msg, { console: false });

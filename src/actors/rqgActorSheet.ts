@@ -696,7 +696,8 @@ export class RqgActorSheet<
 
         const newStatus =
           equippedStatuses[
-            (equippedStatuses.indexOf(item.system.equippedStatus) + 1) % equippedStatuses.length
+            (equippedStatuses.indexOf(item.system.equippedStatus as EquippedStatus) + 1) %
+              equippedStatuses.length
           ];
 
         // Update the item and all items in the same location tree (e.g., container contents)

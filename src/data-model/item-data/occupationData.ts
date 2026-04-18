@@ -2,7 +2,7 @@ import { RqidLink } from "../shared/rqidLink";
 import { ItemTypeEnum } from "./itemTypes";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type OccupationItem = RqgItem & { system: OccupationDataPropertiesData };
+export type OccupationItem = RqgItem & { system: Item.SystemOfType<"occupation"> };
 
 export const StandardOfLivingEnum = {
   Destitute: "destitute",

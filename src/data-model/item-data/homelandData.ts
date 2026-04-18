@@ -2,7 +2,7 @@ import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type HomelandItem = RqgItem & { system: HomelandDataPropertiesData };
+export type HomelandItem = RqgItem & { system: Item.SystemOfType<"homeland"> };
 
 export interface HomelandDataSourceData {
   homeland: string;

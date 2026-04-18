@@ -130,8 +130,8 @@ export async function combatOutcome(
     damageRoll.total,
     attackSuccessLevel,
     defenceSuccessLevel,
-    parryingWeapon?.system.hitPoints.value,
-    attackingWeapon?.system.hitPoints.value,
+    parryingWeapon?.system.hitPoints.value ?? undefined,
+    attackingWeapon?.system.hitPoints.value ?? undefined,
   );
 
   return {

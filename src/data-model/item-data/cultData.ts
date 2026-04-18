@@ -3,17 +3,18 @@ import { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type CultItem = RqgItem & { system: CultDataPropertiesData };
+export type CultItem = RqgItem & { system: Item.SystemOfType<"cult"> };
 
-export enum CultRankEnum {
-  LayMember = "layMember",
-  Initiate = "initiate",
-  GodTalker = "godTalker",
-  RunePriest = "runePriest",
-  RuneLord = "runeLord",
-  ChiefPriest = "chiefPriest",
-  HighPriest = "highPriest",
-}
+export const CultRankEnum = {
+  LayMember: "layMember",
+  Initiate: "initiate",
+  GodTalker: "godTalker",
+  RunePriest: "runePriest",
+  RuneLord: "runeLord",
+  ChiefPriest: "chiefPriest",
+  HighPriest: "highPriest",
+} as const;
+export type CultRankEnum = (typeof CultRankEnum)[keyof typeof CultRankEnum];
 
 export interface JoinedCult {
   cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name

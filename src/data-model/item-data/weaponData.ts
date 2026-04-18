@@ -4,7 +4,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type WeaponItem = RqgItem & { system: WeaponDataPropertiesData };
+export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
 export const damageType = {
   Crush: "crush",
@@ -27,8 +27,8 @@ export type UsageType = "oneHand" | "twoHand" | "offHand" | "missile";
 export type CombatManeuver = {
   //** name used to identify this maneuver */
   name: string;
-  damageType: DamageType;
-  description?: string;
+  damageType: DamageType | string;
+  description?: string | null;
 };
 
 export type Usage = {
@@ -40,7 +40,7 @@ export type Usage = {
   minStrength: number;
   minDexterity: number;
   //** Melee weapon SR */
-  strikeRank?: number;
+  strikeRank?: number | null;
 };
 
 export interface WeaponDataSourceData extends IPhysicalItem {

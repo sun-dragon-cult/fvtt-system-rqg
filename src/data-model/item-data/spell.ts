@@ -6,27 +6,31 @@ import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
 export type SpellItem = SpiritMagicItem | RuneMagicItem;
 export const spellItemTypes = ["spiritMagic", "runeMagic"] as const; // Can't use ItemTypeEnum here because it is not initialized yet
 
-export enum SpellRangeEnum {
-  None = "",
-  Self = "self",
-  Touch = "touch",
-  Ranged = "ranged", // Rune: 160m, Spirit: 50m, Sorcery: 10m
-  Special = "special",
-}
+export const SpellRangeEnum = {
+  None: "",
+  Self: "self",
+  Touch: "touch",
+  Ranged: "ranged", // Rune: 160m, Spirit: 50m, Sorcery: 10m
+  Special: "special",
+} as const;
+export type SpellRangeEnum = (typeof SpellRangeEnum)[keyof typeof SpellRangeEnum];
 
-export enum SpellDurationEnum {
-  None = "",
-  Instant = "instant",
-  Temporal = "temporal", // Rune: 15 min, Spirit: 2 min (10 MR), sorcery: 5 min
-  Focused = "focused", // Active for as long as the caster focuses
-  Permanent = "permanent", // Ritual (Enchantment)
-  Special = "special", // Length of pregnancy / 12 hours / variable etc
-}
+export const SpellDurationEnum = {
+  None: "",
+  Instant: "instant",
+  Temporal: "temporal", // Rune: 15 min, Spirit: 2 min (10 MR), sorcery: 5 min
+  Focused: "focused", // Active for as long as the caster focuses
+  Permanent: "permanent", // Ritual (Enchantment)
+  Special: "special", // Length of pregnancy / 12 hours / variable etc
+} as const;
+export type SpellDurationEnum = (typeof SpellDurationEnum)[keyof typeof SpellDurationEnum];
 
-export enum SpellConcentrationEnum {
-  Passive = "passive",
-  Active = "active",
-}
+export const SpellConcentrationEnum = {
+  Passive: "passive",
+  Active: "active",
+} as const;
+export type SpellConcentrationEnum =
+  (typeof SpellConcentrationEnum)[keyof typeof SpellConcentrationEnum];
 
 // Se core book p247
 export interface Spell {

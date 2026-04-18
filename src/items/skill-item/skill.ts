@@ -6,6 +6,7 @@ import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { systemId } from "../../system/config";
 import type { ArmorItem } from "@item-model/armorData.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { SkillCategories } from "../../data-model/actor-data/skillCategories.ts";
 import type { SkillItem } from "@item-model/skillData.ts";
 
 export class Skill extends AbstractEmbeddedItem {
@@ -23,7 +24,8 @@ export class Skill extends AbstractEmbeddedItem {
     );
     const actorSystem = actor.system;
     // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
-    skillItem.system.categoryMod = actorSystem.skillCategoryModifiers![skillItem.system.category];
+    skillItem.system.categoryMod =
+      actorSystem.skillCategoryModifiers![skillItem.system.category as keyof SkillCategories];
 
     let mod = 0;
 

@@ -20,7 +20,7 @@ import { updateChatMessage } from "../sockets/SocketableRequests";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { DamageType, WeaponItem } from "@item-model/weaponData.ts";
 import type { CombatChatMessage } from "../data-model/chat-data/combatChatMessage.types";
 
 /**
@@ -163,7 +163,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
     hitLocationRoll.total,
     ignoreDefenderAp,
     true,
-    attackChatMessage.system.attackCombatManeuver.damageType,
+    attackChatMessage.system.attackCombatManeuver.damageType as DamageType,
     wasDamagedReducedByParry,
     attackRoll.successLevel,
   );

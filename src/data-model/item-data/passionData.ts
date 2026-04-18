@@ -2,7 +2,7 @@ import type { IAbility } from "../shared/ability";
 import { ItemTypeEnum } from "./itemTypes";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type PassionItem = RqgItem & { system: PassionDataPropertiesData };
+export type PassionItem = RqgItem & { system: Item.SystemOfType<"passion"> };
 
 export const PassionsEnum = {
   Ambition: "Ambition",

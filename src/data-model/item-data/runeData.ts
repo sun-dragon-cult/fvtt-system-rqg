@@ -4,7 +4,7 @@ import type { ItemTypeEnum } from "./itemTypes";
 import { RqidLink } from "../shared/rqidLink";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-export type RuneItem = RqgItem & { system: RuneDataPropertiesData };
+export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
 
 export const RuneTypeEnum = {
   Element: "element",
