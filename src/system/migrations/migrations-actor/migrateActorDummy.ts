@@ -19,7 +19,7 @@ export function migrateActorDummy(actorData: RqgActorDataSource): Actor.UpdateDa
           [`-=race`]: null,
         },
       },
-    };
+    } as any; // Migration uses Foundry's `-=field` delete syntax which doesn't exist in DataModel types
   }
   return updateData;
 }

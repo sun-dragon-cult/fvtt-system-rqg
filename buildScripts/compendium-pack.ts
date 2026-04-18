@@ -261,6 +261,21 @@ export class CompendiumPack {
 
 function resolveExternalImports(documentsToBeEnriched: Document[]): Document[] {
   documentsToBeEnriched.map((documentToEnrich) => {
+    // Resolve external macro command files (command: "file:path/to/macro.js")
+    if (
+      typeof documentToEnrich.command === "string" &&
+      documentToEnrich.command.startsWith("file:")
+    ) {
+      const relPath = documentToEnrich.command.slice("file:".length).trim();
+      const absPath = path.resolve(config.packTemplateDir, "..", relPath);
+      documentToEnrich.command = tryOrThrow(
+        () => fs.readFileSync(absPath, "utf-8"),
+        (e) => {
+          throw new PackError(`Error ${e} when reading macro file ${absPath}`);
+        },
+      );
+    }
+
     // Look for import metadata in the items list only for now
     documentToEnrich.items = documentToEnrich?.items?.map((embeddedItemObject: ImportData) => {
       if (!embeddedItemObject._importExternalDocument) {

@@ -47,7 +47,7 @@ export async function migrateWeaponSkillLinks(
           },
         },
       },
-    };
+    } as any; // Migration uses Foundry's `-=field` delete syntax which doesn't exist in DataModel types
   }
   return updateData;
 }

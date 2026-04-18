@@ -48,6 +48,18 @@ import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeM
 import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import { RuneMagic } from "./rune-magic-item/runeMagic";
+import { GearDataModel } from "@item-model/gearDataModel";
+import { ArmorDataModel } from "@item-model/armorDataModel";
+import { WeaponDataModel } from "@item-model/weaponDataModel";
+import { SkillDataModel } from "@item-model/skillDataModel";
+import { PassionDataModel } from "@item-model/passionDataModel";
+import { RuneDataModel } from "@item-model/runeDataModel";
+import { RuneMagicDataModel } from "@item-model/runeMagicDataModel";
+import { SpiritMagicDataModel } from "@item-model/spiritMagicDataModel";
+import { CultDataModel } from "@item-model/cultDataModel";
+import { HitLocationDataModel } from "@item-model/hitLocationDataModel";
+import { HomelandDataModel } from "@item-model/homelandDataModel";
+import { OccupationDataModel } from "@item-model/occupationDataModel";
 import {
   type SpellItem,
   SpellConcentrationEnum,
@@ -74,6 +86,20 @@ import type { PassionItem } from "@item-model/passionData.ts";
 export class RqgItem extends Item {
   public static init() {
     CONFIG.Item.documentClass = RqgItem;
+
+    // Register DataModels for item subtypes
+    CONFIG.Item.dataModels["gear"] = GearDataModel;
+    CONFIG.Item.dataModels["armor"] = ArmorDataModel;
+    CONFIG.Item.dataModels["weapon"] = WeaponDataModel;
+    CONFIG.Item.dataModels["skill"] = SkillDataModel;
+    CONFIG.Item.dataModels["passion"] = PassionDataModel;
+    CONFIG.Item.dataModels["rune"] = RuneDataModel;
+    CONFIG.Item.dataModels["runeMagic"] = RuneMagicDataModel;
+    CONFIG.Item.dataModels["spiritMagic"] = SpiritMagicDataModel;
+    CONFIG.Item.dataModels["cult"] = CultDataModel;
+    CONFIG.Item.dataModels["hitLocation"] = HitLocationDataModel;
+    CONFIG.Item.dataModels["homeland"] = HomelandDataModel;
+    CONFIG.Item.dataModels["occupation"] = OccupationDataModel;
 
     const Items = foundry.documents.collections.Items;
 
@@ -741,9 +767,7 @@ export class RqgItem extends Item {
         if (!foundry.utils.isEmpty(u)) {
           const document = parent.items.get(u._id);
           if (!document || document.documentName !== "Item") {
-            const msg = "couldn't find item document from result";
-            ui.notifications?.error(msg);
-            throw new RqgError(msg, updates);
+            return; // Skip preUpdateItem for invalid documents not in the collection
           }
           // Will update "updates" as a side effect
           ResponsibleItemClass.get(document.type)?.preUpdateItem(

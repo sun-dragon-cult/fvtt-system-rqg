@@ -1,0 +1,6 @@
+name: DataModel Repair
+type: script
+img: icons/tools/hand/wrench-steel.webp
+scope: global
+flags: { }
+command: "file:macros/datamodel-repair.js"
