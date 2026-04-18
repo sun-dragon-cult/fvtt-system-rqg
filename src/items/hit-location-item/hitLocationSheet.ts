@@ -4,7 +4,7 @@ import {
   hitLocationHealthStatusOptions,
   type HitLocationItem,
   HitLocationTypesEnum,
-} from "@item-model/hitLocationData.ts";
+} from "@item-model/hitLocationDataModel.ts";
 import { RqgActor } from "@actors/rqgActor.ts";
 import {
   assertDocumentSubType,
@@ -18,7 +18,7 @@ import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { damageType } from "@item-model/weaponData.ts";
+import { damageType } from "@item-model/weaponDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 interface HitLocationSheetData {

@@ -67,7 +67,7 @@ import {
   SpellDurationEnum,
   SpellRangeEnum,
 } from "@item-model/spell.ts";
-import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponData.ts";
+import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
 import {
   formatDamagePart,
@@ -75,13 +75,13 @@ import {
 } from "../system/combatCalculations";
 import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 import { Skill } from "./skill-item/skill";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 
-import type { PassionItem } from "@item-model/passionData.ts";
+import type { PassionItem } from "@item-model/passionDataModel.ts";
 
 export class RqgItem extends Item {
   public static init() {

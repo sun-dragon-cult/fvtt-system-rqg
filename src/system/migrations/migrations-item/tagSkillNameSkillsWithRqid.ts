@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { isDocumentSubType } from "../../util.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.

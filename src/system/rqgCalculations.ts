@@ -5,25 +5,25 @@ type LookupTableEntry<T> = {
 };
 
 export class RqgCalculations {
-  public static dexSR(dex: number | undefined): number | undefined {
+  public static dexSR(dex: number | null | undefined): number | null | undefined {
     if (dex == null) {
       return undefined;
     }
-    return this.lookup<number | undefined>(dex, dexSrTable);
+    return this.lookup<number | null | undefined>(dex, dexSrTable);
   }
 
-  public static sizSR(siz: number | undefined): number | undefined {
+  public static sizSR(siz: number | null | undefined): number | null | undefined {
     if (siz == null) {
       return undefined;
     }
-    return this.lookup<number | undefined>(siz, sizSrTable);
+    return this.lookup<number | null | undefined>(siz, sizSrTable);
   }
 
   public static hitPoints(
-    con: number | undefined,
-    siz: number | undefined = 0,
-    pow: number | undefined = 0,
-  ): number | undefined {
+    con: number | null | undefined,
+    siz: number | null | undefined = 0,
+    pow: number | null | undefined = 0,
+  ): number | null | undefined {
     let hp =
       con != null
         ? con + RqgCalculations.linearMod(siz) / 5 + RqgCalculations.flattenedMod(pow) / 5
@@ -35,7 +35,10 @@ export class RqgCalculations {
     return hp;
   }
 
-  public static damageBonus(str: number | undefined, siz: number | undefined): string {
+  public static damageBonus(
+    str: number | null | undefined,
+    siz: number | null | undefined,
+  ): string {
     if (str == null || siz == null) {
       return "0";
     }
@@ -48,7 +51,10 @@ export class RqgCalculations {
     }
   }
 
-  public static spiritCombatDamage(pow: number | undefined, cha: number | undefined): string {
+  public static spiritCombatDamage(
+    pow: number | null | undefined,
+    cha: number | null | undefined,
+  ): string {
     if (pow == null || cha == null) {
       return "0";
     }
@@ -61,17 +67,17 @@ export class RqgCalculations {
     }
   }
 
-  public static healingRate(con: number | undefined): number {
+  public static healingRate(con: number | null | undefined): number {
     return con ? Math.ceil(con / 6) : 0;
   }
 
   public static skillCategoryModifiers(
-    str: number | undefined,
-    siz: number | undefined,
-    dex: number | undefined,
-    int: number | undefined,
-    pow: number | undefined,
-    cha: number | undefined,
+    str: number | null | undefined,
+    siz: number | null | undefined,
+    dex: number | null | undefined,
+    int: number | null | undefined,
+    pow: number | null | undefined,
+    cha: number | null | undefined,
     isCreature: boolean,
   ) {
     if (isCreature) {
@@ -131,7 +137,7 @@ export class RqgCalculations {
     };
   }
 
-  public static linearMod(value: number | undefined): number {
+  public static linearMod(value: number | null | undefined): number {
     if (!value) {
       // undefined or 0
       return 0;
@@ -139,7 +145,7 @@ export class RqgCalculations {
     return (Math.ceil(value / 4) - 3) * 5;
   }
 
-  public static flattenedMod(value: number | undefined): number {
+  public static flattenedMod(value: number | null | undefined): number {
     if (!value) {
       // undefined or 0
       return 0;
@@ -156,7 +162,7 @@ export class RqgCalculations {
 }
 
 // DEX Strike Rank lookup
-const dexSrTable: LookupTableEntry<number | undefined>[] = [
+const dexSrTable: LookupTableEntry<number | null | undefined>[] = [
   { from: -Infinity, to: 0, result: undefined },
   { from: 1, to: 5, result: 5 },
   { from: 6, to: 8, result: 4 },
@@ -167,7 +173,7 @@ const dexSrTable: LookupTableEntry<number | undefined>[] = [
 ];
 
 // SIZ Strike Rank lookup
-const sizSrTable: LookupTableEntry<number | undefined>[] = [
+const sizSrTable: LookupTableEntry<number | null | undefined>[] = [
   { from: -Infinity, to: 0, result: undefined },
   { from: 1, to: 6, result: 3 },
   { from: 7, to: 14, result: 2 },

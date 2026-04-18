@@ -4,8 +4,8 @@ import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { mockItemsWithVirtualNode } from "../../../test/mocks/mockItemsForVirtualNodes";
 import { ItemTree } from "./ItemTree";
 import { isDocumentSubType, mergeArraysById } from "../../system/util";
-import type { WeaponItem } from "@item-model/weaponData.ts";
-import type { GearItem } from "@item-model/gearData.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
 import { describe, it, expect } from "vitest";
 import type { RqgActor } from "@actors/rqgActor";
 

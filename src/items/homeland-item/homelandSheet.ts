@@ -4,7 +4,7 @@ import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";
 import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { HomelandItem } from "@item-model/homelandData.ts";
+import type { HomelandItem } from "@item-model/homelandDataModel.ts";
 
 export interface HomelandSheetData {
   allRuneOptions: SelectOptionData<string>[];

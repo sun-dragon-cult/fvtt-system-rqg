@@ -11,7 +11,7 @@ import {
 import { systemId } from "./config";
 import { Rqid } from "./api/rqidApi";
 import type { RqgItem } from "../items/rqgItem";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes";
 

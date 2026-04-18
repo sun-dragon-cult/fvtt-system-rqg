@@ -17,9 +17,9 @@ import type {
 } from "./RuneMagicRollDialogData.types.ts";
 import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { SpellItem } from "@item-model/spell.ts";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 

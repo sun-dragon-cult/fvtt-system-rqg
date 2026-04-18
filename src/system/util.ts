@@ -1,5 +1,5 @@
 import type { RqgActor } from "../actors/rqgActor";
-import { ItemTypeEnum, type RqgItemDataSource } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
@@ -291,7 +291,6 @@ export function assertDocumentSubType<
 export function isDocumentSubType<
   T extends
     | Document.WithSubTypes
-    | RqgItemDataSource
     | RqgItem
     | RqgActor
     | RqidEnabledDocument
@@ -300,7 +299,6 @@ export function isDocumentSubType<
 >(
   document:
     | Document.WithSubTypes
-    | RqgItemDataSource
     | RqgItem
     | RqgActor
     | RqidEnabledDocument

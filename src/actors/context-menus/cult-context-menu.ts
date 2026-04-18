@@ -9,7 +9,7 @@ import {
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { Rqid } from "../../system/api/rqidApi";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const cultMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [

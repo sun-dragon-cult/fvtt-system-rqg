@@ -1,9 +1,49 @@
+import type { RqgItem } from "@items/rqgItem.ts";
+import { RqidLink } from "../shared/rqidLink";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
-import { damageType } from "./weaponData";
 import { enumChoices } from "../shared/enumChoices";
+
+export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
+
+export const damageType = {
+  Crush: "crush",
+  Slash: "slash",
+  Impale: "impale",
+  Parry: "parry",
+  Special: "special",
+} as const;
+export type DamageType = (typeof damageType)[keyof typeof damageType];
+
+export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(
+  (damageType) => ({
+    value: damageType,
+    label: "RQG.Item.Weapon.DamageTypeEnum." + damageType,
+  }),
+);
+
+export type UsageType = "oneHand" | "twoHand" | "offHand" | "missile";
+
+export type CombatManeuver = {
+  //** name used to identify this maneuver */
+  name: string;
+  damageType: DamageType | string;
+  description?: string | null;
+};
+
+export type Usage = {
+  /** The corresponding skill */
+  skillRqidLink: RqidLink | undefined;
+  combatManeuvers: CombatManeuver[];
+  /** Weapon damage formula */
+  damage: string;
+  minStrength: number;
+  minDexterity: number;
+  //** Melee weapon SR */
+  strikeRank?: number | null;
+};
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 

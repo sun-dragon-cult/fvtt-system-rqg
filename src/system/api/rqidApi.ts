@@ -14,8 +14,8 @@ import {
 } from "../../data-model/shared/rqgDocumentFlags";
 
 import Document = foundry.abstract.Document;
-import type { SkillItem } from "@item-model/skillData.ts";
-import type { ArmorItem } from "@item-model/armorData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
+import type { ArmorItem } from "@item-model/armorDataModel.ts";
 import type { RqidEnabledDocument } from "../../global";
 
 // TODO Look into enhancing typing of rqid strings like this

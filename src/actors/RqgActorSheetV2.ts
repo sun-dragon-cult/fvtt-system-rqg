@@ -1,9 +1,5 @@
 import type { RqgActorSheetV2Context } from "./rqgActorSheetV2.types";
-import type {
-  CharacterActor,
-  CharacterDataPropertiesData,
-} from "../data-model/actor-data/rqgActorData";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
 import {
@@ -22,10 +18,10 @@ import {
 import type { RqgItem } from "../items/rqgItem";
 import type { RqgActor } from "./rqgActor";
 import type { AbilityItem, PhysicalItem } from "@item-model/itemTypes.ts";
-import type { ArmorItem } from "@item-model/armorData.ts";
-import type { OccupationItem } from "@item-model/occupationData.ts";
+import type { ArmorItem } from "@item-model/armorDataModel.ts";
+import type { OccupationItem } from "@item-model/occupationDataModel.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
 import {
   applyDamageBonusToFormula,
@@ -58,9 +54,9 @@ import {
   onDragLeave,
   updateRqidLink,
 } from "../documents/dragDrop";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
-import type { GearItem } from "@item-model/gearData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
@@ -165,7 +161,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
     // Spread the DataModel into a plain object to capture live (prepared) data.
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
-    const system = { ...this.actor.system } as CharacterDataPropertiesData;
+    const system = { ...this.actor.system } as CharacterActor["system"];
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);

@@ -1,4 +1,4 @@
-import { RuneTypeEnum, type RuneItem } from "@item-model/runeData.ts";
+import { RuneTypeEnum, type RuneItem } from "@item-model/runeDataModel.ts";
 import { localize, getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
 import { systemId } from "../../system/config";

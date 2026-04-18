@@ -4,7 +4,7 @@ import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { isDocumentSubType } from "../../system/util.ts";
-import type { GearItem } from "@item-model/gearData.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
 
 export class Gear extends AbstractEmbeddedItem {
   static override preUpdateItem(actor: RqgActor, gear: RqgItem, updates: object[]): void {

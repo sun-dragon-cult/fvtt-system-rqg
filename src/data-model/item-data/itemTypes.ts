@@ -1,21 +1,9 @@
-import type { ArmorDataProperties, ArmorDataSource, ArmorItem } from "./armorData";
-import type { PassionDataProperties, PassionDataSource, PassionItem } from "./passionData";
-import type { HitLocationDataProperties, HitLocationDataSource } from "./hitLocationData";
-import type { GearDataProperties, GearDataSource, GearItem } from "./gearData";
-import type { SpiritMagicDataProperties, SpiritMagicDataSource } from "./spiritMagicData";
-import type { CultDataProperties, CultDataSource } from "./cultData";
-import type { RuneMagicDataProperties, RuneMagicDataSource } from "./runeMagicData";
-import type { SkillDataProperties, SkillDataSource, SkillItem } from "./skillData";
-import type { RuneDataProperties, RuneDataSource, RuneItem } from "./runeData";
-import type { WeaponDataProperties, WeaponDataSource, WeaponItem } from "./weaponData";
-import type {
-  HomelandDataProperties as HomelandDataProperties,
-  HomelandDataSource,
-} from "./homelandData";
-import type {
-  OccupationDataProperties as OccupationDataProperties,
-  OccupationDataSource,
-} from "./occupationData";
+import type { ArmorItem } from "./armorDataModel";
+import type { PassionItem } from "./passionDataModel";
+import type { GearItem } from "./gearDataModel";
+import type { SkillItem } from "./skillDataModel";
+import type { RuneItem } from "./runeDataModel";
+import type { WeaponItem } from "./weaponDataModel";
 import type { AbstractEmbeddedItem } from "@items/abstractEmbeddedItem.ts";
 
 import { Armor } from "@items/armor-item/armor.ts";
@@ -76,34 +64,6 @@ export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = ne
   [ItemTypeEnum.SpiritMagic, SpiritMagic],
   [ItemTypeEnum.Weapon, Weapon],
 ]);
-
-export type RqgItemDataSource =
-  | ArmorDataSource
-  | CultDataSource
-  | GearDataSource
-  | HitLocationDataSource
-  | HomelandDataSource
-  | OccupationDataSource
-  | PassionDataSource
-  | RuneDataSource
-  | RuneMagicDataSource
-  | SkillDataSource
-  | SpiritMagicDataSource
-  | WeaponDataSource;
-
-export type RqgItemDataProperties =
-  | ArmorDataProperties
-  | CultDataProperties
-  | GearDataProperties
-  | HitLocationDataProperties
-  | HomelandDataProperties
-  | OccupationDataProperties
-  | PassionDataProperties
-  | RuneDataProperties
-  | RuneMagicDataProperties
-  | SkillDataProperties
-  | SpiritMagicDataProperties
-  | WeaponDataProperties;
 
 export type PhysicalItem = GearItem | WeaponItem | ArmorItem;
 

@@ -9,7 +9,7 @@ import {
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { GearItem } from "@item-model/gearData.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
 
 export const gearMenuOptions = (actor: RqgActor): ContextMenu.Entry<HTMLElement>[] => [
   {

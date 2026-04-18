@@ -3,7 +3,7 @@ import { isDocumentSubType, localize } from "../../system/util";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 
 import Roll = foundry.dice.Roll;
 

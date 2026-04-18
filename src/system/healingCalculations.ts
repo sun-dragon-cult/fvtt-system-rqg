@@ -1,15 +1,7 @@
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import { assertDocumentSubType, RqgError } from "./util";
-import type {
-  HitLocationDataSource,
-  HitLocationHealthState,
-  HitLocationItem,
-} from "@item-model/hitLocationData.ts";
-import {
-  ActorTypeEnum,
-  type CharacterActor,
-  type CharacterDataSource,
-} from "../data-model/actor-data/rqgActorData";
+import type { HitLocationHealthState, HitLocationItem } from "@item-model/hitLocationDataModel.ts";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RqgActor } from "../actors/rqgActor";
 import type { RqgItem } from "../items/rqgItem";
@@ -18,9 +10,9 @@ import type { DeepPartial } from "fvtt-types/utils";
 
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */
-  hitLocationUpdates: DeepPartial<HitLocationDataSource>;
+  hitLocationUpdates: Item.UpdateData;
   /** Updates to the actor health */
-  actorUpdates: DeepPartial<CharacterDataSource>;
+  actorUpdates: Actor.UpdateData;
   /** Updates to make limbs useful again */
   usefulLegs: DeepPartial<Item.Source>[];
 }

@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../../../data-model/shared/rqidLink";
-import type { UsageType, WeaponItem } from "@item-model/weaponData.ts";
+import type { UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../../data-model/actor-data/rqgActorData.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import { isDocumentSubType } from "../../util.ts";

@@ -2,7 +2,7 @@ import {
   OccupationalSkill,
   type OccupationItem,
   StandardOfLivingEnum,
-} from "@item-model/occupationData.ts";
+} from "@item-model/occupationDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertHtmlElement, getDomDataset, isDocumentSubType, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
@@ -12,8 +12,8 @@ import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { DocumentSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { HomelandItem } from "@item-model/homelandData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { HomelandItem } from "@item-model/homelandDataModel.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 
 export interface OccupationSheetData {
   homelandsJoined: string;

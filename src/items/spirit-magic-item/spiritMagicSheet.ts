@@ -4,7 +4,7 @@ import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 
 interface SpiritMagicSheetData {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];

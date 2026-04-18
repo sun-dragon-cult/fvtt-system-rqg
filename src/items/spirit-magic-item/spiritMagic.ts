@@ -2,7 +2,7 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { assertDocumentSubType, localize } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export class SpiritMagic extends AbstractEmbeddedItem {

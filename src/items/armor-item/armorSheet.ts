@@ -3,7 +3,7 @@ import {
   armorTypeTranslationKeys,
   materialTranslationKeys,
   type ArmorItem,
-} from "@item-model/armorData.ts";
+} from "@item-model/armorDataModel.ts";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import {

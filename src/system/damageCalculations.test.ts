@@ -1,6 +1,6 @@
 import { DamageCalculations } from "./damageCalculations";
 import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import type { CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 import { describe, it, expect, beforeEach } from "vitest";
 

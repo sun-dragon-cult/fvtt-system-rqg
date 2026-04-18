@@ -4,9 +4,9 @@ import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
 import { SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 
 interface RuneMagicSheetContext extends RqgItemSheetContext {
   allRuneOptions: SelectOptionData<string>[];

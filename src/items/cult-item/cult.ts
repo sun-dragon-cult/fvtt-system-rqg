@@ -5,9 +5,9 @@ import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "../rqgItem";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 
 export class Cult extends AbstractEmbeddedItem {
   /*

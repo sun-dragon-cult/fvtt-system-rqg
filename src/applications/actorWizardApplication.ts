@@ -9,7 +9,7 @@ import {
   getDocumentFromUuid,
   isDocumentSubType,
 } from "../system/util";
-import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
@@ -32,11 +32,11 @@ type ActorWizardBaseCtor = (abstract new (
 
 const ActorWizardBase = HandlebarsApplicationMixin(ApplicationV2) as unknown as ActorWizardBaseCtor;
 
-import type { RuneItem } from "@item-model/runeData.ts";
-import type { PassionItem } from "@item-model/passionData.ts";
-import type { HomelandItem } from "@item-model/homelandData.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
+import type { PassionItem } from "@item-model/passionDataModel.ts";
+import type { HomelandItem } from "@item-model/homelandDataModel.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 
 /**
  * Template context types for the Actor Wizard.

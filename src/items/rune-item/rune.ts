@@ -3,7 +3,7 @@ import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
-import type { RuneItem } from "@item-model/runeData.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
 
 export class Rune extends AbstractEmbeddedItem {
   static override preUpdateItem(

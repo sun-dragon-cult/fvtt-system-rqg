@@ -5,8 +5,8 @@ import { testItems } from "./itemTree.testdata";
 import { mockItemsWithLoop } from "../../../test/mocks/mockItemsForLocationLoop.ts";
 import { mockItemsWithVirtualNode } from "../../../test/mocks/mockItemsForVirtualNodes.ts";
 import { isDocumentSubType } from "../../system/util.ts";
-import type { WeaponItem } from "@item-model/weaponData.ts";
-import type { GearItem } from "@item-model/gearData.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
 import { describe, it, expect, beforeEach } from "vitest";
 import type { RqgActor } from "@actors/rqgActor.ts";
 

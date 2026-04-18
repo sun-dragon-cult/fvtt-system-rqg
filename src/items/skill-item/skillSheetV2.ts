@@ -1,4 +1,4 @@
-import { SkillCategoryEnum, type SkillItem } from "@item-model/skillData.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skillDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
 import { assertDocumentSubType, getSelectRuneOptions } from "../../system/util";

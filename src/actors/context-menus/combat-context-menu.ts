@@ -9,9 +9,9 @@ import {
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 
 export const combatMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
   {

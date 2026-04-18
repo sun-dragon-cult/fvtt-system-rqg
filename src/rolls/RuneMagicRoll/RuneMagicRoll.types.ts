@@ -1,5 +1,5 @@
-import type { RuneItem } from "@item-model/runeData.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 
 export type Modifier = { description: string; value: number };
 

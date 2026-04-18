@@ -2,7 +2,7 @@ import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
 import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 
 interface SpiritMagicSheetContext extends RqgItemSheetContext {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];

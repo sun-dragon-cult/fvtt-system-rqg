@@ -11,7 +11,7 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 
 export const runeMagicMenuOptions = (actor: RqgActor): ContextMenu.Entry<HTMLElement>[] => [

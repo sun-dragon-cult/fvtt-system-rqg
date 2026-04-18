@@ -6,7 +6,7 @@ import { assertDocumentSubType } from "./util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgActor } from "../actors/rqgActor";
 import { RqgItem } from "../items/rqgItem";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 import { describe, it, expect, beforeEach } from "vitest";
 

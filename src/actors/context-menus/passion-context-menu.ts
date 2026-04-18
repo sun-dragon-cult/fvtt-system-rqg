@@ -9,7 +9,7 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
-import type { PassionItem } from "@item-model/passionData.ts";
+import type { PassionItem } from "@item-model/passionDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const passionMenuOptions = (

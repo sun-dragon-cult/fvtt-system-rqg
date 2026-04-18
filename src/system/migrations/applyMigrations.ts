@@ -1,14 +1,13 @@
 import { localize } from "../util";
 import { RqgItem } from "@items/rqgItem.ts";
 import { systemId } from "../config";
-import { type RqgActorDataSource } from "../../data-model/actor-data/rqgActorData.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
 
 export type ItemMigration = (
   itemData: RqgItem,
   owningActorData?: RqgActor,
 ) => Promise<Item.UpdateData>;
-export type ActorMigration = (actorData: RqgActorDataSource) => Actor.UpdateData;
+export type ActorMigration = (actorData: RqgActor) => Actor.UpdateData;
 
 interface ActorMigrationResult {
   actorUpdateData: Actor.UpdateData;
@@ -297,7 +296,7 @@ async function getActorMigrationUpdates(
   let actorUpdateData: Actor.UpdateData = {};
   const itemUpdateData: Item.UpdateData[] = [];
 
-  actorMigrations.forEach((fn: (actorData: RqgActorDataSource) => Actor.UpdateData) => {
+  actorMigrations.forEach((fn: (actorData: RqgActor) => Actor.UpdateData) => {
     actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fn(actorData as any), {
       performDeletions: false,
     }) as Actor.UpdateData;

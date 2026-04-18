@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { isDocumentSubType, localize } from "../../util";
-import type { RuneItem } from "@item-model/runeData.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 
 export async function migrateRuneItemType(itemData: RqgItem): Promise<Item.UpdateData> {

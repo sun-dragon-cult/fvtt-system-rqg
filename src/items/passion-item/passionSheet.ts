@@ -1,4 +1,4 @@
-import { PassionsEnum, type PassionItem } from "@item-model/passionData.ts";
+import { PassionsEnum, type PassionItem } from "@item-model/passionDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgItemSheet } from "../RqgItemSheet";
 import { systemId } from "../../system/config";

@@ -3,8 +3,8 @@ import type { ActorSheetData } from "@items/shared/sheetInterfaces.types.ts";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
-import type { GearItem } from "@item-model/gearData.ts";
-import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
 /**

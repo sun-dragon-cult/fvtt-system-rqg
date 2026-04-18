@@ -2,7 +2,7 @@ import {
   OccupationalSkill,
   type OccupationItem,
   StandardOfLivingEnum,
-} from "@item-model/occupationData.ts";
+} from "@item-model/occupationDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
@@ -11,8 +11,8 @@ import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { HomelandItem } from "@item-model/homelandData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { HomelandItem } from "@item-model/homelandDataModel.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 
 interface OccupationSheetContext extends RqgItemSheetContext {
   homelandsJoined: string;

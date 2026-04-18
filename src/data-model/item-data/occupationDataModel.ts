@@ -1,7 +1,25 @@
+import type { RqgItem } from "@items/rqgItem.ts";
+import { RqidLink } from "../shared/rqidLink";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
-import { StandardOfLivingEnum } from "./occupationData";
 import { enumChoices } from "../shared/enumChoices";
+
+export type OccupationItem = RqgItem & { system: Item.SystemOfType<"occupation"> };
+
+export const StandardOfLivingEnum = {
+  Destitute: "destitute",
+  Poor: "poor",
+  Free: "free",
+  Noble: "noble",
+  PettyKing: "petty-king",
+} as const;
+export type StandardOfLivingEnum = (typeof StandardOfLivingEnum)[keyof typeof StandardOfLivingEnum];
+
+export class OccupationalSkill {
+  incomeSkill: boolean = false;
+  bonus: number = 0;
+  skillRqidLink: RqidLink | undefined = undefined;
+}
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 

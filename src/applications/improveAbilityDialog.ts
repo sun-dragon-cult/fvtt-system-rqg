@@ -13,9 +13,9 @@ import {
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { AbilityImprovementData } from "./improveAbilityDialog.types";
 import { RqgCalculations } from "../system/rqgCalculations";
-import type { PassionItem } from "@item-model/passionData.ts";
-import type { RuneItem } from "@item-model/runeData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { PassionItem } from "@item-model/passionDataModel.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 
 /** Shows a dialog for improving a Passion, Rune, or Skill */

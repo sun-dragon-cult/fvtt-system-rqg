@@ -11,7 +11,7 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { Rqid } from "../../system/api/rqidApi";
-import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 
 export class Weapon extends AbstractEmbeddedItem {
   static override preUpdateItem(

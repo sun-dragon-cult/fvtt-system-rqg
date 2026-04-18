@@ -2,7 +2,7 @@ import { RqgActor } from "../actors/rqgActor";
 import { convertFormValueToString, isDocumentSubType, localize } from "../system/util";
 import { systemId } from "../system/config";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { type CultItem, CultRankEnum } from "@item-model/cultData.ts";
+import { type CultItem, CultRankEnum } from "@item-model/cultDataModel.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 
 //**Shows a dialog for improving a Characteristic */

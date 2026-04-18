@@ -1,9 +1,5 @@
 import { RqgCalculations } from "../system/rqgCalculations";
-import {
-  ActorTypeEnum,
-  type CharacterActor,
-  type CharacterDataSource,
-} from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum, type PhysicalItem, ResponsibleItemClass } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgActorSheetV2 } from "./RqgActorSheetV2";
@@ -31,16 +27,16 @@ import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRo
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
-import type { DamageType } from "@item-model/weaponData.ts";
+import type { DamageType } from "@item-model/weaponDataModel.ts";
 import { Skill } from "../items/skill-item/skill";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
 
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 
 import Actor = foundry.documents.Actor;
 
@@ -480,9 +476,9 @@ export class RqgActor extends Actor {
   }
 
   private calcMaxEncumbrance(
-    str: number | undefined,
-    con: number | undefined,
-    carryingFactor: number | undefined,
+    str: number | null | undefined,
+    con: number | null | undefined,
+    carryingFactor: number | null | undefined,
   ): number {
     if (!str) {
       return 0;
@@ -614,7 +610,7 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
     const actorDex =
-      (changes as DeepPartial<CharacterDataSource>)?.system?.characteristics?.dexterity?.value ??
+      (changes as DeepPartial<CharacterActor>)?.system?.characteristics?.dexterity?.value ??
       this.system.characteristics.dexterity.value;
     if (actorDex != null) {
       const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
@@ -632,13 +628,13 @@ export class RqgActor extends Actor {
 
   // Return shorthand access to actor data & characteristics
   private actorCharacteristics(): {
-    str: number | undefined;
-    con: number | undefined;
-    siz: number | undefined;
-    dex: number | undefined;
-    int: number | undefined;
-    pow: number | undefined;
-    cha: number | undefined;
+    str: number | null;
+    con: number | null;
+    siz: number | null;
+    dex: number | null;
+    int: number | null;
+    pow: number | null;
+    cha: number | null;
   } {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const characteristics = this.system.characteristics;

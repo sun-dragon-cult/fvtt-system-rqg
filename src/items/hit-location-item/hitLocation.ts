@@ -2,8 +2,8 @@ import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
-import type { ArmorItem } from "@item-model/armorData.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { ArmorItem } from "@item-model/armorDataModel.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export class HitLocation extends AbstractEmbeddedItem {

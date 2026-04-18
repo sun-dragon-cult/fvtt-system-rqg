@@ -8,16 +8,16 @@ import type {
   TemplateWeaponItem,
 } from "./rqgActorSheet.types";
 import type { RqgItem } from "../items/rqgItem";
-import type { GearItem } from "@item-model/gearData.ts";
-import type { CultItem } from "@item-model/cultData.ts";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
-import type { RuneItem } from "@item-model/runeData.ts";
-import { RuneTypeEnum } from "@item-model/runeData.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
-import type { WeaponItem } from "@item-model/weaponData.ts";
-import type { PassionItem } from "@item-model/passionData.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
+import { SkillCategoryEnum } from "@item-model/skillDataModel.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
+import { RuneTypeEnum } from "@item-model/runeDataModel.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { PassionItem } from "@item-model/passionDataModel.ts";
 import {
   assertDocumentSubType,
   formatListByWorldLanguage,
@@ -26,7 +26,7 @@ import {
   localize,
   range,
 } from "../system/util";
-import { CultRankEnum } from "@item-model/cultData.ts";
+import { CultRankEnum } from "@item-model/cultDataModel.ts";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { physicalItemTypes } from "../data-model/item-data/IPhysicalItem";
 import { systemId } from "../system/config";
@@ -277,7 +277,7 @@ export function getFreeInt(actor: CharacterActor, spiritMagicPointSum: number): 
  * @param dexSr - Dexterity strike rank
  * @returns Array of SR display strings with reload icons
  */
-export function getLoadedMissileSrDisplay(dexSr: number | undefined): string[] {
+export function getLoadedMissileSrDisplay(dexSr: number | null | undefined): string[] {
   const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
   const loadedMissileSr = [
     ["1", reloadIcon, "6", reloadIcon, "11"],
@@ -295,7 +295,7 @@ export function getLoadedMissileSrDisplay(dexSr: number | undefined): string[] {
  * @param dexSr - Dexterity strike rank
  * @returns Comma-separated SR string
  */
-export function getLoadedMissileSr(dexSr: number | undefined): string {
+export function getLoadedMissileSr(dexSr: number | null | undefined): string {
   const loadedMissileSr = ["1,6,11", "1,7", "2,9", "3,11", "4", "5"];
   return dexSr != null ? (loadedMissileSr[dexSr] ?? "") : "";
 }
@@ -305,7 +305,7 @@ export function getLoadedMissileSr(dexSr: number | undefined): string {
  * @param dexSr - Dexterity strike rank
  * @returns Array of SR display strings with reload icons
  */
-export function getUnloadedMissileSrDisplay(dexSr: number | undefined): string[] {
+export function getUnloadedMissileSrDisplay(dexSr: number | null | undefined): string[] {
   const reloadIcon = CONFIG.RQG.missileWeaponReloadIcon;
   const unloadedMissileSr = [
     [reloadIcon, "5", reloadIcon, "10"],
@@ -323,7 +323,7 @@ export function getUnloadedMissileSrDisplay(dexSr: number | undefined): string[]
  * @param dexSr - Dexterity strike rank
  * @returns Comma-separated SR string
  */
-export function getUnloadedMissileSr(dexSr: number | undefined): string {
+export function getUnloadedMissileSr(dexSr: number | null | undefined): string {
   const unloadedMissileSr = ["5,10", "6,12", "7", "8", "9", "10"];
   return dexSr != null ? (unloadedMissileSr[dexSr] ?? "") : "";
 }
@@ -335,15 +335,15 @@ export function getUnloadedMissileSr(dexSr: number | undefined): string {
  * @returns Base strike rank or undefined if both inputs are undefined
  */
 export function getBaseStrikeRank(
-  dexStrikeRank: number | undefined,
-  sizStrikeRank: number | undefined,
+  dexStrikeRank: number | null | undefined,
+  sizStrikeRank: number | null | undefined,
 ): number | undefined {
   if (dexStrikeRank == null && sizStrikeRank == null) {
     return undefined;
   }
 
   return [dexStrikeRank, sizStrikeRank].reduce(
-    (acc: number, value: number | undefined) => (Number(value) ? acc + Number(value) : acc),
+    (acc: number, value: number | null | undefined) => (Number(value) ? acc + Number(value) : acc),
     0,
   );
 }

@@ -20,7 +20,7 @@ import { updateChatMessage } from "../sockets/SocketableRequests";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import type { DamageType, WeaponItem } from "@item-model/weaponData.ts";
+import type { DamageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import type { CombatChatMessage } from "../data-model/chat-data/combatChatMessage.types";
 
 /**

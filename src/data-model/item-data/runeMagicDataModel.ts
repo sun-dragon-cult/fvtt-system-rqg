@@ -1,5 +1,8 @@
+import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { spellSchemaFields } from "../shared/spellSchemaFields";
+
+export type RuneMagicItem = RqgItem & { system: Item.SystemOfType<"runeMagic"> };
 import { rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 
 const { BooleanField, StringField } = foundry.data.fields;

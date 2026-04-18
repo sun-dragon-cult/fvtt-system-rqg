@@ -6,8 +6,8 @@ import {
   organizeEmbeddedItems,
 } from "./rqgActorSheetDataPrep";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { RuneTypeEnum } from "@item-model/runeData.ts";
-import { SkillCategoryEnum } from "@item-model/skillData.ts";
+import { RuneTypeEnum } from "@item-model/runeDataModel.ts";
+import { SkillCategoryEnum } from "@item-model/skillDataModel.ts";
 
 type ItemCollection = any[] & { get: (id: string) => any };
 

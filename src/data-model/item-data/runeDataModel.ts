@@ -1,8 +1,30 @@
+import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
-import { RuneTypeEnum, defaultRuneType } from "./runeData";
 import { enumChoices } from "../shared/enumChoices";
+
+export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
+
+export const RuneTypeEnum = {
+  Element: "element",
+  Power: "power",
+  Form: "form",
+  Condition: "condition",
+  Technique: "technique",
+} as const;
+export type RuneTypeEnum = (typeof RuneTypeEnum)[keyof typeof RuneTypeEnum];
+
+export type RuneType = {
+  type: RuneTypeEnum;
+  /** Translated name of the runeType */
+  name: string;
+};
+
+export const defaultRuneType = {
+  type: RuneTypeEnum.Form,
+  name: RuneTypeEnum.Form,
+};
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 

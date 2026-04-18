@@ -11,7 +11,7 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [

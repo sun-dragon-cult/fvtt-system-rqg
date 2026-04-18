@@ -2,7 +2,7 @@ import { getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import type { HomelandItem } from "@item-model/homelandData.ts";
+import type { HomelandItem } from "@item-model/homelandDataModel.ts";
 
 interface HomelandSheetContext extends RqgItemSheetContext {
   allRuneOptions: SelectOptionData<string>[];

@@ -8,11 +8,7 @@ import {
 } from "../../system/util";
 import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
-import {
-  type CharacterActor,
-  type CharacterDataSourceData,
-} from "../../data-model/actor-data/rqgActorData.ts";
-import type { DeepPartial } from "fvtt-types/utils";
+import { type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const characteristicMenuOptions = (
   actor: CharacterActor,
@@ -148,8 +144,8 @@ export const characteristicMenuOptions = (
 
 async function getCharacteristicUpdate(
   characteristic: string,
-  formula: string | undefined,
-): Promise<Actor.UpdateData & { system: DeepPartial<CharacterDataSourceData> }> {
+  formula: string | null | undefined,
+): Promise<Actor.UpdateData> {
   if (!formula || !Roll.validate(formula)) {
     return {
       system: { characteristics: { [characteristic]: { value: "" } } },
@@ -176,7 +172,7 @@ export async function initializeCharacteristic(
   let formula = char?.formula;
 
   if (formula == null || !Roll.validate(formula)) {
-    formula = undefined;
+    formula = null;
   }
 
   const updateData = await getCharacteristicUpdate(characteristic, formula);

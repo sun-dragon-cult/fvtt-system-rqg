@@ -28,7 +28,7 @@ import type {
   Usage,
   UsageType,
   WeaponItem,
-} from "@item-model/weaponData.ts";
+} from "@item-model/weaponDataModel.ts";
 import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
 import {
   combatOutcome,
@@ -38,7 +38,7 @@ import {
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import { updateChatMessage } from "../../sockets/SocketableRequests";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
-import type { SkillItem } from "@item-model/skillData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;

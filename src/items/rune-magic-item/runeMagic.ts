@@ -10,12 +10,12 @@ import {
   RqgError,
 } from "../../system/util";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
-import type { RuneItem } from "@item-model/runeData.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
 import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
-import type { CultItem } from "@item-model/cultData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
 
 type RpAndMpCost = { mp: number; rp: number; exp: boolean };
 

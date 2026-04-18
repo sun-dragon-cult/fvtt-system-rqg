@@ -19,7 +19,7 @@ import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { CombatManeuver, Usage, UsageType, WeaponItem } from "@item-model/weaponData.ts";
+import type { CombatManeuver, Usage, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
@@ -33,8 +33,8 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { SkillItem } from "@item-model/skillData.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 

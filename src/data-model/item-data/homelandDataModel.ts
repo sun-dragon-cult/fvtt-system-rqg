@@ -1,5 +1,8 @@
+import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
+
+export type HomelandItem = RqgItem & { system: Item.SystemOfType<"homeland"> };
 
 const { StringField } = foundry.data.fields;
 

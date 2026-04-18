@@ -1,7 +1,7 @@
 export interface Characteristic {
-  value: number | undefined;
-  formula: string | undefined;
-  hasExperience?: boolean;
+  value: number | null;
+  formula: string | null;
+  hasExperience?: boolean | null;
 }
 
 export interface Characteristics {

@@ -2,7 +2,7 @@ import {
   hitLocationHealthStatuses,
   type HitLocationItem,
   HitLocationTypesEnum,
-} from "@item-model/hitLocationData.ts";
+} from "@item-model/hitLocationDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { type ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";

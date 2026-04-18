@@ -42,11 +42,7 @@ import {
 } from "../system/util";
 import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
-import {
-  ActorTypeEnum,
-  type CharacterActor,
-  type CharacterDataPropertiesData,
-} from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { RQG_CONFIG, systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqidLink";
@@ -64,7 +60,7 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
-import { type CultItem } from "@item-model/cultData.ts";
+import { type CultItem } from "@item-model/cultDataModel.ts";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
@@ -76,12 +72,12 @@ import {
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../system/combatCalculations";
 import type { NewCombatant } from "../combat/rqgCombatant.types";
-import type { RuneMagicItem } from "@item-model/runeMagicData.ts";
-import type { WeaponItem } from "@item-model/weaponData.ts";
-import type { GearItem } from "@item-model/gearData.ts";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
-import type { OccupationItem } from "@item-model/occupationData.ts";
-import type { ArmorItem } from "@item-model/armorData.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
+import type { OccupationItem } from "@item-model/occupationDataModel.ts";
+import type { ArmorItem } from "@item-model/armorDataModel.ts";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 
 import ActorSheet = foundry.appv1.sheets.ActorSheet;
@@ -189,7 +185,7 @@ export class RqgActorSheet<
     this.incorrectRunes = [];
     // Spread the DataModel into a plain object to capture live (prepared) data.
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
-    const system = { ...this.actor.system } as CharacterDataPropertiesData;
+    const system = { ...this.actor.system } as CharacterActor["system"];
     const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items

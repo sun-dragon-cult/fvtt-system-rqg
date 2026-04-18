@@ -8,7 +8,7 @@ import {
 } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { HitLocationItem } from "@item-model/hitLocationData.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const hitLocationMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [

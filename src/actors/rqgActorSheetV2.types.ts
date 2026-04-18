@@ -2,7 +2,7 @@ import type { SheetRuneData, MainCult, UiSections } from "./rqgActorSheet.types"
 import type { RuneOpposedPair } from "./rqgActorSheetDataPrep";
 import type { RqgItem } from "../items/rqgItem";
 import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { CharacterDataPropertiesData } from "../data-model/actor-data/rqgActorData";
+import type { CharacterActor } from "../data-model/actor-data/rqgActorData";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 /**
@@ -16,7 +16,7 @@ export interface RqgActorSheetV2Context {
   isGM: boolean;
   isEditable: boolean;
   isEmbedded: boolean;
-  system: CharacterDataPropertiesData;
+  system: CharacterActor["system"];
   effects: unknown;
 
   /** Embedded items organized by type (from DataPrep.organizeEmbeddedItems). */

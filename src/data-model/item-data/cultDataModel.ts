@@ -1,8 +1,32 @@
+import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
-import { CultRankEnum } from "./cultData";
 import { enumChoices } from "../shared/enumChoices";
+
+export type CultItem = RqgItem & { system: Item.SystemOfType<"cult"> };
+
+export const CultRankEnum = {
+  LayMember: "layMember",
+  Initiate: "initiate",
+  GodTalker: "godTalker",
+  RunePriest: "runePriest",
+  RuneLord: "runeLord",
+  ChiefPriest: "chiefPriest",
+  HighPriest: "highPriest",
+} as const;
+export type CultRankEnum = (typeof CultRankEnum)[keyof typeof CultRankEnum];
+
+export interface JoinedCult {
+  cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name
+  tagline: string;
+  rank: CultRankEnum; // TODO You can be a Rune Lord and Priest!
+  // cultSkills: string[]; // TODO #204 +++ Link to system wide id...
+  // favouredPassions: string[]; // TODO Link to system wide id...
+  // cultEnchantments: string[]; // TODO Link to system wide id...
+  // cultStartingSkills: cultStartingSkill[] // TODO #204 +++ list of skills with base chance mod, see occupation
+  // cultSpiritMagic: string[]; // TODO Link to system wide id...
+}
 
 const { ArrayField, SchemaField, StringField } = foundry.data.fields;
 

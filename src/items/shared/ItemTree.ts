@@ -6,7 +6,7 @@ import {
   isDocumentSubType,
   localize,
 } from "../../system/util";
-import type { WeaponItem } from "@item-model/weaponData.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 import { physicalItemTypes } from "@item-model/IPhysicalItem";
 import type { RqgActor } from "@actors/rqgActor";
 

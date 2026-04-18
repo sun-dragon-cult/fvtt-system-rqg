@@ -1,5 +1,5 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { CultRankEnum, type CultItem } from "@item-model/cultData.ts";
+import { CultRankEnum, type CultItem } from "@item-model/cultDataModel.ts";
 import {
   isTruthy,
   getRequiredDomDataset,

@@ -11,7 +11,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
-import type { RuneItem } from "@item-model/runeData.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const runeMenuOptions = (

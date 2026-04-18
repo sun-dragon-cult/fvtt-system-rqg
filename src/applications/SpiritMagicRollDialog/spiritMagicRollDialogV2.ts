@@ -15,7 +15,7 @@ import { RqgItem } from "@items/rqgItem.ts";
 import { SpiritMagic } from "@items/spirit-magic-item/spiritMagic.ts";
 import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { SpiritMagicItem } from "@item-model/spiritMagicData.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
