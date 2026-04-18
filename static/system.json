@@ -67,6 +67,20 @@
     "ChatMessage": {
       "combat": {}
     },
+    "Item": {
+      "armor": {},
+      "cult": {},
+      "gear": {},
+      "hitLocation": {},
+      "homeland": {},
+      "occupation": {},
+      "passion": {},
+      "rune": {},
+      "runeMagic": {},
+      "skill": {},
+      "spiritMagic": {},
+      "weapon": {}
+    },
     "RegionBehavior": {
       "clickableScripts": {}
     }
