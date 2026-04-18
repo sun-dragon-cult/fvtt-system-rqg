@@ -7,7 +7,10 @@ const { ArrayField, NumberField, StringField } = foundry.data.fields;
 
 type HitLocationSchema = ReturnType<typeof HitLocationDataModel.defineSchema>;
 
-export class HitLocationDataModel extends RqgItemDataModel<HitLocationSchema> {
+export class HitLocationDataModel extends RqgItemDataModel<
+  HitLocationSchema,
+  { armorPoints: number }
+> {
   static override defineSchema() {
     return {
       dieFrom: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),

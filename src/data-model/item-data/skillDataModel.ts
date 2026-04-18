@@ -7,7 +7,10 @@ const { NumberField, StringField } = foundry.data.fields;
 
 type SkillSchema = ReturnType<typeof SkillDataModel.defineSchema>;
 
-export class SkillDataModel extends RqgItemDataModel<SkillSchema> {
+export class SkillDataModel extends RqgItemDataModel<
+  SkillSchema,
+  { chance: number; categoryMod: number }
+> {
   static override defineSchema() {
     return {
       ...abilitySchemaFields(),

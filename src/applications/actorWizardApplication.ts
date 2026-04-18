@@ -51,10 +51,10 @@ interface TemplateSystemData {
   choice?: CreationChoice;
 }
 
-/** Item with template-specific properties */
-interface TemplateItem extends RqgItem {
-  system: TemplateSystemData;
-}
+/** Item with template-specific properties (uses intersection to add choice to system) */
+type TemplateItem = RqgItem & {
+  system: RqgItem["system"] & TemplateSystemData;
+};
 
 /** RqidLink with choice property for template display */
 interface TemplateRqidLink extends RqidLink {

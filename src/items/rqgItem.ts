@@ -88,18 +88,18 @@ export class RqgItem extends Item {
     CONFIG.Item.documentClass = RqgItem;
 
     // Register DataModels for item subtypes
-    CONFIG.Item.dataModels["gear"] = GearDataModel as any;
-    CONFIG.Item.dataModels["armor"] = ArmorDataModel as any;
-    CONFIG.Item.dataModels["weapon"] = WeaponDataModel as any;
-    CONFIG.Item.dataModels["skill"] = SkillDataModel as any;
-    CONFIG.Item.dataModels["passion"] = PassionDataModel as any;
-    CONFIG.Item.dataModels["rune"] = RuneDataModel as any;
-    CONFIG.Item.dataModels["runeMagic"] = RuneMagicDataModel as any;
-    CONFIG.Item.dataModels["spiritMagic"] = SpiritMagicDataModel as any;
-    CONFIG.Item.dataModels["cult"] = CultDataModel as any;
-    CONFIG.Item.dataModels["hitLocation"] = HitLocationDataModel as any;
-    CONFIG.Item.dataModels["homeland"] = HomelandDataModel as any;
-    CONFIG.Item.dataModels["occupation"] = OccupationDataModel as any;
+    CONFIG.Item.dataModels["gear"] = GearDataModel;
+    CONFIG.Item.dataModels["armor"] = ArmorDataModel;
+    CONFIG.Item.dataModels["weapon"] = WeaponDataModel;
+    CONFIG.Item.dataModels["skill"] = SkillDataModel;
+    CONFIG.Item.dataModels["passion"] = PassionDataModel;
+    CONFIG.Item.dataModels["rune"] = RuneDataModel;
+    CONFIG.Item.dataModels["runeMagic"] = RuneMagicDataModel;
+    CONFIG.Item.dataModels["spiritMagic"] = SpiritMagicDataModel;
+    CONFIG.Item.dataModels["cult"] = CultDataModel;
+    CONFIG.Item.dataModels["hitLocation"] = HitLocationDataModel;
+    CONFIG.Item.dataModels["homeland"] = HomelandDataModel;
+    CONFIG.Item.dataModels["occupation"] = OccupationDataModel;
 
     const Items = foundry.documents.collections.Items;
 

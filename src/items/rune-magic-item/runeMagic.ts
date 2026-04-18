@@ -347,10 +347,10 @@ export class RuneMagic extends AbstractEmbeddedItem {
         );
       }
     }
-    const updateCultItemRunePoints: Actor.UpdateData = {
+    const updateCultItemRunePoints: Item.UpdateData = {
       _id: cult?.id,
       system: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
-    };
+    } as any; // runePoints is a cult-specific field not in the base Item update type
     await actor?.updateEmbeddedDocuments("Item", [updateCultItemRunePoints]);
     const updateActorMagicPoints = {
       system: { attributes: { magicPoints: { value: newMagicPointTotal } } },

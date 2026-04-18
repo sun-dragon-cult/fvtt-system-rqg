@@ -319,7 +319,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     assertHtmlElement<HTMLSelectElement>(usageSelectElement);
 
     await this.weaponItem.update({
-      system: { defaultUsage: usageSelectElement.value },
+      system: { defaultUsage: usageSelectElement.value as UsageType },
     });
 
     this.warnIfSelectedWeaponHasBrokenSkill(this.weaponItem);

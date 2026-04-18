@@ -306,8 +306,7 @@ async function submitImproveAbilityDialog(
   }
 
   if (adapter.abilityType === "skill") {
-    // @ts-expect-error TODO item type should contain derived data
-    const newGainedChance: number = Number(abilityData.gainedChance) + gain;
+    const newGainedChance: number = Number((abilityData as any).gainedChance) + gain;
     await item.update({
       system: { hasExperience: false, gainedChance: newGainedChance },
     });

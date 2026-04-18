@@ -1,12 +1,4 @@
-import type {
-  RqgItemDataProperties,
-  RqgItemDataSource,
-  RqgItemType,
-} from "@item-model/itemTypes.ts";
-import type {
-  RqgActorDataProperties,
-  RqgActorDataSource,
-} from "./data-model/actor-data/rqgActorData";
+import type { RqgItemType } from "@item-model/itemTypes.ts";
 import type { RqgConfig, systemId } from "./system/config";
 import type {
   CardFlags,
@@ -30,6 +22,20 @@ import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgCombatant } from "./combat/rqgCombatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqgActiveEffect.ts";
+
+import type { ArmorDataModel } from "./data-model/item-data/armorDataModel";
+import type { CultDataModel } from "./data-model/item-data/cultDataModel";
+import type { GearDataModel } from "./data-model/item-data/gearDataModel";
+import type { HitLocationDataModel } from "./data-model/item-data/hitLocationDataModel";
+import type { HomelandDataModel } from "./data-model/item-data/homelandDataModel";
+import type { OccupationDataModel } from "./data-model/item-data/occupationDataModel";
+import type { PassionDataModel } from "./data-model/item-data/passionDataModel";
+import type { RuneDataModel } from "./data-model/item-data/runeDataModel";
+import type { RuneMagicDataModel } from "./data-model/item-data/runeMagicDataModel";
+import type { SkillDataModel } from "./data-model/item-data/skillDataModel";
+import type { SpiritMagicDataModel } from "./data-model/item-data/spiritMagicDataModel";
+import type { WeaponDataModel } from "./data-model/item-data/weaponDataModel";
+import type { CharacterDataModel } from "./data-model/actor-data/characterDataModel";
 
 declare global {
   interface Game {
@@ -58,19 +64,24 @@ declare global {
     ActiveEffect: typeof RqgActiveEffect;
   }
 
-  // Use SourceConfig/DataConfig for Items and Actors (template.json approach)
-  interface SourceConfig {
-    Item: RqgItemDataSource;
-    Actor: RqgActorDataSource;
-  }
-
-  interface DataConfig {
-    Item: RqgItemDataProperties;
-    Actor: RqgActorDataProperties;
-  }
-
-  // Use DataModelConfig for ChatMessages (DataModel approach)
   interface DataModelConfig {
+    Item: {
+      armor: typeof ArmorDataModel;
+      cult: typeof CultDataModel;
+      gear: typeof GearDataModel;
+      hitLocation: typeof HitLocationDataModel;
+      homeland: typeof HomelandDataModel;
+      occupation: typeof OccupationDataModel;
+      passion: typeof PassionDataModel;
+      rune: typeof RuneDataModel;
+      runeMagic: typeof RuneMagicDataModel;
+      skill: typeof SkillDataModel;
+      spiritMagic: typeof SpiritMagicDataModel;
+      weapon: typeof WeaponDataModel;
+    };
+    Actor: {
+      character: typeof CharacterDataModel;
+    };
     ChatMessage: {
       combat: typeof CombatChatMessageData;
     };

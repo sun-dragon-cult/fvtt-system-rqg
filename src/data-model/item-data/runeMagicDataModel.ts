@@ -6,7 +6,7 @@ const { BooleanField, StringField } = foundry.data.fields;
 
 type RuneMagicSchema = ReturnType<typeof RuneMagicDataModel.defineSchema>;
 
-export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema> {
+export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chance: number }> {
   static override defineSchema() {
     return {
       ...spellSchemaFields(),

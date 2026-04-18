@@ -47,7 +47,7 @@ import Actor = foundry.documents.Actor;
 export class RqgActor extends Actor {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
-    CONFIG.Actor.dataModels["character"] = CharacterDataModel as any;
+    CONFIG.Actor.dataModels["character"] = CharacterDataModel;
 
     const Actors = foundry.documents.collections.Actors;
 

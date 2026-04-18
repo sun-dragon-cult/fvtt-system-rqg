@@ -35,11 +35,11 @@ export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
 
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
     // Legacy data stored runeType as a plain string (e.g. "power") instead of {type, name}
-    if (typeof source.runeType === "string") {
-      const legacy = source.runeType.toLowerCase();
-      source.runeType = {
+    if (typeof source["runeType"] === "string") {
+      const legacy = source["runeType"].toLowerCase();
+      source["runeType"] = {
         type: runeTypeValues.has(legacy) ? legacy : defaultRuneType.type,
-        name: source.runeType,
+        name: source["runeType"],
       };
     }
     return super.migrateData(source);

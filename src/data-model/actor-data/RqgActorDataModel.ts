@@ -1,4 +1,4 @@
-import Document = foundry.abstract.Document;
+import Actor = foundry.documents.Actor;
 
 function defaultNumber(field: foundry.data.fields.NumberField): number | null {
   return field.options.nullable ? null : Number(field.options.initial) || 0;
@@ -76,7 +76,12 @@ function coerceNumbers(
 export abstract class RqgActorDataModel<
   Schema extends foundry.data.fields.DataSchema,
   DerivedData extends Record<string, unknown> = Record<string, never>,
-> extends foundry.abstract.TypeDataModel<Schema, Document.Any, Record<string, never>, DerivedData> {
+> extends foundry.abstract.TypeDataModel<
+  Schema,
+  Actor.Implementation,
+  Record<string, never>,
+  DerivedData
+> {
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
     const schema = this.defineSchema();
     coerceNumbers(source, schema);

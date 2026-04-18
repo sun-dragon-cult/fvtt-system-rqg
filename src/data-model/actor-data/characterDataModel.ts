@@ -2,6 +2,7 @@ import { RqgActorDataModel } from "./RqgActorDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
+import type { SkillCategories } from "./skillCategories";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -25,7 +26,10 @@ function locomotionSchemaField(
 
 type CharacterSchema = ReturnType<typeof CharacterDataModel.defineSchema>;
 
-export class CharacterDataModel extends RqgActorDataModel<CharacterSchema> {
+export class CharacterDataModel extends RqgActorDataModel<
+  CharacterSchema,
+  { skillCategoryModifiers: SkillCategories }
+> {
   static override defineSchema() {
     return {
       characteristics: new SchemaField({

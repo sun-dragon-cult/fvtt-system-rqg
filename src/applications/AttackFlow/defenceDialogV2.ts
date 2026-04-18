@@ -581,7 +581,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       attackRoll,
       defenceRoll,
       attackingWeapon,
-      attackWeaponUsageType,
+      attackWeaponUsageType as UsageType,
       attackDamageBonus,
       attackExtraDamage,
       defendDamageBonus,
@@ -674,7 +674,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       assertDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon);
     }
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
-      const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage;
+      const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage as UsageType | undefined;
       const attackSkill = attackWeaponUsage
         ? attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
             attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid,
