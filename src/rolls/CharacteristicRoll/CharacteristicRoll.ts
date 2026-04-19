@@ -3,10 +3,13 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuccessLevel";
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import type { CharacteristicRollOptions } from "./CharacteristicRoll.types.ts";
+import { DEFAULT_DIFFICULTY } from "./CharacteristicRoll.types.ts";
 
 import Roll = foundry.dice.Roll;
 
 export class CharacteristicRoll extends Roll {
+  declare options: CharacteristicRollOptions;
+
   public static async rollAndShow(options: CharacteristicRollOptions) {
     const roll = new CharacteristicRoll(undefined, {}, options);
     await roll.evaluate();
@@ -22,7 +25,11 @@ export class CharacteristicRoll extends Roll {
     return roll;
   }
 
-  constructor(formula: string = "1d100", data: any, options: CharacteristicRollOptions) {
+  constructor(
+    formula: string = "1d100",
+    data: Record<string, never> = {},
+    options?: CharacteristicRollOptions,
+  ) {
     super(formula, data, options);
   }
 
@@ -31,10 +38,15 @@ export class CharacteristicRoll extends Roll {
   }
 
   get targetChance(): number {
-    const o = this.options as CharacteristicRollOptions;
     const modificationsSum =
-      o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    return Math.ceil(Math.max(0, o.characteristicValue! * (o.difficulty ?? 5) + modificationsSum)); // -50% => 0% to make the calculations work;
+      this.options?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
+    return Math.ceil(
+      Math.max(
+        0,
+        this.options.characteristicValue! * (this.options.difficulty ?? DEFAULT_DIFFICULTY) +
+          modificationsSum,
+      ),
+    ); // -50% => 0% to make the calculations work;
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
@@ -49,7 +61,6 @@ export class CharacteristicRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate();
     }
-    const o = this.options as CharacteristicRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
@@ -61,7 +72,7 @@ export class CharacteristicRoll extends Roll {
       successLevelText: isPrivate
         ? undefined
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid, // Used for hiding parts
     };
     return foundry.applications.handlebars.renderTemplate(
       templatePaths.characteristicRoll,
@@ -71,28 +82,28 @@ export class CharacteristicRoll extends Roll {
 
   // Html for what modifiers are applied
   override async getTooltip(): Promise<string> {
-    const modifiers = (this.options as CharacteristicRollOptions).modifiers ?? [];
+    const modifiers = this.options.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
         m.value = toSignedString(m.value);
         return m;
       });
-    const o = this.options as CharacteristicRollOptions;
     return foundry.applications.handlebars.renderTemplate(templatePaths.characteristicRollTooltip, {
-      characteristicName: localize(`RQG.Actor.Characteristics.${o.characteristicName}`),
-      characteristicValue: o.characteristicValue,
-      difficulty: o.difficulty ?? 5,
-      difficultyName: this.getDifficultyName(o.difficulty ?? 5),
+      characteristicName: localize(`RQG.Actor.Characteristics.${this.options.characteristicName}`),
+      characteristicValue: this.options.characteristicValue,
+      difficulty: this.options.difficulty ?? DEFAULT_DIFFICULTY,
+      difficultyName: this.getDifficultyName(this.options.difficulty ?? DEFAULT_DIFFICULTY),
       modifiers: nonzeroSignedModifiers,
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid, // Used for hiding parts
     });
   }
 
   // Html for what characteristic the roll is about
   get flavor(): string {
-    const o = this.options as CharacteristicRollOptions;
-    const characteristicName = localize(`RQG.Actor.Characteristics.${o.characteristicName}-full`);
+    const characteristicName = localize(
+      `RQG.Actor.Characteristics.${this.options.characteristicName}-full`,
+    );
     const characteristicTranslation = localize("RQG.Actor.Characteristics.Characteristic");
     return `<span class="roll-action">${characteristicName}</span>
             <span>${characteristicTranslation}</span><br>`;

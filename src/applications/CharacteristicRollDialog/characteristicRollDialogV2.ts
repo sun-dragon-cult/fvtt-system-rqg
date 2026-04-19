@@ -4,6 +4,7 @@ import type {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
 } from "./CharacteristicRollDialogData.types.ts";
+import { DEFAULT_DIFFICULTY } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types.ts";
 import {
   assertDocumentSubType,
   getDomDataset,
@@ -109,7 +110,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
       new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ??
       {}) as CharacteristicRollDialogFormData;
 
-    formData.difficulty ??= 5;
+    formData.difficulty ??= DEFAULT_DIFFICULTY;
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";

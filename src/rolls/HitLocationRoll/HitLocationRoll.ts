@@ -12,7 +12,13 @@ import Roll = foundry.dice.Roll;
  * so no "rollAndShow" or flavor is needed.
  */
 export class HitLocationRoll extends Roll {
-  constructor(formula: string = "1d20", data: any, options: HitLocationRollOptions) {
+  declare options: HitLocationRollOptions;
+
+  constructor(
+    formula: string = "1d20",
+    data: Record<string, never> = {},
+    options?: HitLocationRollOptions,
+  ) {
     super(formula, data, options);
   }
 
@@ -21,7 +27,7 @@ export class HitLocationRoll extends Roll {
   }
 
   get hitLocationName(): string {
-    const damagedHitLocation = (this.options as HitLocationRollOptions).hitLocationNames
+    const damagedHitLocation = this.options.hitLocationNames
       .filter((hln) => (this.total ?? 0) >= hln.dieFrom && (this.total ?? 0) <= hln.dieTo)
       .map((hln) => hln.name);
     return damagedHitLocation[0] ?? localize("RQG.Roll.HitLocationRoll.FallbackHitLocationName");
@@ -32,13 +38,12 @@ export class HitLocationRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate();
     }
-    const o = this.options as HitLocationRollOptions;
     const chatData = {
       user: game.user!.id,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       hitLocationName: isPrivate ? "??" : this.hitLocationName,
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid, // Used for hiding parts
     };
     return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationRoll, chatData);
   }

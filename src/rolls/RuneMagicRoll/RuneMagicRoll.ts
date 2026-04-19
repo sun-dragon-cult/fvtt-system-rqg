@@ -15,6 +15,8 @@ import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
 import Roll = foundry.dice.Roll;
 
 export class RuneMagicRoll extends Roll {
+  declare options: RuneMagicRollOptions;
+
   public static async rollAndShow(options: RuneMagicRollOptions) {
     const roll = new RuneMagicRoll(undefined, {}, options);
     await roll.evaluate();
@@ -29,7 +31,11 @@ export class RuneMagicRoll extends Roll {
     return roll;
   }
 
-  constructor(formula: string = "1d100", data: any, options: RuneMagicRollOptions) {
+  constructor(
+    formula: string = "1d100",
+    data: Record<string, never> = {},
+    options?: RuneMagicRollOptions,
+  ) {
     super(formula, data, options);
   }
 
@@ -38,10 +44,9 @@ export class RuneMagicRoll extends Roll {
   }
 
   get targetChance(): number {
-    const o = this.options as RuneMagicRollOptions;
     const modificationsSum =
-      o?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    return Math.max(0, (o.usedRune.system?.chance ?? 0) + modificationsSum); // -50% => 0% to make the calculations work;
+      this.options?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
+    return Math.max(0, (this.options.usedRune.system?.chance ?? 0) + modificationsSum); // -50% => 0% to make the calculations work;
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
@@ -56,7 +61,6 @@ export class RuneMagicRoll extends Roll {
     if (!this._evaluated) {
       await this.evaluate();
     }
-    const o = this.options as RuneMagicRollOptions;
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : flavor,
@@ -68,27 +72,26 @@ export class RuneMagicRoll extends Roll {
       successLevelText: isPrivate
         ? undefined
         : localize(`RQG.Game.AbilityResultEnum.${this.successLevel}`),
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid, // Used for hiding parts
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid, // Used for hiding parts
     };
     return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRoll, chatData);
   }
 
   // Html for what modifiers are applied and how many mp are used
   override async getTooltip(): Promise<string> {
-    const modifiers = (this.options as RuneMagicRollOptions).modifiers ?? [];
+    const modifiers = this.options.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => {
         m.value = toSignedString(m.value);
         return m;
       });
-    const o = this.options as RuneMagicRollOptions;
     const cost = RuneMagic.calcRuneAndMagicPointCost(
       this.successLevel ?? 0,
-      o.levelUsed,
-      o.magicPointBoost,
+      this.options.levelUsed,
+      this.options.magicPointBoost,
     );
-    const usageCostText = o.runeMagicItem.system.isOneUse
+    const usageCostText = this.options.runeMagicItem.system.isOneUse
       ? localize("RQG.Roll.RuneMagicRoll.OneUseUsageCost", {
           runePointsCost: cost.rp.toString(),
           magicPointCost: cost.mp.toString(),
@@ -100,20 +103,21 @@ export class RuneMagicRoll extends Roll {
 
     return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRollTooltip, {
       usageCostText: usageCostText,
-      usedRuneChance: o.usedRune.system.chance,
-      usedRuneName: o.usedRune.name,
+      usedRuneChance: this.options.usedRune.system.chance,
+      usedRuneName: this.options.usedRune.name,
       modifiers: nonzeroSignedModifiers,
-      speakerUuid: ChatMessage.getSpeakerActor(o.speaker as any)?.uuid,
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid,
     });
   }
 
   // Html for what Rune Magic the roll is about
   get flavor(): string {
-    const o = this.options as RuneMagicRollOptions;
-    const spellName = o.runeMagicItem.name;
-    const flavorImg = o.runeMagicItem.img ? `<img src="${o.runeMagicItem.img}">` : "";
+    const spellName = this.options.runeMagicItem.name;
+    const flavorImg = this.options.runeMagicItem.img
+      ? `<img src="${this.options.runeMagicItem.img}">`
+      : "";
     const itemType = localizeItemType(ItemTypeEnum.RuneMagic);
-    const level = o.levelUsed;
+    const level = this.options.levelUsed;
     return `
 <div class="rqg flavor">${flavorImg}</div>
 <span class="roll-action">${spellName} <span class="roll-level">${level}</span></span>

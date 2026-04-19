@@ -6,7 +6,7 @@ import Roll = foundry.dice.Roll;
  * so no "rollAndShow" or flavor is needed.
  */
 export class DamageRoll extends Roll {
-  constructor(formula: string, data: any = {}, options: any = {}) {
+  constructor(formula: string, data: Record<string, never> = {}, options?: Roll.Options) {
     super(formula, data, options);
   }
 

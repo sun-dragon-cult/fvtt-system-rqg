@@ -12,7 +12,7 @@ import type { AbilityRollOptions } from "./AbilityRoll.types";
 
 import Roll = foundry.dice.Roll;
 
-export class AbilityRoll extends Roll<AbilityRollOptions> {
+export class AbilityRoll extends Roll {
   declare options: AbilityRollOptions;
 
   public static async rollAndShow(options: AbilityRollOptions) {
@@ -29,7 +29,11 @@ export class AbilityRoll extends Roll<AbilityRollOptions> {
     return roll;
   }
 
-  constructor(formula: string = "1d100", data: any, options: AbilityRollOptions) {
+  constructor(
+    formula: string = "1d100",
+    data: Record<string, never> = {},
+    options?: AbilityRollOptions,
+  ) {
     super(formula, data, options);
   }
 
