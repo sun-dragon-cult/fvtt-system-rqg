@@ -21,7 +21,7 @@ export class HomelandSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemHomelandSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     homeland: { template: templatePaths.itemHomelandSheetV2Homeland, scrollable: [""] },
@@ -31,7 +31,7 @@ export class HomelandSheetV2 extends RqgItemSheetV2 {
     },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "homeland", label: "RQG.Item.SheetTab.Homeland" },

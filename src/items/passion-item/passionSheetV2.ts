@@ -35,7 +35,7 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemPassionSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     passion: { template: templatePaths.itemPassionSheetV2Passion, scrollable: [""] },
@@ -43,7 +43,7 @@ export class PassionSheetV2 extends RqgItemSheetV2 {
     gm: { template: templatePaths.itemPassionSheetV2Gm, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "passion", label: "RQG.Item.SheetTab.Passion" },

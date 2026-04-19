@@ -37,7 +37,7 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemWeaponSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     weapon: { template: templatePaths.itemWeaponSheetV2Weapon, scrollable: [""] },
@@ -47,7 +47,7 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     effects: { template: templatePaths.itemWeaponSheetV2Effects, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "weapon", label: "RQG.Item.SheetTab.Weapon" },

@@ -146,7 +146,7 @@ export class ActorWizard extends ActorWizardBase {
     }
   }
 
-  static override DEFAULT_OPTIONS: Record<string, any> = {
+  static override DEFAULT_OPTIONS = {
     id: "actor-wizard-application",
     tag: "form",
     classes: [systemId, "sheet", "character"],
@@ -165,7 +165,7 @@ export class ActorWizard extends ActorWizardBase {
     },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     form: { template: templatePaths.actorWizardApplication },
   };
 

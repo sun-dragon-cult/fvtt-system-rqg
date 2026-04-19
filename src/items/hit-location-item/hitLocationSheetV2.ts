@@ -39,14 +39,14 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
     form: { handler: HitLocationSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemHitLocationSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     "hit-location": { template: templatePaths.itemHitLocationSheetV2HitLocation, scrollable: [""] },
     definition: { template: templatePaths.itemHitLocationSheetV2Definition, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "hit-location", label: "RQG.Item.SheetTab.HitLocation" },

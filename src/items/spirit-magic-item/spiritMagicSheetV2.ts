@@ -22,14 +22,14 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemSpiritMagicSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     "spirit-magic": { template: templatePaths.itemSpiritMagicSheetV2SpiritMagic, scrollable: [""] },
     effects: { template: templatePaths.itemSpiritMagicSheetV2Effects, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "spirit-magic", label: "RQG.Item.SheetTab.SpiritMagic" },

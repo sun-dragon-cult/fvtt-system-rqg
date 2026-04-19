@@ -23,14 +23,14 @@ export class SkillSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemSkillSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     skill: { template: templatePaths.itemSkillSheetV2Skill, scrollable: [""] },
     definition: { template: templatePaths.itemSkillSheetV2Definition, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "skill", label: "RQG.Item.SheetTab.Skill" },

@@ -23,13 +23,13 @@ export class RuneSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemRuneSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     rune: { template: templatePaths.itemRuneSheetV2Rune, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [{ id: "rune", label: "RQG.Item.SheetTab.Rune" }],
       initial: "rune",

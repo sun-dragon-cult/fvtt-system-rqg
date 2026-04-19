@@ -23,7 +23,7 @@ export class GearSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemGearSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     gear: { template: templatePaths.itemGearSheetV2Gear, scrollable: [""] },
@@ -32,7 +32,7 @@ export class GearSheetV2 extends RqgItemSheetV2 {
     effects: { template: templatePaths.itemGearSheetV2Effects, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "gear", label: "RQG.Item.SheetTab.Gear" },

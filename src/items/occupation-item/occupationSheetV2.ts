@@ -68,13 +68,13 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemOccupationSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     occupation: { template: templatePaths.itemOccupationSheetV2Occupation, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [{ id: "occupation", label: "RQG.Item.SheetTab.Occupation" }],
       initial: "occupation",

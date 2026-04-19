@@ -79,7 +79,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     return this.document as CharacterActor;
   }
 
-  static override DEFAULT_OPTIONS: Record<string, any> = {
+  static override DEFAULT_OPTIONS = {
     id: "{id}",
     classes: [systemId, "sheet", "character", "actor-sheet-v2"],
     position: {
@@ -102,7 +102,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     ],
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS: Record<
+    string,
+    foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
+  > = {
     header: { template: templatePaths.actorSheetV2Header },
     nav: { template: templatePaths.actorSheetV2Nav },
     body: { template: templatePaths.actorSheetV2Body, scrollable: [""] },

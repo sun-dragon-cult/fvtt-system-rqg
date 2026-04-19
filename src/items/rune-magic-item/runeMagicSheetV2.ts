@@ -27,14 +27,14 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
     form: { handler: RuneMagicSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemRuneMagicSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     "rune-magic": { template: templatePaths.itemRuneMagicSheetV2RuneMagic, scrollable: [""] },
     effects: { template: templatePaths.itemRuneMagicSheetV2Effects, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "rune-magic", label: "RQG.Item.SheetTab.RuneMagic" },

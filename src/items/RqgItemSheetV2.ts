@@ -51,7 +51,7 @@ export interface RqgItemSheetContext {
 }
 
 export class RqgItemSheetV2 extends RqgItemSheetV2Base {
-  static override DEFAULT_OPTIONS: Record<string, any> = {
+  static override DEFAULT_OPTIONS: foundry.applications.api.ApplicationV2.DefaultOptions = {
     id: "{id}",
     classes: ["rqg", "item-sheet", "sheet"],
     position: {
@@ -70,7 +70,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
   // Subclasses must define PARTS with their template
 
-  static override PARTS: Record<string, any> = {};
+  static override PARTS: Record<
+    string,
+    foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
+  > = {};
 
   override get title(): string {
     const parentName = this.document?.parent?.name;

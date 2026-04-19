@@ -30,7 +30,7 @@ export class CultSheetV2 extends RqgItemSheetV2 {
     window: { resizable: true },
   };
 
-  static override PARTS: Record<string, any> = {
+  static override PARTS = {
     header: { template: templatePaths.itemCultSheetV2Header },
     tabs: { template: "templates/generic/tab-navigation.hbs" },
     deity: { template: templatePaths.itemCultSheetV2Deity, scrollable: [""] },
@@ -38,7 +38,7 @@ export class CultSheetV2 extends RqgItemSheetV2 {
     cults: { template: templatePaths.itemCultSheetV2Cults, scrollable: [""] },
   };
 
-  static override TABS: Record<string, any> = {
+  static override TABS = {
     sheet: {
       tabs: [
         { id: "deity", label: "RQG.Item.SheetTab.Deity" },
