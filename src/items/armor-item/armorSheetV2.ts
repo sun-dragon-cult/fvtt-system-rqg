@@ -4,7 +4,12 @@ import {
   type ArmorItem,
 } from "@item-model/armorDataModel.ts";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/IPhysicalItem.ts";
-import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
+import {
+  RqgItemSheetV2,
+  type RqgItemSheetContext,
+  type AppV2RenderContext,
+  type AppV2RenderOptions,
+} from "../RqgItemSheetV2";
 import {
   convertFormValueToString,
   getAvailableHitLocations,
@@ -86,17 +91,20 @@ export class ArmorSheetV2 extends RqgItemSheetV2 {
       this.tabGroups["sheet"] = ArmorSheetV2.TABS["sheet"].initial;
     }
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
-      delete (context as any).tabs.gm;
-      delete (context as any).tabs.effects;
+      delete context.tabs["gm"];
+      delete context.tabs["effects"];
     }
 
     return context;
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: AppV2RenderContext,
+    options: AppV2RenderOptions,
+  ): Promise<void> {
     await super._onRender(context, options);
     this.element
       .querySelectorAll<HTMLSelectElement>("[data-add-hit-location]")

@@ -16,6 +16,7 @@ import {
 } from "../../system/util";
 import { RqgItem } from "@items/rqgItem.ts";
 import type { AbilityItem } from "@item-model/itemTypes.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -139,7 +140,10 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     };
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<AbilityRollDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     super._onRender(context, options);
     this.element
       .querySelector<HTMLElement>("[data-roll-mode-parent]")

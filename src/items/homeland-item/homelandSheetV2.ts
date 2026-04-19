@@ -55,7 +55,7 @@ export class HomelandSheetV2 extends RqgItemSheetV2 {
       allRuneOptions: getSelectRuneOptions("RQG.Item.Homeland.AddHomelandRunePlaceholder"),
     };
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     return context;
   }

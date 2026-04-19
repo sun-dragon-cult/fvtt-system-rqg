@@ -63,10 +63,10 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
       this.tabGroups["sheet"] = SpiritMagicSheetV2.TABS["sheet"].initial;
     }
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
-      delete (context as any).tabs.effects;
+      delete context.tabs["effects"];
     }
 
     return context;

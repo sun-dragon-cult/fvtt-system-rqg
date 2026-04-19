@@ -17,6 +17,7 @@ import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/Characteristi
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -149,7 +150,10 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
     };
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<CharacteristicRollDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     super._onRender(context, options);
     this.element
       .querySelector<HTMLElement>("[data-roll-mode-parent]")

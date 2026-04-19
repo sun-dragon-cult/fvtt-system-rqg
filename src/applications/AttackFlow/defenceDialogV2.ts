@@ -40,6 +40,7 @@ import { updateChatMessage } from "../../sockets/SocketableRequests";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -117,7 +118,10 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     footer: { template: templatePaths.defenceFooter },
   };
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<DefenceDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     super._onRender(context, options);
 
     this.element

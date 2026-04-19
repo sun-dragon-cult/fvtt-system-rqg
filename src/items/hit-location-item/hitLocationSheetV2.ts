@@ -12,7 +12,12 @@ import {
   localize,
   requireValue,
 } from "../../system/util";
-import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
+import {
+  RqgItemSheetV2,
+  type RqgItemSheetContext,
+  type AppV2RenderContext,
+  type AppV2RenderOptions,
+} from "../RqgItemSheetV2";
 import { HealingCalculations } from "../../system/healingCalculations";
 import { RqgItem } from "../rqgItem";
 import { systemId } from "../../system/config";
@@ -83,13 +88,13 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
       this.tabGroups["sheet"] = "hit-location";
     }
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     if (!context.isEmbedded) {
-      delete (context as any).tabs["hit-location"];
+      delete context.tabs["hit-location"];
     }
     if (!context.isGM) {
-      delete (context as any).tabs.definition;
+      delete context.tabs["definition"];
     }
 
     return context;
@@ -261,7 +266,10 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
     }
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: AppV2RenderContext,
+    options: AppV2RenderOptions,
+  ): Promise<void> {
     await super._onRender(context, options);
 
     // Add event listener for healing wounds

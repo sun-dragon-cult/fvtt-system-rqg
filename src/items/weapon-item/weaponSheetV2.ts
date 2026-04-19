@@ -101,11 +101,11 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
       this.tabGroups["sheet"] = WeaponSheetV2.TABS["sheet"].initial;
     }
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     if (!context.isGM) {
-      delete (context as any).tabs.gm;
-      delete (context as any).tabs.effects;
+      delete context.tabs["gm"];
+      delete context.tabs["effects"];
     }
 
     return context;

@@ -6,7 +6,12 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
 import { RqgItem } from "../rqgItem";
-import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
+import {
+  RqgItemSheetV2,
+  type RqgItemSheetContext,
+  type AppV2RenderContext,
+  type AppV2RenderOptions,
+} from "../RqgItemSheetV2";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
@@ -107,12 +112,15 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
         .join(", "),
     };
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     return context;
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: AppV2RenderContext,
+    options: AppV2RenderOptions,
+  ): Promise<void> {
     await super._onRender(context, options);
 
     this.element

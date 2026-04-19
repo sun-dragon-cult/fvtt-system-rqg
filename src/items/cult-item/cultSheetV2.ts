@@ -5,7 +5,12 @@ import {
   formatListByWorldLanguage,
   getSelectRuneOptions,
 } from "../../system/util";
-import { RqgItemSheetV2, type RqgItemSheetContext } from "../RqgItemSheetV2";
+import {
+  RqgItemSheetV2,
+  type RqgItemSheetContext,
+  type AppV2RenderContext,
+  type AppV2RenderOptions,
+} from "../RqgItemSheetV2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -83,12 +88,15 @@ export class CultSheetV2 extends RqgItemSheetV2 {
     if (!this.document.isEmbedded) {
       delete tabs["giftsandgeases"];
     }
-    (context as any).tabs = tabs;
+    context.tabs = tabs;
 
     return context;
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: AppV2RenderContext,
+    options: AppV2RenderOptions,
+  ): Promise<void> {
     await super._onRender(context, options);
 
     this.element.querySelectorAll<HTMLElement>("[data-add-cult]").forEach((el) => {

@@ -18,6 +18,11 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
+import type { DeepPartial } from "fvtt-types/utils";
+
+/** Shorthand types for ApplicationV2 lifecycle method parameters. */
+export type AppV2RenderContext = DeepPartial<foundry.applications.api.ApplicationV2.RenderContext>;
+export type AppV2RenderOptions = DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>;
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ItemSheetV2 = foundry.applications.sheets.ItemSheetV2;
@@ -48,6 +53,10 @@ export interface RqgItemSheetContext {
   isEmbedded: boolean;
   /** The item's active effects collection, used by the Active Effects tab partial. */
   effects: unknown;
+  /** Tab data prepared by _prepareTabs, used by tab-navigation template. */
+  tabs?: Record<string, foundry.applications.api.ApplicationV2.Tab>;
+  /** Active tab for the current part, set by _preparePartContext. */
+  tab?: foundry.applications.api.ApplicationV2.Tab;
 }
 
 export class RqgItemSheetV2 extends RqgItemSheetV2Base {
@@ -97,13 +106,20 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   }
 
   // Always set context.tab — if left unset, hidden parts inherit the previous part's active tab.
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
+  override async _preparePartContext(
+    partId: string,
+    context: RqgItemSheetContext,
+    options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>,
+  ): Promise<RqgItemSheetContext> {
+    context = await super._preparePartContext(partId, context as any, options);
     context.tab = context.tabs?.[partId] ?? { active: false, id: partId, group: "sheet" };
     return context;
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: AppV2RenderContext,
+    options: AppV2RenderOptions,
+  ): Promise<void> {
     await super._onRender(context, options);
 
     // RQID header button (AppV2 version)

@@ -68,6 +68,7 @@ import {
   physicalItemTypes,
 } from "../data-model/item-data/IPhysicalItem";
 import { ItemTree } from "../items/shared/ItemTree";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -293,8 +294,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     };
   }
 
-  override async _preparePartContext(partId: string, context: any, options: any): Promise<any> {
-    context = await super._preparePartContext(partId, context, options);
+  // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
+  override async _preparePartContext(
+    partId: string,
+    context: RqgActorSheetV2Context,
+    options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>,
+  ): Promise<RqgActorSheetV2Context> {
+    context = (await super._preparePartContext(
+      partId,
+      context as any,
+      options,
+    )) as unknown as RqgActorSheetV2Context;
     context.tab = context.tabs?.[partId] ?? { active: false, id: partId, group: "sheet" };
     return context;
   }
@@ -311,7 +321,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** Temporary image element used as drag preview */
   private _activeDragPreview: HTMLImageElement | null = null;
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<RqgActorSheetV2Context>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     await super._onRender(context, options);
 
     // Toggle edit-mode class for styling

@@ -35,6 +35,7 @@ import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -234,7 +235,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     };
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<AttackDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     super._onRender(context, options);
     this.element
       .querySelector("select[name=attackingTokenOrActorUuid]")

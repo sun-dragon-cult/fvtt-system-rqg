@@ -20,6 +20,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { SpellItem } from "@item-model/spell.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -159,7 +160,10 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     };
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<RuneMagicRollDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     super._onRender(context, options);
     this.element
       .querySelector<HTMLElement>("[data-roll-mode-parent]")

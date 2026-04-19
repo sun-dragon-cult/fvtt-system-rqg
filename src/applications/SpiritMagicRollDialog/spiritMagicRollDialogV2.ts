@@ -17,6 +17,7 @@ import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogD
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -135,7 +136,10 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
     };
   }
 
-  override async _onRender(context: any, options: any): Promise<void> {
+  override async _onRender(
+    context: DeepPartial<SpiritMagicRollDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
     super._onRender(context, options);
     this.element
       .querySelector<HTMLElement>("[data-roll-mode-parent]")

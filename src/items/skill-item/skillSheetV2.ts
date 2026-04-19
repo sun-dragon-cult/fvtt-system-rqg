@@ -69,13 +69,13 @@ export class SkillSheetV2 extends RqgItemSheetV2 {
       this.tabGroups["sheet"] = "skill";
     }
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     if (!context.isEmbedded) {
-      delete (context as any).tabs.skill;
+      delete context.tabs["skill"];
     }
     if (!context.isGM) {
-      delete (context as any).tabs.definition;
+      delete context.tabs["definition"];
     }
 
     return context;

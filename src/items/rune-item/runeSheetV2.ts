@@ -56,7 +56,7 @@ export class RuneSheetV2 extends RqgItemSheetV2 {
       })),
     };
 
-    (context as any).tabs = this._prepareTabs("sheet");
+    context.tabs = this._prepareTabs("sheet");
 
     return context;
   }
