@@ -1,3 +1,4 @@
+import type { RuneItem } from "@item-model/runeDataModel.ts";
 import { beforeEach, describe, expect, it } from "vitest";
 import {
   calcCurrencyTotals,
@@ -387,13 +388,13 @@ describe("getHitLocationDiceRangeError", () => {
   });
 });
 
-function makeRune(key: string, chance: number, opposingRqid?: string): [string, any] {
+function makeRune(key: string, chance: number, opposingRqid?: string): [string, RuneItem] {
   return [
     key,
     {
       system: { chance, opposingRuneRqidLink: opposingRqid ? { rqid: opposingRqid } : undefined },
       flags: { rqg: { documentRqidFlags: { id: `item.rune.${key}` } } },
-    },
+    } as unknown as RuneItem,
   ];
 }
 
@@ -412,7 +413,7 @@ describe("getRuneVisualsMap", () => {
   });
 
   it("defaults to rune-str-0 when system.chance is missing", () => {
-    const rune = { system: {} };
+    const rune = { system: {} } as unknown as RuneItem;
     const result = getRuneVisualsMap({ earth: rune });
     expect(result["earth"]!.cls).toBe("rune-str-0");
   });
@@ -437,7 +438,7 @@ describe("getRuneOpposedPairs", () => {
     const pair = pairs[0]!;
     // fertility is in preferredPairOrder before death, so it should be on the left
     expect(pair.left.system.chance).toBe(60);
-    expect(pair.right.system.chance).toBe(40);
+    expect(pair.right!.system.chance).toBe(40);
     expect(pair.markerPercent).toBe(40); // 100 - 60
     expect(pair.leftCls).toBe("rune-str-6");
     expect(pair.rightCls).toBe("rune-str-4");
@@ -451,7 +452,7 @@ describe("getRuneOpposedPairs", () => {
     ]);
     const { pairs } = getRuneOpposedPairs(runesByName);
     expect(pairs[0]!.left.system.chance).toBe(30); // fertility
-    expect(pairs[0]!.right.system.chance).toBe(70); // death
+    expect(pairs[0]!.right!.system.chance).toBe(70); // death
   });
 
   it("shows rune with null right slot when opposing rune is absent", () => {
@@ -468,7 +469,7 @@ describe("getRuneOpposedPairs", () => {
     const { pairs, standalone } = getRuneOpposedPairs(runesByName);
     expect(pairs).toHaveLength(0);
     expect(standalone).toHaveLength(1);
-    expect(standalone[0].system.chance).toBe(50);
+    expect(standalone[0]!.system.chance).toBe(50);
   });
 
   it("sorts pairs by preferredPairOrder, unknowns last", () => {

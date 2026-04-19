@@ -1,6 +1,7 @@
-import type { SheetRuneData, MainCult, UiSections } from "./rqgActorSheet.types";
+import type { SheetRuneData, MainCult, UiSections, CurrencyTotals } from "./rqgActorSheet.types";
 import type { RuneOpposedPair } from "./rqgActorSheetDataPrep";
 import type { RqgItem } from "../items/rqgItem";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
 import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { CharacterActor } from "../data-model/actor-data/rqgActorData";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
@@ -29,7 +30,7 @@ export interface RqgActorSheetV2Context {
   /** Known item location names for datalist suggestions. */
   locations: string[];
   /** Currency totalized price and encumbrance values. */
-  currencyTotals: any;
+  currencyTotals: CurrencyTotals;
   /** Warning text when item location tree has loops. */
   itemLoopMessage: string | undefined;
   /** Gear tab data split for conditional section rendering. */
@@ -63,7 +64,7 @@ export interface RqgActorSheetV2Context {
   /** Dynamically paired form runes (from opposingRuneRqidLink). */
   formRunePairs: RuneOpposedPair[];
   /** Form runes without an opposing rune. */
-  formRuneStandalone: any[];
+  formRuneStandalone: RuneItem[];
 
   /** Base strike rank (DEX SR + SIZ SR). */
   baseStrikeRank: number | undefined;

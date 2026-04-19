@@ -14,6 +14,7 @@ type ItemCollection = any[] & { get: (id: string) => any };
 function withItemGet(items: any[]): any {
   const collection = [...items] as ItemCollection;
   collection.get = (id: string) => collection.find((item) => item.id === id);
+  (collection as any).contents = [...items];
   return collection;
 }
 

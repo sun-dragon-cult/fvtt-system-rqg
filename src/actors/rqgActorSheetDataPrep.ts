@@ -6,6 +6,8 @@ import type {
   UiSections,
   TemplateGearItem,
   TemplateWeaponItem,
+  CurrencyTotals,
+  EmbeddedRunesByType,
 } from "./rqgActorSheet.types";
 import type { RqgItem } from "../items/rqgItem";
 import type { GearItem } from "@item-model/gearDataModel.ts";
@@ -18,6 +20,7 @@ import { RuneTypeEnum } from "@item-model/runeDataModel.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 import type { PassionItem } from "@item-model/passionDataModel.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import {
   assertDocumentSubType,
   formatListByWorldLanguage,
@@ -37,7 +40,7 @@ import { documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
  * @param actor - The character actor
  * @returns Record of characteristic names to CSS class strings
  */
-export async function rankCharacteristics(actor: CharacterActor): Promise<any> {
+export async function rankCharacteristics(actor: CharacterActor): Promise<Record<string, string>> {
   const result = {} as { [key: string]: string };
   for (const characteristic of Object.keys(actor.system.characteristics)) {
     const rankClass = "characteristic-rank-";
@@ -97,7 +100,7 @@ export async function rankCharacteristics(actor: CharacterActor): Promise<any> {
  * @param actor - The character actor
  * @returns Object with quantity, price, and encumbrance totals
  */
-export function calcCurrencyTotals(actor: CharacterActor): any {
+export function calcCurrencyTotals(actor: CharacterActor): CurrencyTotals {
   const currency = actor.items.filter(
     (i) =>
       isDocumentSubType<GearItem>(i, ItemTypeEnum.Gear) && i.system.physicalItemType === "currency",
@@ -220,15 +223,14 @@ export function getPowCrystals(actor: CharacterActor): { name: string; size: num
     actor.appliedEffects &&
     actor.appliedEffects
       .filter(
-        (e) =>
-          e.changes.find((e: any) => e.key === "system.attributes.magicPoints.max") != undefined,
+        (e) => e.changes.find((c) => c.key === "system.attributes.magicPoints.max") != undefined,
       )
       .map((e) => {
         return {
           name: e.name ?? "",
           size: e.changes
-            .filter((c: any) => c.key === "system.attributes.magicPoints.max")
-            .reduce((acc: number, c: any) => acc + Number(c.value), 0),
+            .filter((c) => c.key === "system.attributes.magicPoints.max")
+            .reduce((acc: number, c) => acc + Number(c.value), 0),
         };
       })
   );
@@ -433,8 +435,8 @@ export function getCharacterFormRuneImgs(actor: CharacterActor): SheetRuneData[]
  * A pair of opposing runes (e.g. Fertility ↔ Death) for template display.
  */
 export interface RuneOpposedPair {
-  left: any;
-  right: any | null;
+  left: RuneItem;
+  right: RuneItem | null;
   /** Marker position (0-100). 0% = left edge, 100% = right edge. Slides toward the dominant rune. */
   markerPercent: number;
   /** CSS strength class for the left rune icon (e.g. "rune-str-7"). */
@@ -465,7 +467,7 @@ function runeStrengthClass(chance: number): string {
  * Returns a Record with the same keys, each containing a `cls` string.
  */
 export function getRuneVisualsMap(
-  runesByName: Record<string, any>,
+  runesByName: Record<string, RuneItem>,
 ): Record<string, { cls: string }> {
   const result: Record<string, { cls: string }> = {};
   for (const [key, rune] of Object.entries(runesByName)) {
@@ -482,13 +484,13 @@ export function getRuneVisualsMap(
  * @param runesByName - Object keyed by rune short name, values are rune items
  * @returns Object with `pairs` array and `standalone` array
  */
-export function getRuneOpposedPairs(runesByName: Record<string, any>): {
+export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
   pairs: RuneOpposedPair[];
-  standalone: any[];
+  standalone: RuneItem[];
 } {
   const paired = new Set<string>();
   const pairs: RuneOpposedPair[] = [];
-  const standalone: any[] = [];
+  const standalone: RuneItem[] = [];
 
   const entries = Object.entries(runesByName);
 
@@ -606,7 +608,7 @@ export async function organizeEmbeddedItems(
     itemTypes[item.type]?.push(item as RqgItem);
   });
 
-  const currency: any = [];
+  const currency: GearItem[] = [];
   actor.items.forEach((item) => {
     if (
       isDocumentSubType<GearItem>(item, ItemTypeEnum.Gear) &&
@@ -617,18 +619,18 @@ export async function organizeEmbeddedItems(
   });
 
   currency.sort(
-    (a: any, b: any) =>
+    (a: GearItem, b: GearItem) =>
       (Number(a.system.price.estimated) < Number(b.system.price.estimated) ? 1 : -1) - 1,
   );
 
   itemTypes["currency"] = currency;
 
   // Separate skills into skill categories {agility: [RqgItem], communication: [RqgItem], ... }
-  const skills: any = {};
+  const skills: Record<string, SkillItem[]> = {};
   Object.values(SkillCategoryEnum).forEach((cat: string) => {
-    skills[cat] = itemTypes[ItemTypeEnum.Skill]?.filter(
-      (skill: any) => cat === skill.system.category,
-    );
+    skills[cat] = (itemTypes[ItemTypeEnum.Skill]?.filter(
+      (skill) => cat === (skill as SkillItem).system.category,
+    ) ?? []) as SkillItem[];
   });
   // Sort the skills inside each category
   Object.values(skills).forEach((skillList) =>
@@ -636,10 +638,10 @@ export async function organizeEmbeddedItems(
       ("" + a.name).localeCompare("" + b.name),
     ),
   );
-  itemTypes[ItemTypeEnum.Skill] = skills;
+  itemTypes[ItemTypeEnum.Skill] = skills as any; // Shape changes from array to category record
 
   // Prepare the object to hold the runes per runeType
-  const resultObject = {
+  const resultObject: EmbeddedRunesByType = {
     [RuneTypeEnum.Element]: {},
     [RuneTypeEnum.Power]: {},
     [RuneTypeEnum.Form]: {},
@@ -648,69 +650,83 @@ export async function organizeEmbeddedItems(
   };
 
   // Separate runes into types (elemental, power, form, technique)
-  itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune]?.reduce((acc: any, rune: any) => {
-    const runeRqidName = rune.flags?.rqg?.documentRqidFlags?.id
-      ?.split(".")
-      .pop()
-      .split("-")
-      .shift();
-    const runeType = rune?.system.runeType.type;
-    if (Object.values(RuneTypeEnum).includes(runeType)) {
-      acc[runeType][runeRqidName] = rune;
-    } else {
-      incorrectRunes.push(rune);
-    }
-    return acc;
-  }, resultObject);
+  itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune]?.reduce(
+    (acc: EmbeddedRunesByType, rune) => {
+      const runeItem = rune as RuneItem;
+      const runeRqidName = runeItem.flags?.rqg?.documentRqidFlags?.id
+        ?.split(".")
+        .pop()
+        ?.split("-")
+        .shift();
+      const runeType = runeItem.system.runeType.type;
+      if (Object.values(RuneTypeEnum).includes(runeType)) {
+        acc[runeType][runeRqidName ?? ""] = runeItem;
+      } else {
+        incorrectRunes.push(rune);
+      }
+      return acc;
+    },
+    resultObject,
+  ) as any;
 
   // Sort the hit locations
   if (game.settings?.get(systemId, "sortHitLocationsLowToHigh")) {
     itemTypes[ItemTypeEnum.HitLocation]?.sort(
-      (a: any, b: any) => a.system.dieFrom - b.system.dieFrom,
+      (a, b) => (a as HitLocationItem).system.dieFrom - (b as HitLocationItem).system.dieFrom,
     );
   } else {
     itemTypes[ItemTypeEnum.HitLocation]?.sort(
-      (a: any, b: any) => b.system.dieFrom - a.system.dieFrom,
+      (a, b) => (b as HitLocationItem).system.dieFrom - (a as HitLocationItem).system.dieFrom,
     );
   }
 
   // Arrange wounds for display & add last rqid part
   itemTypes[ItemTypeEnum.HitLocation] =
-    itemTypes[ItemTypeEnum.HitLocation]?.map((hitLocation: any) => {
-      hitLocation.system.woundsString = hitLocation.system.wounds.join("+");
-      hitLocation.rqidName = hitLocation.flags?.rqg?.documentRqidFlags?.id?.split(".")[2] ?? "";
+    itemTypes[ItemTypeEnum.HitLocation]?.map((hitLocation) => {
+      const hl = hitLocation as HitLocationItem;
+      (hl as any).system.woundsString = hl.system.wounds.join("+");
+      (hl as any).rqidName = hl.flags?.rqg?.documentRqidFlags?.id?.split(".")[2] ?? "";
       return hitLocation;
     }) ?? [];
 
   // Enrich Cult texts for holyDays, gifts & geases
   await Promise.all(
-    itemTypes[ItemTypeEnum.Cult]?.map(async (cult: any) => {
-      cult.system.enrichedHolyDays =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.holyDays);
-      cult.system.enrichedGifts =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.gifts);
-      cult.system.enrichedGeases =
-        await foundry.applications.ux.TextEditor.implementation.enrichHTML(cult.system.geases);
+    itemTypes[ItemTypeEnum.Cult]?.map(async (cult) => {
+      const cultItem = cult as CultItem;
+      (cultItem.system as any).enrichedHolyDays =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          cultItem.system.holyDays,
+        );
+      (cultItem.system as any).enrichedGifts =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(cultItem.system.gifts);
+      (cultItem.system as any).enrichedGeases =
+        await foundry.applications.ux.TextEditor.implementation.enrichHTML(cultItem.system.geases);
     }) ?? [],
   );
 
   // Extract hasAccessToRuneMagic info from subCults and sum up learned rune magic points per cult
-  itemTypes[ItemTypeEnum.Cult]?.forEach((cult: any) => {
-    cult.hasAccessToRuneMagic = cult.system.joinedCults.some(
-      (subCult: any) => subCult.rank !== CultRankEnum.LayMember,
+  itemTypes[ItemTypeEnum.Cult]?.forEach((cult) => {
+    const cultItem = cult as CultItem;
+    (cultItem as any).hasAccessToRuneMagic = cultItem.system.joinedCults.some(
+      (subCult) => subCult.rank !== CultRankEnum.LayMember,
     );
-    cult.runeMagicPointSum =
+    (cultItem as any).runeMagicPointSum =
       itemTypes[ItemTypeEnum.RuneMagic]
-        ?.filter((runeMagicItem: any) => runeMagicItem.system.cultId === cult.id)
-        .reduce((acc: number, spell: any) => acc + (spell.system.points ?? 0), 0) ?? 0;
+        ?.filter((runeMagicItem) => (runeMagicItem as RuneMagicItem).system.cultId === cultItem.id)
+        .reduce((acc: number, spell) => acc + ((spell as RuneMagicItem).system.points ?? 0), 0) ??
+      0;
   });
 
   // Enrich item description and GM notes texts for tooltip display
-  const enrichItem = async (item: any) => {
-    item.system.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.description);
-    item.system.enrichedGmNotes =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(item.system.gmNotes);
+  const enrichItem = async (item: RqgItem) => {
+    (item.system as any).enrichedDescription =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        (item.system as any).description,
+      );
+    (item.system as any).enrichedGmNotes =
+      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        (item.system as any).gmNotes,
+      );
   };
   await Promise.all([
     ...(itemTypes[ItemTypeEnum.Passion]?.map(enrichItem) ?? []),
@@ -721,13 +737,14 @@ export async function organizeEmbeddedItems(
   ]);
 
   // Add extra info for Rune Magic Spells
-  itemTypes[ItemTypeEnum.RuneMagic]?.forEach((runeMagic: any) => {
-    const spellCult = actor.items.get(runeMagic.system.cultId) as CultItem | undefined;
+  itemTypes[ItemTypeEnum.RuneMagic]?.forEach((runeMagic) => {
+    const rm = runeMagic as RuneMagicItem;
+    const spellCult = actor.items.get(rm.system.cultId) as CultItem | undefined;
     const cultCommonRuneMagicRqids =
       spellCult?.system.commonRuneMagicRqidLinks.map((r) => r.rqid) ?? [];
 
-    runeMagic.system.isCommon = cultCommonRuneMagicRqids.includes(
-      runeMagic?.flags?.rqg?.documentRqidFlags?.id ?? "",
+    (rm.system as any).isCommon = cultCommonRuneMagicRqids.includes(
+      rm?.flags?.rqg?.documentRqidFlags?.id ?? "",
     );
   });
 
@@ -742,32 +759,32 @@ export async function organizeEmbeddedItems(
     const actorStr = actor.system.characteristics.strength.value ?? 0;
     const actorDex = actor.system.characteristics.dexterity.value ?? 0;
     // TODO extra data is added to the Usage object for the sheet, look at typing
-    for (const usage of Object.values(usages) as any) {
-      if (!foundry.utils.isEmpty(usage?.skillRqidLink?.rqid)) {
-        const skillItem = actor.getBestEmbeddedDocumentByRqid(usage.skillRqidLink.rqid);
-        usage.skillId = skillItem?.id;
-        usage.skillChance = (skillItem as any)?.system?.chance ?? 0;
-        usage.skillHasExperience = !!(skillItem as any)?.system?.hasExperience;
-        usage.unusable = false;
-        usage.underMinSTR = false;
-        usage.underMinDEX = false;
-        if (actorStr < usage.minStrength) {
-          usage.underMinSTR = true;
+    for (const usage of Object.values(usages) as Record<string, any>[]) {
+      if (!foundry.utils.isEmpty(usage["skillRqidLink"]?.rqid)) {
+        const skillItem = actor.getBestEmbeddedDocumentByRqid(usage["skillRqidLink"].rqid);
+        usage["skillId"] = skillItem?.id;
+        usage["skillChance"] = (skillItem as SkillItem | undefined)?.system?.chance ?? 0;
+        usage["skillHasExperience"] = !!(skillItem as SkillItem | undefined)?.system?.hasExperience;
+        usage["unusable"] = false;
+        usage["underMinSTR"] = false;
+        usage["underMinDEX"] = false;
+        if (actorStr < usage["minStrength"]) {
+          usage["underMinSTR"] = true;
         }
-        if (actorDex < usage.minDexterity) {
-          usage.underMinDEX = true;
+        if (actorDex < usage["minDexterity"]) {
+          usage["underMinDEX"] = true;
         }
-        if (usage.underMinSTR) {
-          usage.unusable = true;
+        if (usage["underMinSTR"]) {
+          usage["unusable"] = true;
         }
-        if (usage.underMinDEX) {
+        if (usage["underMinDEX"]) {
           // STR can compensate for being under DEX min on 2 for 1 basis
-          const deficiency = usage.minDexterity - actorDex;
-          const strover = Math.floor((actorStr - usage.minStrength) / 2);
-          if (usage.minStrength == null) {
-            usage.unusable = true;
+          const deficiency = usage["minDexterity"] - actorDex;
+          const strover = Math.floor((actorStr - usage["minStrength"]) / 2);
+          if (usage["minStrength"] == null) {
+            usage["unusable"] = true;
           } else {
-            usage.unusable = deficiency > strover;
+            usage["unusable"] = deficiency > strover;
           }
         }
       }
@@ -882,20 +899,20 @@ export async function getUnspecifiedSkillText(actor: CharacterActor): Promise<st
  */
 export async function getIncorrectRunesText(
   actor: CharacterActor,
-  embeddedRunes: any,
+  embeddedRunes: EmbeddedRunesByType,
   incorrectRunes: RqgItem[],
 ): Promise<string | undefined> {
   const validRuneIds = [
-    ...Object.values(embeddedRunes.element).map((r: any) => r.id),
-    Object.values(embeddedRunes.form).map((r: any) => r.id),
-    Object.values(embeddedRunes.condition).map((r: any) => r.id),
-    Object.values(embeddedRunes.technique).map((r: any) => r.id),
+    ...Object.values(embeddedRunes.element).map((r) => r.id),
+    Object.values(embeddedRunes.form).map((r) => r.id),
+    Object.values(embeddedRunes.condition).map((r) => r.id),
+    Object.values(embeddedRunes.technique).map((r) => r.id),
     Object.values(embeddedRunes.power)
-      .filter((r: any) => {
+      .filter((r) => {
         const runeRqidName = r?.flags?.rqg?.documentRqidFlags?.id
           ?.split(".")
           .pop()
-          .split("-")
+          ?.split("-")
           .shift();
         return [
           "fertility",
@@ -906,11 +923,11 @@ export async function getIncorrectRunesText(
           "illusion",
           "stasis",
           "movement",
-        ].includes(runeRqidName);
+        ].includes(runeRqidName ?? "");
       })
-      .map((r: any) => r.id),
+      .map((r) => r.id),
   ].flat(Infinity);
-  const extraRunes = actor.items.filter(
+  const extraRunes = (actor.items.contents as RqgItem[]).filter(
     (i) => isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) && !validRuneIds.includes(i.id),
   );
   embeddedRunes.invalid = extraRunes;
@@ -933,15 +950,14 @@ export async function getIncorrectRunesText(
 export function getEquippedProjectileOptions(actor: CharacterActor): SelectOptionData<string>[] {
   return [
     { value: "", label: localize("RQG.Actor.Combat.ProjectileWeaponAmmoNotSelectedAlert") },
-    ...actor
-      .getEmbeddedCollection("Item")
+    ...(actor.items.contents as RqgItem[])
       .filter(
-        (i: RqgItem) =>
+        (i): i is WeaponItem =>
           isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) &&
           i.system.isProjectile &&
           i.system.equippedStatus === "equipped",
       )
-      .map((i: any) => ({
+      .map((i) => ({
         value: i.id ?? "",
         label: `${i.name ?? ""} (${i.system.quantity})`,
       })),

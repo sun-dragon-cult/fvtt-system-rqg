@@ -5,6 +5,8 @@ import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
 import type { GearItem } from "@item-model/gearDataModel.ts";
 import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
+import { RuneTypeEnum } from "@item-model/runeDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 
 /**
@@ -45,6 +47,27 @@ export interface SheetRuneData {
   img: string | undefined | null;
   descriptionRqid: string | undefined;
   cls: string;
+}
+
+/**
+ * Currency totals for display on gear tab.
+ */
+export interface CurrencyTotals {
+  quantity: number;
+  price: { real: number; estimated: number };
+  encumbrance: number;
+}
+
+/**
+ * Runes organized by rune type, as returned by organizeEmbeddedItems.
+ */
+export interface EmbeddedRunesByType {
+  [RuneTypeEnum.Element]: Record<string, RuneItem>;
+  [RuneTypeEnum.Power]: Record<string, RuneItem>;
+  [RuneTypeEnum.Form]: Record<string, RuneItem>;
+  [RuneTypeEnum.Condition]: Record<string, RuneItem>;
+  [RuneTypeEnum.Technique]: Record<string, RuneItem>;
+  invalid?: RqgItem[];
 }
 
 /**
