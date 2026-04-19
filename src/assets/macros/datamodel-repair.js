@@ -4,6 +4,7 @@
  */
 
 const repairs = [];
+const unknownTypeDocs = [];
 const seenCollections = new Set();
 
 /**
@@ -176,6 +177,14 @@ function collectFromCollection(collection, context) {
 
     const ModelClass = CONFIG.Item.dataModels[doc.type];
     if (!ModelClass) {
+      unknownTypeDocs.push({
+        context,
+        name: doc.name ?? "(unnamed)",
+        type: doc.type,
+        id,
+        collection,
+        documentName: "Item",
+      });
       continue;
     }
 
@@ -234,6 +243,20 @@ if (game.actors.invalidDocumentIds?.size) {
     if (!invalidActor) {
       continue;
     }
+
+    /* Check if the actor type itself is unknown */
+    if (!CONFIG.Actor.dataModels[invalidActor.type]) {
+      unknownTypeDocs.push({
+        context: "World Actors",
+        name: invalidActor.name ?? "(unnamed)",
+        type: invalidActor.type,
+        id,
+        collection: game.actors,
+        documentName: "Actor",
+      });
+      continue;
+    }
+
     if (invalidActor.items?.invalidDocumentIds?.size) {
       collectFromCollection(invalidActor.items, `Actor (invalid): ${invalidActor.name}`);
     }
@@ -297,8 +320,8 @@ function buildErrorGroups() {
   return [...groups.values()];
 }
 
-if (repairs.length === 0) {
-  ui.notifications.info("No validation errors found in invalid documents.");
+if (repairs.length === 0 && unknownTypeDocs.length === 0) {
+  ui.notifications.info("No validation errors or unknown-type documents found.");
 } else {
   const errorGroups = buildErrorGroups();
   const { ApplicationV2 } = foundry.applications.api;
@@ -318,6 +341,7 @@ if (repairs.length === 0) {
     };
 
     _errorGroups = errorGroups;
+    _unknownTypeDocs = unknownTypeDocs;
     _totalDocs = repairs.length;
 
     async _renderHTML() {
@@ -328,10 +352,53 @@ if (repairs.length === 0) {
       scrollArea.classList.add("datamodel-repair-scroll");
 
       const intro = document.createElement("p");
+      const issueCount = this._errorGroups.length + (this._unknownTypeDocs.length > 0 ? 1 : 0);
       intro.textContent =
-        `Found ${this._totalDocs} documents with validation errors ` +
-        `(${this._errorGroups.length} unique issues):`;
+        `Found ${this._totalDocs} documents with validation errors` +
+        (this._unknownTypeDocs.length > 0
+          ? ` and ${this._unknownTypeDocs.length} documents with unknown types`
+          : "") +
+        ` (${issueCount} unique issues):`;
       scrollArea.appendChild(intro);
+
+      /* Unknown-type documents section */
+      if (this._unknownTypeDocs.length > 0) {
+        const fieldset = document.createElement("fieldset");
+        fieldset.classList.add("repair-group", "will-delete");
+
+        const legend = document.createElement("legend");
+        const typeList = [...new Set(this._unknownTypeDocs.map((d) => d.type))].join(", ");
+        legend.innerHTML =
+          `<strong>Unknown types</strong>: <code>${typeList}</code>` +
+          ` <span style="background:var(--color-warm-2,#c44);color:#fff;padding:1px 6px;border-radius:8px;font-size:0.8em">${this._unknownTypeDocs.length}×</span>`;
+        fieldset.appendChild(legend);
+
+        const info = document.createElement("p");
+        info.style.cssText = "margin:4px 0;font-size:0.9em";
+        info.textContent =
+          "These documents have types that no longer exist in the system. Check the ones you want to delete.";
+        fieldset.appendChild(info);
+
+        for (let u = 0; u < this._unknownTypeDocs.length; u++) {
+          const doc = this._unknownTypeDocs[u];
+          const row = document.createElement("label");
+          row.style.cssText =
+            "display:flex;align-items:center;gap:6px;margin:2px 0;font-size:0.9em";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.name = `unknown-${u}`;
+          checkbox.checked = true;
+          row.appendChild(checkbox);
+
+          const text = document.createElement("span");
+          text.textContent = `${doc.documentName} "${doc.name}" (type: ${doc.type}) — ${doc.context}`;
+          row.appendChild(text);
+
+          fieldset.appendChild(row);
+        }
+        scrollArea.appendChild(fieldset);
+      }
 
       for (let g = 0; g < this._errorGroups.length; g++) {
         const group = this._errorGroups[g];
@@ -459,6 +526,9 @@ if (repairs.length === 0) {
         .repair-group.will-fix {
           border-color: #2a2;
         }
+        .repair-group.will-delete {
+          border-color: #c44;
+        }
         .datamodel-repair-footer {
           flex: 0 0 auto;
           display: flex;
@@ -496,11 +566,44 @@ if (repairs.length === 0) {
           fieldset.classList.toggle("will-fix", select.value !== "__skip__");
         });
       });
+      /* Toggle red border on unknown-type section when checkboxes change */
+      const unknownFieldset = this.element.querySelector(".will-delete, .repair-group-unknown");
+      if (unknownFieldset) {
+        unknownFieldset.classList.add("repair-group-unknown");
+        unknownFieldset.addEventListener("change", () => {
+          const anyChecked = unknownFieldset.querySelector("input[type='checkbox']:checked");
+          unknownFieldset.classList.toggle("will-delete", !!anyChecked);
+        });
+      }
     }
 
     async _applyFixes() {
       let fixCount = 0;
+      let deleteCount = 0;
       const fixedDocIds = new Set();
+
+      /* Delete unknown-type documents */
+      for (let u = 0; u < this._unknownTypeDocs.length; u++) {
+        const checkbox = this.element.querySelector(`[name="unknown-${u}"]`);
+        if (!checkbox?.checked) {
+          continue;
+        }
+        const docRef = this._unknownTypeDocs[u];
+        try {
+          const doc = docRef.collection.getInvalid(docRef.id);
+          if (!doc) {
+            console.warn(`Could not get invalid document "${docRef.name}" (${docRef.id})`);
+            continue;
+          }
+          await doc.delete();
+          deleteCount++;
+          console.log(
+            `Deleted unknown-type ${docRef.documentName} "${docRef.name}" (${docRef.id}, type: ${docRef.type})`,
+          );
+        } catch (e) {
+          console.warn(`Failed to delete "${docRef.name}" (${docRef.id}):`, e);
+        }
+      }
 
       for (let g = 0; g < this._errorGroups.length; g++) {
         const group = this._errorGroups[g];
@@ -527,7 +630,7 @@ if (repairs.length === 0) {
         }
 
         for (const docRef of group.documents) {
-          const updateKey = `system.${docRef.fieldPath}`;
+          const updateKey = `system.${docRef.fieldPath}`.replace(/\[(\d+)]/g, ".$1");
 
           try {
             const doc = docRef.collection ? docRef.collection.getInvalid(docRef.id) : null;
@@ -553,10 +656,29 @@ if (repairs.length === 0) {
         }
       }
 
-      ui.notifications.info(
-        `Applied ${fixCount} fixes across ${fixedDocIds.size} documents. Reload the world to verify.`,
-      );
+      const parts = [];
+      if (fixCount > 0) {
+        parts.push(`Fixed ${fixCount} issues across ${fixedDocIds.size} documents`);
+      }
+      if (deleteCount > 0) {
+        parts.push(`Deleted ${deleteCount} unknown-type documents`);
+      }
+      if (parts.length === 0) {
+        ui.notifications.info("No changes made.");
+        this.close();
+        return;
+      }
       this.close();
+      const message = `${parts.join(". ")}. A reload is needed for the changes to take effect.`;
+      foundry.applications.api.DialogV2.confirm({
+        window: { title: "DataModel Repair" },
+        content: `<p>${message}</p>`,
+        yes: {
+          label: "Reload",
+          callback: () => window.location.reload(),
+        },
+        no: { label: "Later" },
+      });
     }
   }
 

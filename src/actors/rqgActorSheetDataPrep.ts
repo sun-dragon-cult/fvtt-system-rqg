@@ -735,7 +735,10 @@ export async function organizeEmbeddedItems(
   itemTypes[ItemTypeEnum.Weapon]?.forEach((weapon: RqgItem) => {
     assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
 
-    const usages = weapon.system.usage;
+    // Deep clone usage so we can add extra template properties (skillId, etc.).
+    // DataModel SchemaField getters return fresh objects on each access,
+    // so mutating them directly would be lost by the time the template reads them.
+    const usages: Record<string, any> = foundry.utils.deepClone(weapon.system.usage);
     const actorStr = actor.system.characteristics.strength.value ?? 0;
     const actorDex = actor.system.characteristics.dexterity.value ?? 0;
     // TODO extra data is added to the Usage object for the sheet, look at typing
@@ -769,6 +772,12 @@ export async function organizeEmbeddedItems(
         }
       }
     }
+    // Shadow the DataModel getter so the template sees our enriched usage data
+    Object.defineProperty(weapon.system, "usage", {
+      value: usages,
+      configurable: true,
+      enumerable: true,
+    });
 
     const projectile = actor.items.find((i) => i.id === weapon.system.projectileId) as
       | WeaponItem

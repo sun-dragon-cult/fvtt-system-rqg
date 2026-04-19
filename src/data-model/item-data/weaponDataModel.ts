@@ -104,4 +104,30 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
       projectileId: new StringField({ blank: true, nullable: false, initial: "" }),
     } as const;
   }
+
+  /**
+   * Preserve legacy skillOrigin/skillId into the skillRqidLink field before
+   * schema cleaning strips them. Uses the "NOT-FOUND" encoding that the
+   * world migration (migrateWeaponSkillLinks) knows how to resolve.
+   */
+  static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    const usage = source["usage"] as Record<string, Record<string, unknown>> | undefined;
+    if (usage && typeof usage === "object") {
+      for (const usageType of ["oneHand", "offHand", "twoHand", "missile"]) {
+        const u = usage[usageType];
+        if (!u || typeof u !== "object") {
+          continue;
+        }
+        const skillOrigin = u["skillOrigin"] as string | undefined;
+        const skillId = u["skillId"] as string | undefined;
+        if (skillOrigin && (!u["skillRqidLink"] || (u["skillRqidLink"] as any).rqid === "")) {
+          u["skillRqidLink"] = {
+            rqid: `i.skill.[${skillOrigin}] / [${skillId ?? ""}]`,
+            name: "NOT-FOUND",
+          };
+        }
+      }
+    }
+    return super.migrateData(source);
+  }
 }

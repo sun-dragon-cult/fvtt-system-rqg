@@ -141,16 +141,7 @@ async function migrateWorldScenes(
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const scene of scenes) {
     try {
-      const updateData = await getSceneMigrationUpdates(scene, itemMigrations, actorMigrations);
-      if (!foundry.utils.isEmpty(updateData)) {
-        console.log(`RQG | Migrating Scene document ${scene.name}`, updateData);
-        // @ts-expect-error enforceTypes TODO it does exists
-        await scene.update(updateData, { enforceTypes: false });
-
-        // If we do not do this, then synthetic token actors remain in cache
-        // with the un-updated actorData.
-        scene.tokens.contents.forEach((t: any) => (t._actor = null));
-      }
+      await migrateSceneTokenActors(scene, itemMigrations, actorMigrations, migrationResult);
     } catch (err: any) {
       migrationResult.errorCount += 1;
       err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
@@ -257,10 +248,11 @@ async function migrateCompendium(
           updateData = await getItemMigrationUpdates(doc as RqgItem, itemMigrations);
           break;
         case "Scene":
-          updateData = await getSceneMigrationUpdates(
+          await migrateSceneTokenActors(
             doc as Scene,
             itemMigrations,
             actorMigrations,
+            migrationResult,
           );
           break;
       }
@@ -358,55 +350,55 @@ async function getItemMigrationUpdates(
 
 /* -------------------------------------------- */
 
-async function getSceneMigrationUpdates(
+/**
+ * Migrate unlinked token actors in a scene by applying the same item/actor
+ * migrations used for world actors. Linked tokens are skipped — they share
+ * the world actor already handled in migrateWorldActors.
+ */
+async function migrateSceneTokenActors(
   scene: Scene,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   itemMigrations: ItemMigration[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   actorMigrations: ActorMigration[],
-): Promise<object> {
-  const tokens = await Promise.all(
-    scene.tokens.map(async (token) => {
-      const t = token.toJSON();
-      // TODO fix it
+  migrationResult: MigrationResult,
+): Promise<void> {
+  for (const token of scene.tokens) {
+    if (token.actorLink) {
+      continue;
+    }
+    const actor = token.actor;
+    if (!actor) {
+      continue;
+    }
 
-      // if (!t.actorId || t.actorLink) {
-      //   t.actorData = {}; // TODO what is actorData? does not seem to exist, use token.actor instead?
-      // } else if (!game.actors!.has(t.actorId)) {
-      //   t.actorId = null;
-      //   t.actorData = {};
-      // } else if (!t.actorLink) {
-      //   const actorData = foundry.utils.duplicate(t.actorData);
-      //   actorData.type = token.actor?.type;
-      //   const update = await getActorMigrationUpdates(
-      //     actorData as any,
-      //     itemMigrations,
-      //     actorMigrations,
-      //   ); // TODO fix type
-      //   ["items", "effects"].forEach((embeddedName: string) => {
-      //     if (!(update as any)[embeddedName]?.length) {
-      //       // TODO fix type
-      //       return;
-      //     }
-      //     const updates = new Map((update as any)[embeddedName].map((u: any) => [u._id, u])); // TODO fix type
-      //     (t.actorData as any)[embeddedName].forEach((original: any) => {
-      //       // TODO fix type
-      //       const update: any = updates.get(original._id);
-      //       if (update) {
-      //         foundry.utils.mergeObject(original, update, { performDeletions: false });
-      //       }
-      //     });
-      //
-      //     delete (update as any)[embeddedName]; // TODO fix type
-      //   });
-      //
-      //   // TODO implement AE Delete for scene Actors as well?
-      //   foundry.utils.mergeObject(t.actorData, update, { performDeletions: false });
-      // }
-      return t;
-    }),
-  );
-  return { tokens };
+    try {
+      const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
+        actor.toObject() as any,
+        itemMigrations,
+        actorMigrations,
+      );
+
+      if (!foundry.utils.isEmpty(actorUpdateData)) {
+        console.log(
+          `RQG | Migrating unlinked Token actor ${actor.name} in Scene ${scene.name}`,
+          actorUpdateData,
+        );
+        // @ts-expect-error enforceTypes TODO it does exist
+        await actor.update(actorUpdateData, { enforceTypes: false });
+      }
+
+      if (itemUpdateData.length > 0) {
+        console.log(
+          `RQG | Migrating embedded Items for unlinked Token actor ${actor.name} in Scene ${scene.name}`,
+          itemUpdateData,
+        );
+        await actor.updateEmbeddedDocuments("Item", itemUpdateData);
+      }
+    } catch (err: any) {
+      migrationResult.errorCount += 1;
+      err.message = `RQG | Failed migration for Token actor ${actor.name} in Scene ${scene.name}: ${err.message}`;
+      console.error(err, token);
+    }
+  }
 }
 
 let progressBar: any;
