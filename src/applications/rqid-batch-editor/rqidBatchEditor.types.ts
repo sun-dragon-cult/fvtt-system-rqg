@@ -7,6 +7,12 @@ export interface ItemChange {
   documentRqidFlags: DocumentRqidFlags;
 }
 
+/** Shape of a single item rqid flag update for Foundry's update API */
+export interface ItemRqidUpdate {
+  _id: string;
+  "flags.rqg.documentRqidFlags": DocumentRqidFlags;
+}
+
 export interface ExistingRqids {
   name: string;
   rqid: string;
@@ -16,8 +22,8 @@ export interface ExistingRqids {
 export interface ItemNameWithoutRqid {
   name: string;
   rqid: string;
-  selectedRqid: string;
-  selectedRqidSuffix: string;
+  selectedRqid?: string;
+  selectedRqidSuffix?: string;
 }
 
 export interface RqidBatchEditorData {

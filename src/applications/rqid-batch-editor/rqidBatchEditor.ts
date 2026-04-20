@@ -17,11 +17,10 @@ import type {
   Changes,
   ItemChange,
   ItemNameWithoutRqid,
+  ItemRqidUpdate,
   RqidBatchEditorData,
   RqidBatchEditorOptions,
 } from "./rqidBatchEditor.types";
-
-import Document = foundry.abstract.Document;
 
 export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   Changes,
@@ -31,7 +30,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   public reject: (value: PromiseLike<void> | void) => void = () => {};
 
   /** Keep a single progress object. */
-  private static updateProgressBar: any;
+  private static updateProgressBar: Notifications.Notification<"info"> | undefined;
   private readonly inputDebounceTimers = new WeakMap<HTMLInputElement, number>();
   private static readonly rqidInputDebounceMs = 120;
 
@@ -86,10 +85,10 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     });
 
     const itemNamesWithoutRqid: ItemNameWithoutRqid[] = [...this.object.itemName2Rqid.keys()]
-      .reduce((out: any, itemName) => {
+      .reduce((out: ItemNameWithoutRqid[], itemName) => {
         out.push({
           name: itemName,
-          key: this.options.existingRqids.get(itemName) ?? "",
+          rqid: this.options.existingRqids.get(itemName) ?? "",
           selectedRqid: this.object.itemName2Rqid.get(itemName),
           selectedRqidSuffix: this.object.itemName2Rqid
             .get(itemName)
@@ -97,7 +96,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         });
         return out;
       }, [])
-      .sort((a: Document.Any, b: Document.Any) => a.name!.localeCompare(b.name!));
+      .sort((a, b) => a.name.localeCompare(b.name));
 
     let summary: string;
     switch (this.options.itemType) {
@@ -132,11 +131,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     html.find(".rqid-input").change(this.onTypeRqid.bind(this));
   }
 
-  onTypeRqidInput(event: any): void {
-    const input = event.currentTarget as HTMLInputElement | undefined;
-    if (!input) {
-      return;
-    }
+  onTypeRqidInput(event: JQuery.TriggeredEvent): void {
+    const input = event.currentTarget as HTMLInputElement;
 
     const existingTimer = this.inputDebounceTimers.get(input);
     if (existingTimer != null) {
@@ -151,9 +147,10 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     this.inputDebounceTimers.set(input, timer);
   }
 
-  onSetExistingName(event: any): void {
-    const name = getDomDataset(event, "name") ?? "";
-    const selectedRqid = convertFormValueToString(event.currentTarget?.value);
+  onSetExistingName(event: JQuery.TriggeredEvent): void {
+    const target = event.currentTarget as HTMLInputElement;
+    const name = getDomDataset(target, "name") ?? "";
+    const selectedRqid = convertFormValueToString(target.value);
     const newRqid = selectedRqid || undefined;
     this.object.itemName2Rqid.set(name, newRqid);
 
@@ -161,23 +158,25 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     this.updateRowInput(event, rqidSuffix);
   }
 
-  onClickGuess(event: any): void {
-    const name = getDomDataset(event, "name") ?? "";
+  onClickGuess(event: JQuery.TriggeredEvent): void {
+    const target = event.currentTarget as HTMLElement;
+    const name = getDomDataset(target, "name") ?? "";
     const rqidSuffix = toKebabCase(name);
     const newRqid = rqidSuffix ? this.options.idPrefix + rqidSuffix : undefined;
     this.object.itemName2Rqid.set(name, newRqid);
     this.updateRowInput(event, rqidSuffix);
   }
 
-  onTypeRqid(event: any): void {
-    const name = getDomDataset(event, "name") ?? "";
-    const rqidSuffix = toKebabCase(convertFormValueToString(event.currentTarget.value));
+  onTypeRqid(event: JQuery.TriggeredEvent): void {
+    const target = event.currentTarget as HTMLInputElement;
+    const name = getDomDataset(target, "name") ?? "";
+    const rqidSuffix = toKebabCase(convertFormValueToString(target.value));
     const newRqid = rqidSuffix ? this.options.idPrefix + rqidSuffix : undefined;
     this.object.itemName2Rqid.set(name, newRqid);
     this.updateRowInput(event, rqidSuffix);
   }
 
-  private updateRowInput(event: any, rqidSuffix: string): void {
+  private updateRowInput(event: JQuery.TriggeredEvent, rqidSuffix: string): void {
     const rowElement = (event.currentTarget as HTMLElement | undefined)?.closest(".document-row");
     const rowInput = rowElement?.querySelector(".rqid-input") as HTMLInputElement | null;
     if (!rowInput) {
@@ -278,7 +277,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     for (const [packId, actorChanges] of packActorChanges) {
       let actors;
       for (const [actorId, actorItemUpdates] of actorChanges) {
-        const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
+        const embeddedItemUpdates: ItemRqidUpdate[] = RqidBatchEditor.getItemUpdates(
           actorItemUpdates,
           itemNames2Rqid,
         );
@@ -347,8 +346,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         console.error("RQG | Could not find scene with id", sceneId);
         continue;
       }
-      const sceneUpdates: any = {};
-      sceneUpdates.tokens = [];
+      const sceneUpdates: { tokens: object[] } = { tokens: [] };
       for (const [tokenId, tokenItemUpdates] of token2ItemUpdates) {
         const token = scene.tokens.get(tokenId);
         if (!token) {
@@ -361,9 +359,10 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         }
 
         tokenItemUpdates.forEach((itemUpdate) => {
-          const tokenUpdate: any = { _id: token.id };
-          tokenUpdate.delta = { _id: token.delta?.id };
-          tokenUpdate.delta.items = [];
+          const tokenUpdate: {
+            _id: string | null;
+            delta: { _id: string | null | undefined; items: object[] };
+          } = { _id: token.id, delta: { _id: token.delta?.id, items: [] } };
           const item = token.actor!.items.get(itemUpdate.itemId);
           if (!item) {
             console.error("RQG | Could not find item on token with id", itemUpdate.itemId);
@@ -409,7 +408,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         continue;
       }
 
-      const embeddedItemUpdates: any[] = RqidBatchEditor.getItemUpdates(
+      const embeddedItemUpdates: ItemRqidUpdate[] = RqidBatchEditor.getItemUpdates(
         actorItemChanges,
         itemNames2Rqid,
       );
@@ -466,8 +465,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       const actorData = actor.toObject();
 
       actorData.items.forEach((item) => {
-        const itemData =
-          item instanceof CONFIG.Item.documentClass ? (item as any).toObject() : item;
+        const itemData = item instanceof CONFIG.Item.documentClass ? item.toObject() : item;
         if (itemData.type !== documentType) {
           return;
         }
@@ -486,7 +484,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
             ? actorChangesMap.get(actor._id)!
             : [];
           currentUpdates.push({
-            itemId: itemData._id,
+            itemId: String(itemData._id),
             name: itemData.name,
             documentRqidFlags: itemData.flags.rqg?.documentRqidFlags ?? {},
           });
@@ -501,14 +499,14 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     const worldItems = game.items?.contents ?? [];
     RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from World Items");
     worldItems.forEach((item) => {
-      const itemData = item instanceof CONFIG.Item.documentClass ? (item as any).toObject() : item;
+      const itemData = item.toObject();
       if (itemData.type !== documentType) {
         RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from World Items");
         return;
       }
       if (
-        prefixRegex.test(itemData.flags.rqg?.documentRqidFlags?.id) &&
-        !foundry.utils.isEmpty(itemData.flags.rqg?.documentRqidFlags?.id)
+        itemData.flags.rqg?.documentRqidFlags?.id &&
+        prefixRegex.test(itemData.flags.rqg.documentRqidFlags.id)
       ) {
         existingRqids.set(itemData.name, itemData.flags.rqg.documentRqidFlags.id);
       } else {
@@ -534,15 +532,15 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
     for (const pack of worldItemPacks ?? []) {
       const packIndex = await pack.getIndex();
-      const actors: any[] = pack.metadata.type === "Actor" ? await pack.getDocuments() : [];
+      const actors: RqgActor[] =
+        pack.metadata.type === "Actor" ? ((await pack.getDocuments()) as RqgActor[]) : [];
 
       for (const packIndexData of packIndex) {
-        const anyPackIndexData = packIndexData as any;
-        if ("type" in anyPackIndexData) {
-          switch (anyPackIndexData.type) {
+        if ("type" in packIndexData) {
+          switch (packIndexData.type) {
             case documentType:
               RqidBatchEditor.collectItemPackRqids(
-                pack as any,
+                pack,
                 prefixRegex,
                 packIndexData,
                 existingRqids,
@@ -559,7 +557,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
             case ActorTypeEnum.Character:
               if (!processedActorCompendiumPacks.has(pack.metadata.id)) {
                 await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
-                  pack as any,
+                  pack,
                   actors,
                   documentType,
                   itemNamesWithoutRqid,
@@ -650,28 +648,26 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     // Handle item names with multiple different Rqids
     if ([...itemNamesWithoutRqid.values()].some((v) => !v)) {
       // Fill existingRqids with Rqid from items
-      const items: any = await Rqid.fromRqidRegexBest(
-        prefixRegex,
-        "i",
-        CONFIG.RQG.fallbackLanguage,
-      );
+      const items = await Rqid.fromRqidRegexBest(prefixRegex, "i", CONFIG.RQG.fallbackLanguage);
 
       const namesToDeleteFromExistingRqids: Set<string> = new Set();
-      items.forEach((item: any) => {
-        const previousRqidSuffix = existingRqids.get(item.name)?.replace(prefixRegex, "");
-        const previousExpandedName = `${item.name ?? ""} ➤ ${previousRqidSuffix}`;
+      items.forEach((item) => {
+        const itemName = item.name ?? "";
+        const rqgFlags = (item.flags as { rqg?: { documentRqidFlags?: DocumentRqidFlags } })?.rqg;
+        const previousRqidSuffix = existingRqids.get(itemName)?.replace(prefixRegex, "");
+        const previousExpandedName = `${itemName} ➤ ${previousRqidSuffix}`;
 
-        const newRqidSuffix = item.flags.rqg.documentRqidFlags.id?.replace(prefixRegex, "");
-        const newExpandedName = `${item.name ?? ""} ➤ ${newRqidSuffix}`;
+        const newRqidSuffix = rqgFlags?.documentRqidFlags?.id?.replace(prefixRegex, "");
+        const newExpandedName = `${itemName} ➤ ${newRqidSuffix}`;
 
         if (
           // If existingRqids already has this item name but with another Rqid, then add the new one as well under a different name
-          existingRqids.has(item.name) &&
-          existingRqids.get(item.name) !== item.flags.rqg.documentRqidFlags.id
+          existingRqids.has(itemName) &&
+          existingRqids.get(itemName) !== rqgFlags?.documentRqidFlags?.id
         ) {
-          existingRqids.set(previousExpandedName, existingRqids.get(item.name)!);
-          existingRqids.set(newExpandedName, item.flags.rqg.documentRqidFlags.id);
-          namesToDeleteFromExistingRqids.add(item.name);
+          existingRqids.set(previousExpandedName, existingRqids.get(itemName)!);
+          existingRqids.set(newExpandedName, rqgFlags?.documentRqidFlags?.id ?? "");
+          namesToDeleteFromExistingRqids.add(itemName);
         }
       });
 
@@ -698,42 +694,42 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   }
 
   private static collectItemPackRqids(
-    pack: any,
+    pack: CompendiumCollection.Any,
     prefixRegex: RegExp,
-    packIndexData: any,
+    packIndexData: CompendiumCollection.IndexEntry<CompendiumCollection.DocumentName>,
     existingRqids: Map<string, string>,
     itemNamesWithoutRqid: Map<string, string | undefined>,
     packItemChangesMap: Map<string, ItemChange[]>,
   ): void {
+    const rqgFlags = (
+      packIndexData.flags as { rqg?: { documentRqidFlags?: DocumentRqidFlags } } | undefined
+    )?.rqg;
+    const rqidId = rqgFlags?.documentRqidFlags?.id;
+    const name = packIndexData.name ?? "";
+
     if (
       pack.metadata?.packageName === systemId &&
       pack.metadata?.type === "Item" &&
       pack.metadata?.packageType === "system"
     ) {
       // If the pack is a system item compendium then remember the name -> rqid combo in "existingRqids"
-      if (
-        packIndexData?.flags?.rqg?.documentRqidFlags?.id &&
-        prefixRegex.test(packIndexData.flags.rqg.documentRqidFlags.id)
-      ) {
+      if (rqidId && prefixRegex.test(rqidId)) {
         // RQG System compendium pack item
-        existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
+        existingRqids.set(name, rqidId);
       }
     } else {
-      if (
-        packIndexData?.flags?.rqg?.documentRqidFlags?.id &&
-        prefixRegex.test(packIndexData.flags.rqg.documentRqidFlags.id)
-      ) {
-        existingRqids.set(packIndexData.name, packIndexData.flags.rqg.documentRqidFlags.id);
+      if (rqidId && prefixRegex.test(rqidId)) {
+        existingRqids.set(name, rqidId);
       } else {
-        itemNamesWithoutRqid.set(packIndexData.name, undefined);
+        itemNamesWithoutRqid.set(name, undefined);
 
         const currentChanges: ItemChange[] = packItemChangesMap.has(pack.metadata.id)
           ? packItemChangesMap.get(pack.metadata.id!)!
           : [];
         currentChanges.push({
           itemId: packIndexData._id,
-          name: packIndexData.name,
-          documentRqidFlags: packIndexData?.flags?.rqg?.documentRqidFlags ?? {},
+          name: name,
+          documentRqidFlags: rqgFlags?.documentRqidFlags ?? {},
         });
 
         if (!foundry.utils.isEmpty(currentChanges)) {
@@ -747,7 +743,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
    * Note that packActorChangesMap and itemNamesWithoutRqid parameters will get modified.
    */
   private static async collectActorPackEmbeddedItemRqids(
-    pack: any,
+    pack: CompendiumCollection.Any,
     actors: RqgActor[],
     documentType: ItemTypeEnum,
     itemNamesWithoutRqid: Map<string, string | undefined>,
@@ -761,7 +757,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     const actorItemChanges = new Map<string, ItemChange[]>();
     for (const actor of actors) {
       const embeddedItemChanges: ItemChange[] = [];
-      for (const itemData of actor.items as any) {
+      for (const itemData of actor.items) {
         if (itemData.type !== documentType) {
           continue;
         }
@@ -847,8 +843,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   private static getItemUpdates(
     itemChanges: ItemChange[],
     itemNames2Rqid: Map<string, string | undefined>,
-  ): any[] {
-    return itemChanges.reduce((acc: any[], itemChange) => {
+  ): ItemRqidUpdate[] {
+    return itemChanges.reduce((acc: ItemRqidUpdate[], itemChange) => {
       const rqidFlags: DocumentRqidFlags = {
         id: itemNames2Rqid.get(itemChange.name),
         lang: itemChange.documentRqidFlags.lang ?? game.settings?.get(systemId, "worldLanguage"),
@@ -865,7 +861,10 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   /**
    * Convert an ItemChange & flags to a format for foundry update.
    */
-  private static getItemUpdate(update: ItemChange, flags: DocumentRqidFlags): any | undefined {
+  private static getItemUpdate(
+    update: ItemChange,
+    flags: DocumentRqidFlags,
+  ): ItemRqidUpdate | undefined {
     if (!update.itemId || !flags.id) {
       return undefined;
     }
@@ -900,7 +899,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       });
     }
     if (shouldUpdateUi) {
-      RqidBatchEditor.updateProgressBar.update({ message, pct });
+      RqidBatchEditor.updateProgressBar?.update({ message, pct });
     }
 
     if (closeOnComplete && index >= totalCount) {
