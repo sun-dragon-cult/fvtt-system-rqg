@@ -16,7 +16,7 @@ export class RqgCombat extends Combat {
   /**
    * Reset all combatant SR, remove duplicate combatants and set the turn back to zero
    */
-  override async resetAll({ updateTurn = true } = {}): Promise<any> {
+  override async resetAll({ updateTurn = true } = {}): Promise<this | undefined> {
     const currentId = this.combatant?.id;
     const tokenIds = new Set(); // --- RQG code
     const combatantIdsToDelete = []; // --- RQG code
@@ -32,12 +32,15 @@ export class RqgCombat extends Combat {
       }
       // --- end RQG code ---
     }
-    const update: any = { combatants: this.combatants.toObject() };
+    const update: { combatants: object[]; turn?: number } = {
+      combatants: this.combatants.toObject(),
+    };
     if (updateTurn && currentId) {
       update.turn = this.turns.findIndex((t) => t.id === currentId);
     }
     await this.update(update, { turnEvents: false, diff: false });
     await this.deleteEmbeddedDocuments("Combatant", combatantIdsToDelete);
+    return undefined;
     // --- RQG code
   }
 

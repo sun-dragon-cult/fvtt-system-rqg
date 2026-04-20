@@ -304,7 +304,8 @@ export function isDocumentSubType<
     | RqidEnabledDocument
     | RqgChatMessage
     | ChatMessage
-    | undefined,
+    | undefined
+    | null,
   documentSubTypes: Readonly<
     | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)
     | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)[]

@@ -1,6 +1,6 @@
 export type NewCombatant = {
-  tokenId: any;
-  sceneId: any;
-  actorId: any;
+  tokenId: string | null | undefined;
+  sceneId: string | null | undefined;
+  actorId: string | null | undefined;
   initiative: number;
 };

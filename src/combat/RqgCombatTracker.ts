@@ -115,7 +115,9 @@ export class RqgCombatTracker extends CombatTracker {
         callback: async (li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
-            const combatantIds = getCombatantsSharingToken(combatant).map((c: any) => c.id);
+            const combatantIds = getCombatantsSharingToken(combatant)
+              .map((c) => c.id)
+              .filter((id): id is string => id != null);
             if (combatantIds.length > 1) {
               const indexToKeep = combatantIds.indexOf(combatant.id);
               combatantIds.splice(indexToKeep, 1); // Keep the selected combatant

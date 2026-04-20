@@ -1,13 +1,16 @@
 import { systemId } from "../system/config";
 import type { TokenRulerSettingsType } from "../applications/settings/tokenRulerSettings.types";
-import type { CharacterActor } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
+import { isDocumentSubType } from "../system/util";
 
 export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   static init() {
     CONFIG.Token.rulerClass = RqgTokenRuler;
   }
 
-  override _getSegmentStyle(waypoint: any): any {
+  override _getSegmentStyle(
+    waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint,
+  ): Ruler.SegmentStyle {
     const style = super._getSegmentStyle(waypoint);
     this.#rangeValueStyle(style, waypoint);
     return style;
@@ -16,17 +19,21 @@ export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
   /**
    * Adjusts the grid or segment style based on the token's movement characteristics
    */
-  #rangeValueStyle(style: any, waypoint: any) {
+  #rangeValueStyle(
+    style: Ruler.SegmentStyle,
+    waypoint: foundry.canvas.placeables.tokens.TokenRuler.Waypoint,
+  ) {
     if (!this.token.combatant) {
       // Only show the waypoints for tokens that are in combat.
       style.width = 0;
       return;
     }
     const tokenMovementAction = waypoint.action;
-    const actorAttributes = (this.token.actor as CharacterActor | undefined)?.system?.attributes;
-    if (!actorAttributes) {
+    const actor = this.token.actor;
+    if (!isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
       return;
     }
+    const actorAttributes = actor.system.attributes;
     // TODO Duplicated from RqgActor, make more DRY
     const equippedMovementEncumbrancePenalty = Math.min(
       0,

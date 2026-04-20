@@ -10,7 +10,7 @@ export class RqgToken extends Token {
     CONFIG.Token.objectClass = RqgToken;
   }
 
-  override _onHoverIn(event: any, options: any): void {
+  override _onHoverIn(event: Canvas.Event.Pointer, options?: PlaceableObject.HoverInOptions): void {
     super._onHoverIn(event, options);
     if (this.combatant) {
       getCombatantsSharingToken(this.combatant).forEach((combatant) => {
@@ -22,7 +22,7 @@ export class RqgToken extends Token {
     }
   }
 
-  override _onHoverOut(event: any) {
+  override _onHoverOut(event: Canvas.Event.Pointer) {
     super._onHoverOut(event);
     if (this.combatant) {
       getCombatantsSharingToken(this.combatant).forEach((combatant: Combatant) => {
@@ -34,7 +34,11 @@ export class RqgToken extends Token {
     }
   }
 
-  protected override _onCreate(data: any, options: any, userId: string): void {
+  protected override _onCreate(
+    data: foundry.data.fields.SchemaField.CreateData<TokenDocument["schema"]["fields"]>,
+    options: TokenDocument.Database.OnCreateOptions,
+    userId: string,
+  ): void {
     super._onCreate(data, options, userId);
     this.actor?.updateTokenEffectFromHealth();
     assertDocumentSubType<CharacterActor>(

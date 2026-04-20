@@ -9,7 +9,7 @@ export function getCombatantsSharingToken(combatant: Combatant.Stored | undefine
   const combatantTokenIds = combatant.actor
     .getDependentTokens({ scenes: scene })
     .map((t: TokenDocument) => t.id);
-  return combatant.parent.combatants.filter((cb: any) => combatantTokenIds.includes(cb.tokenId));
+  return combatant.parent.combatants.filter((cb) => combatantTokenIds.includes(cb.tokenId));
 }
 
 /**
