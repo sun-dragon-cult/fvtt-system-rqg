@@ -2,6 +2,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { isDocumentSubType } from "../../util.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqidString } from "../../api/rqidApi";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.
 export async function tagSkillNameSkillsWithRqid(itemData: RqgItem): Promise<Item.UpdateData> {
@@ -14,7 +15,9 @@ export async function tagSkillNameSkillsWithRqid(itemData: RqgItem): Promise<Ite
       flags: {
         rqg: {
           documentRqidFlags: {
-            id: itemData?.flags?.rqg?.documentRqidFlags?.id || name2Rqid.get(itemData.name),
+            id: (itemData?.flags?.rqg?.documentRqidFlags?.id || name2Rqid.get(itemData.name)) as
+              | RqidString
+              | undefined,
             lang: itemData?.flags?.rqg?.documentRqidFlags?.lang || CONFIG.RQG.fallbackLanguage,
             priority: itemData?.flags?.rqg?.documentRqidFlags?.priority || 0,
           },

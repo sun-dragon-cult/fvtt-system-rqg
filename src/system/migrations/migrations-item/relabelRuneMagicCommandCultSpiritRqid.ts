@@ -50,24 +50,20 @@ export async function relabelRuneMagicCommandCultSpiritRqid(
   }
 
   if (isDocumentSubType<CultItem>(itemData, ItemTypeEnum.Cult)) {
-    const commandCultSpiritLink = itemData.system.commonRuneMagicRqidLinks.find(
-      (link) => link.rqid === oldRqid,
-    );
+    // Cast to RqidLink[] to allow comparison with legacy hyphenated rqid format
+    const links = itemData.system.commonRuneMagicRqidLinks as RqidLink[];
+    const commandCultSpiritLink = links.find((link) => link.rqid === oldRqid);
     if (commandCultSpiritLink) {
       const newName =
         commandCultSpiritLink.name === oldEnglishName ? newEnglishName : commandCultSpiritLink.name;
 
       const newCommandCultSpiritLink = new RqidLink(newRqid, newName);
       newCommandCultSpiritLink.bonus = undefined;
-      const index = itemData.system.commonRuneMagicRqidLinks.indexOf(commandCultSpiritLink);
-      itemData.system.commonRuneMagicRqidLinks.splice(
-        index,
-        1,
-        newCommandCultSpiritLink as typeof commandCultSpiritLink,
-      );
+      const index = links.indexOf(commandCultSpiritLink);
+      links.splice(index, 1, newCommandCultSpiritLink);
 
       foundry.utils.mergeObject(updateData, {
-        system: { commonRuneMagicRqidLinks: itemData.system.commonRuneMagicRqidLinks },
+        system: { commonRuneMagicRqidLinks: links },
       });
     }
   }

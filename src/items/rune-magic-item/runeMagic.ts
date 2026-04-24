@@ -16,6 +16,7 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
+import { toRqidString } from "../../system/api/rqidValidation";
 
 type RpAndMpCost = { mp: number; rp: number; exp: boolean };
 
@@ -214,7 +215,10 @@ export class RuneMagic extends AbstractEmbeddedItem {
     }
     // Get the actor's versions of the runes, which will have their "chance"
     const runesForCasting = usableRuneRqids
-      .map((runeRqid) => runeMagicItem.actor?.getBestEmbeddedDocumentByRqid(runeRqid) as RuneItem)
+      .map(
+        (runeRqid) =>
+          runeMagicItem.actor?.getBestEmbeddedDocumentByRqid(toRqidString(runeRqid)) as RuneItem,
+      )
       .filter(isTruthy);
 
     return runesForCasting;

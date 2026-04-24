@@ -3,7 +3,6 @@ import { RqgActor } from "../rqgActor";
 import {
   assertDocumentSubType,
   getDomDataset,
-  getDomDatasetAmongSiblings,
   getRequiredDomDataset,
   isDocumentSubType,
   localize,
@@ -15,6 +14,7 @@ import { SkillCategoryEnum, type SkillItem } from "@item-model/skillDataModel.ts
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
+import { isValidRqidString } from "../../system/api/rqidValidation";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
 export const skillMenuOptions = (
@@ -107,12 +107,15 @@ export const skillMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
     condition: (el: HTMLElement) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
-      return !!rqid;
+      const itemId = getDomDataset(el, "item-id");
+      const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
+      return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
     callback: async (el: HTMLElement) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
-      if (rqid) {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId) as SkillItem | undefined;
+      const rqid = item?.system.descriptionRqidLink?.rqid;
+      if (isValidRqidString(rqid)) {
         await Rqid.renderRqidDocument(rqid);
       }
     },

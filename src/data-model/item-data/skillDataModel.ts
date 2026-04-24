@@ -2,6 +2,8 @@ import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
+import type { RqidLink } from "../shared/rqidLink";
+import type { RqidString } from "../../system/api/rqidApi";
 import { enumChoices } from "../shared/enumChoices";
 
 export type SkillItem = RqgItem & { system: Item.SystemOfType<"skill"> };
@@ -30,6 +32,9 @@ export class SkillDataModel extends RqgItemDataModel<
   SkillSchema,
   { chance: number; categoryMod: number }
 > {
+  declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];
+  declare descriptionRqidLink: RqidLink<RqidString>;
+
   static override defineSchema() {
     return {
       ...abilitySchemaFields(),

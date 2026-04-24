@@ -35,6 +35,7 @@ import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
+import { toRqidString } from "../../system/api/rqidValidation";
 import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -152,8 +153,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
 
     const skillRqid: string | undefined =
       this.weaponItem?.system.usage[formData.usageType].skillRqidLink?.rqid;
-    const usedSkill: RqgItem | undefined =
-      this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+    const usedSkill: RqgItem | undefined = this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(
+      toRqidString(skillRqid),
+    );
     const validUsedSkill = isDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill)
       ? usedSkill
       : undefined;
@@ -310,7 +312,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     }
 
     const skillRqid = weaponItem.system.usage[selectedUsageType].skillRqidLink?.rqid;
-    const usedSkill = weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+    const usedSkill = weaponItem.actor?.getBestEmbeddedDocumentByRqid(toRqidString(skillRqid));
 
     if (!isDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill)) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
@@ -373,9 +375,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
 
-    const skillItem = actor?.getBestEmbeddedDocumentByRqid(
-      weaponItem.system.usage[formDataObject.usageType].skillRqidLink?.rqid,
-    );
+    const skillRqid = weaponItem.system.usage[formDataObject.usageType].skillRqidLink?.rqid;
+    const skillItem = actor?.getBestEmbeddedDocumentByRqid(toRqidString(skillRqid));
     if (!isDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill)) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
       return;

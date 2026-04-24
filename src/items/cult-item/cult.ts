@@ -101,7 +101,7 @@ export class Cult extends AbstractEmbeddedItem {
 
     const runeMagicItems = await Promise.all(
       cult.system.commonRuneMagicRqidLinks.map(
-        async (rqidLink) => (await Rqid.fromRqid(rqidLink.rqid)) as RuneMagicItem | undefined,
+        async (rqidLink) => await Rqid.fromRqid(rqidLink.rqid),
       ),
     );
 

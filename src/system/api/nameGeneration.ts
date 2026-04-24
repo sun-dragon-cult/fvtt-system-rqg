@@ -3,6 +3,7 @@ import Foswig from "foswig";
 import { RQG_CONFIG, systemId } from "../config";
 import { localize } from "../util";
 import { Rqid } from "./rqidApi";
+import { isValidRqidString } from "./rqidValidation";
 import {
   type DocumentRqidFlags,
   documentRqidFlags,
@@ -74,6 +75,9 @@ export class nameGeneration {
     }
 
     // Generate a name using Foswig
+    if (!isValidRqidString(rqid)) {
+      return [];
+    }
     const nameBase = await this.GetNameBase({ id: rqid });
 
     if (!nameBase) {
@@ -101,7 +105,7 @@ export class nameGeneration {
         result.push(chain.generate(mergedConstraints));
       } catch (error) {
         warn = true;
-        console.log(nameBaseNotLongEnoughMsg, error);
+        console.log(nameBaseNotLongEnoughMsg, nameBase, error);
       }
     }
     if (warn) {

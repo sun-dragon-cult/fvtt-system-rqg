@@ -1,15 +1,16 @@
 import { Rqid } from "../../system/api/rqidApi";
+import { isValidRqidString } from "../../system/api/rqidValidation";
 import { getDomDataset } from "../../system/util";
 
-export class RqidLink {
+export class RqidLink<R extends string = string> {
   /** The rqid to link to */
-  readonly rqid: string;
+  readonly rqid: R;
   /** Display name of the link */
   readonly name: string;
 
-  bonus?: number | null | undefined;
+  bonus: number | null | undefined;
 
-  constructor(rqid: string, name: string) {
+  constructor(rqid: R, name: string) {
     this.rqid = rqid;
     this.name = name;
   }
@@ -31,7 +32,9 @@ export class RqidLink {
           if (ev.target instanceof HTMLInputElement || targetUuid || targetRqidLink !== rqid) {
             return; // exclude inputs and embedded uuid & rqid links
           }
-          await Rqid.renderRqidDocument(rqid, anchor);
+          if (isValidRqidString(rqid)) {
+            await Rqid.renderRqidDocument(rqid, anchor);
+          }
         });
       }
     });

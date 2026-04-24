@@ -1,3 +1,5 @@
+import type { RqidString } from "./api/rqidApi";
+
 export const RQG_CONFIG = {
   debug: {
     showActorActiveEffectsTab: false,
@@ -6,28 +8,28 @@ export const RQG_CONFIG = {
 
   // Skill items that need special handling
   skillRqid: {
-    dodge: "i.skill.dodge",
-    jump: "i.skill.jump",
-    worship: "i.skill.worship",
-    moveQuietly: "i.skill.move-quietly",
-    spiritCombat: "i.skill.spirit-combat",
+    dodge: "i.skill.dodge" as RqidString,
+    jump: "i.skill.jump" as RqidString,
+    worship: "i.skill.worship" as RqidString,
+    moveQuietly: "i.skill.move-quietly" as RqidString,
+    spiritCombat: "i.skill.spirit-combat" as RqidString,
   },
 
   // Rune items that need special handling
   runeRqid: {
-    magic: "i.rune.magic-condition",
+    magic: "i.rune.magic-condition" as RqidString,
   },
 
   bodytypes: {
     humanoid: [
-      "i.hit-location.head",
-      "i.hit-location.left-arm",
-      "i.hit-location.right-arm",
-      "i.hit-location.chest",
-      "i.hit-location.abdomen",
-      "i.hit-location.left-leg",
-      "i.hit-location.right-leg",
-    ],
+      "i.hit-location.head" as RqidString,
+      "i.hit-location.left-arm" as RqidString,
+      "i.hit-location.right-arm" as RqidString,
+      "i.hit-location.chest" as RqidString,
+      "i.hit-location.abdomen" as RqidString,
+      "i.hit-location.left-leg" as RqidString,
+      "i.hit-location.right-leg" as RqidString,
+    ] as RqidString[],
   },
 
   fallbackLanguage: "en",

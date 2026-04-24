@@ -1,4 +1,5 @@
 const { NumberField, SchemaField, StringField } = foundry.data.fields;
+import { isValidRqidString } from "../../system/api/rqidValidation";
 
 /**
  * Returns a SchemaField representing a single RqidLink (rqid + name + optional bonus).
@@ -9,7 +10,12 @@ export function rqidLinkSchemaField(
 ) {
   return new SchemaField(
     {
-      rqid: new StringField({ blank: true, nullable: false, initial: "" }),
+      rqid: new StringField({
+        blank: true,
+        nullable: false,
+        initial: "",
+        validate: (value: string) => isValidRqidString(value, { allowEmpty: true }),
+      }),
       name: new StringField({ blank: true, nullable: false, initial: "" }),
       bonus: new NumberField({ integer: true, nullable: true, initial: undefined }),
     },

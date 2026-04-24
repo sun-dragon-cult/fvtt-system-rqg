@@ -1,14 +1,9 @@
 import { RqgActorSheet } from "../rqgActorSheet";
-import {
-  getDomDataset,
-  getRequiredDomDataset,
-  localize,
-  localizeItemType,
-  RqgError,
-} from "../../system/util";
+import { getRequiredDomDataset, localize, localizeItemType, RqgError } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { Rqid } from "../../system/api/rqidApi";
+import { isValidRqidString } from "../../system/api/rqidValidation";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
@@ -17,12 +12,15 @@ export const cultMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLEl
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
     condition: (el: HTMLElement) => {
-      const rqid = getDomDataset(el, "rqid-link");
-      return !!rqid;
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId) as CultItem | undefined;
+      return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
     callback: async (el: HTMLElement) => {
-      const rqid = getDomDataset(el, "rqid-link");
-      if (rqid) {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId) as CultItem | undefined;
+      const rqid = item?.system.descriptionRqidLink?.rqid;
+      if (isValidRqidString(rqid)) {
         await Rqid.renderRqidDocument(rqid);
       }
     },

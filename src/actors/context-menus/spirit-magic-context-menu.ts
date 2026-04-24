@@ -2,7 +2,6 @@ import { RqgActorSheet } from "../rqgActorSheet";
 import {
   assertDocumentSubType,
   getDomDataset,
-  getDomDatasetAmongSiblings,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -11,6 +10,7 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
+import { isValidRqidString } from "../../system/api/rqidValidation";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
@@ -50,12 +50,15 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
     condition: (el: HTMLElement) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
-      return !!rqid;
+      const itemId = getDomDataset(el, "item-id");
+      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
+      return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
     callback: async (el: HTMLElement) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
-      if (rqid) {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId) as SpiritMagicItem | undefined;
+      const rqid = item?.system.descriptionRqidLink?.rqid;
+      if (isValidRqidString(rqid)) {
         await Rqid.renderRqidDocument(rqid);
       }
     },
