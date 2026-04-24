@@ -25,7 +25,6 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type {
   CombatManeuver,
   DamageType,
-  Usage,
   UsageType,
   WeaponItem,
 } from "@item-model/weaponDataModel.ts";
@@ -853,7 +852,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     return usages;
   }
 
-  private static usageHasParryManeuver(usage: Usage): boolean {
+  private static usageHasParryManeuver(usage: WeaponItem["system"]["usage"][UsageType]): boolean {
     return (
       usage.skillRqidLink?.rqid != null &&
       usage.combatManeuvers?.some((m) => m.damageType === "parry")

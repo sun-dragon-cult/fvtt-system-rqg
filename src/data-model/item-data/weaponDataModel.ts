@@ -1,10 +1,12 @@
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqidString } from "../../system/api/rqidApi";
 import { RqidLink } from "../shared/rqidLink";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { enumChoices } from "../shared/enumChoices";
+import { legacyWeaponSkillRefsFlag, preserveLegacyWeaponSkillReference } from "./weaponSkillLink";
 
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
@@ -35,7 +37,7 @@ export type CombatManeuver = {
 
 export type Usage = {
   /** The corresponding skill */
-  skillRqidLink: RqidLink | undefined;
+  skillRqidLink: RqidLink<RqidString | ""> | undefined;
   combatManeuvers: CombatManeuver[];
   /** Weapon damage formula */
   damage: string;
@@ -106,28 +108,42 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   }
 
   /**
-   * Preserve legacy skillOrigin/skillId into the skillRqidLink field before
-   * schema cleaning strips them. Uses the "NOT-FOUND" encoding that the
-   * world migration (migrateWeaponSkillLinks) knows how to resolve.
+   * Preserve legacy weapon skill link inputs in flags before schema cleaning
+   * strips them, so migrations can still convert them into a valid rqid link.
    */
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
     const usage = source["usage"] as Record<string, Record<string, unknown>> | undefined;
+    const legacyRefsByUsage: Record<string, { skillOrigin?: string; skillId?: string }> = {};
+
     if (usage && typeof usage === "object") {
       for (const usageType of ["oneHand", "offHand", "twoHand", "missile"]) {
         const u = usage[usageType];
         if (!u || typeof u !== "object") {
           continue;
         }
-        const skillOrigin = u["skillOrigin"] as string | undefined;
-        const skillId = u["skillId"] as string | undefined;
-        if (skillOrigin && (!u["skillRqidLink"] || (u["skillRqidLink"] as any).rqid === "")) {
-          u["skillRqidLink"] = {
-            rqid: `i.skill.[${skillOrigin}] / [${skillId ?? ""}]`,
-            name: "NOT-FOUND",
-          };
+        const legacyRef = preserveLegacyWeaponSkillReference(u);
+        if (legacyRef?.skillOrigin || legacyRef?.skillId) {
+          legacyRefsByUsage[usageType] = legacyRef;
         }
       }
     }
+
+    if (Object.keys(legacyRefsByUsage).length > 0) {
+      const flags = (source["flags"] as Record<string, unknown> | undefined) ?? {};
+      source["flags"] = flags;
+
+      const rqgFlags = (flags["rqg"] as Record<string, unknown> | undefined) ?? {};
+      flags["rqg"] = rqgFlags;
+
+      const existingLegacyRefs =
+        (rqgFlags[legacyWeaponSkillRefsFlag] as Record<string, unknown> | undefined) ?? {};
+
+      rqgFlags[legacyWeaponSkillRefsFlag] = {
+        ...existingLegacyRefs,
+        ...legacyRefsByUsage,
+      };
+    }
+
     return super.migrateData(source);
   }
 }
