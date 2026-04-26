@@ -11,7 +11,9 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { Rqid } from "../../system/api/rqidApi";
-import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import { toRqidString } from "../../system/api/rqidValidation";
+import type { SkillItem } from "@item-model/skillDataModel.ts";
+import type { Usage, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 
 export class Weapon extends AbstractEmbeddedItem {
   static override preUpdateItem(
@@ -78,23 +80,47 @@ export class Weapon extends AbstractEmbeddedItem {
     skillRqid: string | undefined,
     actor: RqgActor,
   ): Promise<boolean> {
-    if (!skillRqid) {
+    const normalizedSkillRqid = toRqidString(skillRqid);
+    if (!normalizedSkillRqid) {
       return true; // No rqid (no linked skill) so count this as a success.
     }
-    const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(skillRqid);
+    const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(normalizedSkillRqid);
 
     if (!embeddedSkill) {
-      const skill = await Rqid.fromRqid(skillRqid);
+      const skill = await Rqid.fromRqid(normalizedSkillRqid);
       if (!skill) {
         logMisconfiguration(
           localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
           true,
-          skillRqid,
+          normalizedSkillRqid,
         );
         return false;
       }
       await actor.createEmbeddedDocuments("Item", [skill as any]);
     }
     return true;
+  }
+
+  public static hasLinkedSkillReference(weaponItem: WeaponItem, usageType: UsageType): boolean {
+    return !!toRqidString(weaponItem.system.usage[usageType].skillRqidLink?.rqid);
+  }
+
+  public static resolveLinkedSkill(
+    weaponItem: WeaponItem,
+    usageType: UsageType,
+  ): SkillItem | undefined {
+    const usage = weaponItem.system.usage[usageType] as Usage;
+    const skillRqid = toRqidString(usage.skillRqidLink?.rqid);
+    if (!skillRqid) {
+      return undefined;
+    }
+
+    const embeddedByRqid = weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+
+    if (isDocumentSubType<SkillItem>(embeddedByRqid, ItemTypeEnum.Skill)) {
+      return embeddedByRqid;
+    }
+
+    return undefined;
   }
 }

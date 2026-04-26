@@ -25,7 +25,6 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type {
   CombatManeuver,
   DamageType,
-  Usage,
   UsageType,
   WeaponItem,
 } from "@item-model/weaponDataModel.ts";
@@ -40,6 +39,7 @@ import { updateChatMessage } from "../../sockets/SocketableRequests";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { toRqidString } from "../../system/api/rqidValidation";
 import type { DeepPartial } from "fvtt-types/utils";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -240,7 +240,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
 
     const selectedParrySkill =
       formData.defence === "parry"
-        ? defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid)
+        ? defendingActor?.getBestEmbeddedDocumentByRqid(toRqidString(parrySkillRqid))
         : undefined;
     const isSelectedParryWeaponBroken =
       formData.defence === "parry" &&
@@ -345,7 +345,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     }
 
     const parrySkillRqid = parryingWeaponItem.system.usage[selectedUsage]?.skillRqidLink?.rqid;
-    const parrySkill = parryingWeaponItem.actor?.getBestEmbeddedDocumentByRqid(parrySkillRqid);
+    const parrySkill = parryingWeaponItem.actor?.getBestEmbeddedDocumentByRqid(
+      toRqidString(parrySkillRqid),
+    );
 
     if (!isDocumentSubType<SkillItem>(parrySkill, ItemTypeEnum.Skill)) {
       ui.notifications?.warn(localize("RQG.Dialog.Defence.NoValidParrySkillForWeaponUsageWarn"));
@@ -433,9 +435,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     let defendSkillItem: RqgItem | undefined;
     switch (formDataObject.defence) {
       case "parry": {
-        defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid) as
-          | RqgItem
-          | undefined;
+        defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(
+          toRqidString(parrySkillRqid),
+        );
 
         if (!isDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill)) {
           ui.notifications?.warn(
@@ -680,9 +682,10 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
       const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage as UsageType | undefined;
       const attackSkill = attackWeaponUsage
-        ? attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(
-            attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid,
-          )
+        ? (() => {
+            const rqid = attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid;
+            return attackWeapon?.actor?.getBestEmbeddedDocumentByRqid(toRqidString(rqid));
+          })()
         : undefined;
 
       await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
@@ -696,9 +699,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     parrySkillRqid: string | undefined,
   ): { defenceName: string; defenceChance: number } {
     if (defence === "parry") {
-      const parrySkill = defendingActor?.getBestEmbeddedDocumentByRqid(parrySkillRqid) as
-        | SkillItem
-        | undefined;
+      const parrySkill = defendingActor?.getBestEmbeddedDocumentByRqid(
+        toRqidString(parrySkillRqid),
+      ) as SkillItem | undefined;
       return {
         defenceName: parrySkill?.name ?? "",
         defenceChance: parrySkill?.system.chance ?? 0,
@@ -849,9 +852,9 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     return usages;
   }
 
-  private static usageHasParryManeuver(usage: Usage): boolean {
+  private static usageHasParryManeuver(usage: WeaponItem["system"]["usage"][UsageType]): boolean {
     return (
-      usage.skillRqidLink?.rqid != null &&
+      !!toRqidString(usage.skillRqidLink?.rqid) &&
       usage.combatManeuvers?.some((m) => m.damageType === "parry")
     );
   }

@@ -2,6 +2,8 @@ import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
+import type { RqidLink } from "../shared/rqidLink";
+import type { RqidString } from "../../system/api/rqidApi";
 import { enumChoices } from "../shared/enumChoices";
 
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
@@ -33,6 +35,8 @@ type RuneSchema = ReturnType<typeof RuneDataModel.defineSchema>;
 const runeTypeValues = new Set<string>(Object.values(RuneTypeEnum));
 
 export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
+  declare descriptionRqidLink: RqidLink<RqidString>;
+
   static override defineSchema() {
     return {
       ...abilitySchemaFields(),

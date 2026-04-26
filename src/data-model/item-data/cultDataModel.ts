@@ -1,6 +1,8 @@
 import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
+import type { RqidLink } from "../shared/rqidLink";
+import type { RqidString } from "../../system/api/rqidApi";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { enumChoices } from "../shared/enumChoices";
 
@@ -33,6 +35,10 @@ const { ArrayField, SchemaField, StringField } = foundry.data.fields;
 type CultSchema = ReturnType<typeof CultDataModel.defineSchema>;
 
 export class CultDataModel extends RqgItemDataModel<CultSchema> {
+  declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];
+  declare commonRuneMagicRqidLinks: RqidLink<`i.rune-magic.${string}`>[];
+  declare descriptionRqidLink: RqidLink<RqidString>;
+
   static override defineSchema() {
     return {
       deity: new StringField({ blank: true, nullable: true, initial: undefined }),

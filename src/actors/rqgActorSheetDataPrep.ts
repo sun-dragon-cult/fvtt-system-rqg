@@ -743,7 +743,7 @@ export async function organizeEmbeddedItems(
     const cultCommonRuneMagicRqids =
       spellCult?.system.commonRuneMagicRqidLinks.map((r) => r.rqid) ?? [];
 
-    (rm.system as any).isCommon = cultCommonRuneMagicRqids.includes(
+    (rm.system as any).isCommon = (cultCommonRuneMagicRqids as string[]).includes(
       rm?.flags?.rqg?.documentRqidFlags?.id ?? "",
     );
   });

@@ -15,6 +15,8 @@ import { RqidLink } from "../data-model/shared/rqidLink";
 import { RqgItem } from "../items/rqgItem";
 import { actorWizardFlags, documentRqidFlags } from "../data-model/shared/rqgDocumentFlags";
 import { Rqid } from "../system/api/rqidApi";
+import { isValidRqidString, toRqidString } from "../system/api/rqidValidation";
+import type { RqidString } from "../system/api/rqidApi";
 import type { IAbility } from "../data-model/shared/ability";
 import type { RqgActor } from "../actors/rqgActor";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
@@ -331,7 +333,7 @@ export class ActorWizard extends ActorWizardBase {
       const homelandRunes: TemplateItem[] = [];
       if (selectedHomeland.system.runeRqidLinks) {
         for (const runeRqidLink of selectedHomeland.system.runeRqidLinks) {
-          const rune = (await Rqid.fromRqid(runeRqidLink.rqid)) as RuneItem | undefined;
+          const rune = await Rqid.fromRqid(runeRqidLink.rqid);
           if (rune) {
             assertDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune);
             rune.system.chance = 10; // Homeland runes always grant +10%, this is for display purposes only
@@ -350,7 +352,7 @@ export class ActorWizard extends ActorWizardBase {
       const homelandSkills: TemplateItem[] = [];
       if (selectedHomeland.system.skillRqidLinks) {
         for (const skillRqidLink of selectedHomeland.system.skillRqidLinks) {
-          const skill = (await Rqid.fromRqid(skillRqidLink.rqid)) as SkillItem | undefined;
+          const skill = await Rqid.fromRqid(skillRqidLink.rqid);
           if (skill) {
             assertDocumentSubType<SkillItem>(skill, ItemTypeEnum.Skill);
             const templateSkill = skill as TemplateItem;
@@ -373,7 +375,7 @@ export class ActorWizard extends ActorWizardBase {
       const homelandPassions: TemplateItem[] = [];
       if (selectedHomeland.system.passionRqidLinks) {
         for (const passionRqidLink of selectedHomeland.system.passionRqidLinks) {
-          const passion = (await Rqid.fromRqid(passionRqidLink.rqid)) as PassionItem | undefined;
+          const passion = await Rqid.fromRqid(passionRqidLink.rqid);
           if (passion) {
             assertDocumentSubType<PassionItem>(passion, ItemTypeEnum.Passion);
             passion.system.hasExperience = false;
@@ -542,7 +544,10 @@ export class ActorWizard extends ActorWizardBase {
         );
       }
       if (target.name === "selectedHomelandRqid") {
-        await wizard.setHomeland(formData.object["selectedHomelandRqid"] as string);
+        const homelandRqid = formData.object["selectedHomelandRqid"];
+        if (isValidRqidString(homelandRqid)) {
+          await wizard.setHomeland(homelandRqid);
+        }
       }
     }
     if (target instanceof HTMLInputElement && target.classList.contains("wizard-choice-input")) {
@@ -691,16 +696,21 @@ export class ActorWizard extends ActorWizardBase {
     // and mark them not present on the species
     const speciesRqids = this.species.selectedSpeciesTemplate?.items
       .map((i) => i.getFlag(systemId, documentRqidFlags)?.id)
-      .filter((id): id is string => id != null);
+      .filter((id): id is RqidString => id != null);
     for (const choiceKey in this.choices) {
       const choice = this.choices[choiceKey];
-      if (choice && speciesRqids && !speciesRqids.includes(choiceKey)) {
+      if (
+        choice &&
+        speciesRqids &&
+        isValidRqidString(choiceKey) &&
+        !speciesRqids.includes(choiceKey)
+      ) {
         choice.speciesPresent = false;
       }
     }
   }
 
-  async setHomeland(selectedHomelandRqid: string): Promise<void> {
+  async setHomeland(selectedHomelandRqid: RqidString): Promise<void> {
     const selectedHomeland = (await Rqid.fromRqid(selectedHomelandRqid)) as RqgItem | undefined;
 
     this.homeland.selectedHomeland = selectedHomeland;
@@ -779,7 +789,8 @@ export class ActorWizard extends ActorWizardBase {
     const adds = [];
     const deletes: string[] = [];
     for (const key in this.choices) {
-      const existingItems = this.actor.getEmbeddedDocumentsByRqid(key);
+      const keyRqid = toRqidString(key);
+      const existingItems = this.actor.getEmbeddedDocumentsByRqid(keyRqid);
       if (existingItems.length > 0) {
         for (const actorItem of existingItems) {
           // Handle Skills, Runes, and Passions, which use the .present property of the choice
@@ -846,7 +857,7 @@ export class ActorWizard extends ActorWizardBase {
           if (!itemsToAddFromTemplate) {
             // Didn't find items by rqid, so just take what's on the Species Template
             itemsToAddFromTemplate =
-              this.species.selectedSpeciesTemplate?.getEmbeddedDocumentsByRqid(key) || [];
+              this.species.selectedSpeciesTemplate?.getEmbeddedDocumentsByRqid(keyRqid) || [];
             console.log(
               `Actor Species Template had an item with rqid "${key} that was not found in by rqid. Using item from the Actor Species Template.`,
               itemsToAddFromTemplate,

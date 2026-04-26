@@ -1,4 +1,4 @@
-import { type AbilityItem, ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { abilityItemTypes, type AbilityItem, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { IAbility } from "../data-model/shared/ability";
 import { RqgItem } from "../items/rqgItem";
 import { systemId } from "../system/config";
@@ -154,7 +154,7 @@ async function submitImproveAbilityDialog(
   speaker: ChatMessage.SpeakerData,
   adapter: AbilityImprovementData,
 ): Promise<void> {
-  if (!isDocumentSubType<AbilityItem>(item, ItemTypeEnum.Skill)) {
+  if (!isDocumentSubType<AbilityItem>(item, abilityItemTypes)) {
     throw new RqgError("Tried to improve item that isn't an ability item", item);
   }
   const abilityData = item.system;
@@ -199,7 +199,7 @@ async function submitImproveAbilityDialog(
       await expRoll.toMessage({
         speaker: speaker,
         style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-        flavor: `<h3>${rollFlavor}</h3><p>${rollContent}</p>`,
+        flavor: `<div class="roll-action">${rollFlavor}</div><p>${rollContent}</p>`,
       });
 
       // Gain if the modified d100 roll is greater than (but not equal to) the skill chance, or if the roll is greater than or equal to 100
@@ -221,7 +221,7 @@ async function submitImproveAbilityDialog(
           await gainRoll.toMessage({
             speaker: speaker,
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-            flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseFixed}</p>`,
+            flavor: `<div class="roll-action">${resultFlavor}</div><p>${resultContentChoseFixed}</p>`,
           });
           gain = adapter.experienceGainFixed;
         }
@@ -234,7 +234,7 @@ async function submitImproveAbilityDialog(
           await gainRoll.toMessage({
             speaker: speaker,
             style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-            flavor: `<h3>${resultFlavor}</h3><p>${resultContentChoseRandom}</p>`,
+            flavor: `<div class="roll-action">${resultFlavor}</div><p>${resultContentChoseRandom}</p>`,
           });
           gain = Number(gainRoll.total) || 0;
         }
@@ -283,7 +283,7 @@ async function submitImproveAbilityDialog(
     await roll.toMessage({
       speaker: speaker,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-      flavor: `<h3>${flavor}</h3><p>${content}</p>`,
+      flavor: `<div class="roll-action">${flavor}</div><p>${content}</p>`,
     });
     gain = adapter.trainingGainFixed;
   }
@@ -300,7 +300,7 @@ async function submitImproveAbilityDialog(
     await gainRoll.toMessage({
       speaker: speaker,
       style: CONST.CHAT_MESSAGE_STYLES.ROLL,
-      flavor: `<h3>${flavor}</h3><p>${content}</p>`,
+      flavor: `<div class="roll-action">${flavor}</div><p>${content}</p>`,
     });
     gain = Number(gainRoll.total) || 0;
   }

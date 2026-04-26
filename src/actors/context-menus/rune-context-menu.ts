@@ -1,7 +1,6 @@
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   assertDocumentSubType,
-  getDomDatasetAmongSiblings,
   getRequiredDomDataset,
   localize,
   localizeItemType,
@@ -11,6 +10,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
+import { isValidRqidString } from "../../system/api/rqidValidation";
 import type { RuneItem } from "@item-model/runeDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
@@ -69,12 +69,15 @@ export const runeMenuOptions = (
     name: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
     condition: (el: HTMLElement) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
-      return !!rqid;
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId) as RuneItem | undefined;
+      return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
     callback: async (el: HTMLElement) => {
-      const rqid = getDomDatasetAmongSiblings(el, "rqid-link");
-      if (rqid) {
+      const itemId = getRequiredDomDataset(el, "item-id");
+      const item = actor.items.get(itemId) as RuneItem | undefined;
+      const rqid = item?.system.descriptionRqidLink?.rqid;
+      if (isValidRqidString(rqid)) {
         await Rqid.renderRqidDocument(rqid);
       }
     },

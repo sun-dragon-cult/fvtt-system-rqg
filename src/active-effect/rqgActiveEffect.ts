@@ -5,6 +5,7 @@ import {
   logMisconfiguration,
 } from "../system/util";
 import { Rqid } from "../system/api/rqidApi";
+import { toRqidString } from "../system/api/rqidValidation";
 
 import type { AnyMutableObject } from "fvtt-types/utils";
 import Document = foundry.abstract.Document;
@@ -58,7 +59,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       if (isMultiMatch) {
         items.push(...actor.getEmbeddedDocumentsByRqidRegex(rqid ?? ""));
       } else {
-        const bestMatch = actor.getBestEmbeddedDocumentByRqid(rqid);
+        const bestMatch = actor.getBestEmbeddedDocumentByRqid(toRqidString(rqid));
         if (bestMatch) {
           items.push(bestMatch);
         }

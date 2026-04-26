@@ -1,5 +1,6 @@
 import { systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
+import type { RqidString } from "../system/api/rqidApi";
 import { RqidLink } from "../data-model/shared/rqidLink";
 import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
 
@@ -26,12 +27,12 @@ export class RqgJournalEntry extends JournalEntry {
   /**
    * Only handles embedded Pages
    */
-  public getEmbeddedDocumentsByRqid(rqid: string): JournalEntryPage[] {
+  public getEmbeddedDocumentsByRqid(rqid: RqidString): JournalEntryPage[] {
     // @ts-expect-error pages
     return this.pages.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
   }
 
-  public getBestEmbeddedDocumentByRqid(rqid: string): JournalEntryPage | undefined {
+  public getBestEmbeddedDocumentByRqid(rqid: RqidString): JournalEntryPage | undefined {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 }

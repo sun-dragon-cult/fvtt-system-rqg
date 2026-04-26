@@ -16,25 +16,82 @@ import {
 import Document = foundry.abstract.Document;
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { ArmorItem } from "@item-model/armorDataModel.ts";
+import type { RuneItem } from "@item-model/runeDataModel.ts";
+import type { PassionItem } from "@item-model/passionDataModel.ts";
+import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
+import type { WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { GearItem } from "@item-model/gearDataModel.ts";
+import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
+import type { CultItem } from "@item-model/cultDataModel.ts";
+import type { HomelandItem } from "@item-model/homelandDataModel.ts";
+import type { OccupationItem } from "@item-model/occupationDataModel.ts";
+import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { RqidEnabledDocument } from "../../global";
-
-// TODO Look into enhancing typing of rqid strings like this
-export type RqidString =
-  | `${string}.${string}.${string}`
-  | `${string}.${string}.${string}.${string}.${string}.${string}`;
 
 // Add a map from item-document-type (the second segment of an `i.xxx.yyy` rqid) to concrete TS types.
 // Extend this map with more concrete item types as you add them.
 type ItemTypeMap = {
   skill: SkillItem;
   armor: ArmorItem;
-  // add: weapon: WeaponItem; etc.
+  rune: RuneItem;
+  passion: PassionItem;
+  runeMagic: RuneMagicItem;
+  weapon: WeaponItem;
+  gear: GearItem;
+  hitLocation: HitLocationItem;
+  cult: CultItem;
+  homeland: HomelandItem;
+  occupation: OccupationItem;
+  spiritMagic: SpiritMagicItem;
 };
+
+type CamelToKebab<S extends string> = S extends `${infer First}${infer Rest}`
+  ? Rest extends Uncapitalize<Rest>
+    ? `${Lowercase<First>}${CamelToKebab<Rest>}`
+    : `${Lowercase<First>}-${CamelToKebab<Rest>}`
+  : S;
+
+type ItemSubtypeMap = {
+  [K in keyof ItemTypeMap as CamelToKebab<K & string>]: ItemTypeMap[K];
+};
+
+const RQID_DOCUMENT_DEFINITIONS = {
+  a: { documentName: "Actor", gameProperty: "actors", iconConfig: "Actor" },
+  c: { documentName: "Card", gameProperty: "cards", iconConfig: "Cards" },
+  i: { documentName: "Item", gameProperty: "items", iconConfig: "Item" },
+  je: { documentName: "JournalEntry", gameProperty: "journal", iconConfig: "JournalEntry" },
+  jp: { documentName: "JournalEntryPage", iconConfig: "JournalEntryPage" },
+  m: { documentName: "Macro", gameProperty: "macros", iconConfig: "Macro" },
+  p: { documentName: "Playlist", gameProperty: "playlists", iconConfig: "Playlist" },
+  rt: { documentName: "RollTable", gameProperty: "tables", iconConfig: "RollTable" },
+  s: { documentName: "Scene", gameProperty: "scenes", iconConfig: "Scene" },
+} as const;
+
+type RqidDocumentName = keyof typeof RQID_DOCUMENT_DEFINITIONS;
+type NonItemRqidDocumentName = Exclude<RqidDocumentName, "i">;
+type ItemRqidString = `i.${keyof ItemSubtypeMap}.${string}`;
+type DocumentRqidString = ItemRqidString | `${NonItemRqidDocumentName}.${string}.${string}`;
+
+/**
+ * A typed rqid string.
+ *
+ * Supports:
+ * - top-level document rqids (`i.skill.jump`, `a.character.sartar`)
+ * - embedded rqids (`a.character.sartar.i.skill.jump`)
+ */
+export type RqidString = DocumentRqidString | `${DocumentRqidString}.${DocumentRqidString}`;
+
+/** Runtime validator for rqid document name (first segment), including item document `i`. */
+export function isRqidDocumentName(value: unknown): value is RqidDocumentName {
+  return typeof value === "string" && Object.hasOwn(RQID_DOCUMENT_DEFINITIONS, value);
+}
 
 // Resolve an item rqid's ItemType segment to a concrete Item subtype
 type ItemRqidToDocument<ItemType extends string> = ItemType extends keyof ItemTypeMap
   ? ItemTypeMap[ItemType]
-  : Item; // fallback to generic Item when specific mapping missing
+  : ItemType extends keyof ItemSubtypeMap
+    ? ItemSubtypeMap[ItemType]
+    : Item; // fallback to generic Item when specific mapping missing
 
 // Map an rqid literal to a narrower Document type
 type RqidToDocument<R extends string> = R extends `i.${infer ItemType}.${string}`
@@ -157,7 +214,7 @@ export class Rqid {
    */
   public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
-    rqidDocumentName: string | undefined, // like "i", "a", "je"
+    rqidDocumentName: RqidDocumentName | undefined, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
     options: RqidRegexSearchOptions = {},
   ): Promise<RqidEnabledDocument[]> {
@@ -195,7 +252,7 @@ export class Rqid {
    */
   public static async fromRqidRegexBest(
     rqidRegex: RegExp | undefined,
-    rqidDocumentName: string, // like "i", "a", "je"
+    rqidDocumentName: RqidDocumentName, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
   ): Promise<RqidEnabledDocument[]> {
     return this.fromRqidRegex(rqidRegex, rqidDocumentName, lang, {
@@ -321,7 +378,7 @@ export class Rqid {
   /**
    * Given a Document, create a valid rqid string for the document.
    */
-  public static getDefaultRqid(document: RqidEnabledDocument | Document.Any): string {
+  public static getDefaultRqid(document: RqidEnabledDocument | Document.Any): RqidString | "" {
     if (!document.name) {
       return "";
     }
@@ -352,13 +409,13 @@ export class Rqid {
       rqidIdentifier = trimChars(toKebabCase(document.name), "-");
     }
 
-    return `${rqidDocumentString}.${documentSubType}.${rqidIdentifier}`;
+    return `${rqidDocumentString}.${documentSubType}.${rqidIdentifier}` as RqidString;
   }
 
   /**
    * Render the sheet of the documents the rqid points to and brings it to top.
    */
-  public static async renderRqidDocument(rqid: string, anchor?: string): Promise<void> {
+  public static async renderRqidDocument(rqid: RqidString, anchor?: string): Promise<void> {
     const document = await Rqid.fromRqid(rqid);
     if (document == null) {
       return;
@@ -382,7 +439,7 @@ export class Rqid {
    */
   public static async setRqid(
     document: RqidEnabledDocument,
-    newRqid: string,
+    newRqid: RqidString,
     lang: string = CONFIG.RQG.fallbackLanguage,
     priority: number = 0,
   ): Promise<DocumentRqidFlags> {
@@ -486,7 +543,7 @@ export class Rqid {
    */
   private static async documentsFromWorld(
     rqidRegex: RegExp | undefined,
-    rqidDocumentName: string,
+    rqidDocumentName: RqidDocumentName,
     lang: string,
   ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
@@ -611,7 +668,7 @@ export class Rqid {
    */
   private static async documentsFromPacks(
     rqidRegex: RegExp,
-    rqidDocumentName: string,
+    rqidDocumentName: RqidDocumentName,
     lang: string,
   ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
@@ -700,17 +757,12 @@ export class Rqid {
     return `<i class="${linkIcon}"></i>`;
   }
 
-  private static readonly documentLinkIconsConfigName = new Map([
-    ["a", "Actor"],
-    ["c", "Cards"],
-    ["i", "Item"],
-    ["je", "JournalEntry"],
-    ["jp", "JournalEntryPage"],
-    ["m", "Macro"],
-    ["p", "Playlist"],
-    ["rt", "RollTable"],
-    ["s", "Scene"],
-  ]);
+  private static readonly documentLinkIconsConfigName = new Map(
+    Object.entries(RQID_DOCUMENT_DEFINITIONS).map(([rqidDocumentName, definition]) => [
+      rqidDocumentName,
+      definition.iconConfig,
+    ]),
+  );
 
   /**
    * Sort a list of indexCandidates on rqid priority - the highest first.
@@ -745,16 +797,16 @@ export class Rqid {
     return game[prop as keyof typeof game] as WorldCollection<Document.WorldType> | undefined;
   }
 
-  private static readonly gamePropertyLookup: { [rqidDocumentName: string]: string } = {
-    a: "actors",
-    c: "cards",
-    i: "items",
-    je: "journal",
-    m: "macros",
-    p: "playlists",
-    rt: "tables",
-    s: "scenes",
-  };
+  private static readonly gamePropertyLookup: { [rqidDocumentName: string]: string } =
+    Object.entries(RQID_DOCUMENT_DEFINITIONS).reduce(
+      (acc: { [rqidDocumentName: string]: string }, [rqidDocumentName, definition]) => {
+        if ("gameProperty" in definition) {
+          acc[rqidDocumentName] = definition.gameProperty;
+        }
+        return acc;
+      },
+      {},
+    );
 
   /**
    *   Translates the first part of a rqid to a Foundry document name (like "Item").
@@ -769,17 +821,14 @@ export class Rqid {
     return documentName;
   }
 
-  private static readonly documentNameLookup: { [rqidDocumentName: string]: string } = {
-    a: "Actor",
-    c: "Card",
-    i: "Item",
-    je: "JournalEntry",
-    jp: "JournalEntryPage", // Only allowed as embedded in JournalEntry
-    m: "Macro",
-    p: "Playlist",
-    rt: "RollTable",
-    s: "Scene",
-  };
+  private static readonly documentNameLookup: { [rqidDocumentName: string]: string } =
+    Object.entries(RQID_DOCUMENT_DEFINITIONS).reduce(
+      (acc: { [rqidDocumentName: string]: string }, [rqidDocumentName, definition]) => {
+        acc[rqidDocumentName] = definition.documentName;
+        return acc;
+      },
+      {},
+    );
 
   /**
    * Get the document type from the rqid if it exists. For example i.skill.act returns "skill".
