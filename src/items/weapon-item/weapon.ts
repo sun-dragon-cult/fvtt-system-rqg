@@ -11,7 +11,6 @@ import {
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { Rqid } from "../../system/api/rqidApi";
-import type { RqidString } from "../../system/api/rqidApi";
 import { toRqidString } from "../../system/api/rqidValidation";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { Usage, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
@@ -103,7 +102,7 @@ export class Weapon extends AbstractEmbeddedItem {
   }
 
   public static hasLinkedSkillReference(weaponItem: WeaponItem, usageType: UsageType): boolean {
-    return !!weaponItem.system.usage[usageType].skillRqidLink?.rqid;
+    return !!toRqidString(weaponItem.system.usage[usageType].skillRqidLink?.rqid);
   }
 
   public static resolveLinkedSkill(
@@ -111,12 +110,12 @@ export class Weapon extends AbstractEmbeddedItem {
     usageType: UsageType,
   ): SkillItem | undefined {
     const usage = weaponItem.system.usage[usageType] as Usage;
-    const skillRqid = usage.skillRqidLink?.rqid;
+    const skillRqid = toRqidString(usage.skillRqidLink?.rqid);
     if (!skillRqid) {
       return undefined;
     }
 
-    const embeddedByRqid = weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid as RqidString);
+    const embeddedByRqid = weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
 
     if (isDocumentSubType<SkillItem>(embeddedByRqid, ItemTypeEnum.Skill)) {
       return embeddedByRqid;

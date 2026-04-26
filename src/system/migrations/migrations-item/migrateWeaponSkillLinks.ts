@@ -7,7 +7,6 @@ import { isDocumentSubType } from "../../util.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import {
   getLegacyWeaponSkillReferenceForUsage,
-  legacyWeaponSkillRefsFlag,
   type LegacyWeaponSkillRef,
 } from "../../../data-model/item-data/weaponSkillLink.ts";
 
@@ -23,14 +22,10 @@ export async function migrateWeaponSkillLinks(
   ) {
     const usageTypes: UsageType[] = ["oneHand", "offHand", "twoHand", "missile"];
     const usageUpdates: Record<string, unknown> = {};
-    const clearLegacyFlags: Record<string, null> = {};
 
     for (const usageType of usageTypes) {
       const usageUpdate = await getUsageMigrationUpdate(itemData, owningActorData, usageType);
-      usageUpdates[usageType] = usageUpdate.usageUpdate;
-      if (usageUpdate.clearLegacyFlag) {
-        clearLegacyFlags[`-=${usageType}`] = null;
-      }
+      usageUpdates[usageType] = usageUpdate;
     }
 
     updateData = {
@@ -38,14 +33,6 @@ export async function migrateWeaponSkillLinks(
         usage: usageUpdates,
       },
     } as any; // Migration uses Foundry's `-=field` delete syntax which doesn't exist in DataModel types
-
-    if (Object.keys(clearLegacyFlags).length > 0) {
-      (updateData as any).flags = {
-        rqg: {
-          [legacyWeaponSkillRefsFlag]: clearLegacyFlags,
-        },
-      };
-    }
   }
   return updateData;
 }
@@ -54,10 +41,10 @@ async function getUsageMigrationUpdate(
   itemData: WeaponItem,
   owningActorData: CharacterActor | undefined,
   usageType: UsageType,
-): Promise<{ usageUpdate: Record<string, unknown>; clearLegacyFlag: boolean }> {
+): Promise<Record<string, unknown>> {
   const legacySkillRef = getLegacyWeaponSkillReferenceForUsage(itemData, usageType);
   if (!legacySkillRef?.skillOrigin && !legacySkillRef?.skillId) {
-    return { usageUpdate: {}, clearLegacyFlag: false };
+    return {};
   }
 
   const currentSkillItem = await findSkillItem(
@@ -75,21 +62,15 @@ async function getUsageMigrationUpdate(
     ui.notifications?.warn(msg, { console: false });
     console.warn("RQG |", msg);
     return {
-      usageUpdate: {
-        [`-=skillOrigin`]: null,
-        [`-=skillId`]: null,
-      },
-      clearLegacyFlag: false,
+      [`-=skillOrigin`]: null,
+      [`-=skillId`]: null,
     };
   }
 
   return {
-    usageUpdate: {
-      [`-=skillOrigin`]: null,
-      [`-=skillId`]: null,
-      skillRqidLink: new RqidLink(currentRqid, currentSkillItem.name ?? ""),
-    },
-    clearLegacyFlag: true,
+    [`-=skillOrigin`]: null,
+    [`-=skillId`]: null,
+    skillRqidLink: new RqidLink(currentRqid, currentSkillItem.name ?? ""),
   };
 }
 

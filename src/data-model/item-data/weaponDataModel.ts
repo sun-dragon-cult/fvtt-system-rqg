@@ -6,7 +6,7 @@ import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { enumChoices } from "../shared/enumChoices";
-import { legacyWeaponSkillRefsFlag, preserveLegacyWeaponSkillReference } from "./weaponSkillLink";
+import { encodeLegacyWeaponSkillReferenceInRqid } from "./weaponSkillLink";
 
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
@@ -108,12 +108,11 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   }
 
   /**
-   * Preserve legacy weapon skill link inputs in flags before schema cleaning
-   * strips them, so migrations can still convert them into a valid rqid link.
+   * Encode legacy weapon skill link data into the rqid field as a sentinel string
+   * so it survives schema cleaning and can be resolved by migrations.
    */
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
     const usage = source["usage"] as Record<string, Record<string, unknown>> | undefined;
-    const legacyRefsByUsage: Record<string, { skillOrigin?: string; skillId?: string }> = {};
 
     if (usage && typeof usage === "object") {
       for (const usageType of ["oneHand", "offHand", "twoHand", "missile"]) {
@@ -121,27 +120,8 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         if (!u || typeof u !== "object") {
           continue;
         }
-        const legacyRef = preserveLegacyWeaponSkillReference(u);
-        if (legacyRef?.skillOrigin || legacyRef?.skillId) {
-          legacyRefsByUsage[usageType] = legacyRef;
-        }
+        encodeLegacyWeaponSkillReferenceInRqid(u);
       }
-    }
-
-    if (Object.keys(legacyRefsByUsage).length > 0) {
-      const flags = (source["flags"] as Record<string, unknown> | undefined) ?? {};
-      source["flags"] = flags;
-
-      const rqgFlags = (flags["rqg"] as Record<string, unknown> | undefined) ?? {};
-      flags["rqg"] = rqgFlags;
-
-      const existingLegacyRefs =
-        (rqgFlags[legacyWeaponSkillRefsFlag] as Record<string, unknown> | undefined) ?? {};
-
-      rqgFlags[legacyWeaponSkillRefsFlag] = {
-        ...existingLegacyRefs,
-        ...legacyRefsByUsage,
-      };
     }
 
     return super.migrateData(source);

@@ -1,7 +1,6 @@
 const legacyWeaponSkillRefPattern = /^i\.skill\.\[(?<skillOrigin>.*)] \/ \[(?<itemId>.*)]$/;
 export const legacySkillOriginField = "_legacySkillOrigin";
 export const legacySkillIdField = "_legacySkillId";
-export const legacyWeaponSkillRefsFlag = "_legacyWeaponSkillRefs";
 
 export type LegacyWeaponSkillRef = {
   skillOrigin?: string;
@@ -49,20 +48,9 @@ export function getLegacyWeaponSkillReference(
 }
 
 export function getLegacyWeaponSkillReferenceForUsage(
-  itemData: { flags?: unknown; system?: unknown },
+  itemData: { system?: unknown },
   usageType: string,
 ): LegacyWeaponSkillRef | undefined {
-  const legacyFromFlags = (
-    (itemData.flags as Record<string, unknown> | undefined)?.["rqg"] as
-      | Record<string, unknown>
-      | undefined
-  )?.[legacyWeaponSkillRefsFlag] as Record<string, LegacyWeaponSkillRef> | undefined;
-
-  const flaggedLegacyRef = legacyFromFlags?.[usageType];
-  if (flaggedLegacyRef?.skillOrigin || flaggedLegacyRef?.skillId) {
-    return flaggedLegacyRef;
-  }
-
   const usage = (
     (itemData.system as Record<string, unknown> | undefined)?.["usage"] as
       | Record<string, Record<string, unknown>>
@@ -76,22 +64,27 @@ export function getLegacyWeaponSkillReferenceForUsage(
   return getLegacyWeaponSkillReference(usage);
 }
 
-export function preserveLegacyWeaponSkillReference(
-  usage: Record<string, unknown>,
-): LegacyWeaponSkillRef | undefined {
+/**
+ * Encode legacy weapon skill references into the `skillRqidLink.rqid` field
+ * as a sentinel string `i.skill.[skillOrigin] / [skillId]`.
+ * This keeps legacy data inside the schema so it survives Foundry's schema cleaning.
+ */
+export function encodeLegacyWeaponSkillReferenceInRqid(usage: Record<string, unknown>): void {
   const legacyRef = getLegacyWeaponSkillReference(usage);
   if (!legacyRef?.skillOrigin && !legacyRef?.skillId) {
-    return undefined;
+    return;
   }
 
   const skillRqidLink = usage["skillRqidLink"] as Record<string, unknown> | undefined;
-  if (skillRqidLink && isLegacyWeaponSkillReferenceRqid(skillRqidLink["rqid"])) {
-    skillRqidLink["rqid"] = "";
-    skillRqidLink["name"] = "";
+  if (!skillRqidLink) {
+    return;
   }
 
-  return {
-    skillOrigin: legacyRef.skillOrigin ?? "",
-    skillId: legacyRef.skillId ?? "",
-  };
+  const currentRqid = skillRqidLink["rqid"];
+  if (currentRqid && !isLegacyWeaponSkillReferenceRqid(currentRqid) && currentRqid !== "") {
+    return; // Already has a valid rqid — don't overwrite
+  }
+
+  skillRqidLink["rqid"] = `i.skill.[${legacyRef.skillOrigin ?? ""}] / [${legacyRef.skillId ?? ""}]`;
+  skillRqidLink["name"] = skillRqidLink["name"] || "";
 }

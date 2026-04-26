@@ -1,4 +1,5 @@
 import type { RqidString } from "./rqidApi";
+import { isLegacyWeaponSkillReferenceRqid } from "../../data-model/item-data/weaponSkillLink";
 
 const ITEM_SUBTYPES = [
   "skill",
@@ -38,14 +39,18 @@ export function isValidRqidString(value: unknown, options: { allowEmpty?: boolea
   return !!(
     value.match(ITEM_PATTERN) ||
     value.match(NON_ITEM_PATTERN) ||
-    value.match(EMBEDDED_PATTERN)
+    value.match(EMBEDDED_PATTERN) ||
+    isLegacyWeaponSkillReferenceRqid(value)
   );
 }
 
 /**
  * Normalize any value to a valid RqidString or undefined.
- * Empty string and invalid values are treated as "not set".
+ * Empty string, invalid values, and legacy sentinel patterns are treated as "not set".
  */
 export function toRqidString(value: unknown): RqidString | undefined {
+  if (isLegacyWeaponSkillReferenceRqid(value)) {
+    return undefined;
+  }
   return isValidRqidString(value) ? value : undefined;
 }

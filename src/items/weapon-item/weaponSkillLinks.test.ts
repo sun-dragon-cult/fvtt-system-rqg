@@ -3,12 +3,11 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { WeaponDataModel } from "@item-model/weaponDataModel.ts";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import {
+  encodeLegacyWeaponSkillReferenceInRqid,
   getLegacyWeaponSkillReference,
   getLegacyWeaponSkillReferenceForUsage,
   isLegacyWeaponSkillReferenceRqid,
-  legacyWeaponSkillRefsFlag,
   parseLegacyWeaponSkillReference,
-  preserveLegacyWeaponSkillReference,
 } from "@item-model/weaponSkillLink.ts";
 import { Weapon } from "./weapon";
 import { migrateWeaponSkillLinks } from "../../system/migrations/migrations-item/migrateWeaponSkillLinks";
@@ -71,35 +70,35 @@ describe("weapon skill link handling", () => {
     vi.mocked(fromUuid).mockResolvedValue(null);
   });
 
-  it("rejects legacy remembered payloads in the weapon rqid schema", () => {
+  it("accepts legacy sentinel payloads in the weapon rqid schema", () => {
     const schema = WeaponDataModel.defineSchema();
     const usageField: any = schema.usage;
     const oneHandField: any = usageField.schema.oneHand;
     const skillRqidLinkField: any = oneHandField.schema.skillRqidLink;
     const validate = skillRqidLinkField.schema.rqid.options.validate as (value: string) => boolean;
 
-    expect(validate("i.skill.[Compendium.world.new-attack-type.Item.bite] / [abc123]")).toBe(false);
+    expect(validate("i.skill.[Compendium.world.new-attack-type.Item.bite] / [abc123]")).toBe(true);
   });
 
-  it("preserves legacy link data in dedicated migration fields", () => {
+  it("encodes legacy link data into the rqid field", () => {
     const usage: Record<string, unknown> = {
       skillOrigin: "Compendium.world.new-attack-type.Item.bite",
       skillId: "abc123",
+      skillRqidLink: { rqid: "", name: "" },
     };
 
-    const preserved = preserveLegacyWeaponSkillReference(usage);
+    encodeLegacyWeaponSkillReferenceInRqid(usage);
 
-    expect(preserved).toEqual({
-      skillOrigin: "Compendium.world.new-attack-type.Item.bite",
-      skillId: "abc123",
-    });
+    expect((usage["skillRqidLink"] as any).rqid).toBe(
+      "i.skill.[Compendium.world.new-attack-type.Item.bite] / [abc123]",
+    );
     expect(getLegacyWeaponSkillReference(usage)).toEqual({
       skillOrigin: "Compendium.world.new-attack-type.Item.bite",
       skillId: "abc123",
     });
   });
 
-  it("moves previously remembered legacy rqids into flags-based preservation input", () => {
+  it("preserves existing sentinel in rqid field", () => {
     const usage: Record<string, unknown> = {
       skillRqidLink: {
         rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
@@ -113,31 +112,20 @@ describe("weapon skill link handling", () => {
       skillId: "embedded-bite",
     });
 
-    const preserved = preserveLegacyWeaponSkillReference(usage);
+    // Encoding again should not change it
+    encodeLegacyWeaponSkillReferenceInRqid(usage);
 
-    expect(preserved).toEqual({
-      skillOrigin: "Compendium.world.new-attack-type.Item.bite",
-      skillId: "embedded-bite",
-    });
-    expect((usage["skillRqidLink"] as any).rqid).toBe("");
+    expect((usage["skillRqidLink"] as any).rqid).toBe(
+      "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
+    );
   });
 
-  it("reads preserved legacy references from rqg flags first", () => {
+  it("reads legacy references from system.usage fields", () => {
     const itemData: Record<string, unknown> = {
-      flags: {
-        rqg: {
-          [legacyWeaponSkillRefsFlag]: {
-            oneHand: {
-              skillOrigin: "Compendium.world.new-attack-type.Item.bite",
-              skillId: "embedded-bite",
-            },
-          },
-        },
-      },
       system: {
         usage: {
           ["oneHand"]: {
-            skillOrigin: "Compendium.world.new-attack-type.Item.should-not-be-used",
+            skillOrigin: "Compendium.world.new-attack-type.Item.bite",
             skillId: "other-id",
           },
         },
@@ -146,11 +134,11 @@ describe("weapon skill link handling", () => {
 
     expect(getLegacyWeaponSkillReferenceForUsage(itemData, "oneHand")).toEqual({
       skillOrigin: "Compendium.world.new-attack-type.Item.bite",
-      skillId: "embedded-bite",
+      skillId: "other-id",
     });
   });
 
-  it("migration turns preserved legacy data into a valid rqid link and clears the migration fields", async () => {
+  it("migration turns sentinel rqid into a valid rqid link", async () => {
     const originSkill = makeSkill({ id: "world-bite", name: "Bite", rqid: "i.skill.bite" });
     const actor = {
       name: "Actor",
@@ -162,20 +150,13 @@ describe("weapon skill link handling", () => {
       actor,
       usage: {
         oneHand: {
-          skillRqidLink: { rqid: "", name: "" },
-        },
-      },
-    });
-    weapon.flags = {
-      rqg: {
-        [legacyWeaponSkillRefsFlag]: {
-          oneHand: {
-            skillOrigin: "Compendium.world.new-attack-type.Item.bite",
-            skillId: "embedded-bite",
+          skillRqidLink: {
+            rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
+            name: "",
           },
         },
       },
-    };
+    });
 
     await expect(migrateWeaponSkillLinks(weapon, actor as any)).resolves.toMatchObject({
       system: {
@@ -185,13 +166,6 @@ describe("weapon skill link handling", () => {
               rqid: "i.skill.bite",
               name: "Bite",
             },
-          },
-        },
-      },
-      flags: {
-        rqg: {
-          [legacyWeaponSkillRefsFlag]: {
-            "-=oneHand": null,
           },
         },
       },
@@ -217,5 +191,54 @@ describe("weapon skill link handling", () => {
     });
 
     expect(Weapon.resolveLinkedSkill(weapon, "oneHand")).toBe(embeddedSkill);
+  });
+
+  it("hasLinkedSkillReference returns false for sentinel rqid", () => {
+    const weapon = makeWeapon({
+      usage: {
+        oneHand: {
+          skillRqidLink: {
+            rqid: "i.skill.[Compendium.world.attack.Item.bite] / [abc]",
+            name: "",
+          },
+        },
+      },
+    });
+
+    expect(Weapon.hasLinkedSkillReference(weapon, "oneHand")).toBe(false);
+  });
+
+  it("resolveLinkedSkill returns undefined for sentinel rqid", () => {
+    const actor = {
+      items: withItemGet([]),
+      getBestEmbeddedDocumentByRqid: vi.fn(() => undefined),
+    };
+
+    const weapon = makeWeapon({
+      actor,
+      usage: {
+        oneHand: {
+          skillRqidLink: {
+            rqid: "i.skill.[Compendium.world.attack.Item.bite] / [abc]",
+            name: "",
+          },
+        },
+      },
+    });
+
+    expect(Weapon.resolveLinkedSkill(weapon, "oneHand")).toBeUndefined();
+    expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
+  });
+
+  it("does not overwrite a valid rqid with a sentinel", () => {
+    const usage: Record<string, unknown> = {
+      skillOrigin: "Compendium.world.new-attack-type.Item.bite",
+      skillId: "abc123",
+      skillRqidLink: { rqid: "i.skill.bite", name: "Bite" },
+    };
+
+    encodeLegacyWeaponSkillReferenceInRqid(usage);
+
+    expect((usage["skillRqidLink"] as any).rqid).toBe("i.skill.bite");
   });
 });
