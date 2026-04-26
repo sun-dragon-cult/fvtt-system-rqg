@@ -6,10 +6,10 @@ export class RqgCombatant extends Combatant {
   }
 
   /** Collect unique actors from combatant documents and re-render their sheets. */
-  private static rerenderActorSheets(documents: any[]): void {
+  private static rerenderActorSheets(documents: Combatant.Implementation[]): void {
     const actors = new Set<RqgActor>();
     for (const combatant of documents) {
-      if (combatant instanceof Combatant && combatant.actor) {
+      if (combatant.actor) {
         actors.add(combatant.actor);
       }
     }
@@ -20,9 +20,9 @@ export class RqgCombatant extends Combatant {
 
   /** @override Rerender actor sheets when a combatant is created to show SR buttons. */
   static override async _onCreateOperation(
-    documents: any[],
-    operation: any,
-    user: any,
+    documents: Combatant.Implementation[],
+    operation: Combatant.Database.OnCreateOperation,
+    user: User.Implementation,
   ): Promise<void> {
     await Combatant._onCreateOperation(documents, operation, user);
     RqgCombatant.rerenderActorSheets(documents);
@@ -34,9 +34,9 @@ export class RqgCombatant extends Combatant {
    * @override
    */
   static override async _preDeleteOperation(
-    _documents: any,
-    operation: any,
-    _user: any,
+    _documents: Combatant.Implementation[],
+    operation: Combatant.Database.PreDeleteOperation,
+    _user: User.Implementation,
   ): Promise<void> {
     const combat = operation.parent;
     for (const id of operation.ids as string[]) {
@@ -55,9 +55,9 @@ export class RqgCombatant extends Combatant {
 
   /** @override Rerender actor sheets after combatant deletion to update SR buttons. */
   static override async _onDeleteOperation(
-    documents: any[],
-    operation: any,
-    user: any,
+    documents: Combatant.Implementation[],
+    operation: Combatant.Database.OnDeleteOperation,
+    user: User.Implementation,
   ): Promise<void> {
     await Combatant._onDeleteOperation(documents, operation, user);
     RqgCombatant.rerenderActorSheets(documents);
@@ -65,9 +65,9 @@ export class RqgCombatant extends Combatant {
 
   /** @override Rerender actor sheets when combatant initiative changes. */
   static override async _onUpdateOperation(
-    documents: any[],
-    operation: any,
-    user: any,
+    documents: Combatant.Implementation[],
+    operation: Combatant.Database.OnUpdateOperation,
+    user: User.Implementation,
   ): Promise<void> {
     await Combatant._onUpdateOperation(documents, operation, user);
     RqgCombatant.rerenderActorSheets(documents);
