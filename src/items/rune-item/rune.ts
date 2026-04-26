@@ -3,6 +3,7 @@ import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
+import { toRqidString } from "../../system/api/rqidValidation";
 import type { RuneItem } from "@item-model/runeDataModel.ts";
 
 export class Rune extends AbstractEmbeddedItem {
@@ -22,7 +23,7 @@ export class Rune extends AbstractEmbeddedItem {
       }
       if (rune.system.opposingRuneRqidLink?.rqid) {
         const opposingRune = actor.getBestEmbeddedDocumentByRqid(
-          rune.system.opposingRuneRqidLink.rqid,
+          toRqidString(rune.system.opposingRuneRqidLink.rqid),
         );
         const chance = chanceResult["system.chance"] ?? chanceResult.system.chance;
         if (opposingRune && chance != null) {

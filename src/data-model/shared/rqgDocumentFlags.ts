@@ -1,6 +1,8 @@
 export const documentRqidFlags = "documentRqidFlags" as const;
 export const actorWizardFlags = "actorWizardFlags" as const;
 
+import type { RqidString } from "../../system/api/rqidApi";
+
 export interface RqgItemFlags {
   [documentRqidFlags]: DocumentRqidFlags;
 }
@@ -38,7 +40,7 @@ export interface RqgActorFlags {
   [actorWizardFlags]?: {
     actorWizardComplete?: boolean;
     selectedSpeciesUuid?: string;
-    selectedHomelandRqid?: string;
+    selectedHomelandRqid?: RqidString;
     isActorTemplate?: boolean;
     wizardChoices?: string;
   };
@@ -56,7 +58,7 @@ export interface DocumentRqidFlags {
    * Third part is the sluggified id given to the document.
    * Example `i.skill.ride-bison`or `je..rune-descriptions-air`
    */
-  id?: string;
+  id?: RqidString;
   /** Defines what language the document is written in. Example "en", "pl" */
   lang?: string;
   /** Defines how this rqid should be ranked compared to others with the same id. Higher number wins. */

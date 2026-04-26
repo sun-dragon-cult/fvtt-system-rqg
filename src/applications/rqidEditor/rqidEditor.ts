@@ -1,6 +1,6 @@
 import { systemId } from "../../system/config";
 import { escapeRegex, getRequiredDomDataset, toKebabCase, trimChars } from "../../system/util";
-import { Rqid } from "../../system/api/rqidApi";
+import { Rqid, isRqidDocumentName } from "../../system/api/rqidApi";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 import Document = foundry.abstract.Document;
@@ -27,7 +27,7 @@ interface RqidEditorData {
   uuid: string;
   folder: string;
   flags: { rqg: { documentRqidFlags: { lang: string; priority: number } } };
-  rqidPrefix: string;
+  rqidDocumentNamePart: string;
   rqidNamePart: string | undefined;
   parentRqid: string;
   parentMissingRqid: boolean;
@@ -159,21 +159,21 @@ export class RqidEditor extends FormApplication {
     let rqidLinkData: Pick<RqidEditorData, "rqidLink" | "fullRqid"> = {};
 
     if (documentRqid && documentLang) {
-      const rqidDocumentPrefix = documentRqid.split(".")[0];
+      const rqidDocumentName = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
-      // Embedded documents (like JournalEntryPage with "jp" prefix) have no top-level game collection,
+      // Embedded documents (like JournalEntryPage with "jp" document name) have no top-level game collection,
       // so skip the duplicate search to avoid errors from getGameProperty("jp")
-      if (!this.document.isEmbedded) {
+      if (!this.document.isEmbedded && isRqidDocumentName(rqidDocumentName)) {
         const worldDocuments = await Rqid.fromRqidRegex(
           rqidSearchRegex,
-          rqidDocumentPrefix,
+          rqidDocumentName,
           documentLang,
           { source: "world", mode: "all" },
         );
         const compendiumDocuments = await Rqid.fromRqidRegex(
           rqidSearchRegex,
-          rqidDocumentPrefix,
+          rqidDocumentName,
           documentLang,
           { source: "packs", mode: "all" },
         );
@@ -243,7 +243,7 @@ export class RqidEditor extends FormApplication {
           },
         },
       },
-      rqidPrefix: `${documentIdPart}.${documentType}.`,
+      rqidDocumentNamePart: `${documentIdPart}.${documentType}.`,
       rqidNamePart: Rqid.getDocumentFlag(this.document)?.id?.split(".").pop(),
       parentRqid: parentRqid,
       parentMissingRqid: this.document.isEmbedded && !parentRqid,

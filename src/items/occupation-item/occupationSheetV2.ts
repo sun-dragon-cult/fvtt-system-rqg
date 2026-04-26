@@ -55,7 +55,7 @@ function normalizeOccupationalSkills(skills: unknown): OccupationalSkill[] {
       return {
         incomeSkill: Boolean(occupationalSkill.incomeSkill),
         bonus: Number.isFinite(bonusValue) ? bonusValue : 0,
-        skillRqidLink: { rqid, name },
+        skillRqidLink: { rqid, name, bonus: undefined },
       };
     })
     .filter((skill): skill is OccupationalSkill => skill !== undefined);
@@ -253,6 +253,7 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
           skillRqidLink: {
             rqid: droppedRqid.id,
             name: droppedItem.name || "",
+            bonus: undefined,
           },
         };
         const occSkills = normalizeOccupationalSkills(this.document.system.occupationalSkills);

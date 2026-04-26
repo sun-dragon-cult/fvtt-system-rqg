@@ -7,6 +7,8 @@ import {
   toKebabCase,
 } from "../../system/util";
 import { Rqid } from "../../system/api/rqidApi";
+import { isValidRqidString } from "../../system/api/rqidValidation";
+import type { RqidString } from "../../system/api/rqidApi";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { DocumentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
 import type { RqgActor } from "@actors/rqgActor.ts";
@@ -373,7 +375,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
             return;
           }
           const rqidFlags: DocumentRqidFlags = {
-            id: newRqid,
+            id: isValidRqidString(newRqid) ? newRqid : ("" as RqidString),
             lang:
               itemUpdate.documentRqidFlags.lang ?? game.settings?.get(systemId, "worldLanguage"),
             priority: itemUpdate.documentRqidFlags.priority ?? 0,
@@ -845,8 +847,9 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     itemNames2Rqid: Map<string, string | undefined>,
   ): ItemRqidUpdate[] {
     return itemChanges.reduce((acc: ItemRqidUpdate[], itemChange) => {
+      const mappedRqid = itemNames2Rqid.get(itemChange.name);
       const rqidFlags: DocumentRqidFlags = {
-        id: itemNames2Rqid.get(itemChange.name),
+        id: mappedRqid && isValidRqidString(mappedRqid) ? mappedRqid : undefined,
         lang: itemChange.documentRqidFlags.lang ?? game.settings?.get(systemId, "worldLanguage"),
         priority: itemChange.documentRqidFlags.priority ?? 0,
       };

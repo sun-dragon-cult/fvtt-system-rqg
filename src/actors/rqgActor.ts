@@ -17,6 +17,7 @@ import {
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { RQG_CONFIG, systemId } from "../system/config";
 import { Rqid } from "../system/api/rqidApi";
+import type { RqidString } from "../system/api/rqidApi";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import type { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
@@ -65,7 +66,7 @@ export class RqgActor extends Actor {
   /**
    * Only handles embedded Items
    */
-  public getEmbeddedDocumentsByRqid(rqid: string | undefined): RqgItem[] {
+  public getEmbeddedDocumentsByRqid(rqid: RqidString | undefined): RqgItem[] {
     if (!rqid) {
       return [];
     }
@@ -74,7 +75,7 @@ export class RqgActor extends Actor {
     ) as RqgItem[];
   }
 
-  public getBestEmbeddedDocumentByRqid(rqid: string | undefined): RqgItem | undefined {
+  public getBestEmbeddedDocumentByRqid(rqid: RqidString | undefined): RqgItem | undefined {
     return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
   }
 
@@ -304,7 +305,7 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
       .filter((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
-      .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "");
+      .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "") as string[];
     if (
       CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
       CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>

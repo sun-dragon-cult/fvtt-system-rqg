@@ -19,7 +19,7 @@ import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgToken } from "../../combat/rqgToken";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { CombatManeuver, Usage, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
+import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { systemId } from "../../system/config";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
@@ -33,9 +33,9 @@ import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import type { DeepPartial } from "fvtt-types/utils";
+import { Weapon } from "@items/weapon-item/weapon";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -150,13 +150,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       isOutOfAmmo = ammoQuantity <= 0;
     }
 
-    const skillRqid: string | undefined =
-      this.weaponItem?.system.usage[formData.usageType].skillRqidLink?.rqid;
-    const usedSkill: RqgItem | undefined =
-      this.weaponItem?.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
-    const validUsedSkill = isDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill)
-      ? usedSkill
-      : undefined;
+    const validUsedSkill = Weapon.resolveLinkedSkill(this.weaponItem, formData.usageType);
     const hasValidSkillForSelectedUsage = !!validUsedSkill;
     formData.halvedModifier = hasValidSkillForSelectedUsage
       ? -Math.floor(validUsedSkill.system.chance / 2)
@@ -309,10 +303,9 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
 
-    const skillRqid = weaponItem.system.usage[selectedUsageType].skillRqidLink?.rqid;
-    const usedSkill = weaponItem.actor?.getBestEmbeddedDocumentByRqid(skillRqid);
+    const usedSkill = Weapon.resolveLinkedSkill(weaponItem, selectedUsageType);
 
-    if (!isDocumentSubType<SkillItem>(usedSkill, ItemTypeEnum.Skill)) {
+    if (!usedSkill) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
     }
   }
@@ -373,10 +366,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
 
-    const skillItem = actor?.getBestEmbeddedDocumentByRqid(
-      weaponItem.system.usage[formDataObject.usageType].skillRqidLink?.rqid,
-    );
-    if (!isDocumentSubType<SkillItem>(skillItem, ItemTypeEnum.Skill)) {
+    const skillItem = Weapon.resolveLinkedSkill(weaponItem, formDataObject.usageType);
+    if (!skillItem) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
       return;
     }
@@ -656,8 +647,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return [];
     }
     assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
-    return Object.entries<Usage>(weapon.system.usage).reduce((acc: any, [key, usage]) => {
-      if (usage?.skillRqidLink?.rqid) {
+    return Object.entries(weapon.system.usage).reduce((acc: any, [key]) => {
+      if (Weapon.hasLinkedSkillReference(weapon, key as UsageType)) {
         acc.push({ value: key, label: localize(`RQG.Game.WeaponUsage.${key}-full`) });
       }
       return acc;
