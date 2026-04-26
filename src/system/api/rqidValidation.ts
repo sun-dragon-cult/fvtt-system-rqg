@@ -46,7 +46,7 @@ export function isValidRqidString(value: unknown, options: { allowEmpty?: boolea
 
 /**
  * Normalize any value to a valid RqidString or undefined.
- * Empty string, invalid values, and legacy sentinel patterns are treated as "not set".
+ * Empty string, invalid values, and legacy-encoded rqid patterns are treated as "not set".
  */
 export function toRqidString(value: unknown): RqidString | undefined {
   if (isLegacyWeaponSkillReferenceRqid(value)) {

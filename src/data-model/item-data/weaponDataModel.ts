@@ -108,7 +108,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   }
 
   /**
-   * Encode legacy weapon skill link data into the rqid field as a sentinel string
+   * Encode legacy weapon skill link data into the rqid field as a legacy-encoded rqid
    * so it survives schema cleaning and can be resolved by migrations.
    */
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
@@ -120,7 +120,10 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         if (!u || typeof u !== "object") {
           continue;
         }
-        encodeLegacyWeaponSkillReferenceInRqid(u);
+        const encoded = encodeLegacyWeaponSkillReferenceInRqid(u);
+        if (encoded) {
+          u["skillRqidLink"] = encoded;
+        }
       }
     }
 

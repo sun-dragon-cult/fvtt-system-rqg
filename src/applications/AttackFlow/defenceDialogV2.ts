@@ -854,7 +854,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
 
   private static usageHasParryManeuver(usage: WeaponItem["system"]["usage"][UsageType]): boolean {
     return (
-      usage.skillRqidLink?.rqid != null &&
+      !!toRqidString(usage.skillRqidLink?.rqid) &&
       usage.combatManeuvers?.some((m) => m.damageType === "parry")
     );
   }

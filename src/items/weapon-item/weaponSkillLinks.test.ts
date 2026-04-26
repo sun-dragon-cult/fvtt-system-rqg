@@ -4,7 +4,6 @@ import { WeaponDataModel } from "@item-model/weaponDataModel.ts";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import {
   encodeLegacyWeaponSkillReferenceInRqid,
-  getLegacyWeaponSkillReference,
   getLegacyWeaponSkillReferenceForUsage,
   isLegacyWeaponSkillReferenceRqid,
   parseLegacyWeaponSkillReference,
@@ -70,7 +69,7 @@ describe("weapon skill link handling", () => {
     vi.mocked(fromUuid).mockResolvedValue(null);
   });
 
-  it("accepts legacy sentinel payloads in the weapon rqid schema", () => {
+  it("accepts legacy-encoded rqid payloads in the weapon rqid schema", () => {
     const schema = WeaponDataModel.defineSchema();
     const usageField: any = schema.usage;
     const oneHandField: any = usageField.schema.oneHand;
@@ -87,18 +86,29 @@ describe("weapon skill link handling", () => {
       skillRqidLink: { rqid: "", name: "" },
     };
 
-    encodeLegacyWeaponSkillReferenceInRqid(usage);
+    const result = encodeLegacyWeaponSkillReferenceInRqid(usage);
 
-    expect((usage["skillRqidLink"] as any).rqid).toBe(
-      "i.skill.[Compendium.world.new-attack-type.Item.bite] / [abc123]",
-    );
-    expect(getLegacyWeaponSkillReference(usage)).toEqual({
-      skillOrigin: "Compendium.world.new-attack-type.Item.bite",
-      skillId: "abc123",
+    expect(result).toEqual({
+      rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [abc123]",
+      name: "",
     });
   });
 
-  it("preserves existing sentinel in rqid field", () => {
+  it("creates skillRqidLink when missing and encodes legacy data", () => {
+    const usage: Record<string, unknown> = {
+      skillOrigin: "Compendium.world.old-weapon.Item.sword",
+      skillId: "oldId",
+    };
+
+    const result = encodeLegacyWeaponSkillReferenceInRqid(usage);
+
+    expect(result).toEqual({
+      rqid: "i.skill.[Compendium.world.old-weapon.Item.sword] / [oldId]",
+      name: "",
+    });
+  });
+
+  it("preserves existing legacy-encoded rqid in rqid field", () => {
     const usage: Record<string, unknown> = {
       skillRqidLink: {
         rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
@@ -112,12 +122,13 @@ describe("weapon skill link handling", () => {
       skillId: "embedded-bite",
     });
 
-    // Encoding again should not change it
-    encodeLegacyWeaponSkillReferenceInRqid(usage);
+    // Encoding again should return the same legacy-encoded rqid
+    const result = encodeLegacyWeaponSkillReferenceInRqid(usage);
 
-    expect((usage["skillRqidLink"] as any).rqid).toBe(
-      "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
-    );
+    expect(result).toEqual({
+      rqid: "i.skill.[Compendium.world.new-attack-type.Item.bite] / [embedded-bite]",
+      name: "NOT-FOUND",
+    });
   });
 
   it("reads legacy references from system.usage fields", () => {
@@ -138,7 +149,7 @@ describe("weapon skill link handling", () => {
     });
   });
 
-  it("migration turns sentinel rqid into a valid rqid link", async () => {
+  it("migration turns legacy-encoded rqid into a valid rqid link", async () => {
     const originSkill = makeSkill({ id: "world-bite", name: "Bite", rqid: "i.skill.bite" });
     const actor = {
       name: "Actor",
@@ -193,7 +204,7 @@ describe("weapon skill link handling", () => {
     expect(Weapon.resolveLinkedSkill(weapon, "oneHand")).toBe(embeddedSkill);
   });
 
-  it("hasLinkedSkillReference returns false for sentinel rqid", () => {
+  it("hasLinkedSkillReference returns false for legacy-encoded rqid", () => {
     const weapon = makeWeapon({
       usage: {
         oneHand: {
@@ -208,7 +219,7 @@ describe("weapon skill link handling", () => {
     expect(Weapon.hasLinkedSkillReference(weapon, "oneHand")).toBe(false);
   });
 
-  it("resolveLinkedSkill returns undefined for sentinel rqid", () => {
+  it("resolveLinkedSkill returns undefined for legacy-encoded rqid", () => {
     const actor = {
       items: withItemGet([]),
       getBestEmbeddedDocumentByRqid: vi.fn(() => undefined),
@@ -230,15 +241,13 @@ describe("weapon skill link handling", () => {
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
   });
 
-  it("does not overwrite a valid rqid with a sentinel", () => {
+  it("does not overwrite a valid rqid with a legacy-encoded rqid", () => {
     const usage: Record<string, unknown> = {
       skillOrigin: "Compendium.world.new-attack-type.Item.bite",
       skillId: "abc123",
       skillRqidLink: { rqid: "i.skill.bite", name: "Bite" },
     };
 
-    encodeLegacyWeaponSkillReferenceInRqid(usage);
-
-    expect((usage["skillRqidLink"] as any).rqid).toBe("i.skill.bite");
+    expect(encodeLegacyWeaponSkillReferenceInRqid(usage)).toBeUndefined();
   });
 });

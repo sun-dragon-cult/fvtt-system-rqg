@@ -66,25 +66,26 @@ export function getLegacyWeaponSkillReferenceForUsage(
 
 /**
  * Encode legacy weapon skill references into the `skillRqidLink.rqid` field
- * as a sentinel string `i.skill.[skillOrigin] / [skillId]`.
+ * as a legacy-encoded rqid `i.skill.[skillOrigin] / [skillId]`.
  * This keeps legacy data inside the schema so it survives Foundry's schema cleaning.
+ * Returns the updated skillRqidLink value, or undefined if no encoding was needed.
  */
-export function encodeLegacyWeaponSkillReferenceInRqid(usage: Record<string, unknown>): void {
+export function encodeLegacyWeaponSkillReferenceInRqid(
+  usage: Record<string, unknown>,
+): { rqid: string; name: string } | undefined {
   const legacyRef = getLegacyWeaponSkillReference(usage);
   if (!legacyRef?.skillOrigin && !legacyRef?.skillId) {
-    return;
+    return undefined;
   }
 
   const skillRqidLink = usage["skillRqidLink"] as Record<string, unknown> | undefined;
-  if (!skillRqidLink) {
-    return;
-  }
-
-  const currentRqid = skillRqidLink["rqid"];
+  const currentRqid = skillRqidLink?.["rqid"];
   if (currentRqid && !isLegacyWeaponSkillReferenceRqid(currentRqid) && currentRqid !== "") {
-    return; // Already has a valid rqid — don't overwrite
+    return undefined; // Already has a valid rqid — don't overwrite
   }
 
-  skillRqidLink["rqid"] = `i.skill.[${legacyRef.skillOrigin ?? ""}] / [${legacyRef.skillId ?? ""}]`;
-  skillRqidLink["name"] = skillRqidLink["name"] || "";
+  return {
+    rqid: `i.skill.[${legacyRef.skillOrigin ?? ""}] / [${legacyRef.skillId ?? ""}]`,
+    name: (skillRqidLink?.["name"] as string) || "",
+  };
 }
