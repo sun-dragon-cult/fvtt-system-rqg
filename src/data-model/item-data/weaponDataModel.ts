@@ -97,7 +97,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
       hitPoints: resourceSchemaField(),
       hitPointLocation: new StringField({ blank: true, nullable: false, initial: "" }),
       isNatural: new BooleanField({ nullable: false, initial: false }),
-      rate: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+      rate: new NumberField({ integer: true, min: 0, max: 5, nullable: false, initial: 0 }),
       range: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
       isProjectile: new BooleanField({ nullable: false, initial: false }),
       isProjectileWeapon: new BooleanField({ nullable: false, initial: false }),
@@ -112,6 +112,9 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
    * so it survives schema cleaning and can be resolved by migrations.
    */
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    const parsedRate = Math.trunc(Number(source["rate"]));
+    source["rate"] = Number.isFinite(parsedRate) ? Math.max(0, Math.min(5, parsedRate)) : 0;
+
     const usage = source["usage"] as Record<string, Record<string, unknown>> | undefined;
 
     if (usage && typeof usage === "object") {

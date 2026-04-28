@@ -220,7 +220,11 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
       data["system.isProjectileWeapon"] = false;
     }
 
-    data["system.rate"] = Number(data["system.rate"]);
+    if (data["system.rate"] == null || data["system.rate"] === "") {
+      data["system.rate"] = sheet.document.system.rate ?? 0;
+    } else {
+      data["system.rate"] = Number(data["system.rate"]);
+    }
 
     data["system.physicalItemType"] =
       data["system.isProjectile"] || data["system.isThrownWeapon"] ? "consumable" : "unique";

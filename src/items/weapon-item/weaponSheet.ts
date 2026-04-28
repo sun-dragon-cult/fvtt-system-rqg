@@ -133,7 +133,11 @@ export class WeaponSheet extends RqgItemSheet {
       formData["system.isProjectileWeapon"] = false;
     }
 
-    formData["system.rate"] = Number(formData["system.rate"]);
+    if (formData["system.rate"] == null || formData["system.rate"] === "") {
+      formData["system.rate"] = this.document.system.rate ?? 0;
+    } else {
+      formData["system.rate"] = Number(formData["system.rate"]);
+    }
 
     formData["system.physicalItemType"] =
       formData["system.isProjectile"] || formData["system.isThrownWeapon"]
