@@ -1,5 +1,5 @@
 import type { RqgItem } from "@items/rqgItem.ts";
-import { RqgItemDataModel } from "./RqgItemDataModel";
+import { AbilityDataModel } from "./abilityDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 
 export type PassionItem = RqgItem & { system: Item.SystemOfType<"passion"> };
@@ -23,7 +23,7 @@ const { StringField } = foundry.data.fields;
 
 type PassionSchema = ReturnType<typeof PassionDataModel.defineSchema>;
 
-export class PassionDataModel extends RqgItemDataModel<PassionSchema> {
+export class PassionDataModel extends AbilityDataModel<PassionSchema> {
   static override defineSchema() {
     return {
       ...abilitySchemaFields(),

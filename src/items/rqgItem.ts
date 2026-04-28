@@ -24,30 +24,16 @@ import { CultSheet } from "./cult-item/cultSheet";
 import { CultSheetV2 } from "./cult-item/cultSheetV2";
 import { RuneMagicSheet } from "./rune-magic-item/runeMagicSheet";
 import { RuneMagicSheetV2 } from "./rune-magic-item/runeMagicSheetV2";
-import {
-  assertDocumentSubType,
-  getSpeakerFromItem,
-  isDocumentSubType,
-  localize,
-  requireValue,
-  RqgError,
-} from "../system/util";
+import { assertDocumentSubType, isDocumentSubType, localize } from "../system/util";
 import { HomelandSheet } from "./homeland-item/homelandSheet";
 import { HomelandSheetV2 } from "./homeland-item/homelandSheetV2";
 import { OccupationSheet } from "./occupation-item/occupationSheet";
 import { OccupationSheetV2 } from "./occupation-item/occupationSheetV2";
-import { RQG_CONFIG, systemId } from "../system/config";
+import { systemId } from "../system/config";
 import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
-import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
-import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
 import type { SpiritMagicRollOptions } from "../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
-import { SpiritMagicRoll } from "../rolls/SpiritMagicRoll/SpiritMagicRoll";
-import { SpiritMagicRollDialogV2 } from "../applications/SpiritMagicRollDialog/spiritMagicRollDialogV2";
-import { RuneMagicRollDialogV2 } from "../applications/RuneMagicRollDialog/runeMagicRollDialogV2";
-import { RuneMagicRoll } from "../rolls/RuneMagicRoll/RuneMagicRoll";
 import type { RuneMagicRollOptions } from "../rolls/RuneMagicRoll/RuneMagicRoll.types";
-import { RuneMagic } from "./rune-magic-item/runeMagic";
 import { GearDataModel } from "@item-model/gearDataModel";
 import { ArmorDataModel } from "@item-model/armorDataModel";
 import { WeaponDataModel } from "@item-model/weaponDataModel";
@@ -60,20 +46,9 @@ import { CultDataModel } from "@item-model/cultDataModel";
 import { HitLocationDataModel } from "@item-model/hitLocationDataModel";
 import { HomelandDataModel } from "@item-model/homelandDataModel";
 import { OccupationDataModel } from "@item-model/occupationDataModel";
-import {
-  type SpellItem,
-  SpellConcentrationEnum,
-  spellItemTypes,
-  SpellDurationEnum,
-  SpellRangeEnum,
-} from "@item-model/spell.ts";
+import { type SpellItem, spellItemTypes } from "@item-model/spell.ts";
 import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
-import {
-  formatDamagePart,
-  getNormalizedDamageFormulaAndDamageBonus,
-} from "../system/combatCalculations";
-import { AttackDialogV2 } from "../applications/AttackFlow/attackDialogV2";
 import { Skill } from "./skill-item/skill";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
@@ -266,7 +241,7 @@ export class RqgItem extends Item {
    */
   public async abilityRoll(): Promise<void> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await new AbilityRollDialogV2(this).render(true);
+    await this.system.abilityRoll();
   }
 
   /**
@@ -275,29 +250,8 @@ export class RqgItem extends Item {
   public async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
   ): Promise<void> {
-    if (!this.isEmbedded) {
-      const msg = "Item is not embedded";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
-    }
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-
-    const chance: number = Number(this.system.chance) || 0; // Handle NaN
-
-    const abilityRoll = await AbilityRoll.rollAndShow({
-      naturalSkill: chance,
-      modifiers: options?.modifiers,
-      abilityName: this.name ?? undefined,
-      abilityType: this.type,
-      abilityImg: this.img ?? undefined,
-      resultMessages: options?.resultMessages,
-      speaker: getSpeakerFromItem(this),
-      rollMode: options?.rollMode,
-    });
-    if (abilityRoll.successLevel == null) {
-      throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
-    }
-    await this.checkExperience(abilityRoll.successLevel);
+    await this.system.abilityRollImmediate(options);
   }
 
   /**
@@ -305,7 +259,7 @@ export class RqgItem extends Item {
    */
   public async spiritMagicRoll(): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await new SpiritMagicRollDialogV2(this).render(true);
+    await this.system.spiritMagicRoll();
   }
 
   /**
@@ -317,26 +271,7 @@ export class RqgItem extends Item {
     },
   ): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    const actor = this.actor;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
-
-    const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
-
-    const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
-      powX5: powX5,
-      levelUsed: options.levelUsed ?? this.system.points,
-      magicPointBoost: options.magicPointBoost ?? 0,
-      modifiers: options?.modifiers,
-      spellName: this.name ?? undefined,
-      spellImg: this.img ?? undefined,
-      speaker: getSpeakerFromItem(this),
-      rollMode: options?.rollMode,
-    });
-    if (spiritMagicRoll.successLevel == null) {
-      throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
-    }
-    const mpCost = options.levelUsed + (options.magicPointBoost ?? 0);
-    await this.actor?.drawMagicPoints(mpCost, spiritMagicRoll.successLevel);
+    await this.system.spiritMagicRollImmediate(options);
   }
 
   /**
@@ -344,7 +279,7 @@ export class RqgItem extends Item {
    */
   public async runeMagicRoll(): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await new RuneMagicRollDialogV2(this).render(true);
+    await this.system.runeMagicRoll();
   }
 
   /**
@@ -352,54 +287,7 @@ export class RqgItem extends Item {
    */
   public async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-
-    const actor = this.parent;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
-
-    const cult = actor.items.find((i) => i.id === this.system.cultId) as RqgItem | undefined;
-    if (!cult) {
-      const msg = "Rune Magic item isn't connected to a cult";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, this);
-    }
-    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
-
-    const levelUsedOrDefault = options.levelUsed ?? this.system.points;
-
-    const validationError = RuneMagic.hasEnoughToCastSpell(
-      cult,
-      levelUsedOrDefault,
-      options.magicPointBoost,
-    );
-    if (validationError) {
-      ui.notifications?.warn(validationError);
-      return;
-    }
-
-    const usedRune = options.usedRune
-      ? options.usedRune
-      : RuneMagic.getStrongestRune(RuneMagic.getEligibleRunes(this));
-    if (!usedRune) {
-      const msg = "Could not find a rune to use for rune magic";
-      ui.notifications?.warn(msg);
-      return;
-    }
-
-    const runeMagicRoll = await RuneMagicRoll.rollAndShow({
-      usedRune: usedRune,
-      runeMagicItem: this,
-      levelUsed: levelUsedOrDefault,
-      magicPointBoost: options.magicPointBoost ?? 0,
-      modifiers: options?.modifiers ?? [],
-      speaker: getSpeakerFromItem(this),
-      rollMode: options?.rollMode,
-    });
-    if (runeMagicRoll.successLevel == null) {
-      throw new RqgError("Evaluated RuneMagicRoll didn't give successLevel");
-    }
-    const mpCost = options.magicPointBoost ?? 0;
-    const rpCost = options.levelUsed ?? this.system.points;
-    await RuneMagic.handleRollResult(runeMagicRoll.successLevel, rpCost, mpCost, usedRune, this);
+    await this.system.runeMagicRollImmediate(options);
   }
 
   /**
@@ -407,7 +295,7 @@ export class RqgItem extends Item {
    */
   public async attack(): Promise<void> {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
-    await new AttackDialogV2(this).render(true);
+    await this.system.attack();
   }
 
   /**
@@ -420,121 +308,16 @@ export class RqgItem extends Item {
     damageDegree: DamageDegree,
     damageType: DamageType,
   ): string | undefined {
-    if (!usage) {
-      return undefined;
-    }
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
-    const weaponDamage = this.system.usage[usage].damage;
-    const actor = this.parent;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
-    const damageBonus = actor.system.attributes.damageBonus ?? "0";
-
-    requireValue(
-      damageType,
-      "Could not get damageType when calculating damage formula",
-      this,
-      usage,
-      damageDegree,
-      damageType,
-    );
-
-    if (damageDegree === "none") {
-      return undefined;
-    }
-
-    const { damageFormula, damageBonusPlaceholder } =
-      getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
-
-    if (damageDegree === "normal") {
-      const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
-      return `${weaponDamage}${damageBonusPlaceholder}`;
-    }
-
-    if (damageDegree === "special") {
-      switch (damageType) {
-        case "crush": {
-          const maximisedDamageBonus = this.getMaximisedDamageBonusValue(damageBonus);
-
-          const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
-          const specialDamage = formatDamagePart(
-            maximisedDamageBonus,
-            "RQG.Roll.DamageRoll.SpecialDamage",
-            "+",
-          );
-          return `${weaponDamage}${damageBonusPlaceholder}${specialDamage}`;
-        }
-        case "slash":
-        case "impale": {
-          const weaponDamage = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
-          const specialDamage = formatDamagePart(
-            damageFormula,
-            "RQG.Roll.DamageRoll.SpecialDamage",
-            "+",
-          );
-          return `${weaponDamage}${specialDamage}${damageBonusPlaceholder}`;
-        }
-        default: {
-          return undefined; // parry or special
-        }
-      }
-    }
-
-    if (damageDegree === "maxSpecial") {
-      const maximisedDamageBonus = this.getMaximisedDamageBonusValue(damageBonus);
-      const evaluatedDamageBonus = formatDamagePart(
-        maximisedDamageBonus,
-        "RQG.Roll.DamageRoll.DamageBonus",
-        "+",
-      );
-
-      const damageFormulaRoll = new Roll(damageFormula);
-      damageFormulaRoll.evaluateSync({ maximize: true });
-      const evaluatedWeaponDamage = formatDamagePart(
-        damageFormulaRoll.total?.toString() ?? "",
-        "RQG.Roll.DamageRoll.WeaponDamage",
-      );
-
-      switch (damageType) {
-        case "crush": {
-          const evaluatedSpecialDamage = formatDamagePart(
-            maximisedDamageBonus,
-            "RQG.Roll.DamageRoll.SpecialDamage",
-            "+",
-          );
-          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
-        }
-
-        case "slash":
-        case "impale": {
-          const evaluatedSpecialDamage = formatDamagePart(
-            damageFormulaRoll.total?.toString() ?? "",
-            "RQG.Roll.DamageRoll.SpecialDamage",
-            "+",
-          );
-          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
-        }
-
-        default: {
-          return undefined; // parry or special
-        }
-      }
-    }
-
-    throw new RqgError("Tried to get damageFormula for invalid damageDegree");
+    return this.system.getDamageFormula(usage, damageDegree, damageType);
   }
 
   /**
    * Create a string with the maximised or minimised result of a damage bonus roll.
    */
   getMaximisedDamageBonusValue(dbFormula: string): string {
-    const dbRoll = new Roll(dbFormula);
-    if (dbFormula.startsWith("-")) {
-      // TODO Actors with negative db will actually do less damage with special success! Rule inconsistency.
-      dbRoll.evaluateSync({ minimize: true });
-    } else {
-      dbRoll.evaluateSync({ maximize: true });
-    }
-    return dbRoll.total?.toString() ?? "";
+    assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
+    return this.system.getMaximisedDamageBonusValue(dbFormula);
   }
 
   /**
@@ -549,43 +332,20 @@ export class RqgItem extends Item {
       abilityItemTypes,
       "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
     );
-    const isSuccess = result != null && result <= AbilitySuccessLevelEnum.Success;
-    if (isSuccess && !this.system.hasExperience) {
-      await this.awardExperience();
-    }
-    const rqid = this.getFlag(systemId, "documentRqidFlags")?.id;
-    if (
-      isSuccess &&
-      isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill) &&
-      (rqid?.startsWith(RQG_CONFIG.skillRqid.worship) || rqid === RQG_CONFIG.skillRqid.spiritCombat)
-    ) {
-      const actor = this.actor;
-      if (actor && isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
-        await actor.awardPowExperience();
-      }
-    }
+    await this.system.checkExperience(result);
   }
 
-  public async awardExperience() {
+  public async awardExperience(): Promise<void> {
     assertDocumentSubType<AbilityItem>(
       this,
       abilityItemTypes,
       "RQG.Actor.AwardExperience.ItemDoesntHaveExperienceError",
     );
-    if (this.system.canGetExperience && !this.system.hasExperience) {
-      await this.actor?.updateEmbeddedDocuments("Item", [
-        { _id: this.id, system: { hasExperience: true } },
-      ]);
-      const msg = localize("RQG.Actor.AwardExperience.GainedExperienceInfo", {
-        actorName: this.actor?.name ?? "",
-        itemName: this.name,
-      });
-      ui.notifications?.info(msg);
-    }
+    await this.system.awardExperience();
   }
 
   /**
-   * Used for Rune & Spirit Magic items to construct a descriptions close to what as
+   * Used for Rune & Spirit Magic items to construct a description close to what
    * is used in the books. The "1+" syntax for stackable rune magic is used
    */
   get spellSummary(): string {
@@ -594,69 +354,7 @@ export class RqgItem extends Item {
       spellItemTypes,
       "Tried to get spellSummary on a non spell item: " + this.type,
     );
-
-    const descriptionParts = [];
-    const isSpiritMagic = isDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    const isRuneMagic = isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-
-    const stackableRuneMagic = isRuneMagic && this.system.isStackable ? "+" : "";
-    const variableSpiritMagic =
-      isSpiritMagic && this.system.isVariable
-        ? " " + localize("RQG.Item.SpiritMagic.Variable")
-        : "";
-    const pointsTranslated =
-      this.system.points === 1
-        ? localize("RQG.Item.Spell.Point")
-        : localize("RQG.Item.Spell.Points");
-    descriptionParts.push(
-      `${this.system.points}${stackableRuneMagic} ${pointsTranslated}${variableSpiritMagic}`,
-    );
-
-    if (this.system.isRitual) {
-      descriptionParts.push(localize("RQG.Item.Spell.Ritual"));
-    }
-
-    if (this.system.isEnchantment) {
-      descriptionParts.push(localize("RQG.Item.Spell.Enchantment"));
-    }
-
-    const isDefaultRange = this.system.castingRange === SpellRangeEnum.Ranged;
-    if (this.system.castingRange && !isDefaultRange) {
-      const rangeValueTranslation = localize(
-        "RQG.Item.Spell.RangeEnum." + (this.system.castingRange || "undefined"),
-      );
-      const rangeTranslation = localize("RQG.Item.SpiritMagic.Range");
-      const translation =
-        this.system.castingRange === SpellRangeEnum.Special
-          ? `${rangeTranslation}(${rangeValueTranslation.toLowerCase()})`
-          : rangeValueTranslation;
-      descriptionParts.push(translation);
-    }
-
-    const isDefaultDuration = this.system.duration === SpellDurationEnum.Temporal;
-    if (this.system.duration && !isDefaultDuration) {
-      const durationValueTranslation = localize(
-        "RQG.Item.Spell.DurationEnum." + this.system.duration,
-      );
-      const durationTranslation = localize("RQG.Item.SpiritMagic.Duration");
-      const translation =
-        this.system.duration === SpellDurationEnum.Special
-          ? `${durationTranslation}(${durationValueTranslation.toLowerCase()})`
-          : durationValueTranslation;
-      descriptionParts.push(translation);
-    }
-
-    if (this.system.concentration === SpellConcentrationEnum.Active) {
-      descriptionParts.push(
-        localize("RQG.Item.Spell.ConcentrationEnum." + this.system.concentration),
-      );
-    }
-
-    if (isRuneMagic && this.system.isOneUse) {
-      descriptionParts.push(localize("RQG.Item.RuneMagic.OneUse"));
-    }
-
-    return descriptionParts.join(", ");
+    return this.system.spellSummary;
   }
 
   /**
@@ -668,41 +366,7 @@ export class RqgItem extends Item {
       spellItemTypes,
       "Tried to get spellSummaryTooltip on a non spell item: " + this.type,
     );
-
-    const yes = localize("RQG.Dialog.Common.yes");
-
-    const isRuneMagic = isDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-
-    const range =
-      isRuneMagic && this.system.castingRange === SpellRangeEnum.Ranged
-        ? "160m"
-        : this.system.castingRange === SpellRangeEnum.Ranged
-          ? "50m"
-          : localize("RQG.Item.Spell.RangeEnum." + (this.system.castingRange || "undefined"));
-    const duration =
-      isRuneMagic && this.system.duration === SpellDurationEnum.Temporal
-        ? "15 minutes"
-        : this.system.duration === SpellDurationEnum.Temporal
-          ? "2 minutes"
-          : localize("RQG.Item.Spell.DurationEnum." + (this.system.duration || "undefined"));
-    const concentration = localize(
-      "RQG.Item.Spell.ConcentrationEnum." + (this.system.concentration || "undefined"),
-    );
-
-    const descriptionParts = [`Range: ${range}`, `Duration: ${duration}`];
-
-    if (this.system.duration !== SpellDurationEnum.Instant) {
-      descriptionParts.push(concentration);
-    }
-
-    if (isRuneMagic && this.system.isStackable) {
-      descriptionParts.push(localize("RQG.Item.RuneMagic.Stackable"));
-    }
-    if (isRuneMagic && this.system.isEnchantment) {
-      descriptionParts.push(`Enchantment: ${yes}`);
-    }
-
-    return descriptionParts.join(" | ");
+    return this.system.spellSummaryTooltip;
   }
 
   override async _preCreate(data: any, options: any, user: User): Promise<void> {

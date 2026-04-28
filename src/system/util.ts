@@ -1,5 +1,5 @@
 import type { RqgActor } from "../actors/rqgActor";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
