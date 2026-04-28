@@ -1,4 +1,5 @@
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqidString } from "../../system/api/rqidApi";
 import { RqidLink } from "../shared/rqidLink";
 import { RqgItemDataModel } from "./RqgItemDataModel";
@@ -7,6 +8,10 @@ import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { enumChoices } from "../shared/enumChoices";
 import { encodeLegacyWeaponSkillReferenceInRqid } from "./weaponSkillLink";
+import { localize, logMisconfiguration, mergeArraysById } from "../../system/util";
+import { getLocationRelatedUpdates } from "../../items/shared/physicalItemUtil";
+import { Rqid } from "../../system/api/rqidApi";
+import { toRqidString } from "../../system/api/rqidValidation";
 
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
@@ -131,5 +136,81 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     }
 
     return super.migrateData(source);
+  }
+
+  override preUpdateItem(actor: RqgActor, updates: object[]): void {
+    mergeArraysById(
+      updates,
+      getLocationRelatedUpdates(actor.items.contents, this.parent as WeaponItem, updates),
+    );
+  }
+
+  /*
+   * Add the skills specified in the weapon to the actor (if not already there)
+   * and connect the weapons with the embedded item skill id.
+   */
+  override async onEmbedItem(
+    actor: RqgActor,
+    options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _userId: string,
+  ): Promise<Record<string, unknown>> {
+    const child = this.parent as WeaponItem;
+
+    const actorHasRightArm = !!actor.getBestEmbeddedDocumentByRqid("i.hit-location.right-arm");
+
+    if (!child.system.isNatural && !actorHasRightArm) {
+      // To be able to use a physical weapon you need an arm.
+      // This prevents donkeys to get sword skills just because they carry swords.
+      return {};
+    }
+
+    const succeeded = await Promise.all([
+      this.embedLinkedSkill(child.system.usage.oneHand.skillRqidLink?.rqid, actor),
+      this.embedLinkedSkill(child.system.usage.offHand.skillRqidLink?.rqid, actor),
+      this.embedLinkedSkill(child.system.usage.twoHand.skillRqidLink?.rqid, actor),
+      this.embedLinkedSkill(child.system.usage.missile.skillRqidLink?.rqid, actor),
+    ]);
+    if (succeeded.includes(false)) {
+      // Didn't find one of the weapon skills - open the item sheet to let the user select one
+      // TODO how to handle this?
+      options.renderSheet = true;
+    }
+    // Thrown weapons should decrease quantity of themselves
+    const projectileId = child.system.isThrownWeapon ? child.id : child.system.projectileId;
+
+    return {
+      _id: child.id,
+      system: {
+        projectileId: projectileId,
+      },
+    };
+  }
+
+  /**
+   * Checks if the specified skill is already owned by the actor.
+   * If not it embeds the referenced skill.
+   * Returns false if the linked skill could not be found.
+   */
+  private async embedLinkedSkill(skillRqid: string | undefined, actor: RqgActor): Promise<boolean> {
+    const normalizedSkillRqid = toRqidString(skillRqid);
+    if (!normalizedSkillRqid) {
+      return true; // No rqid (no linked skill) so count this as a success.
+    }
+    const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(normalizedSkillRqid);
+
+    if (!embeddedSkill) {
+      const skill = await Rqid.fromRqid(normalizedSkillRqid);
+      if (!skill) {
+        logMisconfiguration(
+          localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
+          true,
+          normalizedSkillRqid,
+        );
+        return false;
+      }
+      await actor.createEmbeddedDocuments("Item", [skill as any]);
+    }
+    return true;
   }
 }

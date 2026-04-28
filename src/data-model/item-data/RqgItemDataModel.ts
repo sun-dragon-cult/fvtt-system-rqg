@@ -1,4 +1,5 @@
 import Item = foundry.documents.Item;
+import type { RqgActor } from "@actors/rqgActor.ts";
 
 function defaultNumber(field: foundry.data.fields.NumberField): number | null {
   return field.options.nullable ? null : Number(field.options.initial) || 0;
@@ -87,4 +88,59 @@ export abstract class RqgItemDataModel<
     coerceNumbers(source, schema);
     return super.migrateData(source);
   }
+
+  /**
+   * Called when this item is embedded into an actor.
+   * Return an update data object (or empty object) to apply to the embedded item.
+   */
+  async onEmbedItem(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _actor: RqgActor,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _userId: string,
+  ): Promise<Record<string, unknown>> {
+    return {};
+  }
+
+  /**
+   * Called when this embedded item is deleted from an actor.
+   * Return an array of update data objects to apply to other embedded items.
+   */
+  onDeleteItem(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _actor: RqgActor,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _userId: string,
+  ): Record<string, unknown>[] {
+    return [];
+  }
+
+  /**
+   * Called before embedded item updates are committed.
+   * May push additional update entries into `updates`.
+   */
+  preUpdateItem(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _actor: RqgActor,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _updates: any[],
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options: any,
+  ): void {}
+
+  /**
+   * Called during actor.prepareEmbeddedDocuments() to let each item type
+   * prepare its own embedded-entity data (e.g. link to cult, resolve rune chance).
+   */
+  onActorPrepareEmbeddedEntities(): void {}
+
+  /**
+   * Called during actor.prepareDerivedData() to let each item type
+   * derive its own data (e.g. compute effective skill chance).
+   */
+  onActorPrepareDerivedData(): void {}
 }

@@ -1,10 +1,14 @@
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import type { RqidLink } from "../shared/rqidLink";
 import type { RqidString } from "../../system/api/rqidApi";
 import { enumChoices } from "../shared/enumChoices";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
+import { toRqidString } from "../../system/api/rqidValidation";
+import { ItemTypeEnum } from "./itemTypes";
 
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
 
@@ -68,5 +72,45 @@ export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
       };
     }
     return super.migrateData(source);
+  }
+
+  override preUpdateItem(actor: RqgActor, updates: any[]): void {
+    const rune = this.parent as RuneItem;
+    if (!isDocumentSubType<RuneItem>(rune, ItemTypeEnum.Rune)) {
+      return;
+    }
+    const chanceResult = updates.find(
+      (r) => r["system.chance"] != null || r?.system?.chance != null,
+    );
+    if (!chanceResult) {
+      return;
+    }
+    if (rune.system.opposingRuneRqidLink?.rqid) {
+      const opposingRune = actor.getBestEmbeddedDocumentByRqid(
+        toRqidString(rune.system.opposingRuneRqidLink.rqid),
+      );
+      const chance = chanceResult["system.chance"] ?? chanceResult.system.chance;
+      if (opposingRune && chance != null) {
+        this.adjustOpposingRuneChance(opposingRune, chance, updates);
+      }
+    }
+  }
+
+  private adjustOpposingRuneChance(
+    opposingRune: RqgItem | undefined,
+    newChance: number,
+    updates: object[],
+  ): void {
+    if (!opposingRune) {
+      return;
+    }
+    assertDocumentSubType<RuneItem>(opposingRune, ItemTypeEnum.Rune);
+    const opposingRuneChance = opposingRune.system.chance;
+    if (newChance + opposingRuneChance !== 100) {
+      updates.push({
+        _id: opposingRune.id,
+        system: { chance: 100 - newChance },
+      });
+    }
   }
 }

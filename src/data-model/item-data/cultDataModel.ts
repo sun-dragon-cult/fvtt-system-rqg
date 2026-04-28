@@ -1,10 +1,22 @@
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import type { RqidLink } from "../shared/rqidLink";
 import type { RqidString } from "../../system/api/rqidApi";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { enumChoices } from "../shared/enumChoices";
+import {
+  assertDocumentSubType,
+  formatListByWorldLanguage,
+  isDocumentSubType,
+  isTruthy,
+  RqgError,
+} from "../../system/util";
+import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqgActorData";
+import { ItemTypeEnum } from "./itemTypes";
+import { Rqid } from "../../system/api/rqidApi";
+import type { RuneMagicItem } from "./runeMagicDataModel";
 
 export type CultItem = RqgItem & { system: Item.SystemOfType<"cult"> };
 
@@ -62,5 +74,103 @@ export class CultDataModel extends RqgItemDataModel<CultSchema> {
         }),
       ),
     } as const;
+  }
+
+  /**
+   * Unlink the runeMagic spells that was connected with this cult.
+   */
+  override onDeleteItem(
+    actor: RqgActor,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _userId: string,
+  ): Record<string, unknown>[] {
+    const cultItem = this.parent as CultItem;
+    const cultRuneMagicItems = actor.items.filter(
+      (i) =>
+        isDocumentSubType<RuneMagicItem>(i, ItemTypeEnum.RuneMagic) &&
+        i.system.cultId === cultItem.id,
+    ) as RuneMagicItem[];
+    return cultRuneMagicItems.map((i) => {
+      return { _id: i.id, "system.cultId": "" };
+    });
+  }
+
+  /**
+   * If the actor already has a Cult with the same Deity, then merge the data from the joined subcults.
+   */
+  override async onEmbedItem(
+    actor: RqgActor,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _options: any,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _userId: string,
+  ): Promise<Record<string, unknown>> {
+    const child = this.parent as CultItem;
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    const matchingDeityInActorCults = actor.items.filter(
+      (i) =>
+        isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) && i.system.deity === child.system.deity,
+    ) as CultItem[];
+
+    switch (matchingDeityInActorCults.length) {
+      case 1: {
+        // This is a new deity to the actor
+        await this.embedCommonRuneMagic(actor);
+        return {};
+      }
+
+      case 2: {
+        // Actor already has this deity - add the joinedCults from the new and old Cult items
+        await child.delete();
+        const existingCult = matchingDeityInActorCults[0]!;
+        const newJoinedCults = [...existingCult.system.joinedCults, ...child.system.joinedCults];
+        const newCultItemName = this.deriveCultItemName(
+          existingCult.system.deity ?? "",
+          newJoinedCults.map((c) => c.cultName ?? ""),
+        );
+
+        return {
+          _id: existingCult.id,
+          name: newCultItemName,
+          system: {
+            joinedCults: newJoinedCults,
+          },
+        };
+      }
+
+      default: {
+        // 0 (failed embed) or multiple cults with same deity
+        const msg = "Actor should not have multiple Cults with same Deity";
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, [actor, child]);
+      }
+    }
+  }
+
+  private async embedCommonRuneMagic(actor: CharacterActor): Promise<void> {
+    const cultItem = this.parent as CultItem;
+    const runeMagicItems = await Promise.all(
+      this.commonRuneMagicRqidLinks.map(async (rqidLink) => await Rqid.fromRqid(rqidLink.rqid)),
+    );
+
+    const connectedRuneMagicItems = runeMagicItems.filter(isTruthy).map((rm) => {
+      rm.system.cultId = cultItem.id!;
+      return rm.toObject(false);
+    });
+
+    await actor.createEmbeddedDocuments("Item", connectedRuneMagicItems as any);
+  }
+
+  private deriveCultItemName(deity: string, cultNames: string[]): string {
+    const joinedCultsFormatted = formatListByWorldLanguage(
+      cultNames.filter(isTruthy).map((c) => c.trim()),
+    );
+
+    if (!joinedCultsFormatted || joinedCultsFormatted === deity) {
+      return deity.trim();
+    }
+    return joinedCultsFormatted + ` (${deity.trim()})`;
   }
 }
