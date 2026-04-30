@@ -1,6 +1,6 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, type PhysicalItem, ResponsibleItemClass } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgActorSheetV2 } from "./RqgActorSheetV2";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -29,8 +29,8 @@ import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weaponDataModel.ts";
-import { Skill } from "../items/skill-item/skill";
-import type { RqgItem } from "@items/rqgItem.ts";
+import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skillFormulas";
+import { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
@@ -38,6 +38,12 @@ import { CharacterDataModel } from "../data-model/actor-data/characterDataModel"
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
+import {
+  applyActorCreateDescendantDocuments,
+  applyActorPrepareDerivedData,
+  applyActorPrepareEmbeddedEntities,
+  buildActorDeleteDescendantDocumentsUpdates,
+} from "@items/itemLifecycleStrategy.ts";
 
 import Actor = foundry.documents.Actor;
 
@@ -220,10 +226,7 @@ export class RqgActor extends Actor {
 
     const { con, siz, pow } = this.actorCharacteristics();
     this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item as RqgItem),
-    );
+    this.items.forEach((item) => applyActorPrepareEmbeddedEntities(item as RqgItem));
   }
 
   /**
@@ -285,9 +288,7 @@ export class RqgActor extends Actor {
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item as RqgItem),
-    );
+    this.items.forEach((item) => applyActorPrepareDerivedData(item as RqgItem));
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
     attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
@@ -540,16 +541,16 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
     assertDocumentSubType<SkillItem>(dodgeItem, ItemTypeEnum.Skill);
-    const dodgeBaseChance = Skill.dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
-    if (dodgeItem && dodgeItem.system.baseChance !== dodgeBaseChance) {
-      await dodgeItem.update({ system: { baseChance: dodgeBaseChance } });
+    const dodgeBase = dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
+    if (dodgeItem && dodgeItem.system.baseChance !== dodgeBase) {
+      await dodgeItem.update({ system: { baseChance: dodgeBase } });
     }
 
     const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
     assertDocumentSubType<SkillItem>(jumpItem, ItemTypeEnum.Skill);
-    const jumpBaseChance = Skill.jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
-    if (jumpItem && jumpItem.system.baseChance !== jumpBaseChance) {
-      await jumpItem.update({ system: { baseChance: jumpBaseChance } });
+    const jumpBase = jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
+    if (jumpItem && jumpItem.system.baseChance !== jumpBase) {
+      await jumpItem.update({ system: { baseChance: jumpBase } });
     }
   }
 
@@ -564,13 +565,13 @@ export class RqgActor extends Actor {
       game.user?.id === userId
     ) {
       documents.forEach((d) => {
-        ResponsibleItemClass.get(d.type)
-          ?.onEmbedItem(this, d as RqgItem, options, userId)
-          .then((updateData) => {
+        applyActorCreateDescendantDocuments(this, d as RqgItem, options, userId).then(
+          (updateData) => {
             if (!foundry.utils.isEmpty(updateData)) {
               this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
             }
-          });
+          },
+        );
       });
     }
 
@@ -588,7 +589,7 @@ export class RqgActor extends Actor {
       game.user?.id === userId
     ) {
       documents.forEach((d) => {
-        const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
+        const updateData = buildActorDeleteDescendantDocumentsUpdates(
           this,
           d as RqgItem,
           options,
@@ -615,13 +616,15 @@ export class RqgActor extends Actor {
       this.system.characteristics.dexterity.value;
     if (actorDex != null) {
       const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
-      if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
-        await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+      if (dodgeSkill && dodgeSkill._source.system.baseChance !== dodgeBaseChance(actorDex)) {
+        await dodgeSkill.update({
+          system: { baseChance: dodgeBaseChance(actorDex) },
+        });
       }
 
       const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
-      if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
-        await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
+      if (jumpSkill && jumpSkill._source.system.baseChance !== jumpBaseChance(actorDex)) {
+        await jumpSkill.update({ system: { baseChance: jumpBaseChance(actorDex) } });
       }
     }
     return super._preUpdate(changes, options, user);

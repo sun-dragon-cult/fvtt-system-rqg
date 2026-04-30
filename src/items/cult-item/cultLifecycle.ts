@@ -1,19 +1,45 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
 import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "../rqgItem";
+import type { RqgItem } from "@items/rqgItem.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 
-export class Cult extends AbstractEmbeddedItem {
+async function embedCommonRuneMagic(cult: RqgItem): Promise<void> {
+  const actor = cult.parent;
+  assertDocumentSubType<CharacterActor>(
+    actor,
+    ActorTypeEnum.Character,
+    "Bug - tried to embed linked common rune magic on a cult that is not embedded",
+  );
+  assertDocumentSubType<CultItem>(
+    cult,
+    ItemTypeEnum.Cult,
+    "Bug - tried to embed linked common rune magic with a cult that does not have id",
+  );
+
+  const runeMagicItems = await Promise.all(
+    cult.system.commonRuneMagicRqidLinks.map(
+      async (rqidLink) => await Rqid.fromRqid(rqidLink.rqid),
+    ),
+  );
+
+  const connectedRuneMagicItems = runeMagicItems.filter(isTruthy).map((rm) => {
+    rm.system.cultId = cult.id!;
+    return rm.toObject(false);
+  });
+
+  await actor.createEmbeddedDocuments("Item", connectedRuneMagicItems as any);
+}
+
+export const cultLifecycle = {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  static override onDeleteItem(
+  onDeleteItem(
     actor: RqgActor,
     cultItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -29,12 +55,12 @@ export class Cult extends AbstractEmbeddedItem {
     return cultRuneMagicItems.map((i) => {
       return { _id: i.id, "system.cultId": "" };
     });
-  }
+  },
 
   /**
    * If the actor already has a Cult with the same Deity, then merge the data from the joined subcults.
    */
-  static override async onEmbedItem(
+  async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -52,7 +78,7 @@ export class Cult extends AbstractEmbeddedItem {
     switch (matchingDeityInActorCults.length) {
       case 1: {
         // This is a new deity to the actor
-        await Cult.embedCommonRuneMagic(child);
+        await embedCommonRuneMagic(child);
         return;
       }
 
@@ -84,32 +110,6 @@ export class Cult extends AbstractEmbeddedItem {
         throw new RqgError(msg, [actor, child]);
       }
     }
-  }
-
-  public static async embedCommonRuneMagic(cult: RqgItem): Promise<void> {
-    const actor = cult.parent;
-    assertDocumentSubType<CharacterActor>(
-      actor,
-      ActorTypeEnum.Character,
-      "Bug - tried to embed linked common rune magic on a cult that is not embedded",
-    );
-    assertDocumentSubType<CultItem>(
-      cult,
-      ItemTypeEnum.Cult,
-      "Bug - tried to embed linked common rune magic with a cult that does not have id",
-    );
-
-    const runeMagicItems = await Promise.all(
-      cult.system.commonRuneMagicRqidLinks.map(
-        async (rqidLink) => await Rqid.fromRqid(rqidLink.rqid),
-      ),
-    );
-
-    const connectedRuneMagicItems = runeMagicItems.filter(isTruthy).map((rm) => {
-      rm.system.cultId = cult.id!;
-      return rm.toObject(false);
-    });
-
-    await actor.createEmbeddedDocuments("Item", connectedRuneMagicItems as any);
-  }
-}
+  },
+  embedCommonRuneMagic,
+};

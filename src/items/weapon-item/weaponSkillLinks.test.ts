@@ -8,7 +8,7 @@ import {
   isLegacyWeaponSkillReferenceRqid,
   parseLegacyWeaponSkillReference,
 } from "@item-model/weaponSkillLink.ts";
-import { Weapon } from "./weapon";
+import { hasLinkedSkillReference, resolveLinkedSkill } from "./weaponSkillLinks";
 import { migrateWeaponSkillLinks } from "../../system/migrations/migrations-item/migrateWeaponSkillLinks";
 
 type TestItemCollection = any[] & { get: (id: string) => any };
@@ -201,7 +201,7 @@ describe("weapon skill link handling", () => {
       },
     });
 
-    expect(Weapon.resolveLinkedSkill(weapon, "oneHand")).toBe(embeddedSkill);
+    expect(resolveLinkedSkill(weapon, "oneHand")).toBe(embeddedSkill);
   });
 
   it("hasLinkedSkillReference returns false for legacy-encoded rqid", () => {
@@ -216,7 +216,7 @@ describe("weapon skill link handling", () => {
       },
     });
 
-    expect(Weapon.hasLinkedSkillReference(weapon, "oneHand")).toBe(false);
+    expect(hasLinkedSkillReference(weapon, "oneHand")).toBe(false);
   });
 
   it("resolveLinkedSkill returns undefined for legacy-encoded rqid", () => {
@@ -237,7 +237,7 @@ describe("weapon skill link handling", () => {
       },
     });
 
-    expect(Weapon.resolveLinkedSkill(weapon, "oneHand")).toBeUndefined();
+    expect(resolveLinkedSkill(weapon, "oneHand")).toBeUndefined();
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
   });
 

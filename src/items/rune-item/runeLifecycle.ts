@@ -1,13 +1,30 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { RqgActor } from "@actors/rqgActor.ts";
-import { RqgItem } from "../rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import { toRqidString } from "../../system/api/rqidValidation";
 import type { RuneItem } from "@item-model/runeDataModel.ts";
 
-export class Rune extends AbstractEmbeddedItem {
-  static override preUpdateItem(
+function adjustOpposingRuneChance(
+  opposingRune: RqgItem | undefined,
+  newChance: number,
+  updates: object[],
+): void {
+  if (!opposingRune) {
+    return;
+  }
+  assertDocumentSubType<RuneItem>(opposingRune, ItemTypeEnum.Rune);
+  const opposingRuneChance = opposingRune.system.chance;
+  if (newChance + opposingRuneChance !== 100) {
+    updates.push({
+      _id: opposingRune.id,
+      system: { chance: 100 - newChance },
+    });
+  }
+}
+
+export const runeLifecycle = {
+  preUpdateItem(
     actor: RqgActor,
     rune: RqgItem,
     updates: any[],
@@ -28,27 +45,9 @@ export class Rune extends AbstractEmbeddedItem {
         const chance = chanceResult["system.chance"] ?? chanceResult.system.chance;
         if (opposingRune && chance != null) {
           // While editing a rune it's possible to have incomplete data, ignore in that case.
-          this.adjustOpposingRuneChance(opposingRune, chance, updates);
+          adjustOpposingRuneChance(opposingRune, chance, updates);
         }
       }
     }
-  }
-
-  private static adjustOpposingRuneChance(
-    opposingRune: RqgItem | undefined,
-    newChance: number,
-    updates: object[],
-  ) {
-    if (!opposingRune) {
-      return;
-    }
-    assertDocumentSubType<RuneItem>(opposingRune, ItemTypeEnum.Rune);
-    const opposingRuneChance = opposingRune.system.chance;
-    if (newChance + opposingRuneChance !== 100) {
-      updates.push({
-        _id: opposingRune.id,
-        system: { chance: 100 - newChance },
-      });
-    }
-  }
-}
+  },
+};

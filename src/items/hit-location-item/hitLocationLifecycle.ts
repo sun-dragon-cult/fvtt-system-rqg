@@ -1,13 +1,16 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-import { RqgItem } from "../rqgItem";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
 import type { ArmorItem } from "@item-model/armorDataModel.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export class HitLocation extends AbstractEmbeddedItem {
-  public static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+function hitPointsPerLocation(totalHitPoints: number, baseHpDelta: number): number {
+  return Math.max(2, Math.ceil(totalHitPoints / 3)) + (baseHpDelta || 0);
+}
+
+export const hitLocationLifecycle = {
+  onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);
@@ -42,16 +45,12 @@ export class HitLocation extends AbstractEmbeddedItem {
     // Remove any healed wounds
     item.system.wounds = item.system.wounds.filter((w) => w > 0);
 
-    item.system.hitPoints.max = HitLocation.hitPointsPerLocation(totalHp, item.system.baseHpDelta);
+    item.system.hitPoints.max = hitPointsPerLocation(totalHp, item.system.baseHpDelta);
     item.system.hitPoints.value = item.system.wounds.reduce(
       (acc: number, w: number) => acc - w,
       item.system.hitPoints.max,
     );
 
     return item;
-  }
-
-  private static hitPointsPerLocation(totalHitPoints: number, baseHpDelta: number): number {
-    return Math.max(2, Math.ceil(totalHitPoints / 3)) + (baseHpDelta || 0);
-  }
-}
+  },
+};

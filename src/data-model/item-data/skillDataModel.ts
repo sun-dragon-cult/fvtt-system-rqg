@@ -1,5 +1,5 @@
 import type { RqgItem } from "@items/rqgItem.ts";
-import { RqgItemDataModel } from "./RqgItemDataModel";
+import { AbilityDataModel } from "./abilityDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLinkField";
 import type { RqidLink } from "../shared/rqidLink";
@@ -28,7 +28,7 @@ const { NumberField, StringField } = foundry.data.fields;
 
 type SkillSchema = ReturnType<typeof SkillDataModel.defineSchema>;
 
-export class SkillDataModel extends RqgItemDataModel<
+export class SkillDataModel extends AbilityDataModel<
   SkillSchema,
   { chance: number; categoryMod: number }
 > {

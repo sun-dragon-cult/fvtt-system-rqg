@@ -35,7 +35,7 @@ import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import type { DeepPartial } from "fvtt-types/utils";
-import { Weapon } from "@items/weapon-item/weapon";
+import { hasLinkedSkillReference, resolveLinkedSkill } from "@items/weapon-item/weaponSkillLinks";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -150,7 +150,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       isOutOfAmmo = ammoQuantity <= 0;
     }
 
-    const validUsedSkill = Weapon.resolveLinkedSkill(this.weaponItem, formData.usageType);
+    const validUsedSkill = resolveLinkedSkill(this.weaponItem, formData.usageType);
     const hasValidSkillForSelectedUsage = !!validUsedSkill;
     formData.halvedModifier = hasValidSkillForSelectedUsage
       ? -Math.floor(validUsedSkill.system.chance / 2)
@@ -303,7 +303,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
 
-    const usedSkill = Weapon.resolveLinkedSkill(weaponItem, selectedUsageType);
+    const usedSkill = resolveLinkedSkill(weaponItem, selectedUsageType);
 
     if (!usedSkill) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
@@ -366,7 +366,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
 
-    const skillItem = Weapon.resolveLinkedSkill(weaponItem, formDataObject.usageType);
+    const skillItem = resolveLinkedSkill(weaponItem, formDataObject.usageType);
     if (!skillItem) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
       return;
@@ -648,7 +648,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     }
     assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
     return Object.entries(weapon.system.usage).reduce((acc: any, [key]) => {
-      if (Weapon.hasLinkedSkillReference(weapon, key as UsageType)) {
+      if (hasLinkedSkillReference(weapon, key as UsageType)) {
         acc.push({ value: key, label: localize(`RQG.Game.WeaponUsage.${key}-full`) });
       }
       return acc;
