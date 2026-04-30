@@ -1,5 +1,5 @@
-import { RqgActor } from "@actors/rqgActor.ts";
-import { RqgItem } from "../rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import { toRqidString } from "../../system/api/rqidValidation";

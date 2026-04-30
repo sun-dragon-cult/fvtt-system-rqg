@@ -3,7 +3,7 @@ import { assertDocumentSubType, isDocumentSubType, isTruthy, RqgError } from "..
 import { deriveCultItemName } from "./cultHelpers";
 import { Rqid } from "../../system/api/rqidApi";
 import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "../rqgItem";
+import type { RqgItem } from "@items/rqgItem.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";

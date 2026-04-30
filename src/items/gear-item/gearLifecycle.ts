@@ -1,5 +1,5 @@
-import { RqgActor } from "@actors/rqgActor.ts";
-import { RqgItem } from "../rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { isDocumentSubType } from "../../system/util.ts";

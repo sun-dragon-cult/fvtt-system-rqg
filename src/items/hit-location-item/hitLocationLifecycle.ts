@@ -1,4 +1,4 @@
-import { RqgItem } from "../rqgItem";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
 import type { ArmorItem } from "@item-model/armorDataModel.ts";
