@@ -1,4 +1,3 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
@@ -6,8 +5,8 @@ import type { ArmorItem } from "@item-model/armorDataModel.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export class HitLocation extends AbstractEmbeddedItem {
-  public static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+export class HitLocation {
+  public static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);

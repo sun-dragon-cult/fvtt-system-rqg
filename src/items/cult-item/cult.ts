@@ -1,4 +1,3 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cultHelpers";
@@ -9,11 +8,11 @@ import type { CultItem } from "@item-model/cultDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 
-export class Cult extends AbstractEmbeddedItem {
+export class Cult {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  static override onDeleteItem(
+  static onDeleteItem(
     actor: RqgActor,
     cultItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -34,7 +33,7 @@ export class Cult extends AbstractEmbeddedItem {
   /**
    * If the actor already has a Cult with the same Deity, then merge the data from the joined subcults.
    */
-  static override async onEmbedItem(
+  static async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

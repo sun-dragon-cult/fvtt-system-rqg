@@ -1,4 +1,3 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
@@ -9,8 +8,8 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import type { SkillCategories } from "../../data-model/actor-data/skillCategories.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 
-export class Skill extends AbstractEmbeddedItem {
-  public static override onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+export class Skill {
+  public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     assertDocumentSubType<SkillItem>(
       skillItem,
       ItemTypeEnum.Skill,

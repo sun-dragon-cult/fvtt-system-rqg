@@ -1,4 +1,3 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
@@ -6,8 +5,8 @@ import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import { toRqidString } from "../../system/api/rqidValidation";
 import type { RuneItem } from "@item-model/runeDataModel.ts";
 
-export class Rune extends AbstractEmbeddedItem {
-  static override preUpdateItem(
+export class Rune {
+  static preUpdateItem(
     actor: RqgActor,
     rune: RqgItem,
     updates: any[],

@@ -1,4 +1,3 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { RqgItem } from "../rqgItem";
 import { RqgActor } from "@actors/rqgActor.ts";
 import {
@@ -15,8 +14,8 @@ import { toRqidString } from "../../system/api/rqidValidation";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { Usage, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 
-export class Weapon extends AbstractEmbeddedItem {
-  static override preUpdateItem(
+export class Weapon {
+  static preUpdateItem(
     actor: RqgActor,
     weapon: RqgItem,
     updates: object[],
@@ -32,7 +31,7 @@ export class Weapon extends AbstractEmbeddedItem {
    * Add the skills specified in the weapon to the actor (if not already there)
    * and connect the weapons with the embedded item skill id.
    */
-  static override async onEmbedItem(
+  static async onEmbedItem(
     actor: RqgActor,
     child: RqgItem,
     options: any,

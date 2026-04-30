@@ -1,3 +1,1 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
-
-export class Homeland extends AbstractEmbeddedItem {}
+export class Homeland {}

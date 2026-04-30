@@ -1,4 +1,3 @@
-import { AbstractEmbeddedItem } from "../abstractEmbeddedItem";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "../rqgItem";
@@ -20,8 +19,8 @@ import { toRqidString } from "../../system/api/rqidValidation";
 
 type RpAndMpCost = { mp: number; rp: number; exp: boolean };
 
-export class RuneMagic extends AbstractEmbeddedItem {
-  static override onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+export class RuneMagic {
+  static onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
     const actor = item.actor;
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     assertDocumentSubType<RuneMagicItem>(
@@ -79,7 +78,7 @@ export class RuneMagic extends AbstractEmbeddedItem {
   /*
    * Connect runeMagic item to a cult.
    */
-  static override async onEmbedItem(
+  static async onEmbedItem(
     actor: RqgActor,
     runeMagicItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
