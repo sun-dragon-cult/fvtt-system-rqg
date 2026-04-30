@@ -55,7 +55,8 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
 
     // Dynamic imports to avoid circular dependencies through rqgItem.ts
-    const { RuneMagic } = await import("../../items/rune-magic-item/runeMagic");
+    const { getEligibleRunes, getStrongestRune, handleRollResult, hasEnoughToCastSpell } =
+      await import("../../items/rune-magic-item/runeMagicCasting");
     const { RuneMagicRoll } = await import("../../rolls/RuneMagicRoll/RuneMagicRoll");
 
     const cult = actor.items.find((i) => i.id === this.cultId) as RqgItem | undefined;
@@ -69,11 +70,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
     const levelUsedOrDefault = options.levelUsed ?? this.points;
 
-    const validationError = RuneMagic.hasEnoughToCastSpell(
-      cult,
-      levelUsedOrDefault,
-      options.magicPointBoost,
-    );
+    const validationError = hasEnoughToCastSpell(cult, levelUsedOrDefault, options.magicPointBoost);
     if (validationError) {
       ui.notifications?.warn(validationError);
       return;
@@ -82,7 +79,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     const runeMagicItemTyped = item as unknown as RuneMagicItem;
     const usedRune = options.usedRune
       ? options.usedRune
-      : RuneMagic.getStrongestRune(RuneMagic.getEligibleRunes(runeMagicItemTyped));
+      : getStrongestRune(getEligibleRunes(runeMagicItemTyped));
     if (!usedRune) {
       const msg = "Could not find a rune to use for rune magic";
       ui.notifications?.warn(msg);
@@ -103,7 +100,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     }
     const mpCost = options.magicPointBoost ?? 0;
     const rpCost = options.levelUsed ?? this.points;
-    await RuneMagic.handleRollResult(
+    await handleRollResult(
       runeMagicRoll.successLevel,
       rpCost,
       mpCost,

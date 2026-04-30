@@ -8,8 +8,8 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import type { SkillCategories } from "../../data-model/actor-data/skillCategories.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 
-export class Skill {
-  public static onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+export const skillLifecycle = {
+  onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     assertDocumentSubType<SkillItem>(
       skillItem,
       ItemTypeEnum.Skill,
@@ -60,13 +60,5 @@ export class Skill {
           )
         : 0;
     return skillItem;
-  }
-
-  static dodgeBaseChance(dex: number): number {
-    return dex * 2;
-  }
-
-  static jumpBaseChance(dex: number): number {
-    return dex * 3;
-  }
-}
+  },
+};

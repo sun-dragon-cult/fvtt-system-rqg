@@ -10,7 +10,7 @@ import { calculateAbilitySuccessLevel } from "../AbilityRoll/calculateAbilitySuc
 import { AbilitySuccessLevelEnum } from "../AbilityRoll/AbilityRoll.defs";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RuneMagicRollOptions } from "./RuneMagicRoll.types";
-import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
+import { calcRuneAndMagicPointCost } from "@items/rune-magic-item/runeMagicCasting.ts";
 
 import Roll = foundry.dice.Roll;
 
@@ -86,7 +86,7 @@ export class RuneMagicRoll extends Roll {
         m.value = toSignedString(m.value);
         return m;
       });
-    const cost = RuneMagic.calcRuneAndMagicPointCost(
+    const cost = calcRuneAndMagicPointCost(
       this.successLevel ?? 0,
       this.options.levelUsed,
       this.options.magicPointBoost,

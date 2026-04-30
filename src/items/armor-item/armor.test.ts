@@ -8,7 +8,7 @@ vi.mock("../../system/util.ts", () => ({
   isDocumentSubType: vi.fn(),
 }));
 
-import { Armor } from "./armor";
+import { armorLifecycle } from "./armorLifecycle";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { isDocumentSubType } from "../../system/util.ts";
@@ -27,7 +27,7 @@ describe("Armor.preUpdateItem", () => {
     vi.mocked(isDocumentSubType).mockReturnValue(true as any);
     vi.mocked(getLocationRelatedUpdates).mockReturnValue(relatedUpdates as any);
 
-    Armor.preUpdateItem(actor, armor, updates);
+    armorLifecycle.preUpdateItem(actor, armor, updates);
 
     expect(isDocumentSubType).toHaveBeenCalledWith(armor, ItemTypeEnum.Armor);
     expect(getLocationRelatedUpdates).toHaveBeenCalledWith(actor.items.contents, armor, updates);
@@ -44,7 +44,7 @@ describe("Armor.preUpdateItem", () => {
 
     vi.mocked(isDocumentSubType).mockReturnValue(false as any);
 
-    Armor.preUpdateItem(actor, item, updates);
+    armorLifecycle.preUpdateItem(actor, item, updates);
 
     expect(getLocationRelatedUpdates).not.toHaveBeenCalled();
     expect(updates).toEqual([{ _id: "item-1" }]);

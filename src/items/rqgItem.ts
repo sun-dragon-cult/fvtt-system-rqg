@@ -44,7 +44,7 @@ import { OccupationDataModel } from "@item-model/occupationDataModel";
 import { type SpellItem, spellItemTypes } from "@item-model/spell.ts";
 import type { DamageType, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
 import { DamageDegree } from "../system/combatCalculations.defs";
-import { Skill } from "./skill-item/skill";
+import { dodgeBaseChance, jumpBaseChance } from "./skill-item/skillFormulas";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
@@ -373,9 +373,9 @@ export class RqgItem extends Item {
       const actorDex = this.parent.system.characteristics.dexterity.value ?? 0;
       const newBaseChance =
         itemRqid === CONFIG.RQG.skillRqid.dodge
-          ? Skill.dodgeBaseChance(actorDex)
+          ? dodgeBaseChance(actorDex)
           : itemRqid === CONFIG.RQG.skillRqid.jump
-            ? Skill.jumpBaseChance(actorDex)
+            ? jumpBaseChance(actorDex)
             : undefined;
       if (newBaseChance) {
         this.updateSource({ system: { baseChance: newBaseChance } });

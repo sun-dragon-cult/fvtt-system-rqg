@@ -8,10 +8,10 @@ import {
   buildActorDeleteDescendantDocumentsUpdates,
   getItemLifecycleStrategy,
 } from "./itemLifecycleStrategy";
-import { Armor } from "./armor-item/armor";
-import { Cult } from "./cult-item/cult";
-import { HitLocation } from "./hit-location-item/hitLocation";
-import { Skill } from "./skill-item/skill";
+import { armorLifecycle } from "./armor-item/armorLifecycle";
+import { cultLifecycle } from "./cult-item/cultLifecycle";
+import { hitLocationLifecycle } from "./hit-location-item/hitLocationLifecycle";
+import { skillLifecycle } from "./skill-item/skillLifecycle";
 
 describe("item lifecycle strategy dispatch", () => {
   afterEach(() => {
@@ -22,7 +22,7 @@ describe("item lifecycle strategy dispatch", () => {
     const strategy = getItemLifecycleStrategy(ItemTypeEnum.Armor);
 
     expect(strategy).toBeDefined();
-    expect(strategy?.preUpdateItem).toBe(Armor.preUpdateItem);
+    expect(strategy?.preUpdateItem).toBe(armorLifecycle.preUpdateItem);
   });
 
   it("dispatches preUpdate to armor strategy", () => {
@@ -30,7 +30,9 @@ describe("item lifecycle strategy dispatch", () => {
     const armor = { type: ItemTypeEnum.Armor } as any;
     const updates: any[] = [{ _id: "a" }];
     const options = { diff: true };
-    const preUpdateSpy = vi.spyOn(Armor, "preUpdateItem").mockImplementation(() => undefined);
+    const preUpdateSpy = vi
+      .spyOn(armorLifecycle, "preUpdateItem")
+      .mockImplementation(() => undefined);
 
     applyItemPreUpdate(actor, armor, updates, options);
 
@@ -41,7 +43,7 @@ describe("item lifecycle strategy dispatch", () => {
   it("dispatches Actor.prepareEmbeddedDocuments to hit location strategy", () => {
     const item = { type: ItemTypeEnum.HitLocation } as any;
     const prepareSpy = vi
-      .spyOn(HitLocation, "onActorPrepareEmbeddedEntities")
+      .spyOn(hitLocationLifecycle, "onActorPrepareEmbeddedEntities")
       .mockImplementation(() => item);
 
     applyActorPrepareEmbeddedEntities(item);
@@ -52,7 +54,9 @@ describe("item lifecycle strategy dispatch", () => {
 
   it("dispatches Actor.prepareDerivedData to skill strategy", () => {
     const item = { type: ItemTypeEnum.Skill } as any;
-    const prepareSpy = vi.spyOn(Skill, "onActorPrepareDerivedData").mockImplementation(() => item);
+    const prepareSpy = vi
+      .spyOn(skillLifecycle, "onActorPrepareDerivedData")
+      .mockImplementation(() => item);
 
     applyActorPrepareDerivedData(item);
 
@@ -66,7 +70,7 @@ describe("item lifecycle strategy dispatch", () => {
     const options = { renderSheet: false };
     const userId = "user-1";
     const payload = { _id: "cult-1", name: "Merged Cult" };
-    const createSpy = vi.spyOn(Cult, "onEmbedItem").mockResolvedValue(payload);
+    const createSpy = vi.spyOn(cultLifecycle, "onEmbedItem").mockResolvedValue(payload);
 
     const result = await applyActorCreateDescendantDocuments(actor, item, options, userId);
 
@@ -81,7 +85,7 @@ describe("item lifecycle strategy dispatch", () => {
     const options = {};
     const userId = "user-1";
     const updates = [{ _id: "rm-1", "system.cultId": "" }];
-    const deleteSpy = vi.spyOn(Cult, "onDeleteItem").mockReturnValue(updates as any);
+    const deleteSpy = vi.spyOn(cultLifecycle, "onDeleteItem").mockReturnValue(updates as any);
 
     const result = buildActorDeleteDescendantDocumentsUpdates(actor, item, options, userId);
 

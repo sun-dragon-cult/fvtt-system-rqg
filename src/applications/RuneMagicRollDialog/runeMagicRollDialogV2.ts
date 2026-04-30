@@ -9,7 +9,11 @@ import {
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import { RqgItem } from "@items/rqgItem.ts";
-import { RuneMagic } from "@items/rune-magic-item/runeMagic.ts";
+import {
+  getEligibleRunes,
+  getStrongestRune,
+  hasEnoughToCastSpell,
+} from "@items/rune-magic-item/runeMagicCasting.ts";
 import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
 import type {
   RuneMagicRollDialogContext,
@@ -18,7 +22,6 @@ import type {
 import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
-import type { SpellItem } from "@item-model/spell.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 import type { DeepPartial } from "fvtt-types/utils";
 
@@ -66,11 +69,11 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     { value: 100, label: "RQG.Dialog.Common.RitualOptions.20years" },
   ];
 
-  private spellItem: SpellItem;
+  private spellItem: RuneMagicItem;
   private rollMode: CONST.DICE_ROLL_MODES;
 
   constructor(
-    spellItem: SpellItem,
+    spellItem: RuneMagicItem,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
@@ -116,14 +119,14 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
     const speaker = getSpeakerFromItem(this.spellItem);
 
-    const eligibleRunes = RuneMagic.getEligibleRunes(this.spellItem);
+    const eligibleRunes = getEligibleRunes(this.spellItem);
 
     const eligibleRuneOptions = eligibleRunes.map((rune) => ({
       value: rune.id ?? "",
       label: rune.name ?? "",
     }));
     formData.levelUsed ??= this.spellItem.system.points;
-    formData.usedRuneId ??= RuneMagic.getStrongestRune(eligibleRunes)?.id ?? "";
+    formData.usedRuneId ??= getStrongestRune(eligibleRunes)?.id ?? "";
     formData.boost ??= 0;
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
@@ -206,7 +209,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
     }
     assertDocumentSubType<RuneMagicItem>(spellItem, ItemTypeEnum.RuneMagic);
 
-    const eligibleRunes = RuneMagic.getEligibleRunes(spellItem);
+    const eligibleRunes = getEligibleRunes(spellItem);
 
     const usedRune = eligibleRunes.find((r) => r.id === formDataObject.usedRuneId);
     if (!usedRune) {
@@ -246,7 +249,7 @@ export class RuneMagicRollDialogV2 extends HandlebarsApplicationMixin(
       speaker: getSpeakerFromItem(spellItem),
       rollMode: rollMode,
     };
-    const validationError = RuneMagic.hasEnoughToCastSpell(
+    const validationError = hasEnoughToCastSpell(
       cult,
       formDataObject.levelUsed,
       formDataObject.boost,

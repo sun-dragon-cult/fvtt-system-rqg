@@ -1,15 +1,13 @@
 import type { RqgActor } from "@actors/rqgActor.ts";
 import { ItemTypeEnum, type RqgItemType } from "@item-model/itemTypes.ts";
-import { Armor } from "./armor-item/armor";
-import { Cult } from "./cult-item/cult";
-import { Gear } from "./gear-item/gear";
-import { HitLocation } from "./hit-location-item/hitLocation";
-import { Passion } from "./passion-item/passion";
-import { Rune } from "./rune-item/rune";
-import { RuneMagic } from "./rune-magic-item/runeMagic";
-import { Skill } from "./skill-item/skill";
-import { SpiritMagic } from "./spirit-magic-item/spiritMagic";
-import { Weapon } from "./weapon-item/weapon";
+import { armorLifecycle } from "./armor-item/armorLifecycle";
+import { cultLifecycle } from "./cult-item/cultLifecycle";
+import { gearLifecycle } from "./gear-item/gearLifecycle";
+import { hitLocationLifecycle } from "./hit-location-item/hitLocationLifecycle";
+import { runeLifecycle } from "./rune-item/runeLifecycle";
+import { runeMagicLifecycle } from "./rune-magic-item/runeMagicLifecycle";
+import { skillLifecycle } from "./skill-item/skillLifecycle";
+import { weaponLifecycle } from "./weapon-item/weaponLifecycle";
 import type { RqgItem } from "./rqgItem";
 
 export interface ItemLifecycleStrategy {
@@ -20,26 +18,15 @@ export interface ItemLifecycleStrategy {
   onActorPrepareDerivedData?(item: RqgItem): RqgItem;
 }
 
-type ItemLifecycleStrategyClass = {
-  prototype: unknown;
-  onEmbedItem?(actor: RqgActor, child: RqgItem, options: any, userId: string): Promise<any>;
-  preUpdateItem?(actor: RqgActor, item: RqgItem, result: any[], options: any): void;
-  onDeleteItem?(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any[];
-  onActorPrepareEmbeddedEntities?(item: RqgItem): RqgItem;
-  onActorPrepareDerivedData?(item: RqgItem): RqgItem;
-};
-
-const itemLifecycleStrategyByType = new Map<RqgItemType, ItemLifecycleStrategyClass>([
-  [ItemTypeEnum.Armor as RqgItemType, Armor],
-  [ItemTypeEnum.Cult as RqgItemType, Cult],
-  [ItemTypeEnum.Gear as RqgItemType, Gear],
-  [ItemTypeEnum.HitLocation as RqgItemType, HitLocation],
-  [ItemTypeEnum.Passion as RqgItemType, Passion],
-  [ItemTypeEnum.Rune as RqgItemType, Rune],
-  [ItemTypeEnum.RuneMagic as RqgItemType, RuneMagic],
-  [ItemTypeEnum.Skill as RqgItemType, Skill],
-  [ItemTypeEnum.SpiritMagic as RqgItemType, SpiritMagic],
-  [ItemTypeEnum.Weapon as RqgItemType, Weapon],
+const itemLifecycleStrategyByType = new Map<RqgItemType, ItemLifecycleStrategy>([
+  [ItemTypeEnum.Armor as RqgItemType, armorLifecycle],
+  [ItemTypeEnum.Cult as RqgItemType, cultLifecycle],
+  [ItemTypeEnum.Gear as RqgItemType, gearLifecycle],
+  [ItemTypeEnum.HitLocation as RqgItemType, hitLocationLifecycle],
+  [ItemTypeEnum.Rune as RqgItemType, runeLifecycle],
+  [ItemTypeEnum.RuneMagic as RqgItemType, runeMagicLifecycle],
+  [ItemTypeEnum.Skill as RqgItemType, skillLifecycle],
+  [ItemTypeEnum.Weapon as RqgItemType, weaponLifecycle],
 ]);
 
 export function getItemLifecycleStrategy(

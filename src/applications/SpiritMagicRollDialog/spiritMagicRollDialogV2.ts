@@ -12,7 +12,7 @@ import {
 } from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "@items/rqgItem.ts";
-import { SpiritMagic } from "@items/spirit-magic-item/spiritMagic.ts";
+import { hasEnoughToCastSpell } from "@items/spirit-magic-item/spiritMagicValidation.ts";
 import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
@@ -207,7 +207,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
       rollMode: rollMode,
       speaker: getSpeakerFromItem(spellItem),
     };
-    const validationError = SpiritMagic.hasEnoughToCastSpell(
+    const validationError = hasEnoughToCastSpell(
       formDataObject.levelUsed,
       formDataObject.boost,
       spellItem,

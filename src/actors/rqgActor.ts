@@ -29,7 +29,7 @@ import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weaponDataModel.ts";
-import { Skill } from "../items/skill-item/skill";
+import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skillFormulas";
 import { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
@@ -541,16 +541,16 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const dodgeItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
     assertDocumentSubType<SkillItem>(dodgeItem, ItemTypeEnum.Skill);
-    const dodgeBaseChance = Skill.dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
-    if (dodgeItem && dodgeItem.system.baseChance !== dodgeBaseChance) {
-      await dodgeItem.update({ system: { baseChance: dodgeBaseChance } });
+    const dodgeBase = dodgeBaseChance(this.system.characteristics.dexterity.value ?? 0);
+    if (dodgeItem && dodgeItem.system.baseChance !== dodgeBase) {
+      await dodgeItem.update({ system: { baseChance: dodgeBase } });
     }
 
     const jumpItem = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
     assertDocumentSubType<SkillItem>(jumpItem, ItemTypeEnum.Skill);
-    const jumpBaseChance = Skill.jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
-    if (jumpItem && jumpItem.system.baseChance !== jumpBaseChance) {
-      await jumpItem.update({ system: { baseChance: jumpBaseChance } });
+    const jumpBase = jumpBaseChance(this.system.characteristics.dexterity.value ?? 0);
+    if (jumpItem && jumpItem.system.baseChance !== jumpBase) {
+      await jumpItem.update({ system: { baseChance: jumpBase } });
     }
   }
 
@@ -616,13 +616,15 @@ export class RqgActor extends Actor {
       this.system.characteristics.dexterity.value;
     if (actorDex != null) {
       const dodgeSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.dodge);
-      if (dodgeSkill && dodgeSkill._source.system.baseChance !== Skill.dodgeBaseChance(actorDex)) {
-        await dodgeSkill.update({ system: { baseChance: Skill.dodgeBaseChance(actorDex) } });
+      if (dodgeSkill && dodgeSkill._source.system.baseChance !== dodgeBaseChance(actorDex)) {
+        await dodgeSkill.update({
+          system: { baseChance: dodgeBaseChance(actorDex) },
+        });
       }
 
       const jumpSkill = this.getBestEmbeddedDocumentByRqid(RQG_CONFIG.skillRqid.jump);
-      if (jumpSkill && jumpSkill._source.system.baseChance !== Skill.jumpBaseChance(actorDex)) {
-        await jumpSkill.update({ system: { baseChance: Skill.jumpBaseChance(actorDex) } });
+      if (jumpSkill && jumpSkill._source.system.baseChance !== jumpBaseChance(actorDex)) {
+        await jumpSkill.update({ system: { baseChance: jumpBaseChance(actorDex) } });
       }
     }
     return super._preUpdate(changes, options, user);
