@@ -1132,6 +1132,44 @@
     }
   }
 
+  .rqg.rune-magic-cult-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .context-row {
+      margin: 0;
+      line-height: 1.2;
+      display: grid;
+      gap: 0.1rem;
+    }
+
+    .context-label {
+      font-size: var(--font-size-12);
+      color: var(--color-text-dark-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .context-value {
+      font-size: var(--font-size-18);
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--color-text-dark-primary);
+      overflow-wrap: anywhere;
+    }
+
+    .cult-select {
+      margin-top: 0.2rem;
+      display: grid;
+      gap: 0.25rem;
+
+      select {
+        width: 100%;
+      }
+    }
+  }
+
   .rqg.sheet {
     input {
       width: inherit;

@@ -1,7 +1,18 @@
-<h3>{{localize "RQG.Item.RuneMagic.runeMagicCultDialog.Actor"}} {{actorName}}</h3>
-<h3>{{localize "RQG.Item.RuneMagic.runeMagicCultDialog.RuneMagic"}} {{runeMagicName}}</h3>
-<label class="mp">Cult
-  <select name="cultId">
-    {{selectOptions actorCultOptions selected=system.cultId localize=true}}
-  </select>
-</label>
+<div class="rqg rune-magic-cult-dialog">
+  <p class="context-row">
+    <span class="context-label">{{localize "RQG.Item.RuneMagic.runeMagicCultDialog.Actor"}}</span>
+    <span class="context-value">{{actorName}}</span>
+  </p>
+
+  <p class="context-row">
+    <span class="context-label">{{localize "RQG.Item.RuneMagic.runeMagicCultDialog.RuneMagic"}}</span>
+    <span class="context-value">{{runeMagicName}}</span>
+  </p>
+
+  <label class="cult-select">
+    <span class="context-label">Cult</span>
+    <select name="cultId">
+      {{selectOptions actorCultOptions selected=system.cultId localize=true}}
+    </select>
+  </label>
+</div>
