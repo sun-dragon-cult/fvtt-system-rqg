@@ -1,3 +1,4 @@
+import type { RqgActor } from "../../actors/rqgActor";
 import Item = foundry.documents.Item;
 
 function defaultNumber(field: foundry.data.fields.NumberField): number | null {
@@ -87,4 +88,39 @@ export abstract class RqgItemDataModel<
     coerceNumbers(source, schema);
     return super.migrateData(source);
   }
+
+  /**
+   * Called from RqgActor.prepareEmbeddedDocuments() for each embedded item.
+   * Override in subclasses to compute values that depend on actor data but run before active effects.
+   */
+  onActorPrepareEmbeddedEntities(): void {}
+
+  /**
+   * Called from RqgActor.prepareDerivedData() for each embedded item.
+   * Override in subclasses to compute derived values that depend on post-effect actor data.
+   */
+  onActorPrepareDerivedData(): void {}
+
+  /**
+   * Called from RqgActor._onCreateDescendantDocuments() when this item is embedded.
+   * Return an update object (or empty object/undefined) to apply back to the embedded item.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async onEmbedItem(actor: RqgActor, options: any, userId: string): Promise<any> {}
+
+  /**
+   * Called from RqgActor._onDeleteDescendantDocuments() when this item is removed.
+   * Return an array of update objects to apply to remaining embedded items, or an empty array.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onDeleteItem(actor: RqgActor, options: any, userId: string): any[] {
+    return [];
+  }
+
+  /**
+   * Called from RqgItem.updateDocuments() before an embedded item is updated.
+   * Mutate the shared `updates` array in-place to add any cascading updates.
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  preUpdateItem(actor: RqgActor, updates: any[], options: any): void {}
 }

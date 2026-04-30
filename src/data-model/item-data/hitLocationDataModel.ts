@@ -3,6 +3,9 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { actorHealthStatuses } from "../actor-data/attributes";
 import { enumChoices } from "../shared/enumChoices";
+import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
+import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqgActorData";
+import type { ArmorItem } from "./armorDataModel";
 
 export type HitLocationItem = RqgItem & { system: Item.SystemOfType<"hitLocation"> };
 
@@ -62,5 +65,52 @@ export class HitLocationDataModel extends RqgItemDataModel<
       }),
       connectedTo: new StringField({ blank: true, nullable: false, initial: "" }),
     } as const;
+  }
+
+  override onActorPrepareEmbeddedEntities(): void {
+    const item = this.parent as HitLocationItem;
+    const actor = item.actor;
+    assertDocumentSubType<CharacterActor>(
+      actor,
+      ActorTypeEnum.Character,
+      "RQG.Item.Notification.HitLocationDoesNotHaveActorError",
+    );
+    if (!isDocumentSubType<HitLocationItem>(item, "hitLocation")) {
+      const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item);
+    }
+    const actorData = actor.system;
+
+    // Add equipped armor absorptions for this hit location
+    const armorAbsorption = actor.items.reduce((sum, armorItem) => {
+      if (
+        isDocumentSubType<ArmorItem>(armorItem, "armor") &&
+        armorItem.system.equippedStatus === "equipped" &&
+        armorItem.system.hitLocationRqidLinks.some(
+          (l) => l.rqid === item.flags?.rqg?.documentRqidFlags?.id,
+        )
+      ) {
+        sum += armorItem.system.absorbs;
+      }
+      return sum;
+    }, 0);
+
+    this.armorPoints = this.naturalAp + armorAbsorption;
+
+    // Calc HP
+    const totalHp = actorData.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
+    // Remove any healed wounds
+    this.wounds = this.wounds.filter((w) => w > 0);
+
+    this.hitPoints.max = HitLocationDataModel.hitPointsPerLocation(totalHp, this.baseHpDelta);
+    this.hitPoints.value = this.wounds.reduce(
+      (acc: number, w: number) => acc - w,
+      this.hitPoints.max,
+    );
+  }
+
+  private static hitPointsPerLocation(totalHitPoints: number, baseHpDelta: number): number {
+    return Math.max(2, Math.ceil(totalHitPoints / 3)) + (baseHpDelta || 0);
   }
 }

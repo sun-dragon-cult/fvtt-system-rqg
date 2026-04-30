@@ -2,6 +2,8 @@ import type { RqgItem } from "@items/rqgItem.ts";
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkArraySchemaField } from "../shared/rqidLinkField";
+import type { RqgActor } from "../../actors/rqgActor";
+import { getLocationRelatedUpdates } from "@items/shared/physicalItemUtil";
 
 export type ArmorItem = RqgItem & { system: Item.SystemOfType<"armor"> };
 
@@ -57,5 +59,11 @@ export class ArmorDataModel extends RqgItemDataModel<ArmorSchema> {
       absorbs: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
       moveQuietlyPenalty: new NumberField({ integer: true, nullable: false, initial: 0 }),
     } as const;
+  }
+
+  override preUpdateItem(actor: RqgActor, updates: any[]): void {
+    updates.push(
+      ...getLocationRelatedUpdates(actor.items.contents, this.parent as ArmorItem, updates),
+    );
   }
 }

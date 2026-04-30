@@ -1,11 +1,6 @@
 import { PassionSheet } from "./passion-item/passionSheet";
 import { PassionSheetV2 } from "./passion-item/passionSheetV2";
-import {
-  type AbilityItem,
-  abilityItemTypes,
-  ItemTypeEnum,
-  ResponsibleItemClass,
-} from "@item-model/itemTypes.ts";
+import { type AbilityItem, abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RuneSheet } from "./rune-item/runeSheet";
 import { RuneSheetV2 } from "./rune-item/runeSheetV2";
 import { SkillSheet } from "./skill-item/skillSheet";
@@ -770,12 +765,7 @@ export class RqgItem extends Item {
             return; // Skip preUpdateItem for invalid documents not in the collection
           }
           // Will update "updates" as a side effect
-          ResponsibleItemClass.get(document.type)?.preUpdateItem(
-            parent,
-            document,
-            updates,
-            options,
-          );
+          (document as RqgItem).system.preUpdateItem(parent, updates, options);
         }
       });
     }

@@ -7,6 +7,12 @@ import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { enumChoices } from "../shared/enumChoices";
 import { encodeLegacyWeaponSkillReferenceInRqid } from "./weaponSkillLink";
+import type { RqgActor } from "../../actors/rqgActor";
+import { assertDocumentSubType, localize, logMisconfiguration } from "../../system/util";
+import { ActorTypeEnum } from "../actor-data/rqgActorData";
+import { getLocationRelatedUpdates } from "@items/shared/physicalItemUtil";
+import { Rqid } from "../../system/api/rqidApi";
+import { toRqidString } from "../../system/api/rqidValidation";
 
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
@@ -131,5 +137,62 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     }
 
     return super.migrateData(source);
+  }
+
+  override preUpdateItem(actor: RqgActor, updates: any[]): void {
+    updates.push(
+      ...getLocationRelatedUpdates(actor.items.contents, this.parent as WeaponItem, updates),
+    );
+  }
+
+  override async onEmbedItem(actor: RqgActor, options: any): Promise<any> {
+    const child = this.parent as WeaponItem;
+    assertDocumentSubType(actor, ActorTypeEnum.Character, "Item is not embedded");
+
+    const actorHasRightArm = !!actor.getBestEmbeddedDocumentByRqid("i.hit-location.right-arm");
+
+    if (!this.isNatural && !actorHasRightArm) {
+      return {};
+    }
+
+    const succeeded = await Promise.all([
+      WeaponDataModel.embedLinkedSkill(this.usage.oneHand.skillRqidLink?.rqid, actor),
+      WeaponDataModel.embedLinkedSkill(this.usage.offHand.skillRqidLink?.rqid, actor),
+      WeaponDataModel.embedLinkedSkill(this.usage.twoHand.skillRqidLink?.rqid, actor),
+      WeaponDataModel.embedLinkedSkill(this.usage.missile.skillRqidLink?.rqid, actor),
+    ]);
+    if (succeeded.includes(false)) {
+      options.renderSheet = true;
+    }
+    const projectileId = this.isThrownWeapon ? child.id : this.projectileId;
+
+    return {
+      _id: child.id,
+      system: {
+        projectileId: projectileId,
+      },
+    };
+  }
+
+  static async embedLinkedSkill(skillRqid: string | undefined, actor: RqgActor): Promise<boolean> {
+    const normalizedSkillRqid = toRqidString(skillRqid);
+    if (!normalizedSkillRqid) {
+      return true;
+    }
+    const embeddedSkill = actor.getBestEmbeddedDocumentByRqid(normalizedSkillRqid);
+
+    if (!embeddedSkill) {
+      const skill = await Rqid.fromRqid(normalizedSkillRqid);
+      if (!skill) {
+        logMisconfiguration(
+          localize("RQG.Item.Notification.CantFindWeaponSkillWarning"),
+          true,
+          normalizedSkillRqid,
+        );
+        return false;
+      }
+      await actor.createEmbeddedDocuments("Item", [skill as any]);
+    }
+    return true;
   }
 }

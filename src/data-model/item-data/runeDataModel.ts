@@ -5,6 +5,9 @@ import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLin
 import type { RqidLink } from "../shared/rqidLink";
 import type { RqidString } from "../../system/api/rqidApi";
 import { enumChoices } from "../shared/enumChoices";
+import type { RqgActor } from "../../actors/rqgActor";
+import { assertDocumentSubType } from "../../system/util";
+import { toRqidString } from "../../system/api/rqidValidation";
 
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
 
@@ -68,5 +71,31 @@ export class RuneDataModel extends RqgItemDataModel<RuneSchema> {
       };
     }
     return super.migrateData(source);
+  }
+
+  override preUpdateItem(actor: RqgActor, updates: any[]): void {
+    const chanceResult = updates.find(
+      (r) => r["system.chance"] != null || r?.system?.chance != null,
+    );
+    if (!chanceResult) {
+      return;
+    }
+    const runeItem = this.parent as RuneItem;
+    if (runeItem.system.opposingRuneRqidLink?.rqid) {
+      const opposingRune = actor.getBestEmbeddedDocumentByRqid(
+        toRqidString(runeItem.system.opposingRuneRqidLink.rqid),
+      );
+      const chance = chanceResult["system.chance"] ?? chanceResult.system.chance;
+      if (opposingRune && chance != null) {
+        assertDocumentSubType<RuneItem>(opposingRune, "rune");
+        const opposingRuneChance = opposingRune.system.chance;
+        if (chance + opposingRuneChance !== 100) {
+          updates.push({
+            _id: opposingRune.id,
+            system: { chance: 100 - chance },
+          });
+        }
+      }
+    }
   }
 }

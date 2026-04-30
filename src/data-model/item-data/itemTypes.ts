@@ -51,6 +51,8 @@ export type ItemTypeEnum = (typeof ItemTypeEnum)[keyof typeof ItemTypeEnum];
 
 /**
  * Map from ItemTypeEnum to responsible AbstractEmbeddedItem class.
+ * @deprecated Lifecycle logic has moved to RqgItemDataModel instance methods.
+ *             This map is kept only for backwards compatibility and will be removed in a future release.
  */
 export const ResponsibleItemClass: Map<string, typeof AbstractEmbeddedItem> = new Map([
   [ItemTypeEnum.Armor, Armor],

@@ -1,6 +1,6 @@
 import { RqgCalculations } from "../system/rqgCalculations";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
-import { ItemTypeEnum, type PhysicalItem, ResponsibleItemClass } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgActorSheetV2 } from "./RqgActorSheetV2";
 import { DamageCalculations } from "../system/damageCalculations";
@@ -221,9 +221,7 @@ export class RqgActor extends Actor {
     const { con, siz, pow } = this.actorCharacteristics();
     this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
 
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareEmbeddedEntities(item as RqgItem),
-    );
+    this.items.forEach((item) => (item as RqgItem).system.onActorPrepareEmbeddedEntities());
   }
 
   /**
@@ -285,9 +283,7 @@ export class RqgActor extends Actor {
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach((item) =>
-      ResponsibleItemClass.get(item.type)?.onActorPrepareDerivedData(item as RqgItem),
-    );
+    this.items.forEach((item) => (item as RqgItem).system.onActorPrepareDerivedData());
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
     attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
@@ -564,13 +560,11 @@ export class RqgActor extends Actor {
       game.user?.id === userId
     ) {
       documents.forEach((d) => {
-        ResponsibleItemClass.get(d.type)
-          ?.onEmbedItem(this, d as RqgItem, options, userId)
-          .then((updateData) => {
-            if (!foundry.utils.isEmpty(updateData)) {
-              this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
-            }
-          });
+        (d as RqgItem).system.onEmbedItem(this, options, userId).then((updateData) => {
+          if (!foundry.utils.isEmpty(updateData)) {
+            this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
+          }
+        });
       });
     }
 
@@ -588,12 +582,7 @@ export class RqgActor extends Actor {
       game.user?.id === userId
     ) {
       documents.forEach((d) => {
-        const updateData = ResponsibleItemClass.get(d.type)?.onDeleteItem(
-          this,
-          d as RqgItem,
-          options,
-          userId,
-        );
+        const updateData = (d as RqgItem).system.onDeleteItem(this, options, userId);
         if (updateData?.length) {
           this.updateEmbeddedDocuments("Item", updateData);
         }
