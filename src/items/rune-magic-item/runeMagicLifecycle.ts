@@ -43,31 +43,33 @@ async function chooseCultDialog(
       actorName: actorName,
     },
   );
-  return await new Promise((resolve, reject) => {
-    const dialog = new Dialog({
-      title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title"),
-      content: htmlContent,
-      default: "submit",
-      buttons: {
-        submit: {
-          icon: '<i class="fas fa-check"></i>',
-          label: localize("RQG.Item.RuneMagic.runeMagicCultDialog.btnAddRuneMagic"),
-          callback: (html: JQuery | HTMLElement) => {
-            const selectedCultId = (html as JQuery).find("[name=cultId]").val() as string;
-            resolve(selectedCultId);
-          },
-        },
-        cancel: {
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: '<i class="fas fa-times"></i>',
-          callback: () => {
-            reject();
-          },
+  const result = await foundry.applications.api.DialogV2.wait({
+    window: { title: localize("RQG.Item.RuneMagic.runeMagicCultDialog.title") },
+    content: htmlContent,
+    rejectClose: false,
+    buttons: [
+      {
+        action: "submit",
+        icon: "fa-solid fa-check",
+        label: localize("RQG.Item.RuneMagic.runeMagicCultDialog.btnAddRuneMagic"),
+        default: true,
+        callback: (_event, button) => {
+          const cultIdElement = button.form?.elements.namedItem("cultId");
+          const selectedCultId =
+            cultIdElement instanceof HTMLSelectElement ? cultIdElement.value : "";
+          return selectedCultId || false;
         },
       },
-    });
-    dialog.render(true);
+      {
+        action: "cancel",
+        icon: "fa-solid fa-xmark",
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        callback: () => false,
+      },
+    ],
   });
+
+  return typeof result === "string" && result.length > 0 ? result : undefined;
 }
 
 export const runeMagicLifecycle = {
