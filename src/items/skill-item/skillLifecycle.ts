@@ -1,4 +1,4 @@
-import { RqgItem } from "../rqgItem";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";

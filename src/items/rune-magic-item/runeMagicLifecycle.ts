@@ -1,9 +1,9 @@
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { RqgActor } from "@actors/rqgActor.ts";
-import { RqgItem } from "../rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "@items/rqgItem.ts";
 import { assertDocumentSubType, isDocumentSubType, localize } from "../../system/util";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
-import { RqidLink } from "../../data-model/shared/rqidLink";
+import type { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
