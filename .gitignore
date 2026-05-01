@@ -16,6 +16,8 @@ yarn.lock
 
 # Local Playwright capture artifacts
 .playwright-mcp/
+playwright-report/
+test-results/
 
 # Ignore Editor settings
 .nova/

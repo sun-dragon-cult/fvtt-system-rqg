@@ -31,6 +31,9 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:ui": "playwright test --ui",
     "tsgo": "tsgo",
     "typecheck": "tsc -noEmit"
   },
@@ -42,6 +45,7 @@
     "@eslint/compat": "^1.4.1",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.3",
+    "@playwright/test": "^1.59.1",
     "@types/eslint": "^9.6.1",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/fs-extra": "^11.0.4",
