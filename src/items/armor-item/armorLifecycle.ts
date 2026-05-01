@@ -6,7 +6,7 @@ import { isDocumentSubType } from "../../system/util.ts";
 import type { ArmorItem } from "@item-model/armorDataModel.ts";
 
 export const armorLifecycle = {
-  preUpdateItem(actor: RqgActor, armor: RqgItem, updates: object[]): void {
+  handleItemUpdateDocumentsPreUpdate(actor: RqgActor, armor: RqgItem, updates: object[]): void {
     if (isDocumentSubType<ArmorItem>(armor, ItemTypeEnum.Armor)) {
       updates.push(...getLocationRelatedUpdates(actor.items.contents, armor, updates));
     }

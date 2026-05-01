@@ -39,10 +39,10 @@ import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import {
-  applyActorCreateDescendantDocuments,
-  applyActorPrepareDerivedData,
-  applyActorPrepareEmbeddedEntities,
-  buildActorDeleteDescendantDocumentsUpdates,
+  handleActorOnCreateDescendantDocuments,
+  handleActorOnDeleteDescendantDocumentsUpdates,
+  handleActorPrepareDerivedData,
+  handleActorPrepareEmbeddedDocuments,
 } from "@items/itemLifecycleStrategy.ts";
 
 import Actor = foundry.documents.Actor;
@@ -226,7 +226,7 @@ export class RqgActor extends Actor {
 
     const { con, siz, pow } = this.actorCharacteristics();
     this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
-    this.items.forEach((item) => applyActorPrepareEmbeddedEntities(item as RqgItem));
+    this.items.forEach((item) => handleActorPrepareEmbeddedDocuments(item as RqgItem));
   }
 
   /**
@@ -288,7 +288,7 @@ export class RqgActor extends Actor {
     );
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
-    this.items.forEach((item) => applyActorPrepareDerivedData(item as RqgItem));
+    this.items.forEach((item) => handleActorPrepareDerivedData(item as RqgItem));
 
     attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
     attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
@@ -564,14 +564,27 @@ export class RqgActor extends Actor {
       collection === "items" &&
       game.user?.id === userId
     ) {
-      documents.forEach((d) => {
-        applyActorCreateDescendantDocuments(this, d as RqgItem, options, userId).then(
-          (updateData) => {
-            if (!foundry.utils.isEmpty(updateData)) {
-              this.updateEmbeddedDocuments("Item", [updateData]); // TODO move the actual update outside the loop (map instead of forEach)
-            }
+      const createdItemIds = documents.map((d) => (d as RqgItem).id);
+      const updatePromises = documents.map((d) =>
+        handleActorOnCreateDescendantDocuments(this, d as RqgItem, options, userId).catch(
+          (error: unknown) => {
+            console.error("RQG | Failed to process embedded item create lifecycle", {
+              actorId: this.id,
+              actorName: this.name,
+              itemId: (d as RqgItem).id,
+              itemIds: createdItemIds,
+              error,
+            });
+            return {};
           },
-        );
+        ),
+      );
+
+      void Promise.all(updatePromises).then((results) => {
+        const updateData = results.filter((result) => !foundry.utils.isEmpty(result));
+        if (updateData.length > 0) {
+          void this.updateEmbeddedDocuments("Item", updateData);
+        }
       });
     }
 
@@ -589,7 +602,7 @@ export class RqgActor extends Actor {
       game.user?.id === userId
     ) {
       documents.forEach((d) => {
-        const updateData = buildActorDeleteDescendantDocumentsUpdates(
+        const updateData = handleActorOnDeleteDescendantDocumentsUpdates(
           this,
           d as RqgItem,
           options,

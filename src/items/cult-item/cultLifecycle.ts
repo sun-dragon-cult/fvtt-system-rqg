@@ -39,7 +39,7 @@ export const cultLifecycle = {
   /*
    * Unlink the runeMagic spells that was connected with this cult
    */
-  onDeleteItem(
+  handleActorOnDeleteDescendantDocuments(
     actor: RqgActor,
     cultItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,7 +60,7 @@ export const cultLifecycle = {
   /**
    * If the actor already has a Cult with the same Deity, then merge the data from the joined subcults.
    */
-  async onEmbedItem(
+  async handleActorOnCreateDescendantDocuments(
     actor: RqgActor,
     child: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

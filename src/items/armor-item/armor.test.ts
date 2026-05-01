@@ -13,7 +13,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
 import { isDocumentSubType } from "../../system/util.ts";
 
-describe("Armor.preUpdateItem", () => {
+describe("Armor.handleItemUpdateDocumentsPreUpdate", () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
@@ -27,7 +27,7 @@ describe("Armor.preUpdateItem", () => {
     vi.mocked(isDocumentSubType).mockReturnValue(true as any);
     vi.mocked(getLocationRelatedUpdates).mockReturnValue(relatedUpdates as any);
 
-    armorLifecycle.preUpdateItem(actor, armor, updates);
+    armorLifecycle.handleItemUpdateDocumentsPreUpdate(actor, armor, updates);
 
     expect(isDocumentSubType).toHaveBeenCalledWith(armor, ItemTypeEnum.Armor);
     expect(getLocationRelatedUpdates).toHaveBeenCalledWith(actor.items.contents, armor, updates);
@@ -44,7 +44,7 @@ describe("Armor.preUpdateItem", () => {
 
     vi.mocked(isDocumentSubType).mockReturnValue(false as any);
 
-    armorLifecycle.preUpdateItem(actor, item, updates);
+    armorLifecycle.handleItemUpdateDocumentsPreUpdate(actor, item, updates);
 
     expect(getLocationRelatedUpdates).not.toHaveBeenCalled();
     expect(updates).toEqual([{ _id: "item-1" }]);

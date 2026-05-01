@@ -11,11 +11,26 @@ import { weaponLifecycle } from "./weapon-item/weaponLifecycle";
 import type { RqgItem } from "./rqgItem";
 
 export interface ItemLifecycleStrategy {
-  onEmbedItem?(actor: RqgActor, child: RqgItem, options: any, userId: string): Promise<any>;
-  preUpdateItem?(actor: RqgActor, item: RqgItem, result: any[], options: any): void;
-  onDeleteItem?(actor: RqgActor, itemData: RqgItem, options: any, userId: string): any[];
-  onActorPrepareEmbeddedEntities?(item: RqgItem): RqgItem;
-  onActorPrepareDerivedData?(item: RqgItem): RqgItem;
+  handleActorOnCreateDescendantDocuments?(
+    actor: RqgActor,
+    child: RqgItem,
+    options: any,
+    userId: string,
+  ): Promise<any>;
+  handleItemUpdateDocumentsPreUpdate?(
+    actor: RqgActor,
+    item: RqgItem,
+    result: any[],
+    options: any,
+  ): void;
+  handleActorOnDeleteDescendantDocuments?(
+    actor: RqgActor,
+    itemData: RqgItem,
+    options: any,
+    userId: string,
+  ): any[];
+  handleActorPrepareEmbeddedDocuments?(item: RqgItem): RqgItem;
+  handleActorPrepareDerivedData?(item: RqgItem): RqgItem;
 }
 
 const itemLifecycleStrategyByType = new Map<RqgItemType, ItemLifecycleStrategy>([
@@ -40,8 +55,8 @@ export function getItemLifecycleStrategy(
  *
  * Side effect: strategy implementations can mutate the provided item's system data in-place.
  */
-export function applyActorPrepareEmbeddedEntities(item: RqgItem): void {
-  getItemLifecycleStrategy(item.type)?.onActorPrepareEmbeddedEntities?.(item);
+export function handleActorPrepareEmbeddedDocuments(item: RqgItem): void {
+  getItemLifecycleStrategy(item.type)?.handleActorPrepareEmbeddedDocuments?.(item);
 }
 
 /**
@@ -49,8 +64,8 @@ export function applyActorPrepareEmbeddedEntities(item: RqgItem): void {
  *
  * Side effect: strategy implementations can mutate the provided item's system data in-place.
  */
-export function applyActorPrepareDerivedData(item: RqgItem): void {
-  getItemLifecycleStrategy(item.type)?.onActorPrepareDerivedData?.(item);
+export function handleActorPrepareDerivedData(item: RqgItem): void {
+  getItemLifecycleStrategy(item.type)?.handleActorPrepareDerivedData?.(item);
 }
 
 /**
@@ -58,13 +73,18 @@ export function applyActorPrepareDerivedData(item: RqgItem): void {
  *
  * Side effect: mutates the updates array by appending/merging additional update payloads.
  */
-export function applyItemPreUpdate(
+export function handleItemUpdateDocumentsPreUpdate(
   actor: RqgActor,
   item: RqgItem,
   updates: any[],
   options: any,
 ): void {
-  getItemLifecycleStrategy(item.type)?.preUpdateItem?.(actor, item, updates, options);
+  getItemLifecycleStrategy(item.type)?.handleItemUpdateDocumentsPreUpdate?.(
+    actor,
+    item,
+    updates,
+    options,
+  );
 }
 
 /**
@@ -72,13 +92,18 @@ export function applyItemPreUpdate(
  *
  * Side effect: strategies may mutate options, create/delete embedded documents, or return follow-up update data.
  */
-export async function applyActorCreateDescendantDocuments(
+export async function handleActorOnCreateDescendantDocuments(
   actor: RqgActor,
   item: RqgItem,
   options: any,
   userId: string,
 ): Promise<any> {
-  return getItemLifecycleStrategy(item.type)?.onEmbedItem?.(actor, item, options, userId);
+  return getItemLifecycleStrategy(item.type)?.handleActorOnCreateDescendantDocuments?.(
+    actor,
+    item,
+    options,
+    userId,
+  );
 }
 
 /**
@@ -87,11 +112,16 @@ export async function applyActorCreateDescendantDocuments(
  *
  * Side effect: none in dispatcher itself; strategies can inspect actor state and compute update payloads.
  */
-export function buildActorDeleteDescendantDocumentsUpdates(
+export function handleActorOnDeleteDescendantDocumentsUpdates(
   actor: RqgActor,
   item: RqgItem,
   options: any,
   userId: string,
 ): any[] | undefined {
-  return getItemLifecycleStrategy(item.type)?.onDeleteItem?.(actor, item, options, userId);
+  return getItemLifecycleStrategy(item.type)?.handleActorOnDeleteDescendantDocuments?.(
+    actor,
+    item,
+    options,
+    userId,
+  );
 }

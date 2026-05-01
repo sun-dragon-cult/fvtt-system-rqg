@@ -24,7 +24,7 @@ function adjustOpposingRuneChance(
 }
 
 export const runeLifecycle = {
-  preUpdateItem(
+  handleItemUpdateDocumentsPreUpdate(
     actor: RqgActor,
     rune: RqgItem,
     updates: any[],

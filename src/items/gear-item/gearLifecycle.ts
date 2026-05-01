@@ -6,7 +6,7 @@ import { isDocumentSubType } from "../../system/util.ts";
 import type { GearItem } from "@item-model/gearDataModel.ts";
 
 export const gearLifecycle = {
-  preUpdateItem(actor: RqgActor, gear: RqgItem, updates: object[]): void {
+  handleItemUpdateDocumentsPreUpdate(actor: RqgActor, gear: RqgItem, updates: object[]): void {
     if (isDocumentSubType<GearItem>(gear, ItemTypeEnum.Gear)) {
       updates.push(...getLocationRelatedUpdates(actor.items.contents, gear, updates));
     }

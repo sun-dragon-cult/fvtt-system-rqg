@@ -10,7 +10,7 @@ function hitPointsPerLocation(totalHitPoints: number, baseHpDelta: number): numb
 }
 
 export const hitLocationLifecycle = {
-  onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+  handleActorPrepareEmbeddedDocuments(item: RqgItem): RqgItem {
     if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
       const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
       ui.notifications?.error(msg);

@@ -52,7 +52,7 @@ import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 
 import type { PassionItem } from "@item-model/passionDataModel.ts";
-import { applyItemPreUpdate } from "./itemLifecycleStrategy";
+import { handleItemUpdateDocumentsPreUpdate } from "./itemLifecycleStrategy";
 
 export class RqgItem extends Item {
   public static init() {
@@ -429,7 +429,7 @@ export class RqgItem extends Item {
           if (!document || document.documentName !== "Item") {
             return; // Skip preUpdateItem for invalid documents not in the collection
           }
-          applyItemPreUpdate(parent, document, updates, options);
+          handleItemUpdateDocumentsPreUpdate(parent, document, updates, options);
         }
       });
     }

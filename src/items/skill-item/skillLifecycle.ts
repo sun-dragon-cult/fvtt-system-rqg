@@ -9,7 +9,7 @@ import type { SkillCategories } from "../../data-model/actor-data/skillCategorie
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 
 export const skillLifecycle = {
-  onActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+  handleActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
     assertDocumentSubType<SkillItem>(
       skillItem,
       ItemTypeEnum.Skill,

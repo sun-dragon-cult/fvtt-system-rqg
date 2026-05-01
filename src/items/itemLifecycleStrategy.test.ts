@@ -1,12 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import {
-  applyActorCreateDescendantDocuments,
-  applyActorPrepareDerivedData,
-  applyActorPrepareEmbeddedEntities,
-  applyItemPreUpdate,
-  buildActorDeleteDescendantDocumentsUpdates,
   getItemLifecycleStrategy,
+  handleActorOnCreateDescendantDocuments,
+  handleActorOnDeleteDescendantDocumentsUpdates,
+  handleActorPrepareDerivedData,
+  handleActorPrepareEmbeddedDocuments,
+  handleItemUpdateDocumentsPreUpdate,
 } from "./itemLifecycleStrategy";
 import { armorLifecycle } from "./armor-item/armorLifecycle";
 import { cultLifecycle } from "./cult-item/cultLifecycle";
@@ -22,7 +22,9 @@ describe("item lifecycle strategy dispatch", () => {
     const strategy = getItemLifecycleStrategy(ItemTypeEnum.Armor);
 
     expect(strategy).toBeDefined();
-    expect(strategy?.preUpdateItem).toBe(armorLifecycle.preUpdateItem);
+    expect(strategy?.handleItemUpdateDocumentsPreUpdate).toBe(
+      armorLifecycle.handleItemUpdateDocumentsPreUpdate,
+    );
   });
 
   it("dispatches preUpdate to armor strategy", () => {
@@ -31,10 +33,10 @@ describe("item lifecycle strategy dispatch", () => {
     const updates: any[] = [{ _id: "a" }];
     const options = { diff: true };
     const preUpdateSpy = vi
-      .spyOn(armorLifecycle, "preUpdateItem")
+      .spyOn(armorLifecycle, "handleItemUpdateDocumentsPreUpdate")
       .mockImplementation(() => undefined);
 
-    applyItemPreUpdate(actor, armor, updates, options);
+    handleItemUpdateDocumentsPreUpdate(actor, armor, updates, options);
 
     expect(preUpdateSpy).toHaveBeenCalledTimes(1);
     expect(preUpdateSpy).toHaveBeenCalledWith(actor, armor, updates, options);
@@ -43,10 +45,10 @@ describe("item lifecycle strategy dispatch", () => {
   it("dispatches Actor.prepareEmbeddedDocuments to hit location strategy", () => {
     const item = { type: ItemTypeEnum.HitLocation } as any;
     const prepareSpy = vi
-      .spyOn(hitLocationLifecycle, "onActorPrepareEmbeddedEntities")
+      .spyOn(hitLocationLifecycle, "handleActorPrepareEmbeddedDocuments")
       .mockImplementation(() => item);
 
-    applyActorPrepareEmbeddedEntities(item);
+    handleActorPrepareEmbeddedDocuments(item);
 
     expect(prepareSpy).toHaveBeenCalledTimes(1);
     expect(prepareSpy).toHaveBeenCalledWith(item);
@@ -55,10 +57,10 @@ describe("item lifecycle strategy dispatch", () => {
   it("dispatches Actor.prepareDerivedData to skill strategy", () => {
     const item = { type: ItemTypeEnum.Skill } as any;
     const prepareSpy = vi
-      .spyOn(skillLifecycle, "onActorPrepareDerivedData")
+      .spyOn(skillLifecycle, "handleActorPrepareDerivedData")
       .mockImplementation(() => item);
 
-    applyActorPrepareDerivedData(item);
+    handleActorPrepareDerivedData(item);
 
     expect(prepareSpy).toHaveBeenCalledTimes(1);
     expect(prepareSpy).toHaveBeenCalledWith(item);
@@ -70,9 +72,11 @@ describe("item lifecycle strategy dispatch", () => {
     const options = { renderSheet: false };
     const userId = "user-1";
     const payload = { _id: "cult-1", name: "Merged Cult" };
-    const createSpy = vi.spyOn(cultLifecycle, "onEmbedItem").mockResolvedValue(payload);
+    const createSpy = vi
+      .spyOn(cultLifecycle, "handleActorOnCreateDescendantDocuments")
+      .mockResolvedValue(payload);
 
-    const result = await applyActorCreateDescendantDocuments(actor, item, options, userId);
+    const result = await handleActorOnCreateDescendantDocuments(actor, item, options, userId);
 
     expect(createSpy).toHaveBeenCalledTimes(1);
     expect(createSpy).toHaveBeenCalledWith(actor, item, options, userId);
@@ -85,9 +89,11 @@ describe("item lifecycle strategy dispatch", () => {
     const options = {};
     const userId = "user-1";
     const updates = [{ _id: "rm-1", "system.cultId": "" }];
-    const deleteSpy = vi.spyOn(cultLifecycle, "onDeleteItem").mockReturnValue(updates as any);
+    const deleteSpy = vi
+      .spyOn(cultLifecycle, "handleActorOnDeleteDescendantDocuments")
+      .mockReturnValue(updates as any);
 
-    const result = buildActorDeleteDescendantDocumentsUpdates(actor, item, options, userId);
+    const result = handleActorOnDeleteDescendantDocumentsUpdates(actor, item, options, userId);
 
     expect(deleteSpy).toHaveBeenCalledTimes(1);
     expect(deleteSpy).toHaveBeenCalledWith(actor, item, options, userId);
@@ -99,7 +105,7 @@ describe("item lifecycle strategy dispatch", () => {
     const item = { type: "unknown-type" } as any;
     const updates: any[] = [];
 
-    expect(() => applyItemPreUpdate(actor, item, updates, {})).not.toThrow();
+    expect(() => handleItemUpdateDocumentsPreUpdate(actor, item, updates, {})).not.toThrow();
     expect(getItemLifecycleStrategy("unknown-type" as any)).toBeUndefined();
   });
 });

@@ -73,7 +73,7 @@ async function chooseCultDialog(
 }
 
 export const runeMagicLifecycle = {
-  onActorPrepareEmbeddedEntities(item: RqgItem): RqgItem {
+  handleActorPrepareEmbeddedDocuments(item: RqgItem): RqgItem {
     const actor = item.actor;
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     assertDocumentSubType<RuneMagicItem>(
@@ -109,7 +109,7 @@ export const runeMagicLifecycle = {
   /*
    * Connect runeMagic item to a cult.
    */
-  async onEmbedItem(
+  async handleActorOnCreateDescendantDocuments(
     actor: RqgActor,
     runeMagicItem: RqgItem,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

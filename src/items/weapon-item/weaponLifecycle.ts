@@ -7,7 +7,7 @@ import type { WeaponItem } from "@item-model/weaponDataModel.ts";
 import { embedLinkedSkill } from "./weaponSkillLinks";
 
 export const weaponLifecycle = {
-  preUpdateItem(
+  handleItemUpdateDocumentsPreUpdate(
     actor: RqgActor,
     weapon: RqgItem,
     updates: object[],
@@ -23,7 +23,7 @@ export const weaponLifecycle = {
    * Add the skills specified in the weapon to the actor (if not already there)
    * and connect the weapons with the embedded item skill id.
    */
-  async onEmbedItem(
+  async handleActorOnCreateDescendantDocuments(
     actor: RqgActor,
     child: RqgItem,
     options: any,
