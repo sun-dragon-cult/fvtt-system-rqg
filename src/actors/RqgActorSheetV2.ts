@@ -1714,4 +1714,57 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         return false;
     }
   }
+
+  protected override async _onDrop(event: DragEvent): Promise<void> {
+    event.preventDefault();
+    this.render(); // Rerender to clear any drag-hover classes
+
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData;
+
+    // Handle compendium drops specially to embed all items from the pack
+    if (data?.type === "Compendium") {
+      if (!this.actor.isOwner) {
+        ui.notifications?.warn(
+          localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
+        );
+        return;
+      }
+      await this._onDropCompendium(event, data);
+      return;
+    }
+
+    // For all other types, delegate to parent
+    await super._onDrop(event);
+  }
+
+  private async _onDropCompendium(event: DragEvent, data: ActorSheet.DropData): Promise<RqgItem[]> {
+    if (!this.actor.isOwner) {
+      return [];
+    }
+    const compendiumId = hasOwnProperty(data, "collection") ? data.collection : undefined;
+    if (typeof compendiumId !== "string") {
+      return [];
+    }
+    const pack = game.packs?.get(compendiumId);
+    const packIndex = await pack?.getIndex();
+    if (!packIndex) {
+      return [];
+    }
+    const documents = (await Promise.all(
+      packIndex.map(async (di) => {
+        const doc = await fromUuid(di.uuid);
+        return doc?.toObject();
+      }),
+    )) as Item.Implementation["_source"][];
+
+    const itemDataToCreate = documents.filter(isTruthy);
+    if (itemDataToCreate.length === 0) {
+      return [];
+    }
+
+    const createdItems = await this.actor.createEmbeddedDocuments("Item", itemDataToCreate);
+    return createdItems as RqgItem[];
+  }
 }
