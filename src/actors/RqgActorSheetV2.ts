@@ -483,7 +483,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     // RQID link click handlers
-    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
+    if (this.element instanceof HTMLElement) {
+      void RqidLink.addRqidLinkClickHandlers(this.element);
+    }
 
     // Delete handlers for RQID links (single link and link arrays)
     this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {

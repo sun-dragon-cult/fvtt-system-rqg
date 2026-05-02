@@ -129,11 +129,17 @@ export function getDomDatasetAmongSiblings(
 export function getHTMLElement(
   el: HTMLElement | Element | Event | JQuery,
 ): HTMLElement | undefined {
-  return el instanceof HTMLElement
-    ? el
-    : (el as Event).target
-      ? ((el as Event).target as HTMLElement)
-      : (el as JQuery).get(0);
+  if (el instanceof HTMLElement) {
+    return el;
+  }
+  if (el instanceof Event && el.target instanceof HTMLElement) {
+    return el.target;
+  }
+  // Handle legacy JQuery - FormApplication v1 compatibility
+  if (el && typeof el === "object" && "get" in el && typeof (el as any).get === "function") {
+    return (el as any).get(0);
+  }
+  return undefined;
 }
 
 export function getSocket(): io.Socket {
