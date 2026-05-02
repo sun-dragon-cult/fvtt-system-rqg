@@ -10,5 +10,5 @@ export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluatio
   magicPointBoost: number;
   modifiers: Modifier[];
   speaker: ChatMessage.SpeakerData;
-  rollMode?: CONST.DICE_ROLL_MODES;
+  rollMode?: foundry.dice.Roll.Mode;
 };

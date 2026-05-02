@@ -33,7 +33,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "~^i\\.hit-location\\.:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.custom,
           value: "1",
         },
       ],
@@ -48,7 +48,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "~^i\\.hit-location\\.:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.custom,
           value: "2",
         },
       ],
@@ -63,7 +63,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "~^i\\.hit-location\\.:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.custom,
           value: "3",
         },
       ],
@@ -78,7 +78,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "~^i\\.hit-location\\.:system.naturalAp",
-          mode: CONST.ACTIVE_EFFECT_MODES.CUSTOM,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.custom,
           value: "4",
         },
       ],
@@ -94,7 +94,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "system.characteristics.strength.value",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.add,
           value: "8",
         },
       ],
@@ -138,7 +138,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "system.characteristics.dexterity.value",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.add,
           value: "3",
         },
       ],
@@ -289,7 +289,7 @@ export function getTokenStatusEffects(): any[] {
       changes: [
         {
           key: "system.characteristics.constitution.value",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          mode: CONST.ACTIVE_EFFECT_CHANGE_TYPES.add,
           value: "3",
         },
       ],

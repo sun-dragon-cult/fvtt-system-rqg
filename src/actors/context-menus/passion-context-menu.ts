@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   assertDocumentSubType,
@@ -15,12 +16,12 @@ import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts
 export const passionMenuOptions = (
   actor: CharacterActor,
   token: TokenDocument | undefined | null,
-): ContextMenu.Entry<HTMLElement>[] => [
+): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.Game.RollChat"),
+    label: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
@@ -28,10 +29,10 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.Game.RollQuick"),
+    label: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
@@ -47,10 +48,10 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ToggleExperience"),
+    label: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || item.type !== ItemTypeEnum.Passion.toString()) {
@@ -65,11 +66,11 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {
+    label: localize("RQG.ContextMenu.ImproveItem", {
       itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: contextMenuRunes.Improve,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || item.type !== ItemTypeEnum.Passion.toString()) {
@@ -82,7 +83,7 @@ export const passionMenuOptions = (
       }
       return !!item.system.hasExperience;
     },
-    callback: (el: HTMLElement) => {
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
@@ -91,12 +92,12 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {
+    label: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => true,
-    callback: (el: HTMLElement) => {
+    visible: () => true,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       if (!item || !item.sheet) {
@@ -111,12 +112,12 @@ export const passionMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {
+    label: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.Passion),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => true,
-    callback: (el: HTMLElement) => {
+    visible: () => true,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

@@ -38,6 +38,22 @@ import type { WeaponDataModel } from "./data-model/item-data/weaponDataModel";
 import type { CharacterDataModel } from "./data-model/actor-data/characterDataModel";
 
 declare global {
+  // TEMP(v14-types): Remove this namespace augmentation once
+  // @league-of-foundry-developers/foundry-vtt-types includes
+  // CONST.ACTIVE_EFFECT_CHANGE_TYPES.
+  // Search token for cleanup: RQG-TEMP-REMOVE-ACTIVE-EFFECT-CHANGE-TYPES
+  namespace CONST {
+    const ACTIVE_EFFECT_CHANGE_TYPES: Readonly<{
+      custom: 0;
+      multiply: 10;
+      add: 20;
+      subtract: 20;
+      downgrade: 30;
+      upgrade: 40;
+      override: 50;
+    }>;
+  }
+
   interface Game {
     dice3d?: Dice3D;
   }

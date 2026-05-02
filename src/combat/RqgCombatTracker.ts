@@ -1,8 +1,13 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
 import { getDomDataset, getRequiredDomDataset, localize } from "../system/util";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import type { RqgContextMenuEntry } from "../foundryUi/RqgContextMenu";
 
 import CombatTracker = foundry.applications.sidebar.tabs.CombatTracker;
+
+type RqgCombatContextMenuEntry = Omit<RqgContextMenuEntry, "onClick"> & {
+  onClick: (_event: Event, target: HTMLElement) => unknown | Promise<unknown>;
+};
 
 export class RqgCombatTracker extends CombatTracker {
   static init() {
@@ -47,12 +52,12 @@ export class RqgCombatTracker extends CombatTracker {
   override _getEntryContextOptions(): ContextMenu.Entry<HTMLElement>[] {
     const getCombatant = (li: HTMLElement) =>
       this.viewed?.combatants.get(li.dataset["combatantId"] ?? "");
-    return [
+    const entries: RqgCombatContextMenuEntry[] = [
       {
-        name: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
+        label: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
         icon: '<i class="far fa-copy fa-fw"></i>',
-        condition: () => game.user?.isGM ?? false,
-        callback: async (li: HTMLElement) => {
+        visible: () => game.user?.isGM ?? false,
+        onClick: async (_event: Event, li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
             await this.viewed!.createEmbeddedDocuments("Combatant", [combatant]);
@@ -60,10 +65,10 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        name: localize("COMBAT.CombatantUpdate"),
+        label: localize("COMBAT.CombatantUpdate"),
         icon: '<i class="fa-solid fa-pen-to-square"></i>',
-        condition: () => game.user?.isGM ?? false,
-        callback: (li: HTMLElement) =>
+        visible: () => game.user?.isGM ?? false,
+        onClick: (_event: Event, li: HTMLElement) =>
           // @ts-expect-error render
           getCombatant(li)?.sheet?.render({
             force: true,
@@ -74,11 +79,11 @@ export class RqgCombatTracker extends CombatTracker {
           }),
       },
       {
-        name: "COMBAT.CombatantClear",
+        label: "COMBAT.CombatantClear",
         icon: '<i class="fa-solid fa-arrow-rotate-left"></i>',
-        condition: (li: HTMLElement) =>
+        visible: (li: HTMLElement) =>
           (game.user?.isGM && Number.isFinite(getCombatant(li)?.initiative)) ?? false,
-        callback: async (li: HTMLElement) => {
+        onClick: async (_event: Event, li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
             await combatant?.update({ initiative: null });
@@ -86,11 +91,11 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        name: "COMBAT.CombatantClearMovementHistory",
+        label: "COMBAT.CombatantClearMovementHistory",
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
-        condition: (li: HTMLElement) =>
+        visible: (li: HTMLElement) =>
           (game.user?.isGM && (getCombatant(li)?.token?.movementHistory.length ?? 0) > 0) ?? false,
-        callback: async (li: HTMLElement) => {
+        onClick: async (_event: Event, li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (!combatant) {
             return;
@@ -103,16 +108,16 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        name: "COMBAT.CombatantRemove",
+        label: "COMBAT.CombatantRemove",
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: () => game.user?.isGM ?? false,
-        callback: (li: HTMLElement) => getCombatant(li)?.delete(),
+        visible: () => game.user?.isGM ?? false,
+        onClick: (_event: Event, li: HTMLElement) => getCombatant(li)?.delete(),
       },
       {
-        name: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
+        label: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: () => game.user?.isGM ?? false,
-        callback: async (li: HTMLElement) => {
+        visible: () => game.user?.isGM ?? false,
+        onClick: async (_event: Event, li: HTMLElement) => {
           const combatant = getCombatant(li);
           if (combatant) {
             const combatantIds = getCombatantsSharingToken(combatant)
@@ -127,6 +132,7 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
     ];
+    return entries as unknown as ContextMenu.Entry<HTMLElement>[];
   }
 
   // Open the tokenActor instead of the actor

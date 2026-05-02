@@ -12,5 +12,5 @@ export type AbilityRollOptions = Partial<Roll.Options> & {
   abilityImg?: string; // Usually skill item image
   resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // Extra html to display in the roll
   speaker?: ChatMessage.SpeakerData;
-  rollMode?: CONFIG.Dice.RollMode;
+  rollMode?: foundry.dice.Roll.Mode;
 };

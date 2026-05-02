@@ -17,6 +17,7 @@ import {
 import { RqgItem } from "@items/rqgItem.ts";
 import type { AbilityItem } from "@item-model/itemTypes.ts";
 import type { DeepPartial } from "fvtt-types/utils";
+import { getDefaultRollMode, getSelectedRollMode } from "../app-parts/rollMode";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -46,7 +47,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
   ];
 
   private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
-  private rollMode: CONST.DICE_ROLL_MODES;
+  private rollMode: foundry.dice.Roll.Mode;
 
   constructor(
     abilityItem: AbilityItem | PartialAbilityItem,
@@ -63,9 +64,7 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     }
 
     this.abilityItem = abilityItem;
-    this.rollMode =
-      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
-      CONST.DICE_ROLL_MODES.PUBLIC;
+    this.rollMode = getDefaultRollMode();
   }
 
   static override DEFAULT_OPTIONS = {
@@ -156,11 +155,11 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
 
   private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode");
-    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+    const newRollMode = getSelectedRollMode(getDomDataset(target, "roll-mode"));
+    if (!newRollMode) {
       return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
+    this.rollMode = newRollMode;
 
     this.render();
   }
@@ -173,8 +172,11 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     const formDataObject = formData.object as AbilityRollDialogFormData;
 
     const rollMode =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ?? game.settings?.get("core", "rollMode");
+      getSelectedRollMode(
+        form?.querySelector<HTMLButtonElement>(
+          'button[data-action="rollMode"][aria-pressed="true"]',
+        )?.dataset["rollMode"],
+      ) ?? getDefaultRollMode();
 
     let abilityItem = (await fromUuid(formDataObject.abilityItemUuid ?? "")) as
       | AbilityItem

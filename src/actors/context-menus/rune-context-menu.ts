@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   assertDocumentSubType,
@@ -17,12 +18,12 @@ import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts
 export const runeMenuOptions = (
   actor: CharacterActor,
   token: TokenDocument | undefined,
-): ContextMenu.Entry<HTMLElement>[] => [
+): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.Game.RollChat"),
+    label: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -30,10 +31,10 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.Game.RollQuick"),
+    label: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -41,10 +42,10 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ToggleExperience"),
+    label: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -52,12 +53,12 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {
+    label: localize("RQG.ContextMenu.ImproveItem", {
       itemType: localizeItemType(ItemTypeEnum.Rune),
     }),
     icon: contextMenuRunes.Improve,
-    condition: () => true,
-    callback: (el: HTMLElement) => {
+    visible: () => true,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -66,14 +67,14 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ViewDescription"),
+    label: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       const rqid = item?.system.descriptionRqidLink?.rqid;
@@ -83,12 +84,12 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {
+    label: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.Rune),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!game.user?.isGM || actor.system.editMode,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM || actor.system.editMode,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
@@ -104,12 +105,12 @@ export const runeMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {
+    label: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.Rune),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!game.user?.isGM,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },
