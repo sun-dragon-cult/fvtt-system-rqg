@@ -32,20 +32,23 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
       ? (await findFoundryHost()).host
       : `${process.env.FOUNDRY_HOST_NAME ?? "localhost"}:${process.env.FOUNDRY_PORT ?? "30013"}`;
 
-  const plugins: Vite.PluginOption[] = [
-    checker({
-      typescript: { buildMode: true },
-      eslint: {
-        lintCommand: "eslint .",
-        useFlatConfig: true,
-      },
-      stylelint: {
-        lintCommand: "stylelint **/*.{scss,css}",
-      },
-    }),
-    tsconfigPaths(),
-    foundryEntrypointsPlugin(),
-  ];
+  const plugins: Vite.PluginOption[] = [tsconfigPaths(), foundryEntrypointsPlugin()];
+
+  // Run checker only in dev to avoid lingering worker processes during production builds.
+  if (command === "serve") {
+    plugins.unshift(
+      checker({
+        typescript: { buildMode: true },
+        eslint: {
+          lintCommand: "eslint .",
+          useFlatConfig: true,
+        },
+        stylelint: {
+          lintCommand: "stylelint 'src/**/*.{scss,css}'",
+        },
+      }),
+    );
+  }
 
   // Handle minification after build to allow for tree-shaking and whitespace minification
   // "Note the build.minify option does not minify whitespaces when using the 'es' format in lib mode, as it removes

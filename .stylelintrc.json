@@ -1,6 +1,6 @@
 {
   "extends": ["stylelint-config-standard-scss", "stylelint-config-prettier-scss"],
-  "ignoreFiles": ["dist/**/*", "node_modules/**/*"],
+  "ignoreFiles": ["dist/**/*", "node_modules/**/*", "playwright-report/**/*", "test-results/**/*"],
   "rules": {
     "rule-empty-line-before": null,
     "scss/double-slash-comment-empty-line-before": null
