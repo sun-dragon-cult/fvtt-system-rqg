@@ -9,5 +9,5 @@ export type CharacteristicRollOptions = Partial<foundry.dice.terms.DiceTerm.Eval
   difficulty?: number; // to multiply with characteristicValue
   modifiers?: Modifier[];
   speaker?: ChatMessage.SpeakerData;
-  rollMode?: CONST.DICE_ROLL_MODES;
+  rollMode?: foundry.dice.Roll.Mode;
 };

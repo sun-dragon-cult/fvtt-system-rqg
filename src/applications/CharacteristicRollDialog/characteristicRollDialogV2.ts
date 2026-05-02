@@ -19,6 +19,7 @@ import type { Characteristics } from "../../data-model/actor-data/characteristic
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { DeepPartial } from "fvtt-types/utils";
+import { getDefaultRollMode, getSelectedRollMode } from "../app-parts/rollMode";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -59,7 +60,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private actor: RqgActor;
   private characteristicName: keyof Characteristics;
-  private rollMode: CONST.DICE_ROLL_MODES;
+  private rollMode: foundry.dice.Roll.Mode;
 
   constructor(
     actor: RqgActor,
@@ -69,9 +70,7 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
     super(options);
     this.actor = actor;
     this.characteristicName = characteristicName;
-    this.rollMode =
-      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
-      CONST.DICE_ROLL_MODES.PUBLIC;
+    this.rollMode = getDefaultRollMode();
   }
 
   static override DEFAULT_OPTIONS = {
@@ -167,11 +166,11 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode");
-    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+    const newRollMode = getSelectedRollMode(getDomDataset(target, "roll-mode"));
+    if (!newRollMode) {
       return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
+    this.rollMode = newRollMode;
 
     this.render();
   }
@@ -183,11 +182,12 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
   ): Promise<void> {
     const formDataObject = formData.object as CharacteristicRollDialogFormData;
 
-    const rollMode: CONST.DICE_ROLL_MODES =
-      (form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
-        ?.dataset["rollMode"] as CONST.DICE_ROLL_MODES) ??
-      game.settings?.get("core", "rollMode") ??
-      CONST.DICE_ROLL_MODES.PUBLIC;
+    const rollMode =
+      getSelectedRollMode(
+        form?.querySelector<HTMLButtonElement>(
+          'button[data-action="rollMode"][aria-pressed="true"]',
+        )?.dataset["rollMode"],
+      ) ?? getDefaultRollMode();
 
     const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
     if (!actor || !formDataObject.characteristicName) {

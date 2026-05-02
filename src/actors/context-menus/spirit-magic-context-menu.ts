@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   assertDocumentSubType,
@@ -14,12 +15,12 @@ import { isValidRqidString } from "../../system/api/rqidValidation";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
+export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.Game.RollChat"),
+    label: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
       assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
@@ -27,15 +28,15 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry
     },
   },
   {
-    name: localize("RQG.Game.RollQuick"),
+    label: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
       assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
       return !item.system.isVariable || item.system.points === 1;
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
       assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
@@ -47,14 +48,14 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry
     },
   },
   {
-    name: localize("RQG.ContextMenu.ViewDescription"),
+    label: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
       return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SpiritMagicItem | undefined;
       const rqid = item?.system.descriptionRqidLink?.rqid;
@@ -64,12 +65,12 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {
+    label: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.SpiritMagic),
     }),
     icon: contextMenuRunes.Edit,
-    condition: () => !!game.user?.isGM,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
       assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
@@ -85,12 +86,12 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): ContextMenu.Entry
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {
+    label: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.SpiritMagic),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!game.user?.isGM,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

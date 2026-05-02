@@ -14,10 +14,10 @@ export class CharacteristicRoll extends Roll {
     const roll = new CharacteristicRoll(undefined, {}, options);
     await roll.evaluate();
     activateChatTab();
-    const msg = await roll.toMessage(
-      { flavor: roll.flavor, speaker: options.speaker },
-      { rollMode: options.rollMode, create: true },
-    );
+    const msg = await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker }, {
+      messageMode: options.rollMode,
+      create: true,
+    } as unknown as Record<string, unknown>);
 
     if (msg?.id != null) {
       await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);

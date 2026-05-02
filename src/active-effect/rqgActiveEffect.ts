@@ -24,8 +24,8 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
    * Prefix the rqid with ~ to use it as a regex and apply the effect to all matching items,
    * like "~i.hit-location:system.naturalAp" to affect all hit location items on the actor.
    */
-  override _applyCustom(
-    actor: Actor.Implementation,
+  static _applyChangeCustom(
+    targetDoc: Actor.Implementation,
     change: ActiveEffect.ChangeData,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     currentP: unknown,
@@ -34,10 +34,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     changes: AnyMutableObject,
   ): void {
+    const effect = (change as any).effect as RqgActiveEffect | undefined;
     const [rqidOrPattern, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       const itemsWithEffectsOnActor = formatListByWorldLanguage(
-        actor.appliedEffects.map((e) => {
+        targetDoc.appliedEffects.map((e) => {
           try {
             return (fromUuidSync(e.origin) as Document.Any)?.name ?? "❓no name";
           } catch {
@@ -46,7 +47,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
         }),
         "disjunction",
       );
-      const msg = `Character ${actor.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
+      const msg = `Character ${targetDoc.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
       ui.notifications?.warn(msg, { console: false });
       console.warn("RQG | ", msg);
     }
@@ -55,11 +56,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const rqid = isMultiMatch ? rqidOrPattern.slice(1) : rqidOrPattern;
 
     const items = [];
-    if (isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character)) {
+    if (isDocumentSubType<CharacterActor>(targetDoc, ActorTypeEnum.Character)) {
       if (isMultiMatch) {
-        items.push(...actor.getEmbeddedDocumentsByRqidRegex(rqid ?? ""));
+        items.push(...targetDoc.getEmbeddedDocumentsByRqidRegex(rqid ?? ""));
       } else {
-        const bestMatch = actor.getBestEmbeddedDocumentByRqid(toRqidString(rqid));
+        const bestMatch = targetDoc.getBestEmbeddedDocumentByRqid(toRqidString(rqid));
         if (bestMatch) {
           items.push(bestMatch);
         }
@@ -70,12 +71,12 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       logMisconfiguration(
         localize("RQG.Foundry.ActiveEffect.TargetItemNotFound", {
           rqid: rqidOrPattern ?? "",
-          actorName: actor.name,
+          actorName: targetDoc.name,
           itemName: Rqid.getDocumentName(rqid),
         }),
-        !this.disabled,
+        !effect?.disabled,
         change,
-        this,
+        effect,
       );
       return;
     }
@@ -129,7 +130,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       try {
         foundry.utils.setProperty(item, path as any, update);
       } catch (e) {
-        const msg = `Active Effect on item [${item.name}] in actor [${actor.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
+        const msg = `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
         ui.notifications?.warn(msg, { console: false });
         console.warn("RQG |", msg, change, e);
       }
@@ -138,7 +139,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
   // TODO this is just copied from the ActiveEffect class. Refactor when items use DataModels
 
-  #castDelta(raw: any, type: any) {
+  static #castDelta(raw: any, type: any) {
     let delta;
     switch (type) {
       case "boolean":
@@ -159,7 +160,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return delta;
   }
 
-  #castArray(raw: any, type: any) {
+  static #castArray(raw: any, type: any) {
     let delta;
     try {
       delta = this.#parseOrString(raw);
@@ -170,7 +171,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return delta.map((d) => this.#castDelta(d, type));
   }
 
-  #parseOrString(raw: any) {
+  static #parseOrString(raw: any) {
     try {
       return JSON.parse(raw);
     } catch {

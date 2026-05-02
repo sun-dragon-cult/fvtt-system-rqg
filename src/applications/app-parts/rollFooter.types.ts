@@ -1,4 +1,4 @@
 export type RollFooterData = {
   totalChance: number;
-  rollMode: CONST.DICE_ROLL_MODES; // read in onSubmit by checking the active class
+  rollMode: foundry.dice.Roll.Mode; // read in onSubmit by checking the active class
 };

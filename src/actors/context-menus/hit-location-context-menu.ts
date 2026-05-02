@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import { RqgActorSheet } from "../rqgActorSheet";
 import {
   getDomDataset,
@@ -11,14 +12,14 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export const hitLocationMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
+export const hitLocationMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.ContextMenu.EditItem", {
+    label: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: HTMLElement) => !!getDomDataset(el, "item-id"),
-    callback: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => !!getDomDataset(el, "item-id"),
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as HitLocationItem | undefined;
       if (!item || !item.sheet) {
@@ -33,12 +34,12 @@ export const hitLocationMenuOptions = (actor: CharacterActor): ContextMenu.Entry
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {
+    label: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.HitLocation),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!game.user?.isGM,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

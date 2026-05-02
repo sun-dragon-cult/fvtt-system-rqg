@@ -18,6 +18,7 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { DeepPartial } from "fvtt-types/utils";
+import { getDefaultRollMode, getSelectedRollMode } from "../app-parts/rollMode";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -48,7 +49,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private spellItem: SpiritMagicItem;
   private powX5: number;
-  private rollMode: CONST.DICE_ROLL_MODES;
+  private rollMode: foundry.dice.Roll.Mode;
 
   constructor(
     spellItem: SpiritMagicItem,
@@ -61,9 +62,7 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
     this.spellItem = spellItem;
     this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
-    this.rollMode =
-      (game.settings?.get("core", "rollMode") as CONST.DICE_ROLL_MODES) ??
-      CONST.DICE_ROLL_MODES.PUBLIC;
+    this.rollMode = getDefaultRollMode();
   }
 
   static override DEFAULT_OPTIONS = {
@@ -152,11 +151,11 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private onChangeRollMode(event: MouseEvent) {
     const target = event.target as HTMLButtonElement;
-    const newRollMode = getDomDataset(target, "roll-mode");
-    if (!newRollMode || !(Object.values(CONST.DICE_ROLL_MODES) as string[]).includes(newRollMode)) {
+    const newRollMode = getSelectedRollMode(getDomDataset(target, "roll-mode"));
+    if (!newRollMode) {
       return; // Clicked outside the buttons, or not a valid roll mode
     }
-    this.rollMode = newRollMode as CONST.DICE_ROLL_MODES;
+    this.rollMode = newRollMode;
 
     this.render();
   }
@@ -168,11 +167,12 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
   ): Promise<void> {
     const formDataObject = formData.object as SpiritMagicRollDialogFormData;
 
-    const rollMode = (form?.querySelector<HTMLButtonElement>(
-      'button[data-action="rollMode"][aria-pressed="true"]',
-    )?.dataset["rollMode"] ??
-      game.settings?.get("core", "rollMode") ??
-      CONST.DICE_ROLL_MODES.PUBLIC) as CONST.DICE_ROLL_MODES;
+    const rollMode =
+      getSelectedRollMode(
+        form?.querySelector<HTMLButtonElement>(
+          'button[data-action="rollMode"][aria-pressed="true"]',
+        )?.dataset["rollMode"],
+      ) ?? getDefaultRollMode();
 
     const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",

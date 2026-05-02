@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { getRequiredDomDataset, localize, localizeItemType, RqgError } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
@@ -7,16 +8,16 @@ import { isValidRqidString } from "../../system/api/rqidValidation";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
-export const cultMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLElement>[] => [
+export const cultMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.ContextMenu.ViewDescription"),
+    label: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as CultItem | undefined;
       return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as CultItem | undefined;
       const rqid = item?.system.descriptionRqidLink?.rqid;
@@ -26,12 +27,12 @@ export const cultMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLEl
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {
+    label: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: HTMLElement) => !!getRequiredDomDataset(el, "item-id"),
-    callback: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => !!getRequiredDomDataset(el, "item-id"),
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as CultItem | undefined;
       if (!item || !item.sheet) {
@@ -46,12 +47,12 @@ export const cultMenuOptions = (actor: CharacterActor): ContextMenu.Entry<HTMLEl
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {
+    label: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.Cult),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!game.user?.isGM || actor.system.editMode,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM || actor.system.editMode,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

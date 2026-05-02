@@ -62,12 +62,16 @@ export const registerHandlebarsHelpers = function () {
     return localizeItemType(itemType);
   });
 
-  Handlebars.registerHelper("localizeActiveEffectMode", (mode: string) => {
-    const valueLookup = Object.fromEntries(
-      Object.entries(CONST.ACTIVE_EFFECT_MODES).map(([key, value]) => [value, key]),
-    );
-    const modeString = valueLookup[mode];
-    return localize(`EFFECT.MODE_${modeString}`);
+  Handlebars.registerHelper("localizeActiveEffectType", (type: string) => {
+    // RQG-TEMP-REMOVE-ACTIVE-EFFECT-CHANGE-TYPES:
+    // This uses CONST.ACTIVE_EFFECT_CHANGE_TYPES, currently provided via
+    // src/global.d.ts augmentation until fvtt-types ships it.
+    const normalizedType =
+      typeof type === "string" && type in CONST.ACTIVE_EFFECT_CHANGE_TYPES ? type : undefined;
+    if (!normalizedType) {
+      return "";
+    }
+    return localize(`EFFECT.CHANGES.TYPES.${normalizedType}`);
   });
 
   Handlebars.registerHelper("skillname", (...args) => {

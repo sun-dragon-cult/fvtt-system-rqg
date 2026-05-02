@@ -230,13 +230,6 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Apply any transformations to the Actor data which are caused by ActiveEffects.
-   */
-  override applyActiveEffects(): void {
-    super.applyActiveEffects();
-  }
-
-  /**
    * Apply final transformations to the Actor data after all effects have been applied
    */
   override prepareDerivedData(): void {

@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import type { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
   getDomDataset,
@@ -13,33 +14,33 @@ import { type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts
 export const characteristicMenuOptions = (
   actor: CharacterActor,
   token: TokenDocument | undefined | null,
-): ContextMenu.Entry<HTMLElement>[] => [
+): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.Game.RollChat"),
+    label: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: () => true,
-    callback: async (el: HTMLElement) => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       await actor.characteristicRoll(characteristicName);
     },
   },
   {
-    name: localize("RQG.Game.RollCharacteristicQuick"),
+    label: localize("RQG.Game.RollCharacteristicQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: () => true,
-    callback: async (el: HTMLElement): Promise<void> => {
+    visible: () => true,
+    onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       await actor.characteristicRollImmediate(characteristicName);
     },
   },
   {
-    name: localize("RQG.ContextMenu.ToggleExperience"),
+    label: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
       return characteristicName === "power";
     },
-    callback: async (): Promise<CharacterActor | undefined> =>
+    onClick: async (): Promise<CharacterActor | undefined> =>
       await actor.update({
         system: {
           characteristics: {
@@ -51,11 +52,11 @@ export const characteristicMenuOptions = (
       }),
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {
+    label: localize("RQG.ContextMenu.ImproveItem", {
       itemType: localize("RQG.Actor.Characteristics.Characteristic"),
     }),
     icon: contextMenuRunes.Improve,
-    condition: (el: HTMLElement): boolean => {
+    visible: (el: HTMLElement): boolean => {
       const { name: characteristicName, value: char } = getCharacteristic(actor, el);
       // You can train STR, CON, DEX, POW, and CHA, and you can increase POW via experience
       // You cannot train INT or increase it via experience
@@ -67,7 +68,7 @@ export const characteristicMenuOptions = (
       const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
       return trainable.includes(characteristicName);
     },
-    callback: (el: HTMLElement) => {
+    onClick: (_event: Event, el: HTMLElement) => {
       const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
@@ -84,9 +85,9 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.InitializeCharacteristic"),
+    label: localize("RQG.ContextMenu.InitializeCharacteristic"),
     icon: contextMenuRunes.InitializeCharacteristics,
-    condition: (el: HTMLElement): boolean => {
+    visible: (el: HTMLElement): boolean => {
       if (actor.system.editMode) {
         const { value: char } = getCharacteristic(actor, el);
         return char.formula != null && Roll.validate(char.formula);
@@ -94,7 +95,7 @@ export const characteristicMenuOptions = (
         return false;
       }
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const characteristic = getDomDataset(el, "characteristic") as
         | keyof Characteristics
         | undefined;
@@ -113,10 +114,10 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.InitializeAllCharacteristics"),
+    label: localize("RQG.ContextMenu.InitializeAllCharacteristics"),
     icon: contextMenuRunes.InitializeAllCharacteristics,
-    condition: (): boolean => actor.system.editMode,
-    callback: async () => {
+    visible: (): boolean => actor.system.editMode,
+    onClick: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
         await initializeAllCharacteristics(actor);
@@ -127,10 +128,10 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.SetAllCharacteristicsToAverage"),
+    label: localize("RQG.ContextMenu.SetAllCharacteristicsToAverage"),
     icon: contextMenuRunes.SetAllCharacteristicsToAverage,
-    condition: (): boolean => actor.system.editMode,
-    callback: async () => {
+    visible: (): boolean => actor.system.editMode,
+    onClick: async () => {
       const confirmed = await confirmInitializeDialog(actor.name ?? "");
       if (confirmed) {
         await setAllCharacteristicsToAverage(actor);

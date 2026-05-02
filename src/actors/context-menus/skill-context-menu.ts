@@ -1,3 +1,4 @@
+import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
 import { RqgActorSheet } from "../rqgActorSheet";
 import { RqgActor } from "../rqgActor";
 import {
@@ -20,11 +21,11 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 export const skillMenuOptions = (
   actor: RqgActor,
   token: TokenDocument | undefined,
-): ContextMenu.Entry<HTMLElement>[] => [
+): RqgContextMenuEntry[] => [
   {
-    name: localize("RQG.Game.RollChat"),
+    label: localize("RQG.Game.RollChat"),
     icon: contextMenuRunes.RollViaChat,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -32,7 +33,7 @@ export const skillMenuOptions = (
         [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons] as SkillCategoryEnum[]
       ).includes(item.system.category);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -40,9 +41,9 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.Game.RollQuick"),
+    label: localize("RQG.Game.RollQuick"),
     icon: contextMenuRunes.RollQuick,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -50,7 +51,7 @@ export const skillMenuOptions = (
         [SkillCategoryEnum.MeleeWeapons, SkillCategoryEnum.MissileWeapons] as SkillCategoryEnum[]
       ).includes(item.system.category);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -67,15 +68,15 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ToggleExperience"),
+    label: localize("RQG.ContextMenu.ToggleExperience"),
     icon: contextMenuRunes.ToggleExperience,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
       return item.system.canGetExperience;
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -83,16 +84,16 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ImproveItem", {
+    label: localize("RQG.ContextMenu.ImproveItem", {
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Improve,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
       return isDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
@@ -104,14 +105,14 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.ViewDescription"),
+    label: localize("RQG.ContextMenu.ViewDescription"),
     icon: contextMenuRunes.ViewDescription,
-    condition: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SkillItem | undefined;
       return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
-    callback: async (el: HTMLElement) => {
+    onClick: async (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       const rqid = item?.system.descriptionRqidLink?.rqid;
@@ -121,12 +122,12 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.EditItem", {
+    label: localize("RQG.ContextMenu.EditItem", {
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Edit,
-    condition: (el: HTMLElement) => !!getRequiredDomDataset(el, "item-id"),
-    callback: (el: HTMLElement) => {
+    visible: (el: HTMLElement) => !!getRequiredDomDataset(el, "item-id"),
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
@@ -139,12 +140,12 @@ export const skillMenuOptions = (
     },
   },
   {
-    name: localize("RQG.ContextMenu.DeleteItem", {
+    label: localize("RQG.ContextMenu.DeleteItem", {
       itemType: localizeItemType(ItemTypeEnum.Skill),
     }),
     icon: contextMenuRunes.Delete,
-    condition: () => !!game.user?.isGM,
-    callback: (el: HTMLElement) => {
+    visible: () => !!game.user?.isGM,
+    onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void RqgActorSheet.confirmItemDelete(actor, itemId);
     },

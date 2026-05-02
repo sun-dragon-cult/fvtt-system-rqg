@@ -8,5 +8,5 @@ export type SpiritMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluat
   spellName?: string;
   spellImg?: string;
   speaker?: ChatMessage.SpeakerData;
-  rollMode?: CONST.DICE_ROLL_MODES;
+  rollMode?: foundry.dice.Roll.Mode;
 };
