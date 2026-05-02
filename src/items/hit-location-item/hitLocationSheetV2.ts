@@ -120,15 +120,15 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
         }),
         content: dialogContentHtml,
         default: "submit",
-        render: () => {
-          $("#inflictDamagePoints").focus();
+        render: (html: JQuery) => {
+          html.find<HTMLInputElement>("#inflictDamagePoints")[0]?.focus();
         },
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: localize("RQG.Item.HitLocation.AddWound.btnAddWound"),
-            callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheetV2.submitAddWoundDialog(html as JQuery, actor, hitLocation),
+            callback: async (html: JQuery) =>
+              await HitLocationSheetV2.submitAddWoundDialog(html[0]!, actor, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -142,12 +142,12 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
   }
 
   private static async submitAddWoundDialog(
-    html: JQuery,
+    html: HTMLElement,
     actor: RqgActor,
     hitLocation: RqgItem,
   ): Promise<void> {
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
-    const formData = new FormData(html.find("form")[0]);
+    const formData = new FormData(html.querySelector("form") ?? undefined);
     const data = Object.fromEntries(formData.entries());
     const applyDamageToTotalHp: boolean = !!data["toTotalHp"];
     const ignoreAP: boolean = !data["subtractAP"];
@@ -182,15 +182,15 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
         }),
         content: dialogContentHtml,
         default: "submit",
-        render: () => {
-          $("#healWoundPoints").focus();
+        render: (html: JQuery) => {
+          html.find<HTMLInputElement>("#healWoundPoints")[0]?.focus();
         },
         buttons: {
           submit: {
             icon: '<i class="fas fa-check"></i>',
             label: localize("RQG.Item.HitLocation.HealWound.btnHealWound"),
-            callback: async (html: JQuery | HTMLElement) =>
-              await HitLocationSheetV2.submitHealWoundDialog(html as JQuery, actor, hitLocation),
+            callback: async (html: JQuery) =>
+              await HitLocationSheetV2.submitHealWoundDialog(html[0]!, actor, hitLocation),
           },
           cancel: {
             icon: '<i class="fas fa-times"></i>',
@@ -204,12 +204,12 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
   }
 
   private static async submitHealWoundDialog(
-    html: JQuery,
+    html: HTMLElement,
     actor: RqgActor,
     hitLocation: RqgItem,
   ): Promise<void> {
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
-    const formData = new FormData(html.find("form")[0]);
+    const formData = new FormData(html.querySelector("form") ?? undefined);
     const data = Object.fromEntries(formData.entries());
     requireValue(
       hitLocation.system.hitPoints.value,

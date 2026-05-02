@@ -511,7 +511,7 @@ export class ActorWizard extends ActorWizardBase {
         }
         const body = wrapper?.querySelector<HTMLElement>(".collapsible-wrapper-body");
         if (body) {
-          $(body).slideToggle(300);
+          body.style.display = body.style.display === "none" ? "" : "none";
         }
         wrapper?.querySelector(".fa-plus-square")?.classList.toggle("no-display");
         wrapper?.querySelector(".fa-minus-square")?.classList.toggle("no-display");
@@ -520,7 +520,9 @@ export class ActorWizard extends ActorWizardBase {
     });
 
     // RQID link click handlers
-    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
+    if (this.element instanceof HTMLElement) {
+      void RqidLink.addRqidLinkClickHandlers(this.element);
+    }
   }
 
   _setActorCreationComplete() {

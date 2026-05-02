@@ -126,7 +126,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
 
     // RQID link click handlers in the sheet body
-    void RqidLink.addRqidLinkClickHandlersToJQuery($(this.element));
+    if (this.element instanceof HTMLElement) {
+      void RqidLink.addRqidLinkClickHandlers(this.element);
+    }
 
     // Drag-drop (register element-level listeners only on first render to avoid duplicates)
     if (options.isFirstRender) {

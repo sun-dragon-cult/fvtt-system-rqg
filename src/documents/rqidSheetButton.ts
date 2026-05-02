@@ -20,6 +20,8 @@ export async function addRqidLinkToSheet(sheet: DocumentSheet<any, any>): Promis
 /**
  * Create an ID link button in the document sheet header which displays the document ID and copies to clipboard
  * Only to be used with application v1 sheets.
+ *
+ * @deprecated Use addRqidLinkToSheet for AppV2/native sheets.
  */
 export async function addRqidLinkToSheetJQuery(
   jquery: JQuery<JQuery.Node>,

@@ -15,7 +15,11 @@ export class RqidLink<R extends string = string> {
     this.name = name;
   }
 
-  // Handle rqid links
+  /**
+   * Handle rqid links for legacy AppV1/JQuery sheets.
+   *
+   * @deprecated Use addRqidLinkClickHandlers with HTMLElement for AppV2/native sheets.
+   */
   static async addRqidLinkClickHandlersToJQuery(jQuery: JQuery): Promise<void> {
     await RqidLink.addRqidLinkClickHandlers(jQuery[0] as HTMLElement);
   }

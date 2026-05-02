@@ -359,10 +359,10 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    if (!(event instanceof SubmitEvent)) {
+    if (event.type !== "submit") {
       return; // Should only be called on form submits
     }
-    const submitter = event.submitter;
+    const submitter = (event as SubmitEvent).submitter;
     const formDataObject = formData.object as DefenceDialogFormData;
 
     if (!isButton(submitter)) {

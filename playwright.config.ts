@@ -22,7 +22,10 @@ export default (async () => {
     projects: [
       {
         name: "chromium",
-        use: { ...devices["Desktop Chrome"] },
+        use: {
+          ...devices["Desktop Chrome"],
+          viewport: { width: 1400, height: 800 },
+        },
       },
     ],
 

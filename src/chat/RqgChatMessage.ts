@@ -165,8 +165,9 @@ export class RqgChatMessage extends ChatMessage {
 
     // Handle HTML content
     if (this.content) {
-      const html = $("<article>").html(this.content.replace(/<\/div>/g, "</div>|n"));
-      const text = html.length ? html.text() : this.content;
+      const article = document.createElement("article");
+      article.innerHTML = this.content.replace(/<\/div>/g, "</div>|n");
+      const text = article.textContent ?? this.content;
       const lines = text
         .replace(/\n/g, "")
         .split("  ")
