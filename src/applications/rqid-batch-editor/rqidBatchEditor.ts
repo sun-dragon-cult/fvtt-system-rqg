@@ -190,20 +190,24 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   }
 
   async _updateObject(event: Event): Promise<void> {
-    if (event instanceof SubmitEvent) {
-      const clickedButton = event.submitter as HTMLButtonElement;
-      clickedButton.disabled = true;
-
-      await RqidBatchEditor.persistChanges(
-        this.object.sceneChangesMap,
-        this.object.actorChangesMap,
-        this.object.worldItemChanges,
-        this.object.packItemChangesMap,
-        this.object.packActorChangesMap,
-        this.object.itemName2Rqid,
-      );
-      await this.close();
+    if (event.type !== "submit") {
+      return;
     }
+
+    const clickedButton = (event as SubmitEvent).submitter as HTMLButtonElement | null;
+    if (clickedButton) {
+      clickedButton.disabled = true;
+    }
+
+    await RqidBatchEditor.persistChanges(
+      this.object.sceneChangesMap,
+      this.object.actorChangesMap,
+      this.object.worldItemChanges,
+      this.object.packItemChangesMap,
+      this.object.packActorChangesMap,
+      this.object.itemName2Rqid,
+    );
+    await this.close();
   }
 
   override get title(): string {

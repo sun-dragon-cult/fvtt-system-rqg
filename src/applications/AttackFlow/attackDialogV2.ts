@@ -5,7 +5,6 @@ import {
   assertDocumentSubType,
   assertHtmlElement,
   getActorLinkDecoration,
-  getDomDataset,
   getTokenFromItem,
   getTokenOrActorFromItem,
   isButton,
@@ -332,10 +331,10 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     form: HTMLFormElement,
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
-    if (!(event instanceof SubmitEvent)) {
+    if (event.type !== "submit") {
       return;
     }
-    const submitter = event.submitter;
+    const submitter = (event as SubmitEvent).submitter;
     const formDataObject = formData.object as AttackDialogFormData;
 
     if (!isButton(submitter)) {
@@ -372,7 +371,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       return;
     }
 
-    const combatManeuverName = getDomDataset(submitter, "combat-maneuver-name");
+    const combatManeuverName = submitter.dataset["combatManeuverName"];
 
     const combatManeuver: CombatManeuver | undefined = weaponItem?.system.usage[
       formDataObject.usageType
