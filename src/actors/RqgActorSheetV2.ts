@@ -532,13 +532,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       );
     }
 
-    // RQID link click handlers
-    if (this.element instanceof HTMLElement) {
-      void RqidLink.addRqidLinkClickHandlers(this.element);
+    // RQID link open/delete handlers (bind once; delegated handlers survive re-renders)
+    if (options.isFirstRender) {
+      RqidLink.bindHandlers(this.element, this.actor as foundry.abstract.Document.Any);
     }
-
-    // Delete handlers for RQID links (single link and link arrays)
-    RqidLink.addRqidLinkDeleteHandlers(this.element, this.actor as foundry.abstract.Document.Any);
 
     // RQID dropzones (wizard background tab and any other dropzone-enabled fields)
     this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
