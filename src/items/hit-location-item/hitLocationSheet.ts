@@ -223,20 +223,6 @@ export class HitLocationSheet extends RqgItemSheet {
       await actor.update(actorUpdates as any);
     }
 
-    if (actor.isToken) {
-      await actor.updateTokenEffectFromHealth();
-    } else {
-      const activeTokens = actor.getActiveTokens(true, false);
-      const currentScene = game.scenes?.current;
-      if (currentScene && activeTokens.length) {
-        // TODO could be a bug if the actor has tokens in multiple scenes maybe. then getting activeTokens[0] could be wrong. Should check that the scene match?
-        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0]?.id ?? "", {});
-        if (token) {
-          await actor.updateTokenEffectFromHealth();
-        }
-      }
-    }
-
     for (const update of usefulLegs) {
       if (update != null && update._id != null) {
         // TODO make sure usefulLegs only contain real data

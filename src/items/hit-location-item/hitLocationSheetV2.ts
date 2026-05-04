@@ -239,19 +239,6 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
       await actor.update(actorUpdates as any);
     }
 
-    if (actor.isToken) {
-      await actor.updateTokenEffectFromHealth();
-    } else {
-      const activeTokens = actor.getActiveTokens(true, false);
-      const currentScene = game.scenes?.current;
-      if (currentScene && activeTokens.length) {
-        const token = currentScene.getEmbeddedDocument("Token", activeTokens[0]?.id ?? "", {});
-        if (token) {
-          await actor.updateTokenEffectFromHealth();
-        }
-      }
-    }
-
     for (const update of usefulLegs) {
       if (update != null && update._id != null) {
         const item = actor.items.get(update._id);

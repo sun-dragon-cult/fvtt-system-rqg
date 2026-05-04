@@ -1167,6 +1167,16 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): Promise<void> {
     const sheet = this as unknown as RqgActorSheetV2;
     const data = formData.object as Record<string, unknown>;
+
+    const maxHitPoints = sheet.actor.system.attributes.hitPoints.max;
+
+    if (
+      data["system.attributes.hitPoints.value"] == null ||
+      (data["system.attributes.hitPoints.value"] as number) >= (maxHitPoints ?? 0)
+    ) {
+      data["system.attributes.hitPoints.value"] = maxHitPoints;
+    }
+
     await sheet.actor.update(data);
   }
 
