@@ -31,7 +31,10 @@ type CharacterSchema = ReturnType<typeof CharacterDataModel.defineSchema>;
 
 export class CharacterDataModel extends RqgActorDataModel<
   CharacterSchema,
-  { skillCategoryModifiers: SkillCategories }
+  {
+    skillCategoryModifiers: SkillCategories;
+    baseSkillCategoryModifiers: SkillCategories;
+  }
 > {
   static override defineSchema() {
     return {
@@ -117,6 +120,7 @@ export class CharacterDataModel extends RqgActorDataModel<
       isCreature: system.attributes.isCreature,
     });
 
+    system.baseSkillCategoryModifiers = characteristicDerived.skillCategoryModifiers;
     system.skillCategoryModifiers = characteristicDerived.skillCategoryModifiers;
     system.attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
     system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;

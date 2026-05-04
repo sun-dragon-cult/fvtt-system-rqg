@@ -34,6 +34,7 @@ import { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
+import { applyEquippedEncumbrancePenalty } from "../data-model/actor-data/derivedCharacterValues";
 
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
@@ -246,7 +247,8 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
     const { str, con } = this.actorCharacteristics();
-    const skillCategoryModifiers = this.system.skillCategoryModifiers;
+    const baseSkillCategoryModifiers =
+      this.system.baseSkillCategoryModifiers ?? this.system.skillCategoryModifiers;
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
@@ -263,17 +265,15 @@ export class RqgActor extends Actor {
       (attributes.encumbrance.max || 0) - (attributes.encumbrance.equipped || 0),
     );
 
+    this.system.skillCategoryModifiers = applyEquippedEncumbrancePenalty(
+      baseSkillCategoryModifiers,
+      equippedMovementEncumbrancePenalty,
+    );
+
     attributes.move.value =
       this.system.attributes.move?.[attributes.move?.currentLocomotion]?.value || 0;
 
     attributes.move.equipped = attributes.move.value + equippedMovementEncumbrancePenalty;
-    skillCategoryModifiers.agility += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.manipulation += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.stealth += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.meleeWeapons += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.missileWeapons += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.naturalWeapons += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.shields += equippedMovementEncumbrancePenalty * 5;
 
     const travelMovementEncumbrancePenalty = Math.min(
       0,

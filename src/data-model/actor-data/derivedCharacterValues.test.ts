@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { getCharacteristicDerivedValues } from "./derivedCharacterValues";
+import {
+  applyEquippedEncumbrancePenalty,
+  getCharacteristicDerivedValues,
+} from "./derivedCharacterValues";
 
 describe("getCharacteristicDerivedValues", () => {
   it("computes expected values for an average non-creature", () => {
@@ -66,5 +69,65 @@ describe("getCharacteristicDerivedValues", () => {
       shields: 0,
       otherSkills: 0,
     });
+  });
+});
+
+describe("applyEquippedEncumbrancePenalty", () => {
+  it("applies penalties only to affected categories", () => {
+    const base = {
+      agility: 10,
+      communication: 5,
+      knowledge: 6,
+      magic: 7,
+      manipulation: 8,
+      perception: 9,
+      stealth: 4,
+      meleeWeapons: 3,
+      missileWeapons: 2,
+      naturalWeapons: 1,
+      shields: 0,
+      otherSkills: 11,
+    };
+
+    const result = applyEquippedEncumbrancePenalty(base, -2);
+
+    expect(result).toStrictEqual({
+      agility: 0,
+      communication: 5,
+      knowledge: 6,
+      magic: 7,
+      manipulation: -2,
+      perception: 9,
+      stealth: -6,
+      meleeWeapons: -7,
+      missileWeapons: -8,
+      naturalWeapons: -9,
+      shields: -10,
+      otherSkills: 11,
+    });
+  });
+
+  it("does not mutate base modifiers", () => {
+    const base = {
+      agility: 5,
+      communication: 1,
+      knowledge: 1,
+      magic: 1,
+      manipulation: 5,
+      perception: 1,
+      stealth: 5,
+      meleeWeapons: 5,
+      missileWeapons: 5,
+      naturalWeapons: 5,
+      shields: 5,
+      otherSkills: 1,
+    };
+
+    const result = applyEquippedEncumbrancePenalty(base, -1);
+
+    expect(base.agility).toBe(5);
+    expect(base.manipulation).toBe(5);
+    expect(base.stealth).toBe(5);
+    expect(result.agility).toBe(0);
   });
 });

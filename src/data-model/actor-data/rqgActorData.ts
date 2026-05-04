@@ -4,6 +4,7 @@ export const ActorTypeEnum = {
 export type ActorTypeEnum = (typeof ActorTypeEnum)[keyof typeof ActorTypeEnum];
 
 import type { RqgActor } from "@actors/rqgActor.ts";
+import type { SkillCategories } from "./skillCategories";
 
 /**
  * Derived attribute fields that `prepareDerivedData()` adds under `system.attributes`.
@@ -27,7 +28,10 @@ type DerivedAttributes = ItemDependentDerivedAttributes & CharacteristicDerivedA
 
 // Narrowed actor type for subtype "character"
 export type CharacterActor = RqgActor & {
-  system: Actor.SystemOfType<"character"> & { attributes: DerivedAttributes };
+  system: Actor.SystemOfType<"character"> & {
+    attributes: DerivedAttributes;
+    baseSkillCategoryModifiers: SkillCategories;
+  };
 };
 
 import Actor = foundry.documents.Actor;

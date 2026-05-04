@@ -43,3 +43,20 @@ export function getCharacteristicDerivedValues(
     skillCategoryModifiers,
   };
 }
+
+export function applyEquippedEncumbrancePenalty(
+  base: SkillCategories,
+  equippedMovementEncumbrancePenalty: number,
+): SkillCategories {
+  const delta = equippedMovementEncumbrancePenalty * 5;
+  return {
+    ...base,
+    agility: base.agility + delta,
+    manipulation: base.manipulation + delta,
+    stealth: base.stealth + delta,
+    meleeWeapons: base.meleeWeapons + delta,
+    missileWeapons: base.missileWeapons + delta,
+    naturalWeapons: base.naturalWeapons + delta,
+    shields: base.shields + delta,
+  };
+}
