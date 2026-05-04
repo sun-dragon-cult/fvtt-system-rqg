@@ -34,6 +34,7 @@ import { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
+import { getCharacteristicDerivedValues } from "../data-model/actor-data/derivedCharacterValues";
 
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
@@ -246,16 +247,18 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
     const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
+    const characteristicDerived = getCharacteristicDerivedValues({
+      str,
+      con,
+      siz,
+      dex,
+      int,
+      pow,
+      cha,
+      isCreature: this.system.attributes.isCreature,
+    });
     const skillCategoryModifiers = (this.system.skillCategoryModifiers =
-      RqgCalculations.skillCategoryModifiers(
-        str,
-        siz,
-        dex,
-        int,
-        pow,
-        cha,
-        this.system.attributes.isCreature,
-      ));
+      characteristicDerived.skillCategoryModifiers);
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
@@ -292,11 +295,11 @@ export class RqgActor extends Actor {
 
     this.items.forEach((item) => handleActorPrepareDerivedData(item as RqgItem));
 
-    attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
-    attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
-    attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
-    attributes.healingRate = RqgCalculations.healingRate(con);
-    attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
+    attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
+    attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
+    attributes.damageBonus = characteristicDerived.damageBonus;
+    attributes.healingRate = characteristicDerived.healingRate;
+    attributes.spiritCombatDamage = characteristicDerived.spiritCombatDamage;
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
   }
