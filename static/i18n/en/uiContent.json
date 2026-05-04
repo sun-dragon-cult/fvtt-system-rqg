@@ -298,7 +298,12 @@
         "AddWound": "Add Wound",
         "NoHitLocations": "This character does not have any hit locations, please add some.",
         "FlipSortOrder": "Reverse the order of the hit locations",
-        "HitLocationDiceDoNotAddUp": "⚠ The hit locations dice does not cover the range 1-20. They cover this [{dice}]."
+        "HitLocationDiceDoNotAddUp": "⚠ The hit locations dice does not cover the range 1-20. They cover this [{dice}].",
+        "Transition": {
+          "DeadFromHitPoints": "{actorName} runs out of hitpoints and dies here and now!",
+          "UnconsciousFromMagicPoints": "{actorName} faints from lack of magic points!",
+          "UnconsciousFromHitPoints": "{actorName} faints from lack of hitpoints!"
+        }
       },
       "Nav": {
         "Combat": "Combat",
@@ -650,6 +655,10 @@
         "title": "Delete {itemType}: {itemName}",
         "content": "Are you sure you want to delete the {itemType} named {itemName}?",
         "contentCult": "Are you sure you want to delete the {itemType} named {itemName}? This will also delete all of the {runeMagicSpell} items associated with this {itemType}."
+      },
+      "confirmActiveEffectDeleteDialog": {
+        "title": "Delete Active Effect: {effectName}",
+        "content": "Are you sure you want to delete the Active Effect named {effectName}?"
       },
       "improveAbilityDialog": {
         "title": "Improvement for {typeLocName} \"{name}\"",

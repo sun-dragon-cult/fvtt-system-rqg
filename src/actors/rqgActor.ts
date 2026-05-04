@@ -47,7 +47,16 @@ import {
 
 import Actor = foundry.documents.Actor;
 
+type HealthTransitionSnapshot = {
+  health: ActorHealthState;
+  hitPoints: number;
+  magicPoints: number;
+};
+
 export class RqgActor extends Actor {
+  private _healthBeforeActorUpdate?: HealthTransitionSnapshot;
+  private _healthBeforeItemUpdate?: HealthTransitionSnapshot;
+
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
     CONFIG.Actor.dataModels["character"] = CharacterDataModel;
@@ -427,8 +436,6 @@ export class RqgActor extends Actor {
         }) + incapacitatingText,
       whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
     });
-
-    await this.updateTokenEffectFromHealth();
   }
 
   /**
@@ -446,22 +453,102 @@ export class RqgActor extends Actor {
     const newEffect = health2Effect.get(this.system.attributes.health);
 
     for (const status of health2Effect.values()) {
-      const actorHasEffectAlready = this.statuses.has(status?.id);
-      if (newEffect?.id === status.id && !actorHasEffectAlready) {
-        const asOverlay = status.id === "dead";
+      const statusId = status?.id;
+      if (!statusId) {
+        continue;
+      }
+
+      // Check if the effect actually exists on the actor
+      const effectExists = this.effects.some((e) => e.statuses.has(statusId));
+
+      if (newEffect?.id === statusId && !effectExists) {
+        const asOverlay = statusId === "dead";
         // Turn on the new effect
-        await this.toggleStatusEffect(status.id, {
+        await this.toggleStatusEffect(statusId, {
           overlay: asOverlay,
           active: true,
         });
-      } else if (newEffect?.id !== status.id && actorHasEffectAlready) {
+      } else if (newEffect?.id !== statusId && effectExists) {
         // This is not the effect we're applying, but it is on, so we need to turn it off
-        await this.toggleStatusEffect(status.id, {
-          overlay: false,
-          active: false,
-        });
+        try {
+          await this.toggleStatusEffect(statusId, {
+            overlay: false,
+            active: false,
+          });
+        } catch (error) {
+          // In v14, the effect might have been deleted already; silently ignore
+          console.warn(`Failed to toggle off status effect ${statusId}:`, error);
+        }
       }
     }
+  }
+
+  private getHealthTransitionSnapshot(): HealthTransitionSnapshot {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    return {
+      health: this.system.attributes.health,
+      hitPoints: this.system.attributes.hitPoints.value ?? 0,
+      magicPoints: this.system.attributes.magicPoints.value ?? 0,
+    };
+  }
+
+  private isHealthAffectingActorUpdate(changes: Actor.UpdateData): boolean {
+    return (
+      foundry.utils.hasProperty(changes, "system.attributes.hitPoints.value") ||
+      foundry.utils.hasProperty(changes, "system.attributes.magicPoints.value") ||
+      foundry.utils.hasProperty(changes, "system.attributes.health")
+    );
+  }
+
+  private async handleHealthTransition(
+    previous: HealthTransitionSnapshot | undefined,
+    userId: string,
+  ): Promise<void> {
+    if (game.user?.id !== userId || previous == null) {
+      return;
+    }
+
+    const next = this.getHealthTransitionSnapshot();
+    const previousHealth = previous.health;
+    const nextHealth = this.system.attributes.health;
+    if (previousHealth === nextHealth) {
+      return;
+    }
+
+    await this.updateTokenEffectFromHealth();
+
+    const speaker = ChatMessage.getSpeaker({ actor: this, token: this.token ?? undefined });
+    const speakerName = speaker.alias as string;
+    let message: string | undefined;
+
+    if (nextHealth === "dead" && previousHealth !== "dead") {
+      message = localize("RQG.Actor.Health.Transition.DeadFromHitPoints", {
+        actorName: speakerName,
+      }) as string;
+    } else if (nextHealth === "unconscious" && previousHealth !== "unconscious") {
+      const mpDroppedToZero = previous.magicPoints > 0 && next.magicPoints <= 0;
+      const hpDroppedToZero = previous.hitPoints > 0 && next.hitPoints <= 0;
+
+      message =
+        mpDroppedToZero && !hpDroppedToZero
+          ? (localize("RQG.Actor.Health.Transition.UnconsciousFromMagicPoints", {
+              actorName: speakerName,
+            }) as string)
+          : (localize("RQG.Actor.Health.Transition.UnconsciousFromHitPoints", {
+              actorName: speakerName,
+            }) as string);
+    }
+
+    if (!message) {
+      return;
+    }
+
+    await ChatMessage.create({
+      speaker,
+      content: message,
+      whisper: usersIdsThatOwnActor(this),
+      style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
+    });
   }
 
   private findEffect(health: ActorHealthState): CONFIG.StatusEffect {
@@ -617,6 +704,10 @@ export class RqgActor extends Actor {
   ): Promise<boolean | void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
+    this._healthBeforeActorUpdate = this.isHealthAffectingActorUpdate(changes)
+      ? this.getHealthTransitionSnapshot()
+      : undefined;
+
     const actorDex =
       (changes as DeepPartial<CharacterActor>)?.system?.characteristics?.dexterity?.value ??
       this.system.characteristics.dexterity.value;
@@ -634,6 +725,41 @@ export class RqgActor extends Actor {
       }
     }
     return super._preUpdate(changes, options, user);
+  }
+
+  protected override _preUpdateDescendantDocuments(
+    ...args: Parameters<Actor["_preUpdateDescendantDocuments"]>
+  ): void {
+    const [parent, collection] = args;
+    this._healthBeforeItemUpdate =
+      parent === this && collection === "items" ? this.getHealthTransitionSnapshot() : undefined;
+    super._preUpdateDescendantDocuments(...args);
+  }
+
+  protected override _onUpdate(...args: Parameters<Actor["_onUpdate"]>): void {
+    const [, , userId] = args;
+    const previousHealth = this._healthBeforeActorUpdate;
+    this._healthBeforeActorUpdate = undefined;
+
+    super._onUpdate(...args);
+
+    if (previousHealth != null) {
+      void this.handleHealthTransition(previousHealth, userId);
+    }
+  }
+
+  protected override _onUpdateDescendantDocuments(
+    ...args: Parameters<Actor["_onUpdateDescendantDocuments"]>
+  ): void {
+    const [parent, collection, , , , userId] = args;
+    const previousHealth = this._healthBeforeItemUpdate;
+    this._healthBeforeItemUpdate = undefined;
+
+    super._onUpdateDescendantDocuments(...args);
+
+    if (parent === this && collection === "items" && previousHealth != null) {
+      void this.handleHealthTransition(previousHealth, userId);
+    }
   }
 
   // Return shorthand access to actor data & characteristics

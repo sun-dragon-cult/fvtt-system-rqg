@@ -125,9 +125,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     // RQID header button (AppV2 version)
     await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
 
-    // RQID link click handlers in the sheet body
-    if (this.element instanceof HTMLElement) {
-      void RqidLink.addRqidLinkClickHandlers(this.element);
+    // RQID link open/delete handlers in the sheet body (bind once)
+    if (options.isFirstRender) {
+      RqidLink.bindHandlers(this.element, this.document as foundry.abstract.Document.Any);
     }
 
     // Drag-drop (register element-level listeners only on first render to avoid duplicates)
@@ -244,71 +244,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         (fromUuidSync(effectUuid) as any)?.delete();
       });
     });
-
-    // Delete an entry from an RqidLink array property
-    this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
-      const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
-      const deleteIndexRaw = getDomDataset(el, "delete-index");
-      const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
-      const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
-      el.addEventListener("click", async () => {
-        const deleteFromProperty = foundry.utils.getProperty(
-          this.document.system as object,
-          deleteFromPropertyName,
-        );
-        const isArray = Array.isArray(deleteFromProperty);
-        let newValue: RqidLink[] | string = "";
-        if (isArray) {
-          const links = [...(deleteFromProperty as RqidLink[])];
-          if (Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length) {
-            links.splice(deleteIndex, 1);
-            newValue = links;
-          } else {
-            newValue = links.filter((r) => r.rqid !== deleteRqid);
-          }
-        }
-        const updateKey = `system.${deleteFromPropertyName}`;
-        if (this.document.isEmbedded) {
-          await this.document.actor?.updateEmbeddedDocuments("Item", [
-            { _id: this.document.id, [updateKey]: newValue },
-          ]);
-        } else {
-          await this.document.update({ [updateKey]: newValue });
-        }
-      });
-    });
-
-    // Edit the bonus field on an RqidLink
-    this.element
-      .querySelectorAll<HTMLInputElement>("[data-edit-bonus-property-name]")
-      .forEach((el) => {
-        const editRqid = getRequiredDomDataset(el, "rqid");
-        const editPropertyName = getRequiredDomDataset(el, "edit-bonus-property-name");
-        el.addEventListener("change", async () => {
-          const updateProperty = foundry.utils.getProperty(
-            this.document.system as object,
-            editPropertyName,
-          );
-          if (Array.isArray(updateProperty)) {
-            const linkToEdit = (updateProperty as RqidLink[]).find(
-              (rqidLink) => rqidLink.rqid === editRqid,
-            );
-            if (linkToEdit) {
-              linkToEdit.bonus = Number(el.value);
-            }
-          } else {
-            (updateProperty as RqidLink).bonus = Number(el.value);
-          }
-          const updateKey = `system.${editPropertyName}`;
-          if (this.document.isEmbedded) {
-            await this.document.actor?.updateEmbeddedDocuments("Item", [
-              { _id: this.document.id, [updateKey]: updateProperty },
-            ]);
-          } else {
-            await this.document.update({ [updateKey]: updateProperty });
-          }
-        });
-      });
   }
 
   _onDragEnter(event: DragEvent): void {
