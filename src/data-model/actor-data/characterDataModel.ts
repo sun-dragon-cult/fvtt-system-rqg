@@ -4,6 +4,8 @@ import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
 import { enumChoices } from "../shared/enumChoices";
 import type { SkillCategories } from "./skillCategories";
+import { getCharacteristicDerivedValues } from "./derivedCharacterValues";
+import type { CharacterActor } from "./rqgActorData";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -96,5 +98,30 @@ export class CharacterDataModel extends RqgActorDataModel<
         }),
       }),
     } as const;
+  }
+
+  override prepareDerivedData(): void {
+    super.prepareDerivedData();
+
+    const system = this as unknown as CharacterActor["system"];
+    const characteristics = system.characteristics;
+
+    const characteristicDerived = getCharacteristicDerivedValues({
+      str: characteristics.strength.value,
+      con: characteristics.constitution.value,
+      siz: characteristics.size.value,
+      dex: characteristics.dexterity.value,
+      int: characteristics.intelligence.value,
+      pow: characteristics.power.value,
+      cha: characteristics.charisma.value,
+      isCreature: system.attributes.isCreature,
+    });
+
+    system.skillCategoryModifiers = characteristicDerived.skillCategoryModifiers;
+    system.attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
+    system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
+    system.attributes.damageBonus = characteristicDerived.damageBonus;
+    system.attributes.healingRate = characteristicDerived.healingRate;
+    system.attributes.spiritCombatDamage = characteristicDerived.spiritCombatDamage;
   }
 }

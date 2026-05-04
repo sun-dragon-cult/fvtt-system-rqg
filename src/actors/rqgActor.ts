@@ -34,7 +34,6 @@ import { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
-import { getCharacteristicDerivedValues } from "../data-model/actor-data/derivedCharacterValues";
 
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
@@ -246,19 +245,8 @@ export class RqgActor extends Actor {
     super.prepareDerivedData();
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
-    const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
-    const characteristicDerived = getCharacteristicDerivedValues({
-      str,
-      con,
-      siz,
-      dex,
-      int,
-      pow,
-      cha,
-      isCreature: this.system.attributes.isCreature,
-    });
-    const skillCategoryModifiers = (this.system.skillCategoryModifiers =
-      characteristicDerived.skillCategoryModifiers);
+    const { str, con } = this.actorCharacteristics();
+    const skillCategoryModifiers = this.system.skillCategoryModifiers;
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
@@ -294,12 +282,6 @@ export class RqgActor extends Actor {
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
     this.items.forEach((item) => handleActorPrepareDerivedData(item as RqgItem));
-
-    attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
-    attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
-    attributes.damageBonus = characteristicDerived.damageBonus;
-    attributes.healingRate = characteristicDerived.healingRate;
-    attributes.spiritCombatDamage = characteristicDerived.spiritCombatDamage;
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
   }
