@@ -522,6 +522,7 @@ export class ActorWizard extends ActorWizardBase {
     // RQID link click handlers
     if (this.element instanceof HTMLElement) {
       void RqidLink.addRqidLinkClickHandlers(this.element);
+      RqidLink.addRqidLinkDeleteHandlers(this.element, this.actor as foundry.abstract.Document.Any);
     }
   }
 

@@ -69,7 +69,7 @@
              {{#if (and (eq key "power") @root.powWarning)}}
                data-tooltip="{{localize 'RQG.Actor.Characteristics.PowWarningTip'}}"
              {{/if}}>
-          <label class="resource-label norse characteristic contextmenu">
+          <label class="resource-label norse characteristic contextmenu" data-characteristic-roll>
             {{localize (concat 'RQG.Actor.Characteristics.' key)}}
           </label>
           {{#if @root.editMode}}
@@ -78,7 +78,9 @@
                    min="0" max="99"
                    value="{{characteristic.value}}">
           {{else}}
-            <div class="value characteristic contextmenu">{{characteristic.value}}</div>
+            <div class="value characteristic contextmenu" data-characteristic-roll>
+              {{characteristic.value}}
+            </div>
           {{/if}}
           <input type="text" name="system.characteristics.{{key}}.formula"
                  class="characteristic contextmenu"

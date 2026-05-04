@@ -16,7 +16,7 @@
         <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
         <div class="grid location-row">
           <div class="headings"></div>
-          <div class="head1"><button class="sort" data-sort-items="physical-by-location" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>{{localize "RQG.Actor.Gear.Name"}}</div>
+          <div class="head1"><button class="sort" data-action="sortItems" data-sort-items="physical-by-location" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>{{localize "RQG.Actor.Gear.Name"}}</div>
           <div class="head2" style="width:45px">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</div>
           <div class="head3"></div>
           <div class="head4" style="width:85px">{{localize "RQG.Actor.Gear.Location"}}</div>
@@ -35,11 +35,11 @@
           <article class="flex-1">
             <h2 class="flex-row">
               <span>{{localize "RQG.Actor.Gear.Gear"}}</span>
-              {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearUniqueTip'}}" data-gear-add="unique"><i class="fas fa-plus"></i></a>{{/if}}
+              {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearUniqueTip'}}" data-action="addGear" data-gear-add="unique"><i class="fas fa-plus"></i></a>{{/if}}
             </h2>
             <div class="grid gear gear-no-price item-list">
               <div class="headings"></div>
-              <div class="head1"><button class="sort" data-sort-items="gear" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+              <div class="head1"><button class="sort" data-action="sortItems" data-sort-items="gear" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
               <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
               <div class="head3"></div>
               <div class="head4"><span class="text-right">{{localize "RQG.Actor.Gear.EncumbranceAbbr"}}</span></div>
@@ -72,7 +72,7 @@
             <article>
               <h2 class="flex-row">
                 <span>{{localize "RQG.Actor.Gear.Currency"}}</span>
-                {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearCurrencyTip'}}" data-gear-add="currency"><i class="fas fa-plus"></i></a>{{/if}}
+                {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearCurrencyTip'}}" data-action="addGear" data-gear-add="currency"><i class="fas fa-plus"></i></a>{{/if}}
               </h2>
               <div class="grid gear item-list">
                 <div class="headings"></div>
@@ -124,7 +124,7 @@
             <article>
               <h2 class="flex-row">
                 <span>{{localize "RQG.Actor.Gear.Consumables"}}</span>
-                {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearConsumablesTip'}}" data-gear-add="consumable"><i class="fas fa-plus"></i></a>{{/if}}
+                {{#if @root.isEditable}}<a data-tooltip="{{localize 'RQG.Actor.Gear.AddNewGearConsumablesTip'}}" data-action="addGear" data-gear-add="consumable"><i class="fas fa-plus"></i></a>{{/if}}
               </h2>
               <div class="grid gear gear-no-price item-list">
                 <div class="headings"></div>
@@ -165,7 +165,7 @@
           <h2>{{localize "RQG.Actor.Gear.WeaponsAndShields"}}</h2>
           <div class="grid weapon item-list">
             <div class="headings"></div>
-            <div class="head1"><button class="sort" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+            <div class="head1"><button class="sort" data-action="sortItems" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
             <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
             <div class="head3">{{localize "RQG.Actor.Gear.Skill"}}</div>
             <div class="head4"><span class="text-center">{{localize "RQG.Actor.Gear.Range"}}</span></div>
@@ -292,7 +292,7 @@
           <h2>{{localize "RQG.Actor.Gear.Armor"}}</h2>
           <div class="grid armor item-list">
             <div class="headings"></div>
-            <div class="head1"><button class="sort" data-sort-items="armor" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+            <div class="head1"><button class="sort" data-action="sortItems" data-sort-items="armor" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
             <div class="head2">{{localize "RQG.Actor.Gear.Name"}}</div>
             <div class="head3"><span class="text-right">{{localize "RQG.Actor.Gear.Absorbs"}}</span></div>
             <div class="head4">{{localize "RQG.Actor.Gear.HitLocations"}}</div>

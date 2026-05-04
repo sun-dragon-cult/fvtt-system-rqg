@@ -62,8 +62,8 @@
                   </div>
                 </div>
                 <div class="hl-wounds-row">
-                  <div class="health-state break-word" data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}">{{#if system.woundsString}}<i class="fas fa-heart-pulse"></i> {{system.woundsString}}{{/if}}</div>
-                  <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-burst"></i></div>
+                  <div class="health-state break-word" data-action="healWound" title="{{localize "RQG.Actor.Health.HealWound"}}">{{#if system.woundsString}}<i class="fas fa-heart-pulse"></i> {{system.woundsString}}{{/if}}</div>
+                  <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-action="addWound"><i class="fas fa-burst"></i></div>
                 </div>
               </div>
             {{/each}}
@@ -78,7 +78,7 @@
           <div class="grid hit-location item-list">
             <div class="headings"></div>
             <div class="head1-4">
-              <button class="sort" data-flip-sort-hitlocation-setting
+                    <button class="sort" data-action="flipHitLocationSortSetting"
                       data-tooltip="{{localize "RQG.Actor.Health.FlipSortOrder"}}"
                       style="width: 1.3rem; padding-top: 2px; margin-top: -2px;">
                 <i class="fas fa-sort"></i>
@@ -109,10 +109,10 @@
                 {{/unless}}
               </div>
               <div class="hit-location contextmenu item flex-row" data-item-id="{{id}}">
-                <div data-item-heal-wound title="{{localize "RQG.Actor.Health.HealWound"}}" class="flex-1 nowrap health-state">
+                <div data-action="healWound" title="{{localize "RQG.Actor.Health.HealWound"}}" class="flex-1 nowrap health-state">
                   {{#if system.woundsString}}<i class="fas fa-heart-pulse"></i> {{system.woundsString}}{{/if}}
                 </div>
-                <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-item-add-wound><i class="fas fa-burst"></i></div>
+                <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-action="addWound"><i class="fas fa-burst"></i></div>
               </div>
             {{/each}}
           </div>
@@ -136,19 +136,19 @@
           {{#if dexSR}}
             <div class="dex">
               {{#each dexSR}}
-                <button type="button" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
+                <button type="button" data-action="toggleSR" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
               {{/each}}
             </div>
           {{/if}}
           {{#if sizSR}}
             <div class="siz">
               {{#each sizSR}}
-                <button type="button" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
+                <button type="button" data-action="toggleSR" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
               {{/each}}
             </div>
           {{/if}}
           {{#each otherSR}}
-            <button type="button" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
+            <button type="button" data-action="toggleSR" data-toggle-sr="{{this}}" {{#ifIn this @root.activeInSR}}class="active"{{/ifIn}}>{{this}}</button>
           {{/each}}
           <i class="ml-5 fa-solid fa-circle-info"
              data-tooltip="<div class='sr-help'>{{localize 'RQG.Actor.Combat.SRTooltip'}}</div>"></i>
@@ -163,7 +163,7 @@
       {{!-- Weapons Grid --}}
       <div class="grid combat item-list">
         <div class="headings"></div>
-        <div class="head1"><button class="sort" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+        <div class="head1"><button class="sort" data-action="sortItems" data-sort-items="weapon" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
         <div class="head2">{{localize "RQG.Actor.Combat.Weapon"}}</div>
         <div class="head3">{{localize "RQG.Actor.Combat.HP"}}</div>
         <div class="head4 text-right">{{localize "RQG.Actor.Combat.Chance"}}</div>
@@ -251,22 +251,21 @@
                         {{#if (eq @key "missile")}}
                           {{#if ../system.rate}}
                             <div class="usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}">
-                              <button type="button" class="sr" data-set-sr="{{max 1 @root.system.attributes.dexStrikeRank}}">{{max 1 @root.system.attributes.dexStrikeRank}}</button>
+                              <button type="button" class="sr" data-action="setSR" data-set-sr="{{max 1 @root.system.attributes.dexStrikeRank}}">{{max 1 @root.system.attributes.dexStrikeRank}}</button>
                             </div>
                           {{else}}
                             <div class="flex-column">
-                              <button type="button" class="sr" data-set-sr="{{@root.unloadedMissileSr}}">
+                              <button type="button" class="sr" data-action="setSR" data-set-sr="{{@root.unloadedMissileSr}}">
                                 {{#each @root.unloadedMissileSrDisplay}}{{{this}}}{{/each}}
                               </button>
-                              <button type="button" class="sr" data-set-sr="{{@root.loadedMissileSr}}">
+                              <button type="button" class="sr" data-action="setSR" data-set-sr="{{@root.loadedMissileSr}}">
                                 {{#each @root.loadedMissileSrDisplay}}{{{this}}}{{/each}}
                               </button>
                             </div>
                           {{/if}}
                         {{else}}
                           <span><button type="button" class="combat sr contextmenu"
-                                        data-tooltip="{{localize "RQG.Actor.Combat.SetSRInCombatTracker"}}"
-                                        data-set-sr="{{sum @root.system.attributes.sizStrikeRank
+                                        data-tooltip="{{localize "RQG.Actor.Combat.SetSRInCombatTracker"}}"                                        data-action="setSR"                                        data-set-sr="{{sum @root.system.attributes.sizStrikeRank
                                                           @root.system.attributes.dexStrikeRank
                                                           strikeRank}}">
                             {{sum @root.system.attributes.sizStrikeRank @root.system.attributes.dexStrikeRank strikeRank}}
@@ -332,8 +331,7 @@
                         {{/if}}
                       {{else}}
                         <span><button type="button" class="combat sr contextmenu"
-                                      data-tooltip="{{localize "RQG.Actor.Combat.SetSRInCombatTracker"}}"
-                                      data-set-sr="{{sum @root.system.attributes.sizStrikeRank
+                                      data-tooltip="{{localize "RQG.Actor.Combat.SetSRInCombatTracker"}}"                                      data-action="setSR"                                      data-set-sr="{{sum @root.system.attributes.sizStrikeRank
                                                         @root.system.attributes.dexStrikeRank
                                                         strikeRank}}">
                           {{sum @root.system.attributes.sizStrikeRank @root.system.attributes.dexStrikeRank strikeRank}}

@@ -246,37 +246,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     });
 
     // Delete an entry from an RqidLink array property
-    this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
-      const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
-      const deleteIndexRaw = getDomDataset(el, "delete-index");
-      const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
-      const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
-      el.addEventListener("click", async () => {
-        const deleteFromProperty = foundry.utils.getProperty(
-          this.document.system as object,
-          deleteFromPropertyName,
-        );
-        const isArray = Array.isArray(deleteFromProperty);
-        let newValue: RqidLink[] | string = "";
-        if (isArray) {
-          const links = [...(deleteFromProperty as RqidLink[])];
-          if (Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length) {
-            links.splice(deleteIndex, 1);
-            newValue = links;
-          } else {
-            newValue = links.filter((r) => r.rqid !== deleteRqid);
-          }
-        }
-        const updateKey = `system.${deleteFromPropertyName}`;
-        if (this.document.isEmbedded) {
-          await this.document.actor?.updateEmbeddedDocuments("Item", [
-            { _id: this.document.id, [updateKey]: newValue },
-          ]);
-        } else {
-          await this.document.update({ [updateKey]: newValue });
-        }
-      });
-    });
+    RqidLink.addRqidLinkDeleteHandlers(
+      this.element,
+      this.document as foundry.abstract.Document.Any,
+    );
 
     // Edit the bonus field on an RqidLink
     this.element

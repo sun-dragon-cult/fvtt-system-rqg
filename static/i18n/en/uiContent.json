@@ -651,6 +651,10 @@
         "content": "Are you sure you want to delete the {itemType} named {itemName}?",
         "contentCult": "Are you sure you want to delete the {itemType} named {itemName}? This will also delete all of the {runeMagicSpell} items associated with this {itemType}."
       },
+      "confirmActiveEffectDeleteDialog": {
+        "title": "Delete Active Effect: {effectName}",
+        "content": "Are you sure you want to delete the Active Effect named {effectName}?"
+      },
       "improveAbilityDialog": {
         "title": "Improvement for {typeLocName} \"{name}\"",
         "titleChar": "Improvement for Characteristic \"{name}\"",
