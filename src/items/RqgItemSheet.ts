@@ -188,84 +188,16 @@ export class RqgItemSheet<
     // Handle rqid links
     void RqidLink.addRqidLinkClickHandlersToJQuery($(this.form!));
 
-    // Handle deleting RqidLinks from RqidLink Array Properties
-    $(this.form!)
-      .find("[data-delete-from-property]")
-      .each((i: number, el: HTMLElement) => {
-        const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
-        const deleteIndexRaw = getDomDataset($(el), "delete-index");
-        const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
-        const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
-        el.addEventListener("click", async () => {
-          const deleteFromProperty = foundry.utils.getProperty(
-            this.item.system as object,
-            deleteFromPropertyName,
-          );
-          const updateKey = `system.${deleteFromPropertyName}`;
-          if (Array.isArray(deleteFromProperty)) {
-            const links = [...(deleteFromProperty as RqidLink[])];
-            const newValueArray =
-              Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length
-                ? (links.splice(deleteIndex, 1), links)
-                : links.filter((r) => r.rqid !== deleteRqid);
-            // @ts-expect-error isEmbedded
-            if (this.isEmbedded) {
-              await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, [updateKey]: newValueArray },
-              ]);
-            } else {
-              await this.item.update({ [updateKey]: newValueArray });
-            }
-          } else {
-            // @ts-expect-error isEmbedded
-            if (this.isEmbedded) {
-              await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, [updateKey]: "" },
-              ]);
-            } else {
-              await this.item.update({ [updateKey]: "" });
-            }
-          }
-        });
-      });
+    // Handle deleting RQID links
+    RqidLink.addRqidLinkDeleteHandlersToJQuery(
+      $(this.form!),
+      this.item as foundry.abstract.Document.Any,
+    );
 
-    $(this.form!)
-      .find("[data-edit-bonus-property-name]")
-      .each((i: number, el: HTMLElement) => {
-        const editRqid = getRequiredDomDataset($(el), "rqid");
-        const editPropertyName = getRequiredDomDataset($(el), "edit-bonus-property-name");
-        el.addEventListener("change", async () => {
-          const updateProperty = foundry.utils.getProperty(
-            this.item.system as object,
-            editPropertyName,
-          );
-          const updateKey = `system.${editPropertyName}`;
-          if (Array.isArray(updateProperty)) {
-            const updateRqidLink = (updateProperty as RqidLink[]).find(
-              (rqidLink) => rqidLink.rqid === editRqid,
-            );
-            if (updateRqidLink) {
-              updateRqidLink.bonus = Number((el as HTMLInputElement).value);
-            }
-            if (this.item.isEmbedded) {
-              await this.item.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, [updateKey]: updateProperty },
-              ]);
-            } else {
-              await this.item.update({ [updateKey]: updateProperty });
-            }
-          } else {
-            (updateProperty as RqidLink).bonus = Number((el as HTMLInputElement).value);
-            if (this.item.isEmbedded) {
-              await this.actor?.updateEmbeddedDocuments("Item", [
-                { _id: this.item.id, [updateKey]: updateProperty },
-              ]);
-            } else {
-              await this.item.update({ [updateKey]: updateProperty });
-            }
-          }
-        });
-      });
+    RqidLink.addRqidLinkBonusHandlersToJQuery(
+      $(this.form!),
+      this.item as foundry.abstract.Document.Any,
+    );
   }
 
   _onDragEnter(event: DragEvent): void {

@@ -12,13 +12,13 @@
   </tr>
   </thead>
   {{#each effects}}
-  <tr data-effect-uuid="{{uuid}}">
-    <td data-actor-effect-edit><img class="effect-img" src="{{img}}"></td>
+  <tr data-effect-uuid="{{uuid}}" data-action="editActiveEffect">
+    <td><img class="effect-img" src="{{img}}"></td>
     <td>{{name}}<br>{{toAnchor parent.uuid}}</td>
-    <td data-actor-effect-edit>{{yes-no disabled}}</td>
-    <td data-actor-effect-edit>{{duration.startTime}}</td>
-    <td data-actor-effect-edit>{{duration.seconds}}</td>
-    <td data-actor-effect-edit>
+    <td>{{yes-no disabled}}</td>
+    <td>{{duration.startTime}}</td>
+    <td>{{duration.seconds}}</td>
+    <td>
       <table>
       {{#each changes}}
         <tbody>
@@ -31,7 +31,7 @@
       {{/each}}
       </table>
     </td>
-    <td class="text-right"><a data-tooltip="Delete Effect" data-actor-effect-delete><i class="fas fa-trash"></i></a></td>
+    <td class="text-right"><a data-tooltip="Delete Effect" data-action="deleteActiveEffect"><i class="fas fa-trash"></i></a></td>
     </tr>
   {{/each}}
 </table>

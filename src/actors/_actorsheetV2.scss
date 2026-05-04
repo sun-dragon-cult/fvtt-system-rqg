@@ -112,8 +112,8 @@
     [data-damage-roll],
     [data-item-roll],
     [data-item-equipped-toggle],
-    [data-item-heal-wound],
-    [data-item-add-wound],
+    [data-action="healWound"],
+    [data-action="addWound"],
     [data-rqid-link],
     [data-weapon-roll],
     [data-reputation-roll],
@@ -1098,7 +1098,7 @@
         text-align: center;
       }
 
-      [data-item-heal-wound] {
+      [data-action="healWound"] {
         cursor: pointer;
 
         .fa-heart-pulse {
@@ -1238,7 +1238,7 @@
             display: flex;
             justify-content: space-between;
 
-            [data-item-add-wound] {
+            [data-action="addWound"] {
               cursor: pointer;
             }
           }
@@ -1847,7 +1847,7 @@
           text-shadow: none;
         }
 
-        [data-item-edit] {
+        [data-action="editItem"] {
           flex: 1 1 auto;
           font-weight: 600;
 
@@ -1856,7 +1856,7 @@
           }
         }
 
-        [data-item-delete] {
+        [data-action="deleteItem"] {
           flex: 0 0 auto;
         }
       }
@@ -2083,7 +2083,12 @@
 
     // --- Background tab ---
     .background-tab-v2 {
-      display: flex;
+      display: none;
+
+      &.active {
+        display: flex;
+      }
+
       flex-direction: column;
       gap: 1rem;
       padding: 0.5rem;
@@ -2189,6 +2194,103 @@
           font-style: italic;
           opacity: 0.7;
           font-size: 0.9em;
+        }
+      }
+    }
+
+    // --- Active Effects tab ---
+    .tab.activeeffectstesting {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      overflow: auto;
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9em;
+
+        td,
+        th {
+          padding: 2px 4px;
+          text-align: left;
+          vertical-align: middle;
+        }
+
+        th {
+          font-weight: bold;
+          background: rgb(0 0 0 / 30%);
+        }
+
+        // Constrain narrow columns with fixed widths
+        th:nth-child(1),
+        td:nth-child(1) {
+          width: 50px;
+          text-align: center;
+
+          img {
+            max-width: 100%;
+            height: auto;
+          }
+        }
+
+        th:nth-child(3),
+        td:nth-child(3) {
+          width: 30px;
+          text-align: right;
+        }
+
+        th:nth-child(4),
+        td:nth-child(4) {
+          width: 70px;
+        }
+
+        th:nth-child(5),
+        td:nth-child(5) {
+          width: 70px;
+        }
+
+        th:nth-child(7),
+        td:nth-child(7) {
+          width: 30px;
+          text-align: center;
+        }
+
+        // Nested table for changes - compact layout, expands to fill space
+        td > table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.95em;
+          margin: 0;
+          table-layout: fixed;
+
+          // Sub-columns: key takes remaining width, type is fixed, value fits 3 chars.
+          td:nth-child(1) {
+            padding: 1px 3px;
+            width: calc(100% - 14ch);
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: left;
+          }
+
+          td:nth-child(2) {
+            padding: 1px 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 11ch;
+          }
+
+          td:nth-child(3) {
+            padding: 1px 3px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            text-align: right;
+            width: 3ch;
+          }
         }
       }
     }

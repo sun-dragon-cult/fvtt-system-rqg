@@ -4,10 +4,10 @@
   {{#each embeddedItems.runeMagic}}
     {{#unless system.cultId}}
       <div class="unassigned-rune-magic" data-item-id="{{id}}">
-        <a data-tooltip="{{localize "RQG.Actor.RuneMagic.EditRuneMagicSpellTitle"}}" data-item-edit>
+        <a data-tooltip="{{localize "RQG.Actor.RuneMagic.EditRuneMagicSpellTitle"}}" data-action="editItem">
           <i class="fas fa-edit"></i>{{localize "RQG.Actor.RuneMagic.ChooseCultForRuneSpell" name=name}}
         </a>
-        <a data-tooltip="{{localize "RQG.Actor.RuneMagic.DeleteRuneMagicSpellTitle"}}" data-item-delete>
+        <a data-tooltip="{{localize "RQG.Actor.RuneMagic.DeleteRuneMagicSpellTitle"}}" data-action="deleteItem">
           <i class="fas fa-trash"></i>
         </a>
       </div>
@@ -104,7 +104,7 @@
       {{#if hasAccessToRuneMagic}}
         <div class="grid runemagic item-list">
           <div class="headings"></div>
-          <div class="head1"><button class="sort" data-sort-items="runeMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
+          <div class="head1"><button class="sort" data-action="sortItems" data-sort-items="runeMagic" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button></div>
           <div class="head2">{{localize "RQG.Actor.RuneMagic.RuneSpell"}}</div>
           <div class="head3">{{localize "RQG.Actor.RuneMagic.SpellSummary"}}</div>
           <div class="head4">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>

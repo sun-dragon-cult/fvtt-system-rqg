@@ -27,7 +27,6 @@ import { characteristicMenuOptions } from "./context-menus/characteristic-contex
 import {
   assertDocumentSubType,
   assertHtmlElement,
-  getDomDataset,
   getHTMLElement,
   getRequiredDomDataset,
   hasOwnProperty,
@@ -38,9 +37,7 @@ import {
   range,
   requireValue,
   RqgError,
-  usersIdsThatOwnActor,
 } from "../system/util";
-import { DamageCalculations } from "../system/damageCalculations";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ActorWizard } from "../applications/actorWizardApplication";
@@ -296,7 +293,7 @@ export class RqgActorSheet<
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override async _updateObject(event: Event, formData: any): Promise<unknown> {
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
@@ -305,42 +302,6 @@ export class RqgActorSheet<
     ) {
       formData["system.attributes.hitPoints.value"] = maxHitPoints;
     }
-
-    // Hack: Temporarily change hp.value to what it will become so getCombinedActorHealth will work
-    const hpTmp = this.actor.system.attributes.hitPoints.value;
-    const mpTmp = this.actor.system.attributes.magicPoints.value;
-
-    this.actor.system.attributes.hitPoints.value = formData["system.attributes.hitPoints.value"];
-    this.actor.system.attributes.magicPoints.value =
-      formData["system.attributes.magicPoints.value"];
-
-    const newHealth = DamageCalculations.getCombinedActorHealth(this.actor);
-    if (newHealth !== this.actor.system.attributes.health) {
-      const speaker = ChatMessage.getSpeaker({ actor: this.actor, token: this.token });
-      const speakerName = speaker.alias;
-      let message;
-      if (newHealth === "dead" && !this.token?.actor?.statuses.has("dead")) {
-        message = `${speakerName} runs out of hitpoints and dies here and now!`;
-      }
-      if (newHealth === "unconscious" && !this.token?.actor?.statuses.has("unconscious")) {
-        message = `${speakerName} faints from lack of hitpoints!`;
-      }
-      if (message) {
-        ChatMessage.create({
-          speaker: speaker,
-          content: message,
-          whisper: usersIdsThatOwnActor(this.actor),
-          style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
-        });
-      }
-    }
-
-    this.actor.system.attributes.hitPoints.value = hpTmp; // Restore hp so the form will work
-    this.actor.system.attributes.magicPoints.value = mpTmp;
-    this.actor.system.attributes.health = newHealth; // "Pre update" the health to make the setTokenEffect call work
-    void this.actor.updateTokenEffectFromHealth();
-
-    formData["system.attributes.health"] = newHealth;
 
     return super._updateObject(event, formData);
   }
@@ -786,32 +747,8 @@ export class RqgActorSheet<
     // Handle rqid links
     void RqidLink.addRqidLinkClickHandlersToJQuery(html);
 
-    // Handle deleting RqidLinks from RqidLink Array Properties
-    $(htmlElement!)
-      .find("[data-delete-from-property]")
-      .each((i: number, el: HTMLElement) => {
-        const deleteRqid = getRequiredDomDataset($(el), "delete-rqid");
-        const deleteIndexRaw = getDomDataset($(el), "delete-index");
-        const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
-        const deleteFromPropertyName = getRequiredDomDataset($(el), "delete-from-property");
-        el.addEventListener("click", async () => {
-          const deleteFromProperty = foundry.utils.getProperty(
-            this.actor.system,
-            deleteFromPropertyName,
-          );
-          const updateKey = `system.${deleteFromPropertyName}`;
-          if (Array.isArray(deleteFromProperty)) {
-            const links = [...(deleteFromProperty as RqidLink[])];
-            const newValueArray =
-              Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length
-                ? (links.splice(deleteIndex, 1), links)
-                : links.filter((r) => r.rqid !== deleteRqid);
-            await this.actor.update({ [updateKey]: newValueArray });
-          } else {
-            await this.actor.update({ [updateKey]: "" });
-          }
-        });
-      });
+    // Handle deleting RQID links
+    RqidLink.addRqidLinkDeleteHandlersToJQuery(html, this.actor as foundry.abstract.Document.Any);
 
     // Add Passion button
     htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {

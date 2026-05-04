@@ -1,9 +1,9 @@
 <section class="tab passions-tab-v2" data-group="primary" data-tab="passions">
 
   <h2>
-    <button class="sort" data-sort-items="passion" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>
+    <button class="sort" data-action="sortItems" data-sort-items="passion" data-tooltip="{{localize "RQG.UI.SortItems"}}"><i class="fas fa-arrow-down-a-z"></i></button>
     {{localize "RQG.Actor.Passion.Passions"}}
-    {{#if @root.isEditable}}<a class="passion-add-btn" data-passion-add data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}"><i class="fas fa-plus"></i></a>{{/if}}
+    {{#if @root.isEditable}}<a class="passion-add-btn" data-action="addPassion" data-tooltip="{{localize 'RQG.Actor.Passion.AddNewPassionTip'}}"><i class="fas fa-plus"></i></a>{{/if}}
   </h2>
 
   <div class="passions-list">

@@ -4,7 +4,6 @@ import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
 import {
   assertDocumentSubType,
-  getDomDataset,
   getRequiredDomDataset,
   hasOwnProperty,
   isDocumentSubType,
@@ -58,6 +57,7 @@ import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { GearItem } from "@item-model/gearDataModel.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
+import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -72,6 +72,13 @@ import type { DeepPartial } from "fvtt-types/utils";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
+
+type SingleDoubleClickOptions = {
+  onSingle: () => Promise<void> | void;
+  onDouble?: () => Promise<void> | void;
+  shouldHandleEvent?: (ev: MouseEvent) => boolean;
+  timeout?: number;
+};
 
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   #skillFilterQuery = "";
@@ -101,6 +108,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         dropSelector: "[data-item-id].contextmenu.item",
       },
     ],
+    actions: {
+      editItem: RqgActorSheetV2._openItemSheetAction,
+      deleteItem: RqgActorSheetV2._deleteItemAction,
+      sortItems: RqgActorSheetV2._sortItemsAction,
+      addWound: RqgActorSheetV2._addWoundAction,
+      healWound: RqgActorSheetV2._healWoundAction,
+      flipHitLocationSortSetting: RqgActorSheetV2._flipHitLocationSortSettingAction,
+      deleteActiveEffect: RqgActorSheetV2._deleteActiveEffectAction,
+      editActiveEffect: RqgActorSheetV2._editActiveEffectAction,
+      setSR: RqgActorSheetV2._setSRAction,
+      toggleSR: RqgActorSheetV2._toggleSRAction,
+      addPassion: RqgActorSheetV2._addPassionAction,
+      addGear: RqgActorSheetV2._addGearAction,
+    },
   };
 
   static override PARTS: Record<
@@ -153,7 +174,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
         action: "openActorWizard",
         onClick: () => {
-          new ActorWizard(this.actor, {}).render(true);
+          new ActorWizard(this.actor, {}).render({ force: true });
         },
       } as any);
     }
@@ -321,6 +342,35 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   /** Temporary image element used as drag preview */
   private _activeDragPreview: HTMLImageElement | null = null;
 
+  private _bindSingleDoubleClick(
+    el: HTMLElement,
+    { onSingle, onDouble, shouldHandleEvent, timeout }: SingleDoubleClickOptions,
+  ): void {
+    let clickCount = 0;
+    const resolvedTimeout = timeout ?? CONFIG.RQG.dblClickTimeout;
+    const doubleHandler = onDouble ?? onSingle;
+
+    el.addEventListener("click", async (ev: MouseEvent) => {
+      if (shouldHandleEvent && !shouldHandleEvent(ev)) {
+        return;
+      }
+
+      clickCount = Math.max(clickCount, ev.detail);
+
+      if (clickCount >= 2) {
+        await doubleHandler();
+        clickCount = 0;
+      } else if (clickCount === 1) {
+        setTimeout(async () => {
+          if (clickCount === 1) {
+            await onSingle();
+          }
+          clickCount = 0;
+        }, resolvedTimeout);
+      }
+    });
+  }
+
   override async _onRender(
     context: DeepPartial<RqgActorSheetV2Context>,
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
@@ -482,35 +532,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       );
     }
 
-    // RQID link click handlers
-    if (this.element instanceof HTMLElement) {
-      void RqidLink.addRqidLinkClickHandlers(this.element);
+    // RQID link open/delete handlers (bind once; delegated handlers survive re-renders)
+    if (options.isFirstRender) {
+      RqidLink.bindHandlers(this.element, this.actor as foundry.abstract.Document.Any);
     }
-
-    // Delete handlers for RQID links (single link and link arrays)
-    this.element.querySelectorAll<HTMLElement>("[data-delete-from-property]").forEach((el) => {
-      const deleteRqid = getRequiredDomDataset(el, "delete-rqid");
-      const deleteIndexRaw = getDomDataset(el, "delete-index");
-      const deleteIndex = Number.parseInt(deleteIndexRaw ?? "", 10);
-      const deleteFromPropertyName = getRequiredDomDataset(el, "delete-from-property");
-      el.addEventListener("click", async () => {
-        const deleteFromProperty = foundry.utils.getProperty(
-          this.actor.system as object,
-          deleteFromPropertyName,
-        );
-        const updateKey = `system.${deleteFromPropertyName}`;
-        if (Array.isArray(deleteFromProperty)) {
-          const links = [...(deleteFromProperty as RqidLink[])];
-          const newValueArray =
-            Number.isInteger(deleteIndex) && deleteIndex >= 0 && deleteIndex < links.length
-              ? (links.splice(deleteIndex, 1), links)
-              : links.filter((r) => r.rqid !== deleteRqid);
-          await this.actor.update({ [updateKey]: newValueArray });
-        } else {
-          await this.actor.update({ [updateKey]: "" });
-        }
-      });
-    });
 
     // RQID dropzones (wizard background tab and any other dropzone-enabled fields)
     this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
@@ -563,26 +588,24 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // --- Combat tab event handlers ---
 
-    // Set comma-separated Token SRs in Combat Tracker
-    this.element.querySelectorAll<HTMLElement>("[data-set-sr]").forEach((el) => {
-      const srValue = getRequiredDomDataset(el, "set-sr");
-      const srToAdd = srValue.split(",").map((v) => Number(v.trim()));
-      el.addEventListener("click", async () => {
-        this._activeInSR = new Set(srToAdd);
-        await this._updateActiveCombatWithSR(this._activeInSR);
-      });
-    });
+    // Roll actor Characteristic
+    this.element.querySelectorAll<HTMLElement>("[data-characteristic-roll]").forEach((el) => {
+      const closestDataCharacteristic = el.closest<HTMLElement>("[data-characteristic]");
+      const characteristicName = closestDataCharacteristic?.dataset["characteristic"];
+      const actorCharacteristics = this.actor.system.characteristics as Record<string, unknown>;
 
-    // Toggle individual SR buttons
-    this.element.querySelectorAll<HTMLElement>("[data-toggle-sr]").forEach((el) => {
-      const sr = Number(getRequiredDomDataset(el, "toggle-sr"));
-      el.addEventListener("click", async () => {
-        if (this._activeInSR.has(sr)) {
-          this._activeInSR.delete(sr);
-        } else {
-          this._activeInSR.add(sr);
-        }
-        await this._updateActiveCombatWithSR(this._activeInSR);
+      if (!characteristicName || !(characteristicName in actorCharacteristics)) {
+        const msg = `Characteristic [${characteristicName}] isn't found on actor [${this.actor.name}].`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, this.actor);
+      }
+
+      const typedCharacteristicName =
+        characteristicName as keyof CharacterActor["system"]["characteristics"];
+
+      this._bindSingleDoubleClick(el, {
+        onSingle: () => this.actor.characteristicRoll(typedCharacteristicName),
+        onDouble: () => this.actor.characteristicRollImmediate(typedCharacteristicName),
       });
     });
 
@@ -606,30 +629,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           { _id: updateId, system: { chance: newChance } },
         ]);
       });
-    });
-
-    // Edit Item (open the item sheet)
-    this.element.querySelectorAll<HTMLElement>("[data-item-edit]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId) as RqgItem | undefined;
-      if (!item?.sheet) {
-        const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet (during setup).`;
-        ui.notifications?.error(msg);
-        throw new RqgError(msg);
-      }
-      el.addEventListener("click", () => item.sheet!.render(true));
-    });
-
-    // Delete Item (remove item from actor)
-    this.element.querySelectorAll<HTMLElement>("[data-item-delete]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
-    });
-
-    // Sort Items alphabetically
-    this.element.querySelectorAll<HTMLElement>("[data-sort-items]").forEach((el) => {
-      const itemType = getRequiredDomDataset(el, "sort-items");
-      el.addEventListener("click", () => RqgActorSheetV2.sortItems(this.actor, itemType));
     });
 
     // Cycle the equipped state of a physical item
@@ -683,71 +682,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       });
     });
 
-    // Add Passion button
-    this.element.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
-      el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = game.settings?.get(
-          systemId,
-          "defaultItemIconSettings",
-        );
-        const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
-        const passion = {
-          name: newPassionName,
-          type: ItemTypeEnum.Passion,
-          img: defaultItemIconSettings[ItemTypeEnum.Passion],
-          system: { passion: newPassionName },
-        };
-        const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
-        (createdItems[0] as RqgItem)?.sheet?.render(true);
-      });
-    });
-
-    // Add Gear buttons
-    this.element.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
-      const physicalItemType = getRequiredDomDataset(el, "gear-add") as PhysicalItemType;
-      el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = game.settings?.get(
-          systemId,
-          "defaultItemIconSettings",
-        );
-
-        const physicalItemType2ItemName = new Map<string, string>([
-          ["unique", "RQG.Actor.Gear.NewGear"],
-          ["currency", "RQG.Actor.Gear.NewCurrency"],
-          ["consumable", "RQG.Actor.Gear.NewConsumable"],
-        ]);
-
-        const name = localize(
-          physicalItemType2ItemName.get(physicalItemType) ?? "RQG.Actor.Gear.NewGear",
-        );
-
-        const newGear = {
-          name: name,
-          type: ItemTypeEnum.Gear,
-          img: defaultItemIconSettings[ItemTypeEnum.Gear],
-          system: { physicalItemType: physicalItemType },
-        };
-        const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
-        (createdItems[0] as RqgItem)?.sheet?.render(true);
-      });
-    });
-
     // Reputation roll — single click opens dialog, double click rolls immediately
     this.element.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
-          await this.actor.reputationRollImmediate();
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1) {
-              await this.actor.reputationRoll();
-            }
-            clickCount = 0;
-          }, 250);
-        }
+      this._bindSingleDoubleClick(el, {
+        onSingle: () => this.actor.reputationRoll(),
+        onDouble: () => this.actor.reputationRollImmediate(),
       });
     });
 
@@ -789,7 +728,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         if (tab) {
           sheet.tabGroups = { ...(sheet.tabGroups ?? {}), sheet: tab };
         }
-        sheet?.render(true);
+        sheet?.render({ force: true });
       });
     });
 
@@ -802,20 +741,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         abilityItemTypes,
         "AbilityChance roll couldn't find skillItem",
       );
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
-          await item.abilityRollImmediate();
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1) {
-              await item.abilityRoll();
-            }
-            clickCount = 0;
-          }, CONFIG.RQG.dblClickTimeout);
-        }
+      this._bindSingleDoubleClick(el, {
+        onSingle: () => item.abilityRoll(),
+        onDouble: () => item.abilityRollImmediate(),
       });
     });
 
@@ -864,24 +792,15 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         ItemTypeEnum.SpiritMagic,
         `Couldn't find item [${itemId}] to roll Spirit Magic`,
       );
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
+      this._bindSingleDoubleClick(el, {
+        onSingle: () => item.spiritMagicRoll(),
+        onDouble: () => {
           if (item.system.isVariable && item.system.points > 1) {
-            await item.spiritMagicRoll();
+            return item.spiritMagicRoll();
           } else {
-            await item.spiritMagicRollImmediate();
+            return item.spiritMagicRollImmediate();
           }
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1) {
-              await item.spiritMagicRoll();
-            }
-            clickCount = 0;
-          }, CONFIG.RQG.dblClickTimeout);
-        }
+        },
       });
     });
 
@@ -894,24 +813,15 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         ItemTypeEnum.RuneMagic,
         `Couldn't find item [${itemId}] to roll Rune Magic`,
       );
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
+      this._bindSingleDoubleClick(el, {
+        onSingle: () => item.runeMagicRoll(),
+        onDouble: () => {
           if (item.system.points === 1) {
-            await item.runeMagicRollImmediate();
+            return item.runeMagicRollImmediate();
           } else {
-            await item.runeMagicRoll();
+            return item.runeMagicRoll();
           }
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1) {
-              await item.runeMagicRoll();
-            }
-            clickCount = 0;
-          }, CONFIG.RQG.dblClickTimeout);
-        }
+        },
       });
     });
 
@@ -920,23 +830,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
       const weapon = this.actor.items.get(weaponItemId) as RqgItem | undefined;
       assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
-      let clickCount = 0;
-      el.addEventListener("click", async (ev: MouseEvent) => {
-        if ((ev.target as HTMLElement)?.tagName === "SELECT") {
-          return;
-        }
-        clickCount = Math.max(clickCount, ev.detail);
-        if (clickCount >= 2) {
-          await weapon.attack();
-          clickCount = 0;
-        } else if (clickCount === 1) {
-          setTimeout(async () => {
-            if (clickCount === 1) {
-              void weapon.attack();
-            }
-            clickCount = 0;
-          }, CONFIG.RQG.dblClickTimeout);
-        }
+      this._bindSingleDoubleClick(el, {
+        shouldHandleEvent: (ev) => (ev.target as HTMLElement)?.tagName !== "SELECT",
+        onSingle: () => weapon.attack(),
+        onDouble: () => weapon.attack(),
       });
     });
 
@@ -952,18 +849,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       el.addEventListener("click", (event) => {
         event.stopPropagation();
       });
-    });
-
-    // Add wound to hit location
-    this.element.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
-    });
-
-    // Heal wounds on hit location
-    this.element.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
     });
 
     // Roll Damage
@@ -992,17 +877,204 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         });
       });
     });
+  }
 
-    // Flip hit location sort order
-    this.element
-      .querySelectorAll<HTMLElement>("[data-flip-sort-hitlocation-setting]")
-      .forEach((el) => {
-        el.addEventListener("click", async () => {
-          const currentValue = game.settings?.get(systemId, "sortHitLocationsLowToHigh");
-          await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
-          this.render();
-        });
-      });
+  private static _openItemSheetAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
+    requireValue(itemId, "No item id found to open item sheet");
+
+    const item = this.actor.items.get(itemId) as RqgItem | undefined;
+    if (!item?.sheet) {
+      const msg = `Couldn't find itemId [${itemId}] on actor ${this.actor.name} to open item sheet.`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+    // @ts-expect-error render signature varies between V1/V2 sheet implementations
+    item.sheet.render({ force: true });
+  }
+
+  private static _deleteItemAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
+    requireValue(itemId, "No item id found to delete item");
+    RqgActorSheet.confirmItemDelete(this.actor, itemId);
+  }
+
+  private static _sortItemsAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    const itemType = target.dataset["sortItems"];
+    requireValue(itemType, "No sort item type found");
+    void RqgActorSheetV2.sortItems(this.actor, itemType);
+  }
+
+  private static _addWoundAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
+    requireValue(itemId, "No hit location item id found to add wound");
+    void HitLocationSheet.showAddWoundDialog(this.actor, itemId);
+  }
+
+  private static _healWoundAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
+    requireValue(itemId, "No hit location item id found to heal wound");
+    void HitLocationSheet.showHealWoundDialog(this.actor, itemId);
+  }
+
+  private static async _flipHitLocationSortSettingAction(this: RqgActorSheetV2): Promise<void> {
+    const currentValue = game.settings?.get(systemId, "sortHitLocationsLowToHigh");
+    await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
+    this.render({ force: true });
+  }
+
+  private static _editActiveEffectAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    const effectRow = target.closest<HTMLElement>("[data-effect-uuid]");
+    const effectUuid = effectRow?.dataset["effectUuid"];
+    requireValue(effectUuid, "No active effect uuid found to edit the effect");
+
+    const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
+    requireValue(effect, `No active effect id [${effectUuid}] to edit the effect`);
+    new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
+      force: true,
+    });
+  }
+
+  private static async _deleteActiveEffectAction(
+    this: RqgActorSheetV2,
+    event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    event.preventDefault();
+    event.stopPropagation();
+    await this._confirmDeleteActiveEffect(target);
+  }
+
+  private async _confirmDeleteActiveEffect(actionEl: HTMLElement): Promise<void> {
+    const effectRow = actionEl.closest<HTMLElement>("[data-effect-uuid]");
+    const effectUuid = effectRow?.dataset["effectUuid"];
+    requireValue(effectUuid, "No active effect uuid found to delete the effect");
+
+    const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
+    requireValue(effect, `No active effect id [${effectUuid}] to delete the effect`);
+
+    const title = localize("RQG.Dialog.confirmActiveEffectDeleteDialog.title", {
+      effectName: effect.name,
+    });
+    const content = localize("RQG.Dialog.confirmActiveEffectDeleteDialog.content", {
+      effectName: effect.name,
+    });
+
+    const confirmed = await foundry.applications.api.DialogV2.wait({
+      window: { title },
+      content,
+      buttons: [
+        {
+          action: "confirm",
+          label: localize("RQG.Dialog.Common.btnConfirm"),
+          icon: "fas fa-check",
+          callback: () => true,
+        },
+        {
+          action: "cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
+          icon: "fas fa-times",
+          callback: () => false,
+          default: true,
+        },
+      ],
+    });
+
+    if (confirmed) {
+      await effect.delete();
+    }
+  }
+
+  private static async _setSRAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    const srValue = getRequiredDomDataset(target, "set-sr");
+    const srToAdd = srValue.split(",").map((v) => Number(v.trim()));
+    this._activeInSR = new Set(srToAdd);
+    await this._updateActiveCombatWithSR(this._activeInSR);
+  }
+
+  private static async _toggleSRAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    const sr = Number(getRequiredDomDataset(target, "toggle-sr"));
+    if (this._activeInSR.has(sr)) {
+      this._activeInSR.delete(sr);
+    } else {
+      this._activeInSR.add(sr);
+    }
+    await this._updateActiveCombatWithSR(this._activeInSR);
+  }
+
+  private static async _addPassionAction(this: RqgActorSheetV2): Promise<void> {
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
+    const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
+    const passion = {
+      name: newPassionName,
+      type: ItemTypeEnum.Passion,
+      img: defaultItemIconSettings[ItemTypeEnum.Passion],
+      system: { passion: newPassionName },
+    };
+    const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
+    // @ts-expect-error render signature varies between V1/V2 sheet implementations
+    (createdItems[0] as RqgItem)?.sheet?.render({ force: true });
+  }
+
+  private static async _addGearAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    const physicalItemType = getRequiredDomDataset(target, "gear-add") as PhysicalItemType;
+    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
+
+    const physicalItemType2ItemName = new Map<string, string>([
+      ["unique", "RQG.Actor.Gear.NewGear"],
+      ["currency", "RQG.Actor.Gear.NewCurrency"],
+      ["consumable", "RQG.Actor.Gear.NewConsumable"],
+    ]);
+
+    const name = localize(
+      physicalItemType2ItemName.get(physicalItemType) ?? "RQG.Actor.Gear.NewGear",
+    );
+
+    const newGear = {
+      name: name,
+      type: ItemTypeEnum.Gear,
+      img: defaultItemIconSettings[ItemTypeEnum.Gear],
+      system: { physicalItemType: physicalItemType },
+    };
+    const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
+    // @ts-expect-error render signature varies between V1/V2 sheet implementations
+    (createdItems[0] as RqgItem)?.sheet?.render({ force: true });
   }
 
   /**
@@ -1095,6 +1167,16 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): Promise<void> {
     const sheet = this as unknown as RqgActorSheetV2;
     const data = formData.object as Record<string, unknown>;
+
+    const maxHitPoints = sheet.actor.system.attributes.hitPoints.max;
+
+    if (
+      data["system.attributes.hitPoints.value"] == null ||
+      (data["system.attributes.hitPoints.value"] as number) >= (maxHitPoints ?? 0)
+    ) {
+      data["system.attributes.hitPoints.value"] = maxHitPoints;
+    }
+
     await sheet.actor.update(data);
   }
 
@@ -1713,5 +1795,58 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         isAllowedDocumentNames(data?.type, ["Item", "JournalEntry", "JournalEntryPage"]);
         return false;
     }
+  }
+
+  protected override async _onDrop(event: DragEvent): Promise<void> {
+    event.preventDefault();
+    this.render(); // Rerender to clear any drag-hover classes
+
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData;
+
+    // Handle compendium drops specially to embed all items from the pack
+    if (data?.type === "Compendium") {
+      if (!this.actor.isOwner) {
+        ui.notifications?.warn(
+          localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
+        );
+        return;
+      }
+      await this._onDropCompendium(event, data);
+      return;
+    }
+
+    // For all other types, delegate to parent
+    await super._onDrop(event);
+  }
+
+  private async _onDropCompendium(event: DragEvent, data: ActorSheet.DropData): Promise<RqgItem[]> {
+    if (!this.actor.isOwner) {
+      return [];
+    }
+    const compendiumId = hasOwnProperty(data, "collection") ? data.collection : undefined;
+    if (typeof compendiumId !== "string") {
+      return [];
+    }
+    const pack = game.packs?.get(compendiumId);
+    const packIndex = await pack?.getIndex();
+    if (!packIndex) {
+      return [];
+    }
+    const documents = (await Promise.all(
+      packIndex.map(async (di) => {
+        const doc = await fromUuid(di.uuid);
+        return doc?.toObject();
+      }),
+    )) as Item.Implementation["_source"][];
+
+    const itemDataToCreate = documents.filter(isTruthy);
+    if (itemDataToCreate.length === 0) {
+      return [];
+    }
+
+    const createdItems = await this.actor.createEmbeddedDocuments("Item", itemDataToCreate);
+    return createdItems as RqgItem[];
   }
 }
