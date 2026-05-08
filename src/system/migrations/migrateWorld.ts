@@ -17,6 +17,9 @@ import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel
 import { migrateActorActiveEffectPaths } from "./migrations-actor/migrateActorActiveEffectPaths";
 import { migrateItemActiveEffectPaths } from "./migrations-item/migrateItemActiveEffectPaths";
 import { migrateActiveEffectActiveEffectPaths } from "./migrations-effect/migrateActiveEffectActiveEffectPaths";
+import { migrateItemActiveEffectTypes } from "./migrations-item/migrateItemActiveEffectTypes";
+import { migrateActorActiveEffectTypes } from "./migrations-actor/migrateActorActiveEffectTypes";
+import { migrateActiveEffectActiveEffectTypes } from "./migrations-effect/migrateActiveEffectActiveEffectTypes";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -116,10 +119,15 @@ export async function applyDefaultWorldMigrations(
     migrateWeaponSkillLinks,
     migrateRuneItemType,
     relabelRuneMagicCommandCultSpiritRqid,
+    migrateItemActiveEffectTypes,
     migrateItemActiveEffectPaths,
   ];
-  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorActiveEffectPaths];
+  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [
+    migrateActorActiveEffectTypes,
+    migrateActorActiveEffectPaths,
+  ];
   const worldActiveEffectMigrations: ActiveEffectMigration[] = activeEffectMigrations ?? [
+    migrateActiveEffectActiveEffectTypes,
     migrateActiveEffectActiveEffectPaths,
   ];
 

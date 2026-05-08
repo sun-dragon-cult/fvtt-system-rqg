@@ -143,12 +143,8 @@ export class RqgItemSheet<
             {
               name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
               img: "icons/svg/aura.svg",
-              changes: [
-                {
-                  key: "",
-                  value: "",
-                },
-              ],
+              // change.type is the string key from CONST.ACTIVE_EFFECT_CHANGE_TYPES, not the numeric priority value
+              changes: [{ key: "", type: "add", value: "" } as any],
               transfer: true,
               disabled: false,
             },

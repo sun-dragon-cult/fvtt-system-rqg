@@ -22,9 +22,6 @@ interface CharacteristicDerivedAttributes {
   damageBonus: string;
   healingRate: number | undefined;
   spiritCombatDamage: string;
-  magicPointsMaxFromEffects: number;
-  hitPointsMaxFromEffects: number;
-  skillCategoryModifiersFromEffects: SkillCategories;
 }
 
 type DerivedAttributes = ItemDependentDerivedAttributes & CharacteristicDerivedAttributes;
@@ -34,6 +31,11 @@ export type CharacterActor = RqgActor & {
   system: Actor.SystemOfType<"character"> & {
     attributes: DerivedAttributes;
     baseSkillCategoryModifiers: SkillCategories;
+    effect: {
+      magicPoints: { max: number };
+      hitPoints: { max: number };
+      skillCategoryModifiers: SkillCategories;
+    };
   };
 };
 

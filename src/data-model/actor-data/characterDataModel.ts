@@ -100,19 +100,16 @@ export class CharacterDataModel extends RqgActorDataModel<
           initial: "healthy",
           choices: enumChoices(actorHealthStatuses, "RQG.Actor.Attributes.Health."),
         }),
-        magicPointsMaxFromEffects: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
+      }),
+
+      effect: new SchemaField({
+        magicPoints: new SchemaField({
+          max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
         }),
-        hitPointsMaxFromEffects: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
+        hitPoints: new SchemaField({
+          max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
         }),
-        skillCategoryModifiersFromEffects: new SchemaField({
+        skillCategoryModifiers: new SchemaField({
           agility: new NumberField({
             integer: true,
             nullable: false,
@@ -204,21 +201,9 @@ export class CharacterDataModel extends RqgActorDataModel<
 
     system.baseSkillCategoryModifiers = characteristicDerived.skillCategoryModifiers;
 
-    // Compose skill modifiers: base + effects + encumbrance penalties
-    const effectsModifiers = system.attributes.skillCategoryModifiersFromEffects ?? {
-      agility: 0,
-      communication: 0,
-      knowledge: 0,
-      magic: 0,
-      manipulation: 0,
-      perception: 0,
-      stealth: 0,
-      meleeWeapons: 0,
-      missileWeapons: 0,
-      shields: 0,
-      naturalWeapons: 0,
-      otherSkills: 0,
-    };
+    // Non-persisted fields are reinitialized each prepare cycle by Foundry v14.
+    // Keep composition strict here so schema regressions are visible in tests.
+    const effectsModifiers = system.effect.skillCategoryModifiers;
 
     const baseWithEffects = {
       agility: characteristicDerived.skillCategoryModifiers.agility + effectsModifiers.agility,
@@ -260,16 +245,15 @@ export class CharacterDataModel extends RqgActorDataModel<
       pow: characteristics.power.value,
     };
 
-    // Note: Non-persisted fields are used to allow AE to target these values
-    // (Requires Foundry v14+)
+    // ActiveEffect deltas are accumulated in non-persisted fields that Foundry
+    // reinitializes per cycle before effects are applied.
     const systemAny = system as any;
     if (systemAny.attributes.magicPoints) {
-      const magicPointsFromEffects = (systemAny.attributes.magicPointsMaxFromEffects ??
-        0) as number;
+      const magicPointsFromEffects = (systemAny.effect.magicPoints.max ?? 0) as number;
       systemAny.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
     }
     if (systemAny.attributes.hitPoints) {
-      const hitPointsFromEffects = (systemAny.attributes.hitPointsMaxFromEffects ?? 0) as number;
+      const hitPointsFromEffects = (systemAny.effect.hitPoints.max ?? 0) as number;
       const baseHitPoints = RqgCalculations.hitPoints(con ?? 0, siz ?? 0, pow ?? 0) ?? 0;
       systemAny.attributes.hitPoints.max = baseHitPoints + hitPointsFromEffects;
     }

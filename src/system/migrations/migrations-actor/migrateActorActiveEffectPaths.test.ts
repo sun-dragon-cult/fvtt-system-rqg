@@ -31,11 +31,11 @@ describe("migrateActorActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
   });
 
-  it("should migrate hitPoints.max to hitPointsMaxFromEffects", () => {
+  it("should migrate hitPoints.max to system.effect.hitPoints.max", () => {
     const mockActor = {
       name: "Test Actor",
       id: "actor-1",
@@ -58,7 +58,7 @@ describe("migrateActorActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.hitPointsMaxFromEffects",
+      "system.effect.hitPoints.max",
     );
   });
 
@@ -67,7 +67,7 @@ describe("migrateActorActiveEffectPaths", () => {
       id: "effect-1",
       name: "Test Effect",
       system: {
-        changes: [{ key: "system.attributes.magicPointsMaxFromEffects", type: "add", value: 5 }],
+        changes: [{ key: "system.effect.magicPoints.max", type: "add", value: 5 }],
       },
     };
 
@@ -110,7 +110,7 @@ describe("migrateActorActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
     expect((updateData.effects as any[])?.[0].system.changes[1].key).toBe(
       "system.attributes.hitPoints.max", // Unchanged
@@ -193,7 +193,7 @@ describe("migrateActorActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.hitPointsMaxFromEffects",
+      "system.effect.hitPoints.max",
     );
   });
 });

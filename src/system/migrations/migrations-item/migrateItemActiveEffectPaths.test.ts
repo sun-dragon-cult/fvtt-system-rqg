@@ -30,8 +30,32 @@ describe("migrateItemActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
+  });
+
+  it("should migrate hitPoints.max to system.effect.hitPoints.max and normalize value", async () => {
+    const mockItem = {
+      name: "Hit Points Item",
+      id: "item-hp-1",
+      effects: [
+        {
+          id: "effect-1",
+          name: "Hit Points Effect",
+          system: {
+            changes: [{ key: "system.attributes.hitPoints.max", type: "add", value: "10" }],
+          },
+        },
+      ],
+    };
+
+    const updateData = await migrateItemActiveEffectPaths(mockItem as unknown as RqgItem);
+
+    expect(updateData.effects).toBeDefined();
+    expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
+      "system.effect.hitPoints.max",
+    );
+    expect((updateData.effects as any[])?.[0].system.changes[0].value).toBe(10);
   });
 
   it("should skip already migrated effects", async () => {
@@ -39,7 +63,7 @@ describe("migrateItemActiveEffectPaths", () => {
       id: "effect-1",
       name: "Test Effect",
       system: {
-        changes: [{ key: "system.attributes.magicPointsMaxFromEffects", type: "add", value: 5 }],
+        changes: [{ key: "system.effect.magicPoints.max", type: "add", value: 5 }],
       },
     };
 
@@ -79,7 +103,7 @@ describe("migrateItemActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
     expect((updateData.effects as any[])?.[0].system.changes[1].key).toBe(
       "system.attributes.hitPoints.max", // Unchanged
@@ -128,7 +152,7 @@ describe("migrateItemActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
   });
 
@@ -143,7 +167,7 @@ describe("migrateItemActiveEffectPaths", () => {
           system: {
             changes: [
               {
-                key: "system.attributes.magicPointsMaxFromEffects",
+                key: "system.effect.magicPoints.max",
                 type: "add",
                 value: undefined,
               },
@@ -213,7 +237,7 @@ describe("migrateItemActiveEffectPaths", () => {
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].effect).toBeUndefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
   });
 
@@ -243,7 +267,7 @@ describe("migrateItemActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
   });
 
@@ -277,7 +301,7 @@ describe("migrateItemActiveEffectPaths", () => {
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0]._id).toBe("effect-1");
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
   });
 
@@ -306,7 +330,7 @@ describe("migrateItemActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
   });
 
@@ -342,7 +366,7 @@ describe("migrateItemActiveEffectPaths", () => {
 
     expect(updateData.effects).toBeDefined();
     expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
-      "system.attributes.magicPointsMaxFromEffects",
+      "system.effect.magicPoints.max",
     );
     expect(Array.isArray(mockItem.effects)).toBe(true);
     expect((mockItem.effects as any[])[0].changes).toEqual([
