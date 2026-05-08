@@ -213,19 +213,18 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           value: "",
         };
 
-        const effect = new ActiveEffect(
-          {
-            name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
-            img: "icons/svg/aura.svg",
+        const effectData = {
+          name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
+          img: "icons/svg/aura.svg",
+          transfer: true,
+          disabled: false,
+          system: {
             // change.type is the string key from CONST.ACTIVE_EFFECT_CHANGE_TYPES, not the numeric priority value
             changes: [initialChange],
-            transfer: true,
-            disabled: false,
           },
-          item,
-        );
+        };
         const created = await item
-          .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
+          .createEmbeddedDocuments("ActiveEffect", [effectData])
           .catch((reason: unknown) => {
             ui.notifications?.error(
               localize("RQG.Item.Notification.CantCreateActiveEffect", {
