@@ -139,24 +139,26 @@ export class RqgItemSheet<
           return; // The item is not in the world (ie it's in a compendium)
         }
         el.addEventListener("click", async () => {
-          const effect = new ActiveEffect(
-            {
-              name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
-              img: "icons/svg/aura.svg",
-              changes: [
-                {
-                  key: "",
-                  value: "",
-                },
-              ],
-              transfer: true,
-              disabled: false,
+          const initialChange: ActiveEffect.ChangeData = {
+            key: "",
+            // @ts-expect-error TEMP(v14-types) legacy ActiveEffect change shape
+            type: "add",
+            value: "",
+          };
+
+          const effectData = {
+            name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
+            img: "icons/svg/aura.svg",
+            transfer: true,
+            disabled: false,
+            system: {
+              // change.type is the string key from CONST.ACTIVE_EFFECT_CHANGE_TYPES, not the numeric priority value
+              changes: [initialChange],
             },
-            item,
-          );
+          };
 
           const e = await item
-            .createEmbeddedDocuments("ActiveEffect", [effect.toObject()])
+            .createEmbeddedDocuments("ActiveEffect", [effectData])
             .catch((reason: any) => {
               ui.notifications?.error(
                 localize("RQG.Item.Notification.CantCreateActiveEffect", {

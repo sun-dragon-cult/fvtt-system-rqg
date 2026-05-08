@@ -1,4 +1,3 @@
-import { RqgCalculations } from "../system/rqgCalculations";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
@@ -34,6 +33,7 @@ import { RqgItem } from "@items/rqgItem.ts";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
+import { applyEquippedEncumbrancePenalty } from "../data-model/actor-data/derivedCharacterValues";
 
 import type { DeepPartial } from "fvtt-types/utils";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
@@ -220,21 +220,13 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
+   * Prepare embedded documents (items, effects).
+   * Note: hitPoints.max is now set in CharacterDataModel.prepareDerivedData() with support for AE effects
    */
-  override prepareBaseData(): void {
-    super.prepareBaseData();
-    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-    // Set this here before Active effects to allow POW crystals to boost it.
-    this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
-  }
-
   override prepareEmbeddedDocuments(): void {
     super.prepareEmbeddedDocuments();
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
-    const { con, siz, pow } = this.actorCharacteristics();
-    this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
     this.items.forEach((item) => handleActorPrepareEmbeddedDocuments(item as RqgItem));
   }
 
@@ -245,17 +237,7 @@ export class RqgActor extends Actor {
     super.prepareDerivedData();
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
-    const { str, con, siz, dex, int, pow, cha } = this.actorCharacteristics();
-    const skillCategoryModifiers = (this.system.skillCategoryModifiers =
-      RqgCalculations.skillCategoryModifiers(
-        str,
-        siz,
-        dex,
-        int,
-        pow,
-        cha,
-        this.system.attributes.isCreature,
-      ));
+    const { str, con } = this.actorCharacteristics();
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
@@ -272,17 +254,16 @@ export class RqgActor extends Actor {
       (attributes.encumbrance.max || 0) - (attributes.encumbrance.equipped || 0),
     );
 
+    // Apply encumbrance penalty to the composed skill modifiers (base + effects from DataModel)
+    this.system.skillCategoryModifiers = applyEquippedEncumbrancePenalty(
+      this.system.skillCategoryModifiers,
+      equippedMovementEncumbrancePenalty,
+    );
+
     attributes.move.value =
       this.system.attributes.move?.[attributes.move?.currentLocomotion]?.value || 0;
 
     attributes.move.equipped = attributes.move.value + equippedMovementEncumbrancePenalty;
-    skillCategoryModifiers.agility += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.manipulation += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.stealth += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.meleeWeapons += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.missileWeapons += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.naturalWeapons += equippedMovementEncumbrancePenalty * 5;
-    skillCategoryModifiers.shields += equippedMovementEncumbrancePenalty * 5;
 
     const travelMovementEncumbrancePenalty = Math.min(
       0,
@@ -291,12 +272,6 @@ export class RqgActor extends Actor {
     attributes.move.travel = attributes.move.value + travelMovementEncumbrancePenalty;
 
     this.items.forEach((item) => handleActorPrepareDerivedData(item as RqgItem));
-
-    attributes.dexStrikeRank = RqgCalculations.dexSR(dex);
-    attributes.sizStrikeRank = RqgCalculations.sizSR(siz);
-    attributes.damageBonus = RqgCalculations.damageBonus(str, siz);
-    attributes.healingRate = RqgCalculations.healingRate(con);
-    attributes.spiritCombatDamage = RqgCalculations.spiritCombatDamage(pow, cha);
 
     attributes.health = DamageCalculations.getCombinedActorHealth(this);
   }

@@ -4,8 +4,8 @@
   "description": "A RuneQuest Glorantha system implementation.",
   "version": "99999.0.0-localhost",
   "compatibility": {
-    "minimum": 13,
-    "verified": 13
+    "minimum": 14,
+    "verified": 14
   },
   "license": "UNLICENSED",
   "background": "systems/rqg/assets/images/ui/sacred-time.webp",

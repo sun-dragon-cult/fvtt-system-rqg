@@ -1,6 +1,7 @@
 import { localize } from "../util";
 import {
   type ActorMigration,
+  type ActiveEffectMigration,
   applyMigrations,
   type ItemMigration,
   type MigrationResult,
@@ -13,6 +14,9 @@ import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqidBatchEditor";
 import { migrateRuneItemType } from "./migrations-item/migrateRuneItemType";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabelRuneMagicCommandCultSpiritRqid";
+import { migrateActorActiveEffectPaths } from "./migrations-actor/migrateActorActiveEffectPaths";
+import { migrateItemActiveEffectPaths } from "./migrations-item/migrateItemActiveEffectPaths";
+import { migrateActiveEffectActiveEffectPaths } from "./migrations-effect/migrateActiveEffectActiveEffectPaths";
 
 /**
  * Perform a system migration for the entire World, applying migrations for what is in it
@@ -101,6 +105,7 @@ export async function applyDefaultWorldMigrations(
   itemMigrations: ItemMigration[] | undefined = undefined,
   actorMigrations: ActorMigration[] | undefined = undefined,
   migrationNotification?: any,
+  activeEffectMigrations: ActiveEffectMigration[] | undefined = undefined,
 ): Promise<MigrationResult> {
   if (!game.user?.isGM) {
     ui.notifications?.info(localize("RQG.Notification.Error.GMOnlyOperation"));
@@ -111,8 +116,17 @@ export async function applyDefaultWorldMigrations(
     migrateWeaponSkillLinks,
     migrateRuneItemType,
     relabelRuneMagicCommandCultSpiritRqid,
+    migrateItemActiveEffectPaths,
   ];
-  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [];
+  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorActiveEffectPaths];
+  const worldActiveEffectMigrations: ActiveEffectMigration[] = activeEffectMigrations ?? [
+    migrateActiveEffectActiveEffectPaths,
+  ];
 
-  return await applyMigrations(worldItemMigrations, worldActorMigrations, migrationNotification);
+  return await applyMigrations(
+    worldItemMigrations,
+    worldActorMigrations,
+    migrationNotification,
+    worldActiveEffectMigrations,
+  );
 }

@@ -219,17 +219,17 @@ export function getSpiritMagicPointSum(actor: CharacterActor): number {
  * @returns Array of POW crystals with name and size
  */
 export function getPowCrystals(actor: CharacterActor): { name: string; size: number }[] {
+  const magicPointEffectKey = "system.effect.magicPoints.max";
+
   return (
     actor.appliedEffects &&
     actor.appliedEffects
-      .filter(
-        (e) => e.changes.find((c) => c.key === "system.attributes.magicPoints.max") != undefined,
-      )
+      .filter((e) => e.changes.find((c) => c.key === magicPointEffectKey) != undefined)
       .map((e) => {
         return {
           name: e.name ?? "",
           size: e.changes
-            .filter((c) => c.key === "system.attributes.magicPoints.max")
+            .filter((c) => c.key === magicPointEffectKey)
             .reduce((acc: number, c) => acc + Number(c.value), 0),
         };
       })

@@ -4,6 +4,9 @@ import { resourceSchemaField } from "../shared/resourceSchemaField";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
 import { enumChoices } from "../shared/enumChoices";
 import type { SkillCategories } from "./skillCategories";
+import { getCharacteristicDerivedValues } from "./derivedCharacterValues";
+import type { CharacterActor } from "./rqgActorData";
+import { RqgCalculations } from "../../system/rqgCalculations";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -29,7 +32,10 @@ type CharacterSchema = ReturnType<typeof CharacterDataModel.defineSchema>;
 
 export class CharacterDataModel extends RqgActorDataModel<
   CharacterSchema,
-  { skillCategoryModifiers: SkillCategories }
+  {
+    skillCategoryModifiers: SkillCategories;
+    baseSkillCategoryModifiers: SkillCategories;
+  }
 > {
   static override defineSchema() {
     return {
@@ -95,6 +101,161 @@ export class CharacterDataModel extends RqgActorDataModel<
           choices: enumChoices(actorHealthStatuses, "RQG.Actor.Attributes.Health."),
         }),
       }),
+
+      effect: new SchemaField({
+        magicPoints: new SchemaField({
+          max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+        }),
+        hitPoints: new SchemaField({
+          max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+        }),
+        skillCategoryModifiers: new SchemaField({
+          agility: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          communication: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          knowledge: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          magic: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+          manipulation: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          perception: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          stealth: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          meleeWeapons: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          missileWeapons: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          shields: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          naturalWeapons: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          otherSkills: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+        }),
+      }),
     } as const;
+  }
+
+  override prepareDerivedData(): void {
+    super.prepareDerivedData();
+
+    const system = this as unknown as CharacterActor["system"];
+    const characteristics = system.characteristics;
+
+    const characteristicDerived = getCharacteristicDerivedValues({
+      str: characteristics.strength.value,
+      con: characteristics.constitution.value,
+      siz: characteristics.size.value,
+      dex: characteristics.dexterity.value,
+      int: characteristics.intelligence.value,
+      pow: characteristics.power.value,
+      cha: characteristics.charisma.value,
+      isCreature: system.attributes.isCreature,
+    });
+
+    system.baseSkillCategoryModifiers = characteristicDerived.skillCategoryModifiers;
+
+    // Non-persisted fields are reinitialized each prepare cycle by Foundry v14.
+    // Keep composition strict here so schema regressions are visible in tests.
+    const effectsModifiers = system.effect.skillCategoryModifiers;
+
+    const baseWithEffects = {
+      agility: characteristicDerived.skillCategoryModifiers.agility + effectsModifiers.agility,
+      communication:
+        characteristicDerived.skillCategoryModifiers.communication + effectsModifiers.communication,
+      knowledge:
+        characteristicDerived.skillCategoryModifiers.knowledge + effectsModifiers.knowledge,
+      magic: characteristicDerived.skillCategoryModifiers.magic + effectsModifiers.magic,
+      manipulation:
+        characteristicDerived.skillCategoryModifiers.manipulation + effectsModifiers.manipulation,
+      perception:
+        characteristicDerived.skillCategoryModifiers.perception + effectsModifiers.perception,
+      stealth: characteristicDerived.skillCategoryModifiers.stealth + effectsModifiers.stealth,
+      meleeWeapons:
+        characteristicDerived.skillCategoryModifiers.meleeWeapons + effectsModifiers.meleeWeapons,
+      missileWeapons:
+        characteristicDerived.skillCategoryModifiers.missileWeapons +
+        effectsModifiers.missileWeapons,
+      shields: characteristicDerived.skillCategoryModifiers.shields + effectsModifiers.shields,
+      naturalWeapons:
+        characteristicDerived.skillCategoryModifiers.naturalWeapons +
+        effectsModifiers.naturalWeapons,
+      otherSkills:
+        characteristicDerived.skillCategoryModifiers.otherSkills + effectsModifiers.otherSkills,
+    };
+
+    system.skillCategoryModifiers = baseWithEffects;
+
+    system.attributes.dexStrikeRank = characteristicDerived.dexStrikeRank;
+    system.attributes.sizStrikeRank = characteristicDerived.sizStrikeRank;
+    system.attributes.damageBonus = characteristicDerived.damageBonus;
+    system.attributes.healingRate = characteristicDerived.healingRate;
+    system.attributes.spiritCombatDamage = characteristicDerived.spiritCombatDamage;
+
+    // Calculate resource max values with effects deltas
+    const { con, siz, pow } = {
+      con: characteristics.constitution.value,
+      siz: characteristics.size.value,
+      pow: characteristics.power.value,
+    };
+
+    // ActiveEffect deltas are accumulated in non-persisted fields that Foundry
+    // reinitializes per cycle before effects are applied.
+    const systemAny = system as any;
+    if (systemAny.attributes.magicPoints) {
+      const magicPointsFromEffects = (systemAny.effect.magicPoints.max ?? 0) as number;
+      systemAny.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
+    }
+    if (systemAny.attributes.hitPoints) {
+      const hitPointsFromEffects = (systemAny.effect.hitPoints.max ?? 0) as number;
+      const baseHitPoints = RqgCalculations.hitPoints(con ?? 0, siz ?? 0, pow ?? 0) ?? 0;
+      systemAny.attributes.hitPoints.max = baseHitPoints + hitPointsFromEffects;
+    }
   }
 }

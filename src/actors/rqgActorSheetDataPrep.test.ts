@@ -227,13 +227,13 @@ describe("getPowCrystals", () => {
       {
         name: "Crystal A",
         changes: [
-          { key: "system.attributes.magicPoints.max", value: "3" },
+          { key: "system.effect.magicPoints.max", value: "3" },
           { key: "system.attributes.hitPoints.max", value: "2" },
         ],
       },
       {
         name: "Crystal B",
-        changes: [{ key: "system.attributes.magicPoints.max", value: 1 }],
+        changes: [{ key: "system.effect.magicPoints.max", value: 1 }],
       },
     ];
 
@@ -241,6 +241,18 @@ describe("getPowCrystals", () => {
       { name: "Crystal A", size: 3 },
       { name: "Crystal B", size: 1 },
     ]);
+  });
+
+  it("ignores legacy magicPoints.max active-effect paths", () => {
+    const actor = actorWithItems([]);
+    actor.appliedEffects = [
+      {
+        name: "Legacy Crystal",
+        changes: [{ key: "system.attributes.magicPoints.max", value: "2" }],
+      },
+    ];
+
+    expect(getPowCrystals(actor)).toEqual([]);
   });
 });
 
