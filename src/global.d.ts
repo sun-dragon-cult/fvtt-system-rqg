@@ -41,7 +41,6 @@ declare global {
   // TEMP(v14-types): Remove this namespace augmentation once
   // @league-of-foundry-developers/foundry-vtt-types includes
   // CONST.ACTIVE_EFFECT_CHANGE_TYPES.
-  // Search token for cleanup: RQG-TEMP-REMOVE-ACTIVE-EFFECT-CHANGE-TYPES
   namespace CONST {
     const ACTIVE_EFFECT_CHANGE_TYPES: Readonly<{
       custom: 0;
@@ -70,6 +69,9 @@ declare global {
     socket: never;
     ui: never;
   }
+
+  // TEMP(v14-types): Remove once fvtt-types declares Foundry's global `_del` helper.
+  const _del: never;
 
   /** Standard format for data to Foundry SelectOptions handlebar helper */
   type SelectOptionData<T> = { value: T; label: string; group?: string };

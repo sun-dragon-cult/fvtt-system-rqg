@@ -705,6 +705,8 @@ class MockTypeDataModel {
   prepareDerivedData() {}
 }
 
+class MockForcedDeletion {}
+
 // --------------------------------------
 // ---      Foundry global mocks      ---
 // ------------------------------
@@ -737,6 +739,9 @@ globalThis.foundry = {
   },
   data: {
     fields: DataMockFields,
+    operators: {
+      ForcedDeletion: MockForcedDeletion,
+    },
   },
   applications: {
     api: {
@@ -761,6 +766,8 @@ globalThis.foundry = {
     },
   },
 };
+
+globalThis._del = new globalThis.foundry.data.operators.ForcedDeletion();
 
 // Silence console noise in tests if desired
 // console.warn = (..._args: any[]) => {};

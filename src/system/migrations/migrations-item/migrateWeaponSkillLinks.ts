@@ -32,7 +32,7 @@ export async function migrateWeaponSkillLinks(
       system: {
         usage: usageUpdates,
       },
-    } as any; // Migration uses Foundry's `-=field` delete syntax which doesn't exist in DataModel types
+    } as Item.UpdateData;
   }
   return updateData;
 }
@@ -62,14 +62,14 @@ async function getUsageMigrationUpdate(
     ui.notifications?.warn(msg, { console: false });
     console.warn("RQG |", msg);
     return {
-      [`-=skillOrigin`]: null,
-      [`-=skillId`]: null,
+      skillOrigin: _del,
+      skillId: _del,
     };
   }
 
   return {
-    [`-=skillOrigin`]: null,
-    [`-=skillId`]: null,
+    skillOrigin: _del,
+    skillId: _del,
     skillRqidLink: new RqidLink(currentRqid, currentSkillItem.name ?? ""),
   };
 }
@@ -79,7 +79,7 @@ async function findSkillItem(
   owningActorData: CharacterActor | undefined,
   usageType: UsageType,
   legacySkillRef: LegacyWeaponSkillRef | undefined,
-): Promise<any | undefined> {
+): Promise<Item | undefined> {
   if (itemData.type !== ItemTypeEnum.Weapon.toString()) {
     return;
   }
@@ -88,7 +88,7 @@ async function findSkillItem(
   const skillEmbeddedItemId = legacySkillRef?.skillId;
 
   const skillOriginItem = await fromUuid(skillOriginUuid ?? "");
-  if (skillOriginItem) {
+  if (isItemLike(skillOriginItem)) {
     return skillOriginItem;
   }
   const embeddedSkillData = owningActorData?.items.find((i) => i._id === skillEmbeddedItemId);
@@ -98,4 +98,8 @@ async function findSkillItem(
   }
 
   return undefined;
+}
+
+function isItemLike(value: unknown): value is Item {
+  return !!value && typeof value === "object" && "type" in value && "_id" in value;
 }

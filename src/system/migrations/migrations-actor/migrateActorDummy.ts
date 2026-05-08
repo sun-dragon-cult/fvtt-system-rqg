@@ -8,15 +8,17 @@ export function migrateActorDummy(actorData: RqgActor): Actor.UpdateData {
   let updateData: Actor.UpdateData = {};
 
   // eslint-disable-next-line no-constant-condition, no-constant-binary-expression
-  if (false && isDocumentSubType<CharacterActor>(actorData as any, ActorTypeEnum.Character)) {
+  if (false && isDocumentSubType<CharacterActor>(actorData, ActorTypeEnum.Character)) {
+    const race = (actorData.system.background as { race?: string }).race;
+    const backgroundUpdate: Record<string, unknown> = {
+      species: race,
+      race: _del,
+    };
     updateData = {
       system: {
-        background: {
-          species: (actorData.system.background as any).race,
-          [`-=race`]: null,
-        },
+        background: backgroundUpdate,
       },
-    } as any; // Migration uses Foundry's `-=field` delete syntax which doesn't exist in DataModel types
+    } as Actor.UpdateData;
   }
   return updateData;
 }
