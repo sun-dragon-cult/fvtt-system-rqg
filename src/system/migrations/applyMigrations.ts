@@ -8,6 +8,9 @@ export type ItemMigration = (
   owningActorData?: RqgActor,
 ) => Promise<Item.UpdateData>;
 export type ActorMigration = (actorData: RqgActor) => Actor.UpdateData;
+export type ActiveEffectMigration = (
+  effectData: ActiveEffect.Implementation,
+) => Promise<ActiveEffect.UpdateData>;
 
 interface ActorMigrationResult {
   actorUpdateData: Actor.UpdateData;
@@ -22,6 +25,7 @@ export async function applyMigrations(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
   migrationNotification?: any,
+  activeEffectMigrations: ActiveEffectMigration[] = [],
 ): Promise<MigrationResult> {
   const migrationResult: MigrationResult = {
     errorCount: 0,
@@ -32,7 +36,12 @@ export async function applyMigrations(
   await migrateWorldActors(itemMigrations, actorMigrations, migrationResult);
   await migrateWorldItems(itemMigrations, migrationResult);
   await migrateWorldScenes(itemMigrations, actorMigrations, migrationResult);
-  await migrateWorldCompendiumPacks(itemMigrations, actorMigrations, migrationResult);
+  await migrateWorldCompendiumPacks(
+    itemMigrations,
+    actorMigrations,
+    activeEffectMigrations,
+    migrationResult,
+  );
   console.timeEnd("RQG | ⏱ World Migrations took (ms)");
 
   if (!migrationNotification) {
@@ -61,7 +70,7 @@ async function migrateWorldActors(
   for (const actor of actorArray) {
     try {
       const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
-        actor.toObject() as any,
+        actor as unknown as RqgActor,
         itemMigrations,
         actorMigrations,
       );
@@ -106,7 +115,11 @@ async function migrateWorldItems(
   console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
   for (const item of itemArray) {
     try {
-      const updateData = await getItemMigrationUpdates((item as any).toObject(), itemMigrations);
+      const updateData = await getItemMigrationUpdates(
+        item as unknown as RqgItem,
+        itemMigrations,
+        undefined,
+      );
       if (!foundry.utils.isEmpty(updateData)) {
         console.log(`RQG | Migrating Item document ${item.name}`, updateData);
         // @ts-expect-error enforceTypes TODO it does exists
@@ -156,6 +169,7 @@ async function migrateWorldScenes(
 async function migrateWorldCompendiumPacks(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  activeEffectMigrations: ActiveEffectMigration[],
   migrationResult: MigrationResult,
 ): Promise<void> {
   const packs = game.packs?.contents.filter((p) => p.metadata.packageName !== systemId) ?? []; // Exclude system packs
@@ -174,10 +188,16 @@ async function migrateWorldCompendiumPacks(
       if (pack.metadata.packageType !== "world") {
         continue;
       }
-      if (!["Actor", "Item", "Scene"].includes(pack.metadata.type)) {
+      if (!["Actor", "Item", "Scene", "ActiveEffect"].includes(pack.metadata.type)) {
         continue;
       }
-      await migrateCompendium(pack, itemMigrations, actorMigrations, migrationResult);
+      await migrateCompendium(
+        pack,
+        itemMigrations,
+        actorMigrations,
+        activeEffectMigrations,
+        migrationResult,
+      );
     } catch (err: any) {
       migrationResult.errorCount += 1;
       err.message = `RQG | Failed migration for Compendium ${pack.collection}: ${err.message}`;
@@ -198,10 +218,11 @@ async function migrateCompendium(
   pack: CompendiumCollection.Any,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  activeEffectMigrations: ActiveEffectMigration[],
   migrationResult: MigrationResult,
 ): Promise<void> {
   const documentType: string = pack.metadata.type;
-  if (!["Actor", "Item", "Scene"].includes(documentType)) {
+  if (!["Actor", "Item", "Scene", "ActiveEffect"].includes(documentType)) {
     return;
   }
 
@@ -246,6 +267,12 @@ async function migrateCompendium(
         }
         case "Item":
           updateData = await getItemMigrationUpdates(doc as RqgItem, itemMigrations);
+          break;
+        case "ActiveEffect":
+          updateData = await getActiveEffectMigrationUpdates(
+            doc as unknown as ActiveEffect.Implementation,
+            activeEffectMigrations,
+          );
           break;
         case "Scene":
           await migrateSceneTokenActors(
@@ -345,6 +372,22 @@ async function getItemMigrationUpdates(
       performDeletions: false,
     }) as Item.UpdateData; // TODO can mergeObject be made to return the correct type?
   }
+
+  return updateData;
+}
+
+/* -------------------------------------------- */
+
+async function getActiveEffectMigrationUpdates(
+  effect: ActiveEffect.Implementation,
+  activeEffectMigrations: ActiveEffectMigration[],
+): Promise<ActiveEffect.UpdateData> {
+  let updateData: ActiveEffect.UpdateData = {};
+  for (const fn of activeEffectMigrations) {
+    updateData = foundry.utils.mergeObject(updateData, await fn(effect), {
+      performDeletions: false,
+    }) as ActiveEffect.UpdateData;
+  }
   return updateData;
 }
 
@@ -372,7 +415,7 @@ async function migrateSceneTokenActors(
 
     try {
       const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
-        actor.toObject() as any,
+        actor as unknown as RqgActor,
         itemMigrations,
         actorMigrations,
       );

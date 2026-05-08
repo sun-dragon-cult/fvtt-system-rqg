@@ -1,4 +1,3 @@
-import { RqgCalculations } from "../system/rqgCalculations";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
@@ -221,21 +220,13 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * First prepare any derived data which is actor-specific and does not depend on Items or Active Effects
+   * Prepare embedded documents (items, effects).
+   * Note: hitPoints.max is now set in CharacterDataModel.prepareDerivedData() with support for AE effects
    */
-  override prepareBaseData(): void {
-    super.prepareBaseData();
-    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-    // Set this here before Active effects to allow POW crystals to boost it.
-    this.system.attributes.magicPoints.max = this.system.characteristics.power.value;
-  }
-
   override prepareEmbeddedDocuments(): void {
     super.prepareEmbeddedDocuments();
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
-    const { con, siz, pow } = this.actorCharacteristics();
-    this.system.attributes.hitPoints.max = RqgCalculations.hitPoints(con, siz, pow);
     this.items.forEach((item) => handleActorPrepareEmbeddedDocuments(item as RqgItem));
   }
 
@@ -247,8 +238,6 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const attributes = this.system.attributes;
     const { str, con } = this.actorCharacteristics();
-    const baseSkillCategoryModifiers =
-      this.system.baseSkillCategoryModifiers ?? this.system.skillCategoryModifiers;
 
     attributes.encumbrance = {
       max: this.calcMaxEncumbrance(
@@ -265,8 +254,9 @@ export class RqgActor extends Actor {
       (attributes.encumbrance.max || 0) - (attributes.encumbrance.equipped || 0),
     );
 
+    // Apply encumbrance penalty to the composed skill modifiers (base + effects from DataModel)
     this.system.skillCategoryModifiers = applyEquippedEncumbrancePenalty(
-      baseSkillCategoryModifiers,
+      this.system.skillCategoryModifiers,
       equippedMovementEncumbrancePenalty,
     );
 

@@ -22,6 +22,9 @@ interface CharacteristicDerivedAttributes {
   damageBonus: string;
   healingRate: number | undefined;
   spiritCombatDamage: string;
+  magicPointsMaxFromEffects: number;
+  hitPointsMaxFromEffects: number;
+  skillCategoryModifiersFromEffects: SkillCategories;
 }
 
 type DerivedAttributes = ItemDependentDerivedAttributes & CharacteristicDerivedAttributes;
