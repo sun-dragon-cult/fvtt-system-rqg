@@ -28,8 +28,8 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       updateData.effects = toPersistedEffectArray(migratedEffects) as any; // Type coercion needed for UpdateData
-      originalEffects.forEach((effect) => {
-        if (migratedEffects.some((migrated) => migrated !== effect)) {
+      originalEffects.forEach((effect, index) => {
+        if (migratedEffects[index] !== effect) {
           console.log(`RQG | Migrated AE paths on effect "${effect.name}" in item ${item.name}`);
         }
       });

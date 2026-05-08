@@ -30,8 +30,8 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       updateData.effects = toPersistedEffectArray(migratedEffects) as any; // Type coercion needed for UpdateData
-      originalEffects.forEach((effect) => {
-        if (migratedEffects.some((migrated) => migrated !== effect)) {
+      originalEffects.forEach((effect, index) => {
+        if (migratedEffects[index] !== effect) {
           console.log(`RQG | Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`);
         }
       });

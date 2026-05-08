@@ -206,12 +206,19 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         return;
       }
       el.addEventListener("click", async () => {
+        const initialChange: ActiveEffect.ChangeData = {
+          key: "",
+          // @ts-expect-error TEMP(v14-types) legacy ActiveEffect change shape
+          type: "add",
+          value: "",
+        };
+
         const effect = new ActiveEffect(
           {
             name: localize("RQG.Foundry.ActiveEffect.NewActiveEffectName"),
             img: "icons/svg/aura.svg",
             // change.type is the string key from CONST.ACTIVE_EFFECT_CHANGE_TYPES, not the numeric priority value
-            changes: [{ key: "", type: "add", value: "" } as any],
+            changes: [initialChange],
             transfer: true,
             disabled: false,
           },
