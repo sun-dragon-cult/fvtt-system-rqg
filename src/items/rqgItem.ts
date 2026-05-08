@@ -79,124 +79,124 @@ export class RqgItem extends Item {
     Items.registerSheet(systemId, PassionSheet, {
       types: [ItemTypeEnum.Passion],
       label: "RQG.SheetName.Item.Passion",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, RuneSheet, {
       types: [ItemTypeEnum.Rune],
       label: "RQG.SheetName.Item.Rune",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, SkillSheet, {
       types: [ItemTypeEnum.Skill],
       label: "RQG.SheetName.Item.Skill",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, HitLocationSheet, {
       types: [ItemTypeEnum.HitLocation],
       label: "RQG.SheetName.Item.HitLocation",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, HomelandSheet, {
       types: [ItemTypeEnum.Homeland],
       label: "RQG.SheetName.Item.Homeland",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, OccupationSheet, {
       types: [ItemTypeEnum.Occupation],
       label: "RQG.SheetName.Item.Occupation",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, GearSheet, {
       types: [ItemTypeEnum.Gear],
       label: "RQG.SheetName.Item.Gear",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, ArmorSheet, {
       types: [ItemTypeEnum.Armor],
       label: "RQG.SheetName.Item.Armor",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, WeaponSheet, {
       types: [ItemTypeEnum.Weapon],
       label: "RQG.SheetName.Item.Weapon",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, SpiritMagicSheet, {
       types: [ItemTypeEnum.SpiritMagic],
       label: "RQG.SheetName.Item.SpiritMagicSpell",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, CultSheet, {
       types: [ItemTypeEnum.Cult],
       label: "RQG.SheetName.Item.Cult",
-      makeDefault: true,
+      makeDefault: false,
     });
     Items.registerSheet(systemId, RuneMagicSheet, {
       types: [ItemTypeEnum.RuneMagic],
       label: "RQG.SheetName.Item.RuneMagicSpell",
-      makeDefault: true,
+      makeDefault: false,
     });
 
     // AppV2 sheets — available as alternatives; users can switch via sheet config
     Items.registerSheet(systemId, PassionSheetV2, {
       types: [ItemTypeEnum.Passion],
       label: "RQG.SheetName.Item.PassionV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, RuneSheetV2, {
       types: [ItemTypeEnum.Rune],
       label: "RQG.SheetName.Item.RuneV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, SkillSheetV2, {
       types: [ItemTypeEnum.Skill],
       label: "RQG.SheetName.Item.SkillV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, HitLocationSheetV2, {
       types: [ItemTypeEnum.HitLocation],
       label: "RQG.SheetName.Item.HitLocationV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, HomelandSheetV2, {
       types: [ItemTypeEnum.Homeland],
       label: "RQG.SheetName.Item.HomelandV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, OccupationSheetV2, {
       types: [ItemTypeEnum.Occupation],
       label: "RQG.SheetName.Item.OccupationV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, GearSheetV2, {
       types: [ItemTypeEnum.Gear],
       label: "RQG.SheetName.Item.GearV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, ArmorSheetV2, {
       types: [ItemTypeEnum.Armor],
       label: "RQG.SheetName.Item.ArmorV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, WeaponSheetV2, {
       types: [ItemTypeEnum.Weapon],
       label: "RQG.SheetName.Item.WeaponV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, SpiritMagicSheetV2, {
       types: [ItemTypeEnum.SpiritMagic],
       label: "RQG.SheetName.Item.SpiritMagicSpellV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, CultSheetV2, {
       types: [ItemTypeEnum.Cult],
       label: "RQG.SheetName.Item.CultV2",
-      makeDefault: false,
+      makeDefault: true,
     });
     Items.registerSheet(systemId, RuneMagicSheetV2, {
       types: [ItemTypeEnum.RuneMagic],
       label: "RQG.SheetName.Item.RuneMagicSpellV2",
-      makeDefault: false,
+      makeDefault: true,
     });
 
     Hooks.on("preCreateItem", (document: any) => {

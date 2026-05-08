@@ -68,13 +68,13 @@ export class RqgActor extends Actor {
     Actors.registerSheet(systemId, RqgActorSheet, {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.Character",
-      makeDefault: true,
+      makeDefault: false,
     });
 
     Actors.registerSheet(systemId, RqgActorSheetV2 as any, {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.CharacterV2",
-      makeDefault: false,
+      makeDefault: true,
     });
   }
 
