@@ -29,7 +29,33 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
     const migratedEffects = migrateEffectArray(originalEffects);
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
-      updateData.effects = toPersistedEffectArray(migratedEffects) as any; // Type coercion needed for UpdateData
+      const effectUpdates = originalEffects.flatMap((effect, index) => {
+        const migrated = migratedEffects[index];
+        if (migrated === effect) {
+          return [];
+        }
+
+        const persisted = toPersistedEffectArray([migrated])[0] as any;
+        const effectId =
+          persisted?._id ?? persisted?.id ?? (effect as any)?._id ?? (effect as any)?.id;
+        if (!effectId) {
+          return [];
+        }
+
+        return [
+          {
+            _id: effectId,
+            system: {
+              changes: persisted?.system?.changes ?? [],
+            },
+          },
+        ];
+      });
+
+      if (effectUpdates.length > 0) {
+        updateData.effects = effectUpdates as any; // Type coercion needed for UpdateData
+      }
+
       originalEffects.forEach((effect, index) => {
         if (migratedEffects[index] !== effect) {
           console.log(`RQG | Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`);

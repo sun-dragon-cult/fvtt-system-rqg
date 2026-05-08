@@ -192,6 +192,18 @@ export function migrateEffectChangeTypes(effect: any): boolean {
 }
 
 /**
+ * Normalize change.type values and then rewrite legacy paths in one pass.
+ *
+ * This keeps Active Effect migration behavior self-contained even when
+ * migration infrastructure merges payloads from independent migration functions.
+ */
+export function migrateEffectTypesAndPaths(effect: any): boolean {
+  const normalizedTypes = migrateEffectChangeTypes(effect);
+  const migratedPaths = migrateEffectChanges(effect);
+  return normalizedTypes || migratedPaths;
+}
+
+/**
  * Process an array of effects and return the migrated array
  * Clones and migrates effects as needed
  *
@@ -200,7 +212,7 @@ export function migrateEffectChangeTypes(effect: any): boolean {
 export function migrateEffectArray(effects: any[]): any[] {
   return effects.map((effect) => {
     const effectClone = toEffectObject(effect);
-    if (migrateEffectChanges(effectClone)) {
+    if (migrateEffectTypesAndPaths(effectClone)) {
       return effectClone;
     }
     return effect;

@@ -1,5 +1,5 @@
 import type { ActiveEffectMigration } from "../applyMigrations";
-import { migrateEffectChanges } from "../shared-ae-migration-utils";
+import { migrateEffectTypesAndPaths } from "../shared-ae-migration-utils";
 
 /**
  * ActiveEffectMigration: Process standalone ActiveEffect documents in compendium packs
@@ -16,7 +16,7 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
   const updateData: ActiveEffect.UpdateData = {};
   const effectAsAny = effect as any;
 
-  if (migrateEffectChanges(effectAsAny)) {
+  if (migrateEffectTypesAndPaths(effectAsAny)) {
     console.log(`RQG | Migrated AE paths on compendium effect "${effect.name}"`);
     if (Array.isArray(effectAsAny.system?.changes)) {
       updateData.system = {
