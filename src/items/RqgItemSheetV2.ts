@@ -6,7 +6,7 @@ import {
   localizeItemType,
   normalizeSourceRqidLinks,
 } from "../system/util";
-import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
+import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqidSheetButton";
 import type { RqgItem } from "./rqgItem";
 import {
   extractDropInfo,
@@ -90,6 +90,14 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     return `${localizeItemType(this.document.type)}: ${this.document.name}${parentAddition}`;
   }
 
+  // @ts-expect-error TEMP(v14-types) _getFrameButtons exists at runtime in Foundry >=14.361
+  override _getFrameButtons(options: any): any[] {
+    // @ts-expect-error TEMP(v14-types) super._getFrameButtons is missing from current type defs
+    const buttons = super._getFrameButtons(options);
+    buttons.unshift(getRqidFrameButton(this as unknown as DocumentSheet<any, any>));
+    return buttons;
+  }
+
   // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
   override async _prepareContext(): Promise<RqgItemSheetContext> {
     return {
@@ -122,8 +130,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   ): Promise<void> {
     await super._onRender(context, options);
 
-    // RQID header button (AppV2 version)
-    await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
+    // RQID header button (AppV2 _getFrameButtons version)
+    await decorateRqidFrameButton(this as unknown as DocumentSheet<any, any>);
 
     // RQID link open/delete handlers in the sheet body (bind once)
     if (options.isFirstRender) {

@@ -31,7 +31,7 @@ import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import * as DataPrep from "./rqgActorSheetDataPrep";
 import { RqidLink } from "../data-model/shared/rqidLink";
-import { addRqidLinkToSheet } from "../documents/rqidSheetButton";
+import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqidSheetButton";
 import { RqgContextMenu } from "../foundryUi/RqgContextMenu";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
@@ -179,6 +179,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       } as any);
     }
     return controls;
+  }
+
+  // @ts-expect-error TEMP(v14-types) _getFrameButtons exists at runtime in Foundry >=14.361
+  override _getFrameButtons(options: any): any[] {
+    // @ts-expect-error TEMP(v14-types) super._getFrameButtons is missing from current type defs
+    const buttons = super._getFrameButtons(options);
+    buttons.unshift(getRqidFrameButton(this as unknown as DocumentSheet<any, any>));
+    return buttons;
   }
 
   // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
@@ -387,8 +395,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       this.element.classList.toggle(state, health === state);
     }
 
-    // RQID header button (AppV2 version)
-    await addRqidLinkToSheet(this as unknown as DocumentSheet<any, any>);
+    // RQID header button (AppV2 _getFrameButtons version)
+    await decorateRqidFrameButton(this as unknown as DocumentSheet<any, any>);
 
     // Update edit-mode header control icon and label
     const editControl = this.element.querySelector<HTMLElement>("[data-action='toggleEditMode']");
