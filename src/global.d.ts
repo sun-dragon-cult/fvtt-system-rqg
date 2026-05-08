@@ -54,6 +54,8 @@ declare global {
     }>;
   }
 
+  type ActiveEffectChangeType = Exclude<keyof typeof CONST.ACTIVE_EFFECT_CHANGE_TYPES, "subtract">;
+
   interface Game {
     dice3d?: Dice3D;
   }

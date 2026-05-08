@@ -560,6 +560,7 @@ class MockDocument {
   getFlag(_scope, _path) {
     return undefined;
   }
+  prepareDerivedData() {}
 }
 
 class MockRoll {
@@ -692,6 +693,18 @@ class MockContextMenu {
   _setPosition(_menu, _target, _options) {}
 }
 
+class MockTypeDataModel {
+  constructor(source = {}) {
+    this._source = source;
+  }
+
+  static migrateData(source) {
+    return source;
+  }
+
+  prepareDerivedData() {}
+}
+
 // --------------------------------------
 // ---      Foundry global mocks      ---
 // ------------------------------
@@ -704,7 +717,7 @@ globalThis.foundry = {
   },
   abstract: {
     Document: MockDocument,
-    TypeDataModel: null, // TODO ***-
+    TypeDataModel: MockTypeDataModel,
   },
   appv1: {
     api: {

@@ -17,7 +17,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    ignores: ["coverage/", "src/assets/packs/", "**/dist/"],
+    ignores: ["coverage/", "src/assets/packs/", "**/dist/", "playwright-report/", "test-results/"],
   },
   ...compat
     .extends(

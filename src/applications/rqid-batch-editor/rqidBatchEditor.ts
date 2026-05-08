@@ -364,20 +364,19 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
           continue;
         }
 
+        const tokenItemDeltaUpdates: ItemRqidUpdate[] = [];
         tokenItemUpdates.forEach((itemUpdate) => {
-          const tokenUpdate: {
-            _id: string | null;
-            delta: { _id: string | null | undefined; items: object[] };
-          } = { _id: token.id, delta: { _id: token.delta?.id, items: [] } };
           const item = token.actor!.items.get(itemUpdate.itemId);
           if (!item) {
             console.error("RQG | Could not find item on token with id", itemUpdate.itemId);
             return;
           }
+
           const newRqid = itemNames2Rqid.get(itemUpdate.name);
           if (!newRqid) {
             return;
           }
+
           const rqidFlags: DocumentRqidFlags = {
             id: isValidRqidString(newRqid) ? newRqid : ("" as RqidString),
             lang:
@@ -385,13 +384,19 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
             priority: itemUpdate.documentRqidFlags.priority ?? 0,
           };
 
-          const itemData = item.toObject();
-          tokenUpdate.delta.items.push(itemData);
-          foundry.utils.setProperty(itemData, "flags.rqg.documentRqidFlags", rqidFlags);
-          if (tokenUpdate.delta.items.length) {
-            sceneUpdates.tokens.push(tokenUpdate);
+          const embeddedItemUpdate = RqidBatchEditor.getItemUpdate(itemUpdate, rqidFlags);
+          if (embeddedItemUpdate) {
+            tokenItemDeltaUpdates.push(embeddedItemUpdate);
           }
         });
+
+        if (tokenItemDeltaUpdates.length > 0) {
+          const tokenUpdate: {
+            _id: string | null;
+            delta: { _id: string | null | undefined; items: ItemRqidUpdate[] };
+          } = { _id: token.id, delta: { _id: token.delta?.id, items: tokenItemDeltaUpdates } };
+          sceneUpdates.tokens.push(tokenUpdate);
+        }
       }
       await scene.update(sceneUpdates);
       RqidBatchEditor.updateProgress(++progress, changesCount, "Update Scenes");
