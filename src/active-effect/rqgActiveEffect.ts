@@ -4,6 +4,7 @@ import {
   localize,
   logMisconfiguration,
 } from "../system/util";
+import { RqgLogger } from "../system/logging/rqgLogger";
 import { Rqid } from "../system/api/rqidApi";
 import { toRqidString } from "../system/api/rqidValidation";
 
@@ -12,6 +13,8 @@ import Document = foundry.abstract.Document;
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 
 export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
+  private static readonly logger = new RqgLogger("RqgActiveEffect");
+
   static init() {
     CONFIG.ActiveEffect.documentClass = RqgActiveEffect as any;
     CONFIG.ActiveEffect.legacyTransferral = false;
@@ -47,9 +50,9 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
         }),
         "disjunction",
       );
-      const msg = `Character ${targetDoc.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`;
-      ui.notifications?.warn(msg, { console: false });
-      console.warn("RQG | ", msg);
+      RqgActiveEffect.logger.warn(
+        `Character ${targetDoc.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`,
+      );
     }
 
     const isMultiMatch = rqidOrPattern !== undefined && rqidOrPattern.startsWith("~");
@@ -103,8 +106,9 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
           delta = this.#castDelta(change.value, targetType);
         }
       } catch (e) {
-        console.warn(
+        RqgActiveEffect.logger.warn(
           `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
+          { notify: false },
           e,
         );
         continue;
@@ -130,9 +134,12 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       try {
         foundry.utils.setProperty(item, path as any, update);
       } catch (e) {
-        const msg = `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`;
-        ui.notifications?.warn(msg, { console: false });
-        console.warn("RQG |", msg, change, e);
+        RqgActiveEffect.logger.warn(
+          `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`,
+          undefined,
+          change,
+          e,
+        );
       }
     }
   }

@@ -5,6 +5,8 @@ import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import { isDocumentSubType } from "../../util.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { MigrationLogger } from "../../logging/migrationLogger";
 
 const oldRqid = "i.rune-magic.command-cult-spirit-elemental";
 const newRqid = "i.rune-magic.command-cult-spirit";
@@ -14,7 +16,12 @@ const newCommandCultSpiritDescriptionRqid = "je..command-cult-spirit";
 
 export async function relabelRuneMagicCommandCultSpiritRqid(
   itemData: RqgItem,
+  _owningActorData?: RqgActor,
+  _migrationLogger?: MigrationLogger,
 ): Promise<Item.UpdateData> {
+  void _owningActorData;
+  void _migrationLogger;
+
   const updateData: Item.UpdateData = {};
 
   if (

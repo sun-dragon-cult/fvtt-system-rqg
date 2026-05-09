@@ -1,0 +1,79 @@
+<article class="migration-report">
+  <table>
+    <tbody>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryWorldActorsWithIssues"}}</td>
+        <td>{{worldActorsWithIssuesLabel}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryWorldItemsWithIssues"}}</td>
+        <td>{{worldItemsWithIssuesLabel}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryScenesWithIssues"}}</td>
+        <td>{{scenesWithIssuesLabel}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryCompendiumsWithIssues"}}</td>
+        <td>{{compendiumsWithIssuesLabel}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryCompendiumsSkipped"}}</td>
+        <td>{{compendiumsSkippedByDesignLabel}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryCompendiumDocumentsProcessed"}}</td>
+        <td>{{stats.compendiumDocumentsInspected}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryUnlinkedTokenActorsProcessed"}}</td>
+        <td>{{stats.unlinkedTokenActorsInspected}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryWarnings"}}</td>
+        <td>{{warningCount}}</td>
+      </tr>
+      <tr>
+        <td>{{localize "RQG.Migration.reportSummaryErrors"}}</td>
+        <td>{{errorCount}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  {{#if hasErrors}}
+    <h1>{{localize "RQG.Migration.reportSummaryErrorsHeading"}}</h1>
+    <p>{{localize "RQG.Migration.reportSummaryErrorsBySourceHint"}}</p>
+    <ul>
+      {{#each errorSummaryGroups}}
+        <li>
+          <strong>{{nameLabel}}</strong>
+          <span> - {{localize "RQG.Migration.reportSummaryErrorSourceLabel" source=sourceLabel}}</span>
+          <br>
+          <span>{{localize "RQG.Migration.reportSummaryErrorUuidLabel"}} {{uuidText}}</span>
+          <br>
+          <span>{{errorText}}</span>
+        </li>
+      {{/each}}
+    </ul>
+  {{/if}}
+
+  {{#if hasIssues}}
+    {{#if affectedSources.scenes.length}}
+      <h1>{{localize "RQG.Migration.reportSummaryScenesWithIssues"}}</h1>
+      <ul>
+        {{#each affectedSources.scenes}}
+          <li>{{name}}</li>
+        {{/each}}
+      </ul>
+    {{/if}}
+
+    {{#if affectedSources.compendiums.length}}
+      <h1>{{localize "RQG.Migration.reportSummaryCompendiumsWithIssues"}}</h1>
+      <ul>
+        {{#each affectedSources.compendiums}}
+          <li>{{name}}</li>
+        {{/each}}
+      </ul>
+    {{/if}}
+  {{/if}}
+</article>

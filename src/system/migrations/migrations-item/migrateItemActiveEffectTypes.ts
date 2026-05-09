@@ -1,4 +1,7 @@
 import type { ItemMigration } from "../applyMigrations";
+import { RqgLogger } from "../../logging/rqgLogger";
+
+const logger = new RqgLogger("ItemActiveEffectTypes");
 import type { RqgItem } from "@items/rqgItem.ts";
 import {
   effectArraysChanged,
@@ -23,7 +26,7 @@ export const migrateItemActiveEffectTypes: ItemMigration = async (
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       updateData.effects = toPersistedEffectArray(migratedEffects) as any;
-      console.log(`RQG | Repaired AE change.type values in item ${item.name}`);
+      logger.info(`Repaired AE change.type values in item ${item.name}`, { notify: false });
     }
   }
 

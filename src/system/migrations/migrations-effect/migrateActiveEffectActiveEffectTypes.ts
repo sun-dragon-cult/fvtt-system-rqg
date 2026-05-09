@@ -1,4 +1,7 @@
 import type { ActiveEffectMigration } from "../applyMigrations";
+import { RqgLogger } from "../../logging/rqgLogger";
+
+const logger = new RqgLogger("ActiveEffectTypes");
 import { migrateEffectChangeTypes } from "../shared-ae-migration-utils";
 
 /**
@@ -14,7 +17,9 @@ export const migrateActiveEffectActiveEffectTypes: ActiveEffectMigration = async
     updateData.system = {
       changes: effectAsAny.system.changes,
     } as any;
-    console.log(`RQG | Repaired AE change.type values on compendium effect "${effect.name}"`);
+    logger.info(`Repaired AE change.type values on compendium effect "${effect.name}"`, {
+      notify: false,
+    });
   }
 
   return updateData;

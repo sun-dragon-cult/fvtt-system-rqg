@@ -12,6 +12,7 @@ import { RqgToken } from "./combat/rqgToken";
 import { cacheAvailableHitLocations, cacheAvailableRunes } from "./system/util";
 import { RqgChatMessage } from "./chat/RqgChatMessage";
 import { nameGeneration } from "./system/api/nameGeneration.js";
+import { openDataModelRepairDialog } from "./system/api/dataModelRepair";
 import { Rqid } from "./system/api/rqidApi.js";
 import { RqgHotbar } from "./foundryUi/rqgHotbar";
 import { TextEditorHooks } from "./foundryUi/textEditorHooks";
@@ -121,23 +122,26 @@ Hooks.once("init", async () => {
 
   // Define the system.api
   (game.system as any).api = {
-    migrate: applyDefaultWorldMigrations,
-    rqid: Rqid,
-    /**
-     * Show an application that lets you set rqid for items.
-     */
-    batchSetRqids: async (...itemTypes: string[]): Promise<void> => {
-      const itemTypeEnums = (
-        itemTypes.length
-          ? itemTypes.map((it) => it as ItemTypeEnum)
-          : [
-              ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-              ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-              ItemTypeEnum.Rune, // Future needs
-            ]
-      ) as Item.SubType[];
-      await RqidBatchEditor.factory(...itemTypeEnums);
+    migration: {
+      applyWorldMigrations: applyDefaultWorldMigrations,
+      openDataModelRepairDialog,
+      /**
+       * Show an application that lets you set rqid for items.
+       */
+      openRqidBatchEditor: async (...itemTypes: string[]): Promise<void> => {
+        const itemTypeEnums = (
+          itemTypes.length
+            ? itemTypes.map((it) => it as ItemTypeEnum)
+            : [
+                ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+                ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+                ItemTypeEnum.Rune, // Future needs
+              ]
+        ) as Item.SubType[];
+        await RqidBatchEditor.factory(...itemTypeEnums);
+      },
     },
+    rqid: Rqid,
     names: nameGeneration,
   };
 });

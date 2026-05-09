@@ -2,10 +2,15 @@ import { localize } from "../util";
 import { RqgItem } from "@items/rqgItem.ts";
 import { systemId } from "../config";
 import type { RqgActor } from "@actors/rqgActor.ts";
+import { MigrationLogger } from "../logging/migrationLogger";
+import { RqgLogger } from "../logging/rqgLogger";
+
+const applyMigrationsLogger = new RqgLogger("Migration");
 
 export type ItemMigration = (
   itemData: RqgItem,
   owningActorData?: RqgActor,
+  logger?: MigrationLogger,
 ) => Promise<Item.UpdateData>;
 export type ActorMigration = (actorData: RqgActor) => Actor.UpdateData;
 export type ActiveEffectMigration = (
@@ -17,8 +22,43 @@ interface ActorMigrationResult {
   itemUpdateData: Item.UpdateData[];
 }
 
+export type MigrationLogLevel = "info" | "warn" | "error";
+
+export interface MigrationDocumentLink {
+  kind:
+    | "Actor"
+    | "Item"
+    | "Scene"
+    | "ActiveEffect"
+    | "JournalEntry"
+    | "JournalEntryPage"
+    | "Compendium";
+  uuid: string;
+  label: string;
+}
+
+export interface MigrationLogEntry {
+  level: MigrationLogLevel;
+  message: string;
+  documents?: MigrationDocumentLink[];
+}
+
+export interface MigrationStats {
+  worldActorsInspected: number;
+  worldItemsInspected: number;
+  scenesInspected: number;
+  unlinkedTokenActorsInspected: number;
+  compendiumsInspected: number;
+  compendiumsSkippedByDesign: number;
+  compendiumDocumentsInspected: number;
+}
+
 export interface MigrationResult {
   errorCount: number;
+  warningCount: number;
+  logCount: number;
+  logEntries: MigrationLogEntry[];
+  stats: MigrationStats;
 }
 
 export async function applyMigrations(
@@ -29,24 +69,48 @@ export async function applyMigrations(
 ): Promise<MigrationResult> {
   const migrationResult: MigrationResult = {
     errorCount: 0,
+    warningCount: 0,
+    logCount: 0,
+    logEntries: [],
+    stats: {
+      worldActorsInspected: 0,
+      worldItemsInspected: 0,
+      scenesInspected: 0,
+      unlinkedTokenActorsInspected: 0,
+      compendiumsInspected: 0,
+      compendiumsSkippedByDesign: 0,
+      compendiumDocumentsInspected: 0,
+    },
   };
+
+  const logger = new MigrationLogger(migrationResult);
+  const timingLogger = new RqgLogger("applyMigrations");
   progressBar = migrationNotification;
   removeProgressBarOnComplete = !migrationNotification;
-  console.time("RQG | ⏱ World Migrations took (ms)");
-  await migrateWorldActors(itemMigrations, actorMigrations, migrationResult);
-  await migrateWorldItems(itemMigrations, migrationResult);
-  await migrateWorldScenes(itemMigrations, actorMigrations, migrationResult);
-  await migrateWorldCompendiumPacks(
-    itemMigrations,
-    actorMigrations,
-    activeEffectMigrations,
-    migrationResult,
-  );
-  console.timeEnd("RQG | ⏱ World Migrations took (ms)");
+  const worldMigrationsTiming = timingLogger.time("World Migrations took (ms)");
+  try {
+    await migrateWorldActors(itemMigrations, actorMigrations, migrationResult, logger);
+    await migrateWorldItems(itemMigrations, migrationResult, logger);
+    await migrateWorldScenes(itemMigrations, actorMigrations, migrationResult, logger);
+    await migrateWorldCompendiumPacks(
+      itemMigrations,
+      actorMigrations,
+      activeEffectMigrations,
+      migrationResult,
+      logger,
+    );
+  } finally {
+    worldMigrationsTiming.timeEnd();
+  }
 
   if (!migrationNotification) {
     progressBar = undefined;
   }
+
+  migrationResult.warningCount = migrationResult.logEntries.filter(
+    (e) => e.level === "warn",
+  ).length;
+  migrationResult.logCount = migrationResult.logEntries.length;
 
   return migrationResult;
 }
@@ -55,9 +119,11 @@ async function migrateWorldActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
   migrationResult: MigrationResult,
+  logger: MigrationLogger,
 ): Promise<void> {
   const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
+  migrationResult.stats.worldActorsInspected = actorCount;
   const migrationMsg = localize("RQG.Migration.actors", {
     count: actorCount.toString(),
   });
@@ -66,31 +132,31 @@ async function migrateWorldActors(
   }
   let progress = 0;
   updateProgressBar(progress, actorCount, migrationMsg, 0, 0.25, 120);
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  logger.info(migrationMsg);
   for (const actor of actorArray) {
     try {
       const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
         actor as unknown as RqgActor,
         itemMigrations,
         actorMigrations,
+        logger,
       );
       if (!foundry.utils.isEmpty(actorUpdateData)) {
-        console.log(`RQG | Migrating Actor document ${actor.name}`, actorUpdateData);
+        logger.info(`Migrating Actor document ${actor.name}`);
         // @ts-expect-error enforceTypes TODO it does exists
         await actor.update(actorUpdateData, { enforceTypes: false });
       }
 
       if (itemUpdateData.length > 0) {
-        console.log(
-          `RQG | Migrating embedded Items for Actor document ${actor.name}`,
-          itemUpdateData,
-        );
+        logger.info(`Migrating embedded Items for Actor document ${actor.name}`);
         await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
     } catch (err: any) {
       migrationResult.errorCount += 1;
-      err.message = `RQG | Failed system migration for Actor ${actor.name}: ${err.message}`;
-      console.error(err, actor);
+      logger.error(
+        `Failed system migration for Actor ${actor.name}: ${err instanceof Error ? err.message : String(err)}`,
+        { documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }] },
+      );
     } finally {
       updateProgressBar(++progress, actorCount, migrationMsg, 0, 0.25, 120);
     }
@@ -101,9 +167,11 @@ async function migrateWorldActors(
 async function migrateWorldItems(
   itemMigrations: ItemMigration[],
   migrationResult: MigrationResult,
+  logger: MigrationLogger,
 ): Promise<void> {
   const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
+  migrationResult.stats.worldItemsInspected = itemCount;
   const migrationMsg = localize("RQG.Migration.items", {
     count: itemCount.toString(),
   });
@@ -112,23 +180,26 @@ async function migrateWorldItems(
   }
   let progress = 0;
   updateProgressBar(progress, itemArray.length, migrationMsg, 0.25, 0.5, 45);
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  logger.info(migrationMsg);
   for (const item of itemArray) {
     try {
       const updateData = await getItemMigrationUpdates(
         item as unknown as RqgItem,
         itemMigrations,
         undefined,
+        logger,
       );
       if (!foundry.utils.isEmpty(updateData)) {
-        console.log(`RQG | Migrating Item document ${item.name}`, updateData);
+        logger.info(`Migrating Item document ${item.name}`);
         // @ts-expect-error enforceTypes TODO it does exists
         await item.update(updateData, { enforceTypes: false });
       }
     } catch (err: any) {
       migrationResult.errorCount += 1;
-      err.message = `RQG | Failed system migration for Item ${item.name}: ${err.message}`;
-      console.error(err, item);
+      logger.error(
+        `Failed system migration for Item ${item.name}: ${err instanceof Error ? err.message : String(err)}`,
+        { documents: [{ kind: "Item", uuid: item.uuid, label: item.name }] },
+      );
     } finally {
       updateProgressBar(++progress, itemCount, migrationMsg, 0.25, 0.5, 45);
     }
@@ -140,9 +211,11 @@ async function migrateWorldScenes(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
   migrationResult: MigrationResult,
+  logger: MigrationLogger,
 ): Promise<void> {
   const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
+  migrationResult.stats.scenesInspected = scenesCount;
   const migrationMsg = localize("RQG.Migration.scenes", {
     count: scenesCount.toString(),
   });
@@ -151,14 +224,22 @@ async function migrateWorldScenes(
   }
   let progress = 0;
   updateProgressBar(progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  logger.info(migrationMsg);
   for (const scene of scenes) {
     try {
-      await migrateSceneTokenActors(scene, itemMigrations, actorMigrations, migrationResult);
+      await migrateSceneTokenActors(
+        scene,
+        itemMigrations,
+        actorMigrations,
+        migrationResult,
+        logger,
+      );
     } catch (err: any) {
       migrationResult.errorCount += 1;
-      err.message = `RQG | Failed system migration for Scene ${scene.name}: ${err.message}`;
-      console.error(err, scene);
+      logger.error(
+        `Failed system migration for Scene ${scene.name}: ${err instanceof Error ? err.message : String(err)}`,
+        { documents: [{ kind: "Scene", uuid: scene.uuid, label: scene.name }] },
+      );
     } finally {
       updateProgressBar(++progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
     }
@@ -171,8 +252,19 @@ async function migrateWorldCompendiumPacks(
   actorMigrations: ActorMigration[],
   activeEffectMigrations: ActiveEffectMigration[],
   migrationResult: MigrationResult,
+  logger: MigrationLogger,
 ): Promise<void> {
-  const packs = game.packs?.contents.filter((p) => p.metadata.packageName !== systemId) ?? []; // Exclude system packs
+  const allPacks = game.packs?.contents ?? [];
+  const packs = allPacks.filter((pack) => {
+    if (pack.metadata.packageName === systemId) {
+      return false;
+    }
+    if (pack.metadata.packageType !== "world") {
+      return false;
+    }
+    return ["Actor", "Item", "Scene", "ActiveEffect"].includes(pack.metadata.type);
+  });
+  migrationResult.stats.compendiumsSkippedByDesign = allPacks.length - packs.length;
   const packsCount = packs.length;
   const migrationMsg = localize("RQG.Migration.compendiums", {
     count: packsCount.toString(),
@@ -182,26 +274,24 @@ async function migrateWorldCompendiumPacks(
   }
   let progress = 0;
   updateProgressBar(progress, packsCount, migrationMsg, 0.75, 1, 350);
-  console.log(`%cRQG | ${migrationMsg}`, "font-size: 16px");
+  logger.info(migrationMsg);
   for (const pack of packs) {
     try {
-      if (pack.metadata.packageType !== "world") {
-        continue;
-      }
-      if (!["Actor", "Item", "Scene", "ActiveEffect"].includes(pack.metadata.type)) {
-        continue;
-      }
+      migrationResult.stats.compendiumsInspected += 1;
       await migrateCompendium(
         pack,
         itemMigrations,
         actorMigrations,
         activeEffectMigrations,
         migrationResult,
+        logger,
       );
     } catch (err: any) {
       migrationResult.errorCount += 1;
-      err.message = `RQG | Failed migration for Compendium ${pack.collection}: ${err.message}`;
-      console.error(err, pack);
+      logger.error(
+        `Failed migration for Compendium ${pack.collection}: ${err instanceof Error ? err.message : String(err)}`,
+        { notify: false },
+      );
     } finally {
       updateProgressBar(++progress, packsCount, migrationMsg, 0.75, 1, 350);
     }
@@ -220,6 +310,7 @@ async function migrateCompendium(
   actorMigrations: ActorMigration[],
   activeEffectMigrations: ActiveEffectMigration[],
   migrationResult: MigrationResult,
+  logger: MigrationLogger,
 ): Promise<void> {
   const documentType: string = pack.metadata.type;
   if (!["Actor", "Item", "Scene", "ActiveEffect"].includes(documentType)) {
@@ -233,6 +324,7 @@ async function migrateCompendium(
   // Begin by requesting server-side data model migration and get the migrated content
   await pack.migrate({ notify: false });
   const documents = await pack.getDocuments();
+  migrationResult.stats.compendiumDocumentsInspected += documents.length;
 
   // Iterate over compendium entries - applying fine-tuned migration functions
   for (const doc of documents) {
@@ -244,20 +336,17 @@ async function migrateCompendium(
             doc as RqgActor,
             itemMigrations,
             actorMigrations,
+            logger,
           );
 
           if (!foundry.utils.isEmpty(actorUpdateData)) {
-            console.log(
-              `RQG | Migrating Actor document ${doc.name} in Compendium ${pack.collection}`,
-              actorUpdateData,
-            );
+            logger.info(`Migrating Actor document ${doc.name} in Compendium ${pack.collection}`);
             await (doc as any).update(actorUpdateData as any);
           }
 
           if (itemUpdateData.length > 0) {
-            console.log(
-              `RQG | Migrating embedded Items for Actor document ${doc.name} in Compendium ${pack.collection}`,
-              itemUpdateData,
+            logger.info(
+              `Migrating embedded Items for Actor document ${doc.name} in Compendium ${pack.collection}`,
             );
             await (doc as RqgActor).updateEmbeddedDocuments("Item", itemUpdateData);
           }
@@ -266,7 +355,12 @@ async function migrateCompendium(
           break;
         }
         case "Item":
-          updateData = await getItemMigrationUpdates(doc as RqgItem, itemMigrations);
+          updateData = await getItemMigrationUpdates(
+            doc as RqgItem,
+            itemMigrations,
+            undefined,
+            logger,
+          );
           break;
         case "ActiveEffect":
           updateData = await getActiveEffectMigrationUpdates(
@@ -280,6 +374,7 @@ async function migrateCompendium(
             itemMigrations,
             actorMigrations,
             migrationResult,
+            logger,
           );
           break;
       }
@@ -288,20 +383,25 @@ async function migrateCompendium(
       if (foundry.utils.isEmpty(updateData)) {
         continue;
       }
-      console.log(
-        `RQG | Migrating ${documentType} document ${doc.name} in Compendium ${pack.collection}`,
-        updateData,
+      logger.info(
+        `Migrating ${documentType} document ${doc.name} in Compendium ${pack.collection}`,
       );
       await doc.update(updateData);
     } catch (err: any) {
       migrationResult.errorCount += 1;
-      err.message = `RQG | Failed system migration for document ${doc.name} in pack ${pack.collection}: ${err.message}`;
-      console.error(err, doc);
+      logger.error(
+        `Failed system migration for document ${doc.name} in pack ${pack.collection}: ${err instanceof Error ? err.message : String(err)}`,
+        {
+          documents: [
+            { kind: "Compendium", uuid: `Compendium.${pack.collection}`, label: pack.collection },
+          ],
+        },
+      );
     }
   }
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  console.log(`RQG | Migrated all ${documentType} documents from Compendium ${pack.collection}`);
+  logger.info(`Migrated all ${documentType} documents from Compendium ${pack.collection}`);
 }
 
 /* -------------------------------------------- */
@@ -311,6 +411,7 @@ async function getActorMigrationUpdates(
   actorData: RqgActor,
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
+  logger?: MigrationLogger,
 ): Promise<ActorMigrationResult> {
   let actorUpdateData: Actor.UpdateData = {};
   const itemUpdateData: Item.UpdateData[] = [];
@@ -322,8 +423,9 @@ async function getActorMigrationUpdates(
   });
 
   if ("items" in (actorUpdateData as Record<string, unknown>)) {
-    console.warn(
-      `RQG | Actor migration returned actor-level items update for ${actorData.name}; ignoring items and using embedded item migrations instead.`,
+    applyMigrationsLogger.warn(
+      `Actor migration returned actor-level items update for ${actorData.name}; ignoring items and using embedded item migrations instead.`,
+      { notify: false },
     );
     delete (actorUpdateData as Record<string, unknown>)["items"];
   }
@@ -336,7 +438,7 @@ async function getActorMigrationUpdates(
       : Array.from(rawActorItems?.values?.() ?? []);
 
     for (const item of actorItems) {
-      const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData);
+      const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData, logger);
       if (foundry.utils.isEmpty(itemUpdate)) {
         continue;
       }
@@ -365,10 +467,11 @@ async function getItemMigrationUpdates(
   item: RqgItem,
   itemMigrations: ItemMigration[],
   owningActor?: RqgActor,
+  logger?: MigrationLogger,
 ): Promise<Item.UpdateData> {
   let updateData: Item.UpdateData = {};
   for (const fn of itemMigrations) {
-    updateData = foundry.utils.mergeObject(updateData, await fn(item, owningActor), {
+    updateData = foundry.utils.mergeObject(updateData, await fn(item, owningActor, logger), {
       performDeletions: false,
     }) as Item.UpdateData; // TODO can mergeObject be made to return the correct type?
   }
@@ -403,6 +506,7 @@ async function migrateSceneTokenActors(
   itemMigrations: ItemMigration[],
   actorMigrations: ActorMigration[],
   migrationResult: MigrationResult,
+  logger: MigrationLogger,
 ): Promise<void> {
   for (const token of scene.tokens) {
     if (token.actorLink) {
@@ -413,33 +517,39 @@ async function migrateSceneTokenActors(
       continue;
     }
 
+    migrationResult.stats.unlinkedTokenActorsInspected += 1;
+
     try {
       const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
         actor as unknown as RqgActor,
         itemMigrations,
         actorMigrations,
+        logger,
       );
 
       if (!foundry.utils.isEmpty(actorUpdateData)) {
-        console.log(
-          `RQG | Migrating unlinked Token actor ${actor.name} in Scene ${scene.name}`,
-          actorUpdateData,
-        );
+        logger.info(`Migrating unlinked Token actor ${actor.name} in Scene ${scene.name}`);
         // @ts-expect-error enforceTypes TODO it does exist
         await actor.update(actorUpdateData, { enforceTypes: false });
       }
 
       if (itemUpdateData.length > 0) {
-        console.log(
-          `RQG | Migrating embedded Items for unlinked Token actor ${actor.name} in Scene ${scene.name}`,
-          itemUpdateData,
+        logger.info(
+          `Migrating embedded Items for unlinked Token actor ${actor.name} in Scene ${scene.name}`,
         );
         await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
     } catch (err: any) {
       migrationResult.errorCount += 1;
-      err.message = `RQG | Failed migration for Token actor ${actor.name} in Scene ${scene.name}: ${err.message}`;
-      console.error(err, token);
+      logger.error(
+        `Failed migration for Token actor ${actor.name} in Scene ${scene.name}: ${err instanceof Error ? err.message : String(err)}`,
+        {
+          documents: [
+            { kind: "Actor", uuid: actor.uuid, label: actor.name },
+            { kind: "Scene", uuid: scene.uuid, label: scene.name },
+          ],
+        },
+      );
     }
   }
 }

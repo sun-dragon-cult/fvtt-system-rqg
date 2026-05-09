@@ -5,7 +5,17 @@ import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqidString } from "../../api/rqidApi";
 
 // Give the "special" skills a rqid, so they can be referenced by rqid instead of name.
-export async function tagSkillNameSkillsWithRqid(itemData: RqgItem): Promise<Item.UpdateData> {
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { MigrationLogger } from "../../logging/migrationLogger";
+
+export async function tagSkillNameSkillsWithRqid(
+  itemData: RqgItem,
+  _owningActorData?: RqgActor,
+  _migrationLogger?: MigrationLogger,
+): Promise<Item.UpdateData> {
+  void _owningActorData;
+  void _migrationLogger;
+
   let updateData: Item.UpdateData = {};
   if (
     isDocumentSubType<SkillItem>(itemData, ItemTypeEnum.Skill) &&

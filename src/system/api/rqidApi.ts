@@ -420,15 +420,21 @@ export class Rqid {
     if (document == null) {
       return;
     }
+    if (document instanceof Macro) {
+      await document.execute();
+      return;
+    }
     if (rqid.split(".")?.[3] === "jp" && document instanceof JournalEntryPage) {
       const journal = document.parent;
       // @ts-expect-error render signature varies between V1/V2 sheet implementations
       await journal?.sheet?.render({ force: true, focus: true });
       (journal?.sheet as JournalSheet | undefined)?.goToPage(document.id!, anchor);
+      return;
     } else if ("sheet" in document) {
       (document.sheet as { render: (...args: unknown[]) => void } | undefined)?.render(true, {
         focus: true,
       });
+      return;
     }
   }
 

@@ -15,6 +15,7 @@ import type { RqgActor } from "@actors/rqgActor.ts";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "@items/rqgItem.ts";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { RqgLogger } from "../../system/logging/rqgLogger";
 import type {
   Changes,
   ItemChange,
@@ -28,6 +29,8 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   Changes,
   RqidBatchEditorOptions
 > {
+  private static readonly logger = new RqgLogger("RqidBatchEditor", { notify: false });
+
   public resolve: (value: PromiseLike<void> | void) => void = () => {};
   public reject: (value: PromiseLike<void> | void) => void = () => {};
 
@@ -291,7 +294,9 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         if (!foundry.utils.isEmpty(embeddedItemUpdates)) {
           const pack: CompendiumCollection.Any | undefined = game.packs?.get(packId);
           if (!pack) {
-            console.warn("RQG | Could not find Actor pack compendium pack with id", packId);
+            RqidBatchEditor.logger.warn(
+              `Could not find Actor pack compendium pack with id ${packId}`,
+            );
             continue;
           }
           const wasLocked = pack.locked;
@@ -326,7 +331,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       if (!foundry.utils.isEmpty(itemUpdates)) {
         const pack = game.packs?.get(packId);
         if (!pack) {
-          console.warn("RQG | Could not find Item pack compendium pack with id", packId);
+          RqidBatchEditor.logger.warn(`Could not find Item pack compendium pack with id ${packId}`);
           continue;
         }
         const wasLocked = pack.locked;
@@ -349,18 +354,18 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     for (const [sceneId, token2ItemUpdates] of sceneChangesMap) {
       const scene = game.scenes?.get(sceneId);
       if (!scene) {
-        console.error("RQG | Could not find scene with id", sceneId);
+        RqidBatchEditor.logger.error(`Could not find scene with id ${sceneId}`);
         continue;
       }
       const sceneUpdates: { tokens: object[] } = { tokens: [] };
       for (const [tokenId, tokenItemUpdates] of token2ItemUpdates) {
         const token = scene.tokens.get(tokenId);
         if (!token) {
-          console.error("RQG | Could not find scene token with id", tokenId);
+          RqidBatchEditor.logger.error(`Could not find scene token with id ${tokenId}`);
           continue;
         }
         if (!token?.actor) {
-          console.error("RQG | Could not find actor on token with id", tokenId);
+          RqidBatchEditor.logger.error(`Could not find actor on token with id ${tokenId}`);
           continue;
         }
 
@@ -368,7 +373,9 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         tokenItemUpdates.forEach((itemUpdate) => {
           const item = token.actor!.items.get(itemUpdate.itemId);
           if (!item) {
-            console.error("RQG | Could not find item on token with id", itemUpdate.itemId);
+            RqidBatchEditor.logger.error(
+              `Could not find item on token with id ${itemUpdate.itemId}`,
+            );
             return;
           }
 
@@ -415,7 +422,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     for (const [actorId, actorItemChanges] of actorChangesMap) {
       const actor = game.actors?.get(actorId) as RqgActor | undefined;
       if (!actor) {
-        console.error("RQG | Could not find actor with id", actorId);
+        RqidBatchEditor.logger.error(`Could not find actor with id ${actorId}`);
         continue;
       }
 
@@ -488,7 +495,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         } else {
           itemNamesWithoutRqid.set(itemData.name, undefined);
           if (!actor._id) {
-            console.warn("RQG | Found actor without _id", actor.name);
+            RqidBatchEditor.logger.warn(`Found actor without _id ${actor.name}`);
             return;
           }
           const currentUpdates: ItemChange[] = actorChangesMap.has(actor._id)
@@ -523,7 +530,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       } else {
         itemNamesWithoutRqid.set(itemData.name, undefined);
         if (!itemData._id) {
-          console.warn("RQG | Found item without _id", itemData.name);
+          RqidBatchEditor.logger.warn(`Found item without _id ${itemData.name}`);
           return;
         }
         const currentUpdates: ItemChange = {
@@ -603,7 +610,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     worldScenes.forEach((scene) => {
       const sceneTokens = scene.tokens.contents ?? [];
       if (!scene._id) {
-        console.warn("RQG | Found scene without _id", scene.name);
+        RqidBatchEditor.logger.warn(`Found scene without _id ${scene.name}`);
         return;
       }
 
@@ -613,7 +620,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       // Loop over scene linked tokens
       sceneTokens.forEach((token) => {
         if (!token._id) {
-          console.warn("RQG | Found token without _id", token.name);
+          RqidBatchEditor.logger.warn(`Found token without _id ${token.name}`);
           return;
         }
 
@@ -626,7 +633,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
           }
 
           if (!item._id) {
-            console.warn("RQG | Found item without _id", item.name);
+            RqidBatchEditor.logger.warn(`Found item without _id ${item.name}`);
             return;
           }
 
@@ -901,7 +908,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
     // Reduce the number of console messages to avoid clutter
     if (index % Math.ceil(totalCount / 10) === 0 || index === totalCount) {
-      console.log(message, pct);
+      RqidBatchEditor.logger.info(`${message} ${pct}`);
     }
 
     if (!RqidBatchEditor.updateProgressBar?.active) {
