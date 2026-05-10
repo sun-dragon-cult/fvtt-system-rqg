@@ -817,15 +817,15 @@ export async function openDataModelRepairDialog(
     const originalClose = application.close.bind(application);
     application.close = async (closeOptions?: any): Promise<typeof application> => {
       const closeResult = await originalClose(closeOptions);
+      if (application._closeResult.needsReload && options.autoReloadAfterFinish) {
+        window.location.reload();
+        return closeResult;
+      }
       resolve(application._closeResult);
       return closeResult;
     };
     application.render(true);
   });
-
-  if (result.needsReload && options.autoReloadAfterFinish) {
-    window.location.reload();
-  }
 
   return result;
 }
