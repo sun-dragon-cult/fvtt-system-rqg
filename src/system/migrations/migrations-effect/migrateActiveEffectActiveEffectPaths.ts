@@ -1,4 +1,7 @@
 import type { ActiveEffectMigration } from "../applyMigrations";
+import { RqgLogger } from "../../logging/rqgLogger";
+
+const logger = new RqgLogger("ActiveEffectPaths");
 import { migrateEffectTypesAndPaths } from "../shared-ae-migration-utils";
 
 /**
@@ -17,7 +20,7 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
   const effectAsAny = effect as any;
 
   if (migrateEffectTypesAndPaths(effectAsAny)) {
-    console.log(`RQG | Migrated AE paths on compendium effect "${effect.name}"`);
+    logger.info(`Migrated AE paths on compendium effect "${effect.name}"`, { notify: false });
     if (Array.isArray(effectAsAny.system?.changes)) {
       updateData.system = {
         changes: effectAsAny.system.changes,

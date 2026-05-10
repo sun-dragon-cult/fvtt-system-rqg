@@ -5,15 +5,21 @@ import { ActorTypeEnum, type CharacterActor } from "../../../data-model/actor-da
 import type { RqgItem } from "@items/rqgItem.ts";
 import { isDocumentSubType } from "../../util.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
+import { RqgLogger } from "../../logging/rqgLogger.ts";
+import type { MigrationDocumentLink } from "../applyMigrations";
+import type { MigrationLogger } from "../../logging/migrationLogger.ts";
 import {
   getLegacyWeaponSkillReferenceForUsage,
   type LegacyWeaponSkillRef,
 } from "../../../data-model/item-data/weaponSkillLink.ts";
 
+const logger = new RqgLogger("WeaponSkillLinks");
+
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
   itemData: RqgItem,
   owningActorData?: RqgActor,
+  migrationLogger?: MigrationLogger,
 ): Promise<Item.UpdateData> {
   let updateData: Item.UpdateData = {};
   if (
@@ -24,7 +30,12 @@ export async function migrateWeaponSkillLinks(
     const usageUpdates: Record<string, unknown> = {};
 
     for (const usageType of usageTypes) {
-      const usageUpdate = await getUsageMigrationUpdate(itemData, owningActorData, usageType);
+      const usageUpdate = await getUsageMigrationUpdate(
+        itemData,
+        owningActorData,
+        usageType,
+        migrationLogger,
+      );
       usageUpdates[usageType] = usageUpdate;
     }
 
@@ -41,6 +52,7 @@ async function getUsageMigrationUpdate(
   itemData: WeaponItem,
   owningActorData: CharacterActor | undefined,
   usageType: UsageType,
+  migrationLogger?: MigrationLogger,
 ): Promise<Record<string, unknown>> {
   const legacySkillRef = getLegacyWeaponSkillReferenceForUsage(itemData, usageType);
   if (!legacySkillRef?.skillOrigin && !legacySkillRef?.skillId) {
@@ -59,8 +71,28 @@ async function getUsageMigrationUpdate(
     const msg = owningActorData
       ? `Weapon item [${itemData.name}] carried by [${owningActorData?.name}] still has an unresolved legacy linked skill for ${usageType} use. Old link was [${legacySkillRef.skillOrigin ?? ""}]`
       : `World weapon item [${itemData.name}] still has an unresolved legacy linked skill for ${usageType} use. Old link was [${legacySkillRef.skillOrigin ?? ""}]`;
-    ui.notifications?.warn(msg, { console: false });
-    console.warn("RQG |", msg);
+
+    const documents: MigrationDocumentLink[] = [
+      {
+        kind: "Item",
+        uuid: itemData.uuid ?? "",
+        label: itemData.name ?? "Weapon item",
+      },
+    ];
+    if (owningActorData?.uuid) {
+      documents.unshift({
+        kind: "Actor",
+        uuid: owningActorData.uuid,
+        label: owningActorData.name ?? "Actor",
+      });
+    }
+
+    if (migrationLogger) {
+      migrationLogger.warn(msg, { notify: false, documents });
+    } else {
+      logger.warn(msg, { notify: false });
+    }
+
     return {
       skillOrigin: _del,
       skillId: _del,

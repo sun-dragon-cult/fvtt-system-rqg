@@ -1,4 +1,7 @@
 import type { ItemMigration } from "../applyMigrations";
+import { RqgLogger } from "../../logging/rqgLogger";
+
+const logger = new RqgLogger("ItemActiveEffectPaths");
 import type { RqgItem } from "@items/rqgItem.ts";
 import {
   migrateEffectArray,
@@ -56,7 +59,9 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
 
       originalEffects.forEach((effect, index) => {
         if (migratedEffects[index] !== effect) {
-          console.log(`RQG | Migrated AE paths on effect "${effect.name}" in item ${item.name}`);
+          logger.info(`Migrated AE paths on effect "${effect.name}" in item ${item.name}`, {
+            notify: false,
+          });
         }
       });
     }

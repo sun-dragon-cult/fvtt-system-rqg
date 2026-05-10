@@ -1,4 +1,7 @@
 import type { ActorMigration } from "../applyMigrations";
+import { RqgLogger } from "../../logging/rqgLogger";
+
+const logger = new RqgLogger("ActorActiveEffectPaths");
 import type { RqgActor } from "@actors/rqgActor.ts";
 import {
   migrateEffectArray,
@@ -58,7 +61,9 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
 
       originalEffects.forEach((effect, index) => {
         if (migratedEffects[index] !== effect) {
-          console.log(`RQG | Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`);
+          logger.info(`Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`, {
+            notify: false,
+          });
         }
       });
     }

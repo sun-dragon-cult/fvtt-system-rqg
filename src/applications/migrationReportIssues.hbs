@@ -1,0 +1,28 @@
+<article class="migration-report">
+  {{#if hasIssues}}
+    {{#each issueGroups}}
+      <h1 id="{{sourceAnchorId}}">{{title}} issues</h1>
+      {{#each actorGroups}}
+        <h2>{{actorName}} ({{entries.length}})</h2>
+        <ul class="migration-issue-list">
+          {{#each entries}}
+            <li class="migration-issue-list-item">
+              <p class="migration-issue-line">
+                <i
+                  class="{{iconClass}} migration-issue-icon migration-issue-icon-{{level}}"
+                  aria-label="{{levelLabel}}"
+                ></i>
+                {{text}}
+              </p>
+              {{#if documentsHtml}}
+                <p>{{{documentsHtml}}}</p>
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{/each}}
+    {{/each}}
+  {{else}}
+    <p>{{localize "RQG.Migration.reportNoIssuesDetected"}}</p>
+  {{/if}}
+</article>
