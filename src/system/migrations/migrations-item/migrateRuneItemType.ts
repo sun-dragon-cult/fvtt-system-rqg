@@ -3,17 +3,7 @@ import { isDocumentSubType, localize } from "../../util";
 import type { RuneItem } from "@item-model/runeDataModel.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { MigrationLogger } from "../../logging/migrationLogger";
-
-export async function migrateRuneItemType(
-  itemData: RqgItem,
-  _owningActorData?: RqgActor,
-  _migrationLogger?: MigrationLogger,
-): Promise<Item.UpdateData> {
-  void _owningActorData;
-  void _migrationLogger;
-
+export async function migrateRuneItemType(itemData: RqgItem): Promise<Item.UpdateData> {
   let updateData = {};
   if (
     isDocumentSubType<RuneItem>(itemData, ItemTypeEnum.Rune) &&

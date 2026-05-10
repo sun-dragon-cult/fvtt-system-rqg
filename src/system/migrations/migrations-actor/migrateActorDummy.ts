@@ -1,10 +1,16 @@
 import { ActorTypeEnum, type CharacterActor } from "../../../data-model/actor-data/rqgActorData";
 import { isDocumentSubType } from "../../util.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
+import type { MigrationLogger } from "../../logging/migrationLogger";
 
 // Dummy Actor Migrator
 
-export function migrateActorDummy(actorData: RqgActor): Actor.UpdateData {
+export function migrateActorDummy(
+  actorData: RqgActor,
+  _migrationLogger?: MigrationLogger,
+): Actor.UpdateData {
+  void _migrationLogger;
+
   let updateData: Actor.UpdateData = {};
 
   // eslint-disable-next-line no-constant-condition, no-constant-binary-expression

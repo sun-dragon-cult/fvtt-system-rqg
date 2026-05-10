@@ -12,9 +12,10 @@ export type ItemMigration = (
   owningActorData?: RqgActor,
   logger?: MigrationLogger,
 ) => Promise<Item.UpdateData>;
-export type ActorMigration = (actorData: RqgActor) => Actor.UpdateData;
+export type ActorMigration = (actorData: RqgActor, logger?: MigrationLogger) => Actor.UpdateData;
 export type ActiveEffectMigration = (
   effectData: ActiveEffect.Implementation,
+  logger?: MigrationLogger,
 ) => Promise<ActiveEffect.UpdateData>;
 
 interface ActorMigrationResult {
@@ -366,6 +367,7 @@ async function migrateCompendium(
           updateData = await getActiveEffectMigrationUpdates(
             doc as unknown as ActiveEffect.Implementation,
             activeEffectMigrations,
+            logger,
           );
           break;
         case "Scene":
@@ -416,8 +418,8 @@ async function getActorMigrationUpdates(
   let actorUpdateData: Actor.UpdateData = {};
   const itemUpdateData: Item.UpdateData[] = [];
 
-  actorMigrations.forEach((fn: (actorData: RqgActor) => Actor.UpdateData) => {
-    actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fn(actorData as any), {
+  actorMigrations.forEach((fn: ActorMigration) => {
+    actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fn(actorData as any, logger), {
       performDeletions: false,
     }) as Actor.UpdateData;
   });
@@ -484,10 +486,11 @@ async function getItemMigrationUpdates(
 async function getActiveEffectMigrationUpdates(
   effect: ActiveEffect.Implementation,
   activeEffectMigrations: ActiveEffectMigration[],
+  logger?: MigrationLogger,
 ): Promise<ActiveEffect.UpdateData> {
   let updateData: ActiveEffect.UpdateData = {};
   for (const fn of activeEffectMigrations) {
-    updateData = foundry.utils.mergeObject(updateData, await fn(effect), {
+    updateData = foundry.utils.mergeObject(updateData, await fn(effect, logger), {
       performDeletions: false,
     }) as ActiveEffect.UpdateData;
   }
