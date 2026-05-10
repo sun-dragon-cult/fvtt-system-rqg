@@ -4,6 +4,12 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
 import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
+import { RqgLogger } from "./logging/rqgLogger";
+import { RqgError } from "./rqgError";
+
+export { RqgError };
+
+const logger = new RqgLogger("util", { notify: false });
 
 import Document = foundry.abstract.Document;
 import type { RqidEnabledDocument } from "../global";
@@ -109,9 +115,7 @@ export function getDomDatasetAmongSiblings(
   const elem = getHTMLElement(el);
   let firstItemEl = elem;
   if (!elem) {
-    const msg = `Called getFormDatasetAmongSiblings with a nonexistent element`;
-    console.error(msg);
-    throw new RqgError(msg, el);
+    return logger.throw(`Called getFormDatasetAmongSiblings with a nonexistent element`, el);
   }
   // Get the itemId on the provided DOM element
   const itemId = elem.dataset["itemId"];
@@ -194,7 +198,7 @@ export function escapeRegex(string: string): string {
 
 export function logMisconfiguration(msg: string, notify: boolean, ...debugData: any) {
   // TODO only for GM? game.user.isGM &&
-  console.warn(`RQG | ${msg}`, debugData);
+  logger.warn(msg, undefined, ...debugData);
   if (notify) {
     ui.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
   }
@@ -414,9 +418,7 @@ export async function getDocumentFromUuid<T>(
 export async function getRequiredDocumentFromUuid<T>(documentUuid: string | undefined): Promise<T> {
   const document = await getDocumentFromUuid<T>(documentUuid);
   if (!document) {
-    const msg = `Actor could not be found from uuid [${documentUuid}]`; // TODO translate
-    console.warn(msg);
-    throw new RqgError(msg, documentUuid);
+    return logger.throw(`Actor could not be found from uuid [${documentUuid}]`, documentUuid); // TODO translate
   }
   return document;
 }
@@ -433,9 +435,7 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   }
   const rqgActor = rqgActorOrTokenDocument.actor;
   if (!rqgActor) {
-    const msg = `TokenDocument didn't contain actor`; // TODO translate
-    console.warn(msg);
-    throw new RqgError(msg, rqgActorOrTokenDocument);
+    logger.throw(`TokenDocument didn't contain actor`, rqgActorOrTokenDocument); // TODO translate
   }
   return rqgActor as unknown as T;
 }
@@ -490,9 +490,9 @@ export async function cacheAvailableRunes(): Promise<AvailableItemCache[]> {
     return availableRunes; // Caching is already initiated, but not finished. Return the empty array.
   }
   availableRunes = []; // Indicate that caching is initiated
-  console.time("RQG | Caching Runes took");
+  const runesTimer = logger.time("Caching Runes took");
   availableRunes = await getItemsToCache("i.rune.");
-  console.timeEnd("RQG | Caching Runes took");
+  runesTimer.timeEnd();
   return availableRunes;
 }
 
@@ -504,9 +504,9 @@ export async function cacheAvailableHitLocations(): Promise<AvailableItemCache[]
     return availableHitLocations; // Caching is already initiated, but not finished. Return the empty array.
   }
   availableHitLocations = [];
-  console.time("RQG | Caching Hit Locations took");
+  const hitLocTimer = logger.time("Caching Hit Locations took");
   availableHitLocations = await getItemsToCache("i.hit-location.");
-  console.timeEnd("RQG | Caching Hit Locations took");
+  hitLocTimer.timeEnd();
   return availableHitLocations.sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -625,25 +625,6 @@ function getIndexData(
   }, []);
 }
 
-/**
- * A system specific Error that can encapsulate extra debugging information (in `debugData`)
- */
-export class RqgError implements Error {
-  public name: string = "RqgError";
-  public debugData: any[];
-
-  constructor(
-    public message: string,
-    ...debugData: any[]
-  ) {
-    // Maintains proper stack trace for where our error was thrown.
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, RqgError);
-    }
-    this.debugData = debugData;
-  }
-}
-
 export function getItemDocumentTypes(): string[] {
   const documentTypes = game.system?.documentTypes.Item ?? {};
   return Object.keys(documentTypes);
@@ -663,13 +644,13 @@ export function moveCursorToEnd(el: HTMLInputElement) {
 
 export function localize(key: string | undefined, data?: Record<string, string>): string {
   if (!key) {
-    console.log(`RQG | Attempt to localize an undefined key`);
+    logger.info("Attempt to localize an undefined key");
     return "";
   }
   const result = game.i18n?.format(key, data) ?? key;
   if (result === key) {
-    console.log(
-      `RQG | Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/uiContent.json).`,
+    logger.info(
+      `Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/uiContent.json).`,
     );
   }
   return result;

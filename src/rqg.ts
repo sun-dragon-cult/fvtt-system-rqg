@@ -37,7 +37,7 @@ import { RqgCombatant } from "./combat/rqgCombatant";
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
 
-Hooks.once("init", async () => {
+Hooks.once("init", () => {
   console.log(
     "%c                                                                                            \n" +
       "                                                                                            \n" +
@@ -116,7 +116,6 @@ Hooks.once("init", async () => {
     makeDefault: true,
   });
 
-  await loadHandlebarsTemplates();
   registerHandlebarsHelpers();
   registerRqgSystemSettings();
 
@@ -146,13 +145,16 @@ Hooks.once("init", async () => {
   };
 });
 
+Hooks.once("i18nInit", () => {
+  // Preload Handlebars templates in the background while Foundry continues initialization.
+  // By the time any sheet renders (setup/ready), the templates will already be cached.
+  loadHandlebarsTemplates();
+});
+
 Hooks.once("ready", async () => {
   await migrateWorld();
-  // Make sure the cache of available runes is preloaded
-  await cacheAvailableRunes();
-
-  // Make sure the cache of available hit locations is preloaded
-  await cacheAvailableHitLocations();
+  // Preload compendium item caches in parallel - both scan all packs but are independent
+  await Promise.all([cacheAvailableRunes(), cacheAvailableHitLocations()]);
 
   // Verify that at least one wiki module is activated
   if (

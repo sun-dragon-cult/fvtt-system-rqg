@@ -8,7 +8,7 @@
  * with `{ notify: false }` when a notification is not appropriate.
  */
 
-import { RqgError } from "../util";
+import { RqgError } from "../rqgError";
 
 export interface LogOptions {
   /**
