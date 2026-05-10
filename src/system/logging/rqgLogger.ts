@@ -4,7 +4,7 @@
  * Provides namespaced console output and optional UI notifications.
  * Can be extended for specific system components (migrations, combat, etc).
  *
- * The `notify` option defaults to `true` for warn/error — opt out explicitly
+ * The `notify` option defaults to `true` except for throw — opt out explicitly
  * with `{ notify: false }` when a notification is not appropriate.
  */
 

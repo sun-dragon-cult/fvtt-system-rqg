@@ -291,7 +291,16 @@ async function migrateWorldCompendiumPacks(
       migrationResult.errorCount += 1;
       logger.error(
         `Failed migration for Compendium ${pack.collection}: ${err instanceof Error ? err.message : String(err)}`,
-        { notify: false },
+        {
+          notify: false,
+          documents: [
+            {
+              kind: "Compendium",
+              uuid: `Compendium.${pack.collection}`,
+              label: pack.metadata.label ?? pack.collection,
+            },
+          ],
+        },
       );
     } finally {
       updateProgressBar(++progress, packsCount, migrationMsg, 0.75, 1, 350);
@@ -395,7 +404,11 @@ async function migrateCompendium(
         `Failed system migration for document ${doc.name} in pack ${pack.collection}: ${err instanceof Error ? err.message : String(err)}`,
         {
           documents: [
-            { kind: "Compendium", uuid: `Compendium.${pack.collection}`, label: pack.collection },
+            {
+              kind: "Compendium",
+              uuid: `Compendium.${pack.collection}`,
+              label: pack.metadata.label ?? pack.collection,
+            },
           ],
         },
       );
