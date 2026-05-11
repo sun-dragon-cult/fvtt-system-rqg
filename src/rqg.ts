@@ -33,6 +33,7 @@ import { RqgTokenRuler } from "./combat/RqgTokenRuler";
 import { ClickableScriptsRegionBehavior } from "./scene/ClickableScriptsRegionBehavior";
 import { RqgTokenLayer } from "./scene/RqgTokenLayer";
 import { RqgCombatant } from "./combat/rqgCombatant";
+import { setConfigStatusEffects } from "./system/fvttTypeCompat";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -69,7 +70,7 @@ Hooks.once("init", () => {
   CONFIG.time.turnTime = 0; // Don't advance time per combatant
   CONFIG.time.roundTime = 12; // Melee round
 
-  CONFIG.statusEffects = getTokenStatusEffects();
+  setConfigStatusEffects(getTokenStatusEffects());
 
   CONFIG.fontDefinitions["Norse"] = {
     editor: true,

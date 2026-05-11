@@ -30,6 +30,7 @@ import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weaponDataModel.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skillFormulas";
 import { RqgItem } from "@items/rqgItem.ts";
+import { getConfigStatusEffects } from "../system/fvttTypeCompat";
 
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
 import { CharacterDataModel } from "../data-model/actor-data/characterDataModel";
@@ -527,7 +528,7 @@ export class RqgActor extends Actor {
   }
 
   private findEffect(health: ActorHealthState): CONFIG.StatusEffect {
-    const effect = CONFIG.statusEffects.find((e) => e.id === health);
+    const effect = getConfigStatusEffects()[health];
     requireValue(effect, `Required statusEffect ${health} is missing`); // TODO translate message
     return effect;
   }
