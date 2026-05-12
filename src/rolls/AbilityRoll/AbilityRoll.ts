@@ -81,10 +81,7 @@ export class AbilityRoll extends Roll {
     const modifiers = this.options.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
-      .map((m: any) => {
-        m.value = toSignedString(m.value);
-        return m;
-      });
+      .map((m: any) => ({ ...m, value: toSignedString(Number(m.value)) }));
     return foundry.applications.handlebars.renderTemplate(templatePaths.abilityRollTooltip, {
       naturalSkill: this.options.naturalSkill,
       modifiers: nonzeroSignedModifiers,

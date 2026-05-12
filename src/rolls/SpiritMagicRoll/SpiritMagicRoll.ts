@@ -81,10 +81,7 @@ export class SpiritMagicRoll extends Roll {
     const modifiers = this.options.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
-      .map((m: any) => {
-        m.value = toSignedString(m.value);
-        return m;
-      });
+      .map((m: any) => ({ ...m, value: toSignedString(Number(m.value)) }));
     const mpCost = this.options.levelUsed + (this.options.magicPointBoost ?? 0);
     const mpDrawn = this.successLevel! <= AbilitySuccessLevelEnum.Success ? mpCost : 0;
     return foundry.applications.handlebars.renderTemplate(templatePaths.spiritMagicRollTooltip, {

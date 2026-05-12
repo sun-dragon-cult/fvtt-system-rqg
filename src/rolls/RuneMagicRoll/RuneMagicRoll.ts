@@ -82,10 +82,7 @@ export class RuneMagicRoll extends Roll {
     const modifiers = this.options.modifiers ?? [];
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
-      .map((m: any) => {
-        m.value = toSignedString(m.value);
-        return m;
-      });
+      .map((m: any) => ({ ...m, value: toSignedString(Number(m.value)) }));
     const cost = calcRuneAndMagicPointCost(
       this.successLevel ?? 0,
       this.options.levelUsed,
