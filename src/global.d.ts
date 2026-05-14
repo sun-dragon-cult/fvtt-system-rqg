@@ -136,6 +136,7 @@ declare global {
     "rqg.showCharacteristicRatings": boolean;
     "rqg.tokenRulerSettings": TokenRulerSettingsType;
     "rqg.allowCombatWithoutToken": boolean;
+    "rqg.matchEffectSuspensionToEquippedStatusDefault": boolean;
   }
 
   interface ConfiguredCombatant {

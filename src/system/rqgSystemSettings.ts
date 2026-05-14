@@ -121,6 +121,15 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
+  game.settings?.register(systemId, "matchEffectSuspensionToEquippedStatusDefault", {
+    name: "RQG.Settings.MatchEffectSuspensionToEquippedStatusDefault.settingName",
+    hint: "RQG.Settings.MatchEffectSuspensionToEquippedStatusDefault.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+
   game.settings?.register(systemId, "actor-wizard-feature-flag", {
     name: "Feature Flag: Enable Actor Wizard",
     hint: "For RnD use only",

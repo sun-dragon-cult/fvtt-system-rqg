@@ -1216,6 +1216,7 @@
         "Label": "Label",
         "Name": "Name",
         "Disabled": "Disabled",
+        "MatchSuspensionToEquippedStatus": "Match \"Effect Suspended\" to Equipped Status",
         "StartTime": "Start Time",
         "KeyValueMode": "Key - Value - Mode",
         "NewActiveEffectName": "New Active Effect",
@@ -1423,6 +1424,10 @@
       "ShowCharacteristicRatings": {
         "settingName": "Show Characteristic Ratings",
         "settingHint": "Show a colored rating bar below characteristics which rates the value as compared to the dice expression formula for the characteristic.  Red is lower than average and green is higher than average.  This can help you to judge an actor's strengths and weaknesses at a glance."
+      },
+      "MatchEffectSuspensionToEquippedStatusDefault": {
+        "settingName": "Default: Match Effect Suspension to Equipped",
+        "settingHint": "If enabled, newly created active effects on physical items (gear, armor, weapon) default to 'Match Suspension to Equipped Status'. Existing active effects are unchanged."
       },
       "TokenRulerSettings": {
         "dialogTitle": "Token Ruler Settings",

@@ -50,6 +50,7 @@ import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import type { CultItem } from "@item-model/cultDataModel.ts";
+import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
 
 import type { PassionItem } from "@item-model/passionDataModel.ts";
 import { handleItemUpdateDocumentsPreUpdate } from "./itemLifecycleStrategy";
@@ -413,6 +414,44 @@ export class RqgItem extends Item {
       item?.update(updateData);
     }
     return super._onCreate(itemData, options, userId);
+  }
+
+  protected override _onUpdate(
+    changed: Record<string, unknown>,
+    options: any,
+    userId: string,
+  ): void {
+    super._onUpdate(changed as any, options as any, userId as any);
+
+    // Only the originating client should issue follow-up writes.
+    if (userId !== game.user?.id) {
+      return;
+    }
+
+    if (!physicalItemTypes.includes(this.type as any)) {
+      return;
+    }
+
+    const equippedStatusChanged =
+      foundry.utils.hasProperty(changed, "system.equippedStatus") ||
+      (foundry.utils.hasProperty(changed, "system") &&
+        foundry.utils.hasProperty((changed as any).system, "equippedStatus"));
+    if (!equippedStatusChanged) {
+      return;
+    }
+
+    const shouldDisable = this.system.equippedStatus !== "equipped";
+    const updates = this.effects.contents
+      .filter(
+        (effect) =>
+          foundry.utils.getProperty(effect, "system.matchSuspensionToEquippedStatus") === true,
+      )
+      .filter((effect) => effect.disabled !== shouldDisable)
+      .map((effect) => ({ _id: effect.id, disabled: shouldDisable }));
+
+    if (updates.length > 0) {
+      void this.updateEmbeddedDocuments("ActiveEffect", updates);
+    }
   }
 
   static override async updateDocuments(updates: any[], context: any): Promise<any> {
