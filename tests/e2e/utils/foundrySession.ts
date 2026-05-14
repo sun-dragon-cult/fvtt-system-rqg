@@ -7,6 +7,28 @@ const SETUP_RETRIES = 5;
 const JOIN_RETRIES = 3;
 const RETRY_WAIT_MS = 1500;
 
+async function isAdminAccessGateVisible(page: Page) {
+  const adminHeading = page.getByRole("heading", { name: /administrator access required/i });
+  const adminPasswordInput = page.getByPlaceholder(/administrator password/i);
+  return (await adminHeading.count()) > 0 && (await adminPasswordInput.count()) > 0;
+}
+
+async function loginToSetupIfNeeded(page: Page, adminPassword: string | null) {
+  if (!(await isAdminAccessGateVisible(page))) {
+    return;
+  }
+
+  if (!adminPassword) {
+    throw new Error(
+      "Foundry setup is protected by an administrator password. Set E2E_FOUNDRY_ADMIN_PASSWORD in .env.local for Playwright E2E runs.",
+    );
+  }
+
+  await page.getByPlaceholder(/administrator password/i).fill(adminPassword);
+  await page.getByRole("button", { name: /log in/i }).click();
+  await page.waitForLoadState("networkidle");
+}
+
 async function clearFoundryClickInterceptors(page: Page) {
   await page.keyboard.press("Escape").catch(() => undefined);
   await page
@@ -158,26 +180,41 @@ async function hasWorldCardByPackageId(page: Page, worldPackageId: string) {
   return Boolean(worldCard);
 }
 
-async function selectUserCaseInsensitive(page: Page, userName: string) {
+async function listEnabledJoinUsers(page: Page): Promise<string[]> {
   const userOptions = await page.locator("select option").evaluateAll((options) =>
-    options.map((option) => ({
-      label: option.textContent?.trim() ?? "",
-      disabled: option instanceof HTMLOptionElement ? option.disabled : false,
-    })),
+    options
+      .map((option) => ({
+        label: option.textContent?.trim() ?? "",
+        disabled: option instanceof HTMLOptionElement ? option.disabled : false,
+      }))
+      .filter((option) => option.label.length > 0 && !option.disabled)
+      .map((option) => option.label),
   );
 
-  const matchingUser = userOptions.find(
-    (option) => option.label.toLowerCase() === userName.toLowerCase(),
-  );
-  expect(matchingUser, `Foundry user "${userName}" was not found on the join page`).toBeTruthy();
+  return userOptions;
+}
 
-  if (matchingUser?.disabled) {
-    throw new Error(
-      `Foundry user "${matchingUser.label}" is disabled on the join page, which usually means that user is already connected in another session. Close the existing session or change E2E_FOUNDRY_USER for Playwright runs.`,
-    );
+async function tryJoinGameSession(
+  page: Page,
+  userName: string,
+  password: string,
+): Promise<boolean> {
+  await page.locator("select").selectOption({ label: userName });
+  await page.locator('input[name="password"]').fill(password);
+  await page.getByRole("button", { name: "Join Game Session" }).click();
+
+  await page.waitForURL(/\/game$/, { timeout: 4000 }).catch(() => undefined);
+  return /\/game$/.test(page.url());
+}
+
+async function closeBlockingWindows(page: Page) {
+  for (let i = 0; i < 5; i++) {
+    if (page.isClosed()) {
+      return;
+    }
+    await page.keyboard.press("Escape").catch(() => undefined);
+    await page.waitForTimeout(100).catch(() => undefined);
   }
-
-  await page.locator("select").selectOption({ label: matchingUser!.label });
 }
 
 export async function loginToConfiguredWorld(
@@ -202,6 +239,7 @@ export async function loginToConfiguredWorld(
 
     await page.goto(foundryBaseUrl, { waitUntil: "networkidle", timeout: 15000 });
     await dismissFoundryFirstRunUI(page);
+    await loginToSetupIfNeeded(page, e2eConfig.foundryAdminPassword);
 
     // Some environments route directly to Join; treat that as a ready state.
     if (await isJoinPageReady(page)) {
@@ -277,31 +315,50 @@ export async function loginToConfiguredWorld(
   await expect(page.locator("select option")).not.toHaveCount(0);
   await expect(page.locator('input[name="password"]')).toHaveCount(1);
 
-  await selectUserCaseInsensitive(page, e2eConfig.foundryUser);
-  await page.locator('input[name="password"]').fill(e2eConfig.foundryPassword);
-  await page.getByRole("button", { name: "Join Game Session" }).click();
-
-  await page
-    .waitForFunction(
-      () => {
-        const ui = (globalThis as { ui?: { notifications?: { error?: unknown[] } } }).ui;
-        return Boolean(ui?.notifications?.error?.length);
-      },
-      { timeout: 3000 },
-    )
-    .catch(() => undefined);
-
-  const invalidPasswordNotice = page.getByText(
-    new RegExp(`Invalid password provided for ${e2eConfig.foundryUser}`, "i"),
+  const enabledUsers = await listEnabledJoinUsers(page);
+  const configuredUser = enabledUsers.find(
+    (candidate) => candidate.toLowerCase() === e2eConfig.GMUser.toLowerCase(),
   );
-  if (await invalidPasswordNotice.count()) {
+  if (!configuredUser) {
     throw new Error(
-      `Foundry rejected the configured E2E credentials for user "${e2eConfig.foundryUser}". Update E2E_FOUNDRY_PASSWORD in .env.local to match the world user password.`,
+      `Configured E2E user "${e2eConfig.GMUser}" is not available on the join page. Available enabled users: ${enabledUsers.join(", ") || "<none>"}.`,
+    );
+  }
+
+  const userCandidates = [configuredUser];
+  const passwordCandidates = Array.from(
+    new Set(["", e2eConfig.GMPassword, e2eConfig.foundryAdminPassword]).values(),
+  ).filter((candidate): candidate is string => candidate != null);
+
+  let joined = false;
+  for (const userName of userCandidates) {
+    for (const password of passwordCandidates) {
+      if (await tryJoinGameSession(page, userName, password)) {
+        joined = true;
+        break;
+      }
+    }
+    if (joined) {
+      break;
+    }
+  }
+
+  // Guard against delayed navigation where joining succeeded right after the last attempt returned.
+  if (!joined) {
+    await page.waitForURL(/\/game$/, { timeout: 2000 }).catch(() => undefined);
+    joined = /\/game$/.test(page.url());
+  }
+
+  if (!joined) {
+    throw new Error(
+      `Foundry rejected E2E credentials for all attempted users (${userCandidates.join(", ") || "<none>"}). Update E2E_GM_USER and E2E_GM_PASSWORD in .env.local to match your world users.`,
     );
   }
 
   await page.waitForURL(/\/game$/, { timeout: 15000 });
   await page.waitForLoadState("networkidle");
+  await dismissFoundryFirstRunUI(page);
+  await closeBlockingWindows(page);
 
   return e2eConfig;
 }

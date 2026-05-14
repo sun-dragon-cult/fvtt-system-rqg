@@ -59,6 +59,51 @@ If you omit the version argument, the scripts use your default values from `.env
 
 If you like to remove the system from foundry then remove the file system softlink.
 
+### E2E tests (Playwright)
+
+Playwright is included as a development dependency in this repository.
+
+Before running E2E tests, add E2E settings to `.env.local` (or export them as environment variables):
+
+```bash
+E2E_FOUNDRY_WORLD=e2e-playwright
+E2E_GM_USER=gamemaster
+E2E_GM_PASSWORD=
+E2E_FOUNDRY_ADMIN_PASSWORD=123
+E2E_RQG_ACTOR=Vasana
+```
+
+World prerequisites:
+
+- The configured world must exist (`E2E_FOUNDRY_WORLD`).
+- The configured GM user must exist and be enabled (`E2E_GM_USER`).
+- At least one actor must exist in the world.
+- For attack-dialog coverage, the actor configured in `E2E_RQG_ACTOR` should exist and have at least one weapon attack (default: `Vasana`).
+
+After installing dependencies, install Playwright browsers once:
+
+```bash
+pnpm exec playwright install
+```
+
+On Linux, if required, also install OS dependencies:
+
+```bash
+pnpm exec playwright install --with-deps
+```
+
+Run E2E tests with:
+
+```bash
+pnpm test:e2e
+```
+
+Or use the Playwright UI mode:
+
+```bash
+pnpm test:e2e:ui
+```
+
 ### Development in Windows
 
 Recommended: use WSL for day-to-day development on Windows.

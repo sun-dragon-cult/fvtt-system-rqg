@@ -33,16 +33,7 @@
     "units": "m"
   },
   "relationships": {
-    "recommends": [
-      {
-        "id": "wiki-en-rqg",
-        "type": "module"
-      },
-      {
-        "id": "times-up",
-        "type": "module"
-      }
-    ]
+    "recommends": [{ "id": "wiki-en-rqg", "type": "module" }]
   },
   "packFolders": [
     {

@@ -1,49 +1,32 @@
 import { expect, test } from "@playwright/test";
 
+import { resolveActorName, triggerFirstWeaponAttack } from "./utils/foundryActor";
 import { loginToConfiguredWorld } from "./utils/foundrySession";
 
 test("Attack dialog action works when popped out", async ({ page, context, baseURL }) => {
   test.slow();
 
   const e2eConfig = await loginToConfiguredWorld(page, baseURL);
+  let actorName: string | null = null;
 
   await expect
     .poll(
-      async () =>
-        page.evaluate((actorName) => {
-          const gameRef = globalThis as {
-            game?: {
-              actors?: {
-                getName?: (name: string) => {
-                  items?: {
-                    contents?: Array<{
-                      type?: string;
-                      name?: string;
-                      attack?: () => Promise<void>;
-                    }>;
-                  };
-                } | null;
-              };
-            };
-          };
-
-          const actor = gameRef.game?.actors?.getName?.(actorName);
-          const weapon = actor?.items?.contents?.find(
-            (item) => item.type === "weapon" && typeof item.attack === "function",
-          );
-
-          if (!weapon?.attack) {
-            return false;
-          }
-
-          void weapon.attack();
-          return true;
-        }, e2eConfig.rqgActorName),
+      async () => {
+        actorName = await resolveActorName(page, e2eConfig.rqgActorName);
+        return actorName;
+      },
       {
-        message: `Expected actor "${e2eConfig.rqgActorName}" to have a weapon that can attack`,
+        message: "Expected at least one actor to exist in the configured E2E world",
         timeout: 15000,
       },
     )
+    .toBeTruthy();
+
+  await expect
+    .poll(async () => triggerFirstWeaponAttack(page, actorName!), {
+      message: `Expected actor "${actorName}" to have a weapon that can attack`,
+      timeout: 15000,
+    })
     .toBe(true);
 
   await expect
