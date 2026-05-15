@@ -158,16 +158,47 @@ export async function applyDefaultWorldMigrations(
   );
 }
 
-async function logMigrationReport(
-  systemVersion: string,
+async function buildMigrationReportPages(
   migrationResult: MigrationResult,
-): Promise<void> {
+): Promise<MigrationReportPages> {
   const warnings = migrationResult.logEntries.filter((entry) => entry.level === "warn");
   const errors = migrationResult.logEntries.filter((entry) => entry.level === "error");
   const issues = migrationResult.logEntries.filter(
     (entry) => entry.level === "warn" || entry.level === "error",
   );
-  const issueGroups = await groupMigrationEntriesBySource(issues);
+
+  // Stage 1: Group migration entries by source. If this fails, create a minimal fallback grouping.
+  let issueGroups: MigrationIssueGroup[] = [];
+  try {
+    issueGroups = await groupMigrationEntriesBySource(issues);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    logger.warn(
+      `Failed to group migration issues (will use minimal fallback grouping): ${errorMessage}`,
+      { notify: false },
+    );
+    // Create a minimal fallback with ungrouped raw entries so the template still renders content
+    if (issues.length > 0) {
+      const fallbackEntries: MigrationIssueEntry[] = await Promise.all(
+        issues.map((entry) => parseMigrationEntry(entry)),
+      );
+      issueGroups = [
+        {
+          sourceKind: "world",
+          sourceName: localize("RQG.Migration.reportSourceWorld"),
+          sourceAnchorId: "migration-world",
+          title: localize("RQG.Migration.reportSourceWorld"),
+          actorGroups: [
+            {
+              actorName: localize("RQG.Migration.reportSourceUnknownActor"),
+              entries: fallbackEntries,
+            },
+          ],
+        },
+      ];
+    }
+  }
+
   const errorSummaryGroups = buildErrorSummaryGroups(issueGroups);
   const sourceIssueSummary = buildSourceIssueSummary(issueGroups, migrationResult);
   const affectedSources = buildAffectedSources(issueGroups);
@@ -187,22 +218,46 @@ async function logMigrationReport(
     affectedSources,
     issueGroups,
   };
-  const [summaryHtml, issuesHtml] = await Promise.all([
-    foundry.applications.handlebars.renderTemplate(
-      templatePaths.migrationReportSummary,
-      reportContext,
-    ),
-    foundry.applications.handlebars.renderTemplate(
-      templatePaths.migrationReportIssues,
-      reportContext,
-    ),
-  ]);
 
+  // Stage 2: Render templates. If this fails, generate minimal fallback HTML.
+  let summaryHtml: string = "";
+  let issuesHtml: string = "";
   try {
-    await saveMigrationReportToJournal(systemVersion, {
-      summaryHtml,
-      issuesHtml,
+    [summaryHtml, issuesHtml] = await Promise.all([
+      foundry.applications.handlebars.renderTemplate(
+        templatePaths.migrationReportSummary,
+        reportContext,
+      ),
+      foundry.applications.handlebars.renderTemplate(
+        templatePaths.migrationReportIssues,
+        reportContext,
+      ),
+    ]);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    logger.warn(`Failed to render migration report templates (using fallback): ${errorMessage}`, {
+      notify: false,
     });
+    // Generate minimal HTML from raw data as fallback
+    summaryHtml = generateMigrationReportFallbackSummary(migrationResult, warnings, errors);
+    issuesHtml = generateMigrationReportFallbackIssues(issues);
+  }
+
+  return { summaryHtml, issuesHtml };
+}
+
+async function logMigrationReport(
+  systemVersion: string,
+  migrationResult: MigrationResult,
+): Promise<void> {
+  const warnings = migrationResult.logEntries.filter((entry) => entry.level === "warn");
+  const errors = migrationResult.logEntries.filter((entry) => entry.level === "error");
+
+  const reportPages = await buildMigrationReportPages(migrationResult);
+
+  // Stage 3: Attempt to save. If this fails, show dialog so the user can retry or download.
+  try {
+    await saveMigrationReportToJournal(systemVersion, reportPages);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     logger.error(`Failed to save migration report to journal: ${errorMessage}`, {
@@ -216,10 +271,8 @@ async function logMigrationReport(
     );
     await showMigrationReportSaveFailureDialog(
       systemVersion,
-      {
-        summaryHtml,
-        issuesHtml,
-      },
+      migrationResult,
+      reportPages,
       errorMessage,
     );
   }
@@ -228,6 +281,43 @@ async function logMigrationReport(
     `Migration report v${systemVersion}: ${migrationResult.logCount} entries (${warnings.length} warnings, ${errors.length} errors)`,
     { notify: false },
   );
+}
+
+function generateMigrationReportFallbackSummary(
+  migrationResult: MigrationResult,
+  warnings: MigrationLogEntry[],
+  errors: MigrationLogEntry[],
+): string {
+  return `
+    <h2>${foundry.utils.escapeHTML(localize("RQG.Migration.reportPageSummary"))}</h2>
+    <p>Log entries: ${migrationResult.logCount} (${warnings.length} ${localize("RQG.Migration.reportSummaryWarnings").toLowerCase()}, ${errors.length} ${localize("RQG.Migration.reportSummaryErrors").toLowerCase()})</p>
+    <p><strong>Statistics:</strong></p>
+    <ul>
+      <li>World actors processed: ${migrationResult.stats.worldActorsInspected}</li>
+      <li>World items processed: ${migrationResult.stats.worldItemsInspected}</li>
+      <li>Scenes processed: ${migrationResult.stats.scenesInspected}</li>
+      <li>Compendiums processed: ${migrationResult.stats.compendiumsInspected}</li>
+    </ul>
+  `;
+}
+
+function generateMigrationReportFallbackIssues(entries: MigrationLogEntry[]): string {
+  if (entries.length === 0) {
+    return `<p>${localize("RQG.Migration.reportNoIssuesDetected")}</p>`;
+  }
+
+  const entriesHtml = entries
+    .map(
+      (entry) =>
+        `<li><strong>${foundry.utils.escapeHTML(entry.level.toUpperCase())}:</strong> ${foundry.utils.escapeHTML(entry.message)}</li>`,
+    )
+    .join("\n");
+
+  return `
+    <h2>${foundry.utils.escapeHTML(localize("RQG.Migration.reportPageIssues"))}</h2>
+    <p>Detailed formatting is unavailable, but here are the raw migration entries:</p>
+    <ul>${entriesHtml}</ul>
+  `;
 }
 
 function buildErrorSummaryGroups(issueGroups: MigrationIssueGroup[]): MigrationErrorSummaryGroup[] {
@@ -310,82 +400,131 @@ async function runDataModelRepairPreflight(): Promise<void> {
 
 async function showMigrationReportSaveFailureDialog(
   systemVersion: string,
+  migrationResult: MigrationResult,
   reportPages: MigrationReportPages,
   initialError: string,
 ): Promise<void> {
-  const reportHtml = buildMigrationReportFallbackHtml(reportPages);
-  const escapedError = foundry.utils.escapeHTML(initialError);
-  const escapedReport = foundry.utils.escapeHTML(reportHtml);
+  const { ApplicationV2 } = foundry.applications.api;
+  let reportHtml = buildMigrationReportFallbackHtml(reportPages);
 
-  const content = `
-    <p>${localize("RQG.Migration.reportSaveFailureDialogBody")}</p>
-    <p><strong>${localize("RQG.Migration.reportSaveFailureDialogErrorLabel")}</strong> ${escapedError}</p>
-    <p>${localize("RQG.Migration.reportSaveFailureDialogFallbackCopyHint")}</p>
-    <textarea readonly rows="12" style="width: 100%; font-family: monospace;">${escapedReport}</textarea>
-  `;
-
-  await foundry.applications.api.DialogV2.wait({
-    window: {
-      title: localize("RQG.Migration.reportSaveFailureDialogTitle", { systemVersion }),
-      resizable: true,
-    },
-    position: {
-      width: 900,
-      height: 620,
-    },
-    content,
-    buttons: [
-      {
-        action: "retry",
-        label: localize("RQG.Migration.reportSaveFailureDialogRetry"),
-        icon: "fas fa-rotate-right",
-        callback: async () => {
-          try {
-            await saveMigrationReportToJournal(systemVersion, reportPages);
-            return true;
-          } catch (err: unknown) {
-            const retryError = err instanceof Error ? err.message : String(err);
-            ui.notifications?.error(
-              localize("RQG.Migration.reportSaveFailed", {
-                error: retryError,
-              }),
-              { console: false },
-            );
-            return false;
-          }
-        },
+  class MigrationFailureApp extends ApplicationV2 {
+    static override DEFAULT_OPTIONS = {
+      id: "rqg-migration-failure",
+      classes: ["rqg", "rqg-migration-failure-dialog"],
+      window: {
+        title: localize("RQG.Migration.reportSaveFailureDialogTitle", { systemVersion }),
+        resizable: true,
       },
-      {
-        action: "copyHtml",
-        label: localize("RQG.Migration.reportSaveFailureDialogCopy"),
-        icon: "fas fa-copy",
-        callback: async () => {
+      position: {
+        width: 900,
+        height: 620,
+      },
+    };
+
+    override async _renderHTML(): Promise<HTMLElement> {
+      const wrapper = document.createElement("div");
+      const previewHtml = stripExecutableMarkupForSandboxedPreview(reportHtml);
+      wrapper.innerHTML = `
+        <p>${localize("RQG.Migration.reportSaveFailureDialogBody")}</p>
+        <p><strong>${localize("RQG.Migration.reportSaveFailureDialogErrorLabel")}</strong> ${foundry.utils.escapeHTML(initialError)}</p>
+        <p>Rendered migration report preview:</p>
+        <iframe
+          sandbox="allow-same-origin"
+          style="width: 100%; height: 260px; border: 1px solid var(--color-border-light-primary); border-radius: 4px; background: white;"
+          srcdoc="${foundry.utils.escapeHTML(previewHtml)}">
+        </iframe>
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem; margin-bottom: 0.25rem; width: 100%;">
+          <button type="button" class="rqg-migration-retry-save" style="flex: 1 1 0;"><i class="fas fa-rotate-right"></i> ${localize("RQG.Migration.reportSaveFailureDialogRetry")}</button>
+          <button type="button" class="rqg-migration-download-html" style="flex: 1 1 0;"><i class="fas fa-download"></i> ${localize("RQG.Migration.reportSaveFailureDialogDownload")}</button>
+          <button type="button" class="rqg-migration-copy-html" style="flex: 1 1 0;"><i class="fas fa-copy"></i> ${localize("RQG.Migration.reportSaveFailureDialogCopy")}</button>
+          <button type="button" class="rqg-migration-close" style="flex: 1 1 0; margin-left: 1rem;"><i class="fas fa-times"></i> ${localize("RQG.Migration.reportCloseButton")}</button>
+        </div>
+        <p>${localize("RQG.Migration.reportSaveFailureDialogFallbackCopyHint")}</p>
+      `;
+      return wrapper;
+    }
+
+    override _replaceHTML(result: HTMLElement, content: HTMLElement): void {
+      content.replaceChildren(result);
+    }
+
+    override async close(options?: any): Promise<this> {
+      return await super.close(options);
+    }
+
+    override async _onRender(): Promise<void> {
+      this.element
+        .querySelector<HTMLButtonElement>(".rqg-migration-close")
+        ?.addEventListener("click", () => {
+          void this.close();
+        });
+
+      this.element
+        .querySelector<HTMLButtonElement>(".rqg-migration-retry-save")
+        ?.addEventListener("click", () => {
+          void (async () => {
+            try {
+              // Re-run stages 1-2 to get fresh template-rendered HTML (with document links)
+              const freshPages = await buildMigrationReportPages(migrationResult);
+              reportHtml = buildMigrationReportFallbackHtml(freshPages);
+              await saveMigrationReportToJournal(systemVersion, freshPages);
+              await this.close();
+            } catch (err: unknown) {
+              const retryError = err instanceof Error ? err.message : String(err);
+              ui.notifications?.error(
+                localize("RQG.Migration.reportSaveFailed", { error: retryError }),
+                { console: false },
+              );
+            }
+          })();
+        });
+
+      this.element
+        .querySelector<HTMLButtonElement>(".rqg-migration-download-html")
+        ?.addEventListener("click", () => {
           try {
-            await navigator.clipboard.writeText(reportHtml);
-            ui.notifications?.info(localize("RQG.Migration.reportHtmlCopied"), {
+            const blob = new Blob([reportHtml], { type: "text/html;charset=utf-8" });
+            const objectUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = objectUrl;
+            link.download = `rqg-migration-report-v${systemVersion}.html`;
+            link.click();
+            URL.revokeObjectURL(objectUrl);
+            ui.notifications?.info(localize("RQG.Migration.reportHtmlDownloaded"), {
               console: false,
             });
-            return false;
           } catch (err: unknown) {
-            const copyError = err instanceof Error ? err.message : String(err);
+            const downloadError = err instanceof Error ? err.message : String(err);
             ui.notifications?.error(
-              localize("RQG.Migration.reportCopyFailed", {
-                error: copyError,
-              }),
+              localize("RQG.Migration.reportDownloadFailed", { error: downloadError }),
               { console: false },
             );
-            return false;
           }
-        },
-      },
-      {
-        action: "close",
-        label: localize("RQG.Migration.reportCloseButton"),
-        icon: "fas fa-times",
-        callback: () => true,
-      },
-    ],
-  });
+        });
+
+      this.element
+        .querySelector<HTMLButtonElement>(".rqg-migration-copy-html")
+        ?.addEventListener("click", () => {
+          navigator.clipboard
+            .writeText(reportHtml)
+            .then(() => {
+              ui.notifications?.info(localize("RQG.Migration.reportHtmlCopied"), {
+                console: false,
+              });
+            })
+            .catch((err: unknown) => {
+              const copyError = err instanceof Error ? err.message : String(err);
+              ui.notifications?.error(
+                localize("RQG.Migration.reportCopyFailed", { error: copyError }),
+                { console: false },
+              );
+            });
+        });
+    }
+  }
+
+  const app = new MigrationFailureApp();
+  app.render({ force: true });
 }
 
 type MigrationActorGroup = {
@@ -742,6 +881,14 @@ function stripMigrationPrefix(message: string): string {
   return message.replace(/^RQG \|\s*/, "").trim();
 }
 
+function stripExecutableMarkupForSandboxedPreview(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/\son[a-z]+\s*=\s*(['"]).*?\1/gi, "")
+    .replace(/\son[a-z]+\s*=\s*[^\s>]+/gi, "")
+    .replace(/\s(href|src)\s*=\s*(['"])\s*javascript:[^'"]*\2/gi, ' $1="#"');
+}
+
 async function saveMigrationReportToJournal(
   systemVersion: string,
   reportPages: MigrationReportPages,
@@ -847,9 +994,23 @@ async function buildDocumentLinksHtml(documents: MigrationDocumentLink[]): Promi
     documents
       .filter((document) => document.uuid)
       .map(async (document) => {
-        const link = `@UUID[${document.uuid}]{${document.label}}`;
-        return await foundry.applications.ux.TextEditor.implementation.enrichHTML(link);
+        const uuid = document.uuid;
+        if (!uuid) {
+          return "";
+        }
+
+        const label = document.label || uuid;
+        const link = `@UUID[${uuid}]{${label}}`;
+        try {
+          return await foundry.applications.ux.TextEditor.implementation.enrichHTML(link);
+        } catch (err: unknown) {
+          logger.warn(
+            `Failed to enrich migration report UUID link [${uuid}]: ${err instanceof Error ? err.message : String(err)}`,
+            { notify: false },
+          );
+          return foundry.utils.escapeHTML(label);
+        }
       }),
   );
-  return labels.join(" / ");
+  return labels.filter((label) => !!label).join(" / ");
 }
