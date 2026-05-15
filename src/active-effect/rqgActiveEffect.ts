@@ -19,9 +19,17 @@ const rqgActiveEffectSchema = {
   matchSuspensionToEquippedStatus: new foundry.data.fields.BooleanField({ initial: false }),
 } as const;
 
-class RqgActiveEffectDataModel extends (foundry.abstract.TypeDataModel as any) {
+const ActiveEffectTypeDataModelBase =
+  ((foundry.data as Record<string, unknown>)["ActiveEffectTypeDataModel"] as
+    | typeof foundry.abstract.TypeDataModel
+    | undefined) ?? (foundry.abstract.TypeDataModel as any);
+
+class RqgActiveEffectDataModel extends (ActiveEffectTypeDataModelBase as any) {
   static defineSchema(): any {
-    return rqgActiveEffectSchema;
+    return {
+      ...super.defineSchema(),
+      ...rqgActiveEffectSchema,
+    };
   }
 }
 
