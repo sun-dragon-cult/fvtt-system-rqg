@@ -340,7 +340,9 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     }
   }
 
-  // TODO this is just copied from the ActiveEffect class. Refactor when items use DataModels
+  // TECH-DEBT: Mirrors ActiveEffect private casting helpers (#castDelta/#castArray).
+  // Foundry keeps those helpers private, so this logic must stay local for now.
+  // Revisit when item-targeted effect application moves to DataModel field operations.
 
   static #castDelta(raw: any, type: any) {
     let delta;

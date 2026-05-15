@@ -220,15 +220,34 @@ export function getSpiritMagicPointSum(actor: CharacterActor): number {
  */
 export function getPowCrystals(actor: CharacterActor): { name: string; size: number }[] {
   const magicPointEffectKey = "system.effect.magicPoints.max";
+  type MinimalEffectChange = {
+    key?: string;
+    value?: unknown;
+  };
+
+  const getEffectChanges = (effect: unknown): MinimalEffectChange[] => {
+    const withSystem = effect as { system?: { changes?: unknown } };
+    if (Array.isArray(withSystem.system?.changes)) {
+      return withSystem.system.changes as MinimalEffectChange[];
+    }
+
+    const withLegacyTopLevel = effect as { changes?: unknown };
+    if (Array.isArray(withLegacyTopLevel.changes)) {
+      return withLegacyTopLevel.changes as MinimalEffectChange[];
+    }
+
+    return [];
+  };
 
   return (
     actor.appliedEffects &&
     actor.appliedEffects
-      .filter((e) => e.changes.find((c) => c.key === magicPointEffectKey) != undefined)
+      .filter((e) => getEffectChanges(e).some((c) => c.key === magicPointEffectKey))
       .map((e) => {
+        const changes = getEffectChanges(e);
         return {
           name: e.name ?? "",
-          size: e.changes
+          size: changes
             .filter((c) => c.key === magicPointEffectKey)
             .reduce((acc: number, c) => acc + Number(c.value), 0),
         };

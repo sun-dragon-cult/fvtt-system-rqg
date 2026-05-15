@@ -226,14 +226,18 @@ describe("getPowCrystals", () => {
     actor.appliedEffects = [
       {
         name: "Crystal A",
-        changes: [
-          { key: "system.effect.magicPoints.max", value: "3" },
-          { key: "system.attributes.hitPoints.max", value: "2" },
-        ],
+        system: {
+          changes: [
+            { key: "system.effect.magicPoints.max", value: "3" },
+            { key: "system.attributes.hitPoints.max", value: "2" },
+          ],
+        },
       },
       {
         name: "Crystal B",
-        changes: [{ key: "system.effect.magicPoints.max", value: 1 }],
+        system: {
+          changes: [{ key: "system.effect.magicPoints.max", value: 1 }],
+        },
       },
     ];
 
@@ -248,11 +252,25 @@ describe("getPowCrystals", () => {
     actor.appliedEffects = [
       {
         name: "Legacy Crystal",
-        changes: [{ key: "system.attributes.magicPoints.max", value: "2" }],
+        system: {
+          changes: [{ key: "system.attributes.magicPoints.max", value: "2" }],
+        },
       },
     ];
 
     expect(getPowCrystals(actor)).toEqual([]);
+  });
+
+  it("supports legacy top-level changes as a compatibility fallback", () => {
+    const actor = actorWithItems([]);
+    actor.appliedEffects = [
+      {
+        name: "Legacy Top-Level Crystal",
+        changes: [{ key: "system.effect.magicPoints.max", value: "2" }],
+      },
+    ];
+
+    expect(getPowCrystals(actor)).toEqual([{ name: "Legacy Top-Level Crystal", size: 2 }]);
   });
 });
 
