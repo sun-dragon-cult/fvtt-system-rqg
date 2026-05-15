@@ -14,6 +14,7 @@ import type { AnyMutableObject } from "fvtt-types/utils";
 import Document = foundry.abstract.Document;
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "@items/rqgItem.ts";
+import { castCustomChangeArray, castCustomChangeDelta } from "./customChangeCasting";
 
 const rqgActiveEffectSchema = {
   matchSuspensionToEquippedStatus: new foundry.data.fields.BooleanField({ initial: false }),
@@ -281,6 +282,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     }
 
     for (const item of items) {
+      const replacementData =
+        typeof (targetDoc as any).getRollData === "function"
+          ? (targetDoc as any).getRollData()
+          : {};
+
       // Determine the data type of the target field
       const current: unknown = foundry.utils.getProperty(item, path as any) ?? null;
       let target = current;
@@ -291,15 +297,15 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       const targetType = foundry.utils.getType(target);
 
       // Cast the effect change value to the correct type
-      let delta;
+      let delta: any;
       try {
         if (targetType === "Array") {
           const innerType = (target as unknown[]).length
             ? foundry.utils.getType((target as unknown[])[0])
             : "string";
-          delta = this.#castArray(change.value, innerType);
+          delta = castCustomChangeArray(change.value, innerType, replacementData);
         } else {
-          delta = this.#castDelta(change.value, targetType);
+          delta = castCustomChangeDelta(change.value, targetType, replacementData);
         }
       } catch (e) {
         RqgActiveEffect.logger.warn(
@@ -337,50 +343,6 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
           e,
         );
       }
-    }
-  }
-
-  // TECH-DEBT: Mirrors ActiveEffect private casting helpers (#castDelta/#castArray).
-  // Foundry keeps those helpers private, so this logic must stay local for now.
-  // Revisit when item-targeted effect application moves to DataModel field operations.
-
-  static #castDelta(raw: any, type: any) {
-    let delta;
-    switch (type) {
-      case "boolean":
-        delta = Boolean(this.#parseOrString(raw));
-        break;
-      case "number":
-        delta = Number.fromString(raw);
-        if (Number.isNaN(delta)) {
-          delta = 0;
-        }
-        break;
-      case "string":
-        delta = String(raw);
-        break;
-      default:
-        delta = this.#parseOrString(raw);
-    }
-    return delta;
-  }
-
-  static #castArray(raw: any, type: any) {
-    let delta;
-    try {
-      delta = this.#parseOrString(raw);
-      delta = delta instanceof Array ? delta : [delta];
-    } catch {
-      delta = [raw];
-    }
-    return delta.map((d) => this.#castDelta(d, type));
-  }
-
-  static #parseOrString(raw: any) {
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return raw;
     }
   }
 }
