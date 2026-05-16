@@ -1,9 +1,4 @@
-import {
-  formatListByWorldLanguage,
-  isDocumentSubType,
-  localize,
-  logMisconfiguration,
-} from "../system/util";
+import { isDocumentSubType, localize, logMisconfiguration } from "../system/util";
 import { RqgLogger } from "../system/logging/rqgLogger";
 import { Rqid } from "../system/api/rqidApi";
 import { toRqidString } from "../system/api/rqidValidation";
@@ -11,28 +6,10 @@ import { systemId } from "../system/config";
 import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
 
 import type { AnyMutableObject } from "fvtt-types/utils";
-import Document = foundry.abstract.Document;
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import type { RqgItem } from "@items/rqgItem.ts";
-import { castCustomChangeArray, castCustomChangeDelta } from "./customChangeCasting";
-
-const rqgActiveEffectSchema = {
-  matchSuspensionToEquippedStatus: new foundry.data.fields.BooleanField({ initial: false }),
-} as const;
-
-const ActiveEffectTypeDataModelBase =
-  ((foundry.data as Record<string, unknown>)["ActiveEffectTypeDataModel"] as
-    | typeof foundry.abstract.TypeDataModel
-    | undefined) ?? (foundry.abstract.TypeDataModel as any);
-
-class RqgActiveEffectDataModel extends (ActiveEffectTypeDataModelBase as any) {
-  static defineSchema(): any {
-    return {
-      ...super.defineSchema(),
-      ...rqgActiveEffectSchema,
-    };
-  }
-}
+import { applyItemChangeThroughDataModel } from "./dataModelFieldChange";
+import { RqgActiveEffectDataModel } from "./data-model/rqgActiveEffectDataModel";
 
 export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   private static readonly logger = new RqgLogger("RqgActiveEffect");
@@ -237,19 +214,13 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const effect = (change as any).effect as RqgActiveEffect | undefined;
     const [rqidOrPattern, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
-      const itemsWithEffectsOnActor = formatListByWorldLanguage(
-        targetDoc.appliedEffects.map((e) => {
-          try {
-            return (fromUuidSync(e.origin) as Document.Any)?.name ?? "❓no name";
-          } catch {
-            return "❓embedded item in compendium"; // origin was in a compendium and could not be read synchronously
-          }
-        }),
-        "disjunction",
+      logMisconfiguration(
+        `Legacy Active Effect key syntax is no longer supported: [${change.key}]. Update to "rqid:system.path".`,
+        !effect?.disabled,
+        change,
+        effect,
       );
-      RqgActiveEffect.logger.warn(
-        `Character ${targetDoc.name} has an embedded item with an old style Active Effect [${change.key}], please update to the new syntax: "rqid:system.path". Check these items [${itemsWithEffectsOnActor}]`,
-      );
+      return;
     }
 
     const isMultiMatch = rqidOrPattern !== undefined && rqidOrPattern.startsWith("~");
@@ -287,62 +258,33 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
           ? (targetDoc as any).getRollData()
           : {};
 
-      // Determine the data type of the target field
-      const current: unknown = foundry.utils.getProperty(item, path as any) ?? null;
-      let target = current;
-      if (current === null) {
-        const model = (game.model?.Item as any)[item.type] || {};
-        target = foundry.utils.getProperty(model, path as any) ?? null;
-      }
-      const targetType = foundry.utils.getType(target);
-
-      // Cast the effect change value to the correct type
-      let delta: any;
-      try {
-        if (targetType === "Array") {
-          const innerType = (target as unknown[]).length
-            ? foundry.utils.getType((target as unknown[])[0])
-            : "string";
-          delta = castCustomChangeArray(change.value, innerType, replacementData);
-        } else {
-          delta = castCustomChangeDelta(change.value, targetType, replacementData);
+      const dataModelResult = applyItemChangeThroughDataModel(
+        item as RqgItem,
+        path ?? "",
+        change,
+        replacementData,
+      );
+      if (dataModelResult.applied) {
+        try {
+          foundry.utils.setProperty(item, path as any, dataModelResult.value);
+          continue;
+        } catch (e) {
+          RqgActiveEffect.logger.warn(
+            `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed while setting DataModel-applied value for [${change.key}].`,
+            { notify: false },
+            change,
+            e,
+          );
+          continue;
         }
-      } catch (e) {
-        RqgActiveEffect.logger.warn(
-          `Item [${item.id}] | Unable to parse active effect change for ${change.key}: "${change.value}"`,
-          { notify: false },
-          e,
-        );
-        continue;
       }
 
-      let update;
-      const ct = foundry.utils.getType(current);
-      switch (ct) {
-        case "boolean":
-          update = current || delta;
-          break;
-        case "null":
-          update = delta;
-          break;
-        case "Array":
-          update = (current as unknown[]).concat(delta);
-          break;
-        default:
-          update = current + delta;
-          break;
-      }
-
-      try {
-        foundry.utils.setProperty(item, path as any, update);
-      } catch (e) {
-        RqgActiveEffect.logger.warn(
-          `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed. Probably because of wrong syntax in the active effect attribute key [${change.key}].`,
-          undefined,
-          change,
-          e,
-        );
-      }
+      logMisconfiguration(
+        `Active Effect item target key [${change.key}] could not be applied via DataModel (${dataModelResult.reason}).`,
+        !effect?.disabled,
+        change,
+        effect,
+      );
     }
   }
 }

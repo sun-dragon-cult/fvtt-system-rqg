@@ -1,3 +1,6 @@
+import { systemId } from "../config";
+import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+
 /**
  * Shared utilities for Active Effect path migrations
  *
@@ -9,6 +12,12 @@ interface AEPathMapping {
   legacyKey: string;
   newKey: string;
 }
+
+type LegacyItemTargetSyntax = {
+  itemType: string;
+  itemName: string;
+  systemPath: string;
+};
 
 const LEGACY_NUMERIC_TYPE_TO_CANONICAL: Record<number, ActiveEffectChangeType> = {
   0: "custom",
@@ -60,6 +69,68 @@ function toPersistedChangeData(change: any): any {
   // It is not part of persisted change data and should never be written.
   delete persisted.effect;
   return persisted;
+}
+
+function parseLegacyItemTargetSyntax(key: string): LegacyItemTargetSyntax | undefined {
+  const parts = key.split(":");
+  if (parts.length !== 3) {
+    return undefined;
+  }
+
+  const [itemType, itemName, systemPath] = parts;
+  if (!itemType || !itemName || !systemPath?.startsWith("system.")) {
+    return undefined;
+  }
+
+  // Already migrated or pattern syntax; not legacy item-type:item-name syntax.
+  if (itemType.startsWith("i.") || itemType.startsWith("~")) {
+    return undefined;
+  }
+
+  return { itemType, itemName, systemPath };
+}
+
+function getCollectionValues<T = any>(collectionLike: any): T[] {
+  if (Array.isArray(collectionLike)) {
+    return collectionLike as T[];
+  }
+  return Array.from(collectionLike?.values?.() ?? []);
+}
+
+function getDocumentRqid(item: any): string | undefined {
+  if (typeof item?.getFlag === "function") {
+    const rqidFlag = item.getFlag(systemId, documentRqidFlags);
+    if (typeof rqidFlag?.id === "string" && rqidFlag.id.length > 0) {
+      return rqidFlag.id;
+    }
+  }
+
+  const rqidFromFlags = item?.flags?.[systemId]?.[documentRqidFlags]?.id;
+  return typeof rqidFromFlags === "string" && rqidFromFlags.length > 0 ? rqidFromFlags : undefined;
+}
+
+function migrateLegacyItemTargetKey(key: string, owningActor?: any): string {
+  const parsed = parseLegacyItemTargetSyntax(key);
+  if (!parsed || !owningActor) {
+    return key;
+  }
+
+  const actorItems = getCollectionValues(owningActor.items);
+  const matchingItems = actorItems.filter(
+    (item) => item && item.type === parsed.itemType && item.name === parsed.itemName,
+  );
+
+  // Ambiguous or missing matches should be left untouched for manual repair.
+  if (matchingItems.length !== 1) {
+    return key;
+  }
+
+  const rqid = getDocumentRqid(matchingItems[0]);
+  if (!rqid) {
+    return key;
+  }
+
+  return `${rqid}:${parsed.systemPath}`;
 }
 
 function toEffectObject(effect: any): any {
@@ -163,6 +234,39 @@ export function migrateEffectChanges(effect: any): boolean {
 }
 
 /**
+ * Migrate legacy item target syntax in custom Active Effect keys:
+ * <item type>:<item name>:<system.path> -> <rqid>:<system.path>
+ */
+export function migrateEffectLegacyItemTargetSyntax(effect: any, owningActor?: any): boolean {
+  const changes = getEffectChanges(effect);
+  if (!changes.length || !owningActor) {
+    return false;
+  }
+
+  let hasChanges = false;
+  const migratedChanges = changes.map((change) => {
+    const persistedChange = toPersistedChangeData(change);
+    if (typeof persistedChange.key !== "string") {
+      return persistedChange;
+    }
+
+    const nextKey = migrateLegacyItemTargetKey(persistedChange.key, owningActor);
+    if (nextKey !== persistedChange.key) {
+      hasChanges = true;
+      persistedChange.key = nextKey;
+    }
+
+    return persistedChange;
+  });
+
+  if (hasChanges) {
+    setEffectChanges(effect, migratedChanges);
+  }
+
+  return hasChanges;
+}
+
+/**
  * Repair malformed or legacy change.type values in a single effect.
  *
  * @returns true if any type values were normalized
@@ -197,10 +301,11 @@ export function migrateEffectChangeTypes(effect: any): boolean {
  * This keeps Active Effect migration behavior self-contained even when
  * migration infrastructure merges payloads from independent migration functions.
  */
-export function migrateEffectTypesAndPaths(effect: any): boolean {
+export function migrateEffectTypesAndPaths(effect: any, owningActor?: any): boolean {
   const normalizedTypes = migrateEffectChangeTypes(effect);
   const migratedPaths = migrateEffectChanges(effect);
-  return normalizedTypes || migratedPaths;
+  const migratedLegacyItemTargets = migrateEffectLegacyItemTargetSyntax(effect, owningActor);
+  return normalizedTypes || migratedPaths || migratedLegacyItemTargets;
 }
 
 /**
@@ -209,10 +314,10 @@ export function migrateEffectTypesAndPaths(effect: any): boolean {
  *
  * @returns array of effects (migrated or original)
  */
-export function migrateEffectArray(effects: any[]): any[] {
+export function migrateEffectArray(effects: any[], owningActor?: any): any[] {
   return effects.map((effect) => {
     const effectClone = toEffectObject(effect);
-    if (migrateEffectTypesAndPaths(effectClone)) {
+    if (migrateEffectTypesAndPaths(effectClone, owningActor)) {
       return effectClone;
     }
     return effect;

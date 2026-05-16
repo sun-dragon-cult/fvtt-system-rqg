@@ -196,4 +196,75 @@ describe("migrateActorActiveEffectPaths", () => {
       "system.effect.hitPoints.max",
     );
   });
+
+  it("should migrate legacy itemType:itemName key syntax to rqid when actor match is unique", () => {
+    const mockActor = {
+      name: "Actor Data",
+      id: "actor-legacy-key-1",
+      effects: [
+        {
+          id: "effect-1",
+          name: "Legacy Key Effect",
+          system: {
+            changes: [{ key: "skill:Dodge:system.baseChance", type: "add", value: 3 }],
+          },
+        },
+      ],
+      items: [
+        {
+          id: "item-1",
+          type: "skill",
+          name: "Dodge",
+          flags: {
+            rqg: {
+              documentRqidFlags: {
+                id: "i.skill.dodge",
+              },
+            },
+          },
+        },
+      ],
+    };
+
+    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+
+    expect(updateData.effects).toBeDefined();
+    expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
+      "i.skill.dodge:system.baseChance",
+    );
+  });
+
+  it("should keep legacy itemType:itemName key when actor match is ambiguous", () => {
+    const mockActor = {
+      name: "Actor Data",
+      id: "actor-legacy-key-ambiguous-1",
+      effects: [
+        {
+          id: "effect-1",
+          name: "Legacy Key Effect",
+          system: {
+            changes: [{ key: "skill:Dodge:system.baseChance", type: "add", value: 3 }],
+          },
+        },
+      ],
+      items: [
+        {
+          id: "item-1",
+          type: "skill",
+          name: "Dodge",
+          flags: { rqg: { documentRqidFlags: { id: "i.skill.dodge-a" } } },
+        },
+        {
+          id: "item-2",
+          type: "skill",
+          name: "Dodge",
+          flags: { rqg: { documentRqidFlags: { id: "i.skill.dodge-b" } } },
+        },
+      ],
+    };
+
+    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+
+    expect(updateData.effects).toBeUndefined();
+  });
 });

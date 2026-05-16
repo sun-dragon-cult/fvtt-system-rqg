@@ -11,8 +11,8 @@ import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-import { CombatChatMessageData } from "../data-model/chat-data/combatChatMessage.dataModel.ts";
-import type { CombatDataProperties } from "../data-model/chat-data/combatChatMessage.types.ts";
+import { CombatChatMessageData } from "./data-model/combatChatMessage.dataModel.ts";
+import type { CombatDataProperties } from "./data-model/combatChatMessage.types.ts";
 
 // TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {

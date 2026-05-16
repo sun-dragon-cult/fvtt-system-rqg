@@ -12,12 +12,12 @@ import type {
   SceneFlags,
 } from "./data-model/shared/rqgDocumentFlags";
 import type { TokenRulerSettingsType } from "./applications/settings/tokenRulerSettings.types";
-import type { RqgChatMessageDataSource } from "./data-model/chat-data/combatChatMessage.types.ts";
+import type { RqgChatMessageDataSource } from "./chat/data-model/combatChatMessage.types.ts";
 
 import type { RqgChatMessage } from "./chat/RqgChatMessage.ts";
 import type { RqgToken } from "./combat/rqgToken.ts";
 import type { Dice3D } from "./module-integrations/dice-so-nice";
-import type { CombatChatMessageData } from "./data-model/chat-data/combatChatMessage.dataModel.ts";
+import type { CombatChatMessageData } from "./chat/data-model/combatChatMessage.dataModel.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
 import type { RqgCombatant } from "./combat/rqgCombatant.ts";

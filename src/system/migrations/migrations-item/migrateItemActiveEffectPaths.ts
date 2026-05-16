@@ -18,6 +18,7 @@ import {
  */
 export const migrateItemActiveEffectPaths: ItemMigration = async (
   item: RqgItem,
+  owningActor,
 ): Promise<Item.UpdateData> => {
   const updateData: Item.UpdateData = {};
   const rawEffects = (item as any).effects;
@@ -27,7 +28,7 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
 
   // Migrate item-owned effects
   if (originalEffects.length > 0) {
-    const migratedEffects = migrateEffectArray(originalEffects);
+    const migratedEffects = migrateEffectArray(originalEffects, owningActor);
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       const effectUpdates = originalEffects.flatMap((effect, index) => {

@@ -5,6 +5,7 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
+import { combatManeuverSchemaField } from "../shared/combatManeuverSchemaField";
 import { enumChoices } from "../shared/enumChoices";
 import { encodeLegacyWeaponSkillReferenceInRqid } from "./weaponSkillLink";
 import { assertDocumentSubType, requireValue, RqgError } from "../../system/util";
@@ -60,15 +61,15 @@ function usageSchemaField() {
   return new SchemaField({
     skillRqidLink: rqidLinkSchemaField({ nullable: true }),
     combatManeuvers: new ArrayField(
-      new SchemaField({
-        name: new StringField({ blank: true, nullable: false, initial: "" }),
-        damageType: new StringField({
+      combatManeuverSchemaField({
+        name: { blank: true, nullable: false, initial: "" },
+        damageType: {
           blank: false,
           nullable: false,
           initial: damageType.Crush,
           choices: enumChoices(damageType, "RQG.Item.Weapon.DamageTypeEnum."),
-        }),
-        description: new StringField({ blank: true, nullable: true, initial: "" }),
+        },
+        description: { blank: true, nullable: true, initial: "" },
       }),
     ),
     damage: new StringField({ blank: true, nullable: false, initial: "" }),

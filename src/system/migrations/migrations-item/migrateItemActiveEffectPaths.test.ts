@@ -377,4 +377,67 @@ describe("migrateItemActiveEffectPaths", () => {
       },
     ]);
   });
+
+  it("should migrate legacy itemType:itemName syntax using owning actor context", async () => {
+    const mockItem = {
+      name: "Embedded Item Data",
+      id: "item-legacy-key-1",
+      effects: [
+        {
+          id: "effect-1",
+          name: "Legacy Key Effect",
+          system: {
+            changes: [{ key: "skill:Dodge:system.baseChance", type: "add", value: 5 }],
+          },
+        },
+      ],
+    };
+
+    const mockOwningActor = {
+      items: [
+        {
+          id: "item-1",
+          type: "skill",
+          name: "Dodge",
+          flags: {
+            rqg: {
+              documentRqidFlags: {
+                id: "i.skill.dodge",
+              },
+            },
+          },
+        },
+      ],
+    };
+
+    const updateData = await migrateItemActiveEffectPaths(
+      mockItem as unknown as RqgItem,
+      mockOwningActor as any,
+    );
+
+    expect(updateData.effects).toBeDefined();
+    expect((updateData.effects as any[])?.[0].system.changes[0].key).toBe(
+      "i.skill.dodge:system.baseChance",
+    );
+  });
+
+  it("should not migrate legacy itemType:itemName syntax without owning actor context", async () => {
+    const mockItem = {
+      name: "Embedded Item Data",
+      id: "item-legacy-key-no-actor-1",
+      effects: [
+        {
+          id: "effect-1",
+          name: "Legacy Key Effect",
+          system: {
+            changes: [{ key: "skill:Dodge:system.baseChance", type: "add", value: 5 }],
+          },
+        },
+      ],
+    };
+
+    const updateData = await migrateItemActiveEffectPaths(mockItem as unknown as RqgItem);
+
+    expect(updateData.effects).toBeUndefined();
+  });
 });

@@ -29,7 +29,7 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
 
   // Migrate actor-owned effects
   if (originalEffects.length > 0) {
-    const migratedEffects = migrateEffectArray(originalEffects);
+    const migratedEffects = migrateEffectArray(originalEffects, actor);
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       const effectUpdates = originalEffects.flatMap((effect, index) => {

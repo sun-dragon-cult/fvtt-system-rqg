@@ -21,7 +21,7 @@ import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
 import type { DamageType, WeaponItem } from "@item-model/weaponDataModel.ts";
-import type { CombatChatMessage } from "../data-model/chat-data/combatChatMessage.types";
+import type { CombatChatMessage } from "./data-model/combatChatMessage.types";
 
 /**
  * Open the Defence Dialog to let someone defend against the attack
