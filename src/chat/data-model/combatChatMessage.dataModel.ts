@@ -1,6 +1,7 @@
-import { attackState, usageType, weaponDesignation } from "./combatChatMessage.defs.ts";
+import { attackState, weaponDesignation } from "./combatChatMessage.defs.ts";
 import { enumChoices } from "../../data-model/shared/enumChoices";
-import { combatManeuverSchemaField } from "../../data-model/shared/combatManeuverSchemaField";
+import { chatCombatManeuverSchemaField } from "../../data-model/shared/combatManeuverSchemaField";
+import { weaponUsageChoices } from "../../data-model/shared/weaponUsageChoices";
 
 const { BooleanField, NumberField, DocumentUUIDField, JSONField, HTMLField, StringField } =
   foundry.data.fields;
@@ -29,7 +30,7 @@ const combatChatMessageSchema = {
     nullable: false,
     required: true,
   }),
-  attackCombatManeuver: combatManeuverSchemaField({
+  attackCombatManeuver: chatCombatManeuverSchemaField({
     name: { blank: false, nullable: false },
     damageType: { blank: false, nullable: false },
     description: { blank: false, nullable: false },
@@ -40,19 +41,17 @@ const combatChatMessageSchema = {
   weaponDamageApplied: new BooleanField({ blank: false, nullable: false, initial: false }),
   attackWeaponUuid: new DocumentUUIDField({ blank: false, nullable: true, required: true }),
 
-  // TODO move weapon usage choices to a shared runtime source used by both item and chat schemas.
   attackWeaponUsage: new StringField({
     blank: false,
     nullable: false,
-    choices: enumChoices(usageType, (v) => `RQG.Game.WeaponUsage.${v}-full`),
+    choices: weaponUsageChoices(),
   }),
 
-  // TODO move weapon usage choices to a shared runtime source used by both item and chat schemas.
   defenceWeaponUsage: new StringField({
     blank: false,
     nullable: true,
     initial: undefined,
-    choices: enumChoices(usageType, (v) => `RQG.Game.WeaponUsage.${v}-full`),
+    choices: weaponUsageChoices(),
   }),
   outcomeDescription: new HTMLField({
     blank: false,

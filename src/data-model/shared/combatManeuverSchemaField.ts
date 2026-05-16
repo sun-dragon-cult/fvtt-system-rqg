@@ -6,7 +6,7 @@ export interface CombatManeuverSchemaOptions {
   description: StringFieldOptions;
 }
 
-export function combatManeuverSchemaField(options: CombatManeuverSchemaOptions) {
+function combatManeuverSchemaField(options: CombatManeuverSchemaOptions) {
   const { SchemaField, StringField } = foundry.data.fields;
 
   return new SchemaField({
@@ -14,4 +14,12 @@ export function combatManeuverSchemaField(options: CombatManeuverSchemaOptions) 
     damageType: new StringField(options.damageType),
     description: new StringField(options.description),
   });
+}
+
+export function weaponCombatManeuverSchemaField(options: CombatManeuverSchemaOptions) {
+  return combatManeuverSchemaField(options);
+}
+
+export function chatCombatManeuverSchemaField(options: CombatManeuverSchemaOptions) {
+  return combatManeuverSchemaField(options);
 }

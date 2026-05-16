@@ -5,8 +5,13 @@ import { RqgItemDataModel } from "./RqgItemDataModel";
 import { physicalItemSchemaFields } from "../shared/physicalItemSchemaFields";
 import { rqidLinkSchemaField } from "../shared/rqidLinkField";
 import { resourceSchemaField } from "../shared/resourceSchemaField";
-import { combatManeuverSchemaField } from "../shared/combatManeuverSchemaField";
+import { weaponCombatManeuverSchemaField } from "../shared/combatManeuverSchemaField";
 import { enumChoices } from "../shared/enumChoices";
+import {
+  weaponUsageChoices,
+  weaponUsageTypes,
+  type WeaponUsageType,
+} from "../shared/weaponUsageChoices";
 import { encodeLegacyWeaponSkillReferenceInRqid } from "./weaponSkillLink";
 import { assertDocumentSubType, requireValue, RqgError } from "../../system/util";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqgActorData";
@@ -34,7 +39,7 @@ export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(d
   }),
 );
 
-export type UsageType = "oneHand" | "twoHand" | "offHand" | "missile";
+export type UsageType = WeaponUsageType;
 
 export type CombatManeuver = {
   //** name used to identify this maneuver */
@@ -61,7 +66,7 @@ function usageSchemaField() {
   return new SchemaField({
     skillRqidLink: rqidLinkSchemaField({ nullable: true }),
     combatManeuvers: new ArrayField(
-      combatManeuverSchemaField({
+      weaponCombatManeuverSchemaField({
         name: { blank: true, nullable: false, initial: "" },
         damageType: {
           blank: false,
@@ -95,12 +100,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         blank: false,
         nullable: true,
         initial: undefined,
-        choices: {
-          oneHand: "RQG.Game.WeaponUsage.oneHand-full",
-          twoHand: "RQG.Game.WeaponUsage.twoHand-full",
-          offHand: "RQG.Game.WeaponUsage.offHand-full",
-          missile: "RQG.Game.WeaponUsage.missile-full",
-        },
+        choices: weaponUsageChoices(),
       }),
       hitPoints: resourceSchemaField(),
       hitPointLocation: new StringField({ blank: true, nullable: false, initial: "" }),
@@ -126,7 +126,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     const usage = source["usage"] as Record<string, Record<string, unknown>> | undefined;
 
     if (usage && typeof usage === "object") {
-      for (const usageType of ["oneHand", "offHand", "twoHand", "missile"]) {
+      for (const usageType of weaponUsageTypes) {
         const u = usage[usageType];
         if (!u || typeof u !== "object") {
           continue;
