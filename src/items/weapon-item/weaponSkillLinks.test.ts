@@ -8,7 +8,13 @@ import {
   isLegacyWeaponSkillReferenceRqid,
   parseLegacyWeaponSkillReference,
 } from "@item-model/weaponSkillLink.ts";
-import { hasLinkedSkillReference, resolveLinkedSkill } from "./weaponSkillLinks";
+import { Rqid } from "../../system/api/rqidApi";
+import {
+  embedLinkedSkill,
+  hasLinkedSkillReference,
+  resolveLinkedSkill,
+  toEmbeddedSkillCreateData,
+} from "./weaponSkillLinks";
 import { migrateWeaponSkillLinks } from "../../system/migrations/migrations-item/migrateWeaponSkillLinks";
 
 type TestItemCollection = any[] & { get: (id: string) => any };
@@ -26,6 +32,21 @@ function makeSkill({ id, name, rqid }: { id: string; name: string; rqid?: string
     type: ItemTypeEnum.Skill,
     name,
     system: { chance: 75 },
+    toObject: vi.fn(function (this: any) {
+      return {
+        _id: this._id,
+        type: this.type,
+        name: this.name,
+        system: { ...this.system },
+        flags: this.flags.rqg
+          ? {
+              rqg: {
+                documentRqidFlags: { ...this.flags.rqg.documentRqidFlags },
+              },
+            }
+          : {},
+      };
+    }),
     flags: rqid
       ? {
           rqg: {
@@ -177,6 +198,54 @@ describe("weapon skill link handling", () => {
               rqid: "i.skill.bite",
               name: "Bite",
             },
+          },
+        },
+      },
+    });
+  });
+
+  it("embeds linked skills using plain item data without reusing the source _id", async () => {
+    const compendiumSkill = makeSkill({
+      id: "compendium-bite",
+      name: "Bite",
+      rqid: "i.skill.bite",
+    });
+    const actor = {
+      getBestEmbeddedDocumentByRqid: vi.fn(() => undefined),
+      createEmbeddedDocuments: vi.fn().mockResolvedValue([]),
+    };
+    const fromRqidSpy = vi.spyOn(Rqid, "fromRqid").mockResolvedValue(compendiumSkill as any);
+
+    await expect(embedLinkedSkill("i.skill.bite", actor as any)).resolves.toBe(true);
+
+    expect(fromRqidSpy).toHaveBeenCalledWith("i.skill.bite");
+    expect(actor.createEmbeddedDocuments).toHaveBeenCalledWith("Item", [
+      {
+        type: ItemTypeEnum.Skill,
+        name: "Bite",
+        system: { chance: 75 },
+        flags: {
+          rqg: {
+            documentRqidFlags: {
+              id: "i.skill.bite",
+            },
+          },
+        },
+      },
+    ]);
+  });
+
+  it("toEmbeddedSkillCreateData strips the source _id", () => {
+    const skill = makeSkill({ id: "source-id", name: "Bite", rqid: "i.skill.bite" });
+
+    expect(toEmbeddedSkillCreateData(skill)).toEqual({
+      type: ItemTypeEnum.Skill,
+      name: "Bite",
+      system: { chance: 75 },
+      flags: {
+        rqg: {
+          documentRqidFlags: {
+            id: "i.skill.bite",
           },
         },
       },

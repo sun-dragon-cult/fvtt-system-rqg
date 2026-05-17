@@ -6,6 +6,16 @@ import { Rqid } from "../../system/api/rqidApi";
 import { toRqidString } from "../../system/api/rqidValidation";
 import { isDocumentSubType, localize, logMisconfiguration } from "../../system/util";
 
+export function toEmbeddedSkillCreateData(
+  skill: SkillItem,
+): Omit<ReturnType<SkillItem["toObject"]>, "_id"> {
+  const { _id, ...embeddedSkillData } = skill.toObject() as ReturnType<SkillItem["toObject"]> & {
+    _id?: string;
+  };
+  void _id;
+  return embeddedSkillData;
+}
+
 /**
  * Checks if the specified skill is already owned by the actor.
  * If not it embeds the referenced skill.
@@ -31,7 +41,7 @@ export async function embedLinkedSkill(
       );
       return false;
     }
-    await actor.createEmbeddedDocuments("Item", [skill as any]);
+    await actor.createEmbeddedDocuments("Item", [toEmbeddedSkillCreateData(skill as SkillItem)]);
   }
   return true;
 }

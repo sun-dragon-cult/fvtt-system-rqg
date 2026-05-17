@@ -146,6 +146,13 @@ export function getHTMLElement(
   return undefined;
 }
 
+/**
+ * Safely returns the event target when it is a DOM Element, otherwise null.
+ */
+export function getEventTargetElement(event: Event): Element | null {
+  return event.target instanceof Element ? event.target : null;
+}
+
 export function getSocket(): io.Socket {
   if (!game.socket) {
     const msg = `socket is not initialized yet! ( Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;

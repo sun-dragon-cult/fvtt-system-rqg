@@ -1095,6 +1095,7 @@
         "DropSkillToAdd": "Drop a weapon skill on this weapon!",
         "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
         "DropSkillMissingRqid": "The dropped skill has no RQID and cannot be linked to this weapon",
+        "DropSkillUpdateFailed": "Failed to link dropped skill to this weapon usage.",
         "EnterNewAction": "Add Action Label",
         "Damage": "Damage",
         "MinimumStrengthAbbr": "Min STR",

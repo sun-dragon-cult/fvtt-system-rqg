@@ -13,8 +13,8 @@ import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheetInterfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { toEmbeddedSkillCreateData } from "./weaponSkillLinks";
 
 interface WeaponSheetData {
   defaultCombatManeuverNames: string[];
@@ -258,10 +258,13 @@ export class WeaponSheet extends RqgItemSheet {
     const actorItemWithSameRqid = this.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
 
     if (!actorItemWithSameRqid) {
-      await this.actor?.createEmbeddedDocuments("Item", [droppedItem]);
+      await this.actor?.createEmbeddedDocuments("Item", [toEmbeddedSkillCreateData(droppedItem)]);
     }
     await this.document.update({
-      [`system.usage.${usage}.skillRqidLink`]: new RqidLink(droppedItemRqid, droppedItem.name),
+      [`system.usage.${usage}.skillRqidLink`]: {
+        rqid: droppedItemRqid,
+        name: droppedItem.name ?? "",
+      },
     });
     return [this.document];
   }

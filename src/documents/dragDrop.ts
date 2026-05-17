@@ -13,6 +13,9 @@ import {
 import Document = foundry.abstract.Document;
 import { Rqid } from "../system/api/rqidApi";
 
+/**
+ * Applies dropzone hover styling when a drag cursor enters or moves within the same drop target tree.
+ */
 export function onDragEnter(event: DragEvent): void {
   const dropZone = event.currentTarget; // Target the event handler was attached to
   const relatedTarget = event.relatedTarget; // EventTarget the pointer exited from
@@ -25,11 +28,13 @@ export function onDragEnter(event: DragEvent): void {
       relatedTarget?.contains(dropZone) ||
       dropZone?.contains(relatedTarget))
   ) {
-    event.preventDefault(); // Allow the drag to be dropped
     dropZone.classList.add("drag-hover");
   }
 }
 
+/**
+ * Removes dropzone hover styling when the drag cursor fully leaves the current drop target.
+ */
 export function onDragLeave(event: DragEvent): void {
   const dropZone = event.currentTarget; // Target the event handler was attached to
   const relatedTarget = event.relatedTarget; // EventTarget the pointer exited from
@@ -113,6 +118,14 @@ export function hasRqid(document: Document.Any | undefined): boolean {
     return false;
   }
   return true;
+}
+
+/**
+ * Type guard to narrow to Item.DropData.
+ * Use when you need to ensure a drop payload is an Item before passing to Item.implementation.fromDropData.
+ */
+export function isItemDropData(data: unknown): data is Item.DropData {
+  return typeof data === "object" && data !== null && (data as any).type === "Item";
 }
 
 /**

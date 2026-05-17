@@ -14,7 +14,11 @@ import {
 } from "../RqgItemSheetV2";
 import { systemId } from "../../system/config";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
+import {
+  getAllowedDropDocumentTypes,
+  isAllowedDocumentType,
+  isItemDropData,
+} from "../../documents/dragDrop";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type { HomelandItem } from "@item-model/homelandDataModel.ts";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
@@ -213,9 +217,9 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
 
   protected override async _onDropDocument(
     event: DragEvent,
-    data: { type: string; uuid: string },
+    data: ActorSheet.DropData,
   ): Promise<boolean | RqgItem[]> {
-    if (data.type !== "Item") {
+    if (!isItemDropData(data)) {
       return super._onDropDocument(event, data);
     }
 

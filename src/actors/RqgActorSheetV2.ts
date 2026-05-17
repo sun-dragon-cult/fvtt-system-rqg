@@ -4,6 +4,7 @@ import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
 import {
   assertDocumentSubType,
+  getEventTargetElement,
   getRequiredDomDataset,
   hasOwnProperty,
   isDocumentSubType,
@@ -83,8 +84,31 @@ type SingleDoubleClickOptions = {
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   #skillFilterQuery = "";
 
+  private _rqgDragDrop?: foundry.applications.ux.DragDrop.Any;
+
   override get actor(): CharacterActor {
     return this.document as CharacterActor;
+  }
+
+  // Runtime override of ActorSheetV2 _dragDrop; current fvtt-types do not expose this member.
+  // Include dragenter/dragleave callbacks for dropzone hover styling.
+  protected get _dragDrop(): foundry.applications.ux.DragDrop.Any {
+    this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
+      dragSelector: "[data-item-drag-handle][data-item-id]",
+      dropSelector: ".contextmenu.item[data-item-id], [data-dropzone]",
+      permissions: {
+        dragstart: (selector) => this._canDragStart(selector ?? ""),
+        drop: (selector) => this._canDragDrop(selector ?? ""),
+      },
+      callbacks: {
+        dragstart: this._onDragStart.bind(this),
+        dragover: this._onDragOver.bind(this),
+        drop: this._onDrop.bind(this),
+        dragenter: this._onDragEnter.bind(this),
+        dragleave: this._onDragLeave.bind(this),
+      },
+    });
+    return this._rqgDragDrop;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -102,12 +126,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     window: {
       resizable: true,
     },
-    dragDrop: [
-      {
-        dragSelector: "[data-item-drag-handle][data-item-id]",
-        dropSelector: "[data-item-id].contextmenu.item",
-      },
-    ],
     actions: {
       editItem: RqgActorSheetV2._openItemSheetAction,
       deleteItem: RqgActorSheetV2._deleteItemAction,
@@ -544,20 +562,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     if (options.isFirstRender) {
       RqidLink.bindHandlers(this.element, this.actor as foundry.abstract.Document.Any);
     }
-
-    // RQID dropzones (wizard background tab and any other dropzone-enabled fields)
-    this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
-      if (elem.dataset["rqidDropzoneBound"] === "true") {
-        return;
-      }
-      elem.dataset["rqidDropzoneBound"] = "true";
-      elem.addEventListener("dragenter", (event) => onDragEnter(event as DragEvent));
-      elem.addEventListener("dragleave", (event) => onDragLeave(event as DragEvent));
-      elem.addEventListener("dragover", (event) => event.preventDefault());
-      elem.addEventListener("drop", (event) => {
-        void this._onDropRqidDocument(event as DragEvent);
-      });
-    });
 
     // Clear drop indicators and drag preview cleanup.
     // Bind once per rendered root element so cleanup listeners don't duplicate.
@@ -1191,15 +1195,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   protected override async _onDragStart(event: DragEvent): Promise<void> {
     await super._onDragStart(event);
 
-    const dragHandle = (event.target as HTMLElement | null)?.closest<HTMLElement>(
-      "[data-item-drag-handle], [data-weapon-drag-handle]",
-    );
-    if (!dragHandle) {
+    const eventTarget = getEventTargetElement(event);
+    const dragHandle = eventTarget?.closest("[data-item-drag-handle], [data-weapon-drag-handle]");
+    if (!(dragHandle instanceof HTMLElement)) {
       return;
     }
 
-    const itemContainer = dragHandle.closest<HTMLElement>("[data-item-id]");
-    if (!itemContainer) {
+    const itemContainer = dragHandle.closest("[data-item-id]");
+    if (!(itemContainer instanceof HTMLElement)) {
       return;
     }
 
@@ -1242,12 +1245,29 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     dataTransfer.setDragImage(preview, 18, 18);
   }
 
+  /**
+   * An event that occurs when a drag workflow enters a drop target.
+   * @param event - The originating drag event.
+   */
+  protected _onDragEnter(event: DragEvent): void {
+    onDragEnter(event);
+  }
+
+  /**
+   * An event that occurs when a drag workflow leaves a drop target.
+   * @param event - The originating drag event.
+   */
+  protected _onDragLeave(event: DragEvent): void {
+    onDragLeave(event);
+  }
+
   protected override _onDragOver(event: DragEvent): void {
     super._onDragOver(event);
 
+    const eventTarget = getEventTargetElement(event);
     const target =
-      (event.target as HTMLElement | null)?.closest<HTMLElement>(".location-row[data-item-id]") ??
-      (event.target as HTMLElement | null)?.closest<HTMLElement>("[data-item-id].contextmenu.item");
+      eventTarget?.closest<HTMLElement>(".location-row[data-item-id]") ??
+      eventTarget?.closest<HTMLElement>(".contextmenu.item[data-item-id]");
 
     // Clear all existing indicators first
     this.element
@@ -1286,7 +1306,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       : locationRow
         ? [locationRow]
         : this.element.querySelectorAll<HTMLElement>(
-            `[data-item-id="${CSS.escape(itemId)}"].contextmenu.item`,
+            `.contextmenu.item[data-item-id="${CSS.escape(itemId)}"]`,
           );
     const targetItem = this.actor.items.get(itemId) as RqgItem | undefined;
     const dropAction = this._getSameActorDropAction(event, target, targetItem ?? null);
@@ -1510,11 +1530,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Same actor or sidebar/compendium drop — sort within same actor
     if (!sourceActor || sameActorDrop) {
       // Try to determine drag context for position-aware sorting
+      const eventTarget = getEventTargetElement(event);
       const dropCell =
-        (event.target as HTMLElement | null)?.closest<HTMLElement>(".location-row[data-item-id]") ??
-        (event.target as HTMLElement | null)?.closest<HTMLElement>(
-          "[data-item-id].contextmenu.item",
-        );
+        eventTarget?.closest<HTMLElement>(".location-row[data-item-id]") ??
+        eventTarget?.closest<HTMLElement>(".contextmenu.item[data-item-id]");
 
       if (dropCell) {
         const targetItemId = dropCell.dataset["itemId"];
@@ -1805,9 +1824,19 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
   }
 
+  /**
+   * An event that occurs when data is dropped into a drop target.
+   * @param event - The originating drag event.
+   */
   protected override async _onDrop(event: DragEvent): Promise<void> {
     event.preventDefault();
     this.render(); // Rerender to clear any drag-hover classes
+
+    const eventTarget = getEventTargetElement(event);
+    if (eventTarget?.closest<HTMLElement>("[data-dropzone]")) {
+      await this._onDropRqidDocument(event);
+      return;
+    }
 
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
       event,

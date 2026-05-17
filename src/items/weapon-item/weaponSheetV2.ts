@@ -10,10 +10,14 @@ import {
   type WeaponItem,
 } from "@item-model/weaponDataModel.ts";
 import { systemId } from "../../system/config";
-import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/dragDrop";
+import {
+  getAllowedDropDocumentTypes,
+  isAllowedDocumentType,
+  isItemDropData,
+} from "../../documents/dragDrop";
 import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
-import { RqidLink } from "../../data-model/shared/rqidLink";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { toEmbeddedSkillCreateData } from "./weaponSkillLinks";
 
 interface WeaponSheetContext extends RqgItemSheetContext {
   defaultCombatManeuverNames: Record<string, string>;
@@ -128,9 +132,9 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
 
   protected override async _onDropDocument(
     event: DragEvent,
-    data: { type: string; uuid: string },
+    data: ActorSheet.DropData,
   ): Promise<boolean | RqgItem[]> {
-    if (data.type !== "Item") {
+    if (!isItemDropData(data)) {
       return super._onDropDocument(event, data);
     }
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
@@ -172,11 +176,27 @@ export class WeaponSheetV2 extends RqgItemSheetV2 {
     const actorItemWithSameRqid =
       this.document.actor?.getBestEmbeddedDocumentByRqid(droppedItemRqid);
     if (!actorItemWithSameRqid) {
-      await this.document.actor?.createEmbeddedDocuments("Item", [droppedItem]);
+      await this.document.actor?.createEmbeddedDocuments("Item", [
+        toEmbeddedSkillCreateData(droppedItem),
+      ]);
     }
-    await this.document.update({
-      [`system.usage.${usage}.skillRqidLink`]: new RqidLink(droppedItemRqid, droppedItem.name),
-    });
+    try {
+      await this.document.update({
+        [`system.usage.${usage}.skillRqidLink`]: {
+          rqid: droppedItemRqid,
+          name: droppedItem.name ?? "",
+        },
+      });
+    } catch (error) {
+      const msg = localize("RQG.Item.Weapon.DropSkillUpdateFailed");
+      ui.notifications?.error(msg, { console: false });
+      console.error(`RQG | ${msg}`, error, {
+        weaponUuid: this.document.uuid,
+        usage,
+        droppedItemRqid,
+      });
+      return false;
+    }
     return [this.document];
   }
 

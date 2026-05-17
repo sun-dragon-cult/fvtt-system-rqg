@@ -77,6 +77,25 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     },
   };
 
+  private _rqgDragDrop?: foundry.applications.ux.DragDrop.Any;
+
+  // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
+  protected get _dragDrop(): foundry.applications.ux.DragDrop.Any {
+    this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
+      dropSelector: "[data-dropzone]",
+      permissions: {
+        drop: () => this.isEditable,
+      },
+      callbacks: {
+        dragover: this._onDragOver.bind(this),
+        drop: this._onDrop.bind(this),
+        dragenter: this._onDragEnter.bind(this),
+        dragleave: this._onDragLeave.bind(this),
+      },
+    });
+    return this._rqgDragDrop;
+  }
+
   // Subclasses must define PARTS with their template
 
   static override PARTS: Record<
@@ -137,16 +156,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     if (options.isFirstRender) {
       RqidLink.bindHandlers(this.element, this.document as foundry.abstract.Document.Any);
     }
-
-    // Drag-drop (register element-level listeners only on first render to avoid duplicates)
-    if (options.isFirstRender) {
-      this.element.addEventListener("dragover", (event) => event.preventDefault());
-      this.element.addEventListener("drop", (event) => void this._onDrop(event));
-    }
-    this.element.querySelectorAll<HTMLElement>("[data-dropzone]").forEach((elem) => {
-      elem.addEventListener("dragenter", (event) => this._onDragEnter(event as DragEvent));
-      elem.addEventListener("dragleave", (event) => this._onDragLeave(event as DragEvent));
-    });
 
     // Add rqidLink via dropdown to an array of links
     this.element.querySelectorAll<HTMLElement>("[data-add-to-rqid-array-link]").forEach((elem) => {
@@ -261,12 +270,20 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     });
   }
 
-  _onDragEnter(event: DragEvent): void {
+  // Runtime override of ItemSheetV2 drag/drop hooks; current fvtt-types do not expose these members.
+  protected _onDragEnter(event: DragEvent): void {
     onDragEnter(event);
   }
 
-  _onDragLeave(event: DragEvent): void {
+  protected _onDragLeave(event: DragEvent): void {
     onDragLeave(event);
+  }
+
+  protected _onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "link";
+    }
   }
 
   protected async _onDrop(event: DragEvent): Promise<unknown> {
@@ -283,7 +300,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
     const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
       event,
-    ) as { type?: string; uuid?: string } | null;
+    ) as ActorSheet.DropData | null;
     const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
 
     if (!isAllowedDocumentNames(droppedDocumentData?.type, allowedDropDocumentNames)) {
@@ -294,13 +311,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       case "Item":
       case "JournalEntry":
       case "JournalEntryPage":
-        if (droppedDocumentData.uuid) {
-          return await this._onDropDocument(event, {
-            type: droppedDocumentData.type,
-            uuid: droppedDocumentData.uuid,
-          });
-        }
-        break;
+        return await this._onDropDocument(event, droppedDocumentData);
       default:
         isAllowedDocumentNames(droppedDocumentData?.type, [
           "Item",
@@ -312,7 +323,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
   protected async _onDropDocument(
     event: DragEvent,
-    data: { type: string; uuid: string },
+    data: ActorSheet.DropData,
   ): Promise<boolean | RqgItem[]> {
     const {
       droppedDocument,

@@ -9,10 +9,8 @@
 
 <label for="encumbrance-total-{{id}}">{{localize "RQG.Item.Gear.EncumbranceAbbrTotal"}}</label>
 <input id="encumbrance-total-{{id}}" 
-       type="number" 
+       type="text"
        value="{{decimalMultiply system.quantity system.encumbrance}}"
-       min="0"
-       max="999999"
        readonly
        tabindex="-1"
 >
