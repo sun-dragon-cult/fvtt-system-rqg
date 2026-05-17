@@ -7,7 +7,7 @@ Instruction precedence: start with repository-wide defaults in `ai.md` at repo r
 ## Scope and Intent
 
 - Project: RuneQuest Glorantha system (`rqg`) for Foundry VTT.
-- Runtime target: Foundry v13.
+- Runtime target: Foundry v14.
 - Languages: TypeScript, SCSS, Handlebars.
 - Primary objective: produce minimal, safe, repo-consistent changes.
 

@@ -12,7 +12,7 @@ When instructions conflict, use the most specific file in the current folder sub
 ## Project Context
 
 - Foundry VTT system: `rqg` (RuneQuest Glorantha)
-- Target runtime: Foundry v13
+- Target runtime: Foundry v14
 - Main languages: TypeScript, SCSS, Handlebars
 
 ## Non-negotiable Rules

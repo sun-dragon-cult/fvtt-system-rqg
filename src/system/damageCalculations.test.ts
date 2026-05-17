@@ -19,9 +19,7 @@ describe("Inflict Damage", () => {
     mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")! as HitLocationItem;
     (global as any).ui = {
       notifications: {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         info(_msg: string, _other?: any) {},
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         error(_msg: string, _other?: any) {},
       },
     };

@@ -11,7 +11,7 @@ This file is the default guidance for AI-assisted changes in this repository.
 ## Project Baseline
 
 - System: RuneQuest Glorantha (`rqg`) for Foundry VTT.
-- Runtime target: Foundry v13.
+- Runtime target: Foundry v14.
 - Main stack: TypeScript, Handlebars templates, SCSS.
 - Foundry v14 source code is available at `~/foundry/Foundry-14/FoundryVTT/` for
   reference when investigating Foundry internals (e.g. client APIs, application

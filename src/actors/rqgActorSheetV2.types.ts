@@ -7,6 +7,14 @@ import type { CharacterActor } from "../data-model/actor-data/rqgActorData";
 import type { LocationItemNodeData } from "../items/shared/locationItemNode";
 
 /**
+ * Foundry v14 runtime supports onClick on header controls, but fvtt-types currently omits it.
+ * Extend the native type rather than redefining the full shape.
+ */
+export type RqgSheetHeaderControl = foundry.applications.api.ApplicationV2.HeaderControlsEntry & {
+  onClick?: () => Promise<void> | void;
+};
+
+/**
  * Context passed to all V2 actor sheet parts.
  */
 export interface RqgActorSheetV2Context {

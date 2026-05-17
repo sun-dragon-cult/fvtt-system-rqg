@@ -1,4 +1,5 @@
-import type { RqgActorSheetV2Context } from "./rqgActorSheetV2.types";
+import type { RqgSheetHeaderControl, RqgActorSheetV2Context } from "./rqgActorSheetV2.types";
+import type { DeepPartial } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
@@ -69,11 +70,11 @@ import {
   physicalItemTypes,
 } from "../data-model/item-data/IPhysicalItem";
 import { ItemTree } from "../items/shared/ItemTree";
-import type { DeepPartial } from "fvtt-types/utils";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
+/** Click behavior options used by single/double click bindings. */
 type SingleDoubleClickOptions = {
   onSingle: () => Promise<void> | void;
   onDouble?: () => Promise<void> | void;
@@ -140,7 +141,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       addPassion: RqgActorSheetV2._addPassionAction,
       addGear: RqgActorSheetV2._addGearAction,
     },
-  };
+  } satisfies foundry.applications.api.ApplicationV2.DefaultOptions;
 
   static override PARTS: Record<
     string,
@@ -165,8 +166,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     return prefix + speakerName + postfix;
   }
 
-  override _getHeaderControls(): any[] {
-    const controls = super._getHeaderControls();
+  override _getHeaderControls(): RqgSheetHeaderControl[] {
+    const controls = super._getHeaderControls() as RqgSheetHeaderControl[];
     const user = game.user;
     if (user?.isGM || user?.isTrusted) {
       const isEditMode = this.actor.system.editMode;
@@ -176,11 +177,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           ? localize("RQG.Actor.EditMode.SwitchToPlayMode")
           : localize("RQG.Actor.EditMode.SwitchToEditMode"),
         action: "toggleEditMode",
-        // onClick is supported at runtime but not in the type definition
         onClick: () => {
           this.actor.update({ system: { editMode: !this.actor.system.editMode } });
         },
-      } as any);
+      });
     }
     if (
       game.settings?.get(systemId, "actor-wizard-feature-flag") && // TODO remove when wizard is released
@@ -194,15 +194,19 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         onClick: () => {
           new ActorWizard(this.actor, {}).render({ force: true });
         },
-      } as any);
+      });
     }
     return controls;
   }
 
   // @ts-expect-error TEMP(v14-types) _getFrameButtons exists at runtime in Foundry >=14.361
-  override _getFrameButtons(options: any): any[] {
+  override _getFrameButtons(
+    options: unknown,
+  ): foundry.applications.api.ApplicationV2.HeaderControlsEntry[] {
     // @ts-expect-error TEMP(v14-types) super._getFrameButtons is missing from current type defs
-    const buttons = super._getFrameButtons(options);
+    const buttons = super._getFrameButtons(
+      options,
+    ) as foundry.applications.api.ApplicationV2.HeaderControlsEntry[];
     buttons.unshift(getRqidFrameButton(this as unknown as DocumentSheet<any, any>));
     return buttons;
   }
@@ -949,7 +953,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     void HitLocationSheet.showHealWoundDialog(this.actor, itemId);
   }
 
-  private static async _flipHitLocationSortSettingAction(this: RqgActorSheetV2): Promise<void> {
+  private static async _flipHitLocationSortSettingAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ): Promise<void> {
     const currentValue = game.settings?.get(systemId, "sortHitLocationsLowToHigh");
     await game.settings?.set(systemId, "sortHitLocationsLowToHigh", !currentValue);
     this.render({ force: true });
@@ -1046,7 +1054,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     await this._updateActiveCombatWithSR(this._activeInSR);
   }
 
-  private static async _addPassionAction(this: RqgActorSheetV2): Promise<void> {
+  private static async _addPassionAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ): Promise<void> {
     const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
     const passion = {
