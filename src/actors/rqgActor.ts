@@ -66,12 +66,14 @@ export class RqgActor extends Actor {
 
     Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
 
+    // AppV1 sheet — kept as non-default alternative; will be removed in a future release
     Actors.registerSheet(systemId, RqgActorSheet, {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.Character",
       makeDefault: false,
     });
 
+    // AppV2 sheet — default
     Actors.registerSheet(systemId, RqgActorSheetV2 as any, {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.CharacterV2",

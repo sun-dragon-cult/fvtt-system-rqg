@@ -77,6 +77,7 @@ export class RqgItem extends Item {
 
     Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
 
+    // AppV1 sheets — kept as non-default alternatives; will be removed in a future release
     Items.registerSheet(systemId, PassionSheet, {
       types: [ItemTypeEnum.Passion],
       label: "RQG.SheetName.Item.Passion",
@@ -139,6 +140,7 @@ export class RqgItem extends Item {
     });
 
     // AppV2 sheets — available as alternatives; users can switch via sheet config
+    // AppV2 sheets — default for all item types
     Items.registerSheet(systemId, PassionSheetV2, {
       types: [ItemTypeEnum.Passion],
       label: "RQG.SheetName.Item.PassionV2",

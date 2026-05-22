@@ -68,21 +68,6 @@ export async function showImproveCharacteristicDialog(
 
   const btnImprove = localize("RQG.Dialog.improveAbilityDialog.btnDoImprovement");
   const btnCancel = localize("RQG.Dialog.improveAbilityDialog.btnCancel");
-  const buttons: any = {};
-  if (adapter.showExperience || adapter.showTraining || adapter.showResearch) {
-    // There's at least one thing to do so show the Submit button
-    buttons.submit = {
-      icon: '<i class="fas fa-check"></i>',
-      label: btnImprove,
-      callback: async (html: JQuery | HTMLElement) =>
-        await submitImproveCharacteristicDialog(html as JQuery, actor, char, speakerName, adapter),
-    };
-  }
-  buttons.cancel = {
-    icon: '<i class="fas fa-times"></i>',
-    label: btnCancel,
-    callback: () => null,
-  };
 
   const content: string = await foundry.applications.handlebars.renderTemplate(
     templatePaths.dialogImproveAbility,
@@ -95,27 +80,41 @@ export async function showImproveCharacteristicDialog(
     typeLocName: adapter.typeLocName,
   });
 
-  new Dialog(
-    {
-      title: title,
-      content: content,
-      default: "submit",
-      buttons: buttons,
-    },
-    {
-      classes: [systemId, "dialog"],
-    },
-  ).render(true);
+  const buttons: foundry.applications.api.DialogV2.Button[] = [];
+  if (adapter.showExperience || adapter.showTraining || adapter.showResearch) {
+    buttons.push({
+      action: "submit",
+      label: btnImprove,
+      icon: "fas fa-check",
+      default: true,
+      callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any) =>
+        await submitImproveCharacteristicDialog(dialog.element, actor, char, speakerName, adapter),
+    });
+  }
+  buttons.push({
+    action: "cancel",
+    label: btnCancel,
+    icon: "fas fa-times",
+    ...(!buttons.length ? { default: true } : {}),
+    callback: () => null,
+  });
+
+  void foundry.applications.api.DialogV2.wait({
+    window: { title },
+    content,
+    classes: [systemId, "dialog"],
+    buttons,
+  });
 }
 
 export async function submitImproveCharacteristicDialog(
-  html: JQuery,
+  html: HTMLElement,
   actor: RqgActor,
   char: any,
   speakerName: string,
   adapter: any,
 ): Promise<void> {
-  const formData = new FormData(html.find("form")[0]);
+  const formData = new FormData(html.querySelector("form") ?? undefined);
   const gaintype = convertFormValueToString(formData.get("experiencegaintype"));
   let gain: number = 0;
 

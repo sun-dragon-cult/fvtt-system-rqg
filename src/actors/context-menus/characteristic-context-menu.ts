@@ -295,41 +295,37 @@ async function confirmInitializeDialog(
   actorName: string,
   characteristic: string = "",
 ): Promise<boolean> {
-  return await new Promise((resolve) => {
-    const title = characteristic
-      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {
-          characteristicName: localizeCharacteristic(characteristic),
-          actorName: actorName,
-        })
-      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {
-          actorName: actorName,
-        });
-    const content = characteristic
-      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {
-          characteristicName: localizeCharacteristic(characteristic),
-        })
-      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
-    const dialog = new Dialog({
-      title: title,
-      content: content,
-      default: "submit",
-      buttons: {
-        submit: {
-          icon: '<i class="fas fa-check"></i>',
-          label: localize("RQG.Dialog.Common.btnConfirm"),
-          callback: () => {
-            resolve(true);
-          },
-        },
-        cancel: {
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: '<i class="fas fa-times"></i>',
-          callback: () => {
-            resolve(false);
-          },
-        },
+  const title = characteristic
+    ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {
+        characteristicName: localizeCharacteristic(characteristic),
+        actorName: actorName,
+      })
+    : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {
+        actorName: actorName,
+      });
+  const content = characteristic
+    ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {
+        characteristicName: localizeCharacteristic(characteristic),
+      })
+    : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
+  const result = await foundry.applications.api.DialogV2.wait({
+    window: { title },
+    content,
+    buttons: [
+      {
+        action: "confirm",
+        label: localize("RQG.Dialog.Common.btnConfirm"),
+        icon: "fas fa-check",
+        default: true,
+        callback: () => true,
       },
-    });
-    dialog.render(true);
+      {
+        action: "cancel",
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        icon: "fas fa-times",
+        callback: () => false,
+      },
+    ],
   });
+  return result === true;
 }

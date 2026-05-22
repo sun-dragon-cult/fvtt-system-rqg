@@ -1,9 +1,9 @@
-<header>
-  <h2>{{localize 'RQG.Dialog.BatchRqidEditor.Title'}}</h2>
-  <p>{{{summary}}}</p>
-</header>
-<main>
-  <form class="{{cssClass}}" autocomplete="off">
+<section class="rqid-batch-editor-form">
+  <header>
+    <h2>{{localize 'RQG.Dialog.BatchRqidEditor.Title'}}</h2>
+    <p>{{{summary}}}</p>
+  </header>
+  <main>
     <ol class="document-list">
       <li class="item flexrow header gap1rem">
         <span class="name">{{localizeitemtype itemType}}</span>
@@ -15,25 +15,19 @@
         <li class="item document-row flexrow gap1rem" data-name="{{name}}">
           <span class="skill-name">{{name}} </span>
           <div class="value">
-            <select class="existing">
+            <select class="existing" data-name="{{name}}">
               {{selectOptions @root.existingRqidOptions localize=false}}
             </select>
           </div>
           <div class="value flexrow">
             <span class="rqid-prefix">{{../idPrefix}}</span>
-          <input class="rqid-input {{#unless selectedRqidSuffix}}missing{{/unless}}" type="text" value="{{selectedRqidSuffix}}">
-            <a class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-tooltip-direction="RIGHT">
+            <input class="rqid-input {{#unless selectedRqidSuffix}}missing{{/unless}}" type="text" value="{{selectedRqidSuffix}}" data-name="{{name}}">
+            <a class="generate-rqid" data-action="generateRqid" data-name="{{name}}" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-tooltip-direction="RIGHT">
               <i class="fas fa-wand-magic-sparkles"></i>
             </a>
           </div>
         </li>
       {{/each}}
     </ol>
-    <div class="dialog-buttons">
-      <button class="dialog-button">
-        <i class="fas fa-check"></i>
-        {{localize 'RQG.Dialog.BatchRqidEditor.ButtonUpdate'}}
-      </button>
-    </div>
-  </form>
-</main>
+  </main>
+</section>

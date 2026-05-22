@@ -113,32 +113,35 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
       templatePaths.hitLocationAddWound,
       {},
     );
-    new Dialog(
-      {
+    void foundry.applications.api.DialogV2.wait({
+      window: {
         title: localize("RQG.Item.HitLocation.AddWound.Title", {
           hitLocationName: hitLocation.name,
         }),
-        content: dialogContentHtml,
-        default: "submit",
-        render: (html: JQuery) => {
-          html.find<HTMLInputElement>("#inflictDamagePoints")[0]?.focus();
-        },
-        buttons: {
-          submit: {
-            icon: '<i class="fas fa-check"></i>',
-            label: localize("RQG.Item.HitLocation.AddWound.btnAddWound"),
-            callback: async (html: JQuery) =>
-              await HitLocationSheetV2.submitAddWoundDialog(html[0]!, actor, hitLocation),
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: localize("RQG.Dialog.Common.btnCancel"),
-            callback: () => null,
-          },
-        },
       },
-      { classes: [systemId, "dialog"] },
-    ).render(true);
+      content: dialogContentHtml,
+      classes: [systemId, "dialog"],
+      buttons: [
+        {
+          action: "submit",
+          label: localize("RQG.Item.HitLocation.AddWound.btnAddWound"),
+          icon: "fas fa-check",
+          default: true,
+          callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any) => {
+            const dialogElement = dialog.element as HTMLElement;
+            const input = dialogElement.querySelector<HTMLInputElement>("#inflictDamagePoints");
+            input?.focus();
+            await HitLocationSheetV2.submitAddWoundDialog(dialogElement, actor, hitLocation);
+          },
+        },
+        {
+          action: "cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
+          icon: "fas fa-times",
+          callback: () => null,
+        },
+      ],
+    });
   }
 
   private static async submitAddWoundDialog(
@@ -175,32 +178,35 @@ export class HitLocationSheetV2 extends RqgItemSheetV2 {
       },
     );
 
-    new Dialog(
-      {
+    void foundry.applications.api.DialogV2.wait({
+      window: {
         title: localize("RQG.Item.HitLocation.HealWound.Title", {
           hitLocationName: hitLocation.name,
         }),
-        content: dialogContentHtml,
-        default: "submit",
-        render: (html: JQuery) => {
-          html.find<HTMLInputElement>("#healWoundPoints")[0]?.focus();
-        },
-        buttons: {
-          submit: {
-            icon: '<i class="fas fa-check"></i>',
-            label: localize("RQG.Item.HitLocation.HealWound.btnHealWound"),
-            callback: async (html: JQuery) =>
-              await HitLocationSheetV2.submitHealWoundDialog(html[0]!, actor, hitLocation),
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: localize("RQG.Dialog.Common.btnCancel"),
-            callback: () => null,
-          },
-        },
       },
-      { classes: [systemId, "dialog", "heal-wound"] },
-    ).render(true);
+      content: dialogContentHtml,
+      classes: [systemId, "dialog", "heal-wound"],
+      buttons: [
+        {
+          action: "submit",
+          label: localize("RQG.Item.HitLocation.HealWound.btnHealWound"),
+          icon: "fas fa-check",
+          default: true,
+          callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any) => {
+            const dialogElement = dialog.element as HTMLElement;
+            const input = dialogElement.querySelector<HTMLInputElement>("#healWoundPoints");
+            input?.focus();
+            await HitLocationSheetV2.submitHealWoundDialog(dialogElement, actor, hitLocation);
+          },
+        },
+        {
+          action: "cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
+          icon: "fas fa-times",
+          callback: () => null,
+        },
+      ],
+    });
   }
 
   private static async submitHealWoundDialog(

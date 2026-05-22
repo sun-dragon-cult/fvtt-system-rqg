@@ -1,10 +1,23 @@
 .rqid-batch-editor {
   .window-content {
     padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .rqid-batch-editor-form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
   }
 
   main {
     position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
   }
 
   .document-list {
@@ -55,13 +68,5 @@
       align-self: center;
       text-align: right;
     }
-  }
-
-  .dialog-buttons {
-    position: sticky;
-    bottom: 0.2rem;
-    width: 100%;
-    background: var(--color-bg-btn-minor-active);
-    margin: 1rem 0;
   }
 }

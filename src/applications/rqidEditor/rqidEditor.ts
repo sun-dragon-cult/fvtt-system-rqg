@@ -4,7 +4,8 @@ import { Rqid, isRqidDocumentName } from "../../system/api/rqidApi";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
 import Document = foundry.abstract.Document;
-import FormApplication = foundry.appv1.api.FormApplication;
+
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 interface DocumentInfo {
   priority: number;
@@ -33,13 +34,47 @@ interface RqidEditorData {
   parentMissingRqid: boolean;
 }
 
-export class RqidEditor extends FormApplication {
+export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEditorData>) {
   private document: Document.Any;
   private parentAppLinked = false;
 
-  constructor(document: Document.Any, options?: Partial<FormApplication.Options>) {
-    super(document, options);
+  constructor(document: Document.Any, options?: any) {
+    super(options);
     this.document = document;
+  }
+
+  static override DEFAULT_OPTIONS = {
+    classes: [systemId, "rqid-editor"],
+    tag: "form",
+    window: {
+      title: "Rqid Editor",
+      resizable: true,
+    },
+    position: {
+      width: 650,
+      left: 35,
+      top: 15,
+    },
+    form: {
+      handler: RqidEditor.onSubmit,
+      closeOnSubmit: false,
+      submitOnChange: true,
+    },
+  };
+
+  static override PARTS = {
+    body: {
+      template: templatePaths.dialogRqidEditor,
+      root: true,
+    },
+  };
+
+  override get id(): string {
+    return `${this.constructor.name}-${trimChars(toKebabCase(this.document.uuid ?? ""), "-")}`;
+  }
+
+  override get title(): string {
+    return `${super.title} ${this.document.documentName}: ${this.document.name}`;
   }
 
   private isAppAwareDocument(
@@ -58,7 +93,7 @@ export class RqidEditor extends FormApplication {
       return;
     }
 
-    parentDocument.apps[String(this.appId)] = this;
+    parentDocument.apps[String(this.id)] = this;
     this.parentAppLinked = true;
   }
 
@@ -68,11 +103,8 @@ export class RqidEditor extends FormApplication {
     }
 
     const parentDocument = this.document.parent;
-    if (
-      this.isAppAwareDocument(parentDocument) &&
-      parentDocument.apps[String(this.appId)] === this
-    ) {
-      delete parentDocument.apps[String(this.appId)];
+    if (this.isAppAwareDocument(parentDocument) && parentDocument.apps[String(this.id)] === this) {
+      delete parentDocument.apps[String(this.id)];
     }
     this.parentAppLinked = false;
   }
@@ -93,18 +125,13 @@ export class RqidEditor extends FormApplication {
       this.isAppAwareDocument(this.document) ? this.document.apps : {},
     ) as Array<{
       window?: { header?: HTMLElement };
-      element?: JQuery<HTMLElement> | HTMLElement;
+      element?: HTMLElement;
     }>;
 
     for (const app of apps) {
-      const elementRoot =
-        app.element instanceof HTMLElement
-          ? app.element
-          : ((app.element?.[0] as HTMLElement | undefined) ?? undefined);
-
       const icon =
         app.window?.header?.querySelector<HTMLElement>(".fa-fingerprint") ??
-        elementRoot?.querySelector<HTMLElement>(".fa-fingerprint") ??
+        app.element?.querySelector<HTMLElement>(".fa-fingerprint") ??
         undefined;
 
       if (!icon) {
@@ -117,31 +144,10 @@ export class RqidEditor extends FormApplication {
     }
   }
 
-  override get id() {
-    return `${this.constructor.name}-${trimChars(toKebabCase(this.document.uuid ?? ""), "-")}`;
-  }
-
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: [systemId, "form", "rqid-editor"],
-      popOut: true,
-      template: templatePaths.dialogRqidEditor,
-      width: 650,
-      left: 35,
-      top: 15,
-      title: "Rqid Editor",
-      closeOnSubmit: false,
-      submitOnClose: true,
-      submitOnChange: true,
-      resizable: true,
-    });
-  }
-
-  override async getData(): Promise<RqidEditorData> {
+  override async _prepareContext(): Promise<RqidEditorData> {
     const documentRqid: string | undefined = Rqid.getDocumentFlag(this.document)?.id;
     const documentLang: string | undefined = Rqid.getDocumentFlag(this.document)?.lang;
 
-    // For embedded documents (e.g. JournalEntryPage inside a JournalEntry), get the parent rqid for display context
     const parentRqid: string = this.document.isEmbedded
       ? (Rqid.getDocumentFlag(this.document.parent)?.id ?? "")
       : "";
@@ -162,8 +168,6 @@ export class RqidEditor extends FormApplication {
       const rqidDocumentName = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
-      // Embedded documents (like JournalEntryPage with "jp" document name) have no top-level game collection,
-      // so skip the duplicate search to avoid errors from getGameProperty("jp")
       if (!this.document.isEmbedded && isRqidDocumentName(rqidDocumentName)) {
         const worldDocuments = await Rqid.fromRqidRegex(
           rqidSearchRegex,
@@ -194,7 +198,7 @@ export class RqidEditor extends FormApplication {
           compendiumDocumentInfo.push({
             priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
             link: link,
-            compendium: `${d.compendium?.metadata?.label} ⇒ ${d.compendium?.metadata?.packageName}`,
+            compendium: `${d.compendium?.metadata?.label} => ${d.compendium?.metadata?.packageName}`,
           });
         }
 
@@ -216,7 +220,6 @@ export class RqidEditor extends FormApplication {
         };
       }
 
-      // For embedded documents, construct the full rqid including the parent's rqid
       const fullRqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
       rqidLinkData = {
         rqidLink: `@RQID[${fullRqid}]{${this.document.name}}`,
@@ -250,27 +253,15 @@ export class RqidEditor extends FormApplication {
     };
   }
 
-  override get title(): string {
-    return `${super.title} ${this.document.documentName}: ${this.document.name}`;
-  }
-
-  protected override _getSubmitData(
-    updateData?: Record<string, unknown> | null,
-  ): Partial<Record<string, unknown>> {
-    return super._getSubmitData(updateData);
-  }
-
-  override activateListeners(html: JQuery) {
+  override async _onRender(): Promise<void> {
     this.linkToParentDocumentApps();
+    this.element.dataset["documentUuid"] = this.document.uuid;
 
-    // update the document with a default rqid
-    html[0]?.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
-      const uuid = getRequiredDomDataset(el, "document-uuid");
+    this.element.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const document = await fromUuid(uuid);
+        const document = await fromUuid(this.document.uuid);
         if (!document) {
-          const msg = "Couldn't find document from uuid";
-          console.warn("RQG | ", msg);
+          console.warn("RQG | Couldn't find document from uuid");
           return;
         }
 
@@ -292,15 +283,14 @@ export class RqidEditor extends FormApplication {
       });
     });
 
-    // Copy associated input value to clipboard
-    html[0]?.querySelectorAll<HTMLElement>("[data-item-copy-input]").forEach((el) => {
+    this.element.querySelectorAll<HTMLElement>("[data-item-copy-input]").forEach((el) => {
       el.addEventListener("click", async () => {
         const input = el.previousElementSibling as HTMLInputElement;
         await navigator.clipboard.writeText(input.value);
       });
     });
 
-    html[0]?.querySelectorAll<HTMLElement>("[data-open-parent-rqid-editor]").forEach((el) => {
+    this.element.querySelectorAll<HTMLElement>("[data-open-parent-rqid-editor]").forEach((el) => {
       el.addEventListener("click", async (event) => {
         event.preventDefault();
         const parentUuid = getRequiredDomDataset(el, "parent-document-uuid");
@@ -309,37 +299,40 @@ export class RqidEditor extends FormApplication {
           console.warn("RQG | Could not find parent document from uuid", parentUuid);
           return;
         }
-        new RqidEditor(parentDocument, {}).render(true, { focus: true });
+        new RqidEditor(parentDocument, {}).render({ force: true });
       });
     });
-
-    super.activateListeners(html);
   }
 
-  override async close(options?: FormApplication.CloseOptions): Promise<void> {
+  override async close(options?: any): Promise<this> {
     this.unlinkFromParentDocumentApps();
     return await super.close(options);
   }
 
-  async _updateObject(event: Event, formData: Record<string, unknown>): Promise<void> {
+  static async onSubmit(
+    this: RqidEditor,
+    _event: Event,
+    _form: HTMLFormElement,
+    formData: FormDataExtended,
+  ): Promise<void> {
+    const data = formData.object as Record<string, unknown>;
     const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
-    const rqidNamePart = toKebabCase(String(formData["rqidNamePart"] ?? "").trim());
-    formData["flags.rqg.documentRqidFlags.id"] =
-      rqidNamePart && (formData["flags.rqg.documentRqidFlags.id"] = rqidNamePart)
-        ? `${documentIdPart}.${documentType}.${rqidNamePart}`
-        : null;
-    delete formData["rqidNamePart"];
+    const rqidNamePart = toKebabCase(String(data["rqidNamePart"] ?? "").trim());
+    data["flags.rqg.documentRqidFlags.id"] = rqidNamePart
+      ? `${documentIdPart}.${documentType}.${rqidNamePart}`
+      : null;
+    delete data["rqidNamePart"];
 
-    formData["flags.rqg.documentRqidFlags.priority"] =
-      Number(formData["flags.rqg.documentRqidFlags.priority"]) || 0;
+    data["flags.rqg.documentRqidFlags.priority"] =
+      Number(data["flags.rqg.documentRqidFlags.priority"]) || 0;
 
     // @ts-expect-error Document.Any.update() first arg typed as never
-    await this.document.update(formData);
+    await this.document.update(data);
     await this.syncRqidHeaderIconState();
     this.render();
   }
 
-  getPath(document: Document.Any): string {
+  private getPath(document: Document.Any): string {
     let path = "";
     type FolderLike = { name: string; folder?: FolderLike | null };
     let folder = "folder" in document ? (document.folder as FolderLike | null) : null;

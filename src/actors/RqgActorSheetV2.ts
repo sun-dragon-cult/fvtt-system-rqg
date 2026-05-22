@@ -61,7 +61,6 @@ import type { GearItem } from "@item-model/gearDataModel.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
-import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import {
   equippedStatuses,
@@ -1640,35 +1639,39 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       targetActor: this.actor.name,
     });
 
-    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
-        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
-        callback: async (html: JQuery | HTMLElement) =>
-          confirmDialog.resolve(
+    const result = await foundry.applications.api.DialogV2.wait({
+      window: { title },
+      content,
+      buttons: [
+        {
+          action: "submit",
+          label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+          icon: "fas fa-check",
+          default: true,
+          callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> =>
             this.submitConfirmTransferPhysicalItem(
-              html as JQuery,
+              dialog.element,
               incomingItemDataSource,
               sourceActor,
             ),
-          ),
-      },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
-        label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
-      },
-    };
-    return await confirmDialog.setButtons(buttons, "submit").show();
+        },
+        {
+          action: "cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
+          icon: "fas fa-times",
+          callback: () => false,
+        },
+      ],
+    });
+    return Boolean(result);
   }
 
   private async submitConfirmTransferPhysicalItem(
-    html: JQuery,
+    html: HTMLElement,
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<boolean> {
-    const formData = new FormData(html.find("form")[0]);
+    const formData = new FormData(html.querySelector("form") ?? undefined);
     const data = Object.fromEntries(formData.entries());
     const quantityToTransfer: number = data["numtotransfer"] ? Number(data["numtotransfer"]) : 1;
     return this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
@@ -1767,25 +1770,31 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       itemName: incomingItemDataSource.name,
       targetActor: this.actor.name,
     });
-    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
-        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
-        callback: async () => {
-          const created = await this.actor.createEmbeddedDocuments("Item", [
-            incomingItemDataSource,
-          ]);
-          confirmDialog.resolve(created.length > 0);
+    const result = await foundry.applications.api.DialogV2.wait({
+      window: { title },
+      content,
+      buttons: [
+        {
+          action: "submit",
+          label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+          icon: "fas fa-check",
+          default: true,
+          callback: async (): Promise<boolean> => {
+            const created = await this.actor.createEmbeddedDocuments("Item", [
+              incomingItemDataSource,
+            ]);
+            return created.length > 0;
+          },
         },
-      },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
-        label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
-      },
-    };
-    return await confirmDialog.setButtons(buttons, "submit").show();
+        {
+          action: "cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
+          icon: "fas fa-times",
+          callback: () => false,
+        },
+      ],
+    });
+    return Boolean(result);
   }
 
   private async _onDropRqidDocument(event: DragEvent): Promise<boolean> {
