@@ -12,6 +12,10 @@ import {
   type LegacyWeaponSkillRef,
 } from "../../../data-model/item-data/weaponSkillLink.ts";
 
+function isEmptyRecord(value: Record<string, unknown>): boolean {
+  return Object.keys(value).length === 0;
+}
+
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
   itemData: RqgItem,
@@ -32,12 +36,12 @@ export async function migrateWeaponSkillLinks(
         usageType,
         migrationLogger,
       );
-      if (!foundry.utils.isEmpty(usageUpdate)) {
+      if (!isEmptyRecord(usageUpdate)) {
         usageUpdates[usageType] = usageUpdate;
       }
     }
 
-    if (foundry.utils.isEmpty(usageUpdates)) {
+    if (isEmptyRecord(usageUpdates)) {
       return {};
     }
 
