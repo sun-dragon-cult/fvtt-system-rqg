@@ -3,7 +3,9 @@ import {
   type ActorMigration,
   type ActiveEffectMigration,
   applyMigrations,
+  type MigrationChangeRow,
   type ItemMigration,
+  type MigrationLogLevel,
   type MigrationResult,
 } from "./applyMigrations";
 import { systemId } from "../config";
@@ -161,6 +163,7 @@ export async function applyDefaultWorldMigrations(
 async function buildMigrationReportPages(
   migrationResult: MigrationResult,
 ): Promise<MigrationReportPages> {
+  const performedMigrations = selectPerformedMigrationEntries(migrationResult.logEntries);
   const warnings = migrationResult.logEntries.filter((entry) => entry.level === "warn");
   const errors = migrationResult.logEntries.filter((entry) => entry.level === "error");
   const issues = migrationResult.logEntries.filter(
@@ -168,18 +171,40 @@ async function buildMigrationReportPages(
   );
 
   // Stage 1: Group migration entries by source. If this fails, create a minimal fallback grouping.
-  let issueGroups: MigrationIssueGroup[] = [];
+  let performedGroups: MigrationReportGroup[] = [];
+  let issueGroups: MigrationReportGroup[] = [];
   try {
+    performedGroups = await groupMigrationEntriesBySource(performedMigrations);
     issueGroups = await groupMigrationEntriesBySource(issues);
   } catch (err: unknown) {
     const errorMessage = err instanceof Error ? err.message : String(err);
     logger.warn(
-      `Failed to group migration issues (will use minimal fallback grouping): ${errorMessage}`,
+      `Failed to group migration report entries (will use minimal fallback grouping): ${errorMessage}`,
       { notify: false },
     );
     // Create a minimal fallback with ungrouped raw entries so the template still renders content
+    if (performedMigrations.length > 0) {
+      const fallbackEntries: MigrationReportEntry[] = await Promise.all(
+        performedMigrations.map((entry) => parseMigrationEntry(entry)),
+      );
+      performedGroups = [
+        {
+          sourceKind: "world",
+          sourceName: localize("RQG.Migration.reportSourceWorld"),
+          sourceAnchorId: "migration-world",
+          title: localize("RQG.Migration.reportSourceWorld"),
+          actorGroups: [
+            {
+              actorName: localize("RQG.Migration.reportSourceUnknownActor"),
+              entries: fallbackEntries,
+            },
+          ],
+        },
+      ];
+    }
+
     if (issues.length > 0) {
-      const fallbackEntries: MigrationIssueEntry[] = await Promise.all(
+      const fallbackEntries: MigrationReportEntry[] = await Promise.all(
         issues.map((entry) => parseMigrationEntry(entry)),
       );
       issueGroups = [
@@ -214,6 +239,8 @@ async function buildMigrationReportPages(
     hasErrors: errors.length > 0,
     errorSummaryGroups,
     stats: migrationResult.stats,
+    hasPerformedMigrations: performedMigrations.length > 0,
+    performedGroups,
     hasIssues: issues.length > 0,
     affectedSources,
     issueGroups,
@@ -221,11 +248,16 @@ async function buildMigrationReportPages(
 
   // Stage 2: Render templates. If this fails, generate minimal fallback HTML.
   let summaryHtml: string = "";
+  let performedHtml: string = "";
   let issuesHtml: string = "";
   try {
-    [summaryHtml, issuesHtml] = await Promise.all([
+    [summaryHtml, performedHtml, issuesHtml] = await Promise.all([
       foundry.applications.handlebars.renderTemplate(
         templatePaths.migrationReportSummary,
+        reportContext,
+      ),
+      foundry.applications.handlebars.renderTemplate(
+        templatePaths.migrationReportPerformed,
         reportContext,
       ),
       foundry.applications.handlebars.renderTemplate(
@@ -240,10 +272,38 @@ async function buildMigrationReportPages(
     });
     // Generate minimal HTML from raw data as fallback
     summaryHtml = generateMigrationReportFallbackSummary(migrationResult, warnings, errors);
+    performedHtml = generateMigrationReportFallbackPerformed(performedMigrations);
     issuesHtml = generateMigrationReportFallbackIssues(issues);
   }
 
-  return { summaryHtml, issuesHtml };
+  return { summaryHtml, performedHtml, issuesHtml };
+}
+
+function selectPerformedMigrationEntries(
+  entries: MigrationResult["logEntries"],
+): MigrationLogEntry[] {
+  const nonMetaInfoEntries = entries.filter((entry) => {
+    if (entry.level !== "info") {
+      return false;
+    }
+
+    return !isMetaMigrationInfoEntry(stripMigrationPrefix(entry.message));
+  });
+
+  const actionableEntries = nonMetaInfoEntries.filter((entry) => {
+    if ((entry.changes?.length ?? 0) > 0) {
+      return true;
+    }
+
+    if (entry.migrationName) {
+      return true;
+    }
+
+    const normalized = stripMigrationPrefix(entry.message);
+    return normalized.startsWith("Migrating ") || normalized.startsWith("Migrated ");
+  });
+
+  return actionableEntries.length > 0 ? actionableEntries : nonMetaInfoEntries;
 }
 
 async function logMigrationReport(
@@ -320,7 +380,31 @@ function generateMigrationReportFallbackIssues(entries: MigrationLogEntry[]): st
   `;
 }
 
-function buildErrorSummaryGroups(issueGroups: MigrationIssueGroup[]): MigrationErrorSummaryGroup[] {
+function generateMigrationReportFallbackPerformed(entries: MigrationLogEntry[]): string {
+  if (entries.length === 0) {
+    return `<p>${localize("RQG.Migration.reportNoPerformedMigrationsDetected")}</p>`;
+  }
+
+  const entriesHtml = entries
+    .map((entry) => {
+      let html = `<li><strong>${foundry.utils.escapeHTML(localize("RQG.Migration.reportLevelInfo"))}:</strong> ${foundry.utils.escapeHTML(stripMigrationPrefix(entry.message))}`;
+      if (entry.migrationName) {
+        html += ` <em>(${foundry.utils.escapeHTML(entry.migrationName)})</em>`;
+      }
+      html += `</li>`;
+      return html;
+    })
+    .join("\n");
+
+  return `
+    <h2>${foundry.utils.escapeHTML(localize("RQG.Migration.reportPagePerformed"))}</h2>
+    <ul>${entriesHtml}</ul>
+  `;
+}
+
+function buildErrorSummaryGroups(
+  issueGroups: MigrationReportGroup[],
+): MigrationErrorSummaryGroup[] {
   const rows: MigrationErrorSummaryGroup[] = [];
   for (const group of issueGroups) {
     for (const actorGroup of group.actorGroups) {
@@ -529,10 +613,10 @@ async function showMigrationReportSaveFailureDialog(
 
 type MigrationActorGroup = {
   actorName: string;
-  entries: MigrationIssueEntry[];
+  entries: MigrationReportEntry[];
 };
 
-type MigrationIssueGroup = {
+type MigrationReportGroup = {
   sourceKind: MigrationSourceKind;
   sourceName: string;
   sourceAnchorId: string;
@@ -542,13 +626,16 @@ type MigrationIssueGroup = {
 
 type MigrationSourceKind = "world" | "scene" | "compendium";
 
-type MigrationIssueEntry = {
-  level: "warn" | "error";
+type MigrationReportEntry = {
+  level: MigrationLogLevel;
   levelLabel: string;
   iconClass: string;
   text: string;
+  migrationName?: string;
   documents?: MigrationDocumentLink[];
   documentsHtml?: string;
+  changes?: MigrationChangeRow[];
+  hiddenChangeCount?: number;
 };
 
 type MigrationAffectedSourceLink = {
@@ -570,13 +657,14 @@ type MigrationAffectedSources = {
 
 type MigrationReportPages = {
   summaryHtml: string;
+  performedHtml: string;
   issuesHtml: string;
 };
 
 async function groupMigrationEntriesBySource(
   entries: MigrationResult["logEntries"],
-): Promise<MigrationIssueGroup[]> {
-  const sourceGroups = new Map<string, Map<string, MigrationIssueEntry[]>>();
+): Promise<MigrationReportGroup[]> {
+  const sourceGroups = new Map<string, Map<string, MigrationReportEntry[]>>();
   const sourceTitles = new Map<string, string>();
   const sourceNames = new Map<string, string>();
   const sourceKinds = new Map<string, MigrationSourceKind>();
@@ -602,7 +690,7 @@ async function groupMigrationEntriesBySource(
     actorMap.get(actorName)!.push(parsedEntry);
   }
 
-  const result: MigrationIssueGroup[] = [];
+  const result: MigrationReportGroup[] = [];
   for (const [sourceKey, actorMap] of sourceGroups) {
     const actorGroups: MigrationActorGroup[] = [];
     for (const [actorName, entries] of actorMap) {
@@ -621,26 +709,22 @@ async function groupMigrationEntriesBySource(
   return result;
 }
 
-async function parseMigrationEntry(entry: MigrationLogEntry): Promise<MigrationIssueEntry> {
-  if (entry.level !== "warn" && entry.level !== "error") {
-    throw new Error(`Unsupported migration report level: ${entry.level}`);
-  }
-
+async function parseMigrationEntry(entry: MigrationLogEntry): Promise<MigrationReportEntry> {
   const normalized = stripMigrationPrefix(entry.message);
   const documents = entry.documents ?? [];
   const enrichedDocumentsHtml = await buildDocumentLinksHtml(documents);
-  const levelLabel =
-    entry.level === "warn"
-      ? localize("RQG.Migration.reportLevelWarning")
-      : localize("RQG.Migration.reportLevelError");
+  const levelLabel = getMigrationReportLevelLabel(entry.level);
 
   return {
     level: entry.level,
     levelLabel,
-    iconClass: entry.level === "warn" ? "fas fa-triangle-exclamation" : "fas fa-circle-xmark",
+    iconClass: getMigrationReportIconClass(entry.level),
     text: normalized,
+    ...(entry.migrationName ? { migrationName: entry.migrationName } : {}),
     ...(documents.length ? { documents } : {}),
     ...(enrichedDocumentsHtml ? { documentsHtml: enrichedDocumentsHtml } : {}),
+    ...(entry.changes?.length ? { changes: entry.changes } : {}),
+    ...(entry.hiddenChangeCount ? { hiddenChangeCount: entry.hiddenChangeCount } : {}),
   };
 }
 
@@ -720,7 +804,7 @@ function resolveMigrationSource(entry: MigrationLogEntry): {
 }
 
 function buildSourceIssueSummary(
-  issueGroups: MigrationIssueGroup[],
+  issueGroups: MigrationReportGroup[],
   migrationResult: MigrationResult,
 ): {
   worldActorsWithIssuesLabel: string;
@@ -774,10 +858,10 @@ function buildSourceIssueSummary(
   };
 }
 
-function buildAffectedSources(issueGroups: MigrationIssueGroup[]): MigrationAffectedSources {
+function buildAffectedSources(issueGroups: MigrationReportGroup[]): MigrationAffectedSources {
   let world = false;
-  const scenes = new Map<string, MigrationIssueGroup>();
-  const compendiums = new Map<string, MigrationIssueGroup>();
+  const scenes = new Map<string, MigrationReportGroup>();
+  const compendiums = new Map<string, MigrationReportGroup>();
 
   for (const group of issueGroups) {
     if (group.sourceKind === "world") {
@@ -805,6 +889,7 @@ function buildAffectedSources(issueGroups: MigrationIssueGroup[]): MigrationAffe
 function buildMigrationReportFallbackHtml(reportPages: MigrationReportPages): string {
   const sections: Array<[string, string]> = [
     [localize("RQG.Migration.reportPageSummary"), reportPages.summaryHtml],
+    [localize("RQG.Migration.reportPagePerformed"), reportPages.performedHtml],
     [localize("RQG.Migration.reportPageIssues"), reportPages.issuesHtml],
   ];
 
@@ -878,7 +963,42 @@ function getSceneIdFromUuid(uuid: string): string | undefined {
 }
 
 function stripMigrationPrefix(message: string): string {
-  return message.replace(/^RQG \|\s*/, "").trim();
+  return message
+    .replace(/^RQG\s*\|\s*/, "")
+    .replace(/^[^|]+\|\s*/, "")
+    .trim();
+}
+
+function isMetaMigrationInfoEntry(normalizedMessage: string): boolean {
+  return (
+    normalizedMessage.startsWith("Starting world migration") ||
+    normalizedMessage.startsWith("Finished world migration") ||
+    normalizedMessage.startsWith("Running DataModel Repair preflight") ||
+    normalizedMessage.startsWith("Migrated all ") ||
+    /^Step \d+ \/ \d+ - /.test(normalizedMessage)
+  );
+}
+
+function getMigrationReportLevelLabel(level: MigrationLogLevel): string {
+  switch (level) {
+    case "info":
+      return localize("RQG.Migration.reportLevelInfo");
+    case "warn":
+      return localize("RQG.Migration.reportLevelWarning");
+    case "error":
+      return localize("RQG.Migration.reportLevelError");
+  }
+}
+
+function getMigrationReportIconClass(level: MigrationLogLevel): string {
+  switch (level) {
+    case "info":
+      return "fas fa-circle-info";
+    case "warn":
+      return "fas fa-triangle-exclamation";
+    case "error":
+      return "fas fa-circle-xmark";
+  }
 }
 
 function stripExecutableMarkupForSandboxedPreview(html: string): string {
@@ -893,7 +1013,11 @@ async function saveMigrationReportToJournal(
   systemVersion: string,
   reportPages: MigrationReportPages,
 ): Promise<void> {
-  if (!reportPages.summaryHtml.trim() || !reportPages.issuesHtml.trim()) {
+  if (
+    !reportPages.summaryHtml.trim() ||
+    !reportPages.performedHtml.trim() ||
+    !reportPages.issuesHtml.trim()
+  ) {
     throw new Error("Migration report HTML is empty.");
   }
 
@@ -931,10 +1055,24 @@ async function saveMigrationReportToJournal(
     },
   });
 
+  const [createdPerformedPage] = await migrationJournal.createEmbeddedDocuments(
+    "JournalEntryPage",
+    [
+      buildPageData(
+        localize("RQG.Migration.reportPagePerformed"),
+        CONST.SORT_INTEGER_DENSITY * 2,
+        reportPages.performedHtml,
+      ),
+    ],
+  );
+  if (!createdPerformedPage?.uuid) {
+    throw new Error("Failed to create migration report performed page.");
+  }
+
   const [createdIssuesPage] = await migrationJournal.createEmbeddedDocuments("JournalEntryPage", [
     buildPageData(
       localize("RQG.Migration.reportPageIssues"),
-      CONST.SORT_INTEGER_DENSITY * 2,
+      CONST.SORT_INTEGER_DENSITY * 3,
       reportPages.issuesHtml,
     ),
   ]);

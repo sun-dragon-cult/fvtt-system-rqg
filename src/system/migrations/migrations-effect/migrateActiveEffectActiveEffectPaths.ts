@@ -1,7 +1,4 @@
 import type { ActiveEffectMigration } from "../applyMigrations";
-import { RqgLogger } from "../../logging/rqgLogger";
-
-const logger = new RqgLogger("ActiveEffectPaths");
 import { migrateEffectTypesAndPaths } from "../shared-ae-migration-utils";
 
 /**
@@ -15,12 +12,16 @@ import { migrateEffectTypesAndPaths } from "../shared-ae-migration-utils";
  */
 export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async (
   effect: ActiveEffect.Implementation,
+  logger,
 ): Promise<ActiveEffect.UpdateData> => {
   const updateData: ActiveEffect.UpdateData = {};
   const effectAsAny = effect as any;
 
   if (migrateEffectTypesAndPaths(effectAsAny)) {
-    logger.info(`Migrated AE paths on compendium effect "${effect.name}"`, { notify: false });
+    logger?.info(`Migrated AE paths on compendium effect "${effect.name}"`, {
+      notify: false,
+      documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
+    });
     if (Array.isArray(effectAsAny.system?.changes)) {
       updateData.system = {
         changes: effectAsAny.system.changes,

@@ -5,7 +5,6 @@ import { ActorTypeEnum, type CharacterActor } from "../../../data-model/actor-da
 import type { RqgItem } from "@items/rqgItem.ts";
 import { isDocumentSubType } from "../../util.ts";
 import type { RqgActor } from "@actors/rqgActor.ts";
-import { RqgLogger } from "../../logging/rqgLogger.ts";
 import type { MigrationDocumentLink } from "../applyMigrations";
 import type { MigrationLogger } from "../../logging/migrationLogger.ts";
 import {
@@ -13,7 +12,9 @@ import {
   type LegacyWeaponSkillRef,
 } from "../../../data-model/item-data/weaponSkillLink.ts";
 
-const logger = new RqgLogger("WeaponSkillLinks");
+function isEmptyRecord(value: Record<string, unknown>): boolean {
+  return Object.keys(value).length === 0;
+}
 
 // Migrate weapon item usage from skillOrigin & skillId to skillRqidLink
 export async function migrateWeaponSkillLinks(
@@ -21,7 +22,6 @@ export async function migrateWeaponSkillLinks(
   owningActorData?: RqgActor,
   migrationLogger?: MigrationLogger,
 ): Promise<Item.UpdateData> {
-  let updateData: Item.UpdateData = {};
   if (
     isDocumentSubType<WeaponItem>(itemData, ItemTypeEnum.Weapon) &&
     isDocumentSubType<CharacterActor>(owningActorData, ActorTypeEnum.Character)
@@ -36,16 +36,23 @@ export async function migrateWeaponSkillLinks(
         usageType,
         migrationLogger,
       );
-      usageUpdates[usageType] = usageUpdate;
+      if (!isEmptyRecord(usageUpdate)) {
+        usageUpdates[usageType] = usageUpdate;
+      }
     }
 
-    updateData = {
+    if (isEmptyRecord(usageUpdates)) {
+      return {};
+    }
+
+    return {
       system: {
         usage: usageUpdates,
       },
     } as Item.UpdateData;
   }
-  return updateData;
+
+  return {};
 }
 
 async function getUsageMigrationUpdate(
@@ -87,11 +94,7 @@ async function getUsageMigrationUpdate(
       });
     }
 
-    if (migrationLogger) {
-      migrationLogger.warn(msg, { notify: false, documents });
-    } else {
-      logger.warn(msg, { notify: false });
-    }
+    migrationLogger?.warn(msg, { notify: false, documents });
 
     return {
       skillOrigin: _del,

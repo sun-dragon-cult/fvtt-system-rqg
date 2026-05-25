@@ -1,0 +1,94 @@
+<article class="migration-report">
+  {{#if hasPerformedMigrations}}
+    {{#each performedGroups}}
+      <h1 id="{{sourceAnchorId}}">{{title}}</h1>
+      {{#each actorGroups}}
+        <h2>{{actorName}} ({{entries.length}})</h2>
+        <ul class="migration-issue-list">
+          {{#each entries}}
+            <li class="migration-issue-list-item">
+              <p class="migration-issue-line">
+                <i
+                  class="{{iconClass}} migration-issue-icon migration-issue-icon-{{level}}"
+                  aria-label="{{levelLabel}}"
+                ></i>
+                {{text}}
+              </p>
+              {{#if documentsHtml}}
+                <p>{{{documentsHtml}}}</p>
+              {{/if}}
+              {{#if migrationName}}
+                <p>
+                  <strong>{{localize "RQG.Migration.reportEntryMigrationName"}}:</strong>
+                  {{migrationName}}
+                </p>
+              {{/if}}
+              {{#if changes}}
+                <p class="migration-change-legend">
+                  <span class="migration-change-legend-item migration-change-legend-item-added">
+                    {{localize "RQG.Migration.reportChangeLegendAdded"}}
+                  </span>
+                  <span class="migration-change-legend-item migration-change-legend-item-changed">
+                    {{localize "RQG.Migration.reportChangeLegendChanged"}}
+                  </span>
+                  <span class="migration-change-legend-item migration-change-legend-item-removed">
+                    {{localize "RQG.Migration.reportChangeLegendRemoved"}}
+                  </span>
+                </p>
+                <table class="migration-change-table">
+                  <thead>
+                    <tr>
+                      <th>{{localize "RQG.Migration.reportChangeTableKey"}}</th>
+                      <th>{{localize "RQG.Migration.reportChangeTableDiff"}}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each changes}}
+                      <tr>
+                        <td>{{key}}</td>
+                        <td>
+                          <div class="migration-change-diff">
+                            {{#each diffLines}}
+                              <div class="migration-change-diff-line migration-change-diff-line-{{kind}}">
+                                {{value}}
+                              </div>
+                            {{/each}}
+                          </div>
+                          <div class="migration-change-values">
+                            <div class="migration-change-value-block">
+                              <details class="migration-change-value-details">
+                                <summary class="migration-change-value-label">
+                                  {{localize "RQG.Migration.reportChangeTablePrevious"}}
+                                </summary>
+                                <div class="migration-change-value">{{previousValue}}</div>
+                              </details>
+                            </div>
+                            <div class="migration-change-value-block">
+                              <details class="migration-change-value-details">
+                                <summary class="migration-change-value-label">
+                                  {{localize "RQG.Migration.reportChangeTableNew"}}
+                                </summary>
+                                <div class="migration-change-value">{{newValue}}</div>
+                              </details>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+                {{#if hiddenChangeCount}}
+                  <p class="migration-change-more">
+                    {{localize "RQG.Migration.reportChangeTableMore" count=hiddenChangeCount}}
+                  </p>
+                {{/if}}
+              {{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{/each}}
+    {{/each}}
+  {{else}}
+    <p>{{localize "RQG.Migration.reportNoPerformedMigrationsDetected"}}</p>
+  {{/if}}
+</article>

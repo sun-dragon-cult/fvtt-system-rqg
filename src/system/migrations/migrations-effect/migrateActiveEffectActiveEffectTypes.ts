@@ -1,7 +1,4 @@
 import type { ActiveEffectMigration } from "../applyMigrations";
-import { RqgLogger } from "../../logging/rqgLogger";
-
-const logger = new RqgLogger("ActiveEffectTypes");
 import { migrateEffectChangeTypes } from "../shared-ae-migration-utils";
 
 /**
@@ -9,6 +6,7 @@ import { migrateEffectChangeTypes } from "../shared-ae-migration-utils";
  */
 export const migrateActiveEffectActiveEffectTypes: ActiveEffectMigration = async (
   effect: ActiveEffect.Implementation,
+  logger,
 ): Promise<ActiveEffect.UpdateData> => {
   const updateData: ActiveEffect.UpdateData = {};
   const effectAsAny = effect as any;
@@ -17,8 +15,9 @@ export const migrateActiveEffectActiveEffectTypes: ActiveEffectMigration = async
     updateData.system = {
       changes: effectAsAny.system.changes,
     } as any;
-    logger.info(`Repaired AE change.type values on compendium effect "${effect.name}"`, {
+    logger?.info(`Repaired AE change.type values on compendium effect "${effect.name}"`, {
       notify: false,
+      documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
     });
   }
 

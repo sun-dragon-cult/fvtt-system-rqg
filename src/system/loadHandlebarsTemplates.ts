@@ -98,6 +98,7 @@ export const templatePaths = {
   dialogRuneMagicCult: "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
   dialogImproveAbility: "systems/rqg/applications/improveAbilityDialog.hbs",
   dialogMigrateWorld: "systems/rqg/applications/migrateWorldDialog.hbs",
+  migrationReportPerformed: "systems/rqg/applications/migrationReportPerformed.hbs",
   migrationReportIssues: "systems/rqg/applications/migrationReportIssues.hbs",
   migrationReportSummary: "systems/rqg/applications/migrationReportSummary.hbs",
   dialogRqidEditor: "systems/rqg/applications/rqidEditor/rqidEditor.hbs",

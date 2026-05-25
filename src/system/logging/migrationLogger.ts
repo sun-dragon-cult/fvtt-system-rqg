@@ -7,6 +7,7 @@
 
 import { RqgLogger, type LogOptions } from "./rqgLogger";
 import type {
+  MigrationChangeRow,
   MigrationDocumentLink,
   MigrationLogEntry,
   MigrationResult,
@@ -15,6 +16,12 @@ import type {
 export interface MigrationLogOptions extends LogOptions {
   /** Links to affected documents shown in the migration report */
   documents?: MigrationDocumentLink[];
+  /** Structured field changes shown on the performed migrations page */
+  changes?: MigrationChangeRow[];
+  /** Count of additional field changes omitted from the rendered table */
+  hiddenChangeCount?: number;
+  /** Name of the migration function producing this entry */
+  migrationName?: string;
 }
 
 /**
@@ -32,23 +39,51 @@ export interface MigrationLogOptions extends LogOptions {
  * ```
  */
 export class MigrationLogger extends RqgLogger {
-  constructor(private migrationResult: MigrationResult) {
+  constructor(
+    private migrationResult: MigrationResult,
+    private readonly defaultMigrationName?: string,
+  ) {
     super("Migration");
+  }
+
+  withMigration(migrationName: string): MigrationLogger {
+    return new MigrationLogger(this.migrationResult, migrationName);
   }
 
   override info(message: string, options?: MigrationLogOptions): void {
     super.info(message, { notify: false, ...options });
-    this.captureToResult("info", message, options?.documents);
+    this.captureToResult(
+      "info",
+      message,
+      options?.documents,
+      options?.changes,
+      options?.hiddenChangeCount,
+      options?.migrationName ?? this.defaultMigrationName,
+    );
   }
 
   override warn(message: string, options?: MigrationLogOptions): void {
     super.warn(message, { notify: false, ...options });
-    this.captureToResult("warn", message, options?.documents);
+    this.captureToResult(
+      "warn",
+      message,
+      options?.documents,
+      options?.changes,
+      options?.hiddenChangeCount,
+      options?.migrationName ?? this.defaultMigrationName,
+    );
   }
 
   override error(message: string, options?: MigrationLogOptions): void {
     super.error(message, { notify: false, ...options });
-    this.captureToResult("error", message, options?.documents);
+    this.captureToResult(
+      "error",
+      message,
+      options?.documents,
+      options?.changes,
+      options?.hiddenChangeCount,
+      options?.migrationName ?? this.defaultMigrationName,
+    );
   }
 
   /**
@@ -58,11 +93,24 @@ export class MigrationLogger extends RqgLogger {
     level: "info" | "warn" | "error",
     message: string,
     documents?: MigrationDocumentLink[],
+    changes?: MigrationChangeRow[],
+    hiddenChangeCount?: number,
+    migrationName?: string,
   ): void {
+    // Keep report logs focused on actionable migration events.
+    // Plain progress/state info messages should stay in console but not in report entries.
+    // Preserve entries that have either structured changes, a migration function name, or document links.
+    if (level === "info" && !(changes?.length || migrationName || documents?.length)) {
+      return;
+    }
+
     const entry: MigrationLogEntry = {
       level,
       message,
       documents,
+      ...(changes?.length ? { changes } : {}),
+      ...(hiddenChangeCount ? { hiddenChangeCount } : {}),
+      ...(migrationName ? { migrationName } : {}),
     };
     this.migrationResult.logEntries.push(entry);
   }

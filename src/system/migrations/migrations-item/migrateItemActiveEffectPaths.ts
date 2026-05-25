@@ -1,7 +1,4 @@
 import type { ItemMigration } from "../applyMigrations";
-import { RqgLogger } from "../../logging/rqgLogger";
-
-const logger = new RqgLogger("ItemActiveEffectPaths");
 import type { RqgItem } from "@items/rqgItem.ts";
 import {
   migrateEffectArray,
@@ -19,6 +16,7 @@ import {
 export const migrateItemActiveEffectPaths: ItemMigration = async (
   item: RqgItem,
   owningActor,
+  logger,
 ): Promise<Item.UpdateData> => {
   const updateData: Item.UpdateData = {};
   const rawEffects = (item as any).effects;
@@ -60,8 +58,9 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
 
       originalEffects.forEach((effect, index) => {
         if (migratedEffects[index] !== effect) {
-          logger.info(`Migrated AE paths on effect "${effect.name}" in item ${item.name}`, {
+          logger?.info(`Migrated AE paths on effect "${effect.name}" in item ${item.name}`, {
             notify: false,
+            documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
           });
         }
       });
