@@ -21,6 +21,18 @@ export type ActiveEffectMigration = (
 interface ActorMigrationResult {
   actorUpdateData: Actor.UpdateData;
   itemUpdateData: Item.UpdateData[];
+  actorMigrationNames: string[];
+  itemMigrationNames: string[];
+}
+
+interface ItemMigrationResult {
+  updateData: Item.UpdateData;
+  migrationNames: string[];
+}
+
+interface ActiveEffectMigrationResult {
+  updateData: ActiveEffect.UpdateData;
+  migrationNames: string[];
 }
 
 export type MigrationLogLevel = "info" | "warn" | "error";
@@ -38,10 +50,25 @@ export interface MigrationDocumentLink {
   label: string;
 }
 
+export interface MigrationChangeRow {
+  key: string;
+  previousValue: string;
+  newValue: string;
+  diffLines: MigrationDiffLine[];
+}
+
+export interface MigrationDiffLine {
+  kind: "added" | "removed" | "changed";
+  value: string;
+}
+
 export interface MigrationLogEntry {
   level: MigrationLogLevel;
   message: string;
+  migrationName?: string;
   documents?: MigrationDocumentLink[];
+  changes?: MigrationChangeRow[];
+  hiddenChangeCount?: number;
 }
 
 export interface MigrationStats {
@@ -136,20 +163,40 @@ async function migrateWorldActors(
   logger.info(migrationMsg);
   for (const actor of actorArray) {
     try {
-      const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
-        actor as unknown as RqgActor,
-        itemMigrations,
-        actorMigrations,
-        logger,
-      );
+      const actorSource = getDocumentSourceObject(actor);
+      const { actorUpdateData, itemUpdateData, actorMigrationNames, itemMigrationNames } =
+        await getActorMigrationUpdates(
+          actor as unknown as RqgActor,
+          itemMigrations,
+          actorMigrations,
+          logger,
+        );
       if (!foundry.utils.isEmpty(actorUpdateData)) {
-        logger.info(`Migrating Actor document ${actor.name}`);
+        const actorChangeSummary = describeDocumentChanges(actorSource, actorUpdateData);
+        const actorMigrationName = summarizeMigrationNames(actorMigrationNames);
+        logger.info(`Migrating Actor document ${actor.name}`, {
+          documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
+          ...(actorMigrationName ? { migrationName: actorMigrationName } : {}),
+          changes: actorChangeSummary.changeRows,
+          hiddenChangeCount: actorChangeSummary.hiddenChangeCount,
+        });
         // @ts-expect-error enforceTypes TODO it does exists
         await actor.update(actorUpdateData, { enforceTypes: false });
       }
 
       if (itemUpdateData.length > 0) {
-        logger.info(`Migrating embedded Items for Actor document ${actor.name}`);
+        const actorEmbeddedItemsSource = getEmbeddedItemsSource(actorSource, actor.items.contents);
+        const itemChangeSummary = describeEmbeddedDocumentChanges(
+          actorEmbeddedItemsSource,
+          itemUpdateData,
+        );
+        const itemMigrationName = summarizeMigrationNames(itemMigrationNames);
+        logger.info(`Migrating embedded Items for Actor document ${actor.name}`, {
+          documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
+          ...(itemMigrationName ? { migrationName: itemMigrationName } : {}),
+          changes: itemChangeSummary.changeRows,
+          hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
+        });
         await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
     } catch (err: any) {
@@ -184,14 +231,22 @@ async function migrateWorldItems(
   logger.info(migrationMsg);
   for (const item of itemArray) {
     try {
-      const updateData = await getItemMigrationUpdates(
+      const itemSource = getDocumentSourceObject(item);
+      const { updateData, migrationNames } = await getItemMigrationUpdates(
         item as unknown as RqgItem,
         itemMigrations,
         undefined,
         logger,
       );
       if (!foundry.utils.isEmpty(updateData)) {
-        logger.info(`Migrating Item document ${item.name}`);
+        const itemChangeSummary = describeDocumentChanges(itemSource, updateData);
+        const migrationName = summarizeMigrationNames(migrationNames);
+        logger.info(`Migrating Item document ${item.name}`, {
+          documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
+          ...(migrationName ? { migrationName } : {}),
+          changes: itemChangeSummary.changeRows,
+          hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
+        });
         // @ts-expect-error enforceTypes TODO it does exists
         await item.update(updateData, { enforceTypes: false });
       }
@@ -339,24 +394,49 @@ async function migrateCompendium(
   // Iterate over compendium entries - applying fine-tuned migration functions
   for (const doc of documents) {
     let updateData = {};
+    let migrationNames: string[] = [];
     try {
+      const docSource = getDocumentSourceObject(doc);
       switch (documentType) {
         case "Actor": {
-          const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
-            doc as RqgActor,
-            itemMigrations,
-            actorMigrations,
-            logger,
-          );
+          const { actorUpdateData, itemUpdateData, actorMigrationNames, itemMigrationNames } =
+            await getActorMigrationUpdates(
+              doc as RqgActor,
+              itemMigrations,
+              actorMigrations,
+              logger,
+            );
 
           if (!foundry.utils.isEmpty(actorUpdateData)) {
-            logger.info(`Migrating Actor document ${doc.name} in Compendium ${pack.collection}`);
+            const actorChangeSummary = describeDocumentChanges(docSource, actorUpdateData);
+            const actorMigrationName = summarizeMigrationNames(actorMigrationNames);
+            logger.info(`Migrating Actor document ${doc.name} in Compendium ${pack.collection}`, {
+              documents: [{ kind: "Actor", uuid: doc.uuid, label: doc.name }],
+              ...(actorMigrationName ? { migrationName: actorMigrationName } : {}),
+              changes: actorChangeSummary.changeRows,
+              hiddenChangeCount: actorChangeSummary.hiddenChangeCount,
+            });
             await (doc as any).update(actorUpdateData as any);
           }
 
           if (itemUpdateData.length > 0) {
+            const actorEmbeddedItemsSource = getEmbeddedItemsSource(
+              docSource,
+              (doc as RqgActor).items.contents,
+            );
+            const itemChangeSummary = describeEmbeddedDocumentChanges(
+              actorEmbeddedItemsSource,
+              itemUpdateData,
+            );
+            const itemMigrationName = summarizeMigrationNames(itemMigrationNames);
             logger.info(
               `Migrating embedded Items for Actor document ${doc.name} in Compendium ${pack.collection}`,
+              {
+                documents: [{ kind: "Actor", uuid: doc.uuid, label: doc.name }],
+                ...(itemMigrationName ? { migrationName: itemMigrationName } : {}),
+                changes: itemChangeSummary.changeRows,
+                hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
+              },
             );
             await (doc as RqgActor).updateEmbeddedDocuments("Item", itemUpdateData);
           }
@@ -365,19 +445,27 @@ async function migrateCompendium(
           break;
         }
         case "Item":
-          updateData = await getItemMigrationUpdates(
-            doc as RqgItem,
-            itemMigrations,
-            undefined,
-            logger,
-          );
+          {
+            const itemMigrationResult = await getItemMigrationUpdates(
+              doc as RqgItem,
+              itemMigrations,
+              undefined,
+              logger,
+            );
+            updateData = itemMigrationResult.updateData;
+            migrationNames = itemMigrationResult.migrationNames;
+          }
           break;
         case "ActiveEffect":
-          updateData = await getActiveEffectMigrationUpdates(
-            doc as unknown as ActiveEffect.Implementation,
-            activeEffectMigrations,
-            logger,
-          );
+          {
+            const activeEffectMigrationResult = await getActiveEffectMigrationUpdates(
+              doc as unknown as ActiveEffect.Implementation,
+              activeEffectMigrations,
+              logger,
+            );
+            updateData = activeEffectMigrationResult.updateData;
+            migrationNames = activeEffectMigrationResult.migrationNames;
+          }
           break;
         case "Scene":
           await migrateSceneTokenActors(
@@ -394,8 +482,17 @@ async function migrateCompendium(
       if (foundry.utils.isEmpty(updateData)) {
         continue;
       }
+      const documentKind = getMigrationDocumentKind(documentType);
+      const documentChangeSummary = describeDocumentChanges(docSource, updateData);
+      const migrationName = summarizeMigrationNames(migrationNames);
       logger.info(
         `Migrating ${documentType} document ${doc.name} in Compendium ${pack.collection}`,
+        {
+          documents: documentKind ? [{ kind: documentKind, uuid: doc.uuid, label: doc.name }] : [],
+          ...(migrationName ? { migrationName } : {}),
+          changes: documentChangeSummary.changeRows,
+          hiddenChangeCount: documentChangeSummary.hiddenChangeCount,
+        },
       );
       await doc.update(updateData);
     } catch (err: any) {
@@ -416,7 +513,29 @@ async function migrateCompendium(
   }
   // Apply the original locked status for the pack
   await pack.configure({ locked: wasLocked });
-  logger.info(`Migrated all ${documentType} documents from Compendium ${pack.collection}`);
+  logger.info(`Migrated all ${documentType} documents from Compendium ${pack.collection}`, {
+    documents: [
+      {
+        kind: "Compendium",
+        uuid: `Compendium.${pack.collection}`,
+        label: pack.metadata.label ?? pack.collection,
+      },
+    ],
+  });
+}
+
+function getMigrationDocumentKind(
+  documentType: string,
+): Extract<MigrationDocumentLink["kind"], "Actor" | "Item" | "Scene" | "ActiveEffect"> | undefined {
+  switch (documentType) {
+    case "Actor":
+    case "Item":
+    case "Scene":
+    case "ActiveEffect":
+      return documentType;
+    default:
+      return undefined;
+  }
 }
 
 /* -------------------------------------------- */
@@ -428,11 +547,20 @@ async function getActorMigrationUpdates(
   actorMigrations: ActorMigration[],
   logger?: MigrationLogger,
 ): Promise<ActorMigrationResult> {
+  const actorSourceData = getDocumentSourceObject(actorData);
   let actorUpdateData: Actor.UpdateData = {};
   const itemUpdateData: Item.UpdateData[] = [];
+  const actorMigrationNames = new Set<string>();
+  const itemMigrationNames = new Set<string>();
 
   actorMigrations.forEach((fn: ActorMigration) => {
-    actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fn(actorData as any, logger), {
+    const migrationName = getMigrationFunctionName(fn);
+    const scopedLogger = logger?.withMigration(migrationName);
+    const fnUpdate = fn(actorData as any, scopedLogger);
+    if (!foundry.utils.isEmpty(pruneNoopUpdateData(fnUpdate, actorSourceData))) {
+      actorMigrationNames.add(migrationName);
+    }
+    actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fnUpdate, {
       performDeletions: false,
     }) as Actor.UpdateData;
   });
@@ -445,6 +573,8 @@ async function getActorMigrationUpdates(
     delete (actorUpdateData as Record<string, unknown>)["items"];
   }
 
+  actorUpdateData = pruneNoopUpdateData(actorUpdateData, actorSourceData);
+
   // Migrate Owned Items
   if (actorData.items) {
     const rawActorItems = (actorData as any).items;
@@ -453,9 +583,18 @@ async function getActorMigrationUpdates(
       : Array.from(rawActorItems?.values?.() ?? []);
 
     for (const item of actorItems) {
-      const itemUpdate = await getItemMigrationUpdates(item, itemMigrations, actorData, logger);
-      if (foundry.utils.isEmpty(itemUpdate)) {
+      const { updateData: itemUpdate, migrationNames } = await getItemMigrationUpdates(
+        item,
+        itemMigrations,
+        actorData,
+        logger,
+      );
+      if (foundry.utils.isEmpty(itemUpdate) || isNoopEmbeddedDocumentUpdate(itemUpdate)) {
         continue;
+      }
+
+      for (const migrationName of migrationNames) {
+        itemMigrationNames.add(migrationName);
       }
 
       const itemId = item._id ?? item.id;
@@ -473,6 +612,8 @@ async function getActorMigrationUpdates(
   return {
     actorUpdateData,
     itemUpdateData,
+    actorMigrationNames: Array.from(actorMigrationNames),
+    itemMigrationNames: Array.from(itemMigrationNames),
   };
 }
 
@@ -483,15 +624,27 @@ async function getItemMigrationUpdates(
   itemMigrations: ItemMigration[],
   owningActor?: RqgActor,
   logger?: MigrationLogger,
-): Promise<Item.UpdateData> {
+): Promise<ItemMigrationResult> {
+  const itemSourceData = getDocumentSourceObject(item);
   let updateData: Item.UpdateData = {};
+  const migrationNames = new Set<string>();
   for (const fn of itemMigrations) {
-    updateData = foundry.utils.mergeObject(updateData, await fn(item, owningActor, logger), {
+    const migrationName = getMigrationFunctionName(fn);
+    const scopedLogger = logger?.withMigration(migrationName);
+    const fnUpdate = await fn(item, owningActor, scopedLogger);
+    if (!foundry.utils.isEmpty(pruneNoopUpdateData(fnUpdate, itemSourceData))) {
+      migrationNames.add(migrationName);
+    }
+
+    updateData = foundry.utils.mergeObject(updateData, fnUpdate, {
       performDeletions: false,
     }) as Item.UpdateData; // TODO can mergeObject be made to return the correct type?
   }
 
-  return updateData;
+  return {
+    updateData: pruneNoopUpdateData(updateData, itemSourceData),
+    migrationNames: Array.from(migrationNames),
+  };
 }
 
 /* -------------------------------------------- */
@@ -500,14 +653,31 @@ async function getActiveEffectMigrationUpdates(
   effect: ActiveEffect.Implementation,
   activeEffectMigrations: ActiveEffectMigration[],
   logger?: MigrationLogger,
-): Promise<ActiveEffect.UpdateData> {
+): Promise<ActiveEffectMigrationResult> {
+  const effectSourceData = getDocumentSourceObject(effect);
   let updateData: ActiveEffect.UpdateData = {};
+  const migrationNames = new Set<string>();
   for (const fn of activeEffectMigrations) {
-    updateData = foundry.utils.mergeObject(updateData, await fn(effect, logger), {
+    const migrationName = getMigrationFunctionName(fn);
+    const scopedLogger = logger?.withMigration(migrationName);
+    const fnUpdate = await fn(effect, scopedLogger);
+    if (!foundry.utils.isEmpty(pruneNoopUpdateData(fnUpdate, effectSourceData))) {
+      migrationNames.add(migrationName);
+    }
+
+    updateData = foundry.utils.mergeObject(updateData, fnUpdate, {
       performDeletions: false,
     }) as ActiveEffect.UpdateData;
   }
-  return updateData;
+
+  return {
+    updateData: pruneNoopUpdateData(updateData, effectSourceData),
+    migrationNames: Array.from(migrationNames),
+  };
+}
+
+function isNoopEmbeddedDocumentUpdate(updateData: Item.UpdateData): boolean {
+  return Object.keys(updateData as Record<string, unknown>).every((key) => key === "_id");
 }
 
 /* -------------------------------------------- */
@@ -536,22 +706,49 @@ async function migrateSceneTokenActors(
     migrationResult.stats.unlinkedTokenActorsInspected += 1;
 
     try {
-      const { actorUpdateData, itemUpdateData } = await getActorMigrationUpdates(
-        actor as unknown as RqgActor,
-        itemMigrations,
-        actorMigrations,
-        logger,
-      );
+      const actorSource = getDocumentSourceObject(actor);
+      const { actorUpdateData, itemUpdateData, actorMigrationNames, itemMigrationNames } =
+        await getActorMigrationUpdates(
+          actor as unknown as RqgActor,
+          itemMigrations,
+          actorMigrations,
+          logger,
+        );
 
       if (!foundry.utils.isEmpty(actorUpdateData)) {
-        logger.info(`Migrating unlinked Token actor ${actor.name} in Scene ${scene.name}`);
+        const actorChangeSummary = describeDocumentChanges(actorSource, actorUpdateData);
+        const actorMigrationName = summarizeMigrationNames(actorMigrationNames);
+        logger.info(`Migrating unlinked Token actor ${actor.name} in Scene ${scene.name}`, {
+          documents: [
+            { kind: "Actor", uuid: actor.uuid, label: actor.name },
+            { kind: "Scene", uuid: scene.uuid, label: scene.name },
+          ],
+          ...(actorMigrationName ? { migrationName: actorMigrationName } : {}),
+          changes: actorChangeSummary.changeRows,
+          hiddenChangeCount: actorChangeSummary.hiddenChangeCount,
+        });
         // @ts-expect-error enforceTypes TODO it does exist
         await actor.update(actorUpdateData, { enforceTypes: false });
       }
 
       if (itemUpdateData.length > 0) {
+        const actorEmbeddedItemsSource = getEmbeddedItemsSource(actorSource, actor.items.contents);
+        const itemChangeSummary = describeEmbeddedDocumentChanges(
+          actorEmbeddedItemsSource,
+          itemUpdateData,
+        );
+        const itemMigrationName = summarizeMigrationNames(itemMigrationNames);
         logger.info(
           `Migrating embedded Items for unlinked Token actor ${actor.name} in Scene ${scene.name}`,
+          {
+            documents: [
+              { kind: "Actor", uuid: actor.uuid, label: actor.name },
+              { kind: "Scene", uuid: scene.uuid, label: scene.name },
+            ],
+            ...(itemMigrationName ? { migrationName: itemMigrationName } : {}),
+            changes: itemChangeSummary.changeRows,
+            hiddenChangeCount: itemChangeSummary.hiddenChangeCount,
+          },
         );
         await actor.updateEmbeddedDocuments("Item", itemUpdateData);
       }
@@ -568,6 +765,507 @@ async function migrateSceneTokenActors(
       );
     }
   }
+}
+
+type MigrationChangeSummary = {
+  changeRows: MigrationChangeRow[];
+  hiddenChangeCount: number;
+};
+
+const MAX_LOGGED_CHANGE_ROWS = 200;
+const MAX_DIFF_LINES_PER_ROW = 400;
+
+function getDocumentSourceObject(documentData: unknown): object {
+  if (!documentData || typeof documentData !== "object") {
+    return {};
+  }
+
+  const maybeToObject = documentData as { toObject?: (...args: unknown[]) => unknown };
+  if (typeof maybeToObject.toObject === "function") {
+    try {
+      const source = maybeToObject.toObject();
+      if (source && typeof source === "object") {
+        return source as object;
+      }
+    } catch {
+      // Fall through to best-effort fallback below.
+    }
+  }
+
+  return documentData as object;
+}
+
+function getEmbeddedItemsSource(
+  actorSourceData: object,
+  fallbackItems: Array<{ id?: string | null; _id?: string | null; name?: string | null }>,
+): Array<{ id?: string | null; _id?: string | null; name?: string | null }> {
+  const sourceItems = foundry.utils.getProperty(actorSourceData, "items");
+  return Array.isArray(sourceItems) ? sourceItems : fallbackItems;
+}
+
+function describeDocumentChanges(documentData: object, updateData: object): MigrationChangeSummary {
+  try {
+    return limitMigrationChangeRows(buildMigrationChangeRows(documentData, updateData));
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    applyMigrationsLogger.warn(
+      `Failed to build document migration change summary (fallback to empty): ${errorMessage}`,
+      { notify: false },
+    );
+    return { changeRows: [], hiddenChangeCount: 0 };
+  }
+}
+
+function describeEmbeddedDocumentChanges(
+  documents: Array<{ id?: string | null; _id?: string | null; name?: string | null }>,
+  updateDataList: object[],
+): MigrationChangeSummary {
+  try {
+    const documentsById = new Map(
+      documents.map((document) => [document.id ?? document._id ?? "", document]),
+    );
+    const changeRows = updateDataList.flatMap((updateData) => {
+      const updateRecord = updateData as Record<string, unknown>;
+      const documentId = String(updateRecord["_id"] ?? "");
+      const sourceDocument = documentsById.get(documentId);
+      const labelPrefix = sourceDocument?.name ? `${sourceDocument.name} :: ` : "";
+      return buildMigrationChangeRows(sourceDocument ?? {}, updateData, labelPrefix);
+    });
+
+    return limitMigrationChangeRows(changeRows);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    applyMigrationsLogger.warn(
+      `Failed to build embedded document migration change summary (fallback to empty): ${errorMessage}`,
+      { notify: false },
+    );
+    return { changeRows: [], hiddenChangeCount: 0 };
+  }
+}
+
+function buildMigrationChangeRows(
+  documentData: object,
+  updateData: object,
+  labelPrefix = "",
+): MigrationChangeRow[] {
+  const flattened = foundry.utils.flattenObject(updateData) as Record<string, unknown>;
+
+  return Object.entries(flattened)
+    .filter(([path]) => path !== "_id")
+    .flatMap(([path, newValue]) => {
+      const previousValue = getPreviousValueForPath(documentData, path);
+      if (isIdentifiedUpdateArray(newValue)) {
+        return buildMigrationChangeRowsForIdentifiedArray(
+          path,
+          previousValue,
+          newValue,
+          labelPrefix,
+        );
+      }
+
+      const displayValues = buildMigrationChangeDisplayValues(previousValue, newValue);
+      return [
+        {
+          key: `${labelPrefix}${normalizeUpdatePath(path)}`,
+          previousValue: displayValues.previousValue,
+          newValue: displayValues.newValue,
+          diffLines: buildFoundryUpdateDiffLines(path, previousValue, newValue),
+        },
+      ];
+    })
+    .filter((row) => row.key.length > 0 && row.previousValue !== row.newValue)
+    .sort((left, right) => left.key.localeCompare(right.key));
+}
+
+function buildMigrationChangeRowsForIdentifiedArray(
+  path: string,
+  previousValue: unknown,
+  newValue: unknown[],
+  labelPrefix: string,
+): MigrationChangeRow[] {
+  const basePath = normalizeUpdatePath(path);
+  const previousArray = asDocumentArray(previousValue);
+  const previousById = new Map(
+    previousArray
+      .map((entry) => {
+        if (!isPlainObject(entry)) {
+          return ["", undefined] as const;
+        }
+
+        const entryRecord = entry as Record<string, unknown>;
+        const entryId = String(entryRecord["_id"] ?? entryRecord["id"] ?? "");
+        return [entryId, entry] as const;
+      })
+      .filter(([entryId]) => entryId.length > 0),
+  );
+
+  return newValue.flatMap((entry) => {
+    if (!isPlainObject(entry)) {
+      return [];
+    }
+
+    const entryRecord = entry as Record<string, unknown>;
+    const entryId = String(entryRecord["_id"] ?? entryRecord["id"] ?? "");
+    const previousEntry = entryId ? (previousById.get(entryId) ?? {}) : {};
+
+    return buildMigrationChangeRows(
+      previousEntry as object,
+      entryRecord,
+      `${labelPrefix}${basePath}[] :: `,
+    );
+  });
+}
+
+function asDocumentArray(value: unknown): unknown[] {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
+  if (!value || typeof value !== "object") {
+    return [];
+  }
+
+  const valuesFunction = (value as { values?: () => Iterable<unknown> }).values;
+  if (typeof valuesFunction === "function") {
+    return Array.from(valuesFunction.call(value));
+  }
+
+  return [];
+}
+
+function getPreviousValueForPath(documentData: object, path: string): unknown {
+  const directValue = foundry.utils.getProperty(documentData, path);
+  if (directValue !== undefined) {
+    return directValue;
+  }
+
+  // ActiveEffect source data may expose fields either at top level or under
+  // system (e.g., changes <-> system.changes). Try both shapes when direct
+  // lookup fails so report diffs keep previous values.
+  if (isActiveEffectLikeData(documentData)) {
+    if (path.startsWith("system.")) {
+      const aliasPath = path.slice("system.".length);
+      const aliasValue = foundry.utils.getProperty(documentData, aliasPath);
+      if (aliasValue !== undefined) {
+        return aliasValue;
+      }
+    } else {
+      const aliasPath = `system.${path}`;
+      const aliasValue = foundry.utils.getProperty(documentData, aliasPath);
+      if (aliasValue !== undefined) {
+        return aliasValue;
+      }
+    }
+  }
+
+  return undefined;
+}
+
+function isActiveEffectLikeData(documentData: object): boolean {
+  const hasTopLevelChanges = Array.isArray(
+    foundry.utils.getProperty(documentData, "changes") as unknown,
+  );
+  const hasSystemChanges = Array.isArray(
+    foundry.utils.getProperty(documentData, "system.changes") as unknown,
+  );
+
+  return hasTopLevelChanges || hasSystemChanges;
+}
+
+function isIdentifiedUpdateArray(value: unknown): value is unknown[] {
+  if (!Array.isArray(value) || value.length === 0) {
+    return false;
+  }
+
+  return value.every((entry) => {
+    if (!isPlainObject(entry)) {
+      return false;
+    }
+
+    const entryRecord = entry as Record<string, unknown>;
+    return entryRecord["_id"] !== undefined || entryRecord["id"] !== undefined;
+  });
+}
+
+function buildMigrationChangeDisplayValues(
+  previousValue: unknown,
+  newValue: unknown,
+): Pick<MigrationChangeRow, "previousValue" | "newValue"> {
+  return {
+    previousValue: formatMigrationChangeValue(previousValue),
+    newValue: formatMigrationChangeValue(newValue),
+  };
+}
+
+function buildFoundryUpdateDiffLines(
+  path: string,
+  previousValue: unknown,
+  newValue: unknown,
+): MigrationDiffLine[] {
+  const leafOperations = buildFoundryLeafOperationLines(path, previousValue, newValue);
+  if (leafOperations.length > 0) {
+    return leafOperations;
+  }
+
+  if (newValue === _del) {
+    return [
+      {
+        kind: "removed",
+        value: `- ${toFoundryDeleteOperationPath(path)}: null`,
+      },
+    ];
+  }
+
+  const operationPrefix = previousValue === undefined ? "+" : "~";
+  const operationKind: MigrationDiffLine["kind"] =
+    previousValue === undefined ? "added" : "changed";
+  return [
+    {
+      kind: operationKind,
+      value: `${operationPrefix} ${path}: ${formatMigrationChangeValue(newValue)}`,
+    },
+  ];
+}
+
+function buildFoundryLeafOperationLines(
+  basePath: string,
+  previousValue: unknown,
+  newValue: unknown,
+): MigrationDiffLine[] {
+  if (!isPlainObject(newValue) && !Array.isArray(newValue)) {
+    return [];
+  }
+
+  const flattenedNewValue = foundry.utils.flattenObject(newValue as object) as Record<
+    string,
+    unknown
+  >;
+  const rawOperationLines: MigrationDiffLine[] = [];
+
+  for (const [relativePath, nextValue] of Object.entries(flattenedNewValue).sort(([a], [b]) =>
+    a.localeCompare(b),
+  )) {
+    const operationPath = relativePath ? `${basePath}.${relativePath}` : basePath;
+    const previousLeafValue = relativePath
+      ? foundry.utils.getProperty(previousValue as object, relativePath)
+      : previousValue;
+    const operationLine = buildFoundryOperationLine(operationPath, previousLeafValue, nextValue);
+    if (operationLine) {
+      rawOperationLines.push(operationLine);
+    }
+  }
+
+  if (rawOperationLines.length <= MAX_DIFF_LINES_PER_ROW) {
+    return rawOperationLines;
+  }
+
+  return [
+    ...rawOperationLines.slice(0, MAX_DIFF_LINES_PER_ROW),
+    {
+      kind: "changed",
+      value: `~ [capped at ${MAX_DIFF_LINES_PER_ROW} lines] +${rawOperationLines.length - MAX_DIFF_LINES_PER_ROW} operations omitted`,
+    },
+  ];
+}
+
+function buildFoundryOperationLine(
+  operationPath: string,
+  previousValue: unknown,
+  newValue: unknown,
+): MigrationDiffLine | undefined {
+  if (newValue === _del) {
+    if (previousValue === undefined) {
+      return undefined;
+    }
+
+    return {
+      kind: "removed",
+      value: `- ${toFoundryDeleteOperationPath(operationPath)}: null`,
+    };
+  }
+
+  if (areEquivalentUpdateValues(previousValue, newValue)) {
+    return undefined;
+  }
+
+  const operationPrefix = previousValue === undefined ? "+" : "~";
+  const operationKind: MigrationDiffLine["kind"] =
+    previousValue === undefined ? "added" : "changed";
+
+  return {
+    kind: operationKind,
+    value: `${operationPrefix} ${normalizeUpdatePath(operationPath)}: ${formatMigrationChangeValue(newValue)}`,
+  };
+}
+
+function toFoundryDeleteOperationPath(path: string): string {
+  const lastDot = path.lastIndexOf(".");
+  if (lastDot < 0) {
+    return `-=${path}`;
+  }
+
+  const parentPath = path.slice(0, lastDot);
+  const leafKey = path.slice(lastDot + 1);
+  return `${parentPath}.-=${leafKey}`;
+}
+
+function limitMigrationChangeRows(changeRows: MigrationChangeRow[]): MigrationChangeSummary {
+  return {
+    changeRows: changeRows.slice(0, MAX_LOGGED_CHANGE_ROWS),
+    hiddenChangeCount: Math.max(0, changeRows.length - MAX_LOGGED_CHANGE_ROWS),
+  };
+}
+
+function normalizeUpdatePath(path: string): string {
+  return path
+    .replace(/\._id$/g, "")
+    .replace(/^_id$/g, "")
+    .replace(/\.\d+(?=\.|$)/g, "[]")
+    .replace(/\[\](?=\[\])/g, "")
+    .replace(/\.+/g, ".")
+    .replace(/\.$/, "");
+}
+
+function formatMigrationChangeValue(value: unknown): string {
+  if (value === _del) {
+    return "(deleted)";
+  }
+  if (value === undefined) {
+    return "(undefined)";
+  }
+  if (value === null) {
+    return "null";
+  }
+
+  let renderedValue: string | undefined;
+  if (typeof value === "string") {
+    renderedValue = value;
+  } else if (typeof value === "number" || typeof value === "boolean" || typeof value === "bigint") {
+    renderedValue = String(value);
+  } else {
+    try {
+      renderedValue = JSON.stringify(value, null, 2) ?? undefined;
+    } catch {
+      const valueType = foundry.utils.getType(value);
+      renderedValue = `(unserializable ${valueType})`;
+    }
+  }
+
+  if (!renderedValue) {
+    return "(empty)";
+  }
+
+  const maxLength = 3000;
+  return renderedValue.length > maxLength
+    ? `${renderedValue.slice(0, maxLength - 3)}...`
+    : renderedValue;
+}
+
+function pruneNoopUpdateData<T extends object>(value: T, sourceData?: object): T {
+  const pruned = pruneNoopUpdateValue(value);
+  if (!pruned || !isPlainObject(pruned)) {
+    return {} as T;
+  }
+
+  if (!sourceData) {
+    return pruned as T;
+  }
+
+  const flattened = foundry.utils.flattenObject(pruned) as Record<string, unknown>;
+  const filteredEntries = Object.entries(flattened).filter(([path, newValue]) => {
+    if (path === "_id") {
+      return false;
+    }
+
+    const previousValue = foundry.utils.getProperty(sourceData, path);
+    if (newValue === _del && previousValue === undefined) {
+      return false;
+    }
+
+    return !areEquivalentUpdateValues(previousValue, newValue);
+  });
+
+  if (filteredEntries.length === 0) {
+    return {} as T;
+  }
+
+  return foundry.utils.expandObject(Object.fromEntries(filteredEntries)) as T;
+}
+
+function pruneNoopUpdateValue(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map((entry) => pruneNoopUpdateValue(entry));
+  }
+
+  if (!isPlainObject(value)) {
+    return value;
+  }
+
+  const result: Record<string, unknown> = {};
+  for (const [key, nested] of Object.entries(value)) {
+    const prunedNested = pruneNoopUpdateValue(nested);
+    if (prunedNested === undefined) {
+      continue;
+    }
+    result[key] = prunedNested;
+  }
+
+  return Object.keys(result).length > 0 ? result : undefined;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const prototype = Object.getPrototypeOf(value);
+  return prototype === Object.prototype || prototype === null;
+}
+
+function areEquivalentUpdateValues(left: unknown, right: unknown): boolean {
+  if (left === right) {
+    return true;
+  }
+
+  if (Array.isArray(left) && Array.isArray(right)) {
+    if (left.length !== right.length) {
+      return false;
+    }
+
+    return left.every((value, index) => areEquivalentUpdateValues(value, right[index]));
+  }
+
+  if (isPlainObject(left) && isPlainObject(right)) {
+    const leftKeys = Object.keys(left);
+    const rightKeys = Object.keys(right);
+    if (leftKeys.length !== rightKeys.length) {
+      return false;
+    }
+
+    return leftKeys.every(
+      (key) => rightKeys.includes(key) && areEquivalentUpdateValues(left[key], right[key]),
+    );
+  }
+
+  return false;
+}
+
+function getMigrationFunctionName(fn: unknown): string {
+  if (typeof fn !== "function") {
+    return "anonymousMigration";
+  }
+
+  const maybeName = (fn as { name?: string }).name;
+  return maybeName || "anonymousMigration";
+}
+
+function summarizeMigrationNames(migrationNames: string[]): string | undefined {
+  const uniqueMigrationNames = Array.from(new Set(migrationNames.filter((name) => !!name)));
+  if (!uniqueMigrationNames.length) {
+    return undefined;
+  }
+
+  return uniqueMigrationNames.join(", ");
 }
 
 let progressBar: any;

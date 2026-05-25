@@ -1,7 +1,4 @@
 import type { ItemMigration } from "../applyMigrations";
-import { RqgLogger } from "../../logging/rqgLogger";
-
-const logger = new RqgLogger("ItemActiveEffectTypes");
 import type { RqgItem } from "@items/rqgItem.ts";
 import {
   effectArraysChanged,
@@ -14,6 +11,8 @@ import {
  */
 export const migrateItemActiveEffectTypes: ItemMigration = async (
   item: RqgItem,
+  _owningActor,
+  logger,
 ): Promise<Item.UpdateData> => {
   const updateData: Item.UpdateData = {};
   const rawEffects = (item as any).effects;
@@ -26,7 +25,10 @@ export const migrateItemActiveEffectTypes: ItemMigration = async (
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       updateData.effects = toPersistedEffectArray(migratedEffects) as any;
-      logger.info(`Repaired AE change.type values in item ${item.name}`, { notify: false });
+      logger?.info(`Repaired AE change.type values in item ${item.name}`, {
+        notify: false,
+        documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
+      });
     }
   }
 

@@ -1,7 +1,4 @@
 import type { ActorMigration } from "../applyMigrations";
-import { RqgLogger } from "../../logging/rqgLogger";
-
-const logger = new RqgLogger("ActorActiveEffectPaths");
 import type { RqgActor } from "@actors/rqgActor.ts";
 import {
   migrateEffectArray,
@@ -20,6 +17,7 @@ import {
  */
 export const migrateActorActiveEffectPaths: ActorMigration = (
   actor: RqgActor,
+  logger,
 ): Actor.UpdateData => {
   const updateData: Actor.UpdateData = {};
   const rawEffects = (actor as any).effects;
@@ -61,8 +59,9 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
 
       originalEffects.forEach((effect, index) => {
         if (migratedEffects[index] !== effect) {
-          logger.info(`Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`, {
+          logger?.info(`Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`, {
             notify: false,
+            documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
           });
         }
       });

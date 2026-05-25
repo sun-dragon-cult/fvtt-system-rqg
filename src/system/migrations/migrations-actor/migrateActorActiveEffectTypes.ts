@@ -1,7 +1,4 @@
 import type { ActorMigration } from "../applyMigrations";
-import { RqgLogger } from "../../logging/rqgLogger";
-
-const logger = new RqgLogger("ActorActiveEffectTypes");
 import type { RqgActor } from "@actors/rqgActor.ts";
 import {
   effectArraysChanged,
@@ -14,6 +11,7 @@ import {
  */
 export const migrateActorActiveEffectTypes: ActorMigration = (
   actor: RqgActor,
+  logger,
 ): Actor.UpdateData => {
   const updateData: Actor.UpdateData = {};
   const rawEffects = (actor as any).effects;
@@ -26,7 +24,10 @@ export const migrateActorActiveEffectTypes: ActorMigration = (
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       updateData.effects = toPersistedEffectArray(migratedEffects) as any;
-      logger.info(`Repaired AE change.type values for actor ${actor.name}`, { notify: false });
+      logger?.info(`Repaired AE change.type values for actor ${actor.name}`, {
+        notify: false,
+        documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
+      });
     }
   }
 
