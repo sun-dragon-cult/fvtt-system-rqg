@@ -20,4 +20,4 @@ Apply root guidance from [`../../ai.md`](../../ai.md) first, then this file for 
 
 - If templates change, verify `src/system/loadHandlebarsTemplates.ts`.
 - Keep sheet TypeScript context, `.hbs` templates, and related styles synchronized.
-- If item lifecycle behavior changes, add/update targeted tests near the changed logic (for example `src/items/**/**/*.test.ts`).
+- If item lifecycle behavior changes, add/update targeted tests near the changed logic (for example `src/items/**/*.test.ts`).
