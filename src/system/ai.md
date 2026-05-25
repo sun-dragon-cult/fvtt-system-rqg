@@ -1,6 +1,6 @@
 # AI Development Guide for `src/system`
 
-Apply root guidance from `/home/runner/work/fvtt-system-rqg/fvtt-system-rqg/ai.md` first, then this file for system-level work.
+Apply root guidance from [`../../ai.md`](../../ai.md) first, then this file for system-level work.
 
 ## Scope
 

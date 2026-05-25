@@ -1,6 +1,6 @@
 # AI Development Guide for `src/items`
 
-Apply root guidance from `/home/runner/work/fvtt-system-rqg/fvtt-system-rqg/ai.md` first, then this file for item-related work.
+Apply root guidance from [`../../ai.md`](../../ai.md) first, then this file for item-related work.
 
 ## Scope
 

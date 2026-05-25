@@ -1,6 +1,6 @@
 # Copilot Instructions for this Repository
 
-Canonical implementation guidance lives in `/home/runner/work/fvtt-system-rqg/fvtt-system-rqg/ai.md`.
+Canonical implementation guidance lives in [`../ai.md`](../ai.md).
 
 ## Source of Truth and Precedence
 
