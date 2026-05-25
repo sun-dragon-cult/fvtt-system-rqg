@@ -67,8 +67,8 @@ Formatting and linting are enforced by project tooling (Prettier + ESLint + Styl
 
 When generating code for this repo, ensure the result is:
 
-- Correct for Foundry v13 APIs.
+- Correct for Foundry v14 APIs.
 - Type-safe enough to pass project type checks.
 - Consistent with local naming and architecture.
-- Localized for any player-facing text.
+- Localized for any user-facing text (including notifications, dialog labels, and window titles).
 - Verified with the smallest relevant lint/test/typecheck commands.
