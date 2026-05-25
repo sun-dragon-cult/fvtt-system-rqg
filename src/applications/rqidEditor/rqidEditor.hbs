@@ -4,8 +4,8 @@
       {{#if parentRqid}}<span class="parent-rqid">{{parentRqid}}.</span>{{/if}}
       <span>{{rqidDocumentNamePart}}</span>
       <input type="text" id="rqid-editor" name="rqidNamePart" value="{{rqidNamePart}}" />
-      <a data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-generate-default-rqid><i
-        class="fas fa-wand-magic-sparkles"></i></a>
+      <button type="button" class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-generate-default-rqid><i
+        class="fas fa-wand-magic-sparkles"></i></button>
     </div>
 
     {{#if parentMissingRqid}}

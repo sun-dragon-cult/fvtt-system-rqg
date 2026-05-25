@@ -5,6 +5,13 @@
       width: 15rem;
     }
 
+    .input-button .generate-rqid {
+      flex: 0 0 var(--input-height);
+      width: var(--input-height);
+      height: var(--input-height);
+      margin-left: 0.25rem;
+    }
+
     .open-parent-rqid-link {
       margin-left: 0.5rem;
       display: inline-flex;

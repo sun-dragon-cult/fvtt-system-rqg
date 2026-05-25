@@ -64,9 +64,15 @@
     }
 
     .generate-rqid {
-      flex: 0 0 20px;
-      align-self: center;
-      text-align: right;
+      flex: 0 0 var(--input-height);
+      width: var(--input-height);
+      height: var(--input-height);
+      margin-left: 0.25rem;
     }
   }
+}
+
+#tooltip.rqid-batch-editor-tooltip,
+.locked-tooltip.rqid-batch-editor-tooltip {
+  text-align: center;
 }

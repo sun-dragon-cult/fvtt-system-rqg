@@ -69,9 +69,10 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
   };
 
   static override PARTS = {
-    form: {
+    body: {
       template: templatePaths.rqidBatchEditor,
       scrollable: [""],
+      root: true,
     },
     footer: {
       template: "templates/generic/form-footer.hbs",
@@ -232,6 +233,10 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
 
   onClickGuess(target: HTMLElement): void {
     const name = getDomDataset(target, "name") ?? "";
+    if (!name) {
+      RqidBatchEditor.logger.warn("Generate RQID clicked but no item name was found in target.");
+      return;
+    }
     const rqidSuffix = toKebabCase(name);
     const newRqid = rqidSuffix ? this.batchConfig.idPrefix + rqidSuffix : undefined;
     this.changes.itemName2Rqid.set(name, newRqid);

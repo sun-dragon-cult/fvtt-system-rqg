@@ -22,9 +22,9 @@
           <div class="value flexrow">
             <span class="rqid-prefix">{{../idPrefix}}</span>
             <input class="rqid-input {{#unless selectedRqidSuffix}}missing{{/unless}}" type="text" value="{{selectedRqidSuffix}}" data-name="{{name}}">
-            <a class="generate-rqid" data-action="generateRqid" data-name="{{name}}" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-tooltip-direction="RIGHT">
+            <button type="button" class="generate-rqid" data-action="generateRqid" data-name="{{name}}" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-tooltip-class="rqid-batch-editor-tooltip" data-tooltip-direction="RIGHT">
               <i class="fas fa-wand-magic-sparkles"></i>
-            </a>
+            </button>
           </div>
         </li>
       {{/each}}
