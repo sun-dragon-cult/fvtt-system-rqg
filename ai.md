@@ -19,7 +19,7 @@ This file is the default guidance for AI-assisted changes in this repository.
 - Foundry v14 source code is available at `~/foundry/Foundry-14/FoundryVTT/` for
   reference when investigating Foundry internals (e.g. client APIs, application
   lifecycle, context menus).
-- A short version of the rules for the roleplaying game this system is for are available at `https://rqwiki.chaosium.com/rules/`
+- A short version of the rules for the roleplaying game this system is for is available at `https://rqwiki.chaosium.com/rules/`
 - Some repo docs/scripts mention v13 for local dual-version workflows; treat v14 as the implementation target unless explicitly requested otherwise.
 
 ## Default Engineering Rules
