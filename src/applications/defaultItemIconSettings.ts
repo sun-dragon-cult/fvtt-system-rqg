@@ -2,6 +2,7 @@ import { systemId } from "../system/config";
 import { defaultItemIconsObject } from "../system/settings/defaultItemIcons";
 import type { ItemTypeEnum, RqgItemType } from "@item-model/itemTypes.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
+import { localizeItemType } from "../system/util";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -10,39 +11,92 @@ export type IconSettingsData = {
   [K in ItemTypeEnum | "reputation"]: string;
 };
 
+type DefaultItemIconSettingsContext = {
+  iconRows: {
+    key: RqgItemType | "reputation";
+    value: string;
+  }[];
+};
+
 export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
-  ApplicationV2<IconSettingsData>,
+  ApplicationV2<DefaultItemIconSettingsContext>,
 ) {
   static override DEFAULT_OPTIONS = {
     id: "default-icons-settings-dialog",
     tag: "form",
     window: {
-      title: "RQG.Settings.DefaultItemIcons.dialogTitle",
-      contentClasses: ["default-icons"],
+      title: "RQG.Settings.DefaultItemIcons.settingName",
+      icon: "fa-solid fa-image",
+      contentClasses: ["standard-form", "default-icons"],
+      resizable: true,
     },
     position: {
       width: 500,
+      height: 680,
     },
     form: {
       handler: DefaultItemIconSettings.onSubmit,
-      closeOnSubmit: false,
-      submitOnChange: true,
+      closeOnSubmit: true,
+    },
+    actions: {
+      resetDefaults: DefaultItemIconSettings.onResetDefaults,
     },
   };
 
   static override PARTS = {
     body: {
       template: templatePaths.defaultItemIconSettings,
-      root: true,
+      scrollable: [""],
+    },
+    footer: {
+      template: templatePaths.defaultItemIconSettingsFooter,
     },
   };
 
-  override async _prepareContext(): Promise<IconSettingsData> {
+  override async _prepareContext(): Promise<DefaultItemIconSettingsContext> {
     const currentSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
-    return Object.entries(defaultItemIconsObject).reduce((acc: any, [key, value]) => {
-      acc[key] = currentSettings[key] ?? value;
-      return acc;
-    }, {});
+    const iconRows = Object.entries(defaultItemIconsObject)
+      .map(([key, value]) => ({
+        key: key as RqgItemType | "reputation",
+        value: currentSettings[key] ?? value,
+      }))
+      .sort((a, b) => localizeItemType(a.key).localeCompare(localizeItemType(b.key)));
+
+    return {
+      iconRows: iconRows,
+    };
+  }
+
+  protected override _onChangeForm(formConfig: any, event: Event): void {
+    this.updatePreviewFromEvent(event);
+    super._onChangeForm(formConfig, event);
+  }
+
+  private updatePreviewFromEvent(event: Event): void {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const filePicker = target.closest("file-picker");
+    if (!filePicker) {
+      return;
+    }
+
+    const input =
+      target instanceof HTMLInputElement
+        ? target
+        : filePicker.querySelector<HTMLInputElement>("input");
+    const selectedPath =
+      (filePicker as HTMLInputElement & { value?: string }).value ?? input?.value;
+    if (!selectedPath) {
+      return;
+    }
+
+    const preview = filePicker.closest(".form-group")?.querySelector<HTMLImageElement>("img");
+    if (preview) {
+      preview.src = selectedPath;
+    }
   }
 
   static async onSubmit(
@@ -53,6 +107,19 @@ export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
   ): Promise<void> {
     const data = formData.object as Record<RqgItemType | "reputation", string>;
     await game.settings?.set(systemId, "defaultItemIconSettings", data);
+    this.render();
+  }
+
+  private static async onResetDefaults(
+    this: DefaultItemIconSettings,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ): Promise<void> {
+    await game.settings?.set(
+      systemId,
+      "defaultItemIconSettings",
+      foundry.utils.deepClone(defaultItemIconsObject),
+    );
     this.render();
   }
 }

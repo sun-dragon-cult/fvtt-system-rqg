@@ -1397,10 +1397,11 @@
         "settingHint": "Activating this setting opens the Chat Messages sidebar when rolls send messages to chat."
       },
       "DefaultItemIcons": {
-        "dialogTitle": "Default Item Icon Settings",
         "settingName": "Default Item Icons",
         "settingLabel": "Configure Default Icons",
-        "settingHint": "Set the default icons used when creating new items."
+        "settingHint": "Set the default icons used when creating new items.",
+        "Reset": "Reset Defaults",
+        "Submit": "Save Overrides"
       },
       "WorldLanguage": {
         "settingName": "World Language",

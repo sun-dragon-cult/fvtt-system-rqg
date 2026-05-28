@@ -123,6 +123,7 @@ export const templatePaths = {
 
   // Settings
   defaultItemIconSettings: "systems/rqg/applications/defaultItemIconSettings.hbs",
+  defaultItemIconSettingsFooter: "systems/rqg/applications/defaultItemIconSettingsFooter.hbs",
   tokenRulerSettings: "systems/rqg/applications/settings/tokenRulerSettings.hbs",
   // Interface
   settings: "systems/rqg/foundryUi/settings.hbs",

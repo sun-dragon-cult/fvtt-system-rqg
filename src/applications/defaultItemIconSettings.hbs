@@ -1,15 +1,11 @@
-<h2 class="module-header">{{localize "RQG.Settings.DefaultItemIcons.settingName"}}</h2>
-
-{{#each this}}
-  <div class="form-group">
-    <label>
-      <span>{{localizeitemtype @key}}</span>
-      <img src="{{this}}" />
-      {{filePicker target=@key type="image"}}
-
-    </label>
-    <div class="form-fields">
-      <input type="text" id="{{@key}}" value="{{this}}" name="{{@key}}" />
+<section class="default-icons-body">
+  {{#each iconRows}}
+    <div class="form-group">
+      <label>{{localizeitemtype key}}</label>
+      <div class="form-fields">
+        <img src="{{value}}" />
+        <file-picker name="{{key}}" type="image" value="{{value}}"></file-picker>
+      </div>
     </div>
-  </div>
-{{/each}}
+  {{/each}}
+</section>
