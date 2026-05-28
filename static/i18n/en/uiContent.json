@@ -1492,6 +1492,7 @@
         "btnMigrate": "Migrate world \"{worldTitle}\" to version {systemVersion}"
       },
       "WorldNotUpdated": "This world is not updated to match the current system version ({systemVersion}). Please wait until your GM has done the update, then refresh this page (F5 or cmd-R).",
+      "MigrationAborted": "World migration to version {systemVersion} was aborted. Do not continue using this world until the migration has been completed. Reload the world to trigger the migration again.",
       "applyingMigration": "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
       "migrationFinished": "World Migration to version {systemVersion} completed!",
       "migrationFinishedWithErrors": "World Migration to version {systemVersion} completed with {errorCount} errors. Review logs and re-run migration. worldMigrationVersion was not updated.",

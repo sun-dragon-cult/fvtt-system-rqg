@@ -1003,24 +1003,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       effectName: effect.name,
     });
 
-    const confirmed = await foundry.applications.api.DialogV2.wait({
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
       window: { title },
       content,
-      buttons: [
-        {
-          action: "confirm",
-          label: localize("RQG.Dialog.Common.btnConfirm"),
-          icon: "fas fa-check",
-          callback: () => true,
-        },
-        {
-          action: "cancel",
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: "fas fa-times",
-          callback: () => false,
-          default: true,
-        },
-      ],
+      yes: {
+        action: "confirm",
+        label: localize("RQG.Dialog.Common.btnConfirm"),
+        icon: "fas fa-check",
+      },
+      no: {
+        action: "cancel",
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        icon: "fas fa-times",
+        default: true,
+      },
     });
 
     if (confirmed) {
@@ -1639,29 +1635,27 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       targetActor: this.actor.name,
     });
 
-    const result = await foundry.applications.api.DialogV2.wait({
+    const result = await foundry.applications.api.DialogV2.confirm({
       window: { title },
       content,
-      buttons: [
-        {
-          action: "submit",
-          label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
-          icon: "fas fa-check",
-          default: true,
-          callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> =>
-            this.submitConfirmTransferPhysicalItem(
-              dialog.element,
-              incomingItemDataSource,
-              sourceActor,
-            ),
-        },
-        {
-          action: "cancel",
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: "fas fa-times",
-          callback: () => false,
-        },
-      ],
+      yes: {
+        action: "submit",
+        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+        icon: "fas fa-check",
+        default: true,
+        callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> =>
+          this.submitConfirmTransferPhysicalItem(
+            dialog.element,
+            incomingItemDataSource,
+            sourceActor,
+          ),
+      },
+      no: {
+        action: "cancel",
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        icon: "fas fa-times",
+        callback: () => false,
+      },
     });
     return Boolean(result);
   }
@@ -1770,29 +1764,27 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       itemName: incomingItemDataSource.name,
       targetActor: this.actor.name,
     });
-    const result = await foundry.applications.api.DialogV2.wait({
+    const result = await foundry.applications.api.DialogV2.confirm({
       window: { title },
       content,
-      buttons: [
-        {
-          action: "submit",
-          label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
-          icon: "fas fa-check",
-          default: true,
-          callback: async (): Promise<boolean> => {
-            const created = await this.actor.createEmbeddedDocuments("Item", [
-              incomingItemDataSource,
-            ]);
-            return created.length > 0;
-          },
+      yes: {
+        action: "submit",
+        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+        icon: "fas fa-check",
+        default: true,
+        callback: async (): Promise<boolean> => {
+          const created = await this.actor.createEmbeddedDocuments("Item", [
+            incomingItemDataSource,
+          ]);
+          return created.length > 0;
         },
-        {
-          action: "cancel",
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: "fas fa-times",
-          callback: () => false,
-        },
-      ],
+      },
+      no: {
+        action: "cancel",
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        icon: "fas fa-times",
+        callback: () => false,
+      },
     });
     return Boolean(result);
   }

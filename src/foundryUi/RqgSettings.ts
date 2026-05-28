@@ -26,27 +26,25 @@ export class RqgSettings extends Settings {
   };
 
   static async migrateWorld(): Promise<void> {
-    await foundry.applications.api.DialogV2.wait({
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
       window: { title: "RQG.Foundry.Settings.Migrate.TriggerTitle" },
       content: localize("RQG.Foundry.Settings.Migrate.TriggerContents"),
-      buttons: [
-        {
-          action: "migrate",
-          label: "RQG.Foundry.Settings.Migrate.TriggerRestart",
-          icon: "fas fa-check",
-          callback: async () => {
-            await game.settings?.set(systemId, "worldMigrationVersion", "---");
-            window.location.reload();
-          },
-        },
-        {
-          action: "cancel",
-          label: "Cancel",
-          icon: "fa-solid fa-xmark",
-          callback: () => false,
-          default: true,
-        },
-      ],
+      yes: {
+        action: "migrate",
+        label: "RQG.Foundry.Settings.Migrate.TriggerRestart",
+        icon: "fas fa-check",
+      },
+      no: {
+        action: "cancel",
+        label: "Cancel",
+        icon: "fa-solid fa-xmark",
+        default: true,
+      },
     });
+
+    if (confirmed) {
+      await game.settings?.set(systemId, "worldMigrationVersion", "---");
+      window.location.reload();
+    }
   }
 }

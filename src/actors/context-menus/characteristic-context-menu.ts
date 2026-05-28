@@ -308,24 +308,21 @@ async function confirmInitializeDialog(
         characteristicName: localizeCharacteristic(characteristic),
       })
     : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
-  const result = await foundry.applications.api.DialogV2.wait({
+  const result = await foundry.applications.api.DialogV2.confirm({
     window: { title },
     content,
-    buttons: [
-      {
-        action: "confirm",
-        label: localize("RQG.Dialog.Common.btnConfirm"),
-        icon: "fas fa-check",
-        default: true,
-        callback: () => true,
-      },
-      {
-        action: "cancel",
-        label: localize("RQG.Dialog.Common.btnCancel"),
-        icon: "fas fa-times",
-        callback: () => false,
-      },
-    ],
+    position: { width: 440 },
+    yes: {
+      action: "confirm",
+      label: localize("RQG.Dialog.Common.btnConfirm"),
+      icon: "fas fa-check",
+      default: true,
+    },
+    no: {
+      action: "cancel",
+      label: localize("RQG.Dialog.Common.btnCancel"),
+      icon: "fas fa-times",
+    },
   });
   return result === true;
 }
