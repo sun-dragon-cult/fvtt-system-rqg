@@ -7,7 +7,7 @@ import {
   requireValue,
   RqgError,
 } from "../../system/util";
-import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
+import { showImproveCharacteristicDialog } from "../../applications/improve-dialogs/improve-characteristic-dialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
@@ -72,16 +72,8 @@ export const characteristicMenuOptions = (
       const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
-      const characteristic = actor.system.characteristics[charName];
-      (characteristic as any).name = charName; // TODO adding extra properties that's not on type Characteristic
       const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
-      if (
-        characteristic != null &&
-        characteristic.value != null &&
-        Number.isNumeric(characteristic.value)
-      ) {
-        showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
-      }
+      void showImproveCharacteristicDialog(actor, charName, speakerName);
     },
   },
   {

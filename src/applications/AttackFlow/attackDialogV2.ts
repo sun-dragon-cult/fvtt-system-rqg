@@ -535,7 +535,6 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     const attackChatMessageOptions = {
       type: "combat", // TODO ChatMessageTypes
       system: chatSystemData,
-      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       flavor: attackFlavor,
       content: attackChatContent,
       speaker: ChatMessage.getSpeaker({

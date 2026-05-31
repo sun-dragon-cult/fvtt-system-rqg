@@ -4,10 +4,12 @@ import { systemId } from "../system/config";
 import {
   assertHtmlElement,
   assertDocumentSubType,
+  getEventTargetElement,
   getItemDocumentTypes,
   localize,
   getDocumentFromUuid,
   isDocumentSubType,
+  isFoundryElementInstanceOf,
 } from "../system/util";
 import { SkillCategoryEnum, type SkillItem } from "@item-model/skillDataModel.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
@@ -537,8 +539,8 @@ export class ActorWizard extends ActorWizardBase {
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
     const wizard = this as ActorWizard;
-    const target = event.target;
-    if (target instanceof HTMLSelectElement) {
+    const target = getEventTargetElement(event);
+    if (isFoundryElementInstanceOf(target, HTMLSelectElement)) {
       if (target.name === "selectedSpeciesTemplateUuid") {
         await wizard.setSpeciesTemplate(
           formData.object["selectedSpeciesTemplateUuid"] as string,
@@ -552,7 +554,10 @@ export class ActorWizard extends ActorWizardBase {
         }
       }
     }
-    if (target instanceof HTMLInputElement && target.classList.contains("wizard-choice-input")) {
+    if (
+      isFoundryElementInstanceOf(target, HTMLInputElement) &&
+      target.classList.contains("wizard-choice-input")
+    ) {
       const rqid = target.dataset["rqid"];
       const forChoice = target.dataset["forChoice"];
       if (rqid) {
@@ -579,7 +584,7 @@ export class ActorWizard extends ActorWizardBase {
         }
       }
     }
-    if (target instanceof HTMLInputElement && target.name === "name") {
+    if (isFoundryElementInstanceOf(target, HTMLInputElement) && target.name === "name") {
       await wizard.actor.update({ name: formData.object["name"] as string });
     }
 

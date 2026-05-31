@@ -1,0 +1,27 @@
+<header>
+  <div class="improve-dialog-header">
+    {{#if headerData.imageSrc}}
+      <img class="improve-dialog-icon" src="{{headerData.imageSrc}}" data-tooltip="{{headerData.name}}">
+    {{else if headerData.chipText}}
+      <div
+        class="improve-dialog-characteristic-chip {{headerData.chipClass}}"
+        data-tooltip="{{headerData.name}}"
+      >
+        {{headerData.chipText}}
+      </div>
+    {{/if}}
+
+    <div class="improve-dialog-heading">
+      <h1>{{localize "RQG.Dialog.improveAbilityDialog.header" name=headerData.name}}</h1>
+      <p>{{headerData.typeLocName}}</p>
+    </div>
+
+    <div
+      class="improve-dialog-current-value"
+      data-tooltip="{{localize 'RQG.Dialog.improveAbilityDialog.currentValueTooltip'}}"
+    >
+      <small>{{localize "RQG.Dialog.improveAbilityDialog.currentValueLabel"}}</small>
+      <strong>{{headerData.currentValueDisplay}}</strong>
+    </div>
+  </div>
+</header>

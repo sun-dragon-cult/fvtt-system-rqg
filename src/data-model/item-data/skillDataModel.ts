@@ -5,6 +5,7 @@ import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqidLin
 import type { RqidLink } from "../shared/rqidLink";
 import type { RqidString } from "../../system/api/rqidApi";
 import { enumChoices } from "../shared/enumChoices";
+import { RqgError } from "../../system/util";
 
 export type SkillItem = RqgItem & { system: Item.SystemOfType<"skill"> };
 
@@ -32,6 +33,8 @@ export class SkillDataModel extends AbilityDataModel<
   SkillSchema,
   { chance: number; categoryMod: number }
 > {
+  declare baseChance: number;
+  declare gainedChance: number;
   declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];
   declare descriptionRqidLink: RqidLink<RqidString>;
 
@@ -51,5 +54,17 @@ export class SkillDataModel extends AbilityDataModel<
       gainedChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
       runeRqidLinks: rqidLinkArraySchemaField(),
     } as const;
+  }
+
+  override async applyChanceGain(gain: number): Promise<void> {
+    const item = this.parent;
+    if (!item) {
+      throw new RqgError("Tried to improve a skill item that isn't embedded on an actor", item);
+    }
+
+    const newGainedChance = Number(this.gainedChance) + gain;
+    await item.update({
+      system: { hasExperience: false, gainedChance: newGainedChance },
+    });
   }
 }

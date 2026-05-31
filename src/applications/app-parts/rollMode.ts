@@ -37,9 +37,9 @@ export function getConfiguredRollModes(): RollMode[] {
 }
 
 export function getDefaultRollMode(): RollMode {
-  const fromSetting = resolveRollMode(game.settings?.get("core", "rollMode"));
-  if (fromSetting) {
-    return fromSetting;
+  const fromMessageMode = resolveRollMode((game.settings as any)?.get("core", "messageMode"));
+  if (fromMessageMode) {
+    return fromMessageMode;
   }
 
   const configuredModes = getConfiguredRollModes();

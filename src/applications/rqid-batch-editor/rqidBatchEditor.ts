@@ -2,6 +2,8 @@ import { systemId } from "../../system/config.js";
 import {
   convertFormValueToString,
   getDomDataset,
+  getEventTargetElement,
+  isFoundryElementInstanceOf,
   localize,
   localizeItemType,
   toKebabCase,
@@ -184,8 +186,8 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
   }
 
   private onFormInput(event: Event): void {
-    const target = event.target as HTMLElement | null;
-    if (!(target instanceof HTMLInputElement)) {
+    const target = getEventTargetElement(event);
+    if (!isFoundryElementInstanceOf(target, HTMLInputElement)) {
       return;
     }
     if (!target.classList.contains("rqid-input")) {
@@ -195,12 +197,18 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
   }
 
   private onFormChange(event: Event): void {
-    const target = event.target as HTMLElement | null;
-    if (target instanceof HTMLSelectElement && target.classList.contains("existing")) {
+    const target = getEventTargetElement(event);
+    if (
+      isFoundryElementInstanceOf(target, HTMLSelectElement) &&
+      target.classList.contains("existing")
+    ) {
       this.onSetExistingName(target);
       return;
     }
-    if (target instanceof HTMLInputElement && target.classList.contains("rqid-input")) {
+    if (
+      isFoundryElementInstanceOf(target, HTMLInputElement) &&
+      target.classList.contains("rqid-input")
+    ) {
       this.onTypeRqid(target);
     }
   }

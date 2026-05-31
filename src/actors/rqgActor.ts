@@ -525,7 +525,6 @@ export class RqgActor extends Actor {
       speaker,
       content: message,
       whisper: usersIdsThatOwnActor(this),
-      style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
     });
   }
 

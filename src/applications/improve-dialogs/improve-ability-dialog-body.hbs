@@ -1,0 +1,108 @@
+<section>
+  {{#> improveDialogSourceChooser}}
+    {{#> improveDialogSourceOption
+      show=improvementData.showExperience
+      source="experience"
+      can=improvementData.canExperience
+      selectedSource=selectedSource
+      labelKey="RQG.Dialog.improveAbilityDialog.fromExperience"
+    }}
+      {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableExperience" typeLocName=improvementData.typeLocName}}
+    {{/improveDialogSourceOption}}
+
+    {{#> improveDialogSourceOption
+      show=improvementData.showTraining
+      source="training"
+      can=improvementData.canTraining
+      selectedSource=selectedSource
+      labelKey="RQG.Dialog.improveAbilityDialog.throughTraining"
+    }}
+      {{#if improvementData.skillOver75}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableTrainingOver75"}}
+      {{else if (eq improvementData.abilityType "passion")}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableTrainingPassion"}}
+      {{else}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableTraining" typeLocName=improvementData.typeLocName}}
+      {{/if}}
+    {{/improveDialogSourceOption}}
+  {{/improveDialogSourceChooser}}
+
+  <div>
+    {{#if improvementData.showExperience}}
+      <section
+        class="improve-dialog-panel improve-dialog-panel--experience"
+        data-source-panel="experience"
+        {{#if showSourceChooser}}{{#unless (eq selectedSource "experience")}}hidden{{/unless}}{{/if}}
+      >
+        <div class="improve-dialog-option-context">
+          {{#if (eq improvementData.abilityType "skill")}}
+            <span class="improve-dialog-formula-value">{{improvementData.chanceToGain}}%</span>
+            {{localize "RQG.Dialog.improveAbilityDialog.improvementChanceLabel"}}
+            ({{localize "RQG.Dialog.improveAbilityDialog.rollThresholdLabel" requiredRoll=improvementData.requiredRoll}})
+            <span class="improve-dialog-formula">(
+              <b>{{localize "RQG.Dialog.improveAbilityDialog.rollLabel"}}</b>{{#unless (eq improvementData.categoryMod 0)}}<b>{{improvementData.categoryModDisplay}}</b><sub><i>{{localize "RQG.Dialog.improveAbilityDialog.categoryModifierLabel"}}</i></sub>{{/unless}}
+              {{localize "RQG.Dialog.improveAbilityDialog.toBeatLabel"}}
+              <b>{{improvementData.skillChance}}</b><sub><i>{{localize "RQG.Dialog.improveAbilityDialog.skillValueLabel"}}</i></sub>
+              {{localize "RQG.Dialog.improveAbilityDialog.modifiedHundredAlwaysLabel"}}
+            )</span>
+          {{else}}
+            <span class="improve-dialog-formula-value">{{improvementData.chanceToGain}}%</span>
+            {{localize "RQG.Dialog.improveAbilityDialog.improvementChanceLabel"}}
+            ({{localize "RQG.Dialog.improveAbilityDialog.rollThresholdLabel" requiredRoll=improvementData.requiredRoll}})
+          {{/if}}
+        </div>
+        <label>
+          <input
+            type="radio"
+            name="experiencegaintype"
+            class="improvement-type-checkbox"
+            value="experience-gain-fixed"
+          >
+          <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainLower" gain=improvementData.experienceGainFixed}}</span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="experiencegaintype"
+            class="improvement-type-checkbox"
+            value="experience-gain-random"
+            data-default-method
+            {{#if showSourceChooser}}{{#if (eq selectedSource "experience")}}checked{{/if}}{{else}}checked{{/if}}
+          >
+          <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainLower" gain=improvementData.experienceGainRandom}}</span>
+        </label>
+      </section>
+    {{/if}}
+
+    {{#if improvementData.showTraining}}
+      <section
+        class="improve-dialog-panel improve-dialog-panel--training"
+        data-source-panel="training"
+        {{#if showSourceChooser}}{{#unless (eq selectedSource "training")}}hidden{{/unless}}{{/if}}
+      >
+        <div class="improve-dialog-option-context">{{localize "RQG.Dialog.improveAbilityDialog.afterTrainingSuffix"}}</div>
+        <label>
+          <input
+            type="radio"
+            name="experiencegaintype"
+            class="improvement-type-checkbox"
+            value="training-gain-fixed"
+          >
+          <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainLower" gain=improvementData.trainingGainFixed}}</span>
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="experiencegaintype"
+            class="improvement-type-checkbox"
+            value="training-gain-random"
+            data-default-method
+            {{#if showSourceChooser}}{{#if (eq selectedSource "training")}}checked{{/if}}{{else}}{{#unless improvementData.showExperience}}checked{{/unless}}{{/if}}
+          >
+          <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainLower" gain=improvementData.trainingGainRandom}}</span>
+        </label>
+      </section>
+    {{/if}}
+  </div>
+
+</section>

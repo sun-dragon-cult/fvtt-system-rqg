@@ -12,7 +12,7 @@ import {
 } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { SkillCategoryEnum, type SkillItem } from "@item-model/skillDataModel.ts";
-import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
+import { showImproveAbilityDialog } from "../../applications/improve-dialogs/improve-ability-dialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { Rqid } from "../../system/api/rqidApi";
 import { isValidRqidString } from "../../system/api/rqidValidation";

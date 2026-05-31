@@ -8,7 +8,7 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { showImproveAbilityDialog } from "../../applications/improveAbilityDialog";
+import { showImproveAbilityDialog } from "../../applications/improve-dialogs/improve-ability-dialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import type { PassionItem } from "@item-model/passionDataModel.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";

@@ -1,0 +1,133 @@
+<section>
+  {{#> improveDialogSourceChooser}}
+    {{#> improveDialogSourceOption
+      show=improvementData.showExperience
+      source="experience"
+      can=improvementData.canExperience
+      selectedSource=selectedSource
+      labelKey="RQG.Dialog.improveAbilityDialog.fromExperience"
+    }}
+      {{#if improvementData.atSpeciesMax}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableSpeciesMax" name=improvementData.name}}
+      {{else}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableExperience" typeLocName=improvementData.typeLocName}}
+      {{/if}}
+    {{/improveDialogSourceOption}}
+
+    {{#> improveDialogSourceOption
+      show=improvementData.showResearch
+      source="research"
+      can=improvementData.canResearch
+      selectedSource=selectedSource
+      labelKey="RQG.Dialog.improveAbilityDialog.throughResearch"
+    }}
+      {{#if improvementData.atSpeciesMax}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableSpeciesMax" name=improvementData.name}}
+      {{else}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableResearch" typeLocName=improvementData.typeLocName}}
+      {{/if}}
+    {{/improveDialogSourceOption}}
+
+    {{#> improveDialogSourceOption
+      show=improvementData.showTraining
+      source="training"
+      can=improvementData.canTraining
+      selectedSource=selectedSource
+      labelKey="RQG.Dialog.improveAbilityDialog.throughTraining"
+    }}
+      {{#if improvementData.atSpeciesMax}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableSpeciesMax" name=improvementData.name}}
+      {{else}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableTraining" typeLocName=improvementData.typeLocName}}
+      {{/if}}
+    {{/improveDialogSourceOption}}
+  {{/improveDialogSourceChooser}}
+
+  <div>
+    {{#if improvementData.showExperience}}
+    <section
+      class="improve-dialog-panel improve-dialog-panel--experience"
+      data-source-panel="experience"
+      {{#if showSourceChooser}}{{#unless (eq selectedSource "experience")}}hidden{{/unless}}{{/if}}
+    >
+      <div class="improve-dialog-option-context">
+        <span class="improve-dialog-formula-value">{{improvementData.chanceToGain}}%</span>
+        {{localize "RQG.Dialog.improveAbilityDialog.improvementChanceLabel"}}
+        <span class="improve-dialog-formula">(
+          <b>{{improvementData.speciesMax}}</b><sub><i>{{localize "RQG.Dialog.improveAbilityDialog.speciesMaxLabel"}}</i></sub> -
+          <b>{{improvementData.chance}}</b><sub><i>{{improvementData.shortName}}</i></sub>
+        ) × <b>5</b>{{#if improvementData.cultBonusValue}} + <b>{{improvementData.cultBonusValue}}</b><sub><i>{{improvementData.cultBonusLabel}}</i></sub>{{/if}}</span>
+      </div>
+      <label>
+        <input
+          type="radio"
+          name="experiencegaintype"
+          class="improvement-type-checkbox"
+          value="experience-gain-fixed"
+        >
+        <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=improvementData.experienceGainFixed}}</span>
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="experiencegaintype"
+          class="improvement-type-checkbox"
+          value="experience-gain-random"
+          data-default-method
+          {{#if showSourceChooser}}{{#if (eq selectedSource "experience")}}checked{{/if}}{{else}}checked{{/if}}
+        >
+        <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=improvementData.experienceGainRandom}}</span>
+      </label>
+    </section>
+    {{/if}}
+
+    {{#if improvementData.showResearch}}
+    <section
+      class="improve-dialog-panel improve-dialog-panel--research"
+      data-source-panel="research"
+      {{#if showSourceChooser}}{{#unless (eq selectedSource "research")}}hidden{{/unless}}{{/if}}
+    >
+      <div class="improve-dialog-option-context">
+        <span class="improve-dialog-formula-value">{{improvementData.chanceToGain}}%</span>
+        {{localize "RQG.Dialog.improveAbilityDialog.improvementChanceLabel"}}
+        <span class="improve-dialog-formula">(
+          <b>{{improvementData.speciesMax}}</b><sub><i>{{localize "RQG.Dialog.improveAbilityDialog.speciesMaxLabel"}}</i></sub> -
+          <b>{{improvementData.chance}}</b><sub><i>{{improvementData.shortName}}</i></sub>
+        ) × <b>5</b>{{#if improvementData.cultBonusValue}} + <b>{{improvementData.cultBonusValue}}</b><sub><i>{{improvementData.cultBonusLabel}}</i></sub>{{/if}}</span>
+      </div>
+      <label>
+        <input
+          type="radio"
+          name="experiencegaintype"
+          class="improvement-type-checkbox"
+          value="research-gain-random"
+          data-default-method
+          {{#if showSourceChooser}}{{#if (eq selectedSource "research")}}checked{{/if}}{{else}}checked{{/if}}
+        >
+        <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=improvementData.researchGainRandom}}</span>
+      </label>
+    </section>
+    {{/if}}
+
+    {{#if improvementData.showTraining}}
+    <section
+      class="improve-dialog-panel improve-dialog-panel--training"
+      data-source-panel="training"
+      {{#if showSourceChooser}}{{#unless (eq selectedSource "training")}}hidden{{/unless}}{{/if}}
+    >
+      <div class="improve-dialog-option-context">{{localize "RQG.Dialog.improveAbilityDialog.afterTrainingSuffixCharacteristic"}}</div>
+      <label>
+        <input
+          type="radio"
+          name="experiencegaintype"
+          class="improvement-type-checkbox"
+          value="training-gain-random"
+          data-default-method
+          {{#if showSourceChooser}}{{#if (eq selectedSource "training")}}checked{{/if}}{{else}}{{#unless improvementData.showExperience}}checked{{/unless}}{{/if}}
+        >
+        <span class="improve-dialog-option-label">{{localize "RQG.Dialog.improveAbilityDialog.gainChar" gain=improvementData.trainingGainRandom}}</span>
+      </label>
+    </section>
+    {{/if}}
+  </div>
+</section>

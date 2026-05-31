@@ -9,6 +9,7 @@ import {
   getRequiredDomDataset,
   hasOwnProperty,
   isDocumentSubType,
+  isFoundryElementInstanceOf,
   isTruthy,
   localize,
   range,
@@ -1204,12 +1205,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     const eventTarget = getEventTargetElement(event);
     const dragHandle = eventTarget?.closest("[data-item-drag-handle], [data-weapon-drag-handle]");
-    if (!(dragHandle instanceof HTMLElement)) {
+    if (!isFoundryElementInstanceOf(dragHandle, HTMLElement)) {
       return;
     }
 
     const itemContainer = dragHandle.closest("[data-item-id]");
-    if (!(itemContainer instanceof HTMLElement)) {
+    if (!isFoundryElementInstanceOf(itemContainer, HTMLElement)) {
       return;
     }
 

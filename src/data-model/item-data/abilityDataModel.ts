@@ -100,6 +100,20 @@ export abstract class AbilityDataModel<
     }
   }
 
+  /**
+   * Apply a chance improvement and clear the current experience check.
+   * Subclasses can override if they store gains in a different field.
+   */
+  async applyChanceGain(gain: number): Promise<void> {
+    const item = this.parent;
+    if (!item) {
+      throw new RqgError("Tried to improve item that isn't embedded on an actor", item);
+    }
+
+    const newChance = Number(this.chance) + gain;
+    await item.update({ system: { hasExperience: false, chance: newChance } });
+  }
+
   // Declared here to satisfy TypeScript since abilitySchemaFields provides them.
   // The actual values come from the schema definition in the subclass.
   declare chance: number;

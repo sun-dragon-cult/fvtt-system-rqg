@@ -96,7 +96,15 @@ export const templatePaths = {
 
   // Applications & Dialogs
   dialogRuneMagicCult: "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
-  dialogImproveAbility: "systems/rqg/applications/improveAbilityDialog.hbs",
+  improveDialogHeader: "systems/rqg/applications/improve-dialogs/improve-dialog-header.hbs",
+  improveDialogSourceChooser:
+    "systems/rqg/applications/improve-dialogs/improve-dialog-source-chooser.hbs",
+  improveDialogSourceOption:
+    "systems/rqg/applications/improve-dialogs/improve-dialog-source-option.hbs",
+  improveAbilityDialogBody:
+    "systems/rqg/applications/improve-dialogs/improve-ability-dialog-body.hbs",
+  improveCharacteristicDialogBody:
+    "systems/rqg/applications/improve-dialogs/improve-characteristic-dialog-body.hbs",
   dialogMigrateWorld: "systems/rqg/applications/migrateWorldDialog.hbs",
   migrationReportPerformed: "systems/rqg/applications/migrationReportPerformed.hbs",
   migrationReportIssues: "systems/rqg/applications/migrationReportIssues.hbs",
@@ -197,6 +205,10 @@ export const loadHandlebarsTemplates = async function () {
 
     // Application sheet parts
     rollModes: "systems/rqg/applications/app-parts/rollModes.hbs",
+    improveDialogSourceChooser:
+      "systems/rqg/applications/improve-dialogs/improve-dialog-source-chooser.hbs",
+    improveDialogSourceOption:
+      "systems/rqg/applications/improve-dialogs/improve-dialog-source-option.hbs",
 
     // RqidLink partials
     rqidLink: "systems/rqg/sheet-partials/rqidLink.hbs",

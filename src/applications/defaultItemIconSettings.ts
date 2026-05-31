@@ -2,7 +2,11 @@ import { systemId } from "../system/config";
 import { defaultItemIconsObject } from "../system/settings/defaultItemIcons";
 import type { ItemTypeEnum, RqgItemType } from "@item-model/itemTypes.ts";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
-import { localizeItemType } from "../system/util";
+import {
+  getEventTargetElement,
+  isFoundryElementInstanceOf,
+  localizeItemType,
+} from "../system/util";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -73,8 +77,8 @@ export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
   }
 
   private updatePreviewFromEvent(event: Event): void {
-    const target = event.target;
-    if (!(target instanceof HTMLElement)) {
+    const target = getEventTargetElement(event);
+    if (!isFoundryElementInstanceOf(target, HTMLElement)) {
       return;
     }
 
@@ -83,10 +87,9 @@ export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
       return;
     }
 
-    const input =
-      target instanceof HTMLInputElement
-        ? target
-        : filePicker.querySelector<HTMLInputElement>("input");
+    const input = isFoundryElementInstanceOf(target, HTMLInputElement)
+      ? target
+      : filePicker.querySelector<HTMLInputElement>("input");
     const selectedPath =
       (filePicker as HTMLInputElement & { value?: string }).value ?? input?.value;
     if (!selectedPath) {
