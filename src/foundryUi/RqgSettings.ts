@@ -26,6 +26,10 @@ export class RqgSettings extends Settings {
   };
 
   static async migrateWorld(): Promise<void> {
+    if (!game.user?.isGM) {
+      return;
+    }
+
     const confirmed = await foundry.applications.api.DialogV2.confirm({
       window: { title: "RQG.Foundry.Settings.Migrate.TriggerTitle" },
       content: localize("RQG.Foundry.Settings.Migrate.TriggerContents"),

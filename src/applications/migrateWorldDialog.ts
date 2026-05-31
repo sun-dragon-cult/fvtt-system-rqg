@@ -7,22 +7,26 @@ export async function migrateWorldDialog(systemVersion: string): Promise<boolean
     templatePaths.dialogMigrateWorld,
     {
       worldVersion: game.settings?.get(systemId, "worldMigrationVersion"),
-      systemVersion: systemVersion,
+      systemVersion,
     },
   );
-  const result = await foundry.applications.api.DialogV2.prompt({
+  const confirmed = await foundry.applications.api.DialogV2.confirm({
     window: { title: localize("RQG.Migration.Dialog.windowTitle") },
     content,
     position: { width: 600 },
-    ok: {
+    yes: {
       label: localize("RQG.Migration.Dialog.btnMigrate", {
         worldTitle: game.world?.title ?? "",
-        systemVersion: systemVersion,
+        systemVersion,
       }),
       icon: "fas fa-wrench",
       default: true,
     },
+    no: {
+      label: localize("RQG.Dialog.Common.btnCancel"),
+      icon: "fas fa-times",
+    },
   });
 
-  return result === "ok";
+  return confirmed === true;
 }
