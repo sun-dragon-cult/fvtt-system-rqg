@@ -110,6 +110,7 @@ export const templatePaths = {
   migrationReportIssues: "systems/rqg/applications/migrationReportIssues.hbs",
   migrationReportSummary: "systems/rqg/applications/migrationReportSummary.hbs",
   dialogRqidEditor: "systems/rqg/applications/rqidEditor/rqidEditor.hbs",
+  dialogRqidEditorInfo: "systems/rqg/applications/rqidEditor/rqidEditorInfo.hbs",
   rqidBatchEditor: "systems/rqg/applications/rqid-batch-editor/rqidBatchEditor.hbs",
   confirmCopyIntangibleItem: "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",

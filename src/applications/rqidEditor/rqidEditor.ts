@@ -1,5 +1,11 @@
 import { systemId } from "../../system/config";
-import { escapeRegex, getRequiredDomDataset, toKebabCase, trimChars } from "../../system/util";
+import {
+  escapeRegex,
+  getRequiredDomDataset,
+  localize,
+  toKebabCase,
+  trimChars,
+} from "../../system/util";
 import { Rqid, isRqidDocumentName } from "../../system/api/rqidApi";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 
@@ -10,6 +16,8 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 interface DocumentInfo {
   priority: number;
   link: string;
+  isCurrent: boolean;
+  hasDuplicatePriority: boolean;
 }
 
 interface RqidEditorData {
@@ -32,11 +40,19 @@ interface RqidEditorData {
   rqidNamePart: string | undefined;
   parentRqid: string;
   parentMissingRqid: boolean;
+  buttons: {
+    type: "button" | "submit";
+    action?: "cancel";
+    icon: string;
+    label: string;
+  }[];
 }
 
 export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEditorData>) {
   private document: Document.Any;
   private parentAppLinked = false;
+  private duplicateLookupDebounce?: number;
+  private duplicateLookupRequestId = 0;
 
   constructor(document: Document.Any, options?: any) {
     super(options);
@@ -49,6 +65,7 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     window: {
       title: "Rqid Editor",
       resizable: true,
+      contentClasses: ["standard-form", "rqid-editor-main"],
     },
     position: {
       width: 650,
@@ -57,15 +74,23 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     },
     form: {
       handler: RqidEditor.onSubmit,
-      closeOnSubmit: false,
-      submitOnChange: true,
+      closeOnSubmit: true,
+    },
+    actions: {
+      cancel: RqidEditor.onCancel,
     },
   };
 
   static override PARTS = {
     body: {
       template: templatePaths.dialogRqidEditor,
-      root: true,
+    },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
+    info: {
+      template: templatePaths.dialogRqidEditorInfo,
+      scrollable: [""],
     },
   };
 
@@ -160,7 +185,14 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
       | "compendiumDuplicates"
       | "worldDocumentInfo"
       | "compendiumDocumentInfo"
-    > = {};
+    > = {
+      warnDuplicateWorldPriority: false,
+      warnDuplicateCompendiumPriority: false,
+      worldDuplicates: 0,
+      compendiumDuplicates: 0,
+      worldDocumentInfo: [],
+      compendiumDocumentInfo: [],
+    };
 
     let rqidLinkData: Pick<RqidEditorData, "rqidLink" | "fullRqid"> = {};
 
@@ -182,23 +214,36 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
           { source: "packs", mode: "all" },
         );
 
-        const worldDocumentInfo: { priority: number; link: string; folder: string }[] = [];
+        const duplicateWorldPriorities = this.getDuplicatePriorities(worldDocuments);
+        const duplicateCompendiumPriorities = this.getDuplicatePriorities(compendiumDocuments);
+
+        const worldDocumentInfo: (DocumentInfo & {
+          folder: string;
+        })[] = [];
         for (const d of worldDocuments) {
           const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
+          const priorityLabel = this.getPriorityLabel(d);
           worldDocumentInfo.push({
-            priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
+            priority: Number(priorityLabel),
             link: link,
             folder: this.getPath(d),
+            isCurrent: d.uuid === this.document.uuid,
+            hasDuplicatePriority: duplicateWorldPriorities.has(priorityLabel),
           });
         }
 
-        const compendiumDocumentInfo: { priority: number; link: string; compendium: string }[] = [];
+        const compendiumDocumentInfo: (DocumentInfo & {
+          compendium: string;
+        })[] = [];
         for (const d of compendiumDocuments) {
           const link = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
+          const priorityLabel = this.getPriorityLabel(d);
           compendiumDocumentInfo.push({
-            priority: Rqid.getDocumentFlag(d)?.priority ?? -Infinity,
+            priority: Number(priorityLabel),
             link: link,
             compendium: `${d.compendium?.metadata?.label} => ${d.compendium?.metadata?.packageName}`,
+            isCurrent: d.uuid === this.document.uuid,
+            hasDuplicatePriority: duplicateCompendiumPriorities.has(priorityLabel),
           });
         }
 
@@ -250,6 +295,19 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
       rqidNamePart: Rqid.getDocumentFlag(this.document)?.id?.split(".").pop(),
       parentRqid: parentRqid,
       parentMissingRqid: this.document.isEmbedded && !parentRqid,
+      buttons: [
+        {
+          type: "submit",
+          icon: "fa-solid fa-floppy-disk",
+          label: "SETTINGS.Save",
+        },
+        {
+          type: "button",
+          action: "cancel",
+          icon: "fa-solid fa-times",
+          label: "RQG.Dialog.Common.btnCancel",
+        },
+      ],
     };
   }
 
@@ -259,34 +317,22 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
 
     this.element.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const document = await fromUuid(this.document.uuid);
-        if (!document) {
-          console.warn("RQG | Couldn't find document from uuid");
-          return;
-        }
-
-        const updateData = {
-          flags: {
-            rqg: {
-              documentRqidFlags: {
-                id: Rqid.getDefaultRqid(document),
-                lang: Rqid.getDocumentFlag(document)?.lang ?? CONFIG.RQG.fallbackLanguage,
-                priority: Rqid.getDocumentFlag(document)?.priority ?? 0,
-              },
-            },
-          },
-        };
-        // @ts-expect-error Document.Any.update() first arg typed as never
-        await this.document.update(foundry.utils.flattenObject(updateData));
-        await this.syncRqidHeaderIconState();
-        this.render();
+        this.applyDefaultRqidToForm();
       });
     });
 
     this.element.querySelectorAll<HTMLElement>("[data-item-copy-input]").forEach((el) => {
-      el.addEventListener("click", async () => {
-        const input = el.previousElementSibling as HTMLInputElement;
-        await navigator.clipboard.writeText(input.value);
+      el.addEventListener("click", async (event) => {
+        event.preventDefault();
+        const copyTarget = el.dataset["copyTarget"];
+        const input = copyTarget
+          ? this.element.querySelector<HTMLInputElement>(`#${copyTarget}`)
+          : (el.previousElementSibling as HTMLInputElement | null);
+        const value = input?.value ?? "";
+        if (!value) {
+          return;
+        }
+        await navigator.clipboard.writeText(value);
       });
     });
 
@@ -302,6 +348,18 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
         new RqidEditor(parentDocument, {}).render({ force: true });
       });
     });
+
+    this.element
+      .querySelector<HTMLInputElement>('input[name="rqidNamePart"]')
+      ?.addEventListener("input", () => this.syncRetrievalPreview());
+    this.element
+      .querySelector<HTMLSelectElement>('select[name="flags.rqg.documentRqidFlags.lang"]')
+      ?.addEventListener("change", () => this.syncRetrievalPreview());
+    this.element
+      .querySelector<HTMLInputElement>('input[name="flags.rqg.documentRqidFlags.priority"]')
+      ?.addEventListener("input", () => this.syncRetrievalPreview());
+
+    this.syncRetrievalPreview();
   }
 
   override async close(options?: any): Promise<this> {
@@ -329,7 +387,289 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     // @ts-expect-error Document.Any.update() first arg typed as never
     await this.document.update(data);
     await this.syncRqidHeaderIconState();
-    this.render();
+  }
+
+  private static onCancel(this: RqidEditor): void {
+    this.close();
+  }
+
+  private applyDefaultRqidToForm(): void {
+    const defaultRqid = Rqid.getDefaultRqid(this.document);
+    const rqidNamePart = defaultRqid.split(".").pop() ?? "";
+
+    const rqidInput = this.element.querySelector<HTMLInputElement>('input[name="rqidNamePart"]');
+    if (rqidInput) {
+      rqidInput.value = rqidNamePart;
+    }
+
+    const langSelect = this.element.querySelector<HTMLSelectElement>(
+      'select[name="flags.rqg.documentRqidFlags.lang"]',
+    );
+    if (langSelect) {
+      langSelect.value = Rqid.getDocumentFlag(this.document)?.lang ?? CONFIG.RQG.fallbackLanguage;
+    }
+
+    const priorityInput = this.element.querySelector<HTMLInputElement>(
+      'input[name="flags.rqg.documentRqidFlags.priority"]',
+    );
+    if (priorityInput) {
+      priorityInput.value = String(Rqid.getDocumentFlag(this.document)?.priority ?? 0);
+    }
+
+    this.syncRetrievalPreview();
+  }
+
+  private syncRetrievalPreview(): void {
+    const rqidInput = this.element.querySelector<HTMLInputElement>('input[name="rqidNamePart"]');
+    const langSelect = this.element.querySelector<HTMLSelectElement>(
+      'select[name="flags.rqg.documentRqidFlags.lang"]',
+    );
+    const priorityInput = this.element.querySelector<HTMLInputElement>(
+      'input[name="flags.rqg.documentRqidFlags.priority"]',
+    );
+    const getLikeThisInput = this.element.querySelector<HTMLInputElement>(
+      "#rqid-editor-get-document-like-this",
+    );
+    const journalLinkInput = this.element.querySelector<HTMLInputElement>(
+      "#rqid-editor-journal-link-to-document-like-this",
+    );
+
+    if (!rqidInput || !getLikeThisInput || !journalLinkInput) {
+      return;
+    }
+
+    const rqidNamePart = toKebabCase(rqidInput.value.trim());
+    const dependentElements = this.element.querySelectorAll<HTMLElement>("[data-rqid-dependent]");
+
+    if (!rqidNamePart) {
+      getLikeThisInput.value = "";
+      journalLinkInput.value = "";
+      dependentElements.forEach((el) => {
+        el.hidden = true;
+      });
+      this.scheduleDuplicateLookupPreview(
+        undefined,
+        langSelect?.value,
+        this.getPreviewPriority(priorityInput),
+      );
+      return;
+    }
+
+    const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
+    const parentRqid: string = this.document.isEmbedded
+      ? (Rqid.getDocumentFlag(this.document.parent)?.id ?? "")
+      : "";
+    const documentRqid = `${documentIdPart}.${documentType}.${rqidNamePart}`;
+    const fullRqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
+    const lang = langSelect?.value ?? CONFIG.RQG.fallbackLanguage;
+
+    getLikeThisInput.value = `await game.system.api.rqid.fromRqid("${fullRqid}","${lang}")`;
+    journalLinkInput.value = `@RQID[${fullRqid}]{${this.document.name}}`;
+
+    dependentElements.forEach((el) => {
+      el.hidden = false;
+    });
+
+    this.scheduleDuplicateLookupPreview(documentRqid, lang, this.getPreviewPriority(priorityInput));
+  }
+
+  private scheduleDuplicateLookupPreview(
+    documentRqid: string | undefined,
+    lang?: string,
+    currentPriority?: number,
+  ): void {
+    if (this.duplicateLookupDebounce) {
+      clearTimeout(this.duplicateLookupDebounce);
+    }
+
+    this.duplicateLookupDebounce = window.setTimeout(() => {
+      void this.updateDuplicateLookupPreview(documentRqid, lang, currentPriority);
+    }, 180);
+  }
+
+  private async updateDuplicateLookupPreview(
+    documentRqid: string | undefined,
+    lang?: string,
+    currentPriority?: number,
+  ): Promise<void> {
+    const requestId = ++this.duplicateLookupRequestId;
+
+    const duplicateElements = this.element.querySelectorAll<HTMLElement>("[data-rqid-duplicates]");
+    const worldSummary = this.element.querySelector<HTMLElement>("#rqid-editor-docs-world-summary");
+    const compSummary = this.element.querySelector<HTMLElement>(
+      "#rqid-editor-docs-compendium-summary",
+    );
+    const worldWarning = this.element.querySelector<HTMLElement>("#rqid-editor-docs-world-warning");
+    const compWarning = this.element.querySelector<HTMLElement>(
+      "#rqid-editor-docs-compendium-warning",
+    );
+    const worldRows = this.element.querySelector<HTMLTableSectionElement>(
+      "#rqid-editor-docs-world-rows",
+    );
+    const compRows = this.element.querySelector<HTMLTableSectionElement>(
+      "#rqid-editor-docs-compendium-rows",
+    );
+
+    if (!worldSummary || !compSummary || !worldWarning || !compWarning || !worldRows || !compRows) {
+      return;
+    }
+
+    const rqidDocumentName = documentRqid?.split(".")[0];
+    const canLookup = !!documentRqid && !!rqidDocumentName && !this.document.isEmbedded;
+
+    duplicateElements.forEach((el) => {
+      el.hidden = !canLookup;
+    });
+
+    if (!canLookup || !isRqidDocumentName(rqidDocumentName)) {
+      worldRows.innerHTML = "";
+      compRows.innerHTML = "";
+      worldWarning.hidden = true;
+      compWarning.hidden = true;
+      return;
+    }
+
+    const lookupLang = lang ?? CONFIG.RQG.fallbackLanguage;
+    const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
+
+    const worldDocuments = await Rqid.fromRqidRegex(rqidSearchRegex, rqidDocumentName, lookupLang, {
+      source: "world",
+      mode: "all",
+    });
+    const compendiumDocuments = await Rqid.fromRqidRegex(
+      rqidSearchRegex,
+      rqidDocumentName,
+      lookupLang,
+      {
+        source: "packs",
+        mode: "all",
+      },
+    );
+
+    if (requestId !== this.duplicateLookupRequestId) {
+      return;
+    }
+
+    worldSummary.textContent = localize("RQG.RQGSystem.DocsInWorld", {
+      count: `${worldDocuments.length}`,
+    });
+    compSummary.textContent = localize("RQG.RQGSystem.DocsInCompendiums", {
+      count: `${compendiumDocuments.length}`,
+    });
+
+    const uniqueWorldPriorityCount = new Set(
+      worldDocuments.map((d) => this.getPriorityLabel(d, currentPriority)),
+    ).size;
+    const uniqueCompendiumPriorityCount = new Set(
+      compendiumDocuments.map((d) => this.getPriorityLabel(d, currentPriority)),
+    ).size;
+    const duplicateWorldPriorities = this.getDuplicatePriorities(worldDocuments, currentPriority);
+    const duplicateCompendiumPriorities = this.getDuplicatePriorities(
+      compendiumDocuments,
+      currentPriority,
+    );
+
+    worldWarning.hidden = uniqueWorldPriorityCount === worldDocuments.length;
+    compWarning.hidden = uniqueCompendiumPriorityCount === compendiumDocuments.length;
+
+    worldRows.innerHTML = "";
+    for (const d of worldDocuments) {
+      const tr = document.createElement("tr");
+      if (d.uuid === this.document.uuid) {
+        tr.classList.add("current-document-row");
+      }
+      const priorityTd = document.createElement("td");
+      const linkTd = document.createElement("td");
+      const folderTd = document.createElement("td");
+      const statusTd = document.createElement("td");
+      statusTd.classList.add("status-col");
+      const priorityLabel = this.getPriorityLabel(d, currentPriority);
+      const hasDuplicatePriority = duplicateWorldPriorities.has(priorityLabel);
+
+      priorityTd.classList.add("priority-cell");
+      priorityTd.textContent = priorityLabel;
+      if (hasDuplicatePriority) {
+        priorityTd.appendChild(this.createDuplicatePriorityMarker());
+      }
+      linkTd.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
+      folderTd.textContent = this.getPath(d);
+      if (d.uuid === this.document.uuid) {
+        const markerText = localize("RQG.RQGSystem.CurrentDocumentMarkerTooltip");
+        statusTd.dataset["tooltip"] = markerText;
+        statusTd.setAttribute("aria-label", markerText);
+        statusTd.appendChild(this.createCurrentDocumentMarker());
+      }
+
+      tr.append(priorityTd, linkTd, folderTd, statusTd);
+      worldRows.appendChild(tr);
+    }
+
+    compRows.innerHTML = "";
+    for (const d of compendiumDocuments) {
+      const tr = document.createElement("tr");
+      if (d.uuid === this.document.uuid) {
+        tr.classList.add("current-document-row");
+      }
+      const priorityTd = document.createElement("td");
+      const linkTd = document.createElement("td");
+      const compendiumTd = document.createElement("td");
+      const statusTd = document.createElement("td");
+      statusTd.classList.add("status-col");
+      const priorityLabel = this.getPriorityLabel(d, currentPriority);
+      const hasDuplicatePriority = duplicateCompendiumPriorities.has(priorityLabel);
+
+      priorityTd.classList.add("priority-cell");
+      priorityTd.textContent = priorityLabel;
+      if (hasDuplicatePriority) {
+        priorityTd.appendChild(this.createDuplicatePriorityMarker());
+      }
+      linkTd.innerHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(d.link);
+      compendiumTd.textContent = `${d.compendium?.metadata?.label} => ${d.compendium?.metadata?.packageName}`;
+      if (d.uuid === this.document.uuid) {
+        const markerText = localize("RQG.RQGSystem.CurrentDocumentMarkerTooltip");
+        statusTd.dataset["tooltip"] = markerText;
+        statusTd.setAttribute("aria-label", markerText);
+        statusTd.appendChild(this.createCurrentDocumentMarker());
+      }
+
+      tr.append(priorityTd, linkTd, compendiumTd, statusTd);
+      compRows.appendChild(tr);
+    }
+  }
+
+  private createCurrentDocumentMarker(): HTMLElement {
+    const marker = document.createElement("i");
+    marker.classList.add("fas", "fa-location-dot", "current-document-marker");
+    return marker;
+  }
+
+  private createDuplicatePriorityMarker(): HTMLElement {
+    const marker = document.createElement("i");
+    const tooltip = localize("RQG.RQGSystem.DuplicatePriorityMarkerTooltip");
+    marker.classList.add("fas", "fa-exclamation-triangle", "duplicate-priority-marker");
+    marker.dataset["tooltip"] = tooltip;
+    marker.setAttribute("aria-label", tooltip);
+    return marker;
+  }
+
+  private getPreviewPriority(priorityInput: HTMLInputElement | null): number {
+    return Number(priorityInput?.value) || 0;
+  }
+
+  private getPriorityLabel(document: Document.Any, currentPriority?: number): string {
+    if (currentPriority != null && document.uuid === this.document.uuid) {
+      return String(currentPriority);
+    }
+    return String(Rqid.getDocumentFlag(document)?.priority ?? -Infinity);
+  }
+
+  private getDuplicatePriorities(documents: Document.Any[], currentPriority?: number): Set<string> {
+    const priorityKeys = documents.map((d) => this.getPriorityLabel(d, currentPriority));
+    const counts = new Map<string, number>();
+    for (const key of priorityKeys) {
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return new Set([...counts].filter(([, count]) => count > 1).map(([key]) => key));
   }
 
   private getPath(document: Document.Any): string {
