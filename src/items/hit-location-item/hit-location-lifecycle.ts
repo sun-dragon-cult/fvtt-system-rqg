@@ -9,6 +9,14 @@ function hitPointsPerLocation(totalHitPoints: number, baseHpDelta: number): numb
   return Math.max(2, Math.ceil(totalHitPoints / 3)) + (baseHpDelta || 0);
 }
 
+function updateHitLocationHitPoints(item: HitLocationItem, totalHp: number): void {
+  item.system.hitPoints.max = hitPointsPerLocation(totalHp, item.system.baseHpDelta);
+  item.system.hitPoints.value = item.system.wounds.reduce(
+    (acc: number, wound: number) => acc - wound,
+    item.system.hitPoints.max,
+  );
+}
+
 export const hitLocationLifecycle = {
   handleActorPrepareEmbeddedDocuments(item: RqgItem): RqgItem {
     if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
@@ -22,7 +30,6 @@ export const hitLocationLifecycle = {
       ActorTypeEnum.Character,
       "RQG.Item.Notification.HitLocationDoesNotHaveActorError",
     );
-    const actorData = actor.system;
 
     // Add equipped armor absorptions for this hit location
     const armorAbsorption = actor.items.reduce((sum, armorItem) => {
@@ -40,16 +47,27 @@ export const hitLocationLifecycle = {
 
     item.system.armorPoints = item.system.naturalAp + armorAbsorption;
 
-    // Calc HP
-    const totalHp = actorData.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
     // Remove any healed wounds
     item.system.wounds = item.system.wounds.filter((w) => w > 0);
 
-    item.system.hitPoints.max = hitPointsPerLocation(totalHp, item.system.baseHpDelta);
-    item.system.hitPoints.value = item.system.wounds.reduce(
-      (acc: number, w: number) => acc - w,
-      item.system.hitPoints.max,
+    return item;
+  },
+
+  handleActorPrepareDerivedData(item: RqgItem): RqgItem {
+    if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
+      const msg = localize("RQG.Item.Notification.ItemWasNotHitLocationError");
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, item);
+    }
+
+    assertDocumentSubType<CharacterActor>(
+      item.actor,
+      ActorTypeEnum.Character,
+      "RQG.Item.Notification.HitLocationDoesNotHaveActorError",
     );
+
+    const totalHp = item.actor.system.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
+    updateHitLocationHitPoints(item, totalHp);
 
     return item;
   },

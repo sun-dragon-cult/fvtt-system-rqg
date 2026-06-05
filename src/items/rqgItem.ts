@@ -5,8 +5,8 @@ import { RuneSheet } from "./rune-item/runeSheet";
 import { RuneSheetV2 } from "./rune-item/runeSheetV2";
 import { SkillSheet } from "./skill-item/skillSheet";
 import { SkillSheetV2 } from "./skill-item/skillSheetV2";
-import { HitLocationSheet } from "./hit-location-item/hitLocationSheet";
-import { HitLocationSheetV2 } from "./hit-location-item/hitLocationSheetV2";
+import { HitLocationSheet } from "./hit-location-item/hit-location-sheet";
+import { HitLocationSheetV2 } from "./hit-location-item/hit-location-sheet-v2";
 import { GearSheet } from "./gear-item/gearSheet";
 import { GearSheetV2 } from "./gear-item/gearSheetV2";
 import { ArmorSheet } from "./armor-item/armorSheet";
@@ -54,6 +54,13 @@ import { physicalItemTypes } from "@item-model/IPhysicalItem.ts";
 
 import type { PassionItem } from "@item-model/passionDataModel.ts";
 import { handleItemUpdateDocumentsPreUpdate } from "./itemLifecycleStrategy";
+import {
+  applyWoundToHitLocation,
+  healWoundOnHitLocation,
+  type ApplyWoundToHitLocationOptions,
+} from "./hit-location-item";
+
+export type { ApplyWoundToHitLocationOptions } from "./hit-location-item";
 
 export class RqgItem extends Item {
   public static init() {
@@ -295,6 +302,19 @@ export class RqgItem extends Item {
   public async attack(): Promise<void> {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
     await this.system.attack();
+  }
+
+  /** Apply damage as a wound on this hit-location item. */
+  public async applyWound(
+    damage: number,
+    options: ApplyWoundToHitLocationOptions = {},
+  ): Promise<void> {
+    await applyWoundToHitLocation(this, damage, options);
+  }
+
+  /** Heal one wound entry on this hit-location item. */
+  public async healWound(healWoundIndex: number, healPoints: number): Promise<boolean> {
+    return healWoundOnHitLocation(this, healWoundIndex, healPoints);
   }
 
   /**

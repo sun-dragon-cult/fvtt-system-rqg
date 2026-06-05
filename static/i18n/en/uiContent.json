@@ -839,8 +839,11 @@
         "Wounds": "Wounds",
         "AddWound": {
           "Title": "Apply Wound to {hitLocationName}",
+          "DamageToApply": "Damage to apply",
+          "TotalHpAfter": "Total HP after",
           "ApplyToTotalHitPointsQ": "Apply to total HP?",
           "SubtractArmorPointsQ": "Subtract AP?",
+          "EffectiveDamage": "Effective damage",
           "btnAddWound": "Add Wound"
         },
         "AddWoundChatContent": "{actorName} takes a wound to the {hitLocationName}. {notification}",
@@ -848,8 +851,14 @@
         "HealWound": {
           "Title": "Heal Wound to {hitLocationName}",
           "SelectWoundToHeal": "Select Wound to Heal on {hitLocationName}",
+          "HealModeLabel": "Heal Target",
+          "HealModeSingle": "Heal One Wound",
+          "HealModeAll": "Remove All Damage",
           "HitPointsToHeal": "Hit Points to Heal: ",
-          "btnHealWound": "Heal Wound"
+          "btnHealWound": "Heal Wound",
+          "btnHealAllWounds": "Heal All Wounds",
+          "FeedbackHealedSingle": "Applied {healPoints} healing.",
+          "FeedbackHealedAll": "All damage removed."
         },
         "HealthStatusEnum": {
           "healthy": "Healthy",
@@ -860,6 +869,10 @@
         "Notification": {
           "CantFindItem": "Couldn't find an item during location changes",
           "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
+          "LimbUseless": "{speakerName}'s {hitLocationName} is useless and cannot hold anything / support standing. {speakerName} can still fight with whatever limbs are still functional.",
+          "LimbShock": "{speakerName} is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.",
+          "ChestShock": "{speakerName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.",
+          "SeveredCannotBeHit": "{hitLocationName} is gone and cannot be hit anymore, reroll to get a new hit location!",
           "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
           "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
           "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",

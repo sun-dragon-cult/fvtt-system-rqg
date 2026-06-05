@@ -1,10 +1,10 @@
-import type { ActorHealthState } from "../data-model/actor-data/attributes";
-import { assertDocumentSubType, RqgError } from "./util";
+import type { ActorHealthState } from "../../data-model/actor-data/attributes";
+import { assertDocumentSubType, RqgError } from "../../system/util";
 import type { HitLocationHealthState, HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { RqgActor } from "../actors/rqgActor";
-import type { RqgItem } from "../items/rqgItem";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { RqgItem } from "../rqgItem";
 
 import type { DeepPartial } from "fvtt-types/utils";
 

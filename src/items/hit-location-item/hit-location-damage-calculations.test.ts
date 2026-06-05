@@ -1,7 +1,9 @@
-import { DamageCalculations } from "./damageCalculations";
-import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
+import { DamageCalculations } from "./hit-location-damage-calculations";
+import { mockActor as mockActorOriginal } from "../../../test/mocks/mockActor.ts";
+import { applyTestDamage } from "./hit-location-test-helpers";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { localize } from "../../system/util";
 import { describe, it, expect, beforeEach } from "vitest";
 
 describe("Inflict Damage", () => {
@@ -27,11 +29,9 @@ describe("Inflict Damage", () => {
 
   describe("Limb Damage", () => {
     it("should be correct for smaller wounds", () => {
-      // --- Arrange ---
       const appliedDamage = mockLeftLeg.system.hitPoints.max! - 1;
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -39,7 +39,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           hitLocationHealthState: "wounded",
@@ -61,11 +60,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= HP should make limb useless", () => {
-      // --- Arrange ---
-      const appliedDamage = mockLeftLeg.system.hitPoints.max!; // 5
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockLeftLeg.system.hitPoints.max!;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -73,7 +70,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "wounded",
@@ -82,7 +78,10 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt's Left Leg is useless and cannot hold anything / support standing. Pelle Plutt can still fight with whatever limbs are still functional.",
+        localize("RQG.Item.HitLocation.Notification.LimbUseless", {
+          speakerName: "Pelle Plutt",
+          hitLocationName: "Left Leg",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -97,11 +96,9 @@ describe("Inflict Damage", () => {
     });
 
     it("should be maxed out to 2*Limb HP", () => {
-      // --- Arrange ---
-      const appliedDamage = mockLeftLeg.system.hitPoints.max! * 2; // 10
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockLeftLeg.system.hitPoints.max! * 2;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -109,7 +106,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "shock",
@@ -118,7 +114,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.",
+        localize("RQG.Item.HitLocation.Notification.LimbShock", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -133,12 +131,10 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 3 * HP should severe the limb", () => {
-      // --- Arrange ---
-      const appliedDamage = mockLeftLeg.system.hitPoints.max! * 3; // 15
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
-      const maxDamage = mockLeftLeg.system.hitPoints.max! * 2; // Limbs can't take more damage
+      const appliedDamage = mockLeftLeg.system.hitPoints.max! * 3;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
+      const maxDamage = mockLeftLeg.system.hitPoints.max! * 2;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -146,7 +142,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "shock",
@@ -170,11 +165,9 @@ describe("Inflict Damage", () => {
     });
 
     it("should not be affected by more damage if previously severed", () => {
-      // --- Arrange --- (Sever arm)
       applyTestDamage(222, true, mockLeftLeg, mockActor);
       const appliedDamage = 3;
 
-      // --- Act --- (Try to hit the same arm again)
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -182,11 +175,12 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({});
       expect(actorUpdates).toStrictEqual({});
       expect(notification).toBe(
-        "Left Leg is gone and cannot be hit anymore, reroll to get a new hit location!",
+        localize("RQG.Item.HitLocation.Notification.SeveredCannotBeHit", {
+          hitLocationName: "Left Leg",
+        }),
       );
       expect(uselessLegs).toStrictEqual([]);
     });
@@ -194,11 +188,9 @@ describe("Inflict Damage", () => {
 
   describe("Head Damage", () => {
     it("should be correct for smaller wounds", () => {
-      // --- Arrange ---
       const appliedDamage = mockHead.system.hitPoints.max! - 1;
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -206,7 +198,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "wounded",
@@ -218,7 +209,6 @@ describe("Inflict Damage", () => {
       expect(actorUpdates).toStrictEqual({
         system: {
           attributes: {
-            // health: "wounded", // TODO this is added by the actorSheet itself for now
             hitPoints: {
               value: actorTotalHp - appliedDamage,
             },
@@ -229,11 +219,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= HP should knock actor unconscious", () => {
-      // --- Arrange ---
-      const appliedDamage = mockHead.system.hitPoints.max!; // 2
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockHead.system.hitPoints.max!;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -241,7 +229,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "unconscious",
@@ -265,11 +252,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 2*HP should knock actor unconscious", () => {
-      // --- Arrange ---
-      const appliedDamage = mockHead.system.hitPoints.max! * 2; // 10
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockHead.system.hitPoints.max! * 2;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -277,7 +262,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "unconscious",
@@ -301,11 +285,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 3*HP kills the actor", () => {
-      // --- Arrange ---
-      const appliedDamage = mockHead.system.hitPoints.max! * 3; // 15
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockHead.system.hitPoints.max! * 3;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -313,7 +295,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "dead",
@@ -337,11 +318,9 @@ describe("Inflict Damage", () => {
 
   describe("Chest Damage", () => {
     it("should be correct for smaller wounds", () => {
-      // --- Arrange ---
       const appliedDamage = mockChest.system.hitPoints.max! - 1;
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -349,7 +328,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "wounded",
@@ -371,11 +349,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= HP should put actor in shock", () => {
-      // --- Arrange ---
-      const appliedDamage = mockChest.system.hitPoints.max!; // 6
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockChest.system.hitPoints.max!;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -383,7 +359,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "shock",
@@ -392,7 +367,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.",
+        localize("RQG.Item.HitLocation.Notification.ChestShock", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -407,11 +384,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 2*HP should knock actor unconscious", () => {
-      // --- Arrange ---
-      const appliedDamage = mockChest.system.hitPoints.max! * 2; // 12
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockChest.system.hitPoints.max! * 2;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -419,7 +394,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "unconscious",
@@ -443,11 +417,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 3*HP kills the actor", () => {
-      // --- Arrange ---
-      const appliedDamage = mockChest.system.hitPoints.max! * 3; // 18
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockChest.system.hitPoints.max! * 3;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -455,7 +427,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "dead",
@@ -479,11 +450,9 @@ describe("Inflict Damage", () => {
 
   describe("Abdomen Damage", () => {
     it("should be correct for smaller wounds", () => {
-      // --- Arrange ---
       const appliedDamage = mockAbdomen.system.hitPoints.max! - 1;
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -491,14 +460,12 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
       expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe("");
       expect(actorUpdates).toStrictEqual({
         system: {
           attributes: {
-            // health: "wounded", // TODO this is added by the actorSheet itself for now
             hitPoints: {
               value: actorTotalHp - appliedDamage,
             },
@@ -509,11 +476,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= HP should make actor fall", () => {
-      // --- Arrange ---
       const appliedDamage = mockAbdomen.system.hitPoints.max!;
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -521,7 +486,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
       expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
@@ -530,7 +494,6 @@ describe("Inflict Damage", () => {
       expect(actorUpdates).toStrictEqual({
         system: {
           attributes: {
-            // health: "wounded", // TODO this is added by the actorSheet itself for now
             hitPoints: {
               value: actorTotalHp - appliedDamage,
             },
@@ -554,11 +517,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 2*HP should knock actor unconscious", () => {
-      // --- Arrange ---
-      const appliedDamage = mockAbdomen.system.hitPoints.max! * 2; // 10
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockAbdomen.system.hitPoints.max! * 2;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -566,7 +527,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "unconscious",
@@ -603,11 +563,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 2*HP from 2 smaller wounds should still knock actor unconscious", () => {
-      // --- Arrange ---
-      const appliedDamage = mockAbdomen.system.hitPoints.max!; // 10
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockAbdomen.system.hitPoints.max!;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       applyTestDamage(appliedDamage, true, mockAbdomen, mockActor);
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
@@ -616,7 +574,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "unconscious",
@@ -653,11 +610,9 @@ describe("Inflict Damage", () => {
     });
 
     it(">= 3*HP kills the actor", () => {
-      // --- Arrange ---
-      const appliedDamage = mockAbdomen.system.hitPoints.max! * 3; // 15
-      const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+      const appliedDamage = mockAbdomen.system.hitPoints.max! * 3;
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
-      // --- Act ---
       const { hitLocationUpdates, actorUpdates, notification, uselessLegs } = applyTestDamage(
         appliedDamage,
         true,
@@ -665,7 +620,6 @@ describe("Inflict Damage", () => {
         mockActor,
       );
 
-      // --- Assert ---
       expect(hitLocationUpdates).toStrictEqual({
         system: {
           actorHealthImpact: "dead",
@@ -686,26 +640,10 @@ describe("Inflict Damage", () => {
       expect(uselessLegs).toStrictEqual([]);
     });
   });
-});
 
-export function applyTestDamage(
-  damage: number,
-  applyDamageToTotalHp: boolean,
-  hitLocation: HitLocationItem,
-  actor: CharacterActor,
-) {
-  const damageEffects = DamageCalculations.addWound(
-    damage,
-    true,
-    hitLocation,
-    actor,
-    "Pelle Plutt",
-  );
-  foundry.utils.mergeObject(hitLocation, damageEffects.hitLocationUpdates);
-  foundry.utils.mergeObject(actor, damageEffects.actorUpdates);
-  actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
-  hitLocation.system.hitPoints.value =
-    hitLocation.system.hitPoints.max! -
-    hitLocation.system.wounds.reduce((acc: number, val: number) => acc + val, 0);
-  return damageEffects;
-}
+  describe("Combined Actor Health", () => {
+    it("derives actor health from total HP and hit-location impacts", () => {
+      expect(DamageCalculations.getCombinedActorHealth(mockActor as any)).toBe("healthy");
+    });
+  });
+});

@@ -1,16 +1,16 @@
-import { mockActor as mockActorOriginal } from "../../test/mocks/mockActor.ts";
-import { HealingCalculations, type HealingEffects } from "./healingCalculations";
-import { applyTestDamage } from "./damageCalculations.test";
-import { DamageCalculations } from "./damageCalculations";
-import { assertDocumentSubType } from "./util";
+import { mockActor as mockActorOriginal } from "../../../test/mocks/mockActor.ts";
+import { HealingCalculations } from "./hit-location-healing-calculations";
+import { applyTestDamage, applyTestHealing } from "./hit-location-test-helpers";
+import { DamageCalculations } from "./hit-location-damage-calculations";
+import { assertDocumentSubType } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { RqgActor } from "../actors/rqgActor";
-import { RqgItem } from "../items/rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqgItem";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import { describe, it, expect, beforeEach } from "vitest";
 
-describe("healing", () => {
+describe("HealingCalculations", () => {
   let mockActor: CharacterActor;
   let mockLeftLeg: HitLocationItem;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -28,14 +28,12 @@ describe("healing", () => {
   });
 
   it("should be correct for healing smaller wounds", () => {
-    // --- Arrange ---
     const healPoints = 2;
-    const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+    const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
     applyTestDamage(1, true, mockLeftLeg, mockActor);
     applyTestDamage(healPoints, true, mockLeftLeg, mockActor);
 
-    // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       1,
@@ -43,7 +41,6 @@ describe("healing", () => {
       mockActor,
     );
 
-    // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       system: {
         actorHealthImpact: "wounded",
@@ -64,14 +61,12 @@ describe("healing", () => {
   });
 
   it("should heal severed limb when healing more than 6 points", () => {
-    // --- Arrange ---
     const healPoints = 6;
 
     applyTestDamage(33, true, mockLeftLeg, mockActor);
     expect(mockLeftLeg.system.hitLocationHealthState).toBe("severed");
     expect(mockLeftLeg.system.wounds).toStrictEqual([10]);
 
-    // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       0,
@@ -79,7 +74,6 @@ describe("healing", () => {
       mockActor,
     );
 
-    // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       system: {
         actorHealthImpact: "wounded",
@@ -100,13 +94,11 @@ describe("healing", () => {
   });
 
   it("should not heal severed limb when healing less than 6 points", () => {
-    // --- Arrange ---
     const healPoints = 5;
 
     applyTestDamage(33, true, mockLeftLeg, mockActor);
     expect(mockLeftLeg.system.hitLocationHealthState).toBe("severed");
 
-    // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       0,
@@ -114,7 +106,6 @@ describe("healing", () => {
       mockActor,
     );
 
-    // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       system: {
         actorHealthImpact: "shock",
@@ -135,16 +126,14 @@ describe("healing", () => {
   });
 
   it("should not heal more than the wound", () => {
-    // --- Arrange ---
     const chestDamage = 2;
     const legDamage = 3;
-    const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+    const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
     applyTestDamage(chestDamage, true, mockChest, mockActor);
     applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
     expect(mockActor.system.attributes.health).toBe("wounded");
 
-    // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       chestDamage + 10,
       0,
@@ -152,12 +141,11 @@ describe("healing", () => {
       mockActor,
     );
 
-    // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       system: {
         actorHealthImpact: "healthy",
         hitLocationHealthState: "healthy",
-        wounds: [], // chestDamage - chestDamage
+        wounds: [],
       },
     });
     mockActor.system.attributes.health = DamageCalculations.getCombinedActorHealth(mockActor);
@@ -175,19 +163,15 @@ describe("healing", () => {
   });
 
   it("should bring an actor out of shock when hitlocation HP > 0", () => {
-    // TODO handle multiple hit locations causing shock
-
-    // --- Arrange ---
     assertDocumentSubType<CharacterActor>(mockActor, ActorTypeEnum.Character);
     assertDocumentSubType<HitLocationItem>(mockChest, ItemTypeEnum.HitLocation);
 
     const healPoints = 1;
-    const chestHP = mockChest.system.hitPoints.max!; // 6
+    const chestHP = mockChest.system.hitPoints.max!;
 
     applyTestDamage(chestHP, true, mockChest, mockActor);
     expect(mockActor.system.attributes.health).toBe("shock");
 
-    // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       healPoints,
       0,
@@ -195,7 +179,6 @@ describe("healing", () => {
       mockActor,
     );
 
-    // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       system: {
         actorHealthImpact: "wounded",
@@ -216,16 +199,14 @@ describe("healing", () => {
   });
 
   it("should remove 'useless' state from limb when HP > 0", () => {
-    // --- Arrange ---
     assertDocumentSubType<CharacterActor>(mockActor, ActorTypeEnum.Character);
     assertDocumentSubType<HitLocationItem>(mockLeftLeg, ItemTypeEnum.HitLocation);
-    const legDamage = mockLeftLeg.system.hitPoints.max!; // 5
-    const actorTotalHp = mockActor.system.attributes.hitPoints.value!; // 15
+    const legDamage = mockLeftLeg.system.hitPoints.max!;
+    const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
 
     applyTestDamage(legDamage, true, mockLeftLeg, mockActor);
     expect(mockLeftLeg.system.hitLocationHealthState).toBe("useless");
 
-    // --- Act ---
     const { hitLocationUpdates, actorUpdates, usefulLegs } = applyTestHealing(
       1,
       0,
@@ -233,12 +214,11 @@ describe("healing", () => {
       mockActor,
     );
 
-    // --- Assert ---
     expect(hitLocationUpdates).toStrictEqual({
       system: {
         actorHealthImpact: "wounded",
         hitLocationHealthState: "wounded",
-        wounds: [legDamage - 1], // chestDamage - chestDamage
+        wounds: [legDamage - 1],
       },
     });
     mockActor.system.attributes.health = DamageCalculations.getCombinedActorHealth(mockActor);
@@ -254,27 +234,15 @@ describe("healing", () => {
     });
     expect(usefulLegs).toStrictEqual([]);
   });
-});
 
-export function applyTestHealing(
-  healPoints: number,
-  healWoundIndex: number,
-  hitLocation: RqgItem,
-  actor: RqgActor,
-): HealingEffects {
-  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
-  assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
-  const healingEffects = HealingCalculations.healWound(
-    healPoints,
-    healWoundIndex,
-    hitLocation,
-    actor,
-  );
-  foundry.utils.mergeObject(hitLocation, healingEffects.hitLocationUpdates);
-  foundry.utils.mergeObject(actor, healingEffects.actorUpdates);
-  actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
-  hitLocation.system.hitPoints.value =
-    hitLocation.system.hitPoints.max! -
-    hitLocation.system.wounds.reduce((acc: number, val: number) => acc + val, 0);
-  return healingEffects;
-}
+  it("throws when trying to heal a missing wound", () => {
+    expect(() =>
+      HealingCalculations.healWound(
+        1,
+        99,
+        mockLeftLeg as unknown as RqgItem,
+        mockActor as unknown as RqgActor,
+      ),
+    ).toThrow();
+  });
+});

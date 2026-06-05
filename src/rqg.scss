@@ -6,6 +6,7 @@
 @use "./applications/rqid-batch-editor/rqidBatchEditor";
 @use "./items/itemsheets";
 @use "./items/itemsheetsV2";
+@use "./items/hit-location-item/hit-location-wound-dialogs";
 @use "./actors/actorsheets";
 @use "./actors/actorsheetV2";
 
@@ -299,6 +300,10 @@
       text-align: right;
     }
 
+    range-picker > input[type="number"] {
+      text-align: center;
+    }
+
     input[type="checkbox"] {
       flex: 0 0 12px;
       width: 12px;
@@ -317,7 +322,7 @@
       font-family: var(--font-primary);
     }
 
-    input:read-only:not([type="checkbox"], [type="radio"]) {
+    input[readonly]:not([type="checkbox"], [type="radio"]) {
       pointer-events: none;
     }
 
@@ -985,12 +990,6 @@
 
       .chat-select-wide {
         width: 100%;
-      }
-    }
-
-    &.dialog.heal-wound {
-      .woundlist label {
-        padding-right: 5px;
       }
     }
 

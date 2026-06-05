@@ -24,7 +24,10 @@ import type { ArmorItem } from "@item-model/armorDataModel.ts";
 import type { OccupationItem } from "@item-model/occupationDataModel.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { WeaponItem } from "@item-model/weaponDataModel.ts";
-import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
+import {
+  showHitLocationAddWoundDialog,
+  showHitLocationHealWoundDialog,
+} from "../items/hit-location-item";
 import {
   applyDamageBonusToFormula,
   formatDamagePart,
@@ -940,7 +943,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): void {
     const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
     requireValue(itemId, "No hit location item id found to add wound");
-    void HitLocationSheet.showAddWoundDialog(this.actor, itemId);
+    void showHitLocationAddWoundDialog(this.actor, itemId);
   }
 
   private static _healWoundAction(
@@ -950,7 +953,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): void {
     const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
     requireValue(itemId, "No hit location item id found to heal wound");
-    void HitLocationSheet.showHealWoundDialog(this.actor, itemId);
+    void showHitLocationHealWoundDialog(this.actor, itemId);
   }
 
   private static async _flipHitLocationSortSettingAction(

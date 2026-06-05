@@ -10,7 +10,7 @@ import {
 } from "./itemLifecycleStrategy";
 import { armorLifecycle } from "./armor-item/armorLifecycle";
 import { cultLifecycle } from "./cult-item/cultLifecycle";
-import { hitLocationLifecycle } from "./hit-location-item/hitLocationLifecycle";
+import { hitLocationLifecycle } from "./hit-location-item/hit-location-lifecycle";
 import { skillLifecycle } from "./skill-item/skillLifecycle";
 
 describe("item lifecycle strategy dispatch", () => {

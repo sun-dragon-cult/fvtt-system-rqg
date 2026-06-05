@@ -2,7 +2,7 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgActorSheetV2 } from "./RqgActorSheetV2";
-import { DamageCalculations } from "../system/damageCalculations";
+import { DamageCalculations } from "../items/hit-location-item/hit-location-damage-calculations";
 import {
   assertDocumentSubType,
   getTokenFromActor,

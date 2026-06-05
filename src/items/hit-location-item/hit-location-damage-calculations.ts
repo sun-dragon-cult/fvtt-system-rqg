@@ -3,13 +3,13 @@ import {
   type HitLocationItem,
   HitLocationTypesEnum,
 } from "@item-model/hitLocationDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqgActorData";
-import { type ActorHealthState, actorHealthStatuses } from "../data-model/actor-data/attributes";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
+import { type ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { assertDocumentSubType, isDocumentSubType, RqgError } from "./util";
-import { RqgItem } from "../items/rqgItem";
-import { RqgActor } from "../actors/rqgActor";
-import { systemId } from "./config";
+import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
+import { RqgItem } from "../rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { systemId } from "../../system/config";
 
 import Document = foundry.abstract.Document;
 
@@ -98,7 +98,12 @@ export class DamageCalculations {
     };
 
     if (hitLocation.system.hitLocationHealthState === "severed") {
-      damageEffects.notification = `${hitLocation.name} is gone and cannot be hit anymore, reroll to get a new hit location!`;
+      damageEffects.notification = localize(
+        "RQG.Item.HitLocation.Notification.SeveredCannotBeHit",
+        {
+          hitLocationName: hitLocation.name,
+        },
+      );
       return damageEffects;
     }
     const maxHp = hitLocation.system.hitPoints.max;
@@ -117,7 +122,6 @@ export class DamageCalculations {
     }
     const totalDamage = hpMax - hpValue + damage;
 
-    // TODO simplify if-structure!
     if (
       totalDamage > 0 &&
       hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
@@ -132,13 +136,18 @@ export class DamageCalculations {
       hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
         hitLocationHealthStatuses.indexOf("useless")
     ) {
-      damageEffects.notification = `${speakerName}'s ${hitLocation.name} is useless and cannot hold anything / support standing. ${speakerName} can still fight with whatever limbs are still functional.`;
+      damageEffects.notification = localize("RQG.Item.HitLocation.Notification.LimbUseless", {
+        speakerName: speakerName,
+        hitLocationName: hitLocation.name,
+      });
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "useless" },
       } as any);
     }
     if (fullDamage >= hpMax * 2) {
-      damageEffects.notification = `${speakerName} is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.`;
+      damageEffects.notification = localize("RQG.Item.HitLocation.Notification.LimbShock", {
+        speakerName: speakerName,
+      });
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "useless", actorHealthImpact: "shock" },
       } as any);
@@ -202,7 +211,6 @@ export class DamageCalculations {
       } as any);
     }
 
-    // A big hit to Abdomen affects connected limbs, but instant death sized damage should override it
     if (
       hitLocation.system.hitLocationType === HitLocationTypesEnum.Abdomen &&
       totalDamage >= hpMax &&
@@ -242,7 +250,9 @@ export class DamageCalculations {
 
         damageEffects.notification = `${speakerName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
       } else if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Chest) {
-        damageEffects.notification = `${speakerName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.`;
+        damageEffects.notification = localize("RQG.Item.HitLocation.Notification.ChestShock", {
+          speakerName: speakerName,
+        });
         foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
           system: { actorHealthImpact: "shock" },
         } as any);

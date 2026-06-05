@@ -5,7 +5,10 @@ import {
   ItemTypeEnum,
   type PhysicalItem,
 } from "@item-model/itemTypes.ts";
-import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
+import {
+  showHitLocationAddWoundDialog,
+  showHitLocationHealWoundDialog,
+} from "../items/hit-location-item";
 import { skillMenuOptions } from "./context-menus/skill-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
 import { hitLocationMenuOptions } from "./context-menus/hit-location-context-menu";
@@ -689,13 +692,13 @@ export class RqgActorSheet<
     // Add wound to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-add-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", () => HitLocationSheet.showAddWoundDialog(this.actor, itemId));
+      el.addEventListener("click", () => showHitLocationAddWoundDialog(this.actor, itemId));
     });
 
     // Heal wounds to hit location
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-heal-wound]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", () => HitLocationSheet.showHealWoundDialog(this.actor, itemId));
+      el.addEventListener("click", () => showHitLocationHealWoundDialog(this.actor, itemId));
     });
 
     // Edit Actor Active Effect

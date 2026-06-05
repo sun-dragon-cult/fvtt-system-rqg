@@ -26,12 +26,13 @@ export const templatePaths = {
   itemGearSheetV2Description: "systems/rqg/items/gear-item/gearSheetV2Description.hbs",
   itemGearSheetV2Gm: "systems/rqg/items/gear-item/gearSheetV2Gm.hbs",
   itemGearSheetV2Effects: "systems/rqg/items/gear-item/gearSheetV2Effects.hbs",
-  itemHitLocationSheet: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
-  itemHitLocationSheetV2Header: "systems/rqg/items/hit-location-item/hitLocationSheetV2Header.hbs",
+  itemHitLocationSheet: "systems/rqg/items/hit-location-item/hit-location-sheet.hbs",
+  itemHitLocationSheetV2Header:
+    "systems/rqg/items/hit-location-item/hit-location-sheet-v2-header.hbs",
   itemHitLocationSheetV2HitLocation:
-    "systems/rqg/items/hit-location-item/hitLocationSheetV2HitLocation.hbs",
+    "systems/rqg/items/hit-location-item/hit-location-sheet-v2-hit-location.hbs",
   itemHitLocationSheetV2Definition:
-    "systems/rqg/items/hit-location-item/hitLocationSheetV2Definition.hbs",
+    "systems/rqg/items/hit-location-item/hit-location-sheet-v2-definition.hbs",
   itemHomelandSheet: "systems/rqg/items/homeland-item/homelandSheet.hbs",
   itemHomelandSheetV2Header: "systems/rqg/items/homeland-item/homelandSheetV2Header.hbs",
   itemHomelandSheetV2Homeland: "systems/rqg/items/homeland-item/homelandSheetV2Homeland.hbs",
@@ -114,8 +115,8 @@ export const templatePaths = {
   rqidBatchEditor: "systems/rqg/applications/rqid-batch-editor/rqidBatchEditor.hbs",
   confirmCopyIntangibleItem: "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
-  hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
-  hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
+  hitLocationAddWound: "systems/rqg/items/hit-location-item/hit-location-add-wound.hbs",
+  hitLocationHealWound: "systems/rqg/items/hit-location-item/hit-location-heal-wound.hbs",
   abilityRollDialogV2: "systems/rqg/applications/AbilityRollDialog/abilityRollDialogV2.hbs",
   characteristicRollDialogV2:
     "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
