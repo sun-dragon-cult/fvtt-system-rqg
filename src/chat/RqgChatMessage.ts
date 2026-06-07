@@ -46,7 +46,19 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   public static async clickHandler(clickEvent: MouseEvent): Promise<void> {
-    const clickedButton = clickEvent.target as HTMLButtonElement;
+    if (clickEvent.defaultPrevented) {
+      return;
+    }
+
+    const target = clickEvent.target;
+    if (!isFoundryElementInstanceOf(target, Element)) {
+      return;
+    }
+
+    const clickedButton = target.closest("button");
+    if (!isFoundryElementInstanceOf(clickedButton, HTMLButtonElement)) {
+      return;
+    }
     // ***************************
     // *** START - Attack Flow ***
     // ***************************
@@ -83,6 +95,7 @@ export class RqgChatMessage extends ChatMessage {
 
   private static commonClickHandling(clickEvent: MouseEvent, clickedButton: HTMLButtonElement) {
     clickEvent.preventDefault();
+    clickEvent.stopPropagation();
     clickedButton.disabled = true;
     setTimeout(() => (clickedButton.disabled = false), 1000); // Prevent double clicks
   }
@@ -91,6 +104,9 @@ export class RqgChatMessage extends ChatMessage {
    * Augment the chat card html markup for additional styling and eventlisteners.
    */
   async #enrichChatCard(html: HTMLElement): Promise<void> {
+    // Bind action handlers on each rendered card so chat popouts/detached windows work too.
+    html.addEventListener("click", RqgChatMessage.clickHandler);
+
     // Enrich the combat chat message with evaluated rolls
     await this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]");
     await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
