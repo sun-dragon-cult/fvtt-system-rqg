@@ -1,0 +1,64 @@
+import type { RqgItem } from "@items/rqg-item.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
+import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
+import { systemId } from "../../system/config";
+import type { ArmorItem } from "@item-model/armor-data-model.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import type { SkillCategories } from "../../data-model/actor-data/skill-categories.ts";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
+
+export const skillLifecycle = {
+  handleActorPrepareDerivedData(skillItem: RqgItem): RqgItem {
+    assertDocumentSubType<SkillItem>(
+      skillItem,
+      ItemTypeEnum.Skill,
+      "RQG.Item.Notification.PrepareDerivedDataNotSkillError",
+    );
+    const actor = skillItem.actor!;
+    assertDocumentSubType<CharacterActor>(
+      actor,
+      ActorTypeEnum.Character,
+      "RQG.Item.Notification.ActorNotCharacterError",
+    );
+    const actorSystem = actor.system;
+    // Add the category modifier to be displayed by the Skill sheet TODO make another method for this!
+    skillItem.system.categoryMod =
+      actorSystem.skillCategoryModifiers![skillItem.system.category as keyof SkillCategories];
+
+    let mod = 0;
+
+    // Special modifiers for Dodge & Move Quietly
+    const skillRqid = skillItem.getFlag(systemId, documentRqidFlags)?.id;
+    if (skillRqid === CONFIG.RQG.skillRqid.dodge) {
+      mod = -Math.min(
+        // mod is equipped ENC modifier
+        actorSystem.attributes.encumbrance?.equipped || 0,
+        actorSystem.attributes.encumbrance?.max || 0,
+      );
+    } else if (skillRqid === CONFIG.RQG.skillRqid.moveQuietly) {
+      // mod is the penalty from equipped armor
+      const equippedArmor = actor.items.filter(
+        (i) =>
+          isDocumentSubType<ArmorItem>(i, ItemTypeEnum.Armor) &&
+          i.system.equippedStatus === "equipped",
+      ) as ArmorItem[];
+      mod = -Math.max(0, ...equippedArmor.map((a) => Math.abs(a.system.moveQuietlyPenalty)));
+    }
+
+    // Calculate the effective skill chance including skill category modifier.
+    // If skill base chance is 0 you need to have studied to get an effective chance
+    skillItem.system.chance =
+      skillItem.system.baseChance > 0 ||
+      skillItem.system.baseChance + skillItem.system.gainedChance > 0
+        ? Math.max(
+            0,
+            skillItem.system.baseChance +
+              skillItem.system.gainedChance +
+              (skillItem.system.categoryMod || 0) +
+              mod,
+          )
+        : 0;
+    return skillItem;
+  },
+};

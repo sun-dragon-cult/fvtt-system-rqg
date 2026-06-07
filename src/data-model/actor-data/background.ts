@@ -1,4 +1,4 @@
-import { RqidLink } from "../shared/rqidLink";
+import { RqidLink } from "../shared/rqid-link";
 
 export const OccupationEnum = {
   NoOccupation: "",

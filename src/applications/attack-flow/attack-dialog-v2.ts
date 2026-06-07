@@ -14,27 +14,27 @@ import {
   localize,
   requireValue,
 } from "../../system/util";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "@items/rqgItem.ts";
-import type { RqgToken } from "../../combat/rqgToken";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weaponDataModel.ts";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgToken } from "../../combat/rqg-token";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import { systemId } from "../../system/config";
-import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
+import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
 import {
   darknessModifier,
   proneTargetModifier,
   unawareTargetModifier,
-} from "../../system/penaltyConstants";
-import { RqgChatMessage } from "../../chat/RqgChatMessage";
-import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
-import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
-import { RqgLogger } from "../../system/logging/rqgLogger";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import { hasLinkedSkillReference, resolveLinkedSkill } from "@items/weapon-item/weaponSkillLinks";
+} from "../../system/penalty-constants";
+import { RqgChatMessage } from "../../chat/rqg-chat-message";
+import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
+import type { HitLocationRollOptions } from "../../rolls/hit-location-roll/hit-location-roll.types";
+import { HitLocationRoll } from "../../rolls/hit-location-roll/hit-location-roll";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import { hasLinkedSkillReference, resolveLinkedSkill } from "@items/weapon-item/weapon-skill-links";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 
 const logger = new RqgLogger("AttackDialogV2");

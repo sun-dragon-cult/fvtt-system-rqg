@@ -1,4 +1,4 @@
-import type { RqidString } from "./api/rqidApi";
+import type { RqidString } from "./api/rqid-api";
 
 export const RQG_CONFIG = {
   debug: {

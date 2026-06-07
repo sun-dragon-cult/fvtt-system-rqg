@@ -1,0 +1,77 @@
+import type { HitLocationName, HitLocationRollOptions } from "./hit-location-roll.types";
+import { isDocumentSubType, localize } from "../../system/util";
+import { templatePaths } from "../../system/load-handlebars-templates";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+
+import Roll = foundry.dice.Roll;
+
+/**
+ * HitLocationRoll is only displayed as part of the CombatChatMessage,
+ * so no "rollAndShow" or flavor is needed.
+ */
+export class HitLocationRoll extends Roll {
+  declare options: HitLocationRollOptions;
+
+  constructor(
+    formula: string = "1d20",
+    data: Record<string, never> = {},
+    options?: HitLocationRollOptions,
+  ) {
+    super(formula, data, options);
+  }
+
+  get isEvaluated(): boolean {
+    return this._evaluated;
+  }
+
+  get hitLocationName(): string {
+    const damagedHitLocation = this.options.hitLocationNames
+      .filter((hln) => (this.total ?? 0) >= hln.dieFrom && (this.total ?? 0) <= hln.dieTo)
+      .map((hln) => hln.name);
+    return damagedHitLocation[0] ?? localize("RQG.Roll.HitLocationRoll.FallbackHitLocationName");
+  }
+
+  // Html for the "content" of the chat-message
+  override async render({ isPrivate = false } = {}) {
+    if (!this._evaluated) {
+      await this.evaluate();
+    }
+    const chatData = {
+      user: game.user!.id,
+      tooltip: isPrivate ? "" : await this.getTooltip(),
+      total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
+      hitLocationName: isPrivate ? "??" : this.hitLocationName,
+      speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid, // Used for hiding parts
+    };
+    return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationRoll, chatData);
+  }
+
+  // Html for what the hit location formula was
+  override async getTooltip(): Promise<string> {
+    return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationTooltip, {
+      formula: this.formula,
+    });
+  }
+
+  /**
+   * Transform a token or actor into a list of hit location names to put in the roll options.
+   */
+  static tokenToHitLocationNames(
+    tokenOrActor: TokenDocument | RqgActor | undefined | null,
+  ): HitLocationName[] {
+    const actor =
+      (tokenOrActor instanceof TokenDocument ? tokenOrActor.actor : tokenOrActor) ?? undefined;
+
+    return (
+      actor?.items
+        .filter((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
+        .map((hl) => ({
+          dieFrom: hl.system.dieFrom,
+          dieTo: hl.system.dieTo,
+          name: hl.name ?? "",
+        })) ?? []
+    );
+  }
+}

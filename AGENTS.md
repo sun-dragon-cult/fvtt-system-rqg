@@ -25,7 +25,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 5. Localize user-facing text via `localize()` from `src/system/util.ts` (window titles, notifications, dialog labels, chat text, and sheet UI labels).
 6. Avoid unrelated refactors in the same change.
 7. Hardcoded English is acceptable only for internal debug/developer-only logging and assertions.
-8. Use `RqgLogger` from `src/system/logging/rqgLogger.ts` for all runtime logging; avoid bare `console.log`/`console.warn`.
+8. Use `RqgLogger` from `src/system/logging/rqg-logger.ts` for all runtime logging; avoid bare `console.log`/`console.warn`.
 9. When code needs to throw in runtime paths, use `logger.throw(...)` with a module-level `RqgLogger`; if a module does not yet have one, add it rather than directly constructing and throwing `RqgError`.
 10. `update`, `create`, `delete` and other document operations are async; await them and handle failures clearly.
 11. Naming convention: use **kebab-case** for new folders and non-type files (especially under `src/applications/**`); keep PascalCase for TypeScript symbol names (classes/types/interfaces). Treat legacy mixed-case paths as stable unless a task explicitly includes path normalization.
@@ -35,7 +35,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 - Prefer existing project types and aliases before introducing new type shapes.
 - Keep strict typing posture aligned with `tsconfig.json` and `fvtt-types`.
 - Use `src/global.d.ts` for global Foundry/system augmentations and declarations.
-- Use `src/system/fvttTypeCompat.ts` for runtime-safe compatibility wrappers around temporary typing gaps.
+- Use `src/system/fvtt-type-compat.ts` for runtime-safe compatibility wrappers around temporary typing gaps.
 - Use `@ts-expect-error TEMP(v14-types)` only when:
   - the runtime API is confirmed in Foundry v14,
   - the type gap is from current `fvtt-types`,
@@ -61,7 +61,7 @@ Foundry themes use `body.theme-dark` / `body.theme-light`. Prefer theme-adaptive
 
 ## Repo-Specific Workflow Rules
 
-- If you add or rename `.hbs` templates, verify `src/system/loadHandlebarsTemplates.ts` is updated.
+- If you add or rename `.hbs` templates, verify `src/system/load-handlebars-templates.ts` is updated.
 - If you change sheets/dialogs, keep TypeScript context data, templates, and styles synchronized.
 - If you change migrations, keep them idempotent, GM-safe, localized in player-facing reports, and covered by targeted migration tests.
 
@@ -69,10 +69,10 @@ Foundry themes use `body.theme-dark` / `body.theme-light`. Prefer theme-adaptive
 
 - `src/rqg.ts`: lifecycle and registration entrypoint.
 - `src/system/util.ts`: shared helpers, `localize()`, and common utility functions.
-- `src/system/logging/rqgLogger.ts`: project logger.
+- `src/system/logging/rqg-logger.ts`: project logger.
 - `src/global.d.ts`: global typing augmentation for Foundry/RQG.
-- `src/system/fvttTypeCompat.ts`: temporary v14 typing compatibility wrappers.
-- `src/system/loadHandlebarsTemplates.ts`: centralized template registry.
+- `src/system/fvtt-type-compat.ts`: temporary v14 typing compatibility wrappers.
+- `src/system/load-handlebars-templates.ts`: centralized template registry.
 - `src/system/migrations/`: migration orchestration, migration implementations, and reporting.
 
 ## RQG Domain Model
@@ -80,11 +80,11 @@ Foundry themes use `body.theme-dark` / `body.theme-light`. Prefer theme-adaptive
 Key types and conventions specific to this system:
 
 - **Core mechanic**: D100 roll-under. A roll succeeds if the result ≤ the skill/ability value; there are critical and special success thresholds derived from the value. See `src/rolls/` for implementation and the rules wiki for exact thresholds; results are reported to chat via `src/chat/`.
-- **Actor types**: One actor type — `character` (`ActorTypeEnum.Character` in `src/data-model/actor-data/rqgActorData.ts`).
-- **Item types**: `armor`, `cult`, `gear`, `hitLocation`, `homeland`, `occupation`, `passion`, `rune`, `runeMagic`, `skill`, `spiritMagic`, `weapon` (`ItemTypeEnum` in `src/data-model/item-data/itemTypes.ts`).
+- **Actor types**: One actor type — `character` (`ActorTypeEnum.Character` in `src/data-model/actor-data/rqg-actor-data.ts`).
+- **Item types**: `armor`, `cult`, `gear`, `hitLocation`, `homeland`, `occupation`, `passion`, `rune`, `runeMagic`, `skill`, `spiritMagic`, `weapon` (`ItemTypeEnum` in `src/data-model/item-data/item-types.ts`).
 - **Ability items**: `skill`, `rune`, `passion` share roll mechanics (`AbilityItem` type).
 - **Physical items**: `gear`, `weapon`, `armor` track encumbrance and hit location.
-- **RQID**: Stable system identifier for cross-document item linking. `RqidLink` (`src/data-model/shared/rqidLink.ts`) stores `{ rqid, name }` and resolves at runtime via `src/system/api/rqidApi.ts`.
+- **RQID**: Stable system identifier for cross-document item linking. `RqidLink` (`src/data-model/shared/rqid-link.ts`) stores `{ rqid, name }` and resolves at runtime via `src/system/api/rqid-api.ts`.
 
 ## Subtree Specifics
 
@@ -93,14 +93,14 @@ Key types and conventions specific to this system:
 - Both AppV1 (`rqgActorSheet.ts`) and AppV2 (`RqgActorSheetV2.ts`) sheets coexist; preserve both unless explicitly removing one.
 - Prefer fixing root cause over adding defensive patches across multiple call sites.
 - When changing actor sheet data prep, extend the existing test files rather than creating new ones:
-  - Pure helpers: `src/actors/rqgActorSheetDataPrep.test.ts`
-  - Async/enrichment helpers: `src/actors/rqgActorSheetDataPrep.async.test.ts`
+  - Pure helpers: `src/actors/rqg-actor-sheet-data-prep.test.ts`
+  - Async/enrichment helpers: `src/actors/rqg-actor-sheet-data-prep.async.test.ts`
 
 ### When working on `src/items/**`
 
 - AppV1 (`RqgItemSheet.ts`) and AppV2 (`RqgItemSheetV2.ts`) sheets coexist; preserve compatibility.
 - Use existing item model types from `src/data-model/item-data/**`.
-- Keep drag/drop and RQID-link behavior consistent with `src/documents/dragDrop.ts` and `src/data-model/shared/rqidLink.ts`.
+- Keep drag/drop and RQID-link behavior consistent with `src/documents/drag-drop.ts` and `src/data-model/shared/rqid-link.ts`.
 - Co-locate tests with their feature folder (e.g., `src/items/armor-item/armor.test.ts`); extend an existing `*.test.ts` before creating a new one.
 
 ### When working on `src/applications/**`
@@ -130,7 +130,7 @@ Checklist:
 
 - Identify the AppV2 class and keep existing lifecycle patterns (`DEFAULT_OPTIONS`, `PARTS`, `_prepareContext`, `_onRender`).
 - Keep TypeScript context data aligned with referenced `.hbs` templates.
-- Keep template registration in `src/system/loadHandlebarsTemplates.ts` aligned with template changes.
+- Keep template registration in `src/system/load-handlebars-templates.ts` aligned with template changes.
 - Ensure user-facing UI strings are localized with `localize()` and valid i18n keys.
 - Preserve V1/V2 coexistence; do not remove legacy sheet paths unless explicitly requested.
 - Add/update targeted tests when behavior logic changes.
@@ -154,7 +154,7 @@ Checklist:
 
 1. Use an existing typed API or project type alias.
 2. Add a global augmentation in `src/global.d.ts` for new or changed Foundry globals/namespaces.
-3. Add a runtime-safe wrapper in `src/system/fvttTypeCompat.ts` where a direct cast would be unsafe or noisy.
+3. Add a runtime-safe wrapper in `src/system/fvtt-type-compat.ts` where a direct cast would be unsafe or noisy.
 4. As a last resort, use `@ts-expect-error TEMP(v14-types)` with a comment explaining the known type gap so it can be removed once upstream typings catch up.
 
 Verify with `pnpm typecheck` and any tests covering the affected behavior.

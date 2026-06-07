@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-vi.mock("../shared/physicalItemUtil", () => ({
+vi.mock("../shared/physical-item-util", () => ({
   getLocationRelatedUpdates: vi.fn(),
 }));
 
@@ -8,9 +8,9 @@ vi.mock("../../system/util.ts", () => ({
   isDocumentSubType: vi.fn(),
 }));
 
-import { armorLifecycle } from "./armorLifecycle";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { getLocationRelatedUpdates } from "../shared/physicalItemUtil";
+import { armorLifecycle } from "./armor-lifecycle";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { getLocationRelatedUpdates } from "../shared/physical-item-util";
 import { isDocumentSubType } from "../../system/util.ts";
 
 describe("Armor.handleItemUpdateDocumentsPreUpdate", () => {

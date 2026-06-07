@@ -4,5 +4,5 @@
  * Exports the general RqgLogger and specialized migration logger.
  */
 
-export { RqgLogger, type LogOptions } from "./rqgLogger";
-export { MigrationLogger, type MigrationLogOptions } from "./migrationLogger";
+export { RqgLogger, type LogOptions } from "./rqg-logger";
+export { MigrationLogger, type MigrationLogOptions } from "./migration-logger";

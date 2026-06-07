@@ -123,7 +123,7 @@ install a formatter in your IDE to format your code on the fly.
 ### Editing compendium Yaml files
 
 To make it easier to edit the yaml files that is used to create to compendium packs, you can
-use the supplied json schema for Rqg Items located here: `src/data-model/jsonSchemas/rqg-item-schema.json`.
+use the supplied json schema for Rqg Items located here: `src/data-model/json-schemas/rqg-item-schema.json`.
 
 #### Visual Studio Code
 
@@ -133,7 +133,7 @@ and then configure it to use the RqgItem schema, use the setting below.
 ```json
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/jsonSchemas/rqg-item-schema.json": ".yaml"
+    "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/rqg-item-schema.json": ".yaml"
   }
 }
 ```
@@ -142,7 +142,7 @@ For details see this article: https://dev.to/brpaz/how-to-create-your-own-auto-c
 
 #### Jetbrains Idea
 
-Open a yaml file and click "No JSON Schema" at the bottom left. Choose "+ New Schema Mapping" and paste `https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/jsonSchemas/rqg-item-schema.json`
+Open a yaml file and click "No JSON Schema" at the bottom left. Choose "+ New Schema Mapping" and paste `https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/rqg-item-schema.json`
 into the "Schema file or URL" input field. Name the schema to for example Rqg Item and set the schema
 version to 7.
 

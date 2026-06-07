@@ -1,11 +1,11 @@
-import type { RqgActor } from "../actors/rqgActor";
-import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
+import type { RqgActor } from "../actors/rqg-actor";
+import type { ItemTypeEnum } from "@item-model/item-types.ts";
+import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
 import { systemId } from "./config";
-import type { RqgItem } from "../items/rqgItem";
+import type { RqgItem } from "../items/rqg-item";
 import type { PartialAbilityItem } from "../applications/ability-roll-dialog/ability-roll-dialog-data.types.ts";
-import { RqgLogger } from "./logging/rqgLogger";
-import { RqgError } from "./rqgError";
+import { RqgLogger } from "./logging/rqg-logger";
+import { RqgError } from "./rqg-error";
 
 export { RqgError };
 
@@ -13,7 +13,7 @@ const logger = new RqgLogger("util", { notify: false });
 
 import Document = foundry.abstract.Document;
 import type { RqidEnabledDocument } from "../global";
-import type { RqgChatMessage } from "../chat/RqgChatMessage.ts";
+import type { RqgChatMessage } from "../chat/rqg-chat-message.ts";
 
 /**
  * Helper to safely get a Roll from JSONField data that could be string or object.

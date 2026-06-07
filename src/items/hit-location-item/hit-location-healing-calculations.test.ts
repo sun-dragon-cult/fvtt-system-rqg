@@ -3,11 +3,11 @@ import { HealingCalculations } from "./hit-location-healing-calculations";
 import { applyTestDamage, applyTestHealing } from "./hit-location-test-helpers";
 import { DamageCalculations } from "./hit-location-damage-calculations";
 import { assertDocumentSubType } from "../../system/util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { RqgActor } from "../../actors/rqgActor";
-import { RqgItem } from "../rqgItem";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { RqgActor } from "../../actors/rqg-actor";
+import { RqgItem } from "../rqg-item";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { describe, it, expect, beforeEach } from "vitest";
 
 describe("HealingCalculations", () => {

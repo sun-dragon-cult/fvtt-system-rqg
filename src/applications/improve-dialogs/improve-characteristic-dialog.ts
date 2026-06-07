@@ -1,11 +1,11 @@
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgActor } from "../../actors/rqg-actor";
 import { convertFormValueToString, isDocumentSubType, localize, RqgError } from "../../system/util";
 import { systemId } from "../../system/config";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { type CultItem, CultRankEnum } from "@item-model/cultDataModel.ts";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { type CultItem, CultRankEnum } from "@item-model/cult-data-model.ts";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
-import { RqgLogger } from "../../system/logging/rqgLogger";
+import { RqgLogger } from "../../system/logging/rqg-logger";
 import {
   buildImproveDialogButtons,
   buildImproveDialogSourceState,

@@ -1,6 +1,6 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
-import { RqgActor } from "../rqgActor";
+import { RqgActor } from "../rqg-actor";
 import {
   getRequiredDomDataset,
   hasOwnProperty,
@@ -8,9 +8,9 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { GearItem } from "@item-model/gearDataModel.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { GearItem } from "@item-model/gear-data-model.ts";
 
 export const gearMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
   {

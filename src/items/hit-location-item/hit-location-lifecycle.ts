@@ -1,9 +1,9 @@
-import type { RqgItem } from "@items/rqgItem.ts";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
-import type { ArmorItem } from "@item-model/armorDataModel.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { ArmorItem } from "@item-model/armor-data-model.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 function hitPointsPerLocation(totalHitPoints: number, baseHpDelta: number): number {
   return Math.max(2, Math.ceil(totalHitPoints / 3)) + (baseHpDelta || 0);

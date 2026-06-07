@@ -1,12 +1,12 @@
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import { damageType, type DamageType } from "@item-model/weaponDataModel.ts";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import { damageType, type DamageType } from "@item-model/weapon-data-model.ts";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { assertDocumentSubType, localize, requireValue } from "../../system/util";
 import { HealingCalculations } from "./hit-location-healing-calculations";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "../rqgItem";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "../rqg-item";
 
 export type ApplyWoundToHitLocationOptions = {
   subtractArmorPoints?: boolean;

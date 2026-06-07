@@ -1,11 +1,11 @@
 import { DamageCalculations } from "./hit-location-damage-calculations";
 import { HealingCalculations, type HealingEffects } from "./hit-location-healing-calculations";
 import { assertDocumentSubType } from "../../system/util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "../rqgItem";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "../rqg-item";
 
 export function applyTestDamage(
   damage: number,

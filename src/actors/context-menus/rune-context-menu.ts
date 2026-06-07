@@ -1,4 +1,4 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import {
   assertDocumentSubType,
@@ -7,13 +7,13 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { showImproveAbilityDialog } from "../../applications/improve-dialogs/improve-ability-dialog";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { Rqid } from "../../system/api/rqidApi";
-import { isValidRqidString } from "../../system/api/rqidValidation";
-import type { RuneItem } from "@item-model/runeDataModel.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { Rqid } from "../../system/api/rqid-api";
+import { isValidRqidString } from "../../system/api/rqid-validation";
+import type { RuneItem } from "@item-model/rune-data-model.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 export const runeMenuOptions = (
   actor: CharacterActor,

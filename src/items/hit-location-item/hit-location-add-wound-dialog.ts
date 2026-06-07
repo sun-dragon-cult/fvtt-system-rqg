@@ -1,11 +1,11 @@
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { ArmorItem } from "@item-model/armorDataModel.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { RqgActor } from "@actors/rqgActor.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { ArmorItem } from "@item-model/armor-data-model.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { assertDocumentSubType, isDocumentSubType, localize } from "../../system/util";
-import { RqgItem } from "../rqgItem";
+import { RqgItem } from "../rqg-item";
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 
 type ArmorLayerDialogData = {
   name: string;

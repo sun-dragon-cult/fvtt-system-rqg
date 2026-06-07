@@ -1,5 +1,5 @@
-import type { RqgItem } from "@items/rqgItem.ts";
-import type { LocationItemNodeData } from "@items/shared/locationItemNode.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
+import type { LocationItemNodeData } from "@items/shared/location-item-node.ts";
 
 // Mock contains derived values
 export const mockItems = [

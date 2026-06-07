@@ -2,13 +2,13 @@
 @use "./theme";
 @use "./variables";
 @use "./applications/improve-dialogs/improve-dialogs";
-@use "./applications/rqidEditor/rqidEditor";
-@use "./applications/rqid-batch-editor/rqidBatchEditor";
+@use "./applications/rqid-editor/rqid-editor";
+@use "./applications/rqid-batch-editor/rqid-batch-editor";
 @use "./items/itemsheets";
-@use "./items/itemsheetsV2";
+@use "./items/itemsheets-v2";
 @use "./items/hit-location-item/hit-location-wound-dialogs";
 @use "./actors/actorsheets";
-@use "./actors/actorsheetV2";
+@use "./actors/actorsheet-v2";
 
 @layer system.base {
   // *** Start of theme specific styles ***

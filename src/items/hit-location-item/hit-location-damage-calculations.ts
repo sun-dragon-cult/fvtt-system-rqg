@@ -2,13 +2,13 @@ import {
   hitLocationHealthStatuses,
   type HitLocationItem,
   HitLocationTypesEnum,
-} from "@item-model/hitLocationDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
+} from "@item-model/hit-location-data-model.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { type ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
-import { RqgItem } from "../rqgItem";
-import { RqgActor } from "../../actors/rqgActor";
+import { RqgItem } from "../rqg-item";
+import { RqgActor } from "../../actors/rqg-actor";
 import { systemId } from "../../system/config";
 
 import Document = foundry.abstract.Document;

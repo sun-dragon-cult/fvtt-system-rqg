@@ -1,4 +1,4 @@
-import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
+import type { RollHeaderData } from "../app-parts/roll-header.types.ts";
 import type { RollFooterData } from "../app-parts/roll-footer.types.ts";
 
 /** Minimal rune data needed for the roll rune dialog to avoid complex type recursion */

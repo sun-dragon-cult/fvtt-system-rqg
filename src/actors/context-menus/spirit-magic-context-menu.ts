@@ -1,4 +1,4 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import {
   assertDocumentSubType,
@@ -8,12 +8,12 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { Rqid } from "../../system/api/rqidApi";
-import { isValidRqidString } from "../../system/api/rqidValidation";
-import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { Rqid } from "../../system/api/rqid-api";
+import { isValidRqidString } from "../../system/api/rqid-validation";
+import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {

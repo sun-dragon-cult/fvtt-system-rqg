@@ -1,8 +1,8 @@
 import { DamageCalculations } from "./hit-location-damage-calculations";
 import { mockActor as mockActorOriginal } from "../../../test/mocks/mockActor.ts";
 import { applyTestDamage } from "./hit-location-test-helpers";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { localize } from "../../system/util";
 import { describe, it, expect, beforeEach } from "vitest";
 

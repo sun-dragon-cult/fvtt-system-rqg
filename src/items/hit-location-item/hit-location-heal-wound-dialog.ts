@@ -1,11 +1,11 @@
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { assertDocumentSubType, localize } from "../../system/util";
-import { RqgItem } from "../rqgItem";
+import { RqgItem } from "../rqg-item";
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 
 type HealSubmitResult = {
   hasRemainingWounds: boolean;

@@ -1,6 +1,6 @@
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RollHeaderData } from "../app-parts/roll-header.types.ts";
 import type { RollFooterData } from "../app-parts/roll-footer.types.ts";
 
 /** "fake" item to be able to handle reputation as Ability rolls */

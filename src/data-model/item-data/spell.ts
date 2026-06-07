@@ -1,6 +1,6 @@
-import type { RqidLink } from "../shared/rqidLink";
-import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
+import type { RqidLink } from "../shared/rqid-link";
+import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
+import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 
 /** For now a spell is either Spirit Magic or Rune Magic. Sorcery can be added here later. */
 export type SpellItem = SpiritMagicItem | RuneMagicItem;

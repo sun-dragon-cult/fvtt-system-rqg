@@ -1,22 +1,22 @@
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import { assertDocumentSubType, getSpeakerFromItem, localize, RqgError } from "../../system/util";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import { RqgItem } from "@items/rqg-item.ts";
 import {
   getEligibleRunes,
   getStrongestRune,
   hasEnoughToCastSpell,
-} from "@items/rune-magic-item/runeMagicCasting.ts";
-import type { RuneMagicRollOptions } from "../../rolls/RuneMagicRoll/RuneMagicRoll.types";
+} from "@items/rune-magic-item/rune-magic-casting.ts";
+import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
 } from "./rune-magic-roll-dialog-data.types.ts";
 import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
-import type { CultItem } from "@item-model/cultDataModel.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
+import type { CultItem } from "@item-model/cult-data-model.ts";
 import {
   getConfiguredRollModeOptions,
   getDefaultRollMode,

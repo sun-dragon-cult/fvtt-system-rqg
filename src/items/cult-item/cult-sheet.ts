@@ -1,0 +1,153 @@
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { CultRankEnum, type CultItem } from "@item-model/cult-data-model.ts";
+import {
+  isTruthy,
+  getRequiredDomDataset,
+  formatListByWorldLanguage,
+  getSelectRuneOptions,
+} from "../../system/util";
+import { RqgItemSheet } from "../rqg-item-sheet";
+import { systemId } from "../../system/config";
+import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
+import { templatePaths } from "../../system/load-handlebars-templates";
+
+interface CultSheetData {
+  allRuneOptions: SelectOptionData<string>[];
+  rankOptions: SelectOptionData<string>[];
+  enrichedGifts: string;
+  enrichedGeases: string;
+  enrichedSubCults: string;
+  enrichedHolyDays: string;
+}
+
+export class CultSheet extends RqgItemSheet {
+  override get document(): CultItem {
+    return super.document as CultItem;
+  }
+
+  static override get defaultOptions(): ItemSheet.Options {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      classes: [systemId, "item-sheet", "sheet", ItemTypeEnum.Cult],
+      template: templatePaths.itemCultSheet,
+      width: 700,
+      height: 500,
+      tabs: [
+        {
+          navSelector: ".item-sheet-nav-tabs",
+          contentSelector: ".sheet-body",
+          initial: "deity",
+        },
+      ],
+    });
+  }
+
+  override async getData(): Promise<CultSheetData & ItemSheetData> {
+    const system = foundry.utils.duplicate(this.document._source.system);
+
+    // To improve UX of creating a new item, set deity to name if empty
+    if (!system.deity) {
+      system.deity = this.document.name;
+    }
+
+    return {
+      id: this.document.id ?? "",
+      uuid: this.document.uuid,
+      name: this.document.name ?? "",
+      img: this.document.img ?? "",
+      isEditable: this.isEditable,
+      isEmbedded: this.document.isEmbedded,
+      isGM: game.user?.isGM ?? false,
+      system: system,
+      enrichedGifts: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.gifts,
+      ),
+      enrichedGeases: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.geases,
+      ),
+      enrichedSubCults: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.subCults,
+      ),
+      enrichedHolyDays: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+        system.holyDays,
+      ),
+      rankOptions: Object.values(CultRankEnum).map((cr) => ({
+        value: cr,
+        label: "RQG.Actor.RuneMagic.CultRank." + cr,
+      })),
+      allRuneOptions: getSelectRuneOptions("RQG.Item.Cult.AddCultRunePlaceholder"),
+    };
+  }
+
+  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+    const formCultName = formData["system.joinedCults.cultName"];
+    const formTagLine = formData["system.joinedCults.tagline"];
+    const formrank = formData["system.joinedCults.rank"];
+
+    let cultNames = Array.isArray(formCultName) ? formCultName : [formCultName];
+    const taglines = Array.isArray(formTagLine) ? formTagLine : [formTagLine];
+    const ranks = Array.isArray(formrank) ? formrank : [formrank];
+
+    cultNames = cultNames.map((name) => name || formData["system.deity"]); // Prefill cultName with deity name is empty
+
+    // Depends on that rank is never empty
+    formData["system.joinedCults"] = ranks.map((rank: any, index: number) => ({
+      cultName: cultNames[index],
+      tagline: taglines[index],
+      rank: rank,
+    }));
+
+    formData["name"] = CultSheet.deriveItemName(formData["system.deity"], cultNames);
+
+    return super._updateObject(event, formData);
+  }
+
+  override activateListeners(html: JQuery) {
+    super.activateListeners(html);
+
+    // add another cult
+    html[0]?.querySelectorAll<HTMLElement>("[data-add-cult]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        this.document.system.joinedCults.push({
+          rank: CultRankEnum.LayMember,
+          cultName: undefined,
+          tagline: "",
+        });
+        await this.document.update({
+          system: { joinedCults: this.document.system.joinedCults },
+        });
+      });
+    });
+
+    // delete a cult
+    html[0]?.querySelectorAll<HTMLElement>("[data-delete-cult]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        const indexToDelete = Number(getRequiredDomDataset(el, "delete-cult"));
+
+        this.document.system.joinedCults.splice(indexToDelete, 1);
+        const newName = this.deriveItemName();
+        await this.document.update({
+          name: newName,
+          system: { joinedCults: this.document.system.joinedCults },
+        });
+      });
+    });
+  }
+
+  deriveItemName(): string {
+    return CultSheet.deriveItemName(
+      this.document.system.deity ?? "",
+      this.document.system.joinedCults.map((c: any) => c.cultName),
+    );
+  }
+
+  static deriveItemName(deity: string, cultNames: string[]): string {
+    const joinedCultsFormatted = formatListByWorldLanguage(
+      cultNames.filter(isTruthy).map((c) => c.trim()),
+    );
+
+    if (!joinedCultsFormatted || joinedCultsFormatted === deity) {
+      return deity.trim();
+    }
+    return joinedCultsFormatted + ` (${deity.trim()})`;
+  }
+}

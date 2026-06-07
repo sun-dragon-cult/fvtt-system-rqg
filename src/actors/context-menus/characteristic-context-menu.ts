@@ -1,4 +1,4 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import type { Characteristic, Characteristics } from "../../data-model/actor-data/characteristics";
 import {
   getDomDataset,
@@ -8,8 +8,8 @@ import {
   RqgError,
 } from "../../system/util";
 import { showImproveCharacteristicDialog } from "../../applications/improve-dialogs/improve-characteristic-dialog";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 export const characteristicMenuOptions = (
   actor: CharacterActor,

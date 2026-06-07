@@ -1,15 +1,15 @@
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
   type HitLocationHealthState,
   hitLocationHealthStatusOptions,
   type HitLocationItem,
   HitLocationTypesEnum,
-} from "@item-model/hitLocationDataModel.ts";
+} from "@item-model/hit-location-data-model.ts";
 import { getSelectHitLocationOptions } from "../../system/util";
-import { RqgItemSheet } from "../RqgItemSheet";
+import { RqgItemSheet } from "../rqg-item-sheet";
 import { systemId } from "../../system/config";
-import type { ItemSheetData } from "../shared/sheetInterfaces.types.ts";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type { ItemSheetData } from "../shared/sheet-interfaces.types.ts";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import { showHitLocationHealWoundDialog } from ".";
 
 interface HitLocationSheetData {

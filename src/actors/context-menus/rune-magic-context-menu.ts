@@ -1,6 +1,6 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
-import { RqgActor } from "../rqgActor";
+import { RqgActor } from "../rqg-actor";
 import {
   assertDocumentSubType,
   getRequiredDomDataset,
@@ -8,12 +8,12 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { Rqid } from "../../system/api/rqidApi";
-import { isValidRqidString } from "../../system/api/rqidValidation";
-import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
-import type { RqgItem } from "@items/rqgItem.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { Rqid } from "../../system/api/rqid-api";
+import { isValidRqidString } from "../../system/api/rqid-validation";
+import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
 
 export const runeMagicMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
   {

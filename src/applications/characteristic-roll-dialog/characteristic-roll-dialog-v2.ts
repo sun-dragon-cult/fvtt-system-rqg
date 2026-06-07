@@ -1,17 +1,17 @@
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import type {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
 } from "./characteristic-roll-dialog-data.types.ts";
-import { DEFAULT_DIFFICULTY } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types.ts";
+import { DEFAULT_DIFFICULTY } from "../../rolls/characteristic-roll/characteristic-roll.types.ts";
 import { assertDocumentSubType, getTokenFromActor, localize, RqgError } from "../../system/util";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
-import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
+import { CharacteristicRoll } from "../../rolls/characteristic-roll/characteristic-roll";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
-import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { ActorTypeEnum } from "../../data-model/actor-data/rqg-actor-data.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import {
   getConfiguredRollModeOptions,
   getDefaultRollMode,

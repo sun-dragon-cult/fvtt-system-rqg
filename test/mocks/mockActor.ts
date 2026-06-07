@@ -1,5 +1,5 @@
 // Mock contains derived values
-import { ActorTypeEnum } from "../../src/data-model/actor-data/rqgActorData.ts";
+import { ActorTypeEnum } from "../../src/data-model/actor-data/rqg-actor-data.ts";
 
 const embeddedItems = [
   {

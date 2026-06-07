@@ -1,16 +1,16 @@
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import type {
   AbilityRollDialogContext,
   AbilityRollDialogFormData,
   PartialAbilityItem,
 } from "./ability-roll-dialog-data.types";
-import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
+import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
+import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
 import { getSpeakerFromItem, localize, localizeItemType } from "../../system/util";
-import { RqgLogger } from "../../system/logging/rqgLogger";
-import { RqgItem } from "@items/rqgItem.ts";
-import type { AbilityItem } from "@item-model/itemTypes.ts";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import { RqgItem } from "@items/rqg-item.ts";
+import type { AbilityItem } from "@item-model/item-types.ts";
 import {
   getConfiguredRollModeOptions,
   getDefaultRollMode,

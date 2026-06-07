@@ -1,8 +1,8 @@
-import type { CultItem } from "@item-model/cultDataModel.ts";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
-import type { RqgItem } from "@items/rqgItem.ts";
-import type { RqgActor } from "./rqgActor";
+import type { CultItem } from "@item-model/cult-data-model.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgActor } from "./rqg-actor";
 import { isDocumentSubType, localize, localizeItemType, requireValue } from "../system/util";
 
 export async function confirmActorItemDelete(actor: RqgActor, itemId: string): Promise<void> {

@@ -1,12 +1,12 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import { getRequiredDomDataset, localize, localizeItemType, RqgError } from "../../system/util";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { Rqid } from "../../system/api/rqidApi";
-import { isValidRqidString } from "../../system/api/rqidValidation";
-import type { CultItem } from "@item-model/cultDataModel.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { Rqid } from "../../system/api/rqid-api";
+import { isValidRqidString } from "../../system/api/rqid-validation";
+import type { CultItem } from "@item-model/cult-data-model.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 export const cultMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {

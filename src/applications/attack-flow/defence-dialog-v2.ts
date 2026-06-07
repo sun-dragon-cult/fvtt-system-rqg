@@ -1,7 +1,7 @@
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
-import type { AbilityRollOptions, Modifier } from "../../rolls/AbilityRoll/AbilityRoll.types";
+import { templatePaths } from "../../system/load-handlebars-templates";
+import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
+import type { AbilityRollOptions, Modifier } from "../../rolls/ability-roll/ability-roll.types";
 import {
   activateChatTab,
   assertDocumentSubType,
@@ -13,35 +13,35 @@ import {
   requireValue,
   safeFromJSON,
 } from "../../system/util";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "@items/rqgItem.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
 import type {
   DefenceDialogContext,
   DefenceDialogFormData,
   DefenceType,
 } from "./defence-dialog-data.types.ts";
-import { RqgChatMessage } from "../../chat/RqgChatMessage";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { RqgChatMessage } from "../../chat/rqg-chat-message";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type {
   CombatManeuver,
   DamageType,
   UsageType,
   WeaponItem,
-} from "@item-model/weaponDataModel.ts";
-import { getBasicOutcomeDescription } from "../../chat/attackFlowHandlers";
+} from "@item-model/weapon-data-model.ts";
+import { getBasicOutcomeDescription } from "../../chat/attack-flow-handlers";
 import {
   combatOutcome,
   getDamageDegree,
   getMasterOpponentModifier,
-} from "../../system/combatCalculations";
-import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
-import { updateChatMessage } from "../../sockets/SocketableRequests";
-import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
-import type { SkillItem } from "@item-model/skillDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import { toRqidString } from "../../system/api/rqidValidation";
+} from "../../system/combat-calculations";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
+import { updateChatMessage } from "../../sockets/socketable-requests";
+import { HitLocationRoll } from "../../rolls/hit-location-roll/hit-location-roll";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import { toRqidString } from "../../system/api/rqid-validation";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
-import { RqgLogger } from "../../system/logging/rqgLogger";
+import { RqgLogger } from "../../system/logging/rqg-logger";
 
 const logger = new RqgLogger("DefenceDialogV2");
 

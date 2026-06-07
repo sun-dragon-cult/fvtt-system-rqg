@@ -1,4 +1,4 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import {
   assertDocumentSubType,
@@ -8,11 +8,11 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { WeaponItem } from "@item-model/weaponDataModel.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { SkillItem } from "@item-model/skillDataModel.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
 
 export const combatMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {

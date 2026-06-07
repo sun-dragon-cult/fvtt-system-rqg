@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { hitLocationLifecycle } from "./hit-location-lifecycle";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { ActorTypeEnum } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 describe("hitLocationLifecycle.handleActorPrepareDerivedData", () => {
   it("recalculates hit location HP from the actor's derived total HP", () => {

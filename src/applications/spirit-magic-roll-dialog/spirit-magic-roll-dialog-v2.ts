@@ -1,17 +1,17 @@
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./spirit-magic-roll-dialog-data.types.ts";
 import { assertDocumentSubType, getSpeakerFromItem, localize } from "../../system/util";
-import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
-import { RqgItem } from "@items/rqgItem.ts";
-import { hasEnoughToCastSpell } from "@items/spirit-magic-item/spiritMagicValidation.ts";
+import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
+import { RqgItem } from "@items/rqg-item.ts";
+import { hasEnoughToCastSpell } from "@items/spirit-magic-item/spirit-magic-validation.ts";
 import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import {
   getConfiguredRollModeOptions,
   getDefaultRollMode,

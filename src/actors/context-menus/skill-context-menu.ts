@@ -1,6 +1,6 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
-import { RqgActor } from "../rqgActor";
+import { RqgActor } from "../rqg-actor";
 import {
   assertDocumentSubType,
   getDomDataset,
@@ -10,13 +10,13 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { SkillCategoryEnum, type SkillItem } from "@item-model/skillDataModel.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { SkillCategoryEnum, type SkillItem } from "@item-model/skill-data-model.ts";
 import { showImproveAbilityDialog } from "../../applications/improve-dialogs/improve-ability-dialog";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { Rqid } from "../../system/api/rqidApi";
-import { isValidRqidString } from "../../system/api/rqidValidation";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { Rqid } from "../../system/api/rqid-api";
+import { isValidRqidString } from "../../system/api/rqid-validation";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 export const skillMenuOptions = (
   actor: RqgActor,

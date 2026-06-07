@@ -1,5 +1,5 @@
 import { systemId } from "../config";
-import { documentRqidFlags } from "../../data-model/shared/rqgDocumentFlags";
+import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
 
 /**
  * Shared utilities for Active Effect path migrations

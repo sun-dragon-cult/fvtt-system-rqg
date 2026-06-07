@@ -1,4 +1,4 @@
-import type { RqgItemType } from "@item-model/itemTypes.ts";
+import type { RqgItemType } from "@item-model/item-types.ts";
 import type { RqgConfig, systemId } from "./system/config";
 import type {
   CardFlags,
@@ -10,32 +10,32 @@ import type {
   RqgJournalEntryPageFlags,
   RollTableFlags,
   SceneFlags,
-} from "./data-model/shared/rqgDocumentFlags";
-import type { TokenRulerSettingsType } from "./applications/settings/tokenRulerSettings.types";
-import type { RqgChatMessageDataSource } from "./chat/data-model/combatChatMessage.types.ts";
+} from "./data-model/shared/rqg-document-flags";
+import type { TokenRulerSettingsType } from "./applications/settings/token-ruler-settings.types";
+import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
 
-import type { RqgChatMessage } from "./chat/RqgChatMessage.ts";
-import type { RqgToken } from "./combat/rqgToken.ts";
+import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
+import type { RqgToken } from "./combat/rqg-token.ts";
 import type { Dice3D } from "./module-integrations/dice-so-nice";
-import type { CombatChatMessageData } from "./chat/data-model/combatChatMessage.dataModel.ts";
-import type { RqgActor } from "@actors/rqgActor.ts";
-import type { RqgItem } from "@items/rqgItem.ts";
-import type { RqgCombatant } from "./combat/rqgCombatant.ts";
-import type { RqgActiveEffect } from "./active-effect/rqgActiveEffect.ts";
+import type { CombatChatMessageData } from "./chat/data-model/combat-chat-message.data-model.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgCombatant } from "./combat/rqg-combatant.ts";
+import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
 
-import type { ArmorDataModel } from "./data-model/item-data/armorDataModel";
-import type { CultDataModel } from "./data-model/item-data/cultDataModel";
-import type { GearDataModel } from "./data-model/item-data/gearDataModel";
-import type { HitLocationDataModel } from "./data-model/item-data/hitLocationDataModel";
-import type { HomelandDataModel } from "./data-model/item-data/homelandDataModel";
-import type { OccupationDataModel } from "./data-model/item-data/occupationDataModel";
-import type { PassionDataModel } from "./data-model/item-data/passionDataModel";
-import type { RuneDataModel } from "./data-model/item-data/runeDataModel";
-import type { RuneMagicDataModel } from "./data-model/item-data/runeMagicDataModel";
-import type { SkillDataModel } from "./data-model/item-data/skillDataModel";
-import type { SpiritMagicDataModel } from "./data-model/item-data/spiritMagicDataModel";
-import type { WeaponDataModel } from "./data-model/item-data/weaponDataModel";
-import type { CharacterDataModel } from "./data-model/actor-data/characterDataModel";
+import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
+import type { CultDataModel } from "./data-model/item-data/cult-data-model";
+import type { GearDataModel } from "./data-model/item-data/gear-data-model";
+import type { HitLocationDataModel } from "./data-model/item-data/hit-location-data-model";
+import type { HomelandDataModel } from "./data-model/item-data/homeland-data-model";
+import type { OccupationDataModel } from "./data-model/item-data/occupation-data-model";
+import type { PassionDataModel } from "./data-model/item-data/passion-data-model";
+import type { RuneDataModel } from "./data-model/item-data/rune-data-model";
+import type { RuneMagicDataModel } from "./data-model/item-data/rune-magic-data-model";
+import type { SkillDataModel } from "./data-model/item-data/skill-data-model";
+import type { SpiritMagicDataModel } from "./data-model/item-data/spirit-magic-data-model";
+import type { WeaponDataModel } from "./data-model/item-data/weapon-data-model";
+import type { CharacterDataModel } from "./data-model/actor-data/character-data-model";
 
 declare global {
   // TEMP(v14-types): Remove this namespace augmentation once

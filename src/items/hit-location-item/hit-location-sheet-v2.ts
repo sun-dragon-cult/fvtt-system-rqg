@@ -3,16 +3,16 @@ import {
   hitLocationHealthStatusOptions,
   type HitLocationItem,
   HitLocationTypesEnum,
-} from "@item-model/hitLocationDataModel.ts";
+} from "@item-model/hit-location-data-model.ts";
 import { getSelectHitLocationOptions } from "../../system/util";
 import {
   RqgItemSheetV2,
   type RqgItemSheetContext,
   type AppV2RenderContext,
   type AppV2RenderOptions,
-} from "../RqgItemSheetV2";
+} from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import { showHitLocationHealWoundDialog } from ".";
 
 interface HitLocationSheetContext extends RqgItemSheetContext {

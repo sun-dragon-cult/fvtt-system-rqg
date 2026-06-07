@@ -1,4 +1,4 @@
-import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
+import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import {
   getDomDataset,
@@ -7,10 +7,10 @@ import {
   localizeItemType,
   RqgError,
 } from "../../system/util";
-import { contextMenuRunes } from "./contextMenuRunes";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import { contextMenuRunes } from "./context-menu-runes";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 
 export const hitLocationMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {

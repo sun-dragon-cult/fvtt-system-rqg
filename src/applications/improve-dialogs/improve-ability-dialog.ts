@@ -1,6 +1,6 @@
-import { type AbilityItem, ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { type AbilityItem, ItemTypeEnum } from "@item-model/item-types.ts";
 import type { IAbility } from "../../data-model/shared/ability";
-import { RqgItem } from "../../items/rqgItem";
+import { RqgItem } from "../../items/rqg-item";
 import { systemId } from "../../system/config";
 import {
   assertDocumentSubType,
@@ -10,12 +10,12 @@ import {
   localizeItemType,
   toSignedString,
 } from "../../system/util";
-import { templatePaths } from "../../system/loadHandlebarsTemplates";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { PassionItem } from "@item-model/passionDataModel.ts";
-import type { RuneItem } from "@item-model/runeDataModel.ts";
-import type { SkillItem } from "@item-model/skillDataModel.ts";
-import { RqgLogger } from "../../system/logging/rqgLogger";
+import { templatePaths } from "../../system/load-handlebars-templates";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import type { PassionItem } from "@item-model/passion-data-model.ts";
+import type { RuneItem } from "@item-model/rune-data-model.ts";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { RqgLogger } from "../../system/logging/rqg-logger";
 import {
   buildImproveDialogButtons,
   buildImproveDialogSourceState,

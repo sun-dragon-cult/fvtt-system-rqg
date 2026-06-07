@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CultRankEnum } from "@item-model/cultDataModel.ts";
-import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { CultRankEnum } from "@item-model/cult-data-model.ts";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { buildCharacteristicAdapter } from "./improve-characteristic-dialog";
 
 function createActorWithSourceCharacteristic(

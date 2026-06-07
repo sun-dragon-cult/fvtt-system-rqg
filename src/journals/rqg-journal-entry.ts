@@ -1,0 +1,38 @@
+import { systemId } from "../system/config";
+import { Rqid } from "../system/api/rqid-api";
+import type { RqidString } from "../system/api/rqid-api";
+import { RqidLink } from "../data-model/shared/rqid-link";
+import { addRqidLinkToSheet } from "../documents/rqid-sheet-button";
+
+export class RqgJournalEntry extends JournalEntry {
+  public static init() {
+    CONFIG.JournalEntry.documentClass = RqgJournalEntry;
+
+    Hooks.on("renderJournalEntryPageSheet", RqgJournalEntry.addRqidHandling);
+    Hooks.on("renderJournalEntrySheet", RqgJournalEntry.addRqidTitleIcon);
+  }
+
+  // TODO can the specific clickhandlers be removed and a generic one on body used instead?
+
+  private static async addRqidHandling(sheet: any, html: HTMLElement) {
+    await addRqidLinkToSheet(sheet);
+    await RqidLink.addRqidLinkClickHandlers(html);
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private static async addRqidTitleIcon(sheet: any, html: HTMLElement, options: any) {
+    await addRqidLinkToSheet(sheet);
+  }
+
+  /**
+   * Only handles embedded Pages
+   */
+  public getEmbeddedDocumentsByRqid(rqid: RqidString): JournalEntryPage[] {
+    // @ts-expect-error pages
+    return this.pages.filter((i) => i.getFlag(systemId, "documentRqidFlags.id") === rqid);
+  }
+
+  public getBestEmbeddedDocumentByRqid(rqid: RqidString): JournalEntryPage | undefined {
+    return this.getEmbeddedDocumentsByRqid(rqid).sort(Rqid.compareRqidPrio)[0];
+  }
+}
