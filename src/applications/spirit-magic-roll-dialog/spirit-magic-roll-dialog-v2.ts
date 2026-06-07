@@ -3,30 +3,30 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
-} from "./SpiritMagicRollDialogData.types.ts";
-import {
-  assertDocumentSubType,
-  getDomDataset,
-  getSpeakerFromItem,
-  localize,
-} from "../../system/util";
+} from "./spirit-magic-roll-dialog-data.types.ts";
+import { assertDocumentSubType, getSpeakerFromItem, localize } from "../../system/util";
 import type { SpiritMagicRollOptions } from "../../rolls/SpiritMagicRoll/SpiritMagicRoll.types";
 import { RqgItem } from "@items/rqgItem.ts";
 import { hasEnoughToCastSpell } from "@items/spirit-magic-item/spiritMagicValidation.ts";
-import type { PartialAbilityItem } from "../AbilityRollDialog/AbilityRollDialogData.types.ts";
+import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { DeepPartial } from "fvtt-types/utils";
-import { getDefaultRollMode, getSelectedRollMode } from "../app-parts/rollMode";
+import {
+  getConfiguredRollModeOptions,
+  getDefaultRollMode,
+  getSelectedRollMode,
+} from "../app-parts/roll-mode";
+import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
-
-export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
-  ApplicationV2<SpiritMagicRollDialogContext>,
-) {
-  override get element(): HTMLFormElement {
-    return super.element as HTMLFormElement;
+export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  private computeTotalChance(formData: SpiritMagicRollDialogFormData): number {
+    return (
+      Number(this.powX5) +
+      Number(formData.augmentModifier ?? 0) +
+      Number(formData.meditateModifier ?? 0) +
+      Number(formData.otherModifier ?? 0)
+    );
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -49,7 +49,13 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private spellItem: SpiritMagicItem;
   private powX5: number;
-  private rollMode: foundry.dice.Roll.Mode;
+
+  protected override getLivePreviewFormBehaviorConfig() {
+    return {
+      submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
+      updateLivePreview: () => this.updateLivePreview(),
+    };
+  }
 
   constructor(
     spellItem: SpiritMagicItem,
@@ -62,7 +68,6 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
 
     this.spellItem = spellItem;
     this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
-    this.rollMode = getDefaultRollMode();
   }
 
   static override DEFAULT_OPTIONS = {
@@ -76,7 +81,6 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
     },
     position: {
       width: "auto" as const,
-      height: "auto" as const,
       left: 35,
       top: 15,
     },
@@ -132,32 +136,19 @@ export class SpiritMagicRollDialogV2 extends HandlebarsApplicationMixin(
         Number(formData.meditateModifier) +
         Number(formData.otherModifier),
       rollMode: this.rollMode,
+      rollModes: getConfiguredRollModeOptions(),
     };
   }
 
-  override async _onRender(
-    context: DeepPartial<SpiritMagicRollDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    super._onRender(context, options);
-    this.element
-      .querySelector<HTMLElement>("[data-roll-mode-parent]")
-      ?.addEventListener("click", this.onChangeRollMode.bind(this));
-  }
-
-  override _onChangeForm(): void {
-    this.render();
-  }
-
-  private onChangeRollMode(event: MouseEvent) {
-    const target = event.target as HTMLButtonElement;
-    const newRollMode = getSelectedRollMode(getDomDataset(target, "roll-mode"));
-    if (!newRollMode) {
-      return; // Clicked outside the buttons, or not a valid roll mode
+  private updateLivePreview(): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (!totalChanceElement) {
+      return;
     }
-    this.rollMode = newRollMode;
 
-    this.render();
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as SpiritMagicRollDialogFormData;
+    totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
   }
 
   private static async onSubmit(

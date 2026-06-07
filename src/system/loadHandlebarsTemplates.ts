@@ -88,7 +88,7 @@ export const templatePaths = {
 
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
-  attackChatMessage: "systems/rqg/applications/AttackFlow/attackChatTemplate.hbs",
+  attackChatMessage: "systems/rqg/applications/attack-flow/attack-chat-template.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 
@@ -117,19 +117,20 @@ export const templatePaths = {
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
   hitLocationAddWound: "systems/rqg/items/hit-location-item/hit-location-add-wound.hbs",
   hitLocationHealWound: "systems/rqg/items/hit-location-item/hit-location-heal-wound.hbs",
-  abilityRollDialogV2: "systems/rqg/applications/AbilityRollDialog/abilityRollDialogV2.hbs",
+  abilityRollDialogV2: "systems/rqg/applications/ability-roll-dialog/ability-roll-dialog-v2.hbs",
   characteristicRollDialogV2:
-    "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
+    "systems/rqg/applications/characteristic-roll-dialog/characteristic-roll-dialog-v2.hbs",
   spiritMagicRollDialogV2:
-    "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialogV2.hbs",
-  runeMagicRollDialogV2: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialogV2.hbs",
-  attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",
-  defenceDialogV2: "systems/rqg/applications/AttackFlow/defenceDialogV2.hbs",
-  defenceFooter: "systems/rqg/applications/AttackFlow/defenceFooter.hbs",
-  attackFooter: "systems/rqg/applications/AttackFlow/attackFooter.hbs",
+    "systems/rqg/applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2.hbs",
+  runeMagicRollDialogV2:
+    "systems/rqg/applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2.hbs",
+  attackDialogV2: "systems/rqg/applications/attack-flow/attack-dialog-v2.hbs",
+  defenceDialogV2: "systems/rqg/applications/attack-flow/defence-dialog-v2.hbs",
+  defenceFooter: "systems/rqg/applications/attack-flow/defence-footer.hbs",
+  attackFooter: "systems/rqg/applications/attack-flow/attack-footer.hbs",
   rollHeader: "systems/rqg/applications/app-parts/rollHeader.hbs",
-  rollFooter: "systems/rqg/applications/app-parts/rollFooter.hbs",
-  combatRollHeader: "systems/rqg/applications/AttackFlow/combatRollHeader.hbs",
+  rollFooter: "systems/rqg/applications/app-parts/roll-footer.hbs",
+  combatRollHeader: "systems/rqg/applications/attack-flow/combat-roll-header.hbs",
 
   // Settings
   defaultItemIconSettings: "systems/rqg/applications/defaultItemIconSettings.hbs",
@@ -206,7 +207,6 @@ export const loadHandlebarsTemplates = async function () {
     itemCommonPhysical: "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
 
     // Application sheet parts
-    rollModes: "systems/rqg/applications/app-parts/rollModes.hbs",
     improveDialogSourceChooser:
       "systems/rqg/applications/improve-dialogs/improve-dialog-source-chooser.hbs",
     improveDialogSourceOption:

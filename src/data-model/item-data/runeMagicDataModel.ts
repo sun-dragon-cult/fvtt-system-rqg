@@ -41,7 +41,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
   async runeMagicRoll(): Promise<void> {
     // Dynamic import to avoid circular dependency through RuneMagicRollDialogV2 → rqgItem.ts
     const { RuneMagicRollDialogV2 } =
-      await import("../../applications/RuneMagicRollDialog/runeMagicRollDialogV2");
+      await import("../../applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2");
     await new RuneMagicRollDialogV2(this.parent as unknown as RuneMagicItem).render(true);
   }
 

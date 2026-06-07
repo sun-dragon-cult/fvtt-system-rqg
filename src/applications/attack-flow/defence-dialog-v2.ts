@@ -19,7 +19,7 @@ import type {
   DefenceDialogContext,
   DefenceDialogFormData,
   DefenceType,
-} from "./DefenceDialogData.types.ts";
+} from "./defence-dialog-data.types.ts";
 import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type {
@@ -40,15 +40,17 @@ import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
 import type { SkillItem } from "@item-model/skillDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import { toRqidString } from "../../system/api/rqidValidation";
-import type { DeepPartial } from "fvtt-types/utils";
+import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
+  private currentDefenceChance = 0;
 
-export class DefenceDialogV2 extends HandlebarsApplicationMixin(
-  ApplicationV2<DefenceDialogContext>,
-) {
-  override get element(): HTMLFormElement {
-    return super.element as HTMLFormElement;
+  protected override getLivePreviewFormBehaviorConfig() {
+    return {
+      submitButtonSelectorForBlurGuard: "button[data-defend]",
+      updateLivePreview: () => this.onFormValuesChanged(),
+      onCommittedFormChange: (event: Event) => this.onCommittedFormChange(event),
+    };
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -117,25 +119,6 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
     form: { template: templatePaths.defenceDialogV2, scrollable: [""] },
     footer: { template: templatePaths.defenceFooter },
   };
-
-  override async _onRender(
-    context: DeepPartial<DefenceDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    super._onRender(context, options);
-
-    this.element
-      .querySelector("select[name=defence]")
-      ?.addEventListener("change", this.onDefenceSelectionChange.bind(this));
-
-    this.element
-      .querySelector("select[name=parryingWeaponUuid]")
-      ?.addEventListener("change", this.onDefenceSelectionChange.bind(this));
-
-    this.element
-      .querySelector("select[name=parryingWeaponUsage]")
-      ?.addEventListener("change", this.onDefenceSelectionChange.bind(this));
-  }
 
   override async _prepareContext(): Promise<DefenceDialogContext> {
     const formData = ((this.element &&
@@ -237,6 +220,7 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       defendingActor,
       parrySkillRqid,
     );
+    this.currentDefenceChance = defenceChance;
 
     const selectedParrySkill =
       formData.defence === "parry"
@@ -294,18 +278,52 @@ export class DefenceDialogV2 extends HandlebarsApplicationMixin(
       subsequentDefenceOptions: DefenceDialogV2.subsequentDefenceOptions,
       isSelectedParryWeaponBroken: isSelectedParryWeaponBroken,
 
-      // combatRollHeader
+      // combat-roll-header
       skillName: defenceName,
       skillChance: defenceChance,
 
-      // defenceFooter
+      // defence-footer
       totalChance: totalChanceExclMasterOpponent + formData.defenceMasterOpponentModifier,
       defenceButtonText: defenceButtonText,
     };
   }
 
-  override _onChangeForm(): void {
-    this.render();
+  private onCommittedFormChange(event: Event): void {
+    const target = event.target;
+    if (target instanceof HTMLSelectElement) {
+      switch (target.name) {
+        case "defence":
+        case "parryingWeaponUuid":
+        case "parryingWeaponUsage":
+          this.onDefenceSelectionChange();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  private onFormValuesChanged(): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (!totalChanceElement) {
+      return;
+    }
+
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as DefenceDialogFormData;
+    const halvedModifier = -Math.floor(this.currentDefenceChance / 2);
+    const totalChanceExclMasterOpponent = Math.max(
+      0,
+      Number(this.currentDefenceChance ?? 0) +
+        Number(formData.augmentModifier ?? 0) +
+        Number(formData.subsequentDefenceModifier ?? 0) +
+        Number(formData.halved ? halvedModifier : 0) +
+        Number(formData.otherModifier ?? 0),
+    );
+
+    const totalChance =
+      totalChanceExclMasterOpponent + Number(formData.defenceMasterOpponentModifier ?? 0);
+    totalChanceElement.textContent = `${totalChance}%`;
   }
 
   private onDefenceSelectionChange(): void {

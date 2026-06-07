@@ -4,28 +4,34 @@ import type {
   AbilityRollDialogContext,
   AbilityRollDialogFormData,
   PartialAbilityItem,
-} from "./AbilityRollDialogData.types";
+} from "./ability-roll-dialog-data.types";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import {
-  getDomDataset,
-  getSpeakerFromItem,
-  localize,
-  localizeItemType,
-  RqgError,
-} from "../../system/util";
+import { getSpeakerFromItem, localize, localizeItemType, RqgError } from "../../system/util";
 import { RqgItem } from "@items/rqgItem.ts";
 import type { AbilityItem } from "@item-model/itemTypes.ts";
-import type { DeepPartial } from "fvtt-types/utils";
-import { getDefaultRollMode, getSelectedRollMode } from "../app-parts/rollMode";
+import {
+  getConfiguredRollModeOptions,
+  getDefaultRollMode,
+  getSelectedRollMode,
+} from "../app-parts/roll-mode";
+import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override getLivePreviewFormBehaviorConfig() {
+    return {
+      submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
+      updateLivePreview: () => this.updateLivePreview(),
+    };
+  }
 
-export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
-  ApplicationV2<AbilityRollDialogContext>,
-) {
-  override get element(): HTMLFormElement {
-    return super.element as HTMLFormElement;
+  private computeTotalChance(formData: AbilityRollDialogFormData): number {
+    return (
+      Number(this.abilityItem.system.chance ?? 0) +
+      Number(formData.augmentModifier ?? 0) +
+      Number(formData.meditateModifier ?? 0) +
+      Number(formData.otherModifier ?? 0)
+    );
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -47,7 +53,6 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
   ];
 
   private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
-  private rollMode: foundry.dice.Roll.Mode;
 
   constructor(
     abilityItem: AbilityItem | PartialAbilityItem,
@@ -64,7 +69,6 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
     }
 
     this.abilityItem = abilityItem;
-    this.rollMode = getDefaultRollMode();
   }
 
   static override DEFAULT_OPTIONS = {
@@ -136,32 +140,19 @@ export class AbilityRollDialogV2 extends HandlebarsApplicationMixin(
         Number(formData.meditateModifier ?? 0) +
         Number(formData.otherModifier ?? 0),
       rollMode: this.rollMode,
+      rollModes: getConfiguredRollModeOptions(),
     };
   }
 
-  override async _onRender(
-    context: DeepPartial<AbilityRollDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    super._onRender(context, options);
-    this.element
-      .querySelector<HTMLElement>("[data-roll-mode-parent]")
-      ?.addEventListener("click", this.onChangeRollMode.bind(this));
-  }
-
-  override _onChangeForm(): void {
-    this.render();
-  }
-
-  private onChangeRollMode(event: MouseEvent) {
-    const target = event.target as HTMLButtonElement;
-    const newRollMode = getSelectedRollMode(getDomDataset(target, "roll-mode"));
-    if (!newRollMode) {
-      return; // Clicked outside the buttons, or not a valid roll mode
+  private updateLivePreview(): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (!totalChanceElement) {
+      return;
     }
-    this.rollMode = newRollMode;
 
-    this.render();
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as AbilityRollDialogFormData;
+    totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
   }
 
   private static async onSubmit(

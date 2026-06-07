@@ -3,7 +3,7 @@ import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
+import type { PartialAbilityItem } from "../applications/ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { RqgLogger } from "./logging/rqgLogger";
 import { RqgError } from "./rqgError";
 

@@ -1,7 +1,7 @@
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RollHeaderData } from "../app-parts/rollHeader.types.ts";
-import type { RollFooterData } from "../app-parts/rollFooter.types.ts";
+import type { RollFooterData } from "../app-parts/roll-footer.types.ts";
 
 /** "fake" item to be able to handle reputation as Ability rolls */
 export type PartialAbilityItem = {

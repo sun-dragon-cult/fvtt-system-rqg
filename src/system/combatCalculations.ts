@@ -18,7 +18,7 @@ import {
 } from "./combatCalculations.defs";
 import { attackDodgeMap } from "./attackDodgeTable";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
-import type { DefenceType } from "../applications/AttackFlow/DefenceDialogData.types.ts";
+import type { DefenceType } from "../applications/attack-flow/defence-dialog-data.types.ts";
 
 export const exportedForTesting = {
   calculateDamages,

@@ -3,31 +3,40 @@ import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import type {
   CharacteristicRollDialogContext,
   CharacteristicRollDialogFormData,
-} from "./CharacteristicRollDialogData.types.ts";
+} from "./characteristic-roll-dialog-data.types.ts";
 import { DEFAULT_DIFFICULTY } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types.ts";
-import {
-  assertDocumentSubType,
-  getDomDataset,
-  getTokenFromActor,
-  localize,
-  RqgError,
-} from "../../system/util";
+import { assertDocumentSubType, getTokenFromActor, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
-import type { DeepPartial } from "fvtt-types/utils";
-import { getDefaultRollMode, getSelectedRollMode } from "../app-parts/rollMode";
+import {
+  getConfiguredRollModeOptions,
+  getDefaultRollMode,
+  getSelectedRollMode,
+} from "../app-parts/roll-mode";
+import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override getLivePreviewFormBehaviorConfig() {
+    return {
+      submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
+      updateLivePreview: () => this.updateLivePreview(),
+    };
+  }
 
-export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
-  ApplicationV2<CharacteristicRollDialogContext>,
-) {
-  override get element(): HTMLFormElement {
-    return super.element as HTMLFormElement;
+  private computeTotalChance(formData: CharacteristicRollDialogFormData): number {
+    return (
+      Math.ceil(
+        Number(formData.characteristicValue) *
+          CharacteristicRollDialogV2.getDifficulty(formData.difficulty),
+      ) +
+      Number(formData.augmentModifier ?? 0) +
+      Number(formData.meditateModifier ?? 0) +
+      Number(formData.otherModifier ?? 0)
+    );
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -60,7 +69,6 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
 
   private actor: RqgActor;
   private characteristicName: keyof Characteristics;
-  private rollMode: foundry.dice.Roll.Mode;
 
   constructor(
     actor: RqgActor,
@@ -70,7 +78,6 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
     super(options);
     this.actor = actor;
     this.characteristicName = characteristicName;
-    this.rollMode = getDefaultRollMode();
   }
 
   static override DEFAULT_OPTIONS = {
@@ -147,32 +154,19 @@ export class CharacteristicRollDialogV2 extends HandlebarsApplicationMixin(
         Number(formData.meditateModifier ?? 0) +
         Number(formData.otherModifier ?? 0),
       rollMode: this.rollMode,
+      rollModes: getConfiguredRollModeOptions(),
     };
   }
 
-  override async _onRender(
-    context: DeepPartial<CharacteristicRollDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    super._onRender(context, options);
-    this.element
-      .querySelector<HTMLElement>("[data-roll-mode-parent]")
-      ?.addEventListener("click", this.onChangeRollMode.bind(this));
-  }
-
-  override _onChangeForm(): void {
-    this.render();
-  }
-
-  private onChangeRollMode(event: MouseEvent) {
-    const target = event.target as HTMLButtonElement;
-    const newRollMode = getSelectedRollMode(getDomDataset(target, "roll-mode"));
-    if (!newRollMode) {
-      return; // Clicked outside the buttons, or not a valid roll mode
+  private updateLivePreview(): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (!totalChanceElement) {
+      return;
     }
-    this.rollMode = newRollMode;
 
-    this.render();
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as CharacteristicRollDialogFormData;
+    totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
   }
 
   private static async onSubmit(

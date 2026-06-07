@@ -25,7 +25,7 @@ export abstract class AbilityDataModel<
   async abilityRoll(): Promise<void> {
     // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
     const { AbilityRollDialogV2 } =
-      await import("../../applications/AbilityRollDialog/abilityRollDialogV2");
+      await import("../../applications/ability-roll-dialog/ability-roll-dialog-v2");
     await new AbilityRollDialogV2(this.parent as unknown as AbilityItem).render(true);
   }
 

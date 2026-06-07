@@ -1,4 +1,4 @@
-import type { AttackDialogContext, AttackDialogFormData } from "./AttackDialogData.types.ts";
+import type { AttackDialogContext, AttackDialogFormData } from "./attack-dialog-data.types.ts";
 
 import {
   activateChatTab,
@@ -31,16 +31,40 @@ import { RqgChatMessage } from "../../chat/RqgChatMessage";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { HitLocationRollOptions } from "../../rolls/HitLocationRoll/HitLocationRoll.types";
 import { HitLocationRoll } from "../../rolls/HitLocationRoll/HitLocationRoll";
+import { RqgLogger } from "../../system/logging/rqgLogger";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import type { HitLocationItem } from "@item-model/hitLocationDataModel.ts";
-import type { DeepPartial } from "fvtt-types/utils";
 import { hasLinkedSkillReference, resolveLinkedSkill } from "@items/weapon-item/weaponSkillLinks";
+import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+const logger = new RqgLogger("AttackDialogV2");
 
-export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<AttackDialogContext>) {
-  override get element(): HTMLFormElement {
-    return super.element as HTMLFormElement;
+export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override getLivePreviewFormBehaviorConfig() {
+    return {
+      submitButtonSelectorForBlurGuard: 'button[name="combatManeuverRoll"]',
+      updateLivePreview: () => this.updateLivePreview(),
+      onCommittedFormChange: (event: Event) => this.onCommittedFormChange(event),
+    };
+  }
+
+  private static computeTotalChance(
+    formData: AttackDialogFormData,
+    naturalSkillChance: number,
+    halvedModifier: number,
+  ): number {
+    return Math.max(
+      0,
+      Number(naturalSkillChance ?? 0) +
+        Number(formData.augmentModifier ?? 0) +
+        Number(formData.otherModifier ?? 0) +
+        (formData.proneTarget ? proneTargetModifier : 0) +
+        (formData.unawareTarget ? unawareTargetModifier : 0) +
+        (formData.darkness ? darknessModifier : 0) +
+        (formData.halved ? halvedModifier : 0) +
+        (formData.aimedBlow > 0 ? halvedModifier : 0) +
+        (formData.proneAttacker ? halvedModifier : 0),
+    );
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -205,22 +229,15 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       isSelectedWeaponBroken: !hasValidSkillForSelectedUsage,
       isHitLocationAutoFromBelow: isHitLocationAutoFromBelow,
 
-      // combatRollHeader
+      // combat-roll-header
       skillName: validUsedSkill?.name ?? "",
       skillChance: validUsedSkill?.system.chance ?? 0,
 
-      // attackFooter
-      totalChance: Math.max(
-        0,
-        Number(validUsedSkill?.system.chance ?? 0) +
-          Number(formData.augmentModifier ?? 0) +
-          Number(formData.otherModifier ?? 0) +
-          (formData.proneTarget ? proneTargetModifier : 0) +
-          (formData.unawareTarget ? unawareTargetModifier : 0) +
-          (formData.darkness ? darknessModifier : 0) +
-          (formData.halved ? formData.halvedModifier : 0) +
-          (formData.aimedBlow > 0 ? formData.halvedModifier : 0) +
-          (formData.proneAttacker ? formData.halvedModifier : 0),
+      // attack-footer
+      totalChance: AttackDialogV2.computeTotalChance(
+        formData,
+        Number(validUsedSkill?.system.chance ?? 0),
+        Number(formData.halvedModifier ?? 0),
       ),
       combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
         .filter((cm: CombatManeuver) => cm.damageType !== "parry")
@@ -228,37 +245,54 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
     };
   }
 
-  override async _onRender(
-    context: DeepPartial<AttackDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    super._onRender(context, options);
-    this.element
-      .querySelector("select[name=attackingTokenOrActorUuid]")
-      ?.addEventListener("change", this.onTokenChange.bind(this));
+  private onCommittedFormChange(event: Event): boolean | void {
+    const target = event.target;
+    if (!(target instanceof HTMLSelectElement)) {
+      return;
+    }
 
-    this.element
-      .querySelector("select[name=attackingWeaponUuid]")
-      ?.addEventListener("change", this.onWeaponChange.bind(this));
-
-    this.element
-      .querySelector("select[name=usageType]")
-      ?.addEventListener("change", this.onUsageChange.bind(this));
+    switch (target.name) {
+      case "attackingTokenOrActorUuid":
+        void this.onTokenChange(event);
+        return false;
+      case "attackingWeaponUuid":
+        void this.onWeaponChange(event);
+        return false;
+      case "usageType":
+        void this.onUsageChange(event);
+        return false;
+      default:
+        break;
+    }
   }
 
-  override _onChangeForm(): void {
-    this.render();
+  private updateLivePreview(): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (!totalChanceElement) {
+      return;
+    }
+
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as AttackDialogFormData;
+    const usedSkill = resolveLinkedSkill(this.weaponItem, formData.usageType);
+    const halvedModifier = usedSkill ? -Math.floor(usedSkill.system.chance / 2) : 0;
+
+    const totalChance = AttackDialogV2.computeTotalChance(
+      formData,
+      Number(usedSkill?.system.chance ?? 0),
+      halvedModifier,
+    );
+
+    totalChanceElement.textContent = `${totalChance}%`;
   }
 
   private async onTokenChange(event: Event): Promise<void> {
-    console.log("onTokenChange", event);
-
     const tokenSelectElement = event.target;
     requireValue(tokenSelectElement, "Token select not working - programming error");
     assertHtmlElement<HTMLSelectElement>(tokenSelectElement);
 
     const weaponOptions = AttackDialogV2.getWeaponOptions(tokenSelectElement.value);
-    const weaponUuid = Object.values(weaponOptions)?.[0]?.value; // TODO for now just pick any weapon;
+    const weaponUuid = weaponOptions[0]?.value;
 
     const weaponItem = (await fromUuid(weaponUuid ?? "")) as RqgItem | undefined;
 
@@ -631,7 +665,8 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
           ) ||
           i.system.usage.missile.combatManeuvers.some((cm: CombatManeuver) =>
             offensiveDamageTypes.includes(cm.damageType),
-          )),
+          )) &&
+        AttackDialogV2.getUsageTypeOptions(i).length > 0,
     ) as WeaponItem[];
 
     return weaponsWithAttacks.map((item) => ({
@@ -715,9 +750,7 @@ export class AttackDialogV2 extends HandlebarsApplicationMixin(ApplicationV2<Att
       // Should not decrease any quantity, keep projectileItem undefined
       return undefined;
     } else {
-      const msg = "Tried to do a missile attack with a projectile. Arrows should not have actions.";
-      ui.notifications?.warn(msg);
-      console.log("RQG |", msg);
+      logger.warn(localize("RQG.Dialog.Attack.InvalidMissileProjectileUsageWarn"));
       return undefined;
     }
   }

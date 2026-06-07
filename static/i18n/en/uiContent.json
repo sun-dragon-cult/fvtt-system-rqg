@@ -464,6 +464,7 @@
     },
     "ChatMessage": {
       "Combat": {
+        "Defend": "Defend",
         "RollDamageAndHitLocation": "Roll Damage & Hit Location",
         "RollDamage": "Roll Damage",
         "ApplyActorDamage": "Apply Damage to Actor",
@@ -507,6 +508,7 @@
         "NoWeaponToAttackWith": "You don't have any weapon to attack with",
         "NoValidSkillForWeaponUsage": "No valid skill found for selected weapon usage.",
         "NoValidSkillForWeaponUsageWarn": "No valid skill found for selected weapon usage. Ask the GM to fix the weapon usage skill link.",
+        "InvalidMissileProjectileUsageWarn": "Tried to do a missile attack with a projectile. Arrows should not have actions.",
         "WeaponNotEmbedded": "Could not find the owner of the used weapon"
       },
       "Defence": {

@@ -28,7 +28,7 @@ export type CombatOutcome = {
   // parryingHitLocation: boolean;
   /** Do not subtract armor when applying damage to a hit location */
   ignoreDefenderAp: boolean;
-  /** used in attackChatTemplate.hbs */
+  /** used in attack-chat-template.hbs */
   weaponDoingDamage: WeaponDesignation;
 };
 

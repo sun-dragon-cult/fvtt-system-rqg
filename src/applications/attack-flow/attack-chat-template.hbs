@@ -7,7 +7,7 @@
   {{#if (eq attackState 'Attacked')}}
     <div class="flexrow">
       <button data-only-owner-visible-uuid="{{defendingTokenOrActorUuid}}"
-              data-defence>Defend
+              data-defence>{{localize "RQG.ChatMessage.Combat.Defend"}}
       </button>
     </div>
   {{else if (eq attackState 'Defended')}}
