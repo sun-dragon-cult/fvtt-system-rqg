@@ -8,6 +8,7 @@ import {
   getActorLinkDecoration,
   isButton,
   isDocumentSubType,
+  isFoundryElementInstanceOf,
   localize,
   requireValue,
   safeFromJSON,
@@ -285,7 +286,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private onCommittedFormChange(event: Event): void {
     const target = event.target;
-    if (target instanceof HTMLSelectElement) {
+    if (isFoundryElementInstanceOf(target, HTMLSelectElement)) {
       switch (target.name) {
         case "defence":
         case "parryingWeaponUuid":

@@ -1,5 +1,10 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import { getDomDataset, getRequiredDomDataset, localize } from "../system/util";
+import {
+  getDomDataset,
+  getRequiredDomDataset,
+  isFoundryElementInstanceOf,
+  localize,
+} from "../system/util";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { RqgContextMenuEntry } from "../foundryUi/RqgContextMenu";
 
@@ -137,7 +142,10 @@ export class RqgCombatTracker extends CombatTracker {
 
   // Open the tokenActor instead of the actor
   override _onCombatantMouseDown(event: PointerEvent, target: HTMLElement): void {
-    if (event.target instanceof HTMLInputElement || event.target instanceof HTMLButtonElement) {
+    if (
+      isFoundryElementInstanceOf(event.target, HTMLInputElement) ||
+      isFoundryElementInstanceOf(event.target, HTMLButtonElement)
+    ) {
       return;
     }
     const { combatantId } = target?.dataset ?? {};

@@ -6,7 +6,7 @@ import {
   handleRollFumble,
 } from "./attackFlowHandlers";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import { localize, safeFromJSON } from "../system/util";
+import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/DamageRoll/DamageRoll";
 import { HitLocationRoll } from "../rolls/HitLocationRoll/HitLocationRoll";
 
@@ -113,7 +113,7 @@ export class RqgChatMessage extends ChatMessage {
     event.stopPropagation();
 
     const target = event.currentTarget;
-    if (!(target instanceof HTMLElement)) {
+    if (!isFoundryElementInstanceOf(target, HTMLElement)) {
       return;
     }
     target?.classList.toggle("expanded");

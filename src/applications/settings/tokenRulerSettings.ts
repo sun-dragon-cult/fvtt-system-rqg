@@ -1,6 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { defaultTokenRulerSettings } from "../../system/settings/defaultTokenRulerSettings";
+import { isFoundryElementInstanceOf } from "../../system/util";
 import type { TokenRulerSettingsContext } from "./tokenRulerSettings.types.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -73,7 +74,10 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(
 
   protected override _onChangeForm(formConfig: any, event: Event): void {
     const target = event.target;
-    if (target instanceof HTMLInputElement && target.name === "sprintMultiplier") {
+    if (
+      isFoundryElementInstanceOf(target, HTMLInputElement) &&
+      target.name === "sprintMultiplier"
+    ) {
       this.updateSprintMeters(Number(target.value) || 0);
     }
     super._onChangeForm(formConfig, event);

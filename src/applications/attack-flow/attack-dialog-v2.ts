@@ -9,6 +9,7 @@ import {
   getTokenOrActorFromItem,
   isButton,
   isDocumentSubType,
+  isFoundryElementInstanceOf,
   isTruthy,
   localize,
   requireValue,
@@ -246,7 +247,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private onCommittedFormChange(event: Event): boolean | void {
     const target = event.target;
-    if (!(target instanceof HTMLSelectElement)) {
+    if (!isFoundryElementInstanceOf(target, HTMLSelectElement)) {
       return;
     }
 
