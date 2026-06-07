@@ -110,7 +110,6 @@ export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
   ): Promise<void> {
     const data = formData.object as Record<RqgItemType | "reputation", string>;
     await game.settings?.set(systemId, "defaultItemIconSettings", data);
-    this.render();
   }
 
   private static async onResetDefaults(

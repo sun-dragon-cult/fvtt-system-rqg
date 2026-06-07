@@ -1,13 +1,16 @@
 import { RqgItemDataModel } from "./RqgItemDataModel";
 import { abilitySchemaFields } from "../shared/abilitySchemaFields";
 import { RQG_CONFIG, systemId } from "../../system/config";
-import { isDocumentSubType, localize, RqgError, getSpeakerFromItem } from "../../system/util";
+import { isDocumentSubType, localize, getSpeakerFromItem } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/AbilityRoll/AbilityRoll.defs";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
 import type { AbilityItem } from "./itemTypes";
 import type { SkillItem } from "./skillDataModel";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqgActorData";
+import { RqgLogger } from "../../system/logging/rqgLogger";
+
+const logger = new RqgLogger("AbilityDataModel");
 
 type AbilitySchema = ReturnType<typeof abilitySchemaFields>;
 
@@ -39,7 +42,7 @@ export abstract class AbilityDataModel<
     if (!item?.isEmbedded) {
       const msg = "Item is not embedded";
       ui.notifications?.error(msg);
-      throw new RqgError(msg, item);
+      logger.throw(msg, item);
     }
 
     const chance: number = Number(this.chance) || 0; // Handle NaN
@@ -55,7 +58,7 @@ export abstract class AbilityDataModel<
       rollMode: options?.rollMode,
     });
     if (abilityRoll.successLevel == null) {
-      throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+      logger.throw("Evaluated AbilityRoll didn't give successLevel", { abilityRoll });
     }
     await this.checkExperience(abilityRoll.successLevel);
   }
@@ -107,7 +110,7 @@ export abstract class AbilityDataModel<
   async applyChanceGain(gain: number): Promise<void> {
     const item = this.parent;
     if (!item) {
-      throw new RqgError("Tried to improve item that isn't embedded on an actor", item);
+      logger.throw("Tried to improve item that isn't embedded on an actor", item);
     }
 
     const newChance = Number(this.chance) + gain;
