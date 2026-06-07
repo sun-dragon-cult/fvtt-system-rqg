@@ -26,7 +26,9 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 6. Avoid unrelated refactors in the same change.
 7. Hardcoded English is acceptable only for internal debug/developer-only logging and assertions.
 8. Use `RqgLogger` from `src/system/logging/rqgLogger.ts` for all runtime logging; avoid bare `console.log`/`console.warn`.
-9. `update`, `create`, `delete` and other document operations are async; await them and handle failures clearly.
+9. When code needs to throw in runtime paths, use `logger.throw(...)` with a module-level `RqgLogger`; if a module does not yet have one, add it rather than directly constructing and throwing `RqgError`.
+10. `update`, `create`, `delete` and other document operations are async; await them and handle failures clearly.
+11. Naming convention: use **kebab-case** for new folders and non-type files (especially under `src/applications/**`); keep PascalCase for TypeScript symbol names (classes/types/interfaces). Treat legacy mixed-case paths as stable unless a task explicitly includes path normalization.
 
 ## Foundry + fvtt-types Guidance
 
@@ -105,6 +107,7 @@ Key types and conventions specific to this system:
 
 - Follow existing AppV2 patterns: `ApplicationV2`, `HandlebarsApplicationMixin`, `DEFAULT_OPTIONS`, `PARTS`, `_prepareContext`, `_onRender`.
 - Keep form behavior consistent with current usage (`form.handler`, `submitOnChange`, `closeOnSubmit`) unless the task requires otherwise.
+- For new folders/files, prefer kebab-case path names; avoid introducing new PascalCase directory names.
 - No dedicated application test suite exists; co-locate a new `*.test.ts` in the same folder when adding non-trivial logic.
 
 ### When working on `src/system/**`

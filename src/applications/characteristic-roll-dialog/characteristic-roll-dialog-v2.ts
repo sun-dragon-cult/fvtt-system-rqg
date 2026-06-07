@@ -1,0 +1,229 @@
+import { systemId } from "../../system/config";
+import { templatePaths } from "../../system/loadHandlebarsTemplates";
+import type {
+  CharacteristicRollDialogContext,
+  CharacteristicRollDialogFormData,
+} from "./characteristic-roll-dialog-data.types.ts";
+import { DEFAULT_DIFFICULTY } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types.ts";
+import { assertDocumentSubType, getTokenFromActor, localize, RqgError } from "../../system/util";
+import type { RqgActor } from "@actors/rqgActor.ts";
+import type { CharacteristicRollOptions } from "../../rolls/CharacteristicRoll/CharacteristicRoll.types";
+import { CharacteristicRoll } from "../../rolls/CharacteristicRoll/CharacteristicRoll";
+import type { Characteristics } from "../../data-model/actor-data/characteristics";
+import { ActorTypeEnum } from "../../data-model/actor-data/rqgActorData.ts";
+import type { CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
+import {
+  getConfiguredRollModeOptions,
+  getDefaultRollMode,
+  getSelectedRollMode,
+} from "../app-parts/roll-mode";
+import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+
+export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override getLivePreviewFormBehaviorConfig() {
+    return {
+      submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
+      updateLivePreview: () => this.updateLivePreview(),
+    };
+  }
+
+  private computeTotalChance(formData: CharacteristicRollDialogFormData): number {
+    return (
+      Math.ceil(
+        Number(formData.characteristicValue) *
+          CharacteristicRollDialogV2.getDifficulty(formData.difficulty),
+      ) +
+      Number(formData.augmentModifier ?? 0) +
+      Number(formData.meditateModifier ?? 0) +
+      Number(formData.otherModifier ?? 0)
+    );
+  }
+
+  private static augmentOptions: SelectOptionData<number>[] = [
+    { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
+    { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },
+    { value: 30, label: "RQG.Dialog.Common.AugmentOptions.SpecialSuccess" },
+    { value: 20, label: "RQG.Dialog.Common.AugmentOptions.Success" },
+    { value: -20, label: "RQG.Dialog.Common.AugmentOptions.Failure" },
+    { value: -50, label: "RQG.Dialog.Common.AugmentOptions.Fumble" },
+  ];
+
+  private static meditateOptions: SelectOptionData<number>[] = [
+    { value: 0, label: "RQG.Dialog.Common.MeditateOptions.None" },
+    { value: 5, label: "RQG.Dialog.Common.MeditateOptions.1mr" },
+    { value: 10, label: "RQG.Dialog.Common.MeditateOptions.2mr" },
+    { value: 15, label: "RQG.Dialog.Common.MeditateOptions.5mr" },
+    { value: 20, label: "RQG.Dialog.Common.MeditateOptions.25mr" },
+    { value: 25, label: "RQG.Dialog.Common.MeditateOptions.50mr" },
+  ];
+
+  private static difficultyOptions: SelectOptionData<number>[] = [
+    { value: 0, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.0" },
+    { value: 1, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.1" },
+    { value: 2, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.2" },
+    { value: 3, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.3" },
+    { value: 4, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.4" },
+    { value: 5, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.5" },
+    { value: 6, label: "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.6" },
+  ];
+
+  private actor: RqgActor;
+  private characteristicName: keyof Characteristics;
+
+  constructor(
+    actor: RqgActor,
+    characteristicName: keyof Characteristics,
+    options?: Partial<foundry.applications.types.ApplicationConfiguration>,
+  ) {
+    super(options);
+    this.actor = actor;
+    this.characteristicName = characteristicName;
+  }
+
+  static override DEFAULT_OPTIONS = {
+    id: `characteristic-{id}`,
+    tag: "form",
+    classes: [systemId, "form", "roll-dialog", "characteristic-roll-dialog"],
+    form: {
+      handler: CharacteristicRollDialogV2.onSubmit,
+      submitOnChange: false,
+      closeOnSubmit: true,
+    },
+    position: {
+      width: "auto" as const,
+      height: "auto" as const,
+      left: 35,
+      top: 15,
+    },
+    window: {
+      contentClasses: ["standard-form"],
+      icon: "fa-solid fa-dice",
+      title: "RQG.Dialog.CharacteristicRoll.Title",
+      resizable: false,
+    },
+  };
+
+  static override PARTS = {
+    header: { template: templatePaths.rollHeader },
+    form: { template: templatePaths.characteristicRollDialogV2, scrollable: [""] },
+    footer: { template: templatePaths.rollFooter },
+  };
+
+  override async _prepareContext(): Promise<CharacteristicRollDialogContext> {
+    assertDocumentSubType<CharacterActor>(this.actor, ActorTypeEnum.Character);
+
+    const formData = ((this.element &&
+      new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ??
+      {}) as CharacteristicRollDialogFormData;
+
+    formData.difficulty ??= DEFAULT_DIFFICULTY;
+    formData.augmentModifier ??= "0";
+    formData.meditateModifier ??= "0";
+    formData.otherModifier ??= "0";
+    formData.otherModifierDescription ??= localize("RQG.Dialog.CharacteristicRoll.OtherModifier");
+    formData.actorUuid ??= this.actor.uuid;
+    formData.characteristicName ??= this.characteristicName;
+    formData.characteristicValue ??=
+      this.actor.system.characteristics[this.characteristicName]?.value ?? 0;
+
+    const speaker = ChatMessage.getSpeaker({
+      token: getTokenFromActor(this.actor),
+      actor: this.actor,
+    });
+
+    return {
+      formData: formData,
+
+      speakerName: speaker.alias ?? "",
+      augmentOptions: CharacteristicRollDialogV2.augmentOptions,
+      meditateOptions: CharacteristicRollDialogV2.meditateOptions,
+      difficultyOptions: CharacteristicRollDialogV2.difficultyOptions,
+
+      // RollHeader
+      rollType: localize("RQG.Actor.Characteristics.Characteristic"),
+      rollName: formData.characteristicName.capitalize(),
+      baseChance: formData.characteristicValue.toString(),
+
+      // RollFooter
+      totalChance:
+        Math.ceil(
+          Number(formData.characteristicValue) *
+            CharacteristicRollDialogV2.getDifficulty(formData.difficulty),
+        ) +
+        Number(formData.augmentModifier ?? 0) +
+        Number(formData.meditateModifier ?? 0) +
+        Number(formData.otherModifier ?? 0),
+      rollMode: this.rollMode,
+      rollModes: getConfiguredRollModeOptions(),
+    };
+  }
+
+  private updateLivePreview(): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (!totalChanceElement) {
+      return;
+    }
+
+    const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
+      .object as CharacteristicRollDialogFormData;
+    totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
+  }
+
+  private static async onSubmit(
+    event: SubmitEvent | Event,
+    form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended,
+  ): Promise<void> {
+    const formDataObject = formData.object as CharacteristicRollDialogFormData;
+
+    const rollMode =
+      getSelectedRollMode(
+        form?.querySelector<HTMLButtonElement>(
+          'button[data-action="rollMode"][aria-pressed="true"]',
+        )?.dataset["rollMode"],
+      ) ?? getDefaultRollMode();
+
+    const actor = (await fromUuid(formDataObject.actorUuid)) as RqgActor | undefined;
+    if (!actor || !formDataObject.characteristicName) {
+      ui.notifications?.error("Could not find an actor or characteristicName to roll.");
+      return;
+    }
+
+    const options: CharacteristicRollOptions = {
+      characteristicValue: formDataObject.characteristicValue,
+      characteristicName: formDataObject.characteristicName,
+      difficulty: CharacteristicRollDialogV2.getDifficulty(formDataObject.difficulty),
+      modifiers: [
+        {
+          value: Number(formDataObject.augmentModifier),
+          description: localize("RQG.Roll.CharacteristicRoll.Augment"),
+        },
+        {
+          value: Number(formDataObject.meditateModifier),
+          description: localize("RQG.Roll.CharacteristicRoll.Meditate"),
+        },
+        {
+          value: Number(formDataObject.otherModifier),
+          description: formDataObject.otherModifierDescription,
+        },
+      ],
+      speaker: ChatMessage.getSpeaker({
+        token: getTokenFromActor(actor),
+        actor: actor,
+      }),
+      rollMode: rollMode,
+    };
+
+    const roll = await CharacteristicRoll.rollAndShow(options);
+    if (roll.successLevel == null) {
+      throw new RqgError("Evaluated CharacteristicRoll didn't give successLevel");
+    }
+    await actor.checkExperience(formDataObject.characteristicName ?? "", roll.successLevel);
+  }
+
+  private static getDifficulty(difficulty: number | string | undefined): number {
+    const diff = Number(difficulty);
+    const d = isNaN(diff) ? 5 : diff; // default to 5
+    return d === 0 ? 0.5 : d; // half chance is represented by 0 in the select options
+  }
+}

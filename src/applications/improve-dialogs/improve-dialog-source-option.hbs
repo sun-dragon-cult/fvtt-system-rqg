@@ -1,0 +1,20 @@
+{{#if show}}
+<label
+  class="improve-dialog-source-option{{#unless can}} is-disabled{{/unless}}"
+  data-source-option="{{source}}"
+>
+  <input
+    type="radio"
+    name="improvementSource"
+    value="{{source}}"
+    {{#if (eq selectedSource source)}}checked{{/if}}
+    {{#unless can}}disabled{{/unless}}
+  >
+  <span>{{localize labelKey}}</span>
+  {{#unless can}}
+    <small class="improve-dialog-source-unavailable">
+      {{> @partial-block}}
+    </small>
+  {{/unless}}
+</label>
+{{/if}}

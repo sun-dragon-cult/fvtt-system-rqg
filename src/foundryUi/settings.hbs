@@ -68,9 +68,11 @@
   </button>
 
   {{!-- BEGIN RQG ADDITION --}}
-  <button type="button" data-action="worldMigration">
-    <i class="fa-solid fa-wrench" inert></i> {{localize "RQG.Foundry.Settings.Migrate.TriggerButton"}}
-  </button>
+  {{#if user.isGM }}
+    <button type="button" data-action="worldMigration">
+      <i class="fa-solid fa-wrench" inert></i> {{localize "RQG.Foundry.Settings.Migrate.TriggerButton"}}
+    </button>
+  {{/if}}
   {{!-- END RQG ADDITION --}}
 </section>
 

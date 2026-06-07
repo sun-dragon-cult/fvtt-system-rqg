@@ -1,0 +1,307 @@
+import {
+  hitLocationHealthStatuses,
+  type HitLocationItem,
+  HitLocationTypesEnum,
+} from "@item-model/hitLocationDataModel.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData";
+import { type ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
+import { ItemTypeEnum } from "@item-model/itemTypes.ts";
+import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
+import { RqgItem } from "../rqgItem";
+import { RqgActor } from "../../actors/rqgActor";
+import { systemId } from "../../system/config";
+
+import Document = foundry.abstract.Document;
+
+export interface DamageEffects {
+  hitLocationUpdates: Item.UpdateData;
+  actorUpdates: Actor.UpdateData;
+  /** info to the user  */
+  notification: string;
+  /** make limbs useless */
+  uselessLegs: ({ _id: string } & Item.UpdateData)[];
+}
+
+/**
+ * Calculate the effects to apply to hitLocations and actor from inflicting damage.
+ */
+export class DamageCalculations {
+  /**
+   * Calculate effects of adding `damage` points of damage to `hitLocationData` on actor `actorData`
+   */
+  public static addWound(
+    damage: number,
+    applyDamageToTotalHp: boolean,
+    hitLocation: HitLocationItem | undefined,
+    actor: CharacterActor,
+    speakerName: string,
+  ): DamageEffects {
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
+
+    if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Limb) {
+      return DamageCalculations.calcLimbDamageEffects(
+        hitLocation,
+        damage,
+        actor,
+        applyDamageToTotalHp,
+        speakerName,
+      );
+    } else {
+      return DamageCalculations.calcLocationDamageEffects(
+        hitLocation,
+        damage,
+        actor,
+        applyDamageToTotalHp,
+        speakerName,
+      );
+    }
+  }
+
+  private static applyDamageToActorTotalHp(
+    damage: number,
+    actor: RqgActor,
+  ): Document.UpdateDataForName<"Actor"> {
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+
+    if (actor.system.attributes.hitPoints.max != null) {
+      const currentTotalHp = actor.system.attributes.hitPoints.value;
+      const actorUpdateData: Document.UpdateDataForName<"Actor"> = {
+        system: { attributes: { hitPoints: { value: 0 } } },
+      };
+      if (currentTotalHp == null) {
+        const msg = `Actor ${actor.name} don't have a calculated hitpoint value`;
+        ui.notifications?.error(msg);
+        throw new RqgError(msg, actorUpdateData);
+      }
+
+      (actorUpdateData as Partial<CharacterActor>).system!.attributes!.hitPoints!.value =
+        currentTotalHp - damage;
+      return actorUpdateData;
+    }
+
+    return {} as Document.UpdateDataForName<"Actor">;
+  }
+
+  private static calcLimbDamageEffects(
+    hitLocation: RqgItem,
+    fullDamage: number,
+    actor: RqgActor,
+    applyDamageToTotalHp: boolean,
+    speakerName: string,
+  ): DamageEffects {
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
+    const damageEffects: DamageEffects = {
+      hitLocationUpdates: {},
+      actorUpdates: {},
+      notification: "",
+      uselessLegs: [],
+    };
+
+    if (hitLocation.system.hitLocationHealthState === "severed") {
+      damageEffects.notification = localize(
+        "RQG.Item.HitLocation.Notification.SeveredCannotBeHit",
+        {
+          hitLocationName: hitLocation.name,
+        },
+      );
+      return damageEffects;
+    }
+    const maxHp = hitLocation.system.hitPoints.max;
+    if (maxHp == null) {
+      const msg = `Hit location ${hitLocation.name} doesn't have a max hp`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocation);
+    }
+    const damage = Math.min(maxHp * 2, fullDamage); // Max damage to THP inflicted by limb wound is 2*HP
+    const hpValue = hitLocation.system.hitPoints.value;
+    const hpMax = hitLocation.system.hitPoints.max;
+    if (hpValue == null || hpMax == null) {
+      const msg = `Hitlocation ${hitLocation.name} don't have hp value or max`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg);
+    }
+    const totalDamage = hpMax - hpValue + damage;
+
+    if (
+      totalDamage > 0 &&
+      hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
+        hitLocationHealthStatuses.indexOf("wounded")
+    ) {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: { hitLocationHealthState: "wounded", actorHealthImpact: "wounded" },
+      } as any);
+    }
+    if (
+      totalDamage >= hpMax &&
+      hitLocationHealthStatuses.indexOf(hitLocation.system.hitLocationHealthState) <
+        hitLocationHealthStatuses.indexOf("useless")
+    ) {
+      damageEffects.notification = localize("RQG.Item.HitLocation.Notification.LimbUseless", {
+        speakerName: speakerName,
+        hitLocationName: hitLocation.name,
+      });
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: { hitLocationHealthState: "useless" },
+      } as any);
+    }
+    if (fullDamage >= hpMax * 2) {
+      damageEffects.notification = localize("RQG.Item.HitLocation.Notification.LimbShock", {
+        speakerName: speakerName,
+      });
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: { hitLocationHealthState: "useless", actorHealthImpact: "shock" },
+      } as any);
+    }
+    if (fullDamage >= hpMax * 3) {
+      damageEffects.notification = `${speakerName}'s ${hitLocation.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. ${speakerName} is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible.`;
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: { hitLocationHealthState: "severed" },
+      } as any);
+    }
+    const currentLimbDamage = hpMax - hpValue;
+    const limbWound = Math.min(hpMax * 2 - currentLimbDamage, damage);
+    const wounds = hitLocation.system.wounds.concat([limbWound]);
+    foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+      system: { wounds: wounds },
+    } as any);
+    if (applyDamageToTotalHp) {
+      foundry.utils.mergeObject(
+        damageEffects.actorUpdates,
+        this.applyDamageToActorTotalHp(damage, actor),
+      );
+    }
+    return damageEffects;
+  }
+
+  private static calcLocationDamageEffects(
+    hitLocation: RqgItem,
+    damage: number,
+    actor: RqgActor,
+    applyDamageToTotalHp: boolean,
+    speakerName: string,
+  ): DamageEffects {
+    const damageEffects: DamageEffects = {
+      hitLocationUpdates: {},
+      actorUpdates: {},
+      notification: "",
+      uselessLegs: [],
+    };
+    assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
+    const hpValue = hitLocation.system.hitPoints.value;
+    const hpMax = hitLocation.system.hitPoints.max;
+    if (!hitLocation.system.hitLocationType) {
+      const msg = `Hitlocation ${hitLocation.name} on actor ${speakerName} does not have a specified hitLocationType`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocation);
+    }
+    if (hpValue == null || hpMax == null) {
+      const msg = `Hitlocation ${hitLocation.name} don't have hp value or max`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, hitLocation);
+    }
+    const totalDamage = hpMax - hpValue + damage;
+
+    if (totalDamage > 0) {
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: {
+          actorHealthImpact: "wounded",
+          hitLocationHealthState: "wounded",
+          wounds: [...hitLocation.system.wounds, damage],
+        },
+      } as any);
+    }
+
+    if (
+      hitLocation.system.hitLocationType === HitLocationTypesEnum.Abdomen &&
+      totalDamage >= hpMax &&
+      totalDamage < hpMax * 3
+    ) {
+      const attachedLimbs = actor.items.filter(
+        (i) =>
+          isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
+          i.system.connectedTo === hitLocation.flags?.[systemId]?.documentRqidFlags?.id,
+      ) as HitLocationItem[];
+      damageEffects.uselessLegs = attachedLimbs.map((limb) => {
+        return {
+          _id: limb.id ?? "",
+          system: {
+            hitLocationHealthState: "useless",
+          },
+        };
+      });
+      damageEffects.notification = `Both legs are useless and ${speakerName} falls to the ground. ${speakerName} may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
+    }
+
+    if (totalDamage >= hpMax * 3) {
+      damageEffects.notification = `${speakerName} dies instantly.`;
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: { actorHealthImpact: "dead" },
+      } as any);
+    } else if (totalDamage >= hpMax * 2) {
+      damageEffects.notification = `${speakerName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
+      foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+        system: { actorHealthImpact: "unconscious" },
+      } as any);
+    } else if (totalDamage >= hpMax) {
+      if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Head) {
+        foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+          system: { actorHealthImpact: "unconscious" },
+        } as any);
+
+        damageEffects.notification = `${speakerName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
+      } else if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Chest) {
+        damageEffects.notification = localize("RQG.Item.HitLocation.Notification.ChestShock", {
+          speakerName: speakerName,
+        });
+        foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
+          system: { actorHealthImpact: "shock" },
+        } as any);
+      }
+    }
+
+    if (applyDamageToTotalHp) {
+      foundry.utils.mergeObject(
+        damageEffects.actorUpdates,
+        this.applyDamageToActorTotalHp(damage, actor),
+      );
+    }
+    return damageEffects;
+  }
+
+  static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
+    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+
+    const maxHitPoints = actor.system.attributes.hitPoints.max;
+
+    const hasMaxMagicPoints = !!actor.system.attributes.magicPoints.max;
+    const currentMagicPoints = actor.system.attributes.magicPoints.value ?? 0;
+
+    if (maxHitPoints == null) {
+      return "healthy";
+    }
+    const totalHitPoints = actor.system.attributes.hitPoints.value;
+    if (totalHitPoints == null) {
+      const msg = `Actor hit points value ${totalHitPoints} is missing in actor ${actor.name}`;
+      ui.notifications?.error(msg);
+      throw new RqgError(msg, actor);
+    }
+    const baseHealth: ActorHealthState = totalHitPoints < maxHitPoints ? "wounded" : "healthy";
+
+    if (totalHitPoints <= 0) {
+      return "dead";
+    } else if (totalHitPoints <= 2 || (hasMaxMagicPoints && currentMagicPoints <= 0)) {
+      return "unconscious";
+    } else {
+      return actor.items.reduce((acc: ActorHealthState, item) => {
+        if (!isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation)) {
+          return acc;
+        } else {
+          const actorHealthImpact = item.system.actorHealthImpact;
+          return actorHealthStatuses.indexOf(actorHealthImpact) > actorHealthStatuses.indexOf(acc)
+            ? actorHealthImpact
+            : acc;
+        }
+      }, baseHealth);
+    }
+  }
+}

@@ -1,6 +1,10 @@
 import { Rqid } from "../../system/api/rqidApi";
 import { isValidRqidString } from "../../system/api/rqidValidation";
-import { getDomDataset, getRequiredDomDataset } from "../../system/util";
+import {
+  getDomDataset,
+  getRequiredDomDataset,
+  isFoundryElementInstanceOf,
+} from "../../system/util";
 
 type RqidDocument = foundry.abstract.Document.Any;
 
@@ -43,12 +47,12 @@ export class RqidLink<R extends string = string> {
     if (html.dataset["rqidLinkOpenBound"] !== "true") {
       html.dataset["rqidLinkOpenBound"] = "true";
       html.addEventListener("click", (ev: MouseEvent) => {
-        if (!(ev.target instanceof Element)) {
+        if (!isFoundryElementInstanceOf(ev.target, Element)) {
           return;
         }
 
         const linkEl = ev.target.closest<HTMLElement>("[data-rqid-link]");
-        if (!linkEl || ev.target instanceof HTMLInputElement) {
+        if (!linkEl || isFoundryElementInstanceOf(ev.target, HTMLInputElement)) {
           return;
         }
 
@@ -69,7 +73,7 @@ export class RqidLink<R extends string = string> {
     if (document && html.dataset["rqidLinkDeleteBound"] !== "true") {
       html.dataset["rqidLinkDeleteBound"] = "true";
       html.addEventListener("click", (ev: MouseEvent) => {
-        if (!(ev.target instanceof Element)) {
+        if (!isFoundryElementInstanceOf(ev.target, Element)) {
           return;
         }
 
@@ -87,7 +91,7 @@ export class RqidLink<R extends string = string> {
     if (document && html.dataset["rqidLinkBonusBound"] !== "true") {
       html.dataset["rqidLinkBonusBound"] = "true";
       html.addEventListener("change", (ev: Event) => {
-        if (!(ev.target instanceof HTMLInputElement)) {
+        if (!isFoundryElementInstanceOf(ev.target, HTMLInputElement)) {
           return;
         }
 

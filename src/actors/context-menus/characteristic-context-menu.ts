@@ -7,7 +7,7 @@ import {
   requireValue,
   RqgError,
 } from "../../system/util";
-import { showImproveCharacteristicDialog } from "../../applications/improveCharacteristicDialog";
+import { showImproveCharacteristicDialog } from "../../applications/improve-dialogs/improve-characteristic-dialog";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 
@@ -72,16 +72,8 @@ export const characteristicMenuOptions = (
       const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
-      const characteristic = actor.system.characteristics[charName];
-      (characteristic as any).name = charName; // TODO adding extra properties that's not on type Characteristic
       const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
-      if (
-        characteristic != null &&
-        characteristic.value != null &&
-        Number.isNumeric(characteristic.value)
-      ) {
-        showImproveCharacteristicDialog(actor, "characteristic", characteristic, speakerName);
-      }
+      void showImproveCharacteristicDialog(actor, charName, speakerName);
     },
   },
   {
@@ -295,41 +287,34 @@ async function confirmInitializeDialog(
   actorName: string,
   characteristic: string = "",
 ): Promise<boolean> {
-  return await new Promise((resolve) => {
-    const title = characteristic
-      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {
-          characteristicName: localizeCharacteristic(characteristic),
-          actorName: actorName,
-        })
-      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {
-          actorName: actorName,
-        });
-    const content = characteristic
-      ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {
-          characteristicName: localizeCharacteristic(characteristic),
-        })
-      : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
-    const dialog = new Dialog({
-      title: title,
-      content: content,
-      default: "submit",
-      buttons: {
-        submit: {
-          icon: '<i class="fas fa-check"></i>',
-          label: localize("RQG.Dialog.Common.btnConfirm"),
-          callback: () => {
-            resolve(true);
-          },
-        },
-        cancel: {
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: '<i class="fas fa-times"></i>',
-          callback: () => {
-            resolve(false);
-          },
-        },
-      },
-    });
-    dialog.render(true);
+  const title = characteristic
+    ? localize("RQG.ContextMenu.OverwriteCharacteristicDialogTitle", {
+        characteristicName: localizeCharacteristic(characteristic),
+        actorName: actorName,
+      })
+    : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialogTitle", {
+        actorName: actorName,
+      });
+  const content = characteristic
+    ? localize("RQG.ContextMenu.OverwriteCharacteristicDialog", {
+        characteristicName: localizeCharacteristic(characteristic),
+      })
+    : localize("RQG.ContextMenu.OverwriteAllCharacteristicsDialog");
+  const result = await foundry.applications.api.DialogV2.confirm({
+    window: { title },
+    content,
+    position: { width: 440 },
+    yes: {
+      action: "confirm",
+      label: localize("RQG.Dialog.Common.btnConfirm"),
+      icon: "fas fa-check",
+      default: true,
+    },
+    no: {
+      action: "cancel",
+      label: localize("RQG.Dialog.Common.btnCancel"),
+      icon: "fas fa-times",
+    },
   });
+  return result === true;
 }

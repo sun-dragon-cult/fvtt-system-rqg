@@ -1,0 +1,196 @@
+<div class="rqid-editor-reference scrollable">
+  <fieldset class="rqid-editor-reference-matches" data-rqid-duplicates {{#unless rqidNamePart}}hidden{{/unless}}>
+    <legend>{{localize "RQG.RQGSystem.MatchingRqidDocuments"}}</legend>
+    <div class="fullwidth">
+      <details open>
+        <summary>
+          <span id="rqid-editor-docs-world-summary">{{localize 'RQG.RQGSystem.DocsInWorld' count=worldDuplicates}}</span>{{#if warnDuplicateWorldPriority}}
+          <span id="rqid-editor-docs-world-warning" class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize
+            "RQG.RQGSystem.DuplicateWarning"}}</span>{{else}}
+          <span id="rqid-editor-docs-world-warning" class="warning" hidden><i class="fas fa-exclamation-triangle"></i>{{localize
+            "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}
+        </summary>
+        <table>
+          <thead>
+            <tr>
+              <th>{{localize "RQG.RQGSystem.Rqid.PriorityColumn"}}</th>
+              <th>{{localize "RQG.RQGSystem.Rqid.LinkColumn"}}</th>
+              <th>{{localize "RQG.RQGSystem.Rqid.FolderColumn"}}</th>
+              <th class="status-col"></th>
+            </tr>
+          </thead>
+          <tbody id="rqid-editor-docs-world-rows">
+            {{#each worldDocumentInfo}}
+              <tr class="{{#if isCurrent}}current-document-row{{/if}}">
+                <td class="priority-cell">{{priority}}{{#if hasDuplicatePriority}}<i
+                    class="fas fa-exclamation-triangle duplicate-priority-marker"
+                    data-tooltip="{{localize 'RQG.RQGSystem.DuplicatePriorityMarkerTooltip'}}"
+                    aria-label="{{localize 'RQG.RQGSystem.DuplicatePriorityMarkerTooltip'}}"
+                  ></i>{{/if}}</td>
+                <td>{{{link}}}</td>
+                <td>{{folder}}</td>
+                <td
+                  class="status-col"
+                  {{#if isCurrent}}
+                    data-tooltip="{{localize 'RQG.RQGSystem.CurrentDocumentMarkerTooltip'}}"
+                    aria-label="{{localize 'RQG.RQGSystem.CurrentDocumentMarkerTooltip'}}"
+                  {{/if}}
+                >{{#if isCurrent}}<i class="fas fa-location-dot current-document-marker"></i>{{/if}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </details>
+
+      <details open>
+        <summary>
+          <span id="rqid-editor-docs-compendium-summary">{{localize 'RQG.RQGSystem.DocsInCompendiums' count=compendiumDuplicates}}</span>{{#if
+          warnDuplicateCompendiumPriority}}<span id="rqid-editor-docs-compendium-warning" class="warning"><i class="fas fa-exclamation-triangle"></i>{{localize
+          "RQG.RQGSystem.DuplicateWarning"}}</span>{{else}}
+          <span id="rqid-editor-docs-compendium-warning" class="warning" hidden><i class="fas fa-exclamation-triangle"></i>{{localize
+          "RQG.RQGSystem.DuplicateWarning"}}</span>{{/if}}
+        </summary>
+        <table>
+          <thead>
+            <tr>
+              <th>{{localize "RQG.RQGSystem.Rqid.PriorityColumn"}}</th>
+              <th>{{localize "RQG.RQGSystem.Rqid.LinkColumn"}}</th>
+              <th>{{localize "RQG.RQGSystem.Rqid.CompendiumColumn"}}</th>
+              <th class="status-col"></th>
+            </tr>
+          </thead>
+          <tbody id="rqid-editor-docs-compendium-rows">
+            {{#each compendiumDocumentInfo}}
+              <tr class="{{#if isCurrent}}current-document-row{{/if}}">
+                <td class="priority-cell">{{priority}}{{#if hasDuplicatePriority}}<i
+                    class="fas fa-exclamation-triangle duplicate-priority-marker"
+                    data-tooltip="{{localize 'RQG.RQGSystem.DuplicatePriorityMarkerTooltip'}}"
+                    aria-label="{{localize 'RQG.RQGSystem.DuplicatePriorityMarkerTooltip'}}"
+                  ></i>{{/if}}</td>
+                <td>{{{link}}}</td>
+                <td>{{{compendium}}}</td>
+                <td
+                  class="status-col"
+                  {{#if isCurrent}}
+                    data-tooltip="{{localize 'RQG.RQGSystem.CurrentDocumentMarkerTooltip'}}"
+                    aria-label="{{localize 'RQG.RQGSystem.CurrentDocumentMarkerTooltip'}}"
+                  {{/if}}
+                >{{#if isCurrent}}<i class="fas fa-location-dot current-document-marker"></i>{{/if}}</td>
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+      </details>
+    </div>
+  </fieldset>
+
+  <fieldset class="key-value-grid rqid-editor-reference-snippets">
+    <legend>{{localize "RQG.RQGSystem.ReferenceSnippets"}}</legend>
+
+    <label>{{localize "RQG.RQGSystem.FoundryId"}}</label>
+    <div class="input-button">
+      <input type="text" id="rqid-editor-foundry-id" value="{{id}}" readonly>
+      <button
+        type="button"
+        class="copy-input"
+        data-copy-target="rqid-editor-foundry-id"
+        data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-copy-input
+        aria-label="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+      >
+        <i class="fas fa-copy"></i>
+      </button>
+    </div>
+
+    {{#if parentId}}
+      <label>{{localize "RQG.RQGSystem.ParentFoundryId"}}</label>
+      <div class="input-button">
+        <input type="text" id="rqid-editor-parent-foundry-id" value="{{parentId}}" readonly>
+        <button
+          type="button"
+          class="copy-input"
+          data-copy-target="rqid-editor-parent-foundry-id"
+          data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+          data-item-copy-input
+          aria-label="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        >
+          <i class="fas fa-copy"></i>
+        </button>
+      </div>
+    {{/if}}
+
+    <label>{{localize "RQG.RQGSystem.FoundryUuid"}}</label>
+    <div class="input-button">
+      <input type="text" id="rqid-editor-foundry-uuid" value="{{uuid}}" readonly>
+      <button
+        type="button"
+        class="copy-input"
+        data-copy-target="rqid-editor-foundry-uuid"
+        data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-copy-input
+        aria-label="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+      >
+        <i class="fas fa-copy"></i>
+      </button>
+    </div>
+
+    <label>{{localize "RQG.RQGSystem.GetThisDocument"}}</label>
+    <div class="input-button">
+      <input type="text" id="rqid-editor-get-this-document" value='await fromUuid("{{uuid}}")' readonly>
+      <button
+        type="button"
+        class="copy-input"
+        data-copy-target="rqid-editor-get-this-document"
+        data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-copy-input
+        aria-label="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+      >
+        <i class="fas fa-copy"></i>
+      </button>
+    </div>
+
+    <label data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+      {{localize "RQG.RQGSystem.GetDocumentLikeThis"}}
+    </label>
+    <div class="input-button" data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+      <input
+        type="text"
+        id="rqid-editor-get-document-like-this"
+        value='{{#if fullRqid}}await game.system.api.rqid.fromRqid("{{fullRqid}}","{{flags.rqg.documentRqidFlags.lang}}"){{/if}}'
+        readonly
+      >
+      <button
+        type="button"
+        class="copy-input"
+        data-copy-target="rqid-editor-get-document-like-this"
+        data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-copy-input
+        aria-label="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+      >
+        <i class="fas fa-copy"></i>
+      </button>
+    </div>
+
+    <label data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+      {{localize "RQG.RQGSystem.JournalLinkToDocumentLikeThis"}}
+    </label>
+    <div class="input-button" data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+      <input
+        type="text"
+        id="rqid-editor-journal-link-to-document-like-this"
+        value='{{rqidLink}}'
+        readonly
+      >
+      <button
+        type="button"
+        class="copy-input"
+        data-copy-target="rqid-editor-journal-link-to-document-like-this"
+        data-tooltip="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+        data-item-copy-input
+        aria-label="{{localize "RQG.RQGSystem.CopyInputValue"}}"
+      >
+        <i class="fas fa-copy"></i>
+      </button>
+    </div>
+  </fieldset>
+</div>

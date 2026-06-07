@@ -1,6 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/loadHandlebarsTemplates";
 import { defaultTokenRulerSettings } from "../../system/settings/defaultTokenRulerSettings";
+import { isFoundryElementInstanceOf } from "../../system/util";
 import type { TokenRulerSettingsContext } from "./tokenRulerSettings.types.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -53,10 +54,11 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(
     const sprintMultiplier = config.sprintMultiplier ?? 0;
     return {
       sprintMultiplier: sprintMultiplier,
-      sprintMeters: Math.roundDecimals(
-        sprintMultiplier * CONFIG.RQG.metersPerMov * TokenRulerSettings.exampleMov,
-        2,
-      ),
+      sprintMeters: (
+        sprintMultiplier *
+        CONFIG.RQG.metersPerMov *
+        TokenRulerSettings.exampleMov
+      ).toNearest(0.01),
       lineWidth: config.lineWidth ?? 30,
       alpha: config.alpha ?? 1,
 
@@ -70,28 +72,29 @@ export default class TokenRulerSettings extends HandlebarsApplicationMixin(
     };
   }
 
-  // add a listener and do DOM manipulation to update the calculated sprint range in meters
-  /** @override */
-  override async _onRender(): Promise<void> {
-    const sprintMultiplier = (this.element as Element).querySelector<HTMLInputElement>(
-      '[name="sprintMultiplier"]',
-    );
-    sprintMultiplier?.addEventListener("input", (e: Event): void => {
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      const html = this.element as HTMLElement;
-      const sprintInput = html.querySelector<HTMLInputElement>('input[name="sprintMultiplier"]');
+  protected override _onChangeForm(formConfig: any, event: Event): void {
+    const target = event.target;
+    if (
+      isFoundryElementInstanceOf(target, HTMLInputElement) &&
+      target.name === "sprintMultiplier"
+    ) {
+      this.updateSprintMeters(Number(target.value) || 0);
+    }
+    super._onChangeForm(formConfig, event);
+  }
 
-      const sprint = html.querySelector<HTMLSpanElement>("[data-sprint-meters]");
-      if (sprint) {
-        sprint.innerHTML = Math.roundDecimals(
-          (Number(sprintInput?.value) || 0) *
-            CONFIG.RQG.metersPerMov *
-            TokenRulerSettings.exampleMov,
-          2,
-        ).toString();
-      }
-    });
+  private updateSprintMeters(sprintMultiplier: number): void {
+    const sprint = this.element.querySelector<HTMLSpanElement>("[data-sprint-meters]");
+    if (!sprint) {
+      return;
+    }
+    sprint.textContent = (
+      sprintMultiplier *
+      CONFIG.RQG.metersPerMov *
+      TokenRulerSettings.exampleMov
+    )
+      .toNearest(0.01)
+      .toString();
   }
 
   /* -------------------------------------------- */

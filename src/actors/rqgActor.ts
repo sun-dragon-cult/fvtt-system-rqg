@@ -2,7 +2,7 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/itemTypes.ts";
 import { RqgActorSheet } from "./rqgActorSheet";
 import { RqgActorSheetV2 } from "./RqgActorSheetV2";
-import { DamageCalculations } from "../system/damageCalculations";
+import { DamageCalculations } from "../items/hit-location-item/hit-location-damage-calculations";
 import {
   assertDocumentSubType,
   getTokenFromActor,
@@ -21,11 +21,11 @@ import { AbilitySuccessLevelEnum } from "../rolls/AbilityRoll/AbilityRoll.defs";
 import type { CharacteristicRollOptions } from "../rolls/CharacteristicRoll/CharacteristicRoll.types";
 import { CharacteristicRoll } from "../rolls/CharacteristicRoll/CharacteristicRoll";
 import type { Characteristic, Characteristics } from "../data-model/actor-data/characteristics";
-import { CharacteristicRollDialogV2 } from "../applications/CharacteristicRollDialog/characteristicRollDialogV2";
+import { CharacteristicRollDialogV2 } from "../applications/characteristic-roll-dialog/characteristic-roll-dialog-v2";
 import type { AbilityRollOptions } from "../rolls/AbilityRoll/AbilityRoll.types";
-import { AbilityRollDialogV2 } from "../applications/AbilityRollDialog/abilityRollDialogV2";
+import { AbilityRollDialogV2 } from "../applications/ability-roll-dialog/ability-roll-dialog-v2";
 import { AbilityRoll } from "../rolls/AbilityRoll/AbilityRoll";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
+import type { PartialAbilityItem } from "../applications/ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weaponDataModel.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skillFormulas";
@@ -66,12 +66,14 @@ export class RqgActor extends Actor {
 
     Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
 
+    // AppV1 sheet — kept as non-default alternative; will be removed in a future release
     Actors.registerSheet(systemId, RqgActorSheet, {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.Character",
       makeDefault: false,
     });
 
+    // AppV2 sheet — default
     Actors.registerSheet(systemId, RqgActorSheetV2 as any, {
       types: [ActorTypeEnum.Character],
       label: "RQG.SheetName.Actor.CharacterV2",
@@ -523,7 +525,6 @@ export class RqgActor extends Actor {
       speaker,
       content: message,
       whisper: usersIdsThatOwnActor(this),
-      style: CONST.CHAT_MESSAGE_STYLES.WHISPER,
     });
   }
 

@@ -464,6 +464,7 @@
     },
     "ChatMessage": {
       "Combat": {
+        "Defend": "Defend",
         "RollDamageAndHitLocation": "Roll Damage & Hit Location",
         "RollDamage": "Roll Damage",
         "ApplyActorDamage": "Apply Damage to Actor",
@@ -507,6 +508,7 @@
         "NoWeaponToAttackWith": "You don't have any weapon to attack with",
         "NoValidSkillForWeaponUsage": "No valid skill found for selected weapon usage.",
         "NoValidSkillForWeaponUsageWarn": "No valid skill found for selected weapon usage. Ask the GM to fix the weapon usage skill link.",
+        "InvalidMissileProjectileUsageWarn": "Tried to do a missile attack with a projectile. Arrows should not have actions.",
         "WeaponNotEmbedded": "Could not find the owner of the used weapon"
       },
       "Defence": {
@@ -664,21 +666,31 @@
         "title": "Improvement for {typeLocName} \"{name}\"",
         "titleChar": "Improvement for Characteristic \"{name}\"",
         "header": "Improving {name}",
-        "fromExperience": ". . . from experience",
-        "chanceToGain": "{chanceToGain}% chance to gain",
-        "experienceGainFixed": "Gain 3%",
-        "experienceGainRandom": "Gain 1d6%",
-        "noExperienceCheckTitle": "No Experience Check",
-        "noExperienceCheckExplanation": "This character does not have an experience check in this {typeLocName} and may not improve from Experience.",
-        "throughTraining": ". . . through training",
-        "afterTraining": "After training",
-        "gain": "Gain {gain}%",
+        "currentValueLabel": "Current",
+        "currentValueTooltip": "Base value before modifiers from equipment, active effects, or other temporary effects.",
+        "chooseSource": "Choose how this improvement is attempted",
+        "fromExperience": "from experience",
+        "sourceUnavailableExperience": "Unavailable now: this {typeLocName} has no experience check",
+        "throughTraining": "through training",
+        "sourceUnavailableTraining": "Unavailable for this {typeLocName}",
+        "sourceUnavailableTrainingPassion": "Unavailable for Passions",
+        "sourceUnavailableTrainingOver75": "Unavailable now: skills above 75% cannot be trained",
+        "sourceUnavailableResearch": "Unavailable for this {typeLocName}",
+        "sourceUnavailableSpeciesMax": "Unavailable now: at species maximum for {name}",
+        "gainLower": "gain {gain}%",
+        "chanceSuffixRemainder": "improvement chance",
+        "rollThresholdLabel": "roll {requiredRoll}+ on 1d100",
+        "rollLabel": "roll",
+        "toBeatLabel": "to beat",
+        "categoryModifierLabel": "Category Modifier",
+        "skillValueLabel": "Skill Value",
+        "modifiedHundredAlwaysLabel": "; modified 100+ always succeeds",
+        "improvementChanceLabel": "improvement chance",
+        "speciesMaxLabel": "Species Max",
+        "afterTrainingSuffix": "improvement from training, no roll.",
+        "afterTrainingSuffixCharacteristic": "improvement from training, no roll.",
         "gainChar": "Gain {gain}",
-        "throughResearch": ". . . through research",
-        "skillOver75Title": "Skill Over 75%",
-        "skillOver75Explanation": "You may not train in skills with a value over 75%.",
-        "speciesMaxTitle": "At species maximum for {name}",
-        "speciesMaxExplanation": "You are at or above the species maximum for {name} and may not gain any more.",
+        "throughResearch": "through research",
         "btnDoImprovement": "Do Improvement",
         "btnCancel": "Cancel",
         "experienceRoll": {
@@ -689,8 +701,8 @@
         },
         "experienceResultChat": {
           "flavor": "Experience improvement for {typeLocName} \"{name}\" succeeded",
-          "contentChoseFixed": "Chose fixed gain of {gain}.",
-          "contentChoseRandom": "Chose gain of {gain}."
+          "contentChoseFixed": "Chose fixed gain of {gain}. Ability value: {from} -> {to}.",
+          "contentChoseRandom": "Chose gain of {gain}. Ability value: {from} -> {to}."
         },
         "experienceGainFailed": {
           "flavor": "Experience improvement for {typeLocName} \"{name}\" failed",
@@ -829,8 +841,11 @@
         "Wounds": "Wounds",
         "AddWound": {
           "Title": "Apply Wound to {hitLocationName}",
+          "DamageToApply": "Damage to apply",
+          "TotalHpAfter": "Total HP after",
           "ApplyToTotalHitPointsQ": "Apply to total HP?",
           "SubtractArmorPointsQ": "Subtract AP?",
+          "EffectiveDamage": "Effective damage",
           "btnAddWound": "Add Wound"
         },
         "AddWoundChatContent": "{actorName} takes a wound to the {hitLocationName}. {notification}",
@@ -838,8 +853,14 @@
         "HealWound": {
           "Title": "Heal Wound to {hitLocationName}",
           "SelectWoundToHeal": "Select Wound to Heal on {hitLocationName}",
+          "HealModeLabel": "Heal Target",
+          "HealModeSingle": "Heal One Wound",
+          "HealModeAll": "Remove All Damage",
           "HitPointsToHeal": "Hit Points to Heal: ",
-          "btnHealWound": "Heal Wound"
+          "btnHealWound": "Heal Wound",
+          "btnHealAllWounds": "Heal All Wounds",
+          "FeedbackHealedSingle": "Applied {healPoints} healing.",
+          "FeedbackHealedAll": "All damage removed."
         },
         "HealthStatusEnum": {
           "healthy": "Healthy",
@@ -850,6 +871,10 @@
         "Notification": {
           "CantFindItem": "Couldn't find an item during location changes",
           "CantFindHitLocation": "Couldn't find hitlocation with itemId [{hitLocationItemId}] on actor ${actorName} to show add wound dialog.",
+          "LimbUseless": "{speakerName}'s {hitLocationName} is useless and cannot hold anything / support standing. {speakerName} can still fight with whatever limbs are still functional.",
+          "LimbShock": "{speakerName} is functionally incapacitated, can no longer fight until healed and is in shock. Self healing may be attempted.",
+          "ChestShock": "{speakerName} falls and is too busy coughing blood to do anything. Will bleed to death in ten minutes unless the bleeding is stopped by First Aid, and cannot take any action, including healing.",
+          "SeveredCannotBeHit": "{hitLocationName} is gone and cannot be hit anymore, reroll to get a new hit location!",
           "HitLocationDoesNotHaveCalculatedArmor": "Hit location {hitLocationName} doesn't have a calculated total armor point",
           "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
           "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",
@@ -1221,7 +1246,7 @@
         "StartTime": "Start Time",
         "KeyValueMode": "Key - Value - Mode",
         "NewActiveEffectName": "New Active Effect",
-        "TargetItemNotFound": "Could not find any embedded item with rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that rqid or modify the item that has this active effect"
+        "TargetItemNotFound": "Could not find any embedded item with Rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that Rqid or modify the item that has this active effect"
       },
       "CombatTracker": {
         "DuplicateCombatant": "Duplicate Combatant",
@@ -1230,8 +1255,8 @@
         "UnknownName": "Unknown"
       },
       "ContentLink": {
-        "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>rqid: {rqid}</small>",
-        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>rqid: {rqid}</small>",
+        "RqidLinkTitle": "{documentName}<small> {documentType}</small><br><small>Rqid: {rqid}</small>",
+        "RqidLinkDelete": "Delete link to \"{name}\"<br><small>Rqid: {rqid}</small>",
         "DropToConnectJournal": "Drop a journal entry on this item to connect a description.",
         "DropToReplaceJournal": "Drop a journal entry on this item to replace the description."
       },
@@ -1334,31 +1359,39 @@
     "RQGSystem": {
       "Rqid": {
         "Id": "RuneQuest System ID (Rqid)",
-        "GenerateDefault": "Create RuneQuest System ID (rqid) based on current document. The rqid should be based on the english document name.",
+        "GenerateDefault": "Create RuneQuest System ID (Rqid) based on current document. The Rqid should be based on the english document name.",
         "rqidPriority": "Rqid Priority",
         "Language": "Language",
-        "InvalidRegexPattern": "Invalid rqid regex pattern: \"{rqidPattern}\""
+        "InvalidRegexPattern": "Invalid Rqid regex pattern: \"{rqidPattern}\"",
+        "PriorityColumn": "Priority",
+        "LinkColumn": "Link",
+        "FolderColumn": "Folder",
+        "CompendiumColumn": "Compendium"
       },
-      "Folder": "Folder",
       "FoundryId": "Foundry ID",
       "FoundryUuid": "Foundry UUID",
       "ParentFoundryId": "Parent Foundry ID",
       "GetThisDocument": "Get This Document",
       "GetDocumentLikeThis": "Get Document Like This",
+      "DocumentRetrieval": "Document Retrieval",
+      "MatchingRqidDocuments": "Documents with Same Rqid",
+      "ReferenceSnippets": "Copyable References",
       "JournalLinkToDocumentLikeThis": "Journal Link to Documents Like This",
       "CopyInputValue": "Copy this value to the clipboard",
-      "OtherDocumentsHeader": "Documents with this rqid and language (excluding embedded documents)",
+      "OtherDocumentsHeader": "Documents with this Rqid and language (excluding embedded documents)",
       "DocsInWorld": "{count} documents in the world",
       "DocsInCompendiums": "{count} documents in the compendiums",
-      "DuplicateWarning": "Warning: Multiple rqids with same priority!",
-      "EmbeddedDocumentParentMissingRqid": "Warning: The parent document does not have an RQID set. The link to this embedded document will not work until the parent has an RQID.",
-      "OpenParentRqidEditor": "Open parent RQID editor",
-      "CouldNotFindRune": "Could not find cached rune with rqid {rqid}",
+      "CurrentDocumentMarkerTooltip": "This is the document currently open in this editor",
+      "DuplicatePriorityMarkerTooltip": "This priority is shared by multiple documents with this Rqid",
+      "DuplicateWarning": "Warning: Multiple Rqids with same priority!",
+      "EmbeddedDocumentParentMissingRqid": "Warning: The parent document does not have an Rqid set. The link to this embedded document will not work until the parent has an RQID.",
+      "OpenParentRqidEditor": "Open parent Rqid editor",
+      "CouldNotFindRune": "Could not find cached rune with Rqid {rqid}",
       "Error": {
-        "NoSheet": "No sheet found for document linked to by RQG System ID (rqid) \"{rqid}\". See console log.",
-        "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in compendium packs) matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
-        "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
-        "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the rqid \"{rqid}\", and lang \"{lang}\". See console log.",
+        "NoSheet": "No sheet found for document linked to by RQG System ID (Rqid) \"{rqid}\". See console log.",
+        "MoreThanOneRqidMatchInWorld": "More than one RQG Document in the world (not in compendium packs) matched the Rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
+        "MoreThanOneRqidMatchInPacks": "More than one RQG Document in installed compendium packs matched the Rqid \"{rqid}\", lang \"{lang}\", and priority \"{priority}\". Please review your RQG System settings.  See console log for item ids.",
+        "DocumentNotFoundByRqid": "Document not found in world or compendium packs matching the Rqid \"{rqid}\", and lang \"{lang}\". See console log.",
         "FumbleTableMissing": "The fumble table \"{fumbleTableName}\" is missing."
       }
     },
@@ -1397,10 +1430,11 @@
         "settingHint": "Activating this setting opens the Chat Messages sidebar when rolls send messages to chat."
       },
       "DefaultItemIcons": {
-        "dialogTitle": "Default Item Icon Settings",
         "settingName": "Default Item Icons",
         "settingLabel": "Configure Default Icons",
-        "settingHint": "Set the default icons used when creating new items."
+        "settingHint": "Set the default icons used when creating new items.",
+        "Reset": "Reset Defaults",
+        "Submit": "Save Overrides"
       },
       "WorldLanguage": {
         "settingName": "World Language",
@@ -1492,6 +1526,7 @@
         "btnMigrate": "Migrate world \"{worldTitle}\" to version {systemVersion}"
       },
       "WorldNotUpdated": "This world is not updated to match the current system version ({systemVersion}). Please wait until your GM has done the update, then refresh this page (F5 or cmd-R).",
+      "MigrationAborted": "World migration to version {systemVersion} was aborted. Do not continue using this world until the migration has been completed. Reload the world to trigger the migration again.",
       "applyingMigration": "Applying World Migration to version {systemVersion}. Please be patient and do not close your game or shut down your server.",
       "migrationFinished": "World Migration to version {systemVersion} completed!",
       "migrationFinishedWithErrors": "World Migration to version {systemVersion} completed with {errorCount} errors. Review logs and re-run migration. worldMigrationVersion was not updated.",

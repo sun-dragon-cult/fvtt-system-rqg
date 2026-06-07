@@ -32,9 +32,14 @@ export interface RqidBatchEditorData {
   idPrefix: string;
   existingRqidOptions: SelectOptionData<string>[];
   itemNamesWithoutRqid: ItemNameWithoutRqid[];
+  buttons: {
+    type: string;
+    icon: string;
+    label: string;
+  }[];
 }
 
-export interface RqidBatchEditorOptions extends FormApplication.Options {
+export interface RqidBatchEditorOptions {
   itemType: ItemTypeEnum;
   idPrefix: string;
   prefixRegex: RegExp;

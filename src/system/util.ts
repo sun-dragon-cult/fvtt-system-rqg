@@ -3,7 +3,7 @@ import type { ItemTypeEnum } from "@item-model/itemTypes.ts";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import { systemId } from "./config";
 import type { RqgItem } from "../items/rqgItem";
-import type { PartialAbilityItem } from "../applications/AbilityRollDialog/AbilityRollDialogData.types.ts";
+import type { PartialAbilityItem } from "../applications/ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { RqgLogger } from "./logging/rqgLogger";
 import { RqgError } from "./rqgError";
 
@@ -122,7 +122,7 @@ export function getDomDatasetAmongSiblings(
 
   // Follow the siblings above the provided DOM element til the first with the same itemId
   while (
-    firstItemEl?.previousElementSibling instanceof HTMLElement &&
+    isFoundryElementInstanceOf(firstItemEl?.previousElementSibling, HTMLElement) &&
     firstItemEl?.previousElementSibling?.dataset?.["itemId"] === itemId
   ) {
     firstItemEl = firstItemEl.previousElementSibling;
@@ -133,10 +133,10 @@ export function getDomDatasetAmongSiblings(
 export function getHTMLElement(
   el: HTMLElement | Element | Event | JQuery,
 ): HTMLElement | undefined {
-  if (el instanceof HTMLElement) {
+  if (isFoundryElementInstanceOf(el, HTMLElement)) {
     return el;
   }
-  if (el instanceof Event && el.target instanceof HTMLElement) {
+  if (el instanceof Event && isFoundryElementInstanceOf(el.target, HTMLElement)) {
     return el.target;
   }
   // Handle legacy JQuery - FormApplication v1 compatibility
@@ -150,7 +150,7 @@ export function getHTMLElement(
  * Safely returns the event target when it is a DOM Element, otherwise null.
  */
 export function getEventTargetElement(event: Event): Element | null {
-  return event.target instanceof Element ? event.target : null;
+  return isFoundryElementInstanceOf(event.target, Element) ? event.target : null;
 }
 
 export function getSocket(): io.Socket {
@@ -337,11 +337,43 @@ export function isDocumentSubType<
 export function assertHtmlElement<T extends HTMLElement>(
   eventTarget: EventTarget | null | undefined,
 ): asserts eventTarget is T | null | undefined {
-  if (eventTarget != null && !(eventTarget instanceof HTMLElement)) {
+  if (eventTarget != null) {
+    if (isFoundryElementInstanceOf(eventTarget, HTMLElement)) {
+      return;
+    }
+
     const msg = "RQG | Programming error - expected a HTMLElement but got something else";
     ui.notifications?.warn(msg);
     throw new RqgError(msg, eventTarget);
   }
+}
+
+export function isFoundryElementInstanceOf<TElement extends Element>(
+  element: Element | Event | JQuery | EventTarget | null | undefined,
+  tagOrClass: new (...args: any[]) => TElement,
+): element is TElement;
+export function isFoundryElementInstanceOf(
+  element: Element | Event | JQuery | EventTarget | null | undefined,
+  tagOrClass: string,
+): element is Element;
+export function isFoundryElementInstanceOf(
+  element: Element | Event | JQuery | EventTarget | null | undefined,
+  tagOrClass: string | (new (...args: any[]) => any),
+): boolean {
+  if (element == null) {
+    return false;
+  }
+
+  if (
+    typeof element === "object" &&
+    "get" in element &&
+    typeof (element as JQuery).get === "function"
+  ) {
+    element = (element as JQuery).get(0);
+  }
+
+  // @ts-expect-error TEMP(v14-types): Foundry v14 runtime provides this helper, but current fvtt-types do not include it yet.
+  return foundry.utils.isElementInstanceOf(element, tagOrClass);
 }
 
 export function requireValue<T>(

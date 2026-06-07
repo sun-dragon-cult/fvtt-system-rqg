@@ -1,0 +1,19 @@
+<footer class="flexrow flex-wrap gap1rem">
+  <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+    <i class="fa-solid fa-bullseye"></i><br>
+    <span data-total-chance>{{totalChance}}%</span>
+  </div>
+  <div data-roll-mode-parent class="split-button flex-none">
+    {{#each rollModes as |mode|}}
+      <button type="button"
+              class="ui-control icon {{mode.icon}}"
+              data-action="rollMode"
+              data-roll-mode="{{mode.id}}"
+              aria-pressed="{{#if (eq ../rollMode mode.id)}}true{{else}}false{{/if}}"
+              data-tooltip="{{localize mode.label}}"
+              aria-label="{{localize mode.label}}">
+      </button>
+    {{/each}}
+  </div>
+  <button data-ability-roll>{{localize "RQG.Game.Roll"}}</button>
+</footer>

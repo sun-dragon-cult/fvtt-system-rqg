@@ -1,0 +1,109 @@
+<div class="wound-dialog add-wound-dialog">
+  <input type="hidden" id="selectedApInput" name="selectedAp" value="{{hitLocationAp}}" />
+
+  {{#if armorLayers.length}}
+
+    <div
+      class="add-wound-summary wound-dialog-summary linked-preview ap-preview formula-preview"
+      data-hit-location-ap="{{hitLocationAp}}"
+      data-actor-current-hp="{{actorCurrentHp}}"
+    >
+      <div class="ap-formula-header">
+        <label class="wound-dialog-label" for="inflictDamagePoints">
+          {{localize "RQG.Item.HitLocation.AddWound.DamageToApply"}}
+        </label>
+        <span class="context-label ap-formula-right-label">{{localize "RQG.Item.HitLocation.AddWound.EffectiveDamage"}}</span>
+      </div>
+      <div class="ap-formula-values">
+        <span class="formula-equation formula-equation-ap-left">
+          <input
+            class="wound-dialog-number-input damage-input inline-damage-input"
+            type="number"
+            id="inflictDamagePoints"
+            name="damage"
+            min="0"
+            step="1"
+          />
+          <span class="formula-operator">-</span>
+          <span id="apAppliedValue">0</span>
+          <span class="formula-max">({{localize "RQG.Actor.Health.ArmorPointsAbbr"}})</span>
+        </span>
+        <span class="formula-equation formula-equation-ap-right">
+          <span class="formula-operator">=&gt;</span>
+          <span id="effectiveDamageValue" class="formula-result effective-damage-value">0</span>
+        </span>
+      </div>
+    </div>
+  {{else}}
+    <div
+      class="add-wound-summary wound-dialog-summary formula-preview no-ap-preview"
+      data-hit-location-ap="{{hitLocationAp}}"
+      data-actor-current-hp="{{actorCurrentHp}}"
+    >
+      <label class="wound-dialog-label" for="inflictDamagePoints">
+        {{localize "RQG.Item.HitLocation.AddWound.DamageToApply"}}
+      </label>
+      <input
+        class="wound-dialog-number-input damage-input inline-damage-input"
+        type="number"
+        id="inflictDamagePoints"
+        name="damage"
+        min="0"
+        step="1"
+      />
+    </div>
+  {{/if}}
+
+  <div class="linked-preview hp-preview formula-preview" id="totalHpPreviewRow">
+    <div class="hp-formula-header">
+      <label class="wound-dialog-checkbox-row">
+        <input type="checkbox" name="toTotalHp" checked />
+        <span>{{localize "RQG.Item.HitLocation.AddWound.ApplyToTotalHitPointsQ"}}</span>
+      </label>
+      <span class="context-label hp-formula-right-label">{{localize "RQG.Item.HitLocation.AddWound.TotalHpAfter"}}</span>
+    </div>
+    <div class="hp-formula-values">
+      <span class="formula-equation hp-formula-right-value">
+        <span id="totalHpCurrentValue">{{actorCurrentHp}}</span>
+        <span class="formula-operator">-</span>
+        <span id="totalHpAppliedDamageValue">0</span>
+        <span class="formula-operator">=</span>
+        <span id="totalHpAfterValue" class="formula-result">{{actorCurrentHp}}</span>
+        <span class="formula-max">/ {{actorMaxHp}}</span>
+      </span>
+    </div>
+  </div>
+
+  {{#if armorLayers.length}}
+    <div class="add-wound-context armor-layers-row" role="list" aria-label="{{localize "RQG.Actor.Gear.Armor"}}">
+      <label class="wound-dialog-checkbox-row armor-subtract-row">
+        <input type="checkbox" name="subtractAP" checked />
+        <span>{{localize "RQG.Item.HitLocation.AddWound.SubtractArmorPointsQ"}}</span>
+        <span class="armor-subtract-value">(<span id="selectedApLabel">{{hitLocationAp}}</span>)</span>
+      </label>
+      <div class="context-label armor-layers-heading armor-layer-grid" aria-hidden="true">
+        <span class="armor-layer-name">{{localize "RQG.Actor.Gear.Armor"}}</span>
+        <span class="armor-layer-ap armor-layer-ap-col armor-layer-col-title">{{localize "RQG.Actor.Health.ArmorPointsAbbr"}}</span>
+      </div>
+      {{#each armorLayers}}
+        <div class="armor-layer-item armor-layer-grid" role="listitem">
+          {{#if ../hasMultipleArmorLayers}}
+            <span class="armor-layer-name armor-layer-name-with-toggle">
+              <input
+                class="armor-layer-toggle"
+                type="checkbox"
+                id="armor-layer-toggle-{{../hitLocationItemId}}-{{@index}}"
+                data-absorbs="{{absorbs}}"
+                checked
+              />
+              <label for="armor-layer-toggle-{{../hitLocationItemId}}-{{@index}}" class="armor-layer-toggle-label">{{name}}</label>
+            </span>
+          {{else}}
+            <span class="armor-layer-name">{{name}}</span>
+          {{/if}}
+          <span class="armor-layer-ap armor-layer-ap-col">{{absorbs}}</span>
+        </div>
+      {{/each}}
+    </div>
+  {{/if}}
+</div>

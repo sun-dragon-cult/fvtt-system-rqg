@@ -10,7 +10,7 @@ import {
   safeFromJSON,
 } from "../system/util";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
-import { DefenceDialogV2 } from "../applications/AttackFlow/defenceDialogV2";
+import { DefenceDialogV2 } from "../applications/attack-flow/defence-dialog-v2";
 import { systemId } from "../system/config";
 import { templatePaths } from "../system/loadHandlebarsTemplates";
 import type { RqgActor } from "../actors/rqgActor";

@@ -26,12 +26,13 @@ export const templatePaths = {
   itemGearSheetV2Description: "systems/rqg/items/gear-item/gearSheetV2Description.hbs",
   itemGearSheetV2Gm: "systems/rqg/items/gear-item/gearSheetV2Gm.hbs",
   itemGearSheetV2Effects: "systems/rqg/items/gear-item/gearSheetV2Effects.hbs",
-  itemHitLocationSheet: "systems/rqg/items/hit-location-item/hitLocationSheet.hbs",
-  itemHitLocationSheetV2Header: "systems/rqg/items/hit-location-item/hitLocationSheetV2Header.hbs",
+  itemHitLocationSheet: "systems/rqg/items/hit-location-item/hit-location-sheet.hbs",
+  itemHitLocationSheetV2Header:
+    "systems/rqg/items/hit-location-item/hit-location-sheet-v2-header.hbs",
   itemHitLocationSheetV2HitLocation:
-    "systems/rqg/items/hit-location-item/hitLocationSheetV2HitLocation.hbs",
+    "systems/rqg/items/hit-location-item/hit-location-sheet-v2-hit-location.hbs",
   itemHitLocationSheetV2Definition:
-    "systems/rqg/items/hit-location-item/hitLocationSheetV2Definition.hbs",
+    "systems/rqg/items/hit-location-item/hit-location-sheet-v2-definition.hbs",
   itemHomelandSheet: "systems/rqg/items/homeland-item/homelandSheet.hbs",
   itemHomelandSheetV2Header: "systems/rqg/items/homeland-item/homelandSheetV2Header.hbs",
   itemHomelandSheetV2Homeland: "systems/rqg/items/homeland-item/homelandSheetV2Homeland.hbs",
@@ -87,7 +88,7 @@ export const templatePaths = {
 
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
-  attackChatMessage: "systems/rqg/applications/AttackFlow/attackChatTemplate.hbs",
+  attackChatMessage: "systems/rqg/applications/attack-flow/attack-chat-template.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 
@@ -96,33 +97,44 @@ export const templatePaths = {
 
   // Applications & Dialogs
   dialogRuneMagicCult: "systems/rqg/items/rune-magic-item/runeMagicCultDialog.hbs",
-  dialogImproveAbility: "systems/rqg/applications/improveAbilityDialog.hbs",
+  improveDialogHeader: "systems/rqg/applications/improve-dialogs/improve-dialog-header.hbs",
+  improveDialogSourceChooser:
+    "systems/rqg/applications/improve-dialogs/improve-dialog-source-chooser.hbs",
+  improveDialogSourceOption:
+    "systems/rqg/applications/improve-dialogs/improve-dialog-source-option.hbs",
+  improveAbilityDialogBody:
+    "systems/rqg/applications/improve-dialogs/improve-ability-dialog-body.hbs",
+  improveCharacteristicDialogBody:
+    "systems/rqg/applications/improve-dialogs/improve-characteristic-dialog-body.hbs",
   dialogMigrateWorld: "systems/rqg/applications/migrateWorldDialog.hbs",
   migrationReportPerformed: "systems/rqg/applications/migrationReportPerformed.hbs",
   migrationReportIssues: "systems/rqg/applications/migrationReportIssues.hbs",
   migrationReportSummary: "systems/rqg/applications/migrationReportSummary.hbs",
   dialogRqidEditor: "systems/rqg/applications/rqidEditor/rqidEditor.hbs",
+  dialogRqidEditorInfo: "systems/rqg/applications/rqidEditor/rqidEditorInfo.hbs",
   rqidBatchEditor: "systems/rqg/applications/rqid-batch-editor/rqidBatchEditor.hbs",
   confirmCopyIntangibleItem: "systems/rqg/applications/confirmCopyIntangibleItem.hbs",
   confirmTransferPhysicalItem: "systems/rqg/applications/confirmTransferPhysicalItem.hbs",
-  hitLocationAddWound: "systems/rqg/items/hit-location-item/hitLocationAddWound.hbs",
-  hitLocationHealWound: "systems/rqg/items/hit-location-item/hitLocationHealWound.hbs",
-  abilityRollDialogV2: "systems/rqg/applications/AbilityRollDialog/abilityRollDialogV2.hbs",
+  hitLocationAddWound: "systems/rqg/items/hit-location-item/hit-location-add-wound.hbs",
+  hitLocationHealWound: "systems/rqg/items/hit-location-item/hit-location-heal-wound.hbs",
+  abilityRollDialogV2: "systems/rqg/applications/ability-roll-dialog/ability-roll-dialog-v2.hbs",
   characteristicRollDialogV2:
-    "systems/rqg/applications/CharacteristicRollDialog/characteristicRollDialogV2.hbs",
+    "systems/rqg/applications/characteristic-roll-dialog/characteristic-roll-dialog-v2.hbs",
   spiritMagicRollDialogV2:
-    "systems/rqg/applications/SpiritMagicRollDialog/spiritMagicRollDialogV2.hbs",
-  runeMagicRollDialogV2: "systems/rqg/applications/RuneMagicRollDialog/runeMagicRollDialogV2.hbs",
-  attackDialogV2: "systems/rqg/applications/AttackFlow/attackDialogV2.hbs",
-  defenceDialogV2: "systems/rqg/applications/AttackFlow/defenceDialogV2.hbs",
-  defenceFooter: "systems/rqg/applications/AttackFlow/defenceFooter.hbs",
-  attackFooter: "systems/rqg/applications/AttackFlow/attackFooter.hbs",
+    "systems/rqg/applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2.hbs",
+  runeMagicRollDialogV2:
+    "systems/rqg/applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2.hbs",
+  attackDialogV2: "systems/rqg/applications/attack-flow/attack-dialog-v2.hbs",
+  defenceDialogV2: "systems/rqg/applications/attack-flow/defence-dialog-v2.hbs",
+  defenceFooter: "systems/rqg/applications/attack-flow/defence-footer.hbs",
+  attackFooter: "systems/rqg/applications/attack-flow/attack-footer.hbs",
   rollHeader: "systems/rqg/applications/app-parts/rollHeader.hbs",
-  rollFooter: "systems/rqg/applications/app-parts/rollFooter.hbs",
-  combatRollHeader: "systems/rqg/applications/AttackFlow/combatRollHeader.hbs",
+  rollFooter: "systems/rqg/applications/app-parts/roll-footer.hbs",
+  combatRollHeader: "systems/rqg/applications/attack-flow/combat-roll-header.hbs",
 
   // Settings
   defaultItemIconSettings: "systems/rqg/applications/defaultItemIconSettings.hbs",
+  defaultItemIconSettingsFooter: "systems/rqg/applications/defaultItemIconSettingsFooter.hbs",
   tokenRulerSettings: "systems/rqg/applications/settings/tokenRulerSettings.hbs",
   // Interface
   settings: "systems/rqg/foundryUi/settings.hbs",
@@ -195,7 +207,10 @@ export const loadHandlebarsTemplates = async function () {
     itemCommonPhysical: "systems/rqg/items/sheet-parts/itemCommonPhysical.hbs",
 
     // Application sheet parts
-    rollModes: "systems/rqg/applications/app-parts/rollModes.hbs",
+    improveDialogSourceChooser:
+      "systems/rqg/applications/improve-dialogs/improve-dialog-source-chooser.hbs",
+    improveDialogSourceOption:
+      "systems/rqg/applications/improve-dialogs/improve-dialog-source-option.hbs",
 
     // RqidLink partials
     rqidLink: "systems/rqg/sheet-partials/rqidLink.hbs",

@@ -1,5 +1,5 @@
 import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
-import { RqgActorSheet } from "../rqgActorSheet";
+import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import { getRequiredDomDataset, localize, localizeItemType, RqgError } from "../../system/util";
 import { contextMenuRunes } from "./contextMenuRunes";
 import { ItemTypeEnum } from "@item-model/itemTypes.ts";
@@ -54,7 +54,7 @@ export const cultMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] =>
     visible: () => !!game.user?.isGM || actor.system.editMode,
     onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      void RqgActorSheet.confirmItemDelete(actor, itemId);
+      void confirmActorItemDelete(actor, itemId);
     },
   },
 ];

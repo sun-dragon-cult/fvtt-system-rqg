@@ -2,6 +2,8 @@ import { systemId } from "../../system/config.js";
 import {
   convertFormValueToString,
   getDomDataset,
+  getEventTargetElement,
+  isFoundryElementInstanceOf,
   localize,
   localizeItemType,
   toKebabCase,
@@ -25,10 +27,11 @@ import type {
   RqidBatchEditorOptions,
 } from "./rqidBatchEditor.types";
 
-export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
-  Changes,
-  RqidBatchEditorOptions
-> {
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+
+export class RqidBatchEditor extends HandlebarsApplicationMixin(
+  ApplicationV2<RqidBatchEditorData>,
+) {
   private static readonly logger = new RqgLogger("RqidBatchEditor", { notify: false });
 
   public resolve: (value: PromiseLike<void> | void) => void = () => {};
@@ -39,28 +42,61 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
   private readonly inputDebounceTimers = new WeakMap<HTMLInputElement, number>();
   private static readonly rqidInputDebounceMs = 120;
 
-  static override get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: [systemId, "form", "rqid-batch-editor"],
-      popOut: true,
-      template: templatePaths.rqidBatchEditor,
-      width: 1000,
-      id: "rqid-batch-editor-application",
+  /** Data carrying the item changes to be persisted */
+  private changes: Changes;
+  /** Config options for this batch editor session */
+  private batchConfig: RqidBatchEditorOptions;
+
+  constructor(changes: Changes, batchConfig: RqidBatchEditorOptions, options?: any) {
+    super(options);
+    this.changes = changes;
+    this.batchConfig = batchConfig;
+  }
+
+  static override DEFAULT_OPTIONS = {
+    classes: [systemId, "rqid-batch-editor"],
+    id: "rqid-batch-editor-application",
+    tag: "form",
+    window: {
       title: "RQG.Dialog.BatchRqidEditor.Title",
-      closeOnSubmit: false,
-      submitOnClose: false,
-      submitOnChange: false,
       resizable: true,
-    });
-  }
+      contentClasses: ["standard-form"],
+    },
+    position: {
+      width: 1000,
+    },
+    actions: {
+      generateRqid: RqidBatchEditor._generateRqidAction,
+    },
+  };
 
-  override async close(options?: FormApplication.CloseOptions): Promise<void> {
-    await super.close(options);
+  static override PARTS = {
+    body: {
+      template: templatePaths.rqidBatchEditor,
+      scrollable: [""],
+      root: true,
+    },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
+  };
+
+  override async close(options?: {
+    animate?: boolean;
+    closeKey?: boolean;
+    submitted?: boolean;
+  }): Promise<this> {
+    const closed = await super.close(options);
     this.resolve();
+    return closed;
   }
 
-  override async getData(): Promise<RqidBatchEditorData> {
-    const existingRqidOptions = [...this.options.existingRqids.keys()]
+  override get title(): string {
+    return `${super.title} - ${localizeItemType(this.batchConfig.itemType)}`;
+  }
+
+  override async _prepareContext(): Promise<RqidBatchEditorData> {
+    const existingRqidOptions = [...this.batchConfig.existingRqids.keys()]
       .reduce(
         (
           out: {
@@ -72,7 +108,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         ) => {
           out.push({
             name: itemName,
-            rqid: this.options.existingRqids.get(itemName),
+            rqid: this.batchConfig.existingRqids.get(itemName),
             optionText: itemName,
           });
           return out;
@@ -89,22 +125,22 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
       label: localize("RQG.Dialog.BatchRqidEditor.NewRqid"),
     });
 
-    const itemNamesWithoutRqid: ItemNameWithoutRqid[] = [...this.object.itemName2Rqid.keys()]
+    const itemNamesWithoutRqid: ItemNameWithoutRqid[] = [...this.changes.itemName2Rqid.keys()]
       .reduce((out: ItemNameWithoutRqid[], itemName) => {
         out.push({
           name: itemName,
-          rqid: this.options.existingRqids.get(itemName) ?? "",
-          selectedRqid: this.object.itemName2Rqid.get(itemName),
-          selectedRqidSuffix: this.object.itemName2Rqid
+          rqid: this.batchConfig.existingRqids.get(itemName) ?? "",
+          selectedRqid: this.changes.itemName2Rqid.get(itemName),
+          selectedRqidSuffix: this.changes.itemName2Rqid
             .get(itemName)
-            ?.replace(this.options.prefixRegex ?? "", ""),
+            ?.replace(this.batchConfig.prefixRegex ?? "", ""),
         });
         return out;
       }, [])
       .sort((a, b) => a.name.localeCompare(b.name));
 
     let summary: string;
-    switch (this.options.itemType) {
+    switch (this.batchConfig.itemType) {
       case ItemTypeEnum.Skill:
         summary = localize("RQG.Dialog.BatchRqidEditor.SummarySkill");
         break;
@@ -112,7 +148,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
         summary = localize("RQG.Dialog.BatchRqidEditor.SummaryRuneMagic");
         break;
       default: {
-        const documentNameTranslation = localizeItemType(this.options.itemType);
+        const documentNameTranslation = localizeItemType(this.batchConfig.itemType);
         summary = localize("RQG.Dialog.BatchRqidEditor.SummaryDefault", {
           type: documentNameTranslation,
         });
@@ -121,68 +157,120 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
 
     return {
       summary: summary,
-      itemType: this.options.itemType,
-      idPrefix: this.options.idPrefix,
+      itemType: this.batchConfig.itemType,
+      idPrefix: this.batchConfig.idPrefix,
       existingRqidOptions: existingRqidOptions,
       itemNamesWithoutRqid: itemNamesWithoutRqid,
+      buttons: [
+        {
+          type: "submit",
+          icon: "fas fa-check",
+          label: "RQG.Dialog.BatchRqidEditor.ButtonUpdate",
+        },
+      ],
     };
   }
 
-  override activateListeners(html: JQuery): void {
-    super.activateListeners(html);
-    html.find(".existing").change(this.onSetExistingName.bind(this));
-    html.find(".generate-rqid").click(this.onClickGuess.bind(this));
-    html.find(".rqid-input").on("input", this.onTypeRqidInput.bind(this));
-    html.find(".rqid-input").change(this.onTypeRqid.bind(this));
+  override async _onRender(): Promise<void> {
+    this.element.addEventListener("input", this.onFormInput.bind(this));
+    this.element.addEventListener("change", this.onFormChange.bind(this));
+    this.element.addEventListener("submit", this.onFormSubmit.bind(this));
   }
 
-  onTypeRqidInput(event: JQuery.TriggeredEvent): void {
-    const input = event.currentTarget as HTMLInputElement;
+  private static _generateRqidAction(
+    this: RqidBatchEditor,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    this.onClickGuess(target);
+  }
 
+  private onFormInput(event: Event): void {
+    const target = getEventTargetElement(event);
+    if (!isFoundryElementInstanceOf(target, HTMLInputElement)) {
+      return;
+    }
+    if (!target.classList.contains("rqid-input")) {
+      return;
+    }
+    this.onTypeRqidInput(target);
+  }
+
+  private onFormChange(event: Event): void {
+    const target = getEventTargetElement(event);
+    if (
+      isFoundryElementInstanceOf(target, HTMLSelectElement) &&
+      target.classList.contains("existing")
+    ) {
+      this.onSetExistingName(target);
+      return;
+    }
+    if (
+      isFoundryElementInstanceOf(target, HTMLInputElement) &&
+      target.classList.contains("rqid-input")
+    ) {
+      this.onTypeRqid(target);
+    }
+  }
+
+  onTypeRqidInput(input: HTMLInputElement): void {
     const existingTimer = this.inputDebounceTimers.get(input);
     if (existingTimer != null) {
       window.clearTimeout(existingTimer);
     }
 
     const timer = window.setTimeout(() => {
-      this.onTypeRqid(event);
+      this.applyTypedRqid(input);
       this.inputDebounceTimers.delete(input);
     }, RqidBatchEditor.rqidInputDebounceMs);
 
     this.inputDebounceTimers.set(input, timer);
   }
 
-  onSetExistingName(event: JQuery.TriggeredEvent): void {
-    const target = event.currentTarget as HTMLInputElement;
+  onSetExistingName(target: HTMLSelectElement): void {
     const name = getDomDataset(target, "name") ?? "";
     const selectedRqid = convertFormValueToString(target.value);
     const newRqid = selectedRqid || undefined;
-    this.object.itemName2Rqid.set(name, newRqid);
+    this.changes.itemName2Rqid.set(name, newRqid);
 
-    const rqidSuffix = selectedRqid ? selectedRqid.replace(this.options.prefixRegex ?? "", "") : "";
-    this.updateRowInput(event, rqidSuffix);
+    const rqidSuffix = selectedRqid
+      ? selectedRqid.replace(this.batchConfig.prefixRegex ?? "", "")
+      : "";
+    this.updateRowInput(target, rqidSuffix);
   }
 
-  onClickGuess(event: JQuery.TriggeredEvent): void {
-    const target = event.currentTarget as HTMLElement;
+  onClickGuess(target: HTMLElement): void {
     const name = getDomDataset(target, "name") ?? "";
+    if (!name) {
+      RqidBatchEditor.logger.warn("Generate RQID clicked but no item name was found in target.");
+      return;
+    }
     const rqidSuffix = toKebabCase(name);
-    const newRqid = rqidSuffix ? this.options.idPrefix + rqidSuffix : undefined;
-    this.object.itemName2Rqid.set(name, newRqid);
-    this.updateRowInput(event, rqidSuffix);
+    const newRqid = rqidSuffix ? this.batchConfig.idPrefix + rqidSuffix : undefined;
+    this.changes.itemName2Rqid.set(name, newRqid);
+    this.updateRowInput(target, rqidSuffix);
   }
 
-  onTypeRqid(event: JQuery.TriggeredEvent): void {
-    const target = event.currentTarget as HTMLInputElement;
+  onTypeRqid(target: HTMLInputElement): void {
+    this.applyTypedRqid(target);
+  }
+
+  private applyTypedRqid(target: HTMLInputElement): void {
     const name = getDomDataset(target, "name") ?? "";
     const rqidSuffix = toKebabCase(convertFormValueToString(target.value));
-    const newRqid = rqidSuffix ? this.options.idPrefix + rqidSuffix : undefined;
-    this.object.itemName2Rqid.set(name, newRqid);
-    this.updateRowInput(event, rqidSuffix);
+    const newRqid = rqidSuffix ? this.batchConfig.idPrefix + rqidSuffix : undefined;
+    this.changes.itemName2Rqid.set(name, newRqid);
+
+    const rowElement = target.closest(".document-row");
+    if (!rowElement) {
+      return;
+    }
+
+    this.updateRowInput(target, rqidSuffix);
   }
 
-  private updateRowInput(event: JQuery.TriggeredEvent, rqidSuffix: string): void {
-    const rowElement = (event.currentTarget as HTMLElement | undefined)?.closest(".document-row");
+  private updateRowInput(target: HTMLElement, rqidSuffix: string): void {
+    const rowElement = target.closest(".document-row");
     const rowInput = rowElement?.querySelector(".rqid-input") as HTMLInputElement | null;
     if (!rowInput) {
       return;
@@ -192,29 +280,22 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     rowInput.classList.toggle("missing", !rqidSuffix);
   }
 
-  async _updateObject(event: Event): Promise<void> {
-    if (event.type !== "submit") {
-      return;
-    }
-
-    const clickedButton = (event as SubmitEvent).submitter as HTMLButtonElement | null;
+  private async onFormSubmit(event: SubmitEvent): Promise<void> {
+    event.preventDefault();
+    const clickedButton = event.submitter as HTMLButtonElement | null;
     if (clickedButton) {
       clickedButton.disabled = true;
     }
 
     await RqidBatchEditor.persistChanges(
-      this.object.sceneChangesMap,
-      this.object.actorChangesMap,
-      this.object.worldItemChanges,
-      this.object.packItemChangesMap,
-      this.object.packActorChangesMap,
-      this.object.itemName2Rqid,
+      this.changes.sceneChangesMap,
+      this.changes.actorChangesMap,
+      this.changes.worldItemChanges,
+      this.changes.packItemChangesMap,
+      this.changes.packActorChangesMap,
+      this.changes.itemName2Rqid,
     );
     await this.close();
-  }
-
-  override get title(): string {
-    return super.title + " - " + localizeItemType(this.options.itemType);
   }
 
   // ---
@@ -802,7 +883,7 @@ export class RqidBatchEditor extends foundry.appv1.api.FormApplication<
     return new Promise((resolve, reject) => {
       this.resolve = resolve;
       this.reject = reject;
-      this.render(true);
+      this.render({ force: true });
     });
   }
 

@@ -9,6 +9,7 @@ import {
   getRequiredDomDataset,
   hasOwnProperty,
   isDocumentSubType,
+  isFoundryElementInstanceOf,
   isTruthy,
   localize,
   range,
@@ -23,7 +24,10 @@ import type { ArmorItem } from "@item-model/armorDataModel.ts";
 import type { OccupationItem } from "@item-model/occupationDataModel.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/itemTypes.ts";
 import type { WeaponItem } from "@item-model/weaponDataModel.ts";
-import { HitLocationSheet } from "../items/hit-location-item/hitLocationSheet";
+import {
+  showHitLocationAddWoundDialog,
+  showHitLocationHealWoundDialog,
+} from "../items/hit-location-item";
 import {
   applyDamageBonusToFormula,
   formatDamagePart,
@@ -58,10 +62,8 @@ import {
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { GearItem } from "@item-model/gearDataModel.ts";
-import { RqgActorSheet } from "./rqgActorSheet";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
-import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import {
   equippedStatuses,
@@ -70,6 +72,7 @@ import {
   physicalItemTypes,
 } from "../data-model/item-data/IPhysicalItem";
 import { ItemTree } from "../items/shared/ItemTree";
+import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -920,7 +923,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): void {
     const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
     requireValue(itemId, "No item id found to delete item");
-    RqgActorSheet.confirmItemDelete(this.actor, itemId);
+    void confirmActorItemDelete(this.actor, itemId);
   }
 
   private static _sortItemsAction(
@@ -940,7 +943,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): void {
     const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
     requireValue(itemId, "No hit location item id found to add wound");
-    void HitLocationSheet.showAddWoundDialog(this.actor, itemId);
+    void showHitLocationAddWoundDialog(this.actor, itemId);
   }
 
   private static _healWoundAction(
@@ -950,7 +953,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): void {
     const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
     requireValue(itemId, "No hit location item id found to heal wound");
-    void HitLocationSheet.showHealWoundDialog(this.actor, itemId);
+    void showHitLocationHealWoundDialog(this.actor, itemId);
   }
 
   private static async _flipHitLocationSortSettingAction(
@@ -1004,24 +1007,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       effectName: effect.name,
     });
 
-    const confirmed = await foundry.applications.api.DialogV2.wait({
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
       window: { title },
       content,
-      buttons: [
-        {
-          action: "confirm",
-          label: localize("RQG.Dialog.Common.btnConfirm"),
-          icon: "fas fa-check",
-          callback: () => true,
-        },
-        {
-          action: "cancel",
-          label: localize("RQG.Dialog.Common.btnCancel"),
-          icon: "fas fa-times",
-          callback: () => false,
-          default: true,
-        },
-      ],
+      yes: {
+        action: "confirm",
+        label: localize("RQG.Dialog.Common.btnConfirm"),
+        icon: "fas fa-check",
+      },
+      no: {
+        action: "cancel",
+        label: localize("RQG.Dialog.Common.btnCancel"),
+        icon: "fas fa-times",
+        default: true,
+      },
     });
 
     if (confirmed) {
@@ -1209,12 +1208,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     const eventTarget = getEventTargetElement(event);
     const dragHandle = eventTarget?.closest("[data-item-drag-handle], [data-weapon-drag-handle]");
-    if (!(dragHandle instanceof HTMLElement)) {
+    if (!isFoundryElementInstanceOf(dragHandle, HTMLElement)) {
       return;
     }
 
     const itemContainer = dragHandle.closest("[data-item-id]");
-    if (!(itemContainer instanceof HTMLElement)) {
+    if (!isFoundryElementInstanceOf(itemContainer, HTMLElement)) {
       return;
     }
 
@@ -1640,35 +1639,37 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       targetActor: this.actor.name,
     });
 
-    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
+    const result = await foundry.applications.api.DialogV2.confirm({
+      window: { title },
+      content,
+      yes: {
+        action: "submit",
         label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
-        callback: async (html: JQuery | HTMLElement) =>
-          confirmDialog.resolve(
-            this.submitConfirmTransferPhysicalItem(
-              html as JQuery,
-              incomingItemDataSource,
-              sourceActor,
-            ),
+        icon: "fas fa-check",
+        default: true,
+        callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> =>
+          this.submitConfirmTransferPhysicalItem(
+            dialog.element,
+            incomingItemDataSource,
+            sourceActor,
           ),
       },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
+      no: {
+        action: "cancel",
         label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
+        icon: "fas fa-times",
+        callback: () => false,
       },
-    };
-    return await confirmDialog.setButtons(buttons, "submit").show();
+    });
+    return Boolean(result);
   }
 
   private async submitConfirmTransferPhysicalItem(
-    html: JQuery,
+    html: HTMLElement,
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<boolean> {
-    const formData = new FormData(html.find("form")[0]);
+    const formData = new FormData(html.querySelector("form") ?? undefined);
     const data = Object.fromEntries(formData.entries());
     const quantityToTransfer: number = data["numtotransfer"] ? Number(data["numtotransfer"]) : 1;
     return this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
@@ -1767,25 +1768,29 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       itemName: incomingItemDataSource.name,
       targetActor: this.actor.name,
     });
-    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
+    const result = await foundry.applications.api.DialogV2.confirm({
+      window: { title },
+      content,
+      yes: {
+        action: "submit",
         label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
-        callback: async () => {
+        icon: "fas fa-check",
+        default: true,
+        callback: async (): Promise<boolean> => {
           const created = await this.actor.createEmbeddedDocuments("Item", [
             incomingItemDataSource,
           ]);
-          confirmDialog.resolve(created.length > 0);
+          return created.length > 0;
         },
       },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
+      no: {
+        action: "cancel",
         label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
+        icon: "fas fa-times",
+        callback: () => false,
       },
-    };
-    return await confirmDialog.setButtons(buttons, "submit").show();
+    });
+    return Boolean(result);
   }
 
   private async _onDropRqidDocument(event: DragEvent): Promise<boolean> {

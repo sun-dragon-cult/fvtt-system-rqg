@@ -3,7 +3,7 @@ import { ItemTypeEnum, type RqgItemType } from "@item-model/itemTypes.ts";
 import { armorLifecycle } from "./armor-item/armorLifecycle";
 import { cultLifecycle } from "./cult-item/cultLifecycle";
 import { gearLifecycle } from "./gear-item/gearLifecycle";
-import { hitLocationLifecycle } from "./hit-location-item/hitLocationLifecycle";
+import { hitLocationLifecycle } from "./hit-location-item/hit-location-lifecycle";
 import { runeLifecycle } from "./rune-item/runeLifecycle";
 import { runeMagicLifecycle } from "./rune-magic-item/runeMagicLifecycle";
 import { skillLifecycle } from "./skill-item/skillLifecycle";

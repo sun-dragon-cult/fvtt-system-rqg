@@ -9,7 +9,7 @@ function openRqidEditor(sheet: DocumentSheet<any, any>): void {
   if (!game.user?.isGM) {
     return;
   }
-  new RqidEditor(sheet.document, {}).render(true, { focus: true });
+  new RqidEditor(sheet.document, {}).render({ force: true });
 }
 
 /**

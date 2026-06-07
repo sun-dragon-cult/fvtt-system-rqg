@@ -60,7 +60,15 @@ export async function migrateWorld(): Promise<void> {
     ItemTypeEnum.Rune, // Future needs
   );
 
-  await migrateWorldDialog(systemVersion);
+  const confirmed = await migrateWorldDialog(systemVersion);
+  if (!confirmed) {
+    ui.notifications?.warn(
+      localize("RQG.Migration.MigrationAborted", { systemVersion: systemVersion }),
+      { permanent: true },
+    );
+    return;
+  }
+
   const migrationNotification = ui.notifications?.info(
     localize("RQG.Migration.applyingMigration", { systemVersion: systemVersion }),
     { permanent: true, console: false, progress: true },

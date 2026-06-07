@@ -1,10 +1,35 @@
 .rqid-batch-editor {
+  --rqid-batch-editor-sticky-surface: color-mix(in srgb, var(--color-bg, #222) 70%, black);
+
   .window-content {
     padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .rqid-batch-editor-form {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
   }
 
   main {
     position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+
+    header {
+      h2 {
+        margin-bottom: 0.25rem;
+      }
+
+      .rqid-batch-editor-summary {
+        margin: 0 0 0.3rem;
+      }
+    }
   }
 
   .document-list {
@@ -17,9 +42,12 @@
   }
 
   li.header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
     line-height: 2rem;
     font-weight: bold;
-    background-color: rgb(0 0 0 / 50%);
+    background: var(--rqid-batch-editor-sticky-surface);
     color: var(--color-text-light-highlight);
     margin-bottom: 0.3rem;
 
@@ -51,17 +79,15 @@
     }
 
     .generate-rqid {
-      flex: 0 0 20px;
-      align-self: center;
-      text-align: right;
+      flex: 0 0 var(--input-height);
+      width: var(--input-height);
+      height: var(--input-height);
+      margin-left: 0.25rem;
     }
   }
+}
 
-  .dialog-buttons {
-    position: sticky;
-    bottom: 0.2rem;
-    width: 100%;
-    background: var(--color-bg-btn-minor-active);
-    margin: 1rem 0;
-  }
+#tooltip.rqid-batch-editor-tooltip,
+.locked-tooltip.rqid-batch-editor-tooltip {
+  text-align: center;
 }

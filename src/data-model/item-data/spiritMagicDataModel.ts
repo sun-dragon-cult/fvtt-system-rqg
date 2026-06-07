@@ -41,7 +41,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
   async spiritMagicRoll(): Promise<void> {
     // Dynamic import to avoid circular dependency through SpiritMagicRollDialogV2 → rqgItem.ts
     const { SpiritMagicRollDialogV2 } =
-      await import("../../applications/SpiritMagicRollDialog/spiritMagicRollDialogV2");
+      await import("../../applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2");
     await new SpiritMagicRollDialogV2(this.parent as unknown as SpiritMagicItem).render(true);
   }
 

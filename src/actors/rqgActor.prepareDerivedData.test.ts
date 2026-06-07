@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { RqgActor } from "./rqgActor";
 import { ActorTypeEnum } from "../data-model/actor-data/rqgActorData";
 import * as itemLifecycleStrategy from "../items/itemLifecycleStrategy";
-import { DamageCalculations } from "../system/damageCalculations";
+import { DamageCalculations } from "../items/hit-location-item/hit-location-damage-calculations";
 
 function createCharacterActor(): any {
   const actor = new RqgActor({ name: "Test Actor", type: ActorTypeEnum.Character }) as any;
