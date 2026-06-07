@@ -12,7 +12,6 @@ import {
   isTruthy,
   localize,
   requireValue,
-  RqgError,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqgActor.ts";
 import type { RqgItem } from "@items/rqgItem.ts";
@@ -89,11 +88,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     if (!attackingToken && !allowCombatWithoutToken) {
       const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
-      ui.notifications?.warn(msg);
-      setTimeout(() => {
-        void this.close();
-      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
-      throw new RqgError(msg);
+      logger.throw(msg, { weaponItem: this.weaponItem?.id });
     }
   }
 
@@ -134,11 +129,16 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     const attackingTokenOrActor = getTokenOrActorFromItem(this.weaponItem);
     if (!attackingTokenOrActor) {
       const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
-      ui.notifications?.warn(msg);
       this.close();
-      throw new RqgError(msg);
+      return logger.throw(msg, { weaponItem: this.weaponItem?.id });
     }
-    formData.attackingTokenOrActorUuid = attackingTokenOrActor?.uuid;
+    const attackingTokenOrActorUuid = attackingTokenOrActor.uuid;
+    if (!attackingTokenOrActorUuid) {
+      const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
+      this.close();
+      return logger.throw(msg, { weaponItem: this.weaponItem?.id });
+    }
+    formData.attackingTokenOrActorUuid = attackingTokenOrActorUuid;
 
     const usageTypeOptions = AttackDialogV2.getUsageTypeOptions(this.weaponItem);
     const availableUsageTypes = usageTypeOptions.map((option) => option.value);
@@ -151,9 +151,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     if (!selectedUsageType) {
       const msg = localize("RQG.Dialog.Attack.NoWeaponToAttackWith");
-      ui.notifications?.warn(msg);
       this.close();
-      throw new RqgError(msg);
+      return logger.throw(msg, { weaponItem: this.weaponItem?.id });
     }
 
     formData.usageType = selectedUsageType;
@@ -703,7 +702,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const weaponOwner = weapon.parent;
     if (!weaponOwner) {
-      throw new RqgError("weapon did not have an owner");
+      logger.throw("weapon did not have an owner", { weaponItem: weapon.id });
     }
     assertDocumentSubType<CharacterActor>(weaponOwner, ActorTypeEnum.Character);
 

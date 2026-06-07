@@ -1,5 +1,5 @@
 import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
-import { RqgActorSheet } from "../rqgActorSheet";
+import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import { RqgActor } from "../rqgActor";
 import {
   getRequiredDomDataset,
@@ -86,7 +86,7 @@ export const gearMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
     visible: () => true,
     onClick: (_event: Event, el: HTMLElement): void => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      void RqgActorSheet.confirmItemDelete(actor, itemId);
+      void confirmActorItemDelete(actor, itemId);
     },
   },
 ];

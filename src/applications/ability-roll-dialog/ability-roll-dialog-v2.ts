@@ -7,7 +7,8 @@ import type {
 } from "./ability-roll-dialog-data.types";
 import { AbilityRoll } from "../../rolls/AbilityRoll/AbilityRoll";
 import type { AbilityRollOptions } from "../../rolls/AbilityRoll/AbilityRoll.types";
-import { getSpeakerFromItem, localize, localizeItemType, RqgError } from "../../system/util";
+import { getSpeakerFromItem, localize, localizeItemType } from "../../system/util";
+import { RqgLogger } from "../../system/logging/rqgLogger";
 import { RqgItem } from "@items/rqgItem.ts";
 import type { AbilityItem } from "@item-model/itemTypes.ts";
 import {
@@ -16,6 +17,8 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+
+const logger = new RqgLogger("AbilityRollDialogV2");
 
 export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -61,11 +64,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     super(options);
     if (!abilityItem) {
       const msg = "No AbilityItem to roll for";
-      ui.notifications?.warn(msg);
-      setTimeout(() => {
-        void this.close();
-      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
-      throw new RqgError(msg);
+      logger.throw(msg);
     }
 
     this.abilityItem = abilityItem;
@@ -212,7 +211,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
       const roll = await AbilityRoll.rollAndShow(options);
       if (roll.successLevel == null) {
-        throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
+        logger.throw("Evaluated AbilityRoll didn't give successLevel", roll, options);
       }
     }
   }

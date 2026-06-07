@@ -1,5 +1,5 @@
 import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
-import { RqgActorSheet } from "../rqgActorSheet";
+import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import { RqgActor } from "../rqgActor";
 import {
   assertDocumentSubType,
@@ -147,7 +147,7 @@ export const skillMenuOptions = (
     visible: () => !!game.user?.isGM,
     onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      void RqgActorSheet.confirmItemDelete(actor, itemId);
+      void confirmActorItemDelete(actor, itemId);
     },
   },
 ];

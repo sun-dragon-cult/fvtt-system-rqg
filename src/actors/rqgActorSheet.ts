@@ -36,7 +36,6 @@ import {
   isDocumentSubType,
   isTruthy,
   localize,
-  localizeItemType,
   range,
   requireValue,
   RqgError,
@@ -49,7 +48,7 @@ import { RqidLink } from "../data-model/shared/rqidLink";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
 import { addRqidLinkToSheetJQuery } from "../documents/rqidSheetButton";
 import { RqgContextMenu } from "../foundryUi/RqgContextMenu";
-import { RqgAsyncDialog } from "../applications/rqgAsyncDialog";
+import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
 import {
   extractDropInfo,
   getAllowedDropDocumentNames,
@@ -60,7 +59,6 @@ import {
   updateRqidLink,
 } from "../documents/dragDrop";
 import { ItemTree } from "../items/shared/ItemTree";
-import { type CultItem } from "@item-model/cultDataModel.ts";
 import type { RqgActor } from "./rqgActor";
 import type { RqgItem } from "../items/rqgItem";
 import { getCombatantIdsToDelete, getSrWithoutCombatants } from "../combat/combatant-utils";
@@ -616,7 +614,7 @@ export class RqgActorSheet<
     // Delete Item (remove item from actor)
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-delete]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
-      el.addEventListener("click", () => RqgActorSheet.confirmItemDelete(this.actor, itemId));
+      el.addEventListener("click", () => void confirmActorItemDelete(this.actor, itemId));
     });
 
     // Sort Items alphabetically
@@ -868,65 +866,6 @@ export class RqgActorSheet<
     await combat.createEmbeddedDocuments("Combatant", newCombatants);
   }
 
-  static async confirmItemDelete(actor: RqgActor, itemId: string): Promise<void> {
-    const item = actor.items.get(itemId) as RqgItem | undefined;
-    requireValue(item, `No itemId [${itemId}] on actor ${actor.name} to show delete item Dialog`);
-
-    const itemTypeLoc: string = localizeItemType(item.type);
-
-    const title = localize("RQG.Dialog.confirmItemDeleteDialog.title", {
-      itemType: itemTypeLoc,
-      itemName: item.name,
-    });
-
-    let content: string;
-    if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
-      content = localize("RQG.Dialog.confirmItemDeleteDialog.contentCult", {
-        itemType: itemTypeLoc,
-        itemName: item.name,
-        runeMagicSpell: localizeItemType(ItemTypeEnum.RuneMagic),
-      });
-    } else {
-      content = localize("RQG.Dialog.confirmItemDeleteDialog.content", {
-        itemType: itemTypeLoc,
-        itemName: item.name,
-      });
-    }
-
-    const confirmDialog = new RqgAsyncDialog<boolean>(title, content);
-
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
-        label: localize("RQG.Dialog.Common.btnConfirm"),
-        callback: async () => confirmDialog.resolve(true),
-      },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
-        label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
-      },
-    };
-
-    if (await confirmDialog.setButtons(buttons, "cancel").show()) {
-      const idsToDelete = [];
-      if (isDocumentSubType<CultItem>(item, ItemTypeEnum.Cult)) {
-        const cultId = item.id;
-        const runeMagicSpells = actor.items.filter(
-          (i) =>
-            isDocumentSubType<RuneMagicItem>(i, ItemTypeEnum.RuneMagic) &&
-            i.system.cultId === cultId,
-        ) as RuneMagicItem[];
-        runeMagicSpells.forEach((s) => {
-          idsToDelete.push(s.id);
-        });
-      }
-
-      idsToDelete.push(itemId);
-      await actor.deleteEmbeddedDocuments("Item", idsToDelete);
-    }
-  }
-
   _onDragEnter(event: DragEvent): void {
     onDragEnter(event);
   }
@@ -1134,23 +1073,28 @@ export class RqgActorSheet<
       itemName: incomingItemDataSource.name,
       targetActor: this.actor.name,
     });
-    const confirmDialog = new RqgAsyncDialog<RqgItem[] | boolean>(title, content);
 
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
+      window: { title },
+      content,
+      yes: {
+        action: "submit",
         label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
-        callback: () => {
-          confirmDialog.resolve(this.submitConfirmCopyIntangibleItem(incomingItemDataSource));
-        },
+        icon: "fas fa-check",
+        default: true,
       },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
+      no: {
+        action: "cancel",
         label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
+        icon: "fas fa-times",
       },
-    };
-    return await confirmDialog.setButtons(buttons, "submit").show();
+    });
+
+    if (!confirmed) {
+      return false;
+    }
+
+    return this.submitConfirmCopyIntangibleItem(incomingItemDataSource);
   }
 
   private async submitConfirmCopyIntangibleItem(
@@ -1182,36 +1126,47 @@ export class RqgActorSheet<
       targetActor: this.actor.name,
     });
 
-    const confirmDialog = new RqgAsyncDialog<RqgItem[] | boolean>(title, content);
+    const result = await foundry.applications.api.DialogV2.wait({
+      window: { title },
+      content,
+      classes: [systemId, "dialog"],
+      buttons: [
+        {
+          action: "submit",
+          label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+          icon: "fas fa-check",
+          default: true,
+          callback: async (_ev, button) => {
+            const form = button.form;
+            if (!form) {
+              return false;
+            }
 
-    const buttons = {
-      submit: {
-        icon: '<i class="fas fa-check"></i>',
-        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
-        callback: async (html: JQuery | HTMLElement) =>
-          confirmDialog.resolve(
-            this.submitConfirmTransferPhysicalItem(
-              html as JQuery,
+            return this.submitConfirmTransferPhysicalItem(
+              form,
               incomingItemDataSource,
               sourceActor,
-            ),
-          ),
-      },
-      cancel: {
-        icon: '<i class="fas fa-times"></i>',
-        label: localize("RQG.Dialog.Common.btnCancel"),
-        callback: () => confirmDialog.resolve(false),
-      },
-    };
-    return await confirmDialog.setButtons(buttons, "submit").show();
+            );
+          },
+        },
+        {
+          action: "cancel",
+          label: localize("RQG.Dialog.Common.btnCancel"),
+          icon: "fas fa-times",
+          callback: () => false,
+        },
+      ],
+    });
+
+    return result ?? false;
   }
 
   private async submitConfirmTransferPhysicalItem(
-    html: JQuery,
+    form: HTMLFormElement,
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
   ): Promise<RqgItem[] | boolean> {
-    const formData = new FormData(html.find("form")[0]);
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
     let quantityToTransfer: number = 1;

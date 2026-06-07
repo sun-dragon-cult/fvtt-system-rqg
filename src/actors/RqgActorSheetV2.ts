@@ -62,7 +62,6 @@ import {
 import type { SpiritMagicItem } from "@item-model/spiritMagicDataModel.ts";
 import type { RuneMagicItem } from "@item-model/runeMagicDataModel.ts";
 import type { GearItem } from "@item-model/gearDataModel.ts";
-import { RqgActorSheet } from "./rqgActorSheet";
 import type { RqgActiveEffect } from "../active-effect/rqgActiveEffect.ts";
 import { ActorWizard } from "../applications/actorWizardApplication";
 import { actorWizardFlags } from "../data-model/shared/rqgDocumentFlags";
@@ -73,6 +72,7 @@ import {
   physicalItemTypes,
 } from "../data-model/item-data/IPhysicalItem";
 import { ItemTree } from "../items/shared/ItemTree";
+import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -923,7 +923,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   ): void {
     const itemId = target.closest<HTMLElement>("[data-item-id]")?.dataset["itemId"];
     requireValue(itemId, "No item id found to delete item");
-    RqgActorSheet.confirmItemDelete(this.actor, itemId);
+    void confirmActorItemDelete(this.actor, itemId);
   }
 
   private static _sortItemsAction(

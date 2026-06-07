@@ -1,5 +1,5 @@
 import type { RqgContextMenuEntry } from "../../foundryUi/RqgContextMenu";
-import { RqgActorSheet } from "../rqgActorSheet";
+import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import {
   assertDocumentSubType,
   getDomDataset,
@@ -95,7 +95,7 @@ export const combatMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] 
     onClick: (_event: Event, el: HTMLElement) => {
       const skillItemId = getDomDataset(el, "skill-id");
       if (skillItemId) {
-        void RqgActorSheet.confirmItemDelete(actor, skillItemId);
+        void confirmActorItemDelete(actor, skillItemId);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantDeleteSkillError", {
           weaponItemId: skillItemId ?? "",
@@ -115,7 +115,7 @@ export const combatMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] 
     onClick: (_event: Event, el: HTMLElement) => {
       const weaponItemId = getDomDataset(el, "weapon-item-id");
       if (weaponItemId) {
-        void RqgActorSheet.confirmItemDelete(actor, weaponItemId);
+        void confirmActorItemDelete(actor, weaponItemId);
       } else {
         const msg = localize("RQG.ContextMenu.Notification.CantDeleteWeaponError", {
           weaponItemId: weaponItemId ?? "",

@@ -10,7 +10,6 @@ import {
   isDocumentSubType,
   localize,
   requireValue,
-  RqgError,
   safeFromJSON,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqgActor.ts";
@@ -41,6 +40,9 @@ import type { SkillItem } from "@item-model/skillDataModel.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqgActorData.ts";
 import { toRqidString } from "../../system/api/rqidValidation";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import { RqgLogger } from "../../system/logging/rqgLogger";
+
+const logger = new RqgLogger("DefenceDialogV2");
 
 export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
   private currentDefenceChance = 0;
@@ -71,7 +73,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     { value: -100, label: "RQG.Dialog.Defence.SubsequentDefenceOptions.Sixth" },
   ];
 
-  private readonly attackChatMessage: RqgChatMessage;
+  private readonly attackChatMessage!: RqgChatMessage;
 
   constructor(
     chatMessageId: string,
@@ -81,14 +83,9 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const attackChatMessage = game.messages?.get(chatMessageId ?? "") as RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
-      const msg = "No attackChatMessage to defend";
-      ui.notifications?.warn(msg);
-      setTimeout(() => {
-        void this.close();
-      }, 500); // Wait to make sure the dialog exists before closing - TODO ugly hack
-      throw new RqgError(msg);
+      logger.throw("No attackChatMessage to defend", { chatMessageId });
     }
-    this.attackChatMessage = attackChatMessage;
+    this.attackChatMessage = attackChatMessage!;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -142,8 +139,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
     if (!attackRoll) {
       const msg = "No attack roll present - cannot defend";
-      ui.notifications?.warn(msg);
-      throw new RqgError(msg);
+      logger.throw(msg, { attackChatMessageId: this.attackChatMessage.id });
     }
 
     const defendingUuid =
@@ -153,11 +149,10 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     if (!defendingUuid) {
       const msg = "No defending token or actor UUID available";
-      ui.notifications?.error(msg);
-      throw new RqgError(msg);
+      logger.throw(msg, { attackChatMessageId: this.attackChatMessage.id });
     }
 
-    formData.defendingTokenOrActorUuid = defendingUuid;
+    formData.defendingTokenOrActorUuid = defendingUuid!;
 
     const defendingTokenOrActor = (await fromUuid(defendingUuid)) as TokenDocument | null;
     const defendingActor =
@@ -247,12 +242,12 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     // Remove any previously saved master opponent modifier before computing the new one,
     // so that targetChance reflects the base attack chance without it.
-    attackRoll.options.modifiers = (attackRoll.options.modifiers ?? []).filter(
+    attackRoll!.options.modifiers = (attackRoll!.options.modifiers ?? []).filter(
       (m: Modifier) => m.description !== masterOpponentModifierDescription,
     );
 
     const { attackModifier, defenceModifier } = getMasterOpponentModifier(
-      attackRoll.targetChance ?? 0,
+      attackRoll!.targetChance ?? 0,
       totalChanceExclMasterOpponent,
     );
 
@@ -396,7 +391,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     if (!attackChatMessage) {
       const msg = "Attack chat message not found";
-      throw new RqgError(msg, formDataObject);
+      logger.throw(msg, formDataObject);
     }
 
     const messageData = attackChatMessage!.toObject();
@@ -430,7 +425,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     }
     // Update the chat with how the defence was done
 
-    const currentFlavor = attackChatMessage.flavor;
+    const currentFlavor = attackChatMessage!.flavor;
 
     const defenderName = defendingTokenDocumentOrActor?.name;
 
@@ -528,7 +523,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       }),
     };
 
-    const attackRollData = attackChatMessage.system.attackRoll;
+    const attackRollData = attackChatMessage!.system.attackRoll;
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
 
     // Apply the master opponent modifier to the attack roll if needed
@@ -567,7 +562,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       await defenceRoll.evaluate();
     }
     if (formDataObject.defence !== "ignore" && defenceRoll?.successLevel == null) {
-      throw new RqgError("Evaluated DefenceRoll didn't give successLevel");
+      logger.throw("Evaluated DefenceRoll didn't give successLevel", formDataObject);
     }
 
     const attackingWeapon = (await fromUuid(
@@ -686,19 +681,21 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         }, 300);
       }
 
-      await game.dice3d.showForRoll(attackRoll, attackChatMessage.author, true, null, false);
+      await game.dice3d.showForRoll(attackRoll, attackChatMessage!.author, true, null, false);
     }
 
     activateChatTab();
-    await updateChatMessage(attackChatMessage, messageData);
-    const attackWeapon = (await fromUuid(attackChatMessage.system.attackWeaponUuid)) as
+    await updateChatMessage(attackChatMessage!, messageData);
+    const attackWeapon = (await fromUuid(attackChatMessage!.system.attackWeaponUuid)) as
       | RqgItem
       | undefined;
     if (attackWeapon) {
       assertDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon);
     }
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
-      const attackWeaponUsage = attackChatMessage.system.attackWeaponUsage as UsageType | undefined;
+      const attackWeaponUsage = attackChatMessage!.system.attackWeaponUsage as
+        | UsageType
+        | undefined;
       const attackSkill = attackWeaponUsage
         ? (() => {
             const rqid = attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid;

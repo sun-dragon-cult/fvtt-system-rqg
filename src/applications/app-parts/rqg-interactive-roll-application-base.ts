@@ -6,7 +6,6 @@ type LivePreviewFormBehaviorConfig = {
   updateLivePreview: () => void;
   onCommittedFormChange?: (event: Event) => boolean | void;
   shouldRerenderOnCommittedChange?: (event: Event) => boolean;
-  rerender: () => void;
 };
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
@@ -40,10 +39,7 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
     return true;
   }
 
-  protected abstract getLivePreviewFormBehaviorConfig(): Omit<
-    LivePreviewFormBehaviorConfig,
-    "rerender"
-  >;
+  protected abstract getLivePreviewFormBehaviorConfig(): LivePreviewFormBehaviorConfig;
 
   protected override _onClickAction(
     event: PointerEvent,
