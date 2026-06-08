@@ -2,17 +2,12 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { assertDocumentSubType, isDocumentSubType, isTruthy, RqgError } from "../../system/util";
 import { deriveCultItemName } from "./cult-helpers";
 import { Rqid } from "../../system/api/rqid-api";
+import type { RqidLink } from "../../data-model/shared/rqid-link";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
-
-type RqidLinkSource = {
-  rqid?: string;
-  name?: string;
-  bonus?: number;
-};
 
 function toCanonicalItemRqid(rqid: string, itemType: "rune" | "rune-magic"): string {
   const match = rqid.match(new RegExp(`(?:^|\\.)(i\\.${itemType}\\.[^.]+)$`));
@@ -20,17 +15,18 @@ function toCanonicalItemRqid(rqid: string, itemType: "rune" | "rune-magic"): str
 }
 
 function normalizeRqidLinks(
-  links: RqidLinkSource[] | undefined,
+  links: RqidLink[] | undefined,
   itemType: "rune" | "rune-magic",
-): { rqid: string; name: string; bonus?: number }[] {
+): RqidLink[] {
   return (links ?? []).map((link) => {
-    const rqid = toCanonicalItemRqid(String(link?.rqid ?? ""), itemType);
-    const normalized: { rqid: string; name: string; bonus?: number } = {
+    const rqid = toCanonicalItemRqid(link.rqid, itemType);
+    const normalized: RqidLink = {
       rqid,
-      name: String(link?.name ?? ""),
+      name: link.name,
+      bonus: undefined,
     };
-    if (Number.isFinite(link?.bonus)) {
-      normalized.bonus = Number(link?.bonus);
+    if (Number.isFinite(link.bonus)) {
+      normalized.bonus = Number(link.bonus);
     }
     return normalized;
   });
@@ -38,7 +34,7 @@ function normalizeRqidLinks(
 
 async function embedCommonRuneMagic(
   cult: RqgItem,
-  commonRuneMagicRqidLinks?: { rqid: string }[],
+  commonRuneMagicRqidLinks?: RqidLink[],
 ): Promise<void> {
   const actor = cult.parent;
   assertDocumentSubType<CharacterActor>(
@@ -59,8 +55,10 @@ async function embedCommonRuneMagic(
   );
 
   const connectedRuneMagicItems = runeMagicItems.filter(isTruthy).map((rm) => {
-    rm.system.cultId = cult.id!;
-    return rm.toObject(false);
+    const embeddedRuneMagic = rm.toObject(false) as any;
+    embeddedRuneMagic.system ??= {};
+    embeddedRuneMagic.system.cultId = cult.id!;
+    return embeddedRuneMagic;
   });
 
   await actor.createEmbeddedDocuments("Item", connectedRuneMagicItems as any);
