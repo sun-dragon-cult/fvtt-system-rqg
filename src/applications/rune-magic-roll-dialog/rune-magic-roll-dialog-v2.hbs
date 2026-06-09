@@ -9,11 +9,11 @@
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}
     </label>
     <div>
-      <input type="number" data-dtype="Number" {{#unless spell.system.isStackable}}readonly{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
+      <input type="number" data-dtype="Number" {{#unless isStackable}}readonly{{/unless}} name="levelUsed" value={{formData.levelUsed}}>
       {{localize "RQG.Actor.RuneMagic.RunePoints"}}
     </div>
 
-    {{#if spell.system.isOneUse}}
+    {{#if isOneUse}}
       <label>{{localize "RQG.Dialog.RuneMagicRoll.OneUseHeader"}}</label>
       <div class="warning">{{localize "RQG.Dialog.RuneMagicRoll.OneUseDescription"}}</div>
     {{/if}}

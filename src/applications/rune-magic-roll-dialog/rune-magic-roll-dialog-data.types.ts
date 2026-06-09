@@ -17,6 +17,8 @@ export type RuneMagicRollDialogContext = RollHeaderData &
     formData: RuneMagicRollDialogFormData;
 
     speakerName: string;
+    isStackable: boolean;
+    isOneUse: boolean;
 
     usedRune: PartialRuneItem | undefined;
     eligibleRuneOptions: SelectOptionData<string>[];

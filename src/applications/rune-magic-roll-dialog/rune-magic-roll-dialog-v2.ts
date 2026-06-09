@@ -1,6 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
-import { assertDocumentSubType, getSpeakerFromItem, localize, RqgError } from "../../system/util";
+import { assertDocumentSubType, getSpeakerFromItem, localize } from "../../system/util";
+import { RqgLogger } from "../../system/logging/rqg-logger";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { RqgItem } from "@items/rqg-item.ts";
 import {
@@ -23,6 +24,8 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+
+const logger = new RqgLogger("RuneMagicRollDialogV2");
 
 export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -145,6 +148,8 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formData: formData,
 
       speakerName: speaker.alias ?? "",
+      isStackable: this.spellItem.system.isStackable,
+      isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,
       eligibleRuneOptions: eligibleRuneOptions,
       augmentOptions: RuneMagicRollDialogV2.augmentOptions,
@@ -209,14 +214,18 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const usedRune = eligibleRunes.find((r) => r.id === formDataObject.usedRuneId);
     if (!usedRune) {
       const msg = "No rune to cast the rune magic spell";
-      throw new RqgError(msg);
+      return logger.throw(msg, formDataObject);
     }
 
     const actor = spellItem.parent as RqgActor | undefined;
     const cult = actor?.items.find((i) => i.id === spellItem.system.cultId) as RqgItem | undefined;
     if (!cult) {
       const msg = "No cult to cast the rune magic spell";
-      throw new RqgError(msg);
+      return logger.throw(msg, {
+        actorId: actor?.id,
+        spellItemId: spellItem.id,
+        cultId: spellItem.system.cultId,
+      });
     }
     assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
     const options: RuneMagicRollOptions = {
