@@ -228,8 +228,21 @@
       display: none;
     }
 
+    @keyframes rqg-drop-pulse {
+      0%,
+      100% {
+        box-shadow: inset 0 0 20px 7px var(--rqg-drop-highlight-color);
+      }
+
+      50% {
+        box-shadow: inset 0 0 36px 14px
+          color-mix(in srgb, var(--rqg-drop-highlight-color) 90%, white);
+      }
+    }
+
     .drag-hover {
-      box-shadow: inset 0 0 20px 7px var(--rqg-secondary-color);
+      box-shadow: inset 0 0 20px 7px var(--rqg-drop-highlight-color);
+      animation: rqg-drop-pulse 1.2s ease-in-out infinite;
     }
 
     .gap1rem {

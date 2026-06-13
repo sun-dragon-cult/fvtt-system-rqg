@@ -191,7 +191,6 @@ export function getMainCultInfo(actor: CharacterActor): MainCult {
     id: mainCultItem?.id ?? "",
     rank: formatListByWorldLanguage(mainCultRankTranslation),
     descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
-    hasMultipleCults: cults.length > 1,
   };
 }
 

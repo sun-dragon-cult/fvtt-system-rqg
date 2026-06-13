@@ -55,8 +55,6 @@ import {
   getAllowedDropDocumentNames,
   hasRqid,
   isAllowedDocumentNames,
-  onDragEnter,
-  onDragLeave,
   updateRqidLink,
 } from "../documents/drag-drop";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
@@ -85,6 +83,12 @@ type SingleDoubleClickOptions = {
   timeout?: number;
 };
 
+type PhysicalTransferResult =
+  | { kind: "created"; item: RqgItem }
+  | { kind: "merged" }
+  | { kind: "failed" }
+  | { kind: "cancelled" };
+
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   #skillFilterQuery = "";
 
@@ -95,12 +99,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   // Runtime override of ActorSheetV2 _dragDrop; current fvtt-types do not expose this member.
-  // Include dragenter/dragleave callbacks for dropzone hover styling.
   protected get _dragDrop(): foundry.applications.ux.DragDrop.Any {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
       dragSelector: "[data-item-drag-handle][data-item-id]",
-      // Allow drops on empty tab content areas (e.g. first cult item), not only existing items.
-      dropSelector: ".sheet-body, .contextmenu.item[data-item-id], [data-dropzone]",
+      // Include a non-root content drop target for generic Foundry handling.
+      // Do not include the root selector here: if html.matches(dropSelector),
+      // Foundry binds only the root and skips descendant dropzones.
+      dropSelector: ".sheet-content, .contextmenu.item[data-item-id], [data-dropzone]",
       permissions: {
         dragstart: (selector) => this._canDragStart(selector ?? ""),
         drop: (selector) => this._canDragDrop(selector ?? ""),
@@ -109,8 +114,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         dragstart: this._onDragStart.bind(this),
         dragover: this._onDragOver.bind(this),
         drop: this._onDrop.bind(this),
-        dragenter: this._onDragEnter.bind(this),
         dragleave: this._onDragLeave.bind(this),
+        dragend: this._onDragEnd.bind(this),
       },
     });
     return this._rqgDragDrop;
@@ -151,9 +156,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     string,
     foundry.applications.api.HandlebarsApplicationMixin.HandlebarsTemplatePart
   > = {
-    header: { template: templatePaths.actorSheetV2Header },
-    nav: { template: templatePaths.actorSheetV2Nav },
-    body: { template: templatePaths.actorSheetV2Body, scrollable: [""] },
+    nav: { template: templatePaths.actorSheetV2Nav, scrollable: [""] },
+    content: { template: templatePaths.actorSheetV2Content, scrollable: [""] },
   };
 
   override get title(): string {
@@ -241,6 +245,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
     const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
+    const cultItems = (embeddedItems[ItemTypeEnum.Cult] ?? []) as RqgItem[];
+    const availableCultTabs = cultItems.map((cult) => `cult-${cult.id}`);
+    const requestedCultTab = this.tabGroups["cult-view"] ?? undefined;
+    const activeCultTab =
+      requestedCultTab && availableCultTabs.includes(requestedCultTab)
+        ? requestedCultTab
+        : availableCultTabs[0];
 
     // Compute active SRs from combat tracker
     const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
@@ -259,6 +270,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       isGM: game.user?.isGM ?? false,
       isEditable: this.isEditable,
       isEmbedded: false,
+      activeTabs: {
+        primary: this.tabGroups["primary"] ?? "combat",
+        gearView: this.tabGroups["gear-view"] ?? "by-item-type",
+        cultView: activeCultTab,
+      },
       system: system,
       effects: [...this.actor.allApplicableEffects()],
 
@@ -349,32 +365,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     };
   }
 
-  // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
-  override async _preparePartContext(
-    partId: string,
-    context: RqgActorSheetV2Context,
-    options: DeepPartial<foundry.applications.api.HandlebarsApplicationMixin.RenderOptions>,
-  ): Promise<RqgActorSheetV2Context> {
-    context = (await super._preparePartContext(
-      partId,
-      context as any,
-      options,
-    )) as unknown as RqgActorSheetV2Context;
-    context.tab = context.tabs?.[partId] ?? { active: false, id: partId, group: "sheet" };
-    return context;
-  }
-
-  /** Remembers the currently active tab across re-renders */
-  protected _currentTab: string | undefined;
-
-  /** Remembers the currently active gear sub-tab across re-renders */
-  protected _currentGearView: string | undefined;
-
   /** Tracks which SRs are active in combat for this actor */
   private _activeInSR: Set<number> = new Set<number>();
 
   /** Temporary image element used as drag preview */
   private _activeDragPreview: HTMLImageElement | null = null;
+
+  /** Currently highlighted focused dropzone under the drag cursor. */
+  private _activeDropzone: HTMLElement | null = null;
+
+  /** True when the active drag originates from this actor's own items (reorder only, no sheet glow). */
+  private _isSameActorDrag = false;
 
   private _bindSingleDoubleClick(
     el: HTMLElement,
@@ -406,7 +407,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   override async _onRender(
-    context: DeepPartial<RqgActorSheetV2Context>,
+    context: foundry.applications.api.HandlebarsApplicationMixin.RenderContext,
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
@@ -452,49 +453,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
     } else {
       badge?.remove();
-    }
-
-    // Tab navigation (preserves active tab across re-renders)
-    const navEl = this.element.querySelector("nav.sheet-tabs");
-    if (navEl) {
-      const tabs = new foundry.applications.ux.Tabs({
-        navSelector: "nav.sheet-tabs",
-        contentSelector: ".sheet-body",
-        initial: this._currentTab ?? "combat",
-        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
-          if (name) {
-            this._currentTab = name;
-          }
-        },
-      });
-      tabs.bind(this.element);
-    }
-
-    // Cult tab navigation (rune magic tab, only present when multiple cults)
-    const cultNavEl = this.element.querySelector("nav.cult-tabs");
-    if (cultNavEl) {
-      const cultTabs = new foundry.applications.ux.Tabs({
-        navSelector: ".cult-tabs",
-        contentSelector: ".cult-body",
-        initial: "",
-      });
-      cultTabs.bind(this.element);
-    }
-
-    // Gear tab sub-navigation (by item type / by location)
-    const gearNavEl = this.element.querySelector("nav.gear-tabs");
-    if (gearNavEl) {
-      const gearTabs = new foundry.applications.ux.Tabs({
-        navSelector: "nav.gear-tabs",
-        contentSelector: ".gear-body",
-        initial: this._currentGearView ?? "by-item-type",
-        callback: (_event: MouseEvent | null, _tabs: unknown, name: string) => {
-          if (name) {
-            this._currentGearView = name;
-          }
-        },
-      });
-      gearTabs.bind(this.element);
     }
 
     // Context menus bind to this.element — create once to avoid accumulating listeners.
@@ -569,41 +527,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // RQID link open/delete handlers (bind once; delegated handlers survive re-renders)
     if (options.isFirstRender) {
       RqidLink.bindHandlers(this.element, this.actor as foundry.abstract.Document.Any);
-    }
-
-    // Clear drop indicators and drag preview cleanup.
-    // Bind once per rendered root element so cleanup listeners don't duplicate.
-    if (this.element.dataset["dragImageBound"] !== "true") {
-      this.element.dataset["dragImageBound"] = "true";
-
-      this.element.addEventListener("dragend", () => {
-        this._clearDropIndicators();
-        this._activeDragPreview?.remove();
-        this._activeDragPreview = null;
-      });
-
-      this.element.addEventListener("drop", () => {
-        this._clearDropIndicators();
-        this._activeDragPreview?.remove();
-        this._activeDragPreview = null;
-      });
-    }
-
-    // Profile image click to open FilePicker (AppV2 convention: data-action)
-    if (options.isFirstRender) {
-      this.element.querySelectorAll<HTMLElement>("[data-action='editImage']").forEach((el) => {
-        el.addEventListener("click", () => {
-          const current = this.actor.img;
-          const fp = new FilePicker({
-            type: "image",
-            current: current ?? undefined,
-            callback: async (path: string) => {
-              await this.actor.update({ img: path });
-            },
-          });
-          fp.browse();
-        });
-      });
     }
 
     // --- Combat tab event handlers ---
@@ -711,7 +634,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
 
     // Set rich HTML tooltips on item icons (description + GM notes)
-    const isGM = context.isGM;
+    const isGM = game.user?.isGM ?? false;
     this.element.querySelectorAll<HTMLElement>("[data-item-tooltip]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId) as RqgItem | undefined;
@@ -1219,64 +1142,98 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     const itemId = itemContainer.dataset["itemId"];
-    if (!itemId) {
-      return;
-    }
-
-    const item = this.actor.items.get(itemId);
+    const item = itemId ? this.actor.items.get(itemId) : undefined;
     // If no item or no image, keep the default grab SVG.
-    if (!item || !item.img) {
+    if (!item?.img || !event.dataTransfer) {
       return;
     }
 
-    const dataTransfer = event.dataTransfer;
-    if (!dataTransfer) {
-      return;
-    }
+    // Suppress sheet-level glow for same-actor reorders; clear when the drag operation ends.
+    this._isSameActorDrag = true;
 
-    // Use a fixed-size preview so large source art does not produce huge drag ghosts.
     const iconElement = itemContainer.querySelector<HTMLImageElement>("img[data-item-id], img");
     const imgSrc = iconElement?.currentSrc || iconElement?.src || item.img;
-    const resolvedSrc = /^(https?:)?\/\//.test(imgSrc) ? imgSrc : foundry.utils.getRoute(imgSrc);
+    this._activeDragPreview = this._buildDragPreview(imgSrc);
+    event.dataTransfer.setDragImage(this._activeDragPreview, 18, 18);
+  }
 
+  protected _onDragEnd(_event: DragEvent): void {
+    this._resetDragVisualState();
+  }
+
+  /** Creates a small fixed-position image used as the drag ghost. */
+  private _buildDragPreview(imgSrc: string): HTMLImageElement {
     this._activeDragPreview?.remove();
+    const resolvedSrc = /^(https?:)?\/\//.test(imgSrc) ? imgSrc : foundry.utils.getRoute(imgSrc);
     const preview = document.createElement("img");
     preview.src = resolvedSrc;
-    preview.width = 36;
-    preview.height = 36;
-    preview.style.position = "fixed";
-    preview.style.top = "-1000px";
-    preview.style.left = "-1000px";
-    preview.style.width = "36px";
-    preview.style.height = "36px";
-    preview.style.objectFit = "contain";
-    preview.style.pointerEvents = "none";
-
+    Object.assign(preview.style, {
+      position: "fixed",
+      top: "-1000px",
+      left: "-1000px",
+      width: "36px",
+      height: "36px",
+      objectFit: "contain",
+      pointerEvents: "none",
+    });
     document.body.append(preview);
-    this._activeDragPreview = preview;
-    dataTransfer.setDragImage(preview, 18, 18);
+    return preview;
   }
 
   /**
-   * An event that occurs when a drag workflow enters a drop target.
-   * @param event - The originating drag event.
-   */
-  protected _onDragEnter(event: DragEvent): void {
-    onDragEnter(event);
-  }
-
-  /**
-   * An event that occurs when a drag workflow leaves a drop target.
-   * @param event - The originating drag event.
+   * Fired when a drag leaves a drop target. Only used to clean up when the cursor
+   * exits the sheet entirely — dropzone tracking while inside is handled by _onDragOver.
    */
   protected _onDragLeave(event: DragEvent): void {
-    onDragLeave(event);
+    // Use .sheet-content bounds: the header and nav sidebar are inside this.element
+    // but are not valid drop areas, so dragging into them should clear indicators.
+    const dropArea = this.element.querySelector<HTMLElement>(".sheet-content") ?? this.element;
+    const rect = dropArea.getBoundingClientRect();
+    const leftSheet =
+      event.clientX < rect.left ||
+      event.clientX > rect.right ||
+      event.clientY < rect.top ||
+      event.clientY > rect.bottom;
+
+    if (leftSheet) {
+      this._clearDropIndicators();
+      this._clearDragState();
+    }
+  }
+
+  /** Tracks the currently highlighted focused dropzone and controls the sheet-level glow. */
+  private _setActiveDropzone(dropzone: HTMLElement | null): void {
+    if (this._activeDropzone !== dropzone) {
+      this._activeDropzone?.classList.remove("drag-hover");
+      this._activeDropzone = dropzone;
+      dropzone?.classList.add("drag-hover");
+    }
+    // Sheet-level glow is suppressed for same-actor reorders and when a focused dropzone is active.
+    this.element.classList.toggle("drag-hover-sheet", !dropzone && !this._isSameActorDrag);
+  }
+
+  /** Clears all transient drag visual state and the active drag preview. */
+  private _clearDragState(): void {
+    this._setActiveDropzone(null);
+    this.element.classList.remove("drag-hover-sheet");
+    this._activeDragPreview?.remove();
+    this._activeDragPreview = null;
+  }
+
+  /** Resets all drag transient state; safe to call from drop and dragend. */
+  private _resetDragVisualState(): void {
+    this._clearDropIndicators();
+    this._isSameActorDrag = false;
+    this._clearDragState();
   }
 
   protected override _onDragOver(event: DragEvent): void {
     super._onDragOver(event);
 
     const eventTarget = getEventTargetElement(event);
+    const dropzone = eventTarget?.closest<HTMLElement>("[data-dropzone]") ?? null;
+    this._setActiveDropzone(dropzone);
+
     const target =
       eventTarget?.closest<HTMLElement>(".location-row[data-item-id]") ??
       eventTarget?.closest<HTMLElement>(".contextmenu.item[data-item-id]");
@@ -1300,7 +1257,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const skillRow = target.closest(".skill-row");
     const runeRow = target.closest(".rune-card, .rune");
     if (skillRow || runeRow) {
-      event.dataTransfer!.dropEffect = "none";
+      // Same-actor drags cannot reorder these rows, but external/sidebar drops are allowed.
+      event.dataTransfer!.dropEffect = this._isSameActorDrag ? "none" : "copy";
       return;
     }
 
@@ -1535,12 +1493,35 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       return null;
     }
 
-    const sourceActor = item.parent as RqgActor | null;
-    const isActorOwnedItem = !!item.id && this.actor.items.has(item.id);
-    const sameActorDrop = sourceActor?.uuid === this.actor.uuid || isActorOwnedItem;
+    const dragData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData | null;
+    const droppedItem =
+      dragData?.type === "Item"
+        ? ((await Item.implementation.fromDropData(dragData as object)) as RqgItem | null)
+        : null;
+    const resolvedItem = droppedItem ?? item;
 
-    // Same actor or sidebar/compendium drop — sort within same actor
-    if (!sourceActor || sameActorDrop) {
+    const dragActorId =
+      dragData && hasOwnProperty(dragData, "actorId") ? dragData.actorId : undefined;
+    const dragActorUuid =
+      dragData && hasOwnProperty(dragData, "actorUuid") ? dragData.actorUuid : undefined;
+
+    let sourceActor = resolvedItem.parent as RqgActor | null;
+    if (!sourceActor && typeof dragActorId === "string") {
+      sourceActor = (game.actors?.get(dragActorId) as unknown as RqgActor | undefined) ?? null;
+    }
+    if (!sourceActor && typeof dragActorUuid === "string") {
+      const sourceActorByUuid = await fromUuid(dragActorUuid);
+      sourceActor =
+        sourceActorByUuid instanceof Actor ? (sourceActorByUuid as unknown as RqgActor) : null;
+    }
+
+    const sameActorDrop = sourceActor?.uuid === this.actor.uuid;
+    const dropPlacement = this._captureDropPlacement(event);
+
+    // Same actor drop — sort/reorder within this actor.
+    if (sameActorDrop) {
       // Try to determine drag context for position-aware sorting
       const eventTarget = getEventTargetElement(event);
       const dropCell =
@@ -1553,7 +1534,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           ? (this.actor.items.get(targetItemId) as RqgItem | undefined)
           : undefined;
 
-        if (targetItem && targetItem.id !== item.id) {
+        if (targetItem && targetItem.id !== resolvedItem.id) {
           const dropAction = this._getSameActorDropAction(event, dropCell, targetItem);
           const targetLocationName = this._getLocationDropTargetName(
             dropCell,
@@ -1562,9 +1543,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           );
           if (sameActorDrop && targetLocationName !== undefined) {
             const currentLocation =
-              isDocumentSubType<PhysicalItem>(item, physicalItemTypes) &&
-              !this._isNaturalWeapon(item)
-                ? (item.system.location?.trim() ?? "")
+              isDocumentSubType<PhysicalItem>(resolvedItem, physicalItemTypes) &&
+              !this._isNaturalWeapon(resolvedItem)
+                ? (resolvedItem.system.location?.trim() ?? "")
                 : undefined;
 
             const shouldMoveLocation =
@@ -1573,7 +1554,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
             if (shouldMoveLocation) {
               const droppedItem = await this._dropPhysicalItemIntoLocation(
-                item,
+                resolvedItem,
                 targetLocationName,
               );
               if (droppedItem) {
@@ -1582,28 +1563,44 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
             }
           }
 
-          await item.sortRelative({
+          await resolvedItem.sortRelative({
             target: targetItem,
-            siblings: this.actor.items.contents as RqgItem[],
+            siblings: this.actor.items.contents.filter(
+              (i) => i.id !== resolvedItem.id,
+            ) as RqgItem[],
             sortBefore: dropAction === "before",
           });
-          return item;
+          return resolvedItem;
         }
       }
 
       // Default: let Foundry handle it (uses item sort order)
-      return super._onDropItem(event, item);
+      return super._onDropItem(event, resolvedItem);
+    }
+
+    // Sidebar/world/compendium item drops should first create/copy into this actor.
+    if (!sourceActor) {
+      const createdItems = await this.actor.createEmbeddedDocuments("Item", [
+        resolvedItem.toObject(),
+      ]);
+      const createdItem = createdItems[0] as RqgItem | undefined;
+      if (!createdItem) {
+        return null;
+      }
+
+      await this._applyDropPosition(createdItem, dropPlacement);
+      return createdItem;
     }
 
     // Cross-actor drop
-    const itemData = item.toObject();
+    const itemData = resolvedItem.toObject();
 
-    if (isDocumentSubType<OccupationItem>(item, ItemTypeEnum.Occupation)) {
-      if (!hasRqid(item)) {
+    if (isDocumentSubType<OccupationItem>(resolvedItem, ItemTypeEnum.Occupation)) {
+      if (!hasRqid(resolvedItem)) {
         return null;
       }
-      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", item);
-      return item;
+      await updateRqidLink(this.actor, "background.currentOccupationRqidLink", resolvedItem);
+      return resolvedItem;
     }
 
     if (
@@ -1611,18 +1608,128 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       isDocumentSubType<GearItem>(itemData as any, ItemTypeEnum.Gear) ||
       isDocumentSubType<WeaponItem>(itemData as any, ItemTypeEnum.Weapon)
     ) {
-      const success = await this.confirmTransferPhysicalItem(itemData, sourceActor);
-      return success ? item : null;
+      const transferResult = await this.confirmTransferPhysicalItem(itemData, sourceActor);
+      if (transferResult.kind === "cancelled") {
+        return null; // cancelled
+      }
+      if (transferResult.kind === "failed") {
+        return null;
+      }
+      if (transferResult.kind === "created") {
+        await this._applyDropPosition(transferResult.item, dropPlacement);
+        return transferResult.item;
+      }
+      return resolvedItem;
     }
 
     const success = await this.confirmCopyIntangibleItem(itemData, sourceActor);
-    return success ? item : null;
+    return success ? resolvedItem : null;
   }
 
+  private _captureDropPlacement(event: DragEvent): {
+    targetItemId: string;
+    dropAction: "before" | "after" | "into";
+    targetLocationName: string | undefined;
+  } | null {
+    const eventTarget = getEventTargetElement(event);
+    const dropCell =
+      eventTarget?.closest<HTMLElement>(".location-row[data-item-id]") ??
+      eventTarget?.closest<HTMLElement>(".contextmenu.item[data-item-id]");
+
+    if (!dropCell) {
+      return null;
+    }
+
+    const targetItemId = dropCell.dataset["itemId"];
+    const targetItem = targetItemId
+      ? (this.actor.items.get(targetItemId) as RqgItem | undefined)
+      : undefined;
+
+    if (!targetItem || !targetItem.id) {
+      return null;
+    }
+
+    if (
+      !isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) ||
+      this._isNaturalWeapon(targetItem)
+    ) {
+      return null;
+    }
+
+    const dropAction = this._getSameActorDropAction(event, dropCell, targetItem);
+    const targetLocationName = this._getLocationDropTargetName(dropCell, dropAction, targetItem);
+
+    return {
+      targetItemId: targetItem.id,
+      dropAction,
+      targetLocationName,
+    };
+  }
+
+  /**
+   * After an item has been created/transferred onto this actor, sort it relative to
+   * the row the user dropped onto and optionally move it into the correct location.
+   */
+  private async _applyDropPosition(
+    createdItem: RqgItem,
+    placement: {
+      targetItemId: string;
+      dropAction: "before" | "after" | "into";
+      targetLocationName: string | undefined;
+    } | null,
+  ): Promise<void> {
+    if (!placement) {
+      return;
+    }
+
+    if (
+      !isDocumentSubType<PhysicalItem>(createdItem, physicalItemTypes) ||
+      this._isNaturalWeapon(createdItem)
+    ) {
+      return;
+    }
+
+    const targetItem = this.actor.items.get(placement.targetItemId) as RqgItem | undefined;
+
+    if (!targetItem || targetItem.id === createdItem.id) {
+      return;
+    }
+
+    if (
+      !isDocumentSubType<PhysicalItem>(targetItem, physicalItemTypes) ||
+      this._isNaturalWeapon(targetItem)
+    ) {
+      return;
+    }
+
+    if (placement.targetLocationName !== undefined) {
+      await this._dropPhysicalItemIntoLocation(createdItem, placement.targetLocationName);
+    }
+
+    await (createdItem as RqgItem).sortRelative({
+      target: targetItem as RqgItem,
+      siblings: this.actor.items.contents.filter((i) => i.id !== createdItem.id) as RqgItem[],
+      sortBefore: placement.dropAction === "before",
+    });
+  }
+
+  /**
+   * Opens confirmation dialog and transfers the physical item.
+   */
   private async confirmTransferPhysicalItem(
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
-  ): Promise<boolean> {
+  ): Promise<PhysicalTransferResult> {
+    if ((incomingItemDataSource.system as any).quantity < 1) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NothingToGiveWarn", {
+          actorName: sourceActor.name ?? "",
+          itemName: incomingItemDataSource.name,
+        }),
+      );
+      return { kind: "cancelled" };
+    }
+
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
       sourceActor: sourceActor,
@@ -1640,7 +1747,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       targetActor: this.actor.name,
     });
 
-    const result = await foundry.applications.api.DialogV2.confirm({
+    let transferResult: Exclude<PhysicalTransferResult, { kind: "cancelled" }> = {
+      kind: "failed",
+    };
+
+    const confirmed = await foundry.applications.api.DialogV2.confirm({
       window: { title },
       content,
       yes: {
@@ -1648,12 +1759,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
         icon: "fas fa-check",
         default: true,
-        callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> =>
-          this.submitConfirmTransferPhysicalItem(
-            dialog.element,
+        callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> => {
+          const formData = new FormData(dialog.element.querySelector("form") ?? undefined);
+          const data = Object.fromEntries(formData.entries());
+          const quantityToTransfer = data["numtotransfer"] ? Number(data["numtotransfer"]) : 1;
+          transferResult = await this.transferPhysicalItem(
             incomingItemDataSource,
+            quantityToTransfer,
             sourceActor,
-          ),
+          );
+          return true;
+        },
       },
       no: {
         action: "cancel",
@@ -1662,38 +1778,31 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         callback: () => false,
       },
     });
-    return Boolean(result);
+
+    return confirmed ? transferResult : { kind: "cancelled" };
   }
 
-  private async submitConfirmTransferPhysicalItem(
-    html: HTMLElement,
-    incomingItemDataSource: Item.Implementation["_source"],
-    sourceActor: RqgActor,
-  ): Promise<boolean> {
-    const formData = new FormData(html.querySelector("form") ?? undefined);
-    const data = Object.fromEntries(formData.entries());
-    const quantityToTransfer: number = data["numtotransfer"] ? Number(data["numtotransfer"]) : 1;
-    return this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
-  }
-
+  /**
+   * Performs the actual quantity accounting and document CRUD for a physical item transfer.
+   */
   private async transferPhysicalItem(
     incomingItemDataSource: Item.Implementation["_source"],
     quantityToTransfer: number,
     sourceActor: RqgActor,
-  ): Promise<boolean> {
-    if (!incomingItemDataSource || !incomingItemDataSource._id) {
+  ): Promise<Exclude<PhysicalTransferResult, { kind: "cancelled" }>> {
+    if (!incomingItemDataSource?._id) {
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
-      return false;
+      return { kind: "failed" };
     }
     if (!hasOwnProperty(incomingItemDataSource.system, "quantity")) {
       ui.notifications?.error(
         localize("RQG.Actor.Notification.IncomingItemDataSourceNotPhysicalItemError"),
       );
-      return false;
+      return { kind: "failed" };
     }
     if (quantityToTransfer < 1) {
       ui.notifications?.error(localize("RQG.Actor.Notification.CantTransferLessThanOneItemError"));
-      return false;
+      return { kind: "failed" };
     }
     if (quantityToTransfer > (incomingItemDataSource.system as any).quantity) {
       ui.notifications?.error(
@@ -1702,15 +1811,30 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           sourceActorName: sourceActor.name,
         }),
       );
-      return false;
+      return { kind: "failed" };
     }
 
-    const existingItem = this.actor.items.find(
-      (i) => i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
-    ) as RqgItem | undefined;
+    const canStack =
+      hasOwnProperty(incomingItemDataSource.system, "physicalItemType") &&
+      incomingItemDataSource.system.physicalItemType !== "unique";
+    const existingItem = canStack
+      ? (this.actor.items.find(
+          (i) => i.name === incomingItemDataSource.name && i.type === incomingItemDataSource.type,
+        ) as RqgItem | undefined)
+      : undefined;
 
     const newSourceQty =
       Number((incomingItemDataSource.system as any).quantity) - quantityToTransfer;
+
+    const adjustSource = async (): Promise<void> => {
+      if (newSourceQty > 0) {
+        await sourceActor.updateEmbeddedDocuments("Item", [
+          { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
+        ]);
+      } else {
+        await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id as string]);
+      }
+    };
 
     if (existingItem) {
       assertDocumentSubType<PhysicalItem>(
@@ -1719,36 +1843,22 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         "Existing item found when transferring physical item is not a PhysicalItem",
       );
       const newTargetQty = quantityToTransfer + Number(existingItem.system.quantity);
-      const targetUpdate = await this.actor.updateEmbeddedDocuments("Item", [
+      await this.actor.updateEmbeddedDocuments("Item", [
         { _id: existingItem.id, system: { quantity: newTargetQty } },
       ]);
-      if (targetUpdate) {
-        if (newSourceQty > 0) {
-          await sourceActor.updateEmbeddedDocuments("Item", [
-            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
-          ]);
-        } else {
-          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
-        }
-        return true;
-      }
-    } else {
-      (incomingItemDataSource.system as any).quantity = quantityToTransfer;
-      const targetCreate = await this.actor.createEmbeddedDocuments("Item", [
-        incomingItemDataSource,
-      ]);
-      if (targetCreate) {
-        if (newSourceQty > 0) {
-          await sourceActor.updateEmbeddedDocuments("Item", [
-            { _id: incomingItemDataSource._id, system: { quantity: newSourceQty } },
-          ]);
-        } else {
-          await sourceActor.deleteEmbeddedDocuments("Item", [incomingItemDataSource._id]);
-        }
-        return true;
-      }
+      await adjustSource();
+      return { kind: "merged" };
     }
-    return false;
+
+    (incomingItemDataSource.system as any).quantity = quantityToTransfer;
+    const created = await this.actor.createEmbeddedDocuments("Item", [incomingItemDataSource]);
+
+    if (created.length < 1) {
+      return { kind: "failed" };
+    }
+
+    await adjustSource();
+    return { kind: "created", item: created[0] as RqgItem };
   }
 
   private async confirmCopyIntangibleItem(
@@ -1848,7 +1958,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    */
   protected override async _onDrop(event: DragEvent): Promise<void> {
     event.preventDefault();
-    this.render(); // Rerender to clear any drag-hover classes
+    this._resetDragVisualState();
 
     const eventTarget = getEventTargetElement(event);
     if (eventTarget?.closest<HTMLElement>("[data-dropzone]")) {

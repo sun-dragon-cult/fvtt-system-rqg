@@ -172,7 +172,6 @@ describe("getMainCultInfo", () => {
 
     expect(result.name).toBe("Main Cult");
     expect(result.id).toBe("cult-main");
-    expect(result.hasMultipleCults).toBe(true);
     expect(result.descriptionRqid).toBe("je..main-cult");
     expect(result.rank).toContain("RQG.Actor.RuneMagic.CultRank.initiate");
   });

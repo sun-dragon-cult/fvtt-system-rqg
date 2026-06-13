@@ -34,7 +34,6 @@ export interface MainCult {
   id: string;
   rank: string;
   descriptionRqid: string;
-  hasMultipleCults: boolean;
 }
 
 /**

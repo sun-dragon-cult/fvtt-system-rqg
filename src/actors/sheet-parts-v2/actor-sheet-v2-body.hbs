@@ -9,7 +9,7 @@
   {{#if showUiSection.passions}}{{> actorSheetV2Passions}}{{/if}}
   {{> actorSheetV2Background}}
   {{#if showUiSection.activeEffects}}
-    <div class="tab activeeffectstesting" data-group="primary" data-tab="activeeffectstesting">
+    <div class="tab activeeffectstesting{{#if (eq activeTabs.primary "activeeffectstesting")}} active{{/if}}" data-group="primary" data-tab="activeeffectstesting">
       {{> actorActiveEffectsTab }}
     </div>
   {{/if}}

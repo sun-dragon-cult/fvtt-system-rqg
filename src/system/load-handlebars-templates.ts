@@ -4,9 +4,8 @@
 export const templatePaths = {
   // Actor sheets
   rqgActorSheet: "systems/rqg/actors/rqg-actor-sheet.hbs",
-  actorSheetV2Header: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-header.hbs",
   actorSheetV2Nav: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-nav.hbs",
-  actorSheetV2Body: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-body.hbs",
+  actorSheetV2Content: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-content.hbs",
 
   // Item Sheets
   itemArmorSheet: "systems/rqg/items/armor-item/armor-sheet.hbs",
@@ -163,6 +162,8 @@ export const loadHandlebarsTemplates = async function () {
     actorSpiritCombat: "systems/rqg/actors/sheet-parts/combat-tab/spirit-combat.hbs",
 
     // V2 Actor Sheet tab partials
+    actorSheetV2Header: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-header.hbs",
+    actorSheetV2Body: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-body.hbs",
     actorSheetV2Combat: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-combat.hbs",
     actorSheetV2Runes: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-runes.hbs",
     actorSheetV2Passions: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-passions.hbs",

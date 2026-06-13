@@ -1,11 +1,10 @@
 <form>
-  <h1>
+  <h3>
     {{#if adapter.incomingItemDataSource.img}}
       <img
         class="item"
         src="{{adapter.incomingItemDataSource.img}}"
         data-tooltip="{{adapter.incomingItemDataSource.name}}"
-        style="padding-right: 10px;"
       />
     {{/if}}
     {{localize
@@ -13,7 +12,7 @@
       itemName=adapter.incomingItemDataSource.name
       targetActor=adapter.targetActor.name
     }}
-  </h1>
+  </h3>
   <div>
 
     {{#if adapter.showQuantity}}

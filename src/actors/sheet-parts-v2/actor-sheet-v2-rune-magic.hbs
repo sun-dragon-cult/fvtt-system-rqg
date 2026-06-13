@@ -1,4 +1,4 @@
-<section class="tab rune-magic-tab-v2" data-group="primary" data-tab="runemagic">
+<section class="tab rune-magic-tab-v2{{#if (eq @root.activeTabs.primary "runemagic")}} active{{/if}}" data-group="primary" data-tab="runemagic">
 
   {{!-- Spells not yet assigned to a cult --}}
   {{#each embeddedItems.runeMagic}}
@@ -14,34 +14,24 @@
     {{/unless}}
   {{/each}}
 
-  {{!-- Cult tab nav (only shown when multiple cults) --}}
-  {{#if mainCult.hasMultipleCults}}
-    <nav class="cult-tabs tabs" data-group="cult-view">
-      {{#each embeddedItems.cult}}
-        <h3 class="item cult contextmenu" data-item-id="{{id}}" data-group="cult-view" data-tab="cult-{{id}}">
-          {{system.deity}}
-          {{#each system.runeRqidLinks}}
-            <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
-          {{/each}}
-        </h3>
-      {{/each}}
-    </nav>
-  {{/if}}
+  {{!-- Cult tab nav (always shown, including single-cult actors) --}}
+  <nav class="cult-tabs tabs" data-group="cult-view">
+    {{#each embeddedItems.cult}}
+      <h3 class="item cult contextmenu{{#if (eq @root.activeTabs.cultView (concat "cult-" id))}} active{{/if}}" data-action="tab" data-item-id="{{id}}" data-group="cult-view" data-tab="cult-{{id}}">
+        {{system.deity}}
+        {{#each system.runeRqidLinks}}
+          <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+        {{/each}}
+      </h3>
+    {{/each}}
+  </nav>
 
   {{!-- Per-cult sections --}}
   <div class="cult-body">
   {{#each embeddedItems.cult}}
-    <div class="cult-section {{#if @root.mainCult.hasMultipleCults}}tab{{/if}}" data-group="cult-view" data-tab="cult-{{id}}">
+    <div class="cult-section tab{{#if (eq @root.activeTabs.cultView (concat "cult-" id))}} active{{/if}}" data-group="cult-view" data-tab="cult-{{id}}">
       <div class="cult-header cult contextmenu" data-item-id="{{id}}"
            {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-        {{#unless @root.mainCult.hasMultipleCults}}
-          <h2>
-            {{system.deity}}
-            {{#each system.runeRqidLinks}}
-              <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
-            {{/each}}
-          </h2>
-        {{/unless}}
         <div class="cult-meta">
           <div class="cult-meta-row">
           {{#if hasAccessToRuneMagic}}

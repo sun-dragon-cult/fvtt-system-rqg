@@ -1,4 +1,4 @@
-<section class="tab sorcery-tab-v2" data-group="primary" data-tab="sorcery">
+<section class="tab sorcery-tab-v2{{#if (eq @root.activeTabs.primary "sorcery")}} active{{/if}}" data-group="primary" data-tab="sorcery">
   <div class="int-capacity-row small-size">
     {{#if (lt freeInt 0)}}
       <span class="warning"

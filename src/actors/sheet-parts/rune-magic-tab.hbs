@@ -9,7 +9,7 @@
   {{/unless}}
 {{/each}}
 
-{{#if mainCult.hasMultipleCults}}
+{{#if (lookup embeddedItems.cult 1)}}
   <nav class="cult-tabs tabs" data-group="cult-view">
     {{#each embeddedItems.cult}}
       <h3 class="item cult-tab contextmenu" data-item-id="{{id}}" data-group="cult-view" data-tab="cult-{{id}}">
@@ -23,7 +23,7 @@
 {{/if}}
 
 <div class="item-list">
-  {{#if mainCult.hasMultipleCults}}
+  {{#if (lookup embeddedItems.cult 1)}}
     <section class="cult-body">
       {{#each embeddedItems.cult}}
         <div class="tab" data-group="cult-view" data-tab="cult-{{id}}">

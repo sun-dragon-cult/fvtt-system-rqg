@@ -25,12 +25,14 @@ export interface RqgActorSheetV2Context {
   isGM: boolean;
   isEditable: boolean;
   isEmbedded: boolean;
+  /** Active tab ids rendered into templates for native data-action=tab handling. */
+  activeTabs: {
+    primary: string;
+    gearView: string;
+    cultView?: string;
+  };
   system: CharacterActor["system"];
   effects: unknown;
-  /** Tab data prepared by _prepareTabs, used by tab-navigation template. */
-  tabs?: Record<string, foundry.applications.api.ApplicationV2.Tab>;
-  /** Active tab for the current part, set by _preparePartContext. */
-  tab?: foundry.applications.api.ApplicationV2.Tab;
 
   /** Embedded items organized by type (from DataPrep.organizeEmbeddedItems). */
   embeddedItems: {

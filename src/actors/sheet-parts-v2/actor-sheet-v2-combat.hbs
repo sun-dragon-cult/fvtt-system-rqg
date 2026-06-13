@@ -1,4 +1,4 @@
-<section class="tab combat-tab" data-group="primary" data-tab="combat">
+<section class="tab combat-tab{{#if (eq @root.activeTabs.primary "combat")}} active{{/if}}" data-group="primary" data-tab="combat">
   <div class="combat-tab-row">
   {{!-- Health Section --}}
   {{#if showUiSection.health}}

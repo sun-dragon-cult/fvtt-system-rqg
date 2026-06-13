@@ -1,17 +1,17 @@
-<div class="tab gear" data-group="primary" data-tab="gear">
+<div class="tab gear{{#if (eq @root.activeTabs.primary "gear")}} active{{/if}}" data-group="primary" data-tab="gear">
   <nav class="gear-tabs tabs" data-group="gear-view">
-    <h3 class="item" data-tooltip="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type">
-      <img src="{{gearViewIcon 'byItemType'}}"> {{localize "RQG.Actor.Gear.ViewByItemType"}}
+    <h3 class="item{{#if (eq @root.activeTabs.gearView "by-item-type")}} active{{/if}}" data-action="tab" data-tooltip="{{localize "RQG.Actor.Gear.ViewByItemType"}}" data-group="gear-view" data-tab="by-item-type">
+      {{localize "RQG.Actor.Gear.ViewByItemType"}} <img src="{{gearViewIcon 'byItemType'}}">
     </h3>
-    <h3 class="item" data-tooltip="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location">
-      <img src="{{gearViewIcon 'byLocation'}}"> {{localize "RQG.Actor.Gear.ViewByLocation"}}
+    <h3 class="item{{#if (eq @root.activeTabs.gearView "by-location")}} active{{/if}}" data-action="tab" data-tooltip="{{localize "RQG.Actor.Gear.ViewByLocation"}}" data-group="gear-view" data-tab="by-location">
+      {{localize "RQG.Actor.Gear.ViewByLocation"}} <img src="{{gearViewIcon 'byLocation'}}">
     </h3>
   </nav>
 
   {{#if itemLoopMessage}}<h2 class="warning">{{itemLoopMessage}}</h2>{{/if}}
 
   <section class="gear-body">
-    <div class="tab by-location" data-group="gear-view" data-tab="by-location">
+    <div class="tab by-location{{#if (eq @root.activeTabs.gearView "by-location")}} active{{/if}}" data-group="gear-view" data-tab="by-location">
       <article>
         <h2>{{localize "RQG.Actor.Gear.Gear"}}</h2>
         <div class="grid location-row">
@@ -29,7 +29,7 @@
       </article>
     </div>
 
-    <div class="tab by-item-type" data-group="gear-view" data-tab="by-item-type">
+    <div class="tab by-item-type{{#if (eq @root.activeTabs.gearView "by-item-type")}} active{{/if}}" data-group="gear-view" data-tab="by-item-type">
       <div class="gear-wrapper flex-row">
         {{#if gearView.hasUnique}}
           <article class="flex-1">

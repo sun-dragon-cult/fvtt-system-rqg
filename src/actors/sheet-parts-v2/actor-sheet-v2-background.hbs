@@ -1,4 +1,4 @@
-<section class="tab background-tab-v2" data-group="primary" data-tab="background">
+<section class="tab background-tab-v2{{#if (eq @root.activeTabs.primary "background")}} active{{/if}}" data-group="primary" data-tab="background">
 
   <div class="background-fieldsets">
 
@@ -254,7 +254,9 @@
         <legend>{{localize "RQG.Actor.Background.Origin"}}</legend>
         <div class="key-value-grid">
           <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-          <div class="rqid-dropzone-wrap">
+          <div class="rqid-dropzone-wrap"
+            data-dropzone="background.homelandJournalRqidLink"
+            data-dropzone-document-names="JournalEntry, JournalEntryPage">
             {{#edit-mode system.editMode "all"}}
               {{> rqidLinkDropzone
                 rqidLink=system.background.homelandJournalRqidLink
@@ -282,7 +284,9 @@
           </div>
 
           <label>{{localize "RQG.Actor.Background.Region"}}</label>
-          <div class="rqid-dropzone-wrap">
+          <div class="rqid-dropzone-wrap"
+            data-dropzone="background.regionJournalRqidLink"
+            data-dropzone-document-names="JournalEntry, JournalEntryPage">
             {{#edit-mode system.editMode "all"}}
               {{> rqidLinkDropzone
                 rqidLink=system.background.regionJournalRqidLink
@@ -329,7 +333,9 @@
           {{/edit-mode}}
 
           <label>{{localize "RQG.Actor.Background.Tribes"}}</label>
-          <div class="rqid-dropzone-wrap">
+          <div class="rqid-dropzone-wrap"
+            data-dropzone="background.tribeJournalRqidLinks"
+            data-dropzone-document-names="JournalEntry, JournalEntryPage">
             {{#edit-mode system.editMode "all"}}
               {{> rqidLinkArrayDropzone
                 rqidLinkArray=system.background.tribeJournalRqidLinks
@@ -361,7 +367,9 @@
           </div>
 
           <label>{{localize "RQG.Actor.Background.Clans"}}</label>
-          <div class="rqid-dropzone-wrap">
+          <div class="rqid-dropzone-wrap"
+            data-dropzone="background.clanJournalRqidLinks"
+            data-dropzone-document-names="JournalEntry, JournalEntryPage">
             {{#edit-mode system.editMode "all"}}
               {{> rqidLinkArrayDropzone
                 rqidLinkArray=system.background.clanJournalRqidLinks

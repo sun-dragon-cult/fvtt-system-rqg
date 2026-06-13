@@ -3,7 +3,7 @@
 
     <div class="profile">
       <img class="profile-img {{#if (eq img 'icons/svg/mystery-man.svg')}}unset{{/if}}"
-           src="{{img}}" data-action="editImage" data-tooltip="{{name}}">
+          src="{{img}}" data-action="editImage" data-edit="img" data-tooltip="{{name}}">
     </div>
 
     <div class="name-runes-cults">
@@ -51,7 +51,7 @@
             <div class="cult contextmenu item" data-item-id="{{mainCult.id}}"
                  {{#if mainCult.descriptionRqid}}data-rqid-link="{{mainCult.descriptionRqid}}"{{/if}}>
               {{mainCult.name}}
-              {{#if mainCult.hasMultipleCults}}
+              {{#if (lookup embeddedItems.cult 1)}}
                 <i class="fa fa-plus-circle small-size" aria-hidden="true"
                    data-tooltip="{{localize 'RQG.UI.MultipleCults'}}"></i>
               {{/if}}

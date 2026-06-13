@@ -127,6 +127,37 @@
       }
     }
 
+    // Unified visual feedback for generic drops anywhere on the actor sheet.
+    // Apply to both header and content so the indicator remains visible above and below
+    // the AppV2 overlap where window-content extends under the header.
+    @keyframes rqg-sheet-drop-pulse {
+      0%,
+      100% {
+        box-shadow:
+          inset 0 0 0 4px var(--rqg-drop-highlight-color),
+          inset 0 0 28px 10px color-mix(in srgb, var(--rqg-drop-highlight-color) 55%, transparent);
+      }
+
+      50% {
+        box-shadow:
+          inset 0 0 0 6px color-mix(in srgb, var(--rqg-drop-highlight-color) 90%, white),
+          inset 0 0 44px 18px color-mix(in srgb, var(--rqg-drop-highlight-color) 70%, transparent);
+      }
+    }
+
+    &.drag-hover-sheet > .window-header,
+    &.drag-hover-sheet > .window-content {
+      box-shadow:
+        inset 0 0 0 4px var(--rqg-drop-highlight-color),
+        inset 0 0 28px 10px color-mix(in srgb, var(--rqg-drop-highlight-color) 55%, transparent);
+      background-image: linear-gradient(
+        color-mix(in srgb, var(--rqg-drop-highlight-color) 12%, transparent),
+        color-mix(in srgb, var(--rqg-drop-highlight-color) 12%, transparent)
+      );
+      background-blend-mode: screen;
+      animation: rqg-sheet-drop-pulse 1.2s ease-in-out infinite;
+    }
+
     // Generic drag handle behavior for all V2 item lists.
     // Hidden by default, positioned outside-left, and revealed on row/cell hover.
     .item-drag-handle {
@@ -158,6 +189,49 @@
         background-color: currentcolor;
         margin-right: 3px;
         pointer-events: none;
+      }
+    }
+
+    nav.cult-tabs,
+    nav.gear-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-bottom: 0;
+      border: none;
+
+      .item {
+        flex: 1;
+        justify-content: center;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 4px 10px;
+        border: 1px solid var(--color-border-dark-secondary, #7b6245);
+        border-radius: 6px 6px 0 0;
+        border-bottom: none;
+        cursor: pointer;
+        background: rgb(139 90 43 / 30%);
+        font-family: var(--font-primary);
+        font-size: 1rem;
+
+        img {
+          height: 16px;
+          width: 16px;
+          border: none;
+          mix-blend-mode: normal;
+        }
+
+        &.active {
+          background: transparent;
+          border-bottom: none;
+          font-weight: bold;
+          margin-bottom: 0;
+        }
+
+        &:hover:not(.active) {
+          background: transparent;
+        }
       }
     }
 
@@ -377,20 +451,12 @@
       position: relative;
       padding: 0;
       display: grid;
-      grid-template:
-        "nav header" min-content "nav main" 1fr
-        / min-content auto;
-      overflow: hidden auto;
-      scrollbar-gutter: stable;
-
-      // Pull content up behind the window header so parchment extends into it
-      margin-top: calc(-1 * var(--rqg-window-header-height));
-      padding-top: var(--rqg-window-header-height);
+      grid-template: "nav content" 1fr / min-content auto;
+      overflow: hidden;
 
       // Parchment as window-content background — offset past the nav so jagged edges show
       background-image: var(--rqg-parchment-url);
       background-repeat: repeat-y;
-      background-attachment: local;
       background-position: top left var(--rqg-nav-width);
       background-size: calc(100% - var(--rqg-nav-width));
 
@@ -401,7 +467,6 @@
 
     // --- Header ---
     .sheet-header {
-      grid-area: header;
       padding: 4px 4%;
       align-items: start;
       height: fit-content;
@@ -627,6 +692,20 @@
     .nav-wrapper {
       grid-area: nav;
       position: relative;
+      min-height: 0;
+      overflow: hidden auto;
+      scrollbar-gutter: stable;
+      // Keep a little breathing room between vertical labels and scrollbar track
+      // without changing the effective nav column width.
+      padding-inline-end: 6px;
+      margin-inline-end: -6px;
+    }
+
+    .sheet-content {
+      grid-area: content;
+      min-height: 0;
+      overflow: auto;
+      scrollbar-gutter: stable;
     }
 
     .navbackground {
@@ -675,13 +754,7 @@
 
     // --- Sheet body ---
     .sheet-body {
-      grid-area: main;
       padding: 8px 4%;
-    }
-
-    .tab-placeholder {
-      padding: 2rem;
-      opacity: 0.7;
     }
 
     // --- Common element styles ---
@@ -1779,56 +1852,6 @@
       // Strip inline colors from enriched journal content so light/dark themes work correctly
       *[style*="color"] {
         color: inherit !important;
-      }
-
-      nav.cult-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0;
-        margin-bottom: 0;
-        border: none;
-
-        .item {
-          flex: 1;
-          justify-content: center;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          padding: 4px 10px;
-          border: 1px solid var(--color-border-dark-secondary, #7b6245);
-          border-radius: 6px 6px 0 0;
-          border-bottom: none;
-          cursor: pointer;
-          background: rgb(139 90 43 / 30%);
-          font-family: var(--font-primary);
-          font-size: 0.9em;
-
-          img.rune {
-            height: 16px;
-            width: 16px;
-            border: none;
-            mix-blend-mode: normal;
-          }
-
-          &:not(.active) img.rune {
-            filter: brightness(0.65) sepia(1) !important; // white SVG → darker warm tan
-          }
-
-          &:hover:not(.active) img.rune {
-            filter: none !important; // match active tab on hover
-          }
-
-          &.active {
-            background: transparent;
-            border-bottom: none;
-            font-weight: bold;
-            margin-bottom: 0;
-          }
-
-          &:hover:not(.active) {
-            background: transparent;
-          }
-        }
       }
 
       .unassigned-rune-magic {
