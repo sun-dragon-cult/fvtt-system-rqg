@@ -18,5 +18,7 @@ jobs:
           node-version: "24"
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
+      - run: pnpm lint
       - run: pnpm build
+      - run: pnpm typecheck
       - run: pnpm test
