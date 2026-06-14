@@ -171,7 +171,9 @@ export class RqgActor extends Actor {
   /**
    * Open an ability roll dialog for reputation   */
   public async reputationRoll(token?: TokenDocument | null): Promise<void> {
-    await new AbilityRollDialogV2(this.createReputationFakeItem(token)).render({ force: true });
+    await new AbilityRollDialogV2(this.createReputationFakeItem(token), token).render({
+      force: true,
+    });
   }
 
   /**

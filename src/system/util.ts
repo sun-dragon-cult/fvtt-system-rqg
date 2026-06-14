@@ -784,7 +784,7 @@ export function getSpeakerFromItem(item: RqgItem | PartialAbilityItem): ChatMess
 
 /**
  * Resolve a human-readable speaker name from speaker data.
- * Falls back from alias to token/actor/user names when needed.
+ * Falls back from alias to token and actor names when needed.
  */
 export function getSpeakerDisplayName(speaker: ChatMessage.SpeakerData | null | undefined): string {
   if (!speaker) {
