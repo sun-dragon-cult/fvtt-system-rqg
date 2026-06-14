@@ -301,7 +301,8 @@ function applyFnToDocumentFromHandlebarsArgs<T extends RqgItem | RqgActor = RqgI
     return "🐛";
   }
 
-  if (!expectedDocumentNames.includes(document?.documentName ?? "")) {
+  const documentName = typeof document?.documentName === "string" ? document.documentName : "";
+  if (!expectedDocumentNames.includes(documentName)) {
     const msg = `Handlebars helper expected ${formatListByUserLanguage(
       expectedDocumentNames,
     )} but got ${document?.documentName} called ${document?.name}`;

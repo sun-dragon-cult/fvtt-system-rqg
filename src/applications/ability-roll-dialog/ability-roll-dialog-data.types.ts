@@ -12,7 +12,7 @@ export type PartialAbilityItem = {
   parent?: RqgActor | null;
   checkExperience?: (result: AbilitySuccessLevelEnum | undefined) => Promise<void>;
   /** Special handling for Reputation rolls */
-  actingToken?: TokenDocument;
+  actingToken?: TokenDocument.Stored | TokenDocument.Implementation;
   uuid?: string;
   ownership?: { default: number }; // TODO should probably ber something like foundry.applications.apps.DocumentOwnershipConfig;
 };
@@ -33,5 +33,7 @@ export type AbilityRollDialogFormData = {
   otherModifierDescription: string;
 
   abilityItemUuid?: string; // hidden field
+  abilityActorUuid?: string; // hidden field
+  tokenUuid?: string; // hidden field
   reputationItemJson?: string; // hidden field - backup for uuid
 };

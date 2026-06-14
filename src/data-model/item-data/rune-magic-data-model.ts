@@ -4,7 +4,8 @@ import { spellSchemaFields } from "../shared/spell-schema-fields";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
-import { RqgError, getSpeakerFromItem, localize, assertDocumentSubType } from "../../system/util";
+import { RqgError, localize, assertDocumentSubType } from "../../system/util";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import type { CultItem } from "./cult-data-model";
@@ -38,18 +39,23 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
   /**
    * Open a dialog for a RuneMagicRoll.
    */
-  async runeMagicRoll(): Promise<void> {
+  async runeMagicRoll(token?: TokenDocument | null): Promise<void> {
     // Dynamic import to avoid circular dependency through RuneMagicRollDialogV2 → rqgItem.ts
     const { RuneMagicRollDialogV2 } =
       await import("../../applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2");
-    await new RuneMagicRollDialogV2(this.parent as unknown as RuneMagicItem).render(true);
+    await new RuneMagicRollDialogV2(this.parent as unknown as RuneMagicItem, token).render({
+      force: true,
+    });
   }
 
   /**
    * Do a runeMagicRoll and possibly draw rune and magic points afterward.
    * Also adds experience to the used rune.
    */
-  async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+  async runeMagicRollImmediate(
+    options: Partial<RuneMagicRollOptions> = {},
+    token?: TokenDocument | null,
+  ): Promise<void> {
     const item = this.parent;
     const actor = item?.parent;
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
@@ -86,13 +92,15 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       return;
     }
 
+    const speaker = getSpeakerCompat({ actor, token });
+
     const runeMagicRoll = await RuneMagicRoll.rollAndShow({
       usedRune: usedRune,
       runeMagicItem: runeMagicItemTyped,
       levelUsed: levelUsedOrDefault,
       magicPointBoost: options.magicPointBoost ?? 0,
       modifiers: options?.modifiers ?? [],
-      speaker: getSpeakerFromItem(item),
+      speaker: speaker,
       rollMode: options?.rollMode,
     });
     if (runeMagicRoll.successLevel == null) {

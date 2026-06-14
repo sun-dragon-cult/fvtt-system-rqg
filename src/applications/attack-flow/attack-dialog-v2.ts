@@ -27,7 +27,6 @@ import {
   proneTargetModifier,
   unawareTargetModifier,
 } from "../../system/penalty-constants";
-import { RqgChatMessage } from "../../chat/rqg-chat-message";
 import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { HitLocationRollOptions } from "../../rolls/hit-location-roll/hit-location-roll.types";
 import { HitLocationRoll } from "../../rolls/hit-location-roll/hit-location-roll";
@@ -36,6 +35,8 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import { hasLinkedSkillReference, resolveLinkedSkill } from "@items/weapon-item/weapon-skill-links";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import Token = foundry.canvas.placeables.Token;
 
 const logger = new RqgLogger("AttackDialogV2");
 
@@ -133,7 +134,10 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       this.close();
       return logger.throw(msg, { weaponItem: this.weaponItem?.id });
     }
-    const attackingTokenOrActorUuid = attackingTokenOrActor.uuid;
+    const attackingTokenOrActorUuid =
+      attackingTokenOrActor instanceof Token
+        ? attackingTokenOrActor.document.uuid
+        : attackingTokenOrActor.uuid;
     if (!attackingTokenOrActorUuid) {
       const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
       this.close();
@@ -186,7 +190,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     const target = game.user?.targets.first();
 
     const damageBonusSourceOptions = AttackDialogV2.getDamageBonusSourceOptions(this.weaponItem);
-    formData.attackingWeaponUuid ??= this.weaponItem.uuid;
+    formData.attackingWeaponUuid ??= this.weaponItem.uuid ?? "";
     formData.attackDamageBonus ??= damageBonusSourceOptions[0]?.value ?? "";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Attack.OtherModifier");
     formData.reduceAmmoQuantity ??= true;
@@ -219,7 +223,11 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       isOutOfAmmo: isOutOfAmmo,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
-      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(attackingTokenOrActor?.uuid),
+      attackingWeaponOptions: AttackDialogV2.getWeaponOptions(
+        attackingTokenOrActor instanceof Token
+          ? (attackingTokenOrActor.document.uuid ?? undefined)
+          : (attackingTokenOrActor?.uuid ?? undefined),
+      ),
       usageTypeOptions: usageTypeOptions,
       augmentOptions: AttackDialogV2.augmentOptions,
       damageBonusSourceOptions: damageBonusSourceOptions,
@@ -494,10 +502,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       abilityName: weaponItem?.name ?? undefined,
       abilityType: weaponItem?.type ?? undefined,
       abilityImg: weaponItem?.img ?? undefined,
-      speaker: RqgChatMessage.getSpeaker({
-        token: tokenDocument,
-        actor: tokenDocument ? undefined : actor,
-      }), // Used to decide who can see the roll in chat
+      speaker: getSpeakerCompat({ token: tokenDocument, actor }), // Used to decide who can see the roll in chat
     };
 
     const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
@@ -510,10 +515,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const hitLocationRollOptions: HitLocationRollOptions = {
       hitLocationNames: [], // hitLocationNames are added in defenceDialog when the target definitely selected
-      speaker: RqgChatMessage.getSpeaker({
-        token: tokenDocument,
-        actor: tokenDocument ? undefined : actor,
-      }),
+      speaker: getSpeakerCompat({ token: tokenDocument, actor }),
     };
 
     const hitLocationFormula =
@@ -571,15 +573,14 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       system: chatSystemData,
       flavor: attackFlavor,
       content: attackChatContent,
-      speaker: ChatMessage.getSpeaker({
-        token: tokenDocument,
-        actor: tokenDocument ? undefined : actor,
-      }),
+      speaker: getSpeakerCompat({ token: tokenDocument, actor }),
     };
 
     activateChatTab();
     const cm = await ChatMessage.create(attackChatMessageOptions as any);
-    cm?.render(true);
+    if (cm && !Array.isArray(cm)) {
+      cm.render(true);
+    }
   }
 
   /**

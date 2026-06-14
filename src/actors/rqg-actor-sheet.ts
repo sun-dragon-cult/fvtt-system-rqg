@@ -161,7 +161,7 @@ export class RqgActorSheet<
   override async _render(force = false, options: Application.RenderOptions<Options> = {}) {
     await super._render(force, options);
     const actorCombatants: Combatant.Implementation[] =
-      game.combat?.getCombatantsByActor(this.actor) ?? [];
+      game.combat?.getCombatantsByActor(this.actor.id ?? "") ?? [];
     actorCombatants?.forEach((c) => (c.apps[this.appId] = this as any));
   }
 
@@ -171,7 +171,7 @@ export class RqgActorSheet<
       // but try to remove the combatant.apps reference.
       // This is is a workaround - can I remove the app reference in a better way?
       const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
-        this.actor,
+        this.actor.id ?? "",
       );
       actorCombatants?.forEach((c) => delete c.apps[this.appId]);
     } else {
@@ -188,7 +188,9 @@ export class RqgActorSheet<
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
-    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
+    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
+      this.actor.id ?? "",
+    );
 
     this.activeInSR = new Set(
       actorCombatants
@@ -327,11 +329,7 @@ export class RqgActorSheet<
       hitLocationMenuOptions(this.actor),
     );
 
-    new RqgContextMenu(
-      htmlElement,
-      ".rune.contextmenu",
-      runeMenuOptions(this.actor, this.token ?? undefined),
-    );
+    new RqgContextMenu(htmlElement, ".rune.contextmenu", runeMenuOptions(this.actor, this.token));
 
     new RqgContextMenu(
       htmlElement,
@@ -349,18 +347,14 @@ export class RqgActorSheet<
 
     new RqgContextMenu(htmlElement, ".rune-magic.contextmenu", runeMagicMenuOptions(this.actor));
 
-    new RqgContextMenu(
-      htmlElement,
-      ".skill.contextmenu",
-      skillMenuOptions(this.actor, this.token ?? undefined),
-    );
+    new RqgContextMenu(htmlElement, ".skill.contextmenu", skillMenuOptions(this.actor, this.token));
 
     new RqgContextMenu(htmlElement, ".gear.contextmenu", gearMenuOptions(this.actor));
 
     new RqgContextMenu(
       htmlElement,
       ".passion.contextmenu",
-      passionMenuOptions(this.actor, this.token ?? undefined),
+      passionMenuOptions(this.actor, this.token),
     );
   }
 
@@ -410,13 +404,13 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await this.actor.characteristicRollImmediate(characteristicName);
+          await this.actor.characteristicRollImmediate(characteristicName, this.token);
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await this.actor.characteristicRoll(characteristicName);
+              await this.actor.characteristicRoll(characteristicName, this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -431,12 +425,12 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await this.actor.reputationRollImmediate();
+          await this.actor.reputationRollImmediate(this.token);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await this.actor.reputationRoll();
+              await this.actor.reputationRoll(this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -458,12 +452,12 @@ export class RqgActorSheet<
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRollImmediate();
+          await item.abilityRollImmediate({}, this.token);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.abilityRoll();
+              await item.abilityRoll(this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -483,16 +477,16 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
-            await runeMagicItem?.runeMagicRoll();
+            await runeMagicItem?.runeMagicRoll(this.token);
           } else {
-            await runeMagicItem?.runeMagicRollImmediate();
+            await runeMagicItem?.runeMagicRollImmediate({}, this.token);
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await runeMagicItem?.runeMagicRoll();
+              await runeMagicItem?.runeMagicRoll(this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -515,16 +509,16 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.system.isVariable && item.system.points > 1) {
-            await item.spiritMagicRoll();
+            await item.spiritMagicRoll(this.token);
           } else {
-            await item.spiritMagicRollImmediate();
+            await item.spiritMagicRollImmediate(undefined, this.token);
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.spiritMagicRoll();
+              await item.spiritMagicRoll(this.token);
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -842,7 +836,7 @@ export class RqgActorSheet<
       );
     }
 
-    const currentCombatants = combat.getCombatantsByActor(this.actor);
+    const currentCombatants = combat.getCombatantsByActor(this.actor.id ?? "");
 
     // Delete combatants that don't match activeInSR
     const combatantIdsToDelete = getCombatantIdsToDelete(currentCombatants, activeInSR);
@@ -1329,7 +1323,7 @@ export class RqgActorSheet<
   }
 
   _openActorWizard() {
-    new ActorWizard(this.actor, {}).render(true);
+    new ActorWizard(this.actor, {}).render({ force: true });
   }
 
   private static async sortItems(actor: RqgActor, itemType: string): Promise<void> {

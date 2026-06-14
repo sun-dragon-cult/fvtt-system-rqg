@@ -19,6 +19,7 @@ export type CharacteristicRollDialogFormData = {
   otherModifierDescription: string;
 
   actorUuid: string; // hidden field
+  tokenUuid: string; // hidden field
   characteristicName: string; // hidden field
   characteristicValue: number; // hidden field
 };

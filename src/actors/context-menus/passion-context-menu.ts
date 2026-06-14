@@ -12,10 +12,11 @@ import { showImproveAbilityDialog } from "../../applications/improve-dialogs/imp
 import { contextMenuRunes } from "./context-menu-runes";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 export const passionMenuOptions = (
   actor: CharacterActor,
-  token: TokenDocument | undefined | null,
+  token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
     label: localize("RQG.Game.RollChat"),
@@ -25,7 +26,7 @@ export const passionMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
-      await item.abilityRoll();
+      await item.abilityRoll(token);
     },
   },
   {
@@ -44,7 +45,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await item.abilityRollImmediate();
+      await item.abilityRollImmediate({}, token);
     },
   },
   {
@@ -87,7 +88,7 @@ export const passionMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
-      const speaker = ChatMessage.getSpeaker({ actor, token });
+      const speaker = getSpeakerCompat({ actor, token });
       void showImproveAbilityDialog(item, speaker);
     },
   },

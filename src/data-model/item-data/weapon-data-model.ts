@@ -147,7 +147,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   async attack(): Promise<void> {
     // Dynamic import to avoid circular dependency through AttackDialogV2 → itemTypes.ts → weapon.ts → rqgItem.ts
     const { AttackDialogV2 } = await import("../../applications/attack-flow/attack-dialog-v2");
-    await new AttackDialogV2(this.parent as unknown as WeaponItem).render(true);
+    await new AttackDialogV2(this.parent as unknown as WeaponItem).render({ force: true });
   }
 
   /**

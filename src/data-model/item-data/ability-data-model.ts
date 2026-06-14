@@ -2,6 +2,7 @@ import { RqgItemDataModel } from "./rqg-item-data-model";
 import { abilitySchemaFields } from "../shared/ability-schema-fields";
 import { RQG_CONFIG, systemId } from "../../system/config";
 import { isDocumentSubType, localize, getSpeakerFromItem } from "../../system/util";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
@@ -25,11 +26,13 @@ export abstract class AbilityDataModel<
   /**
    * Open a dialog for an AbilityRoll.
    */
-  async abilityRoll(): Promise<void> {
+  async abilityRoll(token?: TokenDocument | null): Promise<void> {
     // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
     const { AbilityRollDialogV2 } =
       await import("../../applications/ability-roll-dialog/ability-roll-dialog-v2");
-    await new AbilityRollDialogV2(this.parent as unknown as AbilityItem).render(true);
+    await new AbilityRollDialogV2(this.parent as unknown as AbilityItem, token).render({
+      force: true,
+    });
   }
 
   /**
@@ -37,6 +40,7 @@ export abstract class AbilityDataModel<
    */
   async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
+    token?: TokenDocument | null,
   ): Promise<void> {
     const item = this.parent;
     if (!item?.isEmbedded) {
@@ -47,6 +51,9 @@ export abstract class AbilityDataModel<
 
     const chance: number = Number(this.chance) || 0; // Handle NaN
 
+    const actor = item.actor;
+    const speaker = actor ? getSpeakerCompat({ actor, token }) : getSpeakerFromItem(item);
+
     const abilityRoll = await AbilityRoll.rollAndShow({
       naturalSkill: chance,
       modifiers: options?.modifiers,
@@ -54,7 +61,7 @@ export abstract class AbilityDataModel<
       abilityType: item.type,
       abilityImg: item.img ?? undefined,
       resultMessages: options?.resultMessages,
-      speaker: getSpeakerFromItem(item),
+      speaker: speaker,
       rollMode: options?.rollMode,
     });
     if (abilityRoll.successLevel == null) {

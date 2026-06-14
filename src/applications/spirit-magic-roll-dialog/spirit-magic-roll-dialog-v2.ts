@@ -4,7 +4,8 @@ import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./spirit-magic-roll-dialog-data.types.ts";
-import { assertDocumentSubType, getSpeakerFromItem, localize } from "../../system/util";
+import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../system/util";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { RqgItem } from "@items/rqg-item.ts";
 import { hasEnoughToCastSpell } from "@items/spirit-magic-item/spirit-magic-validation.ts";
@@ -49,6 +50,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private spellItem: SpiritMagicItem;
   private powX5: number;
+  private token: TokenDocument | null | undefined;
 
   protected override getLivePreviewFormBehaviorConfig() {
     return {
@@ -59,6 +61,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
   constructor(
     spellItem: SpiritMagicItem,
+    token?: TokenDocument | null,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
@@ -68,6 +71,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     this.spellItem = spellItem;
     this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
+    this.token = token;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -103,7 +107,10 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
       {}) as SpiritMagicRollDialogFormData;
 
-    const speaker = getSpeakerFromItem(this.spellItem);
+    const speaker = getSpeakerCompat({
+      actor: this.spellItem.actor ?? undefined,
+      token: this.token,
+    });
 
     formData.levelUsed ??= this.spellItem.system.points;
     formData.boost ??= 0;
@@ -112,12 +119,13 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.otherModifier ??= 0;
     formData.otherModifierDescription ??= localize("RQG.Dialog.SpiritMagicRoll.OtherModifier");
     formData.powX5 ??= this.powX5;
-    formData.spellItemUuid ??= this.spellItem.uuid;
+    formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
+    formData.tokenUuid ??= this.token?.uuid ?? undefined;
 
     return {
       formData: formData,
 
-      speakerName: speaker.alias ?? "",
+      speakerName: getSpeakerDisplayName(speaker),
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
@@ -169,6 +177,10 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formDataObject.spellItemUuid ?? "",
     )) as RqgItem | undefined;
 
+    const token = formDataObject.tokenUuid
+      ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)
+      : undefined;
+
     if (!spellItem || !(spellItem instanceof RqgItem)) {
       ui.notifications?.error("Could not find an spirit magic spellItem to roll.");
       return;
@@ -196,7 +208,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       spellName: spellItem?.name ?? undefined,
       spellImg: spellItem?.img ?? undefined,
       rollMode: rollMode,
-      speaker: getSpeakerFromItem(spellItem),
+      speaker: getSpeakerCompat({ actor: spellItem.actor ?? undefined, token }),
     };
     const validationError = hasEnoughToCastSpell(
       formDataObject.levelUsed,
@@ -208,6 +220,6 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    await spellItem.spiritMagicRollImmediate(options);
+    await spellItem.spiritMagicRollImmediate(options, token);
   }
 }

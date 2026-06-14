@@ -42,6 +42,7 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import { toRqidString } from "../../system/api/rqid-validation";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 const logger = new RqgLogger("DefenceDialogV2");
 
@@ -176,7 +177,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.halved ??= false;
     formData.otherModifier ??= "";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Defence.OtherModifier");
-    formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid;
+    formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid ?? undefined;
 
     const parryingWeaponItem = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
       | RqgItem
@@ -185,7 +186,10 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       ? parryingWeaponItem
       : undefined;
 
-    const defenceOptions = DefenceDialogV2.getDefenceOptions(defendingActor, parryingWeapon?.uuid);
+    const defenceOptions = DefenceDialogV2.getDefenceOptions(
+      defendingActor,
+      parryingWeapon?.uuid ?? undefined,
+    );
     if (
       !Object.values(defenceOptions)
         .map((o) => o.value)
@@ -518,10 +522,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       abilityName: defendSkillItem?.name ?? undefined,
       abilityType: defendSkillItem?.type ?? undefined,
       abilityImg: defendSkillItem?.img ?? undefined,
-      speaker: ChatMessage.getSpeaker({
-        token: defendingToken, // Connect the roll to the defender
-        actor: defendingToken ? undefined : defendingActor,
-      }),
+      speaker: getSpeakerCompat({ token: defendingToken, actor: defendingActor }),
     };
 
     const attackRollData = attackChatMessage!.system.attackRoll;

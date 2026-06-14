@@ -245,9 +245,9 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for an AbilityRoll
    */
-  public async abilityRoll(): Promise<void> {
+  public async abilityRoll(token?: TokenDocument | null): Promise<void> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await this.system.abilityRoll();
+    await this.system.abilityRoll(token);
   }
 
   /**
@@ -255,17 +255,18 @@ export class RqgItem extends Item {
    */
   public async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
+    token?: TokenDocument | null,
   ): Promise<void> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await this.system.abilityRollImmediate(options);
+    await this.system.abilityRollImmediate(options, token);
   }
 
   /**
    * Open a dialog for a SpiritMagicRoll
    */
-  public async spiritMagicRoll(): Promise<void> {
+  public async spiritMagicRoll(token?: TokenDocument | null): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await this.system.spiritMagicRoll();
+    await this.system.spiritMagicRoll(token);
   }
 
   /**
@@ -275,25 +276,29 @@ export class RqgItem extends Item {
     options: Omit<SpiritMagicRollOptions, "powX5"> = {
       levelUsed: (this as SpiritMagicItem).system.points,
     },
+    token?: TokenDocument | null,
   ): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await this.system.spiritMagicRollImmediate(options);
+    await this.system.spiritMagicRollImmediate(options, token);
   }
 
   /**
    * Open a dialog for a RuneMagicRoll
    */
-  public async runeMagicRoll(): Promise<void> {
+  public async runeMagicRoll(token?: TokenDocument | null): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await this.system.runeMagicRoll();
+    await this.system.runeMagicRoll(token);
   }
 
   /**
    * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
    */
-  public async runeMagicRollImmediate(options: Partial<RuneMagicRollOptions> = {}): Promise<void> {
+  public async runeMagicRollImmediate(
+    options: Partial<RuneMagicRollOptions> = {},
+    token?: TokenDocument | null,
+  ): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await this.system.runeMagicRollImmediate(options);
+    await this.system.runeMagicRollImmediate(options, token);
   }
 
   /**
@@ -405,6 +410,7 @@ export class RqgItem extends Item {
       }
     }
 
+    // @ts-expect-error TEMP(v14-types) runtime accepts User with nullable id
     await super._preCreate(data, options, user);
   }
 

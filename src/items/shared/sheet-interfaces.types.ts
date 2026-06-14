@@ -3,7 +3,7 @@
 
 export interface DocumentSheetData {
   id: string;
-  uuid: string;
+  uuid: string | null;
   name: string;
   img: string;
   /** game.user.isGM */

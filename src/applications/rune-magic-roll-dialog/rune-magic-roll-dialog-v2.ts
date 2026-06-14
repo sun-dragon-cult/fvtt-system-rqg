@@ -1,6 +1,7 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
-import { assertDocumentSubType, getSpeakerFromItem, localize } from "../../system/util";
+import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../system/util";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { RqgItem } from "@items/rqg-item.ts";
@@ -82,13 +83,16 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   ];
 
   private spellItem: RuneMagicItem;
+  private token: TokenDocument | null | undefined;
 
   constructor(
     spellItem: RuneMagicItem,
+    token?: TokenDocument | null,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
     this.spellItem = spellItem;
+    this.token = token;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -125,7 +129,10 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       new foundry.applications.ux.FormDataExtended(this.element, {}).object) ??
       {}) as RuneMagicRollDialogFormData;
 
-    const speaker = getSpeakerFromItem(this.spellItem);
+    const speaker = getSpeakerCompat({
+      actor: this.spellItem.actor ?? undefined,
+      token: this.token,
+    });
 
     const eligibleRunes = getEligibleRunes(this.spellItem);
 
@@ -140,14 +147,15 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
     formData.otherModifierDescription ??= localize("RQG.Dialog.RuneMagicRoll.OtherModifier");
-    formData.spellItemUuid ??= this.spellItem.uuid;
+    formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
+    formData.tokenUuid ??= this.token?.uuid ?? undefined;
 
     const usedRune = eligibleRunes.find((r) => r.id === formData.usedRuneId);
 
     return {
       formData: formData,
 
-      speakerName: speaker.alias ?? "",
+      speakerName: getSpeakerDisplayName(speaker),
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,
@@ -203,6 +211,10 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formDataObject.spellItemUuid ?? "",
     )) as RqgItem | undefined;
 
+    const token = formDataObject.tokenUuid
+      ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)
+      : undefined;
+
     if (!spellItem || !(spellItem instanceof RqgItem)) {
       ui.notifications?.error("Could not find an rune magic spellItem to roll.");
       return;
@@ -250,7 +262,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
           description: formDataObject.otherModifierDescription,
         },
       ],
-      speaker: getSpeakerFromItem(spellItem),
+      speaker: getSpeakerCompat({ actor: spellItem.actor ?? undefined, token }),
       rollMode: rollMode,
     };
     const validationError = hasEnoughToCastSpell(
@@ -263,6 +275,6 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    await spellItem.runeMagicRollImmediate(options);
+    await spellItem.runeMagicRollImmediate(options, token);
   }
 }

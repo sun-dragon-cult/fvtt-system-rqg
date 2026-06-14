@@ -10,10 +10,11 @@ import {
 import { showImproveCharacteristicDialog } from "../../applications/improve-dialogs/improve-characteristic-dialog";
 import { contextMenuRunes } from "./context-menu-runes";
 import { type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 export const characteristicMenuOptions = (
   actor: CharacterActor,
-  token: TokenDocument | undefined | null,
+  token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
     label: localize("RQG.Game.RollChat"),
@@ -21,7 +22,7 @@ export const characteristicMenuOptions = (
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
-      await actor.characteristicRoll(characteristicName);
+      await actor.characteristicRoll(characteristicName, token);
     },
   },
   {
@@ -30,7 +31,7 @@ export const characteristicMenuOptions = (
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
       const { name: characteristicName } = getCharacteristic(actor, el);
-      await actor.characteristicRollImmediate(characteristicName);
+      await actor.characteristicRollImmediate(characteristicName, token);
     },
   },
   {
@@ -72,8 +73,8 @@ export const characteristicMenuOptions = (
       const charName = getDomDataset(el, "characteristic") as keyof Characteristics | undefined;
       requireValue(charName, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
 
-      const speakerName = token?.name ?? actor.prototypeToken.name ?? "";
-      void showImproveCharacteristicDialog(actor, charName, speakerName);
+      const speaker = getSpeakerCompat({ actor, token });
+      void showImproveCharacteristicDialog(actor, charName, speaker);
     },
   },
   {

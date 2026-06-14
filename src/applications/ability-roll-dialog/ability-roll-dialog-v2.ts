@@ -7,9 +7,16 @@ import type {
 } from "./ability-roll-dialog-data.types";
 import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
-import { getSpeakerFromItem, localize, localizeItemType } from "../../system/util";
+import {
+  getSpeakerDisplayName,
+  getSpeakerFromItem,
+  localize,
+  localizeItemType,
+} from "../../system/util";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { RqgItem } from "@items/rqg-item.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
 import {
   getConfiguredRollModeOptions,
@@ -56,9 +63,11 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
   ];
 
   private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
+  private token: TokenDocument | null | undefined;
 
   constructor(
     abilityItem: AbilityItem | PartialAbilityItem,
+    token?: TokenDocument | null,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
@@ -68,6 +77,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     }
 
     this.abilityItem = abilityItem;
+    this.token = token;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -108,7 +118,12 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.AbilityRoll.OtherModifier");
-    formData.abilityItemUuid ??= this.abilityItem?.uuid;
+    formData.abilityItemUuid ??= this.abilityItem?.uuid ?? undefined;
+    formData.abilityActorUuid ??=
+      this.abilityItem instanceof RqgItem
+        ? (this.abilityItem.actor?.uuid ?? undefined)
+        : (this.abilityItem.parent?.uuid ?? undefined);
+    formData.tokenUuid ??= this.token?.uuid ?? undefined;
 
     if (!(this.abilityItem instanceof RqgItem)) {
       const minimalAbilityItem: PartialAbilityItem = {
@@ -120,10 +135,15 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formData.reputationItemJson = JSON.stringify(minimalAbilityItem);
     }
 
-    const speaker = getSpeakerFromItem(this.abilityItem);
+    const speaker =
+      this.abilityItem instanceof RqgItem
+        ? getSpeakerCompat({ actor: this.abilityItem.actor ?? undefined, token: this.token })
+        : this.abilityItem.parent
+          ? getSpeakerCompat({ actor: this.abilityItem.parent, token: this.token })
+          : getSpeakerFromItem(this.abilityItem);
     return {
       formData: formData,
-      speakerName: speaker.alias ?? "",
+      speakerName: getSpeakerDisplayName(speaker),
       augmentOptions: AbilityRollDialogV2.augmentOptions,
       meditateOptions: AbilityRollDialogV2.meditateOptions,
 
@@ -173,6 +193,14 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       | PartialAbilityItem
       | undefined;
 
+    const token = formDataObject.tokenUuid
+      ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)
+      : undefined;
+
+    const actor = formDataObject.abilityActorUuid
+      ? ((await fromUuid(formDataObject.abilityActorUuid)) as RqgActor | undefined)
+      : undefined;
+
     if (!abilityItem) {
       abilityItem = JSON.parse(formDataObject.reputationItemJson ?? "");
     }
@@ -201,12 +229,12 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       abilityName: abilityItem?.name ?? undefined,
       abilityType: (abilityItem as any)?.type ?? undefined,
       abilityImg: abilityItem?.img ?? undefined,
-      speaker: getSpeakerFromItem(abilityItem),
+      speaker: actor ? getSpeakerCompat({ actor, token }) : getSpeakerFromItem(abilityItem),
       rollMode: rollMode,
     };
 
     if (abilityItem instanceof RqgItem) {
-      await abilityItem.abilityRollImmediate(options);
+      await abilityItem.abilityRollImmediate(options, token);
     } else {
       // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
       const roll = await AbilityRoll.rollAndShow(options);

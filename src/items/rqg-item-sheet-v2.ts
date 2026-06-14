@@ -44,7 +44,7 @@ const RqgItemSheetV2Base = HandlebarsApplicationMixin(
 
 export interface RqgItemSheetContext {
   id: string;
-  uuid: string;
+  uuid: string | null;
   name: string;
   img: string;
   isGM: boolean;
@@ -210,7 +210,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       el.addEventListener("click", () => {
         const effect = fromUuidSync(effectUuid) as RqgActiveEffect | undefined;
         if (effect) {
-          new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render(true);
+          new foundry.applications.sheets.ActiveEffectConfig({ document: effect }).render({
+            force: true,
+          });
         }
       });
     });

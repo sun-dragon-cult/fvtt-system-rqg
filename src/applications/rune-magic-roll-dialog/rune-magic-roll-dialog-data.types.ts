@@ -37,4 +37,5 @@ export type RuneMagicRollDialogFormData = {
   otherModifierDescription: string;
 
   spellItemUuid?: string; // hidden field
+  tokenUuid?: string; // hidden field
 };

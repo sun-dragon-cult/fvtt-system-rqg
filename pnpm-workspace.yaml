@@ -1,5 +1,23 @@
 packages:
   - .
 
+blockExoticSubdeps: false
+
 onlyBuiltDependencies:
   - "@league-of-foundry-developers/foundry-vtt-types"
+  - "@parcel/watcher"
+  - "bufferutil"
+  - "classic-level"
+  - "esbuild"
+  - "unrs-resolver"
+  - "utf-8-validate"
+
+allowBuilds:
+  "@league-of-foundry-developers/foundry-vtt-types@https://codeload.github.com/League-of-Foundry-Developers/foundry-vtt-types/tar.gz/d7751f280498c9d749c5bd821628ab2be9acefbc": true
+  "@league-of-foundry-developers/foundry-vtt-types@https://codeload.github.com/League-of-Foundry-Developers/foundry-vtt-types/tar.gz/096dcefa211f50ba41f66e3364a99b4eb8da2529": true
+  '@parcel/watcher': true
+  bufferutil: true
+  classic-level: true
+  esbuild: true
+  unrs-resolver: true
+  utf-8-validate: true

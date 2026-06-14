@@ -942,7 +942,11 @@ function resolveActorName(entry: MigrationLogEntry): string {
   return localize("RQG.Migration.reportSourceUnknownActor");
 }
 
-function getCompendiumNameFromUuid(uuid: string): string | undefined {
+function getCompendiumNameFromUuid(uuid: string | null): string | undefined {
+  if (!uuid) {
+    return undefined;
+  }
+
   if (!uuid.startsWith("Compendium.")) {
     return undefined;
   }
@@ -957,7 +961,11 @@ function getCompendiumNameFromUuid(uuid: string): string | undefined {
   return `${parts[1]}.${parts[2]}`;
 }
 
-function getSceneIdFromUuid(uuid: string): string | undefined {
+function getSceneIdFromUuid(uuid: string | null): string | undefined {
+  if (!uuid) {
+    return undefined;
+  }
+
   if (!uuid.startsWith("Scene.")) {
     return undefined;
   }

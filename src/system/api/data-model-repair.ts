@@ -824,7 +824,7 @@ export async function openDataModelRepairDialog(
       resolve(application._closeResult);
       return closeResult;
     };
-    application.render(true);
+    application.render({ force: true });
   });
 
   return result;

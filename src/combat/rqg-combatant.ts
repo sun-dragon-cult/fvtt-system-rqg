@@ -24,6 +24,7 @@ export class RqgCombatant extends Combatant {
     operation: Combatant.Database.OnCreateOperation,
     user: User.Implementation,
   ): Promise<void> {
+    // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._onCreateOperation(documents, operation, user);
     RqgCombatant.rerenderActorSheets(documents);
   }
@@ -50,6 +51,7 @@ export class RqgCombatant extends Combatant {
         }
       }
     }
+    // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._preDeleteOperation(_documents, operation, _user);
   }
 
@@ -59,6 +61,7 @@ export class RqgCombatant extends Combatant {
     operation: Combatant.Database.OnDeleteOperation,
     user: User.Implementation,
   ): Promise<void> {
+    // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._onDeleteOperation(documents, operation, user);
     RqgCombatant.rerenderActorSheets(documents);
   }
@@ -69,6 +72,7 @@ export class RqgCombatant extends Combatant {
     operation: Combatant.Database.OnUpdateOperation,
     user: User.Implementation,
   ): Promise<void> {
+    // @ts-expect-error TEMP(v14-types) base static hook expects stricter Stored and User shapes
     await Combatant._onUpdateOperation(documents, operation, user);
     RqgCombatant.rerenderActorSheets(documents);
   }
