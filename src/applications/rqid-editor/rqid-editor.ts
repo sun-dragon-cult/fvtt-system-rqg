@@ -33,7 +33,7 @@ interface RqidEditorData {
   id: string | null;
   parentId: string;
   parentUuid: string;
-  uuid: string;
+  uuid: string | null;
   folder: string;
   flags: { rqg: { documentRqidFlags: { lang: string; priority: number } } };
   rqidDocumentNamePart: string;
@@ -313,7 +313,7 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
 
   override async _onRender(): Promise<void> {
     this.linkToParentDocumentApps();
-    this.element.dataset["documentUuid"] = this.document.uuid;
+    this.element.dataset["documentUuid"] = this.document.uuid ?? "";
 
     this.element.querySelectorAll<HTMLElement>("[data-generate-default-rqid]").forEach((el) => {
       el.addEventListener("click", async () => {

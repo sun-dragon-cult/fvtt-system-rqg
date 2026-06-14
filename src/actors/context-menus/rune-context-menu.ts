@@ -14,10 +14,11 @@ import { Rqid } from "../../system/api/rqid-api";
 import { isValidRqidString } from "../../system/api/rqid-validation";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 export const runeMenuOptions = (
   actor: CharacterActor,
-  token: TokenDocument | undefined,
+  token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
     label: localize("RQG.Game.RollChat"),
@@ -27,7 +28,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
-      await item.abilityRoll();
+      await item.abilityRoll(token);
     },
   },
   {
@@ -38,7 +39,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
-      await item.abilityRollImmediate();
+      await item.abilityRollImmediate({}, token);
     },
   },
   {
@@ -62,7 +63,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
-      const speaker = ChatMessage.getSpeaker({ actor, token });
+      const speaker = getSpeakerCompat({ actor, token });
       void showImproveAbilityDialog(item, speaker);
     },
   },

@@ -19,7 +19,7 @@ export type RqgSheetHeaderControl = foundry.applications.api.ApplicationV2.Heade
  */
 export interface RqgActorSheetV2Context {
   id: string;
-  uuid: string;
+  uuid: string | null;
   name: string;
   img: string;
   isGM: boolean;

@@ -5,7 +5,12 @@ import type {
   CharacteristicRollDialogFormData,
 } from "./characteristic-roll-dialog-data.types.ts";
 import { DEFAULT_DIFFICULTY } from "../../rolls/characteristic-roll/characteristic-roll.types.ts";
-import { assertDocumentSubType, getTokenFromActor, localize, RqgError } from "../../system/util";
+import {
+  assertDocumentSubType,
+  getSpeakerDisplayName,
+  localize,
+  RqgError,
+} from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
 import { CharacteristicRoll } from "../../rolls/characteristic-roll/characteristic-roll";
@@ -18,6 +23,7 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -69,15 +75,18 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
 
   private actor: RqgActor;
   private characteristicName: keyof Characteristics;
+  private token: TokenDocument | null | undefined;
 
   constructor(
     actor: RqgActor,
     characteristicName: keyof Characteristics,
+    token?: TokenDocument | null,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
     this.actor = actor;
     this.characteristicName = characteristicName;
+    this.token = token;
   }
 
   static override DEFAULT_OPTIONS = {
@@ -121,20 +130,18 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.CharacteristicRoll.OtherModifier");
-    formData.actorUuid ??= this.actor.uuid;
+    formData.actorUuid ??= this.actor.uuid ?? "";
+    formData.tokenUuid ??= this.token?.uuid ?? "";
     formData.characteristicName ??= this.characteristicName;
     formData.characteristicValue ??=
       this.actor.system.characteristics[this.characteristicName]?.value ?? 0;
 
-    const speaker = ChatMessage.getSpeaker({
-      token: getTokenFromActor(this.actor),
-      actor: this.actor,
-    });
+    const speaker = getSpeakerCompat({ actor: this.actor, token: this.token });
 
     return {
       formData: formData,
 
-      speakerName: speaker.alias ?? "",
+      speakerName: getSpeakerDisplayName(speaker),
       augmentOptions: CharacteristicRollDialogV2.augmentOptions,
       meditateOptions: CharacteristicRollDialogV2.meditateOptions,
       difficultyOptions: CharacteristicRollDialogV2.difficultyOptions,
@@ -189,6 +196,10 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       return;
     }
 
+    const token = formDataObject.tokenUuid
+      ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)
+      : undefined;
+
     const options: CharacteristicRollOptions = {
       characteristicValue: formDataObject.characteristicValue,
       characteristicName: formDataObject.characteristicName,
@@ -207,10 +218,7 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
           description: formDataObject.otherModifierDescription,
         },
       ],
-      speaker: ChatMessage.getSpeaker({
-        token: getTokenFromActor(actor),
-        actor: actor,
-      }),
+      speaker: getSpeakerCompat({ actor, token }),
       rollMode: rollMode,
     };
 

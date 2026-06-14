@@ -3,7 +3,8 @@ import { RqgItemDataModel } from "./rqg-item-data-model";
 import { spellSchemaFields } from "../shared/spell-schema-fields";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
-import { RqgError, getSpeakerFromItem, localize, assertDocumentSubType } from "../../system/util";
+import { RqgError, localize, assertDocumentSubType } from "../../system/util";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
@@ -38,11 +39,13 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
   /**
    * Open a dialog for a SpiritMagicRoll.
    */
-  async spiritMagicRoll(): Promise<void> {
+  async spiritMagicRoll(token?: TokenDocument | null): Promise<void> {
     // Dynamic import to avoid circular dependency through SpiritMagicRollDialogV2 → rqgItem.ts
     const { SpiritMagicRollDialogV2 } =
       await import("../../applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2");
-    await new SpiritMagicRollDialogV2(this.parent as unknown as SpiritMagicItem).render(true);
+    await new SpiritMagicRollDialogV2(this.parent as unknown as SpiritMagicItem, token).render({
+      force: true,
+    });
   }
 
   /**
@@ -50,12 +53,15 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
    */
   async spiritMagicRollImmediate(
     options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.points },
+    token?: TokenDocument | null,
   ): Promise<void> {
     const item = this.parent;
     const actor = item?.actor;
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
 
     const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
+
+    const speaker = getSpeakerCompat({ actor, token });
 
     // Dynamic import to avoid circular dependency through SpiritMagicRoll → itemTypes.ts → rqgItem.ts
     const { SpiritMagicRoll } = await import("../../rolls/spirit-magic-roll/spirit-magic-roll");
@@ -66,7 +72,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       modifiers: options?.modifiers,
       spellName: item?.name ?? undefined,
       spellImg: item?.img ?? undefined,
-      speaker: getSpeakerFromItem(item),
+      speaker: speaker,
       rollMode: options?.rollMode,
     });
     if (spiritMagicRoll.successLevel == null) {

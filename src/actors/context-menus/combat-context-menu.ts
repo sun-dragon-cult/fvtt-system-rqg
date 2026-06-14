@@ -21,7 +21,7 @@ export const combatMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] 
     visible: (el: HTMLElement) => !!getDomDataset(el, "weapon-item-id"),
     onClick: async (_event: Event, el: HTMLElement) => {
       const weaponItemId = getRequiredDomDataset(el, "weapon-item-id");
-      const weapon = actor.getEmbeddedDocument("Item", weaponItemId, {});
+      const weapon = actor.items.get(weaponItemId);
       assertDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon);
       await weapon?.attack();
     },

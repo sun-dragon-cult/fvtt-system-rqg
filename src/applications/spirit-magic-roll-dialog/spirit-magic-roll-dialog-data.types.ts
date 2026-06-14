@@ -21,5 +21,6 @@ export type SpiritMagicRollDialogFormData = {
   otherModifierDescription: string;
 
   spellItemUuid?: string; // hidden field
+  tokenUuid?: string; // hidden field
   powX5: number; // hidden field
 };

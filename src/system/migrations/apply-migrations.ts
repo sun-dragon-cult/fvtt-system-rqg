@@ -46,7 +46,7 @@ export interface MigrationDocumentLink {
     | "JournalEntry"
     | "JournalEntryPage"
     | "Compendium";
-  uuid: string;
+  uuid: string | null;
   label: string;
 }
 

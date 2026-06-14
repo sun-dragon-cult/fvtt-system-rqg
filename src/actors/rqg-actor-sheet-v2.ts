@@ -254,7 +254,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         : availableCultTabs[0];
 
     // Compute active SRs from combat tracker
-    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(this.actor);
+    const actorCombatants: Combatant[] | undefined = game.combat?.getCombatantsByActor(
+      this.actor.id ?? "",
+    );
     this._activeInSR = new Set(
       actorCombatants
         ?.map((c) => c.initiative)
@@ -483,7 +485,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       new RqgContextMenu(
         this.element,
         ".rune.contextmenu",
-        runeMenuOptions(this.actor, this.document.token ?? undefined),
+        runeMenuOptions(this.actor, this.document.token),
         ctxMenuOptions,
       );
       new RqgContextMenu(
@@ -495,13 +497,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       new RqgContextMenu(
         this.element,
         ".skill.contextmenu",
-        skillMenuOptions(this.actor, this.document.token ?? undefined),
+        skillMenuOptions(this.actor, this.document.token),
         ctxMenuOptions,
       );
       new RqgContextMenu(
         this.element,
         ".passion.contextmenu",
-        passionMenuOptions(this.actor, this.document.token ?? undefined),
+        passionMenuOptions(this.actor, this.document.token),
         ctxMenuOptions,
       );
       new RqgContextMenu(
@@ -547,8 +549,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         characteristicName as keyof CharacterActor["system"]["characteristics"];
 
       this._bindSingleDoubleClick(el, {
-        onSingle: () => this.actor.characteristicRoll(typedCharacteristicName),
-        onDouble: () => this.actor.characteristicRollImmediate(typedCharacteristicName),
+        onSingle: () => this.actor.characteristicRoll(typedCharacteristicName, this.document.token),
+        onDouble: () =>
+          this.actor.characteristicRollImmediate(typedCharacteristicName, this.document.token),
       });
     });
 
@@ -628,8 +631,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Reputation roll — single click opens dialog, double click rolls immediately
     this.element.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       this._bindSingleDoubleClick(el, {
-        onSingle: () => this.actor.reputationRoll(),
-        onDouble: () => this.actor.reputationRollImmediate(),
+        onSingle: () => this.actor.reputationRoll(this.document.token),
+        onDouble: () => this.actor.reputationRollImmediate(this.document.token),
       });
     });
 
@@ -685,8 +688,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         "AbilityChance roll couldn't find skillItem",
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.abilityRoll(),
-        onDouble: () => item.abilityRollImmediate(),
+        onSingle: () => item.abilityRoll(this.document.token),
+        onDouble: () => item.abilityRollImmediate({}, this.document.token),
       });
     });
 
@@ -736,12 +739,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         `Couldn't find item [${itemId}] to roll Spirit Magic`,
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.spiritMagicRoll(),
+        onSingle: () => item.spiritMagicRoll(this.document.token),
         onDouble: () => {
           if (item.system.isVariable && item.system.points > 1) {
-            return item.spiritMagicRoll();
+            return item.spiritMagicRoll(this.document.token);
           } else {
-            return item.spiritMagicRollImmediate();
+            return item.spiritMagicRollImmediate(undefined, this.document.token);
           }
         },
       });
@@ -757,12 +760,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         `Couldn't find item [${itemId}] to roll Rune Magic`,
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.runeMagicRoll(),
+        onSingle: () => item.runeMagicRoll(this.document.token),
         onDouble: () => {
           if (item.system.points === 1) {
-            return item.runeMagicRollImmediate();
+            return item.runeMagicRollImmediate({}, this.document.token);
           } else {
-            return item.runeMagicRoll();
+            return item.runeMagicRoll(this.document.token);
           }
         },
       });
@@ -1037,7 +1040,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       );
     }
 
-    const currentCombatants = combat.getCombatantsByActor(this.actor);
+    const currentCombatants = combat.getCombatantsByActor(this.actor.id ?? "");
     if (currentCombatants.length === 0) {
       return;
     }

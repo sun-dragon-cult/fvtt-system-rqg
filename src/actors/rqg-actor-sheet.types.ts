@@ -74,7 +74,7 @@ export interface EmbeddedRunesByType {
  * This represents the getData() return type.
  */
 export interface CharacterSheetData {
-  uuid: string;
+  uuid: string | null;
   /** reorganized for presentation TODO type it better */
   embeddedItems: any;
 

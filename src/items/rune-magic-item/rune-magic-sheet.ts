@@ -65,15 +65,17 @@ export class RuneMagicSheet extends RqgItemSheet {
   }
 
   private getActorCultOptions(): SelectOptionData<string>[] {
-    return (
-      this.actor
-        ?.getEmbeddedCollection("Item")
-        .filter((i: RqgItem) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
-        .map((c) => ({
-          value: c.id ?? "",
-          label: c.name ?? "",
-        })) ?? []
-    );
+    const actorItems = this.actor?.getEmbeddedCollection("Item")?.contents ?? [];
+    const options: SelectOptionData<string>[] = [];
+    for (const item of actorItems) {
+      if (isDocumentSubType<CultItem>(item as RqgItem, ItemTypeEnum.Cult)) {
+        options.push({
+          value: item.id ?? "",
+          label: item.name ?? "",
+        });
+      }
+    }
+    return options;
   }
 
   protected override _updateObject(event: Event, formData: any): Promise<any> {

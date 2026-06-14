@@ -223,7 +223,11 @@ export async function extractDropInfo<T extends Document.Any>(
 }> {
   const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
   const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
-  const droppedDocument = await cls?.implementation.fromDropData(data as object);
+  const droppedDocument = await (
+    cls?.implementation as {
+      fromDropData?: (dropData: object) => Promise<Document.Any | undefined>;
+    } | null
+  )?.fromDropData?.(data as object);
   const dropZoneData = getDomDataset(event, "dropzone");
   const isAllowedDropDocumentType = isAllowedDocumentType(
     droppedDocument as any,

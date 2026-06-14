@@ -12,8 +12,11 @@ export { RqgError };
 const logger = new RqgLogger("util", { notify: false });
 
 import Document = foundry.abstract.Document;
+import Item = foundry.documents.Item;
+import Actor = foundry.documents.Actor;
 import type { RqidEnabledDocument } from "../global";
-import type { RqgChatMessage } from "../chat/rqg-chat-message.ts";
+
+type SpeakerToken = NonNullable<ChatMessage.GetSpeakerOptions["token"]>;
 
 /**
  * Helper to safely get a Roll from JSONField data that could be string or object.
@@ -271,19 +274,10 @@ export function isButton(el: any): el is HTMLButtonElement {
 /**
  * Check if item data type if of correct type to narrow type to that itemtype.
  * Modified to with both ItemTypeEnum and string like the `type` property on ItemData.
- * TODO The type Document.WithSubTypes includes ActorDelta that seems to miss subtypes
+ * Note: Document.WithSubTypes is a document-name union, not the runtime document classes.
  */
-export function assertDocumentSubType<
-  T extends Document.WithSubTypes | RqgItem | RqgActor | RqgChatMessage | ChatMessage,
->(
-  document:
-    | Document.WithSubTypes
-    | RqgItem
-    | RqgActor
-    | RqgChatMessage
-    | ChatMessage
-    | undefined
-    | null,
+export function assertDocumentSubType<T extends Document.WithSubTypes | Item | Actor | ChatMessage>(
+  document: Document.WithSubTypes | Item | Actor | ChatMessage | undefined | null,
   documentSubTypes: Readonly<
     | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)
     | (string | ItemTypeEnum | ActorTypeEnum | undefined | null)[]
@@ -306,20 +300,13 @@ export function assertDocumentSubType<
  * Check if document is defined, has the correct type and narrow to the T type.
  */
 export function isDocumentSubType<
-  T extends
-    | Document.WithSubTypes
-    | RqgItem
-    | RqgActor
-    | RqidEnabledDocument
-    | RqgChatMessage
-    | ChatMessage,
+  T extends Document.WithSubTypes | Item | Actor | RqidEnabledDocument | ChatMessage,
 >(
   document:
     | Document.WithSubTypes
-    | RqgItem
-    | RqgActor
+    | Item
+    | Actor
     | RqidEnabledDocument
-    | RqgChatMessage
     | ChatMessage
     | undefined
     | null,
@@ -786,8 +773,9 @@ export function* range(start: number | undefined, end: number | undefined): Gene
 
 export function getSpeakerFromItem(item: RqgItem | PartialAbilityItem): ChatMessage.SpeakerData {
   const tokenOrActor = getTokenOrActorFromItem(item);
-  const token = tokenOrActor instanceof TokenDocument ? tokenOrActor : undefined;
-  const actor = tokenOrActor instanceof Actor ? tokenOrActor : undefined;
+  const token: SpeakerToken | undefined =
+    tokenOrActor instanceof TokenDocument ? (tokenOrActor as SpeakerToken) : undefined;
+  const actor = tokenOrActor instanceof Actor ? (tokenOrActor as Actor.Stored) : undefined;
   return ChatMessage.getSpeaker({
     token: token,
     actor: token ? undefined : actor,
@@ -795,16 +783,48 @@ export function getSpeakerFromItem(item: RqgItem | PartialAbilityItem): ChatMess
 }
 
 /**
+ * Resolve a human-readable speaker name from speaker data.
+ * Falls back from alias to token/actor/user names when needed.
+ */
+export function getSpeakerDisplayName(speaker: ChatMessage.SpeakerData | null | undefined): string {
+  if (!speaker) {
+    return "";
+  }
+
+  const alias = speaker.alias?.trim();
+  if (alias) {
+    return alias;
+  }
+
+  const tokenId = speaker.token;
+  if (tokenId) {
+    const tokenName =
+      canvas?.scene?.tokens.get(tokenId)?.name?.trim() ??
+      game.scenes?.current?.tokens.get(tokenId)?.name?.trim();
+    if (tokenName) {
+      return tokenName;
+    }
+  }
+
+  const actorName = ChatMessage.getSpeakerActor(speaker)?.name?.trim();
+  if (actorName) {
+    return actorName;
+  }
+
+  return "";
+}
+
+/**
  * Get the token that is associated with the item's parent actor, by looking at the tokens in the active scene.
  */
-export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocument | undefined {
-  // Type assertion needed since parent may not have getActiveTokens
+export function getTokenFromItem(item: RqgItem | PartialAbilityItem): SpeakerToken | undefined {
+  // Type assertion needed since item.parent can be a non-actor document type.
   const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
     return token;
   } else {
-    return (item as PartialAbilityItem).actingToken;
+    return (item as PartialAbilityItem).actingToken as SpeakerToken | undefined;
   }
 }
 
@@ -814,14 +834,14 @@ export function getTokenFromItem(item: RqgItem | PartialAbilityItem): TokenDocum
  */
 export function getTokenOrActorFromItem(
   item: RqgItem | PartialAbilityItem,
-): TokenDocument | RqgActor | undefined {
-  // Type assertion needed since parent may not have getActiveTokens
+): SpeakerToken | RqgActor | undefined {
+  // Type assertion needed since item.parent can be a non-actor document type.
   const token = getTokenFromActor(item.parent as RqgActor | null | undefined);
 
   if (token) {
     return token;
   } else if ((item as PartialAbilityItem).actingToken) {
-    return (item as PartialAbilityItem).actingToken;
+    return (item as PartialAbilityItem).actingToken as SpeakerToken;
   } else {
     return (item.parent as RqgActor | undefined) ?? undefined;
   }
@@ -830,19 +850,28 @@ export function getTokenOrActorFromItem(
 /**
  * Get the token that is associated with actor, by looking at the tokens in the active scene.
  */
-export function getTokenFromActor(actor: RqgActor | undefined | null): TokenDocument | undefined {
-  // First try to get the token from the item parent, this only works if the actor is unlinked
-  const tokenFromUnlinkedActor = actor?.token;
-  if (tokenFromUnlinkedActor) {
-    return tokenFromUnlinkedActor;
+export function getTokenFromActor(actor: RqgActor | undefined | null): SpeakerToken | undefined {
+  if (!actor) {
+    return undefined;
   }
 
-  // If the actor is linked, we need to get the token from the active scene by comparing IDs
-  const owningActorTokens: TokenDocument[] =
-    actor?.getActiveTokens()?.map((t: any) => t.document) ?? [];
-  const attackingToken =
-    owningActorTokens[0] ?? game.scenes?.current?.tokens.find((t) => t.actorId === actor?.id); // TODO t.actor.id => t.actorId
-  return attackingToken;
+  // Synthetic token actors resolve to their owning TokenDocument even when canvas is not ready.
+  if (actor.token) {
+    return actor.token as SpeakerToken;
+  }
+
+  // Prefer tokens in the current viewed scene, mirroring ChatMessage speaker inference.
+  if (canvas?.ready && canvas.scene) {
+    const dependentTokensInScene = actor.getDependentTokens({ scenes: canvas.scene });
+    const controlledToken = dependentTokensInScene.find((tokenDoc) => tokenDoc.object?.controlled);
+    return (controlledToken ?? dependentTokensInScene[0]) as SpeakerToken | undefined;
+  }
+
+  return (
+    (game.scenes?.current?.tokens.find((tokenDoc) => tokenDoc.actorId === actor.id) as
+      | SpeakerToken
+      | undefined) ?? undefined
+  );
 }
 
 /**

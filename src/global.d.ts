@@ -13,16 +13,12 @@ import type {
 } from "./data-model/shared/rqg-document-flags";
 import type { TokenRulerSettingsType } from "./applications/settings/token-ruler-settings.types";
 import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
-
+import type { RqgActor } from "./actors/rqg-actor.ts";
+import type { RqgItem } from "./items/rqg-item.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
-import type { RqgToken } from "./combat/rqg-token.ts";
-import type { Dice3D } from "./module-integrations/dice-so-nice";
-import type { CombatChatMessageData } from "./chat/data-model/combat-chat-message.data-model.ts";
-import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { RqgItem } from "@items/rqg-item.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
-
+import type { RqgToken } from "./combat/rqg-token.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
 import type { CultDataModel } from "./data-model/item-data/cult-data-model";
 import type { GearDataModel } from "./data-model/item-data/gear-data-model";
@@ -36,6 +32,21 @@ import type { SkillDataModel } from "./data-model/item-data/skill-data-model";
 import type { SpiritMagicDataModel } from "./data-model/item-data/spirit-magic-data-model";
 import type { WeaponDataModel } from "./data-model/item-data/weapon-data-model";
 import type { CharacterDataModel } from "./data-model/actor-data/character-data-model";
+import type { CombatChatMessageData } from "./chat/data-model/combat-chat-message.data-model.ts";
+import type { Dice3D } from "./module-integrations/dice-so-nice";
+
+// Namespace imports for Foundry document types (from fvtt-types)
+import Actor = foundry.documents.Actor;
+import Item = foundry.documents.Item;
+import ActiveEffect = foundry.documents.ActiveEffect;
+import JournalEntry = foundry.documents.JournalEntry;
+import JournalEntryPage = foundry.documents.JournalEntryPage;
+import Macro = foundry.documents.Macro;
+import Playlist = foundry.documents.Playlist;
+import RollTable = foundry.documents.RollTable;
+import Scene = foundry.documents.Scene;
+import Card = foundry.documents.Card;
+import Combatant = foundry.documents.Combatant;
 
 declare global {
   // TEMP(v14-types): Remove this namespace augmentation once

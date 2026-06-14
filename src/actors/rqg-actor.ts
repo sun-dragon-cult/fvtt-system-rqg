@@ -30,7 +30,7 @@ import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weapon-data-model.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skill-formulas";
 import { RqgItem } from "@items/rqg-item.ts";
-import { getConfigStatusEffects } from "../system/fvtt-type-compat";
+import { getConfigStatusEffects, getSpeakerCompat } from "../system/fvtt-type-compat";
 
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
@@ -117,8 +117,11 @@ export class RqgActor extends Actor {
     ) as RqgItem[];
   }
 
-  public async characteristicRoll(characteristicName: keyof Characteristics): Promise<void> {
-    await new CharacteristicRollDialogV2(this, characteristicName).render(true);
+  public async characteristicRoll(
+    characteristicName: keyof Characteristics,
+    token?: TokenDocument | null,
+  ): Promise<void> {
+    await new CharacteristicRollDialogV2(this, characteristicName, token).render({ force: true });
   }
 
   /**
@@ -126,15 +129,17 @@ export class RqgActor extends Actor {
    */
   public async characteristicRollImmediate(
     characteristicName: keyof Characteristics,
+    token?: TokenDocument | null,
     options: Omit<CharacteristicRollOptions, "characteristicValue" | "characteristicName"> = {},
   ): Promise<void> {
-    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options);
+    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, token, options);
     const characteristicRoll = await CharacteristicRoll.rollAndShow(rollOptions);
     await this.checkExperience(rollOptions.characteristicName, characteristicRoll.successLevel);
   }
 
   private getCharacteristicRollDefaults(
     characteristicName: keyof Characteristics,
+    token: TokenDocument | null | undefined,
     options: Partial<CharacteristicRollOptions>,
   ): CharacteristicRollOptions {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
@@ -157,7 +162,7 @@ export class RqgActor extends Actor {
         characteristicName: characteristicName,
         characteristicValue: rollCharacteristic.value ?? 0,
         difficulty: 5,
-        speaker: ChatMessage.getSpeaker({ token: getTokenFromActor(this), actor: this }),
+        speaker: getSpeakerCompat({ actor: this, token }),
       },
       { overwrite: false },
     ) as CharacteristicRollOptions;
@@ -165,18 +170,19 @@ export class RqgActor extends Actor {
 
   /**
    * Open an ability roll dialog for reputation   */
-  public async reputationRoll(): Promise<void> {
-    await new AbilityRollDialogV2(this.createReputationFakeItem()).render(true);
+  public async reputationRoll(token?: TokenDocument | null): Promise<void> {
+    await new AbilityRollDialogV2(this.createReputationFakeItem(token)).render({ force: true });
   }
 
   /**
    * Do a reputation (ability) Roll
    */
   public async reputationRollImmediate(
+    token?: TokenDocument | null,
     options: Omit<AbilityRollOptions, "naturalSkill"> = {},
   ): Promise<void> {
-    const reputationItem = this.createReputationFakeItem();
-    const speaker = ChatMessage.getSpeaker({ token: this.token ?? undefined, actor: this });
+    const reputationItem = this.createReputationFakeItem(token);
+    const speaker = getSpeakerCompat({ actor: this, token });
 
     const combinedOptions = foundry.utils.mergeObject(
       options,
@@ -193,18 +199,20 @@ export class RqgActor extends Actor {
     await AbilityRoll.rollAndShow(combinedOptions);
   }
 
-  private createReputationFakeItem(): PartialAbilityItem {
+  private createReputationFakeItem(token?: TokenDocument | null): PartialAbilityItem {
     const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
-    const token = getTokenFromActor(this);
+    const actingToken =
+      token ?? (getTokenFromActor(this) as PartialAbilityItem["actingToken"] | undefined);
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     return {
       name: "Reputation",
       img: defaultItemIconSettings.reputation,
+      parent: this,
       system: {
         chance: this.system.background.reputation ?? 0,
       },
       ownership: { default: 0 },
-      actingToken: token,
+      actingToken: actingToken ?? undefined,
     } as const;
   }
 
@@ -370,13 +378,13 @@ export class RqgActor extends Actor {
 
       return;
     }
-    const speaker = ChatMessage.getSpeaker({ actor: this, token: this.token ?? undefined });
+    const speaker = getSpeakerCompat({ actor: this });
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
       DamageCalculations.addWound(
         damageAfterAP,
         applyToActorHP,
         damagedHitLocation,
-        this,
+        this as CharacterActor,
         speaker.alias!,
       );
 
@@ -495,7 +503,7 @@ export class RqgActor extends Actor {
 
     await this.updateTokenEffectFromHealth();
 
-    const speaker = ChatMessage.getSpeaker({ actor: this, token: this.token ?? undefined });
+    const speaker = getSpeakerCompat({ actor: this });
     const speakerName = speaker.alias as string;
     let message: string | undefined;
 
@@ -588,7 +596,9 @@ export class RqgActor extends Actor {
       !this.prototypeToken.actorLink &&
       isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)
     ) {
-      initializeAllCharacteristics(this).then(void this.updateDexBasedSkills());
+      void initializeAllCharacteristics(this as CharacterActor).then(() =>
+        this.updateDexBasedSkills(),
+      );
     } else {
       void this.updateDexBasedSkills();
     }
@@ -677,7 +687,7 @@ export class RqgActor extends Actor {
   override async _preUpdate(
     changes: Actor.UpdateData,
     options: Actor.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User,
   ): Promise<boolean | void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
@@ -701,6 +711,7 @@ export class RqgActor extends Actor {
         await jumpSkill.update({ system: { baseChance: jumpBaseChance(actorDex) } });
       }
     }
+    // @ts-expect-error TEMP(v14-types) runtime accepts User with nullable id
     return super._preUpdate(changes, options, user);
   }
 

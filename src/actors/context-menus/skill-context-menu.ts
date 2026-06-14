@@ -17,10 +17,11 @@ import { contextMenuRunes } from "./context-menu-runes";
 import { Rqid } from "../../system/api/rqid-api";
 import { isValidRqidString } from "../../system/api/rqid-validation";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 export const skillMenuOptions = (
   actor: RqgActor,
-  token: TokenDocument | undefined,
+  token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
     label: localize("RQG.Game.RollChat"),
@@ -37,7 +38,7 @@ export const skillMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
-      await item.abilityRoll();
+      await item.abilityRoll(token);
     },
   },
   {
@@ -64,7 +65,7 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await item.abilityRollImmediate();
+      await item.abilityRollImmediate({}, token);
     },
   },
   {
@@ -100,7 +101,7 @@ export const skillMenuOptions = (
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
 
-      const speaker = ChatMessage.getSpeaker({ actor, token });
+      const speaker = getSpeakerCompat({ actor, token });
       await showImproveAbilityDialog(item, speaker);
     },
   },

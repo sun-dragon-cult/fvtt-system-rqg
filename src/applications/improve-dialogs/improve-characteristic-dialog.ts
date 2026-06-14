@@ -106,7 +106,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
   constructor(
     private readonly actor: RqgActor,
     private readonly characteristicName: keyof Characteristics,
-    private readonly speakerName: string,
+    private readonly speaker: ChatMessage.SpeakerData,
   ) {
     super();
     this.improvementData = buildCharacteristicAdapter(actor, characteristicName);
@@ -241,7 +241,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
 
     const expRoll = new Roll("1d100");
     await expRoll.toMessage({
-      speaker: { alias: this.speakerName },
+      speaker: this.speaker,
       flavor: `<div class="roll-action">${localize(
         "RQG.Dialog.improveAbilityDialog.experienceRoll.flavor",
         {
@@ -269,7 +269,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
           name: improvementData.name,
           typeLocName: improvementData.typeLocName,
         }),
-        speaker: { alias: this.speakerName },
+        speaker: this.speaker,
       });
       return 0;
     }
@@ -285,7 +285,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
       const newAbilityValue = originalAbilityValue + fixedGain;
       const gainRoll = new Roll(String(fixedGain));
       await gainRoll.toMessage({
-        speaker: { alias: this.speakerName },
+        speaker: this.speaker,
         flavor: `<div class="roll-action">${resultFlavor}</div><p>${localize(
           "RQG.Dialog.improveAbilityDialog.experienceResultChat.contentChoseFixed",
           {
@@ -303,7 +303,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     const rolledGain = Number(gainRoll.total) || 0;
     const newAbilityValue = originalAbilityValue + rolledGain;
     await gainRoll.toMessage({
-      speaker: { alias: this.speakerName },
+      speaker: this.speaker,
       flavor: `<div class="roll-action">${resultFlavor}</div><p>${localize(
         "RQG.Dialog.improveAbilityDialog.experienceResultChat.contentChoseRandom",
         {
@@ -320,7 +320,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     const improvementData = this.improvementData;
     const gainRoll = new Roll(improvementData.trainingGainRandom);
     await gainRoll.toMessage({
-      speaker: { alias: this.speakerName },
+      speaker: this.speaker,
       flavor: `<div class="roll-action">${localize(
         "RQG.Dialog.improveAbilityDialog.trainingResultChat.flavor",
         {
@@ -341,7 +341,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     const improvementData = this.improvementData;
     const expRoll = new Roll("1d100");
     await expRoll.toMessage({
-      speaker: { alias: this.speakerName },
+      speaker: this.speaker,
       flavor: `<div class="roll-action">${localize(
         "RQG.Dialog.improveAbilityDialog.researchRoll.flavor",
         {
@@ -369,14 +369,14 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
           name: improvementData.name,
           typeLocName: improvementData.typeLocName,
         }),
-        speaker: { alias: this.speakerName },
+        speaker: this.speaker,
       });
       return 0;
     }
 
     const gainRoll = new Roll(improvementData.researchGainRandom);
     await gainRoll.toMessage({
-      speaker: { alias: this.speakerName },
+      speaker: this.speaker,
       flavor: `<div class="roll-action">${localize(
         "RQG.Dialog.improveAbilityDialog.researchResultChat.flavor",
         {
@@ -517,9 +517,9 @@ function buildCharacteristicAdapterFromSource(
 export async function showImproveCharacteristicDialog(
   actor: RqgActor,
   characteristicName: keyof Characteristics,
-  speakerName: string,
+  speaker: ChatMessage.SpeakerData,
 ): Promise<void> {
-  const dialog = new ImproveCharacteristicDialog(actor, characteristicName, speakerName);
+  const dialog = new ImproveCharacteristicDialog(actor, characteristicName, speaker);
   await dialog.render({ force: true });
 }
 
