@@ -1,11 +1,12 @@
 import type { RuneItem } from "@item-model/rune-data-model.ts";
-import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 
 export type Modifier = { description: string; value: number };
 
 export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.EvaluationOptions> & {
   usedRune: RuneItem;
-  runeMagicItem: RuneMagicItem;
+  spellName: string;
+  spellImg?: string;
+  isOneUse: boolean;
   levelUsed: number;
   magicPointBoost: number;
   modifiers: Modifier[];

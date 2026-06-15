@@ -84,35 +84,39 @@ function usageSchemaField() {
   });
 }
 
-type WeaponSchema = ReturnType<typeof WeaponDataModel.defineSchema>;
+function defineWeaponSchema() {
+  return {
+    ...physicalItemSchemaFields(),
+    usage: new SchemaField({
+      oneHand: usageSchemaField(),
+      offHand: usageSchemaField(),
+      twoHand: usageSchemaField(),
+      missile: usageSchemaField(),
+    }),
+    defaultUsage: new StringField({
+      blank: false,
+      nullable: true,
+      initial: undefined,
+      choices: weaponUsageChoices(),
+    }),
+    hitPoints: resourceSchemaField(),
+    hitPointLocation: new StringField({ blank: true, nullable: false, initial: "" }),
+    isNatural: new BooleanField({ nullable: false, initial: false }),
+    rate: new NumberField({ integer: true, min: 0, max: 5, nullable: false, initial: 0 }),
+    range: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    isProjectile: new BooleanField({ nullable: false, initial: false }),
+    isProjectileWeapon: new BooleanField({ nullable: false, initial: false }),
+    isThrownWeapon: new BooleanField({ nullable: false, initial: false }),
+    isRangedWeapon: new BooleanField({ nullable: false, initial: false }),
+    projectileId: new StringField({ blank: true, nullable: false, initial: "" }),
+  } as const;
+}
+
+type WeaponSchema = ReturnType<typeof defineWeaponSchema>;
 
 export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   static override defineSchema() {
-    return {
-      ...physicalItemSchemaFields(),
-      usage: new SchemaField({
-        oneHand: usageSchemaField(),
-        offHand: usageSchemaField(),
-        twoHand: usageSchemaField(),
-        missile: usageSchemaField(),
-      }),
-      defaultUsage: new StringField({
-        blank: false,
-        nullable: true,
-        initial: undefined,
-        choices: weaponUsageChoices(),
-      }),
-      hitPoints: resourceSchemaField(),
-      hitPointLocation: new StringField({ blank: true, nullable: false, initial: "" }),
-      isNatural: new BooleanField({ nullable: false, initial: false }),
-      rate: new NumberField({ integer: true, min: 0, max: 5, nullable: false, initial: 0 }),
-      range: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-      isProjectile: new BooleanField({ nullable: false, initial: false }),
-      isProjectileWeapon: new BooleanField({ nullable: false, initial: false }),
-      isThrownWeapon: new BooleanField({ nullable: false, initial: false }),
-      isRangedWeapon: new BooleanField({ nullable: false, initial: false }),
-      projectileId: new StringField({ blank: true, nullable: false, initial: "" }),
-    } as const;
+    return defineWeaponSchema();
   }
 
   /**

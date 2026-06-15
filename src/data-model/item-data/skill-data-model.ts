@@ -29,7 +29,25 @@ export type SkillCategoryEnum = (typeof SkillCategoryEnum)[keyof typeof SkillCat
 
 const { NumberField, StringField } = foundry.data.fields;
 
-type SkillSchema = ReturnType<typeof SkillDataModel.defineSchema>;
+function defineSkillSchema() {
+  return {
+    ...abilitySchemaFields(),
+    descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
+    category: new StringField({
+      blank: false,
+      nullable: false,
+      initial: SkillCategoryEnum.Magic,
+      choices: enumChoices(SkillCategoryEnum, "RQG.Actor.Skill.SkillCategory."),
+    }),
+    skillName: new StringField({ blank: true, nullable: false, initial: "" }),
+    specialization: new StringField({ blank: true, nullable: false, initial: "" }),
+    baseChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    gainedChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    runeRqidLinks: rqidLinkArraySchemaField(),
+  } as const;
+}
+
+type SkillSchema = ReturnType<typeof defineSkillSchema>;
 
 export class SkillDataModel extends AbilityDataModel<
   SkillSchema,
@@ -41,21 +59,7 @@ export class SkillDataModel extends AbilityDataModel<
   declare descriptionRqidLink: RqidLink<RqidString>;
 
   static override defineSchema() {
-    return {
-      ...abilitySchemaFields(),
-      descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
-      category: new StringField({
-        blank: false,
-        nullable: false,
-        initial: SkillCategoryEnum.Magic,
-        choices: enumChoices(SkillCategoryEnum, "RQG.Actor.Skill.SkillCategory."),
-      }),
-      skillName: new StringField({ blank: true, nullable: false, initial: "" }),
-      specialization: new StringField({ blank: true, nullable: false, initial: "" }),
-      baseChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-      gainedChance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-      runeRqidLinks: rqidLinkArraySchemaField(),
-    } as const;
+    return defineSkillSchema();
   }
 
   override async applyChanceGain(gain: number): Promise<void> {

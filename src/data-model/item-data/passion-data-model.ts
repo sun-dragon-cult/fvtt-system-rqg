@@ -21,16 +21,20 @@ export type PassionsEnum = (typeof PassionsEnum)[keyof typeof PassionsEnum];
 
 const { StringField } = foundry.data.fields;
 
-type PassionSchema = ReturnType<typeof PassionDataModel.defineSchema>;
+function definePassionSchema() {
+  return {
+    ...abilitySchemaFields(),
+    passion: new StringField({ blank: true, nullable: false, initial: "" }),
+    subject: new StringField({ blank: true, nullable: false, initial: "" }),
+    description: new StringField({ blank: true, nullable: false, initial: "" }),
+    gmNotes: new StringField({ blank: true, nullable: false, initial: "" }),
+  } as const;
+}
+
+type PassionSchema = ReturnType<typeof definePassionSchema>;
 
 export class PassionDataModel extends AbilityDataModel<PassionSchema> {
   static override defineSchema() {
-    return {
-      ...abilitySchemaFields(),
-      passion: new StringField({ blank: true, nullable: false, initial: "" }),
-      subject: new StringField({ blank: true, nullable: false, initial: "" }),
-      description: new StringField({ blank: true, nullable: false, initial: "" }),
-      gmNotes: new StringField({ blank: true, nullable: false, initial: "" }),
-    } as const;
+    return definePassionSchema();
   }
 }

@@ -28,9 +28,29 @@ export const defaultRuneType = {
   name: RuneTypeEnum.Form,
 };
 
-const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { BooleanField, SchemaField, StringField } = foundry.data.fields;
 
-type RuneSchema = ReturnType<typeof RuneDataModel.defineSchema>;
+function defineRuneSchema() {
+  return {
+    ...abilitySchemaFields(),
+    descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
+    rune: new StringField({ blank: true, nullable: false, initial: "" }),
+    runeType: new SchemaField({
+      type: new StringField({
+        blank: false,
+        nullable: false,
+        initial: defaultRuneType.type,
+        choices: enumChoices(RuneTypeEnum, "RQG.Item.Rune.RuneType."),
+      }),
+      name: new StringField({ blank: true, nullable: false, initial: defaultRuneType.name }),
+    }),
+    opposingRuneRqidLink: rqidLinkSchemaField({ nullable: true }),
+    minorRuneRqidLinks: rqidLinkArraySchemaField(),
+    isMastered: new BooleanField({ nullable: false, initial: false }),
+  } as const;
+}
+
+type RuneSchema = ReturnType<typeof defineRuneSchema>;
 
 const runeTypeValues = new Set<string>(Object.values(RuneTypeEnum));
 
@@ -38,24 +58,7 @@ export class RuneDataModel extends AbilityDataModel<RuneSchema> {
   declare descriptionRqidLink: RqidLink<RqidString>;
 
   static override defineSchema() {
-    return {
-      ...abilitySchemaFields(),
-      descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
-      rune: new StringField({ blank: true, nullable: false, initial: "" }),
-      runeType: new SchemaField({
-        type: new StringField({
-          blank: false,
-          nullable: false,
-          initial: defaultRuneType.type,
-          choices: enumChoices(RuneTypeEnum, "RQG.Item.Rune.RuneType."),
-        }),
-        name: new StringField({ blank: true, nullable: false, initial: defaultRuneType.name }),
-      }),
-      chance: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-      opposingRuneRqidLink: rqidLinkSchemaField({ nullable: true }),
-      minorRuneRqidLinks: rqidLinkArraySchemaField(),
-      isMastered: new BooleanField({ nullable: false, initial: false }),
-    } as const;
+    return defineRuneSchema();
   }
 
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {

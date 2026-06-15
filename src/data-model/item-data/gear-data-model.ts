@@ -4,14 +4,16 @@ import { physicalItemSchemaFields } from "../shared/physical-item-schema-fields"
 
 export type GearItem = RqgItem & { system: Item.SystemOfType<"gear"> };
 
-const gearSchema = {
-  ...physicalItemSchemaFields(),
-} as const;
+function defineGearSchema() {
+  return {
+    ...physicalItemSchemaFields(),
+  } as const;
+}
 
-type GearSchema = typeof gearSchema;
+type GearSchema = ReturnType<typeof defineGearSchema>;
 
 export class GearDataModel extends RqgItemDataModel<GearSchema> {
   static override defineSchema() {
-    return gearSchema;
+    return defineGearSchema();
   }
 }

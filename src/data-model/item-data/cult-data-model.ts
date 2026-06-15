@@ -32,7 +32,32 @@ export interface JoinedCult {
 
 const { ArrayField, SchemaField, StringField } = foundry.data.fields;
 
-type CultSchema = ReturnType<typeof CultDataModel.defineSchema>;
+function defineCultSchema() {
+  return {
+    deity: new StringField({ blank: true, nullable: true, initial: undefined }),
+    descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
+    runePoints: resourceSchemaField(),
+    holyDays: new StringField({ blank: true, nullable: false, initial: "" }),
+    gifts: new StringField({ blank: true, nullable: false, initial: "" }),
+    geases: new StringField({ blank: true, nullable: false, initial: "" }),
+    runeRqidLinks: rqidLinkArraySchemaField(),
+    commonRuneMagicRqidLinks: rqidLinkArraySchemaField(),
+    joinedCults: new ArrayField(
+      new SchemaField({
+        cultName: new StringField({ blank: true, nullable: true, initial: undefined }),
+        tagline: new StringField({ blank: true, nullable: false, initial: "" }),
+        rank: new StringField({
+          blank: false,
+          nullable: false,
+          initial: CultRankEnum.LayMember,
+          choices: enumChoices(CultRankEnum, "RQG.Actor.RuneMagic.CultRank."),
+        }),
+      }),
+    ),
+  } as const;
+}
+
+type CultSchema = ReturnType<typeof defineCultSchema>;
 
 export class CultDataModel extends RqgItemDataModel<CultSchema> {
   declare runeRqidLinks: RqidLink<`i.rune.${string}`>[];
@@ -40,27 +65,6 @@ export class CultDataModel extends RqgItemDataModel<CultSchema> {
   declare descriptionRqidLink: RqidLink<RqidString>;
 
   static override defineSchema() {
-    return {
-      deity: new StringField({ blank: true, nullable: true, initial: undefined }),
-      descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
-      runePoints: resourceSchemaField(),
-      holyDays: new StringField({ blank: true, nullable: false, initial: "" }),
-      gifts: new StringField({ blank: true, nullable: false, initial: "" }),
-      geases: new StringField({ blank: true, nullable: false, initial: "" }),
-      runeRqidLinks: rqidLinkArraySchemaField(),
-      commonRuneMagicRqidLinks: rqidLinkArraySchemaField(),
-      joinedCults: new ArrayField(
-        new SchemaField({
-          cultName: new StringField({ blank: true, nullable: true, initial: undefined }),
-          tagline: new StringField({ blank: true, nullable: false, initial: "" }),
-          rank: new StringField({
-            blank: false,
-            nullable: false,
-            initial: CultRankEnum.LayMember,
-            choices: enumChoices(CultRankEnum, "RQG.Actor.RuneMagic.CultRank."),
-          }),
-        }),
-      ),
-    } as const;
+    return defineCultSchema();
   }
 }

@@ -9,8 +9,8 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import { calculateAbilitySuccessLevel } from "../ability-roll/calculate-ability-success-level";
 import { AbilitySuccessLevelEnum } from "../ability-roll/ability-roll.defs";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { RuneMagicDataModel } from "@item-model/rune-magic-data-model.ts";
 import type { RuneMagicRollOptions } from "./rune-magic-roll.types";
-import { calcRuneAndMagicPointCost } from "@items/rune-magic-item/rune-magic-casting.ts";
 
 import Roll = foundry.dice.Roll;
 
@@ -44,9 +44,10 @@ export class RuneMagicRoll extends Roll {
   }
 
   get targetChance(): number {
-    const modificationsSum =
-      this.options?.modifiers?.reduce((acc, mod) => acc + Number(mod?.value) || 0, 0) ?? 0;
-    return Math.max(0, (this.options.usedRune.system?.chance ?? 0) + modificationsSum); // -50% => 0% to make the calculations work;
+    return RuneMagicDataModel.calculateCastChance(
+      this.options.usedRune,
+      this.options.modifiers ?? [],
+    );
   }
 
   get successLevel(): AbilitySuccessLevelEnum | undefined {
@@ -83,12 +84,13 @@ export class RuneMagicRoll extends Roll {
     const nonzeroSignedModifiers = modifiers
       .filter((m) => isTruthy(m.value))
       .map((m: any) => ({ ...m, value: toSignedString(Number(m.value)) }));
-    const cost = calcRuneAndMagicPointCost(
+    const cost = RuneMagicDataModel.calculatePointCosts(
       this.successLevel ?? 0,
       this.options.levelUsed,
       this.options.magicPointBoost,
     );
-    const usageCostText = this.options.runeMagicItem.system.isOneUse
+    const isOneUse = this.options.isOneUse;
+    const usageCostText = isOneUse
       ? localize("RQG.Roll.RuneMagicRoll.OneUseUsageCost", {
           runePointsCost: cost.rp.toString(),
           magicPointCost: cost.mp.toString(),
@@ -100,7 +102,7 @@ export class RuneMagicRoll extends Roll {
 
     return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRollTooltip, {
       usageCostText: usageCostText,
-      usedRuneChance: this.options.usedRune.system.chance,
+      usedRuneChance: Number(this.options.usedRune.system.chance ?? 0),
       usedRuneName: this.options.usedRune.name,
       modifiers: nonzeroSignedModifiers,
       speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid,
@@ -109,10 +111,8 @@ export class RuneMagicRoll extends Roll {
 
   // Html for what Rune Magic the roll is about
   get flavor(): string {
-    const spellName = this.options.runeMagicItem.name;
-    const flavorImg = this.options.runeMagicItem.img
-      ? `<img src="${this.options.runeMagicItem.img}">`
-      : "";
+    const spellName = this.options.spellName;
+    const flavorImg = this.options.spellImg ? `<img src="${this.options.spellImg}">` : "";
     const itemType = localizeItemType(ItemTypeEnum.RuneMagic);
     const level = this.options.levelUsed;
     return `

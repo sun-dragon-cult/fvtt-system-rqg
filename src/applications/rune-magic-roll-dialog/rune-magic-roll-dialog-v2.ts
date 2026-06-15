@@ -3,13 +3,7 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
-import type { RqgActor } from "@actors/rqg-actor.ts";
 import { RqgItem } from "@items/rqg-item.ts";
-import {
-  getEligibleRunes,
-  getStrongestRune,
-  hasEnoughToCastSpell,
-} from "@items/rune-magic-item/rune-magic-casting.ts";
 import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import type {
   RuneMagicRollDialogContext,
@@ -18,7 +12,6 @@ import type {
 import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
-import type { CultItem } from "@item-model/cult-data-model.ts";
 import {
   getConfiguredRollModeOptions,
   getDefaultRollMode,
@@ -37,14 +30,13 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   }
 
   private computeTotalChance(formData: RuneMagicRollDialogFormData): number {
-    const eligibleRunes = getEligibleRunes(this.spellItem);
+    const eligibleRunes = this.spellItem.system.getEligibleRunes();
     const usedRune = eligibleRunes.find((r) => r.id === formData.usedRuneId);
-    return (
-      Number(usedRune?.system.chance ?? 0) +
-      Number(formData.augmentModifier ?? 0) +
-      Number(formData.meditateModifier ?? 0) +
-      Number(formData.otherModifier ?? 0)
-    );
+    return this.spellItem.system.getCastChance(usedRune, [
+      { value: formData.augmentModifier },
+      { value: formData.meditateModifier },
+      { value: formData.otherModifier },
+    ]);
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -134,14 +126,14 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       token: this.token,
     });
 
-    const eligibleRunes = getEligibleRunes(this.spellItem);
+    const eligibleRunes = this.spellItem.system.getEligibleRunes();
 
     const eligibleRuneOptions = eligibleRunes.map((rune) => ({
       value: rune.id ?? "",
       label: rune.name ?? "",
     }));
     formData.levelUsed ??= this.spellItem.system.points;
-    formData.usedRuneId ??= getStrongestRune(eligibleRunes)?.id ?? "";
+    formData.usedRuneId ??= this.spellItem.system.getStrongestEligibleRune()?.id ?? "";
     formData.boost ??= 0;
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
@@ -169,14 +161,14 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       rollName: this.spellItem.name ?? "",
       spellSummary: this.spellItem.spellSummary ?? "",
       spellSummaryTooltip: this.spellItem.spellSummaryTooltip ?? "",
-      baseChance: (usedRune?.system.chance ?? 0) + "%",
+      baseChance: this.spellItem.system.getBaseChance(usedRune) + "%",
 
       // RollFooter
-      totalChance:
-        Number(usedRune?.system.chance ?? 0) +
-        Number(formData.augmentModifier ?? 0) +
-        Number(formData.meditateModifier ?? 0) +
-        Number(formData.otherModifier ?? 0),
+      totalChance: this.spellItem.system.getCastChance(usedRune, [
+        { value: formData.augmentModifier },
+        { value: formData.meditateModifier },
+        { value: formData.otherModifier },
+      ]),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
@@ -221,7 +213,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     }
     assertDocumentSubType<RuneMagicItem>(spellItem, ItemTypeEnum.RuneMagic);
 
-    const eligibleRunes = getEligibleRunes(spellItem);
+    const eligibleRunes = spellItem.system.getEligibleRunes();
 
     const usedRune = eligibleRunes.find((r) => r.id === formDataObject.usedRuneId);
     if (!usedRune) {
@@ -229,20 +221,19 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return logger.throw(msg, formDataObject);
     }
 
-    const actor = spellItem.parent as RqgActor | undefined;
-    const cult = actor?.items.find((i) => i.id === spellItem.system.cultId) as RqgItem | undefined;
-    if (!cult) {
+    if (!spellItem.system.getCult()) {
       const msg = "No cult to cast the rune magic spell";
       return logger.throw(msg, {
-        actorId: actor?.id,
+        actorId: spellItem.actor?.id,
         spellItemId: spellItem.id,
         cultId: spellItem.system.cultId,
       });
     }
-    assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
     const options: RuneMagicRollOptions = {
       usedRune: usedRune,
-      runeMagicItem: spellItem,
+      spellName: spellItem.name ?? "",
+      spellImg: spellItem.img ?? undefined,
+      isOneUse: spellItem.system.isOneUse,
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
       modifiers: [
@@ -265,8 +256,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       speaker: getSpeakerCompat({ actor: spellItem.actor ?? undefined, token }),
       rollMode: rollMode,
     };
-    const validationError = hasEnoughToCastSpell(
-      cult,
+    const validationError = spellItem.system.getCastValidationError(
       formDataObject.levelUsed,
       formDataObject.boost,
     );

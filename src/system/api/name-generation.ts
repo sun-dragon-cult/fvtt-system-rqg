@@ -1,5 +1,3 @@
-// @ts-expect-error foswig isn't typed
-import Foswig from "foswig";
 import { RQG_CONFIG, systemId } from "../config";
 import { localize } from "../util";
 import { Rqid } from "./rqid-api";
@@ -90,6 +88,8 @@ export class nameGeneration {
     // properties on the constraints will override defaultConstraints if they exist
     const mergedConstraints = { ...this.defaultConstraints, ...constraints };
 
+    // @ts-expect-error foswig isn't typed
+    const { default: Foswig } = await import("foswig");
     const chain = new Foswig(3, nameBase.names);
     const nameBaseNotLongEnoughMsg = localize("RQG.Notification.Warn.NameBaseNotLongEnough", {
       rqid: rqid,

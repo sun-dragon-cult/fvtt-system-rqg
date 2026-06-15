@@ -9,6 +9,24 @@ function getNestedSchema(field: unknown): DataSchema {
 }
 
 describe("CharacterDataModel accumulator schema", () => {
+  it("declares attributes.magicPoints.max and attributes.hitPoints.max as non-persisted derived fields", () => {
+    const schema = CharacterDataModel.defineSchema();
+    const attributes = getNestedSchema(schema.attributes);
+    const magicPoints = getNestedSchema(attributes["magicPoints"]);
+    const hitPoints = getNestedSchema(attributes["hitPoints"]);
+
+    const magicPointsMax = magicPoints["max"] as { options?: Record<string, unknown> };
+    const hitPointsMax = hitPoints["max"] as { options?: Record<string, unknown> };
+
+    expect(magicPointsMax.options?.["persisted"]).toBe(false);
+    expect(magicPointsMax.options?.["nullable"]).toBe(false);
+    expect(magicPointsMax.options?.["initial"]).toBe(0);
+
+    expect(hitPointsMax.options?.["persisted"]).toBe(false);
+    expect(hitPointsMax.options?.["nullable"]).toBe(false);
+    expect(hitPointsMax.options?.["initial"]).toBe(0);
+  });
+
   it("declares resource effect accumulators as non-persisted numeric fields", () => {
     const schema = CharacterDataModel.defineSchema();
     const effect = getNestedSchema(schema.effect);

@@ -3,32 +3,9 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { assertDocumentSubType, isDocumentSubType, localize } from "../../system/util";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
-import type { RqidLink } from "../../data-model/shared/rqid-link";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
-
-function calcRuneMagicChance(
-  actorItems: CharacterActor["items"]["contents"],
-  cultRuneRqidLinks: RqidLink[],
-  runeMagicRuneRqidLinks: RqidLink[],
-): number {
-  const runeMagicRqids = runeMagicRuneRqidLinks.map((r) => r.rqid);
-  const cultRqids = cultRuneRqidLinks.map((r) => r.rqid);
-  const runeChances = actorItems.reduce((acc: number[], item) => {
-    if (
-      isDocumentSubType(item, ItemTypeEnum.Rune) &&
-      (runeMagicRqids.includes(item.flags.rqg?.documentRqidFlags?.id ?? "") ||
-        (runeMagicRqids.includes(CONFIG.RQG.runeRqid.magic) &&
-          cultRqids.includes(item.flags.rqg?.documentRqidFlags?.id ?? "")))
-    ) {
-      acc.push(item.system.chance ?? 0);
-    }
-    return acc;
-  }, []);
-
-  return runeChances.length > 0 ? Math.max(...runeChances) : 0;
-}
 
 async function chooseCultDialog(
   actorCultOptions: SelectOptionData<string>[],
@@ -82,15 +59,13 @@ export const runeMagicLifecycle = {
       "RQG.Item.Notification.WrongItemTypeRuneMagicError",
     );
 
+    item.system.chance = 0;
+
     if (item.system.cultId) {
-      const runeMagicCult = actor.items.get(item.system.cultId) as RqgItem | undefined;
+      const runeMagicCult = item.system.getCult();
 
       if (isDocumentSubType<CultItem>(runeMagicCult, ItemTypeEnum.Cult)) {
-        item.system.chance = calcRuneMagicChance(
-          actor.items.contents,
-          runeMagicCult.system.runeRqidLinks,
-          item.system.runeRqidLinks,
-        );
+        item.system.chance = item.system.getDefaultChance();
       } else {
         // This warning can happen when drag-dropping a rune spell from one Actor to another,
         // but the notification happens a lot of times and doesn't really matter since the system immediately,
