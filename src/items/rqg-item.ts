@@ -28,7 +28,7 @@ import { systemId } from "../system/config";
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
 import type { AbilityRollOptions } from "../rolls/ability-roll/ability-roll.types";
 import type { SpiritMagicRollOptions } from "../rolls/spirit-magic-roll/spirit-magic-roll.types";
-import type { RuneMagicRollOptions } from "../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { RuneMagicRollImmediateOptions } from "../rolls/rune-magic-roll/rune-magic-roll.types";
 import { GearDataModel } from "@item-model/gear-data-model";
 import { ArmorDataModel } from "@item-model/armor-data-model";
 import { WeaponDataModel } from "@item-model/weapon-data-model";
@@ -294,7 +294,7 @@ export class RqgItem extends Item {
    * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
    */
   public async runeMagicRollImmediate(
-    options: Partial<RuneMagicRollOptions> = {},
+    options: RuneMagicRollImmediateOptions = {},
     token?: TokenDocument | null,
   ): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);

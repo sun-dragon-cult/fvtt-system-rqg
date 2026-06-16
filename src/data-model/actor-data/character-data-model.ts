@@ -7,6 +7,15 @@ import type { SkillCategories } from "./skill-categories";
 import { getCharacteristicDerivedValues } from "./derived-character-values";
 import type { CharacterActor } from "./rqg-actor-data";
 import { RqgCalculations } from "../../system/rqg-calculations";
+import { ItemTypeEnum } from "../item-data/item-types";
+import type { SpiritMagicItem } from "../item-data/spirit-magic-data-model";
+import type { SkillItem } from "../item-data/skill-data-model";
+import type { CultItem } from "../item-data/cult-data-model";
+import {
+  compareCultsByPriority,
+  hasGodTalkerOrHigherNonRuneLord,
+} from "../item-data/cult-priority";
+import { isDocumentSubType } from "../../system/util";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -184,6 +193,53 @@ export class CharacterDataModel extends RqgActorDataModel<
 > {
   static override defineSchema() {
     return defineCharacterSchema();
+  }
+
+  static getSpiritMagicPointSum(actor: CharacterActor): number {
+    return actor.items.reduce((acc: number, item) => {
+      if (
+        isDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic) &&
+        !item.system.isMatrix
+      ) {
+        return acc + item.system.points;
+      }
+      return acc;
+    }, 0);
+  }
+
+  static getFreeInt(actor: CharacterActor, spiritMagicPointSum: number): number {
+    const sorcerySkillCount = actor.items.filter(
+      (i) =>
+        isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) && !!i.system.runeRqidLinks?.length,
+    ).length;
+
+    return (
+      (actor.system.characteristics.intelligence.value ?? 0) -
+      spiritMagicPointSum -
+      sorcerySkillCount
+    );
+  }
+
+  static getSortedCults(actor: CharacterActor): CultItem[] {
+    return actor.items
+      .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
+      .sort((a, b) => compareCultsByPriority(a as CultItem, b as CultItem)) as CultItem[];
+  }
+
+  static getMainCult(actor: CharacterActor): CultItem | undefined {
+    return CharacterDataModel.getSortedCults(actor)[0];
+  }
+
+  static getPowWarning(actor: CharacterActor): boolean {
+    const hasHighRank = CharacterDataModel.getSortedCults(actor).some((cult) =>
+      hasGodTalkerOrHigherNonRuneLord(cult),
+    );
+
+    if (!hasHighRank) {
+      return false;
+    }
+
+    return (actor.system.characteristics.power.value ?? 0) < 18;
   }
 
   override prepareDerivedData(): void {

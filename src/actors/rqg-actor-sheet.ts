@@ -42,6 +42,7 @@ import {
 } from "../system/util";
 import { actorHealthStatuses, LocomotionEnum } from "../data-model/actor-data/attributes";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
+import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
 import { ActorWizard } from "../applications/actor-wizard-application";
 import { RQG_CONFIG, systemId } from "../system/config";
 import { RqidLink } from "../data-model/shared/rqid-link";
@@ -184,7 +185,7 @@ export class RqgActorSheet<
     // Spread the DataModel into a plain object to capture live (prepared) data.
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
     const system = { ...this.actor.system } as CharacterActor["system"];
-    const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
+    const spiritMagicPointSum = CharacterDataModel.getSpiritMagicPointSum(this.actor);
     const dexStrikeRank = system.attributes.dexStrikeRank;
     const itemTree = new ItemTree(this.actor.items.contents); // physical items reorganised as a tree of items containing items
 
@@ -231,7 +232,7 @@ export class RqgActorSheet<
       itemLocationTree: itemTree.toSheetData(),
       powCrystals: DataPrep.getPowCrystals(this.actor),
       spiritMagicPointSum: spiritMagicPointSum,
-      freeInt: DataPrep.getFreeInt(this.actor, spiritMagicPointSum),
+      freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
       baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
       enrichedAllies: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.allies,

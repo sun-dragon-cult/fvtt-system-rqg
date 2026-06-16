@@ -44,8 +44,8 @@ export class RuneMagicRoll extends Roll {
   }
 
   get targetChance(): number {
-    return RuneMagicDataModel.calculateCastChance(
-      this.options.usedRune,
+    return RuneMagicDataModel.calculateCastChanceFromBaseChance(
+      this.options.usedRuneChance,
       this.options.modifiers ?? [],
     );
   }
@@ -102,8 +102,8 @@ export class RuneMagicRoll extends Roll {
 
     return foundry.applications.handlebars.renderTemplate(templatePaths.runeMagicRollTooltip, {
       usageCostText: usageCostText,
-      usedRuneChance: Number(this.options.usedRune.system.chance ?? 0),
-      usedRuneName: this.options.usedRune.name,
+      usedRuneChance: Number(this.options.usedRuneChance ?? 0),
+      usedRuneName: this.options.usedRuneName,
       modifiers: nonzeroSignedModifiers,
       speakerUuid: ChatMessage.getSpeakerActor(this.options.speaker)?.uuid,
     });

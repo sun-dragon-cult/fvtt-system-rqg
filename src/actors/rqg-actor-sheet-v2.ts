@@ -1,6 +1,7 @@
 import type { RqgSheetHeaderControl, RqgActorSheetV2Context } from "./rqg-actor-sheet-v2.types";
 import type { DeepPartial } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
+import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
 import {
@@ -225,7 +226,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Spread the DataModel into a plain object to capture live (prepared) data.
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
     const system = { ...this.actor.system } as CharacterActor["system"];
-    const spiritMagicPointSum = DataPrep.getSpiritMagicPointSum(this.actor);
+    const spiritMagicPointSum = CharacterDataModel.getSpiritMagicPointSum(this.actor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
@@ -310,7 +311,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
 
       spiritMagicPointSum: spiritMagicPointSum,
-      freeInt: DataPrep.getFreeInt(this.actor, spiritMagicPointSum),
+      freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
       powCrystals: DataPrep.getPowCrystals(this.actor),
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(

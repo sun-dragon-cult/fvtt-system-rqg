@@ -40,6 +40,21 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     return defineSpiritMagicSchema();
   }
 
+  getCastValidationError(levelUsed: number | undefined, boost: number = 0): string | undefined {
+    const availableMagicPoints =
+      Number(this.parent?.actor?.system.attributes.magicPoints.value) || 0;
+
+    if (levelUsed == null || levelUsed > this.points) {
+      return localize("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
+    }
+
+    if (levelUsed + boost > availableMagicPoints) {
+      return localize("RQG.Item.SpiritMagic.NotEnoughMagicPoints");
+    }
+
+    return undefined;
+  }
+
   /**
    * Open a dialog for a SpiritMagicRoll.
    */
@@ -65,14 +80,22 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
+    const levelUsed = options.levelUsed ?? this.points;
+    const boost = options.magicPointBoost ?? 0;
+    const validationError = this.getCastValidationError(levelUsed, boost);
+    if (validationError) {
+      ui.notifications?.warn(validationError);
+      return;
+    }
+
     const speaker = getSpeakerCompat({ actor, token });
 
     // Dynamic import to avoid circular dependency through SpiritMagicRoll → itemTypes.ts → rqgItem.ts
     const { SpiritMagicRoll } = await import("../../rolls/spirit-magic-roll/spirit-magic-roll");
     const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
       powX5: powX5,
-      levelUsed: options.levelUsed ?? this.points,
-      magicPointBoost: options.magicPointBoost ?? 0,
+      levelUsed: levelUsed,
+      magicPointBoost: boost,
       modifiers: options?.modifiers,
       spellName: item?.name ?? undefined,
       spellImg: item?.img ?? undefined,
@@ -82,7 +105,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     if (spiritMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
-    const mpCost = options.levelUsed + (options.magicPointBoost ?? 0);
+    const mpCost = levelUsed + boost;
     await actor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel);
   }
 

@@ -26,6 +26,21 @@ describe("RuneMagicDataModel chance helpers", () => {
     expect(RuneMagicDataModel.calculateCastChance(rune, [{ value: -80 }])).toBe(0);
   });
 
+  it("calculates cast chance from serialized base chance values", () => {
+    expect(
+      RuneMagicDataModel.calculateCastChanceFromBaseChance(55, [
+        { value: 20 },
+        { value: -10 },
+        { value: "5" },
+      ]),
+    ).toBe(70);
+
+    expect(RuneMagicDataModel.calculateCastChanceFromBaseChance(55, [{ value: -80 }])).toBe(0);
+    expect(RuneMagicDataModel.calculateCastChanceFromBaseChance(Number.NaN, [{ value: 10 }])).toBe(
+      10,
+    );
+  });
+
   it("validates available rune and magic points for casting", () => {
     const fakeModel = {
       getCult: () => ({ system: { runePoints: { value: 4 } } }),

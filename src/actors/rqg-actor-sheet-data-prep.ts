@@ -1,4 +1,5 @@
 import type { CharacterActor } from "../data-model/actor-data/rqg-actor-data";
+import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
 import type { Characteristics } from "../data-model/actor-data/characteristics";
 import type {
   MainCult,
@@ -11,7 +12,7 @@ import type {
 } from "./rqg-actor-sheet.types";
 import type { RqgItem } from "../items/rqg-item";
 import type { GearItem } from "@item-model/gear-data-model.ts";
-import type { CultItem } from "@item-model/cult-data-model.ts";
+import { CultRankEnum, type CultItem } from "@item-model/cult-data-model.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { SkillCategoryEnum } from "@item-model/skill-data-model.ts";
@@ -21,6 +22,7 @@ import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
+import { compareCultsByPriority } from "@item-model/cult-priority.ts";
 import {
   assertDocumentSubType,
   formatListByWorldLanguage,
@@ -29,7 +31,6 @@ import {
   localize,
   range,
 } from "../system/util";
-import { CultRankEnum } from "@item-model/cult-data-model.ts";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/item-types.ts";
 import { physicalItemTypes } from "../data-model/item-data/i-physical-item";
 import { systemId } from "../system/config";
@@ -135,53 +136,12 @@ export function calcCurrencyTotals(actor: CharacterActor): CurrencyTotals {
 }
 
 /**
- * Rank order for cult sorting (High Priest = 7 highest, Lay Member = 1 lowest).
- */
-const cultRankOrder: Record<CultRankEnum, number> = {
-  [CultRankEnum.HighPriest]: 7,
-  [CultRankEnum.ChiefPriest]: 6,
-  [CultRankEnum.RuneLord]: 5,
-  [CultRankEnum.RunePriest]: 4,
-  [CultRankEnum.GodTalker]: 3,
-  [CultRankEnum.Initiate]: 2,
-  [CultRankEnum.LayMember]: 1,
-} as const;
-
-/**
- * Compare two cult items for sorting: highest rank first, then rune points, then alphabetical.
- */
-function compareCults(a: CultItem, b: CultItem): number {
-  // 1. Highest cult rank (High Priest first, Lay Member last)
-  const bestRankA = Math.max(
-    0,
-    ...(a.system.joinedCults?.map((c) => cultRankOrder[c.rank] ?? 0) ?? []),
-  );
-  const bestRankB = Math.max(
-    0,
-    ...(b.system.joinedCults?.map((c) => cultRankOrder[c.rank as CultRankEnum] ?? 0) ?? []),
-  );
-  if (bestRankB !== bestRankA) {
-    return bestRankB - bestRankA;
-  }
-  // 2. Rune Points (higher first)
-  const rpDiff = (b.system.runePoints?.max ?? 0) - (a.system.runePoints?.max ?? 0);
-  if (rpDiff !== 0) {
-    return rpDiff;
-  }
-  // 3. Alphabetical by deity name
-  return (a.system.deity ?? "").localeCompare(b.system.deity ?? "");
-}
-
-/**
  * Gets information about the actor's main cult.
  * @param actor - The character actor
  * @returns MainCult information
  */
 export function getMainCultInfo(actor: CharacterActor): MainCult {
-  const cults = actor.items
-    .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
-    .sort((a, b) => compareCults(a as CultItem, b as CultItem)) as CultItem[];
-  const mainCultItem = cults[0];
+  const mainCultItem = CharacterDataModel.getMainCult(actor);
   const mainCultRankTranslation =
     mainCultItem?.system?.joinedCults.map((c) =>
       c.rank ? localize("RQG.Actor.RuneMagic.CultRank." + c.rank) : "",
@@ -192,24 +152,6 @@ export function getMainCultInfo(actor: CharacterActor): MainCult {
     rank: formatListByWorldLanguage(mainCultRankTranslation),
     descriptionRqid: mainCultItem?.system?.descriptionRqidLink?.rqid ?? "",
   };
-}
-
-/**
- * Calculates the sum of spirit magic points invested in spells (not in matrices).
- * @param actor - The character actor
- * @returns Total spirit magic points
- */
-export function getSpiritMagicPointSum(actor: CharacterActor): number {
-  return actor.items.reduce((acc: number, item) => {
-    if (
-      isDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic) &&
-      !item.system.isMatrix
-    ) {
-      return acc + item.system.points;
-    } else {
-      return acc;
-    }
-  }, 0);
 }
 
 /**
@@ -261,35 +203,7 @@ export function getPowCrystals(actor: CharacterActor): { name: string; size: num
  * @returns Whether a POW warning should be shown
  */
 export function getPowWarning(actor: CharacterActor): boolean {
-  const hasHighRank = actor.items.some(
-    (i) =>
-      isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult) &&
-      i.system.joinedCults.some(
-        (c) =>
-          cultRankOrder[c.rank] >= cultRankOrder[CultRankEnum.GodTalker] &&
-          c.rank !== CultRankEnum.RuneLord,
-      ),
-  );
-  if (!hasHighRank) {
-    return false;
-  }
-  return (actor.system.characteristics.power.value ?? 0) < 18;
-}
-
-/**
- * Calculates free INT (INT - spirit magic points - sorcery spells).
- * @param actor - The character actor  * @param spiritMagicPointSum - Total spirit magic points invested
- * @returns Free INT available
- */
-export function getFreeInt(actor: CharacterActor, spiritMagicPointSum: number): number {
-  return (
-    (actor.system.characteristics.intelligence.value ?? 0) -
-    spiritMagicPointSum -
-    actor.items.filter(
-      (i) =>
-        isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) && !!i.system.runeRqidLinks?.length,
-    ).length
-  );
+  return CharacterDataModel.getPowWarning(actor);
 }
 
 /**
@@ -830,7 +744,9 @@ export async function organizeEmbeddedItems(
   itemTypes[ItemTypeEnum.SpiritMagic]?.sort((a, b) => a.sort - b.sort);
   itemTypes[ItemTypeEnum.Weapon]?.sort((a, b) => a.sort - b.sort);
 
-  itemTypes[ItemTypeEnum.Cult]?.sort((a, b) => compareCults(a as CultItem, b as CultItem));
+  itemTypes[ItemTypeEnum.Cult]?.sort((a, b) =>
+    compareCultsByPriority(a as CultItem, b as CultItem),
+  );
 
   return itemTypes;
 }

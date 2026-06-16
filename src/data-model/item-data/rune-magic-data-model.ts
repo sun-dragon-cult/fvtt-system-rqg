@@ -7,7 +7,7 @@ import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
 import { localize, assertDocumentSubType, isDocumentSubType, isTruthy } from "../../system/util";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
-import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import type { CultItem } from "./cult-data-model";
@@ -96,13 +96,26 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     return this.getBaseChance(this.getStrongestEligibleRune());
   }
 
+  static calculateCastChanceFromBaseChance(
+    baseChance: number,
+    modifiers: ChanceModifier[] = [],
+  ): number {
+    const normalizedBaseChance = Number(baseChance);
+    const modificationsSum = modifiers.reduce((acc, mod) => acc + (Number(mod?.value) || 0), 0);
+    return Math.max(
+      0,
+      (Number.isFinite(normalizedBaseChance) ? normalizedBaseChance : 0) + modificationsSum,
+    );
+  }
+
   static calculateCastChance(
     usedRune: RuneItem | null | undefined,
     modifiers: ChanceModifier[] = [],
   ): number {
-    const baseChance = Number(usedRune?.system.chance ?? 0);
-    const modificationsSum = modifiers.reduce((acc, mod) => acc + (Number(mod?.value) || 0), 0);
-    return Math.max(0, baseChance + modificationsSum);
+    return RuneMagicDataModel.calculateCastChanceFromBaseChance(
+      Number(usedRune?.system.chance ?? 0),
+      modifiers,
+    );
   }
 
   getCastChance(usedRune: RuneItem | null | undefined, modifiers: ChanceModifier[] = []): number {
@@ -187,7 +200,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
    * Also adds experience to the used rune.
    */
   async runeMagicRollImmediate(
-    options: Partial<RuneMagicRollOptions> = {},
+    options: RuneMagicRollImmediateOptions = {},
     token?: TokenDocument | null,
   ): Promise<void> {
     const item = this.parent;
@@ -217,7 +230,9 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     }
 
     const runeMagicItemTyped = item as unknown as RuneMagicItem;
-    const usedRune = options.usedRune ? options.usedRune : this.getStrongestEligibleRune();
+    const usedRune = options.usedRuneId
+      ? this.getEligibleRunes().find((r) => r.id === options.usedRuneId)
+      : this.getStrongestEligibleRune();
     if (!usedRune) {
       const msg = "Could not find a rune to use for rune magic";
       ui.notifications?.warn(msg);
@@ -227,7 +242,8 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     const speaker = getSpeakerCompat({ actor, token });
 
     const runeMagicRoll = await RuneMagicRoll.rollAndShow({
-      usedRune: usedRune,
+      usedRuneName: usedRune.name ?? "",
+      usedRuneChance: Number(usedRune.system.chance ?? 0),
       spellName: runeMagicItemTyped.name ?? "",
       spellImg: runeMagicItemTyped.img ?? undefined,
       isOneUse: this.isOneUse,
