@@ -82,8 +82,8 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
-    const levelUsed = options.levelUsed ?? this.points;
-    const boost = options.magicPointBoost ?? 0;
+    const levelUsed = Number(options.levelUsed ?? this.points);
+    const boost = Number(options.magicPointBoost ?? 0) || 0;
     const validationError = this.getCastValidationError(levelUsed, boost);
     if (validationError) {
       ui.notifications?.warn(validationError);
