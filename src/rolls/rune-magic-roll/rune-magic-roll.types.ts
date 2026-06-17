@@ -1,9 +1,8 @@
-import type { RuneItem } from "@item-model/rune-data-model.ts";
-
 export type Modifier = { description: string; value: number };
 
 export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.EvaluationOptions> & {
-  usedRune: RuneItem;
+  usedRuneName: string;
+  usedRuneChance: number;
   spellName: string;
   spellImg?: string;
   isOneUse: boolean;
@@ -12,4 +11,10 @@ export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluatio
   modifiers: Modifier[];
   speaker: ChatMessage.SpeakerData;
   rollMode?: foundry.dice.Roll.Mode;
+};
+
+export type RuneMagicRollImmediateOptions = Partial<
+  Omit<RuneMagicRollOptions, "usedRuneName" | "usedRuneChance">
+> & {
+  usedRuneId?: string;
 };

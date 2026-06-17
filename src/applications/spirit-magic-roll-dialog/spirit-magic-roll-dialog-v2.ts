@@ -8,7 +8,6 @@ import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../sy
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { RqgItem } from "@items/rqg-item.ts";
-import { hasEnoughToCastSpell } from "@items/spirit-magic-item/spirit-magic-validation.ts";
 import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
@@ -210,10 +209,9 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       rollMode: rollMode,
       speaker: getSpeakerCompat({ actor: spellItem.actor ?? undefined, token }),
     };
-    const validationError = hasEnoughToCastSpell(
+    const validationError = spellItem.system.getCastValidationError(
       formDataObject.levelUsed,
-      formDataObject.boost,
-      spellItem,
+      Number(formDataObject.boost ?? 0),
     );
     if (validationError) {
       ui.notifications?.warn(validationError);

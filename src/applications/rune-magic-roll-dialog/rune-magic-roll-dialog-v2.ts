@@ -4,7 +4,7 @@ import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../sy
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { RqgItem } from "@items/rqg-item.ts";
-import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
@@ -229,8 +229,8 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         cultId: spellItem.system.cultId,
       });
     }
-    const options: RuneMagicRollOptions = {
-      usedRune: usedRune,
+    const options: RuneMagicRollImmediateOptions = {
+      usedRuneId: usedRune.id ?? undefined,
       spellName: spellItem.name ?? "",
       spellImg: spellItem.img ?? undefined,
       isOneUse: spellItem.system.isOneUse,

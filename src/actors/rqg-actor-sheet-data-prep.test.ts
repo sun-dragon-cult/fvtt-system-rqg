@@ -1,12 +1,12 @@
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import { beforeEach, describe, expect, it } from "vitest";
+import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
 import {
   calcCurrencyTotals,
   getBaseStrikeRank,
   getCharacterElementRuneImgs,
   getCharacterFormRuneImgs,
   getCharacterPowerRuneImgs,
-  getFreeInt,
   getHitLocationDiceRangeError,
   getLoadedMissileSr,
   getLoadedMissileSrDisplay,
@@ -14,7 +14,6 @@ import {
   getPowCrystals,
   getRuneOpposedPairs,
   getRuneVisualsMap,
-  getSpiritMagicPointSum,
   getUnloadedMissileSr,
   getUnloadedMissileSrDisplay,
 } from "./rqg-actor-sheet-data-prep";
@@ -189,7 +188,7 @@ describe("spirit magic and free INT", () => {
       },
     ]);
 
-    expect(getSpiritMagicPointSum(actor)).toBe(6);
+    expect(CharacterDataModel.getSpiritMagicPointSum(actor)).toBe(6);
   });
 
   it("calculates free INT as INT minus spirit points and sorcery skill count", () => {
@@ -208,7 +207,7 @@ describe("spirit magic and free INT", () => {
       },
     ]);
 
-    expect(getFreeInt(actor, 4)).toBe(6);
+    expect(CharacterDataModel.getFreeInt(actor, 4)).toBe(6);
   });
 });
 
