@@ -46,5 +46,5 @@ export function hasGodTalkerOrHigherNonRuneLord(cult: CultItem): boolean {
  * granting access to rune magic.
  */
 export function hasAccessToRuneMagic(cult: CultItem): boolean {
-  return cult.system.joinedCults.some((c) => c.rank !== CultRankEnum.LayMember);
+  return cult.system.joinedCults?.some((c) => c.rank !== CultRankEnum.LayMember) ?? false;
 }
