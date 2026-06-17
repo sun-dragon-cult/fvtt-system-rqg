@@ -17,7 +17,7 @@ export function compareCultsByPriority(a: CultItem, b: CultItem): number {
   );
   const bestRankB = Math.max(
     0,
-    ...(b.system.joinedCults?.map((c) => cultRankOrder[c.rank as CultRankEnum] ?? 0) ?? []),
+    ...(b.system.joinedCults?.map((c) => cultRankOrder[c.rank] ?? 0) ?? []),
   );
   if (bestRankB !== bestRankA) {
     return bestRankB - bestRankA;
@@ -37,4 +37,12 @@ export function hasGodTalkerOrHigherNonRuneLord(cult: CultItem): boolean {
       cultRankOrder[c.rank] >= cultRankOrder[CultRankEnum.GodTalker] &&
       c.rank !== CultRankEnum.RuneLord,
   );
+}
+
+/**
+ * Returns true if any joined sub-cult has a rank above Lay Member,
+ * granting access to rune magic.
+ */
+export function hasAccessToRuneMagic(cult: CultItem): boolean {
+  return cult.system.joinedCults.some((c) => c.rank !== CultRankEnum.LayMember);
 }

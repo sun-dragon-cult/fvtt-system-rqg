@@ -12,7 +12,7 @@ import type {
 } from "./rqg-actor-sheet.types";
 import type { RqgItem } from "../items/rqg-item";
 import type { GearItem } from "@item-model/gear-data-model.ts";
-import { CultRankEnum, type CultItem } from "@item-model/cult-data-model.ts";
+import type { CultItem } from "@item-model/cult-data-model.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { SkillCategoryEnum } from "@item-model/skill-data-model.ts";
@@ -22,7 +22,7 @@ import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
-import { compareCultsByPriority } from "@item-model/cult-priority.ts";
+import { compareCultsByPriority, hasAccessToRuneMagic } from "@item-model/cult-priority.ts";
 import {
   assertDocumentSubType,
   formatListByWorldLanguage,
@@ -639,9 +639,7 @@ export async function organizeEmbeddedItems(
   // Extract hasAccessToRuneMagic info from subCults and sum up learned rune magic points per cult
   itemTypes[ItemTypeEnum.Cult]?.forEach((cult) => {
     const cultItem = cult as CultItem;
-    (cultItem as any).hasAccessToRuneMagic = cultItem.system.joinedCults.some(
-      (subCult) => subCult.rank !== CultRankEnum.LayMember,
-    );
+    (cultItem as any).hasAccessToRuneMagic = hasAccessToRuneMagic(cultItem);
     (cultItem as any).runeMagicPointSum =
       itemTypes[ItemTypeEnum.RuneMagic]
         ?.filter((runeMagicItem) => (runeMagicItem as RuneMagicItem).system.cultId === cultItem.id)
