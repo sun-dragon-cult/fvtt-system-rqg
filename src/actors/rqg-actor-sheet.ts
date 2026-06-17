@@ -78,6 +78,7 @@ import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import type { ArmorItem } from "@item-model/armor-data-model.ts";
 import type { RqgActiveEffect } from "../active-effect/rqg-active-effect.ts";
+import { getSpeakerCompat } from "../system/fvtt-type-compat";
 
 import ActorSheet = foundry.appv1.sheets.ActorSheet;
 
@@ -734,7 +735,7 @@ export class RqgActorSheet<
         const r = new DamageRoll(damageFormulaWithDb);
         await r.evaluate();
         await r.toMessage({
-          speaker: ChatMessage.getSpeaker(),
+          speaker: getSpeakerCompat({ actor: this.actor, token: this.actor.token ?? undefined }),
           flavor: `<div class="roll-action">${localize(heading)}</div>`,
         });
       });

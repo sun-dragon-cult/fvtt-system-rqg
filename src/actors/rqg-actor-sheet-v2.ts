@@ -72,6 +72,7 @@ import {
 } from "../data-model/item-data/i-physical-item";
 import { ItemTree } from "../items/shared/item-tree";
 import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
+import { getSpeakerCompat } from "../system/fvtt-type-compat";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -819,7 +820,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         const r = new DamageRoll(damageFormulaWithDb);
         await r.evaluate();
         await r.toMessage({
-          speaker: ChatMessage.getSpeaker(),
+          speaker: getSpeakerCompat({ actor: this.actor, token: this.actor.token ?? undefined }),
           flavor: `<div class="roll-action">${localize(heading)}</div>`,
         });
       });

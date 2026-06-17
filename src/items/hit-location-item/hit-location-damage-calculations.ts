@@ -6,7 +6,13 @@ import {
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { type ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { assertDocumentSubType, isDocumentSubType, localize, RqgError } from "../../system/util";
+import {
+  assertDocumentSubType,
+  getSpeakerDisplayName,
+  isDocumentSubType,
+  localize,
+  RqgError,
+} from "../../system/util";
 import { RqgItem } from "../rqg-item";
 import { RqgActor } from "../../actors/rqg-actor";
 import { systemId } from "../../system/config";
@@ -34,7 +40,7 @@ export class DamageCalculations {
     applyDamageToTotalHp: boolean,
     hitLocation: HitLocationItem | undefined,
     actor: CharacterActor,
-    speakerName: string,
+    speaker: ChatMessage.SpeakerData,
   ): DamageEffects {
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
@@ -44,7 +50,7 @@ export class DamageCalculations {
         damage,
         actor,
         applyDamageToTotalHp,
-        speakerName,
+        speaker,
       );
     } else {
       return DamageCalculations.calcLocationDamageEffects(
@@ -52,9 +58,13 @@ export class DamageCalculations {
         damage,
         actor,
         applyDamageToTotalHp,
-        speakerName,
+        speaker,
       );
     }
+  }
+
+  private static getResolvedSpeakerName(actor: RqgActor, speaker: ChatMessage.SpeakerData): string {
+    return getSpeakerDisplayName(speaker) || actor.name || "";
   }
 
   private static applyDamageToActorTotalHp(
@@ -87,9 +97,10 @@ export class DamageCalculations {
     fullDamage: number,
     actor: RqgActor,
     applyDamageToTotalHp: boolean,
-    speakerName: string,
+    speaker: ChatMessage.SpeakerData,
   ): DamageEffects {
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
+    const speakerName = DamageCalculations.getResolvedSpeakerName(actor, speaker);
     const damageEffects: DamageEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},
@@ -178,8 +189,9 @@ export class DamageCalculations {
     damage: number,
     actor: RqgActor,
     applyDamageToTotalHp: boolean,
-    speakerName: string,
+    speaker: ChatMessage.SpeakerData,
   ): DamageEffects {
+    const speakerName = DamageCalculations.getResolvedSpeakerName(actor, speaker);
     const damageEffects: DamageEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},

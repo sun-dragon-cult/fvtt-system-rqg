@@ -18,7 +18,7 @@ export function applyTestDamage(
     applyDamageToTotalHp,
     hitLocation,
     actor,
-    "Pelle Plutt",
+    { alias: "Pelle Plutt" } as ChatMessage.SpeakerData,
   );
   foundry.utils.mergeObject(hitLocation, damageEffects.hitLocationUpdates);
   foundry.utils.mergeObject(actor, damageEffects.actorUpdates);
