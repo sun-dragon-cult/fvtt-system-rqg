@@ -32,10 +32,12 @@ export function compareCultsByPriority(a: CultItem, b: CultItem): number {
 }
 
 export function hasGodTalkerOrHigherNonRuneLord(cult: CultItem): boolean {
-  return cult.system.joinedCults.some(
-    (c) =>
-      cultRankOrder[c.rank] >= cultRankOrder[CultRankEnum.GodTalker] &&
-      c.rank !== CultRankEnum.RuneLord,
+  return (
+    cult.system.joinedCults?.some(
+      (c) =>
+        cultRankOrder[c.rank] >= cultRankOrder[CultRankEnum.GodTalker] &&
+        c.rank !== CultRankEnum.RuneLord,
+    ) ?? false
   );
 }
 
