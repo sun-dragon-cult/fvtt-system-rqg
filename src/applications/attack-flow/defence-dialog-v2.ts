@@ -58,12 +58,16 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     totalChance: number,
     modifiers: Array<{ label: string; value: number }>,
   ): string {
+    const escapeText = (value: unknown): string => foundry.utils.escapeHTML(String(value ?? ""));
     const tooltipLines = [
-      `<strong>${localize("RQG.Dialog.Common.TargetChance")}</strong>`,
-      `${localize("TYPES.Item.skill")}: ${baseSkillChance}%`,
+      `<strong>${escapeText(localize("RQG.Dialog.Common.TargetChance"))}</strong>`,
+      `${escapeText(localize("TYPES.Item.skill"))}: ${baseSkillChance}%`,
       ...modifiers
         .filter((modifier) => Number(modifier.value ?? 0) !== 0)
-        .map((modifier) => `${toSignedString(modifier.value)}% ${modifier.label}`),
+        .map(
+          (modifier) =>
+            `${escapeText(toSignedString(modifier.value))}% ${escapeText(modifier.label)}`,
+        ),
       `= ${totalChance}%`,
     ];
 
@@ -368,8 +372,6 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
       // defence-footer
       totalChance,
-      weaponEffectModifierLabel:
-        weaponEffectModifier === 0 ? null : `(${toSignedString(weaponEffectModifier)}%)`,
       chanceBreakdownTooltip,
       defenceButtonText: defenceButtonText,
     };
