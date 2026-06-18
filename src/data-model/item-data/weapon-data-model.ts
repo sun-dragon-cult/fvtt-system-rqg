@@ -62,6 +62,13 @@ export type Usage = {
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
+function usageEffectSchemaField() {
+  return new SchemaField({
+    attack: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    parry: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+  });
+}
+
 function usageSchemaField() {
   return new SchemaField({
     skillRqidLink: rqidLinkSchemaField({ nullable: true }),
@@ -87,6 +94,10 @@ function usageSchemaField() {
 function defineWeaponSchema() {
   return {
     ...physicalItemSchemaFields(),
+    effect: new SchemaField({
+      melee: usageEffectSchemaField(),
+      missile: usageEffectSchemaField(),
+    }),
     usage: new SchemaField({
       oneHand: usageSchemaField(),
       offHand: usageSchemaField(),

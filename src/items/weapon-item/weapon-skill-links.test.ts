@@ -11,8 +11,10 @@ import {
 import { Rqid } from "../../system/api/rqid-api";
 import {
   embedLinkedSkill,
+  getWeaponEffectModifier,
   hasLinkedSkillReference,
   resolveLinkedSkill,
+  resolveLinkedSkillChanceData,
   toEmbeddedSkillCreateData,
 } from "./weapon-skill-links";
 import { migrateWeaponSkillLinks } from "../../system/migrations/migrations-item/migrate-weapon-skill-links";
@@ -73,6 +75,10 @@ function makeWeapon({ actor, usage }: { actor?: any; usage?: Record<string, any>
     type: ItemTypeEnum.Weapon,
     actor,
     system: {
+      effect: {
+        melee: { attack: 0, parry: 0 },
+        missile: { attack: 0, parry: 0 },
+      },
       usage: {
         oneHand: { ...emptyUsage },
         offHand: { ...emptyUsage },
@@ -318,5 +324,44 @@ describe("weapon skill link handling", () => {
     };
 
     expect(encodeLegacyWeaponSkillReferenceInRqid(usage)).toBeUndefined();
+  });
+
+  it("returns melee and missile modifiers based on selected usage", () => {
+    const weapon = makeWeapon();
+    weapon.system.effect.melee.attack = 5;
+    weapon.system.effect.melee.parry = 7;
+    weapon.system.effect.missile.attack = 11;
+    weapon.system.effect.missile.parry = 13;
+
+    expect(getWeaponEffectModifier(weapon, "oneHand", "attack")).toBe(5);
+    expect(getWeaponEffectModifier(weapon, "twoHand", "parry")).toBe(7);
+    expect(getWeaponEffectModifier(weapon, "missile", "attack")).toBe(11);
+    expect(getWeaponEffectModifier(weapon, "missile", "parry")).toBe(13);
+  });
+
+  it("resolves linked skill chance data including weapon effect modifier", () => {
+    const embeddedSkill = makeSkill({ id: "embedded-bite", name: "Bite", rqid: "i.skill.bite" });
+    const actor = {
+      items: withItemGet([embeddedSkill]),
+      getBestEmbeddedDocumentByRqid: vi.fn((rqid: string | undefined) =>
+        rqid === "i.skill.bite" ? embeddedSkill : undefined,
+      ),
+    };
+
+    const weapon = makeWeapon({
+      actor,
+      usage: {
+        oneHand: {
+          skillRqidLink: { rqid: "i.skill.bite", name: "Bite" },
+        },
+      },
+    });
+    weapon.system.effect.melee.attack = 9;
+
+    expect(resolveLinkedSkillChanceData(weapon, "oneHand", "attack")).toMatchObject({
+      skillItem: embeddedSkill,
+      skillChance: 75,
+      weaponEffectModifier: 9,
+    });
   });
 });

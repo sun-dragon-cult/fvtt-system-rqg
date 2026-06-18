@@ -19,10 +19,11 @@ import { SkillCategoryEnum } from "@item-model/skill-data-model.ts";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import { RuneTypeEnum } from "@item-model/rune-data-model.ts";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
-import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import { compareCultsByPriority, hasAccessToRuneMagic } from "@item-model/cult-priority.ts";
+import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import {
   assertDocumentSubType,
   formatListByWorldLanguage,
@@ -689,11 +690,18 @@ export async function organizeEmbeddedItems(
     const actorStr = actor.system.characteristics.strength.value ?? 0;
     const actorDex = actor.system.characteristics.dexterity.value ?? 0;
     // TODO extra data is added to the Usage object for the sheet, look at typing
-    for (const usage of Object.values(usages) as Record<string, any>[]) {
+    for (const [usageType, usage] of Object.entries(usages) as [UsageType, Record<string, any>][]) {
       if (!foundry.utils.isEmpty(usage["skillRqidLink"]?.rqid)) {
         const skillItem = actor.getBestEmbeddedDocumentByRqid(usage["skillRqidLink"].rqid);
         usage["skillId"] = skillItem?.id;
         usage["skillChance"] = (skillItem as SkillItem | undefined)?.system?.chance ?? 0;
+        // Add weapon effect modifier and calculate total chance for display
+        const weaponEffectModifier = getWeaponEffectModifier(
+          weapon as WeaponItem,
+          usageType,
+          "attack",
+        );
+        usage["totalChance"] = usage["skillChance"] + weaponEffectModifier;
         usage["skillHasExperience"] = !!(skillItem as SkillItem | undefined)?.system?.hasExperience;
         usage["unusable"] = false;
         usage["underMinSTR"] = false;

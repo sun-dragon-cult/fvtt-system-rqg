@@ -1186,6 +1186,7 @@
         "Darkness": "darkness",
         "Halved": "halved",
         "AimedBlow": "aimed blow",
+        "WeaponEffect": "weapon effect",
         "OtherModifier": "other modifier",
         "MasterOpponentModifier": "master opponent"
       },

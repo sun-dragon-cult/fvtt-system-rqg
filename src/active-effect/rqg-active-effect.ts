@@ -266,7 +266,41 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       );
       if (dataModelResult.applied) {
         try {
-          foundry.utils.setProperty(item, path as any, dataModelResult.value);
+          const systemModel = (item as RqgItem).system as any;
+          const systemPath = (path as string).slice("system.".length);
+          const field =
+            systemModel.getFieldForProperty?.(systemPath) ??
+            systemModel.schema?.getField?.(systemPath, {
+              source: systemModel._source ?? systemModel,
+            });
+
+          // Nested SchemaField getters can return fresh objects on access, so
+          // shadow the top-level segment to preserve non-persisted mutations.
+          if (field?.persisted === false) {
+            const [rootSegment] = systemPath.split(".");
+            if (!rootSegment) {
+              throw new Error(`Invalid item system path for Active Effect: ${path}`);
+            }
+
+            const rawRootValue = foundry.utils.getProperty(systemModel, rootSegment) ?? {};
+            const rootValue =
+              typeof foundry.utils.deepClone === "function"
+                ? foundry.utils.deepClone(rawRootValue)
+                : structuredClone(rawRootValue);
+            foundry.utils.setProperty(
+              rootValue,
+              systemPath.slice(rootSegment.length + 1) as any,
+              dataModelResult.value,
+            );
+            Object.defineProperty(systemModel, rootSegment, {
+              value: rootValue,
+              configurable: true,
+              enumerable: true,
+            });
+          } else {
+            // For persisted fields, use the document-level setProperty
+            foundry.utils.setProperty(item, path as any, dataModelResult.value);
+          }
           continue;
         } catch (e) {
           RqgActiveEffect.logger.warn(

@@ -87,7 +87,7 @@
                       data-item-roll
                       data-tooltip="{{localize "RQG.Game.RollTitle"}}">
                   {{localize (concat "RQG.Game.WeaponUsage." @key)}}
-                  <span class="{{experiencedclass @root.uuid skillId}}">{{skillchance @root.uuid skillId}}%</span>
+                  <span class="{{experiencedclass @root.uuid skillId}}">{{totalChance}}%</span>
                 </div>
               {{/if}}
             {{/each}}

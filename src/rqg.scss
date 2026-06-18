@@ -14,6 +14,7 @@
   // *** Start of theme specific styles ***
 
   .rqg {
+
     // Chrome anchors the datalist dropdown arrow on line-height; fix vertical centering
     input[list] {
       line-height: 1rem;
@@ -147,6 +148,7 @@
   }
 
   .rqg {
+
     h1,
     h2,
     h3,
@@ -171,7 +173,7 @@
       justify-content: space-between;
       gap: 0.5rem;
 
-      > * {
+      >* {
         height: 100%;
       }
     }
@@ -195,7 +197,7 @@
       flex-wrap: wrap;
       align-items: flex-start;
 
-      > * {
+      >* {
         height: auto;
       }
     }
@@ -229,14 +231,14 @@
     }
 
     @keyframes rqg-drop-pulse {
+
       0%,
       100% {
         box-shadow: inset 0 0 20px 7px var(--rqg-drop-highlight-color);
       }
 
       50% {
-        box-shadow: inset 0 0 36px 14px
-          color-mix(in srgb, var(--rqg-drop-highlight-color) 90%, white);
+        box-shadow: inset 0 0 36px 14px color-mix(in srgb, var(--rqg-drop-highlight-color) 90%, white);
       }
     }
 
@@ -313,7 +315,7 @@
       text-align: right;
     }
 
-    range-picker > input[type="number"] {
+    range-picker>input[type="number"] {
       text-align: center;
     }
 
@@ -423,7 +425,7 @@
       grid-auto-columns: auto;
       gap: 0;
 
-      > * {
+      >* {
         padding: 2px;
         position: relative;
         display: flex;
@@ -543,9 +545,9 @@
         grid-template-columns: [col-start] 30px auto min-content [col-end];
 
         // Alternating row background
-        > *:nth-child(6n + 1),
-        > *:nth-child(6n + 2),
-        > *:nth-child(6n + 3) {
+        >*:nth-child(6n + 1),
+        >*:nth-child(6n + 2),
+        >*:nth-child(6n + 3) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -554,12 +556,12 @@
         grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
 
         // Alternating row background for 6 columns
-        > *:nth-child(12n + 14),
-        > *:nth-child(12n + 15),
-        > *:nth-child(12n + 16),
-        > *:nth-child(12n + 17),
-        > *:nth-child(12n + 18),
-        > *:nth-child(12n + 19) {
+        >*:nth-child(12n + 14),
+        >*:nth-child(12n + 15),
+        >*:nth-child(12n + 16),
+        >*:nth-child(12n + 17),
+        >*:nth-child(12n + 18),
+        >*:nth-child(12n + 19) {
           background: var(--rqg-table-alternate-background);
         }
 
@@ -592,16 +594,16 @@
         grid-template-columns: [col-start] 30px auto auto repeat(7, min-content) [col-end];
 
         // Alternating row background for 10 columns
-        > *:nth-child(20n + 22),
-        > *:nth-child(20n + 23),
-        > *:nth-child(20n + 24),
-        > *:nth-child(20n + 25),
-        > *:nth-child(20n + 26),
-        > *:nth-child(20n + 27),
-        > *:nth-child(20n + 28),
-        > *:nth-child(20n + 29),
-        > *:nth-child(20n + 30),
-        > *:nth-child(20n + 31) {
+        >*:nth-child(20n + 22),
+        >*:nth-child(20n + 23),
+        >*:nth-child(20n + 24),
+        >*:nth-child(20n + 25),
+        >*:nth-child(20n + 26),
+        >*:nth-child(20n + 27),
+        >*:nth-child(20n + 28),
+        >*:nth-child(20n + 29),
+        >*:nth-child(20n + 30),
+        >*:nth-child(20n + 31) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -610,13 +612,13 @@
         grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];
 
         // Alternating row background for 7 columns
-        > *:nth-child(14n + 16),
-        > *:nth-child(14n + 17),
-        > *:nth-child(14n + 18),
-        > *:nth-child(14n + 19),
-        > *:nth-child(14n + 20),
-        > *:nth-child(14n + 21),
-        > *:nth-child(14n + 22) {
+        >*:nth-child(14n + 16),
+        >*:nth-child(14n + 17),
+        >*:nth-child(14n + 18),
+        >*:nth-child(14n + 19),
+        >*:nth-child(14n + 20),
+        >*:nth-child(14n + 21),
+        >*:nth-child(14n + 22) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -633,37 +635,36 @@
         grid-template-columns: [col-start] 30px auto auto repeat(10, max-content) [col-end];
 
         // Alternating row background for 13 columns
-        > *:nth-child(26n + 28),
-        > *:nth-child(26n + 29),
-        > *:nth-child(26n + 30),
-        > *:nth-child(26n + 31),
-        > *:nth-child(26n + 32),
-        > *:nth-child(26n + 33),
-        > *:nth-child(26n + 34),
-        > *:nth-child(26n + 35),
-        > *:nth-child(26n + 36),
-        > *:nth-child(26n + 37),
-        > *:nth-child(26n + 38),
-        > *:nth-child(26n + 39),
-        > *:nth-child(26n + 40) {
+        >*:nth-child(26n + 28),
+        >*:nth-child(26n + 29),
+        >*:nth-child(26n + 30),
+        >*:nth-child(26n + 31),
+        >*:nth-child(26n + 32),
+        >*:nth-child(26n + 33),
+        >*:nth-child(26n + 34),
+        >*:nth-child(26n + 35),
+        >*:nth-child(26n + 36),
+        >*:nth-child(26n + 37),
+        >*:nth-child(26n + 38),
+        >*:nth-child(26n + 39),
+        >*:nth-child(26n + 40) {
           background: var(--rqg-table-alternate-background);
         }
       }
 
       &.armor {
         grid-template-columns:
-          [col-start] 30px auto min-content auto repeat(5, max-content)
-          [col-end];
+          [col-start] 30px auto min-content auto repeat(5, max-content) [col-end];
 
-        > *:nth-child(18n + 20),
-        > *:nth-child(18n + 21),
-        > *:nth-child(18n + 22),
-        > *:nth-child(18n + 23),
-        > *:nth-child(18n + 24),
-        > *:nth-child(18n + 25),
-        > *:nth-child(18n + 26),
-        > *:nth-child(18n + 27),
-        > *:nth-child(18n + 28) {
+        >*:nth-child(18n + 20),
+        >*:nth-child(18n + 21),
+        >*:nth-child(18n + 22),
+        >*:nth-child(18n + 23),
+        >*:nth-child(18n + 24),
+        >*:nth-child(18n + 25),
+        >*:nth-child(18n + 26),
+        >*:nth-child(18n + 27),
+        >*:nth-child(18n + 28) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -671,16 +672,16 @@
       &.rune-magic {
         grid-template-columns: [col-start] 30px auto repeat(8, max-content) [col-end];
 
-        > *:nth-child(20n + 22),
-        > *:nth-child(20n + 23),
-        > *:nth-child(20n + 24),
-        > *:nth-child(20n + 25),
-        > *:nth-child(20n + 26),
-        > *:nth-child(20n + 27),
-        > *:nth-child(20n + 28),
-        > *:nth-child(20n + 29),
-        > *:nth-child(20n + 30),
-        > *:nth-child(20n + 31) {
+        >*:nth-child(20n + 22),
+        >*:nth-child(20n + 23),
+        >*:nth-child(20n + 24),
+        >*:nth-child(20n + 25),
+        >*:nth-child(20n + 26),
+        >*:nth-child(20n + 27),
+        >*:nth-child(20n + 28),
+        >*:nth-child(20n + 29),
+        >*:nth-child(20n + 30),
+        >*:nth-child(20n + 31) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -688,13 +689,13 @@
       &.hit-location {
         grid-template-columns: [col-start] repeat(3, min-content) repeat(4, auto) [col-end];
 
-        > *:nth-child(14n + 13),
-        > *:nth-child(14n + 14),
-        > *:nth-child(14n + 15),
-        > *:nth-child(14n + 16),
-        > *:nth-child(14n + 17),
-        > *:nth-child(14n + 18),
-        > *:nth-child(14n + 19) {
+        >*:nth-child(14n + 13),
+        >*:nth-child(14n + 14),
+        >*:nth-child(14n + 15),
+        >*:nth-child(14n + 16),
+        >*:nth-child(14n + 17),
+        >*:nth-child(14n + 18),
+        >*:nth-child(14n + 19) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -703,9 +704,9 @@
         grid-template-columns: [col-start] 30px auto min-content [col-end];
 
         // Alternating row background
-        > *:nth-child(6n + 1),
-        > *:nth-child(6n + 2),
-        > *:nth-child(6n + 3) {
+        >*:nth-child(6n + 1),
+        >*:nth-child(6n + 2),
+        >*:nth-child(6n + 3) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -714,10 +715,10 @@
         grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
 
         // Alternating row background
-        > *:nth-child(8n + 1),
-        > *:nth-child(8n + 2),
-        > *:nth-child(8n + 3),
-        > *:nth-child(8n + 4) {
+        >*:nth-child(8n + 1),
+        >*:nth-child(8n + 2),
+        >*:nth-child(8n + 3),
+        >*:nth-child(8n + 4) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -726,10 +727,10 @@
         grid-template-columns: [col-start] 30px auto 50px min-content [col-end];
 
         // Alternating row background
-        > *:nth-child(8n + 1),
-        > *:nth-child(8n + 2),
-        > *:nth-child(8n + 3),
-        > *:nth-child(8n + 4) {
+        >*:nth-child(8n + 1),
+        >*:nth-child(8n + 2),
+        >*:nth-child(8n + 3),
+        >*:nth-child(8n + 4) {
           background: var(--rqg-table-alternate-background);
         }
       }
@@ -743,7 +744,7 @@
         grid-template-columns: [col-start] auto [col-end];
 
         // Alternating row background
-        > *:nth-child(2n + 1) {
+        >*:nth-child(2n + 1) {
           background: var(--rqg-table-alternate-background);
         }
 
@@ -947,14 +948,13 @@
     }
 
     &.chat-content {
-      & > * {
+      &>* {
         margin-top: 5px;
         margin-bottom: 5px;
       }
 
       .chat-options {
-        background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top
-          left/100%;
+        background: url("/systems/rqg/assets/images/ui/mainbackground.webp") repeat-y scroll top left/100%;
       }
 
       .chat-option {
@@ -1109,20 +1109,18 @@
         &.success-level-4 {
           background-color: #e23333cc;
           box-shadow: inset 0 0 3px 0 black;
-          clip-path: polygon(
-            0% 17%,
-            7% 17%,
-            4% 0%,
-            97% 0%,
-            93% 17%,
-            100% 17%,
-            100% 83%,
-            93% 83%,
-            96% 100%,
-            4% 100%,
-            7% 83%,
-            0% 83%
-          );
+          clip-path: polygon(0% 17%,
+              7% 17%,
+              4% 0%,
+              97% 0%,
+              93% 17%,
+              100% 17%,
+              100% 83%,
+              93% 83%,
+              96% 100%,
+              4% 100%,
+              7% 83%,
+              0% 83%);
         }
       }
     }
@@ -1214,7 +1212,7 @@
   .window-content.default-icons {
     overscroll-behavior: contain;
 
-    > form {
+    >form {
       display: flex;
       flex: 1;
       flex-direction: column;
@@ -1234,16 +1232,16 @@
       gap: 0.5rem;
       align-items: center;
 
-      > .form-group {
+      >.form-group {
         display: contents;
       }
 
-      > .form-group > label {
+      >.form-group>label {
         grid-column: 1;
         white-space: nowrap;
       }
 
-      > .form-group > .form-fields {
+      >.form-group>.form-fields {
         grid-column: 2;
       }
     }
@@ -1409,7 +1407,7 @@
     color: var(--color-text-secondary);
   }
 
-  .migration-report > h1 + h1 {
+  .migration-report>h1+h1 {
     margin-top: 1.1rem;
     margin-bottom: 0.35rem;
   }
@@ -1709,6 +1707,14 @@
     .target-box {
       flex: none;
       text-align: center;
+
+      .target-box-delta {
+        display: block;
+        margin-top: 0.1rem;
+        font-size: 0.75rem;
+        line-height: 1;
+        color: var(--color-text-secondary);
+      }
     }
 
     button {
@@ -1745,5 +1751,10 @@
       border: 1px solid var(--color-level-error);
       background-color: transparent;
     }
+  }
+
+  #tooltip.chance-breakdown-tooltip,
+  .locked-tooltip.chance-breakdown-tooltip {
+    text-align: left;
   }
 }

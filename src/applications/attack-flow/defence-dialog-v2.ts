@@ -12,6 +12,7 @@ import {
   localize,
   requireValue,
   safeFromJSON,
+  toSignedString,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -43,11 +44,81 @@ import { toRqidString } from "../../system/api/rqid-validation";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { getWeaponEffectModifier } from "@items/weapon-item/weapon-skill-links";
 
 const logger = new RqgLogger("DefenceDialogV2");
 
 export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
   private currentDefenceChance = 0;
+  private currentDefenceBaseChance = 0;
+  private currentParryWeaponEffectModifier = 0;
+
+  private static getChanceBreakdownTooltip(
+    baseSkillChance: number,
+    totalChance: number,
+    modifiers: Array<{ label: string; value: number }>,
+  ): string {
+    const tooltipLines = [
+      `<strong>${localize("RQG.Dialog.Common.TargetChance")}</strong>`,
+      `${localize("TYPES.Item.skill")}: ${baseSkillChance}%`,
+      ...modifiers
+        .filter((modifier) => Number(modifier.value ?? 0) !== 0)
+        .map((modifier) => `${toSignedString(modifier.value)}% ${modifier.label}`),
+      `= ${totalChance}%`,
+    ];
+
+    return tooltipLines.join("<br>");
+  }
+
+  private static computeTotalChanceExclMasterOpponent(
+    defenceChance: number,
+    formData: DefenceDialogFormData,
+    halvedModifier: number,
+  ): number {
+    return Math.max(
+      0,
+      Number(defenceChance ?? 0) +
+        Number(formData.augmentModifier ?? 0) +
+        Number(formData.subsequentDefenceModifier ?? 0) +
+        Number(formData.halved ? halvedModifier : 0) +
+        Number(formData.otherModifier ?? 0),
+    );
+  }
+
+  private static getChanceBreakdownModifiers(
+    formData: DefenceDialogFormData,
+    weaponEffectModifier: number,
+    halvedModifier: number,
+  ): Array<{ label: string; value: number }> {
+    return [
+      {
+        label: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        value: weaponEffectModifier,
+      },
+      {
+        label: localize("RQG.Roll.AbilityRoll.Augment"),
+        value: Number(formData.augmentModifier ?? 0),
+      },
+      {
+        label: DefenceDialogV2.getSubsequentDefenceModifierLabel(
+          Number(formData.subsequentDefenceModifier ?? 0),
+        ),
+        value: Number(formData.subsequentDefenceModifier ?? 0),
+      },
+      {
+        label: localize("RQG.Roll.AbilityRoll.Halved"),
+        value: formData.halved ? halvedModifier : 0,
+      },
+      {
+        label: formData.otherModifierDescription ?? localize("RQG.Dialog.Defence.OtherModifier"),
+        value: Number(formData.otherModifier ?? 0),
+      },
+      {
+        label: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
+        value: Number(formData.defenceMasterOpponentModifier ?? 0),
+      },
+    ];
+  }
 
   protected override getLivePreviewFormBehaviorConfig() {
     return {
@@ -215,12 +286,17 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       ? parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid
       : undefined;
 
-    const { defenceName, defenceChance } = DefenceDialogV2.getDefenceNameAndChance(
-      formData.defence,
-      defendingActor,
-      parrySkillRqid,
-    );
+    const { defenceName, baseChance, weaponEffectModifier, defenceChance } =
+      DefenceDialogV2.getDefenceNameAndChance(
+        formData.defence,
+        defendingActor,
+        parrySkillRqid,
+        parryingWeapon,
+        formData.parryingWeaponUsage,
+      );
     this.currentDefenceChance = defenceChance;
+    this.currentDefenceBaseChance = baseChance;
+    this.currentParryWeaponEffectModifier = weaponEffectModifier;
 
     const selectedParrySkill =
       formData.defence === "parry"
@@ -232,13 +308,10 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.halvedModifier = -Math.floor(defenceChance / 2);
 
-    const totalChanceExclMasterOpponent = Math.max(
-      0,
-      Number(defenceChance ?? 0) +
-        Number(formData.augmentModifier ?? 0) +
-        Number(formData.subsequentDefenceModifier ?? 0) +
-        Number(formData.halved ? formData.halvedModifier : 0) +
-        Number(formData.otherModifier ?? 0),
+    const totalChanceExclMasterOpponent = DefenceDialogV2.computeTotalChanceExclMasterOpponent(
+      defenceChance,
+      formData,
+      Number(formData.halvedModifier ?? 0),
     );
 
     const masterOpponentModifierDescription = localize(
@@ -266,6 +339,17 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       ? DefenceDialogV2.getParryingWeaponUsageOptions(parryingWeapon)[0]?.value
       : undefined;
 
+    const totalChance = totalChanceExclMasterOpponent + formData.defenceMasterOpponentModifier;
+    const chanceBreakdownTooltip = DefenceDialogV2.getChanceBreakdownTooltip(
+      baseChance,
+      totalChance,
+      DefenceDialogV2.getChanceBreakdownModifiers(
+        formData,
+        weaponEffectModifier,
+        Number(formData.halvedModifier ?? 0),
+      ),
+    );
+
     return {
       formData: formData,
 
@@ -280,10 +364,13 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
       // combat-roll-header
       skillName: defenceName,
-      skillChance: defenceChance,
+      skillChance: baseChance,
 
       // defence-footer
-      totalChance: totalChanceExclMasterOpponent + formData.defenceMasterOpponentModifier,
+      totalChance,
+      weaponEffectModifierLabel:
+        weaponEffectModifier === 0 ? null : `(${toSignedString(weaponEffectModifier)}%)`,
+      chanceBreakdownTooltip,
       defenceButtonText: defenceButtonText,
     };
   }
@@ -305,6 +392,9 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private onFormValuesChanged(): void {
     const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    const targetChanceBoxElement = this.element.querySelector<HTMLElement>(
+      "[data-target-chance-box]",
+    );
     if (!totalChanceElement) {
       return;
     }
@@ -312,18 +402,28 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as DefenceDialogFormData;
     const halvedModifier = -Math.floor(this.currentDefenceChance / 2);
-    const totalChanceExclMasterOpponent = Math.max(
-      0,
-      Number(this.currentDefenceChance ?? 0) +
-        Number(formData.augmentModifier ?? 0) +
-        Number(formData.subsequentDefenceModifier ?? 0) +
-        Number(formData.halved ? halvedModifier : 0) +
-        Number(formData.otherModifier ?? 0),
+    const totalChanceExclMasterOpponent = DefenceDialogV2.computeTotalChanceExclMasterOpponent(
+      this.currentDefenceChance,
+      formData,
+      halvedModifier,
     );
 
     const totalChance =
       totalChanceExclMasterOpponent + Number(formData.defenceMasterOpponentModifier ?? 0);
     totalChanceElement.textContent = `${totalChance}%`;
+
+    if (targetChanceBoxElement) {
+      const chanceBreakdownTooltip = DefenceDialogV2.getChanceBreakdownTooltip(
+        this.currentDefenceBaseChance,
+        totalChance,
+        DefenceDialogV2.getChanceBreakdownModifiers(
+          formData,
+          Number(this.currentParryWeaponEffectModifier ?? 0),
+          halvedModifier,
+        ),
+      );
+      targetChanceBoxElement.dataset["tooltip"] = chanceBreakdownTooltip;
+    }
   }
 
   private onDefenceSelectionChange(): void {
@@ -440,6 +540,10 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       formDataObject.defence,
       defendingActor,
       parrySkillRqid,
+      isDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon)
+        ? selectedParryingWeapon
+        : undefined,
+      formDataObject.parryingWeaponUsage,
     );
 
     if (formDataObject.defence === "parry") {
@@ -492,9 +596,26 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         return;
       }
     }
+
+    // Passed as a named modifier in defenceRollOptions; naturalSkill is the raw skill chance only.
+    const parryWeaponEffectModifier =
+      formDataObject.defence === "parry" &&
+      isDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon) &&
+      !!formDataObject.parryingWeaponUsage
+        ? getWeaponEffectModifier(
+            selectedParryingWeapon,
+            formDataObject.parryingWeaponUsage,
+            "parry",
+          )
+        : 0;
+
     const defenceRollOptions: AbilityRollOptions = {
-      naturalSkill: defendSkillItem?.system.chance ?? 0,
+      naturalSkill: Number(defendSkillItem?.system.chance ?? 0),
       modifiers: [
+        {
+          value: Number(parryWeaponEffectModifier),
+          description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
         {
           value: Number(formDataObject.augmentModifier),
           description: localize("RQG.Roll.AbilityRoll.Augment"),
@@ -714,27 +835,49 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     defence: string | undefined,
     defendingActor: RqgActor | undefined,
     parrySkillRqid: string | undefined,
-  ): { defenceName: string; defenceChance: number } {
+    parryingWeapon: WeaponItem | undefined,
+    parryingWeaponUsage: UsageType | undefined,
+  ): {
+    defenceName: string;
+    baseChance: number;
+    weaponEffectModifier: number;
+    defenceChance: number;
+  } {
     if (defence === "parry") {
       const parrySkill = defendingActor?.getBestEmbeddedDocumentByRqid(
         toRqidString(parrySkillRqid),
       ) as SkillItem | undefined;
+      const baseChance = Number(parrySkill?.system.chance ?? 0);
+      const parryWeaponEffectModifier =
+        parryingWeapon && parryingWeaponUsage
+          ? getWeaponEffectModifier(parryingWeapon, parryingWeaponUsage, "parry")
+          : 0;
       return {
         defenceName: parrySkill?.name ?? "",
-        defenceChance: parrySkill?.system.chance ?? 0,
+        baseChance,
+        weaponEffectModifier: Number(parryWeaponEffectModifier),
+        defenceChance: baseChance + Number(parryWeaponEffectModifier),
       };
     }
     if (defence === "dodge") {
       const dodgeSkill = defendingActor?.getBestEmbeddedDocumentByRqid(
         CONFIG.RQG.skillRqid.dodge,
       ) as SkillItem | undefined;
+      const baseChance = Number(dodgeSkill?.system.chance ?? 0);
       return {
         defenceName: dodgeSkill?.name ?? "No dodge skill found!",
-        defenceChance: dodgeSkill?.system.chance ?? 0,
+        baseChance,
+        weaponEffectModifier: 0,
+        defenceChance: baseChance,
       };
     }
 
-    return { defenceName: localize("RQG.Dialog.Defence.Ignore"), defenceChance: 0 };
+    return {
+      defenceName: localize("RQG.Dialog.Defence.Ignore"),
+      baseChance: 0,
+      weaponEffectModifier: 0,
+      defenceChance: 0,
+    };
   }
 
   private static getSubsequentDefenceModifierLabel(defenceModifier: number): string {
