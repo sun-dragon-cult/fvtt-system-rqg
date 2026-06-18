@@ -2,9 +2,22 @@ import { describe, expect, it, vi } from "vitest";
 import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
 
 describe("RqgActiveEffect._applyChangeCustom", () => {
-  it("preserves writes to nested non-persisted item effect fields", async () => {
+  it("applies writes to nested non-persisted item effect fields", async () => {
     (globalThis as any).ActiveEffect ??= class ActiveEffect {};
-    ((globalThis as any).ActiveEffect as any).SubType ??= {};
+    const activeEffectClass = (globalThis as any).ActiveEffect as any;
+    activeEffectClass.SubType ??= {};
+    activeEffectClass.applyChangeField ??= vi.fn(
+      (targetDoc: object, change: ActiveEffect.ChangeData, options: any) => {
+        const current = foundry.utils.getProperty(targetDoc, change.key ?? "");
+        const update = options.field.applyChange(current, targetDoc, change, {
+          replacementData: options.replacementData,
+        });
+        if (options.modifyTarget && update !== undefined) {
+          foundry.utils.setProperty(targetDoc, change.key ?? "", update);
+        }
+        return update;
+      },
+    );
 
     const { RqgActiveEffect } = await import("./rqg-active-effect");
 
@@ -13,16 +26,12 @@ describe("RqgActiveEffect._applyChangeCustom", () => {
       missile: { attack: 0, parry: 0 },
     };
 
+    const applyChange = vi.fn((currentValue: number) => currentValue + 50);
     const system = {
-      schema: {
-        getField: vi.fn(() => ({
-          persisted: false,
-          applyChange: vi.fn((currentValue: number) => currentValue + 50),
-        })),
-      },
-      get effect() {
-        return structuredClone(effectData);
-      },
+      getFieldForProperty: vi.fn((fieldPath: string) =>
+        fieldPath === "effect.melee.attack" ? { applyChange } : undefined,
+      ),
+      effect: effectData,
     };
 
     const item = {
@@ -52,6 +61,8 @@ describe("RqgActiveEffect._applyChangeCustom", () => {
     );
 
     expect(actor.getBestEmbeddedDocumentByRqid).toHaveBeenCalledWith("i.weapon.short-spear");
+    expect(system.getFieldForProperty).toHaveBeenCalledWith("effect.melee.attack");
+    expect(applyChange).toHaveBeenCalled();
     expect(item.system.effect.melee.attack).toBe(50);
   });
 });

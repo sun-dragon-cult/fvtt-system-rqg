@@ -8,7 +8,6 @@ import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 import type { AnyMutableObject } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
 import type { RqgItem } from "@items/rqg-item.ts";
-import { applyItemChangeThroughDataModel } from "./data-model-field-change";
 import { RqgActiveEffectDataModel } from "./data-model/rqg-active-effect-data-model";
 
 export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
@@ -253,72 +252,77 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     }
 
     for (const item of items) {
+      const systemModel = item.system as unknown as {
+        getFieldForProperty?: (path: string) => unknown;
+      };
+
+      if (!path?.startsWith("system.")) {
+        logMisconfiguration(
+          `Active Effect item target key [${change.key}] must target an item system path.`,
+          !effect?.disabled,
+          change,
+          effect,
+        );
+        continue;
+      }
+
+      const fieldPath = path.slice("system.".length);
+      const field = systemModel.getFieldForProperty?.(fieldPath);
+      if (!field) {
+        logMisconfiguration(
+          `Active Effect item target key [${change.key}] could not resolve item system field [${path}].`,
+          !effect?.disabled,
+          change,
+          effect,
+        );
+        continue;
+      }
+
       const replacementData =
         typeof (targetDoc as any).getRollData === "function"
           ? (targetDoc as any).getRollData()
           : {};
+      const addChange = {
+        ...change,
+        key: path,
+        type: "add",
+      } as ActiveEffect.ChangeData & { type: string };
 
-      const dataModelResult = applyItemChangeThroughDataModel(
-        item as RqgItem,
-        path ?? "",
-        change,
-        replacementData,
-      );
-      if (dataModelResult.applied) {
-        try {
-          const systemModel = (item as RqgItem).system as any;
-          const systemPath = (path as string).slice("system.".length);
-          const field =
-            systemModel.getFieldForProperty?.(systemPath) ??
-            systemModel.schema?.getField?.(systemPath, {
-              source: systemModel._source ?? systemModel,
-            });
-
-          // Nested SchemaField getters can return fresh objects on access, so
-          // shadow the top-level segment to preserve non-persisted mutations.
-          if (field?.persisted === false) {
-            const [rootSegment] = systemPath.split(".");
-            if (!rootSegment) {
-              throw new Error(`Invalid item system path for Active Effect: ${path}`);
-            }
-
-            const rawRootValue = foundry.utils.getProperty(systemModel, rootSegment) ?? {};
-            const rootValue =
-              typeof foundry.utils.deepClone === "function"
-                ? foundry.utils.deepClone(rawRootValue)
-                : structuredClone(rawRootValue);
-            foundry.utils.setProperty(
-              rootValue,
-              systemPath.slice(rootSegment.length + 1) as any,
-              dataModelResult.value,
-            );
-            Object.defineProperty(systemModel, rootSegment, {
-              value: rootValue,
-              configurable: true,
-              enumerable: true,
-            });
-          } else {
-            // For persisted fields, use the document-level setProperty
-            foundry.utils.setProperty(item, path as any, dataModelResult.value);
-          }
-          continue;
-        } catch (e) {
-          RqgActiveEffect.logger.warn(
-            `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed while setting DataModel-applied value for [${change.key}].`,
-            { notify: false },
-            change,
-            e,
-          );
-          continue;
-        }
+      const activeEffectClass = ActiveEffect as typeof ActiveEffect & {
+        applyChangeField?: (
+          targetDoc: object,
+          changeData: ActiveEffect.ChangeData,
+          options: {
+            field: unknown;
+            replacementData: Record<string, unknown>;
+            modifyTarget: boolean;
+          },
+        ) => unknown;
+      };
+      if (typeof activeEffectClass.applyChangeField !== "function") {
+        logMisconfiguration(
+          `Active Effect item target key [${change.key}] could not be applied because core applyChangeField is unavailable.`,
+          !effect?.disabled,
+          change,
+          effect,
+        );
+        continue;
       }
 
-      logMisconfiguration(
-        `Active Effect item target key [${change.key}] could not be applied via DataModel (${dataModelResult.reason}).`,
-        !effect?.disabled,
-        change,
-        effect,
-      );
+      try {
+        activeEffectClass.applyChangeField(item as RqgItem, addChange, {
+          field,
+          replacementData,
+          modifyTarget: true,
+        });
+      } catch (e) {
+        RqgActiveEffect.logger.warn(
+          `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed while applying [${change.key}] via applyChangeField.`,
+          { notify: false },
+          change,
+          e,
+        );
+      }
     }
   }
 }
