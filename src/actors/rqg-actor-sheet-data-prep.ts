@@ -694,14 +694,13 @@ export async function organizeEmbeddedItems(
       if (!foundry.utils.isEmpty(usage["skillRqidLink"]?.rqid)) {
         const skillItem = actor.getBestEmbeddedDocumentByRqid(usage["skillRqidLink"].rqid);
         usage["skillId"] = skillItem?.id;
-        usage["skillChance"] = (skillItem as SkillItem | undefined)?.system?.chance ?? 0;
+        const skillChance = Number((skillItem as SkillItem | undefined)?.system?.chance ?? 0);
+        usage["skillChance"] = skillChance;
         // Add weapon effect modifier and calculate total chance for display
-        const weaponEffectModifier = getWeaponEffectModifier(
-          weapon as WeaponItem,
-          usageType,
-          "attack",
-        );
-        usage["totalChance"] = usage["skillChance"] + weaponEffectModifier;
+        const weaponEffectModifier = skillItem
+          ? getWeaponEffectModifier(weapon as WeaponItem, usageType, "attack")
+          : 0;
+        usage["totalChance"] = Math.max(0, skillChance + Number(weaponEffectModifier));
         usage["skillHasExperience"] = !!(skillItem as SkillItem | undefined)?.system?.hasExperience;
         usage["unusable"] = false;
         usage["underMinSTR"] = false;

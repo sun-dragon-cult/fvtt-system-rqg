@@ -94,9 +94,10 @@ export function resolveLinkedSkillChanceData(
   weaponEffectModifier: number;
 } {
   const skillItem = resolveLinkedSkill(weaponItem, usageType);
+  const weaponEffectModifier = skillItem ? getWeaponEffectModifier(weaponItem, usageType, mode) : 0;
   return {
     skillItem,
     skillChance: Number(skillItem?.system.chance ?? 0),
-    weaponEffectModifier: getWeaponEffectModifier(weaponItem, usageType, mode),
+    weaponEffectModifier,
   };
 }

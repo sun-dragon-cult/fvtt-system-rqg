@@ -89,6 +89,13 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     );
   }
 
+  private static computeTotalChance(
+    totalChanceExclMasterOpponent: number,
+    defenceMasterOpponentModifier: number,
+  ): number {
+    return Math.max(0, totalChanceExclMasterOpponent + Number(defenceMasterOpponentModifier ?? 0));
+  }
+
   private static getChanceBreakdownModifiers(
     formData: DefenceDialogFormData,
     weaponEffectModifier: number,
@@ -343,7 +350,10 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       ? DefenceDialogV2.getParryingWeaponUsageOptions(parryingWeapon)[0]?.value
       : undefined;
 
-    const totalChance = totalChanceExclMasterOpponent + formData.defenceMasterOpponentModifier;
+    const totalChance = DefenceDialogV2.computeTotalChance(
+      totalChanceExclMasterOpponent,
+      Number(formData.defenceMasterOpponentModifier ?? 0),
+    );
     const chanceBreakdownTooltip = DefenceDialogV2.getChanceBreakdownTooltip(
       baseChance,
       totalChance,
@@ -410,8 +420,10 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       halvedModifier,
     );
 
-    const totalChance =
-      totalChanceExclMasterOpponent + Number(formData.defenceMasterOpponentModifier ?? 0);
+    const totalChance = DefenceDialogV2.computeTotalChance(
+      totalChanceExclMasterOpponent,
+      Number(formData.defenceMasterOpponentModifier ?? 0),
+    );
     totalChanceElement.textContent = `${totalChance}%`;
 
     if (targetChanceBoxElement) {

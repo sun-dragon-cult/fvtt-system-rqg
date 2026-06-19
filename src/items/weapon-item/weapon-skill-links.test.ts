@@ -364,4 +364,27 @@ describe("weapon skill link handling", () => {
       weaponEffectModifier: 9,
     });
   });
+
+  it("returns zero weapon effect modifier when linked skill is not resolved", () => {
+    const actor = {
+      items: withItemGet([]),
+      getBestEmbeddedDocumentByRqid: vi.fn(() => undefined),
+    };
+
+    const weapon = makeWeapon({
+      actor,
+      usage: {
+        oneHand: {
+          skillRqidLink: { rqid: "i.skill.bite", name: "Bite" },
+        },
+      },
+    });
+    weapon.system.effect.melee.attack = 9;
+
+    expect(resolveLinkedSkillChanceData(weapon, "oneHand", "attack")).toMatchObject({
+      skillItem: undefined,
+      skillChance: 0,
+      weaponEffectModifier: 0,
+    });
+  });
 });
