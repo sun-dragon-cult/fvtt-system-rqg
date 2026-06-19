@@ -221,6 +221,7 @@
                               {{#if unusable}}data-tooltip="{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}"{{/if}}
                               data-skill-id="{{skillId}}"
                               data-item-id="{{skillId}}"
+                              data-weapon-effect-modifier="{{weaponEffectModifier}}"
                               data-item-roll
                               data-tooltip="{{localize "RQG.Game.RollTitle"}}">
                           {{localize (concat "RQG.Game.WeaponUsage." @key)}}
@@ -295,6 +296,7 @@
                             data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                             data-skill-id="{{skillId}}"
                             data-item-id="{{skillId}}"
+                                data-weapon-effect-modifier="{{weaponEffectModifier}}"
                             data-item-roll>
                             {{totalChance}}%
                       </span>

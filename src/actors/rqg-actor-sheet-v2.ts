@@ -684,14 +684,24 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this.element.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      const weaponEffectModifier = Number(el.dataset["weaponEffectModifier"] ?? 0);
+      const weaponEffectModifiers = weaponEffectModifier
+        ? [
+            {
+              value: weaponEffectModifier,
+              description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+            },
+          ]
+        : [];
       assertDocumentSubType<AbilityItem>(
         item,
         abilityItemTypes,
         "AbilityChance roll couldn't find skillItem",
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.abilityRoll(this.document.token),
-        onDouble: () => item.abilityRollImmediate({}, this.document.token),
+        onSingle: () => item.abilityRoll(this.document.token, { modifiers: weaponEffectModifiers }),
+        onDouble: () =>
+          item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.document.token),
       });
     });
 

@@ -6,7 +6,7 @@ import type {
   PartialAbilityItem,
 } from "./ability-roll-dialog-data.types";
 import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
-import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
+import type { AbilityRollOptions, Modifier } from "../../rolls/ability-roll/ability-roll.types";
 import {
   getSpeakerDisplayName,
   getSpeakerFromItem,
@@ -36,12 +36,38 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
   }
 
   private computeTotalChance(formData: AbilityRollDialogFormData): number {
-    return (
+    return Math.max(
+      0,
       Number(this.abilityItem.system.chance ?? 0) +
-      Number(formData.augmentModifier ?? 0) +
-      Number(formData.meditateModifier ?? 0) +
-      Number(formData.otherModifier ?? 0)
+        this.initialModifiers.reduce((acc: number, mod) => acc + Number(mod?.value ?? 0), 0) +
+        Number(formData.augmentModifier ?? 0) +
+        Number(formData.meditateModifier ?? 0) +
+        Number(formData.otherModifier ?? 0),
     );
+  }
+
+  private static getChanceBreakdownTooltip(
+    baseLabel: string,
+    baseChance: number,
+    totalChance: number,
+    modifiers: Modifier[],
+  ): string {
+    const escapeText = (value: unknown): string => foundry.utils.escapeHTML(String(value ?? ""));
+    return [
+      `<strong>${escapeText(localize("RQG.Dialog.Common.TargetChance"))}</strong>`,
+      `${escapeText(baseLabel)}: ${baseChance}%`,
+      ...modifiers
+        .filter((modifier) => Number(modifier.value ?? 0) !== 0)
+        .map(
+          (modifier) =>
+            `${escapeText(Number(modifier.value ?? 0) >= 0 ? "+" : "")}${escapeText(Number(modifier.value ?? 0))}% ${escapeText(modifier.description)}`,
+        ),
+      `= ${totalChance}%`,
+    ].join("<br>");
+  }
+
+  private static getInitialModifiersJson(modifiers: Modifier[]): string {
+    return JSON.stringify(modifiers);
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -64,10 +90,12 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private abilityItem: AbilityItem | PartialAbilityItem; // A fake reduced RqgItem to make reputation rolls work
   private token: TokenDocument | null | undefined;
+  private readonly initialModifiers: Modifier[];
 
   constructor(
     abilityItem: AbilityItem | PartialAbilityItem,
     token?: TokenDocument | null,
+    initialOptions: Partial<AbilityRollOptions> = {},
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
@@ -78,6 +106,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     this.abilityItem = abilityItem;
     this.token = token;
+    this.initialModifiers = initialOptions.modifiers ?? [];
   }
 
   static override DEFAULT_OPTIONS = {
@@ -134,6 +163,9 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       };
       formData.reputationItemJson = JSON.stringify(minimalAbilityItem);
     }
+    formData.initialModifiersJson ??= AbilityRollDialogV2.getInitialModifiersJson(
+      this.initialModifiers,
+    );
 
     const speaker =
       this.abilityItem instanceof RqgItem
@@ -153,11 +185,29 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       baseChance: (this.abilityItem.system.chance ?? 0) + "%",
 
       // RollFooter
-      totalChance:
-        Number(this.abilityItem.system.chance ?? 0) +
-        Number(formData.augmentModifier ?? 0) +
-        Number(formData.meditateModifier ?? 0) +
-        Number(formData.otherModifier ?? 0),
+      totalChance: this.computeTotalChance(formData),
+      totalChanceTooltip: AbilityRollDialogV2.getChanceBreakdownTooltip(
+        this.abilityItem.type
+          ? localizeItemType(this.abilityItem.type)
+          : (this.abilityItem.name ?? ""),
+        Number(this.abilityItem.system.chance ?? 0),
+        this.computeTotalChance(formData),
+        [
+          ...this.initialModifiers,
+          {
+            value: Number(formData.augmentModifier ?? 0),
+            description: localize("RQG.Roll.AbilityRoll.Augment"),
+          },
+          {
+            value: Number(formData.meditateModifier ?? 0),
+            description: localize("RQG.Roll.AbilityRoll.Meditate"),
+          },
+          {
+            value: Number(formData.otherModifier ?? 0),
+            description: formData.otherModifierDescription,
+          },
+        ],
+      ),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
@@ -165,13 +215,42 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private updateLivePreview(): void {
     const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    const targetChanceBoxElement = this.element.querySelector<HTMLElement>(
+      "[data-target-chance-box]",
+    );
     if (!totalChanceElement) {
       return;
     }
 
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as AbilityRollDialogFormData;
-    totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
+    const totalChance = this.computeTotalChance(formData);
+    totalChanceElement.textContent = `${totalChance}%`;
+
+    if (targetChanceBoxElement) {
+      targetChanceBoxElement.dataset["tooltip"] = AbilityRollDialogV2.getChanceBreakdownTooltip(
+        this.abilityItem.type
+          ? localizeItemType(this.abilityItem.type)
+          : (this.abilityItem.name ?? ""),
+        Number(this.abilityItem.system.chance ?? 0),
+        totalChance,
+        [
+          ...this.initialModifiers,
+          {
+            value: Number(formData.augmentModifier ?? 0),
+            description: localize("RQG.Roll.AbilityRoll.Augment"),
+          },
+          {
+            value: Number(formData.meditateModifier ?? 0),
+            description: localize("RQG.Roll.AbilityRoll.Meditate"),
+          },
+          {
+            value: Number(formData.otherModifier ?? 0),
+            description: formData.otherModifierDescription,
+          },
+        ],
+      );
+    }
   }
 
   private static async onSubmit(
@@ -180,6 +259,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData: foundry.applications.ux.FormDataExtended,
   ): Promise<void> {
     const formDataObject = formData.object as AbilityRollDialogFormData;
+    const initialModifiers = JSON.parse(formDataObject.initialModifiersJson ?? "[]") as Modifier[];
 
     const rollMode =
       getSelectedRollMode(
@@ -213,6 +293,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const options: AbilityRollOptions = {
       naturalSkill: abilityItem?.system.chance ?? 0,
       modifiers: [
+        ...initialModifiers,
         {
           value: Number(formDataObject.augmentModifier),
           description: localize("RQG.Roll.AbilityRoll.Augment"),

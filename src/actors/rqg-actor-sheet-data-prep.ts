@@ -700,6 +700,7 @@ export async function organizeEmbeddedItems(
         const weaponEffectModifier = skillItem
           ? getWeaponEffectModifier(weapon as WeaponItem, usageType, "attack")
           : 0;
+        usage["weaponEffectModifier"] = Number(weaponEffectModifier);
         usage["totalChance"] = Math.max(0, skillChance + Number(weaponEffectModifier));
         usage["skillHasExperience"] = !!(skillItem as SkillItem | undefined)?.system?.hasExperience;
         usage["unusable"] = false;

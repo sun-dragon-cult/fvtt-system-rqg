@@ -444,6 +444,15 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      const weaponEffectModifier = Number(el.dataset["weaponEffectModifier"] ?? 0);
+      const weaponEffectModifiers = weaponEffectModifier
+        ? [
+            {
+              value: weaponEffectModifier,
+              description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+            },
+          ]
+        : [];
       assertDocumentSubType<AbilityItem>(
         item,
         abilityItemTypes,
@@ -454,12 +463,12 @@ export class RqgActorSheet<
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRollImmediate({}, this.token);
+          await item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.token);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.abilityRoll(this.token);
+              await item.abilityRoll(this.token, { modifiers: weaponEffectModifiers });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

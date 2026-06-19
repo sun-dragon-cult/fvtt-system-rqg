@@ -12,7 +12,6 @@ import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data
 import { RqgLogger } from "../../system/logging/rqg-logger";
 
 const logger = new RqgLogger("AbilityDataModel");
-
 type AbilitySchema = ReturnType<typeof abilitySchemaFields>;
 
 /**
@@ -26,11 +25,18 @@ export abstract class AbilityDataModel<
   /**
    * Open a dialog for an AbilityRoll.
    */
-  async abilityRoll(token?: TokenDocument | null): Promise<void> {
+  async abilityRoll(
+    token?: TokenDocument | null,
+    options: Partial<Omit<AbilityRollOptions, "naturalSkill" | "abilityItem">> = {},
+  ): Promise<void> {
     // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
     const { AbilityRollDialogV2 } =
       await import("../../applications/ability-roll-dialog/ability-roll-dialog-v2");
-    await new AbilityRollDialogV2(this.parent as unknown as AbilityItem, token).render({
+    await new AbilityRollDialogV2(
+      this.parent as unknown as AbilityItem,
+      token,
+      options as Partial<AbilityRollOptions>,
+    ).render({
       force: true,
     });
   }
