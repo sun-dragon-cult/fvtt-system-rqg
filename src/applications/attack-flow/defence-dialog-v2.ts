@@ -863,7 +863,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       ) as SkillItem | undefined;
       const baseChance = Number(parrySkill?.system.chance ?? 0);
       const parryWeaponEffectModifier =
-        parryingWeapon && parryingWeaponUsage
+        parrySkill && parryingWeapon && parryingWeaponUsage
           ? getWeaponEffectModifier(parryingWeapon, parryingWeaponUsage, "parry")
           : 0;
       return {
