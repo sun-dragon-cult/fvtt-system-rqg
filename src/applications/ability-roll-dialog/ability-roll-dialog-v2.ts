@@ -12,6 +12,7 @@ import {
   getSpeakerFromItem,
   localize,
   localizeItemType,
+  toSignedString,
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
@@ -53,15 +54,19 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     modifiers: Modifier[],
   ): string {
     const escapeText = (value: unknown): string => foundry.utils.escapeHTML(String(value ?? ""));
+    const normalizedModifiers = modifiers
+      .map((modifier) => ({
+        value: Number(modifier.value ?? 0),
+        description: modifier.description,
+      }))
+      .filter((modifier) => Number.isFinite(modifier.value) && modifier.value !== 0);
+
     return [
       `<strong>${escapeText(localize("RQG.Dialog.Common.TargetChance"))}</strong>`,
       `${escapeText(baseLabel)}: ${baseChance}%`,
-      ...modifiers
-        .filter((modifier) => Number(modifier.value ?? 0) !== 0)
-        .map(
-          (modifier) =>
-            `${escapeText(Number(modifier.value ?? 0) >= 0 ? "+" : "")}${escapeText(Number(modifier.value ?? 0))}% ${escapeText(modifier.description)}`,
-        ),
+      ...normalizedModifiers.map(
+        (modifier) => `${toSignedString(modifier.value)}% ${escapeText(modifier.description)}`,
+      ),
       `= ${totalChance}%`,
     ].join("<br>");
   }
