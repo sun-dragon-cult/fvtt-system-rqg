@@ -245,9 +245,12 @@ export class RqgItem extends Item {
   /**
    * Open a dialog for an AbilityRoll
    */
-  public async abilityRoll(token?: TokenDocument | null): Promise<void> {
+  public async abilityRoll(
+    token?: TokenDocument | null,
+    options: Partial<Omit<AbilityRollOptions, "naturalSkill" | "abilityItem">> = {},
+  ): Promise<void> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await this.system.abilityRoll(token);
+    await this.system.abilityRoll(token, options);
   }
 
   /**

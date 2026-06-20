@@ -6,6 +6,7 @@ export type RollModeOption = {
 
 export type RollFooterData = {
   totalChance: number;
+  totalChanceTooltip?: string;
   rollMode: foundry.dice.Roll.Mode; // read in onSubmit by checking aria-pressed state
   rollModes: RollModeOption[];
 };
