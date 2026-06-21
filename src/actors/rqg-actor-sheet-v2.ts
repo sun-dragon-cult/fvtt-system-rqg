@@ -24,7 +24,7 @@ import type { AbilityItem, PhysicalItem } from "@item-model/item-types.ts";
 import type { ArmorItem } from "@item-model/armor-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
-import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import {
   showHitLocationAddWoundDialog,
   showHitLocationHealWoundDialog,
@@ -58,6 +58,7 @@ import {
   isAllowedDocumentNames,
   updateRqidLink,
 } from "../documents/drag-drop";
+import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import type { GearItem } from "@item-model/gear-data-model.ts";
@@ -684,14 +685,32 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this.element.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      const weaponItemId = el.dataset["weaponItemId"];
+      const weaponUsageType = el.dataset["weaponUsageType"] as UsageType | undefined;
+      let weaponEffectModifier = Number(el.dataset["weaponEffectModifier"] ?? 0);
+      if (weaponItemId && weaponUsageType) {
+        const weaponItem = this.actor.items.get(weaponItemId) as RqgItem | undefined;
+        if (isDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon)) {
+          weaponEffectModifier = getWeaponEffectModifier(weaponItem, weaponUsageType, "attack");
+        }
+      }
+      const weaponEffectModifiers = weaponEffectModifier
+        ? [
+            {
+              value: weaponEffectModifier,
+              description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+            },
+          ]
+        : [];
       assertDocumentSubType<AbilityItem>(
         item,
         abilityItemTypes,
         "AbilityChance roll couldn't find skillItem",
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.abilityRoll(this.document.token),
-        onDouble: () => item.abilityRollImmediate({}, this.document.token),
+        onSingle: () => item.abilityRoll(this.document.token, { modifiers: weaponEffectModifiers }),
+        onDouble: () =>
+          item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.document.token),
       });
     });
 

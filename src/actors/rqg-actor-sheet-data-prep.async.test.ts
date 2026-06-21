@@ -85,6 +85,10 @@ describe("organizeEmbeddedItems", () => {
         return false;
       };
     }
+
+    if (!foundry.utils.deepClone) {
+      foundry.utils.deepClone = (<T>(value: T): T => structuredClone(value)) as any;
+    }
   });
 
   it("groups/sorts embedded data and enriches cult/passion fields", async () => {
@@ -176,6 +180,59 @@ describe("organizeEmbeddedItems", () => {
 
     expect(result[ItemTypeEnum.Passion][0].system.enrichedDescription).toBe("Fear (Chaos)");
     expect(result[ItemTypeEnum.RuneMagic][0].system.isCommon).toBe(true);
+  });
+
+  it("clamps weapon usage total chance and ignores weapon effect without linked skill", async () => {
+    const linkedSkill = {
+      id: "skill-spear",
+      type: ItemTypeEnum.Skill,
+      system: { chance: 10, hasExperience: true },
+    };
+
+    const weapon = {
+      id: "weapon-spear",
+      type: ItemTypeEnum.Weapon,
+      system: {
+        projectileId: "",
+        effect: {
+          melee: { attack: -30, parry: 0 },
+          missile: { attack: 0, parry: 0 },
+        },
+        usage: {
+          oneHand: {
+            skillRqidLink: { rqid: "i.skill.spear", name: "Spear" },
+            combatManeuvers: [],
+            damage: "",
+            minStrength: 0,
+            minDexterity: 0,
+            strikeRank: 0,
+          },
+          twoHand: {
+            skillRqidLink: { rqid: "i.skill.missing", name: "Missing" },
+            combatManeuvers: [],
+            damage: "",
+            minStrength: 0,
+            minDexterity: 0,
+            strikeRank: 0,
+          },
+        },
+      },
+    };
+
+    const actor = actorWithItems([weapon]);
+    actor.getBestEmbeddedDocumentByRqid = vi.fn((rqid: string) =>
+      rqid === "i.skill.spear" ? linkedSkill : undefined,
+    );
+
+    await organizeEmbeddedItems(actor, []);
+
+    const oneHandUsage = weapon.system.usage.oneHand as any;
+    const twoHandUsage = weapon.system.usage.twoHand as any;
+
+    expect(oneHandUsage.skillChance).toBe(10);
+    expect(oneHandUsage.totalChance).toBe(0);
+    expect(twoHandUsage.skillChance).toBe(0);
+    expect(twoHandUsage.totalChance).toBe(0);
   });
 });
 

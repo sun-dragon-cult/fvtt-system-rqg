@@ -1,5 +1,7 @@
 <footer class="flexrow flex-wrap gap1rem">
-  <div class="target-box" data-tooltip="{{localize "RQG.Dialog.Common.TargetChance"}}">
+  <div class="target-box" data-target-chance-box
+       data-tooltip="{{#if totalChanceTooltip}}{{{totalChanceTooltip}}}{{else}}{{localize "RQG.Dialog.Common.TargetChance"}}{{/if}}"
+       {{#if totalChanceTooltip}}data-tooltip-class="chance-breakdown-tooltip"{{/if}}>
     <i class="fa-solid fa-bullseye"></i><br>
     <span data-total-chance>{{totalChance}}%</span>
   </div>
