@@ -13,6 +13,59 @@ interface AEPathMapping {
   newKey: string;
 }
 
+export interface AEPathRewriteRule extends AEPathMapping {
+  allowedModes?: ActiveEffectChangeType[];
+  validateValue?: (value: unknown) => number | undefined;
+  transformValue?: (value: number) => number;
+  transformMode?: (mode: ActiveEffectChangeType) => ActiveEffectChangeType;
+}
+
+export type AERewriteWarningReason =
+  | "non-additive-mode"
+  | "non-numeric-value"
+  | "duplicate-target-key"
+  | "effect-processing-failure"
+  | "document-processing-failure";
+
+export interface AEPathRewriteSummary {
+  scannedEffects: number;
+  migratedChanges: number;
+  skippedChanges: number;
+  warningCount: number;
+  warningReasons: Record<AERewriteWarningReason, number>;
+  failureCount: number;
+}
+
+export interface AERewriteOptions {
+  rules?: AEPathRewriteRule[];
+  dryRun?: boolean;
+}
+
+export interface AERewriteResult {
+  changed: boolean;
+  summary: AEPathRewriteSummary;
+}
+
+export interface AERunOwner {
+  id: string;
+  name: string;
+  effects: any[];
+  owningActor?: any;
+}
+
+export interface AEOwnerUpdate {
+  id: string;
+  effects: any[];
+}
+
+export interface AEOwnerRunResult {
+  updates: AEOwnerUpdate[];
+  ownersScanned: number;
+  ownersUpdated: number;
+  ownersFailed: number;
+  summary: AEPathRewriteSummary;
+}
+
 type LegacyItemTargetSyntax = {
   itemType: string;
   itemName: string;
@@ -48,7 +101,21 @@ export const AE_LEGACY_PATH_MAPPINGS: AEPathMapping[] = [
   },
 ];
 
-const AE_TARGET_KEYS = new Set(AE_LEGACY_PATH_MAPPINGS.flatMap((m) => [m.legacyKey, m.newKey]));
+export const AE_DEFAULT_PATH_REWRITE_RULES: AEPathRewriteRule[] = AE_LEGACY_PATH_MAPPINGS.map(
+  (mapping) => ({
+    ...mapping,
+    allowedModes: ["add"],
+    validateValue: parseNumericValue,
+  }),
+);
+
+const EMPTY_WARNING_REASONS: Record<AERewriteWarningReason, number> = {
+  "non-additive-mode": 0,
+  "non-numeric-value": 0,
+  "duplicate-target-key": 0,
+  "effect-processing-failure": 0,
+  "document-processing-failure": 0,
+};
 
 function getEffectChanges(effect: any): any[] {
   // v14 canonical persisted location is `system.changes`.
@@ -141,19 +208,21 @@ function toEffectObject(effect: any): any {
   return structuredClone(effect);
 }
 
-function normalizeNumericValue(rawValue: unknown): number {
+function parseNumericValue(rawValue: unknown): number | undefined {
   if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
     return rawValue;
   }
+
   if (typeof rawValue === "string") {
     const normalized = rawValue.trim().replace(",", ".");
     if (normalized.length === 0) {
-      return 0;
+      return undefined;
     }
     const parsed = Number(normalized);
-    return Number.isFinite(parsed) ? parsed : 0;
+    return Number.isFinite(parsed) ? parsed : undefined;
   }
-  return 0;
+
+  return undefined;
 }
 
 function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
@@ -194,43 +263,114 @@ function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefin
  * @returns true if any changes were migrated
  */
 export function migrateEffectChanges(effect: any): boolean {
-  const changes = getEffectChanges(effect);
-  if (!changes.length) {
-    return false;
+  return migrateEffectChangesWithSummary(effect).changed;
+}
+
+export function createEmptyAEPathRewriteSummary(): AEPathRewriteSummary {
+  return {
+    scannedEffects: 0,
+    migratedChanges: 0,
+    skippedChanges: 0,
+    warningCount: 0,
+    warningReasons: { ...EMPTY_WARNING_REASONS },
+    failureCount: 0,
+  };
+}
+
+export function mergeAEPathRewriteSummaries(
+  base: AEPathRewriteSummary,
+  addition: AEPathRewriteSummary,
+): AEPathRewriteSummary {
+  const merged = createEmptyAEPathRewriteSummary();
+  merged.scannedEffects = base.scannedEffects + addition.scannedEffects;
+  merged.migratedChanges = base.migratedChanges + addition.migratedChanges;
+  merged.skippedChanges = base.skippedChanges + addition.skippedChanges;
+  merged.warningCount = base.warningCount + addition.warningCount;
+  merged.failureCount = base.failureCount + addition.failureCount;
+
+  for (const reason of Object.keys(EMPTY_WARNING_REASONS) as AERewriteWarningReason[]) {
+    merged.warningReasons[reason] = base.warningReasons[reason] + addition.warningReasons[reason];
   }
 
-  const legacyKeyMap = new Map(AE_LEGACY_PATH_MAPPINGS.map((m) => [m.legacyKey, m.newKey]));
+  return merged;
+}
+
+function addWarning(summary: AEPathRewriteSummary, reason: AERewriteWarningReason): void {
+  summary.warningCount += 1;
+  summary.warningReasons[reason] += 1;
+}
+
+function getRewriteRuleByLegacyKey(rules: AEPathRewriteRule[]): Map<string, AEPathRewriteRule> {
+  return new Map(rules.map((rule) => [rule.legacyKey, rule]));
+}
+
+export function migrateEffectChangesWithSummary(
+  effect: any,
+  options: AERewriteOptions = {},
+): AERewriteResult {
+  const summary = createEmptyAEPathRewriteSummary();
+  summary.scannedEffects += 1;
+
+  const rules = options.rules ?? AE_DEFAULT_PATH_REWRITE_RULES;
+  const ruleByLegacyKey = getRewriteRuleByLegacyKey(rules);
+  const changes = getEffectChanges(effect);
+  if (!changes.length) {
+    return {
+      changed: false,
+      summary,
+    };
+  }
+
   let hasChanges = false;
 
   const migratedChanges = changes.map((change) => {
     const persistedChange = toPersistedChangeData(change);
-    if (change.type !== "add") {
+    const rule = ruleByLegacyKey.get(persistedChange.key);
+    if (!rule) {
       return persistedChange;
     }
-    const keyBeforeRewrite = persistedChange.key;
-    const keyAfterRewrite = legacyKeyMap.get(keyBeforeRewrite) ?? keyBeforeRewrite;
-    const nextKey = keyAfterRewrite;
-    let nextValue = persistedChange.value;
 
-    if (AE_TARGET_KEYS.has(nextKey)) {
-      nextValue = normalizeNumericValue(persistedChange.value);
+    const normalizedMode = normalizeChangeType(persistedChange.type);
+    const transformedMode = rule.transformMode?.(normalizedMode ?? "custom") ?? normalizedMode;
+    const allowedModes = rule.allowedModes ?? ["add"];
+
+    if (!transformedMode || !allowedModes.includes(transformedMode)) {
+      summary.skippedChanges += 1;
+      addWarning(summary, "non-additive-mode");
+      return persistedChange;
     }
 
-    if (nextKey !== persistedChange.key || nextValue !== persistedChange.value) {
+    const validateValue = rule.validateValue ?? parseNumericValue;
+    const validatedValue = validateValue(persistedChange.value);
+    if (validatedValue === undefined) {
+      summary.skippedChanges += 1;
+      addWarning(summary, "non-numeric-value");
+      return persistedChange;
+    }
+
+    const nextKey = rule.newKey;
+
+    const transformedValue = rule.transformValue?.(validatedValue) ?? validatedValue;
+    summary.migratedChanges += 1;
+
+    if (!options.dryRun) {
+      persistedChange.key = nextKey;
+      persistedChange.type = transformedMode;
+      persistedChange.value = transformedValue;
       hasChanges = true;
-      return {
-        ...persistedChange,
-        key: nextKey,
-        value: nextValue,
-      };
     }
 
     return persistedChange;
   });
 
-  setEffectChanges(effect, migratedChanges);
+  if (hasChanges) {
+    setEffectChanges(effect, migratedChanges);
+  }
 
-  return hasChanges;
+  return {
+    changed: hasChanges,
+    summary,
+  };
 }
 
 /**
@@ -302,10 +442,24 @@ export function migrateEffectChangeTypes(effect: any): boolean {
  * migration infrastructure merges payloads from independent migration functions.
  */
 export function migrateEffectTypesAndPaths(effect: any, owningActor?: any): boolean {
-  const normalizedTypes = migrateEffectChangeTypes(effect);
   const migratedPaths = migrateEffectChanges(effect);
   const migratedLegacyItemTargets = migrateEffectLegacyItemTargetSyntax(effect, owningActor);
-  return normalizedTypes || migratedPaths || migratedLegacyItemTargets;
+  return migratedPaths || migratedLegacyItemTargets;
+}
+
+export function migrateEffectTypesAndPathsWithSummary(
+  effect: any,
+  owningActor?: any,
+  options: AERewriteOptions = {},
+): AERewriteResult {
+  const pathRewrite = migrateEffectChangesWithSummary(effect, options);
+  const migratedLegacyItemTargets = options.dryRun
+    ? false
+    : migrateEffectLegacyItemTargetSyntax(effect, owningActor);
+  return {
+    changed: pathRewrite.changed || migratedLegacyItemTargets,
+    summary: pathRewrite.summary,
+  };
 }
 
 /**
@@ -322,6 +476,73 @@ export function migrateEffectArray(effects: any[], owningActor?: any): any[] {
     }
     return effect;
   });
+}
+
+export function migrateEffectArrayWithSummary(
+  effects: any[],
+  owningActor?: any,
+  options: AERewriteOptions = {},
+): { effects: any[]; summary: AEPathRewriteSummary } {
+  const aggregateSummary = createEmptyAEPathRewriteSummary();
+
+  const migrated = effects.map((effect) => {
+    const effectClone = toEffectObject(effect);
+
+    try {
+      const rewriteResult = migrateEffectTypesAndPathsWithSummary(
+        effectClone,
+        owningActor,
+        options,
+      );
+      const mergedSummary = mergeAEPathRewriteSummaries(aggregateSummary, rewriteResult.summary);
+      Object.assign(aggregateSummary, mergedSummary);
+      return rewriteResult.changed ? effectClone : effect;
+    } catch {
+      aggregateSummary.failureCount += 1;
+      addWarning(aggregateSummary, "effect-processing-failure");
+      return effect;
+    }
+  });
+
+  return {
+    effects: migrated,
+    summary: aggregateSummary,
+  };
+}
+
+export function runAEPathRewriteForOwners(
+  owners: AERunOwner[],
+  options: AERewriteOptions = {},
+): AEOwnerRunResult {
+  const summary = createEmptyAEPathRewriteSummary();
+  const updates: AEOwnerUpdate[] = [];
+  let ownersUpdated = 0;
+  let ownersFailed = 0;
+
+  for (const owner of owners) {
+    try {
+      const migrated = migrateEffectArrayWithSummary(owner.effects, owner.owningActor, options);
+      const mergedSummary = mergeAEPathRewriteSummaries(summary, migrated.summary);
+      Object.assign(summary, mergedSummary);
+
+      if (effectArraysChanged(owner.effects, migrated.effects)) {
+        ownersUpdated += 1;
+        updates.push({ id: owner.id, effects: migrated.effects });
+      }
+    } catch {
+      ownersFailed += 1;
+      summary.failureCount += 1;
+      addWarning(summary, "document-processing-failure");
+    }
+  }
+
+  return {
+    updates,
+    ownersScanned: owners.length,
+    ownersUpdated,
+    ownersFailed,
+    summary,
+  };
 }
 
 /**

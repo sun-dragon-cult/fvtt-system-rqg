@@ -1,5 +1,16 @@
 import type { ActiveEffectMigration } from "../apply-migrations";
-import { migrateEffectTypesAndPaths } from "../shared-ae-migration-utils";
+import {
+  type AERewriteWarningReason,
+  migrateEffectTypesAndPathsWithSummary,
+} from "../shared-ae-migration-utils";
+
+const WARNING_REASON_LABELS: Record<AERewriteWarningReason, string> = {
+  "non-additive-mode": "non-additive-mode",
+  "non-numeric-value": "non-numeric-value",
+  "duplicate-target-key": "duplicate-target-key",
+  "effect-processing-failure": "effect-processing-failure",
+  "document-processing-failure": "document-processing-failure",
+};
 
 /**
  * ActiveEffectMigration: Process standalone ActiveEffect documents in compendium packs
@@ -16,12 +27,30 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
 ): Promise<ActiveEffect.UpdateData> => {
   const updateData: ActiveEffect.UpdateData = {};
   const effectAsAny = effect as any;
+  const rewriteResult = migrateEffectTypesAndPathsWithSummary(effectAsAny);
 
-  if (migrateEffectTypesAndPaths(effectAsAny)) {
-    logger?.info(`Migrated AE paths on compendium effect "${effect.name}"`, {
-      notify: false,
-      documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
-    });
+  if (rewriteResult.summary.warningCount > 0) {
+    for (const [reason, count] of Object.entries(rewriteResult.summary.warningReasons)) {
+      if (count > 0) {
+        logger?.warn(
+          `AE path rewrite warning on compendium effect "${effect.name}": ${WARNING_REASON_LABELS[reason as AERewriteWarningReason]} (${count})`,
+          {
+            notify: false,
+            documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
+          },
+        );
+      }
+    }
+  }
+
+  if (rewriteResult.changed) {
+    logger?.info(
+      `Migrated AE paths on compendium effect "${effect.name}": scanned effects=${rewriteResult.summary.scannedEffects}, migrated changes=${rewriteResult.summary.migratedChanges}, skipped changes=${rewriteResult.summary.skippedChanges}`,
+      {
+        notify: false,
+        documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
+      },
+    );
     if (Array.isArray(effectAsAny.system?.changes)) {
       updateData.system = {
         changes: effectAsAny.system.changes,

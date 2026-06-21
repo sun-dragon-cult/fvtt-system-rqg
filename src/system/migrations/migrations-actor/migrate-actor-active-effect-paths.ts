@@ -1,10 +1,19 @@
 import type { ActorMigration } from "../apply-migrations";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import {
-  migrateEffectArray,
+  type AERewriteWarningReason,
   effectArraysChanged,
+  migrateEffectArrayWithSummary,
   toPersistedEffectArray,
 } from "../shared-ae-migration-utils";
+
+const WARNING_REASON_LABELS: Record<AERewriteWarningReason, string> = {
+  "non-additive-mode": "non-additive-mode",
+  "non-numeric-value": "non-numeric-value",
+  "duplicate-target-key": "duplicate-target-key",
+  "effect-processing-failure": "effect-processing-failure",
+  "document-processing-failure": "document-processing-failure",
+};
 
 /**
  * ActorMigration: Process actor-owned effects only
@@ -27,7 +36,24 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
 
   // Migrate actor-owned effects
   if (originalEffects.length > 0) {
-    const migratedEffects = migrateEffectArray(originalEffects, actor);
+    const { effects: migratedEffects, summary } = migrateEffectArrayWithSummary(
+      originalEffects,
+      actor,
+    );
+
+    if (summary.warningCount > 0) {
+      for (const [reason, count] of Object.entries(summary.warningReasons)) {
+        if (count > 0) {
+          logger?.warn(
+            `AE path rewrite warning for actor ${actor.name}: ${WARNING_REASON_LABELS[reason as AERewriteWarningReason]} (${count})`,
+            {
+              notify: false,
+              documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
+            },
+          );
+        }
+      }
+    }
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       const effectUpdates = originalEffects.flatMap((effect, index) => {
@@ -57,14 +83,13 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
         updateData.effects = effectUpdates as any; // Type coercion needed for UpdateData
       }
 
-      originalEffects.forEach((effect, index) => {
-        if (migratedEffects[index] !== effect) {
-          logger?.info(`Migrated AE paths on effect "${effect.name}" for actor ${actor.name}`, {
-            notify: false,
-            documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
-          });
-        }
-      });
+      logger?.info(
+        `Migrated AE paths for actor ${actor.name}: scanned effects=${summary.scannedEffects}, migrated changes=${summary.migratedChanges}, skipped changes=${summary.skippedChanges}`,
+        {
+          notify: false,
+          documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
+        },
+      );
     }
   }
 
