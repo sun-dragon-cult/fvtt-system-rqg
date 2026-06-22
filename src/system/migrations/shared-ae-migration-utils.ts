@@ -530,7 +530,7 @@ export function runAEPathRewriteForOwners(
 
       if (effectArraysChanged(owner.effects, migrated.effects)) {
         ownersUpdated += 1;
-        updates.push({ id: owner.id, effects: migrated.effects });
+        updates.push({ id: owner.id, effects: toPersistedEffectArray(migrated.effects) });
       }
     } catch {
       ownersFailed += 1;
