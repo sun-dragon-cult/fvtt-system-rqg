@@ -41,10 +41,11 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
     );
 
     if (summary.warningCount > 0) {
-      for (const [reason, count] of Object.entries(summary.warningReasons)) {
+      for (const reason of Object.keys(summary.warningReasons) as AERewriteWarningReason[]) {
+        const count = summary.warningReasons[reason];
         if (count > 0) {
           logger?.warn(
-            `AE path rewrite warning on item ${item.name}: ${WARNING_REASON_LABELS[reason as AERewriteWarningReason]} (${count})`,
+            `AE path rewrite warning on item ${item.name}: ${WARNING_REASON_LABELS[reason]} (${count})`,
             {
               notify: false,
               documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
