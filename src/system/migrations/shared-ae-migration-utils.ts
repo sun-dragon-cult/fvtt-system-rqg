@@ -436,10 +436,14 @@ export function migrateEffectChangeTypes(effect: any): boolean {
 }
 
 /**
- * Normalize change.type values and then rewrite legacy paths in one pass.
+ * Rewrite legacy attribute paths and legacy item-target key syntax in one pass.
  *
- * This keeps Active Effect migration behavior self-contained even when
- * migration infrastructure merges payloads from independent migration functions.
+ * - Legacy attribute paths (e.g. system.attributes.magicPoints.max) are rewritten to their
+ *   current equivalents using the default path rewrite rules.
+ * - Legacy item-target syntax (<itemType>:<itemName>:<systemPath>) is rewritten to
+ *   rqid-based syntax when a unique actor item match can be found.
+ *
+ * Type normalization is handled by separate migration functions and is not performed here.
  */
 export function migrateEffectTypesAndPaths(effect: any, owningActor?: any): boolean {
   const migratedPaths = migrateEffectChanges(effect);
@@ -486,9 +490,8 @@ export function migrateEffectArrayWithSummary(
   const aggregateSummary = createEmptyAEPathRewriteSummary();
 
   const migrated = effects.map((effect) => {
-    const effectClone = toEffectObject(effect);
-
     try {
+      const effectClone = toEffectObject(effect);
       const rewriteResult = migrateEffectTypesAndPathsWithSummary(
         effectClone,
         owningActor,
