@@ -30,10 +30,11 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
   const rewriteResult = migrateEffectTypesAndPathsWithSummary(effectAsAny);
 
   if (rewriteResult.summary.warningCount > 0) {
-    for (const [reason, count] of Object.entries(rewriteResult.summary.warningReasons)) {
+    for (const reason of Object.keys(rewriteResult.summary.warningReasons) as AERewriteWarningReason[]) {
+      const count = rewriteResult.summary.warningReasons[reason];
       if (count > 0) {
         logger?.warn(
-          `AE path rewrite warning on compendium effect "${effect.name}": ${WARNING_REASON_LABELS[reason as AERewriteWarningReason]} (${count})`,
+          `AE path rewrite warning on compendium effect "${effect.name}": ${WARNING_REASON_LABELS[reason]} (${count})`,
           {
             notify: false,
             documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
