@@ -352,11 +352,12 @@ describe("rune image selectors", () => {
         id: "f-pass",
         img: "beast.png",
         type: ItemTypeEnum.Rune,
+        flags: { rqg: { documentRqidFlags: { id: "i.rune.beast-form" } } },
         system: {
           runeType: { type: RuneTypeEnum.Form },
           rune: "Beast",
           chance: 60,
-          opposingRuneRqidLink: { rqid: "i.rune.man" },
+          opposingRuneRqidLink: { rqid: "i.rune.man-form" },
           descriptionRqidLink: { rqid: "i.rune.beast" },
         },
       },
@@ -364,6 +365,7 @@ describe("rune image selectors", () => {
         id: "f-no-opposing",
         img: "man.png",
         type: ItemTypeEnum.Rune,
+        flags: { rqg: { documentRqidFlags: { id: "i.rune.man-form" } } },
         system: {
           runeType: { type: RuneTypeEnum.Form },
           rune: "Man",
@@ -376,11 +378,12 @@ describe("rune image selectors", () => {
         id: "f-fail",
         img: "plant.png",
         type: ItemTypeEnum.Rune,
+        flags: { rqg: { documentRqidFlags: { id: "i.rune.plant-form" } } },
         system: {
           runeType: { type: RuneTypeEnum.Form },
           rune: "Plant",
           chance: 25,
-          opposingRuneRqidLink: { rqid: "i.rune.beast" },
+          opposingRuneRqidLink: { rqid: "i.rune.beast-form" },
           descriptionRqidLink: { rqid: "i.rune.plant" },
         },
       },
@@ -389,6 +392,28 @@ describe("rune image selectors", () => {
     const result = getCharacterFormRuneImgs(actor);
 
     expect(result.map((r) => r.id)).toEqual(["f-pass", "f-no-opposing"]);
+  });
+
+  it("returns low-chance form rune when its opposing rune is missing from actor", () => {
+    const actor = actorWithItems([
+      {
+        id: "f-alone",
+        img: "plant.png",
+        type: ItemTypeEnum.Rune,
+        flags: { rqg: { documentRqidFlags: { id: "i.rune.plant-form" } } },
+        system: {
+          runeType: { type: RuneTypeEnum.Form },
+          rune: "Plant",
+          chance: 25,
+          opposingRuneRqidLink: { rqid: "i.rune.beast-form" },
+          descriptionRqidLink: { rqid: "i.rune.plant" },
+        },
+      },
+    ]);
+
+    const result = getCharacterFormRuneImgs(actor);
+
+    expect(result.map((r) => r.id)).toEqual(["f-alone"]);
   });
 });
 
@@ -421,7 +446,22 @@ function makeRune(key: string, chance: number, opposingRqid?: string): [string, 
     key,
     {
       system: { chance, opposingRuneRqidLink: opposingRqid ? { rqid: opposingRqid } : undefined },
-      flags: { rqg: { documentRqidFlags: { id: `item.rune.${key}` } } },
+      flags: { rqg: { documentRqidFlags: { id: `i.rune.${key}` } } },
+    } as unknown as RuneItem,
+  ];
+}
+
+function makeRuneWithRqid(
+  key: string,
+  chance: number,
+  rqid: string,
+  opposingRqid?: string,
+): [string, RuneItem] {
+  return [
+    key,
+    {
+      system: { chance, opposingRuneRqidLink: opposingRqid ? { rqid: opposingRqid } : undefined },
+      flags: { rqg: { documentRqidFlags: { id: rqid } } },
     } as unknown as RuneItem,
   ];
 }
@@ -457,8 +497,8 @@ describe("getRuneVisualsMap", () => {
 describe("getRuneOpposedPairs", () => {
   it("pairs opposing runes and computes markerPercent from left rune chance", () => {
     const runesByName = Object.fromEntries([
-      makeRune("fertility", 60, "item.rune.death"),
-      makeRune("death", 40, "item.rune.fertility"),
+      makeRune("fertility", 60, "i.rune.death"),
+      makeRune("death", 40, "i.rune.fertility"),
     ]);
     const { pairs, standalone } = getRuneOpposedPairs(runesByName);
     expect(standalone).toHaveLength(0);
@@ -473,23 +513,40 @@ describe("getRuneOpposedPairs", () => {
   });
 
   it("places the preferred-order rune on the left regardless of entry order", () => {
-    // death is listed first but fertility has preferred order
+    // death-power is listed first but fertility-power has preferred order
     const runesByName = Object.fromEntries([
-      makeRune("death", 70, "item.rune.fertility"),
-      makeRune("fertility", 30, "item.rune.death"),
+      makeRune("death-power", 70, "i.rune.fertility-power"),
+      makeRune("fertility-power", 30, "i.rune.death-power"),
     ]);
     const { pairs } = getRuneOpposedPairs(runesByName);
-    expect(pairs[0]!.left.system.chance).toBe(30); // fertility
-    expect(pairs[0]!.right!.system.chance).toBe(70); // death
+    expect(pairs[0]!.left.system.chance).toBe(30); // fertility-power
+    expect(pairs[0]!.right!.system.chance).toBe(70); // death-power
   });
 
   it("shows rune with null right slot when opposing rune is absent", () => {
-    const runesByName = Object.fromEntries([makeRune("fertility", 60, "item.rune.death")]);
+    const runesByName = Object.fromEntries([makeRune("fertility-power", 60, "i.rune.death-power")]);
     const { pairs, standalone } = getRuneOpposedPairs(runesByName);
     expect(standalone).toHaveLength(0);
     expect(pairs).toHaveLength(1);
     expect(pairs[0]!.right).toBeNull();
     expect(pairs[0]!.left.system.chance).toBe(60);
+  });
+
+  it("shows one-sided link as rune with null right slot, other rune as standalone", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("beast", 48, "i.rune.beast-form"),
+      makeRuneWithRqid("man", 52, "i.rune.man-form", "i.rune.beast-form"),
+    ]);
+
+    const { pairs, standalone } = getRuneOpposedPairs(runesByName);
+
+    // Man has Beast as opposing but Beast does not link back — show Man with empty
+    // right slot and Beast as standalone.
+    expect(pairs).toHaveLength(1);
+    expect(pairs[0]!.left.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.man-form");
+    expect(pairs[0]!.right).toBeNull();
+    expect(standalone).toHaveLength(1);
+    expect(standalone[0]!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.beast-form");
   });
 
   it("puts runes without an opposing rqid into standalone", () => {
@@ -501,16 +558,33 @@ describe("getRuneOpposedPairs", () => {
   });
 
   it("sorts pairs by preferredPairOrder, unknowns last", () => {
-    // man (index 4), harmony (index 1), truth (index 2)
+    // man-form (index 4), harmony-power (index 1), truth-power (index 2)
     const runesByName = Object.fromEntries([
-      makeRune("man", 60, "item.rune.beast"),
-      makeRune("beast", 40, "item.rune.man"),
-      makeRune("harmony", 55, "item.rune.disorder"),
-      makeRune("disorder", 45, "item.rune.harmony"),
-      makeRune("truth", 70, "item.rune.illusion"),
-      makeRune("illusion", 30, "item.rune.truth"),
+      makeRune("man-form", 60, "i.rune.beast-form"),
+      makeRune("beast-form", 40, "i.rune.man-form"),
+      makeRune("harmony-power", 55, "i.rune.disorder-power"),
+      makeRune("disorder-power", 45, "i.rune.harmony-power"),
+      makeRune("truth-power", 70, "i.rune.illusion-power"),
+      makeRune("illusion-power", 30, "i.rune.truth-power"),
     ]);
     const { pairs } = getRuneOpposedPairs(runesByName);
     expect(pairs.map((p) => p.left.system.chance)).toEqual([55, 70, 60]);
+  });
+
+  it("orders by rqid when map keys are non-canonical", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("translatedAlpha", 40, "i.rune.beast-form", "i.rune.man-form"),
+      makeRuneWithRqid("translatedBeta", 60, "i.rune.man-form", "i.rune.beast-form"),
+      makeRuneWithRqid("translatedGamma", 55, "i.rune.harmony-power", "i.rune.disorder-power"),
+      makeRuneWithRqid("translatedDelta", 45, "i.rune.disorder-power", "i.rune.harmony-power"),
+    ]);
+
+    const { pairs } = getRuneOpposedPairs(runesByName);
+
+    // harmony-power pair first, then man-form pair based on preferred RQID order
+    expect(pairs.map((p) => p.left.flags?.rqg?.documentRqidFlags?.id)).toEqual([
+      "i.rune.harmony-power",
+      "i.rune.man-form",
+    ]);
   });
 });

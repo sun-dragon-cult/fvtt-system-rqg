@@ -5,6 +5,7 @@ import {
   localize,
   localizeItemType,
   normalizeSourceRqidLinks,
+  parseBooleanString,
 } from "../system/util";
 import { addRqidLinkToSheetJQuery } from "../documents/rqid-sheet-button";
 import type { RqgItem } from "./rqg-item";
@@ -75,7 +76,7 @@ export class RqgItemSheet<
           elem.addEventListener("change", async (event) => {
             event.stopPropagation();
             const selectElem = event.currentTarget as HTMLSelectElement;
-            const allowDuplicates = getDomDataset(elem, "allow-duplicates");
+            const allowDuplicates = parseBooleanString(getDomDataset(elem, "allow-duplicates"));
             const newRqid = selectElem?.value?.trim() ?? "";
             if (!newRqid || newRqid === "empty") {
               return;
@@ -106,10 +107,18 @@ export class RqgItemSheet<
         if (targetProperty) {
           elem.addEventListener("change", async (event) => {
             const selectElem = event.currentTarget as HTMLSelectElement;
-            const newRqid = selectElem?.value;
-            if ((this.document as any).system[targetProperty].rqid !== newRqid) {
-              const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
-              const newHitLocationRqidLink = new RqidLink(newRqid, newName);
+            const newRqid = selectElem?.value?.trim() ?? "";
+            if (!newRqid || newRqid === "empty") {
+              return;
+            }
+
+            const currentLink = foundry.utils.getProperty(
+              this.document.system as object,
+              targetProperty,
+            ) as { rqid?: string } | null | undefined;
+            if (currentLink?.rqid !== newRqid) {
+              const newName = selectElem?.selectedOptions[0]?.innerText?.trim() ?? "";
+              const newHitLocationRqidLink = { rqid: newRqid, name: newName };
               await this.document.update({ [`system.${targetProperty}`]: newHitLocationRqidLink });
             }
           });

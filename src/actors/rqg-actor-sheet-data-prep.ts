@@ -343,12 +343,26 @@ export function getCharacterPowerRuneImgs(actor: CharacterActor): SheetRuneData[
  * @returns Array of form rune data
  */
 export function getCharacterFormRuneImgs(actor: CharacterActor): SheetRuneData[] {
+  const hasOpposingRuneOnActor = (opposingRuneRqid: string | undefined): boolean => {
+    if (!opposingRuneRqid) {
+      return false;
+    }
+
+    return actor.items.some(
+      (item) =>
+        isDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune) &&
+        item.flags?.rqg?.documentRqidFlags?.id === opposingRuneRqid,
+    );
+  };
+
   return actor.items
     .reduce((acc: SheetRuneData[], i) => {
       if (
         isDocumentSubType<RuneItem>(i, ItemTypeEnum.Rune) &&
         i.system.runeType.type === RuneTypeEnum.Form &&
-        (!i.system.opposingRuneRqidLink?.rqid || i.system.chance > 50)
+        (!i.system.opposingRuneRqidLink?.rqid ||
+          !hasOpposingRuneOnActor(i.system.opposingRuneRqidLink?.rqid) ||
+          i.system.chance > 50)
       ) {
         acc.push({
           id: i.id,
@@ -383,7 +397,13 @@ export interface RuneOpposedPair {
  * matching the traditional RuneQuest paper character sheet.
  * Runes not in this list sort after known ones in their original order.
  */
-const preferredPairOrder: string[] = ["fertility", "harmony", "truth", "stasis", "man"];
+const preferredPairOrderByRqid: string[] = [
+  "i.rune.fertility-power",
+  "i.rune.harmony-power",
+  "i.rune.truth-power",
+  "i.rune.stasis-power",
+  "i.rune.man-form",
+];
 
 /**
  * Compute a CSS strength class for a rune based on its chance.
@@ -434,16 +454,32 @@ export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
 
     const opposingRqid = rune.system?.opposingRuneRqidLink?.rqid;
     if (opposingRqid) {
+      const selfRqid = rune.flags?.rqg?.documentRqidFlags?.id ?? "";
       const opposingEntry = entries.find(
-        ([k, r]) => k !== key && r.flags?.rqg?.documentRqidFlags?.id === opposingRqid,
+        ([k, r]) =>
+          k !== key &&
+          r.flags?.rqg?.documentRqidFlags?.id === opposingRqid &&
+          r.system?.opposingRuneRqidLink?.rqid === selfRqid,
       );
       paired.add(key);
       if (opposingEntry) {
         const [opposingKey, opposingRune] = opposingEntry;
         paired.add(opposingKey);
+
+        // If the opposing rune was seen earlier without a link, it may already be
+        // in standalone; remove it now that we can form a pair.
+        const standaloneIndex = standalone.findIndex((r) => r.id === opposingRune.id);
+        if (standaloneIndex >= 0) {
+          standalone.splice(standaloneIndex, 1);
+        }
+
         // Place the rune with preferred order on the left side
-        const leftIdx = preferredPairOrder.indexOf(key);
-        const rightIdx = preferredPairOrder.indexOf(opposingKey);
+        const leftIdx = preferredPairOrderByRqid.indexOf(
+          rune.flags?.rqg?.documentRqidFlags?.id ?? "",
+        );
+        const rightIdx = preferredPairOrderByRqid.indexOf(
+          opposingRune.flags?.rqg?.documentRqidFlags?.id ?? "",
+        );
         if (rightIdx !== -1 && (leftIdx === -1 || rightIdx < leftIdx)) {
           const chance = opposingRune.system?.chance ?? 50;
           pairs.push({
@@ -481,10 +517,8 @@ export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
 
   // Sort pairs by preferred order (left rune key), unknowns sort last
   pairs.sort((a, b) => {
-    const aKey = entries.find(([, r]) => r === a.left)?.[0] ?? "";
-    const bKey = entries.find(([, r]) => r === b.left)?.[0] ?? "";
-    const aIdx = preferredPairOrder.indexOf(aKey);
-    const bIdx = preferredPairOrder.indexOf(bKey);
+    const aIdx = preferredPairOrderByRqid.indexOf(a.left.flags?.rqg?.documentRqidFlags?.id ?? "");
+    const bIdx = preferredPairOrderByRqid.indexOf(b.left.flags?.rqg?.documentRqidFlags?.id ?? "");
     if (aIdx !== -1 && bIdx !== -1) {
       return aIdx - bIdx;
     }
@@ -586,13 +620,11 @@ export async function organizeEmbeddedItems(
   itemTypes[ItemTypeEnum.Rune] = itemTypes[ItemTypeEnum.Rune]?.reduce(
     (acc: EmbeddedRunesByType, rune) => {
       const runeItem = rune as RuneItem;
-      const runeRqidName = runeItem.flags?.rqg?.documentRqidFlags?.id
-        ?.split(".")
-        .pop()
-        ?.split("-")
-        .shift();
+      const runeRqid = runeItem.flags?.rqg?.documentRqidFlags?.id;
+      const runeRqidName = runeRqid?.split(".").pop()?.split("-").shift();
       const runeType = runeItem.system.runeType.type;
-      if (Object.values(RuneTypeEnum).includes(runeType)) {
+      // Runes must have a valid RQID to be categorized by type
+      if (Object.values(RuneTypeEnum).includes(runeType) && runeRqid) {
         acc[runeType][runeRqidName ?? ""] = runeItem;
       } else {
         incorrectRunes.push(rune);
@@ -842,13 +874,26 @@ export async function getIncorrectRunesText(
   embeddedRunes: EmbeddedRunesByType,
   incorrectRunes: RqgItem[],
 ): Promise<string | undefined> {
+  const hasDocumentRqid = (rune: RuneItem): boolean => !!rune.flags?.rqg?.documentRqidFlags?.id;
+
   const validRuneIds = [
-    ...Object.values(embeddedRunes.element).map((r) => r.id),
-    Object.values(embeddedRunes.form).map((r) => r.id),
-    Object.values(embeddedRunes.condition).map((r) => r.id),
-    Object.values(embeddedRunes.technique).map((r) => r.id),
+    ...Object.values(embeddedRunes.element)
+      .filter(hasDocumentRqid)
+      .map((r) => r.id),
+    Object.values(embeddedRunes.form)
+      .filter(hasDocumentRqid)
+      .map((r) => r.id),
+    Object.values(embeddedRunes.condition)
+      .filter(hasDocumentRqid)
+      .map((r) => r.id),
+    Object.values(embeddedRunes.technique)
+      .filter(hasDocumentRqid)
+      .map((r) => r.id),
     Object.values(embeddedRunes.power)
       .filter((r) => {
+        if (!hasDocumentRqid(r)) {
+          return false;
+        }
         const runeRqidName = r?.flags?.rqg?.documentRqidFlags?.id
           ?.split(".")
           .pop()

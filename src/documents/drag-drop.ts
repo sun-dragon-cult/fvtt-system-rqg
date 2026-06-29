@@ -6,12 +6,23 @@ import {
   localize,
   localizeDocumentName,
   localizeItemType,
+  parseBooleanString,
+  type NormalizedRqidLink,
   normalizeSourceRqidLinks,
   type SourceRqidLink,
 } from "../system/util";
+import { RqgLogger } from "../system/logging/rqg-logger";
 
 import Document = foundry.abstract.Document;
 import { Rqid } from "../system/api/rqid-api";
+
+const logger = new RqgLogger("drag-drop");
+
+export type DragDropPayloadLike = {
+  type?: string;
+  itemType?: string;
+  data?: { type?: string };
+} | null;
 
 /**
  * Applies dropzone hover styling when a drag cursor enters or moves within the same drop target tree.
@@ -48,14 +59,23 @@ export function onDragLeave(event: DragEvent): void {
   }
 }
 
+export function parseDropzoneList(rawValue: string | undefined): string[] {
+  return (
+    rawValue
+      ?.split(",")
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0) ?? []
+  );
+}
+
 export function isAllowedDocumentNames(
   documentName: string | undefined,
   allowedDocumentNames: string[] | undefined,
+  showWarning: boolean = true,
 ): boolean {
-  if (
-    !documentName ||
-    (allowedDocumentNames?.length && !allowedDocumentNames.includes(documentName))
-  ) {
+  const allowedNames = allowedDocumentNames ?? [];
+
+  if (!documentName || (allowedNames.length > 0 && !allowedNames.includes(documentName))) {
     const translatedDocumentName = localizeDocumentName(documentName);
     const translatedAllowedDocumentNames = allowedDocumentNames
       ? allowedDocumentNames.map((d: any) => localizeDocumentName(d))
@@ -65,12 +85,13 @@ export function isAllowedDocumentNames(
       "disjunction",
     );
 
-    const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
-      allowedDocumentNames: allowedDocumentNamesString,
-      documentName: translatedDocumentName,
-    });
-    ui.notifications?.warn(msg, { console: false });
-    console.warn(`RQG | ${msg}`);
+    if (showWarning) {
+      const msg = localize("RQG.Item.Notification.DroppedWrongDocumentName", {
+        allowedDocumentNames: allowedDocumentNamesString,
+        documentName: translatedDocumentName,
+      });
+      logger.warn(msg);
+    }
     return false;
   }
   return true;
@@ -97,8 +118,7 @@ export function isAllowedDocumentType(
       allowedDropTypes: allowedDocumentTypesString,
       type: localizeItemType(document?.type as any),
     });
-    ui.notifications?.warn(msg, { console: false });
-    console.warn(`RQG | ${msg}`);
+    logger.warn(msg);
     return false;
   }
   return true;
@@ -113,8 +133,7 @@ export function hasRqid(document: Document.Any | undefined): boolean {
       name: document?.name ?? "",
       uuid: (document as any)?.uuid,
     });
-    ui.notifications?.warn(msg, { console: false });
-    console.warn(`RQG | ${msg}`);
+    logger.warn(msg);
     return false;
   }
   return true;
@@ -131,7 +150,6 @@ export function isItemDropData(data: unknown): data is Item.DropData {
 /**
  * Update the targetDocument property called what targetPropertyName contains
  * with a RqidLink to the droppedDocument.
- * TODO always construct an embedded rqid?
  */
 export async function updateRqidLink(
   targetDocument: Document.Any,
@@ -140,13 +158,6 @@ export async function updateRqidLink(
   allowDuplicates: boolean = false, // need a version that allows duplicates for cult runes, Orlanth have 2 air for example
 ): Promise<void> {
   type SourceSystemDocument = { _source?: { system?: object } };
-
-  const droppedDocumentRqid = Rqid.getDocumentFlag(droppedDocument)?.id ?? "";
-  const parentDocumentRqid = droppedDocument.isEmbedded
-    ? (Rqid.getDocumentFlag(droppedDocument.parent)?.id ?? "")
-    : "";
-  const fullDocumentRqid =
-    (parentDocumentRqid ? parentDocumentRqid + "." : "") + droppedDocumentRqid;
 
   const targetProperty = foundry.utils.getProperty(
     ((targetDocument as SourceSystemDocument)?._source?.system ??
@@ -166,10 +177,10 @@ export async function updateRqidLink(
     return;
   }
 
-  const newLink = {
-    rqid: fullDocumentRqid,
-    name: droppedDocument.name ?? "",
-  };
+  const newLink = getDroppedDocumentRqidLink(droppedDocument);
+  if (!newLink) {
+    return;
+  }
   const updateKey = `system.${targetPropertyName}`;
   if (Array.isArray(targetProperty)) {
     const targetPropertyRqidLinkArray = normalizeSourceRqidLinks(
@@ -204,12 +215,38 @@ export async function updateRqidLink(
   }
 }
 
+export function getDroppedDocumentRqidLink(
+  droppedDocument: Document.Any,
+): NormalizedRqidLink | undefined {
+  const droppedDocumentRqid = Rqid.getDocumentFlag(droppedDocument)?.id;
+  if (!droppedDocumentRqid) {
+    return undefined;
+  }
+
+  if (droppedDocument.documentName === "JournalEntryPage") {
+    const parentRqid = Rqid.getDocumentFlag(droppedDocument.parent)?.id;
+    if (!parentRqid) {
+      return undefined;
+    }
+
+    return {
+      rqid: `${parentRqid}.${droppedDocumentRqid}`,
+      name: droppedDocument.name ?? "",
+    };
+  }
+
+  return {
+    rqid: droppedDocumentRqid,
+    name: droppedDocument.name ?? "",
+  };
+}
+
 export function getAllowedDropDocumentTypes(event: DragEvent) {
-  return convertStringToArray(getDomDataset(event, "dropzone-document-types"));
+  return parseDropzoneList(getDomDataset(event, "dropzone-document-types"));
 }
 
 export function getAllowedDropDocumentNames(event: DragEvent) {
-  return convertStringToArray(getDomDataset(event, "dropzone-document-names"));
+  return parseDropzoneList(getDomDataset(event, "dropzone-document-names"));
 }
 
 export async function extractDropInfo<T extends Document.Any>(
@@ -233,20 +270,11 @@ export async function extractDropInfo<T extends Document.Any>(
     droppedDocument as any,
     allowedDropDocumentTypes,
   );
-  const allowDuplicates = !!getDomDataset(event, "allow-duplicates");
+  const allowDuplicates = parseBooleanString(getDomDataset(event, "allow-duplicates"));
   return {
     droppedDocument: droppedDocument as any,
     dropZoneData: dropZoneData,
     isAllowedToDrop: !!droppedDocument && isAllowedDropDocumentType,
     allowDuplicates: allowDuplicates,
   };
-}
-
-function convertStringToArray(commaSeparatedString: string | undefined): string[] {
-  return (
-    commaSeparatedString
-      ?.split(",")
-      .map((s) => s.trim())
-      .filter((s) => s) ?? []
-  );
 }

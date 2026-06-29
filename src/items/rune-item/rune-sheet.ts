@@ -35,6 +35,13 @@ export class RuneSheet extends RqgItemSheet {
 
   override getData(): RuneSheetData & ItemSheetData {
     const system = foundry.utils.duplicate(this.document._source.system);
+    const rqid = this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "";
+    let opposingRuneOptions = getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder");
+    if (rqid) {
+      opposingRuneOptions = opposingRuneOptions.filter(
+        (option) => option.value === "empty" || option.value !== rqid,
+      );
+    }
 
     if (!system.rune) {
       system.rune = this.document.name;
@@ -43,13 +50,13 @@ export class RuneSheet extends RqgItemSheet {
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
-      rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
+      rqid,
       name: this.document.name ?? "",
       img: this.document.img ?? "",
       isGM: game.user?.isGM ?? false,
       system: system,
       isEmbedded: this.document.isEmbedded,
-      opposingRuneOptions: getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder"),
+      opposingRuneOptions,
       minorRuneOptions: getSelectRuneOptions("RQG.Item.Rune.AddMinorRunePlaceholder"),
       runeTypeOption: Object.values(RuneTypeEnum).map((rt) => ({
         value: rt,
