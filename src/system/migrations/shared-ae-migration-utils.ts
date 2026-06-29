@@ -23,7 +23,6 @@ export interface AEPathRewriteRule extends AEPathMapping {
 export type AERewriteWarningReason =
   | "non-additive-mode"
   | "non-numeric-value"
-  | "duplicate-target-key"
   | "effect-processing-failure"
   | "document-processing-failure";
 
@@ -112,7 +111,6 @@ export const AE_DEFAULT_PATH_REWRITE_RULES: AEPathRewriteRule[] = AE_LEGACY_PATH
 const EMPTY_WARNING_REASONS: Record<AERewriteWarningReason, number> = {
   "non-additive-mode": 0,
   "non-numeric-value": 0,
-  "duplicate-target-key": 0,
   "effect-processing-failure": 0,
   "document-processing-failure": 0,
 };
@@ -436,19 +434,20 @@ export function migrateEffectChangeTypes(effect: any): boolean {
 }
 
 /**
- * Rewrite legacy attribute paths and legacy item-target key syntax in one pass.
+ * Normalize change.type values and rewrite legacy effect keys in one pass.
  *
+ * - Legacy change.type values (numeric, subtract, custom.X) are normalized to their
+ *   canonical v14 string equivalents.
  * - Legacy attribute paths (e.g. system.attributes.magicPoints.max) are rewritten to their
  *   current equivalents using the default path rewrite rules.
  * - Legacy item-target syntax (<itemType>:<itemName>:<systemPath>) is rewritten to
  *   rqid-based syntax when a unique actor item match can be found.
- *
- * Type normalization is handled by separate migration functions and is not performed here.
  */
 export function migrateEffectTypesAndPaths(effect: any, owningActor?: any): boolean {
+  const migratedTypes = migrateEffectChangeTypes(effect);
   const migratedPaths = migrateEffectChanges(effect);
   const migratedLegacyItemTargets = migrateEffectLegacyItemTargetSyntax(effect, owningActor);
-  return migratedPaths || migratedLegacyItemTargets;
+  return migratedTypes || migratedPaths || migratedLegacyItemTargets;
 }
 
 export function migrateEffectTypesAndPathsWithSummary(
@@ -456,12 +455,13 @@ export function migrateEffectTypesAndPathsWithSummary(
   owningActor?: any,
   options: AERewriteOptions = {},
 ): AERewriteResult {
+  const migratedTypes = options.dryRun ? false : migrateEffectChangeTypes(effect);
   const pathRewrite = migrateEffectChangesWithSummary(effect, options);
   const migratedLegacyItemTargets = options.dryRun
     ? false
     : migrateEffectLegacyItemTargetSyntax(effect, owningActor);
   return {
-    changed: pathRewrite.changed || migratedLegacyItemTargets,
+    changed: migratedTypes || pathRewrite.changed || migratedLegacyItemTargets,
     summary: pathRewrite.summary,
   };
 }

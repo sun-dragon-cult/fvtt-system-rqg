@@ -7,7 +7,6 @@ import {
 const WARNING_REASON_LABELS: Record<AERewriteWarningReason, string> = {
   "non-additive-mode": "non-additive-mode",
   "non-numeric-value": "non-numeric-value",
-  "duplicate-target-key": "duplicate-target-key",
   "effect-processing-failure": "effect-processing-failure",
   "document-processing-failure": "document-processing-failure",
 };
@@ -30,7 +29,9 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
   const rewriteResult = migrateEffectTypesAndPathsWithSummary(effectAsAny);
 
   if (rewriteResult.summary.warningCount > 0) {
-    for (const reason of Object.keys(rewriteResult.summary.warningReasons) as AERewriteWarningReason[]) {
+    for (const reason of Object.keys(
+      rewriteResult.summary.warningReasons,
+    ) as AERewriteWarningReason[]) {
       const count = rewriteResult.summary.warningReasons[reason];
       if (count > 0) {
         logger?.warn(

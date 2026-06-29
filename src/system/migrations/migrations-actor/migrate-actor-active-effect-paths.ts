@@ -10,7 +10,6 @@ import {
 const WARNING_REASON_LABELS: Record<AERewriteWarningReason, string> = {
   "non-additive-mode": "non-additive-mode",
   "non-numeric-value": "non-numeric-value",
-  "duplicate-target-key": "duplicate-target-key",
   "effect-processing-failure": "effect-processing-failure",
   "document-processing-failure": "document-processing-failure",
 };
