@@ -123,6 +123,32 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(result.summary.migratedChanges).toBe(1);
   });
 
+  it("does not let transformMode rescue unrecognized change types", () => {
+    const effect = {
+      system: {
+        changes: [{ key: "system.attributes.magicPoints.max", type: "banana", value: 3 }],
+      },
+    };
+
+    const result = migrateEffectChangesWithSummary(effect, {
+      rules: [
+        {
+          legacyKey: "system.attributes.magicPoints.max",
+          newKey: "system.effect.magicPoints.max",
+          allowedModes: ["add"],
+          transformMode: () => "add",
+        },
+      ],
+    });
+
+    expect(result.changed).toBe(false);
+    expect(effect.system.changes[0]!.key).toBe("system.attributes.magicPoints.max");
+    expect(effect.system.changes[0]!.type).toBe("banana");
+    expect(result.summary.migratedChanges).toBe(0);
+    expect(result.summary.skippedChanges).toBe(1);
+    expect(result.summary.warningReasons["non-additive-mode"]).toBe(1);
+  });
+
   it("repairs legacy change.type values on non-legacy keys in the combined helper", () => {
     const effect = {
       system: {
@@ -252,5 +278,31 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
 
     expect(result.summary.migratedChanges).toBe(1);
     expect(result.effects[0]).toBe(sourceEffects[0]);
+  });
+
+  it("counts failed effects as scanned in array summaries", () => {
+    const sourceEffects = [
+      {
+        id: "effect-1",
+        system: {
+          changes: [{ key: "system.attributes.magicPoints.max", type: "add", value: 6 }],
+        },
+      },
+      {
+        id: "effect-2",
+        toObject(): never {
+          throw new Error("boom");
+        },
+      },
+    ];
+
+    const result = migrateEffectArrayWithSummary(sourceEffects);
+
+    expect(result.summary.scannedEffects).toBe(2);
+    expect(result.summary.migratedChanges).toBe(1);
+    expect(result.summary.failureCount).toBe(1);
+    expect(result.summary.warningCount).toBe(1);
+    expect(result.summary.warningReasons["effect-processing-failure"]).toBe(1);
+    expect(result.effects[1]).toBe(sourceEffects[1]);
   });
 });

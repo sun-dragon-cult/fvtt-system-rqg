@@ -329,7 +329,9 @@ export function migrateEffectChangesWithSummary(
     }
 
     const normalizedMode = normalizeChangeType(persistedChange.type);
-    const transformedMode = rule.transformMode?.(normalizedMode ?? "custom") ?? normalizedMode;
+    const transformedMode = normalizedMode
+      ? (rule.transformMode?.(normalizedMode) ?? normalizedMode)
+      : undefined;
     const allowedModes = rule.allowedModes ?? ["add"];
 
     if (!transformedMode || !allowedModes.includes(transformedMode)) {
@@ -501,6 +503,7 @@ export function migrateEffectArrayWithSummary(
       Object.assign(aggregateSummary, mergedSummary);
       return rewriteResult.changed ? effectClone : effect;
     } catch {
+      aggregateSummary.scannedEffects += 1;
       aggregateSummary.failureCount += 1;
       addWarning(aggregateSummary, "effect-processing-failure");
       return effect;
