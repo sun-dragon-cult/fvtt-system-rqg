@@ -156,6 +156,14 @@ export function getEventTargetElement(event: Event): Element | null {
   return isFoundryElementInstanceOf(event.target, Element) ? event.target : null;
 }
 
+/**
+ * Parse a string token into a boolean where only "true" means true.
+ * Useful for data-* attributes that should not rely on JS truthy coercion.
+ */
+export function parseBooleanString(rawValue: string | undefined): boolean {
+  return rawValue?.trim().toLowerCase() === "true";
+}
+
 export function getSocket(): io.Socket {
   if (!game.socket) {
     const msg = `socket is not initialized yet! ( Initialized between the 'DOMContentLoaded' event and the 'init' hook event.)`;

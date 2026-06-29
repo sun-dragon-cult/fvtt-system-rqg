@@ -235,7 +235,6 @@ describe("organizeEmbeddedItems", () => {
     expect(twoHandUsage.totalChance).toBe(0);
   });
 });
-
 describe("warning text helpers", () => {
   it("returns enriched text for unspecified skills", async () => {
     const actor = actorWithItems([
@@ -305,6 +304,43 @@ describe("warning text helpers", () => {
     expect(text).toContain("@UUID[i.rune.invalid]");
     expect((embeddedRunes as any).invalid.map((r: any) => r.id)).toEqual(["rune-extra"]);
   });
+});
+
+it("places runes missing document rqid in invalid/extra list", async () => {
+  const runeMissingRqid = {
+    id: "rune-missing-rqid",
+    flags: { rqg: {} },
+  };
+
+  const actor = actorWithItems([
+    {
+      id: "rune-truth",
+      type: ItemTypeEnum.Rune,
+      flags: { rqg: { documentRqidFlags: { id: "i.rune.truth-power" } } },
+    },
+    {
+      id: "rune-missing-rqid",
+      type: ItemTypeEnum.Rune,
+      flags: { rqg: {} },
+    },
+  ]);
+
+  const embeddedRunes: any = {
+    element: {},
+    form: { broken: runeMissingRqid },
+    condition: {},
+    technique: {},
+    power: {
+      truth: {
+        id: "rune-truth",
+        flags: { rqg: { documentRqidFlags: { id: "i.rune.truth-power" } } },
+      },
+    },
+  };
+
+  await getIncorrectRunesText(actor, embeddedRunes, [] as any);
+
+  expect((embeddedRunes as any).invalid.map((r: any) => r.id)).toEqual(["rune-missing-rqid"]);
 });
 
 describe("getEquippedProjectileOptions", () => {

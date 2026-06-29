@@ -326,7 +326,10 @@
         "CantTransferLessThanOneItemError": "Can't transfer less than one item!",
         "CantTransferMoreThanSourceOwnsError": "Cannot transfer more {itemName} than {sourceActorName} has in inventory.",
         "NothingToGiveWarn": "Cannot transfer \"{itemName}\": {actorName} has 0 available.",
-        "CantCreateLocationLoopWarn": "Can't put {itemName} inside {targetItemName} because that would create a location loop."
+        "CantCreateLocationLoopWarn": "Can't put {itemName} inside {targetItemName} because that would create a location loop.",
+        "JournalPageDropRequiresParentRqidWarn": "Can't link \"{pageName}\": both the page and its parent Journal Entry must have an RQID.",
+        "CantDropDocumentHereWarn": "{documentName} can't be dropped on a character sheet.",
+        "ItemAddedInfo": "Added \"{itemName}\" to {actorName}."
       },
       "Passion": {
         "Passions": "Passions",

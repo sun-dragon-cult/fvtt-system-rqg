@@ -75,6 +75,8 @@ export interface RqgActorSheetV2Context {
 
   /** Dynamically paired power runes (from opposingRuneRqidLink). */
   powerRunePairs: RuneOpposedPair[];
+  /** Power runes without an opposing rune link. */
+  powerRuneStandalone: RuneItem[];
   /** Dynamically paired form runes (from opposingRuneRqidLink). */
   formRunePairs: RuneOpposedPair[];
   /** Form runes without an opposing rune. */
