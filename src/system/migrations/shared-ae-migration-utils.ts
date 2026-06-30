@@ -2,15 +2,97 @@ import { systemId } from "../config";
 import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
 
 /**
- * Shared utilities for Active Effect path migrations
+ * Shared Active Effect migration helpers.
  *
- * Handles rewriting legacy AE paths to new non-persisted AE-target fields
- * introduced in PR4 for Foundry v14 compatibility.
+ * Used by actor, item, and standalone ActiveEffect world migrations to:
+ * rewrite legacy effect target paths, normalize legacy change.type values,
+ * and convert legacy item-name target keys to rqid-based keys.
  */
 
 interface AEPathMapping {
   legacyKey: string;
   newKey: string;
+}
+
+export interface AEPathRewriteRule extends AEPathMapping {
+  allowedModes?: ActiveEffectChangeType[];
+  validateValue?: (value: unknown) => number | undefined;
+  transformValue?: (value: number) => number;
+  transformMode?: (mode: ActiveEffectChangeType) => ActiveEffectChangeType;
+}
+
+export type AERewriteWarningReason =
+  | "non-additive-mode"
+  | "non-numeric-value"
+  | "effect-processing-failure"
+  | "document-processing-failure";
+
+export interface AEPathRewriteSummary {
+  scannedEffects: number;
+  migratedChanges: number;
+  skippedChanges: number;
+  warningCount: number;
+  warningReasons: Record<AERewriteWarningReason, number>;
+  failureCount: number;
+}
+
+export interface AERewriteOptions {
+  rules?: AEPathRewriteRule[];
+  dryRun?: boolean;
+}
+
+export interface AERewriteResult {
+  changed: boolean;
+  summary: AEPathRewriteSummary;
+}
+
+type CollectionLike<T> = Iterable<T> | { values: () => Iterable<T> };
+
+export interface AEMigrationChangeLike extends Record<string, unknown> {
+  key?: string;
+  type?: unknown;
+  value?: unknown;
+  effect?: unknown;
+}
+
+export interface AEMigrationEffectLike extends Record<string, unknown> {
+  _id?: string;
+  id?: string;
+  system?: {
+    changes?: AEMigrationChangeLike[];
+  } & Record<string, unknown>;
+  toObject?: () => AEMigrationEffectLike;
+}
+
+export interface AEMigrationItemLike extends Record<string, unknown> {
+  type?: string;
+  name?: string;
+  getFlag?: (scope: string, key: string) => unknown;
+  flags?: Record<string, unknown>;
+}
+
+export interface AEOwningActorLike {
+  items?: CollectionLike<unknown>;
+}
+
+export interface AERunOwner {
+  id: string;
+  name: string;
+  effects: AEMigrationEffectLike[];
+  owningActor?: AEOwningActorLike;
+}
+
+export interface AEOwnerUpdate {
+  id: string;
+  effects: AEMigrationEffectLike[];
+}
+
+export interface AEOwnerRunResult {
+  updates: AEOwnerUpdate[];
+  ownersScanned: number;
+  ownersUpdated: number;
+  ownersFailed: number;
+  summary: AEPathRewriteSummary;
 }
 
 type LegacyItemTargetSyntax = {
@@ -48,9 +130,22 @@ export const AE_LEGACY_PATH_MAPPINGS: AEPathMapping[] = [
   },
 ];
 
-const AE_TARGET_KEYS = new Set(AE_LEGACY_PATH_MAPPINGS.flatMap((m) => [m.legacyKey, m.newKey]));
+export const AE_DEFAULT_PATH_REWRITE_RULES: AEPathRewriteRule[] = AE_LEGACY_PATH_MAPPINGS.map(
+  (mapping) => ({
+    ...mapping,
+    allowedModes: ["add"],
+    validateValue: parseNumericValue,
+  }),
+);
 
-function getEffectChanges(effect: any): any[] {
+const EMPTY_WARNING_REASONS: Record<AERewriteWarningReason, number> = {
+  "non-additive-mode": 0,
+  "non-numeric-value": 0,
+  "effect-processing-failure": 0,
+  "document-processing-failure": 0,
+};
+
+function getEffectChanges(effect: AEMigrationEffectLike): AEMigrationChangeLike[] {
   // v14 canonical persisted location is `system.changes`.
   // Foundry's own migrateData moves top-level changes → system.changes.
   // The shim only creates top-level as a getter/setter proxy.
@@ -58,13 +153,13 @@ function getEffectChanges(effect: any): any[] {
   return systemChanges;
 }
 
-function setEffectChanges(effect: any, changes: any[]): void {
+function setEffectChanges(effect: AEMigrationEffectLike, changes: AEMigrationChangeLike[]): void {
   effect.system ??= {};
   effect.system.changes = changes;
 }
 
-function toPersistedChangeData(change: any): any {
-  const persisted = { ...change };
+function toPersistedChangeData(change: AEMigrationChangeLike): AEMigrationChangeLike {
+  const persisted: AEMigrationChangeLike = { ...change };
   // v14 runtime shape includes a back-reference to the parent effect.
   // It is not part of persisted change data and should never be written.
   delete persisted.effect;
@@ -90,26 +185,38 @@ function parseLegacyItemTargetSyntax(key: string): LegacyItemTargetSyntax | unde
   return { itemType, itemName, systemPath };
 }
 
-function getCollectionValues<T = any>(collectionLike: any): T[] {
-  if (Array.isArray(collectionLike)) {
-    return collectionLike as T[];
+function getCollectionValues<T>(collectionLike?: CollectionLike<T>): T[] {
+  if (!collectionLike) {
+    return [];
   }
-  return Array.from(collectionLike?.values?.() ?? []);
+  if (Array.isArray(collectionLike)) {
+    return collectionLike;
+  }
+  if ("values" in collectionLike && typeof collectionLike.values === "function") {
+    return Array.from(collectionLike.values());
+  }
+  return Array.from(collectionLike as Iterable<T>);
 }
 
-function getDocumentRqid(item: any): string | undefined {
+function getDocumentRqid(item: AEMigrationItemLike): string | undefined {
   if (typeof item?.getFlag === "function") {
     const rqidFlag = item.getFlag(systemId, documentRqidFlags);
-    if (typeof rqidFlag?.id === "string" && rqidFlag.id.length > 0) {
-      return rqidFlag.id;
+    if (typeof rqidFlag === "object" && rqidFlag !== null && "id" in rqidFlag) {
+      const rqid = (rqidFlag as { id?: unknown }).id;
+      if (typeof rqid === "string" && rqid.length > 0) {
+        return rqid;
+      }
     }
   }
 
-  const rqidFromFlags = item?.flags?.[systemId]?.[documentRqidFlags]?.id;
+  const systemFlags = item?.flags?.[systemId] as
+    | Record<string, { id?: string } | undefined>
+    | undefined;
+  const rqidFromFlags = systemFlags?.[documentRqidFlags]?.id;
   return typeof rqidFromFlags === "string" && rqidFromFlags.length > 0 ? rqidFromFlags : undefined;
 }
 
-function migrateLegacyItemTargetKey(key: string, owningActor?: any): string {
+function migrateLegacyItemTargetKey(key: string, owningActor?: AEOwningActorLike): string {
   const parsed = parseLegacyItemTargetSyntax(key);
   if (!parsed || !owningActor) {
     return key;
@@ -117,7 +224,13 @@ function migrateLegacyItemTargetKey(key: string, owningActor?: any): string {
 
   const actorItems = getCollectionValues(owningActor.items);
   const matchingItems = actorItems.filter(
-    (item) => item && item.type === parsed.itemType && item.name === parsed.itemName,
+    (item): item is AEMigrationItemLike =>
+      !!item &&
+      typeof item === "object" &&
+      "type" in item &&
+      "name" in item &&
+      (item as AEMigrationItemLike).type === parsed.itemType &&
+      (item as AEMigrationItemLike).name === parsed.itemName,
   );
 
   // Ambiguous or missing matches should be left untouched for manual repair.
@@ -125,7 +238,12 @@ function migrateLegacyItemTargetKey(key: string, owningActor?: any): string {
     return key;
   }
 
-  const rqid = getDocumentRqid(matchingItems[0]);
+  const matchingItem = matchingItems[0];
+  if (!matchingItem) {
+    return key;
+  }
+
+  const rqid = getDocumentRqid(matchingItem);
   if (!rqid) {
     return key;
   }
@@ -133,7 +251,7 @@ function migrateLegacyItemTargetKey(key: string, owningActor?: any): string {
   return `${rqid}:${parsed.systemPath}`;
 }
 
-function toEffectObject(effect: any): any {
+function toEffectObject(effect: AEMigrationEffectLike): AEMigrationEffectLike {
   if (effect && typeof effect.toObject === "function") {
     // ActiveEffect documents expose persisted source via toObject().
     return effect.toObject();
@@ -141,19 +259,21 @@ function toEffectObject(effect: any): any {
   return structuredClone(effect);
 }
 
-function normalizeNumericValue(rawValue: unknown): number {
+function parseNumericValue(rawValue: unknown): number | undefined {
   if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
     return rawValue;
   }
+
   if (typeof rawValue === "string") {
     const normalized = rawValue.trim().replace(",", ".");
     if (normalized.length === 0) {
-      return 0;
+      return undefined;
     }
     const parsed = Number(normalized);
-    return Number.isFinite(parsed) ? parsed : 0;
+    return Number.isFinite(parsed) ? parsed : undefined;
   }
-  return 0;
+
+  return undefined;
 }
 
 function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
@@ -193,51 +313,130 @@ function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefin
  *
  * @returns true if any changes were migrated
  */
-export function migrateEffectChanges(effect: any): boolean {
-  const changes = getEffectChanges(effect);
-  if (!changes.length) {
-    return false;
+export function migrateEffectChanges(effect: AEMigrationEffectLike): boolean {
+  return migrateEffectChangesWithSummary(effect).changed;
+}
+
+export function createEmptyAEPathRewriteSummary(): AEPathRewriteSummary {
+  return {
+    scannedEffects: 0,
+    migratedChanges: 0,
+    skippedChanges: 0,
+    warningCount: 0,
+    warningReasons: { ...EMPTY_WARNING_REASONS },
+    failureCount: 0,
+  };
+}
+
+export function mergeAEPathRewriteSummaries(
+  base: AEPathRewriteSummary,
+  addition: AEPathRewriteSummary,
+): AEPathRewriteSummary {
+  const merged = createEmptyAEPathRewriteSummary();
+  merged.scannedEffects = base.scannedEffects + addition.scannedEffects;
+  merged.migratedChanges = base.migratedChanges + addition.migratedChanges;
+  merged.skippedChanges = base.skippedChanges + addition.skippedChanges;
+  merged.warningCount = base.warningCount + addition.warningCount;
+  merged.failureCount = base.failureCount + addition.failureCount;
+
+  for (const reason of Object.keys(EMPTY_WARNING_REASONS) as AERewriteWarningReason[]) {
+    merged.warningReasons[reason] = base.warningReasons[reason] + addition.warningReasons[reason];
   }
 
-  const legacyKeyMap = new Map(AE_LEGACY_PATH_MAPPINGS.map((m) => [m.legacyKey, m.newKey]));
+  return merged;
+}
+
+function addWarning(summary: AEPathRewriteSummary, reason: AERewriteWarningReason): void {
+  summary.warningCount += 1;
+  summary.warningReasons[reason] += 1;
+}
+
+function getRewriteRuleByLegacyKey(rules: AEPathRewriteRule[]): Map<string, AEPathRewriteRule> {
+  return new Map(rules.map((rule) => [rule.legacyKey, rule]));
+}
+
+export function migrateEffectChangesWithSummary(
+  effect: AEMigrationEffectLike,
+  options: AERewriteOptions = {},
+): AERewriteResult {
+  const summary = createEmptyAEPathRewriteSummary();
+  summary.scannedEffects += 1;
+
+  const rules = options.rules ?? AE_DEFAULT_PATH_REWRITE_RULES;
+  const ruleByLegacyKey = getRewriteRuleByLegacyKey(rules);
+  const changes = getEffectChanges(effect);
+  if (!changes.length) {
+    return {
+      changed: false,
+      summary,
+    };
+  }
+
   let hasChanges = false;
 
   const migratedChanges = changes.map((change) => {
     const persistedChange = toPersistedChangeData(change);
-    if (change.type !== "add") {
+    if (typeof persistedChange.key !== "string") {
       return persistedChange;
     }
-    const keyBeforeRewrite = persistedChange.key;
-    const keyAfterRewrite = legacyKeyMap.get(keyBeforeRewrite) ?? keyBeforeRewrite;
-    const nextKey = keyAfterRewrite;
-    let nextValue = persistedChange.value;
-
-    if (AE_TARGET_KEYS.has(nextKey)) {
-      nextValue = normalizeNumericValue(persistedChange.value);
+    const rule = ruleByLegacyKey.get(persistedChange.key);
+    if (!rule) {
+      return persistedChange;
     }
 
-    if (nextKey !== persistedChange.key || nextValue !== persistedChange.value) {
+    const normalizedMode = normalizeChangeType(persistedChange.type);
+    const transformedMode = normalizedMode
+      ? (rule.transformMode?.(normalizedMode) ?? normalizedMode)
+      : undefined;
+    const allowedModes = rule.allowedModes ?? ["add"];
+
+    if (!transformedMode || !allowedModes.includes(transformedMode)) {
+      summary.skippedChanges += 1;
+      addWarning(summary, "non-additive-mode");
+      return persistedChange;
+    }
+
+    const validateValue = rule.validateValue ?? parseNumericValue;
+    const validatedValue = validateValue(persistedChange.value);
+    if (validatedValue === undefined) {
+      summary.skippedChanges += 1;
+      addWarning(summary, "non-numeric-value");
+      return persistedChange;
+    }
+
+    const nextKey = rule.newKey;
+
+    const transformedValue = rule.transformValue?.(validatedValue) ?? validatedValue;
+    summary.migratedChanges += 1;
+
+    if (!options.dryRun) {
+      persistedChange.key = nextKey;
+      persistedChange.type = transformedMode;
+      persistedChange.value = transformedValue;
       hasChanges = true;
-      return {
-        ...persistedChange,
-        key: nextKey,
-        value: nextValue,
-      };
     }
 
     return persistedChange;
   });
 
-  setEffectChanges(effect, migratedChanges);
+  if (hasChanges) {
+    setEffectChanges(effect, migratedChanges);
+  }
 
-  return hasChanges;
+  return {
+    changed: hasChanges,
+    summary,
+  };
 }
 
 /**
  * Migrate legacy item target syntax in custom Active Effect keys:
  * <item type>:<item name>:<system.path> -> <rqid>:<system.path>
  */
-export function migrateEffectLegacyItemTargetSyntax(effect: any, owningActor?: any): boolean {
+export function migrateEffectLegacyItemTargetSyntax(
+  effect: AEMigrationEffectLike,
+  owningActor?: AEOwningActorLike,
+): boolean {
   const changes = getEffectChanges(effect);
   if (!changes.length || !owningActor) {
     return false;
@@ -271,7 +470,7 @@ export function migrateEffectLegacyItemTargetSyntax(effect: any, owningActor?: a
  *
  * @returns true if any type values were normalized
  */
-export function migrateEffectChangeTypes(effect: any): boolean {
+export function migrateEffectChangeTypes(effect: AEMigrationEffectLike): boolean {
   const changes = getEffectChanges(effect);
   if (!changes.length) {
     return false;
@@ -296,16 +495,39 @@ export function migrateEffectChangeTypes(effect: any): boolean {
 }
 
 /**
- * Normalize change.type values and then rewrite legacy paths in one pass.
+ * Normalize change.type values and rewrite legacy effect keys in one pass.
  *
- * This keeps Active Effect migration behavior self-contained even when
- * migration infrastructure merges payloads from independent migration functions.
+ * - Legacy change.type values (numeric, subtract, custom.X) are normalized to their
+ *   canonical v14 string equivalents.
+ * - Legacy attribute paths (e.g. system.attributes.magicPoints.max) are rewritten to their
+ *   current equivalents using the default path rewrite rules.
+ * - Legacy item-target syntax (<itemType>:<itemName>:<systemPath>) is rewritten to
+ *   rqid-based syntax when a unique actor item match can be found.
  */
-export function migrateEffectTypesAndPaths(effect: any, owningActor?: any): boolean {
-  const normalizedTypes = migrateEffectChangeTypes(effect);
+export function migrateEffectTypesAndPaths(
+  effect: AEMigrationEffectLike,
+  owningActor?: AEOwningActorLike,
+): boolean {
+  const migratedTypes = migrateEffectChangeTypes(effect);
   const migratedPaths = migrateEffectChanges(effect);
   const migratedLegacyItemTargets = migrateEffectLegacyItemTargetSyntax(effect, owningActor);
-  return normalizedTypes || migratedPaths || migratedLegacyItemTargets;
+  return migratedTypes || migratedPaths || migratedLegacyItemTargets;
+}
+
+export function migrateEffectTypesAndPathsWithSummary(
+  effect: AEMigrationEffectLike,
+  owningActor?: AEOwningActorLike,
+  options: AERewriteOptions = {},
+): AERewriteResult {
+  const migratedTypes = options.dryRun ? false : migrateEffectChangeTypes(effect);
+  const pathRewrite = migrateEffectChangesWithSummary(effect, options);
+  const migratedLegacyItemTargets = options.dryRun
+    ? false
+    : migrateEffectLegacyItemTargetSyntax(effect, owningActor);
+  return {
+    changed: migratedTypes || pathRewrite.changed || migratedLegacyItemTargets,
+    summary: pathRewrite.summary,
+  };
 }
 
 /**
@@ -314,7 +536,10 @@ export function migrateEffectTypesAndPaths(effect: any, owningActor?: any): bool
  *
  * @returns array of effects (migrated or original)
  */
-export function migrateEffectArray(effects: any[], owningActor?: any): any[] {
+export function migrateEffectArray(
+  effects: AEMigrationEffectLike[],
+  owningActor?: AEOwningActorLike,
+): AEMigrationEffectLike[] {
   return effects.map((effect) => {
     const effectClone = toEffectObject(effect);
     if (migrateEffectTypesAndPaths(effectClone, owningActor)) {
@@ -324,10 +549,77 @@ export function migrateEffectArray(effects: any[], owningActor?: any): any[] {
   });
 }
 
+export function migrateEffectArrayWithSummary(
+  effects: AEMigrationEffectLike[],
+  owningActor?: AEOwningActorLike,
+  options: AERewriteOptions = {},
+): { effects: AEMigrationEffectLike[]; summary: AEPathRewriteSummary } {
+  const aggregateSummary = createEmptyAEPathRewriteSummary();
+
+  const migrated = effects.map((effect) => {
+    try {
+      const effectClone = toEffectObject(effect);
+      const rewriteResult = migrateEffectTypesAndPathsWithSummary(
+        effectClone,
+        owningActor,
+        options,
+      );
+      const mergedSummary = mergeAEPathRewriteSummaries(aggregateSummary, rewriteResult.summary);
+      Object.assign(aggregateSummary, mergedSummary);
+      return rewriteResult.changed ? effectClone : effect;
+    } catch {
+      aggregateSummary.scannedEffects += 1;
+      aggregateSummary.failureCount += 1;
+      addWarning(aggregateSummary, "effect-processing-failure");
+      return effect;
+    }
+  });
+
+  return {
+    effects: migrated,
+    summary: aggregateSummary,
+  };
+}
+
+export function runAEPathRewriteForOwners(
+  owners: AERunOwner[],
+  options: AERewriteOptions = {},
+): AEOwnerRunResult {
+  const summary = createEmptyAEPathRewriteSummary();
+  const updates: AEOwnerUpdate[] = [];
+  let ownersUpdated = 0;
+  let ownersFailed = 0;
+
+  for (const owner of owners) {
+    try {
+      const migrated = migrateEffectArrayWithSummary(owner.effects, owner.owningActor, options);
+      const mergedSummary = mergeAEPathRewriteSummaries(summary, migrated.summary);
+      Object.assign(summary, mergedSummary);
+
+      if (effectArraysChanged(owner.effects, migrated.effects)) {
+        ownersUpdated += 1;
+        updates.push({ id: owner.id, effects: toPersistedEffectArray(migrated.effects) });
+      }
+    } catch {
+      ownersFailed += 1;
+      summary.failureCount += 1;
+      addWarning(summary, "document-processing-failure");
+    }
+  }
+
+  return {
+    updates,
+    ownersScanned: owners.length,
+    ownersUpdated,
+    ownersFailed,
+    summary,
+  };
+}
+
 /**
  * Process an array of effects and normalize change.type values.
  */
-export function migrateEffectTypeArray(effects: any[]): any[] {
+export function migrateEffectTypeArray(effects: AEMigrationEffectLike[]): AEMigrationEffectLike[] {
   return effects.map((effect) => {
     const effectClone = toEffectObject(effect);
     if (migrateEffectChangeTypes(effectClone)) {
@@ -340,13 +632,16 @@ export function migrateEffectTypeArray(effects: any[]): any[] {
 /**
  * Convert an effects array to persisted plain data suitable for document updates.
  */
-export function toPersistedEffectArray(effects: any[]): any[] {
+export function toPersistedEffectArray(effects: AEMigrationEffectLike[]): AEMigrationEffectLike[] {
   return effects.map((effect) => toEffectObject(effect));
 }
 
 /**
  * Check if effect arrays are different (any migrations occurred)
  */
-export function effectArraysChanged(original: any[], migrated: any[]): boolean {
+export function effectArraysChanged(
+  original: AEMigrationEffectLike[],
+  migrated: AEMigrationEffectLike[],
+): boolean {
   return migrated.some((e, i) => e !== original[i]);
 }

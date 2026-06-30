@@ -4,7 +4,6 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 
 describe("migrateActorActiveEffectPaths", () => {
   beforeEach(() => {
-    // Mock console.log to avoid noise
     vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
@@ -80,7 +79,6 @@ describe("migrateActorActiveEffectPaths", () => {
 
     const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
 
-    // Should not include effects in updateData if nothing changed
     expect(updateData.effects).toBeUndefined();
   });
 
@@ -96,8 +94,8 @@ describe("migrateActorActiveEffectPaths", () => {
             name: "Test Effect",
             system: {
               changes: [
-                { key: "system.attributes.magicPoints.max", type: "add", value: 5 }, // ADD type - should migrate
-                { key: "system.attributes.hitPoints.max", type: "multiply", value: 10 }, // Non-ADD type - should not migrate
+                { key: "system.attributes.magicPoints.max", type: "add", value: 5 },
+                { key: "system.attributes.hitPoints.max", type: "multiply", value: 10 },
               ],
             },
           },
@@ -113,7 +111,7 @@ describe("migrateActorActiveEffectPaths", () => {
       "system.effect.magicPoints.max",
     );
     expect((updateData.effects as any[])?.[0].system.changes[1].key).toBe(
-      "system.attributes.hitPoints.max", // Unchanged
+      "system.attributes.hitPoints.max",
     );
   });
 
