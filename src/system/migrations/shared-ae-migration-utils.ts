@@ -67,7 +67,7 @@ export interface AEMigrationEffectLike extends Record<string, unknown> {
 export interface AEMigrationItemLike extends Record<string, unknown> {
   type?: string;
   name?: string;
-  getFlag?: (...args: never[]) => unknown;
+  getFlag?: (scope: string, key: string) => unknown;
   flags?: Record<string, unknown>;
 }
 
@@ -200,11 +200,12 @@ function getCollectionValues<T>(collectionLike?: CollectionLike<T>): T[] {
 
 function getDocumentRqid(item: AEMigrationItemLike): string | undefined {
   if (typeof item?.getFlag === "function") {
-    const rqidFlag = item.getFlag(systemId as never, documentRqidFlags as never) as
-      | { id?: string }
-      | undefined;
-    if (typeof rqidFlag?.id === "string" && rqidFlag.id.length > 0) {
-      return rqidFlag.id;
+    const rqidFlag = item.getFlag(systemId, documentRqidFlags);
+    if (typeof rqidFlag === "object" && rqidFlag !== null && "id" in rqidFlag) {
+      const rqid = (rqidFlag as { id?: unknown }).id;
+      if (typeof rqid === "string" && rqid.length > 0) {
+        return rqid;
+      }
     }
   }
 
