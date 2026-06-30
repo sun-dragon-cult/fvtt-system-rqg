@@ -258,7 +258,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(runResult.summary.warningReasons["non-numeric-value"]).toBe(1);
     expect(runResult.updates).toHaveLength(3);
     const updatedKeys = runResult.updates
-      .map((update) => update.effects[0]?.system?.changes[0]?.key)
+      .map((update) => update.effects[0]?.system?.changes?.[0]?.key)
       .filter((key): key is string => typeof key === "string");
     expect(updatedKeys).toContain("system.effect.magicPoints.max");
     expect(updatedKeys).toContain("system.effect.hitPoints.max");

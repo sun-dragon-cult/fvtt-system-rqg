@@ -47,7 +47,7 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
 
   if (rewriteResult.changed) {
     logger?.info(
-      `Migrated AE paths on compendium effect "${effect.name}": scanned effects=${rewriteResult.summary.scannedEffects}, migrated changes=${rewriteResult.summary.migratedChanges}, skipped changes=${rewriteResult.summary.skippedChanges}`,
+      `Migrated AE changes on compendium effect "${effect.name}" (path rewrite counters: scanned effects=${rewriteResult.summary.scannedEffects}, migrated changes=${rewriteResult.summary.migratedChanges}, skipped changes=${rewriteResult.summary.skippedChanges})`,
       {
         notify: false,
         documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],

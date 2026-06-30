@@ -57,7 +57,7 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       const effectUpdates = originalEffects.flatMap((effect, index) => {
         const migrated = migratedEffects[index];
-        if (migrated === effect) {
+        if (!migrated || migrated === effect) {
           return [];
         }
 
@@ -83,7 +83,7 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
       }
 
       logger?.info(
-        `Migrated AE paths on item ${item.name}: scanned effects=${summary.scannedEffects}, migrated changes=${summary.migratedChanges}, skipped changes=${summary.skippedChanges}`,
+        `Migrated AE changes on item ${item.name} (path rewrite counters: scanned effects=${summary.scannedEffects}, migrated changes=${summary.migratedChanges}, skipped changes=${summary.skippedChanges})`,
         {
           notify: false,
           documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],

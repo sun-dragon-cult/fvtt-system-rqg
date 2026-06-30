@@ -58,7 +58,7 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       const effectUpdates = originalEffects.flatMap((effect, index) => {
         const migrated = migratedEffects[index];
-        if (migrated === effect) {
+        if (!migrated || migrated === effect) {
           return [];
         }
 
@@ -84,7 +84,7 @@ export const migrateActorActiveEffectPaths: ActorMigration = (
       }
 
       logger?.info(
-        `Migrated AE paths for actor ${actor.name}: scanned effects=${summary.scannedEffects}, migrated changes=${summary.migratedChanges}, skipped changes=${summary.skippedChanges}`,
+        `Migrated AE changes for actor ${actor.name} (path rewrite counters: scanned effects=${summary.scannedEffects}, migrated changes=${summary.migratedChanges}, skipped changes=${summary.skippedChanges})`,
         {
           notify: false,
           documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
