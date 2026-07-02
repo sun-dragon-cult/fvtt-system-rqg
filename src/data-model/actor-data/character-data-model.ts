@@ -231,9 +231,9 @@ export class CharacterDataModel extends RqgActorDataModel<
   }
 
   static getPowWarning(actor: CharacterActor): boolean {
-    const hasHighRank = CharacterDataModel.getSortedCults(actor).some((cult) =>
-      hasGodTalkerOrHigherNonRuneLord(cult),
-    );
+    const hasHighRank = actor.items
+      .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))
+      .some((cult) => hasGodTalkerOrHigherNonRuneLord(cult));
 
     if (!hasHighRank) {
       return false;

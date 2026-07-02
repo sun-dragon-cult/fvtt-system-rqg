@@ -14,7 +14,7 @@ export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluatio
 };
 
 export type RuneMagicRollImmediateOptions = Partial<
-  Omit<RuneMagicRollOptions, "usedRuneName" | "usedRuneChance">
+  Pick<RuneMagicRollOptions, "levelUsed" | "magicPointBoost" | "modifiers" | "rollMode">
 > & {
   usedRuneId?: string;
 };

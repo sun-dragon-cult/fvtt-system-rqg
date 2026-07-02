@@ -231,9 +231,6 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     }
     const options: RuneMagicRollImmediateOptions = {
       usedRuneId: usedRune.id ?? undefined,
-      spellName: spellItem.name ?? "",
-      spellImg: spellItem.img ?? undefined,
-      isOneUse: spellItem.system.isOneUse,
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
       modifiers: [
@@ -253,7 +250,6 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
           description: formDataObject.otherModifierDescription,
         },
       ],
-      speaker: getSpeakerCompat({ actor: spellItem.actor ?? undefined, token }),
       rollMode: rollMode,
     };
     const validationError = spellItem.system.getCastValidationError(

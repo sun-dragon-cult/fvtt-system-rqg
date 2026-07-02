@@ -137,11 +137,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       baseChance: (this.powX5 ?? 0) + "%",
 
       // RollFooter
-      totalChance:
-        Number(this.powX5) +
-        Number(formData.augmentModifier) +
-        Number(formData.meditateModifier) +
-        Number(formData.otherModifier),
+      totalChance: this.computeTotalChance(formData),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
