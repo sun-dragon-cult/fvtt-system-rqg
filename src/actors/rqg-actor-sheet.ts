@@ -72,12 +72,14 @@ import {
 } from "../system/combat-calculations";
 import type { NewCombatant } from "../combat/rqg-combatant.types";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
-import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { GearItem } from "@item-model/gear-data-model.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import type { ArmorItem } from "@item-model/armor-data-model.ts";
 import type { RqgActiveEffect } from "../active-effect/rqg-active-effect.ts";
+import { getSpeakerCompat } from "../system/fvtt-type-compat";
+import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 
 import ActorSheet = foundry.appv1.sheets.ActorSheet;
 
@@ -443,6 +445,23 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      const weaponItemId = el.dataset["weaponItemId"];
+      const weaponUsageType = el.dataset["weaponUsageType"] as UsageType | undefined;
+      let weaponEffectModifier = Number(el.dataset["weaponEffectModifier"] ?? 0);
+      if (weaponItemId && weaponUsageType) {
+        const weaponItem = this.actor.items.get(weaponItemId) as RqgItem | undefined;
+        if (isDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon)) {
+          weaponEffectModifier = getWeaponEffectModifier(weaponItem, weaponUsageType, "attack");
+        }
+      }
+      const weaponEffectModifiers = weaponEffectModifier
+        ? [
+            {
+              value: weaponEffectModifier,
+              description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+            },
+          ]
+        : [];
       assertDocumentSubType<AbilityItem>(
         item,
         abilityItemTypes,
@@ -453,12 +472,12 @@ export class RqgActorSheet<
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRollImmediate({}, this.token);
+          await item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.token);
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.abilityRoll(this.token);
+              await item.abilityRoll(this.token, { modifiers: weaponEffectModifiers });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -734,7 +753,7 @@ export class RqgActorSheet<
         const r = new DamageRoll(damageFormulaWithDb);
         await r.evaluate();
         await r.toMessage({
-          speaker: ChatMessage.getSpeaker(),
+          speaker: getSpeakerCompat({ actor: this.actor, token: this.actor.token ?? undefined }),
           flavor: `<div class="roll-action">${localize(heading)}</div>`,
         });
       });

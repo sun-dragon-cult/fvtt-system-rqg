@@ -144,7 +144,7 @@
     {{/unless}}
 
     {{!-- ========== Power Rune Affinities (opposed pairs) ========== --}}
-    {{#if powerRunePairs.length}}
+    {{#if (or powerRunePairs.length powerRuneStandalone.length)}}
     <div class="rune-section power-section">
       <h2>{{localize 'RQG.Actor.Rune.Power'}}</h2>
 
@@ -185,6 +185,20 @@
         </div>
         {{/each}}
       </div>
+
+      {{!-- Standalone power runes (no opposing rune link defined) --}}
+      {{#each powerRuneStandalone}}
+      <div class="rune rune-card standalone contextmenu item" data-item-id="{{id}}">
+        {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-tooltip data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="rune" src="{{img}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+        <span class="rune-name" data-item-id="{{id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.rune}}</span>
+        {{#edit-mode ../system.editMode "all"}}
+        <input type="number" data-rune-grid-edit data-item-id="{{id}}" value="{{system.chance}}">
+        {{else}}
+        <span class="rune-chance {{experiencedclass uuid}}" data-item-id="{{id}}" data-item-roll
+              data-tooltip="{{localize "RQG.Game.RollTitle"}}">{{system.chance}}%</span>
+        {{/edit-mode}}
+      </div>
+      {{/each}}
     </div>
     {{/if}}
 

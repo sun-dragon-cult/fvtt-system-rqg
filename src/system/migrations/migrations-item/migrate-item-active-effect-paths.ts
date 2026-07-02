@@ -1,10 +1,18 @@
 import type { ItemMigration } from "../apply-migrations";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
-  migrateEffectArray,
+  type AERewriteWarningReason,
   effectArraysChanged,
+  migrateEffectArrayWithSummary,
   toPersistedEffectArray,
 } from "../shared-ae-migration-utils";
+
+const WARNING_REASON_LABELS: Record<AERewriteWarningReason, string> = {
+  "non-additive-mode": "non-additive-mode",
+  "non-numeric-value": "non-numeric-value",
+  "effect-processing-failure": "effect-processing-failure",
+  "document-processing-failure": "document-processing-failure",
+};
 
 /**
  * ItemMigration: Process all effects on world-level items
@@ -26,12 +34,30 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
 
   // Migrate item-owned effects
   if (originalEffects.length > 0) {
-    const migratedEffects = migrateEffectArray(originalEffects, owningActor);
+    const { effects: migratedEffects, summary } = migrateEffectArrayWithSummary(
+      originalEffects,
+      owningActor,
+    );
+
+    if (summary.warningCount > 0) {
+      for (const reason of Object.keys(summary.warningReasons) as AERewriteWarningReason[]) {
+        const count = summary.warningReasons[reason];
+        if (count > 0) {
+          logger?.warn(
+            `AE path rewrite warning on item ${item.name}: ${WARNING_REASON_LABELS[reason]} (${count})`,
+            {
+              notify: false,
+              documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
+            },
+          );
+        }
+      }
+    }
 
     if (effectArraysChanged(originalEffects, migratedEffects)) {
       const effectUpdates = originalEffects.flatMap((effect, index) => {
         const migrated = migratedEffects[index];
-        if (migrated === effect) {
+        if (!migrated || migrated === effect) {
           return [];
         }
 
@@ -56,14 +82,13 @@ export const migrateItemActiveEffectPaths: ItemMigration = async (
         updateData.effects = effectUpdates as any; // Type coercion needed for UpdateData
       }
 
-      originalEffects.forEach((effect, index) => {
-        if (migratedEffects[index] !== effect) {
-          logger?.info(`Migrated AE paths on effect "${effect.name}" in item ${item.name}`, {
-            notify: false,
-            documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
-          });
-        }
-      });
+      logger?.info(
+        `Migrated AE changes on item ${item.name} (path rewrite counters: scanned effects=${summary.scannedEffects}, migrated changes=${summary.migratedChanges}, skipped changes=${summary.skippedChanges})`,
+        {
+          notify: false,
+          documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
+        },
+      );
     }
   }
 

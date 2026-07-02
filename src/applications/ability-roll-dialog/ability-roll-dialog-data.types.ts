@@ -36,4 +36,5 @@ export type AbilityRollDialogFormData = {
   abilityActorUuid?: string; // hidden field
   tokenUuid?: string; // hidden field
   reputationItemJson?: string; // hidden field - backup for uuid
+  initialModifiersJson?: string; // hidden field
 };

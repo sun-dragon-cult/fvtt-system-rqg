@@ -6,6 +6,8 @@ import { Rqid } from "../../system/api/rqid-api";
 import { toRqidString } from "../../system/api/rqid-validation";
 import { isDocumentSubType, localize, logMisconfiguration } from "../../system/util";
 
+export type WeaponChanceMode = "attack" | "parry";
+
 export function toEmbeddedSkillCreateData(
   skill: SkillItem,
 ): Omit<ReturnType<SkillItem["toObject"]>, "_id"> {
@@ -67,4 +69,35 @@ export function resolveLinkedSkill(
   }
 
   return undefined;
+}
+
+function getWeaponEffectGroup(usageType: UsageType): "melee" | "missile" {
+  return usageType === "missile" ? "missile" : "melee";
+}
+
+export function getWeaponEffectModifier(
+  weaponItem: WeaponItem,
+  usageType: UsageType,
+  mode: WeaponChanceMode,
+): number {
+  const effectGroup = getWeaponEffectGroup(usageType);
+  return Number(weaponItem.system.effect?.[effectGroup]?.[mode] ?? 0);
+}
+
+export function resolveLinkedSkillChanceData(
+  weaponItem: WeaponItem,
+  usageType: UsageType,
+  mode: WeaponChanceMode,
+): {
+  skillItem: SkillItem | undefined;
+  skillChance: number;
+  weaponEffectModifier: number;
+} {
+  const skillItem = resolveLinkedSkill(weaponItem, usageType);
+  const weaponEffectModifier = skillItem ? getWeaponEffectModifier(weaponItem, usageType, mode) : 0;
+  return {
+    skillItem,
+    skillChance: Number(skillItem?.system.chance ?? 0),
+    weaponEffectModifier,
+  };
 }

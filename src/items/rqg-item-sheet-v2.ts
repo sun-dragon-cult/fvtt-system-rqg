@@ -5,6 +5,7 @@ import {
   localize,
   localizeItemType,
   normalizeSourceRqidLinks,
+  parseBooleanString,
 } from "../system/util";
 import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqid-sheet-button";
 import type { RqgItem } from "./rqg-item";
@@ -164,9 +165,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         return;
       }
       elem.addEventListener("change", async (event) => {
-        event.stopPropagation();
         const selectElem = event.currentTarget as HTMLSelectElement;
-        const allowDuplicates = getDomDataset(elem, "allow-duplicates");
+        const allowDuplicates = parseBooleanString(getDomDataset(elem, "allow-duplicates"));
         const newRqid = selectElem?.value?.trim() ?? "";
         if (!newRqid || newRqid === "empty") {
           return;
@@ -195,10 +195,18 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       }
       elem.addEventListener("change", async (event) => {
         const selectElem = event.currentTarget as HTMLSelectElement;
-        const newRqid = selectElem?.value;
-        if ((this.document.system as any)[targetProperty]?.rqid !== newRqid) {
-          const newName = selectElem?.selectedOptions[0]?.innerText ?? "";
-          const newRqidLink = new RqidLink(newRqid, newName);
+        const newRqid = selectElem?.value?.trim() ?? "";
+        if (!newRqid || newRqid === "empty") {
+          return;
+        }
+
+        const currentLink = foundry.utils.getProperty(
+          this.document.system as object,
+          targetProperty,
+        ) as { rqid?: string } | null | undefined;
+        if (currentLink?.rqid !== newRqid) {
+          const newName = selectElem?.selectedOptions[0]?.innerText?.trim() ?? "";
+          const newRqidLink = { rqid: newRqid, name: newName };
           await this.document.update({ [`system.${targetProperty}`]: newRqidLink });
         }
       });

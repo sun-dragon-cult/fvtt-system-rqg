@@ -13,6 +13,8 @@ import {
   isFoundryElementInstanceOf,
   isTruthy,
   localize,
+  parseBooleanString,
+  localizeDocumentName,
   range,
   requireValue,
   RqgError,
@@ -24,7 +26,7 @@ import type { AbilityItem, PhysicalItem } from "@item-model/item-types.ts";
 import type { ArmorItem } from "@item-model/armor-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
-import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import {
   showHitLocationAddWoundDialog,
   showHitLocationHealWoundDialog,
@@ -52,12 +54,15 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { gearMenuOptions } from "./context-menus/gear-context-menu";
 import {
-  extractDropInfo,
-  getAllowedDropDocumentNames,
+  getDroppedDocumentRqidLink,
   hasRqid,
   isAllowedDocumentNames,
+  isAllowedDocumentType,
+  parseDropzoneList,
+  type DragDropPayloadLike,
   updateRqidLink,
 } from "../documents/drag-drop";
+import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import type { GearItem } from "@item-model/gear-data-model.ts";
@@ -72,6 +77,7 @@ import {
 } from "../data-model/item-data/i-physical-item";
 import { ItemTree } from "../items/shared/item-tree";
 import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
+import { getSpeakerCompat } from "../system/fvtt-type-compat";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -244,6 +250,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       (a: RqgItem, b: RqgItem) => (a.sort ?? 0) - (b.sort ?? 0),
     ) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
+    const powerRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.power ?? {});
     const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
     const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
     const cultItems = (embeddedItems[ItemTypeEnum.Cult] ?? []) as RqgItem[];
@@ -304,7 +311,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       characterPowerRunes: DataPrep.getCharacterPowerRuneImgs(this.actor),
       characterFormRunes: DataPrep.getCharacterFormRuneImgs(this.actor),
       elementRuneVisuals: DataPrep.getRuneVisualsMap(embeddedItems?.rune?.element ?? {}),
-      powerRunePairs: DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.power ?? {}).pairs,
+      powerRunePairs: powerRuneGroups.pairs,
+      powerRuneStandalone: powerRuneGroups.standalone,
       formRunePairs: formRuneGroups.pairs,
       formRuneStandalone: formRuneGroups.standalone,
 
@@ -683,14 +691,32 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this.element.querySelectorAll<HTMLElement>("[data-item-roll]").forEach((el) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = this.actor.items.get(itemId) as RqgItem | undefined;
+      const weaponItemId = el.dataset["weaponItemId"];
+      const weaponUsageType = el.dataset["weaponUsageType"] as UsageType | undefined;
+      let weaponEffectModifier = Number(el.dataset["weaponEffectModifier"] ?? 0);
+      if (weaponItemId && weaponUsageType) {
+        const weaponItem = this.actor.items.get(weaponItemId) as RqgItem | undefined;
+        if (isDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon)) {
+          weaponEffectModifier = getWeaponEffectModifier(weaponItem, weaponUsageType, "attack");
+        }
+      }
+      const weaponEffectModifiers = weaponEffectModifier
+        ? [
+            {
+              value: weaponEffectModifier,
+              description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+            },
+          ]
+        : [];
       assertDocumentSubType<AbilityItem>(
         item,
         abilityItemTypes,
         "AbilityChance roll couldn't find skillItem",
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.abilityRoll(this.document.token),
-        onDouble: () => item.abilityRollImmediate({}, this.document.token),
+        onSingle: () => item.abilityRoll(this.document.token, { modifiers: weaponEffectModifiers }),
+        onDouble: () =>
+          item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.document.token),
       });
     });
 
@@ -819,7 +845,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         const r = new DamageRoll(damageFormulaWithDb);
         await r.evaluate();
         await r.toMessage({
-          speaker: ChatMessage.getSpeaker(),
+          speaker: getSpeakerCompat({ actor: this.actor, token: this.actor.token ?? undefined }),
           flavor: `<div class="roll-action">${localize(heading)}</div>`,
         });
       });
@@ -1147,18 +1173,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     const itemId = itemContainer.dataset["itemId"];
     const item = itemId ? this.actor.items.get(itemId) : undefined;
-    // If no item or no image, keep the default grab SVG.
-    if (!item?.img || !event.dataTransfer) {
+    if (!item || !event.dataTransfer) {
       return;
     }
 
     // Suppress sheet-level glow for same-actor reorders; clear when the drag operation ends.
     this._isSameActorDrag = true;
 
-    const iconElement = itemContainer.querySelector<HTMLImageElement>("img[data-item-id], img");
-    const imgSrc = iconElement?.currentSrc || iconElement?.src || item.img;
-    this._activeDragPreview = this._buildDragPreview(imgSrc);
-    event.dataTransfer.setDragImage(this._activeDragPreview, 18, 18);
+    // If no image exists, keep the browser/default drag ghost.
+    if (item.img) {
+      const iconElement = itemContainer.querySelector<HTMLImageElement>("img[data-item-id], img");
+      const imgSrc = iconElement?.currentSrc || iconElement?.src || item.img;
+      this._activeDragPreview = this._buildDragPreview(imgSrc);
+      event.dataTransfer.setDragImage(this._activeDragPreview, 18, 18);
+    }
   }
 
   protected _onDragEnd(_event: DragEvent): void {
@@ -1231,12 +1259,53 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this._clearDragState();
   }
 
+  private _getDropzoneFromEvent(event: DragEvent): HTMLElement | null {
+    const directTarget = getEventTargetElement(event);
+    const directDropzone = directTarget?.closest<HTMLElement>("[data-dropzone]") ?? null;
+    if (directDropzone) {
+      return directDropzone;
+    }
+
+    for (const pathNode of event.composedPath()) {
+      if (!isFoundryElementInstanceOf(pathNode, HTMLElement)) {
+        continue;
+      }
+      if (pathNode.matches("[data-dropzone]")) {
+        return pathNode;
+      }
+      const parentDropzone = pathNode.closest<HTMLElement>("[data-dropzone]");
+      if (parentDropzone) {
+        return parentDropzone;
+      }
+    }
+
+    const hitElement = event.view?.document?.elementFromPoint(event.clientX, event.clientY);
+    const hitDropzone = hitElement?.closest<HTMLElement>("[data-dropzone]") ?? null;
+    if (hitDropzone) {
+      return hitDropzone;
+    }
+
+    return null;
+  }
+
   protected override _onDragOver(event: DragEvent): void {
     super._onDragOver(event);
 
     const eventTarget = getEventTargetElement(event);
-    const dropzone = eventTarget?.closest<HTMLElement>("[data-dropzone]") ?? null;
-    this._setActiveDropzone(dropzone);
+    // Presence-based highlight: glow the nested dropzone the cursor is over, or the
+    // sheet body otherwise. We do not try to predict payload validity during
+    // dragover — browsers block reading the payload, and sidebar drags expose no
+    // reliable hints. Acceptance is validated against the real payload on drop,
+    // where a rejected drop produces an explicit notification.
+    const candidateDropzone = this._getDropzoneFromEvent(event);
+    this._setActiveDropzone(candidateDropzone);
+
+    // When hovering a nested dropzone, the item-reorder indicators (which only
+    // apply to the inventory/skill lists on the sheet body) are irrelevant.
+    if (candidateDropzone) {
+      this._clearDropIndicators();
+      return;
+    }
 
     const target =
       eventTarget?.closest<HTMLElement>(".location-row[data-item-id]") ??
@@ -1593,6 +1662,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
 
       await this._applyDropPosition(createdItem, dropPlacement);
+      // The new item may land on a tab the user is not currently viewing, so
+      // confirm the otherwise-invisible success explicitly.
+      ui.notifications?.info(
+        localize("RQG.Actor.Notification.ItemAddedInfo", {
+          itemName: createdItem.name ?? "",
+          actorName: this.actor.name ?? "",
+        }),
+      );
       return createdItem;
     }
 
@@ -1912,12 +1989,16 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     event.preventDefault();
     event.stopPropagation();
 
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as {
-      type?: string;
-      uuid?: string;
-    } | null;
-    const allowedDropDocumentNames = getAllowedDropDocumentNames(event);
-    if (!isAllowedDocumentNames(data?.type, allowedDropDocumentNames)) {
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as
+      | (DragDropPayloadLike & { uuid?: string })
+      | null;
+
+    const dropzone = this._getDropzoneFromEvent(event);
+    if (!dropzone) {
+      return false;
+    }
+    const allowedDocumentNames = parseDropzoneList(dropzone.dataset["dropzoneDocumentNames"]);
+    if (!isAllowedDocumentNames(data?.type, allowedDocumentNames, true)) {
       return false;
     }
 
@@ -1928,20 +2009,38 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         if (!data.uuid) {
           return false;
         }
-        const {
-          droppedDocument,
-          dropZoneData: targetPropertyName,
-          isAllowedToDrop,
-          allowDuplicates,
-        } = await extractDropInfo<foundry.abstract.Document.Any>(event, {
-          type: data.type,
-          uuid: data.uuid,
-        } as any);
 
-        if (!isAllowedToDrop || !hasRqid(droppedDocument)) {
+        const cls = getDocumentClass(data.type as CONST.ALL_DOCUMENT_TYPES);
+        const droppedDocument = (await (
+          cls?.implementation as {
+            fromDropData?: (dropData: object) => Promise<foundry.abstract.Document.Any | undefined>;
+          } | null
+        )?.fromDropData?.(data as object)) as foundry.abstract.Document.Any | undefined;
+
+        const allowedDropDocumentTypes = parseDropzoneList(
+          dropzone.dataset["dropzoneDocumentTypes"],
+        );
+        if (!isAllowedDocumentType(droppedDocument, allowedDropDocumentTypes)) {
           return false;
         }
 
+        if (!droppedDocument || !hasRqid(droppedDocument)) {
+          return false;
+        }
+
+        // JournalEntryPage links are stored as parentRqid.pageRqid, so a page
+        // without a parent journal RQID cannot be linked.
+        if (!getDroppedDocumentRqidLink(droppedDocument)) {
+          ui.notifications?.warn(
+            localize("RQG.Actor.Notification.JournalPageDropRequiresParentRqidWarn", {
+              pageName: droppedDocument.name ?? "",
+            }),
+          );
+          return false;
+        }
+
+        const targetPropertyName = dropzone.dataset["dropzone"];
+        const allowDuplicates = parseBooleanString(dropzone.dataset["allowDuplicates"]);
         await updateRqidLink(
           this.actor as foundry.abstract.Document.Any,
           targetPropertyName,
@@ -1951,7 +2050,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         return true;
       }
       default:
-        isAllowedDocumentNames(data?.type, ["Item", "JournalEntry", "JournalEntryPage"]);
         return false;
     }
   }
@@ -1962,10 +2060,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    */
   protected override async _onDrop(event: DragEvent): Promise<void> {
     event.preventDefault();
+    // Foundry binds an ondrop handler to every element matching the dropSelector
+    // and does not stop propagation, so a drop landing on a nested droppable
+    // (e.g. an item row inside .sheet-content) would otherwise fire this handler
+    // twice and double up any notification. Handle the drop once.
+    event.stopPropagation();
     this._resetDragVisualState();
 
-    const eventTarget = getEventTargetElement(event);
-    if (eventTarget?.closest<HTMLElement>("[data-dropzone]")) {
+    if (this._getDropzoneFromEvent(event)) {
       await this._onDropRqidDocument(event);
       return;
     }
@@ -1983,6 +2085,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         return;
       }
       await this._onDropCompendium(event, data);
+      return;
+    }
+
+    // The character sheet body only accepts these document kinds. Anything else
+    // (e.g. a Journal Entry dropped outside the background tab's dropzones) would
+    // otherwise be silently ignored by the parent handler, so reject it with a
+    // clear, localized reason instead.
+    const bodySupportedDocumentNames = ["Item", "Folder", "ActiveEffect", "Actor"];
+    if (data?.type && !bodySupportedDocumentNames.includes(data.type)) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.CantDropDocumentHereWarn", {
+          documentName: localizeDocumentName(data.type),
+        }),
+      );
       return;
     }
 

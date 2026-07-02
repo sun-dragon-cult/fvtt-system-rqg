@@ -13,6 +13,7 @@ import {
   isTruthy,
   localize,
   requireValue,
+  toSignedString,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -33,7 +34,11 @@ import { HitLocationRoll } from "../../rolls/hit-location-roll/hit-location-roll
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
-import { hasLinkedSkillReference, resolveLinkedSkill } from "@items/weapon-item/weapon-skill-links";
+import {
+  hasLinkedSkillReference,
+  resolveLinkedSkill,
+  resolveLinkedSkillChanceData,
+} from "@items/weapon-item/weapon-skill-links";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import Token = foundry.canvas.placeables.Token;
@@ -52,11 +57,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   private static computeTotalChance(
     formData: AttackDialogFormData,
     naturalSkillChance: number,
+    weaponEffectModifier: number,
     halvedModifier: number,
   ): number {
     return Math.max(
       0,
       Number(naturalSkillChance ?? 0) +
+        Number(weaponEffectModifier ?? 0) +
         Number(formData.augmentModifier ?? 0) +
         Number(formData.otherModifier ?? 0) +
         (formData.proneTarget ? proneTargetModifier : 0) +
@@ -66,6 +73,93 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         (formData.aimedBlow > 0 ? halvedModifier : 0) +
         (formData.proneAttacker ? halvedModifier : 0),
     );
+  }
+
+  private static getChanceBreakdownTooltip(
+    baseSkillChance: number,
+    totalChance: number,
+    modifiers: Array<{ label: string; value: number }>,
+  ): string {
+    const escapeText = (value: unknown): string => foundry.utils.escapeHTML(String(value ?? ""));
+    const tooltipLines = [
+      `<strong>${escapeText(localize("RQG.Dialog.Common.TargetChance"))}</strong>`,
+      `${escapeText(localize("TYPES.Item.skill"))}: ${baseSkillChance}%`,
+      ...modifiers
+        .filter((modifier) => Number(modifier.value ?? 0) !== 0)
+        .map(
+          (modifier) =>
+            `${escapeText(toSignedString(modifier.value))}% ${escapeText(modifier.label)}`,
+        ),
+      `= ${totalChance}%`,
+    ];
+
+    return tooltipLines.join("<br>");
+  }
+
+  private static getChanceBreakdownModifiers(
+    formData: AttackDialogFormData,
+    weaponEffectModifier: number,
+    halvedModifier: number,
+  ): Array<{ label: string; value: number }> {
+    return [
+      {
+        label: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        value: weaponEffectModifier,
+      },
+      {
+        label: localize("RQG.Roll.AbilityRoll.Augment"),
+        value: Number(formData.augmentModifier ?? 0),
+      },
+      {
+        label: localize("RQG.Dialog.Attack.ProneTarget"),
+        value: formData.proneTarget ? proneTargetModifier : 0,
+      },
+      {
+        label: localize("RQG.Dialog.Attack.UnawareTarget"),
+        value: formData.unawareTarget ? unawareTargetModifier : 0,
+      },
+      {
+        label: localize("RQG.Dialog.Attack.Darkness"),
+        value: formData.darkness ? darknessModifier : 0,
+      },
+      {
+        label: localize("RQG.Roll.AbilityRoll.Halved"),
+        value: formData.halved ? halvedModifier : 0,
+      },
+      {
+        label: localize("RQG.Dialog.Attack.AimedBlow"),
+        value: Number(formData.aimedBlow ?? 0) > 0 ? halvedModifier : 0,
+      },
+      {
+        label: localize("RQG.Dialog.Attack.ProneAttacker"),
+        value: formData.proneAttacker ? halvedModifier : 0,
+      },
+      {
+        label: formData.otherModifierDescription ?? localize("RQG.Dialog.Attack.OtherModifier"),
+        value: Number(formData.otherModifier ?? 0),
+      },
+    ];
+  }
+
+  private static buildChancePresentation(
+    formData: AttackDialogFormData,
+    baseSkillChance: number,
+    weaponEffectModifier: number,
+    halvedModifier: number,
+  ): { totalChance: number; chanceBreakdownTooltip: string } {
+    const totalChance = AttackDialogV2.computeTotalChance(
+      formData,
+      baseSkillChance,
+      weaponEffectModifier,
+      halvedModifier,
+    );
+    const chanceBreakdownTooltip = AttackDialogV2.getChanceBreakdownTooltip(
+      baseSkillChance,
+      totalChance,
+      AttackDialogV2.getChanceBreakdownModifiers(formData, weaponEffectModifier, halvedModifier),
+    );
+
+    return { totalChance, chanceBreakdownTooltip };
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -177,10 +271,18 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       isOutOfAmmo = ammoQuantity <= 0;
     }
 
-    const validUsedSkill = resolveLinkedSkill(this.weaponItem, formData.usageType);
+    const attackChanceData = resolveLinkedSkillChanceData(
+      this.weaponItem,
+      formData.usageType,
+      "attack",
+    );
+    const validUsedSkill = attackChanceData.skillItem;
     const hasValidSkillForSelectedUsage = !!validUsedSkill;
+    const baseSkillChance = Number(attackChanceData.skillChance ?? 0);
+    const weaponEffectModifier = Number(attackChanceData.weaponEffectModifier ?? 0);
+    const naturalAttackChance = baseSkillChance + weaponEffectModifier;
     formData.halvedModifier = hasValidSkillForSelectedUsage
-      ? -Math.floor(validUsedSkill.system.chance / 2)
+      ? -Math.floor(naturalAttackChance / 2)
       : 0;
 
     if ((game.user?.targets.size ?? 0) > 1) {
@@ -217,6 +319,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.proneAttackerPrev = proneAttacker;
 
+    const { totalChance, chanceBreakdownTooltip } = AttackDialogV2.buildChancePresentation(
+      formData,
+      baseSkillChance,
+      weaponEffectModifier,
+      Number(formData.halvedModifier ?? 0),
+    );
+
     return {
       formData: formData,
       ammoQuantity: ammoQuantity,
@@ -239,14 +348,11 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
       // combat-roll-header
       skillName: validUsedSkill?.name ?? "",
-      skillChance: validUsedSkill?.system.chance ?? 0,
+      skillChance: baseSkillChance,
 
       // attack-footer
-      totalChance: AttackDialogV2.computeTotalChance(
-        formData,
-        Number(validUsedSkill?.system.chance ?? 0),
-        Number(formData.halvedModifier ?? 0),
-      ),
+      totalChance,
+      chanceBreakdownTooltip,
       combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
         .filter((cm: CombatManeuver) => cm.damageType !== "parry")
         .map((cm: CombatManeuver) => cm.name),
@@ -276,22 +382,34 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
   private updateLivePreview(): void {
     const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    const targetChanceBoxElement = this.element.querySelector<HTMLElement>(
+      "[data-target-chance-box]",
+    );
     if (!totalChanceElement) {
       return;
     }
 
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as AttackDialogFormData;
-    const usedSkill = resolveLinkedSkill(this.weaponItem, formData.usageType);
-    const halvedModifier = usedSkill ? -Math.floor(usedSkill.system.chance / 2) : 0;
+    const chanceData = resolveLinkedSkillChanceData(this.weaponItem, formData.usageType, "attack");
+    const usedSkill = chanceData.skillItem;
+    const baseSkillChance = Number(chanceData.skillChance ?? 0);
+    const weaponEffectModifier = Number(chanceData.weaponEffectModifier ?? 0);
+    const naturalAttackChance = baseSkillChance + weaponEffectModifier;
+    const halvedModifier = usedSkill ? -Math.floor(naturalAttackChance / 2) : 0;
 
-    const totalChance = AttackDialogV2.computeTotalChance(
+    const { totalChance, chanceBreakdownTooltip } = AttackDialogV2.buildChancePresentation(
       formData,
-      Number(usedSkill?.system.chance ?? 0),
+      baseSkillChance,
+      weaponEffectModifier,
       halvedModifier,
     );
 
     totalChanceElement.textContent = `${totalChance}%`;
+
+    if (targetChanceBoxElement) {
+      targetChanceBoxElement.dataset["tooltip"] = chanceBreakdownTooltip;
+    }
   }
 
   private async onTokenChange(event: Event): Promise<void> {
@@ -407,7 +525,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    const skillItem = resolveLinkedSkill(weaponItem, formDataObject.usageType);
+    const skillChanceData = resolveLinkedSkillChanceData(
+      weaponItem,
+      formDataObject.usageType,
+      "attack",
+    );
+    const skillItem = skillChanceData.skillItem;
     if (!skillItem) {
       ui.notifications?.warn(localize("RQG.Dialog.Attack.NoValidSkillForWeaponUsageWarn"));
       return;
@@ -463,8 +586,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     <span>${damageTypeTranslated} – ${weaponItem?.name} – ${usageTypeTranslated}</span>`;
 
     const attackRollOptions: AbilityRollOptions = {
-      naturalSkill: skillItem.system.chance,
+      naturalSkill: Number(skillChanceData.skillChance ?? 0),
       modifiers: [
+        {
+          value: Number(skillChanceData.weaponEffectModifier ?? 0),
+          description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
         {
           value: Number(formDataObject.augmentModifier),
           description: localize("RQG.Roll.AbilityRoll.Augment"),

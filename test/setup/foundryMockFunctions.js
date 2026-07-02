@@ -715,6 +715,7 @@ globalThis.foundry = {
   utils: {
     mergeObject: vi.fn((...args) => mockMergeObject(...args)),
     getProperty: vi.fn((...args) => mockGetProperty(...args)),
+    setProperty: vi.fn((...args) => setProperty(...args)),
     getType: vi.fn((...args) => mockGetType(...args)),
   },
   abstract: {

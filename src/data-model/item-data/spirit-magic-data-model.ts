@@ -41,14 +41,20 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
   }
 
   getCastValidationError(levelUsed: number | undefined, boost: number = 0): string | undefined {
+    const normalizedLevelUsed = levelUsed == null ? undefined : Number(levelUsed);
+    const normalizedBoost = Number(boost) || 0;
     const availableMagicPoints =
       Number(this.parent?.actor?.system.attributes.magicPoints.value) || 0;
 
-    if (levelUsed == null || levelUsed > this.points) {
+    if (
+      normalizedLevelUsed == null ||
+      !Number.isFinite(normalizedLevelUsed) ||
+      normalizedLevelUsed > this.points
+    ) {
       return localize("RQG.Item.SpiritMagic.CantCastSpellAboveLearnedLevel");
     }
 
-    if (levelUsed + boost > availableMagicPoints) {
+    if (normalizedLevelUsed + normalizedBoost > availableMagicPoints) {
       return localize("RQG.Item.SpiritMagic.NotEnoughMagicPoints");
     }
 
@@ -80,8 +86,8 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
-    const levelUsed = options.levelUsed ?? this.points;
-    const boost = options.magicPointBoost ?? 0;
+    const levelUsed = Number(options.levelUsed ?? this.points);
+    const boost = Number(options.magicPointBoost ?? 0) || 0;
     const validationError = this.getCastValidationError(levelUsed, boost);
     if (validationError) {
       ui.notifications?.warn(validationError);

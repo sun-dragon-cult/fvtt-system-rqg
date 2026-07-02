@@ -4,7 +4,6 @@ import type { RqgItem } from "@items/rqg-item.ts";
 
 describe("migrateItemActiveEffectPaths", () => {
   beforeEach(() => {
-    // Mock console.log to avoid noise
     vi.spyOn(console, "log").mockImplementation(() => {});
   });
 
@@ -90,8 +89,8 @@ describe("migrateItemActiveEffectPaths", () => {
             name: "Test Effect",
             system: {
               changes: [
-                { key: "system.attributes.magicPoints.max", type: "add", value: 5 }, // ADD type - should migrate
-                { key: "system.attributes.hitPoints.max", type: "multiply", value: 10 }, // Non-ADD type - should not migrate
+                { key: "system.attributes.magicPoints.max", type: "add", value: 5 },
+                { key: "system.attributes.hitPoints.max", type: "multiply", value: 10 },
               ],
             },
           },
@@ -106,7 +105,7 @@ describe("migrateItemActiveEffectPaths", () => {
       "system.effect.magicPoints.max",
     );
     expect((updateData.effects as any[])?.[0].system.changes[1].key).toBe(
-      "system.attributes.hitPoints.max", // Unchanged
+      "system.attributes.hitPoints.max",
     );
   });
 
@@ -156,9 +155,9 @@ describe("migrateItemActiveEffectPaths", () => {
     );
   });
 
-  it("should normalize undefined ADD value on already-migrated key", async () => {
+  it("should skip non-numeric ADD value on legacy key", async () => {
     const mockItem = {
-      name: "Broken Migrated Item",
+      name: "Broken Legacy Item",
       id: "item-broken-1",
       effects: [
         {
@@ -167,7 +166,7 @@ describe("migrateItemActiveEffectPaths", () => {
           system: {
             changes: [
               {
-                key: "system.effect.magicPoints.max",
+                key: "system.attributes.magicPoints.max",
                 type: "add",
                 value: undefined,
               },
@@ -179,8 +178,7 @@ describe("migrateItemActiveEffectPaths", () => {
 
     const updateData = await migrateItemActiveEffectPaths(mockItem as unknown as RqgItem);
 
-    expect(updateData.effects).toBeDefined();
-    expect((updateData.effects as any[])?.[0].system.changes[0].value).toBe(0);
+    expect(updateData.effects).toBeUndefined();
   });
 
   it("should not migrate legacy key when type is missing", async () => {

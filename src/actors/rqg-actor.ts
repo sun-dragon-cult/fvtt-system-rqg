@@ -5,6 +5,7 @@ import { RqgActorSheetV2 } from "./rqg-actor-sheet-v2";
 import { DamageCalculations } from "../items/hit-location-item/hit-location-damage-calculations";
 import {
   assertDocumentSubType,
+  getSpeakerDisplayName,
   getTokenFromActor,
   isDocumentSubType,
   localize,
@@ -380,14 +381,14 @@ export class RqgActor extends Actor {
 
       return;
     }
-    const speaker = getSpeakerCompat({ actor: this });
+    const speaker = getSpeakerCompat({ actor: this, token: this.token ?? undefined });
     const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
       DamageCalculations.addWound(
         damageAfterAP,
         applyToActorHP,
         damagedHitLocation,
         this as CharacterActor,
-        speaker.alias!,
+        speaker,
       );
 
     for (const update of uselessLegs) {
@@ -505,8 +506,8 @@ export class RqgActor extends Actor {
 
     await this.updateTokenEffectFromHealth();
 
-    const speaker = getSpeakerCompat({ actor: this });
-    const speakerName = speaker.alias as string;
+    const speaker = getSpeakerCompat({ actor: this, token: this.token ?? undefined });
+    const speakerName = getSpeakerDisplayName(speaker) || this.name;
     let message: string | undefined;
 
     if (nextHealth === "dead" && previousHealth !== "dead") {

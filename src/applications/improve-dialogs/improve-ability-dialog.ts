@@ -5,6 +5,7 @@ import { systemId } from "../../system/config";
 import {
   assertDocumentSubType,
   convertFormValueToString,
+  getSpeakerDisplayName,
   isDocumentSubType,
   localize,
   localizeItemType,
@@ -220,6 +221,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
     const improvementData = this.improvementData;
     const abilityData = this.item.system;
     const sourceAbility = this.item._source.system as Partial<IAbility>;
+    const speakerName = getSpeakerDisplayName(this.speaker) || this.item.parent?.name || "";
     const actor = this.item.parent;
     if (!actor) {
       return logger.throw("Tried to improve item that isn't embedded on an actor", this.item);
@@ -231,7 +233,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       if (sourceAbility.hasExperience) {
         const categoryMod = improvementData.categoryMod ?? 0;
         const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.experienceRoll.flavor", {
-          actorName: this.speaker.alias as string,
+          actorName: speakerName,
           name: improvementData.name,
           typeLocName: improvementData.typeLocName,
         });
@@ -322,7 +324,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
           const failedContent = localize(
             "RQG.Dialog.improveAbilityDialog.experienceGainFailed.content",
             {
-              actorName: this.speaker.alias as string,
+              actorName: speakerName,
               name: improvementData.name,
               typeLocName: improvementData.typeLocName,
             },
@@ -335,7 +337,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
         }
       } else {
         const msg = localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
-          actorName: this.speaker.alias as string,
+          actorName: speakerName,
           name: improvementData.name,
           typeLocName: improvementData.typeLocName,
         });

@@ -44,11 +44,15 @@ export class RuneSheetV2 extends RqgItemSheetV2 {
     if (!system.rune) {
       system.rune = this.document.name;
     }
+    const rqid = this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "";
+    const opposingRuneOptions = getSelectRuneOptions(
+      "RQG.Item.Rune.SetOpposingRunePlaceholder",
+    ).filter((option) => option.value === "empty" || (rqid && option.value !== rqid));
 
     const context: RuneSheetContext = {
       ...base,
-      rqid: this.document.flags?.[systemId]?.documentRqidFlags?.id ?? "",
-      opposingRuneOptions: getSelectRuneOptions("RQG.Item.Rune.SetOpposingRunePlaceholder"),
+      rqid,
+      opposingRuneOptions,
       minorRuneOptions: getSelectRuneOptions("RQG.Item.Rune.AddMinorRunePlaceholder"),
       runeTypeOption: Object.values(RuneTypeEnum).map((rt) => ({
         value: rt,

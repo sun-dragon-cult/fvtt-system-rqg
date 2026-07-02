@@ -85,6 +85,10 @@ describe("organizeEmbeddedItems", () => {
         return false;
       };
     }
+
+    if (!foundry.utils.deepClone) {
+      foundry.utils.deepClone = (<T>(value: T): T => structuredClone(value)) as any;
+    }
   });
 
   it("groups/sorts embedded data and enriches cult/passion fields", async () => {
@@ -177,8 +181,60 @@ describe("organizeEmbeddedItems", () => {
     expect(result[ItemTypeEnum.Passion][0].system.enrichedDescription).toBe("Fear (Chaos)");
     expect(result[ItemTypeEnum.RuneMagic][0].system.isCommon).toBe(true);
   });
-});
 
+  it("clamps weapon usage total chance and ignores weapon effect without linked skill", async () => {
+    const linkedSkill = {
+      id: "skill-spear",
+      type: ItemTypeEnum.Skill,
+      system: { chance: 10, hasExperience: true },
+    };
+
+    const weapon = {
+      id: "weapon-spear",
+      type: ItemTypeEnum.Weapon,
+      system: {
+        projectileId: "",
+        effect: {
+          melee: { attack: -30, parry: 0 },
+          missile: { attack: 0, parry: 0 },
+        },
+        usage: {
+          oneHand: {
+            skillRqidLink: { rqid: "i.skill.spear", name: "Spear" },
+            combatManeuvers: [],
+            damage: "",
+            minStrength: 0,
+            minDexterity: 0,
+            strikeRank: 0,
+          },
+          twoHand: {
+            skillRqidLink: { rqid: "i.skill.missing", name: "Missing" },
+            combatManeuvers: [],
+            damage: "",
+            minStrength: 0,
+            minDexterity: 0,
+            strikeRank: 0,
+          },
+        },
+      },
+    };
+
+    const actor = actorWithItems([weapon]);
+    actor.getBestEmbeddedDocumentByRqid = vi.fn((rqid: string) =>
+      rqid === "i.skill.spear" ? linkedSkill : undefined,
+    );
+
+    await organizeEmbeddedItems(actor, []);
+
+    const oneHandUsage = weapon.system.usage.oneHand as any;
+    const twoHandUsage = weapon.system.usage.twoHand as any;
+
+    expect(oneHandUsage.skillChance).toBe(10);
+    expect(oneHandUsage.totalChance).toBe(0);
+    expect(twoHandUsage.skillChance).toBe(0);
+    expect(twoHandUsage.totalChance).toBe(0);
+  });
+});
 describe("warning text helpers", () => {
   it("returns enriched text for unspecified skills", async () => {
     const actor = actorWithItems([
@@ -248,6 +304,43 @@ describe("warning text helpers", () => {
     expect(text).toContain("@UUID[i.rune.invalid]");
     expect((embeddedRunes as any).invalid.map((r: any) => r.id)).toEqual(["rune-extra"]);
   });
+});
+
+it("places runes missing document rqid in invalid/extra list", async () => {
+  const runeMissingRqid = {
+    id: "rune-missing-rqid",
+    flags: { rqg: {} },
+  };
+
+  const actor = actorWithItems([
+    {
+      id: "rune-truth",
+      type: ItemTypeEnum.Rune,
+      flags: { rqg: { documentRqidFlags: { id: "i.rune.truth-power" } } },
+    },
+    {
+      id: "rune-missing-rqid",
+      type: ItemTypeEnum.Rune,
+      flags: { rqg: {} },
+    },
+  ]);
+
+  const embeddedRunes: any = {
+    element: {},
+    form: { broken: runeMissingRqid },
+    condition: {},
+    technique: {},
+    power: {
+      truth: {
+        id: "rune-truth",
+        flags: { rqg: { documentRqidFlags: { id: "i.rune.truth-power" } } },
+      },
+    },
+  };
+
+  await getIncorrectRunesText(actor, embeddedRunes, [] as any);
+
+  expect((embeddedRunes as any).invalid.map((r: any) => r.id)).toEqual(["rune-missing-rqid"]);
 });
 
 describe("getEquippedProjectileOptions", () => {
