@@ -51,7 +51,10 @@
     <label>
       {{localize "RQG.Dialog.Attack.DamageBonusFrom"}}
     </label>
-    {{#if (and formData.proneAttacker (not weaponIsNatural))}}
+    {{#if (not selectedWeaponUsageHasDamageBonus)}}
+      <input type="hidden" name="attackDamageBonus" value="">
+      <input type="text" readonly value="{{localize "RQG.Dialog.Attack.WeaponUsageHasNoDamageBonus"}}">
+    {{else if (and formData.proneAttacker (not weaponIsNatural))}}
       <input type="hidden" name="attackDamageBonus" value="">
       <input type="text" readonly value="{{localize "RQG.Dialog.Attack.ProneAttackerNoDamageBonus"}}">
     {{else}}

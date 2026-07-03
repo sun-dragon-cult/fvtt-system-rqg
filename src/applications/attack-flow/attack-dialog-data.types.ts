@@ -17,6 +17,7 @@ export type AttackDialogContext = CombatRollHeaderPartData &
     hitLocationFormulaOptions: SelectOptionData<string>[];
     aimedBlowOptions: SelectOptionData<number>[];
     weaponIsNatural: boolean;
+    selectedWeaponUsageHasDamageBonus: boolean;
     isSelectedWeaponBroken: boolean;
     isHitLocationAutoFromBelow: boolean;
   };

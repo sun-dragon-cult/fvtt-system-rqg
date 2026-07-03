@@ -492,6 +492,7 @@
         "ProneAttacker": "Prone Attacker",
         "ProneAttackerHitLocationFromBelow": "Hit location is set to From Below (1d10).",
         "ProneAttackerNoDamageBonus": "No damage bonus when attacking from prone",
+        "WeaponUsageHasNoDamageBonus": "Weapon usage has no damage bonus",
         "UnawareTarget": "Unaware Target",
         "Darkness": "Darkness",
         "OtherModifier": "Other Modifier",

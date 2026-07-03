@@ -46,6 +46,14 @@ import Token = foundry.canvas.placeables.Token;
 const logger = new RqgLogger("AttackDialogV2");
 
 export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
+  private static usageHasDamageBonusPlaceholder(
+    weaponItem: WeaponItem,
+    usageType: UsageType,
+  ): boolean {
+    const damageFormula = weaponItem.system.usage[usageType]?.damage ?? "";
+    return /db(\/2)?/i.test(damageFormula.replaceAll(" ", ""));
+  }
+
   protected override getLivePreviewFormBehaviorConfig() {
     return {
       submitButtonSelectorForBlurGuard: 'button[name="combatManeuverRoll"]',
@@ -291,9 +299,18 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const target = game.user?.targets.first();
 
+    const selectedWeaponUsageHasDamageBonus = AttackDialogV2.usageHasDamageBonusPlaceholder(
+      this.weaponItem,
+      formData.usageType,
+    );
+
     const damageBonusSourceOptions = AttackDialogV2.getDamageBonusSourceOptions(this.weaponItem);
     formData.attackingWeaponUuid ??= this.weaponItem.uuid ?? "";
-    formData.attackDamageBonus ??= damageBonusSourceOptions[0]?.value ?? "";
+    if (selectedWeaponUsageHasDamageBonus) {
+      formData.attackDamageBonus ||= damageBonusSourceOptions[0]?.value ?? "";
+    } else {
+      formData.attackDamageBonus = "";
+    }
     formData.otherModifierDescription ??= localize("RQG.Dialog.Attack.OtherModifier");
     formData.reduceAmmoQuantity ??= true;
     const rawProneAttackerPrev = foundry.utils.getProperty(formData as object, "proneAttackerPrev");
@@ -343,6 +360,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(formData.aimedBlow),
       aimedBlowOptions: AttackDialogV2.getAimedBlowOptions(target),
       weaponIsNatural: this.weaponItem.system.isNatural,
+      selectedWeaponUsageHasDamageBonus: selectedWeaponUsageHasDamageBonus,
       isSelectedWeaponBroken: !hasValidSkillForSelectedUsage,
       isHitLocationAutoFromBelow: isHitLocationAutoFromBelow,
 
