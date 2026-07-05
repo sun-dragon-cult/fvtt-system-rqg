@@ -451,8 +451,9 @@
       position: relative;
       padding: 0;
       display: grid;
-      grid-template: "nav content" 1fr / min-content auto;
+      grid-template: "nav content" 1fr / 30px auto;
       overflow: hidden;
+      container-type: size;
 
       // Parchment as window-content background — offset past the nav so jagged edges show
       background-image: var(--rqg-parchment-url);
@@ -727,8 +728,8 @@
         color: white;
         writing-mode: vertical-rl;
         transform: rotate(180deg) translateX(-4px);
-        padding: 10px 0;
-        font-size: 13px;
+        padding: clamp(5px, 1.2cqh, 10px) 0;
+        font-size: clamp(11px, 1.8cqh, 15px);
         font-variant-caps: normal;
 
         &.active {
@@ -737,17 +738,11 @@
             -2px -2px 3px black;
           color: white;
           font-weight: bold;
-        }
-
-        &.active::before {
-          content: "";
-          position: absolute;
-          inset: 0 -6px;
-          z-index: -1;
-          border-radius: 50% 23% 25% 50% / 16% 35% 37% 50%;
-          box-shadow: var(--rqg-box-shadow-tab-active);
-          background: var(--rqg-background-tab-active);
-          background-blend-mode: screen, difference;
+          border-left: 3px solid var(--rqg-color-accent, #d4af37);
+          border-right: 3px solid var(--rqg-color-accent, #d4af37);
+          padding-left: 0;
+          padding-right: 0;
+          margin: 0 -3px;
         }
       }
     }
@@ -2223,10 +2218,13 @@
 
     // --- Active Effects tab ---
     .tab.activeeffectstesting {
-      display: flex;
-      flex-direction: column;
       min-width: 0;
       overflow: auto;
+
+      &.active {
+        display: flex;
+        flex-direction: column;
+      }
 
       table {
         width: 100%;
@@ -2259,22 +2257,29 @@
 
         th:nth-child(3),
         td:nth-child(3) {
-          width: 30px;
-          text-align: right;
+          width: 50px;
+          text-align: center;
         }
 
         th:nth-child(4),
         td:nth-child(4) {
           width: 70px;
+          text-align: center;
         }
 
         th:nth-child(5),
         td:nth-child(5) {
-          width: 70px;
+          text-align: center;
         }
 
-        th:nth-child(7),
-        td:nth-child(7) {
+        th:nth-child(6),
+        td:nth-child(6) {
+          width: 70px;
+          text-align: center;
+        }
+
+        th:nth-child(8),
+        td:nth-child(8) {
           width: 30px;
           text-align: center;
         }

@@ -315,7 +315,7 @@
         "Gear": "Gear",
         "Passions": "Passions",
         "Background": "Background",
-        "ActiveEffects": "AE 🧪"
+        "ActiveEffects": "Effects"
       },
       "Notification": {
         "NotActorOwnerWarn": "You are not the owner of {actorName}, and cannot drop this item onto this actor sheet",
@@ -1243,13 +1243,16 @@
     },
     "Foundry": {
       "ActiveEffect": {
-        "Header": "Active Effects🧪",
+        "Header": "Active Effects",
         "AddEffectTitle": "Add Effect",
         "Label": "Label",
         "Name": "Name",
-        "Disabled": "Disabled",
-        "MatchSuspensionToEquippedStatus": "Match \"Effect Suspended\" to Equipped Status",
-        "StartTime": "Start Time",
+        "Disabled": "Suspended",
+        "MatchSuspensionToEquippedStatus": "Match Equipped Suspension",
+        "Start": "Start",
+        "Duration": "Duration",
+        "EarlyExpiryWarningBadge": "⚠",
+        "EarlyExpiryWarningTooltip": "This effect has both Duration and Expiry Event configured. It expires when the duration has elapsed and the selected event occurs, so it may persist past the listed duration until that event happens.",
         "KeyValueMode": "Key - Value - Mode",
         "NewActiveEffectName": "New Active Effect",
         "TargetItemNotFound": "Could not find any embedded item with Rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that Rqid or modify the item that has this active effect"
@@ -1469,6 +1472,10 @@
       "MatchEffectSuspensionToEquippedStatusDefault": {
         "settingName": "Default: Match Effect Suspension to Equipped",
         "settingHint": "If enabled, newly created active effects on physical items (gear, armor, weapon) default to 'Match Suspension to Equipped Status'. Existing active effects are unchanged."
+      },
+      "ShowActorActiveEffectsTab": {
+        "settingName": "Show Actor Active Effects Tab",
+        "settingHint": "If enabled, a GM-only Active Effects debug tab is shown on the actor sheet."
       },
       "TokenRulerSettings": {
         "dialogTitle": "Token Ruler Settings",

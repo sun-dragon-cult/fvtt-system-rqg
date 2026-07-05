@@ -148,6 +148,7 @@ declare global {
     "rqg.tokenRulerSettings": TokenRulerSettingsType;
     "rqg.allowCombatWithoutToken": boolean;
     "rqg.matchEffectSuspensionToEquippedStatusDefault": boolean;
+    "rqg.showActorActiveEffectsTab": boolean;
   }
 
   interface ConfiguredCombatant {

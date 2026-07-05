@@ -21,6 +21,9 @@ import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel
 import { migrateActorActiveEffectPaths } from "./migrations-actor/migrate-actor-active-effect-paths";
 import { migrateItemActiveEffectPaths } from "./migrations-item/migrate-item-active-effect-paths";
 import { migrateActiveEffectActiveEffectPaths } from "./migrations-effect/migrate-active-effect-active-effect-paths";
+import { migrateActorActiveEffectDurationUnits } from "./migrations-actor/migrate-actor-active-effect-duration-units";
+import { migrateItemActiveEffectDurationUnits } from "./migrations-item/migrate-item-active-effect-duration-units";
+import { migrateActiveEffectDurationUnits } from "./migrations-effect/migrate-active-effect-duration-units";
 import { templatePaths } from "../load-handlebars-templates";
 import type { MigrationDocumentLink, MigrationLogEntry } from "./apply-migrations";
 import { RqgLogger } from "../logging/rqg-logger";
@@ -156,10 +159,15 @@ export async function applyDefaultWorldMigrations(
     migrateRuneOpposingRqidLinks,
     relabelRuneMagicCommandCultSpiritRqid,
     migrateItemActiveEffectPaths,
+    migrateItemActiveEffectDurationUnits,
   ];
-  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [migrateActorActiveEffectPaths];
+  const worldActorMigrations: ActorMigration[] = actorMigrations ?? [
+    migrateActorActiveEffectPaths,
+    migrateActorActiveEffectDurationUnits,
+  ];
   const worldActiveEffectMigrations: ActiveEffectMigration[] = activeEffectMigrations ?? [
     migrateActiveEffectActiveEffectPaths,
+    migrateActiveEffectDurationUnits,
   ];
 
   return await applyMigrations(

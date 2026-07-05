@@ -74,6 +74,143 @@ export const registerHandlebarsHelpers = function () {
     return localize(`EFFECT.CHANGES.TYPES.${normalizedType}`);
   });
 
+  /**
+   * Format an Active Effect start marker for sheet tables.
+   * Prefers round/turn for combat expiry and time for clock-based expiry,
+   * and falls back to "-" when no usable start data exists.
+   */
+  Handlebars.registerHelper("activeEffectStart", (effect: unknown): string => {
+    const toFiniteNumber = (value: unknown): number | null => {
+      const numeric = typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+      return typeof numeric === "number" && Number.isFinite(numeric) ? numeric : null;
+    };
+
+    const formatWorldTime = (worldTime: number): string => {
+      const calendar = game.time?.calendar;
+      if (calendar && typeof calendar.format === "function") {
+        try {
+          const currentWorldTime = game.time?.worldTime;
+          const hasAgoFormatter =
+            typeof CONFIG.time?.formatters === "object" &&
+            CONFIG.time?.formatters != null &&
+            "ago" in CONFIG.time.formatters;
+
+          if (
+            typeof currentWorldTime === "number" &&
+            Number.isFinite(currentWorldTime) &&
+            hasAgoFormatter
+          ) {
+            const elapsedSeconds = Math.max(0, currentWorldTime - worldTime);
+            return calendar.format(elapsedSeconds, "ago" as never);
+          }
+
+          return calendar.format(worldTime, "timestamp");
+        } catch {
+          // Fall through to numeric fallback if formatter is unavailable.
+        }
+      }
+      return String(worldTime);
+    };
+
+    const duration =
+      (effect as { duration?: Record<string, unknown> } | undefined)?.duration ?? undefined;
+    const durationTypeRaw = duration?.["type"];
+    const durationType =
+      durationTypeRaw === "turns" || durationTypeRaw === "seconds" || durationTypeRaw === "none"
+        ? durationTypeRaw
+        : undefined;
+    const durationValue = toFiniteNumber(duration?.["value"]);
+
+    const start = (effect as { start?: Record<string, unknown> } | undefined)?.start;
+    const time = toFiniteNumber(start?.["time"]);
+    const round = toFiniteNumber(start?.["round"]);
+    const turn = toFiniteNumber(start?.["turn"]);
+    const formattedRound =
+      round !== null ? (turn !== null ? `${round}:${turn}` : String(round)) : undefined;
+
+    const formattedTime =
+      time !== null && (durationType === "seconds" || time !== 0)
+        ? formatWorldTime(time)
+        : undefined;
+    const preferTime = durationType === "seconds";
+    if (durationType === "none" || durationValue === null) {
+      return "-";
+    }
+    const primary = preferTime ? formattedTime : formattedRound;
+    const secondary = preferTime ? formattedRound : formattedTime;
+
+    return primary ?? secondary ?? "-";
+  });
+
+  /**
+   * Format an Active Effect duration label for sheet tables.
+   * Prefers configured value + units, falling back to Foundry's prepared label
+   * only when the effect has actual start metadata.
+   */
+  Handlebars.registerHelper("activeEffectDuration", (effect: unknown): string => {
+    const toFiniteNumber = (value: unknown): number | undefined => {
+      const numeric = typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+      return typeof numeric === "number" && Number.isFinite(numeric) ? numeric : undefined;
+    };
+
+    const duration =
+      (effect as { duration?: Record<string, unknown> } | undefined)?.duration ?? undefined;
+
+    const start = (effect as { start?: Record<string, unknown> } | undefined)?.start;
+    const hasStartMarker =
+      toFiniteNumber(start?.["time"]) !== undefined ||
+      toFiniteNumber(start?.["round"]) !== undefined ||
+      toFiniteNumber(start?.["turn"]) !== undefined;
+
+    const value = toFiniteNumber(duration?.["value"]);
+    const unitsRaw = duration?.["units"];
+    const units = typeof unitsRaw === "string" ? unitsRaw : undefined;
+
+    const foundryDurationUnitLabel = (unit: string): string => {
+      const key = `EFFECT.FIELDS.duration.choices.${unit}`;
+      const localized = localize(key);
+      return localized !== key ? localized : unit;
+    };
+
+    if (value != null && Number.isFinite(value) && units) {
+      return `${value} ${foundryDurationUnitLabel(units)}`;
+    }
+
+    const preparedLabel = duration?.["label"];
+    if (hasStartMarker && typeof preparedLabel === "string" && preparedLabel.trim().length > 0) {
+      return preparedLabel;
+    }
+
+    return "-";
+  });
+
+  const hasEarlyExpiryWarning = (effect: unknown): boolean => {
+    const toFiniteNumber = (value: unknown): number | undefined => {
+      const numeric = typeof value === "string" && value.trim() !== "" ? Number(value) : value;
+      return typeof numeric === "number" && Number.isFinite(numeric) ? numeric : undefined;
+    };
+
+    const duration =
+      (effect as { duration?: Record<string, unknown> } | undefined)?.duration ?? undefined;
+    const durationValue = toFiniteNumber(duration?.["value"]);
+    const expiryRaw = duration?.["expiry"];
+    const expiry = typeof expiryRaw === "string" ? expiryRaw.trim() : "";
+
+    return durationValue != null && durationValue > 0 && expiry.length > 0;
+  };
+
+  Handlebars.registerHelper("activeEffectHasEarlyExpiryWarning", (effect: unknown): boolean => {
+    return hasEarlyExpiryWarning(effect);
+  });
+
+  Handlebars.registerHelper("activeEffectEarlyExpiryWarningTooltip", (effect: unknown): string => {
+    if (!hasEarlyExpiryWarning(effect)) {
+      return "";
+    }
+
+    return localize("RQG.Foundry.ActiveEffect.EarlyExpiryWarningTooltip");
+  });
+
   Handlebars.registerHelper("skillname", (...args) => {
     return applyFnToDocumentFromHandlebarsArgs(args, (item) => {
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);

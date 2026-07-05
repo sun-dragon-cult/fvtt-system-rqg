@@ -11,8 +11,10 @@
     <thead>
     <tr>
       <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Label"}}</th>
-      <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
-      <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.StartTime"}}</th>
+      <th class="text-center">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
+      <th class="text-center">{{localize "RQG.Foundry.ActiveEffect.MatchSuspensionToEquippedStatus"}}</th>
+      <th class="text-center">{{localize "RQG.Foundry.ActiveEffect.Start"}}</th>
+      <th class="text-center">{{localize "RQG.Foundry.ActiveEffect.Duration"}}</th>
       <th class="text-left">{{localize "RQG.Foundry.ActiveEffect.KeyValueMode"}}</th>
       <th class="text-left"></th>
     </tr>
@@ -21,8 +23,17 @@
       <tbody data-effect-uuid="{{uuid}}">
       <tr>
         <td><a data-item-effect-edit>{{name}}</a></td>
-        <td><a data-item-effect-edit>{{yes-no disabled}}</a></td>
-        <td><a data-item-effect-edit>{{duration.startTime}}</a></td>
+        <td class="text-center"><a data-item-effect-edit>{{yes-no disabled}}</a></td>
+        <td class="text-center"><a data-item-effect-edit>{{yes-no system.matchSuspensionToEquippedStatus}}</a></td>
+        <td class="text-center"><a data-item-effect-edit>{{activeEffectStart this}}</a></td>
+        {{#if (activeEffectHasEarlyExpiryWarning this)}}
+          <td class="text-center"><a data-item-effect-edit data-tooltip="{{activeEffectEarlyExpiryWarningTooltip this}}">
+            {{activeEffectDuration this}}
+            <span class="active-effect-warning-badge">{{localize "RQG.Foundry.ActiveEffect.EarlyExpiryWarningBadge"}}</span>
+          </a></td>
+        {{else}}
+          <td class="text-center"><a data-item-effect-edit>{{activeEffectDuration this}}</a></td>
+        {{/if}}
         <td><a data-item-effect-edit>
           {{#each changes}}
             {{key}} - {{value}} - {{localizeActiveEffectType type}}<br>

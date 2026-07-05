@@ -837,7 +837,8 @@ export function getUiSectionVisibility(actor: CharacterActor): UiSections {
       CONFIG.RQG.debug.showAllUiSections ||
       actor.items.some((i) => isDocumentSubType<PassionItem>(i, ItemTypeEnum.Passion)),
     background: true,
-    activeEffects: (CONFIG.RQG.debug.showActorActiveEffectsTab && game.user?.isGM) ?? false,
+    activeEffects:
+      (game.settings?.get(systemId, "showActorActiveEffectsTab") && game.user?.isGM) ?? false,
   };
 }
 

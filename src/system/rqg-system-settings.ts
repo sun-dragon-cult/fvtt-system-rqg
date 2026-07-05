@@ -130,6 +130,15 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
+  game.settings?.register(systemId, "showActorActiveEffectsTab", {
+    name: "RQG.Settings.ShowActorActiveEffectsTab.settingName",
+    hint: "RQG.Settings.ShowActorActiveEffectsTab.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+
   game.settings?.register(systemId, "actor-wizard-feature-flag", {
     name: "Feature Flag: Enable Actor Wizard",
     hint: "For RnD use only",
