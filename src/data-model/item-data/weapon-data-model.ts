@@ -95,8 +95,10 @@ function defineWeaponSchema() {
   return {
     ...physicalItemSchemaFields(),
     effect: new SchemaField({
-      melee: usageEffectSchemaField(),
-      missile: usageEffectSchemaField(),
+      add: new SchemaField({
+        melee: usageEffectSchemaField(),
+        missile: usageEffectSchemaField(),
+      }),
     }),
     usage: new SchemaField({
       oneHand: usageSchemaField(),

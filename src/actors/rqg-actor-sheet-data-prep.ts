@@ -161,7 +161,7 @@ export function getMainCultInfo(actor: CharacterActor): MainCult {
  * @returns Array of POW crystals with name and size
  */
 export function getPowCrystals(actor: CharacterActor): { name: string; size: number }[] {
-  const magicPointEffectKey = "system.effect.magicPoints.max";
+  const magicPointEffectKey = "system.effect.add.magicPoints.max";
   type MinimalEffectChange = {
     key?: string;
     value?: unknown;

@@ -30,8 +30,9 @@ describe("CharacterDataModel accumulator schema", () => {
   it("declares resource effect accumulators as non-persisted numeric fields", () => {
     const schema = CharacterDataModel.defineSchema();
     const effect = getNestedSchema(schema.effect);
-    const magicPoints = getNestedSchema(effect["magicPoints"]);
-    const hitPoints = getNestedSchema(effect["hitPoints"]);
+    const add = getNestedSchema(effect["add"]);
+    const magicPoints = getNestedSchema(add["magicPoints"]);
+    const hitPoints = getNestedSchema(add["hitPoints"]);
 
     const magicPointsMax = magicPoints["max"] as { options?: Record<string, unknown> };
     const hitPointsMax = hitPoints["max"] as { options?: Record<string, unknown> };
@@ -46,7 +47,8 @@ describe("CharacterDataModel accumulator schema", () => {
   it("declares skill category effect accumulators as non-persisted zero-initialized fields", () => {
     const schema = CharacterDataModel.defineSchema();
     const effect = getNestedSchema(schema.effect);
-    const skillFromEffects = getNestedSchema(effect["skillCategoryModifiers"]);
+    const add = getNestedSchema(effect["add"]);
+    const skillFromEffects = getNestedSchema(add["skillCategoryModifiers"]);
 
     const categories = [
       "agility",

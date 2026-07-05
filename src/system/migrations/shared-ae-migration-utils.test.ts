@@ -18,7 +18,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     const result = migrateEffectChangesWithSummary(effect);
 
     expect(result.changed).toBe(true);
-    expect(effect.system.changes[0]!.key).toBe("system.effect.magicPoints.max");
+    expect(effect.system.changes[0]!.key).toBe("system.effect.add.magicPoints.max");
     expect(effect.system.changes[0]!.value).toBe(4);
     expect(result.summary.migratedChanges).toBe(1);
     expect(result.summary.skippedChanges).toBe(0);
@@ -37,7 +37,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(firstPass.changed).toBe(true);
     expect(secondPass.changed).toBe(false);
     expect(secondPass.summary.migratedChanges).toBe(0);
-    expect(effect.system.changes[0]!.key).toBe("system.effect.hitPoints.max");
+    expect(effect.system.changes[0]!.key).toBe("system.effect.add.hitPoints.max");
   });
 
   it("skips non-additive mode changes and reports warning reason", () => {
@@ -60,7 +60,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
       system: {
         changes: [
           { key: "system.attributes.magicPoints.max", type: "add", value: 5 },
-          { key: "system.effect.magicPoints.max", type: "add", value: 1 },
+          { key: "system.effect.add.magicPoints.max", type: "add", value: 1 },
         ],
       },
     };
@@ -68,8 +68,8 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     const result = migrateEffectChangesWithSummary(effect);
 
     expect(result.changed).toBe(true);
-    expect(effect.system.changes[0]!.key).toBe("system.effect.magicPoints.max");
-    expect(effect.system.changes[1]!.key).toBe("system.effect.magicPoints.max");
+    expect(effect.system.changes[0]!.key).toBe("system.effect.add.magicPoints.max");
+    expect(effect.system.changes[1]!.key).toBe("system.effect.add.magicPoints.max");
     expect(result.summary.migratedChanges).toBe(1);
     expect(result.summary.skippedChanges).toBe(0);
   });
@@ -87,8 +87,8 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     const result = migrateEffectChangesWithSummary(effect);
 
     expect(result.changed).toBe(true);
-    expect(effect.system.changes[0]!.key).toBe("system.effect.magicPoints.max");
-    expect(effect.system.changes[1]!.key).toBe("system.effect.magicPoints.max");
+    expect(effect.system.changes[0]!.key).toBe("system.effect.add.magicPoints.max");
+    expect(effect.system.changes[1]!.key).toBe("system.effect.add.magicPoints.max");
     expect(effect.system.changes[0]!.value).toBe(2);
     expect(effect.system.changes[1]!.value).toBe(3);
     expect(result.summary.migratedChanges).toBe(2);
@@ -134,7 +134,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
       rules: [
         {
           legacyKey: "system.attributes.magicPoints.max",
-          newKey: "system.effect.magicPoints.max",
+          newKey: "system.effect.add.magicPoints.max",
           allowedModes: ["add"],
           transformMode: () => "add",
         },
@@ -152,28 +152,28 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
   it("repairs legacy change.type values on non-legacy keys in the combined helper", () => {
     const effect = {
       system: {
-        changes: [{ key: "system.effect.magicPoints.max", type: "subtract", value: 3 }],
+        changes: [{ key: "system.effect.add.magicPoints.max", type: "subtract", value: 3 }],
       },
     };
 
     const changed = migrateEffectTypesAndPaths(effect);
 
     expect(changed).toBe(true);
-    expect(effect.system.changes[0]!.key).toBe("system.effect.magicPoints.max");
+    expect(effect.system.changes[0]!.key).toBe("system.effect.add.magicPoints.max");
     expect(effect.system.changes[0]!.type).toBe("add");
   });
 
   it("reports changed when only change.type normalization occurs", () => {
     const effect = {
       system: {
-        changes: [{ key: "system.effect.hitPoints.max", type: "custom.2", value: 4 }],
+        changes: [{ key: "system.effect.add.hitPoints.max", type: "custom.2", value: 4 }],
       },
     };
 
     const result = migrateEffectTypesAndPathsWithSummary(effect);
 
     expect(result.changed).toBe(true);
-    expect(effect.system.changes[0]!.key).toBe("system.effect.hitPoints.max");
+    expect(effect.system.changes[0]!.key).toBe("system.effect.add.hitPoints.max");
     expect(effect.system.changes[0]!.type).toBe("add");
     expect(result.summary.migratedChanges).toBe(0);
     expect(result.summary.skippedChanges).toBe(0);
@@ -221,7 +221,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
           system: {
             changes: [
               { key: "system.attributes.magicPoints.max", type: "add", value: 7 },
-              { key: "system.effect.magicPoints.max", type: "add", value: 2 },
+              { key: "system.effect.add.magicPoints.max", type: "add", value: 2 },
             ],
           },
         },
@@ -260,8 +260,8 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     const updatedKeys = runResult.updates
       .map((update) => update.effects[0]?.system?.changes?.[0]?.key)
       .filter((key): key is string => typeof key === "string");
-    expect(updatedKeys).toContain("system.effect.magicPoints.max");
-    expect(updatedKeys).toContain("system.effect.hitPoints.max");
+    expect(updatedKeys).toContain("system.effect.add.magicPoints.max");
+    expect(updatedKeys).toContain("system.effect.add.hitPoints.max");
   });
 
   it("supports dry-run array migration summaries without churn", () => {

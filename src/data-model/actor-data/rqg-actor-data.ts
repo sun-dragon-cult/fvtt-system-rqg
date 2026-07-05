@@ -43,9 +43,11 @@ export type CharacterActor = RqgActor & {
     attributes: DerivedAttributes;
     baseSkillCategoryModifiers: SkillCategories;
     effect: {
-      magicPoints: { max: number };
-      hitPoints: { max: number };
-      skillCategoryModifiers: SkillCategories;
+      add: {
+        magicPoints: { max: number };
+        hitPoints: { max: number };
+        skillCategoryModifiers: SkillCategories;
+      };
     };
   };
 };

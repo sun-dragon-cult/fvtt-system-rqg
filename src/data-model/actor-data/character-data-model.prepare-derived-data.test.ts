@@ -20,21 +20,23 @@ function buildSystem() {
       hitPoints: { max: 0 },
     },
     effect: {
-      magicPoints: { max: 0 },
-      hitPoints: { max: 0 },
-      skillCategoryModifiers: {
-        agility: 0,
-        communication: 0,
-        knowledge: 0,
-        magic: 0,
-        manipulation: 0,
-        perception: 0,
-        stealth: 0,
-        meleeWeapons: 0,
-        missileWeapons: 0,
-        shields: 0,
-        naturalWeapons: 0,
-        otherSkills: 0,
+      add: {
+        magicPoints: { max: 0 },
+        hitPoints: { max: 0 },
+        skillCategoryModifiers: {
+          agility: 0,
+          communication: 0,
+          knowledge: 0,
+          magic: 0,
+          manipulation: 0,
+          perception: 0,
+          stealth: 0,
+          meleeWeapons: 0,
+          missileWeapons: 0,
+          shields: 0,
+          naturalWeapons: 0,
+          otherSkills: 0,
+        },
       },
     },
     baseSkillCategoryModifiers: {
@@ -72,8 +74,8 @@ describe("CharacterDataModel.prepareDerivedData", () => {
   it("composes base skill modifiers with effect deltas", () => {
     const model = new CharacterDataModel({});
     const system = buildSystem();
-    system.effect.skillCategoryModifiers.agility = 2;
-    system.effect.skillCategoryModifiers.magic = -1;
+    system.effect.add.skillCategoryModifiers.agility = 2;
+    system.effect.add.skillCategoryModifiers.magic = -1;
 
     Object.assign(model as object, system);
     model.prepareDerivedData();
@@ -114,8 +116,8 @@ describe("CharacterDataModel.prepareDerivedData", () => {
 
     Object.assign(model as object, system);
 
-    system.effect.magicPoints.max = 3;
-    system.effect.hitPoints.max = 2;
+    system.effect.add.magicPoints.max = 3;
+    system.effect.add.hitPoints.max = 2;
     model.prepareDerivedData();
 
     const cycleOneAttributes = (
@@ -128,8 +130,8 @@ describe("CharacterDataModel.prepareDerivedData", () => {
     expect(cycleOneAttributes.hitPoints.max).toBe(baseHitPoints + 2);
 
     // Simulate the next prepare cycle using a different effects state.
-    system.effect.magicPoints.max = 2;
-    system.effect.hitPoints.max = 1;
+    system.effect.add.magicPoints.max = 2;
+    system.effect.add.hitPoints.max = 1;
     model.prepareDerivedData();
 
     const cycleTwoAttributes = (

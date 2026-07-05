@@ -226,7 +226,7 @@ describe("getPowCrystals", () => {
         name: "Crystal A",
         system: {
           changes: [
-            { key: "system.effect.magicPoints.max", value: "3" },
+            { key: "system.effect.add.magicPoints.max", value: "3" },
             { key: "system.attributes.hitPoints.max", value: "2" },
           ],
         },
@@ -234,7 +234,7 @@ describe("getPowCrystals", () => {
       {
         name: "Crystal B",
         system: {
-          changes: [{ key: "system.effect.magicPoints.max", value: 1 }],
+          changes: [{ key: "system.effect.add.magicPoints.max", value: 1 }],
         },
       },
     ];
@@ -264,7 +264,7 @@ describe("getPowCrystals", () => {
     actor.appliedEffects = [
       {
         name: "Legacy Top-Level Crystal",
-        changes: [{ key: "system.effect.magicPoints.max", value: "2" }],
+        changes: [{ key: "system.effect.add.magicPoints.max", value: "2" }],
       },
     ];
 

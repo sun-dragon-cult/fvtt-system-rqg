@@ -103,79 +103,81 @@ function defineCharacterSchema() {
     }),
 
     effect: new SchemaField({
-      magicPoints: new SchemaField({
-        max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-      }),
-      hitPoints: new SchemaField({
-        max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-      }),
-      skillCategoryModifiers: new SchemaField({
-        agility: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
+      add: new SchemaField({
+        magicPoints: new SchemaField({
+          max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
         }),
-        communication: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
+        hitPoints: new SchemaField({
+          max: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
         }),
-        knowledge: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        magic: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-        manipulation: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        perception: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        stealth: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        meleeWeapons: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        missileWeapons: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        shields: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        naturalWeapons: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
-        }),
-        otherSkills: new NumberField({
-          integer: true,
-          nullable: false,
-          initial: 0,
-          persisted: false,
+        skillCategoryModifiers: new SchemaField({
+          agility: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          communication: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          knowledge: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          magic: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+          manipulation: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          perception: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          stealth: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          meleeWeapons: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          missileWeapons: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          shields: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          naturalWeapons: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
+          otherSkills: new NumberField({
+            integer: true,
+            nullable: false,
+            initial: 0,
+            persisted: false,
+          }),
         }),
       }),
     }),
@@ -263,7 +265,7 @@ export class CharacterDataModel extends RqgActorDataModel<
 
     // Non-persisted fields are reinitialized each prepare cycle by Foundry v14.
     // Keep composition strict here so schema regressions are visible in tests.
-    const effectsModifiers = system.effect.skillCategoryModifiers;
+    const effectsModifiers = system.effect.add.skillCategoryModifiers;
 
     const baseWithEffects = {
       agility: characteristicDerived.skillCategoryModifiers.agility + effectsModifiers.agility,
@@ -309,11 +311,11 @@ export class CharacterDataModel extends RqgActorDataModel<
     // reinitializes per cycle before effects are applied.
     const systemAny = system as any;
     if (systemAny.attributes.magicPoints) {
-      const magicPointsFromEffects = (systemAny.effect.magicPoints.max ?? 0) as number;
+      const magicPointsFromEffects = (systemAny.effect.add.magicPoints.max ?? 0) as number;
       systemAny.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
     }
     if (systemAny.attributes.hitPoints) {
-      const hitPointsFromEffects = (systemAny.effect.hitPoints.max ?? 0) as number;
+      const hitPointsFromEffects = (systemAny.effect.add.hitPoints.max ?? 0) as number;
       const baseHitPoints = RqgCalculations.hitPoints(con ?? 0, siz ?? 0, pow ?? 0) ?? 0;
       systemAny.attributes.hitPoints.max = baseHitPoints + hitPointsFromEffects;
     }

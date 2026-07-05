@@ -76,8 +76,10 @@ function makeWeapon({ actor, usage }: { actor?: any; usage?: Record<string, any>
     actor,
     system: {
       effect: {
-        melee: { attack: 0, parry: 0 },
-        missile: { attack: 0, parry: 0 },
+        add: {
+          melee: { attack: 0, parry: 0 },
+          missile: { attack: 0, parry: 0 },
+        },
       },
       usage: {
         oneHand: { ...emptyUsage },
@@ -328,10 +330,10 @@ describe("weapon skill link handling", () => {
 
   it("returns melee and missile modifiers based on selected usage", () => {
     const weapon = makeWeapon();
-    weapon.system.effect.melee.attack = 5;
-    weapon.system.effect.melee.parry = 7;
-    weapon.system.effect.missile.attack = 11;
-    weapon.system.effect.missile.parry = 13;
+    weapon.system.effect.add.melee.attack = 5;
+    weapon.system.effect.add.melee.parry = 7;
+    weapon.system.effect.add.missile.attack = 11;
+    weapon.system.effect.add.missile.parry = 13;
 
     expect(getWeaponEffectModifier(weapon, "oneHand", "attack")).toBe(5);
     expect(getWeaponEffectModifier(weapon, "twoHand", "parry")).toBe(7);
@@ -356,7 +358,7 @@ describe("weapon skill link handling", () => {
         },
       },
     });
-    weapon.system.effect.melee.attack = 9;
+    weapon.system.effect.add.melee.attack = 9;
 
     expect(resolveLinkedSkillChanceData(weapon, "oneHand", "attack")).toMatchObject({
       skillItem: embeddedSkill,
@@ -379,7 +381,7 @@ describe("weapon skill link handling", () => {
         },
       },
     });
-    weapon.system.effect.melee.attack = 9;
+    weapon.system.effect.add.melee.attack = 9;
 
     expect(resolveLinkedSkillChanceData(weapon, "oneHand", "attack")).toMatchObject({
       skillItem: undefined,

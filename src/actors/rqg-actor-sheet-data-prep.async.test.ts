@@ -195,8 +195,10 @@ describe("organizeEmbeddedItems", () => {
       system: {
         projectileId: "",
         effect: {
-          melee: { attack: -30, parry: 0 },
-          missile: { attack: 0, parry: 0 },
+          add: {
+            melee: { attack: -30, parry: 0 },
+            missile: { attack: 0, parry: 0 },
+          },
         },
         usage: {
           oneHand: {

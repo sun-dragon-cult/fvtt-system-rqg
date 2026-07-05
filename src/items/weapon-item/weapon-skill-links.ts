@@ -81,7 +81,7 @@ export function getWeaponEffectModifier(
   mode: WeaponChanceMode,
 ): number {
   const effectGroup = getWeaponEffectGroup(usageType);
-  return Number(weaponItem.system.effect?.[effectGroup]?.[mode] ?? 0);
+  return Number(weaponItem.system.effect?.add?.[effectGroup]?.[mode] ?? 0);
 }
 
 export function resolveLinkedSkillChanceData(

@@ -22,14 +22,16 @@ describe("RqgActiveEffect._applyChangeCustom", () => {
     const { RqgActiveEffect } = await import("./rqg-active-effect");
 
     const effectData = {
-      melee: { attack: 0, parry: 0 },
-      missile: { attack: 0, parry: 0 },
+      add: {
+        melee: { attack: 0, parry: 0 },
+        missile: { attack: 0, parry: 0 },
+      },
     };
 
     const applyChange = vi.fn((currentValue: number) => currentValue + 50);
     const system = {
       getFieldForProperty: vi.fn((fieldPath: string) =>
-        fieldPath === "effect.melee.attack" ? { applyChange } : undefined,
+        fieldPath === "effect.add.melee.attack" ? { applyChange } : undefined,
       ),
       effect: effectData,
     };
@@ -50,7 +52,7 @@ describe("RqgActiveEffect._applyChangeCustom", () => {
     RqgActiveEffect._applyChangeCustom(
       actor as any,
       {
-        key: "i.weapon.short-spear:system.effect.melee.attack",
+        key: "i.weapon.short-spear:system.effect.add.melee.attack",
         mode: 0 as any,
         priority: 0,
         value: "50",
@@ -61,8 +63,8 @@ describe("RqgActiveEffect._applyChangeCustom", () => {
     );
 
     expect(actor.getBestEmbeddedDocumentByRqid).toHaveBeenCalledWith("i.weapon.short-spear");
-    expect(system.getFieldForProperty).toHaveBeenCalledWith("effect.melee.attack");
+    expect(system.getFieldForProperty).toHaveBeenCalledWith("effect.add.melee.attack");
     expect(applyChange).toHaveBeenCalled();
-    expect(item.system.effect.melee.attack).toBe(50);
+    expect(item.system.effect.add.melee.attack).toBe(50);
   });
 });

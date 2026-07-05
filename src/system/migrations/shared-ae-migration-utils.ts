@@ -122,11 +122,11 @@ const CANONICAL_CHANGE_TYPES = new Set<ActiveEffectChangeType>([
 export const AE_LEGACY_PATH_MAPPINGS: AEPathMapping[] = [
   {
     legacyKey: "system.attributes.magicPoints.max",
-    newKey: "system.effect.magicPoints.max",
+    newKey: "system.effect.add.magicPoints.max",
   },
   {
     legacyKey: "system.attributes.hitPoints.max",
-    newKey: "system.effect.hitPoints.max",
+    newKey: "system.effect.add.hitPoints.max",
   },
 ];
 
