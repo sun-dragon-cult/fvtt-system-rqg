@@ -23,7 +23,7 @@
     "dev": "tsx buildScripts/startDev.ts",
     "foundry": "tsx buildScripts/startFoundry.ts",
     "format": "prettier -w .",
-    "i18n:audit:en": "pnpm -s i18n:audit-unused --lang en",
+    "i18n:audit:en": "pnpm -s i18n:audit-unused --lang en --fail-on-unused",
     "i18n:audit-unused": "tsx buildScripts/audit-unused-translations.ts",
     "lint:scripts:fix": "eslint . --fix",
     "lint:scripts": "eslint .",
