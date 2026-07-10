@@ -7,7 +7,6 @@ import { enumChoices } from "../shared/enum-choices";
 export type OccupationItem = RqgItem & { system: Item.SystemOfType<"occupation"> };
 
 import { StandardOfLivingEnum } from "./occupation-enums";
-export { StandardOfLivingEnum };
 
 export class OccupationalSkill {
   incomeSkill: boolean = false;

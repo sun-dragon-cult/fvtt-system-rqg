@@ -5,7 +5,8 @@ import { attackParryMap } from "./attack-parry-table";
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import type { RqgItem } from "../items/rqg-item";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import type { DamageType, UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { DamageType } from "@item-model/weapon-enums.ts";
 import {
   DamageDegree,
   dodgeDamageDegreeTable,

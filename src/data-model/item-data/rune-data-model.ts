@@ -9,7 +9,6 @@ import { enumChoices } from "../shared/enum-choices";
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
 
 import { RuneTypeEnum } from "./rune-enums";
-export { RuneTypeEnum };
 
 export type RuneType = {
   type: RuneTypeEnum;

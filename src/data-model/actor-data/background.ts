@@ -1,7 +1,5 @@
 import { RqidLink } from "../shared/rqid-link";
-import { OccupationEnum, HomeLandEnum } from "./background-enums";
-
-export { OccupationEnum, HomeLandEnum };
+import { OccupationEnum } from "./background-enums";
 
 export interface Background {
   species: string;

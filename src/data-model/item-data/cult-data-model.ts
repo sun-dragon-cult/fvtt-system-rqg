@@ -9,7 +9,6 @@ import { enumChoices } from "../shared/enum-choices";
 export type CultItem = RqgItem & { system: Item.SystemOfType<"cult"> };
 
 import { CultRankEnum } from "./cult-enums";
-export { CultRankEnum };
 
 export interface JoinedCult {
   cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name

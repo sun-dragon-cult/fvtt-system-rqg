@@ -18,8 +18,8 @@ import {
   getUnloadedMissileSrDisplay,
 } from "./rqg-actor-sheet-data-prep";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { RuneTypeEnum } from "@item-model/rune-data-model.ts";
-import { SkillCategoryEnum } from "@item-model/skill-data-model.ts";
+import { RuneTypeEnum } from "@item-model/rune-enums.ts";
+import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
 
 function actorWithItems(items: any[]): any {
   return {

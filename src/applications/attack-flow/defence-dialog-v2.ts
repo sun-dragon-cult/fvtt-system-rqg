@@ -24,12 +24,8 @@ import type {
 } from "./defence-dialog-data.types.ts";
 import { RqgChatMessage } from "../../chat/rqg-chat-message";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import type {
-  CombatManeuver,
-  DamageType,
-  UsageType,
-  WeaponItem,
-} from "@item-model/weapon-data-model.ts";
+import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { DamageType } from "@item-model/weapon-enums.ts";
 import { getBasicOutcomeDescription } from "../../chat/attack-flow-handlers";
 import {
   combatOutcome,

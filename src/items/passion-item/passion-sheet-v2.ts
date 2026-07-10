@@ -1,4 +1,5 @@
-import { PassionsEnum, type PassionItem } from "@item-model/passion-data-model.ts";
+import type { PassionItem } from "@item-model/passion-data-model.ts";
+import { PassionsEnum } from "@item-model/passion-enums.ts";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";

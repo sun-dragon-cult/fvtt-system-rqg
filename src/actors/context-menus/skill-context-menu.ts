@@ -11,7 +11,8 @@ import {
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { SkillCategoryEnum, type SkillItem } from "@item-model/skill-data-model.ts";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
 import { showImproveAbilityDialog } from "../../applications/improve-dialogs/improve-ability-dialog";
 import { contextMenuRunes } from "./context-menu-runes";
 import { Rqid } from "../../system/api/rqid-api";

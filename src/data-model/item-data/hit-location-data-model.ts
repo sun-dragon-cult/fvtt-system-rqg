@@ -7,8 +7,6 @@ import { enumChoices } from "../shared/enum-choices";
 export type HitLocationItem = RqgItem & { system: Item.SystemOfType<"hitLocation"> };
 
 import { hitLocationHealthStatuses, HitLocationTypesEnum } from "./hit-location-enums";
-export { hitLocationHealthStatuses, HitLocationTypesEnum };
-export type { HitLocationHealthState } from "./hit-location-enums";
 
 export const hitLocationHealthStatusOptions: SelectOptionData<
   (typeof hitLocationHealthStatuses)[number]

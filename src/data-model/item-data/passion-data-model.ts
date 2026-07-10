@@ -4,9 +4,6 @@ import { abilitySchemaFields } from "../shared/ability-schema-fields";
 
 export type PassionItem = RqgItem & { system: Item.SystemOfType<"passion"> };
 
-import { PassionsEnum } from "./passion-enums";
-export { PassionsEnum };
-
 const { StringField } = foundry.data.fields;
 
 function definePassionSchema() {

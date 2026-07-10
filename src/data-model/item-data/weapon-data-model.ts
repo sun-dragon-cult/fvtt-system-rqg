@@ -24,8 +24,6 @@ import {
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
 import { damageType } from "./weapon-enums";
-export { damageType };
-export type { DamageType } from "./weapon-enums";
 import type { DamageType } from "./weapon-enums";
 
 export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(

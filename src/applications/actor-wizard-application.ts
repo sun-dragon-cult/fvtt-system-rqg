@@ -11,7 +11,8 @@ import {
   isDocumentSubType,
   isFoundryElementInstanceOf,
 } from "../system/util";
-import { SkillCategoryEnum, type SkillItem } from "@item-model/skill-data-model.ts";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RqidLink } from "../data-model/shared/rqid-link";
 import { RqgItem } from "../items/rqg-item";

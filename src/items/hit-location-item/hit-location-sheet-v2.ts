@@ -1,9 +1,9 @@
 import {
-  type HitLocationHealthState,
   hitLocationHealthStatusOptions,
   type HitLocationItem,
-  HitLocationTypesEnum,
 } from "@item-model/hit-location-data-model.ts";
+import type { HitLocationHealthState } from "@item-model/hit-location-enums.ts";
+import { HitLocationTypesEnum } from "@item-model/hit-location-enums.ts";
 import { getSelectHitLocationOptions } from "../../system/util";
 import {
   RqgItemSheetV2,

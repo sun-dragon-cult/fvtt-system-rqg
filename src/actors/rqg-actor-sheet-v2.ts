@@ -42,7 +42,7 @@ import * as DataPrep from "./rqg-actor-sheet-data-prep";
 import { RqidLink } from "../data-model/shared/rqid-link";
 import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqid-sheet-button";
 import { RqgContextMenu } from "../foundry-ui/rqg-context-menu";
-import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
+import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background-enums";
 import { characteristicMenuOptions } from "./context-menus/characteristic-context-menu";
 import { combatMenuOptions } from "./context-menus/combat-context-menu";
 import { cultMenuOptions } from "./context-menus/cult-context-menu";

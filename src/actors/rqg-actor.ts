@@ -28,7 +28,7 @@ import { AbilityRollDialogV2 } from "../applications/ability-roll-dialog/ability
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import type { PartialAbilityItem } from "../applications/ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import type { ActorHealthState } from "../data-model/actor-data/attributes";
-import type { DamageType } from "@item-model/weapon-data-model.ts";
+import type { DamageType } from "@item-model/weapon-enums.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skill-formulas";
 import { RqgItem } from "@items/rqg-item.ts";
 import { getConfigStatusEffects, getSpeakerCompat } from "../system/fvtt-type-compat";

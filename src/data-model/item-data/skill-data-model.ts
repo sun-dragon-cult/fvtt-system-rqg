@@ -12,7 +12,6 @@ const logger = new RqgLogger("SkillDataModel");
 export type SkillItem = RqgItem & { system: Item.SystemOfType<"skill"> };
 
 import { SkillCategoryEnum } from "./skill-enums";
-export { SkillCategoryEnum };
 
 const { NumberField, StringField } = foundry.data.fields;
 
