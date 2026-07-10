@@ -69,6 +69,7 @@ const ritualOptions = [
   "1d",
   "2d",
   "1week",
+  "2weeks",
   "4weeks",
   "1season",
   "1year",
