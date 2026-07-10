@@ -276,7 +276,7 @@ function getCharacteristic(
     };
   } else {
     throw new RqgError(
-      localize("RQG.Contextmenu.Notification.CharacteristicNotFound", {
+      localize("RQG.ContextMenu.Notification.CharacteristicNotFound", {
         characteristicName: characteristicName ?? "",
         actorName: actor.name,
       }),

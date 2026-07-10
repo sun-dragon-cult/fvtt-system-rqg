@@ -70,7 +70,7 @@
                data-tooltip="{{localize 'RQG.Actor.Characteristics.PowWarningTip'}}"
              {{/if}}>
           <label class="resource-label norse characteristic contextmenu" data-characteristic-roll>
-            {{localize (concat 'RQG.Actor.Characteristics.' key)}}
+            {{localizeDynamic 'RQG.Actor.Characteristics.' key}}
           </label>
           {{#if @root.editMode}}
             <input type="number" name="system.characteristics.{{key}}.value"

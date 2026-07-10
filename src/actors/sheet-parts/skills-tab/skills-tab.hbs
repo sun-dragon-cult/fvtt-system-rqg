@@ -2,7 +2,7 @@
 <div class="masonry">
   {{#each embeddedItems.skill}} {{#if this}}
   <div class="masonry-item">
-    <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}}
+    <h2>{{localizeDynamic 'RQG.Actor.Skill.SkillCategory.' @key}}
       {{#unless ../wizard}}
         ({{#with @root.system.skillCategoryModifiers}}{{lookup this @key}}{{/with}})
       {{/unless}}

@@ -12,6 +12,7 @@ import {
   getSpeakerFromItem,
   localize,
   localizeItemType,
+  normalizeOtherModifierDescriptionForRoll,
   toSignedString,
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
@@ -151,7 +152,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";
-    formData.otherModifierDescription ??= localize("RQG.Dialog.AbilityRoll.OtherModifier");
+    formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.abilityItemUuid ??= this.abilityItem?.uuid ?? undefined;
     formData.abilityActorUuid ??=
       this.abilityItem instanceof RqgItem
@@ -201,11 +202,11 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
           ...this.initialModifiers,
           {
             value: Number(formData.augmentModifier ?? 0),
-            description: localize("RQG.Roll.AbilityRoll.Augment"),
+            description: localize("RQG.Roll.Common.Augment"),
           },
           {
             value: Number(formData.meditateModifier ?? 0),
-            description: localize("RQG.Roll.AbilityRoll.Meditate"),
+            description: localize("RQG.Roll.Common.Meditate"),
           },
           {
             value: Number(formData.otherModifier ?? 0),
@@ -243,11 +244,11 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
           ...this.initialModifiers,
           {
             value: Number(formData.augmentModifier ?? 0),
-            description: localize("RQG.Roll.AbilityRoll.Augment"),
+            description: localize("RQG.Roll.Common.Augment"),
           },
           {
             value: Number(formData.meditateModifier ?? 0),
-            description: localize("RQG.Roll.AbilityRoll.Meditate"),
+            description: localize("RQG.Roll.Common.Meditate"),
           },
           {
             value: Number(formData.otherModifier ?? 0),
@@ -301,15 +302,17 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
         ...initialModifiers,
         {
           value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.AbilityRoll.Augment"),
+          description: localize("RQG.Roll.Common.Augment"),
         },
         {
           value: Number(formDataObject.meditateModifier),
-          description: localize("RQG.Roll.AbilityRoll.Meditate"),
+          description: localize("RQG.Roll.Common.Meditate"),
         },
         {
           value: Number(formDataObject.otherModifier),
-          description: formDataObject.otherModifierDescription,
+          description: normalizeOtherModifierDescriptionForRoll(
+            formDataObject.otherModifierDescription,
+          ),
         },
       ],
       abilityName: abilityItem?.name ?? undefined,

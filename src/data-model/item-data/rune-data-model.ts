@@ -8,14 +8,8 @@ import { enumChoices } from "../shared/enum-choices";
 
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
 
-export const RuneTypeEnum = {
-  Element: "element",
-  Power: "power",
-  Form: "form",
-  Condition: "condition",
-  Technique: "technique",
-} as const;
-export type RuneTypeEnum = (typeof RuneTypeEnum)[keyof typeof RuneTypeEnum];
+import { RuneTypeEnum } from "./rune-enums";
+export { RuneTypeEnum };
 
 export type RuneType = {
   type: RuneTypeEnum;

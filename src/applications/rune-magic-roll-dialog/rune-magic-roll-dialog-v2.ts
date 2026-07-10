@@ -1,6 +1,11 @@
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
-import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../system/util";
+import {
+  assertDocumentSubType,
+  getSpeakerDisplayName,
+  localize,
+  normalizeOtherModifierDescriptionForRoll,
+} from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { RqgItem } from "@items/rqg-item.ts";
@@ -65,6 +70,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     { value: 50, label: "RQG.Dialog.Common.RitualOptions.1d" },
     { value: 55, label: "RQG.Dialog.Common.RitualOptions.2d" },
     { value: 60, label: "RQG.Dialog.Common.RitualOptions.1week" },
+    { value: 65, label: "RQG.Dialog.Common.RitualOptions.2weeks" },
     { value: 70, label: "RQG.Dialog.Common.RitualOptions.4weeks" },
     { value: 75, label: "RQG.Dialog.Common.RitualOptions.1season" },
     { value: 80, label: "RQG.Dialog.Common.RitualOptions.1year" },
@@ -138,7 +144,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
-    formData.otherModifierDescription ??= localize("RQG.Dialog.RuneMagicRoll.OtherModifier");
+    formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
 
@@ -236,18 +242,20 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.RuneMagicRoll.Augment"),
+          description: localize("RQG.Roll.Common.Augment"),
         },
         {
           value: Number(formDataObject.meditateModifier),
           description:
             Number(formDataObject.meditateModifier) >= 30
               ? localize("RQG.Roll.RuneMagicRoll.Ritual")
-              : localize("RQG.Roll.RuneMagicRoll.Meditate"),
+              : localize("RQG.Roll.Common.Meditate"),
         },
         {
           value: Number(formDataObject.otherModifier),
-          description: formDataObject.otherModifierDescription,
+          description: normalizeOtherModifierDescriptionForRoll(
+            formDataObject.otherModifierDescription,
+          ),
         },
       ],
       rollMode: rollMode,

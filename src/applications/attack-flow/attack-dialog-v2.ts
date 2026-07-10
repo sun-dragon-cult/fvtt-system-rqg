@@ -12,6 +12,7 @@ import {
   isFoundryElementInstanceOf,
   isTruthy,
   localize,
+  normalizeOtherModifierDescriptionForRoll,
   requireValue,
   toSignedString,
 } from "../../system/util";
@@ -115,7 +116,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         value: weaponEffectModifier,
       },
       {
-        label: localize("RQG.Roll.AbilityRoll.Augment"),
+        label: localize("RQG.Roll.Common.Augment"),
         value: Number(formData.augmentModifier ?? 0),
       },
       {
@@ -143,7 +144,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         value: formData.proneAttacker ? halvedModifier : 0,
       },
       {
-        label: formData.otherModifierDescription ?? localize("RQG.Dialog.Attack.OtherModifier"),
+        label: formData.otherModifierDescription ?? localize("RQG.Dialog.Common.OtherModifier"),
         value: Number(formData.otherModifier ?? 0),
       },
     ];
@@ -311,7 +312,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     } else {
       formData.attackDamageBonus = "";
     }
-    formData.otherModifierDescription ??= localize("RQG.Dialog.Attack.OtherModifier");
+    formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.reduceAmmoQuantity ??= true;
     const rawProneAttackerPrev = foundry.utils.getProperty(formData as object, "proneAttackerPrev");
     formData.proneAttackerPrev = rawProneAttackerPrev === true || rawProneAttackerPrev === "true";
@@ -612,7 +613,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         },
         {
           value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.AbilityRoll.Augment"),
+          description: localize("RQG.Roll.Common.Augment"),
         },
         {
           value: formDataObject.proneTarget ? proneTargetModifier : 0,
@@ -640,7 +641,9 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         },
         {
           value: Number(formDataObject.otherModifier),
-          description: formDataObject.otherModifierDescription,
+          description: normalizeOtherModifierDescriptionForRoll(
+            formDataObject.otherModifierDescription,
+          ),
         },
       ],
       heading: attackRollHeading,

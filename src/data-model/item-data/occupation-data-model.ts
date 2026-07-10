@@ -6,14 +6,8 @@ import { enumChoices } from "../shared/enum-choices";
 
 export type OccupationItem = RqgItem & { system: Item.SystemOfType<"occupation"> };
 
-export const StandardOfLivingEnum = {
-  Destitute: "destitute",
-  Poor: "poor",
-  Free: "free",
-  Noble: "noble",
-  PettyKing: "petty-king",
-} as const;
-export type StandardOfLivingEnum = (typeof StandardOfLivingEnum)[keyof typeof StandardOfLivingEnum];
+import { StandardOfLivingEnum } from "./occupation-enums";
+export { StandardOfLivingEnum };
 
 export class OccupationalSkill {
   incomeSkill: boolean = false;

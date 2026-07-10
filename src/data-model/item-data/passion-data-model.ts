@@ -4,20 +4,8 @@ import { abilitySchemaFields } from "../shared/ability-schema-fields";
 
 export type PassionItem = RqgItem & { system: Item.SystemOfType<"passion"> };
 
-export const PassionsEnum = {
-  Ambition: "Ambition",
-  Cowardly: "Cowardly",
-  Devotion: "Devotion",
-  Fear: "Fear",
-  Hate: "Hate",
-  Honor: "Honor",
-  Loyalty: "Loyalty",
-  Love: "Love",
-  Gluttony: "Gluttony",
-  Vanity: "Vanity",
-  Custom: "",
-} as const;
-export type PassionsEnum = (typeof PassionsEnum)[keyof typeof PassionsEnum];
+import { PassionsEnum } from "./passion-enums";
+export { PassionsEnum };
 
 const { StringField } = foundry.data.fields;
 

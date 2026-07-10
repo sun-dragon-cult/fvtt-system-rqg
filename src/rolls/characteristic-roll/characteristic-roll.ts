@@ -112,7 +112,7 @@ export class CharacteristicRoll extends Roll {
       `RQG.Roll.CharacteristicRoll.RollDifficultyLevel.${translationKeyDifficulty}`,
     );
     if (translation.startsWith("RQG.Roll.CharacteristicRoll.RollDifficultyLevel.")) {
-      return localize("RQG.Roll.CharacteristicRoll.Other");
+      return localize("RQG.Roll.Common.OtherModifier");
     }
     return translation;
   }

@@ -88,7 +88,7 @@
                       data-weapon-effect-modifier="{{weaponEffectModifier}}"
                       data-item-roll
                       data-tooltip="{{#if unusable}}{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}{{else}}{{localize "RQG.Game.RollTitle"}}{{/if}}">
-                  {{localize (concat "RQG.Game.WeaponUsage." @key)}}
+                  {{localizeDynamic "RQG.Game.WeaponUsage." @key}}
                   <span class="{{experiencedclass @root.uuid skillId}}">{{totalChance}}%</span>
                 </div>
               {{/if}}
@@ -102,7 +102,7 @@
                 <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
                       data-skill-id="{{skillId}}"
                       data-damage-roll="{{damage}}"
-                      data-damage-roll-heading="{{../name}} – {{localize (concat "RQG.Game.WeaponUsage." @key)}}"
+                      data-damage-roll-heading="{{../name}} – {{localizeDynamic "RQG.Game.WeaponUsage." @key}}"
                       data-tooltip="{{localize "RQG.Game.RollChat"}}"
                       >{{damage}}&nbsp;</span>
               {{/if}}

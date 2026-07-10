@@ -94,12 +94,12 @@
           />
         <datalist id="homelands">
           {{#each homelands}}
-            <option value="{{localize (concat "RQG.Actor.Background.Homeland." this)}}"></option>
+            <option value="{{localizeDynamic "RQG.Actor.Background.Homeland." this}}"></option>
           {{/each}}
         </datalist>
       {{else if system.background.homeland}}
         <label>{{localize "RQG.Actor.Background.Homeland.Heading"}}</label>
-        {{localize (concat "RQG.Actor.Background.Homeland." system.background.homeland)}}
+        {{localizeDynamic "RQG.Actor.Background.Homeland." system.background.homeland}}
       {{/if}}
 
       {{#if isGM}}
@@ -201,7 +201,7 @@
         </select>
       {{else if system.background.occupation}}
         <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
-        {{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}
+        {{localizeDynamic "RQG.Actor.Background.Occupation." system.background.occupation}}
       {{/if}}
 
       {{#if actorWizardFeatureFlag}}

@@ -10,6 +10,7 @@ import {
   isDocumentSubType,
   isFoundryElementInstanceOf,
   localize,
+  normalizeOtherModifierDescriptionForRoll,
   requireValue,
   safeFromJSON,
   toSignedString,
@@ -107,7 +108,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         value: weaponEffectModifier,
       },
       {
-        label: localize("RQG.Roll.AbilityRoll.Augment"),
+        label: localize("RQG.Roll.Common.Augment"),
         value: Number(formData.augmentModifier ?? 0),
       },
       {
@@ -121,7 +122,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         value: formData.halved ? halvedModifier : 0,
       },
       {
-        label: formData.otherModifierDescription ?? localize("RQG.Dialog.Defence.OtherModifier"),
+        label: formData.otherModifierDescription ?? localize("RQG.Dialog.Common.OtherModifier"),
         value: Number(formData.otherModifier ?? 0),
       },
       {
@@ -258,7 +259,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.subsequentDefenceModifier ??= "0";
     formData.halved ??= false;
     formData.otherModifier ??= "";
-    formData.otherModifierDescription ??= localize("RQG.Dialog.Defence.OtherModifier");
+    formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid ?? undefined;
 
     const parryingWeaponItem = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
@@ -632,7 +633,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         },
         {
           value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.AbilityRoll.Augment"),
+          description: localize("RQG.Roll.Common.Augment"),
         },
         {
           value: Number(formDataObject.subsequentDefenceModifier),
@@ -646,7 +647,9 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         },
         {
           value: Number(formDataObject.otherModifier),
-          description: formDataObject.otherModifierDescription,
+          description: normalizeOtherModifierDescriptionForRoll(
+            formDataObject.otherModifierDescription,
+          ),
         },
         {
           value: formDataObject.defenceMasterOpponentModifier,

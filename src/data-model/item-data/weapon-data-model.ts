@@ -23,14 +23,10 @@ import {
 
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
-export const damageType = {
-  Crush: "crush",
-  Slash: "slash",
-  Impale: "impale",
-  Parry: "parry",
-  Special: "special",
-} as const;
-export type DamageType = (typeof damageType)[keyof typeof damageType];
+import { damageType } from "./weapon-enums";
+export { damageType };
+export type { DamageType } from "./weapon-enums";
+import type { DamageType } from "./weapon-enums";
 
 export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(
   (damageType) => ({

@@ -8,16 +8,8 @@ import { enumChoices } from "../shared/enum-choices";
 
 export type CultItem = RqgItem & { system: Item.SystemOfType<"cult"> };
 
-export const CultRankEnum = {
-  LayMember: "layMember",
-  Initiate: "initiate",
-  GodTalker: "godTalker",
-  RunePriest: "runePriest",
-  RuneLord: "runeLord",
-  ChiefPriest: "chiefPriest",
-  HighPriest: "highPriest",
-} as const;
-export type CultRankEnum = (typeof CultRankEnum)[keyof typeof CultRankEnum];
+import { CultRankEnum } from "./cult-enums";
+export { CultRankEnum };
 
 export interface JoinedCult {
   cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name

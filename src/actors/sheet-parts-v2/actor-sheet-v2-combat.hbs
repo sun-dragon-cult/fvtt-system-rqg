@@ -6,7 +6,7 @@
       <h2 class="section-heading">
         <span>{{localize "RQG.Actor.Health.Health"}}</span>
         {{#unless (eq system.attributes.health "healthy")}}
-          <span class="health-state">{{localize (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</span>
+          <span class="health-state">{{localizeDynamic "RQG.Actor.Attributes.Health." system.attributes.health}}</span>
         {{/unless}}
       </h2>
 
@@ -225,7 +225,7 @@
                               data-weapon-effect-modifier="{{weaponEffectModifier}}"
                               data-item-roll
                               data-tooltip="{{#if unusable}}{{localize "RQG.Actor.Combat.StrDexMinsNotMetTip"}}{{else}}{{localize "RQG.Game.RollTitle"}}{{/if}}">
-                          {{localize (concat "RQG.Game.WeaponUsage." @key)}}
+                          {{localizeDynamic "RQG.Game.WeaponUsage." @key}}
                           <span class="{{#if skillHasExperience}}experienced{{/if}}">{{totalChance}}%</span>
                         </div>
                       {{/if}}
@@ -239,7 +239,7 @@
                         <span class="combat contextmenu usage {{#if (and (eq @key "missile") (eq ../system.rate 0))}}missile{{/if}}"
                               data-skill-id="{{skillId}}"
                               data-damage-roll="{{damage}}"
-                              data-damage-roll-heading="{{../name}} – {{localize (concat "RQG.Game.WeaponUsage." @key)}}"
+                              data-damage-roll-heading="{{../name}} – {{localizeDynamic "RQG.Game.WeaponUsage." @key}}"
                               data-tooltip="{{localize "RQG.Game.RollDirect"}}"
                               >{{damage}}&nbsp;</span>
                       {{/if}}

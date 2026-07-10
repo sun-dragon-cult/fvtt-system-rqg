@@ -30,8 +30,8 @@
   <div class="head6">{{localize "RQG.Actor.SpiritMagic.Range"}}</div>
   <div class="head7">{{localize "RQG.Actor.SpiritMagic.Duration"}}</div>
   <div class="head8">{{localize "RQG.Actor.SpiritMagic.Concentration"}}</div>
-  <div class="head9">{{localize "RQG.Actor.SpiritMagic.Ritual"}}</div>
-  <div class="head10">{{localize "RQG.Actor.SpiritMagic.Enchantment"}}</div>
+  <div class="head9">{{localize "RQG.Item.Spell.Ritual"}}</div>
+  <div class="head10">{{localize "RQG.Item.Spell.Enchantment"}}</div>
   {{#each embeddedItems.spiritMagic}}
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
@@ -60,17 +60,17 @@
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{localize (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>
+      <span class="text-center">{{localizeDynamic "RQG.Item.Spell.RangeEnum." system.castingRange}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{localize (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>
+      <span class="text-center">{{localizeDynamic "RQG.Item.Spell.DurationEnum." system.duration}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"
         data-spirit-magic-roll>
-      <span class="text-center">{{localize (concat "RQG.Item.Spell.ConcentrationEnum." system.concentration)}}</span>
+      <span class="text-center">{{localizeDynamic "RQG.Item.Spell.ConcentrationEnum." system.concentration}}</span>
     </div>
     <div data-item-id="{{id}}"
         class="spirit-magic contextmenu item"

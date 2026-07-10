@@ -87,7 +87,7 @@ function getChangedLocationRelatedChanges(
     | undefined;
 
   if (!updatedItem) {
-    const msg = localize("RQG.Item.Notification.CantFindItem");
+    const msg = localize("RQG.Item.HitLocation.Notification.CantFindItem");
     ui.notifications?.error(msg);
     throw new RqgError(msg, actorEmbeddedItems);
   }
