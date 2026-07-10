@@ -3,10 +3,9 @@ import { RqgItemDataModel } from "./rqg-item-data-model";
 import { resourceSchemaField } from "../shared/resource-schema-field";
 import { actorHealthStatuses } from "../actor-data/attributes";
 import { enumChoices } from "../shared/enum-choices";
+import { hitLocationHealthStatuses, HitLocationTypesEnum } from "./hit-location-enums";
 
 export type HitLocationItem = RqgItem & { system: Item.SystemOfType<"hitLocation"> };
-
-import { hitLocationHealthStatuses, HitLocationTypesEnum } from "./hit-location-enums";
 
 export const hitLocationHealthStatusOptions: SelectOptionData<
   (typeof hitLocationHealthStatuses)[number]

@@ -20,11 +20,10 @@ import {
   formatDamagePart,
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../../system/combat-calculations";
-
-export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
-
 import { damageType } from "./weapon-enums";
 import type { DamageType } from "./weapon-enums";
+
+export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
 export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(
   (damageType) => ({

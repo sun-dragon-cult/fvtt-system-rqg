@@ -58,7 +58,7 @@ function parseArgs(argv: string[]): Options {
     const arg = argv[i];
 
     if (arg === "--") {
-      continue;
+      break;
     }
 
     switch (arg) {

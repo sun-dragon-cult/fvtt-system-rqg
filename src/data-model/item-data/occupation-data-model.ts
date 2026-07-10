@@ -3,10 +3,9 @@ import { RqidLink } from "../shared/rqid-link";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqid-link-field";
 import { enumChoices } from "../shared/enum-choices";
+import { StandardOfLivingEnum } from "./occupation-enums";
 
 export type OccupationItem = RqgItem & { system: Item.SystemOfType<"occupation"> };
-
-import { StandardOfLivingEnum } from "./occupation-enums";
 
 export class OccupationalSkill {
   incomeSkill: boolean = false;

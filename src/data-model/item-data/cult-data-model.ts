@@ -5,10 +5,9 @@ import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { resourceSchemaField } from "../shared/resource-schema-field";
 import { enumChoices } from "../shared/enum-choices";
+import { CultRankEnum } from "./cult-enums";
 
 export type CultItem = RqgItem & { system: Item.SystemOfType<"cult"> };
-
-import { CultRankEnum } from "./cult-enums";
 
 export interface JoinedCult {
   cultName: string | undefined; // For cults with subcults (like Orlanth & Yelm) others should have the Deity name

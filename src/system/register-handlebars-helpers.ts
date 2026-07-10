@@ -43,7 +43,8 @@ export const registerHandlebarsHelpers = function () {
 
   // Route template localization through the same wrapper as TypeScript.
   Handlebars.registerHelper("localize", (key: unknown, options: unknown) => {
-    return localize(typeof key === "string" ? key : String(key), getHelperHash(options));
+    const normalizedKey = key == null ? undefined : typeof key === "string" ? key : String(key);
+    return localize(normalizedKey, getHelperHash(options));
   });
 
   Handlebars.registerHelper(

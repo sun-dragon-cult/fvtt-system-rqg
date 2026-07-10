@@ -6,12 +6,11 @@ import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { enumChoices } from "../shared/enum-choices";
 import { RqgLogger } from "../../system/logging/rqg-logger";
-
-const logger = new RqgLogger("SkillDataModel");
+import { SkillCategoryEnum } from "./skill-enums";
 
 export type SkillItem = RqgItem & { system: Item.SystemOfType<"skill"> };
 
-import { SkillCategoryEnum } from "./skill-enums";
+const logger = new RqgLogger("SkillDataModel");
 
 const { NumberField, StringField } = foundry.data.fields;
 
