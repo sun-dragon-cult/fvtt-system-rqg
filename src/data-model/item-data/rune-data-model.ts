@@ -5,17 +5,9 @@ import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqid-li
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { enumChoices } from "../shared/enum-choices";
+import { RuneTypeEnum } from "./rune-enums";
 
 export type RuneItem = RqgItem & { system: Item.SystemOfType<"rune"> };
-
-export const RuneTypeEnum = {
-  Element: "element",
-  Power: "power",
-  Form: "form",
-  Condition: "condition",
-  Technique: "technique",
-} as const;
-export type RuneTypeEnum = (typeof RuneTypeEnum)[keyof typeof RuneTypeEnum];
 
 export type RuneType = {
   type: RuneTypeEnum;

@@ -20,17 +20,10 @@ import {
   formatDamagePart,
   getNormalizedDamageFormulaAndDamageBonus,
 } from "../../system/combat-calculations";
+import { damageType } from "./weapon-enums";
+import type { DamageType } from "./weapon-enums";
 
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
-
-export const damageType = {
-  Crush: "crush",
-  Slash: "slash",
-  Impale: "impale",
-  Parry: "parry",
-  Special: "special",
-} as const;
-export type DamageType = (typeof damageType)[keyof typeof damageType];
 
 export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(
   (damageType) => ({

@@ -1,4 +1,5 @@
-import { CultRankEnum, type CultItem } from "./cult-data-model";
+import type { CultItem } from "./cult-data-model";
+import { CultRankEnum } from "./cult-enums";
 
 const cultRankOrder: Record<CultRankEnum, number> = {
   [CultRankEnum.HighPriest]: 7,

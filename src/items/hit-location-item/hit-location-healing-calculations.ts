@@ -1,9 +1,7 @@
 import type { ActorHealthState } from "../../data-model/actor-data/attributes";
 import { assertDocumentSubType, RqgError } from "../../system/util";
-import type {
-  HitLocationHealthState,
-  HitLocationItem,
-} from "@item-model/hit-location-data-model.ts";
+import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { HitLocationHealthState } from "@item-model/hit-location-enums.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";

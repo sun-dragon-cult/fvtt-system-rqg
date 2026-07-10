@@ -3,26 +3,16 @@ import { RqgItemDataModel } from "./rqg-item-data-model";
 import { resourceSchemaField } from "../shared/resource-schema-field";
 import { actorHealthStatuses } from "../actor-data/attributes";
 import { enumChoices } from "../shared/enum-choices";
+import { hitLocationHealthStatuses, HitLocationTypesEnum } from "./hit-location-enums";
 
 export type HitLocationItem = RqgItem & { system: Item.SystemOfType<"hitLocation"> };
 
-// TODO differentiate between severed & maimed? slash / crush or impale
-export const hitLocationHealthStatuses = ["healthy", "wounded", "useless", "severed"] as const;
-export type HitLocationHealthState = (typeof hitLocationHealthStatuses)[number];
-
-export const hitLocationHealthStatusOptions: SelectOptionData<HitLocationHealthState>[] =
-  hitLocationHealthStatuses.map((status) => ({
-    value: status,
-    label: "RQG.Item.HitLocation.HealthStatusEnum." + status,
-  }));
-
-export const HitLocationTypesEnum = {
-  Limb: "limb",
-  Head: "head",
-  Chest: "chest",
-  Abdomen: "abdomen",
-} as const;
-export type HitLocationTypesEnum = (typeof HitLocationTypesEnum)[keyof typeof HitLocationTypesEnum];
+export const hitLocationHealthStatusOptions: SelectOptionData<
+  (typeof hitLocationHealthStatuses)[number]
+>[] = hitLocationHealthStatuses.map((status) => ({
+  value: status,
+  label: "RQG.Item.HitLocation.HealthStatusEnum." + status,
+}));
 
 const { ArrayField, NumberField, StringField } = foundry.data.fields;
 

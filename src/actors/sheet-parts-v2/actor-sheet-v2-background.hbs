@@ -91,7 +91,7 @@
               value="{{system.background.homeland}}" type="text" list="homelands-{{id}}" />
             <datalist id="homelands-{{id}}">
               {{#each homelands}}
-                <option value="{{localize (concat "RQG.Actor.Background.Homeland." this)}}"></option>
+                <option value="{{localizeDynamic "RQG.Actor.Background.Homeland." this}}"></option>
               {{/each}}
             </datalist>
           {{else}}
@@ -183,13 +183,13 @@
             {{#unless system.background.currentOccupationRqidLink.rqid}}
               {{#if system.background.occupation}}
                 <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
-                <span>{{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}</span>
+                <span>{{localizeDynamic "RQG.Actor.Background.Occupation." system.background.occupation}}</span>
               {{/if}}
             {{/unless}}
           {{else}}
             {{#if system.background.occupation}}
               <label>{{localize "RQG.Actor.Background.Occupation.Heading"}}</label>
-              <span>{{localize (concat "RQG.Actor.Background.Occupation." system.background.occupation)}}</span>
+              <span>{{localizeDynamic "RQG.Actor.Background.Occupation." system.background.occupation}}</span>
             {{/if}}
           {{/if}}
         {{/edit-mode}}

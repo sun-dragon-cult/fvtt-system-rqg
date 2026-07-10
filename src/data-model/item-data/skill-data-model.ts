@@ -6,26 +6,11 @@ import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { enumChoices } from "../shared/enum-choices";
 import { RqgLogger } from "../../system/logging/rqg-logger";
-
-const logger = new RqgLogger("SkillDataModel");
+import { SkillCategoryEnum } from "./skill-enums";
 
 export type SkillItem = RqgItem & { system: Item.SystemOfType<"skill"> };
 
-export const SkillCategoryEnum = {
-  Agility: "agility",
-  Communication: "communication",
-  Knowledge: "knowledge",
-  Magic: "magic",
-  Manipulation: "manipulation",
-  Perception: "perception",
-  Stealth: "stealth",
-  MeleeWeapons: "meleeWeapons",
-  MissileWeapons: "missileWeapons",
-  Shields: "shields",
-  NaturalWeapons: "naturalWeapons",
-  OtherSkills: "otherSkills",
-} as const;
-export type SkillCategoryEnum = (typeof SkillCategoryEnum)[keyof typeof SkillCategoryEnum];
+const logger = new RqgLogger("SkillDataModel");
 
 const { NumberField, StringField } = foundry.data.fields;
 

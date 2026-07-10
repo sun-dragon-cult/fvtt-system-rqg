@@ -12,7 +12,7 @@
     {{#each embeddedItems.skill}}
     {{#if this}}
     <div class="masonry-item">
-      <h2>{{localize (concat 'RQG.Actor.Skill.SkillCategory.' @key)}}
+      <h2>{{localizeDynamic 'RQG.Actor.Skill.SkillCategory.' @key}}
         <span class="category-modifier">({{#with @root.system.skillCategoryModifiers}}{{lookup this @key}}{{/with}})</span>
       </h2>
       <div class="grid skill{{#edit-mode ../system.editMode 'all'}} skill-edit-mode{{/edit-mode}} item-list">

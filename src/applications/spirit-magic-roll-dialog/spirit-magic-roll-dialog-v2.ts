@@ -4,7 +4,12 @@ import type {
   SpiritMagicRollDialogContext,
   SpiritMagicRollDialogFormData,
 } from "./spirit-magic-roll-dialog-data.types.ts";
-import { assertDocumentSubType, getSpeakerDisplayName, localize } from "../../system/util";
+import {
+  assertDocumentSubType,
+  getSpeakerDisplayName,
+  localize,
+  normalizeOtherModifierDescriptionForRoll,
+} from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { RqgItem } from "@items/rqg-item.ts";
@@ -116,7 +121,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
-    formData.otherModifierDescription ??= localize("RQG.Dialog.SpiritMagicRoll.OtherModifier");
+    formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.powX5 ??= this.powX5;
     formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
@@ -189,15 +194,17 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.AbilityRoll.Augment"),
+          description: localize("RQG.Roll.Common.Augment"),
         },
         {
           value: Number(formDataObject.meditateModifier),
-          description: localize("RQG.Roll.AbilityRoll.Meditate"),
+          description: localize("RQG.Roll.Common.Meditate"),
         },
         {
           value: Number(formDataObject.otherModifier),
-          description: formDataObject.otherModifierDescription,
+          description: normalizeOtherModifierDescriptionForRoll(
+            formDataObject.otherModifierDescription,
+          ),
         },
       ],
       spellName: spellItem?.name ?? undefined,

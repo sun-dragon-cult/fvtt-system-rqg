@@ -1,8 +1,5 @@
-import {
-  hitLocationHealthStatuses,
-  type HitLocationItem,
-  HitLocationTypesEnum,
-} from "@item-model/hit-location-data-model.ts";
+import { type HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import { hitLocationHealthStatuses, HitLocationTypesEnum } from "@item-model/hit-location-enums.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { type ActorHealthState, actorHealthStatuses } from "../../data-model/actor-data/attributes";
 import { ItemTypeEnum } from "@item-model/item-types.ts";

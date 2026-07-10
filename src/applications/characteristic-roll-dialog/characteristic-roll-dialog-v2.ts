@@ -9,6 +9,7 @@ import {
   assertDocumentSubType,
   getSpeakerDisplayName,
   localize,
+  normalizeOtherModifierDescriptionForRoll,
   RqgError,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -129,7 +130,7 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";
-    formData.otherModifierDescription ??= localize("RQG.Dialog.CharacteristicRoll.OtherModifier");
+    formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.actorUuid ??= this.actor.uuid ?? "";
     formData.tokenUuid ??= this.token?.uuid ?? "";
     formData.characteristicName ??= this.characteristicName;
@@ -207,15 +208,17 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.CharacteristicRoll.Augment"),
+          description: localize("RQG.Roll.Common.Augment"),
         },
         {
           value: Number(formDataObject.meditateModifier),
-          description: localize("RQG.Roll.CharacteristicRoll.Meditate"),
+          description: localize("RQG.Roll.Common.Meditate"),
         },
         {
           value: Number(formDataObject.otherModifier),
-          description: formDataObject.otherModifierDescription,
+          description: normalizeOtherModifierDescriptionForRoll(
+            formDataObject.otherModifierDescription,
+          ),
         },
       ],
       speaker: getSpeakerCompat({ actor, token }),

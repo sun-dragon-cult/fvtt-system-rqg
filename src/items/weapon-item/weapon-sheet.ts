@@ -1,14 +1,12 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { SkillCategoryEnum, type SkillItem } from "@item-model/skill-data-model.ts";
+import type { SkillItem } from "@item-model/skill-data-model.ts";
+import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
 import { RqgItem } from "../rqg-item";
 import { type EquippedStatus, equippedStatusOptions } from "@item-model/i-physical-item.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import { getDomDataset, isDocumentSubType, localize } from "../../system/util";
-import {
-  type DamageType,
-  damageTypeOptions,
-  type WeaponItem,
-} from "@item-model/weapon-data-model.ts";
+import { damageTypeOptions, type WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { DamageType } from "@item-model/weapon-enums.ts";
 import { systemId } from "../../system/config";
 import type { EffectsItemSheetData } from "../shared/sheet-interfaces.types.ts";
 import { getAllowedDropDocumentTypes, isAllowedDocumentType } from "../../documents/drag-drop";

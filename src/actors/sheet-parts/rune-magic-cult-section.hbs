@@ -48,7 +48,7 @@
       <div class="flex-column"
            {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
         {{#each system.joinedCults}}
-          <div><b>{{cultName}} – {{localize (concat "RQG.Actor.RuneMagic.CultRank." rank)}}</b>
+          <div><b>{{cultName}} – {{localizeDynamic "RQG.Actor.RuneMagic.CultRank." rank}}</b>
             {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}
           </div>
         {{/each}}
@@ -66,8 +66,8 @@
       <div class="head3">{{localize "RQG.Actor.RuneMagic.Points"}}</div>
       <div class="head4"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Range"}}</span></div>
       <div class="head5"><span class="text-center">{{localize "RQG.Actor.RuneMagic.Duration"}}</span></div>
-      <div class="head6">{{localize "RQG.Actor.RuneMagic.Ritual"}}</div>
-      <div class="head7">{{localize "RQG.Actor.RuneMagic.Enchantment"}}</div>
+      <div class="head6">{{localize "RQG.Item.Spell.Ritual"}}</div>
+      <div class="head7">{{localize "RQG.Item.Spell.Enchantment"}}</div>
       <div class="head8">{{localize "RQG.Actor.RuneMagic.Stackable"}}</div>
       <div class="head9">{{localize "RQG.Actor.RuneMagic.OneUse"}}</div>
       <div class="head10">{{localize "RQG.Actor.RuneMagic.Chance"}}</div>
@@ -98,14 +98,12 @@
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"
                data-rune-magic-roll>
-            {{#if system.castingRange}}<span class="text-center">{{localize
-              (concat "RQG.Item.Spell.RangeEnum." system.castingRange)}}</span>{{/if}}
+            {{#if system.castingRange}}<span class="text-center">{{localizeDynamic "RQG.Item.Spell.RangeEnum." system.castingRange}}</span>{{/if}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"
                data-rune-magic-roll>
-            {{#if system.duration}}<span class="text-center">{{localize
-              (concat "RQG.Item.Spell.DurationEnum." system.duration)}}</span>{{/if}}
+            {{#if system.duration}}<span class="text-center">{{localizeDynamic "RQG.Item.Spell.DurationEnum." system.duration}}</span>{{/if}}
           </div>
           <div class="rune-magic contextmenu item" data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                data-item-id="{{id}}"

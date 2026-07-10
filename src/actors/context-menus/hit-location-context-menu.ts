@@ -23,7 +23,7 @@ export const hitLocationMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as HitLocationItem | undefined;
       if (!item || !item.sheet) {
-        const msg = localize("RQG.ContextMenu.CantEditHitLocationError", {
+        const msg = localize("RQG.ContextMenu.Notification.CantEditHitLocationError", {
           itemId: itemId!,
           actorName: actor.name,
         });

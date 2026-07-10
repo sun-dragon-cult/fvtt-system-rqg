@@ -1,6 +1,6 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
-import { damageType, type DamageType } from "@item-model/weapon-data-model.ts";
+import { damageType, type DamageType } from "@item-model/weapon-enums.ts";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { assertDocumentSubType, localize, requireValue } from "../../system/util";

@@ -1,4 +1,4 @@
-import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
+import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background-enums";
 import {
   type AbilityItem,
   abilityItemTypes,

@@ -2,8 +2,7 @@
   <div class="health">
     <h2 class="flex-row">
       <span>{{localize "RQG.Actor.Health.Health"}}</span>
-      <span>{{#unless (eq system.attributes.health "healthy")}}<i class="health-state">{{localize
-        (concat "RQG.Actor.Attributes.Health." system.attributes.health)}}</i>{{/unless}}</span>
+      <span>{{#unless (eq system.attributes.health "healthy")}}<i class="health-state">{{localizeDynamic "RQG.Actor.Attributes.Health." system.attributes.health}}</i>{{/unless}}</span>
     </h2>
 
     {{#if system.characteristics.constitution.value}}

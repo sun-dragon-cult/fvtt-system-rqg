@@ -4,6 +4,7 @@ import {
   formatListByUserLanguage,
   getAvailableRunes,
   localize,
+  localizeDynamic,
   localizeItemType,
   toCamelCase,
 } from "./util";
@@ -16,11 +17,45 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import { ItemTypeEnum } from "@item-model/item-types";
 
 export const registerHandlebarsHelpers = function () {
+  const getHelperHash = (options: unknown): Record<string, string> | undefined => {
+    if (!options || typeof options !== "object" || !("hash" in options)) {
+      return undefined;
+    }
+
+    const hash = (options as { hash?: Record<string, unknown> }).hash;
+    if (!hash) {
+      return undefined;
+    }
+
+    return Object.fromEntries(
+      Object.entries(hash)
+        .filter(([, value]) => value !== undefined)
+        .map(([key, value]) => [key, String(value)]),
+    );
+  };
+
   Handlebars.registerHelper("concat", (...strs) =>
     strs
       .filter((s) => s == null || typeof s !== "object")
       .map((v) => (v != null && v !== "" ? v : "undefined")) // This concat is used for localization and empty keys don't work
       .join(""),
+  );
+
+  // Route template localization through the same wrapper as TypeScript.
+  Handlebars.registerHelper("localize", (key: unknown, options: unknown) => {
+    const normalizedKey = key == null ? undefined : typeof key === "string" ? key : String(key);
+    return localize(normalizedKey, getHelperHash(options));
+  });
+
+  Handlebars.registerHelper(
+    "localizeDynamic",
+    (prefix: unknown, suffix: unknown, options: unknown) => {
+      return localizeDynamic(
+        typeof prefix === "string" ? prefix : String(prefix),
+        suffix == null ? undefined : String(suffix),
+        getHelperHash(options),
+      );
+    },
   );
 
   Handlebars.registerHelper("json", (context) => JSON.stringify(context));

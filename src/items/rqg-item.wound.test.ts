@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
-import { damageType } from "@item-model/weapon-data-model.ts";
+import { damageType } from "@item-model/weapon-enums.ts";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { HealingCalculations } from "./hit-location-item/hit-location-healing-calculations";

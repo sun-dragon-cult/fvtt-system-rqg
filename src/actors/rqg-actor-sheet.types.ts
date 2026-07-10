@@ -1,12 +1,12 @@
 import type { RqgItem } from "../items/rqg-item";
 import type { ActorSheetData } from "@items/shared/sheet-interfaces.types.ts";
-import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background";
+import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background-enums";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import type { LocationItemNodeData } from "../items/shared/location-item-node";
 import type { GearItem } from "@item-model/gear-data-model.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
-import { RuneTypeEnum } from "@item-model/rune-data-model.ts";
+import { RuneTypeEnum } from "@item-model/rune-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 
 /**

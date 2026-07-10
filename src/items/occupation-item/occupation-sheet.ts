@@ -1,8 +1,5 @@
-import {
-  OccupationalSkill,
-  type OccupationItem,
-  StandardOfLivingEnum,
-} from "@item-model/occupation-data-model.ts";
+import { OccupationalSkill, type OccupationItem } from "@item-model/occupation-data-model.ts";
+import { StandardOfLivingEnum } from "@item-model/occupation-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { assertHtmlElement, getDomDataset, isDocumentSubType, localize } from "../../system/util";
 import { RqgItem } from "../rqg-item";

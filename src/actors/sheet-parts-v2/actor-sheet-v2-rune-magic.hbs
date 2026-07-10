@@ -54,7 +54,7 @@
           {{/if}}
           <div class="joined-cults" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
             {{#each system.joinedCults}}
-              <div><b>{{cultName}} – {{localize (concat "RQG.Actor.RuneMagic.CultRank." rank)}}</b>
+              <div><b>{{cultName}} – {{localizeDynamic "RQG.Actor.RuneMagic.CultRank." rank}}</b>
                 {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}
               </div>
             {{/each}}

@@ -681,6 +681,7 @@ export function localize(key: string | undefined, data?: Record<string, string>)
     logger.info("Attempt to localize an undefined key");
     return "";
   }
+
   const result = game.i18n?.format(key, data) ?? key;
   if (result === key) {
     logger.info(
@@ -690,8 +691,32 @@ export function localize(key: string | undefined, data?: Record<string, string>)
   return result;
 }
 
+export function localizeDynamic(
+  prefix: string,
+  suffix: string | number | undefined,
+  data?: Record<string, string>,
+): string {
+  const suffixText = suffix == null || suffix === "" ? "undefined" : String(suffix);
+  return localize(`${prefix}${suffixText}`, data);
+}
+
 export function localizeItemType(itemType: Item.SubType | string | "reputation"): string {
   return localize("TYPES.Item." + itemType);
+}
+
+/**
+ * Dialogs should default to title-case "Other Modifier", while roll tooltips
+ * use lower-case "other modifier" unless the user customizes the label.
+ */
+export function normalizeOtherModifierDescriptionForRoll(description: string | undefined): string {
+  const providedText = description?.trim() ?? "";
+  const dialogDefaultText = localize("RQG.Dialog.Common.OtherModifier").trim();
+
+  if (!providedText || providedText === dialogDefaultText) {
+    return localize("RQG.Roll.Common.OtherModifier");
+  }
+
+  return providedText;
 }
 
 export function localizeDocumentName(documentName: string | undefined): string {

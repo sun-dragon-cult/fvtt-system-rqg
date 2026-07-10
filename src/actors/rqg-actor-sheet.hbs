@@ -78,7 +78,7 @@
                {{/if}}>
             <label class="resource-label norse characteristic contextmenu"
                 data-characteristic-roll
-                data-characteristic-name="{{key}}">{{localize (concat 'RQG.Actor.Characteristics.' key)}}</label>
+                data-characteristic-name="{{key}}">{{localizeDynamic 'RQG.Actor.Characteristics.' key}}</label>
 
             <!--Characteristic Value-->
             {{#edit-mode @root.system.editMode "all"}}
@@ -160,8 +160,7 @@
                     <br><br>
                     {{localize "RQG.Actor.Attributes.MaxEnc" maxEnc=system.attributes.encumbrance.max}}</div>">
 
-          <legend>{{localize
-            (concat "RQG.Actor.Attributes.MoveMode." system.attributes.move.currentLocomotion)}}</legend>
+          <legend>{{localizeDynamic "RQG.Actor.Attributes.MoveMode." system.attributes.move.currentLocomotion}}</legend>
           <div class="flex-column">
             {{#if (or isGM system.attributes.move.walk.value)}}
               <label class="nowrap"><input type="radio" name="system.attributes.move.currentLocomotion"

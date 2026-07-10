@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CultRankEnum } from "@item-model/cult-data-model.ts";
+import { CultRankEnum } from "@item-model/cult-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { buildCharacteristicAdapter } from "./improve-characteristic-dialog";
 
