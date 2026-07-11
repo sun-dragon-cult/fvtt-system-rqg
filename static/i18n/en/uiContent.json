@@ -1205,6 +1205,7 @@
         "TargetItemNotFound": "Could not find any embedded item with Rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that Rqid or modify the item that has this active effect"
       },
       "CombatTracker": {
+        "ActivateFirstTurn": "Activate First Turn",
         "DuplicateCombatant": "Duplicate Combatant",
         "RemoveAllDuplicates": "Remove All Duplicates"
       },

@@ -31,7 +31,7 @@
                 data-tooltip aria-label="{{ localize "COMBAT.Create" }}"></button>
         {{#each combats}}
         <button type="button" class="inline-control {{#if active}}active{{/if}}" data-action="cycleCombat"
-                data-combat-id="{{ id }}">
+                data-combat-id="{{ id }}" {{#if name}}data-tooltip aria-label="{{name}}"{{/if}}>
             {{ label }}
         </button>
         {{/each}}
@@ -49,12 +49,24 @@
     </nav>
     {{/if}}
 
+    {{!-- Encounter Name --}}
+    {{#if combat.name}}
+    <h2 class="encounter-name">{{ combat.name }}</h2>
+    {{/if}}
+
     <div class="encounter-controls {{#if hasCombat}}combat{{/if}}">
 
         {{!-- Bulk Rolls --}}
         <div class="control-buttons left flexrow">
+            {{#if user.isGM}}
+            <button type="button" class="inline-control combat-control icon fa-solid fa-arrow-up-to-line" data-action="activateFirstTurn"
+                    {{#unless combat.turns.length}}disabled{{/unless}} data-tooltip
+                    aria-label="{{ localize "RQG.Foundry.CombatTracker.ActivateFirstTurn" }}"></button>
+            <div class="spacer"></div>
+            {{else}}
             <div class="spacer"></div>
             <div class="spacer"></div>
+            {{/if}}
         </div>
 
         {{!-- Combat Status --}}

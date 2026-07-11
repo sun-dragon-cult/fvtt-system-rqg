@@ -1,10 +1,5 @@
 import { getCombatantsSharingToken } from "./combatant-utils";
-import {
-  getDomDataset,
-  getRequiredDomDataset,
-  isFoundryElementInstanceOf,
-  localize,
-} from "../system/util";
+import { getDomDataset, getRequiredDomDataset, isFoundryElementInstanceOf } from "../system/util";
 import { templatePaths } from "../system/load-handlebars-templates";
 import type { RqgContextMenuEntry } from "../foundry-ui/rqg-context-menu";
 
@@ -35,6 +30,12 @@ export class RqgCombatTracker extends CombatTracker {
     },
   };
 
+  static override DEFAULT_OPTIONS = {
+    actions: {
+      activateFirstTurn: RqgCombatTracker._activateFirstTurnAction,
+    },
+  };
+
   override async _onToggleDefeatedStatus(combatant: Combatant.Stored): Promise<void> {
     const isDefeated = !combatant.isDefeated;
 
@@ -59,7 +60,7 @@ export class RqgCombatTracker extends CombatTracker {
       this.viewed?.combatants.get(li.dataset["combatantId"] ?? "");
     const entries: RqgCombatContextMenuEntry[] = [
       {
-        label: localize("RQG.Foundry.CombatTracker.DuplicateCombatant"),
+        label: "RQG.Foundry.CombatTracker.DuplicateCombatant",
         icon: '<i class="far fa-copy fa-fw"></i>',
         visible: () => game.user?.isGM ?? false,
         onClick: async (_event: Event, li: HTMLElement) => {
@@ -70,7 +71,7 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        label: localize("COMBAT.CombatantUpdate"),
+        label: "COMBATANT.ACTIONS.Update",
         icon: '<i class="fa-solid fa-pen-to-square"></i>',
         visible: () => game.user?.isGM ?? false,
         onClick: (_event: Event, li: HTMLElement) =>
@@ -84,7 +85,7 @@ export class RqgCombatTracker extends CombatTracker {
           }),
       },
       {
-        label: "COMBAT.CombatantClear",
+        label: "COMBATANT.ACTIONS.Clear",
         icon: '<i class="fa-solid fa-arrow-rotate-left"></i>',
         visible: (li: HTMLElement) =>
           (game.user?.isGM && Number.isFinite(getCombatant(li)?.initiative)) ?? false,
@@ -96,7 +97,7 @@ export class RqgCombatTracker extends CombatTracker {
         },
       },
       {
-        label: "COMBAT.CombatantClearMovementHistory",
+        label: "COMBATANT.ACTIONS.ClearMovementHistory",
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
         visible: (li: HTMLElement) =>
           (game.user?.isGM && (getCombatant(li)?.token?.movementHistory.length ?? 0) > 0) ?? false,
@@ -106,20 +107,20 @@ export class RqgCombatTracker extends CombatTracker {
             return;
           }
           await combatant.clearMovementHistory();
-          ui.notifications?.info("COMBAT.CombatantMovementHistoryCleared", {
+          ui.notifications?.info("COMBATANT.MovementHistoryCleared", {
             // @ts-expect-error format
             format: { name: combatant.token?.name },
           });
         },
       },
       {
-        label: "COMBAT.CombatantRemove",
+        label: "COMBATANT.ACTIONS.Remove",
         icon: '<i class="fa-solid fa-trash"></i>',
         visible: () => game.user?.isGM ?? false,
         onClick: (_event: Event, li: HTMLElement) => getCombatant(li)?.delete(),
       },
       {
-        label: localize("RQG.Foundry.CombatTracker.RemoveAllDuplicates"),
+        label: "RQG.Foundry.CombatTracker.RemoveAllDuplicates",
         icon: '<i class="fa-solid fa-trash"></i>',
         visible: () => game.user?.isGM ?? false,
         onClick: async (_event: Event, li: HTMLElement) => {
@@ -167,6 +168,19 @@ export class RqgCombatTracker extends CombatTracker {
     if (controlled) {
       void canvas?.animatePan(token.center);
     }
+  }
+
+  // Set the currently active combatant to be first in the turn order, without changing SR/sorting
+  private static async _activateFirstTurnAction(
+    this: RqgCombatTracker,
+    _event: PointerEvent,
+    _target: HTMLElement,
+  ): Promise<void> {
+    const combat = this.viewed;
+    if (!combat || !game.user?.isGM) {
+      return;
+    }
+    await combat.update({ turn: 0 });
   }
 
   public static async editSRHandler(inputEvent: Event): Promise<void> {

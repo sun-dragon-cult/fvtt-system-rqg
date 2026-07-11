@@ -678,13 +678,13 @@ export function moveCursorToEnd(el: HTMLInputElement) {
 
 export function localize(key: string | undefined, data?: Record<string, string>): string {
   if (!key) {
-    logger.info("Attempt to localize an undefined key");
+    logger.warn("Attempt to localize an undefined key");
     return "";
   }
 
   const result = game.i18n?.format(key, data) ?? key;
   if (result === key) {
-    logger.info(
+    logger.warn(
       `Attempt to localize the key ${key} resulted in the same value. This key may need an entry in the language json (ie en/uiContent.json).`,
     );
   }
