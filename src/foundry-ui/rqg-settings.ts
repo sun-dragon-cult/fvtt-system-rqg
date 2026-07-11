@@ -4,7 +4,11 @@ import { templatePaths } from "../system/load-handlebars-templates";
 
 import Settings = foundry.applications.sidebar.tabs.Settings;
 
-export class RqgSettings extends Settings {
+export class RqgSettings<
+  RenderContext extends Settings.RenderContext = Settings.RenderContext,
+  Configuration extends Settings.Configuration = Settings.Configuration,
+  RenderOptions extends Settings.RenderOptions = Settings.RenderOptions,
+> extends Settings<RenderContext, Configuration, RenderOptions> {
   static init() {
     CONFIG.ui.settings = RqgSettings;
   }

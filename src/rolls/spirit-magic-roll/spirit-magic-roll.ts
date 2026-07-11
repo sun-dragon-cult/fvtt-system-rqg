@@ -10,10 +10,11 @@ import { calculateAbilitySuccessLevel } from "../ability-roll/calculate-ability-
 import { AbilitySuccessLevelEnum } from "../ability-roll/ability-roll.defs";
 import type { SpiritMagicRollOptions } from "./spirit-magic-roll.types";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
 
-export class SpiritMagicRoll extends Roll {
+export class SpiritMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: SpiritMagicRollOptions;
 
   public static async rollAndShow(options: SpiritMagicRollOptions) {
@@ -30,11 +31,7 @@ export class SpiritMagicRoll extends Roll {
     return roll;
   }
 
-  constructor(
-    formula: string = "1d100",
-    data: Record<string, never> = {},
-    options?: SpiritMagicRollOptions,
-  ) {
+  constructor(formula: string = "1d100", data?: D, options?: SpiritMagicRollOptions) {
     super(formula, data, options);
   }
 

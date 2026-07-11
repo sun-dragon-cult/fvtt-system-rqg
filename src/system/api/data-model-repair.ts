@@ -29,6 +29,19 @@ type InvalidDocumentCollection = {
   getInvalid(id: string): unknown;
 };
 
+/**
+ * TEMP(v14-types): `Item.SubType`/`Actor.SubType` include the "base" fallback subtype, but
+ * `CONFIG.Item.dataModels`/`CONFIG.Actor.dataModels` only contain entries for subtypes with a
+ * registered custom DataModel. Look up by an unconstrained string key so "base" (or any other
+ * subtype without a custom model) safely resolves to `undefined` instead of a type error.
+ */
+function getDataModelClass<T extends Record<string, unknown>>(
+  dataModels: T,
+  type: string,
+): T[keyof T] | undefined {
+  return (dataModels as Record<string, T[keyof T] | undefined>)[type];
+}
+
 type RepairEntry = {
   context: string;
   name: string;
@@ -261,7 +274,7 @@ function collectFromCollection(
       continue;
     }
 
-    const ModelClass = CONFIG.Item.dataModels[doc.type as Item.SubType];
+    const ModelClass = getDataModelClass(CONFIG.Item.dataModels, doc.type);
     if (!ModelClass) {
       unknownTypeDocs.push({
         context,
@@ -296,7 +309,7 @@ function collectFromSourceItems(
   repairs: RepairEntry[],
 ): void {
   for (const itemSource of sourceItems) {
-    const ModelClass = CONFIG.Item.dataModels[itemSource.type as Item.SubType];
+    const ModelClass = getDataModelClass(CONFIG.Item.dataModels, itemSource.type);
     if (!ModelClass) {
       continue;
     }
@@ -389,7 +402,7 @@ export async function openDataModelRepairDialog(
         continue;
       }
 
-      if (!CONFIG.Actor.dataModels[invalidActor.type as Actor.SubType]) {
+      if (!getDataModelClass(CONFIG.Actor.dataModels, invalidActor.type)) {
         unknownTypeDocs.push({
           context: "World Actors",
           name: invalidActor.name ?? "(unnamed)",

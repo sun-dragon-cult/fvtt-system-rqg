@@ -18,7 +18,7 @@ import type { RqgItem } from "./items/rqg-item.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
-import type { RqgToken } from "./combat/rqg-token.ts";
+import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
 import type { CultDataModel } from "./data-model/item-data/cult-data-model";
 import type { GearDataModel } from "./data-model/item-data/gear-data-model";
@@ -74,6 +74,14 @@ declare global {
     RQG: RqgConfig;
   }
 
+  namespace CONFIG {
+    // TEMP(v14-types): Declare the RQG custom "Norse" font so it can be assigned to
+    // CONFIG.fontDefinitions, which strips its index signature via RemoveIndexSignatures.
+    interface FontDefinitions {
+      Norse: Font.FamilyDefinition;
+    }
+  }
+
   // Since we never use these before `init` tell league types that they are never undefined
   interface LenientGlobalVariableTypes {
     game: never;
@@ -116,6 +124,9 @@ declare global {
     ChatMessage: {
       combat: typeof CombatChatMessageData;
     };
+    RegionBehavior: {
+      clickableScripts: typeof ClickableScriptsRegionBehavior;
+    };
   }
 
   interface FlagConfig {
@@ -131,9 +142,15 @@ declare global {
     ChatMessage: { [systemId]?: RqgChatMessageDataSource };
   }
 
-  interface PlaceableObjectClassConfig {
-    Token: typeof RqgToken;
-  }
+  // TEMP(v14-types): We previously augmented PlaceableObjectClassConfig.Token with `typeof RqgToken`
+  // to get RqgToken-specific typing from CONFIG.Token.objectClass / canvas.tokens.placeables etc.
+  // As of fvtt-types main (confirmed with any entry, even the base Token class), this triggers an
+  // internal generic-constraint bug in placeable-object.d.mts:
+  // "_GetKey<PlaceableObjectClassConfig, Name, DefaultPlaceables[Name]> does not satisfy the
+  // constraint 'abstract new (...args: never) => any'". This is an upstream fvtt-types bug, not
+  // something fixable from our augmentation. Removed the augmentation until upstream fixes it;
+  // call sites that need RqgToken-specific members should narrow via `instanceof RqgToken` or use
+  // the base `Token` type when the RqgToken-specific members aren't actually needed.
 
   interface SettingConfig {
     "rqg.autoActivateChatTab": boolean;

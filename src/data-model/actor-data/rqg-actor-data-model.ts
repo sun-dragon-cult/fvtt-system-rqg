@@ -85,6 +85,6 @@ export abstract class RqgActorDataModel<
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
     const schema = this.defineSchema();
     coerceNumbers(source, schema);
-    return super.migrateData(source);
+    return super.migrateData(source) as Record<string, unknown>;
   }
 }
