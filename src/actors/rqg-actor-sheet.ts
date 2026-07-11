@@ -1093,13 +1093,13 @@ export class RqgActorSheet<
       content,
       yes: {
         action: "submit",
-        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+        label: "RQG.Dialog.confirmCopyIntangibleItem.btnCopy",
         icon: "fas fa-check",
         default: true,
       },
       no: {
         action: "cancel",
-        label: localize("RQG.Dialog.Common.btnCancel"),
+        label: "RQG.Dialog.Common.btnCancel",
         icon: "fas fa-times",
       },
     });
@@ -1147,7 +1147,7 @@ export class RqgActorSheet<
       buttons: [
         {
           action: "submit",
-          label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+          label: "RQG.Dialog.confirmTransferPhysicalItem.btnGive",
           icon: "fas fa-check",
           default: true,
           callback: async (_ev, button) => {
@@ -1165,7 +1165,7 @@ export class RqgActorSheet<
         },
         {
           action: "cancel",
-          label: localize("RQG.Dialog.Common.btnCancel"),
+          label: "RQG.Dialog.Common.btnCancel",
           icon: "fas fa-times",
           callback: () => false,
         },
@@ -1295,7 +1295,7 @@ export class RqgActorSheet<
     ) {
       headerButtons.splice(0, 0, {
         class: `actor-wizard-button-${this.actor.id}`,
-        label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
+        label: "RQG.ActorCreation.AdventurerCreationHeaderButton",
         icon: "fas fa-user-edit",
         onclick: () => this._openActorWizard(),
       });

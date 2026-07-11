@@ -19,7 +19,7 @@ export const passionMenuOptions = (
   token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.Game.RollChat"),
+    label: "RQG.Game.RollChat",
     icon: contextMenuRunes.RollViaChat,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
@@ -30,7 +30,7 @@ export const passionMenuOptions = (
     },
   },
   {
-    label: localize("RQG.Game.RollQuick"),
+    label: "RQG.Game.RollQuick",
     icon: contextMenuRunes.RollQuick,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
@@ -49,7 +49,7 @@ export const passionMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.ToggleExperience"),
+    label: "RQG.ContextMenu.ToggleExperience",
     icon: contextMenuRunes.ToggleExperience,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {

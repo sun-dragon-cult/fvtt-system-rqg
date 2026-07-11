@@ -16,7 +16,7 @@ import type { SkillItem } from "@item-model/skill-data-model.ts";
 
 export const combatMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.Game.InitiateCombat"),
+    label: "RQG.Game.InitiateCombat",
     icon: contextMenuRunes.RollViaChat,
     visible: (el: HTMLElement) => !!getDomDataset(el, "weapon-item-id"),
     onClick: async (_event: Event, el: HTMLElement) => {
@@ -27,7 +27,7 @@ export const combatMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] 
     },
   },
   {
-    label: localize("RQG.ContextMenu.ToggleExperience"),
+    label: "RQG.ContextMenu.ToggleExperience",
     icon: contextMenuRunes.ToggleExperience,
     visible: (el: HTMLElement) => !!getDomDataset(el, "skill-id"),
     onClick: async (_event: Event, el: HTMLElement) => {

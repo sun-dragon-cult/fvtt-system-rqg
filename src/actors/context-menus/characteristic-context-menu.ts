@@ -17,7 +17,7 @@ export const characteristicMenuOptions = (
   token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.Game.RollChat"),
+    label: "RQG.Game.RollChat",
     icon: contextMenuRunes.RollViaChat,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
@@ -26,7 +26,7 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    label: localize("RQG.Game.RollCharacteristicQuick"),
+    label: "RQG.Game.RollCharacteristicQuick",
     icon: contextMenuRunes.RollQuick,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
@@ -35,7 +35,7 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.ToggleExperience"),
+    label: "RQG.ContextMenu.ToggleExperience",
     icon: contextMenuRunes.ToggleExperience,
     visible: (el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
@@ -78,7 +78,7 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.InitializeCharacteristic"),
+    label: "RQG.ContextMenu.InitializeCharacteristic",
     icon: contextMenuRunes.InitializeCharacteristics,
     visible: (el: HTMLElement): boolean => {
       if (actor.system.editMode) {
@@ -107,7 +107,7 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.InitializeAllCharacteristics"),
+    label: "RQG.ContextMenu.InitializeAllCharacteristics",
     icon: contextMenuRunes.InitializeAllCharacteristics,
     visible: (): boolean => actor.system.editMode,
     onClick: async () => {
@@ -121,7 +121,7 @@ export const characteristicMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.SetAllCharacteristicsToAverage"),
+    label: "RQG.ContextMenu.SetAllCharacteristicsToAverage",
     icon: contextMenuRunes.SetAllCharacteristicsToAverage,
     visible: (): boolean => actor.system.editMode,
     onClick: async () => {
@@ -307,13 +307,13 @@ async function confirmInitializeDialog(
     position: { width: 440 },
     yes: {
       action: "confirm",
-      label: localize("RQG.Dialog.Common.btnConfirm"),
+      label: "RQG.Dialog.Common.btnConfirm",
       icon: "fas fa-check",
       default: true,
     },
     no: {
       action: "cancel",
-      label: localize("RQG.Dialog.Common.btnCancel"),
+      label: "RQG.Dialog.Common.btnCancel",
       icon: "fas fa-times",
     },
   });

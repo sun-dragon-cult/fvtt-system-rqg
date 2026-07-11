@@ -25,7 +25,7 @@ export const skillMenuOptions = (
   token?: TokenDocument | null,
 ): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.Game.RollChat"),
+    label: "RQG.Game.RollChat",
     icon: contextMenuRunes.RollViaChat,
     visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -43,7 +43,7 @@ export const skillMenuOptions = (
     },
   },
   {
-    label: localize("RQG.Game.RollQuick"),
+    label: "RQG.Game.RollQuick",
     icon: contextMenuRunes.RollQuick,
     visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -70,7 +70,7 @@ export const skillMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.ToggleExperience"),
+    label: "RQG.ContextMenu.ToggleExperience",
     icon: contextMenuRunes.ToggleExperience,
     visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -107,7 +107,7 @@ export const skillMenuOptions = (
     },
   },
   {
-    label: localize("RQG.ContextMenu.ViewDescription"),
+    label: "RQG.ContextMenu.ViewDescription",
     icon: contextMenuRunes.ViewDescription,
     visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");

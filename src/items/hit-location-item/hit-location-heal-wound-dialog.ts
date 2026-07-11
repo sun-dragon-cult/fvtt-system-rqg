@@ -79,7 +79,7 @@ export async function showHitLocationHealWoundDialog(
       buttons: [
         {
           action: "submit",
-          label: localize("RQG.Item.HitLocation.HealWound.btnHealWound"),
+          label: "RQG.Item.HitLocation.HealWound.btnHealWound",
           icon: "fas fa-heart-pulse",
           default: true,
           callback: async (_ev, button, dialog): Promise<boolean> => {
@@ -99,7 +99,7 @@ export async function showHitLocationHealWoundDialog(
         },
         {
           action: "cancel",
-          label: localize("RQG.Dialog.Common.btnCancel"),
+          label: "RQG.Dialog.Common.btnCancel",
           icon: "fas fa-times",
           callback: async (_ev, _button, dialog): Promise<boolean> => {
             await dialog.close();

@@ -23,7 +23,7 @@ export async function migrateWorldDialog(systemVersion: string): Promise<boolean
       default: true,
     },
     no: {
-      label: localize("RQG.Dialog.Common.btnCancel"),
+      label: "RQG.Dialog.Common.btnCancel",
       icon: "fas fa-times",
     },
   });

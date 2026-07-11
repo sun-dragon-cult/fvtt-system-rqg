@@ -57,7 +57,7 @@ export async function showHitLocationAddWoundDialog(
     buttons: [
       {
         action: "submit",
-        label: localize("RQG.Item.HitLocation.AddWound.btnAddWound"),
+        label: "RQG.Item.HitLocation.AddWound.btnAddWound",
         icon: "fas fa-burst",
         default: true,
         callback: async (_ev, button) => {
@@ -70,7 +70,7 @@ export async function showHitLocationAddWoundDialog(
       },
       {
         action: "cancel",
-        label: localize("RQG.Dialog.Common.btnCancel"),
+        label: "RQG.Dialog.Common.btnCancel",
         icon: "fas fa-times",
         callback: () => null,
       },

@@ -17,7 +17,7 @@ import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.
 
 export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.Game.RollChat"),
+    label: "RQG.Game.RollChat",
     icon: contextMenuRunes.RollViaChat,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
@@ -28,7 +28,7 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
     },
   },
   {
-    label: localize("RQG.Game.RollQuick"),
+    label: "RQG.Game.RollQuick",
     icon: contextMenuRunes.RollQuick,
     visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
@@ -48,7 +48,7 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
     },
   },
   {
-    label: localize("RQG.ContextMenu.ViewDescription"),
+    label: "RQG.ContextMenu.ViewDescription",
     icon: contextMenuRunes.ViewDescription,
     visible: (el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");

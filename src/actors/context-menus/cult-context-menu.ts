@@ -10,7 +10,7 @@ import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.
 
 export const cultMenuOptions = (actor: CharacterActor): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.ContextMenu.ViewDescription"),
+    label: "RQG.ContextMenu.ViewDescription",
     icon: contextMenuRunes.ViewDescription,
     visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");

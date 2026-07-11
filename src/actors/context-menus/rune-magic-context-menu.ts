@@ -17,7 +17,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 
 export const runeMagicMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.Game.RollChat"),
+    label: "RQG.Game.RollChat",
     icon: contextMenuRunes.RollViaChat,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
@@ -28,7 +28,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => 
     },
   },
   {
-    label: localize("RQG.Game.RollQuick"),
+    label: "RQG.Game.RollQuick",
     icon: contextMenuRunes.RollQuick,
     visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
@@ -44,7 +44,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => 
     },
   },
   {
-    label: localize("RQG.ContextMenu.ViewDescription"),
+    label: "RQG.ContextMenu.ViewDescription",
     icon: contextMenuRunes.ViewDescription,
     visible: (el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");

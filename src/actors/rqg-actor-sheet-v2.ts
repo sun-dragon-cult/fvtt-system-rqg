@@ -204,7 +204,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     ) {
       controls.unshift({
         icon: "fas fa-user-edit",
-        label: localize("RQG.ActorCreation.AdventurerCreationHeaderButton"),
+        label: "RQG.ActorCreation.AdventurerCreationHeaderButton",
         action: "openActorWizard",
         onClick: () => {
           new ActorWizard(this.actor, {}).render({ force: true });
@@ -966,12 +966,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       content,
       yes: {
         action: "confirm",
-        label: localize("RQG.Dialog.Common.btnConfirm"),
+        label: "RQG.Dialog.Common.btnConfirm",
         icon: "fas fa-check",
       },
       no: {
         action: "cancel",
-        label: localize("RQG.Dialog.Common.btnCancel"),
+        label: "RQG.Dialog.Common.btnCancel",
         icon: "fas fa-times",
         default: true,
       },
@@ -1837,7 +1837,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       content,
       yes: {
         action: "submit",
-        label: localize("RQG.Dialog.confirmTransferPhysicalItem.btnGive"),
+        label: "RQG.Dialog.confirmTransferPhysicalItem.btnGive",
         icon: "fas fa-check",
         default: true,
         callback: async (_ev: Event, _btn: HTMLButtonElement, dialog: any): Promise<boolean> => {
@@ -1854,7 +1854,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       },
       no: {
         action: "cancel",
-        label: localize("RQG.Dialog.Common.btnCancel"),
+        label: "RQG.Dialog.Common.btnCancel",
         icon: "fas fa-times",
         callback: () => false,
       },
@@ -1965,7 +1965,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       content,
       yes: {
         action: "submit",
-        label: localize("RQG.Dialog.confirmCopyIntangibleItem.btnCopy"),
+        label: "RQG.Dialog.confirmCopyIntangibleItem.btnCopy",
         icon: "fas fa-check",
         default: true,
         callback: async (): Promise<boolean> => {
@@ -1977,7 +1977,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       },
       no: {
         action: "cancel",
-        label: localize("RQG.Dialog.Common.btnCancel"),
+        label: "RQG.Dialog.Common.btnCancel",
         icon: "fas fa-times",
         callback: () => false,
       },

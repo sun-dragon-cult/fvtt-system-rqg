@@ -31,12 +31,12 @@ export async function confirmActorItemDelete(actor: RqgActor, itemId: string): P
     content,
     yes: {
       action: "confirm",
-      label: localize("RQG.Dialog.Common.btnConfirm"),
+      label: "RQG.Dialog.Common.btnConfirm",
       icon: "fas fa-check",
     },
     no: {
       action: "cancel",
-      label: localize("RQG.Dialog.Common.btnCancel"),
+      label: "RQG.Dialog.Common.btnCancel",
       icon: "fas fa-times",
       default: true,
     },

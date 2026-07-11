@@ -14,7 +14,7 @@ import type { GearItem } from "@item-model/gear-data-model.ts";
 
 export const gearMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
   {
-    label: localize("RQG.ContextMenu.SetAsNotCarried"),
+    label: "RQG.ContextMenu.SetAsNotCarried",
     icon: contextMenuRunes.SetNotCarried,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
@@ -24,7 +24,7 @@ export const gearMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
     },
   },
   {
-    label: localize("RQG.ContextMenu.SetAsCarried"),
+    label: "RQG.ContextMenu.SetAsCarried",
     icon: contextMenuRunes.SetCarried,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
@@ -34,7 +34,7 @@ export const gearMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
     },
   },
   {
-    label: localize("RQG.ContextMenu.SetAsEquipped"),
+    label: "RQG.ContextMenu.SetAsEquipped",
     icon: contextMenuRunes.SetEquipped,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
@@ -44,7 +44,7 @@ export const gearMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => [
     },
   },
   {
-    label: localize("RQG.ContextMenu.SplitIntoNewLocation"),
+    label: "RQG.ContextMenu.SplitIntoNewLocation",
     icon: contextMenuRunes.Split,
     visible: (el: HTMLElement): boolean => {
       const itemId = getRequiredDomDataset(el, "item-id");

@@ -28,7 +28,7 @@ async function chooseCultDialog(
       {
         action: "submit",
         icon: "fa-solid fa-check",
-        label: localize("RQG.Item.RuneMagic.runeMagicCultDialog.btnAddRuneMagic"),
+        label: "RQG.Item.RuneMagic.runeMagicCultDialog.btnAddRuneMagic",
         default: true,
         callback: (_event, button) => {
           const cultIdElement = button.form?.elements.namedItem("cultId");
@@ -40,7 +40,7 @@ async function chooseCultDialog(
       {
         action: "cancel",
         icon: "fa-solid fa-xmark",
-        label: localize("RQG.Dialog.Common.btnCancel"),
+        label: "RQG.Dialog.Common.btnCancel",
         callback: () => false,
       },
     ],
