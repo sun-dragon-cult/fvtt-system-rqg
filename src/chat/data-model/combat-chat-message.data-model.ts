@@ -39,7 +39,7 @@ const combatChatMessageSchema = {
   attackDamageBonus: new StringField({ blank: false, nullable: true, initial: undefined }),
   actorDamagedApplied: new BooleanField({ blank: false, nullable: false, initial: false }),
   weaponDamageApplied: new BooleanField({ blank: false, nullable: false, initial: false }),
-  attackWeaponUuid: new DocumentUUIDField({ blank: false, nullable: true, required: true }),
+  attackWeaponUuid: new DocumentUUIDField({ blank: false, nullable: false, required: true }),
 
   attackWeaponUsage: new StringField({
     blank: false,
@@ -59,7 +59,12 @@ const combatChatMessageSchema = {
     initial: undefined,
     required: false,
   }),
-  defenceRoll: new JSONField({}),
+  defenceRoll: new JSONField({
+    blank: false,
+    nullable: true,
+    required: false,
+    initial: undefined,
+  }),
 
   attackerFumbled: new BooleanField({ blank: false, nullable: false, initial: false }),
   defenderFumbled: new BooleanField({ blank: false, nullable: false, initial: false }),

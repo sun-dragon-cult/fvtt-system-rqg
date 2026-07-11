@@ -2,6 +2,7 @@ import { RqgActorDataModel } from "./rqg-actor-data-model";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqid-link-field";
 import { derivedResourceSchemaField } from "../shared/resource-schema-field";
 import { actorHealthStatuses, LocomotionEnum } from "./attributes";
+import { OccupationEnum } from "./background-enums";
 import { enumChoices } from "../shared/enum-choices";
 import type { SkillCategories } from "./skill-categories";
 import { getCharacteristicDerivedValues } from "./derived-character-values";
@@ -52,7 +53,15 @@ function defineCharacterSchema() {
     background: new SchemaField({
       species: new StringField({ blank: true, nullable: false, initial: "Human" }),
       speciesRqidLink: rqidLinkSchemaField({ nullable: true }),
-      occupation: new StringField({ blank: true, nullable: false, initial: "" }),
+      occupation: new StringField({
+        blank: true,
+        nullable: false,
+        initial: OccupationEnum.NoOccupation,
+        choices: enumChoices(
+          OccupationEnum,
+          (o: OccupationEnum) => `RQG.Actor.Background.Occupation.${o || "none"}`,
+        ),
+      }),
       currentOccupationRqidLink: rqidLinkSchemaField({ nullable: true }),
       homeland: new StringField({ blank: true, nullable: true, initial: undefined }),
       town: new StringField({ blank: true, nullable: true, initial: undefined }),
@@ -309,15 +318,14 @@ export class CharacterDataModel extends RqgActorDataModel<
 
     // ActiveEffect deltas are accumulated in non-persisted fields that Foundry
     // reinitializes per cycle before effects are applied.
-    const systemAny = system as any;
-    if (systemAny.attributes.magicPoints) {
-      const magicPointsFromEffects = (systemAny.effect.add.magicPoints.max ?? 0) as number;
-      systemAny.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
+    if (system.attributes.magicPoints) {
+      const magicPointsFromEffects = system.effect.add.magicPoints.max ?? 0;
+      system.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
     }
-    if (systemAny.attributes.hitPoints) {
-      const hitPointsFromEffects = (systemAny.effect.add.hitPoints.max ?? 0) as number;
+    if (system.attributes.hitPoints) {
+      const hitPointsFromEffects = system.effect.add.hitPoints.max ?? 0;
       const baseHitPoints = RqgCalculations.hitPoints(con ?? 0, siz ?? 0, pow ?? 0) ?? 0;
-      systemAny.attributes.hitPoints.max = baseHitPoints + hitPointsFromEffects;
+      system.attributes.hitPoints.max = baseHitPoints + hitPointsFromEffects;
     }
   }
 }
