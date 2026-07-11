@@ -708,8 +708,7 @@ export async function openDataModelRepairDialog(
         const docRef = unknownTypeDocs[index]!;
         try {
           const doc = docRef.collection.getInvalid(docRef.id) as
-            | { delete: () => Promise<unknown> }
-            | undefined;
+            { delete: () => Promise<unknown> } | undefined;
           if (!doc) {
             console.warn(`Could not get invalid document "${docRef.name}" (${docRef.id})`);
             continue;
@@ -727,9 +726,7 @@ export async function openDataModelRepairDialog(
       for (let groupIndex = 0; groupIndex < errorGroups.length; groupIndex += 1) {
         const group = errorGroups[groupIndex]!;
         const input = this.element.querySelector(`[name="group-${groupIndex}"]`) as
-          | HTMLInputElement
-          | HTMLSelectElement
-          | null;
+          HTMLInputElement | HTMLSelectElement | null;
         if (!input) {
           continue;
         }
@@ -755,8 +752,7 @@ export async function openDataModelRepairDialog(
           const updateKey = `system.${docRef.fieldPath}`.replace(/\[(\d+)]/g, ".$1");
           try {
             const doc = docRef.collection?.getInvalid(docRef.id) as
-              | { update: (data: Record<string, unknown>) => Promise<unknown> }
-              | undefined;
+              { update: (data: Record<string, unknown>) => Promise<unknown> } | undefined;
             if (!doc) {
               console.warn(`Could not get invalid document "${docRef.name}" (${docRef.id})`);
               continue;

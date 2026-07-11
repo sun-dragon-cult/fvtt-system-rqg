@@ -311,13 +311,7 @@ export function isDocumentSubType<
   T extends Document.WithSubTypes | Item | Actor | RqidEnabledDocument | ChatMessage,
 >(
   document:
-    | Document.WithSubTypes
-    | Item
-    | Actor
-    | RqidEnabledDocument
-    | ChatMessage
-    | undefined
-    | null,
+    Document.WithSubTypes | Item | Actor | RqidEnabledDocument | ChatMessage | undefined | null,
   documentSubTypes: Readonly<
     | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)
     | (string | ItemTypeEnum | ActorTypeEnum | RqidEnabledDocument | undefined | null)[]
@@ -902,8 +896,7 @@ export function getTokenFromActor(actor: RqgActor | undefined | null): SpeakerTo
 
   return (
     (game.scenes?.current?.tokens.find((tokenDoc) => tokenDoc.actorId === actor.id) as
-      | SpeakerToken
-      | undefined) ?? undefined
+      SpeakerToken | undefined) ?? undefined
   );
 }
 

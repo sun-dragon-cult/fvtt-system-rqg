@@ -524,8 +524,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     setTimeout(() => (submitter.disabled = false), 1000);
 
     const weaponItem = (await fromUuid(formDataObject.attackingWeaponUuid ?? "")) as
-      | RqgItem
-      | undefined;
+      RqgItem | undefined;
     assertDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon, "Missing weapon for attack");
 
     const tokenDocumentOrRqgActor = (await fromUuid(
@@ -793,9 +792,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     tokenOrActorUuid: string | undefined,
   ): SelectOptionData<string>[] {
     const actorOrToken = fromUuidSync(tokenOrActorUuid ?? "") as
-      | TokenDocument
-      | RqgActor
-      | undefined;
+      TokenDocument | RqgActor | undefined;
 
     const actor = actorOrToken instanceof TokenDocument ? actorOrToken?.actor : actorOrToken;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry

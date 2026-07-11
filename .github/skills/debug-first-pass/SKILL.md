@@ -17,9 +17,11 @@ Use this workflow when the user reports a bug and wants quick triage before a lo
 
 1. Restate the bug in one sentence to confirm the target behavior.
 2. Do a first-pass investigation immediately:
+
 - Search for likely files/symbols tied to the symptom.
 - Check recent related tests, logs, and error-prone call paths.
 - Propose 1-3 ranked hypotheses with why each fits.
+
 3. If one hypothesis is strong enough, proceed with a focused fix attempt and validate.
 4. If confidence is low, ask for more info using the smallest useful question set (3-7 questions max).
 5. After receiving answers, continue debugging without re-asking already answered questions.

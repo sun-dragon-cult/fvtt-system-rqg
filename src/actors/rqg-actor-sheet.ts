@@ -393,8 +393,7 @@ export class RqgActorSheet<
       const closestDataCharacteristic = el.closest("[data-characteristic]");
       assertHtmlElement(closestDataCharacteristic);
       const characteristicName = closestDataCharacteristic?.dataset["characteristic"] as
-        | keyof typeof actorCharacteristics
-        | undefined;
+        keyof typeof actorCharacteristics | undefined;
 
       let clickCount = 0;
       const actorCharacteristics = this.actor.system.characteristics;

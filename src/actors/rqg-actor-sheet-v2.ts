@@ -1990,8 +1990,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     event.stopPropagation();
 
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event) as
-      | (DragDropPayloadLike & { uuid?: string })
-      | null;
+      (DragDropPayloadLike & { uuid?: string }) | null;
 
     const dropzone = this._getDropzoneFromEvent(event);
     if (!dropzone) {

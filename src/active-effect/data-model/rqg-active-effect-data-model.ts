@@ -14,8 +14,7 @@ type ActiveEffectTypeDataModelConstructor = {
 
 const ActiveEffectTypeDataModelBase =
   ((foundry.data as Record<string, unknown>)["ActiveEffectTypeDataModel"] as
-    | ActiveEffectTypeDataModelConstructor
-    | undefined) ??
+    ActiveEffectTypeDataModelConstructor | undefined) ??
   (foundry.abstract.TypeDataModel as unknown as ActiveEffectTypeDataModelConstructor);
 
 function rqgActiveEffectSchemaFields() {

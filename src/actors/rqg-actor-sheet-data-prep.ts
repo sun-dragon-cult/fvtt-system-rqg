@@ -782,8 +782,7 @@ export async function organizeEmbeddedItems(
     });
 
     const projectile = actor.items.find((i) => i.id === weapon.system.projectileId) as
-      | WeaponItem
-      | undefined;
+      WeaponItem | undefined;
     if (projectile) {
       const templateWeapon = weapon as TemplateWeaponItem;
       templateWeapon.system.projectileQuantity = projectile.system.quantity;

@@ -275,9 +275,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       ) ?? getDefaultRollMode();
 
     let abilityItem = (await fromUuid(formDataObject.abilityItemUuid ?? "")) as
-      | AbilityItem
-      | PartialAbilityItem
-      | undefined;
+      AbilityItem | PartialAbilityItem | undefined;
 
     const token = formDataObject.tokenUuid
       ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)

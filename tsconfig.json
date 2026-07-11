@@ -80,8 +80,5 @@
   },
   // Exclude the src directory from the root project to avoid double type checking and causing an error due to mismatched `compilerOptions.types`.
   // "exclude": ["dist", "node_modules"],
-  "include": [
-    "src/global.d.ts",
-    "src/**/*.ts"
-  ]
+  "include": ["src/global.d.ts", "src/**/*.ts"]
 }

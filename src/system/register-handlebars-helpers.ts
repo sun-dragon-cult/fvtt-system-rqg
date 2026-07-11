@@ -379,8 +379,7 @@ export const registerHandlebarsHelpers = function () {
     const documentName = Rqid.getDocumentName(rqid);
     const itemTypeString = documentName === "Item" ? Rqid.getDocumentType(rqid) : undefined;
     const itemType = (itemTypeString ? toCamelCase(itemTypeString) : undefined) as
-      | ItemTypeEnum
-      | undefined;
+      ItemTypeEnum | undefined;
     return localize("RQG.Foundry.ContentLink.RqidLinkTitle", {
       rqid: rqid,
       documentName: game.i18n?.localize(`DOCUMENT.${documentName}`) ?? "",
