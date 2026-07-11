@@ -823,7 +823,7 @@
         "ArmorPoints": "Armor Points",
         "Wounds": "Wounds",
         "AddWound": {
-          "Title": "Apply Wound to {hitLocationName}",
+          "Title": "Apply Wound to {hitLocationName} of {actorName}",
           "DamageToApply": "Damage to apply",
           "TotalHpAfter": "Total HP after",
           "ApplyToTotalHitPointsQ": "Apply to total HP?",

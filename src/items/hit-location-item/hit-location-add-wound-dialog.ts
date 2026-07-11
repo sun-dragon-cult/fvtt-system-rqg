@@ -41,6 +41,7 @@ export async function showHitLocationAddWoundDialog(
   void foundry.applications.api.DialogV2.wait({
     window: {
       title: localize("RQG.Item.HitLocation.AddWound.Title", {
+        actorName: actor.name,
         hitLocationName: hitLocation.name,
       }),
     },
