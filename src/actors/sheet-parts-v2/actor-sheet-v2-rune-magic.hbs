@@ -44,20 +44,16 @@
             </span>
           {{/if}}
           {{#if system.enrichedHolyDays}}
-            <span><b>{{localize "RQG.Actor.RuneMagic.HolyDays"}}</b> {{{system.enrichedHolyDays}}}</span>
+            <span data-tooltip-html="{{system.enrichedHolyDays}}"><b>{{localize "RQG.Actor.RuneMagic.HolyDays"}}</b> {{{system.enrichedHolyDays}}}</span>
           {{/if}}
           {{#if system.enrichedGifts}}
-            <span><b>{{localize "RQG.Actor.RuneMagic.Gifts"}}</b> {{{system.enrichedGifts}}}</span>
+            <span data-tooltip-html="{{system.enrichedGifts}}"><b>{{localize "RQG.Actor.RuneMagic.Gifts"}}</b> {{{system.enrichedGifts}}}</span>
           {{/if}}
           {{#if system.enrichedGeases}}
-            <span><b>{{localize "RQG.Actor.RuneMagic.Geases"}}</b> {{{system.enrichedGeases}}}</span>
+            <span data-tooltip-html="{{system.enrichedGeases}}"><b>{{localize "RQG.Actor.RuneMagic.Geases"}}</b> {{{system.enrichedGeases}}}</span>
           {{/if}}
-          <div class="joined-cults" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-            {{#each system.joinedCults}}
-              <div><b>{{cultName}} – {{localizeDynamic "RQG.Actor.RuneMagic.CultRank." rank}}</b>
-                {{#if tagline}}<br><i>{{tagline}}</i>{{/if}}
-              </div>
-            {{/each}}
+          <div class="joined-cults" data-tooltip-html="{{system.enrichedJoinedCults}}" {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+            {{{system.enrichedJoinedCults}}}
           </div>
           </div>{{!-- cult-meta-row --}}
         </div>

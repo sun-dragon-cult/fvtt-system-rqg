@@ -30,6 +30,7 @@ import {
   getItemDocumentTypes,
   isDocumentSubType,
   localize,
+  localizeDynamic,
   range,
 } from "../system/util";
 import { ItemTypeEnum, type PhysicalItem } from "@item-model/item-types.ts";
@@ -668,6 +669,20 @@ export async function organizeEmbeddedItems(
         await foundry.applications.ux.TextEditor.implementation.enrichHTML(cultItem.system.geases);
     }) ?? [],
   );
+
+  // Build the HTML for the joined cults / god names column, reused both for
+  // the (line-clamped) visible sheet content and its full-text tooltip
+  itemTypes[ItemTypeEnum.Cult]?.forEach((cult) => {
+    const cultItem = cult as CultItem;
+    (cultItem.system as any).enrichedJoinedCults = (cultItem.system.joinedCults ?? [])
+      .map((joinedCult) => {
+        const rankText = localizeDynamic("RQG.Actor.RuneMagic.CultRank.", joinedCult.rank);
+        const header = `<b>${joinedCult.cultName} – ${rankText}</b>`;
+        const tagline = joinedCult.tagline ? `<br><i>${joinedCult.tagline}</i>` : "";
+        return `<div>${header}${tagline}</div>`;
+      })
+      .join("");
+  });
 
   // Extract hasAccessToRuneMagic info from subCults and sum up learned rune magic points per cult
   itemTypes[ItemTypeEnum.Cult]?.forEach((cult) => {
