@@ -83,8 +83,7 @@ function getChangedLocationRelatedChanges(
   const containedItemUpdates: any[] = [];
 
   const updatedItem = actorEmbeddedItems.find((i) => i.id === physicalItem.id) as
-    | RqgItem
-    | undefined;
+    RqgItem | undefined;
 
   if (!updatedItem) {
     const msg = localize("RQG.Item.HitLocation.Notification.CantFindItem");

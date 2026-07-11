@@ -18,7 +18,6 @@ import {
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
-import type { RqgToken } from "../../combat/rqg-token";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { CombatManeuver, UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import { templatePaths } from "../../system/load-handlebars-templates";
@@ -524,8 +523,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     setTimeout(() => (submitter.disabled = false), 1000);
 
     const weaponItem = (await fromUuid(formDataObject.attackingWeaponUuid ?? "")) as
-      | RqgItem
-      | undefined;
+      RqgItem | undefined;
     assertDocumentSubType<WeaponItem>(weaponItem, ItemTypeEnum.Weapon, "Missing weapon for attack");
 
     const tokenDocumentOrRqgActor = (await fromUuid(
@@ -770,7 +768,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     return [...tokenOptions, ...ownedActorOptions];
   }
 
-  private static getAimedBlowOptions(target: RqgToken | undefined): SelectOptionData<number>[] {
+  private static getAimedBlowOptions(target: Token | undefined): SelectOptionData<number>[] {
     if (!target) {
       return [];
     }
@@ -793,9 +791,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     tokenOrActorUuid: string | undefined,
   ): SelectOptionData<string>[] {
     const actorOrToken = fromUuidSync(tokenOrActorUuid ?? "") as
-      | TokenDocument
-      | RqgActor
-      | undefined;
+      TokenDocument | RqgActor | undefined;
 
     const actor = actorOrToken instanceof TokenDocument ? actorOrToken?.actor : actorOrToken;
     const offensiveDamageTypes = ["crush", "slash", "impale", "special"]; // Exclude parry

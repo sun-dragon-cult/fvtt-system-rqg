@@ -11,10 +11,11 @@ import { AbilitySuccessLevelEnum } from "../ability-roll/ability-roll.defs";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RuneMagicDataModel } from "@item-model/rune-magic-data-model.ts";
 import type { RuneMagicRollOptions } from "./rune-magic-roll.types";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
 
-export class RuneMagicRoll extends Roll {
+export class RuneMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: RuneMagicRollOptions;
 
   public static async rollAndShow(options: RuneMagicRollOptions) {
@@ -31,11 +32,7 @@ export class RuneMagicRoll extends Roll {
     return roll;
   }
 
-  constructor(
-    formula: string = "1d100",
-    data: Record<string, never> = {},
-    options?: RuneMagicRollOptions,
-  ) {
+  constructor(formula: string = "1d100", data?: D, options?: RuneMagicRollOptions) {
     super(formula, data, options);
   }
 

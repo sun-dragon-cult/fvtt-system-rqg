@@ -9,10 +9,11 @@ import {
 import { AbilitySuccessLevelEnum } from "./ability-roll.defs";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { AbilityRollOptions } from "./ability-roll.types";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
 
-export class AbilityRoll extends Roll {
+export class AbilityRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: AbilityRollOptions;
 
   public static async rollAndShow(options: AbilityRollOptions) {
@@ -29,11 +30,7 @@ export class AbilityRoll extends Roll {
     return roll;
   }
 
-  constructor(
-    formula: string = "1d100",
-    data: Record<string, never> = {},
-    options?: AbilityRollOptions,
-  ) {
+  constructor(formula: string = "1d100", data?: D, options?: AbilityRollOptions) {
     super(formula, data, options);
   }
 

@@ -660,8 +660,7 @@ export class Rqid {
       console.warn(msg + "  Duplicate items: ", result);
     }
     const highestPrioDocument = (await result[0]?.pack.getDocument(result[0].indexData._id)) as
-      | RqidEnabledDocument
-      | undefined;
+      RqidEnabledDocument | undefined;
     if (!highestPrioDocument) {
       return undefined;
     }

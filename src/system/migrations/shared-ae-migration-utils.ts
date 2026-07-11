@@ -210,8 +210,7 @@ function getDocumentRqid(item: AEMigrationItemLike): string | undefined {
   }
 
   const systemFlags = item?.flags?.[systemId] as
-    | Record<string, { id?: string } | undefined>
-    | undefined;
+    Record<string, { id?: string } | undefined> | undefined;
   const rqidFromFlags = systemFlags?.[documentRqidFlags]?.id;
   return typeof rqidFromFlags === "string" && rqidFromFlags.length > 0 ? rqidFromFlags : undefined;
 }

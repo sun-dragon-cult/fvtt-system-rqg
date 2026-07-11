@@ -4,10 +4,11 @@ import { calculateAbilitySuccessLevel } from "../ability-roll/calculate-ability-
 import { AbilitySuccessLevelEnum } from "../ability-roll/ability-roll.defs";
 import type { CharacteristicRollOptions } from "./characteristic-roll.types.ts";
 import { DEFAULT_DIFFICULTY } from "./characteristic-roll.types.ts";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
 
-export class CharacteristicRoll extends Roll {
+export class CharacteristicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: CharacteristicRollOptions;
 
   public static async rollAndShow(options: CharacteristicRollOptions) {
@@ -25,11 +26,7 @@ export class CharacteristicRoll extends Roll {
     return roll;
   }
 
-  constructor(
-    formula: string = "1d100",
-    data: Record<string, never> = {},
-    options?: CharacteristicRollOptions,
-  ) {
+  constructor(formula: string = "1d100", data?: D, options?: CharacteristicRollOptions) {
     super(formula, data, options);
   }
 

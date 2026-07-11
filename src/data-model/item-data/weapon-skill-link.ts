@@ -53,8 +53,7 @@ export function getLegacyWeaponSkillReferenceForUsage(
 ): LegacyWeaponSkillRef | undefined {
   const usage = (
     (itemData.system as Record<string, unknown> | undefined)?.["usage"] as
-      | Record<string, Record<string, unknown>>
-      | undefined
+      Record<string, Record<string, unknown>> | undefined
   )?.[usageType];
 
   if (!usage) {

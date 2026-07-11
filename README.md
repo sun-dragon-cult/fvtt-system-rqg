@@ -1,5 +1,5 @@
 ![Supported Foundry Versions](https://img.shields.io/endpoint?url=https://foundryshields.com/version?url=https://github.com/sun-dragon-cult/fvtt-system-rqg/releases/latest/download/system.json)
-[![GitHub Release](https://img.shields.io/github/release/sun-dragon-cult/fvtt-system-rqg)]()
+[![GitHub Release](https://img.shields.io/github/release/sun-dragon-cult/fvtt-system-rqg)](<>)
 [![Issues](https://img.shields.io/github/issues-raw/sun-dragon-cult/fvtt-system-rqg?maxAge=25000)](https://github.com/sun-dragon-cult/fvtt-system-rqg/issues)
 ![Latest Release Download Count](https://img.shields.io/github/downloads/sun-dragon-cult/fvtt-system-rqg/latest/rqg.zip)
 [![License](https://img.shields.io/badge/License-Custom-blue.svg)](https://github.com/sun-dragon-cult/fvtt-system-rqg/blob/master/LICENSE)
@@ -174,7 +174,7 @@ version to 7.
 ## Pre-releases
 
 Foundry's own version comparison (`isNewerVersion`) is not full semver-aware: a version like
-`6.0.0-alpha0` is treated as *newer* than the eventual `6.0.0`, not older, so GMs who installed
+`6.0.0-alpha0` is treated as _newer_ than the eventual `6.0.0`, not older, so GMs who installed
 the alpha would never see the real `6.0.0` as an update.
 
 To avoid this, pre-releases for an upcoming major must use a lower major version number than the

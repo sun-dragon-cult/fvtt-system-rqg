@@ -147,8 +147,7 @@ export class RqgActor extends Actor {
 
     const actorCharacteristics = this.system.characteristics;
     const rollCharacteristic = actorCharacteristics[characteristicName] as
-      | Characteristic
-      | undefined;
+      Characteristic | undefined;
 
     if (!rollCharacteristic) {
       throw new RqgError(

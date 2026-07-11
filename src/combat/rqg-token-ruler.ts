@@ -86,7 +86,6 @@ export class RqgTokenRuler extends foundry.canvas.placeables.tokens.TokenRuler {
       breakpoints.find((breakpoint) => breakpoint.range < waypoint.measurement.cost)?.color ??
       tokenRulerSettings.rangeColors.attack;
 
-    // @ts-expect-error uiScale
     const scale = canvas?.dimensions?.uiScale ?? 1;
     style.width = (tokenRulerSettings.lineWidth ?? 12) * scale;
 

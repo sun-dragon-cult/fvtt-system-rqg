@@ -9,7 +9,11 @@ type RqgCombatContextMenuEntry = Omit<RqgContextMenuEntry, "onClick"> & {
   onClick: (_event: Event, target: HTMLElement) => unknown | Promise<unknown>;
 };
 
-export class RqgCombatTracker extends CombatTracker {
+export class RqgCombatTracker<
+  RenderContext extends CombatTracker.RenderContext = CombatTracker.RenderContext,
+  Configuration extends CombatTracker.Configuration = CombatTracker.Configuration,
+  RenderOptions extends CombatTracker.RenderOptions = CombatTracker.RenderOptions,
+> extends CombatTracker<RenderContext, Configuration, RenderOptions> {
   static init() {
     Hooks.on("ready", () => {
       // one listener for sidebar combat & popped out combat

@@ -17,8 +17,7 @@ export async function handleRollResult(
   assertDocumentSubType<RuneItem>(runeItem, ItemTypeEnum.Rune);
   assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
   const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "") as
-    | CultItem
-    | undefined;
+    CultItem | undefined;
   assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
   const isOneUse = runeMagicItem.system?.isOneUse;
 

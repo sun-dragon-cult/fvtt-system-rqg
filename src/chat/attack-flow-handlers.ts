@@ -139,9 +139,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
 
   const damagedTokenOrActorUuid = attackChatMessage.system.defendingTokenOrActorUuid as string;
   const damagedTokenOrActor = (await fromUuid(damagedTokenOrActorUuid)) as
-    | RqgActor
-    | TokenDocument
-    | undefined;
+    RqgActor | TokenDocument | undefined;
 
   const damagedActor =
     damagedTokenOrActor instanceof TokenDocument ? damagedTokenOrActor.actor : damagedTokenOrActor;

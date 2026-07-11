@@ -90,8 +90,7 @@ export const characteristicMenuOptions = (
     },
     onClick: async (_event: Event, el: HTMLElement) => {
       const characteristic = getDomDataset(el, "characteristic") as
-        | keyof Characteristics
-        | undefined;
+        keyof Characteristics | undefined;
       requireValue(characteristic, localize("RQG.ContextMenu.Notification.DatasetNotFound"));
       const confirmed = await confirmInitializeDialog(actor.name ?? "", characteristic);
       if (confirmed) {

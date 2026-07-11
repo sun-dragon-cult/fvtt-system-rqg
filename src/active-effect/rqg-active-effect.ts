@@ -15,7 +15,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
   static init() {
     CONFIG.ActiveEffect.documentClass = RqgActiveEffect as any;
-    CONFIG.ActiveEffect.dataModels["base"] = RqgActiveEffectDataModel as any;
+    // TEMP(v14-types): DataModelConfig["ActiveEffect"] can't be augmented without RqgActiveEffectDataModel
+    // fully satisfying fvtt-types' internal AnyDataModel shape, which our runtime-safe
+    // ActiveEffectTypeDataModelBase polyfill (see rqg-active-effect-data-model.ts) doesn't statically expose.
+    // @ts-expect-error TEMP(v14-types)
+    CONFIG.ActiveEffect.dataModels["base"] = RqgActiveEffectDataModel;
     CONFIG.ActiveEffect.legacyTransferral = false;
 
     Hooks.on(

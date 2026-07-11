@@ -4,6 +4,7 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
+import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
 
@@ -11,14 +12,10 @@ import Roll = foundry.dice.Roll;
  * HitLocationRoll is only displayed as part of the CombatChatMessage,
  * so no "rollAndShow" or flavor is needed.
  */
-export class HitLocationRoll extends Roll {
+export class HitLocationRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: HitLocationRollOptions;
 
-  constructor(
-    formula: string = "1d20",
-    data: Record<string, never> = {},
-    options?: HitLocationRollOptions,
-  ) {
+  constructor(formula: string = "1d20", data?: D, options?: HitLocationRollOptions) {
     super(formula, data, options);
   }
 

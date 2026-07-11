@@ -212,9 +212,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const attackingTokenOrActorUuid = this.attackChatMessage?.system.attackingTokenOrActorUuid;
     const attackingTokenOrActor = fromUuidSync(attackingTokenOrActorUuid ?? "") as
-      | TokenDocument
-      | RqgActor
-      | undefined;
+      TokenDocument | RqgActor | undefined;
 
     const attackRollData = this.attackChatMessage?.system.attackRoll;
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
@@ -259,8 +257,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.attackChatMessageUuid ??= this.attackChatMessage?.uuid ?? undefined;
 
     const parryingWeaponItem = (await fromUuid(formData.parryingWeaponUuid ?? "")) as
-      | RqgItem
-      | undefined;
+      RqgItem | undefined;
     const parryingWeapon = isDocumentSubType<WeaponItem>(parryingWeaponItem, ItemTypeEnum.Weapon)
       ? parryingWeaponItem
       : undefined;
@@ -454,8 +451,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     }
 
     const parryingWeaponItem = fromUuidSync(formData.parryingWeaponUuid ?? "") as
-      | RqgItem
-      | undefined;
+      RqgItem | undefined;
 
     if (!isDocumentSubType<WeaponItem>(parryingWeaponItem, ItemTypeEnum.Weapon)) {
       return;
@@ -502,8 +498,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     this.close();
 
     const attackChatMessage = (await fromUuid(formDataObject.attackChatMessageUuid ?? "")) as
-      | RqgChatMessage
-      | undefined;
+      RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
       const msg = "Attack chat message not found";
@@ -823,15 +818,13 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     activateChatTab();
     await updateChatMessage(attackChatMessage!, messageData);
     const attackWeapon = (await fromUuid(attackChatMessage!.system.attackWeaponUuid)) as
-      | RqgItem
-      | undefined;
+      RqgItem | undefined;
     if (attackWeapon) {
       assertDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon);
     }
     if (isDocumentSubType<WeaponItem>(attackWeapon, ItemTypeEnum.Weapon)) {
       const attackWeaponUsage = attackChatMessage!.system.attackWeaponUsage as
-        | UsageType
-        | undefined;
+        UsageType | undefined;
       const attackSkill = attackWeaponUsage
         ? (() => {
             const rqid = attackWeapon.system.usage[attackWeaponUsage]?.skillRqidLink?.rqid;
