@@ -367,6 +367,9 @@ export class ActorWizard extends ActorWizardBase {
               skill.system.baseChance = 0;
               skill.system.gainedChance = 0;
               skill.system.hasExperience = false;
+              // `chance` isn't a persisted skill field (it's derived at runtime by
+              // skill-lifecycle.ts), but this item is transient and only rendered in the
+              // wizard preview table, never saved, so setting it here just for display is safe.
               skill.system.chance = skillRqidLink.bonus;
             }
             homelandSkills.push(templateSkill);

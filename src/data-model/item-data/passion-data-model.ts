@@ -1,6 +1,6 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import { AbilityDataModel } from "./ability-data-model";
-import { abilitySchemaFields } from "../shared/ability-schema-fields";
+import { abilitySchemaFields, persistedChanceSchemaField } from "../shared/ability-schema-fields";
 
 export type PassionItem = RqgItem & { system: Item.SystemOfType<"passion"> };
 
@@ -9,6 +9,7 @@ const { StringField } = foundry.data.fields;
 function definePassionSchema() {
   return {
     ...abilitySchemaFields(),
+    ...persistedChanceSchemaField(),
     passion: new StringField({ blank: true, nullable: false, initial: "" }),
     subject: new StringField({ blank: true, nullable: false, initial: "" }),
     description: new StringField({ blank: true, nullable: false, initial: "" }),

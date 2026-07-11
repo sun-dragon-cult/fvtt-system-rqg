@@ -1,6 +1,6 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import { AbilityDataModel } from "./ability-data-model";
-import { abilitySchemaFields } from "../shared/ability-schema-fields";
+import { abilitySchemaFields, persistedChanceSchemaField } from "../shared/ability-schema-fields";
 import { rqidLinkSchemaField, rqidLinkArraySchemaField } from "../shared/rqid-link-field";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
@@ -25,6 +25,7 @@ const { BooleanField, SchemaField, StringField } = foundry.data.fields;
 function defineRuneSchema() {
   return {
     ...abilitySchemaFields(),
+    ...persistedChanceSchemaField(),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
     rune: new StringField({ blank: true, nullable: false, initial: "" }),
     runeType: new SchemaField({
