@@ -171,6 +171,27 @@ version to 7.
 4. Notify in Discord
 5. Mark the milestone in Github as [done] and close it
 
+## Pre-releases
+
+Foundry's own version comparison (`isNewerVersion`) is not full semver-aware: a version like
+`6.0.0-alpha0` is treated as *newer* than the eventual `6.0.0`, not older, so GMs who installed
+the alpha would never see the real `6.0.0` as an update.
+
+To avoid this, pre-releases for an upcoming major must use a lower major version number than the
+target release, with an `alphaN` label naming the targeted major version followed by an
+incrementing numeric segment, e.g. `5.alpha6.0`, `5.alpha6.1`, ... `5.alpha6.10` for an upcoming
+`6.0.0`. The leading `5` keeps every alpha build safely below any real `5.x.y` or `6.0.0` release,
+and the trailing numeric segment is compared numerically, so it sorts correctly even past single
+digits (unlike a suffix like `-alpha10`, which would be compared as a string and sort incorrectly
+against `-alpha9`).
+
+Always tag these as a GitHub **pre-release** (never "latest"), so stable users never receive them
+automatically. Testers install manually via the specific tag's manifest URL, not the `latest`
+manifest. Never reuse an already-published version string for different code — always bump it
+(e.g. `5.alpha6.0` → `5.alpha6.1`), even for small fixes, or Foundry won't detect the change as an
+update either. These alpha versions are for testing only and are not documented in the release
+notes.
+
 ## Project Status
 
 Actively maintained, with an official release expected in the future.
