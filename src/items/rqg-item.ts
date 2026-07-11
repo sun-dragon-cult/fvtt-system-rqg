@@ -397,6 +397,19 @@ export class RqgItem extends Item {
     return this.system.spellSummaryTooltip;
   }
 
+  /**
+   * Same as spellSummary but without the leading points/variable phrase. Used where the points
+   * value is displayed / edited separately (e.g. an editable points input for variable spirit magic).
+   */
+  get spellSummaryRest(): string {
+    assertDocumentSubType<SpiritMagicItem>(
+      this,
+      ItemTypeEnum.SpiritMagic,
+      "Tried to get spellSummaryRest on a non spirit magic item: " + this.type,
+    );
+    return this.system.spellSummaryRest;
+  }
+
   override async _preCreate(data: any, options: any, user: User): Promise<void> {
     if (this.parent && isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill)) {
       assertDocumentSubType<CharacterActor>(this.parent, ActorTypeEnum.Character);

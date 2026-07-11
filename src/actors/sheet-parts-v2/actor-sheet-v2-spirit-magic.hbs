@@ -43,12 +43,23 @@
            data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
         {{name}}{{#if system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
       </div>
-      <div class="spirit-magic contextmenu item"
-           data-item-id="{{id}}"
-         data-tooltip="{{spellSummaryTooltip}}"
-           data-spirit-magic-roll>
-        {{spellSummary}}
-      </div>
+      {{#if (and system.isVariable ../system.editMode)}}
+        <div class="spirit-magic contextmenu item"
+             data-item-id="{{id}}"
+             data-tooltip="{{spellSummaryTooltip}}">
+          <input type="number" class="spirit-magic-points-input" min="0" step="1"
+                 data-item-edit-value="system.points" data-item-id="{{id}}" value="{{system.points}}">
+          {{#if (eq system.points 1)}}{{localize "RQG.Item.Spell.Point"}}{{else}}{{localize "RQG.Item.Spell.Points"}}{{/if}}
+          {{localize "RQG.Item.SpiritMagic.Variable"}}{{#if spellSummaryRest}}, {{spellSummaryRest}}{{/if}}
+        </div>
+      {{else}}
+        <div class="spirit-magic contextmenu item"
+             data-item-id="{{id}}"
+           data-tooltip="{{spellSummaryTooltip}}"
+             data-spirit-magic-roll>
+          {{spellSummary}}
+        </div>
+      {{/if}}
       <div class="spirit-magic contextmenu item" data-item-id="{{id}}">
         <input type="text" data-item-edit-value="system.spellFocus" data-item-id="{{id}}" value="{{system.spellFocus}}" placeholder="—">
       </div>

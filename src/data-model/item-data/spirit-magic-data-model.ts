@@ -119,6 +119,25 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
    * Constructs a description close to what is used in the books.
    */
   get spellSummary(): string {
+    const pointsTranslated =
+      this.points === 1 ? localize("RQG.Item.Spell.Point") : localize("RQG.Item.Spell.Points");
+    const variableSpiritMagic = this.isVariable
+      ? " " + localize("RQG.Item.SpiritMagic.Variable")
+      : "";
+    const pointsPart = `${this.points} ${pointsTranslated}${variableSpiritMagic}`;
+
+    return [pointsPart, ...this.getSpellSummaryRestParts()].join(", ");
+  }
+
+  /**
+   * Same as spellSummary but without the leading points/variable phrase, for use where the points
+   * value is displayed / edited separately (e.g. an editable points input).
+   */
+  get spellSummaryRest(): string {
+    return this.getSpellSummaryRestParts().join(", ");
+  }
+
+  private getSpellSummaryRestParts(): string[] {
     const item = this.parent as unknown as SpellItem;
     assertDocumentSubType<SpellItem>(
       item,
@@ -127,12 +146,6 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     );
 
     const descriptionParts = [];
-    const variableSpiritMagic = this.isVariable
-      ? " " + localize("RQG.Item.SpiritMagic.Variable")
-      : "";
-    const pointsTranslated =
-      this.points === 1 ? localize("RQG.Item.Spell.Point") : localize("RQG.Item.Spell.Points");
-    descriptionParts.push(`${this.points} ${pointsTranslated}${variableSpiritMagic}`);
 
     if (this.isRitual) {
       descriptionParts.push(localize("RQG.Item.Spell.Ritual"));
@@ -170,7 +183,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       descriptionParts.push(localize("RQG.Item.Spell.ConcentrationEnum." + this.concentration));
     }
 
-    return descriptionParts.join(", ");
+    return descriptionParts;
   }
 
   /**

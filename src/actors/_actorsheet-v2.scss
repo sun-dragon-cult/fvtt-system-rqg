@@ -1792,6 +1792,13 @@
         grid-template-columns: [col-start] 30px auto auto 1fr [col-end];
       }
 
+      .spirit-magic-points-input {
+        width: 3ch;
+        text-align: center;
+        margin-right: 0.25rem;
+        flex: 0 0 auto;
+      }
+
       .spirit-magic-row {
         display: contents;
 
