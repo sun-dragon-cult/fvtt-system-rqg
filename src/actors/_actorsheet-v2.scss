@@ -1933,7 +1933,9 @@
 
               > span,
               > div {
-                flex: 1 1 auto;
+                // Holy Days / Gifts / Geases: get most of any extra space,
+                // since they usually hold the longest text
+                flex: 4 1 10em;
                 min-width: 0;
                 overflow: hidden;
                 display: -webkit-box;
@@ -1955,14 +1957,21 @@
                 }
               }
 
+
               > span.rune-points {
                 flex: 0 0 auto;
                 display: block; // override line-clamp display
+                white-space: nowrap;
+                min-width: 5.5em; // fit label + input without wrapping
               }
 
               > div.joined-cults {
-                flex: 0 0 auto;
+                // Cult/god name: size to its (usually short) content instead of
+                // stretching, but cap so a long name/tagline doesn't dominate
+                flex: 1 1 auto;
                 min-width: 8em;
+                max-width: 16em;
+                overflow-wrap: break-word;
               }
             }
 
