@@ -1312,6 +1312,7 @@
     "RQGSystem": {
       "Rqid": {
         "Id": "RuneQuest System ID (Rqid)",
+        "EditButtonLabel": "Edit / Copy document Rqid",
         "GenerateDefault": "Create RuneQuest System ID (Rqid) based on current document. The Rqid should be based on the english document name.",
         "rqidPriority": "Rqid Priority",
         "Language": "Language",

@@ -2,6 +2,7 @@ import { RqidEditor } from "../applications/rqid-editor/rqid-editor";
 import { systemId } from "../system/config";
 import { type DocumentRqidFlags, documentRqidFlags } from "../data-model/shared/rqg-document-flags";
 import { templatePaths } from "../system/load-handlebars-templates";
+import { localize } from "../system/util";
 
 export const rqidFrameButtonAction = "rqgRqid";
 
@@ -35,9 +36,9 @@ export function getRqidFrameButton(sheet: DocumentSheet<any, any>): any {
 
   return {
     icon: "fa-solid fa-fingerprint",
-    label: "",
+    label: "RQG.RQGSystem.Rqid.EditButtonLabel",
     action: rqidFrameButtonAction,
-    tooltip: "Edit / Copy document rqid",
+    tooltip: localize("RQG.RQGSystem.Rqid.EditButtonLabel"),
     // Keep existing visual warning for missing rqids.
     cssClass: lastpartOfId ? "" : "rqid-missing",
   };
@@ -60,7 +61,7 @@ export async function decorateRqidFrameButton(sheet: DocumentSheet<any, any>): P
   const rqid: DocumentRqidFlags = sheet.options.document.getFlag(systemId, documentRqidFlags);
   const lastpartOfId = rqid?.id?.split(".")[2]?.trim();
   button.classList.toggle("rqid-missing", !lastpartOfId);
-  button.setAttribute("aria-label", "Edit / Copy document rqid");
+  button.setAttribute("aria-label", localize("RQG.RQGSystem.Rqid.EditButtonLabel"));
   button.dataset["tooltipDirection"] = "UP";
   button.dataset["tooltip"] = await foundry.applications.handlebars.renderTemplate(
     templatePaths.rqidTooltip,
@@ -105,7 +106,7 @@ async function createRqidLink(
 ): Promise<HTMLElement> {
   const rqidLink = document.createElement(rootElement);
   rqidLink.setAttribute("type", "button");
-  rqidLink.setAttribute("aria-label", "Edit / Copy document rqid");
+  rqidLink.setAttribute("aria-label", localize("RQG.RQGSystem.Rqid.EditButtonLabel"));
   rqidLink.classList.add("header-control", "fa-solid", "fa-fingerprint", "icon");
   const lastpartOfId = rqid?.id?.split(".")[2]?.trim();
   if (!lastpartOfId) {
