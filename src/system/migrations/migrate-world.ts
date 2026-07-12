@@ -265,9 +265,9 @@ async function buildMigrationReportPages(
   };
 
   // Stage 2: Render templates. If this fails, generate minimal fallback HTML.
-  let summaryHtml: string = "";
-  let performedHtml: string = "";
-  let issuesHtml: string = "";
+  let summaryHtml: string;
+  let performedHtml: string;
+  let issuesHtml: string;
   try {
     [summaryHtml, performedHtml, issuesHtml] = await Promise.all([
       foundry.applications.handlebars.renderTemplate(

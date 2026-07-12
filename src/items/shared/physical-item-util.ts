@@ -61,12 +61,10 @@ function getChangedEquippedStatusRelatedUpdates(
   actorEmbeddedItems: RqgActor["items"]["contents"],
   equippedStatusUpdateValue: EquippedStatus | undefined,
 ): any[] {
-  let containedItemUpdates = [];
-
   const sameLocationItemIds = new ItemTree(actorEmbeddedItems).getOtherItemIdsInSameLocationTree(
     physicalItem.name ?? "",
   );
-  containedItemUpdates = sameLocationItemIds.map((id: string) => ({
+  const containedItemUpdates = sameLocationItemIds.map((id: string) => ({
     _id: id,
     "system.equippedStatus": equippedStatusUpdateValue,
   }));

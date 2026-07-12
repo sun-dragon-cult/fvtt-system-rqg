@@ -187,13 +187,10 @@ export async function initializeAllCharacteristics(actor: CharacterActor): Promi
       continue;
     }
 
-    let update = {};
-
-    if (char.formula == null || !Roll.validate(char.formula)) {
-      update = await getCharacteristicUpdate(characteristic, undefined);
-    } else {
-      update = await getCharacteristicUpdate(characteristic, char.formula);
-    }
+    const update =
+      char.formula == null || !Roll.validate(char.formula)
+        ? await getCharacteristicUpdate(characteristic, undefined)
+        : await getCharacteristicUpdate(characteristic, char.formula);
 
     foundry.utils.mergeObject(updateData, update);
   }
@@ -232,7 +229,7 @@ export async function setAllCharacteristicsToAverage(actor: CharacterActor): Pro
       // no existing or valid formula
       averages["cannot average"] = undefined;
     } else if (!averages[char.formula]) {
-      let avg = 0;
+      let avg: number;
       if (Number.isNumeric(char.formula)) {
         // formula is literal number
         avg = Number.parseInt(char.formula);
