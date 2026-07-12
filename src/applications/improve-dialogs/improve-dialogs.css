@@ -1,9 +1,10 @@
+/* stylelint-disable no-descending-specificity */
 @layer system.base {
   .window-content.improve-dialog {
     gap: 0;
     padding-top: 0.25rem;
 
-    .improve-dialog-source-picker {
+    & .improve-dialog-source-picker {
       border: 1px solid var(--color-border-light-primary);
       border-radius: 0.25rem;
       display: flex;
@@ -11,7 +12,7 @@
       gap: 0.5rem;
       padding: 0.75rem;
 
-      h2 {
+      & h2 {
         color: var(--color-form-label);
         font-size: var(--font-size-20);
         font-weight: bold;
@@ -19,20 +20,20 @@
         margin: 0;
       }
 
-      p {
+      & p {
         color: var(--color-text-secondary);
         font-size: var(--font-size-13);
         margin: 0;
       }
     }
 
-    .improve-dialog-source-options {
+    & .improve-dialog-source-options {
       display: grid;
       gap: 0.5rem;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
-    .improve-dialog-source-option {
+    & .improve-dialog-source-option {
       background: var(--input-background-color);
       border: 2px solid transparent;
       cursor: pointer;
@@ -56,18 +57,18 @@
         opacity: 1;
       }
 
-      input {
+      & input {
         margin: 0;
       }
 
-      span {
+      & span {
         color: var(--color-form-label);
         flex: 1;
         line-height: 1.15;
         font-weight: bold;
       }
 
-      .improve-dialog-source-unavailable {
+      & .improve-dialog-source-unavailable {
         color: var(--color-text-secondary);
         flex-basis: 100%;
         font-size: var(--font-size-12);
@@ -75,12 +76,12 @@
         opacity: 0.85;
       }
 
-      input:disabled {
+      & input:disabled {
         pointer-events: none;
       }
     }
 
-    .improve-dialog-panel {
+    & .improve-dialog-panel {
       border: 1px solid var(--color-border-light-primary);
       border-radius: 0.25rem;
       display: flex;
@@ -88,7 +89,7 @@
       gap: 0.5rem;
       padding: 0.75rem;
 
-      h2 {
+      & h2 {
         color: var(--color-form-label);
         font-size: var(--font-size-16);
         font-weight: bold;
@@ -96,13 +97,13 @@
         margin: 0;
       }
 
-      p {
+      & p {
         color: var(--color-text-secondary);
         font-size: var(--font-size-13);
         margin: 0;
       }
 
-      label {
+      & label {
         align-items: center;
         background: var(--input-background-color);
         border: 1px solid var(--color-border-light-primary);
@@ -113,7 +114,7 @@
         padding: 0.35rem 0.5rem;
       }
 
-      .improve-dialog-option-context {
+      & .improve-dialog-option-context {
         align-self: stretch;
         color: var(--color-text-secondary);
         font-size: var(--font-size-13);
@@ -122,22 +123,22 @@
         opacity: 0.72;
         text-align: center;
 
-        .improve-dialog-formula {
+        & .improve-dialog-formula {
           white-space: nowrap;
 
-          b {
+          & b {
             color: var(--color-text-primary);
             font-weight: 700;
           }
 
-          sub {
+          & sub {
             font-size: 80%;
             margin-left: 1px;
             opacity: 0.9;
           }
         }
 
-        .improve-dialog-formula-value {
+        & .improve-dialog-formula-value {
           color: var(--color-text-primary);
           font-weight: 700;
         }
@@ -154,7 +155,7 @@
     margin: 0;
     padding-bottom: 0.75rem;
 
-    .improve-dialog-icon {
+    & .improve-dialog-icon {
       border: 1px solid var(--color-border-light-primary);
       border-radius: 3px;
       display: block;
@@ -165,7 +166,7 @@
       width: 64px;
     }
 
-    .improve-dialog-characteristic-chip {
+    & .improve-dialog-characteristic-chip {
       align-items: center;
       background: #1a1a1a;
       border: 1px solid var(--color-border-light-primary);
@@ -187,26 +188,26 @@
       }
     }
 
-    .improve-dialog-heading {
+    & .improve-dialog-heading {
       display: flex;
       flex-direction: column;
       gap: 0.25rem;
       flex: 1;
       min-width: 0;
 
-      h1 {
+      & h1 {
         font-size: var(--font-size-24);
         line-height: 1.2;
         margin: 0;
       }
 
-      p {
+      & p {
         color: var(--color-text-secondary);
         margin: 0;
       }
     }
 
-    .improve-dialog-current-value {
+    & .improve-dialog-current-value {
       align-items: flex-end;
       background: var(--input-background-color);
       border: 1px solid var(--color-border-light-primary);
@@ -218,13 +219,13 @@
       min-width: 84px;
       padding: 0.35rem 0.5rem;
 
-      small {
+      & small {
         color: var(--color-text-secondary);
         font-size: var(--font-size-11);
         text-transform: uppercase;
       }
 
-      strong {
+      & strong {
         color: var(--color-text-primary);
         font-size: var(--font-size-20);
         font-weight: 700;

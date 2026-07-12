@@ -1,30 +1,31 @@
+/* stylelint-disable no-descending-specificity, no-duplicate-selectors */
 @layer system.base {
   .rqg {
     &.dialog.heal-wound,
     &.dialog.add-wound {
-      form {
+      & form {
         display: flex;
         flex-direction: column;
         gap: 0.55rem;
       }
 
-      .form-footer {
+      & .form-footer {
         margin-top: 0.3rem;
       }
 
-      .wound-dialog {
+      & .wound-dialog {
         display: flex;
         flex-direction: column;
         gap: 0.55rem;
       }
 
-      .wound-dialog-label {
+      & .wound-dialog-label {
         color: var(--color-text-secondary);
         font-size: var(--font-size-14);
         line-height: 1.2;
       }
 
-      .wound-dialog-number-input {
+      & .wound-dialog-number-input {
         width: 100%;
         text-align: center;
         font-size: var(--font-size-18);
@@ -32,75 +33,75 @@
         letter-spacing: 0.015em;
       }
 
-      .wound-dialog-checkbox-row {
+      & .wound-dialog-checkbox-row {
         display: flex;
         gap: 0.25rem;
         align-items: center;
         margin: 0;
       }
 
-      .context-label {
+      & .context-label {
         color: var(--color-text-secondary);
       }
 
-      .wound-dialog-summary {
+      & .wound-dialog-summary {
         margin-top: 0.2rem;
         border-top: 1px solid var(--color-border-light-primary);
         padding-top: 0.5rem;
         font-weight: 600;
       }
 
-      .linked-preview {
+      & .linked-preview {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
         gap: 0.35rem;
       }
 
-      .formula-preview {
+      & .formula-preview {
         border: 1px solid var(--color-border-light-primary);
         border-radius: 4px;
         padding: 0.25rem 0.4rem;
         background: color-mix(in srgb, var(--input-background-color) 90%, black 10%);
       }
 
-      .ap-preview.formula-preview,
-      .hp-preview.formula-preview {
+      & .ap-preview.formula-preview,
+      & .hp-preview.formula-preview {
         display: flex;
         flex-direction: column;
         gap: 0.2rem;
       }
 
-      .no-ap-preview {
+      & .no-ap-preview {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
         gap: 0.35rem;
       }
 
-      .ap-formula-header,
-      .hp-formula-header,
-      .ap-formula-values,
-      .hp-formula-values {
+      & .ap-formula-header,
+      & .hp-formula-header,
+      & .ap-formula-values,
+      & .hp-formula-values {
         display: flex;
         justify-content: space-between;
         align-items: center;
         width: 100%;
       }
 
-      .ap-formula-header,
-      .ap-formula-values,
-      .hp-formula-header,
-      .hp-formula-values {
+      & .ap-formula-header,
+      & .ap-formula-values,
+      & .hp-formula-header,
+      & .hp-formula-values {
         gap: 3rem;
       }
 
-      .ap-formula-right-label,
-      .hp-formula-right-label {
+      & .ap-formula-right-label,
+      & .hp-formula-right-label {
         text-align: right;
       }
 
-      .formula-equation {
+      & .formula-equation {
         display: inline-flex;
         align-items: center;
         gap: 0.22rem;
@@ -108,69 +109,69 @@
         flex-wrap: wrap;
       }
 
-      .inline-damage-input {
+      & .inline-damage-input {
         width: 4.5ch;
         min-width: 4.5ch;
         text-align: right;
         justify-self: start;
       }
 
-      .formula-equation-ap-left {
+      & .formula-equation-ap-left {
         justify-content: flex-start;
         flex-wrap: nowrap;
         white-space: nowrap;
       }
 
-      .formula-equation-ap-right {
+      & .formula-equation-ap-right {
         font-size: var(--font-size-18);
       }
 
-      .formula-equation-ap-right .formula-result {
+      & .formula-equation-ap-right .formula-result {
         min-width: 1.1ch;
         text-align: right;
       }
 
-      .hp-formula-right-value {
+      & .hp-formula-right-value {
         margin-left: auto;
         justify-content: flex-end;
         flex-wrap: nowrap;
         white-space: nowrap;
       }
 
-      .formula-operator {
+      & .formula-operator {
         color: var(--color-text-secondary);
       }
 
-      .formula-result {
+      & .formula-result {
         font-weight: 700;
       }
 
-      .effective-damage-value.is-positive {
+      & .effective-damage-value.is-positive {
         color: #d97706;
         font-weight: 800;
         font-size: var(--font-size-24);
         line-height: 1;
       }
 
-      .formula-max {
+      & .formula-max {
         color: var(--color-text-secondary);
       }
 
-      .linked-preview.is-muted {
+      & .linked-preview.is-muted {
         opacity: 0.65;
       }
     }
 
     &.dialog.heal-wound {
-      button[data-action="submit"] .fa-heart-pulse {
+      & button[data-action="submit"] .fa-heart-pulse {
         color: #20802e;
       }
 
-      .heal-points-section range-picker {
+      & .heal-points-section range-picker {
         width: 100%;
       }
 
-      .heal-feedback {
+      & .heal-feedback {
         min-height: 1.1rem;
         margin-top: 0.15rem;
         color: var(--color-level-success, #1a7f37);
@@ -178,7 +179,7 @@
         line-height: 1.1;
       }
 
-      .heal-mode-segmented {
+      & .heal-mode-segmented {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 0;
@@ -191,14 +192,14 @@
         overflow: visible;
       }
 
-      .heal-mode-segmented input[type="radio"] {
+      & .heal-mode-segmented input[type="radio"] {
         position: absolute;
         inline-size: 1px;
         block-size: 1px;
         opacity: 0;
       }
 
-      .heal-mode-segmented label {
+      & .heal-mode-segmented label {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -224,11 +225,11 @@
         background: color-mix(in srgb, var(--input-background-color) 88%, black 12%);
       }
 
-      .heal-mode-segmented > input[type="radio"]:first-of-type + label {
+      & .heal-mode-segmented > input[type="radio"]:first-of-type + label {
         border-radius: 4px 0 0 4px;
       }
 
-      .heal-mode-segmented label + input[type="radio"] + label {
+      & .heal-mode-segmented label + input[type="radio"] + label {
         margin-left: -1px;
         border-left: 1px solid
           var(
@@ -244,7 +245,7 @@
         border-radius: 0 4px 4px 0;
       }
 
-      .heal-mode-segmented input[type="radio"]:checked + label {
+      & .heal-mode-segmented input[type="radio"]:checked + label {
         background: color-mix(
           in srgb,
           var(--input-background-color) 62%,
@@ -255,12 +256,12 @@
         box-shadow: inset 0 0 0 1px var(--color-border-highlight-alt);
       }
 
-      .heal-mode-segmented input[type="radio"]:focus-visible + label {
+      & .heal-mode-segmented input[type="radio"]:focus-visible + label {
         outline: 2px solid var(--color-border-highlight);
         outline-offset: -2px;
       }
 
-      .wound-dialog-wounds {
+      & .wound-dialog-wounds {
         --wound-token-size: 2.35rem;
         --wound-gap: 0.4rem;
 
@@ -270,7 +271,7 @@
         contain: layout paint;
       }
 
-      .wound-dialog-wound-option {
+      & .wound-dialog-wound-option {
         position: relative;
         display: inline-grid;
         place-items: center;
@@ -291,34 +292,34 @@
           outline-color 240ms ease;
       }
 
-      .wound-dialog-wound-option:has(input[type="radio"]:checked) {
+      & .wound-dialog-wound-option:has(input[type="radio"]:checked) {
         transform: translateY(-1px);
       }
 
-      .wound-dialog-wound-option.is-healed-removed {
+      & .wound-dialog-wound-option.is-healed-removed {
         pointer-events: none;
         animation: heal-wound-remove 260ms ease-out forwards;
       }
 
-      .wound-dialog-wound-option.is-healed-updated {
+      & .wound-dialog-wound-option.is-healed-updated {
         background-color: color-mix(in srgb, var(--color-level-success, #1a7f37) 18%, transparent);
         outline-color: color-mix(in srgb, var(--color-level-success, #1a7f37) 60%, transparent);
         box-shadow: 0 0 10px
           color-mix(in srgb, var(--color-level-success, #1a7f37) 45%, transparent);
 
-        .wound-dialog-wound-burst {
+        & .wound-dialog-wound-burst {
           animation: heal-wound-update 1120ms ease-in-out 1;
           color: var(--color-level-success, #1a7f37);
           opacity: 1;
         }
 
-        .wound-dialog-wound-value {
+        & .wound-dialog-wound-value {
           color: #f7f3e8 !important;
           text-shadow: 0 0 1px color-mix(in srgb, black 55%, transparent);
         }
       }
 
-      .wound-dialog-wound-burst {
+      & .wound-dialog-wound-burst {
         grid-area: 1 / 1;
         display: block;
         z-index: 0;
@@ -338,7 +339,7 @@
           transform 140ms ease;
       }
 
-      .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-burst {
+      & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-burst {
         color: var(--checkbox-checked-color, var(--color-border-highlight-alt));
         opacity: 1;
         filter: drop-shadow(
@@ -352,7 +353,7 @@
         transform: scale(1.04);
       }
 
-      .wound-dialog-wound-value {
+      & .wound-dialog-wound-value {
         grid-area: 1 / 1;
         z-index: 1;
         text-align: center;
@@ -363,12 +364,12 @@
         pointer-events: none;
       }
 
-      .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-value {
+      & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-value {
         color: #191813 !important;
         text-shadow: 0 0 1px color-mix(in srgb, white 25%, transparent);
       }
 
-      .wound-dialog-wound-option input[type="radio"] {
+      & .wound-dialog-wound-option input[type="radio"] {
         position: absolute;
         inset: 0;
         opacity: 0;
@@ -376,7 +377,7 @@
         cursor: pointer;
       }
 
-      .wound-dialog-wound-option input[type="radio"]:focus-visible + .wound-dialog-wound-burst {
+      & .wound-dialog-wound-option input[type="radio"]:focus-visible + .wound-dialog-wound-burst {
         filter: drop-shadow(
             0 0 2px color-mix(in srgb, var(--color-border-highlight) 75%, transparent)
           )
@@ -443,7 +444,7 @@
     }
 
     &.dialog.add-wound {
-      input[type="checkbox"] {
+      & input[type="checkbox"] {
         flex: 0 0 var(--checkbox-size, var(--font-size-20));
         margin: 0;
         width: var(--checkbox-size, var(--font-size-20));
@@ -451,13 +452,13 @@
         background: transparent;
       }
 
-      .damage-input {
+      & .damage-input {
         width: 4.5rem;
         min-width: 4.5rem;
         align-self: flex-start;
       }
 
-      .armor-layers-row {
+      & .armor-layers-row {
         display: grid;
         margin-top: 0.25rem;
         border-top: 1px solid var(--color-border-light-primary);
@@ -467,27 +468,27 @@
         width: 100%;
       }
 
-      .armor-layers-row input[type="checkbox"].armor-layer-toggle {
+      & .armor-layers-row input[type="checkbox"].armor-layer-toggle {
         --checkbox-size: 0.9rem;
       }
 
-      .armor-layers-row.is-muted {
+      & .armor-layers-row.is-muted {
         opacity: 0.65;
       }
 
-      .armor-subtract-row {
+      & .armor-subtract-row {
         align-items: center;
       }
 
-      .armor-subtract-value {
+      & .armor-subtract-value {
         color: var(--color-text-secondary);
       }
 
-      .armor-layers-heading {
+      & .armor-layers-heading {
         font-size: var(--font-size-13);
       }
 
-      .armor-layer-grid {
+      & .armor-layer-grid {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -495,38 +496,38 @@
         gap: 0.35rem;
       }
 
-      .armor-layer-ap-col {
+      & .armor-layer-ap-col {
         margin-left: auto;
         text-align: right;
       }
 
-      .armor-layer-item {
+      & .armor-layer-item {
         margin: 0.1rem 0 0;
         padding: 0;
         font-size: var(--font-size-12);
         font-weight: 400;
       }
 
-      .armor-layer-name-with-toggle {
+      & .armor-layer-name-with-toggle {
         display: flex;
         align-items: center;
         gap: 0.45rem;
       }
 
-      .armor-layer-toggle-label {
+      & .armor-layer-toggle-label {
         cursor: pointer;
       }
 
-      .armor-layer-col-title {
+      & .armor-layer-col-title {
         color: var(--color-text-secondary);
         font-size: var(--font-size-11);
       }
 
-      .armor-layer-name {
+      & .armor-layer-name {
         overflow-wrap: anywhere;
       }
 
-      .add-wound-context {
+      & .add-wound-context {
         margin-bottom: 0.15rem;
       }
     }

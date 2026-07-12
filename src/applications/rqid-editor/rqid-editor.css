@@ -1,5 +1,5 @@
 .rqid-editor {
-  // Mirror Foundry input text tokens; update these if Foundry changes its input color mappings.
+/* Mirror Foundry input text tokens; update these if Foundry changes its input color mappings. */
   --rqid-editor-input-text-color: var(--color-light-3);
   --rqid-editor-input-focus-text-color: var(--color-light-1);
 }
@@ -10,18 +10,18 @@ body.theme-light .rqid-editor {
 }
 
 .rqid-editor .window-content.rqid-editor-main {
-  .key-value-grid.rqid-editor-main[data-application-part="body"] {
-    .rqid-input-group {
+  & .key-value-grid.rqid-editor-main[data-application-part="body"] {
+    & .rqid-input-group {
       display: flex;
       align-items: center;
 
-      input[name="rqidNamePart"] {
+      & input[name="rqidNamePart"] {
         width: 15rem;
         padding-left: 0;
       }
     }
 
-    .rqid-prefix {
+    & .rqid-prefix {
       color: var(--rqid-editor-input-text-color);
     }
 
@@ -30,18 +30,18 @@ body.theme-light .rqid-editor {
     }
   }
 
-  input[name="flags.rqg.documentRqidFlags.priority"] {
+  & input[name="flags.rqg.documentRqidFlags.priority"] {
     width: 8ch;
   }
 
-  .input-button .generate-rqid {
+  & .input-button .generate-rqid {
     flex: 0 0 var(--input-height);
     width: var(--input-height);
     height: var(--input-height);
     margin-left: 0.25rem;
   }
 
-  .open-parent-rqid-link {
+  & .open-parent-rqid-link {
     margin-left: 0.5rem;
     display: inline-flex;
     align-items: center;
@@ -59,17 +59,17 @@ body.theme-light .rqid-editor {
   border: 1px solid color-mix(in srgb, var(--color-border-light-primary) 60%, transparent);
   border-radius: 0.375rem;
 
-  input[type="text"],
-  select {
+  & input[type="text"],
+  & select {
     width: 15rem;
   }
 
-  .input-button {
+  & .input-button {
     display: flex;
     align-items: center;
     gap: 0.25rem;
 
-    input[type="text"] {
+    & input[type="text"] {
       flex: 1 1 auto;
       min-width: 0;
       width: auto;
@@ -77,7 +77,7 @@ body.theme-light .rqid-editor {
       font-size: inherit;
     }
 
-    .copy-input {
+    & .copy-input {
       flex: 0 0 var(--input-height);
       width: var(--input-height);
       height: var(--input-height);
@@ -86,50 +86,50 @@ body.theme-light .rqid-editor {
     }
   }
 
-  .status-col {
+  & .status-col {
     width: 1.75rem;
     text-align: center;
     padding-left: 0.25rem;
     padding-right: 0.25rem;
   }
 
-  .priority-cell {
+  & .priority-cell {
     white-space: nowrap;
   }
 
-  .duplicate-priority-marker {
+  & .duplicate-priority-marker {
     margin-left: 0.25rem;
     color: var(--color-level-warning);
   }
 
-  .warning .fa-exclamation-triangle {
+  & .warning .fa-exclamation-triangle {
     color: var(--color-level-warning);
   }
 
-  .current-document-row > * {
+  & .current-document-row > * {
     background: color-mix(in srgb, var(--rqid-current-document-accent) 8%, transparent);
     border-top: 1px solid color-mix(in srgb, var(--rqid-current-document-accent) 75%, transparent);
     border-bottom: 1px solid
       color-mix(in srgb, var(--rqid-current-document-accent) 75%, transparent);
   }
 
-  .current-document-row > :first-child {
+  & .current-document-row > :first-child {
     border-left: 1px solid color-mix(in srgb, var(--rqid-current-document-accent) 75%, transparent);
   }
 
-  .current-document-row > :last-child {
+  & .current-document-row > :last-child {
     border-right: 1px solid color-mix(in srgb, var(--rqid-current-document-accent) 75%, transparent);
   }
 
-  .fullwidth details + details {
+  & .fullwidth details + details {
     margin-top: 2.5rem;
   }
 
-  .current-document-marker {
+  & .current-document-marker {
     color: var(--rqid-current-document-accent);
   }
 
-  .rqid-editor-reference-snippets {
+  & .rqid-editor-reference-snippets {
     margin-top: 0.5rem;
     padding: 0.5rem 0.75rem 0.75rem;
   }

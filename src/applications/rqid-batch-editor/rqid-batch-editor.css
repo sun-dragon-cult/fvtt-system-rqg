@@ -1,47 +1,47 @@
 .rqid-batch-editor {
   --rqid-batch-editor-sticky-surface: color-mix(in srgb, var(--color-bg, #222) 70%, black);
 
-  .window-content {
+  & .window-content {
     padding: 1rem 1.5rem;
     display: flex;
     flex-direction: column;
     min-height: 0;
   }
 
-  .rqid-batch-editor-form {
+  & .rqid-batch-editor-form {
     display: flex;
     flex: 1;
     flex-direction: column;
     min-height: 0;
   }
 
-  main {
+  & main {
     position: relative;
     flex: 1;
     min-height: 0;
     overflow-y: auto;
 
-    header {
-      h2 {
+    & header {
+      & h2 {
         margin-bottom: 0.25rem;
       }
 
-      .rqid-batch-editor-summary {
+      & .rqid-batch-editor-summary {
         margin: 0 0 0.3rem;
       }
     }
   }
 
-  .document-list {
+  & .document-list {
     margin: 0;
     padding: 0;
 
-    li:nth-child(odd):not(:first-child) {
+    & li:nth-child(odd):not(:first-child) {
       background: var(--rqg-table-alternate-background);
     }
   }
 
-  li.header {
+  & li.header {
     position: sticky;
     top: 0;
     z-index: 1;
@@ -51,26 +51,26 @@
     color: var(--color-text-light-highlight);
     margin-bottom: 0.3rem;
 
-    * {
+    & * {
       padding-left: 0.5rem;
     }
   }
 
-  .document-row {
+  & .document-row {
     line-height: 2rem;
     padding: 0 0.5rem;
   }
 
-  .value {
+  & .value {
     align-items: center;
 
-    .rqid-prefix {
+    & .rqid-prefix {
       flex: 0;
       align-self: center;
       white-space: nowrap;
     }
 
-    .rqid-input {
+    & .rqid-input {
       flex: 2;
 
       &.missing {
@@ -78,7 +78,7 @@
       }
     }
 
-    .generate-rqid {
+    & .generate-rqid {
       flex: 0 0 var(--input-height);
       width: var(--input-height);
       height: var(--input-height);

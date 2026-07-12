@@ -8,7 +8,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 
 - System: RuneQuest Glorantha (`rqg`) for Foundry VTT.
 - Runtime target: Foundry v14.
-- Main stack: TypeScript, Handlebars templates, SCSS.
+- Main stack: TypeScript, Handlebars templates, CSS.
 - Foundry v14 source code is available for reference when investigating Foundry internals (e.g. client APIs, application lifecycle, context menus). The exact path varies per machine; read `FOUNDRY_V14_APP` from `.env.local` to locate it.
 - Foundry v14 API reference: `https://foundryvtt.com/api/` — use to verify public API shape, method signatures, and document lifecycle.
 - Foundry knowledge base (developer articles): `https://foundryvtt.com/kb/` — the "Community Development" section covers system data models, localization, API migration guides, and system development patterns.

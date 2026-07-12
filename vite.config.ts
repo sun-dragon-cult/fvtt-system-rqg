@@ -18,7 +18,7 @@ const filesToCopy = [manifestJSONPath, "CHANGELOG.md", "README.md", "CONTRIBUTIN
 
 const devServerPort = 30001;
 const scriptsEntrypoint = "./src/rqg.ts";
-const stylesEntrypoint = "./src/rqg.scss";
+const stylesEntrypoint = "./src/rqg.css";
 
 const foundryPackagePath = getFoundryPackagePath(packageType, packageID);
 
@@ -44,7 +44,7 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
           useFlatConfig: true,
         },
         stylelint: {
-          lintCommand: "stylelint 'src/**/*.{scss,css}'",
+          lintCommand: "stylelint 'src/**/*.css'",
         },
       }),
     );

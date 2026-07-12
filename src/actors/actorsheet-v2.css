@@ -1,27 +1,30 @@
+/* stylelint-disable no-descending-specificity */
 @layer system.actor-v2 {
-  // V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed.
-  // Reuses --rqg-* CSS variables from _variables.scss and global utility classes from rqg.scss.
+/* V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed. */
 
-  // Dark-mode overrides scoped to V2 actor sheet only (don't affect V1)
+/* Reuses --rqg-* CSS variables from variables.css and global utility classes from rqg.css. */
+
+/* Dark-mode overrides scoped to V2 actor sheet only (don't affect V1) */
   .theme-dark .rqg.character.actor-sheet-v2 {
-    .dex-sr,
-    .siz-sr,
-    .sr-buttons .dex,
-    .sr-buttons .siz {
+    & .dex-sr,
+    & .siz-sr,
+    & .sr-buttons .dex,
+    & .sr-buttons .siz {
       text-shadow: var(--rqg-v2-sr-text-shadow);
     }
 
-    img.rune {
+    & img.rune {
       mix-blend-mode: var(--rqg-v2-rune-blend-mode);
     }
 
-    .grid .headings {
+    & .grid .headings {
       mix-blend-mode: var(--rqg-v2-grid-headings-blend-mode);
       min-height: 1.8rem;
     }
 
-    // Override Foundry's opaque dark-mode application background
-    // so wounded/edit-mode transparency shows through
+/* Override Foundry's opaque dark-mode application background */
+
+/* so wounded/edit-mode transparency shows through */
     &.dead,
     &.unconscious,
     &.shock,
@@ -31,105 +34,110 @@
 
       backdrop-filter: none;
 
-      // Also disable the dark-mode backdrop-filter on .window-content
-      // so the content edges match the header transparency
-      > .window-content {
+/* Also disable the dark-mode backdrop-filter on .window-content */
+
+/* so the content edges match the header transparency */
+      & > .window-content {
         backdrop-filter: none;
       }
 
-      // Restore opaque background on the controls dropdown menu
-      .controls-dropdown {
+/* Restore opaque background on the controls dropdown menu */
+      & .controls-dropdown {
         background: var(--color-cool-5-90);
         backdrop-filter: blur(4px);
       }
     }
 
-    // Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark mode
-    // Specificity: 0,7,0 beats V1's 0,6,0
-    .contextmenu.context.context-highlight {
+/* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark mode */
+
+/* Specificity: 0,7,0 beats V1's 0,6,0 */
+    & .contextmenu.context.context-highlight {
       mix-blend-mode: normal;
       background: var(--rqg-v2-context-highlight-bg) !important;
       border-color: var(--rqg-v2-context-highlight-border) !important;
     }
   }
 
-  // Restore light-mode enc colors at same specificity
+/* Restore light-mode enc colors at same specificity */
   .theme-light .rqg.character.actor-sheet-v2 {
-    .item-drag-handle {
-      color: rgb(0 0 0 / 45%); // dark grey for light mode (default is white for dark mode)
+    & .item-drag-handle {
+      color: rgb(0 0 0 / 45%); /* dark grey for light mode (default is white for dark mode) */
     }
 
-    // Override V1's context-highlight for ALL V2 context menus — light mode
-    // Specificity: 0,7,0 beats V1's 0,6,0
-    .contextmenu.context.context-highlight {
+/* Override V1's context-highlight for ALL V2 context menus — light mode */
+
+/* Specificity: 0,7,0 beats V1's 0,6,0 */
+    & .contextmenu.context.context-highlight {
       mix-blend-mode: normal;
       background: var(--rqg-v2-context-highlight-bg) !important;
       border-color: var(--rqg-v2-context-highlight-border) !important;
     }
 
-    .rune-magic-tab-v2 nav.cult-tabs .item img.rune {
+    & .rune-magic-tab-v2 nav.cult-tabs .item img.rune {
       filter: var(--rqg-v2-tab-icon-active-filter) !important;
     }
 
-    .rune-magic-tab-v2 nav.cult-tabs .item:not(.active) img.rune {
+    & .rune-magic-tab-v2 nav.cult-tabs .item:not(.active) img.rune {
       filter: var(--rqg-v2-tab-icon-inactive-filter) !important;
     }
 
-    .rune-magic-tab-v2 nav.cult-tabs .item:hover:not(.active) img.rune {
+    & .rune-magic-tab-v2 nav.cult-tabs .item:hover:not(.active) img.rune {
       filter: var(--rqg-v2-tab-icon-hover-filter) !important;
     }
 
-    .window-header {
+    & .window-header {
       background-color: var(--rqg-v2-window-header-overlay-bg);
     }
 
-    .play-mode-icon,
-    .edit-mode-icon {
+    & .play-mode-icon,
+    & .edit-mode-icon {
       filter: invert(var(--rqg-svg-invert-param));
     }
   }
 
   .rqg.character.actor-sheet-v2 {
-    // Width of the vertical nav sidebar — used to align header parchment with content
+/* Width of the vertical nav sidebar — used to align header parchment with content */
     --rqg-window-header-height: 40px;
     --rqg-nav-width: 20px;
 
-    // Reduce sort button and icon size to match header height.
-    button.sort {
+/* Reduce sort button and icon size to match header height. */
+    & button.sort {
       width: 1.4rem;
       font-size: 0.7rem;
 
-      i {
+      & i {
         margin-left: 0;
       }
     }
 
-    // Dark fill visible behind both nav and parchment transparent areas
+/* Dark fill visible behind both nav and parchment transparent areas */
     background: rgb(0 0 0 / 60%);
 
-    // Suppress V1 neumorphic hover/active shadow in V2
-    [data-characteristic-roll],
-    [data-damage-roll],
-    [data-item-roll],
-    [data-item-equipped-toggle],
-    [data-action="healWound"],
-    [data-action="addWound"],
-    [data-rqid-link],
-    [data-weapon-roll],
-    [data-reputation-roll],
-    [data-rune-magic-roll],
-    [data-spirit-magic-roll],
-    [data-gear-add],
-    [data-passion-add] {
+/* Suppress V1 neumorphic hover/active shadow in V2 */
+    & [data-characteristic-roll],
+    & [data-damage-roll],
+    & [data-item-roll],
+    & [data-item-equipped-toggle],
+    & [data-action="healWound"],
+    & [data-action="addWound"],
+    & [data-rqid-link],
+    & [data-weapon-roll],
+    & [data-reputation-roll],
+    & [data-rune-magic-roll],
+    & [data-spirit-magic-roll],
+    & [data-gear-add],
+    & [data-passion-add] {
       &:hover,
       &:active {
         box-shadow: none;
       }
     }
 
-    // Unified visual feedback for generic drops anywhere on the actor sheet.
-    // Apply to both header and content so the indicator remains visible above and below
-    // the AppV2 overlap where window-content extends under the header.
+/* Unified visual feedback for generic drops anywhere on the actor sheet. */
+
+/* Apply to both header and content so the indicator remains visible above and below */
+
+/* the AppV2 overlap where window-content extends under the header. */
     @keyframes rqg-sheet-drop-pulse {
       0%,
       100% {
@@ -158,8 +166,9 @@
       animation: rqg-sheet-drop-pulse 1.2s ease-in-out infinite;
     }
 
-    // Generic drag handle behavior for all V2 item lists.
-    // Hidden by default, positioned outside-left, and revealed on row/cell hover.
+/* Generic drag handle behavior for all V2 item lists. */
+
+/* Hidden by default, positioned outside-left, and revealed on row/cell hover. */
     .item-drag-handle {
       position: absolute;
       left: 0;
@@ -179,7 +188,7 @@
         cursor: grabbing;
       }
 
-      .grip-icon {
+      & .grip-icon {
         display: inline-block;
         height: 0.8rem;
         aspect-ratio: 284.44 / 512;
@@ -200,7 +209,7 @@
       margin-bottom: 0;
       border: none;
 
-      .item {
+      & .item {
         flex: 1;
         justify-content: center;
         display: flex;
@@ -215,7 +224,7 @@
         font-family: var(--font-primary);
         font-size: 1rem;
 
-        img {
+        & img {
           height: 16px;
           width: 16px;
           border: none;
@@ -239,7 +248,7 @@
       flex-wrap: wrap;
       align-items: flex-start;
 
-      > * {
+      & > * {
         flex: 1 1 18rem;
       }
     }
@@ -252,8 +261,9 @@
       display: contents;
     }
 
-    // gear-row children are not direct children of .grid so the base > * flex rule
-    // doesn't reach them — apply the same flex layout here.
+/* gear-row children are not direct children of .grid so the base > * flex rule */
+
+/* doesn't reach them — apply the same flex layout here. */
     .tab.gear .grid.item-list .gear-row > * {
       padding: 2px;
       position: relative;
@@ -297,8 +307,9 @@
       opacity: 1;
     }
 
-    // Drop position indicator — shown while dragging over a sortable item row.
-    // box-shadow avoids layout shift; inset keeps the line inside the cell boundary.
+/* Drop position indicator — shown while dragging over a sortable item row. */
+
+/* box-shadow avoids layout shift; inset keeps the line inside the cell boundary. */
     .drop-before {
       box-shadow: inset 0 2px 0 0 var(--rqg-color-main-bg);
     }
@@ -311,48 +322,48 @@
       box-shadow: inset 0 0 0 2px var(--rqg-color-main-bg);
     }
 
-    // Journal entry links: help cursor on the element itself (V1 targets children only)
+/* Journal entry links: help cursor on the element itself (V1 targets children only) */
     [data-rqid-link^="je"] {
       cursor: help;
     }
 
-    // Item tooltip elements are informational (icon hover = show description)
+/* Item tooltip elements are informational (icon hover = show description) */
     [data-item-tooltip] {
       cursor: help;
     }
 
-    // Embedded item journal links use help cursor.
+/* Embedded item journal links use help cursor. */
     [data-item-id][data-rqid-link] {
       cursor: help;
     }
 
-    // Weapon and damage rolls are interactive
+/* Weapon and damage rolls are interactive */
     [data-weapon-roll],
     [data-item-roll],
     [data-damage-roll] {
       cursor: pointer;
     }
 
-    // V2 gear tree should keep V1's pronounced container edge in location view.
+/* V2 gear tree should keep V1's pronounced container edge in location view. */
     .tab.gear .location ul.container {
       border-top: 4px solid var(--rqg-tree-border-strong);
       border-left: 4px solid var(--rqg-tree-border-strong);
       background-color: rgb(255 255 255 / 10%);
     }
 
-    // Grid layout for gear location-view rows.
+/* Grid layout for gear location-view rows. */
     .grid.location-row {
       display: grid;
       grid-template-columns: auto min-content max-content min-content;
 
-      img.item {
+      & img.item {
         width: 24px;
         height: 24px;
         object-fit: contain;
         margin-right: 4px;
       }
 
-      i.fa-folder-open {
+      & i.fa-folder-open {
         color: var(--rqg-tree-border-strong);
         margin-right: 5px;
         position: relative;
@@ -363,14 +374,14 @@
       }
     }
 
-    // Location view list styling — remove bullets and style nested containers.
+/* Location view list styling — remove bullets and style nested containers. */
     ul.location {
       list-style: none;
       padding: 0;
     }
 
     .tab.gear .location {
-      ul {
+      & ul {
         list-style: none;
 
         &.container {
@@ -383,20 +394,20 @@
         }
       }
 
-      ul.container.drop-into-container,
-      .location-row.drop-into-container {
+      & ul.container.drop-into-container,
+      & .location-row.drop-into-container {
         box-shadow:
           inset 0 0 0 1px rgb(255 255 255 / 10%),
           0 0 0 2px var(--rqg-color-main-bg);
         background-color: rgb(255 255 255 / 9%);
       }
 
-      .virtual {
+      & .virtual {
         font-style: italic;
       }
     }
 
-    // Sticky encumbrance totals footer for gear tab.
+/* Sticky encumbrance totals footer for gear tab. */
     .tab.gear .enc-totals {
       display: flex;
       position: sticky;
@@ -413,29 +424,69 @@
       filter: drop-shadow(1px 1px 4px black);
       z-index: 10;
 
-      * {
+      & * {
         justify-self: center;
       }
     }
 
-    // Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest).
-    // Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1.
-    @for $i from 0 through 10 {
-      img.rune.rune-str-#{$i} {
-        $t: calc($i / 10);
-        $raw-opacity: 0.05 + $t * 0.95;
+/* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). */
 
-        opacity: max(#{$raw-opacity}, var(--rqg-rune-min-opacity, 0.05));
-        transform: scale(#{0.55 + $t * 0.55});
-      }
+/* Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1. */
+
+    /* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). */
+
+    /* Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1. */
+    & img.rune.rune-str-0 {
+      opacity: max(0.05, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.55);
+    }
+    & img.rune.rune-str-1 {
+      opacity: max(0.145, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.605);
+    }
+    & img.rune.rune-str-2 {
+      opacity: max(0.24, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.66);
+    }
+    & img.rune.rune-str-3 {
+      opacity: max(0.335, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.715);
+    }
+    & img.rune.rune-str-4 {
+      opacity: max(0.43, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.77);
+    }
+    & img.rune.rune-str-5 {
+      opacity: max(0.525, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.825);
+    }
+    & img.rune.rune-str-6 {
+      opacity: max(0.62, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.88);
+    }
+    & img.rune.rune-str-7 {
+      opacity: max(0.715, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.935);
+    }
+    & img.rune.rune-str-8 {
+      opacity: max(0.81, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(0.99);
+    }
+    & img.rune.rune-str-9 {
+      opacity: max(0.905, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(1.045);
+    }
+    & img.rune.rune-str-10 {
+      opacity: max(1, var(--rqg-rune-min-opacity, 0.05));
+      transform: scale(1.1);
     }
 
-    // Resize handle sits over dark background — always invert to light
+/* Resize handle sits over dark background — always invert to light */
     .window-resize-handle {
       filter: invert(1);
     }
 
-    // Window header — shows app background to dim scrolled content behind it
+/* Window header — shows app background to dim scrolled content behind it */
     .window-header {
       position: relative;
       border-bottom: none;
@@ -443,10 +494,13 @@
       background-color: var(--rqg-v2-window-header-overlay-bg);
     }
 
-    // --- Layout: .window-content IS the form in AppV2, PARTS are its direct children ---
-    // Foundry sets display:flex on .window-content; override to grid for side-tab layout.
-    // Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats Foundry's
-    // single-class .window-content rule without needing !important.
+/* --- Layout: .window-content IS the form in AppV2, PARTS are its direct children --- */
+
+/* Foundry sets display:flex on .window-content; override to grid for side-tab layout. */
+
+/* Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats Foundry's */
+
+/* single-class .window-content rule without needing !important. */
     > .window-content {
       position: relative;
       padding: 0;
@@ -455,34 +509,34 @@
       overflow: hidden;
       container-type: size;
 
-      // Parchment as window-content background — offset past the nav so jagged edges show
+/* Parchment as window-content background — offset past the nav so jagged edges show */
       background-image: var(--rqg-parchment-url);
       background-repeat: repeat-y;
       background-position: top left var(--rqg-nav-width);
       background-size: calc(100% - var(--rqg-nav-width));
 
-      > * {
+      & > * {
         position: relative;
       }
     }
 
-    // --- Header ---
+/* --- Header --- */
     .sheet-header {
       padding: 4px 4%;
       align-items: start;
       height: fit-content;
 
-      .header-grid {
+      & .header-grid {
         display: grid;
         grid-template-columns: [profile-start full-start] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
         gap: 0;
 
-        .profile {
+        & .profile {
           grid-row: 1 / 3;
           grid-column: profile-start / profile-end;
           margin-right: 15px;
 
-          img {
+          & img {
             height: 125px;
             transform: rotate(5deg);
             box-shadow: var(--rqg-box-shadow-profile-img);
@@ -496,18 +550,18 @@
           }
         }
 
-        .name-runes-cults {
+        & .name-runes-cults {
           grid-row: 1;
           grid-column: name-rune-start / name-rune-end;
 
-          .charname {
+          & .charname {
             background-color: transparent;
             font-weight: bold;
             flex: 1;
             min-width: 0;
             margin-left: 1rem;
 
-            input[name="name"] {
+            & input[name="name"] {
               font-size: 35px;
               border: none;
               width: 100%;
@@ -522,7 +576,7 @@
               }
             }
 
-            input[name="system.extendedName"] {
+            & input[name="system.extendedName"] {
               font-size: 16px;
               font-style: italic;
               border: none;
@@ -535,24 +589,24 @@
               }
             }
 
-            .name-display {
+            & .name-display {
               font-size: 35px;
               line-height: 1;
             }
 
-            .extended-name-display {
+            & .extended-name-display {
               font-size: 16px;
               font-style: italic;
               color: var(--color-text-secondary);
             }
           }
 
-          .rune {
+          & .rune {
             height: 24px;
           }
         }
 
-        .characteristics {
+        & .characteristics {
           grid-row: 2;
           grid-column: name-rune-start / name-rune-end;
           margin-top: -2px;
@@ -560,31 +614,31 @@
           grid-template-columns: repeat(7, auto);
           justify-content: space-between;
 
-          div {
+          & div {
             text-align: center;
           }
 
-          label {
+          & label {
             font-size: min(20px, 2.5cqw);
             font-weight: bold;
           }
 
-          .value {
+          & .value {
             font-size: min(22px, 3cqw);
             font-weight: bold;
             margin-top: -4px;
             text-align: center;
           }
 
-          // Rank color bar only when characteristic ratings are shown
-          [class*="characteristic-rank"] .value {
+/* Rank color bar only when characteristic ratings are shown */
+          & [class*="characteristic-rank"] .value {
             display: inline-block;
             border-bottom: 7px solid var(--rank-color, transparent);
             border-left: 5px solid transparent;
             border-right: 5px solid transparent;
           }
 
-          input:not(.value) {
+          & input:not(.value) {
             background-color: transparent;
             font-size: 12px;
             width: 8ch;
@@ -598,7 +652,7 @@
             }
           }
 
-          [data-characteristic] {
+          & [data-characteristic] {
             border-radius: 4px;
             padding: 2px 4px;
 
@@ -612,7 +666,7 @@
           }
         }
 
-        .bottom-line {
+        & .bottom-line {
           grid-row: 3;
           grid-column: full-start / full-end;
           display: flex;
@@ -620,8 +674,8 @@
           align-items: end;
           margin-top: -4px;
 
-          .dex-sr,
-          .siz-sr {
+          & .dex-sr,
+          & .siz-sr {
             border-radius: 6px;
             border: 1px inset #999;
             padding: 6px;
@@ -629,21 +683,21 @@
             text-box: trim-both cap alphabetic;
           }
 
-          .dex-sr {
+          & .dex-sr {
             background-color: var(--rqg-color-dex-sr-bg);
           }
 
-          .siz-sr {
+          & .siz-sr {
             background-color: var(--rqg-color-siz-sr-bg);
           }
 
-          input[type="number"] {
+          & input[type="number"] {
             width: 4ch;
             text-align: center;
           }
         }
 
-        .mov-enc {
+        & .mov-enc {
           display: flex;
           align-items: center;
           gap: 0.5rem;
@@ -652,16 +706,16 @@
           border-radius: 3px;
           font-size: 14px;
 
-          .locomotion-picker {
+          & .locomotion-picker {
             display: flex;
             align-items: center;
 
-            > i {
+            & > i {
               font-size: 1rem;
             }
           }
 
-          .locomotion-select {
+          & .locomotion-select {
             border: none;
             background-color: var(--rqg-color-enc-bg);
             color: inherit;
@@ -669,18 +723,18 @@
             padding: 0 2px;
             width: auto;
 
-            option {
+            & option {
               background-color: var(--rqg-color-enc-bg);
               color: inherit;
             }
           }
 
-          .equipped-status {
+          & .equipped-status {
             height: 1rem;
           }
 
-          // Icon + move value pairs (equipped / carried)
-          > span {
+/* Icon + move value pairs (equipped / carried) */
+          & > span {
             display: inline-flex;
             align-items: center;
             gap: 2px;
@@ -689,15 +743,17 @@
       }
     }
 
-    // --- Vertical tab navigation (rotated left edge, matching V1) ---
+/* --- Vertical tab navigation (rotated left edge, matching V1) --- */
     .nav-wrapper {
       grid-area: nav;
       position: relative;
       min-height: 0;
       overflow: hidden auto;
       scrollbar-gutter: stable;
-      // Keep a little breathing room between vertical labels and scrollbar track
-      // without changing the effective nav column width.
+
+/* Keep a little breathing room between vertical labels and scrollbar track */
+
+/* without changing the effective nav column width. */
       padding-inline-end: 6px;
       margin-inline-end: -6px;
     }
@@ -723,7 +779,7 @@
       display: block;
       line-height: 20px;
 
-      .item {
+      & .item {
         white-space: nowrap;
         color: white;
         writing-mode: vertical-rl;
@@ -747,36 +803,40 @@
       }
     }
 
-    // --- Sheet body ---
+/* --- Sheet body --- */
     .sheet-body {
       padding: 8px 4%;
     }
 
-    // --- Common element styles ---
-    // Foundry's heading & text styles (border, font-size, margins) are scoped to
-    // `body.game .app` (V1 apps).  V2 apps use `.application` and don't inherit
-    // those rules, so we replicate the essentials inside .window-content only
-    // to avoid affecting the window title bar.
+/* --- Common element styles --- */
+
+/* Foundry's heading & text styles (border, font-size, margins) are scoped to */
+
+/* `body.game .app` (V1 apps).  V2 apps use `.application` and don't inherit */
+
+/* those rules, so we replicate the essentials inside .window-content only */
+
+/* to avoid affecting the window title bar. */
     .window-content {
-      h1,
-      h2,
-      h3,
-      h4 {
+      & h1,
+      & h2,
+      & h3,
+      & h4 {
         margin: 0 0 0.5rem;
         padding: 0;
       }
 
-      h1 {
+      & h1 {
         font-size: 2em;
         border-bottom: 2px solid #782e22;
       }
 
-      h2 {
+      & h2 {
         font-size: 1.5em;
         border-bottom: 1px solid #782e22;
       }
 
-      h3 {
+      & h3 {
         font-size: 1.25em;
         border-bottom: 1px solid #782e22;
       }
@@ -795,8 +855,9 @@
       }
     }
 
-    // --- Characteristic ranking indicators — set --rank-color, bar rendered on .value ---
-    // Reset the global border-bottom from V1 rank classes; V2 uses --rank-color on .value instead
+/* --- Characteristic ranking indicators — set --rank-color, bar rendered on .value --- */
+
+/* Reset the global border-bottom from V1 rank classes; V2 uses --rank-color on .value instead */
     [class*="characteristic-rank"] {
       border-bottom: none !important;
     }
@@ -853,62 +914,62 @@
       --rank-color: #8a0101ff;
     }
 
-    // --- Runes tab (V2 visual layout) ---
+/* --- Runes tab (V2 visual layout) --- */
     .runes-tab-v2 {
-      // Highlight entire rune card when any clickable child is hovered/active
-      .rune-card:has([data-item-roll]:hover) {
+/* Highlight entire rune card when any clickable child is hovered/active */
+      & .rune-card:has([data-item-roll]:hover) {
         background: rgb(139 90 43 / 18%);
         border-radius: 4px;
       }
 
-      .rune-card:has([data-item-roll]:active) {
+      & .rune-card:has([data-item-roll]:active) {
         background: rgb(139 90 43 / 30%);
         border-radius: 4px;
       }
 
-      .rune-sections {
+      & .rune-sections {
         display: flex;
         flex-wrap: wrap;
         gap: 2rem;
         justify-content: center;
       }
 
-      .rune-section {
+      & .rune-section {
         flex: 0 1 auto;
 
-        h2 {
+        & h2 {
           text-align: center;
           margin-bottom: 0.75rem;
         }
       }
 
-      // --- Rune card: icon + name + chance% ---
-      .rune-card {
+/* --- Rune card: icon + name + chance% --- */
+      & .rune-card {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 2px;
         cursor: pointer;
 
-        img.rune {
+        & img.rune {
           height: 32px;
           width: 32px;
           object-fit: contain;
         }
 
-        .rune-name {
+        & .rune-name {
           font-size: 11px;
           line-height: 1;
           white-space: nowrap;
         }
 
-        .rune-chance {
+        & .rune-chance {
           font-size: 14px;
           font-weight: bold;
           line-height: 1;
         }
 
-        input[type="number"] {
+        & input[type="number"] {
           width: 5ch;
           text-align: center;
           font-size: 12px;
@@ -920,28 +981,32 @@
         }
       }
 
-      // --- Elemental wheel: pentagonal layout with arrows ---
-      .elemental-wheel {
+/* --- Elemental wheel: pentagonal layout with arrows --- */
+      & .elemental-wheel {
         position: relative;
         width: 20rem;
         height: 20rem;
         top: -0.8rem;
 
-        .rune-card img.rune {
+        & .rune-card img.rune {
           height: 42px;
           width: 42px;
         }
       }
 
-      .wheel-slot {
+      & .wheel-slot {
         position: absolute;
 
-        // Center the icon on the slot anchor via absolute positioning.
-        // Fixed width matches the 42px icon so centering is exact regardless
-        // of rune-name text width. Text overflows symmetrically via align-items: center.
-        // Do NOT use transform — it creates a stacking context and breaks
-        // mix-blend-mode on descendant images.
-        .rune-card {
+/* Center the icon on the slot anchor via absolute positioning. */
+
+/* Fixed width matches the 42px icon so centering is exact regardless */
+
+/* of rune-name text width. Text overflows symmetrically via align-items: center. */
+
+/* Do NOT use transform — it creates a stacking context and breaks */
+
+/* mix-blend-mode on descendant images. */
+        & .rune-card {
           position: absolute;
           width: 42px;
           left: -21px;
@@ -949,40 +1014,42 @@
         }
       }
 
-      // Regular pentagon inscribed in a circle of radius 35%,
-      // centered at (50%, 50%) in the 20rem × 20rem square container.
-      // Clockwise from top: Fire, Darkness, Water, Earth, Air.
-      .wheel-fire {
+/* Regular pentagon inscribed in a circle of radius 35%, */
+
+/* centered at (50%, 50%) in the 20rem × 20rem square container. */
+
+/* Clockwise from top: Fire, Darkness, Water, Earth, Air. */
+      & .wheel-fire {
         left: 50%;
         top: 15%;
       }
 
-      .wheel-darkness {
+      & .wheel-darkness {
         left: 83%;
         top: 39%;
       }
 
-      .wheel-water {
+      & .wheel-water {
         left: 71%;
         top: 78%;
       }
 
-      .wheel-earth {
+      & .wheel-earth {
         left: 29%;
         top: 78%;
       }
 
-      .wheel-air {
+      & .wheel-air {
         left: 17%;
         top: 39%;
       }
 
-      .wheel-moon {
+      & .wheel-moon {
         left: 50%;
         top: 50%;
       }
 
-      .wheel-connectors {
+      & .wheel-connectors {
         position: absolute;
         inset: 0;
         width: 100%;
@@ -990,48 +1057,48 @@
         pointer-events: none;
         overflow: visible;
 
-        .wheel-pentagram {
+        & .wheel-pentagram {
           stroke: var(--rqg-color-main);
           stroke-width: 0.75;
           opacity: 0.6;
         }
 
-        .wheel-arrows {
+        & .wheel-arrows {
           fill: none;
           stroke: var(--rqg-color-main);
           stroke-width: 1.5;
         }
 
-        #rune-arrow path {
+        & #rune-arrow path {
           fill: var(--rqg-color-main);
         }
       }
 
-      // --- Opposed pairs (power & form runes) ---
-      .opposed-pairs {
+/* --- Opposed pairs (power & form runes) --- */
+      & .opposed-pairs {
         display: flex;
         flex-direction: column;
         gap: 0.75rem;
       }
 
-      .opposed-row {
+      & .opposed-row {
         display: grid;
         grid-template-columns: 1fr 6rem 1fr;
         align-items: center;
         gap: 0.5rem;
 
-        // Left rune aligns right, right rune aligns left
-        > .rune-slot:first-child {
+/* Left rune aligns right, right rune aligns left */
+        & > .rune-slot:first-child {
           justify-self: end;
         }
 
-        > .rune-slot:last-child {
+        & > .rune-slot:last-child {
           justify-self: start;
         }
       }
 
-      // --- Balance track with sliding marker ---
-      .balance-bar {
+/* --- Balance track with sliding marker --- */
+      & .balance-bar {
         height: 9px;
         position: relative;
 
@@ -1048,7 +1115,7 @@
         }
       }
 
-      .balance-marker {
+      & .balance-marker {
         position: absolute;
         top: 50%;
         width: 9px;
@@ -1060,8 +1127,8 @@
         transition: left 0.3s ease;
       }
 
-      // --- Standalone card row (condition runes) ---
-      .rune-card-row {
+/* --- Standalone card row (condition runes) --- */
+      & .rune-card-row {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
@@ -1069,27 +1136,27 @@
       }
     }
 
-    // --- Passions tab ---
+/* --- Passions tab --- */
     .passions-tab-v2 {
-      h2 {
+      & h2 {
         display: grid;
         grid-template-columns: 28px 1fr auto;
         align-items: center;
         gap: 0.5rem;
         padding: 0 6px;
 
-        .passion-add-btn {
+        & .passion-add-btn {
           cursor: pointer;
         }
       }
 
-      .passions-list {
+      & .passions-list {
         display: flex;
         flex-direction: column;
         gap: 2px;
       }
 
-      .passion-row {
+      & .passion-row {
         display: grid;
         grid-template-columns: 28px 1fr auto;
         align-items: center;
@@ -1108,19 +1175,19 @@
           background: rgb(139 90 43 / 30%);
         }
 
-        .passion-icon {
+        & .passion-icon {
           align-self: stretch;
           display: flex;
           align-items: center;
 
-          img {
+          & img {
             width: 24px;
             height: 24px;
             object-fit: contain;
           }
         }
 
-        .passion-name {
+        & .passion-name {
           cursor: pointer;
           font-weight: 500;
           white-space: nowrap;
@@ -1131,7 +1198,7 @@
           align-items: center;
         }
 
-        .passion-chance {
+        & .passion-chance {
           cursor: pointer;
           font-weight: bold;
           align-self: stretch;
@@ -1141,12 +1208,12 @@
           min-width: 4ch;
         }
 
-        .passion-chance-edit {
+        & .passion-chance-edit {
           display: flex;
           align-items: center;
           gap: 2px;
 
-          input[type="number"] {
+          & input[type="number"] {
             width: 5ch;
             text-align: center;
             font-size: 12px;
@@ -1154,53 +1221,53 @@
         }
       }
 
-      .empty-hint {
+      & .empty-hint {
         opacity: 0.6;
       }
     }
 
-    // --- Combat tab ---
+/* --- Combat tab --- */
     .combat-tab {
-      input[type="number"] {
+      & input[type="number"] {
         width: 4ch;
         text-align: center;
       }
 
-      [data-action="healWound"] {
+      & [data-action="healWound"] {
         cursor: pointer;
 
-        .fa-heart-pulse {
+        & .fa-heart-pulse {
           color: #20802e;
         }
       }
 
-      .combat-tab-row {
+      & .combat-tab-row {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
         gap: 3rem;
 
-        > .health-section {
+        & > .health-section {
           flex: 0 1 auto;
         }
 
-        > .combat-weapons-column {
+        & > .combat-weapons-column {
           flex: 1 1 0;
           min-width: 20rem;
         }
       }
 
-      .section-heading {
+      & .section-heading {
         display: flex;
         justify-content: space-between;
         align-items: baseline;
       }
 
-      .health-state {
+      & .health-state {
         color: var(--rqg-color-health-state);
       }
 
-      .total-hp-row {
+      & .total-hp-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -1208,18 +1275,18 @@
         gap: 0.5rem;
       }
 
-      .hit-location-dice-error {
+      & .hit-location-dice-error {
         width: 22rem;
         padding: 0.3rem;
         margin-bottom: 0.5rem;
       }
 
-      .wounded {
+      & .wounded {
         background-color: var(--rqg-color-wounded-bg);
         border-color: #901010;
       }
 
-      .strike {
+      & .strike {
         text-decoration: none;
         position: relative;
 
@@ -1239,8 +1306,8 @@
         }
       }
 
-      // --- Humanoid hit location layout ---
-      .humanoid {
+/* --- Humanoid hit location layout --- */
+      & .humanoid {
         position: relative;
         width: 18rem;
         height: 21rem;
@@ -1255,19 +1322,19 @@
           mix-blend-mode: overlay;
         }
 
-        .actor-state {
+        & .actor-state {
           position: absolute;
           top: 0;
           right: 0;
 
-          img {
+          & img {
             height: 5rem;
             filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
               brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
           }
         }
 
-        .stats {
+        & .stats {
           position: absolute !important;
           border: 1px solid #666;
           border-radius: 10px;
@@ -1287,26 +1354,26 @@
             border-width: 2px;
           }
 
-          .roll-range {
+          & .roll-range {
             font-size: 80%;
           }
 
-          .hl-header-row {
+          & .hl-header-row {
             display: flex;
             justify-content: space-between;
             align-items: baseline;
             gap: 0.5rem;
           }
 
-          .hl-stat-row {
+          & .hl-stat-row {
             display: flex;
           }
 
-          .hl-wounds-row {
+          & .hl-wounds-row {
             display: flex;
             justify-content: space-between;
 
-            [data-action="addWound"] {
+            & [data-action="addWound"] {
               cursor: pointer;
             }
           }
@@ -1354,28 +1421,28 @@
         }
       }
 
-      // --- SR buttons ---
-      .sr-buttons {
+/* --- SR buttons --- */
+      & .sr-buttons {
         display: flex;
         align-items: center;
         gap: 0.55rem;
         margin-bottom: 0.4rem;
 
-        button {
+        & button {
           width: 1.7rem;
           padding: 0;
           border-style: outset;
           background-color: var(--rqg-color-sr-button-bg);
         }
 
-        .active {
+        & .active {
           border-style: inset;
           background-color: var(--color-border-highlight);
           color: #000;
         }
 
-        .dex,
-        .siz {
+        & .dex,
+        & .siz {
           display: flex;
           align-items: center;
           gap: 0.55rem;
@@ -1387,31 +1454,31 @@
           text-box: trim-both cap alphabetic;
         }
 
-        .dex {
+        & .dex {
           background-color: var(--rqg-color-dex-sr-bg);
         }
 
-        .siz {
+        & .siz {
           background-color: var(--rqg-color-siz-sr-bg);
         }
       }
 
-      .damage-bonus-row {
+      & .damage-bonus-row {
         display: flex;
         align-items: center;
       }
 
-      // Weapon row hover: light warm tint across all 6 grid cells
-      .grid.combat.item-list .weapon-row,
-      .grid.spirit-combat .weapon-row {
+/* Weapon row hover: light warm tint across all 6 grid cells */
+      & .grid.combat.item-list .weapon-row,
+      & .grid.spirit-combat .weapon-row {
         display: contents;
 
-        > :nth-child(1) {
+        & > :nth-child(1) {
           position: relative;
           overflow: visible;
         }
 
-        .weapon-drag-handle {
+        & .weapon-drag-handle {
           position: absolute;
           left: 0;
           top: 50%;
@@ -1422,7 +1489,7 @@
           color: rgb(255 255 255 / 70%);
           z-index: 2;
 
-          .grip-icon {
+          & .grip-icon {
             display: inline-block;
             height: 0.8rem;
             aspect-ratio: 284.44 / 512;
@@ -1441,51 +1508,54 @@
           opacity: 1;
         }
 
-        .weapon-drag-handle:active {
+        & .weapon-drag-handle:active {
           cursor: grabbing;
         }
 
-        // Restore padding lost because display:contents bypasses .grid > * selector
-        > * {
+/* Restore padding lost because display:contents bypasses .grid > * selector */
+        & > * {
           padding: 2px;
           position: relative;
           display: flex;
           align-items: center;
 
-          // Cells containing flex-column (chance, damage, SR) must stretch
-          // so usage subrows can fill the full row height (not just content height)
+/* Cells containing flex-column (chance, damage, SR) must stretch */
+
+/* so usage subrows can fill the full row height (not just content height) */
           &:has(> .flex-column) {
             align-items: stretch;
           }
 
-          // flex-column wrappers must fill the cell so usage subrows divide
-          // the full row height equally for proper hover coverage
-          > .flex-column {
+/* flex-column wrappers must fill the cell so usage subrows divide */
+
+/* the full row height equally for proper hover coverage */
+          & > .flex-column {
             width: 100%;
             height: 100%;
 
-            > .usage,
-            > div.usage {
+            & > .usage,
+            & > div.usage {
               flex: 1;
               display: flex;
               align-items: center;
             }
 
-            // SR column: right-align buttons inside each usage subrow
+/* SR column: right-align buttons inside each usage subrow */
             &.text-right > .usage,
             &.text-right > div.usage {
               justify-content: flex-end;
             }
 
-            // Melee SR wraps button in a bare <span>, not .usage — push right
-            > span > button.sr {
+/* Melee SR wraps button in a bare <span>, not .usage — push right */
+            & > span > button.sr {
               margin-left: auto;
             }
           }
         }
 
-        // Restore alternating row background (V1 nth-child rule targets weapon-row
-        // elements themselves which have display:contents, so it has no visual effect)
+/* Restore alternating row background (V1 nth-child rule targets weapon-row */
+
+/* elements themselves which have display:contents, so it has no visual effect) */
         &:nth-child(odd) > * {
           background: var(--rqg-table-alternate-background);
         }
@@ -1498,7 +1568,7 @@
           background: rgb(139 90 43 / 30%);
         }
 
-        // Dodge: single-action row — whole row gets the brighter tint
+/* Dodge: single-action row — whole row gets the brighter tint */
         &.dodge-row:hover > * {
           background: rgb(139 90 43 / 32%) !important;
         }
@@ -1507,67 +1577,71 @@
           background: rgb(139 90 43 / 50%) !important;
         }
 
-        // Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together
-        // only when one of those roll cells is hovered, not the damage cell
+/* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together */
+
+/* only when one of those roll cells is hovered, not the damage cell */
         &.spirit-combat-row:has(> [data-item-roll]:hover) {
-          > :nth-child(2),
-          > :nth-child(3),
-          > :nth-child(4) {
+          & > :nth-child(2),
+          & > :nth-child(3),
+          & > :nth-child(4) {
             background: rgb(139 90 43 / 32%) !important;
           }
         }
 
         &.spirit-combat-row:has(> [data-item-roll]:active) {
-          > :nth-child(2),
-          > :nth-child(3),
-          > :nth-child(4) {
+          & > :nth-child(2),
+          & > :nth-child(3),
+          & > :nth-child(4) {
             background: rgb(139 90 43 / 50%) !important;
           }
         }
 
-        // Brighter tint on the specific cell being clicked.
-        // Nested here so SCSS child combinators escape the IE-hack misparse.
-        // Use descendant .usage selector (not :has) so multi-usage weapons
-        // only highlight the hovered subrow, not the whole column cell.
-        .usage[data-item-roll]:hover,
-        .usage[data-damage-roll]:hover,
-        // :not(:empty) excludes natural-weapon / dodge empty placeholder cells
-        >[data-weapon-roll]:not(:empty):hover,
-        >[data-item-roll]:hover,
-        >[data-damage-roll]:hover {
+/* Brighter tint on the specific cell being clicked. */
+
+/* Nested here so SCSS child combinators escape the IE-hack misparse. */
+
+/* Use descendant .usage selector (not :has) so multi-usage weapons */
+
+/* only highlight the hovered subrow, not the whole column cell. */
+        & .usage[data-item-roll]:hover,
+        & .usage[data-damage-roll]:hover,
+/* :not(:empty) excludes natural-weapon / dodge empty placeholder cells */
+        & >[data-weapon-roll]:not(:empty):hover,
+        & >[data-item-roll]:hover,
+        & >[data-damage-roll]:hover {
           background: rgb(139 90 43 / 32%) !important;
         }
 
-        .usage[data-item-roll]:active,
-        .usage[data-damage-roll]:active,
-        > [data-weapon-roll]:not(:empty):active,
-        > [data-item-roll]:active,
-        > [data-damage-roll]:active {
+        & .usage[data-item-roll]:active,
+        & .usage[data-damage-roll]:active,
+        & > [data-weapon-roll]:not(:empty):active,
+        & > [data-item-roll]:active,
+        & > [data-damage-roll]:active {
           background: rgb(139 90 43 / 50%) !important;
         }
       }
 
-      // V2 spirit-combat grid: match 6-column weapons grid (icon | name | HP | chance | damage | SR)
-      .grid.spirit-combat {
+/* V2 spirit-combat grid: match 6-column weapons grid (icon | name | HP | chance | damage | SR) */
+      & .grid.spirit-combat {
         grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
       }
 
-      // Extra breathing room before the damage column
-      .grid.combat.item-list .head5,
-      .grid.combat.item-list .weapon-row > :nth-child(5),
-      .grid.spirit-combat .weapon-row > :nth-child(5) {
+/* Extra breathing room before the damage column */
+      & .grid.combat.item-list .head5,
+      & .grid.combat.item-list .weapon-row > :nth-child(5),
+      & .grid.spirit-combat .weapon-row > :nth-child(5) {
         padding-left: 0.75rem;
       }
 
-      .spirit-combat-section {
+      & .spirit-combat-section {
         margin-top: 1.5rem;
       }
 
-      .rate-range {
+      & .rate-range {
         color: var(--color-text-dark-secondary);
       }
 
-      select.projectile {
+      & select.projectile {
         border: none;
         font-size: small;
         font-style: italic;
@@ -1579,12 +1653,12 @@
         }
       }
 
-      input.quantity {
+      & input.quantity {
         text-align: center;
       }
 
-      // Set-token-SR-in-combat button
-      button.sr {
+/* Set-token-SR-in-combat button */
+      & button.sr {
         height: 1.5rem;
         line-height: unset;
         width: unset;
@@ -1592,7 +1666,7 @@
         background-color: var(--rqg-color-sr-button-bg);
       }
 
-      .usage {
+      & .usage {
         line-height: 1.5rem;
         column-gap: 0.3rem;
 
@@ -1605,25 +1679,25 @@
         }
       }
 
-      .allies-section {
+      & .allies-section {
         margin-top: 1rem;
       }
     }
 
-    // --- Skills tab ---
+/* --- Skills tab --- */
     .skills-tab-v2 {
-      .skill-filter-row {
+      & .skill-filter-row {
         display: flex;
         align-items: center;
         gap: 0.5rem;
         margin-bottom: 8px;
 
-        .skill-filter-input {
+        & .skill-filter-input {
           position: relative;
           width: 25%;
           flex-shrink: 0;
 
-          i {
+          & i {
             position: absolute;
             right: 0.45rem;
             top: 50%;
@@ -1633,7 +1707,7 @@
             font-size: 0.8em;
           }
 
-          .skill-filter {
+          & .skill-filter {
             width: 100%;
             padding-right: 1.25rem;
 
@@ -1643,7 +1717,7 @@
           }
         }
 
-        .specialization.warning {
+        & .specialization.warning {
           flex: 1;
           display: flex;
           flex-wrap: wrap;
@@ -1653,28 +1727,28 @@
         }
       }
 
-      h2 {
+      & h2 {
         display: flex;
         align-items: baseline;
         gap: 0.5rem;
         padding: 0 6px;
 
-        .category-modifier {
+        & .category-modifier {
           font-size: 0.8em;
           font-weight: normal;
           opacity: 0.8;
         }
       }
 
-      .grid.skill.item-list,
-      .grid.skill-edit-mode.item-list {
+      & .grid.skill.item-list,
+      & .grid.skill-edit-mode.item-list {
         margin-bottom: 0.5rem;
       }
 
-      .skill-row {
+      & .skill-row {
         display: contents;
 
-        > * {
+        & > * {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1695,19 +1769,19 @@
         }
       }
 
-      img.requires-training {
+      & img.requires-training {
         width: 18px;
         height: 18px;
         margin-left: auto;
         opacity: 0.85;
       }
 
-      .skill-gained-edit {
+      & .skill-gained-edit {
         display: flex;
         align-items: center;
         gap: 2px;
 
-        input[type="number"] {
+        & input[type="number"] {
           width: 5ch;
           text-align: center;
           font-size: 12px;
@@ -1715,21 +1789,21 @@
       }
     }
 
-    // --- Sorcery tab (V2): match skills-row hover/active highlight ---
+/* --- Sorcery tab (V2): match skills-row hover/active highlight --- */
     .sorcery-tab-v2 {
-      .power.flex-row {
+      & .power.flex-row {
         display: grid;
         grid-template-columns: 2fr 1fr 1fr;
         align-items: start;
         gap: 0.75rem;
         width: 100%;
 
-        > div {
+        & > div {
           min-width: 0;
         }
       }
 
-      .int-capacity-row {
+      & .int-capacity-row {
         display: flex;
         justify-content: flex-end;
         padding: 0 6px;
@@ -1738,15 +1812,15 @@
         font-size: 0.75em;
         font-weight: normal;
 
-        .warning {
+        & .warning {
           color: var(--color-text-dark-warn, #a00);
         }
       }
 
-      .skill-row {
+      & .skill-row {
         display: contents;
 
-        > * {
+        & > * {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1768,41 +1842,41 @@
       }
     }
 
-    // --- Spirit Magic tab ---
+/* --- Spirit Magic tab --- */
     .spirit-magic-tab-v2 {
-      h2 {
+      & h2 {
         display: flex;
         align-items: baseline;
         gap: 0.5rem;
         padding: 0 6px;
         flex-wrap: wrap;
 
-        .small-size {
+        & .small-size {
           font-size: 0.75em;
           font-weight: normal;
           margin-left: auto;
         }
 
-        .warning {
+        & .warning {
           color: var(--color-text-dark-warn, #a00);
         }
       }
 
-      .grid.spiritmagic.item-list {
+      & .grid.spiritmagic.item-list {
         grid-template-columns: [col-start] 30px auto auto 1fr [col-end];
       }
 
-      .spirit-magic-points-input {
+      & .spirit-magic-points-input {
         width: 3ch;
         text-align: center;
         margin-right: 0.25rem;
         flex: 0 0 auto;
       }
 
-      .spirit-magic-row {
+      & .spirit-magic-row {
         display: contents;
 
-        > * {
+        & > * {
           padding: 2px;
           position: relative;
           display: flex;
@@ -1827,7 +1901,7 @@
         }
       }
 
-      input[type="text"] {
+      & input[type="text"] {
         font-size: 12px;
         border: 1px solid transparent;
         border-radius: 3px;
@@ -1849,14 +1923,14 @@
       }
     }
 
-    // --- Rune Magic tab ---
+/* --- Rune Magic tab --- */
     .rune-magic-tab-v2 {
-      // Strip inline colors from enriched journal content so light/dark themes work correctly
-      *[style*="color"] {
+/* Strip inline colors from enriched journal content so light/dark themes work correctly */
+      & *[style*="color"] {
         color: inherit !important;
       }
 
-      .unassigned-rune-magic {
+      & .unassigned-rune-magic {
         display: flex;
         gap: 0.5rem;
         align-items: center;
@@ -1867,74 +1941,75 @@
         padding: 4px 8px;
         margin-bottom: 4px;
 
-        a {
+        & a {
           color: var(--rqg-unassigned-rm-action);
           text-shadow: none;
         }
 
-        [data-action="editItem"] {
+        & [data-action="editItem"] {
           flex: 1 1 auto;
           font-weight: 600;
 
-          i {
+          & i {
             margin-right: 0.35rem;
           }
         }
 
-        [data-action="deleteItem"] {
+        & [data-action="deleteItem"] {
           flex: 0 0 auto;
         }
       }
 
-      .cult-section {
+      & .cult-section {
         margin-bottom: 1.5rem;
 
-        .cult-header {
+        & .cult-header {
           padding: 4px 6px;
           cursor: pointer;
 
-          h2 {
+          & h2 {
             display: flex;
             align-items: baseline;
             gap: 0.5rem;
             flex-wrap: wrap;
 
-            img.rune {
+            & img.rune {
               height: 20px;
               width: 20px;
               object-fit: contain;
               vertical-align: middle;
             }
 
-            .small-size {
+            & .small-size {
               font-size: 0.75em;
               font-weight: normal;
               margin-left: auto;
             }
 
-            .warning {
+            & .warning {
               color: var(--color-text-dark-warn, #a00);
             }
           }
 
-          .cult-meta {
+          & .cult-meta {
             display: flex;
             flex-direction: column;
             gap: 0.25rem;
             font-size: 0.85em;
             padding: 2px 0;
 
-            .cult-meta-row {
+            & .cult-meta-row {
               display: flex;
               flex-wrap: nowrap;
               gap: 0.5rem 1.5rem;
               justify-content: space-between;
               min-width: 0;
 
-              > span,
-              > div {
-                // Holy Days / Gifts / Geases: get most of any extra space,
-                // since they usually hold the longest text
+              & > span,
+              & > div {
+/* Holy Days / Gifts / Geases: get most of any extra space, */
+
+/* since they usually hold the longest text */
                 flex: 4 1 10em;
                 min-width: 0;
                 overflow: hidden;
@@ -1943,30 +2018,31 @@
                 -webkit-line-clamp: 2;
                 line-clamp: 2;
 
-                // Bold label on its own line, content follows below
-                > b:first-child {
+/* Bold label on its own line, content follows below */
+                & > b:first-child {
                   display: block;
                 }
 
-                // Flatten block elements inside enriched HTML content
-                p,
-                div,
-                br {
+/* Flatten block elements inside enriched HTML content */
+                & p,
+                & div,
+                & br {
                   display: inline;
                   margin: 0;
                 }
               }
 
-              > span.rune-points {
+              & > span.rune-points {
                 flex: 0 0 auto;
-                display: block; // override line-clamp display
+                display: block; /* override line-clamp display */
                 white-space: nowrap;
-                min-width: 5.5em; // fit label + input without wrapping
+                min-width: 5.5em; /* fit label + input without wrapping */
               }
 
-              > div.joined-cults {
-                // Cult/god name: size to its (usually short) content instead of
-                // stretching, but cap so a long name/tagline doesn't dominate
+              & > div.joined-cults {
+/* Cult/god name: size to its (usually short) content instead of */
+
+/* stretching, but cap so a long name/tagline doesn't dominate */
                 flex: 1 1 auto;
                 min-width: 8em;
                 max-width: 16em;
@@ -1974,7 +2050,7 @@
               }
             }
 
-            input[type="number"] {
+            & input[type="number"] {
               width: 3em;
               text-align: center;
               font-size: 12px;
@@ -1999,33 +2075,33 @@
         }
       }
 
-      .cult-cha-limit {
+      & .cult-cha-limit {
         text-align: right;
         font-size: 0.85em;
         padding: 2px 0;
       }
 
-      .grid.runemagic.item-list {
+      & .grid.runemagic.item-list {
         grid-template-columns: 30px auto 1fr auto;
       }
 
-      .rune-magic-row {
+      & .rune-magic-row {
         display: contents;
 
-        > * {
+        & > * {
           padding: 2px;
           position: relative;
           display: flex;
           align-items: center;
           width: 100%;
 
-          img {
+          & img {
             max-width: 26px;
             max-height: 26px;
             object-fit: contain;
           }
 
-          img.rune {
+          & img.rune {
             height: 16px;
             width: 16px;
             mix-blend-mode: overlay;
@@ -2033,7 +2109,7 @@
             margin: 0 1px;
           }
 
-          img.common {
+          & img.common {
             height: 16px;
             width: 16px;
             border: none;
@@ -2065,7 +2141,7 @@
       }
     }
 
-    // --- Wounded / injured overall sheet background ---
+/* --- Wounded / injured overall sheet background --- */
     &.dead {
       filter: grayscale(0.8);
     }
@@ -2080,7 +2156,7 @@
     &.wounded {
       background: #620000d0;
 
-      > .window-content {
+      & > .window-content {
         scrollbar-color: rgb(255 255 255 / 70%) transparent;
         background-image: linear-gradient(#62000028, #62000028), var(--rqg-parchment-url);
         background-repeat: repeat-y;
@@ -2091,13 +2167,13 @@
         background-size: 100%, calc(100% - var(--rqg-nav-width));
       }
 
-      .window-header {
+      & .window-header {
         background-color: #620000d0;
       }
     }
 
     &.wounded {
-      .health .humanoid::before {
+      & .health .humanoid::before {
         mix-blend-mode: revert;
         filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
           brightness(99%) contrast(105%);
@@ -2107,14 +2183,14 @@
     &.shock,
     &.unconscious,
     &.dead {
-      .health .humanoid::before {
+      & .health .humanoid::before {
         mix-blend-mode: revert;
         filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
           brightness(99%) contrast(105%) blur(1.5px);
       }
     }
 
-    // --- Background tab ---
+/* --- Background tab --- */
     .background-tab-v2 {
       display: none;
 
@@ -2126,40 +2202,40 @@
       gap: 1rem;
       padding: 0.5rem;
 
-      .background-fieldsets {
+      & .background-fieldsets {
         display: flex;
         flex-wrap: wrap;
         gap: 0.75rem;
         align-items: flex-start;
 
-        fieldset {
+        & fieldset {
           flex: 1 1 auto;
           min-width: 200px;
           border: 1px solid var(--color-border-dark-tertiary, #a8926b);
           border-radius: 4px;
           padding: 6px 10px;
 
-          legend {
+          & legend {
             font-weight: bold;
             padding: 0 4px;
             font-size: 0.9em;
           }
         }
 
-        .key-value-grid {
+        & .key-value-grid {
           display: grid;
           grid-template-columns: auto 1fr;
           gap: 4px 0.75rem;
           align-items: center;
           font-size: 0.85em;
 
-          label {
+          & label {
             text-align: right;
             white-space: nowrap;
           }
 
-          // Reputation row: subgrid so both cells span and hover covers the full row
-          .reputation-row {
+/* Reputation row: subgrid so both cells span and hover covers the full row */
+          & .reputation-row {
             grid-column: 1 / -1;
             display: grid;
             grid-template-columns: subgrid;
@@ -2177,53 +2253,54 @@
             }
           }
 
-          input[type="text"],
-          select {
+          & input[type="text"],
+          & select {
             width: 100%;
           }
 
-          input[type="number"] {
+          & input[type="number"] {
             width: 5em;
           }
 
-          // Input + "(L)" suffix on the same line
-          div:has(> input[type="number"]) {
+/* Input + "(L)" suffix on the same line */
+          & div:has(> input[type="number"]) {
             display: flex;
             align-items: center;
             gap: 0.25em;
           }
 
-          // Global .key-value-grid styles set .drop-target to inline-grid.
-          // In the V2 background tab we want rqid dropzones to fill the value column.
-          .drop-target.item-sheet-rqid-link {
+/* Global .key-value-grid styles set .drop-target to inline-grid. */
+
+/* In the V2 background tab we want rqid dropzones to fill the value column. */
+          & .drop-target.item-sheet-rqid-link {
             display: grid;
             width: 100%;
           }
 
-          .rqid-dropzone-wrap {
+          & .rqid-dropzone-wrap {
             width: 100%;
           }
 
-          .rqid-dropzone-wrap > .drop-target.item-sheet-rqid-link {
+          & .rqid-dropzone-wrap > .drop-target.item-sheet-rqid-link {
             width: 100%;
           }
         }
 
-        .reputation-label {
+        & .reputation-label {
           display: flex;
           align-items: center;
           gap: 0.3em;
           justify-content: flex-end;
           cursor: pointer;
 
-          img {
+          & img {
             width: 16px;
             height: 16px;
             border: none;
           }
         }
 
-        .rqid-fallback-text {
+        & .rqid-fallback-text {
           font-style: italic;
           opacity: 0.7;
           font-size: 0.9em;
@@ -2231,7 +2308,7 @@
       }
     }
 
-    // --- Active Effects tab ---
+/* --- Active Effects tab --- */
     .tab.activeeffectstesting {
       min-width: 0;
       overflow: auto;
@@ -2241,30 +2318,30 @@
         flex-direction: column;
       }
 
-      table {
+      & table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.9em;
 
-        td,
-        th {
+        & td,
+        & th {
           padding: 2px 4px;
           text-align: left;
           vertical-align: middle;
         }
 
-        th {
+        & th {
           font-weight: bold;
           background: rgb(0 0 0 / 30%);
         }
 
-        // Constrain narrow columns with fixed widths
+/* Constrain narrow columns with fixed widths */
         th:nth-child(1),
         td:nth-child(1) {
           width: 50px;
           text-align: center;
 
-          img {
+          & img {
             max-width: 100%;
             height: auto;
           }
@@ -2299,7 +2376,7 @@
           text-align: center;
         }
 
-        // Nested table for changes - compact layout, expands to fill space
+/* Nested table for changes - compact layout, expands to fill space */
         td > table {
           width: 100%;
           border-collapse: collapse;
@@ -2307,8 +2384,8 @@
           margin: 0;
           table-layout: fixed;
 
-          // Sub-columns: key takes remaining width, type is fixed, value fits 3 chars.
-          td:nth-child(1) {
+/* Sub-columns: key takes remaining width, type is fixed, value fits 3 chars. */
+          & td:nth-child(1) {
             padding: 1px 3px;
             width: calc(100% - 14ch);
             min-width: 0;
@@ -2318,7 +2395,7 @@
             text-align: left;
           }
 
-          td:nth-child(2) {
+          & td:nth-child(2) {
             padding: 1px 3px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -2326,7 +2403,7 @@
             width: 11ch;
           }
 
-          td:nth-child(3) {
+          & td:nth-child(3) {
             padding: 1px 3px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -2338,7 +2415,7 @@
       }
     }
 
-    // --- Edit mode badge in window header ---
+/* --- Edit mode badge in window header --- */
     .edit-mode-badge {
       opacity: 0.7;
       padding: 1px 6px;
@@ -2347,16 +2424,17 @@
       user-select: none;
     }
 
-    // --- Edit mode ---
-    // When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`)
+/* --- Edit mode --- */
+
+/* When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`) */
     &.edit-mode {
       background: #007300d0;
 
-      .window-header {
+      & .window-header {
         background-color: #007300d0;
       }
 
-      > .window-content {
+      & > .window-content {
         background-image: linear-gradient(#00730028, #00730028), var(--rqg-parchment-url);
         background-repeat: repeat-y;
         background-attachment: scroll, local;
@@ -2366,14 +2444,15 @@
         background-size: 100%, calc(100% - var(--rqg-nav-width));
       }
 
-      .characteristics input {
+      & .characteristics input {
         background-color: rgb(255 255 255 / 15%);
       }
     }
   }
 
-  // Item description tooltip — applied via data-tooltip-class on the element,
-  // Foundry adds this class to the #tooltip element.
+/* Item description tooltip — applied via data-tooltip-class on the element, */
+
+/* Foundry adds this class to the #tooltip element. */
   #tooltip.item-description-tooltip,
   .locked-tooltip.item-description-tooltip {
     max-width: 600px;

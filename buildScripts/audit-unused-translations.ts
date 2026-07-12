@@ -6,7 +6,7 @@ import { dynamicKeyMap } from "./i18n-dynamic-key-map";
 const DEFAULT_LANG = "en";
 const DEFAULT_I18N_DIR = path.resolve(process.cwd(), "static", "i18n");
 const DEFAULT_SOURCE_DIRS = ["src", "test", "tests", "buildScripts"];
-const DEFAULT_SOURCE_EXTENSIONS = new Set([".ts", ".hbs", ".scss", ".js", ".mjs", ".cjs"]);
+const DEFAULT_SOURCE_EXTENSIONS = new Set([".ts", ".hbs", ".css", ".js", ".mjs", ".cjs"]);
 
 type Options = {
   failOnUnused: boolean;
