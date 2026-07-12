@@ -1,28 +1,41 @@
 /* Theme layer — contains all dark/light mode styling and color schemes. */
+
 /* This layer affects all other layers uniformly through CSS custom properties and selectors. */
+
 /* Source: Previously in variables.css */
+
 @layer system.theme {
-  /* Item-sheet header is a prominent branded area. */
-  /* In dark mode the orange (#f3a71e) fails WCAG AA with Foundry's light text (~2:1). */
-  /* We invert the roles: dark brown background + orange as the active-tab accent. */
-  /* In light mode we keep the familiar orange header + dark brown accent. */
-  /* Foundry's default theme is dark, so :root defines dark-mode defaults. */
-  /* .theme-light overrides for light; .theme-dark reinforces for per-app overrides. */
+/* Item-sheet header is a prominent branded area. */
+
+/* In dark mode the orange (#f3a71e) fails WCAG AA with Foundry's light text (~2:1). */
+
+/* We invert the roles: dark brown background + orange as the active-tab accent. */
+
+/* In light mode we keep the familiar orange header + dark brown accent. */
+
+/* Foundry's default theme is dark, so :root defines dark-mode defaults. */
+
+/* .theme-light overrides for light; .theme-dark reinforces for per-app overrides. */
+
   .theme-dark {
     --rqg-themed-exp-outline: rgb(0 0 0 / 80%);
     --rqg-themed-highlight: #f8da10;
     --rqg-svg-invert-param: 0.1;
     --rqg-rune-min-opacity: 0.05;
-    /* V2 actor sheet parchment — dark variant image (replace placeholder with properly authored dark parchment) */
+
+/* V2 actor sheet parchment — dark variant image (replace placeholder with properly authored dark parchment) */
     --rqg-parchment-url: url("/systems/rqg/assets/images/ui/mainbackground-dark.webp");
-    /* Item sheet header — dark brown bg, warm cream text, orange active-tab accent */
-    /* Header bg is an RQG-specific deep brown (#3e2723); no Foundry equivalent. */
+
+/* Item sheet header — dark brown bg, warm cream text, orange active-tab accent */
+
+/* Header bg is an RQG-specific deep brown (#3e2723); no Foundry equivalent. */
     --rqg-color-header-bg: #3e2723;
     --rqg-color-header-text: var(--color-light-1); /* #f7f3e8 — Foundry warm cream */
     --rqg-color-header-border: rgb(255 255 255 / 20%); /* semi-transparent, adapts to bg */
     --rqg-color-header-input-bg: rgb(
       255 255 255 / 12%
     ); /* Foundry pattern: translucent overlay on bg */
+
     --rqg-color-header-input-border: rgb(255 255 255 / 25%);
     --rqg-color-header-input-text: var(--color-light-2); /* #efe6d8 — slightly muted cream */
     --rqg-color-header-active-tab-bg: var(--rqg-color-main-bg); /* orange pop against deep brown */
@@ -31,14 +44,17 @@
     --rqg-income-skill-text: var(--color-light-1);
     --rqg-income-skill-border: #7b6245;
   }
+
   .theme-light {
     --rqg-themed-exp-outline: rgb(255 255 255 / 80%);
     --rqg-themed-highlight: #901010;
     --rqg-svg-invert-param: 0.9;
     --rqg-rune-min-opacity: 0.2;
-    /* V2 actor sheet parchment — light variant (original image) */
+
+/* V2 actor sheet parchment — light variant (original image) */
     --rqg-parchment-url: url("/systems/rqg/assets/images/ui/mainbackground.webp");
-    /* Item sheet header — orange bg, dark text, brown active-tab accent */
+
+/* Item sheet header — orange bg, dark text, brown active-tab accent */
     --rqg-color-header-bg: var(--rqg-color-main-bg); /* #f3a71e — the RQG brand orange */
     --rqg-color-header-text: var(--color-dark-1); /* #111 — max contrast on orange */
     --rqg-color-header-border: rgb(0 0 0 / 40%); /* semi-transparent, adapts to bg */
@@ -51,6 +67,7 @@
     --rqg-income-skill-text: var(--color-dark-1);
     --rqg-income-skill-border: #a8926b;
   }
+
   .theme-dark .rqg.character.actor-sheet-v2 {
     --rqg-table-alternate-background: rgb(255 255 255 / 5%);
     --rqg-box-shadow-editor-content: inset 0 0 20px 0 #3a2a10, 0 0 3px 2px #3a2a10;
@@ -69,7 +86,8 @@
     --rqg-unassigned-rm-text: #1f1204;
     --rqg-unassigned-rm-action: #3a2208;
     --rqg-tree-border-strong: #8f6a32;
-    /* V2 mode utility tokens (dark) */
+
+/* V2 mode utility tokens (dark) */
     --rqg-v2-sr-text-shadow: 0 0 3px #000, 0 0 3px #000;
     --rqg-v2-rune-blend-mode: luminosity;
     --rqg-v2-grid-headings-blend-mode: soft-light;
@@ -80,6 +98,7 @@
     --rqg-v2-tab-icon-inactive-filter: none;
     --rqg-v2-tab-icon-hover-filter: none;
   }
+
   .theme-light .rqg.character.actor-sheet-v2 {
     --rqg-table-alternate-background: rgb(0 0 0 / 8%);
     --rqg-box-shadow-editor-content: inset 0 0 20px 0 #bd9844, 0 0 3px 2px #bd9844;
@@ -98,7 +117,8 @@
     --rqg-unassigned-rm-text: #2f1f07;
     --rqg-unassigned-rm-action: #5a3a10;
     --rqg-tree-border-strong: #7b5a29;
-    /* V2 mode utility tokens (light) */
+
+/* V2 mode utility tokens (light) */
     --rqg-v2-sr-text-shadow: none;
     --rqg-v2-rune-blend-mode: normal;
     --rqg-v2-grid-headings-blend-mode: normal;
@@ -109,7 +129,8 @@
     --rqg-v2-tab-icon-inactive-filter: brightness(0) invert(40%);
     --rqg-v2-tab-icon-hover-filter: brightness(0) invert(20%);
   }
-  /* Root theme defaults (dark mode — Foundry's default) */
+
+/* Root theme defaults (dark mode — Foundry's default) */
   :root {
     --rqg-themed-exp-outline: rgb(0 0 0 / 80%);
     --rqg-themed-highlight: #f8da10;
@@ -127,14 +148,16 @@
     --rqg-income-skill-bg: #4a3820;
     --rqg-income-skill-text: var(--color-light-1);
     --rqg-income-skill-border: #7b6245;
-    /* Keep legacy-v1 visuals as the default token set. */
+
+/* Keep legacy-v1 visuals as the default token set. */
     --rqg-table-alternate-background: rgb(0 0 0 / 8%);
     --rqg-box-shadow-editor-content: inset 0 0 20px 0 #bd9844, 0 0 3px 2px #bd9844;
     --rqg-color-enc-bg: #d8b16e;
     --rqg-color-enc-legend: #e4cc9d;
     --rqg-color-dex-sr-bg: #f2ff009e;
     --rqg-color-siz-sr-bg: #15ff1f5e;
-    /* V2 mode utility defaults (dark mode) */
+
+/* V2 mode utility defaults (dark mode) */
     --rqg-v2-sr-text-shadow: 0 0 3px #000, 0 0 3px #000;
     --rqg-v2-rune-blend-mode: luminosity;
     --rqg-v2-grid-headings-blend-mode: soft-light;

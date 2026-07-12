@@ -1,5 +1,7 @@
 /* Structural and design system CSS custom properties. */
+
 /* Theme-specific variables (dark/light mode) are now in theme.css */
+
 :root {
   --rqg-color-main: #854906;
   --rqg-color-main-bg: #f3a71e;
