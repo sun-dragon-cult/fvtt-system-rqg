@@ -197,12 +197,16 @@ function minifyPlugin(): Vite.Plugin {
     renderChunk: {
       order: "post",
       async handler(code) {
-        return esbuild.transform(code, {
+        const result = await esbuild.transform(code, {
           keepNames: true,
           minifyIdentifiers: false,
           minifySyntax: true,
           minifyWhitespace: true,
         });
+        // esbuild.transform() returns map as an empty string when no sourcemap was requested.
+        // Rolldown (Vite 8+) tries to JSON-parse a truthy `map`, so an empty string breaks the build.
+        // Rollup (Vite 7 and earlier) silently ignored it, hiding this bug.
+        return { code: result.code, map: null };
       },
     },
   };

@@ -196,15 +196,18 @@ export class CompendiumPack {
    */
   async save(): Promise<number> {
     const langPackOutPath = getPackOutDir();
-    //create DB and grab a transaction
     const dbPath = path.join(langPackOutPath, this.packDir);
-    const db = new ClassicLevel(dbPath, { keyEncoding: "utf8", valueEncoding: "json" });
-    const batch = db.batch();
 
     //attempt to clear the DB files if they already exist.
     if (existsSync(dbPath)) {
       await promises.rm(dbPath, { recursive: true });
     }
+
+    //create DB and grab a transaction
+    const db = new ClassicLevel(dbPath, { keyEncoding: "utf8", valueEncoding: "json" });
+    // abstract-level 3+ requires the db to be open before a chained batch can be created.
+    await db.open();
+    const batch = db.batch();
 
     for (const doc of this.data) {
       this.finalize(doc, batch);
