@@ -1,6 +1,5 @@
-// Structural and design system CSS custom properties.
-// Theme-specific variables (dark/light mode) are now in _theme.scss
-
+/* Structural and design system CSS custom properties. */
+/* Theme-specific variables (dark/light mode) are now in theme.css */
 :root {
   --rqg-color-main: #854906;
   --rqg-color-main-bg: #f3a71e;
@@ -17,8 +16,8 @@
   --rqg-box-shadow-grid-header: inset 0 0 20px 7px var(--rqg-color-main-bg);
   --rqg-color-grid-text-shadow: #6f644e;
   --rqg-color-enc-warning: #ff640045;
-  --rqg-color-invalid-journal: #e4b5ad; // Regular journal in chat message is: #7a7971
-  --color-shadow-primary: var(--rqg-color-main); // #ff0000;
-  --color-border-highlight: var(--rqg-color-main-bg); // #ff6400;
-  --color-border-highlight-alt: var(--rqg-color-main-bg); // #ff0000;
+  --rqg-color-invalid-journal: #e4b5ad; /* Regular journal in chat message is: #7a7971 */
+  --color-shadow-primary: var(--rqg-color-main); /* #ff0000; */
+  --color-border-highlight: var(--rqg-color-main-bg); /* #ff6400; */
+  --color-border-highlight-alt: var(--rqg-color-main-bg); /* #ff0000; */
 }

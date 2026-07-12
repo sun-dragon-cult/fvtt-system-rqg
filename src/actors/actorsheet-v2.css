@@ -1,0 +1,2178 @@
+@layer system.actor-v2 {
+  /* V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed. */
+  /* Reuses --rqg-* CSS variables from variables.css and global utility classes from rqg.css. */
+  /* Dark-mode overrides scoped to V2 actor sheet only (don't affect V1) */
+  .theme-dark .rqg.character.actor-sheet-v2 .dex-sr,
+  .theme-dark .rqg.character.actor-sheet-v2 .siz-sr,
+  .theme-dark .rqg.character.actor-sheet-v2 .sr-buttons .dex,
+  .theme-dark .rqg.character.actor-sheet-v2 .sr-buttons .siz {
+    text-shadow: var(--rqg-v2-sr-text-shadow);
+  }
+  .theme-dark .rqg.character.actor-sheet-v2 img.rune {
+    mix-blend-mode: var(--rqg-v2-rune-blend-mode);
+  }
+  .theme-dark .rqg.character.actor-sheet-v2 .grid .headings {
+    mix-blend-mode: var(--rqg-v2-grid-headings-blend-mode);
+    min-height: 1.8rem;
+  }
+  .theme-dark .rqg.character.actor-sheet-v2 {
+    /* Override Foundry's opaque dark-mode application background */
+    /* so wounded/edit-mode transparency shows through */
+  }
+  .theme-dark .rqg.character.actor-sheet-v2.dead, .theme-dark .rqg.character.actor-sheet-v2.unconscious, .theme-dark .rqg.character.actor-sheet-v2.shock, .theme-dark .rqg.character.actor-sheet-v2.wounded, .theme-dark .rqg.character.actor-sheet-v2.edit-mode {
+    --background: transparent;
+    backdrop-filter: none;
+    /* Also disable the dark-mode backdrop-filter on .window-content */
+    /* so the content edges match the header transparency */
+  }
+  .theme-dark .rqg.character.actor-sheet-v2.dead > .window-content, .theme-dark .rqg.character.actor-sheet-v2.unconscious > .window-content, .theme-dark .rqg.character.actor-sheet-v2.shock > .window-content, .theme-dark .rqg.character.actor-sheet-v2.wounded > .window-content, .theme-dark .rqg.character.actor-sheet-v2.edit-mode > .window-content {
+    backdrop-filter: none;
+  }
+  .theme-dark .rqg.character.actor-sheet-v2.dead, .theme-dark .rqg.character.actor-sheet-v2.unconscious, .theme-dark .rqg.character.actor-sheet-v2.shock, .theme-dark .rqg.character.actor-sheet-v2.wounded, .theme-dark .rqg.character.actor-sheet-v2.edit-mode {
+    /* Restore opaque background on the controls dropdown menu */
+  }
+  .theme-dark .rqg.character.actor-sheet-v2.dead .controls-dropdown, .theme-dark .rqg.character.actor-sheet-v2.unconscious .controls-dropdown, .theme-dark .rqg.character.actor-sheet-v2.shock .controls-dropdown, .theme-dark .rqg.character.actor-sheet-v2.wounded .controls-dropdown, .theme-dark .rqg.character.actor-sheet-v2.edit-mode .controls-dropdown {
+    background: var(--color-cool-5-90);
+    backdrop-filter: blur(4px);
+  }
+  .theme-dark .rqg.character.actor-sheet-v2 {
+    /* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark mode */
+    /* Specificity: 0,7,0 beats V1's 0,6,0 */
+  }
+  .theme-dark .rqg.character.actor-sheet-v2 .contextmenu.context.context-highlight {
+    mix-blend-mode: normal;
+    background: var(--rqg-v2-context-highlight-bg) !important;
+    border-color: var(--rqg-v2-context-highlight-border) !important;
+  }
+  /* Restore light-mode enc colors at same specificity */
+  .theme-light .rqg.character.actor-sheet-v2 .item-drag-handle {
+    color: rgba(0, 0, 0, 0.45); /* dark grey for light mode (default is white for dark mode) */
+  }
+  .theme-light .rqg.character.actor-sheet-v2 {
+    /* Override V1's context-highlight for ALL V2 context menus — light mode */
+    /* Specificity: 0,7,0 beats V1's 0,6,0 */
+  }
+  .theme-light .rqg.character.actor-sheet-v2 .contextmenu.context.context-highlight {
+    mix-blend-mode: normal;
+    background: var(--rqg-v2-context-highlight-bg) !important;
+    border-color: var(--rqg-v2-context-highlight-border) !important;
+  }
+  .theme-light .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 nav.cult-tabs .item img.rune {
+    filter: var(--rqg-v2-tab-icon-active-filter) !important;
+  }
+  .theme-light .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 nav.cult-tabs .item:not(.active) img.rune {
+    filter: var(--rqg-v2-tab-icon-inactive-filter) !important;
+  }
+  .theme-light .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 nav.cult-tabs .item:hover:not(.active) img.rune {
+    filter: var(--rqg-v2-tab-icon-hover-filter) !important;
+  }
+  .theme-light .rqg.character.actor-sheet-v2 .window-header {
+    background-color: var(--rqg-v2-window-header-overlay-bg);
+  }
+  .theme-light .rqg.character.actor-sheet-v2 .play-mode-icon,
+  .theme-light .rqg.character.actor-sheet-v2 .edit-mode-icon {
+    filter: invert(var(--rqg-svg-invert-param));
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Width of the vertical nav sidebar — used to align header parchment with content */
+    --rqg-window-header-height: 40px;
+    --rqg-nav-width: 20px;
+    /* Reduce sort button and icon size to match header height. */
+  }
+  .rqg.character.actor-sheet-v2 button.sort {
+    width: 1.4rem;
+    font-size: 0.7rem;
+  }
+  .rqg.character.actor-sheet-v2 button.sort i {
+    margin-left: 0;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Dark fill visible behind both nav and parchment transparent areas */
+    background: rgba(0, 0, 0, 0.6);
+    /* Suppress V1 neumorphic hover/active shadow in V2 */
+  }
+  .rqg.character.actor-sheet-v2 [data-characteristic-roll]:hover, .rqg.character.actor-sheet-v2 [data-characteristic-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-damage-roll]:hover,
+  .rqg.character.actor-sheet-v2 [data-damage-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-item-roll]:hover,
+  .rqg.character.actor-sheet-v2 [data-item-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-item-equipped-toggle]:hover,
+  .rqg.character.actor-sheet-v2 [data-item-equipped-toggle]:active,
+  .rqg.character.actor-sheet-v2 [data-action=healWound]:hover,
+  .rqg.character.actor-sheet-v2 [data-action=healWound]:active,
+  .rqg.character.actor-sheet-v2 [data-action=addWound]:hover,
+  .rqg.character.actor-sheet-v2 [data-action=addWound]:active,
+  .rqg.character.actor-sheet-v2 [data-rqid-link]:hover,
+  .rqg.character.actor-sheet-v2 [data-rqid-link]:active,
+  .rqg.character.actor-sheet-v2 [data-weapon-roll]:hover,
+  .rqg.character.actor-sheet-v2 [data-weapon-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-reputation-roll]:hover,
+  .rqg.character.actor-sheet-v2 [data-reputation-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-rune-magic-roll]:hover,
+  .rqg.character.actor-sheet-v2 [data-rune-magic-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-spirit-magic-roll]:hover,
+  .rqg.character.actor-sheet-v2 [data-spirit-magic-roll]:active,
+  .rqg.character.actor-sheet-v2 [data-gear-add]:hover,
+  .rqg.character.actor-sheet-v2 [data-gear-add]:active,
+  .rqg.character.actor-sheet-v2 [data-passion-add]:hover,
+  .rqg.character.actor-sheet-v2 [data-passion-add]:active {
+    box-shadow: none;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Unified visual feedback for generic drops anywhere on the actor sheet. */
+    /* Apply to both header and content so the indicator remains visible above and below */
+    /* the AppV2 overlap where window-content extends under the header. */
+  }
+  @keyframes rqg-sheet-drop-pulse {
+    0%, 100% {
+      box-shadow: inset 0 0 0 4px var(--rqg-drop-highlight-color), inset 0 0 28px 10px color-mix(in srgb, var(--rqg-drop-highlight-color) 55%, transparent);
+    }
+    50% {
+      box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--rqg-drop-highlight-color) 90%, white), inset 0 0 44px 18px color-mix(in srgb, var(--rqg-drop-highlight-color) 70%, transparent);
+    }
+  }
+  .rqg.character.actor-sheet-v2.drag-hover-sheet > .window-header, .rqg.character.actor-sheet-v2.drag-hover-sheet > .window-content {
+    box-shadow: inset 0 0 0 4px var(--rqg-drop-highlight-color), inset 0 0 28px 10px color-mix(in srgb, var(--rqg-drop-highlight-color) 55%, transparent);
+    background-image: linear-gradient(color-mix(in srgb, var(--rqg-drop-highlight-color) 12%, transparent), color-mix(in srgb, var(--rqg-drop-highlight-color) 12%, transparent));
+    background-blend-mode: screen;
+    animation: rqg-sheet-drop-pulse 1.2s ease-in-out infinite;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Generic drag handle behavior for all V2 item lists. */
+    /* Hidden by default, positioned outside-left, and revealed on row/cell hover. */
+  }
+  .rqg.character.actor-sheet-v2 .item-drag-handle {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-120%, -50%);
+    opacity: 0;
+    pointer-events: auto;
+    cursor: grab;
+    color: rgba(255, 255, 255, 0.7);
+    z-index: 2;
+    transition: opacity 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rqg.character.actor-sheet-v2 .item-drag-handle:active {
+    cursor: grabbing;
+  }
+  .rqg.character.actor-sheet-v2 .item-drag-handle .grip-icon {
+    display: inline-block;
+    height: 0.8rem;
+    aspect-ratio: 284.44/512;
+    mask-image: url("/systems/rqg/assets/images/ui/grip-drag-dots.svg");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    background-color: currentcolor;
+    margin-right: 3px;
+    pointer-events: none;
+  }
+  .rqg.character.actor-sheet-v2 nav.cult-tabs,
+  .rqg.character.actor-sheet-v2 nav.gear-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    margin-bottom: 0;
+    border: none;
+  }
+  .rqg.character.actor-sheet-v2 nav.cult-tabs .item,
+  .rqg.character.actor-sheet-v2 nav.gear-tabs .item {
+    flex: 1;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border: 1px solid var(--color-border-dark-secondary, #7b6245);
+    border-radius: 6px 6px 0 0;
+    border-bottom: none;
+    cursor: pointer;
+    background: rgba(139, 90, 43, 0.3);
+    font-family: var(--font-primary);
+    font-size: 1rem;
+  }
+  .rqg.character.actor-sheet-v2 nav.cult-tabs .item img,
+  .rqg.character.actor-sheet-v2 nav.gear-tabs .item img {
+    height: 16px;
+    width: 16px;
+    border: none;
+    mix-blend-mode: normal;
+  }
+  .rqg.character.actor-sheet-v2 nav.cult-tabs .item.active,
+  .rqg.character.actor-sheet-v2 nav.gear-tabs .item.active {
+    background: transparent;
+    border-bottom: none;
+    font-weight: bold;
+    margin-bottom: 0;
+  }
+  .rqg.character.actor-sheet-v2 nav.cult-tabs .item:hover:not(.active),
+  .rqg.character.actor-sheet-v2 nav.gear-tabs .item:hover:not(.active) {
+    background: transparent;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .gear-wrapper {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .gear-wrapper > * {
+    flex: 1 1 18rem;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear article {
+    min-width: 0;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .grid.item-list .gear-row {
+    display: contents;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* gear-row children are not direct children of .grid so the base > * flex rule */
+    /* doesn't reach them — apply the same flex layout here. */
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .grid.item-list .gear-row > * {
+    padding: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .grid.item-list .gear-row > .usagecontainer {
+    display: block;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .grid.item-list {
+    column-gap: 5px;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .grid.gear.gear-no-price.item-list {
+    grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
+  }
+  .rqg.character.actor-sheet-v2 :has(> .item-drag-handle),
+  .rqg.character.actor-sheet-v2 .tab.gear .location li.gear-row > .grid.location-row > div:first-child {
+    position: relative;
+    overflow: visible;
+  }
+  .rqg.character.actor-sheet-v2 :is(.skill-row,
+  .passion-row,
+  .rune.rune-card,
+  .spirit-magic-row,
+  .rune-magic-row,
+  .tab.gear .location li.gear-row > .grid.location-row,
+  .grid.gear.item-list .gear-row,
+  .grid.weapon.item-list .gear-row,
+  .grid.armor.item-list .gear-row,
+  .grid.hit-location.item-list > .contextmenu.item):hover .item-drag-handle,
+  .rqg.character.actor-sheet-v2 :has(> .item-drag-handle:hover) > .item-drag-handle {
+    opacity: 1;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Drop position indicator — shown while dragging over a sortable item row. */
+    /* box-shadow avoids layout shift; inset keeps the line inside the cell boundary. */
+  }
+  .rqg.character.actor-sheet-v2 .drop-before {
+    box-shadow: inset 0 2px 0 0 var(--rqg-color-main-bg);
+  }
+  .rqg.character.actor-sheet-v2 .drop-after {
+    box-shadow: inset 0 -2px 0 0 var(--rqg-color-main-bg);
+  }
+  .rqg.character.actor-sheet-v2 .drop-into {
+    box-shadow: inset 0 0 0 2px var(--rqg-color-main-bg);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Journal entry links: help cursor on the element itself (V1 targets children only) */
+  }
+  .rqg.character.actor-sheet-v2 [data-rqid-link^=je] {
+    cursor: help;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Item tooltip elements are informational (icon hover = show description) */
+  }
+  .rqg.character.actor-sheet-v2 [data-item-tooltip] {
+    cursor: help;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Embedded item journal links use help cursor. */
+  }
+  .rqg.character.actor-sheet-v2 [data-item-id][data-rqid-link] {
+    cursor: help;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Weapon and damage rolls are interactive */
+  }
+  .rqg.character.actor-sheet-v2 [data-weapon-roll],
+  .rqg.character.actor-sheet-v2 [data-item-roll],
+  .rqg.character.actor-sheet-v2 [data-damage-roll] {
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* V2 gear tree should keep V1's pronounced container edge in location view. */
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .location ul.container {
+    border-top: 4px solid var(--rqg-tree-border-strong);
+    border-left: 4px solid var(--rqg-tree-border-strong);
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Grid layout for gear location-view rows. */
+  }
+  .rqg.character.actor-sheet-v2 .grid.location-row {
+    display: grid;
+    grid-template-columns: auto min-content max-content min-content;
+  }
+  .rqg.character.actor-sheet-v2 .grid.location-row img.item {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    margin-right: 4px;
+  }
+  .rqg.character.actor-sheet-v2 .grid.location-row i.fa-folder-open {
+    color: var(--rqg-tree-border-strong);
+    margin-right: 5px;
+    position: relative;
+    bottom: -7px;
+    left: -2px;
+    height: 100%;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Location view list styling — remove bullets and style nested containers. */
+  }
+  .rqg.character.actor-sheet-v2 ul.location {
+    list-style: none;
+    padding: 0;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .location ul {
+    list-style: none;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .location ul.container {
+    border-top: 3px solid var(--rqg-tree-border-strong);
+    border-left: 3px solid var(--rqg-tree-border-strong);
+    margin-top: 5px;
+    padding-top: 5px;
+    font-style: normal;
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .location ul.container.drop-into-container,
+  .rqg.character.actor-sheet-v2 .tab.gear .location .location-row.drop-into-container {
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), 0 0 0 2px var(--rqg-color-main-bg);
+    background-color: rgba(255, 255, 255, 0.09);
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .location .virtual {
+    font-style: italic;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Sticky encumbrance totals footer for gear tab. */
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .enc-totals {
+    display: flex;
+    position: sticky;
+    bottom: 0;
+    padding: 5px;
+    align-items: flex-end;
+    background-color: var(--rqg-color-enc-bg);
+    border: inset var(--rqg-color-enc-bg);
+    border-radius: 50px;
+    text-align: center;
+    gap: 3rem;
+    justify-content: center;
+    opacity: 0.9;
+    filter: drop-shadow(1px 1px 4px black);
+    z-index: 10;
+  }
+  .rqg.character.actor-sheet-v2 .tab.gear .enc-totals * {
+    justify-self: center;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). */
+    /* Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1. */
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-0 {
+    opacity: max(0.05, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.55);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-1 {
+    opacity: max(0.145, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.605);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-2 {
+    opacity: max(0.24, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.66);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-3 {
+    opacity: max(0.335, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.715);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-4 {
+    opacity: max(0.43, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.77);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-5 {
+    opacity: max(0.525, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.825);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-6 {
+    opacity: max(0.62, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.88);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-7 {
+    opacity: max(0.715, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.935);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-8 {
+    opacity: max(0.81, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(0.99);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-9 {
+    opacity: max(0.905, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(1.045);
+  }
+  .rqg.character.actor-sheet-v2 img.rune.rune-str-10 {
+    opacity: max(1, var(--rqg-rune-min-opacity, 0.05));
+    transform: scale(1.1);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Resize handle sits over dark background — always invert to light */
+  }
+  .rqg.character.actor-sheet-v2 .window-resize-handle {
+    filter: invert(1);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* Window header — shows app background to dim scrolled content behind it */
+  }
+  .rqg.character.actor-sheet-v2 .window-header {
+    position: relative;
+    border-bottom: none;
+    z-index: 1;
+    background-color: var(--rqg-v2-window-header-overlay-bg);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Layout: .window-content IS the form in AppV2, PARTS are its direct children --- */
+    /* Foundry sets display:flex on .window-content; override to grid for side-tab layout. */
+    /* Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats Foundry's */
+    /* single-class .window-content rule without needing !important. */
+  }
+  .rqg.character.actor-sheet-v2 > .window-content {
+    position: relative;
+    padding: 0;
+    display: grid;
+    grid-template: "nav content" 1fr/30px auto;
+    overflow: hidden;
+    container-type: size;
+    /* Parchment as window-content background — offset past the nav so jagged edges show */
+    background-image: var(--rqg-parchment-url);
+    background-repeat: repeat-y;
+    background-position: top left var(--rqg-nav-width);
+    background-size: calc(100% - var(--rqg-nav-width));
+  }
+  .rqg.character.actor-sheet-v2 > .window-content > * {
+    position: relative;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Header --- */
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header {
+    padding: 4px 4%;
+    align-items: start;
+    height: fit-content;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid {
+    display: grid;
+    grid-template-columns: [profile-start full-start] auto [profile-end name-rune-start] 1fr [name-rune-end full-end];
+    gap: 0;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .profile {
+    grid-row: 1/3;
+    grid-column: profile-start/profile-end;
+    margin-right: 15px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .profile img {
+    height: 125px;
+    transform: rotate(5deg);
+    box-shadow: var(--rqg-box-shadow-profile-img);
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .profile img.unset {
+    height: 20px;
+    flex: 0 0 20px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults {
+    grid-row: 1;
+    grid-column: name-rune-start/name-rune-end;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname {
+    background-color: transparent;
+    font-weight: bold;
+    flex: 1;
+    min-width: 0;
+    margin-left: 1rem;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname input[name=name] {
+    font-size: 35px;
+    border: none;
+    width: 100%;
+    height: 39px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: -8px;
+    margin-left: -0.8rem;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname input[name=name]:hover {
+    outline: 1px solid var(--color-border-light-2);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname input[name="system.extendedName"] {
+    font-size: 16px;
+    font-style: italic;
+    border: none;
+    width: 100%;
+    color: var(--color-text-secondary);
+    margin-left: -0.8rem;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname input[name="system.extendedName"]:hover {
+    outline: 1px solid var(--color-border-light-2);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname .name-display {
+    font-size: 35px;
+    line-height: 1;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .charname .extended-name-display {
+    font-size: 16px;
+    font-style: italic;
+    color: var(--color-text-secondary);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .name-runes-cults .rune {
+    height: 24px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics {
+    grid-row: 2;
+    grid-column: name-rune-start/name-rune-end;
+    margin-top: -2px;
+    display: grid;
+    grid-template-columns: repeat(7, auto);
+    justify-content: space-between;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics div {
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics label {
+    font-size: min(20px, 2.5cqw);
+    font-weight: bold;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics .value {
+    font-size: min(22px, 3cqw);
+    font-weight: bold;
+    margin-top: -4px;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics {
+    /* Rank color bar only when characteristic ratings are shown */
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics [class*=characteristic-rank] .value {
+    display: inline-block;
+    border-bottom: 7px solid var(--rank-color, transparent);
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics input:not(.value) {
+    background-color: transparent;
+    font-size: 12px;
+    width: 8ch;
+    min-width: 0;
+    text-align: center;
+    margin-top: -4px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics input:not(.value):focus {
+    border: 1px solid grey;
+    background-color: var(--color-text-light-highlight);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics [data-characteristic] {
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics [data-characteristic]:hover {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .characteristics [data-characteristic]:active {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .bottom-line {
+    grid-row: 3;
+    grid-column: full-start/full-end;
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-top: -4px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .bottom-line .dex-sr,
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .bottom-line .siz-sr {
+    border-radius: 6px;
+    border: 1px inset #999;
+    padding: 6px;
+    line-height: 1;
+    text-box: trim-both cap alphabetic;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .bottom-line .dex-sr {
+    background-color: var(--rqg-color-dex-sr-bg);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .bottom-line .siz-sr {
+    background-color: var(--rqg-color-siz-sr-bg);
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .bottom-line input[type=number] {
+    width: 4ch;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2px 5px;
+    background-color: var(--rqg-color-enc-bg);
+    border-radius: 3px;
+    font-size: 14px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc .locomotion-picker {
+    display: flex;
+    align-items: center;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc .locomotion-picker > i {
+    font-size: 1rem;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc .locomotion-select {
+    border: none;
+    background-color: var(--rqg-color-enc-bg);
+    color: inherit;
+    font-size: 13px;
+    padding: 0 2px;
+    width: auto;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc .locomotion-select option {
+    background-color: var(--rqg-color-enc-bg);
+    color: inherit;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc .equipped-status {
+    height: 1rem;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc {
+    /* Icon + move value pairs (equipped / carried) */
+  }
+  .rqg.character.actor-sheet-v2 .sheet-header .header-grid .mov-enc > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Vertical tab navigation (rotated left edge, matching V1) --- */
+  }
+  .rqg.character.actor-sheet-v2 .nav-wrapper {
+    grid-area: nav;
+    position: relative;
+    min-height: 0;
+    overflow: hidden auto;
+    scrollbar-gutter: stable;
+    /* Keep a little breathing room between vertical labels and scrollbar track */
+    /* without changing the effective nav column width. */
+    padding-inline-end: 6px;
+    margin-inline-end: -6px;
+  }
+  .rqg.character.actor-sheet-v2 .sheet-content {
+    grid-area: content;
+    min-height: 0;
+    overflow: auto;
+    scrollbar-gutter: stable;
+  }
+  .rqg.character.actor-sheet-v2 .navbackground {
+    position: absolute;
+    inset: 0;
+  }
+  .rqg.character.actor-sheet-v2 nav.sheet-tabs {
+    position: relative;
+    flex-direction: row;
+    border: none;
+    padding: 8px 0;
+    margin: 0;
+    display: block;
+    line-height: 20px;
+  }
+  .rqg.character.actor-sheet-v2 nav.sheet-tabs .item {
+    white-space: nowrap;
+    color: white;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg) translateX(-4px);
+    padding: clamp(5px, 1.2cqh, 10px) 0;
+    font-size: clamp(11px, 1.8cqh, 15px);
+    font-variant-caps: normal;
+  }
+  .rqg.character.actor-sheet-v2 nav.sheet-tabs .item.active {
+    text-shadow: 0 0 3px black, -2px -2px 3px black;
+    color: white;
+    font-weight: bold;
+    border-left: 3px solid var(--rqg-color-accent, #d4af37);
+    border-right: 3px solid var(--rqg-color-accent, #d4af37);
+    padding-left: 0;
+    padding-right: 0;
+    margin: 0 -3px;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Sheet body --- */
+  }
+  .rqg.character.actor-sheet-v2 .sheet-body {
+    padding: 8px 4%;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Common element styles --- */
+    /* Foundry's heading & text styles (border, font-size, margins) are scoped to */
+    /* `body.game .app` (V1 apps).  V2 apps use `.application` and don't inherit */
+    /* those rules, so we replicate the essentials inside .window-content only */
+    /* to avoid affecting the window title bar. */
+  }
+  .rqg.character.actor-sheet-v2 .window-content h1,
+  .rqg.character.actor-sheet-v2 .window-content h2,
+  .rqg.character.actor-sheet-v2 .window-content h3,
+  .rqg.character.actor-sheet-v2 .window-content h4 {
+    margin: 0 0 0.5rem;
+    padding: 0;
+  }
+  .rqg.character.actor-sheet-v2 .window-content h1 {
+    font-size: 2em;
+    border-bottom: 2px solid #782e22;
+  }
+  .rqg.character.actor-sheet-v2 .window-content h2 {
+    font-size: 1.5em;
+    border-bottom: 1px solid #782e22;
+  }
+  .rqg.character.actor-sheet-v2 .window-content h3 {
+    font-size: 1.25em;
+    border-bottom: 1px solid #782e22;
+  }
+  .rqg.character.actor-sheet-v2 img {
+    border: none;
+  }
+  .rqg.character.actor-sheet-v2 input {
+    width: initial;
+    border: none;
+  }
+  .rqg.character.actor-sheet-v2 input:hover {
+    outline: 1px solid var(--color-border-light-2);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Characteristic ranking indicators — set --rank-color, bar rendered on .value --- */
+    /* Reset the global border-bottom from V1 rank classes; V2 uses --rank-color on .value instead */
+  }
+  .rqg.character.actor-sheet-v2 [class*=characteristic-rank] {
+    border-bottom: none !important;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-high {
+    --rank-color: rgb(1 107 38);
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-10 {
+    --rank-color: #018a31d6;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-9 {
+    --rank-color: #018a31ad;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-8 {
+    --rank-color: #018a3182;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-7 {
+    --rank-color: #018a3159;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-6 {
+    --rank-color: #018a3130;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-5 {
+    --rank-color: #018a310d;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-4 {
+    --rank-color: #8a01010d;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-3 {
+    --rank-color: #8a010130;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-2 {
+    --rank-color: #8a010659;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-1 {
+    --rank-color: #8a010182;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-0 {
+    --rank-color: #8a0101ad;
+  }
+  .rqg.character.actor-sheet-v2 .characteristic-rank-low {
+    --rank-color: #8a0101ff;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Runes tab (V2 visual layout) --- */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* Highlight entire rune card when any clickable child is hovered/active */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card:has([data-item-roll]:hover) {
+    background: rgba(139, 90, 43, 0.18);
+    border-radius: 4px;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card:has([data-item-roll]:active) {
+    background: rgba(139, 90, 43, 0.3);
+    border-radius: 4px;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-section {
+    flex: 0 1 auto;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-section h2 {
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* --- Rune card: icon + name + chance% --- */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card img.rune {
+    height: 32px;
+    width: 32px;
+    object-fit: contain;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card .rune-name {
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card .rune-chance {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 1;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card input[type=number] {
+    width: 5ch;
+    text-align: center;
+    font-size: 12px;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card.standalone {
+    display: inline-flex;
+    margin: 0.25rem 0.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* --- Elemental wheel: pentagonal layout with arrows --- */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .elemental-wheel {
+    position: relative;
+    width: 20rem;
+    height: 20rem;
+    top: -0.8rem;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .elemental-wheel .rune-card img.rune {
+    height: 42px;
+    width: 42px;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-slot {
+    position: absolute;
+    /* Center the icon on the slot anchor via absolute positioning. */
+    /* Fixed width matches the 42px icon so centering is exact regardless */
+    /* of rune-name text width. Text overflows symmetrically via align-items: center. */
+    /* Do NOT use transform — it creates a stacking context and breaks */
+    /* mix-blend-mode on descendant images. */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-slot .rune-card {
+    position: absolute;
+    width: 42px;
+    left: -21px;
+    top: -21px;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* Regular pentagon inscribed in a circle of radius 35%, */
+    /* centered at (50%, 50%) in the 20rem × 20rem square container. */
+    /* Clockwise from top: Fire, Darkness, Water, Earth, Air. */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-fire {
+    left: 50%;
+    top: 15%;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-darkness {
+    left: 83%;
+    top: 39%;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-water {
+    left: 71%;
+    top: 78%;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-earth {
+    left: 29%;
+    top: 78%;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-air {
+    left: 17%;
+    top: 39%;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-moon {
+    left: 50%;
+    top: 50%;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-connectors {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-connectors .wheel-pentagram {
+    stroke: var(--rqg-color-main);
+    stroke-width: 0.75;
+    opacity: 0.6;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-connectors .wheel-arrows {
+    fill: none;
+    stroke: var(--rqg-color-main);
+    stroke-width: 1.5;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .wheel-connectors #rune-arrow path {
+    fill: var(--rqg-color-main);
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* --- Opposed pairs (power & form runes) --- */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .opposed-pairs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .opposed-row {
+    display: grid;
+    grid-template-columns: 1fr 6rem 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    /* Left rune aligns right, right rune aligns left */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .opposed-row > .rune-slot:first-child {
+    justify-self: end;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .opposed-row > .rune-slot:last-child {
+    justify-self: start;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* --- Balance track with sliding marker --- */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .balance-bar {
+    height: 9px;
+    position: relative;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .balance-bar::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--rqg-color-main);
+    opacity: 0.35;
+    transform: translateY(-50%);
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .balance-marker {
+    position: absolute;
+    top: 50%;
+    width: 9px;
+    height: 9px;
+    background: var(--rqg-color-main-bg);
+    border: 1px solid var(--rqg-color-main);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: left 0.3s ease;
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 {
+    /* --- Standalone card row (condition runes) --- */
+  }
+  .rqg.character.actor-sheet-v2 .runes-tab-v2 .rune-card-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Passions tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 h2 {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0 6px;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 h2 .passion-add-btn {
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row {
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 4px 6px;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row:nth-child(odd) {
+    background: var(--rqg-table-alternate-background);
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row:hover {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row:active {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row .passion-icon {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row .passion-icon img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row .passion-name {
+    cursor: pointer;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row .passion-chance {
+    cursor: pointer;
+    font-weight: bold;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    text-align: right;
+    min-width: 4ch;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row .passion-chance-edit {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .passion-row .passion-chance-edit input[type=number] {
+    width: 5ch;
+    text-align: center;
+    font-size: 12px;
+  }
+  .rqg.character.actor-sheet-v2 .passions-tab-v2 .empty-hint {
+    opacity: 0.6;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Combat tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab input[type=number] {
+    width: 4ch;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab [data-action=healWound] {
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab [data-action=healWound] .fa-heart-pulse {
+    color: #20802e;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .combat-tab-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 3rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .combat-tab-row > .health-section {
+    flex: 0 1 auto;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .combat-tab-row > .combat-weapons-column {
+    flex: 1 1 0;
+    min-width: 20rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .health-state {
+    color: var(--rqg-color-health-state);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .total-hp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .hit-location-dice-error {
+    width: 22rem;
+    padding: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .wounded {
+    background-color: var(--rqg-color-wounded-bg);
+    border-color: #901010;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .strike {
+    text-decoration: none;
+    position: relative;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .strike::before {
+    top: 45%;
+    background: var(--rqg-highlight);
+    opacity: 0.42;
+    content: "";
+    width: 150%;
+    position: absolute;
+    height: 0.2em;
+    border-radius: 1em;
+    left: -30%;
+    white-space: nowrap;
+    display: block;
+    transform: rotate(-45deg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab {
+    /* --- Humanoid hit location layout --- */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid {
+    position: relative;
+    width: 18rem;
+    height: 21rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid::before {
+    content: "";
+    background: center/contain no-repeat url("/systems/rqg/assets/images/runes/man.svg");
+    width: inherit;
+    height: inherit;
+    position: absolute;
+    filter: invert(1);
+    mix-blend-mode: overlay;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .actor-state {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .actor-state img {
+    height: 5rem;
+    filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) drop-shadow(3px 3px 3px rgba(0, 0, 0, 0.7098039216));
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats {
+    position: absolute !important;
+    border: 1px solid #666;
+    border-radius: 10px;
+    padding: 5px;
+    width: fit-content;
+    min-width: 5rem;
+    max-width: 7rem;
+    background-color: var(--rqg-color-hl-stats-bg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.useless, .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.severed {
+    background-color: var(--rqg-color-hl-stats-severed-bg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats:not(.healthy) {
+    border-color: #901010;
+    border-width: 2px;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats .roll-range {
+    font-size: 80%;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats .hl-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats .hl-stat-row {
+    display: flex;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats .hl-wounds-row {
+    display: flex;
+    justify-content: space-between;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats .hl-wounds-row [data-action=addWound] {
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.head {
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.left-arm {
+    top: 7rem;
+    right: 0;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.right-arm {
+    top: 7rem;
+    left: 0;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.chest {
+    top: 6.5rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.abdomen {
+    top: 13rem;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.left-leg {
+    top: 16rem;
+    right: 0;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .humanoid .stats.right-leg {
+    top: 16rem;
+    left: 0;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab {
+    /* --- SR buttons --- */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: 0.4rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons button {
+    width: 1.7rem;
+    padding: 0;
+    border-style: outset;
+    background-color: var(--rqg-color-sr-button-bg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons .active {
+    border-style: inset;
+    background-color: var(--color-border-highlight);
+    color: #000;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons .dex,
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons .siz {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    border-radius: 6px;
+    border: 1px inset #999;
+    padding: 5px 0.275rem;
+    margin: 0 -0.275rem;
+    line-height: 1;
+    text-box: trim-both cap alphabetic;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons .dex {
+    background-color: var(--rqg-color-dex-sr-bg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .sr-buttons .siz {
+    background-color: var(--rqg-color-siz-sr-bg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .damage-bonus-row {
+    display: flex;
+    align-items: center;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab {
+    /* Weapon row hover: light warm tint across all 6 grid cells */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row {
+    display: contents;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > :nth-child(1),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > :nth-child(1) {
+    position: relative;
+    overflow: visible;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .weapon-drag-handle,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .weapon-drag-handle {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translate(-120%, -50%);
+    opacity: 0;
+    pointer-events: auto;
+    cursor: grab;
+    color: rgba(255, 255, 255, 0.7);
+    z-index: 2;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .weapon-drag-handle .grip-icon,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .weapon-drag-handle .grip-icon {
+    display: inline-block;
+    height: 0.8rem;
+    aspect-ratio: 284.44/512;
+    mask-image: url("/systems/rqg/assets/images/ui/grip-drag-dots.svg");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    background-color: currentcolor;
+    margin-right: 2px;
+    pointer-events: none;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row:hover > :nth-child(1) .weapon-drag-handle, .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row:has(> *:hover) > :nth-child(1) .weapon-drag-handle, .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row:has(.weapon-drag-handle:hover) > :nth-child(1) .weapon-drag-handle,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row:hover > :nth-child(1) .weapon-drag-handle,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row:has(> *:hover) > :nth-child(1) .weapon-drag-handle,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row:has(.weapon-drag-handle:hover) > :nth-child(1) .weapon-drag-handle {
+    opacity: 1;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .weapon-drag-handle:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .weapon-drag-handle:active {
+    cursor: grabbing;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row {
+    /* Restore padding lost because display:contents bypasses .grid > * selector */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * {
+    padding: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    /* Cells containing flex-column (chance, damage, SR) must stretch */
+    /* so usage subrows can fill the full row height (not just content height) */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > *:has(> .flex-column),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > *:has(> .flex-column) {
+    align-items: stretch;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * {
+    /* flex-column wrappers must fill the cell so usage subrows divide */
+    /* the full row height equally for proper hover coverage */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column {
+    width: 100%;
+    height: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column > .usage,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column > div.usage,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column > .usage,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column > div.usage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column {
+    /* SR column: right-align buttons inside each usage subrow */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column.text-right > .usage, .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column.text-right > div.usage,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column.text-right > .usage,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column.text-right > div.usage {
+    justify-content: flex-end;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column {
+    /* Melee SR wraps button in a bare <span>, not .usage — push right */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > * > .flex-column > span > button.sr,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > * > .flex-column > span > button.sr {
+    margin-left: auto;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row {
+    /* Restore alternating row background (V1 nth-child rule targets weapon-row */
+    /* elements themselves which have display:contents, so it has no visual effect) */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row:nth-child(odd) > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row:nth-child(odd) > * {
+    background: var(--rqg-table-alternate-background);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row:hover > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row:hover > * {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row:active > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row:active > * {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row {
+    /* Dodge: single-action row — whole row gets the brighter tint */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.dodge-row:hover > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.dodge-row:hover > * {
+    background: rgba(139, 90, 43, 0.32) !important;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.dodge-row:active > *,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.dodge-row:active > * {
+    background: rgba(139, 90, 43, 0.5) !important;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row {
+    /* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together */
+    /* only when one of those roll cells is hovered, not the damage cell */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.spirit-combat-row:has(> [data-item-roll]:hover) > :nth-child(2),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.spirit-combat-row:has(> [data-item-roll]:hover) > :nth-child(3),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.spirit-combat-row:has(> [data-item-roll]:hover) > :nth-child(4),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.spirit-combat-row:has(> [data-item-roll]:hover) > :nth-child(2),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.spirit-combat-row:has(> [data-item-roll]:hover) > :nth-child(3),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.spirit-combat-row:has(> [data-item-roll]:hover) > :nth-child(4) {
+    background: rgba(139, 90, 43, 0.32) !important;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.spirit-combat-row:has(> [data-item-roll]:active) > :nth-child(2),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.spirit-combat-row:has(> [data-item-roll]:active) > :nth-child(3),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row.spirit-combat-row:has(> [data-item-roll]:active) > :nth-child(4),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.spirit-combat-row:has(> [data-item-roll]:active) > :nth-child(2),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.spirit-combat-row:has(> [data-item-roll]:active) > :nth-child(3),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row.spirit-combat-row:has(> [data-item-roll]:active) > :nth-child(4) {
+    background: rgba(139, 90, 43, 0.5) !important;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row {
+    /* Brighter tint on the specific cell being clicked. */
+    /* Nested here so SCSS child combinators escape the IE-hack misparse. */
+    /* Use descendant .usage selector (not :has) so multi-usage weapons */
+    /* only highlight the hovered subrow, not the whole column cell. */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .usage[data-item-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .usage[data-damage-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > [data-weapon-roll]:not(:empty):hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > [data-item-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > [data-damage-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .usage[data-item-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .usage[data-damage-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > [data-weapon-roll]:not(:empty):hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > [data-item-roll]:hover,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > [data-damage-roll]:hover {
+    background: rgba(139, 90, 43, 0.32) !important;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .usage[data-item-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row .usage[data-damage-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > [data-weapon-roll]:not(:empty):active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > [data-item-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > [data-damage-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .usage[data-item-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row .usage[data-damage-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > [data-weapon-roll]:not(:empty):active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > [data-item-roll]:active,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > [data-damage-roll]:active {
+    background: rgba(139, 90, 43, 0.5) !important;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab {
+    /* V2 spirit-combat grid: match 6-column weapons grid (icon | name | HP | chance | damage | SR) */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat {
+    grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab {
+    /* Extra breathing room before the damage column */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .head5,
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.combat.item-list .weapon-row > :nth-child(5),
+  .rqg.character.actor-sheet-v2 .combat-tab .grid.spirit-combat .weapon-row > :nth-child(5) {
+    padding-left: 0.75rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .spirit-combat-section {
+    margin-top: 1.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .rate-range {
+    color: var(--color-text-dark-secondary);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab select.projectile {
+    border: none;
+    font-size: small;
+    font-style: italic;
+    padding: 4px 0;
+    background-color: rgba(255, 255, 255, 0.168627451);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab select.projectile:hover {
+    outline: 1px solid var(--color-border-light-2);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab input.quantity {
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab {
+    /* Set-token-SR-in-combat button */
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab button.sr {
+    height: 1.5rem;
+    line-height: unset;
+    width: unset;
+    text-align: left;
+    background-color: var(--rqg-color-sr-button-bg);
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .usage {
+    line-height: 1.5rem;
+    column-gap: 0.3rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .usage.missile {
+    line-height: 3rem;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .usage.default-usage {
+    font-weight: bold;
+  }
+  .rqg.character.actor-sheet-v2 .combat-tab .allies-section {
+    margin-top: 1rem;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Skills tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 8px;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-filter-row .skill-filter-input {
+    position: relative;
+    width: 25%;
+    flex-shrink: 0;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-filter-row .skill-filter-input i {
+    position: absolute;
+    right: 0.45rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0.65;
+    font-size: 0.8em;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-filter-row .skill-filter-input .skill-filter {
+    width: 100%;
+    padding-right: 1.25rem;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-filter-row .skill-filter-input .skill-filter::placeholder {
+    opacity: 0.65;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-filter-row .specialization.warning {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 4px 8px;
+    gap: 0.4rem;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0 6px;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 h2 .category-modifier {
+    font-size: 0.8em;
+    font-weight: normal;
+    opacity: 0.8;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .grid.skill.item-list,
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .grid.skill-edit-mode.item-list {
+    margin-bottom: 0.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-row {
+    display: contents;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-row > * {
+    padding: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-row:nth-child(odd) > * {
+    background: var(--rqg-table-alternate-background);
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-row:hover > * {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-row:active > * {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 img.requires-training {
+    width: 18px;
+    height: 18px;
+    margin-left: auto;
+    opacity: 0.85;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-gained-edit {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .rqg.character.actor-sheet-v2 .skills-tab-v2 .skill-gained-edit input[type=number] {
+    width: 5ch;
+    text-align: center;
+    font-size: 12px;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Sorcery tab (V2): match skills-row hover/active highlight --- */
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .power.flex-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    align-items: start;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .power.flex-row > div {
+    min-width: 0;
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .int-capacity-row {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 6px;
+    margin-bottom: 0.25rem;
+    text-align: right;
+    font-size: 0.75em;
+    font-weight: normal;
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .int-capacity-row .warning {
+    color: var(--color-text-dark-warn, #a00);
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .skill-row {
+    display: contents;
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .skill-row > * {
+    padding: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .skill-row:nth-child(odd) > * {
+    background: var(--rqg-table-alternate-background);
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .skill-row:hover > * {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .sorcery-tab-v2 .skill-row:active > * {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Spirit Magic tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding: 0 6px;
+    flex-wrap: wrap;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 h2 .small-size {
+    font-size: 0.75em;
+    font-weight: normal;
+    margin-left: auto;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 h2 .warning {
+    color: var(--color-text-dark-warn, #a00);
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .grid.spiritmagic.item-list {
+    grid-template-columns: [col-start] 30px auto auto 1fr [col-end];
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-points-input {
+    width: 3ch;
+    text-align: center;
+    margin-right: 0.25rem;
+    flex: 0 0 auto;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-row {
+    display: contents;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-row > * {
+    padding: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-row > *.text-center {
+    justify-content: center;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-row:nth-child(odd) > * {
+    background: var(--rqg-table-alternate-background);
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-row:hover > * {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 .spirit-magic-row:active > * {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 input[type=text] {
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    width: 100%;
+    background: transparent;
+    box-shadow: none;
+    transition: none;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 input[type=text]:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+  }
+  .rqg.character.actor-sheet-v2 .spirit-magic-tab-v2 input[type=text]:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Rune Magic tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 {
+    /* Strip inline colors from enriched journal content so light/dark themes work correctly */
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 *[style*=color] {
+    color: inherit !important;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .unassigned-rune-magic {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    color: var(--rqg-unassigned-rm-text);
+    background: var(--rqg-unassigned-rm-bg);
+    border: 1px solid var(--rqg-unassigned-rm-border);
+    border-radius: 3px;
+    padding: 4px 8px;
+    margin-bottom: 4px;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .unassigned-rune-magic a {
+    color: var(--rqg-unassigned-rm-action);
+    text-shadow: none;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .unassigned-rune-magic [data-action=editItem] {
+    flex: 1 1 auto;
+    font-weight: 600;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .unassigned-rune-magic [data-action=editItem] i {
+    margin-right: 0.35rem;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .unassigned-rune-magic [data-action=deleteItem] {
+    flex: 0 0 auto;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section {
+    margin-bottom: 1.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header {
+    padding: 4px 6px;
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header h2 img.rune {
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
+    vertical-align: middle;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header h2 .small-size {
+    font-size: 0.75em;
+    font-weight: normal;
+    margin-left: auto;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header h2 .warning {
+    color: var(--color-text-dark-warn, #a00);
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.85em;
+    padding: 2px 0;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem 1.5rem;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div {
+    /* Holy Days / Gifts / Geases: get most of any extra space, */
+    /* since they usually hold the longest text */
+    flex: 4 1 10em;
+    min-width: 0;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    /* Bold label on its own line, content follows below */
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span > b:first-child,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div > b:first-child {
+    display: block;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div {
+    /* Flatten block elements inside enriched HTML content */
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span p,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span div,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span br,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div p,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div div,
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div br {
+    display: inline;
+    margin: 0;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > span.rune-points {
+    flex: 0 0 auto;
+    display: block; /* override line-clamp display */
+    white-space: nowrap;
+    min-width: 5.5em; /* fit label + input without wrapping */
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta .cult-meta-row > div.joined-cults {
+    /* Cult/god name: size to its (usually short) content instead of */
+    /* stretching, but cap so a long name/tagline doesn't dominate */
+    flex: 1 1 auto;
+    min-width: 8em;
+    max-width: 16em;
+    overflow-wrap: break-word;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta input[type=number] {
+    width: 3em;
+    text-align: center;
+    font-size: 12px;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    background: transparent;
+    box-shadow: none;
+    transition: none;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta input[type=number]:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: none;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-section .cult-header .cult-meta input[type=number]:focus {
+    outline: none;
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .cult-cha-limit {
+    text-align: right;
+    font-size: 0.85em;
+    padding: 2px 0;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .grid.runemagic.item-list {
+    grid-template-columns: 30px auto 1fr auto;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row {
+    display: contents;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row > * {
+    padding: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row > * img {
+    max-width: 26px;
+    max-height: 26px;
+    object-fit: contain;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row > * img.rune {
+    height: 16px;
+    width: 16px;
+    mix-blend-mode: overlay;
+    border: none;
+    margin: 0 1px;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row > * img.common {
+    height: 16px;
+    width: 16px;
+    border: none;
+    margin: 0 1px;
+    opacity: 0.4;
+    filter: grayscale(1);
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row > *.text-center {
+    justify-content: center;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row > *.text-right {
+    justify-content: flex-end;
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row:nth-child(odd) > * {
+    background: var(--rqg-table-alternate-background);
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row:hover > * {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .rune-magic-tab-v2 .rune-magic-row:active > * {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Wounded / injured overall sheet background --- */
+  }
+  .rqg.character.actor-sheet-v2.dead {
+    filter: grayscale(0.8);
+  }
+  .rqg.character.actor-sheet-v2.unconscious {
+    filter: grayscale(0.5);
+  }
+  .rqg.character.actor-sheet-v2.dead, .rqg.character.actor-sheet-v2.unconscious, .rqg.character.actor-sheet-v2.shock, .rqg.character.actor-sheet-v2.wounded {
+    background: rgba(98, 0, 0, 0.8156862745);
+  }
+  .rqg.character.actor-sheet-v2.dead > .window-content, .rqg.character.actor-sheet-v2.unconscious > .window-content, .rqg.character.actor-sheet-v2.shock > .window-content, .rqg.character.actor-sheet-v2.wounded > .window-content {
+    scrollbar-color: rgba(255, 255, 255, 0.7) transparent;
+    background-image: linear-gradient(rgba(98, 0, 0, 0.1568627451), rgba(98, 0, 0, 0.1568627451)), var(--rqg-parchment-url);
+    background-repeat: repeat-y;
+    background-attachment: scroll, local;
+    background-position: top left, top left var(--rqg-nav-width);
+    background-size: 100%, calc(100% - var(--rqg-nav-width));
+  }
+  .rqg.character.actor-sheet-v2.dead .window-header, .rqg.character.actor-sheet-v2.unconscious .window-header, .rqg.character.actor-sheet-v2.shock .window-header, .rqg.character.actor-sheet-v2.wounded .window-header {
+    background-color: rgba(98, 0, 0, 0.8156862745);
+  }
+  .rqg.character.actor-sheet-v2.wounded .health .humanoid::before {
+    mix-blend-mode: revert;
+    filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%);
+  }
+  .rqg.character.actor-sheet-v2.shock .health .humanoid::before, .rqg.character.actor-sheet-v2.unconscious .health .humanoid::before, .rqg.character.actor-sheet-v2.dead .health .humanoid::before {
+    mix-blend-mode: revert;
+    filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg) brightness(99%) contrast(105%) blur(1.5px);
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Background tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 {
+    display: none;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2.active {
+    display: flex;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets fieldset {
+    flex: 1 1 auto;
+    min-width: 200px;
+    border: 1px solid var(--color-border-dark-tertiary, #a8926b);
+    border-radius: 4px;
+    padding: 6px 10px;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets fieldset legend {
+    font-weight: bold;
+    padding: 0 4px;
+    font-size: 0.9em;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 0.75rem;
+    align-items: center;
+    font-size: 0.85em;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid label {
+    text-align: right;
+    white-space: nowrap;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid {
+    /* Reputation row: subgrid so both cells span and hover covers the full row */
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid .reputation-row {
+    grid-column: 1/-1;
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: center;
+    border-radius: 2px;
+    cursor: pointer;
+    line-height: var(--input-height);
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid .reputation-row:hover {
+    background: rgba(139, 90, 43, 0.18);
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid .reputation-row:active {
+    background: rgba(139, 90, 43, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid input[type=text],
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid select {
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid input[type=number] {
+    width: 5em;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid {
+    /* Input + "(L)" suffix on the same line */
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid div:has(> input[type=number]) {
+    display: flex;
+    align-items: center;
+    gap: 0.25em;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid {
+    /* Global .key-value-grid styles set .drop-target to inline-grid. */
+    /* In the V2 background tab we want rqid dropzones to fill the value column. */
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid .drop-target.item-sheet-rqid-link {
+    display: grid;
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid .rqid-dropzone-wrap {
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .key-value-grid .rqid-dropzone-wrap > .drop-target.item-sheet-rqid-link {
+    width: 100%;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .reputation-label {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    justify-content: flex-end;
+    cursor: pointer;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .reputation-label img {
+    width: 16px;
+    height: 16px;
+    border: none;
+  }
+  .rqg.character.actor-sheet-v2 .background-tab-v2 .background-fieldsets .rqid-fallback-text {
+    font-style: italic;
+    opacity: 0.7;
+    font-size: 0.9em;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Active Effects tab --- */
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting {
+    min-width: 0;
+    overflow: auto;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting.active {
+    display: flex;
+    flex-direction: column;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td,
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th {
+    padding: 2px 4px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th {
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.3);
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table {
+    /* Constrain narrow columns with fixed widths */
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(1),
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(1) {
+    width: 50px;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(1) img,
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(1) img {
+    max-width: 100%;
+    height: auto;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(3),
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(3) {
+    width: 50px;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(4),
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(4) {
+    width: 70px;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(5),
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(5) {
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(6),
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(6) {
+    width: 70px;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table th:nth-child(8),
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td:nth-child(8) {
+    width: 30px;
+    text-align: center;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table {
+    /* Nested table for changes - compact layout, expands to fill space */
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td > table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95em;
+    margin: 0;
+    table-layout: fixed;
+    /* Sub-columns: key takes remaining width, type is fixed, value fits 3 chars. */
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td > table td:nth-child(1) {
+    padding: 1px 3px;
+    width: calc(100% - 14ch);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td > table td:nth-child(2) {
+    padding: 1px 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 11ch;
+  }
+  .rqg.character.actor-sheet-v2 .tab.activeeffectstesting table td > table td:nth-child(3) {
+    padding: 1px 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+    width: 3ch;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Edit mode badge in window header --- */
+  }
+  .rqg.character.actor-sheet-v2 .edit-mode-badge {
+    opacity: 0.7;
+    padding: 1px 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+  .rqg.character.actor-sheet-v2 {
+    /* --- Edit mode --- */
+    /* When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`) */
+  }
+  .rqg.character.actor-sheet-v2.edit-mode {
+    background: rgba(0, 115, 0, 0.8156862745);
+  }
+  .rqg.character.actor-sheet-v2.edit-mode .window-header {
+    background-color: rgba(0, 115, 0, 0.8156862745);
+  }
+  .rqg.character.actor-sheet-v2.edit-mode > .window-content {
+    background-image: linear-gradient(rgba(0, 115, 0, 0.1568627451), rgba(0, 115, 0, 0.1568627451)), var(--rqg-parchment-url);
+    background-repeat: repeat-y;
+    background-attachment: scroll, local;
+    background-position: top left, top left var(--rqg-nav-width);
+    background-size: 100%, calc(100% - var(--rqg-nav-width));
+  }
+  .rqg.character.actor-sheet-v2.edit-mode .characteristics input {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+  /* Item description tooltip — applied via data-tooltip-class on the element, */
+  /* Foundry adds this class to the #tooltip element. */
+  #tooltip.item-description-tooltip,
+  .locked-tooltip.item-description-tooltip {
+    max-width: 600px;
+    text-align: left;
+  }
+}

@@ -1,0 +1,146 @@
+@layer system.item-v1 {
+  .rqg.item-sheet {
+    /* Tabbed Navigation for Item Sheets */
+  }
+  .rqg.item-sheet .item-sheet-nav-tabs {
+    border-top: 1px solid var(--rqg-color-header-border);
+    border-bottom: 1px solid var(--rqg-color-header-border);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    background-color: var(--rqg-color-header-bg);
+    margin: 8px -8px;
+  }
+  .rqg.item-sheet .item-sheet-nav-tabs .item {
+    font-weight: bold;
+    white-space: nowrap;
+    padding: 0.25rem;
+    color: var(--rqg-color-header-text);
+  }
+  .rqg.item-sheet .item-sheet-nav-tabs .item.active {
+    background-color: var(--rqg-color-header-active-tab-bg);
+    color: var(--rqg-color-header-active-tab-text);
+  }
+  .rqg.item-sheet .item-sheet-nav-tabs .item.wider {
+    flex: 1.3 1 0;
+  }
+  .rqg.item-sheet .item-sheet-nav-tabs .item.narrower {
+    flex: 0.7 1 0;
+  }
+  .rqg.item-sheet header.item-sheet-header {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 0.5em;
+    align-items: center;
+    padding: 8px;
+    margin: -8px;
+    background-color: var(--rqg-color-header-bg);
+    color: var(--rqg-color-header-text);
+  }
+  .rqg.item-sheet header.item-sheet-header label {
+    color: var(--rqg-color-header-text);
+  }
+  .rqg.item-sheet header.item-sheet-header .property-line {
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+  .rqg.item-sheet header.item-sheet-header .property-line > * {
+    width: fit-content;
+  }
+  .rqg.item-sheet header.item-sheet-header .property-line .short {
+    width: 5rem;
+  }
+  .rqg.item-sheet header.item-sheet-header .property-line .long {
+    width: 100%;
+  }
+  .rqg.item-sheet header.item-sheet-header img {
+    width: 100%;
+    grid-row: 1/-1;
+  }
+  .rqg.item-sheet header.item-sheet-header input,
+  .rqg.item-sheet header.item-sheet-header select {
+    /* Use themed header variables; these directly override Foundry's input CSS */
+    /* cascade so both AppV1 and AppV2 get correct colors in each theme. */
+    color: var(--rqg-color-header-input-text);
+    border-color: var(--rqg-color-header-input-border);
+  }
+  .rqg.item-sheet header.item-sheet-header input {
+    width: 100%;
+  }
+  .rqg.item-sheet .label-above label {
+    line-height: 1.3rem;
+    font-weight: bold;
+  }
+  .rqg.item-sheet .label-above.parens label {
+    margin-left: 0.75rem;
+  }
+  .rqg.item-sheet .label-above div {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+  .rqg.item-sheet .label-above .text-value {
+    line-height: var(--input-height);
+  }
+  .rqg.item-sheet .label-above select {
+    display: block;
+  }
+  .rqg.item-sheet .skill-sheet-grid {
+    display: grid;
+    grid-template-columns: 1fr 0.25fr 1fr 1fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+    text-align: center;
+    padding: 0 0 0.5em;
+  }
+  .rqg.item-sheet .skill-sheet-grid label {
+    font-weight: bold;
+  }
+  .rqg.item-sheet .skill-sheet-grid .skill {
+    font-weight: bold;
+    font-size: xx-large;
+  }
+  .rqg.item-sheet .skill-sheet-grid .skill input[type=checkbox] {
+    --checkbox-size: 16px;
+    font-size: initial;
+    vertical-align: middle;
+  }
+  .rqg.item-sheet .occupational-skill {
+    border: 1px green dashed;
+    padding: 0.25rem;
+    margin: 0.25rem;
+    width: 100%;
+    display: flex;
+    column-gap: 0.5em;
+    align-items: baseline;
+  }
+  .rqg.item-sheet .occupational-skill input[type=number] {
+    width: 45px;
+  }
+  .rqg.item-sheet .occupational-skill div {
+    display: flex;
+    align-items: baseline;
+  }
+  .rqg.item-sheet .income-skill {
+    font-weight: bold;
+    font-style: italic;
+    background-color: var(--rqg-income-skill-bg);
+    color: var(--rqg-income-skill-text);
+    border: 1px solid var(--rqg-income-skill-border);
+  }
+  .rqg.item-sheet .income-skill-text {
+    font-weight: bold;
+    font-style: italic;
+  }
+  .rqg.item-sheet.cult .joined-cult {
+    background-color: rgba(216, 177, 110, 0.3803921569);
+    padding: 0.5rem;
+  }
+  .rqg.item-sheet.cult .joined-cult a {
+    margin: 1rem;
+  }
+  .rqg.item-sheet.cult button.add-cult {
+    margin-top: 1rem;
+  }
+}

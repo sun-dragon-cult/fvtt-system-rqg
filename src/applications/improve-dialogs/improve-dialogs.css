@@ -1,0 +1,204 @@
+@layer system.base {
+  .window-content.improve-dialog {
+    gap: 0;
+    padding-top: 0.25rem;
+  }
+  .window-content.improve-dialog .improve-dialog-source-picker {
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  .window-content.improve-dialog .improve-dialog-source-picker h2 {
+    color: var(--color-form-label);
+    font-size: var(--font-size-20);
+    font-weight: bold;
+    line-height: 1.2;
+    margin: 0;
+  }
+  .window-content.improve-dialog .improve-dialog-source-picker p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-13);
+    margin: 0;
+  }
+  .window-content.improve-dialog .improve-dialog-source-options {
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .window-content.improve-dialog .improve-dialog-source-option {
+    background: var(--input-background-color);
+    border: 2px solid transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    min-height: 2.75rem;
+    opacity: 0.7;
+    padding: 0.5rem 0.75rem;
+    transition: opacity 120ms ease, border-color 120ms ease, box-shadow 120ms ease, background-color 120ms ease;
+  }
+  .window-content.improve-dialog .improve-dialog-source-option.active {
+    background: color-mix(in srgb, var(--color-cool-4), transparent 30%);
+    border-color: var(--color-warm-2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-warm-2), transparent 45%);
+    opacity: 1;
+  }
+  .window-content.improve-dialog .improve-dialog-source-option input {
+    margin: 0;
+  }
+  .window-content.improve-dialog .improve-dialog-source-option span {
+    color: var(--color-form-label);
+    flex: 1;
+    line-height: 1.15;
+    font-weight: bold;
+  }
+  .window-content.improve-dialog .improve-dialog-source-option .improve-dialog-source-unavailable {
+    color: var(--color-text-secondary);
+    flex-basis: 100%;
+    font-size: var(--font-size-12);
+    line-height: 1.2;
+    opacity: 0.85;
+  }
+  .window-content.improve-dialog .improve-dialog-source-option input:disabled {
+    pointer-events: none;
+  }
+  .window-content.improve-dialog .improve-dialog-panel {
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 0.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  .window-content.improve-dialog .improve-dialog-panel h2 {
+    color: var(--color-form-label);
+    font-size: var(--font-size-16);
+    font-weight: bold;
+    line-height: 1.2;
+    margin: 0;
+  }
+  .window-content.improve-dialog .improve-dialog-panel p {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-13);
+    margin: 0;
+  }
+  .window-content.improve-dialog .improve-dialog-panel label {
+    align-items: center;
+    background: var(--input-background-color);
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 3px;
+    display: flex;
+    gap: 0.4rem;
+    min-height: var(--input-height);
+    padding: 0.35rem 0.5rem;
+  }
+  .window-content.improve-dialog .improve-dialog-panel .improve-dialog-option-context {
+    align-self: stretch;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-13);
+    font-weight: 500;
+    margin: 0 0 0.1rem;
+    opacity: 0.72;
+    text-align: center;
+  }
+  .window-content.improve-dialog .improve-dialog-panel .improve-dialog-option-context .improve-dialog-formula {
+    white-space: nowrap;
+  }
+  .window-content.improve-dialog .improve-dialog-panel .improve-dialog-option-context .improve-dialog-formula b {
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+  .window-content.improve-dialog .improve-dialog-panel .improve-dialog-option-context .improve-dialog-formula sub {
+    font-size: 80%;
+    margin-left: 1px;
+    opacity: 0.9;
+  }
+  .window-content.improve-dialog .improve-dialog-panel .improve-dialog-option-context .improve-dialog-formula-value {
+    color: var(--color-text-primary);
+    font-weight: 700;
+  }
+  /* Root PART headers may render outside .window-content; keep header styling resilient. */
+  .improve-dialog-header {
+    align-items: center;
+    border-bottom: 1px solid var(--color-border-light-primary);
+    display: flex;
+    gap: 0.75rem;
+    margin: 0;
+    padding-bottom: 0.75rem;
+  }
+  .improve-dialog-header .improve-dialog-icon {
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 3px;
+    display: block;
+    flex: none;
+    height: 64px;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    width: 64px;
+  }
+  .improve-dialog-header .improve-dialog-characteristic-chip {
+    align-items: center;
+    background: #1a1a1a;
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 40%;
+    color: var(--color-light-1);
+    display: inline-flex;
+    flex: none;
+    font-size: var(--font-size-24);
+    font-weight: bold;
+    height: 64px;
+    justify-content: center;
+    line-height: 1;
+    text-transform: uppercase;
+    width: 64px;
+  }
+  .theme-dark .improve-dialog-header .improve-dialog-characteristic-chip {
+    background: #e6e6e6;
+    color: var(--color-dark-1);
+  }
+  .improve-dialog-header .improve-dialog-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+  }
+  .improve-dialog-header .improve-dialog-heading h1 {
+    font-size: var(--font-size-24);
+    line-height: 1.2;
+    margin: 0;
+  }
+  .improve-dialog-header .improve-dialog-heading p {
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+  .improve-dialog-header .improve-dialog-current-value {
+    align-items: flex-end;
+    background: var(--input-background-color);
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    line-height: 1.1;
+    min-width: 84px;
+    padding: 0.35rem 0.5rem;
+  }
+  .improve-dialog-header .improve-dialog-current-value small {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-11);
+    text-transform: uppercase;
+  }
+  .improve-dialog-header .improve-dialog-current-value strong {
+    color: var(--color-text-primary);
+    font-size: var(--font-size-20);
+    font-weight: 700;
+  }
+  .theme-light .window-content.improve-dialog .improve-dialog-source-option.active {
+    background: color-mix(in srgb, var(--color-cool-5-50), transparent 50%);
+  }
+}

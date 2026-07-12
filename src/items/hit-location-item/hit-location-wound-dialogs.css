@@ -1,0 +1,405 @@
+@layer system.base {
+  .rqg.dialog.heal-wound form, .rqg.dialog.add-wound form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .rqg.dialog.heal-wound .form-footer, .rqg.dialog.add-wound .form-footer {
+    margin-top: 0.3rem;
+  }
+  .rqg.dialog.heal-wound .wound-dialog, .rqg.dialog.add-wound .wound-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-label, .rqg.dialog.add-wound .wound-dialog-label {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-14);
+    line-height: 1.2;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-number-input, .rqg.dialog.add-wound .wound-dialog-number-input {
+    width: 100%;
+    text-align: center;
+    font-size: var(--font-size-18);
+    font-weight: 600;
+    letter-spacing: 0.015em;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-checkbox-row, .rqg.dialog.add-wound .wound-dialog-checkbox-row {
+    display: flex;
+    gap: 0.25rem;
+    align-items: center;
+    margin: 0;
+  }
+  .rqg.dialog.heal-wound .context-label, .rqg.dialog.add-wound .context-label {
+    color: var(--color-text-secondary);
+  }
+  .rqg.dialog.heal-wound .wound-dialog-summary, .rqg.dialog.add-wound .wound-dialog-summary {
+    margin-top: 0.2rem;
+    border-top: 1px solid var(--color-border-light-primary);
+    padding-top: 0.5rem;
+    font-weight: 600;
+  }
+  .rqg.dialog.heal-wound .linked-preview, .rqg.dialog.add-wound .linked-preview {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.35rem;
+  }
+  .rqg.dialog.heal-wound .formula-preview, .rqg.dialog.add-wound .formula-preview {
+    border: 1px solid var(--color-border-light-primary);
+    border-radius: 4px;
+    padding: 0.25rem 0.4rem;
+    background: color-mix(in srgb, var(--input-background-color) 90%, black 10%);
+  }
+  .rqg.dialog.heal-wound .ap-preview.formula-preview,
+  .rqg.dialog.heal-wound .hp-preview.formula-preview, .rqg.dialog.add-wound .ap-preview.formula-preview,
+  .rqg.dialog.add-wound .hp-preview.formula-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .rqg.dialog.heal-wound .no-ap-preview, .rqg.dialog.add-wound .no-ap-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+  .rqg.dialog.heal-wound .ap-formula-header,
+  .rqg.dialog.heal-wound .hp-formula-header,
+  .rqg.dialog.heal-wound .ap-formula-values,
+  .rqg.dialog.heal-wound .hp-formula-values, .rqg.dialog.add-wound .ap-formula-header,
+  .rqg.dialog.add-wound .hp-formula-header,
+  .rqg.dialog.add-wound .ap-formula-values,
+  .rqg.dialog.add-wound .hp-formula-values {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  .rqg.dialog.heal-wound .ap-formula-header,
+  .rqg.dialog.heal-wound .ap-formula-values,
+  .rqg.dialog.heal-wound .hp-formula-header,
+  .rqg.dialog.heal-wound .hp-formula-values, .rqg.dialog.add-wound .ap-formula-header,
+  .rqg.dialog.add-wound .ap-formula-values,
+  .rqg.dialog.add-wound .hp-formula-header,
+  .rqg.dialog.add-wound .hp-formula-values {
+    gap: 3rem;
+  }
+  .rqg.dialog.heal-wound .ap-formula-right-label,
+  .rqg.dialog.heal-wound .hp-formula-right-label, .rqg.dialog.add-wound .ap-formula-right-label,
+  .rqg.dialog.add-wound .hp-formula-right-label {
+    text-align: right;
+  }
+  .rqg.dialog.heal-wound .formula-equation, .rqg.dialog.add-wound .formula-equation {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22rem;
+    font-family: monospace;
+    flex-wrap: wrap;
+  }
+  .rqg.dialog.heal-wound .inline-damage-input, .rqg.dialog.add-wound .inline-damage-input {
+    width: 4.5ch;
+    min-width: 4.5ch;
+    text-align: right;
+    justify-self: start;
+  }
+  .rqg.dialog.heal-wound .formula-equation-ap-left, .rqg.dialog.add-wound .formula-equation-ap-left {
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  .rqg.dialog.heal-wound .formula-equation-ap-right, .rqg.dialog.add-wound .formula-equation-ap-right {
+    font-size: var(--font-size-18);
+  }
+  .rqg.dialog.heal-wound .formula-equation-ap-right .formula-result, .rqg.dialog.add-wound .formula-equation-ap-right .formula-result {
+    min-width: 1.1ch;
+    text-align: right;
+  }
+  .rqg.dialog.heal-wound .hp-formula-right-value, .rqg.dialog.add-wound .hp-formula-right-value {
+    margin-left: auto;
+    justify-content: flex-end;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+  .rqg.dialog.heal-wound .formula-operator, .rqg.dialog.add-wound .formula-operator {
+    color: var(--color-text-secondary);
+  }
+  .rqg.dialog.heal-wound .formula-result, .rqg.dialog.add-wound .formula-result {
+    font-weight: 700;
+  }
+  .rqg.dialog.heal-wound .effective-damage-value.is-positive, .rqg.dialog.add-wound .effective-damage-value.is-positive {
+    color: #d97706;
+    font-weight: 800;
+    font-size: var(--font-size-24);
+    line-height: 1;
+  }
+  .rqg.dialog.heal-wound .formula-max, .rqg.dialog.add-wound .formula-max {
+    color: var(--color-text-secondary);
+  }
+  .rqg.dialog.heal-wound .linked-preview.is-muted, .rqg.dialog.add-wound .linked-preview.is-muted {
+    opacity: 0.65;
+  }
+  .rqg.dialog.heal-wound button[data-action=submit] .fa-heart-pulse {
+    color: #20802e;
+  }
+  .rqg.dialog.heal-wound .heal-points-section range-picker {
+    width: 100%;
+  }
+  .rqg.dialog.heal-wound .heal-feedback {
+    min-height: 1.1rem;
+    margin-top: 0.15rem;
+    color: var(--color-level-success, #1a7f37);
+    font-size: var(--font-size-12);
+    line-height: 1.1;
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    align-self: flex-start;
+    width: max-content;
+    margin: 0 0 0.2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented input[type=radio] {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    opacity: 0;
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 4.75rem;
+    padding: 0.2rem 0.35rem;
+    font-size: var(--font-size-12);
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid color-mix(in srgb, var(--input-border-color, var(--color-border-light-2, var(--color-border-light-primary, var(--color-text-secondary)))) 88%, transparent 12%);
+    border-radius: 0;
+    background: color-mix(in srgb, var(--input-background-color) 88%, black 12%);
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented > input[type=radio]:first-of-type + label {
+    border-radius: 4px 0 0 4px;
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented label + input[type=radio] + label {
+    margin-left: -1px;
+    border-left: 1px solid var(--input-border-color, var(--color-border-light-2, var(--color-border-light-primary, color-mix(in srgb, var(--color-text-secondary) 50%, transparent 50%))));
+    border-radius: 0 4px 4px 0;
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented input[type=radio]:checked + label {
+    background: color-mix(in srgb, var(--input-background-color) 62%, var(--color-border-highlight-alt) 38%);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px var(--color-border-highlight-alt);
+  }
+  .rqg.dialog.heal-wound .heal-mode-segmented input[type=radio]:focus-visible + label {
+    outline: 2px solid var(--color-border-highlight);
+    outline-offset: -2px;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wounds {
+    --wound-token-size: 2.35rem;
+    --wound-gap: 0.4rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--wound-gap);
+    contain: layout paint;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    margin: 0;
+    padding: 0;
+    inline-size: var(--wound-token-size);
+    block-size: var(--wound-token-size);
+    min-inline-size: 0;
+    border: 0;
+    border-radius: 0.35rem;
+    outline: 1px solid transparent;
+    background: transparent;
+    overflow: hidden;
+    cursor: pointer;
+    transition: background-color 240ms ease, box-shadow 240ms ease, outline-color 240ms ease;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option:has(input[type=radio]:checked) {
+    transform: translateY(-1px);
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option.is-healed-removed {
+    pointer-events: none;
+    animation: heal-wound-remove 260ms ease-out forwards;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option.is-healed-updated {
+    background-color: color-mix(in srgb, var(--color-level-success, #1a7f37) 18%, transparent);
+    outline-color: color-mix(in srgb, var(--color-level-success, #1a7f37) 60%, transparent);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--color-level-success, #1a7f37) 45%, transparent);
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option.is-healed-updated .wound-dialog-wound-burst {
+    animation: heal-wound-update 1120ms ease-in-out 1;
+    color: var(--color-level-success, #1a7f37);
+    opacity: 1;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option.is-healed-updated .wound-dialog-wound-value {
+    color: #f7f3e8 !important;
+    text-shadow: 0 0 1px color-mix(in srgb, black 55%, transparent);
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-burst {
+    grid-area: 1/1;
+    display: block;
+    z-index: 0;
+    font-size: 2.25rem;
+    line-height: 1;
+    transform-origin: center;
+    will-change: transform, opacity, filter;
+    color: color-mix(in srgb, var(--input-border-color, var(--color-text-secondary)) 92%, transparent 8%);
+    opacity: 0.7;
+    transition: color 140ms ease, opacity 140ms ease, transform 140ms ease;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option:has(input[type=radio]:checked) .wound-dialog-wound-burst {
+    color: var(--checkbox-checked-color, var(--color-border-highlight-alt));
+    opacity: 1;
+    filter: drop-shadow(0 0 2px color-mix(in srgb, var(--checkbox-checked-color, var(--color-border-highlight-alt)) 55%, transparent));
+    transform: scale(1.04);
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-value {
+    grid-area: 1/1;
+    z-index: 1;
+    text-align: center;
+    font-size: var(--font-size-14);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    text-shadow: 0 0 1px color-mix(in srgb, black 30%, transparent);
+    pointer-events: none;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option:has(input[type=radio]:checked) .wound-dialog-wound-value {
+    color: #191813 !important;
+    text-shadow: 0 0 1px color-mix(in srgb, white 25%, transparent);
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option input[type=radio] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .rqg.dialog.heal-wound .wound-dialog-wound-option input[type=radio]:focus-visible + .wound-dialog-wound-burst {
+    filter: drop-shadow(0 0 2px color-mix(in srgb, var(--color-border-highlight) 75%, transparent)) drop-shadow(0 0 5px color-mix(in srgb, var(--color-border-highlight) 40%, transparent));
+  }
+  @keyframes heal-wound-remove {
+    from {
+      opacity: 1;
+      inline-size: var(--wound-token-size);
+      margin-inline-end: 0;
+    }
+    to {
+      opacity: 0;
+      inline-size: 0;
+      margin-inline-end: calc(-1 * var(--wound-gap));
+      outline-color: transparent;
+      box-shadow: none;
+    }
+  }
+  @keyframes heal-wound-update {
+    0% {
+      transform: scale(1);
+      opacity: 0.95;
+      filter: drop-shadow(0 0 1px color-mix(in srgb, var(--color-level-success, #1a7f37) 18%, transparent));
+    }
+    38% {
+      transform: scale(1.09);
+      opacity: 1;
+      filter: drop-shadow(0 0 8px color-mix(in srgb, var(--color-level-success, #1a7f37) 52%, transparent));
+    }
+    72% {
+      transform: scale(1);
+      opacity: 0.94;
+      filter: drop-shadow(0 0 3px color-mix(in srgb, var(--color-level-success, #1a7f37) 28%, transparent));
+    }
+    100% {
+      transform: scale(1.04);
+      opacity: 1;
+      filter: drop-shadow(0 0 6px color-mix(in srgb, var(--color-level-success, #1a7f37) 42%, transparent));
+    }
+  }
+  body.theme-dark .rqg.dialog.heal-wound .wound-dialog-wound-value {
+    color: #191813 !important;
+  }
+  body.theme-light .rqg.dialog.heal-wound .wound-dialog-wound-value {
+    color: #f5f5f5 !important;
+  }
+  .rqg.dialog.add-wound input[type=checkbox] {
+    flex: 0 0 var(--checkbox-size, var(--font-size-20));
+    margin: 0;
+    width: var(--checkbox-size, var(--font-size-20));
+    height: var(--checkbox-size, var(--font-size-20));
+    background: transparent;
+  }
+  .rqg.dialog.add-wound .damage-input {
+    width: 4.5rem;
+    min-width: 4.5rem;
+    align-self: flex-start;
+  }
+  .rqg.dialog.add-wound .armor-layers-row {
+    display: grid;
+    margin-top: 0.25rem;
+    border-top: 1px solid var(--color-border-light-primary);
+    padding: 0.35rem 0.4rem 0;
+    gap: 0.15rem;
+    justify-items: start;
+    width: 100%;
+  }
+  .rqg.dialog.add-wound .armor-layers-row input[type=checkbox].armor-layer-toggle {
+    --checkbox-size: 0.9rem;
+  }
+  .rqg.dialog.add-wound .armor-layers-row.is-muted {
+    opacity: 0.65;
+  }
+  .rqg.dialog.add-wound .armor-subtract-row {
+    align-items: center;
+  }
+  .rqg.dialog.add-wound .armor-subtract-value {
+    color: var(--color-text-secondary);
+  }
+  .rqg.dialog.add-wound .armor-layers-heading {
+    font-size: var(--font-size-13);
+  }
+  .rqg.dialog.add-wound .armor-layer-grid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 0.35rem;
+  }
+  .rqg.dialog.add-wound .armor-layer-ap-col {
+    margin-left: auto;
+    text-align: right;
+  }
+  .rqg.dialog.add-wound .armor-layer-item {
+    margin: 0.1rem 0 0;
+    padding: 0;
+    font-size: var(--font-size-12);
+    font-weight: 400;
+  }
+  .rqg.dialog.add-wound .armor-layer-name-with-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .rqg.dialog.add-wound .armor-layer-toggle-label {
+    cursor: pointer;
+  }
+  .rqg.dialog.add-wound .armor-layer-col-title {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-11);
+  }
+  .rqg.dialog.add-wound .armor-layer-name {
+    overflow-wrap: anywhere;
+  }
+  .rqg.dialog.add-wound .add-wound-context {
+    margin-bottom: 0.15rem;
+  }
+}
