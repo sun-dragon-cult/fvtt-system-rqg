@@ -57,15 +57,13 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
     plugins.push(
       minifyPlugin(),
       viteStaticCopy({
-        structured: false,
         targets: [
           {
+            // Strip the leading "src/" segment while preserving the rest of the directory
+            // structure (e.g. src/rolls/ability-roll/ability-roll.hbs -> rolls/ability-roll/ability-roll.hbs).
             src: "src/**/*.hbs",
             dest: "",
-            rename: (name, extension, fullPath) => {
-              const relativePath = path.relative(process.cwd(), fullPath);
-              return relativePath.replace(/^src\//, "");
-            },
+            rename: { stripBase: 1 },
           },
           {
             src: filesToCopy,
@@ -79,15 +77,11 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
   } else {
     plugins.push(
       viteStaticCopy({
-        structured: false,
         targets: [
           {
             src: "src/**/*.hbs",
             dest: "",
-            rename: (name, extension, fullPath) => {
-              const relativePath = path.relative(process.cwd(), fullPath);
-              return relativePath.replace(/^src\//, "");
-            },
+            rename: { stripBase: 1 },
           },
         ],
         silent: true,
