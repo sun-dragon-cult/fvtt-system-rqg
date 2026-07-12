@@ -329,7 +329,6 @@
         height: 600px;
 
         & .item {
-          flex-basis: 1fr;
           color: white;
           padding: 0.5rem 0;
           font-size: 13px;
