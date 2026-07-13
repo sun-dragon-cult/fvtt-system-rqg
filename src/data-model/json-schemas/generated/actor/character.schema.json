@@ -1,0 +1,808 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/actor/character.schema.json",
+  "title": "RQG Actor - character",
+  "description": "Generated JSON Schema for the \"character\" Actor DataModel's `system` data. Source: src/data-model/actor-data/character-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "characteristics": {
+      "type": "object",
+      "properties": {
+        "strength": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "3d6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "constitution": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "3d6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "2d6+6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "dexterity": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "3d6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "intelligence": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "2d6+6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "power": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "3d6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        },
+        "charisma": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "formula": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "default": "3d6"
+            },
+            "hasExperience": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "strength",
+        "constitution",
+        "size",
+        "dexterity",
+        "intelligence",
+        "power",
+        "charisma"
+      ]
+    },
+    "background": {
+      "type": "object",
+      "properties": {
+        "species": {
+          "type": "string",
+          "default": "Human"
+        },
+        "speciesRqidLink": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "rqid": {
+              "type": "string",
+              "default": ""
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            },
+            "bonus": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "occupation": {
+          "type": "string",
+          "enum": [
+            "",
+            "assistantShaman",
+            "bandit",
+            "chariotDriver",
+            "crafter",
+            "entertainer",
+            "farmer",
+            "fisher",
+            "healer",
+            "herder",
+            "hunter",
+            "merchant",
+            "noble",
+            "philosopher",
+            "priest",
+            "scribe",
+            "thief",
+            "warriorHeavyInfantry",
+            "warriorLightInfantry",
+            "warriorHeavyCavalry",
+            "warriorLightCavalry"
+          ],
+          "default": ""
+        },
+        "currentOccupationRqidLink": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "rqid": {
+              "type": "string",
+              "default": ""
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            },
+            "bonus": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "homeland": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "town": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "birthYear": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "age": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "gender": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "tribe": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "clan": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reputation": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "standardOfLiving": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "ransom": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "ransomDetails": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "baseIncome": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "biography": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "homelandJournalRqidLink": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "rqid": {
+              "type": "string",
+              "default": ""
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            },
+            "bonus": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "regionJournalRqidLink": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "rqid": {
+              "type": "string",
+              "default": ""
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            },
+            "bonus": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "cultureJournalRqidLinks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rqid": {
+                "type": "string",
+                "default": ""
+              },
+              "name": {
+                "type": "string",
+                "default": ""
+              },
+              "bonus": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "rqid",
+              "name"
+            ]
+          }
+        },
+        "tribeJournalRqidLinks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rqid": {
+                "type": "string",
+                "default": ""
+              },
+              "name": {
+                "type": "string",
+                "default": ""
+              },
+              "bonus": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "rqid",
+              "name"
+            ]
+          }
+        },
+        "clanJournalRqidLinks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rqid": {
+                "type": "string",
+                "default": ""
+              },
+              "name": {
+                "type": "string",
+                "default": ""
+              },
+              "bonus": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "rqid",
+              "name"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "species",
+        "occupation",
+        "cultureJournalRqidLinks",
+        "tribeJournalRqidLinks",
+        "clanJournalRqidLinks"
+      ]
+    },
+    "allies": {
+      "type": "string",
+      "default": ""
+    },
+    "editMode": {
+      "type": "boolean",
+      "default": true
+    },
+    "extendedName": {
+      "type": "string",
+      "default": ""
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "magicPoints": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "max": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "max"
+          ]
+        },
+        "hitPoints": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "default": 0
+            },
+            "max": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "max"
+          ]
+        },
+        "move": {
+          "type": "object",
+          "properties": {
+            "currentLocomotion": {
+              "type": "string",
+              "enum": [
+                "walk",
+                "swim",
+                "fly"
+              ],
+              "minLength": 1,
+              "default": "walk"
+            },
+            "walk": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": 8
+                },
+                "carryingFactor": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": 1
+                }
+              },
+              "additionalProperties": false
+            },
+            "swim": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": 2
+                },
+                "carryingFactor": {
+                  "type": [
+                    "number",
+                    "null"
+                  ],
+                  "default": 0.5
+                }
+              },
+              "additionalProperties": false
+            },
+            "fly": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "carryingFactor": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "currentLocomotion",
+            "walk",
+            "swim",
+            "fly"
+          ]
+        },
+        "heroPoints": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        },
+        "isCreature": {
+          "type": "boolean",
+          "default": false
+        },
+        "health": {
+          "type": "string",
+          "enum": [
+            "healthy",
+            "wounded",
+            "shock",
+            "unconscious",
+            "dead"
+          ],
+          "minLength": 1,
+          "default": "healthy"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "magicPoints",
+        "hitPoints",
+        "move",
+        "heroPoints",
+        "isCreature",
+        "health"
+      ]
+    },
+    "effect": {
+      "type": "object",
+      "properties": {
+        "add": {
+          "type": "object",
+          "properties": {
+            "magicPoints": {
+              "type": "object",
+              "properties": {
+                "max": {
+                  "type": "integer",
+                  "default": 0
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "max"
+              ]
+            },
+            "hitPoints": {
+              "type": "object",
+              "properties": {
+                "max": {
+                  "type": "integer",
+                  "default": 0
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "max"
+              ]
+            },
+            "skillCategoryModifiers": {
+              "type": "object",
+              "properties": {
+                "agility": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "communication": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "knowledge": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "magic": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "manipulation": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "perception": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "stealth": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "meleeWeapons": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "missileWeapons": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "shields": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "naturalWeapons": {
+                  "type": "integer",
+                  "default": 0
+                },
+                "otherSkills": {
+                  "type": "integer",
+                  "default": 0
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "agility",
+                "communication",
+                "knowledge",
+                "magic",
+                "manipulation",
+                "perception",
+                "stealth",
+                "meleeWeapons",
+                "missileWeapons",
+                "shields",
+                "naturalWeapons",
+                "otherSkills"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "magicPoints",
+            "hitPoints",
+            "skillCategoryModifiers"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "add"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "characteristics",
+    "background",
+    "allies",
+    "editMode",
+    "extendedName",
+    "attributes",
+    "effect"
+  ]
+}

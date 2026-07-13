@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/cult.schema.json",
+  "title": "RQG Item - cult",
+  "description": "Generated JSON Schema for the \"cult\" Item DataModel's `system` data. Source: src/data-model/item-data/cult-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "deity": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "descriptionRqidLink": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rqid": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "bonus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rqid",
+        "name"
+      ]
+    },
+    "runePoints": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "default": 0
+        },
+        "max": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "holyDays": {
+      "type": "string",
+      "default": ""
+    },
+    "gifts": {
+      "type": "string",
+      "default": ""
+    },
+    "geases": {
+      "type": "string",
+      "default": ""
+    },
+    "runeRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    },
+    "commonRuneMagicRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    },
+    "joinedCults": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "cultName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "tagline": {
+            "type": "string",
+            "default": ""
+          },
+          "rank": {
+            "type": "string",
+            "enum": [
+              "layMember",
+              "initiate",
+              "godTalker",
+              "runePriest",
+              "runeLord",
+              "chiefPriest",
+              "highPriest"
+            ],
+            "minLength": 1,
+            "default": "layMember"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "tagline",
+          "rank"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "runePoints",
+    "holyDays",
+    "gifts",
+    "geases",
+    "runeRqidLinks",
+    "commonRuneMagicRqidLinks",
+    "joinedCults"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/passion.schema.json",
+  "title": "RQG Item - passion",
+  "description": "Generated JSON Schema for the \"passion\" Item DataModel's `system` data. Source: src/data-model/item-data/passion-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "canGetExperience": {
+      "type": "boolean",
+      "default": true
+    },
+    "hasExperience": {
+      "type": "boolean",
+      "default": false
+    },
+    "chance": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "passion": {
+      "type": "string",
+      "default": ""
+    },
+    "subject": {
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "gmNotes": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "canGetExperience",
+    "hasExperience",
+    "chance",
+    "passion",
+    "subject",
+    "description",
+    "gmNotes"
+  ]
+}

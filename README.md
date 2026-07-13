@@ -120,18 +120,25 @@ install a formatter in your IDE to format your code on the fly.
 
 ### Editing compendium Yaml files
 
-To make it easier to edit the yaml files that is used to create to compendium packs, you can
-use the supplied json schema for Rqg Items located here: `src/data-model/json-schemas/rqg-item-schema.json`.
+To make it easier to edit the yaml files that is used to create to compendium packs, there is a JSON
+Schema generated for each item/actor `type`, one file per type, under
+`src/data-model/json-schemas/generated/{item,actor}/<type>.schema.json` (see `manifest.json` in that
+folder for the full list). These are generated straight from the real `defineSchema()` DataModel
+definitions in `src/data-model/**` by `pnpm generate:schemas` (see `buildScripts/generate-schema.ts`),
+so they stay in sync with the actual system data. Run `pnpm generate:schemas` after changing a
+DataModel's schema and commit the regenerated files — `pnpm check:schemas` (part of `pnpm check:ci`)
+fails the build if the committed files are stale.
 
 #### Visual Studio Code
 
 To enable yaml validation in vs code, you first need to install this [YAML plugin](https://marketplace.visualstudio.com/items?itemName=redhat.vscode-yaml)
-and then configure it to use the RqgItem schema, use the setting below.
+and then configure it to map each compendium yaml file to its type's schema, use the setting below
+(adjust the glob patterns to how your yaml source files are organized).
 
 ```json
 {
   "yaml.schemas": {
-    "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/rqg-item-schema.json": ".yaml"
+    "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/skill.schema.json": "**/skill/*.yaml"
   }
 }
 ```
@@ -140,9 +147,10 @@ For details see this article: https://dev.to/brpaz/how-to-create-your-own-auto-c
 
 #### Jetbrains Idea
 
-Open a yaml file and click "No JSON Schema" at the bottom left. Choose "+ New Schema Mapping" and paste `https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/rqg-item-schema.json`
-into the "Schema file or URL" input field. Name the schema to for example Rqg Item and set the schema
-version to 7.
+Open a yaml file and click "No JSON Schema" at the bottom left. Choose "+ New Schema Mapping" and paste
+`https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/skill.schema.json`
+(pick the file matching the item/actor type you're editing) into the "Schema file or URL" input field.
+Name the schema, and set the schema version to 2020-12.
 
 ### Releasing
 

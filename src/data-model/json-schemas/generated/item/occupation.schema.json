@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/occupation.schema.json",
+  "title": "RQG Item - occupation",
+  "description": "Generated JSON Schema for the \"occupation\" Item DataModel's `system` data. Source: src/data-model/item-data/occupation-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "occupation": {
+      "type": "string",
+      "default": ""
+    },
+    "occupationRqidLink": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rqid": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "bonus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rqid",
+        "name"
+      ]
+    },
+    "specialization": {
+      "type": "string",
+      "default": ""
+    },
+    "homelands": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "default": ""
+      }
+    },
+    "occupationalSkills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "incomeSkill": {
+            "type": "boolean",
+            "default": false
+          },
+          "bonus": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          },
+          "skillRqidLink": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "rqid": {
+                "type": "string",
+                "default": ""
+              },
+              "name": {
+                "type": "string",
+                "default": ""
+              },
+              "bonus": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "rqid",
+              "name"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "incomeSkill",
+          "bonus"
+        ]
+      }
+    },
+    "standardOfLiving": {
+      "type": "string",
+      "enum": [
+        "destitute",
+        "poor",
+        "free",
+        "noble",
+        "petty-king"
+      ],
+      "minLength": 1,
+      "default": "free"
+    },
+    "baseIncome": {
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "baseIncomeNotes": {
+      "type": "string",
+      "default": ""
+    },
+    "cultRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    },
+    "ransom": {
+      "type": "number",
+      "minimum": 0,
+      "default": 0
+    },
+    "startingEquipmentRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "occupation",
+    "specialization",
+    "homelands",
+    "occupationalSkills",
+    "standardOfLiving",
+    "baseIncome",
+    "baseIncomeNotes",
+    "cultRqidLinks",
+    "ransom",
+    "startingEquipmentRqidLinks"
+  ]
+}

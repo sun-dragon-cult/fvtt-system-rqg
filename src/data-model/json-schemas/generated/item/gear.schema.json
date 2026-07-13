@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/gear.schema.json",
+  "title": "RQG Item - gear",
+  "description": "Generated JSON Schema for the \"gear\" Item DataModel's `system` data. Source: src/data-model/item-data/gear-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "physicalItemType": {
+      "type": "string",
+      "enum": [
+        "unique",
+        "currency",
+        "consumable"
+      ],
+      "minLength": 1,
+      "default": "unique"
+    },
+    "quantity": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 1
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "gmNotes": {
+      "type": "string",
+      "default": ""
+    },
+    "location": {
+      "type": "string",
+      "default": ""
+    },
+    "isContainer": {
+      "type": "boolean",
+      "default": false
+    },
+    "attunedTo": {
+      "type": "string",
+      "default": ""
+    },
+    "encumbrance": {
+      "type": "number",
+      "minimum": 0,
+      "default": 1
+    },
+    "equippedStatus": {
+      "type": "string",
+      "enum": [
+        "notCarried",
+        "carried",
+        "equipped"
+      ],
+      "minLength": 1,
+      "default": "carried"
+    },
+    "price": {
+      "type": "object",
+      "properties": {
+        "real": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        },
+        "estimated": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "real",
+        "estimated"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "physicalItemType",
+    "quantity",
+    "description",
+    "gmNotes",
+    "location",
+    "isContainer",
+    "attunedTo",
+    "encumbrance",
+    "equippedStatus",
+    "price"
+  ]
+}

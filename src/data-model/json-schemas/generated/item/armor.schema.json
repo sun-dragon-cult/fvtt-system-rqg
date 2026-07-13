@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/armor.schema.json",
+  "title": "RQG Item - armor",
+  "description": "Generated JSON Schema for the \"armor\" Item DataModel's `system` data. Source: src/data-model/item-data/armor-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "physicalItemType": {
+      "type": "string",
+      "enum": [
+        "unique",
+        "currency",
+        "consumable"
+      ],
+      "minLength": 1,
+      "default": "unique"
+    },
+    "quantity": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 1
+    },
+    "description": {
+      "type": "string",
+      "default": ""
+    },
+    "gmNotes": {
+      "type": "string",
+      "default": ""
+    },
+    "location": {
+      "type": "string",
+      "default": ""
+    },
+    "isContainer": {
+      "type": "boolean",
+      "default": false
+    },
+    "attunedTo": {
+      "type": "string",
+      "default": ""
+    },
+    "encumbrance": {
+      "type": "number",
+      "minimum": 0,
+      "default": 1
+    },
+    "equippedStatus": {
+      "type": "string",
+      "enum": [
+        "notCarried",
+        "carried",
+        "equipped"
+      ],
+      "minLength": 1,
+      "default": "carried"
+    },
+    "price": {
+      "type": "object",
+      "properties": {
+        "real": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        },
+        "estimated": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "real",
+        "estimated"
+      ]
+    },
+    "size": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "hitLocationRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    },
+    "namePrefix": {
+      "type": "string",
+      "default": ""
+    },
+    "armorType": {
+      "type": "string",
+      "default": ""
+    },
+    "material": {
+      "type": "string",
+      "default": ""
+    },
+    "absorbs": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "moveQuietlyPenalty": {
+      "type": "integer",
+      "default": 0
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "physicalItemType",
+    "quantity",
+    "description",
+    "gmNotes",
+    "location",
+    "isContainer",
+    "attunedTo",
+    "encumbrance",
+    "equippedStatus",
+    "price",
+    "size",
+    "hitLocationRqidLinks",
+    "namePrefix",
+    "armorType",
+    "material",
+    "absorbs",
+    "moveQuietlyPenalty"
+  ]
+}

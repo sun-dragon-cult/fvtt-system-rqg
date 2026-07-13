@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/runeMagic.schema.json",
+  "title": "RQG Item - runeMagic",
+  "description": "Generated JSON Schema for the \"runeMagic\" Item DataModel's `system` data. Source: src/data-model/item-data/rune-magic-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "points": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "castingRange": {
+      "type": "string",
+      "enum": [
+        "",
+        "self",
+        "touch",
+        "ranged",
+        "special"
+      ],
+      "default": "ranged"
+    },
+    "duration": {
+      "type": "string",
+      "enum": [
+        "",
+        "instant",
+        "temporal",
+        "focused",
+        "permanent",
+        "special"
+      ],
+      "default": "temporal"
+    },
+    "concentration": {
+      "type": "string",
+      "enum": [
+        "passive",
+        "active"
+      ],
+      "minLength": 1,
+      "default": "passive"
+    },
+    "isRitual": {
+      "type": "boolean",
+      "default": false
+    },
+    "isEnchantment": {
+      "type": "boolean",
+      "default": false
+    },
+    "descriptionRqidLink": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rqid": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "bonus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rqid",
+        "name"
+      ]
+    },
+    "cultId": {
+      "type": "string",
+      "default": ""
+    },
+    "runeRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    },
+    "isStackable": {
+      "type": "boolean",
+      "default": false
+    },
+    "isOneUse": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "points",
+    "castingRange",
+    "duration",
+    "concentration",
+    "isRitual",
+    "isEnchantment",
+    "cultId",
+    "runeRqidLinks",
+    "isStackable",
+    "isOneUse"
+  ]
+}

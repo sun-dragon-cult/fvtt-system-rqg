@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/rune.schema.json",
+  "title": "RQG Item - rune",
+  "description": "Generated JSON Schema for the \"rune\" Item DataModel's `system` data. Source: src/data-model/item-data/rune-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "canGetExperience": {
+      "type": "boolean",
+      "default": true
+    },
+    "hasExperience": {
+      "type": "boolean",
+      "default": false
+    },
+    "chance": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "descriptionRqidLink": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rqid": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "bonus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rqid",
+        "name"
+      ]
+    },
+    "rune": {
+      "type": "string",
+      "default": ""
+    },
+    "runeType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "element",
+            "power",
+            "form",
+            "condition",
+            "technique"
+          ],
+          "minLength": 1,
+          "default": "form"
+        },
+        "name": {
+          "type": "string",
+          "default": "form"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "name"
+      ]
+    },
+    "opposingRuneRqidLink": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rqid": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "bonus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rqid",
+        "name"
+      ]
+    },
+    "minorRuneRqidLinks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rqid": {
+            "type": "string",
+            "default": ""
+          },
+          "name": {
+            "type": "string",
+            "default": ""
+          },
+          "bonus": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "rqid",
+          "name"
+        ]
+      }
+    },
+    "isMastered": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "canGetExperience",
+    "hasExperience",
+    "chance",
+    "rune",
+    "runeType",
+    "minorRuneRqidLinks",
+    "isMastered"
+  ]
+}

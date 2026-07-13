@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/sun-dragon-cult/fvtt-system-rqg/master/src/data-model/json-schemas/generated/item/hitLocation.schema.json",
+  "title": "RQG Item - hitLocation",
+  "description": "Generated JSON Schema for the \"hitLocation\" Item DataModel's `system` data. Source: src/data-model/item-data/hit-location-data-model.ts. Do not edit by hand — run `pnpm generate:schemas`.",
+  "type": "object",
+  "properties": {
+    "dieFrom": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "dieTo": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "hitPoints": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "default": 0
+        },
+        "max": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "baseHpDelta": {
+      "type": "integer",
+      "default": 0
+    },
+    "naturalAp": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0
+    },
+    "wounds": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0,
+        "default": 0
+      }
+    },
+    "hitLocationHealthState": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "wounded",
+        "useless",
+        "severed"
+      ],
+      "minLength": 1,
+      "default": "healthy"
+    },
+    "actorHealthImpact": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "wounded",
+        "shock",
+        "unconscious",
+        "dead"
+      ],
+      "minLength": 1,
+      "default": "healthy"
+    },
+    "hitLocationType": {
+      "type": "string",
+      "enum": [
+        "limb",
+        "head",
+        "chest",
+        "abdomen"
+      ],
+      "minLength": 1,
+      "default": "limb"
+    },
+    "connectedTo": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "dieFrom",
+    "dieTo",
+    "hitPoints",
+    "baseHpDelta",
+    "naturalAp",
+    "wounds",
+    "hitLocationHealthState",
+    "actorHealthImpact",
+    "hitLocationType",
+    "connectedTo"
+  ]
+}
