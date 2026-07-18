@@ -14,6 +14,13 @@ export interface NormalizedActiveEffectDuration {
   duration: {
     value: number | null;
     units: "seconds" | "rounds" | "turns";
+    startTime: typeof _del;
+    seconds: typeof _del;
+    combat: typeof _del;
+    rounds: typeof _del;
+    turns: typeof _del;
+    startRound: typeof _del;
+    startTurn: typeof _del;
   };
   start: {
     time: number;
@@ -85,6 +92,17 @@ export function normalizeLegacyActiveEffectDuration(
     duration: {
       value: inferredValue,
       units: inferredUnits,
+      // Explicitly delete legacy fields so they don't linger alongside the new
+      // value/units shape and keep triggering Foundry's compatibility warnings.
+      // Foundry v14 deprecated the "-=key" deletion syntax in favor of the `_del`
+      // ForcedDeletion sentinel (see foundry.data.operators.ForcedDeletion).
+      startTime: _del,
+      seconds: _del,
+      combat: _del,
+      rounds: _del,
+      turns: _del,
+      startRound: _del,
+      startTurn: _del,
     },
     start: {
       time: toFiniteNumber(startRecord["time"]) ?? toFiniteNumber(duration["startTime"]) ?? 0,

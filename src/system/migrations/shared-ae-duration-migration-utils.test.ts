@@ -11,7 +11,17 @@ describe("normalizeLegacyActiveEffectDuration", () => {
     });
 
     expect(normalized).toBeDefined();
-    expect(normalized?.duration).toEqual({ value: 60, units: "seconds" });
+    expect(normalized?.duration).toEqual({
+      value: 60,
+      units: "seconds",
+      startTime: _del,
+      seconds: _del,
+      combat: _del,
+      rounds: _del,
+      turns: _del,
+      startRound: _del,
+      startTurn: _del,
+    });
     expect(normalized?.start.time).toBe(123);
     expect(normalized?.start.round).toBeNull();
     expect(normalized?.start.turn).toBeNull();
@@ -27,7 +37,17 @@ describe("normalizeLegacyActiveEffectDuration", () => {
     });
 
     expect(normalized).toBeDefined();
-    expect(normalized?.duration).toEqual({ value: 10, units: "rounds" });
+    expect(normalized?.duration).toEqual({
+      value: 10,
+      units: "rounds",
+      startTime: _del,
+      seconds: _del,
+      combat: _del,
+      rounds: _del,
+      turns: _del,
+      startRound: _del,
+      startTurn: _del,
+    });
     expect(normalized?.start.round).toBe(3);
     expect(normalized?.start.turn).toBe(1);
   });
