@@ -37,17 +37,18 @@
             {{#each embeddedItems.hitLocation}}
               <div class="hit-location contextmenu item stats {{rqidName}} {{system.hitLocationHealthState}}" data-item-id="{{id}}">
                 <div class="hl-header-row">
-                  <div>
-                    {{#unless (eq system.hitLocationHealthState "healthy")}}
-                      {{#unless (eq system.hitLocationHealthState "wounded")}}
-                        <i class="health-state">{{toLowerCase
-                          (localize (concat "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState))}}</i>
-                      {{/unless}}
-                    {{/unless}}
-                  </div>
+                  <div class="flex-1"></div>
                   <div class="roll-range"><i class="fa-solid fa-dice-d20"></i> {{#if (eq system.dieFrom system.dieTo)}}{{system.dieFrom}}{{else}}{{system.dieFrom}}-{{system.dieTo}}{{/if}}</div>
                 </div>
                 <b>{{name}}</b>
+                {{#unless (eq system.hitLocationHealthState "healthy")}}
+                  {{#unless (eq system.hitLocationHealthState "wounded")}}
+                    <div class="hl-status-row">
+                      <i class="health-state">{{toLowerCase
+                        (localizeDynamic "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState)}}</i>
+                    </div>
+                  {{/unless}}
+                {{/unless}}
                 <div class="hl-stat-row">
                   <div>
                     {{localize "RQG.Actor.Health.ArmorPointsAbbr"}}<br>

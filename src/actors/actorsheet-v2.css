@@ -1365,6 +1365,14 @@
             gap: 0.5rem;
           }
 
+          & .hl-status-row {
+            text-align: left;
+
+            & .health-state {
+              white-space: nowrap;
+            }
+          }
+
           & .hl-stat-row {
             display: flex;
           }
