@@ -127,6 +127,20 @@ export async function applyMigrations(
       migrationResult,
       logger,
     );
+  } catch (err: unknown) {
+    // An error here means something escaped the fine-grained per-document/per-pack
+    // try/catch blocks inside the phase functions above. Without this, the progress
+    // bar would freeze at whatever percentage it last reached instead of reflecting
+    // that the migration run has ended (successfully or not).
+    migrationResult.errorCount += 1;
+    const errorMessage = err instanceof Error ? err.message : String(err);
+    logger.error(`World migration aborted unexpectedly: ${errorMessage}`);
+    progressBar?.update?.({ pct: 1 });
+    if (removeProgressBarOnComplete) {
+      progressBar?.remove();
+      progressBar = undefined;
+    }
+    throw err;
   } finally {
     worldMigrationsTiming.timeEnd();
   }
@@ -156,6 +170,7 @@ async function migrateWorldActors(
     count: actorCount.toString(),
   });
   if (!actorArray || actorCount === 0) {
+    updateProgressBar(0, 0, migrationMsg, 0, 0.25, 120);
     return;
   }
   let progress = 0;
@@ -224,6 +239,7 @@ async function migrateWorldItems(
     count: itemCount.toString(),
   });
   if (!itemArray || itemCount === 0) {
+    updateProgressBar(0, 0, migrationMsg, 0.25, 0.5, 45);
     return;
   }
   let progress = 0;
@@ -276,6 +292,7 @@ async function migrateWorldScenes(
     count: scenesCount.toString(),
   });
   if (!scenes || scenesCount === 0) {
+    updateProgressBar(0, 0, migrationMsg, 0.5, 0.75, 180);
     return;
   }
   let progress = 0;
@@ -326,6 +343,7 @@ async function migrateWorldCompendiumPacks(
     count: packsCount.toString(),
   });
   if (packsCount === 0) {
+    updateProgressBar(0, 0, migrationMsg, 0.75, 1, 350);
     return;
   }
   let progress = 0;
@@ -1289,11 +1307,15 @@ function updateProgressBar(
     phaseTimingStart = now;
   }
 
-  const countProgress = Math.max(0, Math.min(1, index / total));
+  // An empty phase (nothing to migrate) is trivially finished, so treat it as 100% for
+  // this phase's slice of the overall bar. Otherwise the phase's end percentage would
+  // never be reached, leaving the overall progress bar stuck below 100%.
+  const isEmptyPhase = totalCount === 0;
+  const countProgress = isEmptyPhase ? 1 : Math.max(0, Math.min(1, index / total));
   const expectedPhaseMs = Math.max(1000, total * expectedUnitMs);
   const elapsedPhaseMs = Math.max(0, now - phaseTimingStart);
   const rawTimeProgress = Math.max(0, Math.min(1, elapsedPhaseMs / expectedPhaseMs));
-  const timeProgress = index >= total ? 1 : Math.min(rawTimeProgress, 0.98);
+  const timeProgress = isEmptyPhase || index >= total ? 1 : Math.min(rawTimeProgress, 0.98);
   const phaseProgress = Math.max(countProgress, timeProgress);
   const pct = phaseStartPct + (phaseEndPct - phaseStartPct) * phaseProgress;
   const message = `${prefix} ${index} / ${totalCount}`;
@@ -1304,7 +1326,7 @@ function updateProgressBar(
 
   progressBar?.update?.({ message, pct });
 
-  if (index === totalCount && removeProgressBarOnComplete) {
+  if ((isEmptyPhase || index === totalCount) && removeProgressBarOnComplete) {
     progressBar?.remove();
     progressBar = undefined;
   }
