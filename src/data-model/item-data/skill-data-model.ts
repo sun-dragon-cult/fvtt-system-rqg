@@ -53,10 +53,6 @@ export class SkillDataModel extends AbilityDataModel<
       logger.throw("Tried to improve a skill item that isn't embedded on an actor", item);
     }
 
-    // Use the persisted (un-modified by Active Effects) source value as the base for the
-    // gain. `this.gainedChance` is the derived, in-memory value and may already include
-    // Active Effect bonuses - using it here would permanently bake those temporary bonuses
-    // into the persisted gainedChance.
     const newGainedChance = Number(item._source.system.gainedChance) + gain;
     await item.update({
       system: { hasExperience: false, gainedChance: newGainedChance },
