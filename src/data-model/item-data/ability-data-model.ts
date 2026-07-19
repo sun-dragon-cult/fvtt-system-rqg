@@ -126,7 +126,7 @@ export abstract class AbilityDataModel<
       logger.throw("Tried to improve item that isn't embedded on an actor", item);
     }
 
-    const newChance = Number(this.chance) + gain;
+    const newChance = Number(item._source.system.chance) + gain;
     await item.update({ system: { hasExperience: false, chance: newChance } });
   }
 
