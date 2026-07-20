@@ -6,6 +6,33 @@ import { getLocationRelatedUpdates } from "../shared/physical-item-util";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { embedLinkedSkill } from "./weapon-skill-links";
 
+/**
+ * If a projectile (e.g. an arrow) that is linked to a weapon (e.g. a bow) via projectileId
+ * is unequipped, remove that link so the weapon doesn't keep consuming the unequipped projectile.
+ */
+function getUnequippedProjectileLinkUpdates(
+  actorEmbeddedItems: RqgActor["items"]["contents"],
+  physicalItem: RqgItem,
+  updates: object[],
+): any[] {
+  const equippedStatusUpdate: any = updates.find((u: any) => u._id === physicalItem.id);
+  // Updates can use either the flattened dot-notation key (from form submissions) or a
+  // nested `system: { equippedStatus }` object (e.g. from updateEmbeddedDocuments calls).
+  const newEquippedStatus =
+    equippedStatusUpdate?.["system.equippedStatus"] ?? equippedStatusUpdate?.system?.equippedStatus;
+  if (!newEquippedStatus || newEquippedStatus === "equipped") {
+    return [];
+  }
+
+  return actorEmbeddedItems
+    .filter(
+      (i) =>
+        isDocumentSubType<WeaponItem>(i, ItemTypeEnum.Weapon) &&
+        i.system.projectileId === physicalItem.id,
+    )
+    .map((i) => ({ _id: i.id, "system.projectileId": "" }));
+}
+
 export const weaponLifecycle = {
   handleItemUpdateDocumentsPreUpdate(
     actor: RqgActor,
@@ -16,6 +43,10 @@ export const weaponLifecycle = {
   ): void {
     if (isDocumentSubType<WeaponItem>(weapon, ItemTypeEnum.Weapon)) {
       mergeArraysById(updates, getLocationRelatedUpdates(actor.items.contents, weapon, updates));
+      mergeArraysById(
+        updates,
+        getUnequippedProjectileLinkUpdates(actor.items.contents, weapon, updates),
+      );
     }
   },
 
