@@ -1,7 +1,6 @@
 import * as fs from "fs/promises";
 import * as Vite from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
-import tsconfigPaths from "vite-tsconfig-paths";
 import { checker } from "vite-plugin-checker";
 import esbuild from "esbuild";
 import * as path from "path";
@@ -32,7 +31,7 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
       ? (await findFoundryHost()).host
       : `${process.env.FOUNDRY_HOST_NAME ?? "localhost"}:${process.env.FOUNDRY_PORT ?? "30013"}`;
 
-  const plugins: Vite.PluginOption[] = [tsconfigPaths(), foundryEntrypointsPlugin()];
+  const plugins: Vite.PluginOption[] = [foundryEntrypointsPlugin()];
 
   // Run checker only in dev to avoid lingering worker processes during production builds.
   if (command === "serve") {
@@ -93,6 +92,9 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
   return {
     base: command === "build" ? "./" : `/${foundryPackagePath}`,
     publicDir: "static",
+    resolve: {
+      tsconfigPaths: true,
+    },
     build: {
       outDir,
       emptyOutDir: true,
