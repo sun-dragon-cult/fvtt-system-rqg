@@ -6,29 +6,32 @@
         <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
       {{/each}}
       {{#if hasAccessToRuneMagic}}
-        {{#if (lte (difference @root.system.characteristics.charisma.value runeMagicPointSum) -1)}}
+        {{#if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) -1)}}
           <span class="small-size warning"
                 data-tooltip="{{localize 'RQG.Actor.RuneMagic.CHALimitExceeded'
-                    learnedPoints=runeMagicPointSum
+                    runePointsMax=system.runePoints.max
                     chaValue=@root.system.characteristics.charisma.value
-                    exceededBy=(difference runeMagicPointSum @root.system.characteristics.charisma.value)}}">{{localize "RQG.Actor.RuneMagic.CHALimitExceeded"
-              learnedPoints=runeMagicPointSum
+                    exceededBy=(difference system.runePoints.max @root.system.characteristics.charisma.value)}}">{{localize "RQG.Actor.RuneMagic.CHALimitExceeded"
+              runePointsMax=system.runePoints.max
               chaValue=@root.system.characteristics.charisma.value
-              exceededBy=(difference runeMagicPointSum @root.system.characteristics.charisma.value)}}</span>
-        {{else if (lte (difference @root.system.characteristics.charisma.value runeMagicPointSum) 0)}}
-          <span class="small-size warning">{{localize "RQG.Actor.RuneMagic.CHALimitReached"
-              learnedPoints=runeMagicPointSum}}</span>
-        {{else}}
-          <span class="small-size"
-                data-tooltip="{{localize 'RQG.Actor.RuneMagic.CHALimitTooltip'
-                    chaValue=@root.system.characteristics.charisma.value}}">{{localize "RQG.Actor.RuneMagic.CHALimitFormula"
-              learnedPoints=runeMagicPointSum
-              freePoints=(difference @root.system.characteristics.charisma.value runeMagicPointSum)}}</span>
+              exceededBy=(difference system.runePoints.max @root.system.characteristics.charisma.value)}}</span>
+        {{else if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) 0)}}
+          <span class="small-size">{{localize "RQG.Actor.RuneMagic.CHALimitReached"
+              runePointsMax=system.runePoints.max}}</span>
         {{/if}}
       {{/if}}
     </h2>
     <div class="flex-row gap1rem cult contextmenu">
-      <span>
+      <span class="rune-points"
+            {{#if hasAccessToRuneMagic}}
+            data-tooltip="{{#if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) -1)}}{{localize 'RQG.Actor.RuneMagic.CHALimitExceeded'
+                runePointsMax=system.runePoints.max
+                chaValue=@root.system.characteristics.charisma.value
+                exceededBy=(difference system.runePoints.max @root.system.characteristics.charisma.value)}}{{else if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) 0)}}{{localize 'RQG.Actor.RuneMagic.CHALimitReached'
+                runePointsMax=system.runePoints.max}}{{else}}{{localize 'RQG.Actor.RuneMagic.CHALimitFormula'
+                runePointsMax=system.runePoints.max
+                freePoints=(difference @root.system.characteristics.charisma.value system.runePoints.max)}}{{/if}}"
+            {{/if}}>
         {{#if hasAccessToRuneMagic}}
           <b>{{localize "RQG.Actor.RuneMagic.RunePoints"}}</b>
           <input type="number" min="0" max="99"

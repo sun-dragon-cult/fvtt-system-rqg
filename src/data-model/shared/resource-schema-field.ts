@@ -8,7 +8,7 @@ const { NumberField, SchemaField } = foundry.data.fields;
 export function resourceSchemaField() {
   return new SchemaField({
     value: new NumberField({ integer: true, nullable: true, initial: 0 }),
-    max: new NumberField({ integer: true, nullable: true, initial: undefined }),
+    max: new NumberField({ integer: true, nullable: false, initial: 0 }),
   });
 }
 

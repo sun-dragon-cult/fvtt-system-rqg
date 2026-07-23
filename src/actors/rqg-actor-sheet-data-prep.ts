@@ -684,15 +684,10 @@ export async function organizeEmbeddedItems(
       .join("");
   });
 
-  // Extract hasAccessToRuneMagic info from subCults and sum up learned rune magic points per cult
+  // Extract hasAccessToRuneMagic info from subCults
   itemTypes[ItemTypeEnum.Cult]?.forEach((cult) => {
     const cultItem = cult as CultItem;
     (cultItem as any).hasAccessToRuneMagic = hasAccessToRuneMagic(cultItem);
-    (cultItem as any).runeMagicPointSum =
-      itemTypes[ItemTypeEnum.RuneMagic]
-        ?.filter((runeMagicItem) => (runeMagicItem as RuneMagicItem).system.cultId === cultItem.id)
-        .reduce((acc: number, spell) => acc + ((spell as RuneMagicItem).system.points ?? 0), 0) ??
-      0;
   });
 
   // Enrich item description and GM notes texts for tooltip display
