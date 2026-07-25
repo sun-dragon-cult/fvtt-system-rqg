@@ -106,6 +106,7 @@ export interface CharacterSheetData {
   /** list of pow-crystals */
   powCrystals: { name: string; size: number }[];
   spiritMagicPointSum: number;
+  sorcerySkillCount: number;
   freeInt: number;
   baseStrikeRank: number | undefined;
   enrichedAllies: string;

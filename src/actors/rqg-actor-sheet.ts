@@ -234,6 +234,7 @@ export class RqgActorSheet<
       itemLocationTree: itemTree.toSheetData(),
       powCrystals: DataPrep.getPowCrystals(this.actor),
       spiritMagicPointSum: spiritMagicPointSum,
+      sorcerySkillCount: CharacterDataModel.getSorcerySkillCount(this.actor),
       freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
       baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
       enrichedAllies: await foundry.applications.ux.TextEditor.implementation.enrichHTML(

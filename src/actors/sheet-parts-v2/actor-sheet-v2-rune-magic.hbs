@@ -68,8 +68,8 @@
 
       {{#if hasAccessToRuneMagic}}
         {{#if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) -1)}}
-          <div class="cult-cha-limit">
-            <span class="small-size warning"
+          <div class="magic-limit-banner">
+            <span class="warning"
                   data-tooltip="{{localize 'RQG.Actor.RuneMagic.CHALimitExceeded'
                       runePointsMax=system.runePoints.max
                       chaValue=@root.system.characteristics.charisma.value
@@ -79,8 +79,8 @@
               exceededBy=(difference system.runePoints.max @root.system.characteristics.charisma.value)}}</span>
           </div>
         {{else if (lte (difference @root.system.characteristics.charisma.value system.runePoints.max) 0)}}
-          <div class="cult-cha-limit">
-            <span class="small-size">{{localize "RQG.Actor.RuneMagic.CHALimitReached"
+          <div class="magic-limit-banner">
+            <span>{{localize "RQG.Actor.RuneMagic.CHALimitReached"
                 runePointsMax=system.runePoints.max}}</span>
           </div>
         {{/if}}

@@ -319,6 +319,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       baseStrikeRank: DataPrep.getBaseStrikeRank(dexStrikeRank, system.attributes.sizStrikeRank),
 
       spiritMagicPointSum: spiritMagicPointSum,
+      sorcerySkillCount: CharacterDataModel.getSorcerySkillCount(this.actor),
       freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
       powCrystals: DataPrep.getPowCrystals(this.actor),
 

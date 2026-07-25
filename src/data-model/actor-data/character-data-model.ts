@@ -218,11 +218,15 @@ export class CharacterDataModel extends RqgActorDataModel<
     }, 0);
   }
 
-  static getFreeInt(actor: CharacterActor, spiritMagicPointSum: number): number {
-    const sorcerySkillCount = actor.items.filter(
+  static getSorcerySkillCount(actor: CharacterActor): number {
+    return actor.items.filter(
       (i) =>
         isDocumentSubType<SkillItem>(i, ItemTypeEnum.Skill) && !!i.system.runeRqidLinks?.length,
     ).length;
+  }
+
+  static getFreeInt(actor: CharacterActor, spiritMagicPointSum: number): number {
+    const sorcerySkillCount = CharacterDataModel.getSorcerySkillCount(actor);
 
     return (
       (actor.system.characteristics.intelligence.value ?? 0) -

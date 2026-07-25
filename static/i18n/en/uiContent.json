@@ -397,17 +397,20 @@
         }
       },
       "Sorcery": {
-        "INTLimitTooltip": "Maximum learnable Sorcery is limited by INT ({intValue}). Spirit Magic points also count against this limit.",
+        "INTLimitTooltip": "Maximum learnable Sorcery spells is limited by INT ({intValue}). Spirit Magic points also count against this limit.",
+        "INTLimitFormula": "Remaining Sorcery capacity is {freePoints} Free INT ({spiritMagicPoints} Spirit Magic + {sorceryCount} Sorcery spells learned).",
+        "INTLimitReached": "Sorcery capacity reached — {spiritMagicPoints} Spirit Magic + {sorceryCount} Sorcery spells learned (INT limit).",
+        "INTLimitExceeded": "Sorcery capacity exceeded by {exceededBy} points! ({spiritMagicPoints} Spirit Magic + {sorceryCount} Sorcery spells learned, INT limit is {intValue}).",
         "Spells": "Spells",
         "Techniques": "Techniques",
         "MasteredRunes": "Mastered Runes"
       },
       "SpiritMagic": {
         "SpiritMagic": "Spirit Magic",
-        "INTLimitFormula": "Remaining learning capacity is {freePoints} points of Spirit Magic ({learnedPoints} points already learned).",
-        "INTLimitTooltip": "Maximum learnable Spirit Magic is limited by INT ({intValue}). Sorcery spells also count against this limit.",
-        "INTLimitReached": "Learning capacity reached — {learnedPoints} points of Spirit Magic learned (INT limit).",
-        "INTLimitExceeded": "Learning capacity exceeded by {exceededBy} points! ({learnedPoints} points learned, INT limit is {intValue}).",
+        "CHALimitFormula": "Remaining learning capacity is {freePoints} points of Spirit Magic ({learnedPoints} points already learned).",
+        "CHALimitTooltip": "Maximum Spirit Magic points learnable is limited by CHA ({chaValue}).",
+        "CHALimitReached": "Learning capacity reached — {learnedPoints} points of Spirit Magic learned (CHA limit).",
+        "CHALimitExceeded": "Learning capacity exceeded by {exceededBy} points! ({learnedPoints} points learned, CHA limit is {chaValue}).",
         "Name": "Name",
         "SpellFocus": "Focus",
         "SpellSummary": "Spell Summary",
