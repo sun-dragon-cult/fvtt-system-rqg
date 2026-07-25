@@ -1,23 +1,23 @@
 <h2>
   {{localize "RQG.Actor.SpiritMagic.SpiritMagic"}}
-  {{#if (lt freeInt 0)}}
+  {{#if (lt (difference system.characteristics.charisma.value spiritMagicPointSum) 0)}}
     <span class="small-size warning"
-          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitExceeded'
+          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.CHALimitExceeded'
               learnedPoints=spiritMagicPointSum
-              intValue=system.characteristics.intelligence.value
-              exceededBy=(difference 0 freeInt)}}">{{localize "RQG.Actor.SpiritMagic.INTLimitExceeded"
+              chaValue=system.characteristics.charisma.value
+              exceededBy=(difference spiritMagicPointSum system.characteristics.charisma.value)}}">{{localize "RQG.Actor.SpiritMagic.CHALimitExceeded"
         learnedPoints=spiritMagicPointSum
-        intValue=system.characteristics.intelligence.value
-        exceededBy=(difference 0 freeInt)}}</span>
-  {{else if (eq freeInt 0)}}
-    <span class="small-size warning">{{localize "RQG.Actor.SpiritMagic.INTLimitReached"
+        chaValue=system.characteristics.charisma.value
+        exceededBy=(difference spiritMagicPointSum system.characteristics.charisma.value)}}</span>
+    {{else if (eq (difference system.characteristics.charisma.value spiritMagicPointSum) 0)}}
+    <span class="small-size">{{localize "RQG.Actor.SpiritMagic.CHALimitReached"
         learnedPoints=spiritMagicPointSum}}</span>
   {{else}}
     <span class="small-size"
-          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.INTLimitTooltip'
-              intValue=system.characteristics.intelligence.value}}">{{localize "RQG.Actor.SpiritMagic.INTLimitFormula"
+          data-tooltip="{{localize 'RQG.Actor.SpiritMagic.CHALimitTooltip'
+              chaValue=system.characteristics.charisma.value}}">{{localize "RQG.Actor.SpiritMagic.CHALimitFormula"
         learnedPoints=spiritMagicPointSum
-        freePoints=freeInt}}</span>
+        freePoints=(difference system.characteristics.charisma.value spiritMagicPointSum)}}</span>
   {{/if}}
 </h2>
 <div class="grid spiritmagic item-list">

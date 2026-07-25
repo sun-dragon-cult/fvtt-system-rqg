@@ -49,13 +49,14 @@
           "default": 0
         },
         "max": {
-          "type": [
-            "integer",
-            "null"
-          ]
+          "type": "integer",
+          "default": 0
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "required": [
+        "max"
+      ]
     },
     "holyDays": {
       "type": "string",

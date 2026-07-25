@@ -110,6 +110,12 @@
       }
     }
 
+/* Shared "magic capacity limit" status banner, used by the Spirit Magic, Sorcery and Rune Magic tabs. */
+    & .magic-limit-banner {
+      font-size: small;
+      padding: 2px 0;
+    }
+
 /* Dark fill visible behind both nav and parchment transparent areas */
     background: rgb(0 0 0 / 60%);
 
@@ -1811,20 +1817,6 @@
         }
       }
 
-      & .int-capacity-row {
-        display: flex;
-        justify-content: flex-end;
-        padding: 0 6px;
-        margin-bottom: 0.25rem;
-        text-align: right;
-        font-size: 0.75em;
-        font-weight: normal;
-
-        & .warning {
-          color: var(--color-text-dark-warn, #a00);
-        }
-      }
-
       & .skill-row {
         display: contents;
 
@@ -1853,21 +1845,7 @@
 /* --- Spirit Magic tab --- */
     .spirit-magic-tab-v2 {
       & h2 {
-        display: flex;
-        align-items: baseline;
-        gap: 0.5rem;
         padding: 0 6px;
-        flex-wrap: wrap;
-
-        & .small-size {
-          font-size: 0.75em;
-          font-weight: normal;
-          margin-left: auto;
-        }
-
-        & .warning {
-          color: var(--color-text-dark-warn, #a00);
-        }
       }
 
       & .grid.spiritmagic.item-list {
@@ -1987,16 +1965,6 @@
               object-fit: contain;
               vertical-align: middle;
             }
-
-            & .small-size {
-              font-size: 0.75em;
-              font-weight: normal;
-              margin-left: auto;
-            }
-
-            & .warning {
-              color: var(--color-text-dark-warn, #a00);
-            }
           }
 
           & .cult-meta {
@@ -2081,11 +2049,6 @@
             }
           }
         }
-      }
-
-      & .cult-cha-limit {
-        font-size: 0.85em;
-        padding: 2px 0;
       }
 
       & .grid.runemagic.item-list {

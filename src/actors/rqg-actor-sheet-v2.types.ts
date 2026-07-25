@@ -87,6 +87,8 @@ export interface RqgActorSheetV2Context {
 
   /** Total spirit magic points memorized. */
   spiritMagicPointSum: number;
+  /** Number of sorcery spells (rune-linked skills) learned. */
+  sorcerySkillCount: number;
   /** INT remaining after spirit magic. */
   freeInt: number;
 
