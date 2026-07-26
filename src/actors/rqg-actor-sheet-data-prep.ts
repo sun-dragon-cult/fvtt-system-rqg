@@ -807,7 +807,9 @@ export function getUiSectionVisibility(actor: CharacterActor): UiSections {
   return {
     health:
       CONFIG.RQG.debug.showAllUiSections ||
-      actor.system.attributes.hitPoints.max != null ||
+      actor.system.characteristics.strength.value != null ||
+      actor.system.characteristics.constitution.value != null ||
+      actor.system.characteristics.size.value != null ||
       actor.items.some((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation)),
     combat:
       CONFIG.RQG.debug.showAllUiSections ||
