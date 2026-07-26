@@ -14,6 +14,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 - Foundry knowledge base (developer articles): `https://foundryvtt.com/kb/` — the "Community Development" section covers system data models, localization, API migration guides, and system development patterns.
 - Foundry v14 release notes: individual builds at `https://foundryvtt.com/releases/14.{build}` — useful when investigating what changed in a specific v14 build.
 - RQG rules reference: `https://rqwiki.chaosium.com/rules/` — consult when implementing an unfamiliar game mechanic (skills, runes, passions, combat, spirit magic, rune magic).
+- RQG rules formulas/thresholds: when implementing or verifying a game mechanic, cite the specific page and book of the actual rulebook (e.g. "Core p.144" or "RBM p.107") rather than relying on memory. Core = *RuneQuest: Roleplaying in Glorantha* (2nd printing); RBM = *Red Book of Magic* (supersedes Core on magic rules where the two disagree).
 - Some repo docs/scripts mention v13 for local dual-version workflows; treat v14 as the implementation target unless explicitly requested otherwise.
 
 ## Default Engineering Rules

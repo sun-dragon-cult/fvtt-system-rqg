@@ -28,9 +28,10 @@ describe("Evaluate Ability Roll Success Levels", () => {
     ${1}         | ${2}   | ${AbilitySuccessLevelEnum.Success}
     ${1}         | ${5}   | ${AbilitySuccessLevelEnum.Success}
     ${1}         | ${6}   | ${AbilitySuccessLevelEnum.Failure}
-    ${6}         | ${2}   | ${AbilitySuccessLevelEnum.Special}
-    ${6}         | ${3}   | ${AbilitySuccessLevelEnum.Success}
-    ${7}         | ${2}   | ${AbilitySuccessLevelEnum.Special}
+    ${6}         | ${1}   | ${AbilitySuccessLevelEnum.Critical}
+    ${6}         | ${2}   | ${AbilitySuccessLevelEnum.Success}
+    ${7}         | ${1}   | ${AbilitySuccessLevelEnum.Critical}
+    ${7}         | ${2}   | ${AbilitySuccessLevelEnum.Success}
     ${13}        | ${3}   | ${AbilitySuccessLevelEnum.Special}
     ${13}        | ${4}   | ${AbilitySuccessLevelEnum.Success}
     ${18}        | ${4}   | ${AbilitySuccessLevelEnum.Special}
