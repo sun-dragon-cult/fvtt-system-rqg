@@ -115,7 +115,18 @@
       data-source-panel="training"
       {{#if showSourceChooser}}{{#unless (eq selectedSource "training")}}hidden{{/unless}}{{/if}}
     >
+      {{#if improvementData.trainingIsGated}}
+      <div class="improve-dialog-option-context">
+        <span class="improve-dialog-formula-value">{{improvementData.chanceToGain}}%</span>
+        {{localize "RQG.Dialog.improveAbilityDialog.improvementChanceLabel"}}
+        <span class="improve-dialog-formula">(
+          <b>{{improvementData.speciesMax}}</b><sub><i>{{localize "RQG.Dialog.improveAbilityDialog.speciesMaxLabel"}}</i></sub> -
+          <b>{{improvementData.chance}}</b><sub><i>{{improvementData.shortName}}</i></sub>
+        ) × <b>5</b>{{#if improvementData.cultBonusValue}} + <b>{{improvementData.cultBonusValue}}</b><sub><i>{{improvementData.cultBonusLabel}}</i></sub>{{/if}}</span>
+      </div>
+      {{else}}
       <div class="improve-dialog-option-context">{{localize "RQG.Dialog.improveAbilityDialog.afterTrainingSuffixCharacteristic"}}</div>
+      {{/if}}
       <label>
         <input
           type="radio"

@@ -45,6 +45,7 @@ describe("buildCharacteristicAdapter", () => {
     expect(adapter.canExperience).toBe(true);
     expect(adapter.canTraining).toBe(true);
     expect(adapter.canResearch).toBe(false);
+    expect(adapter.trainingIsGated).toBe(true);
   });
 
   it("does not allow experience for non-power characteristics", async () => {
@@ -62,6 +63,7 @@ describe("buildCharacteristicAdapter", () => {
     expect(adapter.showResearch).toBe(true);
     expect(adapter.canTraining).toBe(true);
     expect(adapter.canResearch).toBe(true);
+    expect(adapter.trainingIsGated).toBe(false);
   });
 
   it("applies 20% cult bonus for qualifying power cult rank", async () => {

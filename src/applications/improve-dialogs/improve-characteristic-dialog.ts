@@ -52,6 +52,8 @@ type CharacteristicImprovementData = {
   experienceGainRandom: string;
   trainingGainRandom: string;
   researchGainRandom: string;
+  /** POW training requires the same gated POW-gain-roll chance check as Experience; other trainable characteristics don't. */
+  trainingIsGated: boolean;
 };
 
 type ImproveCharacteristicDialogContext = {
@@ -319,6 +321,13 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
 
   private async resolveTrainingGain(): Promise<number> {
     const improvementData = this.improvementData;
+
+    // POW training (Core p.419: "Increasing POW Through Training") resolves with the same
+    // gated POW-gain-roll chance check as Experience, unlike the other trainable characteristics.
+    if (improvementData.trainingIsGated) {
+      return this.resolveGatedCharacteristicGain("training", improvementData.trainingGainRandom);
+    }
+
     const gainRoll = new Roll(improvementData.trainingGainRandom);
     await gainRoll.toMessage({
       speaker: this.speaker,
@@ -339,18 +348,49 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
   }
 
   private async resolveResearchGain(): Promise<number> {
+    return this.resolveGatedCharacteristicGain("research", this.improvementData.researchGainRandom);
+  }
+
+  private static readonly gatedGainLocKeys = {
+    research: {
+      rollFlavor: "RQG.Dialog.improveAbilityDialog.researchRoll.flavor",
+      rollContentChar: "RQG.Dialog.improveAbilityDialog.researchRoll.contentChar",
+      gainFailedFlavor: "RQG.Dialog.improveAbilityDialog.researchGainFailed.flavor",
+      gainFailedContent: "RQG.Dialog.improveAbilityDialog.researchGainFailed.content",
+      resultFlavor: "RQG.Dialog.improveAbilityDialog.researchResultChat.flavor",
+      resultContentChoseRandom:
+        "RQG.Dialog.improveAbilityDialog.researchResultChat.contentChoseRandom",
+    },
+    training: {
+      rollFlavor: "RQG.Dialog.improveAbilityDialog.trainingRoll.flavor",
+      rollContentChar: "RQG.Dialog.improveAbilityDialog.trainingRoll.contentChar",
+      gainFailedFlavor: "RQG.Dialog.improveAbilityDialog.trainingGainFailed.flavor",
+      gainFailedContent: "RQG.Dialog.improveAbilityDialog.trainingGainFailed.content",
+      resultFlavor: "RQG.Dialog.improveAbilityDialog.trainingResultChat.flavor",
+      resultContentChoseRandom:
+        "RQG.Dialog.improveAbilityDialog.trainingResultChat.contentChoseRandom",
+    },
+  } as const;
+
+  /**
+   * Shared resolution for improvement sources that require a POW-gain-roll-style chance check
+   * (`chanceToGain`, Core p.415-416/419-420) before rolling the actual characteristic gain.
+   * Used by both Research (all researchable characteristics) and Training (POW only).
+   */
+  private async resolveGatedCharacteristicGain(
+    source: "research" | "training",
+    gainFormula: string,
+  ): Promise<number> {
     const improvementData = this.improvementData;
-    const expRoll = new Roll("1d100");
-    await expRoll.toMessage({
+    const locKeys = ImproveCharacteristicDialog.gatedGainLocKeys[source];
+    const checkRoll = new Roll("1d100");
+    await checkRoll.toMessage({
       speaker: this.speaker,
-      flavor: `<div class="roll-action">${localize(
-        "RQG.Dialog.improveAbilityDialog.researchRoll.flavor",
-        {
-          actorName: this.actor.name,
-          name: improvementData.name,
-          typeLocName: improvementData.typeLocName,
-        },
-      )}</div><p>${localize("RQG.Dialog.improveAbilityDialog.researchRoll.contentChar", {
+      flavor: `<div class="roll-action">${localize(locKeys.rollFlavor, {
+        actorName: this.actor.name,
+        name: improvementData.name,
+        typeLocName: improvementData.typeLocName,
+      })}</div><p>${localize(locKeys.rollContentChar, {
         chance: improvementData.chance.toString(),
         chanceToGain: improvementData.chanceToGain.toString(),
         speciesMax: improvementData.speciesMax.toString(),
@@ -359,13 +399,13 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
       })}</p>`,
     });
 
-    if (expRoll.total === undefined || expRoll.total > improvementData.chanceToGain) {
+    if (checkRoll.total === undefined || checkRoll.total > improvementData.chanceToGain) {
       await ChatMessage.create({
-        flavor: localize("RQG.Dialog.improveAbilityDialog.researchGainFailed.flavor", {
+        flavor: localize(locKeys.gainFailedFlavor, {
           name: improvementData.name,
           typeLocName: improvementData.typeLocName,
         }),
-        content: localize("RQG.Dialog.improveAbilityDialog.researchGainFailed.content", {
+        content: localize(locKeys.gainFailedContent, {
           actorName: this.actor.name,
           name: improvementData.name,
           typeLocName: improvementData.typeLocName,
@@ -375,21 +415,15 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
       return 0;
     }
 
-    const gainRoll = new Roll(improvementData.researchGainRandom);
+    const gainRoll = new Roll(gainFormula);
     await gainRoll.toMessage({
       speaker: this.speaker,
-      flavor: `<div class="roll-action">${localize(
-        "RQG.Dialog.improveAbilityDialog.researchResultChat.flavor",
-        {
-          name: improvementData.name,
-          typeLocName: improvementData.typeLocName,
-        },
-      )}</div><p>${localize(
-        "RQG.Dialog.improveAbilityDialog.researchResultChat.contentChoseRandom",
-        {
-          gain: improvementData.researchGainRandom,
-        },
-      )}</p>`,
+      flavor: `<div class="roll-action">${localize(locKeys.resultFlavor, {
+        name: improvementData.name,
+        typeLocName: improvementData.typeLocName,
+      })}</div><p>${localize(locKeys.resultContentChoseRandom, {
+        gain: gainFormula,
+      })}</p>`,
     });
     return Number(gainRoll.total) || 0;
   }
@@ -499,6 +533,7 @@ function buildCharacteristicAdapterFromSource(
     experienceGainRandom: "1d3-1",
     trainingGainRandom: "1d3-1",
     researchGainRandom: "1d3-1",
+    trainingIsGated: isPowerCharacteristic,
     name: localize("RQG.Actor.Characteristics." + characteristicName + "-full"),
     typeLocName: localize("RQG.Actor.Characteristics.Characteristic"),
     speciesMax,
