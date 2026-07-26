@@ -666,7 +666,7 @@
         "throughTraining": "through training",
         "sourceUnavailableTraining": "Unavailable for this {typeLocName}",
         "sourceUnavailableTrainingPassion": "Unavailable for Passions",
-        "sourceUnavailableTrainingOver75": "Unavailable now: skills above 75% cannot be trained",
+        "sourceUnavailableTrainingOver75": "Unavailable now: skills at 75% or above cannot be trained",
         "sourceUnavailableResearch": "Unavailable for this {typeLocName}",
         "sourceUnavailableSpeciesMax": "Unavailable now: at species maximum for {name}",
         "gainLower": "gain {gain}%",

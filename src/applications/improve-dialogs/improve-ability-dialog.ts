@@ -478,7 +478,10 @@ export async function showImproveAbilityDialog(
   await dialog.render({ force: true });
 }
 
-function updateAdapterForSkill(improvementData: AbilityImprovementData, item: RqgItem): void {
+export function updateAdapterForSkill(
+  improvementData: AbilityImprovementData,
+  item: RqgItem,
+): void {
   assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
   improvementData.abilityType = "skill";
   const actor = item.parent;
@@ -505,8 +508,8 @@ function updateAdapterForSkill(improvementData: AbilityImprovementData, item: Rq
   improvementData.chanceToGain = successfulRawRolls.length;
   improvementData.requiredRoll = successfulRawRolls[0] ?? 100;
 
-  if (improvementData.chance > 75) {
-    //Cannot train skills over 75%
+  if (improvementData.chance >= 75) {
+    // Cannot train skills at or above 75%
     improvementData.canTraining = false;
     improvementData.skillOver75 = true;
   }

@@ -4,7 +4,21 @@ import {
   buildSkillExperienceRollFormula,
   formatCategoryModDisplay,
   isSupportedAbilityGainType,
+  updateAdapterForSkill,
 } from "./improve-ability-dialog";
+
+function createSkillItem(baseChance: number, gainedChance: number = 0) {
+  return {
+    type: "skill",
+    system: { category: "agility" },
+    _source: { system: { baseChance, gainedChance } },
+    parent: { type: "character", system: { baseSkillCategoryModifiers: { agility: 0 } } },
+  } as any;
+}
+
+function createImprovementData() {
+  return { canTraining: true } as any;
+}
 
 describe("buildSkillExperienceRollFormula", () => {
   it("builds formula for positive category modifiers", () => {
@@ -31,6 +45,29 @@ describe("formatCategoryModDisplay", () => {
 
   it("formats zero category modifier", () => {
     expect(formatCategoryModDisplay(0)).toBe("0");
+  });
+});
+
+describe("updateAdapterForSkill", () => {
+  it("allows training a skill just below 75%", () => {
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, createSkillItem(74));
+    expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.skillOver75).toBeUndefined();
+  });
+
+  it("blocks training a skill at exactly 75%", () => {
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, createSkillItem(75));
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("blocks training a skill above 75%", () => {
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, createSkillItem(80));
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.skillOver75).toBe(true);
   });
 });
 
