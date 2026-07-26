@@ -322,7 +322,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
   private async resolveTrainingGain(): Promise<number> {
     const improvementData = this.improvementData;
 
-    // POW training (Core p.419: "Increasing POW Through Training") resolves with the same
+    // POW training (Core p.418: "Increasing POW Through Training") resolves with the same
     // gated POW-gain-roll chance check as Experience, unlike the other trainable characteristics.
     if (improvementData.trainingIsGated) {
       return this.resolveGatedCharacteristicGain("training", improvementData.trainingGainRandom);
@@ -374,7 +374,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
 
   /**
    * Shared resolution for improvement sources that require a POW-gain-roll-style chance check
-   * (`chanceToGain`, Core p.415-416/419-420) before rolling the actual characteristic gain.
+   * (`chanceToGain`, Core p.418) before rolling the actual characteristic gain.
    * Used by both Research (all researchable characteristics) and Training (POW only).
    */
   private async resolveGatedCharacteristicGain(
