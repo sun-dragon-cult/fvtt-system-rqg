@@ -280,10 +280,22 @@ export class DamageCalculations {
   static getCombinedActorHealth(actor: RqgActor): ActorHealthState {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
-    const maxHitPoints = actor.system.attributes.hitPoints.max;
+    const tracksHitPoints =
+      actor.system.characteristics.strength.value != null ||
+      actor.system.characteristics.constitution.value != null ||
+      actor.system.characteristics.size.value != null ||
+      actor.items.some((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation));
 
     const hasMaxMagicPoints = !!actor.system.attributes.magicPoints.max;
     const currentMagicPoints = actor.system.attributes.magicPoints.value ?? 0;
+
+    if (!tracksHitPoints) {
+      // Actors without physical characteristics (e.g. spirits) have no hit points, but
+      // still fall unconscious when their magic points are depleted, same as other actors.
+      return hasMaxMagicPoints && currentMagicPoints <= 0 ? "unconscious" : "healthy";
+    }
+
+    const maxHitPoints = actor.system.attributes.hitPoints.max;
 
     if (maxHitPoints == null) {
       return "healthy";
