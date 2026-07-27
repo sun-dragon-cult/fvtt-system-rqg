@@ -4,16 +4,17 @@ import {
   buildSkillExperienceRollFormula,
   configureAdapterForAbilityItem,
   formatCategoryModDisplay,
+  getGateThreshold,
   isSupportedAbilityGainType,
   updateAdapterForSkill,
 } from "./improve-ability-dialog";
 
-function createSkillItem(baseChance: number, gainedChance: number = 0) {
+function createSkillItem(baseChance: number, gainedChance: number = 0, categoryMod: number = 0) {
   return {
     type: "skill",
     system: { category: "agility" },
     _source: { system: { baseChance, gainedChance } },
-    parent: { type: "character", system: { baseSkillCategoryModifiers: { agility: 0 } } },
+    parent: { type: "character", system: { baseSkillCategoryModifiers: { agility: categoryMod } } },
   } as any;
 }
 
@@ -74,6 +75,24 @@ describe("updateAdapterForSkill", () => {
     updateAdapterForSkill(improvementData, createSkillItem(80));
     expect(improvementData.canTraining).toBe(false);
     expect(improvementData.skillOver75).toBe(true);
+  });
+});
+
+describe("getGateThreshold", () => {
+  it("uses the unmodified skill value for skills, not the category-modified chance", () => {
+    const improvementData = createImprovementData();
+    // baseChance 40 + categoryMod 15 -> chance 55, but the gate threshold must stay at
+    // the unmodified 40, since the roll formula already adds the category mod itself.
+    updateAdapterForSkill(improvementData, createSkillItem(40, 0, 15));
+    expect(improvementData.chance).toBe(55);
+    expect(getGateThreshold(improvementData)).toBe(40);
+  });
+
+  it("uses the plain chance for Runes/Passions, which get no category modifier", () => {
+    const improvementData = createImprovementData();
+    improvementData.abilityType = "rune";
+    improvementData.chance = 30;
+    expect(getGateThreshold(improvementData)).toBe(30);
   });
 });
 

@@ -248,7 +248,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
           improvementData.abilityType === "skill"
             ? localize("RQG.Dialog.improveAbilityDialog.experienceRoll.contentSkill", {
                 mod: improvementData.categoryModDisplay ?? formatCategoryModDisplay(categoryMod),
-                skillChance: improvementData.chance.toString(),
+                skillChance: getGateThreshold(improvementData).toString(),
                 name: improvementData.name,
                 typeLocName: improvementData.typeLocName,
               })
@@ -273,7 +273,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
 
         if (
           expRoll.total !== undefined &&
-          (expRoll.total > Number(improvementData.chance) ||
+          (expRoll.total > getGateThreshold(improvementData) ||
             expRoll.total >= 100 ||
             isNaturalHundredOnSkillRoll)
         ) {
@@ -416,7 +416,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       improvementData.abilityType === "skill"
         ? localize("RQG.Dialog.improveAbilityDialog.researchRoll.contentSkill", {
             mod: improvementData.categoryModDisplay ?? formatCategoryModDisplay(categoryMod),
-            skillChance: improvementData.chance.toString(),
+            skillChance: getGateThreshold(improvementData).toString(),
             name: improvementData.name,
             typeLocName: improvementData.typeLocName,
           })
@@ -442,7 +442,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
     if (
       gateRoll.total === undefined ||
       !(
-        gateRoll.total > Number(improvementData.chance) ||
+        gateRoll.total > getGateThreshold(improvementData) ||
         gateRoll.total >= 100 ||
         isNaturalHundredOnSkillRoll
       )
@@ -540,6 +540,18 @@ export function buildSkillExperienceRollFormula(categoryMod: number): string {
 
 export function formatCategoryModDisplay(categoryMod: number): string {
   return toSignedString(categoryMod);
+}
+
+/**
+ * The gate-roll threshold for Experience/Research: the *unmodified* skill value for skills
+ * (the category modifier is already baked into the roll itself via
+ * `buildSkillExperienceRollFormula`, so using the modified `chance` here would cancel it out),
+ * or the plain chance for Runes/Passions (Core p.415-416: they get no category modifier).
+ */
+export function getGateThreshold(improvementData: AbilityImprovementData): number {
+  return improvementData.abilityType === "skill"
+    ? Number(improvementData.skillChance ?? 0)
+    : Number(improvementData.chance);
 }
 
 function getDefaultImprovementSource(
