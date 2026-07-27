@@ -13,6 +13,7 @@ import {
 } from "../../system/util";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
+import { getCharacteristicDerivedValues } from "../../data-model/actor-data/derived-character-values";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
@@ -618,9 +619,21 @@ export function updateAdapterForSkill(
   assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
   // Use unmodified values for improvement checks: base category modifier and source skill value.
-  improvementData.categoryMod = Number(
-    actor.system.baseSkillCategoryModifiers[item.system.category] ?? 0,
-  );
+  // Derived from the actor's *source* characteristics rather than actor.system.baseSkillCategoryModifiers,
+  // since active effects on characteristics (e.g. status-effect conditions) are already baked into the
+  // live/prepared characteristic values and must not influence this gate roll.
+  const sourceCharacteristics = actor._source.system.characteristics;
+  const sourceCategoryModifiers = getCharacteristicDerivedValues({
+    str: sourceCharacteristics.strength.value,
+    con: sourceCharacteristics.constitution.value,
+    siz: sourceCharacteristics.size.value,
+    dex: sourceCharacteristics.dexterity.value,
+    int: sourceCharacteristics.intelligence.value,
+    pow: sourceCharacteristics.power.value,
+    cha: sourceCharacteristics.charisma.value,
+    isCreature: actor._source.system.attributes.isCreature,
+  }).skillCategoryModifiers;
+  improvementData.categoryMod = Number(sourceCategoryModifiers[item.system.category] ?? 0);
   improvementData.categoryModDisplay = formatCategoryModDisplay(improvementData.categoryMod);
   const unmodifiedSkillChance =
     Number(item._source.system.baseChance) + Number(item._source.system.gainedChance);
