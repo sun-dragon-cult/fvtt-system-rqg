@@ -2,22 +2,29 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildSkillExperienceRollFormula,
+  configureAdapterForAbilityItem,
   formatCategoryModDisplay,
+  getGateThreshold,
   isSupportedAbilityGainType,
   updateAdapterForSkill,
 } from "./improve-ability-dialog";
 
-function createSkillItem(baseChance: number, gainedChance: number = 0) {
+function createSkillItem(baseChance: number, gainedChance: number = 0, categoryMod: number = 0) {
   return {
     type: "skill",
     system: { category: "agility" },
     _source: { system: { baseChance, gainedChance } },
-    parent: { type: "character", system: { baseSkillCategoryModifiers: { agility: 0 } } },
+    parent: { type: "character", system: { baseSkillCategoryModifiers: { agility: categoryMod } } },
   } as any;
 }
 
 function createImprovementData() {
-  return { canTraining: true } as any;
+  return {
+    showTraining: true,
+    canTraining: true,
+    showResearch: true,
+    canResearch: true,
+  } as any;
 }
 
 describe("buildSkillExperienceRollFormula", () => {
@@ -71,17 +78,63 @@ describe("updateAdapterForSkill", () => {
   });
 });
 
+describe("getGateThreshold", () => {
+  it("uses the unmodified skill value for skills, not the category-modified chance", () => {
+    const improvementData = createImprovementData();
+    // baseChance 40 + categoryMod 15 -> chance 55, but the gate threshold must stay at
+    // the unmodified 40, since the roll formula already adds the category mod itself.
+    updateAdapterForSkill(improvementData, createSkillItem(40, 0, 15));
+    expect(improvementData.chance).toBe(55);
+    expect(getGateThreshold(improvementData)).toBe(40);
+  });
+
+  it("uses the plain chance for Runes/Passions, which get no category modifier", () => {
+    const improvementData = createImprovementData();
+    improvementData.abilityType = "rune";
+    improvementData.chance = 30;
+    expect(getGateThreshold(improvementData)).toBe(30);
+  });
+});
+
 describe("isSupportedAbilityGainType", () => {
   it("returns true for supported gain types", () => {
     expect(isSupportedAbilityGainType("experience-gain-fixed")).toBe(true);
     expect(isSupportedAbilityGainType("experience-gain-random")).toBe(true);
+    expect(isSupportedAbilityGainType("research-gain-fixed")).toBe(true);
+    expect(isSupportedAbilityGainType("research-gain-random")).toBe(true);
     expect(isSupportedAbilityGainType("training-gain-fixed")).toBe(true);
     expect(isSupportedAbilityGainType("training-gain-random")).toBe(true);
   });
 
   it("returns false for empty or unknown gain types", () => {
     expect(isSupportedAbilityGainType("")).toBe(false);
-    expect(isSupportedAbilityGainType("research-gain-random")).toBe(false);
     expect(isSupportedAbilityGainType("not-a-gain-type")).toBe(false);
+  });
+});
+
+describe("configureAdapterForAbilityItem", () => {
+  it("allows research for skills", () => {
+    const improvementData = createImprovementData();
+    configureAdapterForAbilityItem(improvementData, createSkillItem(50));
+    expect(improvementData.showResearch).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("allows research for runes", () => {
+    const improvementData = createImprovementData();
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.showResearch).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("disallows research and training for passions", () => {
+    const improvementData = createImprovementData();
+    const passionItem = { type: "passion" } as any;
+    configureAdapterForAbilityItem(improvementData, passionItem);
+    expect(improvementData.showResearch).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.showTraining).toBe(false);
+    expect(improvementData.canTraining).toBe(false);
   });
 });
