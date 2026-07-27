@@ -704,6 +704,14 @@
           "contentChoseFixed": "Chose fixed gain of {gain}.",
           "contentChoseRandom": "Chose gain of {gain}."
         },
+        "trainingRoll": {
+          "flavor": "{actorName} makes a POW gain roll after training {typeLocName} \"{name}\"",
+          "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
+        },
+        "trainingGainFailed": {
+          "flavor": "Training improvement for {typeLocName} \"{name}\" failed",
+          "content": "{actorName} trained, but the POW gain roll failed for {typeLocName} \"{name}\"."
+        },
         "researchRoll": {
           "flavor": "{actorName} makes a research improvement check for {typeLocName} \"{name}\"",
           "contentChar": "Roll 1d100 and gain if the roll is LOWER THAN OR EQUAL TO {chanceToGain}%.  This is based on the Species Maximum for the Characteristic of {speciesMax} minus the Characteristic \"{name}\" value of {chance} times five."
