@@ -29,7 +29,7 @@
 
     & .improve-dialog-source-options {
       display: flex;
-      flex-wrap: nowrap;
+      flex-wrap: wrap;
       gap: 0.5rem;
     }
 
@@ -39,11 +39,11 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      flex: 1 1 0;
+      flex: 1 1 150px;
       flex-wrap: wrap;
       gap: 0.55rem;
       min-height: 2.75rem;
-      min-width: 0;
+      min-width: 150px;
       opacity: 0.7;
       padding: 0.5rem 0.75rem;
       transition:
