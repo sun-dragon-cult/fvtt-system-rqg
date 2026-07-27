@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildSkillExperienceRollFormula,
+  configureAdapterForAbilityItem,
   formatCategoryModDisplay,
   isSupportedAbilityGainType,
   updateAdapterForSkill,
@@ -17,7 +18,12 @@ function createSkillItem(baseChance: number, gainedChance: number = 0) {
 }
 
 function createImprovementData() {
-  return { canTraining: true } as any;
+  return {
+    showTraining: true,
+    canTraining: true,
+    showResearch: true,
+    canResearch: true,
+  } as any;
 }
 
 describe("buildSkillExperienceRollFormula", () => {
@@ -75,13 +81,41 @@ describe("isSupportedAbilityGainType", () => {
   it("returns true for supported gain types", () => {
     expect(isSupportedAbilityGainType("experience-gain-fixed")).toBe(true);
     expect(isSupportedAbilityGainType("experience-gain-random")).toBe(true);
+    expect(isSupportedAbilityGainType("research-gain-fixed")).toBe(true);
+    expect(isSupportedAbilityGainType("research-gain-random")).toBe(true);
     expect(isSupportedAbilityGainType("training-gain-fixed")).toBe(true);
     expect(isSupportedAbilityGainType("training-gain-random")).toBe(true);
   });
 
   it("returns false for empty or unknown gain types", () => {
     expect(isSupportedAbilityGainType("")).toBe(false);
-    expect(isSupportedAbilityGainType("research-gain-random")).toBe(false);
     expect(isSupportedAbilityGainType("not-a-gain-type")).toBe(false);
+  });
+});
+
+describe("configureAdapterForAbilityItem", () => {
+  it("allows research for skills", () => {
+    const improvementData = createImprovementData();
+    configureAdapterForAbilityItem(improvementData, createSkillItem(50));
+    expect(improvementData.showResearch).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("allows research for runes", () => {
+    const improvementData = createImprovementData();
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.showResearch).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("disallows research and training for passions", () => {
+    const improvementData = createImprovementData();
+    const passionItem = { type: "passion" } as any;
+    configureAdapterForAbilityItem(improvementData, passionItem);
+    expect(improvementData.showResearch).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.showTraining).toBe(false);
+    expect(improvementData.canTraining).toBe(false);
   });
 });

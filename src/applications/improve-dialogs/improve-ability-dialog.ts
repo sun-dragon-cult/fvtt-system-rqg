@@ -30,10 +30,12 @@ import {
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 const logger = new RqgLogger("improve-ability-dialog");
-const IMPROVEMENT_SOURCES = ["experience", "training"] as const;
+const IMPROVEMENT_SOURCES = ["experience", "research", "training"] as const;
 const SUPPORTED_ABILITY_GAIN_TYPES = [
   "experience-gain-fixed",
   "experience-gain-random",
+  "research-gain-fixed",
+  "research-gain-random",
   "training-gain-fixed",
   "training-gain-random",
 ] as const;
@@ -46,8 +48,10 @@ type AbilityImprovementData = {
   name: string; // name of item
   currentValueDisplay: string;
   showExperience: boolean;
+  showResearch: boolean;
   showTraining: boolean;
   canExperience: boolean;
+  canResearch: boolean;
   canTraining: boolean;
   img: string | null;
   skillChance?: number;
@@ -59,11 +63,13 @@ type AbilityImprovementData = {
   skillOver75?: boolean;
   experienceGainFixed: number;
   experienceGainRandom: string;
+  researchGainFixed: number;
+  researchGainRandom: string;
   trainingGainFixed: number;
   trainingGainRandom: string;
 };
 
-type ImprovementSource = "experience" | "training";
+type ImprovementSource = "experience" | "research" | "training";
 
 type ImproveAbilityDialogContext = {
   headerData: ImproveDialogHeaderData;
@@ -345,6 +351,10 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       }
     }
 
+    if (gainType === "research-gain-fixed" || gainType === "research-gain-random") {
+      gain = await this.resolveResearchGain(gainType, speakerName);
+    }
+
     if (gainType === "training-gain-fixed") {
       const flavor = localize("RQG.Dialog.improveAbilityDialog.trainingResultChat.flavor", {
         name: improvementData.name,
@@ -386,6 +396,104 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
     await abilityData.applyChanceGain(gain);
   }
 
+  /**
+   * Research (Core p.417) requires the same gate roll as Experience, but unlike Experience it
+   * doesn't require a prior in-play experience check - it's self-directed study instead.
+   */
+  private async resolveResearchGain(
+    gainType: "research-gain-fixed" | "research-gain-random",
+    speakerName: string,
+  ): Promise<number> {
+    const improvementData = this.improvementData;
+    const categoryMod = improvementData.categoryMod ?? 0;
+    const rollFlavor = localize("RQG.Dialog.improveAbilityDialog.researchRoll.flavor", {
+      actorName: speakerName,
+      name: improvementData.name,
+      typeLocName: improvementData.typeLocName,
+    });
+
+    const rollContent =
+      improvementData.abilityType === "skill"
+        ? localize("RQG.Dialog.improveAbilityDialog.researchRoll.contentSkill", {
+            mod: improvementData.categoryModDisplay ?? formatCategoryModDisplay(categoryMod),
+            skillChance: improvementData.chance.toString(),
+            name: improvementData.name,
+            typeLocName: improvementData.typeLocName,
+          })
+        : localize("RQG.Dialog.improveAbilityDialog.researchRoll.contentOther", {
+            chance: improvementData.chance.toString(),
+            name: improvementData.name,
+            typeLocName: improvementData.typeLocName,
+          });
+
+    const gateRoll = new Roll(
+      improvementData.abilityType === "skill"
+        ? buildSkillExperienceRollFormula(categoryMod)
+        : "1d100",
+    );
+    await gateRoll.toMessage({
+      speaker: this.speaker,
+      flavor: `<div class="roll-action">${rollFlavor}</div><p>${rollContent}</p>`,
+    });
+
+    const isNaturalHundredOnSkillRoll =
+      improvementData.abilityType === "skill" && gateRoll.dice[0]?.total === 100;
+
+    if (
+      gateRoll.total === undefined ||
+      !(
+        gateRoll.total > Number(improvementData.chance) ||
+        gateRoll.total >= 100 ||
+        isNaturalHundredOnSkillRoll
+      )
+    ) {
+      await ChatMessage.create({
+        speaker: this.speaker,
+        flavor: localize("RQG.Dialog.improveAbilityDialog.researchGainFailed.flavor", {
+          name: improvementData.name,
+          typeLocName: improvementData.typeLocName,
+        }),
+        content: localize("RQG.Dialog.improveAbilityDialog.researchGainFailed.content", {
+          actorName: speakerName,
+          name: improvementData.name,
+          typeLocName: improvementData.typeLocName,
+        }),
+      });
+      return 0;
+    }
+
+    const resultFlavor = localize("RQG.Dialog.improveAbilityDialog.researchResultChat.flavor", {
+      name: improvementData.name,
+      typeLocName: improvementData.typeLocName,
+    });
+
+    if (gainType === "research-gain-fixed") {
+      const fixedGain = improvementData.researchGainFixed;
+      const content = localize(
+        "RQG.Dialog.improveAbilityDialog.researchResultChat.contentChoseFixed",
+        { gain: `${fixedGain}%` },
+      );
+      const gainRoll = new Roll(String(fixedGain));
+      await gainRoll.toMessage({
+        speaker: this.speaker,
+        flavor: `<div class="roll-action">${resultFlavor}</div><p>${content}</p>`,
+      });
+      return fixedGain;
+    }
+
+    const gainRoll = new Roll(improvementData.researchGainRandom);
+    await gainRoll.evaluate();
+    const content = localize(
+      "RQG.Dialog.improveAbilityDialog.researchResultChat.contentChoseRandom",
+      { gain: `${improvementData.researchGainRandom}%` },
+    );
+    await gainRoll.toMessage({
+      speaker: this.speaker,
+      flavor: `<div class="roll-action">${resultFlavor}</div><p>${content}</p>`,
+    });
+    return Number(gainRoll.total) || 0;
+  }
+
   private buildAdapter(): AbilityImprovementData {
     const sourceAbility = this.item._source.system as Partial<IAbility>;
     const sourceChance = Number(sourceAbility.chance ?? 0);
@@ -397,8 +505,10 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       abilityType,
       currentValueDisplay: "",
       showExperience: Boolean(sourceAbility.hasExperience),
+      showResearch: true,
       showTraining: true,
       canExperience: Boolean(sourceAbility.hasExperience),
+      canResearch: true,
       canTraining: true,
       img: this.item.img,
       chance: sourceChance,
@@ -406,6 +516,8 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       requiredRoll: Math.min(Math.max(Math.floor(sourceChance) + 1, 1), 100),
       experienceGainFixed: 3,
       experienceGainRandom: "1d6",
+      researchGainFixed: 1,
+      researchGainRandom: "1d6-2",
       trainingGainFixed: 2,
       trainingGainRandom: "1d6-1",
     };
@@ -435,6 +547,9 @@ function getDefaultImprovementSource(
 ): ImprovementSource | null {
   if (improvementData.canExperience) {
     return "experience";
+  }
+  if (improvementData.canResearch) {
+    return "research";
   }
   if (improvementData.canTraining) {
     return "training";
@@ -515,7 +630,7 @@ export function updateAdapterForSkill(
   }
 }
 
-function configureAdapterForAbilityItem(
+export function configureAdapterForAbilityItem(
   improvementData: AbilityImprovementData,
   item: RqgItem,
 ): void {
@@ -526,9 +641,11 @@ function configureAdapterForAbilityItem(
 
   if (isDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion)) {
     improvementData.abilityType = "passion";
-    // Cannot train passions
+    // Cannot train or research passions (Core p.417: research is only for skills/Runes)
     improvementData.showTraining = false;
     improvementData.canTraining = false;
+    improvementData.showResearch = false;
+    improvementData.canResearch = false;
     return;
   }
 
