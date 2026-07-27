@@ -9,12 +9,36 @@ import {
   updateAdapterForSkill,
 } from "./improve-ability-dialog";
 
+// Agility category mod == DEX's linearMod alone when STR/SIZ/POW sit in the flattenedMod(0) band
+// (5-16): flattenedMod(str) - flattenedMod(siz) + linearMod(dex) + flattenedMod(pow).
+// linearMod(dex) = (ceil(dex/4) - 3) * 5, so dex = (mod/5 + 3) * 4 inverts it exactly on multiples of 5.
+function dexterityForAgilityMod(agilityMod: number): number {
+  return (agilityMod / 5 + 3) * 4;
+}
+
 function createSkillItem(baseChance: number, gainedChance: number = 0, categoryMod: number = 0) {
+  const neutral = { value: 13 }; // str/siz/pow in the flattenedMod(0) band
   return {
     type: "skill",
     system: { category: "agility" },
     _source: { system: { baseChance, gainedChance } },
-    parent: { type: "character", system: { baseSkillCategoryModifiers: { agility: categoryMod } } },
+    parent: {
+      type: "character",
+      _source: {
+        system: {
+          characteristics: {
+            strength: neutral,
+            constitution: neutral,
+            size: neutral,
+            dexterity: { value: dexterityForAgilityMod(categoryMod) },
+            intelligence: neutral,
+            power: neutral,
+            charisma: neutral,
+          },
+          attributes: { isCreature: false },
+        },
+      },
+    },
   } as any;
 }
 
@@ -75,6 +99,21 @@ describe("updateAdapterForSkill", () => {
     updateAdapterForSkill(improvementData, createSkillItem(80));
     expect(improvementData.canTraining).toBe(false);
     expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("derives the category modifier from source characteristics, ignoring active-effect deltas", () => {
+    // A live characteristic value shifted by an active effect (e.g. a DEX-draining status effect)
+    // must not change the category mod used for this gate roll: only actor._source is honored.
+    const item = createSkillItem(40, 0, 15);
+    item.parent.system = {
+      // Live/prepared data an active effect could have overwritten, e.g. dropping DEX far enough
+      // to fall out of the category mod band that the unmodified DEX 21 sits in.
+      baseSkillCategoryModifiers: { agility: -5 },
+      characteristics: { dexterity: { value: 5 } },
+    };
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, item);
+    expect(improvementData.categoryMod).toBe(15);
   });
 });
 
