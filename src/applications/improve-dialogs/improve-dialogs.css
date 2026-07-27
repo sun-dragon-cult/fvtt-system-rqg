@@ -28,9 +28,9 @@
     }
 
     & .improve-dialog-source-options {
-      display: grid;
+      display: flex;
+      flex-wrap: nowrap;
       gap: 0.5rem;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
     & .improve-dialog-source-option {
@@ -39,9 +39,11 @@
       cursor: pointer;
       display: flex;
       align-items: center;
+      flex: 1 1 0;
       flex-wrap: wrap;
       gap: 0.55rem;
       min-height: 2.75rem;
+      min-width: 0;
       opacity: 0.7;
       padding: 0.5rem 0.75rem;
       transition:
