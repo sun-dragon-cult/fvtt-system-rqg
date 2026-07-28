@@ -332,9 +332,6 @@ async function migrateWorldCompendiumPacks(
     if (pack.metadata.packageName === systemId) {
       return false;
     }
-    if (pack.metadata.packageType !== "world") {
-      return false;
-    }
     return ["Actor", "Item", "Scene", "ActiveEffect"].includes(pack.metadata.type);
   });
   migrationResult.stats.compendiumsSkippedByDesign = allPacks.length - packs.length;
