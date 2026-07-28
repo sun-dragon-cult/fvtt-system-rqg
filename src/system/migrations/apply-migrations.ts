@@ -113,19 +113,31 @@ export async function applyMigrations(
 
   const logger = new MigrationLogger(migrationResult);
   const timingLogger = new RqgLogger("applyMigrations");
-  progressBar = migrationNotification;
-  removeProgressBarOnComplete = !migrationNotification;
+  const progressState = createMigrationProgressState(migrationNotification);
   const worldMigrationsTiming = timingLogger.time("World Migrations took (ms)");
   try {
-    await migrateWorldActors(itemMigrations, actorMigrations, migrationResult, logger);
-    await migrateWorldItems(itemMigrations, migrationResult, logger);
-    await migrateWorldScenes(itemMigrations, actorMigrations, migrationResult, logger);
+    await migrateWorldActors(
+      itemMigrations,
+      actorMigrations,
+      migrationResult,
+      logger,
+      progressState,
+    );
+    await migrateWorldItems(itemMigrations, migrationResult, logger, progressState);
+    await migrateWorldScenes(
+      itemMigrations,
+      actorMigrations,
+      migrationResult,
+      logger,
+      progressState,
+    );
     await migrateWorldCompendiumPacks(
       itemMigrations,
       actorMigrations,
       activeEffectMigrations,
       migrationResult,
       logger,
+      progressState,
     );
   } catch (err: unknown) {
     // An error here means something escaped the fine-grained per-document/per-pack
@@ -135,10 +147,10 @@ export async function applyMigrations(
     migrationResult.errorCount += 1;
     const errorMessage = err instanceof Error ? err.message : String(err);
     logger.error(`World migration aborted unexpectedly: ${errorMessage}`);
-    progressBar?.update?.({ pct: 1 });
-    if (removeProgressBarOnComplete) {
-      progressBar?.remove();
-      progressBar = undefined;
+    progressState.progressBar?.update?.({ pct: 1 });
+    if (progressState.removeProgressBarOnComplete) {
+      progressState.progressBar?.remove();
+      progressState.progressBar = undefined;
     }
     throw err;
   } finally {
@@ -146,7 +158,7 @@ export async function applyMigrations(
   }
 
   if (!migrationNotification) {
-    progressBar = undefined;
+    progressState.progressBar = undefined;
   }
 
   migrationResult.warningCount = migrationResult.logEntries.filter(
@@ -162,6 +174,7 @@ async function migrateWorldActors(
   actorMigrations: ActorMigration[],
   migrationResult: MigrationResult,
   logger: MigrationLogger,
+  progressState: MigrationProgressState,
 ): Promise<void> {
   const actorArray = game.actors?.contents;
   const actorCount = actorArray?.length ?? 0;
@@ -170,11 +183,11 @@ async function migrateWorldActors(
     count: actorCount.toString(),
   });
   if (!actorArray || actorCount === 0) {
-    updateProgressBar(0, 0, migrationMsg, 0, 0.25, 120);
+    updateProgressBar(progressState, 0, 0, migrationMsg, 0, 0.25, 120);
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, actorCount, migrationMsg, 0, 0.25, 120);
+  updateProgressBar(progressState, progress, actorCount, migrationMsg, 0, 0.25, 120);
   logger.info(migrationMsg);
   for (const actor of actorArray) {
     try {
@@ -221,16 +234,17 @@ async function migrateWorldActors(
         { documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }] },
       );
     } finally {
-      updateProgressBar(++progress, actorCount, migrationMsg, 0, 0.25, 120);
+      updateProgressBar(progressState, ++progress, actorCount, migrationMsg, 0, 0.25, 120);
     }
   }
-  updateProgressBar(actorCount, actorCount, migrationMsg, 0, 0.25, 120);
+  updateProgressBar(progressState, actorCount, actorCount, migrationMsg, 0, 0.25, 120);
 }
 
 async function migrateWorldItems(
   itemMigrations: ItemMigration[],
   migrationResult: MigrationResult,
   logger: MigrationLogger,
+  progressState: MigrationProgressState,
 ): Promise<void> {
   const itemArray = game.items?.contents as RqgItem[] | undefined;
   const itemCount = itemArray?.length ?? 0;
@@ -239,11 +253,11 @@ async function migrateWorldItems(
     count: itemCount.toString(),
   });
   if (!itemArray || itemCount === 0) {
-    updateProgressBar(0, 0, migrationMsg, 0.25, 0.5, 45);
+    updateProgressBar(progressState, 0, 0, migrationMsg, 0.25, 0.5, 45);
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, itemArray.length, migrationMsg, 0.25, 0.5, 45);
+  updateProgressBar(progressState, progress, itemArray.length, migrationMsg, 0.25, 0.5, 45);
   logger.info(migrationMsg);
   for (const item of itemArray) {
     try {
@@ -273,10 +287,10 @@ async function migrateWorldItems(
         { documents: [{ kind: "Item", uuid: item.uuid, label: item.name }] },
       );
     } finally {
-      updateProgressBar(++progress, itemCount, migrationMsg, 0.25, 0.5, 45);
+      updateProgressBar(progressState, ++progress, itemCount, migrationMsg, 0.25, 0.5, 45);
     }
   }
-  updateProgressBar(itemCount, itemCount, migrationMsg, 0.25, 0.5, 45);
+  updateProgressBar(progressState, itemCount, itemCount, migrationMsg, 0.25, 0.5, 45);
 }
 
 async function migrateWorldScenes(
@@ -284,6 +298,7 @@ async function migrateWorldScenes(
   actorMigrations: ActorMigration[],
   migrationResult: MigrationResult,
   logger: MigrationLogger,
+  progressState: MigrationProgressState,
 ): Promise<void> {
   const scenes = game.scenes?.contents;
   const scenesCount = scenes?.length ?? 0;
@@ -292,11 +307,11 @@ async function migrateWorldScenes(
     count: scenesCount.toString(),
   });
   if (!scenes || scenesCount === 0) {
-    updateProgressBar(0, 0, migrationMsg, 0.5, 0.75, 180);
+    updateProgressBar(progressState, 0, 0, migrationMsg, 0.5, 0.75, 180);
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
+  updateProgressBar(progressState, progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
   logger.info(migrationMsg);
   for (const scene of scenes) {
     try {
@@ -314,10 +329,10 @@ async function migrateWorldScenes(
         { documents: [{ kind: "Scene", uuid: scene.uuid, label: scene.name }] },
       );
     } finally {
-      updateProgressBar(++progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
+      updateProgressBar(progressState, ++progress, scenesCount, migrationMsg, 0.5, 0.75, 180);
     }
   }
-  updateProgressBar(scenesCount, scenesCount, migrationMsg, 0.5, 0.75, 180);
+  updateProgressBar(progressState, scenesCount, scenesCount, migrationMsg, 0.5, 0.75, 180);
 }
 
 async function migrateWorldCompendiumPacks(
@@ -326,6 +341,7 @@ async function migrateWorldCompendiumPacks(
   activeEffectMigrations: ActiveEffectMigration[],
   migrationResult: MigrationResult,
   logger: MigrationLogger,
+  progressState: MigrationProgressState,
 ): Promise<void> {
   const allPacks = game.packs?.contents ?? [];
   const packs = allPacks.filter((pack) => {
@@ -340,11 +356,11 @@ async function migrateWorldCompendiumPacks(
     count: packsCount.toString(),
   });
   if (packsCount === 0) {
-    updateProgressBar(0, 0, migrationMsg, 0.75, 1, 350);
+    updateProgressBar(progressState, 0, 0, migrationMsg, 0.75, 1, 350);
     return;
   }
   let progress = 0;
-  updateProgressBar(progress, packsCount, migrationMsg, 0.75, 1, 350);
+  updateProgressBar(progressState, progress, packsCount, migrationMsg, 0.75, 1, 350);
   logger.info(migrationMsg);
   for (const pack of packs) {
     try {
@@ -373,10 +389,10 @@ async function migrateWorldCompendiumPacks(
         },
       );
     } finally {
-      updateProgressBar(++progress, packsCount, migrationMsg, 0.75, 1, 350);
+      updateProgressBar(progressState, ++progress, packsCount, migrationMsg, 0.75, 1, 350);
     }
   }
-  updateProgressBar(packsCount, packsCount, migrationMsg, 0.75, 1, 350);
+  updateProgressBar(progressState, packsCount, packsCount, migrationMsg, 0.75, 1, 350);
 }
 
 /* -------------------------------------------- */
@@ -1283,12 +1299,27 @@ function summarizeMigrationNames(migrationNames: string[]): string | undefined {
   return uniqueMigrationNames.join(", ");
 }
 
-let progressBar: any;
-let removeProgressBarOnComplete = true;
-let phaseTimingKey = "";
-let phaseTimingStart = 0;
+interface MigrationProgressState {
+  progressBar: any;
+  removeProgressBarOnComplete: boolean;
+  phaseTimingKey: string;
+  phaseTimingStart: number;
+}
+
+// Scoped to a single applyMigrations() call (see createMigrationProgressState) rather than
+// module-level, so overlapping/concurrent invocations don't stomp on each other's progress
+// bar and spawn duplicate notifications instead of one bar cleanly updating.
+function createMigrationProgressState(migrationNotification?: any): MigrationProgressState {
+  return {
+    progressBar: migrationNotification,
+    removeProgressBarOnComplete: !migrationNotification,
+    phaseTimingKey: "",
+    phaseTimingStart: 0,
+  };
+}
 
 function updateProgressBar(
+  progressState: MigrationProgressState,
   index: number,
   totalCount: number,
   prefix: string = "",
@@ -1299,9 +1330,9 @@ function updateProgressBar(
   const total = totalCount || 1; // Avoid division by zero
   const now = Date.now();
   const currentPhaseKey = `${prefix}|${phaseStartPct}|${phaseEndPct}`;
-  if (phaseTimingKey !== currentPhaseKey) {
-    phaseTimingKey = currentPhaseKey;
-    phaseTimingStart = now;
+  if (progressState.phaseTimingKey !== currentPhaseKey) {
+    progressState.phaseTimingKey = currentPhaseKey;
+    progressState.phaseTimingStart = now;
   }
 
   // An empty phase (nothing to migrate) is trivially finished, so treat it as 100% for
@@ -1310,21 +1341,21 @@ function updateProgressBar(
   const isEmptyPhase = totalCount === 0;
   const countProgress = isEmptyPhase ? 1 : Math.max(0, Math.min(1, index / total));
   const expectedPhaseMs = Math.max(1000, total * expectedUnitMs);
-  const elapsedPhaseMs = Math.max(0, now - phaseTimingStart);
+  const elapsedPhaseMs = Math.max(0, now - progressState.phaseTimingStart);
   const rawTimeProgress = Math.max(0, Math.min(1, elapsedPhaseMs / expectedPhaseMs));
   const timeProgress = isEmptyPhase || index >= total ? 1 : Math.min(rawTimeProgress, 0.98);
   const phaseProgress = Math.max(countProgress, timeProgress);
   const pct = phaseStartPct + (phaseEndPct - phaseStartPct) * phaseProgress;
   const message = `${prefix} ${index} / ${totalCount}`;
 
-  if (!progressBar) {
-    progressBar = ui.notifications?.info(message, { progress: true });
+  if (!progressState.progressBar) {
+    progressState.progressBar = ui.notifications?.info(message, { progress: true });
   }
 
-  progressBar?.update?.({ message, pct });
+  progressState.progressBar?.update?.({ message, pct });
 
-  if ((isEmptyPhase || index === totalCount) && removeProgressBarOnComplete) {
-    progressBar?.remove();
-    progressBar = undefined;
+  if ((isEmptyPhase || index === totalCount) && progressState.removeProgressBarOnComplete) {
+    progressState.progressBar?.remove();
+    progressState.progressBar = undefined;
   }
 }
