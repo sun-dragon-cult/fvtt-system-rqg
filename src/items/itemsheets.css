@@ -71,9 +71,8 @@
 
       & input,
       & select {
-/* Use themed header variables; these directly override Foundry's input CSS */
-
-/* cascade so both AppV1 and AppV2 get correct colors in each theme. */
+/* Use themed header variables; these directly override Foundry's input CSS cascade so
+         both AppV1 and AppV2 get correct colors in each theme. */
         color: var(--rqg-color-header-input-text);
         border-color: var(--rqg-color-header-input-border);
       }
