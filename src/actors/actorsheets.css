@@ -95,9 +95,8 @@
       padding: 0;
       background: none;
 
-/* V2 apps do not inherit V1 .app tab visibility rules in all contexts. */
-
-/* Ensure only the active tab is shown for main tabs and nested wizard tabs. */
+/* V2 apps do not inherit V1 .app tab visibility rules in all contexts. Ensure only the
+       active tab is shown for main tabs and nested wizard tabs. */
       & .sheet-body > .tab,
       & .species-body > .tab,
       & .homeland-body > .tab,
@@ -117,9 +116,8 @@
         grid-template: "nav header" min-content "nav main" 1fr / min-content auto;
       }
 
-/* AppV2 actor wizard uses a wrapper div as the single template root. */
-
-/* Mirror the legacy form grid so V1 wizard GUI layout still applies. */
+/* AppV2 actor wizard uses a wrapper div as the single template root. Mirror the legacy
+       form grid so V1 wizard GUI layout still applies. */
       & .wizard-app-root {
         display: grid;
         grid-template: "nav header" min-content "nav main" 1fr / min-content auto;

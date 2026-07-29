@@ -1,10 +1,8 @@
 /* stylelint-disable no-descending-specificity */
 @layer system.actor-v2 {
-/* V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed. */
-
-/* Reuses --rqg-* CSS variables from variables.css and global utility classes from rqg.css. */
-
-/* Matches ancestor theme-dark (e.g. body) or a same-element override; :where() makes the override win. */
+/* V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed. 
+   Reuses --rqg-* CSS variables from variables.css and global utility classes from rqg.css.
+   Matches ancestor theme-dark (e.g. body) or a same-element override; :where() makes the override win. */
   :where(.theme-dark) .rqg.character.actor-sheet-v2,
   .rqg.character.actor-sheet-v2.theme-dark {
     & .dex-sr,
@@ -23,9 +21,8 @@
       min-height: 1.8rem;
     }
 
-/* Override Foundry's opaque dark-mode application background */
-
-/* so wounded/edit-mode transparency shows through */
+/* Override Foundry's opaque dark-mode application background so wounded/edit-mode
+   transparency shows through */
     &.dead,
     &.unconscious,
     &.shock,
@@ -35,9 +32,8 @@
 
       backdrop-filter: none;
 
-/* Also disable the dark-mode backdrop-filter on .window-content */
-
-/* so the content edges match the header transparency */
+/* Also disable the dark-mode backdrop-filter on .window-content so the content
+     edges match the header transparency */
       & > .window-content {
         backdrop-filter: none;
       }
@@ -49,9 +45,8 @@
       }
     }
 
-/* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark mode */
-
-/* Specificity: 0,7,0 beats V1's 0,6,0 */
+/* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark
+       mode. Specificity: 0,7,0 beats V1's 0,6,0 */
     & .contextmenu.context.context-highlight {
       mix-blend-mode: normal;
       background: var(--rqg-v2-context-highlight-bg) !important;
@@ -66,9 +61,8 @@
       color: rgb(0 0 0 / 45%); /* dark grey for light mode (default is white for dark mode) */
     }
 
-/* Override V1's context-highlight for ALL V2 context menus — light mode */
-
-/* Specificity: 0,7,0 beats V1's 0,6,0 */
+/* Override V1's context-highlight for ALL V2 context menus — light mode. 
+   Specificity: 0,7,0 beats V1's 0,6,0 */
     & .contextmenu.context.context-highlight {
       mix-blend-mode: normal;
       background: var(--rqg-v2-context-highlight-bg) !important;
@@ -141,11 +135,9 @@
       }
     }
 
-/* Unified visual feedback for generic drops anywhere on the actor sheet. */
-
-/* Apply to both header and content so the indicator remains visible above and below */
-
-/* the AppV2 overlap where window-content extends under the header. */
+/* Unified visual feedback for generic drops anywhere on the actor sheet. Apply to both
+     header and content so the indicator remains visible above and below the AppV2
+     overlap where window-content extends under the header. */
     @keyframes rqg-sheet-drop-pulse {
       0%,
       100% {
@@ -174,9 +166,8 @@
       animation: rqg-sheet-drop-pulse 1.2s ease-in-out infinite;
     }
 
-/* Generic drag handle behavior for all V2 item lists. */
-
-/* Hidden by default, positioned outside-left, and revealed on row/cell hover. */
+/* Generic drag handle behavior for all V2 item lists. Hidden by default, positioned
+     outside-left, and revealed on row/cell hover. */
     .item-drag-handle {
       position: absolute;
       left: 0;
@@ -269,9 +260,8 @@
       display: contents;
     }
 
-/* gear-row children are not direct children of .grid so the base > * flex rule */
-
-/* doesn't reach them — apply the same flex layout here. */
+/* gear-row children are not direct children of .grid so the base > * flex rule doesn't
+     reach them — apply the same flex layout here. */
     .tab.gear .grid.item-list .gear-row > * {
       padding: 2px;
       position: relative;
@@ -315,9 +305,8 @@
       opacity: 1;
     }
 
-/* Drop position indicator — shown while dragging over a sortable item row. */
-
-/* box-shadow avoids layout shift; inset keeps the line inside the cell boundary. */
+/* Drop position indicator — shown while dragging over a sortable item row. box-shadow
+     avoids layout shift; inset keeps the line inside the cell boundary. */
     .drop-before {
       box-shadow: inset 0 2px 0 0 var(--rqg-color-main-bg);
     }
@@ -437,13 +426,9 @@
       }
     }
 
-/* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). */
-
-/* Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1. */
-
-    /* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). */
-
-    /* Opacity: 0.05 → 1.0, floored by theme minimum. Scale: 0.55 → 1.1. */
+/* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). 
+    Opacity: 0.05 → 1.0, floored by theme minimum. 
+    Scale: 0.55 → 1.1. */
     & img.rune.rune-str-0 {
       opacity: max(0.05, var(--rqg-rune-min-opacity, 0.05));
       transform: scale(0.55);
@@ -504,11 +489,9 @@
 
 /* --- Layout: .window-content IS the form in AppV2, PARTS are its direct children --- */
 
-/* Foundry sets display:flex on .window-content; override to grid for side-tab layout. */
-
-/* Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats Foundry's */
-
-/* single-class .window-content rule without needing !important. */
+/* Foundry sets display:flex on .window-content; override to grid for side-tab layout.
+     Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats
+     Foundry's single-class .window-content rule without needing !important. */
     > .window-content {
       position: relative;
       padding: 0;
@@ -759,9 +742,8 @@
       overflow: hidden auto;
       scrollbar-gutter: stable;
 
-/* Keep a little breathing room between vertical labels and scrollbar track */
-
-/* without changing the effective nav column width. */
+/* Keep a little breathing room between vertical labels and scrollbar track without
+       changing the effective nav column width. */
       padding-inline-end: 6px;
       margin-inline-end: -6px;
     }
@@ -818,13 +800,10 @@
 
 /* --- Common element styles --- */
 
-/* Foundry's heading & text styles (border, font-size, margins) are scoped to */
-
-/* `body.game .app` (V1 apps).  V2 apps use `.application` and don't inherit */
-
-/* those rules, so we replicate the essentials inside .window-content only */
-
-/* to avoid affecting the window title bar. */
+/* Foundry's heading & text styles (border, font-size, margins) are scoped to
+     `body.game .app` (V1 apps). V2 apps use `.application` and don't inherit those
+     rules, so we replicate the essentials inside .window-content only to avoid
+     affecting the window title bar. */
     .window-content {
       & h1,
       & h2,
@@ -1005,15 +984,10 @@
       & .wheel-slot {
         position: absolute;
 
-/* Center the icon on the slot anchor via absolute positioning. */
-
-/* Fixed width matches the 42px icon so centering is exact regardless */
-
-/* of rune-name text width. Text overflows symmetrically via align-items: center. */
-
-/* Do NOT use transform — it creates a stacking context and breaks */
-
-/* mix-blend-mode on descendant images. */
+/* Center the icon on the slot anchor via absolute positioning. Fixed width matches the
+           42px icon so centering is exact regardless of rune-name text width. Text
+           overflows symmetrically via align-items: center. Do NOT use transform — it
+           creates a stacking context and breaks mix-blend-mode on descendant images. */
         & .rune-card {
           position: absolute;
           width: 42px;
@@ -1022,11 +996,9 @@
         }
       }
 
-/* Regular pentagon inscribed in a circle of radius 35%, */
-
-/* centered at (50%, 50%) in the 20rem × 20rem square container. */
-
-/* Clockwise from top: Fire, Darkness, Water, Earth, Air. */
+/* Regular pentagon inscribed in a circle of radius 35%, centered at (50%, 50%) in the
+     20rem × 20rem square container. Clockwise from top: Fire, Darkness, Water, Earth,
+     Air. */
       & .wheel-fire {
         left: 50%;
         top: 15%;
@@ -1535,16 +1507,14 @@
           display: flex;
           align-items: center;
 
-/* Cells containing flex-column (chance, damage, SR) must stretch */
-
-/* so usage subrows can fill the full row height (not just content height) */
+/* Cells containing flex-column (chance, damage, SR) must stretch so usage subrows can
+             fill the full row height (not just content height) */
           &:has(> .flex-column) {
             align-items: stretch;
           }
 
-/* flex-column wrappers must fill the cell so usage subrows divide */
-
-/* the full row height equally for proper hover coverage */
+/* flex-column wrappers must fill the cell so usage subrows divide the full row height
+             equally for proper hover coverage */
           & > .flex-column {
             width: 100%;
             height: 100%;
@@ -1569,9 +1539,8 @@
           }
         }
 
-/* Restore alternating row background (V1 nth-child rule targets weapon-row */
-
-/* elements themselves which have display:contents, so it has no visual effect) */
+/* Restore alternating row background (V1 nth-child rule targets weapon-row elements
+         themselves which have display:contents, so it has no visual effect) */
         &:nth-child(odd) > * {
           background: var(--rqg-table-alternate-background);
         }
@@ -1593,9 +1562,8 @@
           background: rgb(139 90 43 / 50%) !important;
         }
 
-/* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together */
-
-/* only when one of those roll cells is hovered, not the damage cell */
+/* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together only when
+         one of those roll cells is hovered, not the damage cell */
         &.spirit-combat-row:has(> [data-item-roll]:hover) {
           & > :nth-child(2),
           & > :nth-child(3),
@@ -1612,13 +1580,10 @@
           }
         }
 
-/* Brighter tint on the specific cell being clicked. */
-
-/* Nested here so SCSS child combinators escape the IE-hack misparse. */
-
-/* Use descendant .usage selector (not :has) so multi-usage weapons */
-
-/* only highlight the hovered subrow, not the whole column cell. */
+/* Brighter tint on the specific cell being clicked. Nested here so SCSS child
+         combinators escape the IE-hack misparse. Use descendant .usage selector (not
+         :has) so multi-usage weapons only highlight the hovered subrow, not the whole
+         column cell. */
         & .usage[data-item-roll]:hover,
         & .usage[data-damage-roll]:hover,
 /* :not(:empty) excludes natural-weapon / dodge empty placeholder cells */
@@ -1985,9 +1950,8 @@
 
               & > span,
               & > div {
-/* Holy Days / Gifts / Geases: get most of any extra space, */
-
-/* since they usually hold the longest text */
+/* Holy Days / Gifts / Geases: get most of any extra space, since they usually hold the
+                longest text */
                 flex: 4 1 10em;
                 min-width: 0;
                 overflow: hidden;
@@ -2018,9 +1982,8 @@
               }
 
               & > div.joined-cults {
-/* Cult/god name: size to its (usually short) content instead of */
-
-/* stretching, but cap so a long name/tagline doesn't dominate */
+/* Cult/god name: size to its (usually short) content instead of stretching, but cap so
+                a long name/tagline doesn't dominate */
                 flex: 1 1 auto;
                 min-width: 8em;
                 max-width: 16em;
@@ -2241,9 +2204,8 @@
             gap: 0.25em;
           }
 
-/* Global .key-value-grid styles set .drop-target to inline-grid. */
-
-/* In the V2 background tab we want rqid dropzones to fill the value column. */
+/* Global .key-value-grid styles set .drop-target to inline-grid. In the V2 background
+           tab we want rqid dropzones to fill the value column. */
           & .drop-target.item-sheet-rqid-link {
             display: grid;
             width: 100%;
@@ -2422,9 +2384,8 @@
     }
   }
 
-/* Item description tooltip — applied via data-tooltip-class on the element, */
-
-/* Foundry adds this class to the #tooltip element. */
+/* Item description tooltip — applied via data-tooltip-class on the element, Foundry adds
+     this class to the #tooltip element. */
   #tooltip.item-description-tooltip,
   .locked-tooltip.item-description-tooltip {
     max-width: 600px;
