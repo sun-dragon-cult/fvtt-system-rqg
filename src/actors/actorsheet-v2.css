@@ -4,8 +4,9 @@
 
 /* Reuses --rqg-* CSS variables from variables.css and global utility classes from rqg.css. */
 
-/* Dark-mode overrides scoped to V2 actor sheet only (don't affect V1) */
-  .theme-dark .rqg.character.actor-sheet-v2 {
+/* Matches ancestor theme-dark (e.g. body) or a same-element override; :where() makes the override win. */
+  :where(.theme-dark) .rqg.character.actor-sheet-v2,
+  .rqg.character.actor-sheet-v2.theme-dark {
     & .dex-sr,
     & .siz-sr,
     & .sr-buttons .dex,
@@ -59,7 +60,8 @@
   }
 
 /* Restore light-mode enc colors at same specificity */
-  .theme-light .rqg.character.actor-sheet-v2 {
+  :where(.theme-light) .rqg.character.actor-sheet-v2,
+  .rqg.character.actor-sheet-v2.theme-light {
     & .item-drag-handle {
       color: rgb(0 0 0 / 45%); /* dark grey for light mode (default is white for dark mode) */
     }

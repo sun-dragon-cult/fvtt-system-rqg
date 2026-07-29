@@ -68,7 +68,9 @@
     --rqg-income-skill-border: #a8926b;
   }
 
-  .theme-dark .rqg.character.actor-sheet-v2 {
+/* Matches ancestor theme-dark (e.g. body) or a same-element override; :where() makes the override win. */
+  :where(.theme-dark) .rqg.character.actor-sheet-v2,
+  .rqg.character.actor-sheet-v2.theme-dark {
     --rqg-table-alternate-background: rgb(255 255 255 / 5%);
     --rqg-box-shadow-editor-content: inset 0 0 20px 0 #3a2a10, 0 0 3px 2px #3a2a10;
     --rqg-color-enc-bg: #3d2e14;
@@ -99,7 +101,8 @@
     --rqg-v2-tab-icon-hover-filter: none;
   }
 
-  .theme-light .rqg.character.actor-sheet-v2 {
+  :where(.theme-light) .rqg.character.actor-sheet-v2,
+  .rqg.character.actor-sheet-v2.theme-light {
     --rqg-table-alternate-background: rgb(0 0 0 / 8%);
     --rqg-box-shadow-editor-content: inset 0 0 20px 0 #bd9844, 0 0 3px 2px #bd9844;
     --rqg-color-enc-bg: #d8b16e;
