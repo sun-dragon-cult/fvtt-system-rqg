@@ -43,8 +43,11 @@
     filter: invert(var(--rqg-svg-invert-param));
   }
 
-  img[src*="systems/rqg/assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
-/* Make them black for light backgrounds, but exclude the token-hud images */
+  img[src*="systems/rqg"][src*="assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
+/* Make them black for light backgrounds, but exclude the token-hud images.
+   Split into two attribute selectors because The Forge duplicates the "assets"
+   path segment (systems/rqg/assets/assets/images/...), breaking a single
+   contiguous "systems/rqg/assets/images" match. */
     filter: invert(var(--rqg-svg-invert-param));
   }
 
