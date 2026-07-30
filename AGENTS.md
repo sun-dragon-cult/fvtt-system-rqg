@@ -68,6 +68,7 @@ Foundry themes use `body.theme-dark` / `body.theme-light`. Prefer theme-adaptive
 - If you add or rename `.hbs` templates, verify `src/system/load-handlebars-templates.ts` is updated.
 - If you change sheets/dialogs, keep TypeScript context data, templates, and styles synchronized.
 - If you change migrations, keep them idempotent, GM-safe, localized in player-facing reports, and covered by targeted migration tests.
+- If a commit fixes a tracked GitHub issue, use a GitHub closing keyword on its own line in the commit body (`Fixes #N`, `Closes #N`, or `Resolves #N`) — a bare `(#N)` reference does not auto-close the issue.
 
 ## AI-Facing Codebase Map
 
