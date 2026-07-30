@@ -158,6 +158,23 @@
                {{localize 'RQG.Actor.Attributes.MaxEnc' maxEnc=system.attributes.encumbrance.max}}</div>"
         >{{localize "RQG.Actor.Attributes.MovementAbbr"}}</span>
 
+        {{#edit-mode system.editMode "gm"}}
+          {{#with (lookup system.attributes.move system.attributes.move.currentLocomotion)}}
+            <input class="text-center mov-value-input" type="number" min="0" max="99" size="2"
+                   data-tooltip="{{localize 'RQG.Actor.Attributes.MovementAbbr'}}"
+                   name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.value'}}"
+                   value="{{value}}">
+
+            <span class="norse enc-factor-label" data-tooltip="{{localize 'RQG.Actor.Attributes.EncumbranceFactorTooltip'}}">
+              {{localize "RQG.Actor.Attributes.EncumbranceFactor"}}
+            </span>
+            <input class="text-center enc-factor-input" type="number" step="0.1" min="0" max="99" size="2"
+                   data-tooltip="{{localize 'RQG.Actor.Attributes.EncumbranceFactorTooltip'}}"
+                   name="{{concat 'system.attributes.move.' @root.system.attributes.move.currentLocomotion '.carryingFactor'}}"
+                   value="{{carryingFactor}}">
+          {{/with}}
+        {{/edit-mode}}
+
         <span{{#if
           (gt system.attributes.encumbrance.equipped system.attributes.encumbrance.max)}} class="warning"{{/if}}>
           <img class="equipped-status" src="systems/rqg/assets/images/equipped/equipped.svg">

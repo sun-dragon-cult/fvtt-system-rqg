@@ -730,6 +730,20 @@
             align-items: center;
             gap: 2px;
           }
+
+          & input.mov-value-input {
+            width: 3ch;
+            text-align: center;
+          }
+
+          & input.enc-factor-input {
+            width: 5ch;
+            text-align: center;
+          }
+
+          & .enc-factor-label {
+            font-size: 12px;
+          }
         }
       }
     }

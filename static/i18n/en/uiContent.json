@@ -101,6 +101,7 @@
         "MovementAbbr": "MOV",
         "EncumbranceAbbr": "ENC",
         "EncumbranceFactor": "ENC Factor",
+        "EncumbranceFactorTooltip": "Multiplier applied to this creature's Maximum Encumbrance, set separately per movement mode (e.g. the default 0.5 for swim reflects the core rule that carrying capacity is halved while swimming). Raising it, such as for horses that can carry more before their MOV drops, is a house rule.",
         "HeroPoints": "Hero Points",
         "Health": {
           "healthy": "Healthy",
