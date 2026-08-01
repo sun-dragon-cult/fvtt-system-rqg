@@ -73,9 +73,9 @@ export interface RqgActorSheetV2Context {
   /** CSS strength class per element rune key (e.g. fire, air). */
   elementRuneVisuals: Record<string, { cls: string }>;
 
-  /** Dynamically paired power runes (from opposingRuneRqidLink). */
+  /** Power rune rows: 4 fixed standard pairs, plus any extra runes dynamically paired below. */
   powerRunePairs: RuneOpposedPair[];
-  /** Power runes without an opposing rune link. */
+  /** Extra (non-standard) power runes without an opposing rune link. */
   powerRuneStandalone: RuneItem[];
   /** Dynamically paired form runes (from opposingRuneRqidLink). */
   formRunePairs: RuneOpposedPair[];

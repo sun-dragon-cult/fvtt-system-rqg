@@ -17,6 +17,7 @@ import {
   hasGodTalkerOrHigherNonRuneLord,
 } from "../item-data/cult-priority";
 import { isDocumentSubType } from "../../system/util";
+import { RQG_CONFIG } from "../../system/config";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -243,6 +244,19 @@ export class CharacterDataModel extends RqgActorDataModel<
 
   static getMainCult(actor: CharacterActor): CultItem | undefined {
     return CharacterDataModel.getSortedCults(actor)[0];
+  }
+
+  /**
+   * Whether this actor has "Embrace Runic Opposites": opposed Power/Form runes no longer
+   * need to sum to 100%.
+   *
+   * STOPGAP: checks for presence of the Infinity (condition) rune as a proxy for "this
+   * character has become Illuminated." This isn't confirmed as rules-accurate yet, but
+   * it's a better approximation than merely owning the Illumination skill (which only
+   * reflects eligibility to attempt becoming Illuminated, not having succeeded).
+   */
+  static isIlluminated(actor: CharacterActor): boolean {
+    return !!actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.runeRqid.infinity);
   }
 
   static getPowWarning(actor: CharacterActor): boolean {

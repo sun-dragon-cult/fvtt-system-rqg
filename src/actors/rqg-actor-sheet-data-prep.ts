@@ -209,6 +209,15 @@ export function getPowWarning(actor: CharacterActor): boolean {
 }
 
 /**
+ * Whether this actor has "Embrace Runic Opposites" (see {@link CharacterDataModel.isIlluminated}
+ * for the current stopgap detection approach).
+ * @param actor - The character actor
+ */
+export function isIlluminated(actor: CharacterActor): boolean {
+  return CharacterDataModel.isIlluminated(actor);
+}
+
+/**
  * Gets display values for loaded missile weapon strike ranks.
  * @param dexSr - Dexterity strike rank
  * @returns Array of SR display strings with reload icons
@@ -381,10 +390,24 @@ export function getCharacterFormRuneImgs(actor: CharacterActor): SheetRuneData[]
 
 /**
  * A pair of opposing runes (e.g. Fertility ↔ Death) for template display.
+ * Either side can be `null` when that rune isn't owned by the actor.
  */
 export interface RuneOpposedPair {
-  left: RuneItem;
+  left: RuneItem | null;
   right: RuneItem | null;
+  /**
+   * True when both runes reciprocally link to each other via opposingRuneRqidLink.
+   * A one-sided link (only one side declares it) does not count — no connecting line
+   * is shown unless the link is fully reciprocal.
+   */
+  linked: boolean;
+  /**
+   * True when the actor is Illuminated and the pair is linked: the "Embrace Runic
+   * Opposites" power means the two runes no longer need to sum to 100%, so their
+   * chances are independent of each other and the sliding marker position would be
+   * meaningless.
+   */
+  independent: boolean;
   /** Marker position (0-100). 0% = left edge, 100% = right edge. Slides toward the dominant rune. */
   markerPercent: number;
   /** CSS strength class for the left rune icon (e.g. "rune-str-7"). */
@@ -404,6 +427,18 @@ const preferredPairOrderByRqid: string[] = [
   "i.rune.truth-power",
   "i.rune.stasis-power",
   "i.rune.man-form",
+];
+
+/**
+ * Fixed row order for the standard Power rune pairs, matching the paper character
+ * sheet. Keys are the rune short-names as produced by `organizeEmbeddedItems`
+ * (the last segment of the rqid, minus its `-power` suffix).
+ */
+const standardPowerRuneRowKeys: readonly [string, string][] = [
+  ["fertility", "death"],
+  ["harmony", "disorder"],
+  ["truth", "illusion"],
+  ["stasis", "movement"],
 ];
 
 /**
@@ -431,14 +466,56 @@ export function getRuneVisualsMap(
 }
 
 /**
+ * Classifies a left/right rune slot into a `RuneOpposedPair`. There are 3 display states:
+ * both runes reciprocally link to each other (normal, sliding marker); reciprocally
+ * linked and the actor is Illuminated (`independent`, Infinity-rune marker); or anything
+ * less than a full reciprocal link — including a one-sided link — which shows no
+ * connecting line at all.
+ * @param illuminated - Whether the owning actor has the Illumination skill; if so,
+ *   a linked pair is marked `independent` instead of getting a sliding marker.
+ */
+function buildOpposedRow(
+  left: RuneItem | null,
+  right: RuneItem | null,
+  illuminated: boolean,
+): RuneOpposedPair {
+  const leftRqid = left?.flags?.rqg?.documentRqidFlags?.id;
+  const rightRqid = right?.flags?.rqg?.documentRqidFlags?.id;
+  const leftLinksRight =
+    !!left && !!rightRqid && left.system?.opposingRuneRqidLink?.rqid === rightRqid;
+  const rightLinksLeft =
+    !!right && !!leftRqid && right.system?.opposingRuneRqidLink?.rqid === leftRqid;
+
+  const linked = leftLinksRight && rightLinksLeft;
+  const independent = linked && illuminated;
+
+  const leftChance = left?.system?.chance ?? 0;
+  const rightChance = right?.system?.chance ?? 0;
+
+  return {
+    left,
+    right,
+    linked,
+    independent,
+    markerPercent: linked ? 100 - leftChance : 50,
+    leftCls: runeStrengthClass(leftChance),
+    rightCls: runeStrengthClass(rightChance),
+  };
+}
+
+/**
  * Builds opposed pairs and standalone runes from a category's rune map.
  * Uses each rune's `opposingRuneRqidLink` to find its pair dynamically.
  * Pairs are sorted to match the traditional paper character sheet order
  * when possible.
  * @param runesByName - Object keyed by rune short name, values are rune items
+ * @param illuminated - Whether the owning actor has the Illumination skill
  * @returns Object with `pairs` array and `standalone` array
  */
-export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
+export function getRuneOpposedPairs(
+  runesByName: Record<string, RuneItem>,
+  illuminated: boolean = false,
+): {
   pairs: RuneOpposedPair[];
   standalone: RuneItem[];
 } {
@@ -453,64 +530,40 @@ export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
       continue;
     }
 
+    const selfRqid = rune.flags?.rqg?.documentRqidFlags?.id ?? "";
     const opposingRqid = rune.system?.opposingRuneRqidLink?.rqid;
-    if (opposingRqid) {
-      const selfRqid = rune.flags?.rqg?.documentRqidFlags?.id ?? "";
-      const opposingEntry = entries.find(
-        ([k, r]) =>
-          k !== key &&
-          r.flags?.rqg?.documentRqidFlags?.id === opposingRqid &&
-          r.system?.opposingRuneRqidLink?.rqid === selfRqid,
-      );
-      paired.add(key);
-      if (opposingEntry) {
-        const [opposingKey, opposingRune] = opposingEntry;
-        paired.add(opposingKey);
 
-        // If the opposing rune was seen earlier without a link, it may already be
-        // in standalone; remove it now that we can form a pair.
-        const standaloneIndex = standalone.findIndex((r) => r.id === opposingRune.id);
-        if (standaloneIndex >= 0) {
-          standalone.splice(standaloneIndex, 1);
-        }
-
-        // Place the rune with preferred order on the left side
-        const leftIdx = preferredPairOrderByRqid.indexOf(
-          rune.flags?.rqg?.documentRqidFlags?.id ?? "",
-        );
-        const rightIdx = preferredPairOrderByRqid.indexOf(
-          opposingRune.flags?.rqg?.documentRqidFlags?.id ?? "",
-        );
-        if (rightIdx !== -1 && (leftIdx === -1 || rightIdx < leftIdx)) {
-          const chance = opposingRune.system?.chance ?? 50;
-          pairs.push({
-            left: opposingRune,
-            right: rune,
-            markerPercent: 100 - chance,
-            leftCls: runeStrengthClass(chance),
-            rightCls: runeStrengthClass(100 - chance),
-          });
-        } else {
-          const chance = rune.system?.chance ?? 50;
-          pairs.push({
-            left: rune,
-            right: opposingRune,
-            markerPercent: 100 - chance,
-            leftCls: runeStrengthClass(chance),
-            rightCls: runeStrengthClass(100 - chance),
-          });
-        }
-      } else {
-        // Opposing rune not on this actor — show with empty right slot
-        const chance = rune.system?.chance ?? 50;
-        pairs.push({
-          left: rune,
-          right: null,
-          markerPercent: 100 - chance,
-          leftCls: runeStrengthClass(chance),
-          rightCls: runeStrengthClass(100 - chance),
-        });
+    // A partner is either the rune this one points to, or (for one-sided links
+    // discovered from the other direction) a rune that points to this one.
+    const partnerEntry = entries.find(([k, r]) => {
+      if (k === key || paired.has(k)) {
+        return false;
       }
+      const rRqid = r.flags?.rqg?.documentRqidFlags?.id;
+      const selfLinksPartner = !!opposingRqid && rRqid === opposingRqid;
+      const partnerLinksSelf = !!selfRqid && r.system?.opposingRuneRqidLink?.rqid === selfRqid;
+      return selfLinksPartner || partnerLinksSelf;
+    });
+
+    if (partnerEntry) {
+      const [partnerKey, partnerRune] = partnerEntry;
+      paired.add(key);
+      paired.add(partnerKey);
+
+      // Place the rune with preferred order on the left side
+      const leftIdx = preferredPairOrderByRqid.indexOf(selfRqid);
+      const rightIdx = preferredPairOrderByRqid.indexOf(
+        partnerRune.flags?.rqg?.documentRqidFlags?.id ?? "",
+      );
+      if (rightIdx !== -1 && (leftIdx === -1 || rightIdx < leftIdx)) {
+        pairs.push(buildOpposedRow(partnerRune, rune, illuminated));
+      } else {
+        pairs.push(buildOpposedRow(rune, partnerRune, illuminated));
+      }
+    } else if (opposingRqid) {
+      // Links somewhere, but not to anything this actor owns — show with empty slot
+      paired.add(key);
+      pairs.push(buildOpposedRow(rune, null, illuminated));
     } else {
       standalone.push(rune);
     }
@@ -518,8 +571,8 @@ export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
 
   // Sort pairs by preferred order (left rune key), unknowns sort last
   pairs.sort((a, b) => {
-    const aIdx = preferredPairOrderByRqid.indexOf(a.left.flags?.rqg?.documentRqidFlags?.id ?? "");
-    const bIdx = preferredPairOrderByRqid.indexOf(b.left.flags?.rqg?.documentRqidFlags?.id ?? "");
+    const aIdx = preferredPairOrderByRqid.indexOf(a.left?.flags?.rqg?.documentRqidFlags?.id ?? "");
+    const bIdx = preferredPairOrderByRqid.indexOf(b.left?.flags?.rqg?.documentRqidFlags?.id ?? "");
     if (aIdx !== -1 && bIdx !== -1) {
       return aIdx - bIdx;
     }
@@ -533,6 +586,47 @@ export function getRuneOpposedPairs(runesByName: Record<string, RuneItem>): {
   });
 
   return { pairs, standalone };
+}
+
+/**
+ * Builds the Power rune section for the rune tab: the 4 standard opposed pairs
+ * (Fertility/Death, Harmony/Disorder, Truth/Illusion, Stasis/Movement) always
+ * appear in the same fixed order and on the same fixed side, whether or not an
+ * `opposingRuneRqidLink` connects them — only the connecting line depends on that
+ * link. Any other power runes (homebrew/non-standard) are appended below, paired
+ * dynamically among themselves the same way `getRuneOpposedPairs` works.
+ * @param runesByName - Power runes keyed by rune short name
+ * @param illuminated - Whether the owning actor has the Illumination skill
+ * @returns Object with `rows` (fixed pairs + extra dynamic pairs) and `standalone` arrays
+ */
+export function getPowerRuneSections(
+  runesByName: Record<string, RuneItem>,
+  illuminated: boolean = false,
+): {
+  rows: RuneOpposedPair[];
+  standalone: RuneItem[];
+} {
+  const consumedKeys = new Set<string>();
+  const rows: RuneOpposedPair[] = [];
+
+  for (const [leftKey, rightKey] of standardPowerRuneRowKeys) {
+    const left = runesByName[leftKey] ?? null;
+    const right = runesByName[rightKey] ?? null;
+    if (!left && !right) {
+      continue;
+    }
+    consumedKeys.add(leftKey);
+    consumedKeys.add(rightKey);
+    rows.push(buildOpposedRow(left, right, illuminated));
+  }
+
+  const leftoverEntries = Object.entries(runesByName).filter(([key]) => !consumedKeys.has(key));
+  const { pairs: extraPairs, standalone } = getRuneOpposedPairs(
+    Object.fromEntries(leftoverEntries),
+    illuminated,
+  );
+
+  return { rows: [...rows, ...extraPairs], standalone };
 }
 
 /**
