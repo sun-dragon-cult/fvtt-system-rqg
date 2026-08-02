@@ -747,7 +747,7 @@ async function getItemMigrationUpdates(
       migrationNames.add(migrationName);
     }
 
-    updateData = mergeMigrationUpdateData(updateData, fnUpdate) as Item.UpdateData; // TODO can mergeObject be made to return the correct type?
+    updateData = mergeMigrationUpdateData(updateData, fnUpdate) as Item.UpdateData;
   }
 
   return {
