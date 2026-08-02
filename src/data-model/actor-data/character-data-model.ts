@@ -245,6 +245,20 @@ export class CharacterDataModel extends RqgActorDataModel<
     return CharacterDataModel.getSortedCults(actor)[0];
   }
 
+  /**
+   * Whether this actor has been granted the "Embrace Runic Opposites" power: opposed
+   * Power/Form runes no longer need to sum to 100% (Cults of RuneQuest: The Lunar Way,
+   * p.96). This is one of several distinct powers a gamemaster may grant an Illuminate —
+   * it is common but not automatic.
+   *
+   * Disabled for now (always false): there's no supported way yet for a player to be
+   * granted this power. Tracking it properly needs a dedicated `illuminationPower` item
+   * type (see #975) rather than reusing a Rune item as an ad-hoc marker.
+   */
+  static hasEmbraceRunicOpposites(_actor: CharacterActor): boolean {
+    return false;
+  }
+
   static getPowWarning(actor: CharacterActor): boolean {
     const hasHighRank = actor.items
       .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))

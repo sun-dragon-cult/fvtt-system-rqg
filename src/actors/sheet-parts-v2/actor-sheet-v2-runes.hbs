@@ -165,8 +165,9 @@
             </div>
             {{/with}}
           </div>
-          <div class="balance-bar">
-            <div class="balance-marker" style="left: {{this.markerPercent}}%"></div>
+          <div class="balance-bar {{#if this.independent}}independent{{else if this.linked}}linked{{else}}unlinked{{/if}}"
+               {{#if this.independent}}data-tooltip="{{localize 'RQG.Actor.Rune.IndependentTooltip'}}"{{/if}}>
+            {{#if this.independent}}<img class="rune balance-marker independent-marker" src="systems/rqg/assets/images/runes/infinity.svg">{{else if this.linked}}<div class="balance-marker" style="left: {{this.markerPercent}}%"></div>{{/if}}
           </div>
           <div class="rune-slot">
             {{#with this.right}}
@@ -226,8 +227,9 @@
             </div>
             {{/with}}
           </div>
-          <div class="balance-bar">
-            <div class="balance-marker" style="left: {{this.markerPercent}}%"></div>
+          <div class="balance-bar {{#if this.independent}}independent{{else if this.linked}}linked{{else}}unlinked{{/if}}"
+               {{#if this.independent}}data-tooltip="{{localize 'RQG.Actor.Rune.IndependentTooltip'}}"{{/if}}>
+            {{#if this.independent}}<img class="rune balance-marker independent-marker" src="systems/rqg/assets/images/runes/infinity.svg">{{else if this.linked}}<div class="balance-marker" style="left: {{this.markerPercent}}%"></div>{{/if}}
           </div>
           <div class="rune-slot">
             {{#with this.right}}

@@ -250,8 +250,15 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       (a: RqgItem, b: RqgItem) => (a.sort ?? 0) - (b.sort ?? 0),
     ) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
-    const powerRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.power ?? {});
-    const formRuneGroups = DataPrep.getRuneOpposedPairs(embeddedItems?.rune?.form ?? {});
+    const hasEmbraceRunicOpposites = DataPrep.hasEmbraceRunicOpposites(this.actor);
+    const powerRuneGroups = DataPrep.getPowerRuneSections(
+      embeddedItems?.rune?.power ?? {},
+      hasEmbraceRunicOpposites,
+    );
+    const formRuneGroups = DataPrep.getRuneOpposedPairs(
+      embeddedItems?.rune?.form ?? {},
+      hasEmbraceRunicOpposites,
+    );
     const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
     const cultItems = (embeddedItems[ItemTypeEnum.Cult] ?? []) as RqgItem[];
     const availableCultTabs = cultItems.map((cult) => `cult-${cult.id}`);
@@ -311,7 +318,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       characterPowerRunes: DataPrep.getCharacterPowerRuneImgs(this.actor),
       characterFormRunes: DataPrep.getCharacterFormRuneImgs(this.actor),
       elementRuneVisuals: DataPrep.getRuneVisualsMap(embeddedItems?.rune?.element ?? {}),
-      powerRunePairs: powerRuneGroups.pairs,
+      powerRunePairs: powerRuneGroups.rows,
       powerRuneStandalone: powerRuneGroups.standalone,
       formRunePairs: formRuneGroups.pairs,
       formRuneStandalone: formRuneGroups.standalone,

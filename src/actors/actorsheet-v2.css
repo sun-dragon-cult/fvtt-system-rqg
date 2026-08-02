@@ -1129,10 +1129,15 @@
           top: 50%;
           left: 0;
           right: 0;
-          height: 1px;
-          background: var(--rqg-color-main);
+          height: 0;
+          border-top: 1px solid var(--rqg-color-main);
           opacity: 0.35;
           transform: translateY(-50%);
+        }
+
+/* No opposingRuneRqidLink between the two runes — nothing to connect. */
+        &.unlinked::before {
+          display: none;
         }
       }
 
@@ -1146,6 +1151,19 @@
         border-radius: 50%;
         transform: translate(-50%, -50%);
         transition: left 0.3s ease;
+      }
+
+/* Embrace Runic Opposites: the pair no longer needs to sum to 100%, so the chances are
+     independent of each other and a sliding position would be meaningless — show the
+     Infinity rune fixed at center instead. */
+      & .independent-marker {
+        left: 50%;
+        width: 18px;
+        height: auto;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+        background: none;
       }
 
 /* --- Standalone card row (condition runes) --- */

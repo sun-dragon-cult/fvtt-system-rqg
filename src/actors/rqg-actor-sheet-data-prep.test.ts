@@ -12,10 +12,12 @@ import {
   getLoadedMissileSrDisplay,
   getMainCultInfo,
   getPowCrystals,
+  getPowerRuneSections,
   getRuneOpposedPairs,
   getRuneVisualsMap,
   getUnloadedMissileSr,
   getUnloadedMissileSrDisplay,
+  hasEmbraceRunicOpposites,
 } from "./rqg-actor-sheet-data-prep";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RuneTypeEnum } from "@item-model/rune-enums.ts";
@@ -505,8 +507,9 @@ describe("getRuneOpposedPairs", () => {
     expect(pairs).toHaveLength(1);
     const pair = pairs[0]!;
     // fertility is in preferredPairOrder before death, so it should be on the left
-    expect(pair.left.system.chance).toBe(60);
+    expect(pair.left!.system.chance).toBe(60);
     expect(pair.right!.system.chance).toBe(40);
+    expect(pair.linked).toBe(true);
     expect(pair.markerPercent).toBe(40); // 100 - 60
     expect(pair.leftCls).toBe("rune-str-6");
     expect(pair.rightCls).toBe("rune-str-4");
@@ -519,20 +522,21 @@ describe("getRuneOpposedPairs", () => {
       makeRune("fertility-power", 30, "i.rune.death-power"),
     ]);
     const { pairs } = getRuneOpposedPairs(runesByName);
-    expect(pairs[0]!.left.system.chance).toBe(30); // fertility-power
+    expect(pairs[0]!.left!.system.chance).toBe(30); // fertility-power
     expect(pairs[0]!.right!.system.chance).toBe(70); // death-power
   });
 
-  it("shows rune with null right slot when opposing rune is absent", () => {
+  it("shows rune with null right slot and no line when opposing rune is absent", () => {
     const runesByName = Object.fromEntries([makeRune("fertility-power", 60, "i.rune.death-power")]);
     const { pairs, standalone } = getRuneOpposedPairs(runesByName);
     expect(standalone).toHaveLength(0);
     expect(pairs).toHaveLength(1);
     expect(pairs[0]!.right).toBeNull();
-    expect(pairs[0]!.left.system.chance).toBe(60);
+    expect(pairs[0]!.left!.system.chance).toBe(60);
+    expect(pairs[0]!.linked).toBe(false);
   });
 
-  it("shows one-sided link as rune with null right slot, other rune as standalone", () => {
+  it("groups a one-sided link into the same row, but shows no connecting line", () => {
     const runesByName = Object.fromEntries([
       makeRuneWithRqid("beast", 48, "i.rune.beast-form"),
       makeRuneWithRqid("man", 52, "i.rune.man-form", "i.rune.beast-form"),
@@ -540,13 +544,15 @@ describe("getRuneOpposedPairs", () => {
 
     const { pairs, standalone } = getRuneOpposedPairs(runesByName);
 
-    // Man has Beast as opposing but Beast does not link back — show Man with empty
-    // right slot and Beast as standalone.
+    // Man has Beast as opposing but Beast does not link back — they're still grouped
+    // into one row (rather than split into standalone), but since the link isn't
+    // reciprocal there's no connecting line.
     expect(pairs).toHaveLength(1);
-    expect(pairs[0]!.left.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.man-form");
-    expect(pairs[0]!.right).toBeNull();
-    expect(standalone).toHaveLength(1);
-    expect(standalone[0]!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.beast-form");
+    expect(standalone).toHaveLength(0);
+    const pair = pairs[0]!;
+    expect(pair.left!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.man-form");
+    expect(pair.right!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.beast-form");
+    expect(pair.linked).toBe(false);
   });
 
   it("puts runes without an opposing rqid into standalone", () => {
@@ -568,7 +574,7 @@ describe("getRuneOpposedPairs", () => {
       makeRune("illusion-power", 30, "i.rune.truth-power"),
     ]);
     const { pairs } = getRuneOpposedPairs(runesByName);
-    expect(pairs.map((p) => p.left.system.chance)).toEqual([55, 70, 60]);
+    expect(pairs.map((p) => p.left!.system.chance)).toEqual([55, 70, 60]);
   });
 
   it("orders by rqid when map keys are non-canonical", () => {
@@ -582,9 +588,141 @@ describe("getRuneOpposedPairs", () => {
     const { pairs } = getRuneOpposedPairs(runesByName);
 
     // harmony-power pair first, then man-form pair based on preferred RQID order
-    expect(pairs.map((p) => p.left.flags?.rqg?.documentRqidFlags?.id)).toEqual([
+    expect(pairs.map((p) => p.left!.flags?.rqg?.documentRqidFlags?.id)).toEqual([
       "i.rune.harmony-power",
       "i.rune.man-form",
     ]);
+  });
+});
+
+describe("getPowerRuneSections", () => {
+  it("places the 4 standard pairs in fixed order regardless of link presence", () => {
+    // Deliberately out of order and with links removed (e.g. a decoupled Embrace Runic Opposites character).
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("stasis", 25, "i.rune.stasis-power"),
+      makeRuneWithRqid("movement", 75, "i.rune.movement-power"),
+      makeRuneWithRqid("fertility", 50, "i.rune.fertility-power"),
+      makeRuneWithRqid("death", 50, "i.rune.death-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]!.left!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.fertility-power");
+    expect(rows[0]!.right!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.death-power");
+    expect(rows[1]!.left!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.stasis-power");
+    expect(rows[1]!.right!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.movement-power");
+  });
+
+  it("hides the connecting line when the opposingRuneRqidLink is missing on both sides", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("fertility", 50, "i.rune.fertility-power"),
+      makeRuneWithRqid("death", 50, "i.rune.death-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.left).not.toBeNull();
+    expect(rows[0]!.right).not.toBeNull();
+    expect(rows[0]!.linked).toBe(false);
+  });
+
+  it("hides the connecting line for a one-sided link too, even though both runes are owned", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("fertility", 50, "i.rune.fertility-power", "i.rune.death-power"),
+      makeRuneWithRqid("death", 50, "i.rune.death-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.left).not.toBeNull();
+    expect(rows[0]!.right).not.toBeNull();
+    expect(rows[0]!.linked).toBe(false);
+  });
+
+  it("keeps a fixed row's own side in place when only one rune of the pair is owned", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("death", 50, "i.rune.death-power", "i.rune.fertility-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.left).toBeNull();
+    expect(rows[0]!.right!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.death-power");
+    expect(rows[0]!.linked).toBe(false);
+  });
+
+  it("skips a standard row entirely when neither rune is owned", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("fertility", 50, "i.rune.fertility-power", "i.rune.death-power"),
+      makeRuneWithRqid("death", 50, "i.rune.death-power", "i.rune.fertility-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(1); // only fertility/death, not harmony/disorder etc.
+  });
+
+  it("appends extra (non-standard) power runes below the standard rows, paired if linked", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("fertility", 50, "i.rune.fertility-power", "i.rune.death-power"),
+      makeRuneWithRqid("death", 50, "i.rune.death-power", "i.rune.fertility-power"),
+      makeRuneWithRqid("luck", 40, "i.rune.luck-power", "i.rune.doom-power"),
+      makeRuneWithRqid("doom", 60, "i.rune.doom-power", "i.rune.luck-power"),
+    ]);
+
+    const { rows, standalone } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(2);
+    expect(rows[1]!.left!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.luck-power");
+    expect(rows[1]!.right!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.doom-power");
+    expect(rows[1]!.linked).toBe(true);
+    expect(standalone).toHaveLength(0);
+  });
+
+  it("puts an unlinked extra power rune into standalone", () => {
+    const runesByName = Object.fromEntries([makeRuneWithRqid("luck", 40, "i.rune.luck-power")]);
+
+    const { rows, standalone } = getPowerRuneSections(runesByName);
+
+    expect(rows).toHaveLength(0);
+    expect(standalone).toHaveLength(1);
+    expect(standalone[0]!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.luck-power");
+  });
+
+  it("marks a linked pair as independent (no sliding marker) when the actor has Embrace Runic Opposites", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("fertility", 75, "i.rune.fertility-power", "i.rune.death-power"),
+      makeRuneWithRqid("death", 75, "i.rune.death-power", "i.rune.fertility-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName, true);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.linked).toBe(true);
+    expect(rows[0]!.independent).toBe(true);
+  });
+
+  it("does not mark an unlinked pair as independent even for an actor with Embrace Runic Opposites", () => {
+    const runesByName = Object.fromEntries([
+      makeRuneWithRqid("fertility", 50, "i.rune.fertility-power"),
+      makeRuneWithRqid("death", 50, "i.rune.death-power"),
+    ]);
+
+    const { rows } = getPowerRuneSections(runesByName, true);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]!.linked).toBe(false);
+    expect(rows[0]!.independent).toBe(false);
+  });
+});
+
+describe("hasEmbraceRunicOpposites", () => {
+  it("is always false for now — there's no supported way yet to grant this power (#975)", () => {
+    const actor = { getBestEmbeddedDocumentByRqid: () => ({ id: "some-item-id" }) } as any;
+    expect(hasEmbraceRunicOpposites(actor)).toBe(false);
   });
 });
