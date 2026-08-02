@@ -19,7 +19,6 @@ import {
   getUnloadedMissileSrDisplay,
   hasEmbraceRunicOpposites,
 } from "./rqg-actor-sheet-data-prep";
-import { RQG_CONFIG } from "../system/config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RuneTypeEnum } from "@item-model/rune-enums.ts";
 import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
@@ -722,20 +721,8 @@ describe("getPowerRuneSections", () => {
 });
 
 describe("hasEmbraceRunicOpposites", () => {
-  function actorWithInfinityRune(hasInfinityRune: boolean): any {
-    return {
-      getBestEmbeddedDocumentByRqid: (rqid: string) =>
-        hasInfinityRune && rqid === RQG_CONFIG.runeRqid.infinity
-          ? { id: "infinity-rune-id" }
-          : undefined,
-    };
-  }
-
-  it("is true when the actor owns the Infinity rune", () => {
-    expect(hasEmbraceRunicOpposites(actorWithInfinityRune(true))).toBe(true);
-  });
-
-  it("is false when the actor doesn't own the Infinity rune", () => {
-    expect(hasEmbraceRunicOpposites(actorWithInfinityRune(false))).toBe(false);
+  it("is always false for now — there's no supported way yet to grant this power (#975)", () => {
+    const actor = { getBestEmbeddedDocumentByRqid: () => ({ id: "some-item-id" }) } as any;
+    expect(hasEmbraceRunicOpposites(actor)).toBe(false);
   });
 });

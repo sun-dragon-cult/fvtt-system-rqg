@@ -17,7 +17,6 @@ export const RQG_CONFIG = {
   // Rune items that need special handling
   runeRqid: {
     magic: "i.rune.magic-condition" as RqidString,
-    infinity: "i.rune.infinity-condition" as RqidString,
   },
 
   bodytypes: {

@@ -17,7 +17,6 @@ import {
   hasGodTalkerOrHigherNonRuneLord,
 } from "../item-data/cult-priority";
 import { isDocumentSubType } from "../../system/util";
-import { RQG_CONFIG } from "../../system/config";
 
 const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
@@ -250,13 +249,14 @@ export class CharacterDataModel extends RqgActorDataModel<
    * Whether this actor has been granted the "Embrace Runic Opposites" power: opposed
    * Power/Form runes no longer need to sum to 100% (Cults of RuneQuest: The Lunar Way,
    * p.96). This is one of several distinct powers a gamemaster may grant an Illuminate —
-   * it is common but not automatic, so it's tracked directly rather than derived from
-   * "is this character Illuminated" (which this system doesn't otherwise track).
+   * it is common but not automatic.
    *
-   * Presence of the Infinity (condition) rune is the marker for having this power.
+   * Disabled for now (always false): there's no supported way yet for a player to be
+   * granted this power. Tracking it properly needs a dedicated `illuminationPower` item
+   * type (see #975) rather than reusing a Rune item as an ad-hoc marker.
    */
-  static hasEmbraceRunicOpposites(actor: CharacterActor): boolean {
-    return !!actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.runeRqid.infinity);
+  static hasEmbraceRunicOpposites(_actor: CharacterActor): boolean {
+    return false;
   }
 
   static getPowWarning(actor: CharacterActor): boolean {

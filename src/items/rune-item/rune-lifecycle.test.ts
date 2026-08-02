@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqg-actor-data";
-import { RQG_CONFIG, systemId } from "../../system/config";
+import { systemId } from "../../system/config";
 import { runeLifecycle } from "./rune-lifecycle";
 
 function makeRune({
@@ -24,22 +24,12 @@ function makeRune({
   };
 }
 
-function makeActor({
-  hasEmbraceRunicOpposites = false,
-  items = [] as any[],
-}: {
-  hasEmbraceRunicOpposites?: boolean;
-  items?: any[];
-} = {}): any {
+function makeActor({ items = [] as any[] }: { items?: any[] } = {}): any {
   return {
     type: ActorTypeEnum.Character,
     items,
-    getBestEmbeddedDocumentByRqid: (rqid: string) => {
-      if (rqid === RQG_CONFIG.runeRqid.infinity) {
-        return hasEmbraceRunicOpposites ? { id: "infinity-rune-id" } : undefined;
-      }
-      return items.find((i: any) => i.getFlag?.(systemId, "documentRqidFlags")?.id === rqid);
-    },
+    getBestEmbeddedDocumentByRqid: (rqid: string) =>
+      items.find((i: any) => i.getFlag?.(systemId, "documentRqidFlags")?.id === rqid),
   };
 }
 
@@ -77,22 +67,6 @@ describe("runeLifecycle.handleItemUpdateDocumentsPreUpdate", () => {
 
     expect(updates).toHaveLength(2);
     expect(updates[1]).toEqual({ _id: "opposing-id", system: { chance: 30 } });
-  });
-
-  it("skips balancing entirely when the actor has Embrace Runic Opposites", () => {
-    const opposingRune = makeRune({ id: "opposing-id", rqid: "i.rune.death-power", chance: 40 });
-    const rune = makeRune({
-      id: "rune-id",
-      rqid: "i.rune.fertility-power",
-      chance: 60,
-      opposingRqid: "i.rune.death-power",
-    });
-    const actor = makeActor({ hasEmbraceRunicOpposites: true, items: [rune, opposingRune] });
-    const updates = [{ _id: "rune-id", "system.chance": 70 }];
-
-    runeLifecycle.handleItemUpdateDocumentsPreUpdate(actor, rune, updates, {});
-
-    expect(updates).toHaveLength(1); // no balancing update was added
   });
 
   it("does nothing when the update doesn't touch chance", () => {
