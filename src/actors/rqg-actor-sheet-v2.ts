@@ -441,6 +441,23 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       this.element.classList.toggle(state, health === state);
     }
 
+    // Right-click the portrait to see it larger, via Foundry's native image popout --
+    // the same action as the sidebar's "Show Player Artwork" context menu entry.
+    const portraitImg = this.element.querySelector<HTMLImageElement>(
+      ".profile-frame img.profile-img",
+    );
+    portraitImg?.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      if (!this.actor.img) {
+        return;
+      }
+      new foundry.applications.apps.ImagePopout({
+        src: this.actor.img,
+        uuid: this.actor.uuid,
+        window: { title: this.actor.name },
+      }).render({ force: true });
+    });
+
     // RQID header button (AppV2 _getFrameButtons version)
     await decorateRqidFrameButton(this as unknown as DocumentSheet<any, any>);
 
