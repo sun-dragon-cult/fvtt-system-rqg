@@ -572,6 +572,88 @@ function getMigrationDocumentKind(
 /* -------------------------------------------- */
 /*  Document Type Migration Helpers             */
 /* -------------------------------------------- */
+
+/**
+ * Merge a migration function's proposed update into the accumulated update data.
+ *
+ * foundry.utils.mergeObject treats arrays as atomic values (they are only
+ * recursively merged when both sides are plain Objects), so a plain mergeObject
+ * call here would let a later migration's `effects` array silently overwrite an
+ * earlier migration's `effects` array wholesale instead of combining them by
+ * `_id`. Since multiple AE migrations (path rewrites, duration-unit normalization)
+ * can each target the same embedded effect, the `effects` key is merged
+ * separately, entry-by-entry, while everything else goes through the normal
+ * mergeObject path.
+ */
+export function mergeMigrationUpdateData(
+  accumulated: Record<string, unknown>,
+  incoming: Record<string, unknown>,
+): Record<string, unknown> {
+  const { effects: incomingEffects, ...incomingRest } = incoming;
+
+  const merged = foundry.utils.mergeObject(accumulated, incomingRest, {
+    performDeletions: false,
+  }) as Record<string, unknown>;
+
+  if (incomingEffects !== undefined) {
+    merged["effects"] = mergeEmbeddedEffectsUpdates(merged["effects"], incomingEffects);
+  }
+
+  return merged;
+}
+
+/**
+ * Merge two arrays of partial embedded-ActiveEffect update objects (each
+ * shaped like `{ _id, ...partialFields }`) by `_id`, so that different
+ * migrations touching different fields of the same effect combine rather than
+ * one replacing the other.
+ */
+export function mergeEmbeddedEffectsUpdates(existing: unknown, incoming: unknown): unknown[] {
+  const existingArray = Array.isArray(existing) ? existing : [];
+  const incomingArray = Array.isArray(incoming) ? incoming : [];
+
+  const byId = new Map<string, Record<string, unknown>>();
+  const order: string[] = [];
+
+  for (const entry of existingArray) {
+    if (!isPlainObject(entry)) {
+      continue;
+    }
+    const entryId = String((entry as Record<string, unknown>)["_id"] ?? "");
+    if (!entryId) {
+      continue;
+    }
+    byId.set(entryId, { ...(entry as Record<string, unknown>) });
+    order.push(entryId);
+  }
+
+  for (const entry of incomingArray) {
+    if (!isPlainObject(entry)) {
+      continue;
+    }
+    const entryId = String((entry as Record<string, unknown>)["_id"] ?? "");
+    if (!entryId) {
+      continue;
+    }
+    const prior = byId.get(entryId);
+    if (prior) {
+      // `prior` is our own owned shallow copy (spread in above), so mutating it
+      // in place via the default `inplace: true` is safe here.
+      byId.set(
+        entryId,
+        foundry.utils.mergeObject(prior, entry as Record<string, unknown>, {
+          performDeletions: false,
+        }) as Record<string, unknown>,
+      );
+    } else {
+      byId.set(entryId, { ...(entry as Record<string, unknown>) });
+      order.push(entryId);
+    }
+  }
+
+  return order.map((id) => byId.get(id)!);
+}
+
 async function getActorMigrationUpdates(
   actorData: RqgActor,
   itemMigrations: ItemMigration[],
@@ -591,9 +673,7 @@ async function getActorMigrationUpdates(
     if (!foundry.utils.isEmpty(pruneNoopUpdateData(fnUpdate, actorSourceData))) {
       actorMigrationNames.add(migrationName);
     }
-    actorUpdateData = foundry.utils.mergeObject(actorUpdateData, fnUpdate, {
-      performDeletions: false,
-    }) as Actor.UpdateData;
+    actorUpdateData = mergeMigrationUpdateData(actorUpdateData, fnUpdate) as Actor.UpdateData;
   });
 
   if ("items" in (actorUpdateData as Record<string, unknown>)) {
@@ -667,9 +747,7 @@ async function getItemMigrationUpdates(
       migrationNames.add(migrationName);
     }
 
-    updateData = foundry.utils.mergeObject(updateData, fnUpdate, {
-      performDeletions: false,
-    }) as Item.UpdateData; // TODO can mergeObject be made to return the correct type?
+    updateData = mergeMigrationUpdateData(updateData, fnUpdate) as Item.UpdateData;
   }
 
   return {
