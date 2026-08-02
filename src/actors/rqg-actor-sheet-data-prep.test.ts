@@ -17,7 +17,7 @@ import {
   getRuneVisualsMap,
   getUnloadedMissileSr,
   getUnloadedMissileSrDisplay,
-  isIlluminated,
+  hasEmbraceRunicOpposites,
 } from "./rqg-actor-sheet-data-prep";
 import { RQG_CONFIG } from "../system/config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -721,7 +721,7 @@ describe("getPowerRuneSections", () => {
   });
 });
 
-describe("isIlluminated", () => {
+describe("hasEmbraceRunicOpposites", () => {
   function actorWithInfinityRune(hasInfinityRune: boolean): any {
     return {
       getBestEmbeddedDocumentByRqid: (rqid: string) =>
@@ -732,10 +732,10 @@ describe("isIlluminated", () => {
   }
 
   it("is true when the actor owns the Infinity rune", () => {
-    expect(isIlluminated(actorWithInfinityRune(true))).toBe(true);
+    expect(hasEmbraceRunicOpposites(actorWithInfinityRune(true))).toBe(true);
   });
 
   it("is false when the actor doesn't own the Infinity rune", () => {
-    expect(isIlluminated(actorWithInfinityRune(false))).toBe(false);
+    expect(hasEmbraceRunicOpposites(actorWithInfinityRune(false))).toBe(false);
   });
 });

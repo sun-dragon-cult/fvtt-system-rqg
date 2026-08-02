@@ -1140,9 +1140,9 @@
         transition: left 0.3s ease;
       }
 
-/* Illuminated character: the pair no longer needs to sum to 100%, so the chances are
+/* Embrace Runic Opposites: the pair no longer needs to sum to 100%, so the chances are
      independent of each other and a sliding position would be meaningless — show the
-     Infinity rune (Illumination's own symbol) fixed at center instead. */
+     Infinity rune fixed at center instead. */
       & .independent-marker {
         left: 50%;
         width: 18px;

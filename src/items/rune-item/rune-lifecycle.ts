@@ -67,11 +67,11 @@ export const runeLifecycle = {
       if (!chanceResult) {
         return;
       }
-      // Illuminated characters gain "Embrace Runic Opposites": their opposed runes no
-      // longer need to sum to 100%, so skip the auto-balancing entirely for them.
+      // Actors with "Embrace Runic Opposites" have opposed runes that no longer need to
+      // sum to 100%, so skip the auto-balancing entirely for them.
       if (
         isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character) &&
-        CharacterDataModel.isIlluminated(actor)
+        CharacterDataModel.hasEmbraceRunicOpposites(actor)
       ) {
         return;
       }

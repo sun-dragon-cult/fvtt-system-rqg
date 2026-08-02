@@ -25,10 +25,10 @@ function makeRune({
 }
 
 function makeActor({
-  illuminated = false,
+  hasEmbraceRunicOpposites = false,
   items = [] as any[],
 }: {
-  illuminated?: boolean;
+  hasEmbraceRunicOpposites?: boolean;
   items?: any[];
 } = {}): any {
   return {
@@ -36,7 +36,7 @@ function makeActor({
     items,
     getBestEmbeddedDocumentByRqid: (rqid: string) => {
       if (rqid === RQG_CONFIG.runeRqid.infinity) {
-        return illuminated ? { id: "infinity-rune-id" } : undefined;
+        return hasEmbraceRunicOpposites ? { id: "infinity-rune-id" } : undefined;
       }
       return items.find((i: any) => i.getFlag?.(systemId, "documentRqidFlags")?.id === rqid);
     },
@@ -79,7 +79,7 @@ describe("runeLifecycle.handleItemUpdateDocumentsPreUpdate", () => {
     expect(updates[1]).toEqual({ _id: "opposing-id", system: { chance: 30 } });
   });
 
-  it("skips balancing entirely when the actor is Illuminated", () => {
+  it("skips balancing entirely when the actor has Embrace Runic Opposites", () => {
     const opposingRune = makeRune({ id: "opposing-id", rqid: "i.rune.death-power", chance: 40 });
     const rune = makeRune({
       id: "rune-id",
@@ -87,7 +87,7 @@ describe("runeLifecycle.handleItemUpdateDocumentsPreUpdate", () => {
       chance: 60,
       opposingRqid: "i.rune.death-power",
     });
-    const actor = makeActor({ illuminated: true, items: [rune, opposingRune] });
+    const actor = makeActor({ hasEmbraceRunicOpposites: true, items: [rune, opposingRune] });
     const updates = [{ _id: "rune-id", "system.chance": 70 }];
 
     runeLifecycle.handleItemUpdateDocumentsPreUpdate(actor, rune, updates, {});

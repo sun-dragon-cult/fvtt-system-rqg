@@ -16,7 +16,6 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqid-batch-editor";
 import { openDataModelRepairDialog } from "../api/data-model-repair";
 import { migrateRuneItemType } from "./migrations-item/migrate-rune-item-type";
-import { migrateRuneOpposingRqidLinks } from "./migrations-item/migrate-rune-opposing-rqid-links";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel-rune-magic-command-cult-spirit-rqid";
 import { migrateActorActiveEffectPaths } from "./migrations-actor/migrate-actor-active-effect-paths";
 import { migrateItemActiveEffectPaths } from "./migrations-item/migrate-item-active-effect-paths";
@@ -156,7 +155,6 @@ export async function applyDefaultWorldMigrations(
     tagSkillNameSkillsWithRqid,
     migrateWeaponSkillLinks,
     migrateRuneItemType,
-    migrateRuneOpposingRqidLinks,
     relabelRuneMagicCommandCultSpiritRqid,
     migrateItemActiveEffectPaths,
     migrateItemActiveEffectDurationUnits,

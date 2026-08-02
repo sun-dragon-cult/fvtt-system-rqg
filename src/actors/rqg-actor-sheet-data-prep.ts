@@ -209,12 +209,12 @@ export function getPowWarning(actor: CharacterActor): boolean {
 }
 
 /**
- * Whether this actor has "Embrace Runic Opposites" (see {@link CharacterDataModel.isIlluminated}
- * for the current stopgap detection approach).
+ * Whether this actor has been granted the "Embrace Runic Opposites" power (see
+ * {@link CharacterDataModel.hasEmbraceRunicOpposites}).
  * @param actor - The character actor
  */
-export function isIlluminated(actor: CharacterActor): boolean {
-  return CharacterDataModel.isIlluminated(actor);
+export function hasEmbraceRunicOpposites(actor: CharacterActor): boolean {
+  return CharacterDataModel.hasEmbraceRunicOpposites(actor);
 }
 
 /**
@@ -402,10 +402,9 @@ export interface RuneOpposedPair {
    */
   linked: boolean;
   /**
-   * True when the actor is Illuminated and the pair is linked: the "Embrace Runic
-   * Opposites" power means the two runes no longer need to sum to 100%, so their
-   * chances are independent of each other and the sliding marker position would be
-   * meaningless.
+   * True when the actor has "Embrace Runic Opposites" and the pair is linked: the two
+   * runes no longer need to sum to 100%, so their chances are independent of each other
+   * and the sliding marker position would be meaningless.
    */
   independent: boolean;
   /** Marker position (0-100). 0% = left edge, 100% = right edge. Slides toward the dominant rune. */
@@ -468,16 +467,17 @@ export function getRuneVisualsMap(
 /**
  * Classifies a left/right rune slot into a `RuneOpposedPair`. There are 3 display states:
  * both runes reciprocally link to each other (normal, sliding marker); reciprocally
- * linked and the actor is Illuminated (`independent`, Infinity-rune marker); or anything
- * less than a full reciprocal link — including a one-sided link — which shows no
- * connecting line at all.
- * @param illuminated - Whether the owning actor has the Illumination skill; if so,
- *   a linked pair is marked `independent` instead of getting a sliding marker.
+ * linked and the actor has "Embrace Runic Opposites" (`independent`, Infinity-rune
+ * marker); or anything less than a full reciprocal link — including a one-sided link —
+ * which shows no connecting line at all.
+ * @param hasEmbraceRunicOpposites - Whether the owning actor has been granted the
+ *   "Embrace Runic Opposites" power; if so, a linked pair is marked `independent`
+ *   instead of getting a sliding marker.
  */
 function buildOpposedRow(
   left: RuneItem | null,
   right: RuneItem | null,
-  illuminated: boolean,
+  hasEmbraceRunicOpposites: boolean,
 ): RuneOpposedPair {
   const leftRqid = left?.flags?.rqg?.documentRqidFlags?.id;
   const rightRqid = right?.flags?.rqg?.documentRqidFlags?.id;
@@ -487,7 +487,7 @@ function buildOpposedRow(
     !!right && !!leftRqid && right.system?.opposingRuneRqidLink?.rqid === leftRqid;
 
   const linked = leftLinksRight && rightLinksLeft;
-  const independent = linked && illuminated;
+  const independent = linked && hasEmbraceRunicOpposites;
 
   const leftChance = left?.system?.chance ?? 0;
   const rightChance = right?.system?.chance ?? 0;
@@ -509,12 +509,13 @@ function buildOpposedRow(
  * Pairs are sorted to match the traditional paper character sheet order
  * when possible.
  * @param runesByName - Object keyed by rune short name, values are rune items
- * @param illuminated - Whether the owning actor has the Illumination skill
+ * @param hasEmbraceRunicOpposites - Whether the owning actor has been granted the
+ *   "Embrace Runic Opposites" power
  * @returns Object with `pairs` array and `standalone` array
  */
 export function getRuneOpposedPairs(
   runesByName: Record<string, RuneItem>,
-  illuminated: boolean = false,
+  hasEmbraceRunicOpposites: boolean = false,
 ): {
   pairs: RuneOpposedPair[];
   standalone: RuneItem[];
@@ -556,14 +557,14 @@ export function getRuneOpposedPairs(
         partnerRune.flags?.rqg?.documentRqidFlags?.id ?? "",
       );
       if (rightIdx !== -1 && (leftIdx === -1 || rightIdx < leftIdx)) {
-        pairs.push(buildOpposedRow(partnerRune, rune, illuminated));
+        pairs.push(buildOpposedRow(partnerRune, rune, hasEmbraceRunicOpposites));
       } else {
-        pairs.push(buildOpposedRow(rune, partnerRune, illuminated));
+        pairs.push(buildOpposedRow(rune, partnerRune, hasEmbraceRunicOpposites));
       }
     } else if (opposingRqid) {
       // Links somewhere, but not to anything this actor owns — show with empty slot
       paired.add(key);
-      pairs.push(buildOpposedRow(rune, null, illuminated));
+      pairs.push(buildOpposedRow(rune, null, hasEmbraceRunicOpposites));
     } else {
       standalone.push(rune);
     }
@@ -596,12 +597,13 @@ export function getRuneOpposedPairs(
  * link. Any other power runes (homebrew/non-standard) are appended below, paired
  * dynamically among themselves the same way `getRuneOpposedPairs` works.
  * @param runesByName - Power runes keyed by rune short name
- * @param illuminated - Whether the owning actor has the Illumination skill
+ * @param hasEmbraceRunicOpposites - Whether the owning actor has been granted the
+ *   "Embrace Runic Opposites" power
  * @returns Object with `rows` (fixed pairs + extra dynamic pairs) and `standalone` arrays
  */
 export function getPowerRuneSections(
   runesByName: Record<string, RuneItem>,
-  illuminated: boolean = false,
+  hasEmbraceRunicOpposites: boolean = false,
 ): {
   rows: RuneOpposedPair[];
   standalone: RuneItem[];
@@ -617,13 +619,13 @@ export function getPowerRuneSections(
     }
     consumedKeys.add(leftKey);
     consumedKeys.add(rightKey);
-    rows.push(buildOpposedRow(left, right, illuminated));
+    rows.push(buildOpposedRow(left, right, hasEmbraceRunicOpposites));
   }
 
   const leftoverEntries = Object.entries(runesByName).filter(([key]) => !consumedKeys.has(key));
   const { pairs: extraPairs, standalone } = getRuneOpposedPairs(
     Object.fromEntries(leftoverEntries),
-    illuminated,
+    hasEmbraceRunicOpposites,
   );
 
   return { rows: [...rows, ...extraPairs], standalone };

@@ -247,15 +247,15 @@ export class CharacterDataModel extends RqgActorDataModel<
   }
 
   /**
-   * Whether this actor has "Embrace Runic Opposites": opposed Power/Form runes no longer
-   * need to sum to 100%.
+   * Whether this actor has been granted the "Embrace Runic Opposites" power: opposed
+   * Power/Form runes no longer need to sum to 100% (Cults of RuneQuest: The Lunar Way,
+   * p.96). This is one of several distinct powers a gamemaster may grant an Illuminate —
+   * it is common but not automatic, so it's tracked directly rather than derived from
+   * "is this character Illuminated" (which this system doesn't otherwise track).
    *
-   * STOPGAP: checks for presence of the Infinity (condition) rune as a proxy for "this
-   * character has become Illuminated." This isn't confirmed as rules-accurate yet, but
-   * it's a better approximation than merely owning the Illumination skill (which only
-   * reflects eligibility to attempt becoming Illuminated, not having succeeded).
+   * Presence of the Infinity (condition) rune is the marker for having this power.
    */
-  static isIlluminated(actor: CharacterActor): boolean {
+  static hasEmbraceRunicOpposites(actor: CharacterActor): boolean {
     return !!actor.getBestEmbeddedDocumentByRqid(RQG_CONFIG.runeRqid.infinity);
   }
 

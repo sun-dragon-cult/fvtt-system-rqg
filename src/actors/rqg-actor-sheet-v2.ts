@@ -250,14 +250,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       (a: RqgItem, b: RqgItem) => (a.sort ?? 0) - (b.sort ?? 0),
     ) as RqgItem[];
     const dexStrikeRank = system.attributes.dexStrikeRank;
-    const isIlluminated = DataPrep.isIlluminated(this.actor);
+    const hasEmbraceRunicOpposites = DataPrep.hasEmbraceRunicOpposites(this.actor);
     const powerRuneGroups = DataPrep.getPowerRuneSections(
       embeddedItems?.rune?.power ?? {},
-      isIlluminated,
+      hasEmbraceRunicOpposites,
     );
     const formRuneGroups = DataPrep.getRuneOpposedPairs(
       embeddedItems?.rune?.form ?? {},
-      isIlluminated,
+      hasEmbraceRunicOpposites,
     );
     const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
     const cultItems = (embeddedItems[ItemTypeEnum.Cult] ?? []) as RqgItem[];
