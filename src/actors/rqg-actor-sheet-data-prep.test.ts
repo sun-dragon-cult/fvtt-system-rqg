@@ -597,7 +597,7 @@ describe("getRuneOpposedPairs", () => {
 
 describe("getPowerRuneSections", () => {
   it("places the 4 standard pairs in fixed order regardless of link presence", () => {
-    // Deliberately out of order and with links removed (e.g. a decoupled Illuminated character).
+    // Deliberately out of order and with links removed (e.g. a decoupled Embrace Runic Opposites character).
     const runesByName = Object.fromEntries([
       makeRuneWithRqid("stasis", 25, "i.rune.stasis-power"),
       makeRuneWithRqid("movement", 75, "i.rune.movement-power"),
@@ -693,7 +693,7 @@ describe("getPowerRuneSections", () => {
     expect(standalone[0]!.flags?.rqg?.documentRqidFlags?.id).toBe("i.rune.luck-power");
   });
 
-  it("marks a linked pair as independent (no sliding marker) when the actor is Illuminated", () => {
+  it("marks a linked pair as independent (no sliding marker) when the actor has Embrace Runic Opposites", () => {
     const runesByName = Object.fromEntries([
       makeRuneWithRqid("fertility", 75, "i.rune.fertility-power", "i.rune.death-power"),
       makeRuneWithRqid("death", 75, "i.rune.death-power", "i.rune.fertility-power"),
@@ -706,7 +706,7 @@ describe("getPowerRuneSections", () => {
     expect(rows[0]!.independent).toBe(true);
   });
 
-  it("does not mark an unlinked pair as independent even for an Illuminated actor", () => {
+  it("does not mark an unlinked pair as independent even for an actor with Embrace Runic Opposites", () => {
     const runesByName = Object.fromEntries([
       makeRuneWithRqid("fertility", 50, "i.rune.fertility-power"),
       makeRuneWithRqid("death", 50, "i.rune.death-power"),
