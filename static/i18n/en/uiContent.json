@@ -1559,7 +1559,8 @@
     },
     "UI": {
       "SortItems": "Sort items alphabetically",
-      "MultipleCults": "Character has more cults,<br> see Rune Magic Tab"
+      "MultipleCults": "Character has more cults,<br> see Rune Magic Tab",
+      "PortraitTooltip": "Right-click to view larger"
     },
     "SheetName": {
       "Actor": {

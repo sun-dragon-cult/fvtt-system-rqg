@@ -2,8 +2,11 @@
   <div class="header-grid">
 
     <div class="profile">
-      <img class="profile-img {{#if (eq img 'icons/svg/mystery-man.svg')}}unset{{/if}}"
-          src="{{img}}" data-action="editImage" data-edit="img" data-tooltip="{{name}}">
+      <div class="profile-frame">
+        <img class="profile-img {{#if (eq img 'icons/svg/mystery-man.svg')}}unset{{/if}}" src="{{img}}"
+            data-action="editImage" data-edit="img"
+            data-tooltip="{{name}}<br>{{localize 'RQG.UI.PortraitTooltip'}}">
+      </div>
     </div>
 
     <div class="name-runes-cults">
