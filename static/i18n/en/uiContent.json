@@ -343,7 +343,7 @@
         "Elemental": "Elemental",
         "Form": "Form",
         "Power": "Power",
-        "IndependentTooltip": "This character is Illuminated — these runes no longer need to add up to 100% and vary independently."
+        "IndependentTooltip": "This character has Embrace Runic Opposites — these runes no longer need to add up to 100% and vary independently."
       },
       "RuneMagic": {
         "EmbeddingRuneMagicWithoutCultWarning": "{characterName} has to join a cult before learning the {spellName} rune magic spell",
