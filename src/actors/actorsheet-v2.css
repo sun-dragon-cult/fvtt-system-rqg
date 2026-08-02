@@ -533,7 +533,7 @@
             top: -2px; /* pull the frame up so it starts at the top of the window */
             width: fit-content; /* shrink-wraps to whatever size the portrait renders at */
             cursor: pointer;
-            margin: -4px -24px -36px -14px;
+            margin: -4px -24px -36px 0;
 
             & img {
               display: block;
@@ -626,6 +626,8 @@
           grid-row: 2;
           grid-column: name-rune-start / name-rune-end;
           margin-top: -2px;
+          min-height: 80px; /* prevents responsive font shrink from also shrinking this row,
+            which let the portrait bleed into the strike-rank row below at narrow widths */
           display: grid;
           grid-template-columns: repeat(7, auto);
           justify-content: space-between;
