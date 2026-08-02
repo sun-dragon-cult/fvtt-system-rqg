@@ -27,29 +27,34 @@ function adjustOpposingRuneChance(
 }
 
 /**
- * Finds the rune opposing `rune`, regardless of which side declares the
- * `opposingRuneRqidLink` — either `rune` links to it, or it links to `rune`.
- * This keeps auto-balancing symmetric: it doesn't matter which of the pair you edit.
+ * Finds the rune reciprocally opposing `rune` — both sides must declare the
+ * `opposingRuneRqidLink` to each other, matching the `linked` state that decides whether
+ * the rune tab shows a connecting line. A cleared or one-sided link means the pair is
+ * independent for auto-balancing too, not just for display — otherwise clearing the link
+ * on one rune would visually disconnect the pair while the other rune's still-declared
+ * link kept silently forcing it back into sync.
  */
 function findOpposingRune(actor: RqgActor, rune: RuneItem): RqgItem | undefined {
   const linkedRqid = toRqidString(rune.system.opposingRuneRqidLink?.rqid);
-  if (linkedRqid) {
-    const direct = actor.getBestEmbeddedDocumentByRqid(linkedRqid);
-    if (direct) {
-      return direct;
-    }
+  if (!linkedRqid) {
+    return undefined;
   }
 
   const ownRqid = rune.getFlag(systemId, "documentRqidFlags")?.id;
   if (!ownRqid) {
     return undefined;
   }
-  return (actor.items as unknown as RqgItem[]).find(
-    (candidate) =>
-      candidate.id !== rune.id &&
-      isDocumentSubType<RuneItem>(candidate, ItemTypeEnum.Rune) &&
-      toRqidString(candidate.system.opposingRuneRqidLink?.rqid) === ownRqid,
-  );
+
+  const candidate = actor.getBestEmbeddedDocumentByRqid(linkedRqid);
+  if (
+    !candidate ||
+    !isDocumentSubType<RuneItem>(candidate, ItemTypeEnum.Rune) ||
+    toRqidString(candidate.system.opposingRuneRqidLink?.rqid) !== ownRqid
+  ) {
+    return undefined;
+  }
+
+  return candidate;
 }
 
 export const runeLifecycle = {

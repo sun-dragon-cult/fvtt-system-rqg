@@ -34,8 +34,13 @@ function makeActor({ items = [] as any[] }: { items?: any[] } = {}): any {
 }
 
 describe("runeLifecycle.handleItemUpdateDocumentsPreUpdate", () => {
-  it("adds an update to balance the opposing rune's chance to 100%", () => {
-    const opposingRune = makeRune({ id: "opposing-id", rqid: "i.rune.death-power", chance: 40 });
+  it("adds an update to balance the opposing rune's chance to 100% when reciprocally linked", () => {
+    const opposingRune = makeRune({
+      id: "opposing-id",
+      rqid: "i.rune.death-power",
+      chance: 40,
+      opposingRqid: "i.rune.fertility-power",
+    });
     const rune = makeRune({
       id: "rune-id",
       rqid: "i.rune.fertility-power",
@@ -51,26 +56,71 @@ describe("runeLifecycle.handleItemUpdateDocumentsPreUpdate", () => {
     expect(updates[1]).toEqual({ _id: "opposing-id", system: { chance: 30 } });
   });
 
-  it("balances the opposing rune even when only the other rune declares the link (one-sided)", () => {
-    // Fertility has no opposingRuneRqidLink of its own, but Death links to Fertility.
-    const rune = makeRune({ id: "rune-id", rqid: "i.rune.fertility-power", chance: 60 });
+  it("balances regardless of which reciprocally-linked rune is edited", () => {
     const opposingRune = makeRune({
       id: "opposing-id",
       rqid: "i.rune.death-power",
       chance: 40,
       opposingRqid: "i.rune.fertility-power",
     });
+    const rune = makeRune({
+      id: "rune-id",
+      rqid: "i.rune.fertility-power",
+      chance: 60,
+      opposingRqid: "i.rune.death-power",
+    });
+    const actor = makeActor({ items: [rune, opposingRune] });
+    const updates = [{ _id: "opposing-id", "system.chance": 30 }];
+
+    runeLifecycle.handleItemUpdateDocumentsPreUpdate(actor, opposingRune, updates, {});
+
+    expect(updates).toHaveLength(2);
+    expect(updates[1]).toEqual({ _id: "rune-id", system: { chance: 70 } });
+  });
+
+  it("does not balance when the link is one-sided (not reciprocal)", () => {
+    // Fertility declares the link, but Death doesn't declare one back — not a connected
+    // pair, so editing either rune must not silently force the other's chance.
+    const opposingRune = makeRune({ id: "opposing-id", rqid: "i.rune.death-power", chance: 40 });
+    const rune = makeRune({
+      id: "rune-id",
+      rqid: "i.rune.fertility-power",
+      chance: 60,
+      opposingRqid: "i.rune.death-power",
+    });
     const actor = makeActor({ items: [rune, opposingRune] });
     const updates = [{ _id: "rune-id", "system.chance": 70 }];
 
     runeLifecycle.handleItemUpdateDocumentsPreUpdate(actor, rune, updates, {});
 
-    expect(updates).toHaveLength(2);
-    expect(updates[1]).toEqual({ _id: "opposing-id", system: { chance: 30 } });
+    expect(updates).toHaveLength(1); // no balancing update was added
+  });
+
+  it("does not balance once a previously-linked rune has its link cleared, even editing the still-linked partner", () => {
+    // Mirrors the manual-disconnect workflow: the player cleared Fertility's link, but
+    // Death still declares one back to Fertility. Editing Death must not resurrect the pair.
+    const opposingRune = makeRune({
+      id: "opposing-id",
+      rqid: "i.rune.death-power",
+      chance: 40,
+      opposingRqid: "i.rune.fertility-power",
+    });
+    const rune = makeRune({ id: "rune-id", rqid: "i.rune.fertility-power", chance: 60 });
+    const actor = makeActor({ items: [rune, opposingRune] });
+    const updates = [{ _id: "opposing-id", "system.chance": 30 }];
+
+    runeLifecycle.handleItemUpdateDocumentsPreUpdate(actor, opposingRune, updates, {});
+
+    expect(updates).toHaveLength(1); // no balancing update was added
   });
 
   it("does nothing when the update doesn't touch chance", () => {
-    const opposingRune = makeRune({ id: "opposing-id", rqid: "i.rune.death-power", chance: 40 });
+    const opposingRune = makeRune({
+      id: "opposing-id",
+      rqid: "i.rune.death-power",
+      chance: 40,
+      opposingRqid: "i.rune.fertility-power",
+    });
     const rune = makeRune({
       id: "rune-id",
       rqid: "i.rune.fertility-power",
