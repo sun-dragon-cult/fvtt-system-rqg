@@ -3,7 +3,7 @@
     <div>
       {{#unless isVirtual}}{{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}{{/unless}}
       {{#if isContainer}}<i class="fas fa-folder-open"> </i>{{/if}}
-      {{#unless isVirtual}}<img class="item" src="{{img}}" data-item-tooltip data-tooltip-class="item-description-tooltip">{{/unless}}
+      {{#unless isVirtual}}<img class="item row-icon" src="{{img}}" data-item-tooltip data-tooltip-class="item-description-tooltip">{{/unless}}
       {{#unless (eq physicalItemType "unique")}} {{this.quantity}} {{/unless}}
       {{name}}
     </div>

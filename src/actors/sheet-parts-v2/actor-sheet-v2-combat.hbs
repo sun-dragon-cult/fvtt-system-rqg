@@ -181,7 +181,7 @@
                   class="combat contextmenu item">{{#if @root.isEditable}}<span class="weapon-drag-handle item draggable"
                                                          data-weapon-drag-handle
                                                          data-weapon-item-id="{{id}}"
-                                                         data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="item" src="{{img}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
+                                                         data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{img}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
                 <div data-weapon-item-id="{{id}}"
                     data-item-id="{{id}}"
                     data-weapon-roll
@@ -287,7 +287,7 @@
         {{#each embeddedItems.weapon}}
           {{#if system.isNatural}}
             <div class="weapon-row" data-item-id="{{id}}">
-              <div data-weapon-item-id="{{id}}" data-item-id="{{id}}" class="combat contextmenu item">{{#if @root.isEditable}}<span class="weapon-drag-handle item draggable" data-weapon-drag-handle data-weapon-item-id="{{id}}" data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="item" src="{{img}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
+              <div data-weapon-item-id="{{id}}" data-item-id="{{id}}" class="combat contextmenu item">{{#if @root.isEditable}}<span class="weapon-drag-handle item draggable" data-weapon-drag-handle data-weapon-item-id="{{id}}" data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{img}}" data-item-id="{{id}}" data-item-tooltip data-tooltip-class="item-description-tooltip"></div>
               <div data-weapon-item-id="{{id}}" data-weapon-roll data-tooltip="{{localize "RQG.Game.InitiateCombat"}}" class="combat contextmenu item">{{name}}</div>
               <div data-weapon-item-id="{{id}}" class="combat contextmenu item"></div>
               <div data-weapon-item-id="{{id}}" data-item-id="{{id}}">
@@ -355,7 +355,7 @@
             <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}"
                 class="skill contextmenu"
                 {{#if dodgeSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{dodgeSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
-              <img class="item" src="{{dodgeSkillData.img}}">
+              <img class="row-icon" src="{{dodgeSkillData.img}}">
             </div>
             <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu">{{localize "RQG.Actor.Combat.Dodge"}}</div>
             <div data-item-id="{{dodgeSkillData.id}}" data-item-roll data-tooltip="{{localize "RQG.Game.RollTitle"}}" class="skill contextmenu"></div>
@@ -380,7 +380,7 @@
             <div data-item-id="{{spiritCombatSkillData.id}}"
                 class="skill contextmenu"
                 {{#if spiritCombatSkillData.system.descriptionRqidLink.rqid}}data-rqid-link="{{spiritCombatSkillData.system.descriptionRqidLink.rqid}}"{{/if}}>
-              <img class="item" src="{{spiritCombatSkillData.img}}">
+              <img class="row-icon" src="{{spiritCombatSkillData.img}}">
             </div>
             <div data-item-id="{{spiritCombatSkillData.id}}"
                 class="skill contextmenu"
