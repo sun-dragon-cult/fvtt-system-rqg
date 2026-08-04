@@ -703,6 +703,15 @@
         }
       }
 
+/* Explicit widths for yes/no and start/duration — min-content squeezes them narrower
+         than their header text. minmax(0, …) tracks can shrink below content instead of
+         forcing the grid wider than the tab. */
+      &.activeeffects {
+        grid-template-columns:
+          [col-start] 30px minmax(0, auto) 5rem 7rem minmax(0, max-content) 5rem minmax(0, 1fr) 30px
+          [col-end];
+      }
+
       &.skill {
         grid-template-columns: [col-start] 30px auto min-content [col-end];
 

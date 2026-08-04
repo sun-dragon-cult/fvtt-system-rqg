@@ -1,0 +1,29 @@
+<div class="skill contextmenu item"
+     data-item-id="{{id}}"
+     {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+  {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{img}}">
+</div>
+<div class="skill contextmenu item"
+     data-item-id="{{id}}"
+     data-item-roll
+     data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+  {{system.skillName}}{{#if system.specialization}} ({{system.specialization}}){{/if}}
+  {{#unless system.canGetExperience}}
+    <img class="requires-training" src="systems/rqg/assets/images/ui/skill-requires-training.svg"
+         data-tooltip="{{localize 'RQG.Actor.Skill.RequiresTraining'}}">
+  {{/unless}}
+  {{#each system.runeRqidLinks}}
+    <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+  {{/each}}
+</div>
+{{#edit-mode @root.system.editMode "all"}}
+  <div class="skill-gained-edit">
+    <input type="number" data-item-edit-value="system.gainedChance" data-item-id="{{id}}" value="{{system.gainedChance}}">%
+  </div>
+{{/edit-mode}}
+<div class="skill contextmenu item {{experiencedclass uuid}}"
+     data-item-id="{{id}}"
+     data-item-roll
+     data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+  <span class="nowrap text-right">{{system.chance}}%</span>
+</div>

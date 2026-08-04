@@ -32,12 +32,7 @@
           {{#each this}}
             {{#if system.runeRqidLinks.length}}
               <div class="skill-row">
-                {{> actorSkillsGrid
-                  skill=this
-                  wizard=../../../wizard
-                  forChoice=../../../forChoice
-                  checkedProperty=../../../checkedProperty
-                  asBonus=../../../asBonus}}
+                {{> actorSheetV2SkillRow}}
               </div>
             {{/if}}
           {{/each}}
