@@ -17,7 +17,11 @@
       selectedSource=selectedSource
       labelKey="RQG.Dialog.improveAbilityDialog.throughResearch"
     }}
-      {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableResearch" typeLocName=improvementData.typeLocName}}
+      {{#if improvementData.skillOver75}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableResearchOver75"}}
+      {{else}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableResearch" typeLocName=improvementData.typeLocName}}
+      {{/if}}
     {{/improveDialogSourceOption}}
 
     {{#> improveDialogSourceOption

@@ -80,25 +80,43 @@ describe("formatCategoryModDisplay", () => {
 });
 
 describe("updateAdapterForSkill", () => {
-  it("allows training a skill just below 75%", () => {
+  it("allows training and research for a skill just below 75%", () => {
     const improvementData = createImprovementData();
     updateAdapterForSkill(improvementData, createSkillItem(74));
     expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
     expect(improvementData.skillOver75).toBeUndefined();
   });
 
-  it("blocks training a skill at exactly 75%", () => {
+  it("blocks training and research for a skill at exactly 75% that can gain experience", () => {
     const improvementData = createImprovementData();
+    improvementData.canGetExperience = true;
     updateAdapterForSkill(improvementData, createSkillItem(75));
     expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
     expect(improvementData.skillOver75).toBe(true);
   });
 
-  it("blocks training a skill above 75%", () => {
+  it("blocks training and research for a skill above 75% that can gain experience", () => {
     const improvementData = createImprovementData();
+    improvementData.canGetExperience = true;
     updateAdapterForSkill(improvementData, createSkillItem(80));
     expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
     expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("allows training and research for a skill above 75% that cannot gain experience (Core p.413, p.417)", () => {
+    // The 75%-plus restriction is gated on canGetExperience (Core p.413's "if there is no box
+    // next to the ability" concept - some skills like Alchemy or Farm never get an experience
+    // box on the official sheet), not on whether a check is currently ticked. A skill with no
+    // box at all has no alternative path and stays trainable/researchable past 75%.
+    const improvementData = createImprovementData();
+    improvementData.canGetExperience = false;
+    updateAdapterForSkill(improvementData, createSkillItem(80));
+    expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+    expect(improvementData.skillOver75).toBeUndefined();
   });
 
   it("derives the category modifier from source characteristics, ignoring active-effect deltas", () => {
@@ -165,6 +183,31 @@ describe("configureAdapterForAbilityItem", () => {
     configureAdapterForAbilityItem(improvementData, runeItem);
     expect(improvementData.showResearch).toBe(true);
     expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("blocks training and research for a Rune at 75%+ that can gain experience (Core p.417)", () => {
+    // The 75%-plus restriction is worded generically ("any ability listed on the adventurer
+    // sheet"), not skill-specific, and Core p.417 gives a worked Rune-training example
+    // (Sorala's Air Rune) - so Runes are gated identically to Skills.
+    const improvementData = createImprovementData();
+    improvementData.chance = 80;
+    improvementData.canGetExperience = true;
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("allows training and research for a Rune at 75%+ that cannot gain experience", () => {
+    const improvementData = createImprovementData();
+    improvementData.chance = 80;
+    improvementData.canGetExperience = false;
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+    expect(improvementData.skillOver75).toBeUndefined();
   });
 
   it("disallows research and training for passions", () => {

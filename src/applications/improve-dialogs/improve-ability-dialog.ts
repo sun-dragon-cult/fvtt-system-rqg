@@ -52,6 +52,7 @@ type AbilityImprovementData = {
   showResearch: boolean;
   showTraining: boolean;
   canExperience: boolean;
+  canGetExperience: boolean;
   canResearch: boolean;
   canTraining: boolean;
   img: string | null;
@@ -87,8 +88,6 @@ export function isSupportedAbilityGainType(gainType: string): boolean {
 class ImproveAbilityDialog extends HandlebarsApplicationMixin(
   ApplicationV2<ImproveAbilityDialogContext>,
 ) {
-  private static readonly logger = new RqgLogger("ImproveAbilityDialog");
-
   /** Precomputed dialog data model used by the template and improvement logic. */
   private readonly improvementData: AbilityImprovementData;
 
@@ -509,6 +508,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       showResearch: true,
       showTraining: true,
       canExperience: Boolean(sourceAbility.hasExperience),
+      canGetExperience: Boolean(sourceAbility.canGetExperience),
       canResearch: true,
       canTraining: true,
       img: this.item.img,
@@ -648,9 +648,18 @@ export function updateAdapterForSkill(
   improvementData.chanceToGain = successfulRawRolls.length;
   improvementData.requiredRoll = successfulRawRolls[0] ?? 100;
 
-  if (improvementData.chance >= 75) {
-    // Cannot train skills at or above 75%
+  applyOver75TrainingResearchGate(improvementData);
+}
+
+/**
+ * Abilities at 75%+ with canGetExperience (Core p.413's box, not the hasExperience tick)
+ * must be improved through Experience instead of Training/Research (Core p.417). Applies to
+ * Skills and Runes alike; never called for Passions, which are always fully excluded.
+ */
+function applyOver75TrainingResearchGate(improvementData: AbilityImprovementData): void {
+  if (improvementData.chance >= 75 && improvementData.canGetExperience) {
     improvementData.canTraining = false;
+    improvementData.canResearch = false;
     improvementData.skillOver75 = true;
   }
 }
@@ -677,6 +686,7 @@ export function configureAdapterForAbilityItem(
   if (isDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune)) {
     improvementData.abilityType = "rune";
     improvementData.name = item.system.rune;
+    applyOver75TrainingResearchGate(improvementData);
     return;
   }
 
