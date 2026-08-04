@@ -1,5 +1,8 @@
 import { systemId } from "../system/config";
-import { defaultItemIconsObject } from "../system/settings/default-item-icons";
+import {
+  defaultItemIconsObject,
+  getDefaultItemIconSettings,
+} from "../system/settings/default-item-icons";
 import type { ItemTypeEnum, RqgItemType } from "@item-model/item-types.ts";
 import { templatePaths } from "../system/load-handlebars-templates";
 import {
@@ -58,11 +61,11 @@ export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
   };
 
   override async _prepareContext(): Promise<DefaultItemIconSettingsContext> {
-    const currentSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
-    const iconRows = Object.entries(defaultItemIconsObject)
+    const mergedSettings = getDefaultItemIconSettings();
+    const iconRows = Object.entries(mergedSettings)
       .map(([key, value]) => ({
         key: key as RqgItemType | "reputation",
-        value: currentSettings[key] ?? value,
+        value,
       }))
       .sort((a, b) => localizeItemType(a.key).localeCompare(localizeItemType(b.key)));
 

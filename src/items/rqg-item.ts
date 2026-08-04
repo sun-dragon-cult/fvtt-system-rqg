@@ -1,6 +1,11 @@
 import { PassionSheet } from "./passion-item/passion-sheet";
 import { PassionSheetV2 } from "./passion-item/passion-sheet-v2";
-import { type AbilityItem, abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
+import {
+  type AbilityItem,
+  abilityItemTypes,
+  ItemTypeEnum,
+  type RqgItemType,
+} from "@item-model/item-types.ts";
 import { RuneSheet } from "./rune-item/rune-sheet";
 import { RuneSheetV2 } from "./rune-item/rune-sheet-v2";
 import { SkillSheet } from "./skill-item/skill-sheet";
@@ -25,6 +30,7 @@ import { HomelandSheetV2 } from "./homeland-item/homeland-sheet-v2";
 import { OccupationSheet } from "./occupation-item/occupation-sheet";
 import { OccupationSheetV2 } from "./occupation-item/occupation-sheet-v2";
 import { systemId } from "../system/config";
+import { getDefaultItemIconSettings } from "../system/settings/default-item-icons";
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
 import type { AbilityRollOptions } from "../rolls/ability-roll/ability-roll.types";
 import type { SpiritMagicRollOptions } from "../rolls/spirit-magic-roll/spirit-magic-roll.types";
@@ -432,13 +438,12 @@ export class RqgItem extends Item {
   }
 
   protected override _onCreate(itemData: any, options: never, userId: string): void {
-    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const item = itemData._id ? game.items?.get(itemData._id) : undefined;
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
     if (item?.img === defaultIcon) {
       const updateData: any = {
-        img: defaultItemIconSettings[itemData.type],
+        img: getDefaultItemIconSettings()[itemData.type as RqgItemType],
         "data.namePrefix": itemData.name,
       };
 

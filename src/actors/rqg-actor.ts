@@ -16,6 +16,7 @@ import {
 } from "../system/util";
 import { initializeAllCharacteristics } from "./context-menus/characteristic-context-menu";
 import { RQG_CONFIG, systemId } from "../system/config";
+import { getDefaultItemIconSettings } from "../system/settings/default-item-icons";
 import { Rqid } from "../system/api/rqid-api";
 import type { RqidString } from "../system/api/rqid-api";
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
@@ -202,13 +203,12 @@ export class RqgActor extends Actor {
   }
 
   private createReputationFakeItem(token?: TokenDocument | null): PartialAbilityItem {
-    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const actingToken =
       token ?? (getTokenFromActor(this) as PartialAbilityItem["actingToken"] | undefined);
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     return {
       name: "Reputation",
-      img: defaultItemIconSettings.reputation,
+      img: getDefaultItemIconSettings().reputation,
       parent: this,
       system: {
         chance: this.system.background.reputation ?? 0,

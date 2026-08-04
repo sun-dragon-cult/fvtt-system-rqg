@@ -9,12 +9,12 @@ import {
   toCamelCase,
 } from "./util";
 
-import { systemId } from "./config";
 import { Rqid } from "./api/rqid-api";
 import type { RqgItem } from "../items/rqg-item";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { ItemTypeEnum } from "@item-model/item-types";
+import { getDefaultItemIconSettings } from "./settings/default-item-icons";
 
 export const registerHandlebarsHelpers = function () {
   const getHelperHash = (options: unknown): Record<string, string> | undefined => {
@@ -300,8 +300,9 @@ export const registerHandlebarsHelpers = function () {
   });
 
   Handlebars.registerHelper("defaultItemIconSrc", (itemType: string): string | undefined => {
-    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
-    return defaultItemIconSettings[itemType];
+    return getDefaultItemIconSettings()[
+      itemType as keyof ReturnType<typeof getDefaultItemIconSettings>
+    ];
   });
 
   Handlebars.registerHelper("equippedIcon", (equippedStatus: EquippedStatus): string => {

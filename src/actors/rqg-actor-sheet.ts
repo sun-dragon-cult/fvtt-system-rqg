@@ -4,6 +4,7 @@ import {
   abilityItemTypes,
   ItemTypeEnum,
   type PhysicalItem,
+  type RqgItemType,
 } from "@item-model/item-types.ts";
 import {
   showHitLocationAddWoundDialog,
@@ -45,6 +46,7 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
 import { ActorWizard } from "../applications/actor-wizard-application";
 import { RQG_CONFIG, systemId } from "../system/config";
+import { getDefaultItemIconSettings } from "../system/settings/default-item-icons";
 import { RqidLink } from "../data-model/shared/rqid-link";
 import { actorWizardFlags } from "../data-model/shared/rqg-document-flags";
 import { addRqidLinkToSheetJQuery } from "../documents/rqid-sheet-button";
@@ -768,15 +770,11 @@ export class RqgActorSheet<
     // Add Passion button
     htmlElement?.querySelectorAll<HTMLElement>("[data-passion-add]").forEach((el) => {
       el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = game.settings?.get(
-          systemId,
-          "defaultItemIconSettings",
-        );
         const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
         const passion = {
           name: newPassionName,
           type: ItemTypeEnum.Passion,
-          img: defaultItemIconSettings[ItemTypeEnum.Passion],
+          img: getDefaultItemIconSettings()[ItemTypeEnum.Passion as RqgItemType],
           system: { passion: newPassionName },
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
@@ -821,11 +819,6 @@ export class RqgActorSheet<
     htmlElement?.querySelectorAll<HTMLElement>("[data-gear-add]").forEach((el) => {
       const physicalItemType = getRequiredDomDataset(el, "gear-add") as PhysicalItemType;
       el.addEventListener("click", async () => {
-        const defaultItemIconSettings: any = game.settings?.get(
-          systemId,
-          "defaultItemIconSettings",
-        );
-
         const physicalItemType2ItemName = new Map<PhysicalItemType, string>([
           ["unique", "RQG.Actor.Gear.NewGear"],
           ["currency", "RQG.Actor.Gear.NewCurrency"],
@@ -839,7 +832,7 @@ export class RqgActorSheet<
         const newGear = {
           name: name,
           type: ItemTypeEnum.Gear,
-          img: defaultItemIconSettings[ItemTypeEnum.Gear],
+          img: getDefaultItemIconSettings()[ItemTypeEnum.Gear as RqgItemType],
           system: { physicalItemType: physicalItemType },
         };
         const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
