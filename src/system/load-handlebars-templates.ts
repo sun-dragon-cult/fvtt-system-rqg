@@ -190,6 +190,7 @@ export const loadHandlebarsTemplates = async function () {
 
     actorSkillsTab: "systems/rqg/actors/sheet-parts/skills-tab/skills-tab.hbs",
     actorSkillsGrid: "systems/rqg/actors/sheet-parts/skills-tab/grid-skill.hbs",
+    actorSheetV2SkillRow: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-skill-row.hbs",
 
     actorGearTab: "systems/rqg/actors/sheet-parts/gear-tab/gear-tab.hbs",
     actorGearPhysicalItemLocation:

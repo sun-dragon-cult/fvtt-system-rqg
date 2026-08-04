@@ -144,7 +144,7 @@
         {{#edit-mode system.editMode "all"}}
           <div class="reputation-row">
             <div data-reputation-roll class="reputation-label">
-              <img src="{{defaultItemIconSrc 'reputation'}}" class="item" />
+              <img src="{{defaultItemIconSrc 'reputation'}}" class="row-icon" />
               <label for="reputation-{{id}}">{{localize "RQG.Actor.Background.Reputation"}}</label>
             </div>
             <div>
@@ -155,7 +155,7 @@
         {{else}}
           <div class="reputation-row">
             <div data-reputation-roll class="reputation-label">
-              <img src="{{defaultItemIconSrc 'reputation'}}" class="item" />
+              <img src="{{defaultItemIconSrc 'reputation'}}" class="row-icon" />
               <label>{{localize "RQG.Actor.Background.Reputation"}}</label>
             </div>
             <div data-reputation-roll>{{system.background.reputation}}%</div>

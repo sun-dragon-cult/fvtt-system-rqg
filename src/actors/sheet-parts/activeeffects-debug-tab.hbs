@@ -1,46 +1,42 @@
 <h2>{{localize "RQG.Foundry.ActiveEffect.Header"}}</h2>
-<table>
-  <thead>
-  <tr>
-    <th></th>
-    <th>{{localize "RQG.Foundry.ActiveEffect.Name"}}</th>
-    <th>{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</th>
-    <th>{{localize "RQG.Foundry.ActiveEffect.MatchSuspensionToEquippedStatus"}}</th>
-    <th>{{localize "RQG.Foundry.ActiveEffect.Start"}}</th>
-    <th>{{localize "RQG.Foundry.ActiveEffect.Duration"}}</th>
-    <th>{{localize "EFFECT.FIELDS.changes.element.key.label"}} - {{localize "EFFECT.FIELDS.changes.element.type.label"}} - {{localize "EFFECT.FIELDS.changes.element.value.label"}}</th>
-    <th></th>
-  </tr>
-  </thead>
+<div class="grid activeeffects item-list">
+  <div class="headings"></div>
+  <div class="head1"></div>
+  <div class="head2">{{localize "RQG.Foundry.ActiveEffect.Name"}}</div>
+  <div class="head3">{{localize "RQG.Foundry.ActiveEffect.Disabled"}}</div>
+  <div class="head4">{{localize "RQG.Foundry.ActiveEffect.MatchSuspensionToEquippedStatus"}}</div>
+  <div class="head5">{{localize "RQG.Foundry.ActiveEffect.Start"}}</div>
+  <div class="head6">{{localize "RQG.Foundry.ActiveEffect.Duration"}}</div>
+  <div class="head7">{{localize "EFFECT.FIELDS.changes.element.key.label"}} - {{localize "EFFECT.FIELDS.changes.element.type.label"}} - {{localize "EFFECT.FIELDS.changes.element.value.label"}}</div>
+  <div class="head8"></div>
+
   {{#each effects}}
-  <tr data-effect-uuid="{{uuid}}" data-action="editActiveEffect">
-    <td><img class="effect-img" src="{{img}}"></td>
-    <td>{{name}}<br>{{toAnchor parent.uuid}}</td>
-      <td>{{yes-no disabled}}</td>
-      <td>{{yes-no system.matchSuspensionToEquippedStatus}}</td>
-    <td>{{activeEffectStart this}}</td>
-    {{#if (activeEffectHasEarlyExpiryWarning this)}}
-        <td data-tooltip="{{activeEffectEarlyExpiryWarningTooltip this}}">
-        {{activeEffectDuration this}}
-        <span class="active-effect-warning-badge">{{localize "RQG.Foundry.ActiveEffect.EarlyExpiryWarningBadge"}}</span>
-      </td>
-    {{else}}
-        <td>{{activeEffectDuration this}}</td>
-    {{/if}}
-    <td>
-      <table>
-      {{#each changes}}
-        <tbody>
-        <tr>
-          <td>{{key}}</td>
-          <td>{{localizeActiveEffectType type}}</td>
-          <td>{{value}}</td>
-        </tr>
-        </tbody>
-      {{/each}}
-      </table>
-    </td>
-      <td><a data-tooltip="Delete Effect" data-action="deleteActiveEffect"><i class="fas fa-trash"></i></a></td>
-    </tr>
+    <div class="active-effect-row" data-effect-uuid="{{uuid}}" data-action="editActiveEffect">
+      <div><img class="effect-img row-icon" src="{{img}}"></div>
+      <div><span class="effect-name">{{name}}<br>{{toAnchor parent.uuid}}</span></div>
+      <div class="text-center">{{yes-no disabled}}</div>
+      <div class="text-center">{{yes-no system.matchSuspensionToEquippedStatus}}</div>
+      <div class="text-center">{{activeEffectStart this}}</div>
+      {{#if (activeEffectHasEarlyExpiryWarning this)}}
+        <div class="text-center" data-tooltip="{{activeEffectEarlyExpiryWarningTooltip this}}">
+          {{activeEffectDuration this}}
+          <span class="active-effect-warning-badge">{{localize "RQG.Foundry.ActiveEffect.EarlyExpiryWarningBadge"}}</span>
+        </div>
+      {{else}}
+        <div class="text-center">{{activeEffectDuration this}}</div>
+      {{/if}}
+      <div>
+        <div class="effect-changes">
+          {{#each changes}}
+            <div class="effect-change">
+              <span class="effect-change-key">{{key}}</span>
+              <span class="effect-change-type">{{localizeActiveEffectType type}}</span>
+              <span class="effect-change-value">{{value}}</span>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+      <div class="text-center"><a data-tooltip="{{localize "RQG.Foundry.ActiveEffect.DeleteEffect"}}" data-action="deleteActiveEffect"><i class="fas fa-trash"></i></a></div>
+    </div>
   {{/each}}
-</table>
+</div>

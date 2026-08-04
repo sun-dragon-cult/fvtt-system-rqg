@@ -258,12 +258,21 @@
 
     .tab.gear .grid.item-list .gear-row {
       display: contents;
+
+/* V1's striping rule targets these elements, but display:contents makes it a no-op
+       (same fix as weapon-row/spirit-combat-row). Re-implement it explicitly. */
+      &:nth-child(odd) > * {
+        background: var(--rqg-table-alternate-background);
+      }
     }
 
-/* gear-row children are not direct children of .grid so the base > * flex rule doesn't
-     reach them — apply the same flex layout here. */
+/* gear-row children aren't direct children of .grid, so the base > * flex rule misses
+     them — reapply it here. Padding is widened by half the column-gap and pulled back
+     with a matching negative margin, so the striped background bleeds across the gap
+     without shifting the content. */
     .tab.gear .grid.item-list .gear-row > * {
-      padding: 2px;
+      padding: 2px 4.5px;
+      margin-inline: -2.5px;
       position: relative;
       display: flex;
       align-items: center;
@@ -278,8 +287,17 @@
       column-gap: 5px;
     }
 
+/* Qty pinned to 7ch instead of max-content — the input has no intrinsic width, so
+       max-content sized the column off Foundry's default input width, squeezing Name
+       onto two lines. Inputs are width: 100%, so narrowing the column is enough. */
     .tab.gear .grid.gear.gear-no-price.item-list {
-      grid-template-columns: [col-start] 30px auto repeat(4, max-content) [col-end];
+      grid-template-columns: [col-start] 30px auto 7ch repeat(3, max-content) [col-end];
+    }
+
+/* Currency reuses the plain .gear class (columns bled from V1's rqg.css); narrow just
+       Qty here, leaving the rest at their V1-bled max-content sizing. */
+    .tab.gear .grid.gear.item-list:not(.gear-no-price) {
+      grid-template-columns: [col-start] 30px auto 7ch repeat(4, max-content) [col-end];
     }
 
     :has(> .item-drag-handle),
@@ -353,10 +371,7 @@
       display: grid;
       grid-template-columns: auto min-content max-content min-content;
 
-      & img.item {
-        width: 24px;
-        height: 24px;
-        object-fit: contain;
+      & .row-icon {
         margin-right: 4px;
       }
 
@@ -874,6 +889,24 @@
       border: none;
     }
 
+    /* Shared icon size for item-list row icons across Spirit Magic, Rune Magic, Sorcery,
+       Skills, Gear, Passion, and the Background tab's reputation icon. */
+    .row-icon {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+      border: none;
+    }
+
+    /* Foundry defaults inputs to --input-height (2rem), making rows with editable fields
+       taller than icon-only rows. Cap height to match .row-icon; width: 100% re-fills the
+       grid cell, overriding the `width: initial` reset below. */
+    .grid input[type="text"],
+    .grid input[type="number"] {
+      width: 100%;
+      height: 26px;
+    }
+
     input {
       width: initial;
       border: none;
@@ -1200,7 +1233,7 @@
         grid-template-columns: 28px 1fr auto;
         align-items: center;
         gap: 0.5rem;
-        padding: 4px 6px;
+        padding: 2px 6px;
 
         &:nth-child(odd) {
           background: var(--rqg-table-alternate-background);
@@ -1218,12 +1251,6 @@
           align-self: stretch;
           display: flex;
           align-items: center;
-
-          & img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-          }
         }
 
         & .passion-name {
@@ -1699,7 +1726,11 @@
 
 /* Set-token-SR-in-combat button */
       & button.sr {
-        height: 1.5rem;
+        height: 26px;
+
+/* Foundry's min-height: var(--button-size) floors the rendered height regardless of
+           the explicit height above (min-height isn't overridden by height). */
+        min-height: 0;
         line-height: unset;
         width: unset;
         text-align: left;
@@ -1814,6 +1845,7 @@
         height: 18px;
         margin-left: auto;
         opacity: 0.85;
+        mix-blend-mode: normal;
       }
 
       & .skill-gained-edit {
@@ -2285,12 +2317,6 @@
           gap: 0.3em;
           justify-content: flex-end;
           cursor: pointer;
-
-          & img {
-            width: 16px;
-            height: 16px;
-            border: none;
-          }
         }
 
         & .rqid-fallback-text {
@@ -2306,105 +2332,86 @@
       min-width: 0;
       overflow: auto;
 
+/* .headings bleeds 0.4rem past the grid; match it here so the only scrolling tab
+         doesn't clip that bleed. */
+      padding-inline: 0.4rem;
+
       &.active {
         display: flex;
         flex-direction: column;
       }
 
-      & table {
-        width: 100%;
-        border-collapse: collapse;
+      & .grid.activeeffects.item-list {
         font-size: 0.9em;
 
-        & td,
-        & th {
+/* Centre the headers over the columns whose values are centred. */
+        & .head3,
+        & .head4,
+        & .head5,
+        & .head6,
+        & .head8 {
+          justify-content: center;
+          text-align: center;
+        }
+      }
+
+/* Cell is flex, which collapses the <br> between name and parent link — keep them
+         stacked via a block child. */
+      & .effect-name {
+        display: block;
+        min-width: 0;
+      }
+
+/* Subgrid makes the row one real box spanning every column, so striping paints as a
+         continuous band instead of leaving seams per cell. Same technique as
+         .reputation-row on the Background tab. */
+      & .active-effect-row {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: subgrid;
+        align-items: stretch;
+
+        &:nth-child(odd) {
+          background: var(--rqg-table-alternate-background);
+        }
+
+        & > * {
           padding: 2px 4px;
-          text-align: left;
-          vertical-align: middle;
-        }
+          position: relative;
+          display: flex;
+          align-items: center;
+          min-width: 0;
 
-        & th {
-          font-weight: bold;
-          background: rgb(0 0 0 / 30%);
-        }
-
-/* Constrain narrow columns with fixed widths */
-        th:nth-child(1),
-        td:nth-child(1) {
-          width: 50px;
-          text-align: center;
-
-          & img {
-            max-width: 100%;
-            height: auto;
+          &.text-center {
+            justify-content: center;
           }
         }
+      }
 
-        th:nth-child(3),
-        td:nth-child(3) {
-          width: 50px;
-          text-align: center;
+/* Changes sub-list: key takes the remaining width, type is fixed, value fits 3 chars. */
+      & .effect-changes {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-width: 0;
+        font-size: 0.95em;
+      }
+
+      & .effect-change {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 11ch 3ch;
+        gap: 0 6px;
+        align-items: center;
+
+        & > * {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
+      }
 
-        th:nth-child(4),
-        td:nth-child(4) {
-          width: 70px;
-          text-align: center;
-        }
-
-        th:nth-child(5),
-        td:nth-child(5) {
-          text-align: center;
-        }
-
-        th:nth-child(6),
-        td:nth-child(6) {
-          width: 70px;
-          text-align: center;
-        }
-
-        th:nth-child(8),
-        td:nth-child(8) {
-          width: 30px;
-          text-align: center;
-        }
-
-/* Nested table for changes - compact layout, expands to fill space */
-        td > table {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.95em;
-          margin: 0;
-          table-layout: fixed;
-
-/* Sub-columns: key takes remaining width, type is fixed, value fits 3 chars. */
-          & td:nth-child(1) {
-            padding: 1px 3px;
-            width: calc(100% - 14ch);
-            min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            text-align: left;
-          }
-
-          & td:nth-child(2) {
-            padding: 1px 3px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            width: 11ch;
-          }
-
-          & td:nth-child(3) {
-            padding: 1px 3px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            text-align: right;
-            width: 3ch;
-          }
-        }
+      & .effect-change-value {
+        text-align: right;
       }
     }
 

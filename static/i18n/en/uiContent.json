@@ -1213,6 +1213,7 @@
         "MatchSuspensionToEquippedStatus": "Match Equipped Suspension",
         "Start": "Start",
         "Duration": "Duration",
+        "DeleteEffect": "Delete Effect",
         "EarlyExpiryWarningBadge": "⚠",
         "EarlyExpiryWarningTooltip": "This effect has both Duration and Expiry Event configured. It expires when the duration has elapsed and the selected event occurs, so it may persist past the listed duration until that event happens.",
         "KeyValueMode": "Key - Value - Mode",
