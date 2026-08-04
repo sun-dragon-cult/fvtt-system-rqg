@@ -1,4 +1,5 @@
 import type { RqgItemType } from "@item-model/item-types.ts";
+import { systemId } from "../config.ts";
 
 export const defaultItemIconsObject = {
   armor: "systems/rqg/assets/images/items/armor.svg",
@@ -15,3 +16,10 @@ export const defaultItemIconsObject = {
   weapon: "systems/rqg/assets/images/items/weapon.svg",
   reputation: "systems/rqg/assets/images/other/reputation.svg",
 } satisfies Record<RqgItemType | "reputation", string>;
+
+// Falls back to the built-in defaults for keys missing from a world's stored
+// settings (e.g. "reputation" was added after some worlds already saved this setting).
+export function getDefaultItemIconSettings(): Record<RqgItemType | "reputation", string> {
+  const storedSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
+  return { ...defaultItemIconsObject, ...storedSettings };
+}

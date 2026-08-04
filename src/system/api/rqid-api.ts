@@ -1,5 +1,6 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { systemId } from "../config";
+import { getDefaultItemIconSettings } from "../settings/default-item-icons";
 import {
   getAvailableRunes,
   isDocumentSubType,
@@ -742,8 +743,8 @@ export class Rqid {
         }
       }
 
-      const iconSettings = game.settings?.get(systemId, "defaultItemIconSettings");
-      const defaultItemIcon = itemType && iconSettings?.[itemType as keyof typeof iconSettings];
+      const iconSettings = getDefaultItemIconSettings();
+      const defaultItemIcon = itemType && iconSettings[itemType as keyof typeof iconSettings];
       if (defaultItemIcon) {
         // TODO If undefined then the rqid is invalid since all items need a type
         return `<img src="${defaultItemIcon}"/>`;

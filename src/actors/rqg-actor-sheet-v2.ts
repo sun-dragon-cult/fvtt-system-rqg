@@ -4,6 +4,7 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
 import { actorHealthStatuses } from "../data-model/actor-data/attributes";
 import { RQG_CONFIG, systemId } from "../system/config";
+import { getDefaultItemIconSettings } from "../system/settings/default-item-icons";
 import {
   assertDocumentSubType,
   getEventTargetElement,
@@ -22,7 +23,7 @@ import {
 
 import type { RqgItem } from "../items/rqg-item";
 import type { RqgActor } from "./rqg-actor";
-import type { AbilityItem, PhysicalItem } from "@item-model/item-types.ts";
+import type { AbilityItem, PhysicalItem, RqgItemType } from "@item-model/item-types.ts";
 import type { ArmorItem } from "@item-model/armor-data-model.ts";
 import type { OccupationItem } from "@item-model/occupation-data-model.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
@@ -1037,12 +1038,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     _event: PointerEvent,
     _target: HTMLElement,
   ): Promise<void> {
-    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
     const newPassionName = localize("RQG.Item.Passion.PassionEnum.Loyalty");
     const passion = {
       name: newPassionName,
       type: ItemTypeEnum.Passion,
-      img: defaultItemIconSettings[ItemTypeEnum.Passion],
+      img: getDefaultItemIconSettings()[ItemTypeEnum.Passion as RqgItemType],
       system: { passion: newPassionName },
     };
     const createdItems = await this.actor.createEmbeddedDocuments("Item", [passion]);
@@ -1056,7 +1056,6 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     target: HTMLElement,
   ): Promise<void> {
     const physicalItemType = getRequiredDomDataset(target, "gear-add") as PhysicalItemType;
-    const defaultItemIconSettings: any = game.settings?.get(systemId, "defaultItemIconSettings");
 
     const physicalItemType2ItemName = new Map<string, string>([
       ["unique", "RQG.Actor.Gear.NewGear"],
@@ -1071,7 +1070,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const newGear = {
       name: name,
       type: ItemTypeEnum.Gear,
-      img: defaultItemIconSettings[ItemTypeEnum.Gear],
+      img: getDefaultItemIconSettings()[ItemTypeEnum.Gear as RqgItemType],
       system: { physicalItemType: physicalItemType },
     };
     const createdItems = await this.actor.createEmbeddedDocuments("Item", [newGear]);
