@@ -17,6 +17,7 @@ import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqid-batch
 import { openDataModelRepairDialog } from "../api/data-model-repair";
 import { migrateRuneItemType } from "./migrations-item/migrate-rune-item-type";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel-rune-magic-command-cult-spirit-rqid";
+import { migrateHitLocationConnectedToAndType } from "./migrations-item/migrate-hit-location-connected-to-and-type";
 import { migrateActorActiveEffectPaths } from "./migrations-actor/migrate-actor-active-effect-paths";
 import { migrateItemActiveEffectPaths } from "./migrations-item/migrate-item-active-effect-paths";
 import { migrateActiveEffectActiveEffectPaths } from "./migrations-effect/migrate-active-effect-active-effect-paths";
@@ -156,6 +157,7 @@ export async function applyDefaultWorldMigrations(
     migrateWeaponSkillLinks,
     migrateRuneItemType,
     relabelRuneMagicCommandCultSpiritRqid,
+    migrateHitLocationConnectedToAndType,
     migrateItemActiveEffectPaths,
     migrateItemActiveEffectDurationUnits,
   ];
