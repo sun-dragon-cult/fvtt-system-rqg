@@ -1,11 +1,15 @@
 import type { ActorHealthState } from "../../data-model/actor-data/attributes";
-import { assertDocumentSubType, RqgError } from "../../system/util";
+import { assertDocumentSubType, isDocumentSubType, RqgError } from "../../system/util";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
-import type { HitLocationHealthState } from "@item-model/hit-location-enums.ts";
+import {
+  HitLocationTypesEnum,
+  type HitLocationHealthState,
+} from "@item-model/hit-location-enums.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "../rqg-item";
+import { systemId } from "../../system/config";
 
 import type { DeepPartial } from "fvtt-types/utils";
 
@@ -33,7 +37,7 @@ export class HealingCalculations {
     const healingEffects: HealingEffects = {
       hitLocationUpdates: {},
       actorUpdates: {},
-      usefulLegs: [], // Not used yet
+      usefulLegs: [],
     };
 
     if (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex) {
@@ -70,6 +74,37 @@ export class HealingCalculations {
       actorHealthImpact = "wounded";
       if (hitLocationHealthState !== "severed") {
         hitLocationHealthState = "wounded";
+      }
+    }
+
+    // A healed abdomen wound that drops below the useless-legs threshold restores any
+    // connected legs that were only made useless by the abdomen wound (not by their own damage).
+    if (
+      hitLocation.system.hitLocationType === HitLocationTypesEnum.Abdomen &&
+      woundsSumAfter < hpMax
+    ) {
+      const hitLocationRqid = hitLocation.flags?.[systemId]?.documentRqidFlags?.id;
+      const connectedLimbs = actor.items.filter(
+        (i) =>
+          isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
+          i.system.connectedTo === hitLocationRqid,
+      ) as HitLocationItem[];
+
+      for (const limb of connectedLimbs) {
+        if (limb.system.hitLocationHealthState !== "useless") {
+          continue;
+        }
+        const limbHpMax = limb.system.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
+        const limbDamage = limb.system.wounds.reduce((acc: number, w: number) => acc + w, 0);
+        if (limbDamage >= limbHpMax) {
+          continue; // Limb is independently useless from its own damage
+        }
+        healingEffects.usefulLegs.push({
+          _id: limb.id ?? "",
+          system: {
+            hitLocationHealthState: limbDamage === 0 ? "healthy" : "wounded",
+          },
+        });
       }
     }
 
