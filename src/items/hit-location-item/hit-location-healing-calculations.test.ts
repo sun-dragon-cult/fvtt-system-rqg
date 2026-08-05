@@ -13,15 +13,16 @@ import { describe, it, expect, beforeEach } from "vitest";
 describe("HealingCalculations", () => {
   let mockActor: CharacterActor;
   let mockLeftLeg: HitLocationItem;
+  let mockRightLeg: HitLocationItem;
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockHead: HitLocationItem;
   let mockChest: HitLocationItem;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let mockAbdomen: HitLocationItem;
 
   beforeEach(() => {
     mockActor = JSON.parse(JSON.stringify(mockActorOriginal));
     mockLeftLeg = mockActor.items.find((i) => i.name === "Left Leg")! as HitLocationItem;
+    mockRightLeg = mockActor.items.find((i) => i.name === "Right Leg")! as HitLocationItem;
     mockHead = mockActor.items.find((i) => i.name === "Head")! as HitLocationItem;
     mockChest = mockActor.items.find((i) => i.name === "Chest")! as HitLocationItem;
     mockAbdomen = mockActor.items.find((i) => i.name === "Abdomen")! as HitLocationItem;
@@ -233,6 +234,46 @@ describe("HealingCalculations", () => {
       },
     });
     expect(usefulLegs).toStrictEqual([]);
+  });
+
+  it("should restore useless legs when the abdomen wound causing them heals below threshold", () => {
+    const appliedDamage = mockAbdomen.system.hitPoints.max!;
+
+    applyTestDamage(appliedDamage, true, mockAbdomen, mockActor);
+    // Simulate the connected legs having been made useless by the abdomen wound.
+    mockLeftLeg.system.hitLocationHealthState = "useless";
+    mockRightLeg.system.hitLocationHealthState = "useless";
+
+    const { usefulLegs } = applyTestHealing(appliedDamage, 0, mockAbdomen, mockActor);
+
+    expect(usefulLegs).toStrictEqual([
+      {
+        _id: "Dhm40qEh3Idp5HSE",
+        system: { hitLocationHealthState: "healthy" },
+      },
+      {
+        _id: "RFt7m9xXHtjpVNeY",
+        system: { hitLocationHealthState: "healthy" },
+      },
+    ]);
+  });
+
+  it("should not restore a leg that is independently useless from its own damage", () => {
+    const appliedDamage = mockAbdomen.system.hitPoints.max!;
+
+    applyTestDamage(appliedDamage, true, mockAbdomen, mockActor);
+    applyTestDamage(mockLeftLeg.system.hitPoints.max!, true, mockLeftLeg, mockActor);
+    mockRightLeg.system.hitLocationHealthState = "useless";
+    expect(mockLeftLeg.system.hitLocationHealthState).toBe("useless");
+
+    const { usefulLegs } = applyTestHealing(appliedDamage, 0, mockAbdomen, mockActor);
+
+    expect(usefulLegs).toStrictEqual([
+      {
+        _id: "RFt7m9xXHtjpVNeY",
+        system: { hitLocationHealthState: "healthy" },
+      },
+    ]);
   });
 
   it("throws when trying to heal a missing wound", () => {
