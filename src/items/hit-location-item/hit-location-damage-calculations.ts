@@ -161,7 +161,10 @@ export class DamageCalculations {
       } as any);
     }
     if (fullDamage >= hpMax * 3) {
-      damageEffects.notification = `${speakerName}'s ${hitLocation.name} is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. ${speakerName} is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible.`;
+      damageEffects.notification = localize("RQG.Item.HitLocation.Notification.LimbSevered", {
+        speakerName: speakerName,
+        hitLocationName: hitLocation.name,
+      });
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { hitLocationHealthState: "severed" },
       } as any);
@@ -238,16 +241,28 @@ export class DamageCalculations {
           },
         };
       });
-      damageEffects.notification = `Both legs are useless and ${speakerName} falls to the ground. ${speakerName} may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.`;
+      damageEffects.notification = localize(
+        "RQG.Item.HitLocation.Notification.AbdomenUselessLegs",
+        {
+          speakerName: speakerName,
+        },
+      );
     }
 
     if (totalDamage >= hpMax * 3) {
-      damageEffects.notification = `${speakerName} dies instantly.`;
+      damageEffects.notification = localize("RQG.Item.HitLocation.Notification.DiesInstantly", {
+        speakerName: speakerName,
+      });
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { actorHealthImpact: "dead" },
       } as any);
     } else if (totalDamage >= hpMax * 2) {
-      damageEffects.notification = `${speakerName} becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.`;
+      damageEffects.notification = localize(
+        "RQG.Item.HitLocation.Notification.LocationUnconsciousBleeding",
+        {
+          speakerName: speakerName,
+        },
+      );
       foundry.utils.mergeObject(damageEffects.hitLocationUpdates, {
         system: { actorHealthImpact: "unconscious" },
       } as any);
@@ -257,7 +272,9 @@ export class DamageCalculations {
           system: { actorHealthImpact: "unconscious" },
         } as any);
 
-        damageEffects.notification = `${speakerName} is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die`;
+        damageEffects.notification = localize("RQG.Item.HitLocation.Notification.HeadUnconscious", {
+          speakerName: speakerName,
+        });
       } else if (hitLocation.system.hitLocationType === HitLocationTypesEnum.Chest) {
         damageEffects.notification = localize("RQG.Item.HitLocation.Notification.ChestShock", {
           speakerName: speakerName,

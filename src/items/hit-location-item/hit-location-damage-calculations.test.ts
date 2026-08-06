@@ -150,7 +150,10 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt's Left Leg is severed or irrevocably maimed. Only a 6 point heal applied within ten minutes can restore a severed limb, assuming all parts are available. Pelle Plutt is functionally incapacitated and can no longer fight until healed and is in shock. Self healing is still possible.",
+        localize("RQG.Item.HitLocation.Notification.LimbSevered", {
+          speakerName: "Pelle Plutt",
+          hitLocationName: "Left Leg",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -237,7 +240,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt is unconscious and must be healed or treated with First Aid within five minutes (one full turn) or die",
+        localize("RQG.Item.HitLocation.Notification.HeadUnconscious", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -270,7 +275,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
+        localize("RQG.Item.HitLocation.Notification.LocationUnconsciousBleeding", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -302,7 +309,9 @@ describe("Inflict Damage", () => {
           wounds: [appliedDamage],
         },
       });
-      expect(notification).toBe("Pelle Plutt dies instantly.");
+      expect(notification).toBe(
+        localize("RQG.Item.HitLocation.Notification.DiesInstantly", { speakerName: "Pelle Plutt" }),
+      );
       expect(actorUpdates).toStrictEqual({
         system: {
           attributes: {
@@ -402,7 +411,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
+        localize("RQG.Item.HitLocation.Notification.LocationUnconsciousBleeding", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -434,7 +445,9 @@ describe("Inflict Damage", () => {
           wounds: [appliedDamage],
         },
       });
-      expect(notification).toBe("Pelle Plutt dies instantly.");
+      expect(notification).toBe(
+        localize("RQG.Item.HitLocation.Notification.DiesInstantly", { speakerName: "Pelle Plutt" }),
+      );
       expect(actorUpdates).toStrictEqual({
         system: {
           attributes: {
@@ -489,7 +502,9 @@ describe("Inflict Damage", () => {
       expect((hitLocationUpdates.system as any)?.wounds).toStrictEqual([appliedDamage]);
       expect((hitLocationUpdates.system as any)?.hitLocationHealthState).toBe("wounded");
       expect(notification).toBe(
-        "Both legs are useless and Pelle Plutt falls to the ground. Pelle Plutt may fight from the ground in subsequent melee rounds. Will bleed to death, if not healed or treated with First Aid within ten minutes.",
+        localize("RQG.Item.HitLocation.Notification.AbdomenUselessLegs", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -535,7 +550,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
+        localize("RQG.Item.HitLocation.Notification.LocationUnconsciousBleeding", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -582,7 +599,9 @@ describe("Inflict Damage", () => {
         },
       });
       expect(notification).toBe(
-        "Pelle Plutt becomes unconscious and begins to lose 1 hit point per melee round from bleeding unless healed or treated with First Aid.",
+        localize("RQG.Item.HitLocation.Notification.LocationUnconsciousBleeding", {
+          speakerName: "Pelle Plutt",
+        }),
       );
       expect(actorUpdates).toStrictEqual({
         system: {
@@ -627,7 +646,9 @@ describe("Inflict Damage", () => {
           wounds: [appliedDamage],
         },
       });
-      expect(notification).toBe("Pelle Plutt dies instantly.");
+      expect(notification).toBe(
+        localize("RQG.Item.HitLocation.Notification.DiesInstantly", { speakerName: "Pelle Plutt" }),
+      );
       expect(actorUpdates).toStrictEqual({
         system: {
           attributes: {
