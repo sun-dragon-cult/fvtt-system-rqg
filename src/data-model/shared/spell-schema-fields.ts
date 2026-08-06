@@ -34,3 +34,18 @@ export function spellSchemaFields() {
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
   } as const;
 }
+
+/**
+ * Coerces legacy string-typed values on the boolean spell fields (e.g. "true," left over from
+ * an old compendium-authoring typo where a trailing comma turned the YAML boolean into a string)
+ * back into real booleans, so they survive schema validation instead of silently collapsing to
+ * the field's `false` default.
+ */
+export function migrateSpellBooleanFields(source: Record<string, unknown>): void {
+  for (const key of ["isRitual", "isEnchantment"] as const) {
+    const value = source[key];
+    if (typeof value === "string") {
+      source[key] = value.trim().replace(/,$/, "") === "true";
+    }
+  }
+}

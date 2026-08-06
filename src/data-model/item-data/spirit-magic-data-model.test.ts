@@ -21,3 +21,11 @@ describe("SpiritMagicDataModel cast validation", () => {
     );
   });
 });
+
+describe("SpiritMagicDataModel.migrateData", () => {
+  it("rewrites a legacy string-typed isRitual value to a real boolean", () => {
+    const migrated = SpiritMagicDataModel.migrateData({ isRitual: "true," });
+
+    expect(migrated["isRitual"]).toBe(true);
+  });
+});

@@ -635,6 +635,11 @@ const DataMockFields = (() => {
   class NumberField extends BaseField {}
   class BooleanField extends BaseField {}
   class ArrayField extends BaseField {
+    element;
+    constructor(element, options = {}) {
+      super(options);
+      this.element = element;
+    }
     clean(value) {
       if (!Array.isArray(value)) {
         return [];
@@ -652,9 +657,11 @@ const DataMockFields = (() => {
   }
   class SchemaField extends BaseField {
     schema;
+    fields;
     constructor(schema, options = {}) {
       super(options);
       this.schema = schema;
+      this.fields = schema;
     }
     clean(value) {
       const out = {};
