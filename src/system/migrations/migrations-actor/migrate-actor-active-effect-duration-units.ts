@@ -7,7 +7,7 @@ import { normalizeLegacyActiveEffectDuration } from "../shared-ae-duration-migra
  */
 export const migrateActorActiveEffectDurationUnits: ActorMigration = (
   actor: RqgActor,
-  logger,
+  _logger,
 ): Actor.UpdateData => {
   const updateData: Actor.UpdateData = {};
   const rawEffects = (actor as any).effects;
@@ -42,10 +42,6 @@ export const migrateActorActiveEffectDurationUnits: ActorMigration = (
 
   if (effectUpdates.length > 0) {
     updateData.effects = effectUpdates as any;
-    logger?.info(`Migrated AE duration units for actor ${actor.name}`, {
-      notify: false,
-      documents: [{ kind: "Actor", uuid: actor.uuid, label: actor.name }],
-    });
   }
 
   return updateData;

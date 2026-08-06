@@ -67,4 +67,36 @@ describe("normalizeLegacyActiveEffectDuration", () => {
 
     expect(normalized).toBeUndefined();
   });
+
+  it("returns undefined when legacy keys are only Foundry's deprecation getters", () => {
+    // Foundry v14 keeps the deprecated duration keys readable via getters that
+    // derive from the new value/units/start fields, so they report data forever
+    // and can never be deleted. A prior bug treated those shims as real legacy
+    // data, so already-migrated documents were re-migrated on every pass and
+    // kept reappearing under "Performed migrations". See issue #984.
+    const duration: Record<string, unknown> = { value: 10, units: "turns" };
+    const start = { time: 41254758748, round: 9, turn: 5, combat: "e0ZOFZUjkzNg87KS" };
+    Object.defineProperties(duration, {
+      startTime: { get: () => start.time, enumerable: true },
+      seconds: { get: () => null, enumerable: true },
+      combat: { get: () => start.combat, enumerable: true },
+      rounds: { get: () => null, enumerable: true },
+      turns: { get: () => duration["value"], enumerable: true },
+      startRound: { get: () => start.round, enumerable: true },
+      startTurn: { get: () => start.turn, enumerable: true },
+    });
+
+    expect(normalizeLegacyActiveEffectDuration({ duration, start })).toBeUndefined();
+  });
+
+  it("reads raw stored data from _source rather than the initialized document", () => {
+    const normalized = normalizeLegacyActiveEffectDuration({
+      _source: { duration: { seconds: 60, startTime: 123 } },
+      duration: { value: 60, units: "seconds" },
+    });
+
+    expect(normalized?.duration.value).toBe(60);
+    expect(normalized?.duration.units).toBe("seconds");
+    expect(normalized?.start.time).toBe(123);
+  });
 });

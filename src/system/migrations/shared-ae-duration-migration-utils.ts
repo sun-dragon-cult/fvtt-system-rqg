@@ -32,15 +32,28 @@ export interface NormalizedActiveEffectDuration {
   };
 }
 
+/**
+ * Foundry v14 keeps the deprecated duration keys readable via getters that derive
+ * their value from the new `duration.value`/`units`/`start` fields. Those shims
+ * report data forever, so only a real stored (data) property counts as legacy.
+ */
+function hasStoredLegacyValue(duration: LegacyDurationRecord, key: string): boolean {
+  const descriptor = Object.getOwnPropertyDescriptor(duration, key);
+  if (!descriptor || typeof descriptor.get === "function") {
+    return false;
+  }
+  return descriptor.value !== null && descriptor.value !== undefined;
+}
+
 export function normalizeLegacyActiveEffectDuration(
   effectLike: unknown,
 ): NormalizedActiveEffectDuration | undefined {
+  // Deliberately read `_source` rather than `toObject()`: cloning would collapse
+  // the deprecation getters into plain values and hide the distinction above.
   const source =
-    effectLike &&
-    typeof effectLike === "object" &&
-    "toObject" in effectLike &&
-    typeof (effectLike as { toObject?: unknown }).toObject === "function"
-      ? (effectLike as { toObject: () => Record<string, unknown> }).toObject()
+    effectLike && typeof effectLike === "object" && "_source" in effectLike
+      ? ((effectLike as { _source: Record<string, unknown> })._source ??
+        (effectLike as Record<string, unknown>))
       : (effectLike as Record<string, unknown> | undefined);
 
   const durationRaw = source?.["duration"];
@@ -49,21 +62,27 @@ export function normalizeLegacyActiveEffectDuration(
   }
 
   const duration = durationRaw as LegacyDurationRecord;
-  const hasLegacyDurationShape = LEGACY_DURATION_KEYS.some((key) => key in duration);
-  if (!hasLegacyDurationShape) {
-    return undefined;
-  }
 
   const toFiniteNumber = (value: unknown): number | null => {
     const numeric = typeof value === "string" ? Number(value) : value;
     return typeof numeric === "number" && Number.isFinite(numeric) ? numeric : null;
   };
 
+  const hasLegacyDurationShape = LEGACY_DURATION_KEYS.some((key) =>
+    hasStoredLegacyValue(duration, key),
+  );
+  if (!hasLegacyDurationShape) {
+    return undefined;
+  }
+
+  const legacyValue = (key: string): unknown =>
+    hasStoredLegacyValue(duration, key) ? duration[key] : undefined;
+
   const existingValue = toFiniteNumber(duration["value"]);
   const existingUnits = duration["units"];
-  const seconds = toFiniteNumber(duration["seconds"]);
-  const rounds = toFiniteNumber(duration["rounds"]);
-  const turns = toFiniteNumber(duration["turns"]);
+  const seconds = toFiniteNumber(legacyValue("seconds"));
+  const rounds = toFiniteNumber(legacyValue("rounds"));
+  const turns = toFiniteNumber(legacyValue("turns"));
 
   let inferredValue: number | null = null;
   let inferredUnits: "seconds" | "rounds" | "turns" = "seconds";
@@ -105,10 +124,10 @@ export function normalizeLegacyActiveEffectDuration(
       startTurn: _del,
     },
     start: {
-      time: toFiniteNumber(startRecord["time"]) ?? toFiniteNumber(duration["startTime"]) ?? 0,
-      round: toFiniteNumber(startRecord["round"]) ?? toFiniteNumber(duration["startRound"]),
-      turn: toFiniteNumber(startRecord["turn"]) ?? toFiniteNumber(duration["startTurn"]),
-      combat: startRecord["combat"] ?? duration["combat"] ?? null,
+      time: toFiniteNumber(startRecord["time"]) ?? toFiniteNumber(legacyValue("startTime")) ?? 0,
+      round: toFiniteNumber(startRecord["round"]) ?? toFiniteNumber(legacyValue("startRound")),
+      turn: toFiniteNumber(startRecord["turn"]) ?? toFiniteNumber(legacyValue("startTurn")),
+      combat: startRecord["combat"] ?? legacyValue("combat") ?? null,
       combatant: startRecord["combatant"] ?? null,
       initiative: toFiniteNumber(startRecord["initiative"]),
     },

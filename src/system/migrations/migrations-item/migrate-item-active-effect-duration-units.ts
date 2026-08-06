@@ -7,8 +7,8 @@ import { normalizeLegacyActiveEffectDuration } from "../shared-ae-duration-migra
  */
 export const migrateItemActiveEffectDurationUnits: ItemMigration = async (
   item: RqgItem,
-  owningActor,
-  logger,
+  _owningActor,
+  _logger,
 ): Promise<Item.UpdateData> => {
   const updateData: Item.UpdateData = {};
   const rawEffects = (item as any).effects;
@@ -43,10 +43,6 @@ export const migrateItemActiveEffectDurationUnits: ItemMigration = async (
 
   if (effectUpdates.length > 0) {
     updateData.effects = effectUpdates as any;
-    logger?.info(`Migrated AE duration units on item ${item.name}`, {
-      notify: false,
-      documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
-    });
   }
 
   return updateData;

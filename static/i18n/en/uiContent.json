@@ -1536,7 +1536,7 @@
       "reportChangeLegendRemoved": "- delete",
       "reportSaved": "Saved migration report to journal: {journalName}",
       "reportSaveFailed": "Failed to save migration report to journal: {error}",
-      "reportNoPerformedMigrationsDetected": "No successful migrations were recorded.",
+      "reportNoPerformedMigrationsDetected": "No documents needed migrating - nothing was changed.",
       "reportNoIssuesDetected": "No warnings or errors detected.",
       "reportSourceWorld": "World",
       "reportSourceScene": "Scene: {name}",

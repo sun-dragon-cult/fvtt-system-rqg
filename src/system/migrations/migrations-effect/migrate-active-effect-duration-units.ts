@@ -6,17 +6,12 @@ import { normalizeLegacyActiveEffectDuration } from "../shared-ae-duration-migra
  */
 export const migrateActiveEffectDurationUnits: ActiveEffectMigration = async (
   effect: ActiveEffect.Implementation,
-  logger,
+  _logger,
 ): Promise<ActiveEffect.UpdateData> => {
   const normalized = normalizeLegacyActiveEffectDuration(effect);
   if (!normalized) {
     return {};
   }
-
-  logger?.info(`Migrated AE duration units on compendium effect "${effect.name}"`, {
-    notify: false,
-    documents: [{ kind: "ActiveEffect", uuid: effect.uuid, label: effect.name }],
-  });
 
   return {
     duration: normalized.duration as any,
