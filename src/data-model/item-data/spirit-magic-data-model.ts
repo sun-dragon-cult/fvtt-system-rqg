@@ -1,6 +1,6 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
-import { spellSchemaFields } from "../shared/spell-schema-fields";
+import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
@@ -38,6 +38,11 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
   static override defineSchema() {
     return defineSpiritMagicSchema();
+  }
+
+  static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    migrateSpellBooleanFields(source);
+    return super.migrateData(source);
   }
 
   getCastValidationError(levelUsed: number | undefined, boost: number = 0): string | undefined {

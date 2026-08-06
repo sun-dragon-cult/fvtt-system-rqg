@@ -81,3 +81,11 @@ describe("RuneMagicDataModel chance helpers", () => {
     });
   });
 });
+
+describe("RuneMagicDataModel.migrateData", () => {
+  it("rewrites a legacy string-typed isRitual value to a real boolean", () => {
+    const migrated = RuneMagicDataModel.migrateData({ isRitual: "true," });
+
+    expect(migrated["isRitual"]).toBe(true);
+  });
+});

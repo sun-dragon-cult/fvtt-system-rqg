@@ -1,6 +1,6 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
-import { spellSchemaFields } from "../shared/spell-schema-fields";
+import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
@@ -46,6 +46,11 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
   static override defineSchema() {
     return defineRuneMagicSchema();
+  }
+
+  static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
+    migrateSpellBooleanFields(source);
+    return super.migrateData(source);
   }
 
   getCult(): CultItem | undefined {

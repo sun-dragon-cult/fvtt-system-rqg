@@ -128,6 +128,11 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   /**
    * Encode legacy weapon skill link data into the rqid field as a legacy-encoded rqid
    * so it survives schema cleaning and can be resolved by migrations.
+   *
+   * Also rewrites the retired "cut" damageType (renamed to "slash" before this schema's
+   * choices were fixed) so old worlds and stale compendium builds - e.g. natural weapon
+   * "Claw" maneuvers imported from a pre-fix wiki module build - don't fail schema
+   * validation or get silently reset to the "crush" default on import.
    */
   static override migrateData(source: Record<string, unknown>): Record<string, unknown> {
     const parsedRate = Math.trunc(Number(source["rate"]));
@@ -144,6 +149,19 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         const encoded = encodeLegacyWeaponSkillReferenceInRqid(u);
         if (encoded) {
           u["skillRqidLink"] = encoded;
+        }
+
+        const combatManeuvers = u["combatManeuvers"];
+        if (Array.isArray(combatManeuvers)) {
+          for (const maneuver of combatManeuvers) {
+            if (
+              maneuver &&
+              typeof maneuver === "object" &&
+              (maneuver as Record<string, unknown>)["damageType"] === "cut"
+            ) {
+              (maneuver as Record<string, unknown>)["damageType"] = damageType.Slash;
+            }
+          }
         }
       }
     }
