@@ -3,66 +3,31 @@ import { describe, expect, it } from "vitest";
 import { evaluateImprovementGate } from "./evaluate-improvement-gate";
 import type { ImprovementGateSpec } from "./improvement-roll.types";
 
-const abilityGate: ImprovementGateSpec = {
-  formula: "1d100",
-  comparator: "roll-over",
-  threshold: 65,
-};
-
-const skillGate: ImprovementGateSpec = {
-  ...abilityGate,
-  naturalHundredAlwaysSucceeds: true,
-};
-
-const characteristicGate: ImprovementGateSpec = {
-  formula: "1d100",
-  comparator: "roll-under",
-  threshold: 45,
-};
-
 describe("evaluateImprovementGate", () => {
-  describe("roll-over (abilities)", () => {
-    it("gains when the roll beats the threshold", () => {
-      expect(evaluateImprovementGate(abilityGate, 66)).toBe(true);
-    });
+  it.each`
+    description                                                            | comparator      | naturalHundredAlwaysSucceeds | threshold | rollTotal    | expected
+    ${"roll-over: gains when the roll beats the threshold"}                | ${"roll-over"}  | ${true}                      | ${65}     | ${66}        | ${true}
+    ${"roll-over: fails when the roll equals the threshold"}               | ${"roll-over"}  | ${true}                      | ${65}     | ${65}        | ${false}
+    ${"roll-over: fails when the roll is below the threshold"}             | ${"roll-over"}  | ${true}                      | ${65}     | ${12}        | ${false}
+    ${"roll-over: a 100 succeeds even past a threshold pushed above 100"}  | ${"roll-over"}  | ${true}                      | ${120}    | ${100}       | ${true}
+    ${"roll-over: a 100 does not auto-succeed without the exception flag"} | ${"roll-over"}  | ${false}                     | ${105}    | ${100}       | ${false}
+    ${"roll-under: gains when the roll is below the threshold"}            | ${"roll-under"} | ${false}                     | ${45}     | ${12}        | ${true}
+    ${"roll-under: gains when the roll equals the threshold"}              | ${"roll-under"} | ${false}                     | ${45}     | ${45}        | ${true}
+    ${"roll-under: fails when the roll is above the threshold"}            | ${"roll-under"} | ${false}                     | ${45}     | ${46}        | ${false}
+    ${"roll-under: a 100 is never a special case, even with the flag set"} | ${"roll-under"} | ${true}                      | ${45}     | ${100}       | ${false}
+    ${"fails when the roll-over gate produced no total"}                   | ${"roll-over"}  | ${true}                      | ${65}     | ${undefined} | ${false}
+    ${"fails when the roll-under gate produced no total"}                  | ${"roll-under"} | ${false}                     | ${45}     | ${undefined} | ${false}
+  `(
+    "$description",
+    ({ comparator, naturalHundredAlwaysSucceeds, threshold, rollTotal, expected }) => {
+      const gate: ImprovementGateSpec = {
+        formula: "1d100",
+        comparator,
+        threshold,
+        naturalHundredAlwaysSucceeds,
+      };
 
-    it("does not gain when the roll equals the threshold", () => {
-      expect(evaluateImprovementGate(abilityGate, 65)).toBe(false);
-    });
-
-    it("does not gain when the roll is below the threshold", () => {
-      expect(evaluateImprovementGate(abilityGate, 12)).toBe(false);
-    });
-
-    it("gains on a natural 100 even when a negative category modifier pushed the threshold above 100", () => {
-      expect(evaluateImprovementGate({ ...skillGate, threshold: 120 }, 100, 100)).toBe(true);
-    });
-
-    it("ignores a natural 100 when the domain did not ask for that exception", () => {
-      expect(evaluateImprovementGate({ ...abilityGate, threshold: 90 }, 75, 100)).toBe(false);
-    });
-  });
-
-  describe("roll-under (characteristics)", () => {
-    it("gains when the roll is below the threshold", () => {
-      expect(evaluateImprovementGate(characteristicGate, 12)).toBe(true);
-    });
-
-    it("gains when the roll equals the threshold", () => {
-      expect(evaluateImprovementGate(characteristicGate, 45)).toBe(true);
-    });
-
-    it("does not gain when the roll is above the threshold", () => {
-      expect(evaluateImprovementGate(characteristicGate, 46)).toBe(false);
-    });
-
-    it("does not treat a natural 100 as a success", () => {
-      expect(evaluateImprovementGate(characteristicGate, 100, 100)).toBe(false);
-    });
-  });
-
-  it("fails when the roll produced no total", () => {
-    expect(evaluateImprovementGate(abilityGate, undefined)).toBe(false);
-    expect(evaluateImprovementGate(characteristicGate, undefined)).toBe(false);
-  });
+      expect(evaluateImprovementGate(gate, rollTotal)).toBe(expected);
+    },
+  );
 });

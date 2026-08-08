@@ -8,6 +8,7 @@ import {
   updateAdapterForSkill,
   buildAbilityImprovementRequest,
 } from "./ability-improvement-adapter";
+import { evaluateImprovementGate } from "./evaluate-improvement-gate";
 
 // Agility category mod == DEX's linearMod alone when STR/SIZ/POW sit in the flattenedMod(0) band
 // (5-16): flattenedMod(str) - flattenedMod(siz) + linearMod(dex) + flattenedMod(pow).
@@ -66,43 +67,26 @@ describe("formatCategoryModDisplay", () => {
 });
 
 describe("updateAdapterForSkill", () => {
-  it("allows training and research for a skill just below 75%", () => {
-    const improvementData = createImprovementData();
-    updateAdapterForSkill(improvementData, createSkillItem(74));
-    expect(improvementData.canTraining).toBe(true);
-    expect(improvementData.canResearch).toBe(true);
-    expect(improvementData.skillOver75).toBeUndefined();
-  });
-
-  it("blocks training and research for a skill at exactly 75% that can gain experience", () => {
-    const improvementData = createImprovementData();
-    improvementData.canGetExperience = true;
-    updateAdapterForSkill(improvementData, createSkillItem(75));
-    expect(improvementData.canTraining).toBe(false);
-    expect(improvementData.canResearch).toBe(false);
-    expect(improvementData.skillOver75).toBe(true);
-  });
-
-  it("blocks training and research for a skill above 75% that can gain experience", () => {
-    const improvementData = createImprovementData();
-    improvementData.canGetExperience = true;
-    updateAdapterForSkill(improvementData, createSkillItem(80));
-    expect(improvementData.canTraining).toBe(false);
-    expect(improvementData.canResearch).toBe(false);
-    expect(improvementData.skillOver75).toBe(true);
-  });
-
-  it("allows training and research for a skill above 75% that cannot gain experience (Core p.413, p.417)", () => {
+  describe("75%+ training/research gate (Core p.413, p.417)", () => {
     // The 75%-plus restriction is gated on canGetExperience (Core p.413's "if there is no box
     // next to the ability" concept - some skills like Alchemy or Farm never get an experience
     // box on the official sheet), not on whether a check is currently ticked. A skill with no
     // box at all has no alternative path and stays trainable/researchable past 75%.
-    const improvementData = createImprovementData();
-    improvementData.canGetExperience = false;
-    updateAdapterForSkill(improvementData, createSkillItem(80));
-    expect(improvementData.canTraining).toBe(true);
-    expect(improvementData.canResearch).toBe(true);
-    expect(improvementData.skillOver75).toBeUndefined();
+    it.each`
+      description                                           | chance | canGetExperience | expectedAllowed | expectedSkillOver75
+      ${"below 75%, no experience box: allowed"}            | ${74}  | ${false}         | ${true}         | ${undefined}
+      ${"below 75%, with an experience box: still allowed"} | ${74}  | ${true}          | ${true}         | ${undefined}
+      ${"at 75% with an experience box: blocked"}           | ${75}  | ${true}          | ${false}        | ${true}
+      ${"above 75% with an experience box: blocked"}        | ${80}  | ${true}          | ${false}        | ${true}
+      ${"above 75% with no experience box: still allowed"}  | ${80}  | ${false}         | ${true}         | ${undefined}
+    `("$description", ({ chance, canGetExperience, expectedAllowed, expectedSkillOver75 }) => {
+      const improvementData = createImprovementData();
+      improvementData.canGetExperience = canGetExperience;
+      updateAdapterForSkill(improvementData, createSkillItem(chance));
+      expect(improvementData.canTraining).toBe(expectedAllowed);
+      expect(improvementData.canResearch).toBe(expectedAllowed);
+      expect(improvementData.skillOver75).toBe(expectedSkillOver75);
+    });
   });
 
   it("derives the category modifier from source characteristics, ignoring active-effect deltas", () => {
@@ -140,18 +124,18 @@ describe("getGateThreshold", () => {
 });
 
 describe("isSupportedAbilityGainType", () => {
-  it("returns true for supported gain types", () => {
-    expect(isSupportedAbilityGainType("experience-gain-fixed")).toBe(true);
-    expect(isSupportedAbilityGainType("experience-gain-random")).toBe(true);
-    expect(isSupportedAbilityGainType("research-gain-fixed")).toBe(true);
-    expect(isSupportedAbilityGainType("research-gain-random")).toBe(true);
-    expect(isSupportedAbilityGainType("training-gain-fixed")).toBe(true);
-    expect(isSupportedAbilityGainType("training-gain-random")).toBe(true);
-  });
-
-  it("returns false for empty or unknown gain types", () => {
-    expect(isSupportedAbilityGainType("")).toBe(false);
-    expect(isSupportedAbilityGainType("not-a-gain-type")).toBe(false);
+  it.each`
+    gainType                    | expected
+    ${"experience-gain-fixed"}  | ${true}
+    ${"experience-gain-random"} | ${true}
+    ${"research-gain-fixed"}    | ${true}
+    ${"research-gain-random"}   | ${true}
+    ${"training-gain-fixed"}    | ${true}
+    ${"training-gain-random"}   | ${true}
+    ${""}                       | ${false}
+    ${"not-a-gain-type"}        | ${false}
+  `('"$gainType" -> $expected', ({ gainType, expected }) => {
+    expect(isSupportedAbilityGainType(gainType)).toBe(expected);
   });
 });
 
@@ -276,36 +260,6 @@ describe("buildAbilityImprovementRequest", () => {
       naturalHundredAlwaysSucceeds: true,
     });
     expect(request.gain).toEqual({ kind: "random", formula: "1d6" });
-  });
-
-  it("caps the pre-modifier skill value at 99 so a positive category mod still gets the modified-100+ success band", () => {
-    // skillChance 105 (grandmaster) + categoryMod +10: the underlying rule is "a modified roll
-    // of 100+ always succeeds", i.e. roll+10>=100 <=> roll>=90 <=> roll>89. Without capping the
-    // base at 99 first, threshold would be 105-10=95, silently requiring roll>95 instead and
-    // losing rolls 90-95 that should have succeeded.
-    const improvementData = skillImprovementData();
-    improvementData.skillChance = 105;
-    improvementData.categoryMod = 10;
-
-    const request = buildAbilityImprovementRequest(
-      improvementData,
-      "experience-gain-random",
-      "Vasana",
-      speaker,
-    );
-
-    expect(request.gate?.threshold).toBe(89);
-  });
-
-  it("leaves the threshold unaffected by the 99-cap for a normal sub-100% skill value", () => {
-    const request = buildAbilityImprovementRequest(
-      skillImprovementData(),
-      "experience-gain-random",
-      "Vasana",
-      speaker,
-    );
-
-    expect(request.gate?.threshold).toBe(25); // skillChance 40 - categoryMod 15, unaffected by the cap
   });
 
   it("explains the threshold as a skill-value/category-mod breakdown", () => {
@@ -450,5 +404,45 @@ describe("buildAbilityImprovementRequest", () => {
 
     expect(request.gate).toMatchObject({ formula: "1d100", threshold: 36 });
     expect(request.gateBreakdownChips).toEqual([{ label: "Passion", value: "36" }]);
+  });
+
+  describe("gate success-outcome matrix", () => {
+    function gateScenarioData(
+      abilityType: "skill" | "rune" | "passion",
+      baseValue: number,
+      categoryMod = 0,
+    ): any {
+      return {
+        abilityType,
+        typeLocName: abilityType,
+        name: "Test",
+        chance: abilityType === "skill" ? baseValue + categoryMod : baseValue,
+        skillChance: baseValue,
+        categoryMod: abilityType === "skill" ? categoryMod : undefined,
+      };
+    }
+
+    it.each`
+      description                                                                    | abilityType  | baseValue | categoryMod | rollTotal | expectedSucceeded
+      ${"skill, positive mod: fails at the threshold (40 - 15 = 25)"}                | ${"skill"}   | ${40}     | ${15}       | ${25}     | ${false}
+      ${"skill, positive mod: succeeds just above the threshold"}                    | ${"skill"}   | ${40}     | ${15}       | ${26}     | ${true}
+      ${"skill, base >=100 + positive mod: succeeds in the modified-100+ band"}      | ${"skill"}   | ${105}    | ${10}       | ${90}     | ${true}
+      ${"skill, base >=100 + positive mod: fails just below that band"}              | ${"skill"}   | ${105}    | ${10}       | ${89}     | ${false}
+      ${"skill, heavily negative mod: natural 100 succeeds despite threshold >=100"} | ${"skill"}   | ${90}     | ${-15}      | ${100}    | ${true}
+      ${"skill, heavily negative mod: a near-max non-natural roll still fails"}      | ${"skill"}   | ${90}     | ${-15}      | ${99}     | ${false}
+      ${"rune, under 100%: ordinary roll-over"}                                      | ${"rune"}    | ${30}     | ${0}        | ${31}     | ${true}
+      ${"rune, at/above 100%: a natural 100 succeeds"}                               | ${"rune"}    | ${115}    | ${0}        | ${100}    | ${true}
+      ${"rune, at/above 100%: a 99 still fails"}                                     | ${"rune"}    | ${115}    | ${0}        | ${99}     | ${false}
+      ${"passion, at/above 100%: a natural 100 succeeds"}                            | ${"passion"} | ${120}    | ${0}        | ${100}    | ${true}
+    `("$description", ({ abilityType, baseValue, categoryMod, rollTotal, expectedSucceeded }) => {
+      const request = buildAbilityImprovementRequest(
+        gateScenarioData(abilityType, baseValue, categoryMod),
+        "experience-gain-random",
+        "Vasana",
+        speaker,
+      );
+
+      expect(evaluateImprovementGate(request.gate!, rollTotal)).toBe(expectedSucceeded);
+    });
   });
 });

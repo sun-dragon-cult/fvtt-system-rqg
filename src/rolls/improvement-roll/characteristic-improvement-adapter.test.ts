@@ -5,7 +5,9 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
   buildCharacteristicAdapter,
   buildCharacteristicImprovementRequest,
+  isSupportedCharacteristicGainType,
 } from "./characteristic-improvement-adapter";
+import { evaluateImprovementGate } from "./evaluate-improvement-gate";
 
 function createActorWithSourceCharacteristic(
   characteristicName: string,
@@ -33,40 +35,46 @@ describe("buildCharacteristicAdapter", () => {
     });
   });
 
-  it("enables power experience and training, but not research", async () => {
-    const actor = createActorWithSourceCharacteristic("power", {
-      value: 14,
-      hasExperience: true,
-      formula: "3d6+6",
+  describe("per-characteristic improvement-source eligibility", () => {
+    const trainableResearchable = {
+      showExperience: false,
+      canExperience: false,
+      showTraining: true,
+      canTraining: true,
+      showResearch: true,
+      canResearch: true,
+      trainingIsGated: false,
+    };
+    const locked = {
+      showExperience: false,
+      canExperience: false,
+      showTraining: false,
+      canTraining: false,
+      showResearch: false,
+      canResearch: false,
+      trainingIsGated: false,
+    };
+
+    it.each`
+      description                                                    | characteristicName | expected
+      ${"power: experience+training gated by POW-roll, no research"} | ${"power"}         | ${{ showExperience: true, canExperience: true, showTraining: true, canTraining: true, showResearch: false, canResearch: false, trainingIsGated: true }}
+      ${"strength: trainable/researchable, no experience"}           | ${"strength"}      | ${trainableResearchable}
+      ${"constitution: trainable/researchable, no experience"}       | ${"constitution"}  | ${trainableResearchable}
+      ${"dexterity: trainable/researchable, no experience"}          | ${"dexterity"}     | ${trainableResearchable}
+      ${"charisma: trainable/researchable, no experience"}           | ${"charisma"}      | ${trainableResearchable}
+      ${"size: cannot be improved by any source"}                    | ${"size"}          | ${locked}
+      ${"intelligence: cannot be improved by any source"}            | ${"intelligence"}  | ${locked}
+    `("$description", async ({ characteristicName, expected }) => {
+      const actor = createActorWithSourceCharacteristic(characteristicName, {
+        value: 10,
+        hasExperience: true,
+        formula: "3d6",
+      });
+
+      const adapter = await buildCharacteristicAdapter(actor, characteristicName);
+
+      expect(adapter).toMatchObject(expected);
     });
-
-    const adapter = await buildCharacteristicAdapter(actor, "power");
-
-    expect(adapter.showExperience).toBe(true);
-    expect(adapter.showTraining).toBe(true);
-    expect(adapter.showResearch).toBe(false);
-    expect(adapter.canExperience).toBe(true);
-    expect(adapter.canTraining).toBe(true);
-    expect(adapter.canResearch).toBe(false);
-    expect(adapter.trainingIsGated).toBe(true);
-  });
-
-  it("does not allow experience for non-power characteristics", async () => {
-    const actor = createActorWithSourceCharacteristic("strength", {
-      value: 12,
-      hasExperience: true,
-      formula: "3d6+6",
-    });
-
-    const adapter = await buildCharacteristicAdapter(actor, "strength");
-
-    expect(adapter.showExperience).toBe(false);
-    expect(adapter.canExperience).toBe(false);
-    expect(adapter.showTraining).toBe(true);
-    expect(adapter.showResearch).toBe(true);
-    expect(adapter.canTraining).toBe(true);
-    expect(adapter.canResearch).toBe(true);
-    expect(adapter.trainingIsGated).toBe(false);
   });
 
   it("applies 20% cult bonus for qualifying power cult rank", async () => {
@@ -152,6 +160,24 @@ describe("buildCharacteristicAdapter", () => {
       expect(adapter.canTraining).toBe(true);
       expect(adapter.canResearch).toBe(true);
     });
+  });
+});
+
+describe("isSupportedCharacteristicGainType", () => {
+  // Unlike abilities, only Experience has a fixed-gain option here - Training/Research are
+  // always random for characteristics, so their "-gain-fixed" variants are deliberately absent.
+  it.each`
+    gainType                    | expected
+    ${"experience-gain-fixed"}  | ${true}
+    ${"experience-gain-random"} | ${true}
+    ${"training-gain-random"}   | ${true}
+    ${"research-gain-random"}   | ${true}
+    ${"training-gain-fixed"}    | ${false}
+    ${"research-gain-fixed"}    | ${false}
+    ${""}                       | ${false}
+    ${"not-a-gain-type"}        | ${false}
+  `('"$gainType" -> $expected', ({ gainType, expected }) => {
+    expect(isSupportedCharacteristicGainType(gainType)).toBe(expected);
   });
 });
 
@@ -303,5 +329,27 @@ describe("buildCharacteristicImprovementRequest", () => {
     );
 
     expect(request.gateBreakdownChips).toEqual([]);
+  });
+
+  describe("gate success-outcome matrix", () => {
+    it.each`
+      description                                                   | gainType                    | trainingIsGated | rollTotal | expectedSucceeded
+      ${"experience: succeeds at/under chanceToGain (roll-under)"}  | ${"experience-gain-random"} | ${true}         | ${40}     | ${true}
+      ${"experience: fails just above chanceToGain"}                | ${"experience-gain-random"} | ${true}         | ${41}     | ${false}
+      ${"research: always gated, succeeds at/under chanceToGain"}   | ${"research-gain-random"}   | ${false}        | ${40}     | ${true}
+      ${"POW training (gated): fails above chanceToGain"}           | ${"training-gain-random"}   | ${true}         | ${41}     | ${false}
+      ${"other-characteristic training (ungated): always succeeds"} | ${"training-gain-random"}   | ${false}        | ${99}     | ${true}
+    `("$description", ({ gainType, trainingIsGated, rollTotal, expectedSucceeded }) => {
+      const request = buildCharacteristicImprovementRequest(
+        characteristicImprovementData({ trainingIsGated }),
+        gainType,
+        "Vasana",
+        speaker,
+      );
+
+      const succeeded = request.gate ? evaluateImprovementGate(request.gate, rollTotal) : true; // no gate at all means the source always gains, matching resolveImprovement.
+
+      expect(succeeded).toBe(expectedSucceeded);
+    });
   });
 });

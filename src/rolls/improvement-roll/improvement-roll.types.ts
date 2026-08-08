@@ -73,10 +73,8 @@ export type ImprovementRequest = {
 export type ImprovementResult = {
   request: ImprovementRequest;
   succeeded: boolean;
-  /** Modified total of the gate roll, undefined when the source has no gate. */
+  /** Total of the gate roll, undefined when the source has no gate. */
   gateTotal?: number;
-  /** Unmodified total of the gate roll's first die, undefined when the source has no gate. */
-  gateNaturalTotal?: number;
   gain: number;
   previousValue: number;
   newValue: number;

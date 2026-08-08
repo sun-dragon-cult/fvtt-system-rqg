@@ -17,11 +17,7 @@ export async function resolveImprovement(
   if (request.gate) {
     gateRoll = new Roll(request.gate.formula);
     await gateRoll.evaluate();
-    succeeded = evaluateImprovementGate(
-      request.gate,
-      gateRoll.total ?? undefined,
-      gateRoll.dice[0]?.total ?? undefined,
-    );
+    succeeded = evaluateImprovementGate(request.gate, gateRoll.total);
   }
 
   let gainRoll: Roll | undefined;
@@ -37,8 +33,7 @@ export async function resolveImprovement(
     result: {
       request,
       succeeded,
-      gateTotal: gateRoll?.total ?? undefined,
-      gateNaturalTotal: gateRoll?.dice[0]?.total ?? undefined,
+      gateTotal: gateRoll?.total,
       gain,
       previousValue: request.currentValue,
       newValue: request.currentValue + gain,
