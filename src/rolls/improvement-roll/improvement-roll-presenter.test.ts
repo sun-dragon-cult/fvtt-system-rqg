@@ -14,6 +14,7 @@ describe("getGateDisplay", () => {
     ${"roll-over: caps to =100 at exactly 100 with the exception flag"}            | ${"roll-over"}  | ${true}                      | ${100}    | ${"="}         | ${100}
     ${"roll-over: caps to =100 above 100 with the exception flag"}                 | ${"roll-over"}  | ${true}                      | ${130}    | ${"="}         | ${100}
     ${"roll-over: no cap at 100+ without the exception flag"}                      | ${"roll-over"}  | ${false}                     | ${105}    | ${">"}         | ${105}
+    ${"roll-over: a category mod bigger than the base clamps the target at 0"}     | ${"roll-over"}  | ${true}                      | ${-5}     | ${">"}         | ${0}
     ${"roll-under: no symbol - the default target direction every roll card uses"} | ${"roll-under"} | ${false}                     | ${45}     | ${""}          | ${45}
   `(
     "$description",

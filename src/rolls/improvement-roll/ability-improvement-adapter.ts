@@ -100,6 +100,8 @@ export function buildAbilityImprovementRequest(
       kind: isFixed ? "fixed" : "random",
       formula: String(getGainFormula(improvementData, source, isFixed)),
     },
+    // Runes cannot normally increase over 100% (Core p.415) - Skills and Passions have no such cap.
+    maxValue: improvementData.abilityType === "rune" ? 100 : undefined,
     gateBreakdownChips: source === "training" ? [] : buildAbilityGateBreakdown(improvementData),
     speaker,
   };
@@ -163,7 +165,9 @@ function buildAbilityGateBreakdown(
   const baseLabel = isSkill
     ? localize("RQG.Dialog.improveAbilityDialog.skillValueLabel")
     : improvementData.typeLocName;
-  const baseValue = isSkill ? (improvementData.skillChance ?? 0) : improvementData.chance;
+  // Capped the same way as buildAbilityGate's base term, so these chips always sum to the
+  // threshold actually shown in the headline instead of a stale pre-cap number.
+  const baseValue = Math.min(getGateThreshold(improvementData), 99);
   const chips: ImprovementDetailRow[] = [{ label: baseLabel, value: String(baseValue) }];
 
   const categoryMod = improvementData.categoryMod ?? 0;

@@ -62,6 +62,8 @@ export type ImprovementRequest = {
   valueSuffix: string;
   gate?: ImprovementGateSpec;
   gain: ImprovementGainSpec;
+  /** Ceiling the gain must not push currentValue past, e.g. a Rune's 100% cap (Core p.415). */
+  maxValue?: number;
   /**
    * Chips explaining how the gate's threshold was derived, shown in the gate roll's expandable
    * details - only populated when that derivation isn't already the number shown in the headline.

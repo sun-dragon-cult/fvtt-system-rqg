@@ -105,7 +105,10 @@ export function getGateDisplay(gate: ImprovementGateSpec): { symbol: string; thr
   if (gate.naturalHundredAlwaysSucceeds && gate.threshold >= 100) {
     return { symbol: "=", threshold: 100 };
   }
-  return { symbol: ">", threshold: gate.threshold };
+  // A category modifier bigger than the base value can push the threshold negative - every roll
+  // (minimum 1) already clears that, so clamp the displayed target at 0 rather than showing a
+  // threshold that reads as nonsense on a d100 card.
+  return { symbol: ">", threshold: Math.max(gate.threshold, 0) };
 }
 
 /** Tooltip for the gate roll: the adapter's threshold-derivation chips (e.g. skill value − category modifier). */

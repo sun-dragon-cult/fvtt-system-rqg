@@ -386,6 +386,35 @@ describe("buildAbilityImprovementRequest", () => {
       threshold: 99,
       naturalHundredAlwaysSucceeds: true,
     });
+    // The breakdown chip must show the same capped value as the headline threshold (99), not the
+    // pre-cap chance (115) - otherwise the tooltip would contradict the number shown above it.
+    expect(request.gateBreakdownChips).toEqual([{ label: "Passion", value: "99" }]);
+  });
+
+  it("caps a Rune's gain at 100%, but leaves Skills/Passions with no such ceiling", () => {
+    const runeRequest = buildAbilityImprovementRequest(
+      { ...createImprovementData(), abilityType: "rune", typeLocName: "Rune", chance: 98 },
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+    expect(runeRequest.maxValue).toBe(100);
+
+    const skillRequest = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+    expect(skillRequest.maxValue).toBeUndefined();
+
+    const passionRequest = buildAbilityImprovementRequest(
+      { ...createImprovementData(), abilityType: "passion", typeLocName: "Passion", chance: 98 },
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+    expect(passionRequest.maxValue).toBeUndefined();
   });
 
   it("gives Passions the same labeled base chip, since they take no category mod either", () => {

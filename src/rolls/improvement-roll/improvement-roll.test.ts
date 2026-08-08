@@ -153,4 +153,22 @@ describe("resolveImprovement", () => {
     expect(result.gain).toBe(0);
     expect(result.newValue).toBe(65);
   });
+
+  it("clamps the gain so it never pushes currentValue past maxValue (e.g. a Rune's 100% cap)", async () => {
+    queue = [{ total: 88 }, { total: 5 }];
+
+    const { result } = await resolveImprovement(buildRequest({ currentValue: 98, maxValue: 100 }));
+
+    expect(result.gain).toBe(2);
+    expect(result.newValue).toBe(100);
+  });
+
+  it("leaves the gain untouched when it already fits under maxValue", async () => {
+    queue = [{ total: 88 }, { total: 1 }];
+
+    const { result } = await resolveImprovement(buildRequest({ currentValue: 98, maxValue: 100 }));
+
+    expect(result.gain).toBe(1);
+    expect(result.newValue).toBe(99);
+  });
 });
