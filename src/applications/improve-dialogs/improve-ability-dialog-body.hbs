@@ -7,7 +7,11 @@
       selectedSource=selectedSource
       labelKey="RQG.Dialog.improveAbilityDialog.fromExperience"
     }}
-      {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableExperience" typeLocName=improvementData.typeLocName}}
+      {{#if improvementData.atRuneCap}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableRuneCap"}}
+      {{else}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableExperience" typeLocName=improvementData.typeLocName}}
+      {{/if}}
     {{/improveDialogSourceOption}}
 
     {{#> improveDialogSourceOption
@@ -17,7 +21,9 @@
       selectedSource=selectedSource
       labelKey="RQG.Dialog.improveAbilityDialog.throughResearch"
     }}
-      {{#if improvementData.skillOver75}}
+      {{#if improvementData.atRuneCap}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableRuneCap"}}
+      {{else if improvementData.skillOver75}}
         {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableResearchOver75"}}
       {{else}}
         {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableResearch" typeLocName=improvementData.typeLocName}}
@@ -31,7 +37,9 @@
       selectedSource=selectedSource
       labelKey="RQG.Dialog.improveAbilityDialog.throughTraining"
     }}
-      {{#if improvementData.skillOver75}}
+      {{#if improvementData.atRuneCap}}
+        {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableRuneCap"}}
+      {{else if improvementData.skillOver75}}
         {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableTrainingOver75"}}
       {{else if (eq improvementData.abilityType "passion")}}
         {{localize "RQG.Dialog.improveAbilityDialog.sourceUnavailableTrainingPassion"}}

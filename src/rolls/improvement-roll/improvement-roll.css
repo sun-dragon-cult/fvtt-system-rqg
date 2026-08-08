@@ -1,0 +1,18 @@
+@layer system.base {
+  .chat-message {
+    & .message-header .flavor-text .improvement-attempt {
+      /* Matches the message-content default size, since this line replaces the removed
+         "<actor> tries to improve <ability>" heading that used to carry that weight. */
+      font-size: var(--font-size-14);
+    }
+
+    & .improvement-roll {
+      & .improvement-value-change {
+        width: 100%;
+        text-align: center;
+        font-size: var(--font-size-14);
+        opacity: 0.8;
+      }
+    }
+  }
+}
