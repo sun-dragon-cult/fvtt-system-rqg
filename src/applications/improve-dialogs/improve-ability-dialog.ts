@@ -193,7 +193,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
     const speakerName = getSpeakerDisplayName(this.speaker) || this.item.parent.name || "";
 
     // Experience is the only source that consumes an experience check, and the check has to be
-    // there to spend (Core p.413). Read live rather than trusting improvementData's construction-
+    // there to spend (Core p.415). Read live rather than trusting improvementData's construction-
     // time snapshot, since the check could have been spent through another route while this
     // dialog was still open.
     const sourceAbility = this.item._source.system as Partial<IAbility>;

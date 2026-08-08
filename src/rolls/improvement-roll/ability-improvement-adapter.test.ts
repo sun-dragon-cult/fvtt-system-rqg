@@ -67,11 +67,10 @@ describe("formatCategoryModDisplay", () => {
 });
 
 describe("updateAdapterForSkill", () => {
-  describe("75%+ training/research gate (Core p.413, p.417)", () => {
-    // The 75%-plus restriction is gated on canGetExperience (Core p.413's "if there is no box
-    // next to the ability" concept - some skills like Alchemy or Farm never get an experience
-    // box on the official sheet), not on whether a check is currently ticked. A skill with no
-    // box at all has no alternative path and stays trainable/researchable past 75%.
+  describe("75%+ training/research gate (Core p.416, p.417)", () => {
+    // The 75%-plus restriction (Core p.416, p.417) only applies to skills that can gain
+    // Experience at all (canGetExperience) - a skill that can't (e.g. Alchemy, Farm) has no
+    // alternative path and stays trainable/researchable past 75%.
     it.each`
       description                                           | chance | canGetExperience | expectedAllowed | expectedSkillOver75
       ${"below 75%, no experience box: allowed"}            | ${74}  | ${false}         | ${true}         | ${undefined}
@@ -155,7 +154,7 @@ describe("configureAdapterForAbilityItem", () => {
     expect(improvementData.canResearch).toBe(true);
   });
 
-  it("blocks training and research for a Rune at 75%+ that can gain experience (Core p.417)", () => {
+  it("blocks training and research for a Rune at 75%+ that can gain experience (Core p.416, p.417)", () => {
     // The 75%-plus restriction is worded generically ("any ability listed on the adventurer
     // sheet"), not skill-specific, and Core p.417 gives a worked Rune-training example
     // (Sorala's Air Rune) - so Runes are gated identically to Skills.

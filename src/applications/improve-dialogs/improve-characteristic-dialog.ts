@@ -169,7 +169,7 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     const speakerName = getSpeakerDisplayName(this.speaker) || this.actor.name || "";
 
     // Experience is the only source that consumes an experience check, and the check has to be
-    // there to spend (Core p.413).
+    // there to spend (Core p.415).
     if (gainType.startsWith("experience-") && !improvementData.hasExperience) {
       ImproveCharacteristicDialog.logger.error(
         localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {

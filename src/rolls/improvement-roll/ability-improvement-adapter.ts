@@ -305,8 +305,8 @@ export function updateAdapterForSkill(
 }
 
 /**
- * Abilities at 75%+ with canGetExperience (Core p.413's box, not the hasExperience tick)
- * must be improved through Experience instead of Training/Research (Core p.417). Applies to
+ * Abilities at 75%+ with canGetExperience (Core p.415's box, not the hasExperience tick)
+ * must be improved through Experience instead of Training/Research (Core p.416, p.417). Applies to
  * Skills and Runes alike; never called for Passions, which are always fully excluded.
  */
 function applyOver75TrainingResearchGate(improvementData: AbilityImprovementData): void {
@@ -318,9 +318,7 @@ function applyOver75TrainingResearchGate(improvementData: AbilityImprovementData
 }
 
 /**
- * Runes cannot normally increase over 100% (Core p.415) - some non-human entities/spirits sit
- * exactly at 100% as a natural rating (e.g. Wraiths' Death 100%), and no improvement source
- * should be able to push a Rune past that ceiling.
+ * Runes cannot normally increase over 100% (Core p.415).
  */
 function applyRuneHundredPercentCap(improvementData: AbilityImprovementData): void {
   if (improvementData.chance >= 100) {
