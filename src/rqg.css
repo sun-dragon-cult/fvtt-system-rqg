@@ -2,6 +2,7 @@
 @import url("./theme.css");
 @import url("./variables.css");
 @import url("./applications/improve-dialogs/improve-dialogs.css");
+@import url("./rolls/improvement-roll/improvement-roll.css");
 @import url("./applications/rqid-editor/rqid-editor.css");
 @import url("./applications/rqid-batch-editor/rqid-batch-editor.css");
 @import url("./items/itemsheets.css");

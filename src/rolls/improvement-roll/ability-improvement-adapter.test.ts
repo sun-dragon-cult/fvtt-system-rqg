@@ -1,0 +1,454 @@
+import { describe, expect, it } from "vitest";
+
+import {
+  configureAdapterForAbilityItem,
+  formatCategoryModDisplay,
+  getGateThreshold,
+  isSupportedAbilityGainType,
+  updateAdapterForSkill,
+  buildAbilityImprovementRequest,
+} from "./ability-improvement-adapter";
+
+// Agility category mod == DEX's linearMod alone when STR/SIZ/POW sit in the flattenedMod(0) band
+// (5-16): flattenedMod(str) - flattenedMod(siz) + linearMod(dex) + flattenedMod(pow).
+// linearMod(dex) = (ceil(dex/4) - 3) * 5, so dex = (mod/5 + 3) * 4 inverts it exactly on multiples of 5.
+function dexterityForAgilityMod(agilityMod: number): number {
+  return (agilityMod / 5 + 3) * 4;
+}
+
+function createSkillItem(baseChance: number, gainedChance: number = 0, categoryMod: number = 0) {
+  const neutral = { value: 13 }; // str/siz/pow in the flattenedMod(0) band
+  return {
+    type: "skill",
+    system: { category: "agility" },
+    _source: { system: { baseChance, gainedChance } },
+    parent: {
+      type: "character",
+      _source: {
+        system: {
+          characteristics: {
+            strength: neutral,
+            constitution: neutral,
+            size: neutral,
+            dexterity: { value: dexterityForAgilityMod(categoryMod) },
+            intelligence: neutral,
+            power: neutral,
+            charisma: neutral,
+          },
+          attributes: { isCreature: false },
+        },
+      },
+    },
+  } as any;
+}
+
+function createImprovementData() {
+  return {
+    showTraining: true,
+    canTraining: true,
+    showResearch: true,
+    canResearch: true,
+  } as any;
+}
+
+describe("formatCategoryModDisplay", () => {
+  it("formats positive category modifiers", () => {
+    expect(formatCategoryModDisplay(15)).toBe("+15");
+  });
+
+  it("formats negative category modifiers", () => {
+    expect(formatCategoryModDisplay(-5)).toBe("-5");
+  });
+
+  it("formats zero category modifier", () => {
+    expect(formatCategoryModDisplay(0)).toBe("0");
+  });
+});
+
+describe("updateAdapterForSkill", () => {
+  it("allows training and research for a skill just below 75%", () => {
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, createSkillItem(74));
+    expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+    expect(improvementData.skillOver75).toBeUndefined();
+  });
+
+  it("blocks training and research for a skill at exactly 75% that can gain experience", () => {
+    const improvementData = createImprovementData();
+    improvementData.canGetExperience = true;
+    updateAdapterForSkill(improvementData, createSkillItem(75));
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("blocks training and research for a skill above 75% that can gain experience", () => {
+    const improvementData = createImprovementData();
+    improvementData.canGetExperience = true;
+    updateAdapterForSkill(improvementData, createSkillItem(80));
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("allows training and research for a skill above 75% that cannot gain experience (Core p.413, p.417)", () => {
+    // The 75%-plus restriction is gated on canGetExperience (Core p.413's "if there is no box
+    // next to the ability" concept - some skills like Alchemy or Farm never get an experience
+    // box on the official sheet), not on whether a check is currently ticked. A skill with no
+    // box at all has no alternative path and stays trainable/researchable past 75%.
+    const improvementData = createImprovementData();
+    improvementData.canGetExperience = false;
+    updateAdapterForSkill(improvementData, createSkillItem(80));
+    expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+    expect(improvementData.skillOver75).toBeUndefined();
+  });
+
+  it("derives the category modifier from source characteristics, ignoring active-effect deltas", () => {
+    // A live characteristic value shifted by an active effect (e.g. a DEX-draining status effect)
+    // must not change the category mod used for this gate roll: only actor._source is honored.
+    const item = createSkillItem(40, 0, 15);
+    item.parent.system = {
+      // Live/prepared data an active effect could have overwritten, e.g. dropping DEX far enough
+      // to fall out of the category mod band that the unmodified DEX 21 sits in.
+      baseSkillCategoryModifiers: { agility: -5 },
+      characteristics: { dexterity: { value: 5 } },
+    };
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, item);
+    expect(improvementData.categoryMod).toBe(15);
+  });
+});
+
+describe("getGateThreshold", () => {
+  it("uses the unmodified skill value for skills, not the category-modified chance", () => {
+    const improvementData = createImprovementData();
+    // baseChance 40 + categoryMod 15 -> chance 55, but the gate threshold must stay at
+    // the unmodified 40, since the roll formula already adds the category mod itself.
+    updateAdapterForSkill(improvementData, createSkillItem(40, 0, 15));
+    expect(improvementData.chance).toBe(55);
+    expect(getGateThreshold(improvementData)).toBe(40);
+  });
+
+  it("uses the plain chance for Runes/Passions, which get no category modifier", () => {
+    const improvementData = createImprovementData();
+    improvementData.abilityType = "rune";
+    improvementData.chance = 30;
+    expect(getGateThreshold(improvementData)).toBe(30);
+  });
+});
+
+describe("isSupportedAbilityGainType", () => {
+  it("returns true for supported gain types", () => {
+    expect(isSupportedAbilityGainType("experience-gain-fixed")).toBe(true);
+    expect(isSupportedAbilityGainType("experience-gain-random")).toBe(true);
+    expect(isSupportedAbilityGainType("research-gain-fixed")).toBe(true);
+    expect(isSupportedAbilityGainType("research-gain-random")).toBe(true);
+    expect(isSupportedAbilityGainType("training-gain-fixed")).toBe(true);
+    expect(isSupportedAbilityGainType("training-gain-random")).toBe(true);
+  });
+
+  it("returns false for empty or unknown gain types", () => {
+    expect(isSupportedAbilityGainType("")).toBe(false);
+    expect(isSupportedAbilityGainType("not-a-gain-type")).toBe(false);
+  });
+});
+
+describe("configureAdapterForAbilityItem", () => {
+  it("allows research for skills", () => {
+    const improvementData = createImprovementData();
+    configureAdapterForAbilityItem(improvementData, createSkillItem(50));
+    expect(improvementData.showResearch).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("allows research for runes", () => {
+    const improvementData = createImprovementData();
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.showResearch).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+  });
+
+  it("blocks training and research for a Rune at 75%+ that can gain experience (Core p.417)", () => {
+    // The 75%-plus restriction is worded generically ("any ability listed on the adventurer
+    // sheet"), not skill-specific, and Core p.417 gives a worked Rune-training example
+    // (Sorala's Air Rune) - so Runes are gated identically to Skills.
+    const improvementData = createImprovementData();
+    improvementData.chance = 80;
+    improvementData.canGetExperience = true;
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.skillOver75).toBe(true);
+  });
+
+  it("allows training and research for a Rune at 75%+ that cannot gain experience", () => {
+    const improvementData = createImprovementData();
+    improvementData.chance = 80;
+    improvementData.canGetExperience = false;
+    const runeItem = { type: "rune", system: { rune: "Fire" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.canTraining).toBe(true);
+    expect(improvementData.canResearch).toBe(true);
+    expect(improvementData.skillOver75).toBeUndefined();
+  });
+
+  it("disallows research and training for passions", () => {
+    const improvementData = createImprovementData();
+    const passionItem = { type: "passion" } as any;
+    configureAdapterForAbilityItem(improvementData, passionItem);
+    expect(improvementData.showResearch).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.showTraining).toBe(false);
+    expect(improvementData.canTraining).toBe(false);
+  });
+
+  it("blocks every improvement source for a Rune at 100%, unlike Skills/Passions (Core p.415)", () => {
+    // Certain non-human entities sit exactly at 100% as a natural rating (e.g. Wraiths'
+    // Death 100%) - Runes cannot normally be pushed past that ceiling by any source.
+    const improvementData = createImprovementData();
+    improvementData.chance = 100;
+    improvementData.canGetExperience = true;
+    improvementData.canExperience = true;
+    const runeItem = { type: "rune", system: { rune: "Death" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.canExperience).toBe(false);
+    expect(improvementData.canResearch).toBe(false);
+    expect(improvementData.canTraining).toBe(false);
+    expect(improvementData.atRuneCap).toBe(true);
+  });
+
+  it("does not cap a Rune below 100%", () => {
+    const improvementData = createImprovementData();
+    improvementData.chance = 99;
+    improvementData.canGetExperience = true;
+    improvementData.canExperience = true;
+    const runeItem = { type: "rune", system: { rune: "Death" } } as any;
+    configureAdapterForAbilityItem(improvementData, runeItem);
+    expect(improvementData.canExperience).toBe(true);
+    expect(improvementData.atRuneCap).toBeUndefined();
+  });
+});
+
+describe("buildAbilityImprovementRequest", () => {
+  const speaker = {} as ChatMessage.SpeakerData;
+
+  function skillImprovementData(overrides: Partial<any> = {}) {
+    const improvementData = createImprovementData();
+    updateAdapterForSkill(improvementData, createSkillItem(40, 0, 15));
+    Object.assign(improvementData, {
+      name: "Dodge",
+      typeLocName: "Skill",
+      img: "icons/dodge.webp",
+      currentValueDisplay: "55%",
+      experienceGainFixed: 3,
+      experienceGainRandom: "1d6",
+      researchGainFixed: 1,
+      researchGainRandom: "1d6-2",
+      trainingGainFixed: 2,
+      trainingGainRandom: "1d6-1",
+      ...overrides,
+    });
+    return improvementData;
+  }
+
+  it("maps experience on a skill to a roll-over gate with the category mod folded into the threshold", () => {
+    const request = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.domain).toBe("ability");
+    expect(request.source).toBe("experience");
+    expect(request.valueSuffix).toBe("%");
+    expect(request.currentValue).toBe(55);
+    // Skill value 40, category mod +15 -> threshold 25, so the roll stays a plain 1-100 value
+    // instead of a die+mod total that could read above 100.
+    expect(request.gate).toEqual({
+      formula: "1d100",
+      comparator: "roll-over",
+      threshold: 25,
+      naturalHundredAlwaysSucceeds: true,
+    });
+    expect(request.gain).toEqual({ kind: "random", formula: "1d6" });
+  });
+
+  it("caps the pre-modifier skill value at 99 so a positive category mod still gets the modified-100+ success band", () => {
+    // skillChance 105 (grandmaster) + categoryMod +10: the underlying rule is "a modified roll
+    // of 100+ always succeeds", i.e. roll+10>=100 <=> roll>=90 <=> roll>89. Without capping the
+    // base at 99 first, threshold would be 105-10=95, silently requiring roll>95 instead and
+    // losing rolls 90-95 that should have succeeded.
+    const improvementData = skillImprovementData();
+    improvementData.skillChance = 105;
+    improvementData.categoryMod = 10;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate?.threshold).toBe(89);
+  });
+
+  it("leaves the threshold unaffected by the 99-cap for a normal sub-100% skill value", () => {
+    const request = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate?.threshold).toBe(25); // skillChance 40 - categoryMod 15, unaffected by the cap
+  });
+
+  it("explains the threshold as a skill-value/category-mod breakdown", () => {
+    const request = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gateBreakdownChips).toEqual([
+      { label: expect.stringContaining("skillValueLabel"), value: "40" },
+      { label: "", value: "−" },
+      { label: expect.stringContaining("categoryModifierLabel"), value: "15" },
+    ]);
+  });
+
+  it("flips the breakdown connector for a negative category mod", () => {
+    const improvementData = skillImprovementData();
+    improvementData.categoryMod = -10;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate?.threshold).toBe(50); // 40 - (-10)
+    expect(request.gateBreakdownChips).toEqual([
+      { label: expect.stringContaining("skillValueLabel"), value: "40" },
+      { label: "", value: "+" },
+      { label: expect.stringContaining("categoryModifierLabel"), value: "10" },
+    ]);
+  });
+
+  it("still shows the base skill-value chip when there is no category modifier to adjust it", () => {
+    const improvementData = skillImprovementData();
+    improvementData.categoryMod = 0;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate?.threshold).toBe(40);
+    expect(request.gateBreakdownChips).toEqual([
+      { label: expect.stringContaining("skillValueLabel"), value: "40" },
+    ]);
+  });
+
+  it("maps a fixed research gain to a plain-number gain formula", () => {
+    const request = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "research-gain-fixed",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.source).toBe("research");
+    expect(request.gain).toEqual({ kind: "fixed", formula: "1" });
+    expect(request.gate?.comparator).toBe("roll-over");
+  });
+
+  it("maps training to an ungated request - training never rolls to see if it took", () => {
+    const request = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "training-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.source).toBe("training");
+    expect(request.gate).toBeUndefined();
+    expect(request.gain).toEqual({ kind: "random", formula: "1d6-1" });
+  });
+
+  it("still grants runes the natural-100 exception, even though they take no category mod", () => {
+    // Runes/Passions take no category mod, so their gate is already a plain unmodified 1d100 -
+    // but they still need the natural-100 exception, since Passions routinely reach/exceed 100%
+    // (Core p.415-416) and would otherwise become permanently un-improvable via Experience.
+    const improvementData = createImprovementData();
+    improvementData.abilityType = "rune";
+    improvementData.typeLocName = "Rune";
+    improvementData.chance = 30;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate).toMatchObject({
+      formula: "1d100",
+      threshold: 30,
+      naturalHundredAlwaysSucceeds: true,
+    });
+    // Runes get no category-mod adjustment, but the headline target still gets a labeled chip
+    // explaining what it is - not left as a bare, unexplained number.
+    expect(request.gateBreakdownChips).toEqual([{ label: "Rune", value: "30" }]);
+  });
+
+  it("caps the threshold at 99 for a Passion that has already exceeded 100%", () => {
+    // No category mod for Passions, so the same 99-cap that keeps skills honest also applies
+    // here: threshold 115 would require an impossible >115 roll, while 99 (only a natural 100
+    // succeeds) is exactly equivalent in outcome and renders as a legible ">99" target.
+    const improvementData = createImprovementData();
+    improvementData.abilityType = "passion";
+    improvementData.typeLocName = "Passion";
+    improvementData.chance = 115;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate).toEqual({
+      formula: "1d100",
+      comparator: "roll-over",
+      threshold: 99,
+      naturalHundredAlwaysSucceeds: true,
+    });
+  });
+
+  it("gives Passions the same labeled base chip, since they take no category mod either", () => {
+    const improvementData = createImprovementData();
+    improvementData.abilityType = "passion";
+    improvementData.typeLocName = "Passion";
+    improvementData.chance = 36;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate).toMatchObject({ formula: "1d100", threshold: 36 });
+    expect(request.gateBreakdownChips).toEqual([{ label: "Passion", value: "36" }]);
+  });
+});
