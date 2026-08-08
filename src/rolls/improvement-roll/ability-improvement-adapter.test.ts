@@ -278,6 +278,36 @@ describe("buildAbilityImprovementRequest", () => {
     expect(request.gain).toEqual({ kind: "random", formula: "1d6" });
   });
 
+  it("caps the pre-modifier skill value at 99 so a positive category mod still gets the modified-100+ success band", () => {
+    // skillChance 105 (grandmaster) + categoryMod +10: the underlying rule is "a modified roll
+    // of 100+ always succeeds", i.e. roll+10>=100 <=> roll>=90 <=> roll>89. Without capping the
+    // base at 99 first, threshold would be 105-10=95, silently requiring roll>95 instead and
+    // losing rolls 90-95 that should have succeeded.
+    const improvementData = skillImprovementData();
+    improvementData.skillChance = 105;
+    improvementData.categoryMod = 10;
+
+    const request = buildAbilityImprovementRequest(
+      improvementData,
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate?.threshold).toBe(89);
+  });
+
+  it("leaves the threshold unaffected by the 99-cap for a normal sub-100% skill value", () => {
+    const request = buildAbilityImprovementRequest(
+      skillImprovementData(),
+      "experience-gain-random",
+      "Vasana",
+      speaker,
+    );
+
+    expect(request.gate?.threshold).toBe(25); // skillChance 40 - categoryMod 15, unaffected by the cap
+  });
+
   it("explains the threshold as a skill-value/category-mod breakdown", () => {
     const request = buildAbilityImprovementRequest(
       skillImprovementData(),
@@ -381,7 +411,10 @@ describe("buildAbilityImprovementRequest", () => {
     expect(request.gateBreakdownChips).toEqual([{ label: "Rune", value: "30" }]);
   });
 
-  it("caps the display target at 100+ for a Passion that has already exceeded 100%", () => {
+  it("caps the threshold at 99 for a Passion that has already exceeded 100%", () => {
+    // No category mod for Passions, so the same 99-cap that keeps skills honest also applies
+    // here: threshold 115 would require an impossible >115 roll, while 99 (only a natural 100
+    // succeeds) is exactly equivalent in outcome and renders as a legible ">99" target.
     const improvementData = createImprovementData();
     improvementData.abilityType = "passion";
     improvementData.typeLocName = "Passion";
@@ -397,7 +430,7 @@ describe("buildAbilityImprovementRequest", () => {
     expect(request.gate).toEqual({
       formula: "1d100",
       comparator: "roll-over",
-      threshold: 115,
+      threshold: 99,
       naturalHundredAlwaysSucceeds: true,
     });
   });

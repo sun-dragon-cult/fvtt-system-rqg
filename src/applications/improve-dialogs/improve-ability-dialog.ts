@@ -205,7 +205,8 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
           typeLocName: improvementData.typeLocName,
         }),
       );
-      await this.item.system.applyChanceGain(0);
+      // No gain to apply and hasExperience is already false here, so skip the write entirely
+      // rather than issuing a no-op Item update.
       return;
     }
 

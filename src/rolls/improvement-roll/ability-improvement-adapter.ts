@@ -111,6 +111,15 @@ export function buildAbilityImprovementRequest(
  * value - matching every other roll card in the app - instead of showing a total above 100 when
  * die+modifier is displayed as the roll.
  *
+ * The base value is capped at 99 before the modifier is subtracted: the underlying rule is a
+ * *modified* roll of 100+ always succeeds (`RQG.Dialog...modifiedHundredAlwaysLabel`, and
+ * `updateAdapterForSkill`'s own probability calc counts `modifiedRoll >= 100`). For an
+ * (already rare) skill whose *unmodified* value is itself >=100% with a positive category mod,
+ * leaving the base uncapped would silently drop that "modified 100+" success band, since a raw
+ * roll can never itself exceed 100. Capping at 99 reproduces the modified-100+ rule exactly via
+ * the plain roll-over comparison; the natural-100 exception below covers the mirror case (a
+ * heavily negative modifier pushing the threshold past 100).
+ *
  * The natural-100 exception applies to every ability type, not just skills: Runes and Passions
  * take no category modifier, so their roll is already a plain, unmodified 1d100, and a natural
  * 100 there must still succeed even once their value reaches or passes 100% (Passions routinely
@@ -121,7 +130,7 @@ function buildAbilityGate(improvementData: AbilityImprovementData) {
   return {
     formula: "1d100",
     comparator: "roll-over" as const,
-    threshold: getGateThreshold(improvementData) - categoryMod,
+    threshold: Math.min(getGateThreshold(improvementData), 99) - categoryMod,
     naturalHundredAlwaysSucceeds: true,
   };
 }
