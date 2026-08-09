@@ -1,0 +1,28 @@
+@layer system.base {
+  .chat-message {
+    & .message-header .flavor-text {
+      /* Sits inline before the name instead of on its own line (see buildFlavor) - fixed-width
+         so it doesn't nudge the name over by a slightly different amount per icon glyph. */
+      & .improvement-icon {
+        color: var(--color-text-dark-secondary);
+      }
+
+      /* Rides after the type text rather than being pinned to the row's far end: a right-pinned
+         tag either crowds a long item name or gets shoved onto its own line regardless, which is
+         exactly the row this tag exists to avoid reserving. */
+      & .improvement-source-tag {
+        font-size: var(--font-size-12);
+        color: var(--color-text-dark-secondary);
+      }
+    }
+
+    & .improvement-roll {
+      & .improvement-value-change {
+        width: 100%;
+        text-align: center;
+        font-size: var(--font-size-14);
+        opacity: 0.8;
+      }
+    }
+  }
+}

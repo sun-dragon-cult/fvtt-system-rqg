@@ -1,4 +1,5 @@
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { formatRollFormulaHtml } from "../../system/util";
 import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
@@ -43,11 +44,7 @@ export class DamageRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
 
     return foundry.applications.handlebars.renderTemplate(templatePaths.damageRollTooltip, {
       parts,
-      formulaHtml: this._formula
-        .replaceAll(" ", "&nbsp;") // Prevent linebreaks
-        .replaceAll("[", "</b><sub>&nbsp;")
-        .replaceAll("]", "</sub><b> ") // Include a regular linebreak to allow for linebreaks here
-        .replaceAll("-", "&#8209;"), // non-breaking minus sign
+      formulaHtml: formatRollFormulaHtml(this._formula),
     });
   }
 }

@@ -918,6 +918,19 @@ export function toSignedString(num: number) {
 }
 
 /**
+ * Converts a Roll formula's "[label]" flavor bracket (see {@link formatDamagePart}) into an HTML
+ * <sub> tag, and guards spaces/hyphens against line-wrapping mid-formula. Shared by every roll
+ * tooltip that shows a bracket-flavored formula line (DamageRoll, the improvement gain roll).
+ */
+export function formatRollFormulaHtml(formula: string): string {
+  return formula
+    .replaceAll(" ", "&nbsp;")
+    .replaceAll("[", "</b><sub>&nbsp;")
+    .replaceAll("]", "</sub><b> ")
+    .replaceAll("-", "&#8209;");
+}
+
+/**
  * Get the actor name with a link if the actor has a prototype token that is linked and the user is GM.
  */
 export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefined): string {

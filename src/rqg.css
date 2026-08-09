@@ -2,6 +2,7 @@
 @import url("./theme.css");
 @import url("./variables.css");
 @import url("./applications/improve-dialogs/improve-dialogs.css");
+@import url("./rolls/improvement-roll/improvement-roll.css");
 @import url("./applications/rqid-editor/rqid-editor.css");
 @import url("./applications/rqid-batch-editor/rqid-batch-editor.css");
 @import url("./items/itemsheets.css");
@@ -1043,10 +1044,18 @@
       flex-flow: row wrap;
       justify-content: space-around;
 
-      & .damage-formula {
+      & .roll-formula {
         margin-bottom: 0.2rem;
         padding-bottom: 0.3rem;
         border-bottom: 3px double var(--color-text-light-6);
+      }
+
+      /* Extra breathing room before a dice part's total - gap03rem alone is enough to separate
+         same-kind neighbors (die faces, or a formula followed by a flavor label), but a bare
+         formula directly followed by a bare total (e.g. an improvement gain roll's single
+         unlabeled part) reads as one run-on number without it. */
+      & .part-header .part-total {
+        margin-left: 0.75rem;
       }
 
       & .dice-result {
