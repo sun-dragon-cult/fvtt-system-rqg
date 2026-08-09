@@ -165,11 +165,12 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
       return;
     }
 
-    const improvementData = this.improvementData;
+    // Rebuilt from live source data rather than trusting the dialog's construction-time snapshot:
+    // the experience check and the characteristic's value can both have changed through another
+    // route while this dialog was still open (Core p.415).
+    const improvementData = buildCharacteristicAdapter(this.actor, this.characteristicName);
     const speakerName = getSpeakerDisplayName(this.speaker) || this.actor.name || "";
 
-    // Experience is the only source that consumes an experience check, and the check has to be
-    // there to spend (Core p.415).
     if (gainType.startsWith("experience-") && !improvementData.hasExperience) {
       ImproveCharacteristicDialog.logger.error(
         localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
@@ -189,19 +190,22 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     );
     const resolution = await resolveImprovement(request);
     await showImprovementChatMessage(resolution);
-    await this.applyCharacteristicGain(resolution.result.gain);
+    await this.applyCharacteristicGain(improvementData, resolution.result.gain);
   }
 
-  private async applyCharacteristicGain(gain: number): Promise<void> {
+  private async applyCharacteristicGain(
+    improvementData: CharacteristicImprovementData,
+    gain: number,
+  ): Promise<void> {
     const charUpdate: any = {
       system: {
         characteristics: {
-          [this.characteristicName]: { value: this.improvementData.chance + gain },
+          [this.characteristicName]: { value: improvementData.chance + gain },
         },
       },
     };
 
-    if (this.improvementData.hasExperience) {
+    if (improvementData.hasExperience) {
       charUpdate.system.characteristics[this.characteristicName].hasExperience = false;
     }
 
