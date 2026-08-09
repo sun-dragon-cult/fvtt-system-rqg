@@ -174,16 +174,29 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     const improvementData = buildCharacteristicAdapter(this.actor, this.characteristicName);
     const speakerName = getSpeakerDisplayName(this.speaker) || this.actor.name || "";
 
-    if (
-      getImprovementSourceFromGainType(gainType) === "experience" &&
-      !improvementData.hasExperience
-    ) {
+    const source = getImprovementSourceFromGainType(gainType);
+
+    // The selected source can have gone stale (e.g. the characteristic reached its species
+    // maximum through another route) while this dialog was still open, so re-check it against
+    // the just-rebuilt live flags rather than trusting the radio button that was chosen earlier.
+    const canUseSource =
+      source === "experience"
+        ? improvementData.canExperience
+        : source === "research"
+          ? improvementData.canResearch
+          : improvementData.canTraining;
+    if (!canUseSource) {
       ImproveCharacteristicDialog.logger.error(
-        localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
-          actorName: speakerName,
-          name: improvementData.name,
-          typeLocName: improvementData.typeLocName,
-        }),
+        localize(
+          source === "experience"
+            ? "RQG.Dialog.improveAbilityDialog.notifications.noExperience"
+            : "RQG.Dialog.improveAbilityDialog.notifications.sourceNoLongerAvailable",
+          {
+            actorName: speakerName,
+            name: improvementData.name,
+            typeLocName: improvementData.typeLocName,
+          },
+        ),
       );
       return;
     }

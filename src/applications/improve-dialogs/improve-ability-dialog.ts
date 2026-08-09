@@ -198,10 +198,9 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
     const improvementData = buildAbilityImprovementData(this.item);
     const speakerName = getSpeakerDisplayName(this.speaker) || this.item.parent.name || "";
 
-    if (
-      getImprovementSourceFromGainType(gainType) === "experience" &&
-      !improvementData.canExperience
-    ) {
+    const source = getImprovementSourceFromGainType(gainType);
+
+    if (source === "experience" && !improvementData.canExperience) {
       ui.notifications?.error(
         localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
           actorName: speakerName,
@@ -211,6 +210,22 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       );
       // No gain to apply and canExperience is already false here, so skip the write entirely
       // rather than issuing a no-op Item update.
+      return;
+    }
+
+    // The selected source can have gone stale (e.g. the ability crossed 75% or a Rune reached
+    // 100% through another route) while this dialog was still open, so re-check it against the
+    // just-rebuilt live flags rather than trusting the radio button that was chosen earlier.
+    const canUseSource =
+      source === "research" ? improvementData.canResearch : improvementData.canTraining;
+    if (source !== "experience" && !canUseSource) {
+      ui.notifications?.error(
+        localize("RQG.Dialog.improveAbilityDialog.notifications.sourceNoLongerAvailable", {
+          actorName: speakerName,
+          name: improvementData.name,
+          typeLocName: improvementData.typeLocName,
+        }),
+      );
       return;
     }
 

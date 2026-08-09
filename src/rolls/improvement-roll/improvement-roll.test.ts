@@ -152,6 +152,17 @@ describe("resolveImprovement", () => {
     expect(result.newValue).toBe(65);
   });
 
+  it("clamps a negative gain roll to zero (e.g. Research's 1d6-2)", async () => {
+    queue = [{ total: 88 }, { total: -1 }];
+
+    const { result } = await resolveImprovement(
+      buildRequest({ source: "research", gain: { kind: "random", formula: "1d6-2" } }),
+    );
+
+    expect(result.gain).toBe(0);
+    expect(result.newValue).toBe(65);
+  });
+
   it("clamps the gain so it never pushes currentValue past maxValue (e.g. a Rune's 100% cap)", async () => {
     queue = [{ total: 88 }, { total: 5 }];
 

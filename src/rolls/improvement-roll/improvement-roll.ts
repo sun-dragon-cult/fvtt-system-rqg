@@ -26,7 +26,7 @@ export async function resolveImprovement(
   if (succeeded) {
     gainRoll = new Roll(request.gain.formula);
     await gainRoll.evaluate();
-    gain = Number(gainRoll.total) || 0;
+    gain = Math.max(Number(gainRoll.total) || 0, 0);
     if (request.maxValue != null) {
       gain = Math.max(Math.min(gain, request.maxValue - request.currentValue), 0);
     }

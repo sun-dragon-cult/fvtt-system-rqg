@@ -689,7 +689,8 @@
         "btnDoImprovement": "Do Improvement",
         "btnCancel": "Cancel",
         "notifications": {
-          "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now."
+          "noExperience": "{actorName} does not have an experience check in {typeLocName} \"{name}\" and cannot gain from experience now.",
+          "sourceNoLongerAvailable": "{typeLocName} \"{name}\" changed while this dialog was open and can no longer be improved this way for {actorName}."
         }
       }
     },
