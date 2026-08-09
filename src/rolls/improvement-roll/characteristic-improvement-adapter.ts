@@ -1,15 +1,18 @@
 import type { RqgActor } from "../../actors/rqg-actor";
-import { isDocumentSubType, localize, RqgError } from "../../system/util";
+import { isDocumentSubType, localize } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
 import { CultRankEnum } from "@item-model/cult-enums.ts";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
+import { RqgLogger } from "../../system/logging/rqg-logger";
 import {
   getImprovementSourceFromGainType,
   type ImprovementDetailRow,
   type ImprovementRequest,
   type ImprovementSource,
 } from "./improvement-roll.types";
+
+const logger = new RqgLogger("characteristic-improvement-adapter");
 
 const SUPPORTED_CHARACTERISTIC_GAIN_TYPES = [
   "experience-gain-fixed",
@@ -284,7 +287,7 @@ function getActorSourceCharacteristicOrThrow(
     !Number.isFinite(Number(sourceChar.value)) ||
     typeof sourceChar.formula !== "string"
   ) {
-    throw new RqgError(
+    return logger.throw(
       "Tried to improve characteristic without complete source characteristic data",
       { actor, characteristicName },
     );
