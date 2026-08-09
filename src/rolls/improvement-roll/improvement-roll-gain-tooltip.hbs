@@ -1,4 +1,4 @@
-<div class="dice-tooltip">
+<div class="dice-tooltip" data-only-owner-visible-uuid="{{speakerUuid}}">
   <div class="roll-formula">
     <b>{{{formulaHtml}}}</b>
   </div>
@@ -11,18 +11,9 @@
               <li class="roll {{this.classes}}">{{{this.result}}}</li>
             {{/each}}
           </ol>
-          <div>
-            {{#if icon}}
-              <span class="part-method" data-tooltip="{{ method }}" aria-label="{{ localize method }}">
-                {{{ icon }}}
-              </span>
-            {{/if}}
-            <span class="part-formula">{{this.formula}}</span>
-          </div>
-          {{#if this.flavor}}<span class="part-flavor">{{this.flavor}}</span>{{/if}}
+          <span class="part-formula">{{this.formula}}</span>
           <span class="part-total">{{this.total}}</span>
         </header>
-
       </div>
     </section>
   {{/each}}

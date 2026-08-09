@@ -1,11 +1,39 @@
-import { activateChatTab, isTruthy, localize } from "../../system/util";
+import { activateChatTab, formatRollFormulaHtml, isTruthy, localize } from "../../system/util";
+import { formatDamagePart } from "../../system/combat-calculations";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import { AbilitySuccessLevelEnum } from "../ability-roll/ability-roll.defs";
 import type {
   ImprovementGateSpec,
   ImprovementResolution,
   ImprovementResult,
+  ImprovementSource,
 } from "./improvement-roll.types";
+
+/**
+ * The bare source word shown as an inline tag next to the item name/type in the header - always
+ * visible regardless of expand state or success/fail, unlike the gain roll's tooltip (see
+ * showImprovementChatMessage's flavor). Deliberately terse: it sits in the header on every card,
+ * so it has to survive being next to long item names without pushing the header onto an extra
+ * line any more than the icon in front of it already does.
+ */
+const TITLE_SOURCE_TAG_KEYS: Record<ImprovementSource, string> = {
+  experience: "RQG.Roll.ImprovementRoll.Source.experience",
+  research: "RQG.Roll.ImprovementRoll.Source.research",
+  training: "RQG.Roll.ImprovementRoll.Source.training",
+};
+
+/**
+ * The compact "(formula)[label]" suffix damage rolls use for each term (see formatDamagePart)
+ * reused here so the gain roll's formula line reads "1d6-1 through training" the same way a
+ * damage roll reads "1d8+1 weapon damage". Full phrase (not the bare TITLE_SOURCE_TAG_KEYS word)
+ * because this only shows up once someone expands the gain roll, where the extra couple of words
+ * cost nothing.
+ */
+const GAIN_TOOLTIP_SOURCE_LABEL_KEYS: Record<ImprovementSource, string> = {
+  experience: "RQG.Dialog.improveAbilityDialog.fromExperience",
+  research: "RQG.Dialog.improveAbilityDialog.throughResearch",
+  training: "RQG.Dialog.improveAbilityDialog.throughTraining",
+};
 
 /**
  * Renders one chat card per improvement action from the normalized resolver result. Knows nothing
@@ -26,8 +54,8 @@ export async function showImprovementChatMessage(resolution: ImprovementResoluti
 
   // Independent template renders - run in parallel rather than blocking one on the other.
   const [gateTooltip, gainTooltip] = await Promise.all([
-    showGateRoll ? renderTooltip(result.request.gateBreakdownChips, speakerUuid) : undefined,
-    showGainRoll ? renderTooltip([gainFormulaChip(result, gainRoll)], speakerUuid) : undefined,
+    showGateRoll ? renderChipTooltip(result.request.gateBreakdownChips, speakerUuid) : undefined,
+    showGainRoll && gainRoll ? renderGainTooltip(gainRoll, request.source, speakerUuid) : undefined,
   ]);
 
   const content = await foundry.applications.handlebars.renderTemplate(
@@ -78,14 +106,21 @@ export async function showImprovementChatMessage(resolution: ImprovementResoluti
   }
 }
 
-/** Html for what is being improved, shown in the chat message header. */
+/**
+ * Html for what is being improved, shown in the chat message header: the improvement icon sits
+ * inline before the name (rather than on its own line) and the source rides along after the type
+ * as a short tag, so the header stays glanceable - on both success and failure, since unlike the
+ * gain roll's tooltip this line isn't collapsible - without reserving a dedicated row for it.
+ */
 function buildFlavor(request: ImprovementResult["request"]): string {
   const flavorImg = request.img ? `<img src="${request.img}">` : "";
+  const sourceTag = localize(TITLE_SOURCE_TAG_KEYS[request.source]);
   return `
 <div class="rqg flavor">${flavorImg}</div>
+<i class="fa-fw fa-solid fa-arrow-trend-up improvement-icon"></i>
 <span class="roll-action">${request.name}</span>
-<span>${request.typeLocName}</span><br>
-<div class="improvement-attempt"><i class="fa-fw fa-solid fa-arrow-trend-up"></i> ${localize(`RQG.Roll.ImprovementRoll.Attempt.${request.source}`)}</div>`;
+<span>${request.typeLocName}</span>
+<span class="improvement-source-tag">· ${sourceTag}</span>`;
 }
 
 /**
@@ -111,8 +146,8 @@ export function getGateDisplay(gate: ImprovementGateSpec): { symbol: string; thr
   return { symbol: ">", threshold: Math.max(gate.threshold, 0) };
 }
 
-/** Tooltip for either roll block: the gate's threshold-derivation chips, or the gain's formula chip. */
-async function renderTooltip(
+/** Tooltip for the gate roll: the adapter's threshold-derivation chips (e.g. skill value − category modifier). */
+async function renderChipTooltip(
   chips: ImprovementResult["request"]["gateBreakdownChips"],
   speakerUuid: string | undefined,
 ): Promise<string> {
@@ -123,13 +158,21 @@ async function renderTooltip(
 }
 
 /**
- * The gain roll's tooltip chip: the formula that produced it, matching how ability-roll-tooltip.hbs
- * shows its base chance as one unmodified chip.
+ * Tooltip for the gain roll: a bracket-flavored formula line plus the individual die faces that
+ * were rolled, in the same style DamageRoll uses (see damage-roll-tooltip.hbs) - rather than just
+ * restating the formula, so e.g. a Research 1d6-2 roll shows "(1d6-2) through research" above the
+ * raw d6 face.
  */
-function gainFormulaChip(
-  result: ImprovementResult,
-  gainRoll: foundry.dice.Roll | undefined,
-): ImprovementResult["request"]["gateBreakdownChips"][number] {
-  const formula = gainRoll?.formula ?? result.request.gain.formula;
-  return { value: formula, label: localize("RQG.Roll.ImprovementRoll.Formula") };
+async function renderGainTooltip(
+  gainRoll: foundry.dice.Roll,
+  source: ImprovementSource,
+  speakerUuid: string | undefined,
+): Promise<string> {
+  return foundry.applications.handlebars.renderTemplate(templatePaths.improvementRollGainTooltip, {
+    formulaHtml: formatRollFormulaHtml(
+      formatDamagePart(gainRoll.formula, GAIN_TOOLTIP_SOURCE_LABEL_KEYS[source]),
+    ),
+    parts: gainRoll.dice.map((d) => d.getTooltipData()),
+    speakerUuid,
+  });
 }

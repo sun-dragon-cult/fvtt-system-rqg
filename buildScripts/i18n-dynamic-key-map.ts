@@ -36,7 +36,6 @@ import {
   SpellConcentrationEnum,
 } from "../src/data-model/item-data/spell";
 import { AbilitySuccessLevelEnum } from "../src/rolls/ability-roll/ability-roll.defs";
-import { improvementSources } from "../src/rolls/improvement-roll/improvement-roll.types";
 
 // --- Characteristics (defined inline in schema, no separate enum) ---
 const characteristics = [
@@ -155,5 +154,4 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   // Roll
   "RQG.Roll.AbilityRoll.SubsequentDefenceRoll.": [...subsequentDefenceRolls],
   "RQG.Roll.CharacteristicRoll.RollDifficultyLevel.": [...rollDifficultyLevels],
-  "RQG.Roll.ImprovementRoll.Attempt.": [...improvementSources],
 };

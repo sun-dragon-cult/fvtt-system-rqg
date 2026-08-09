@@ -88,6 +88,8 @@ export const templatePaths = {
   runeMagicRollTooltip: "systems/rqg/rolls/rune-magic-roll/rune-magic-roll-tooltip.hbs",
   runeMagicRoll: "systems/rqg/rolls/rune-magic-roll/rune-magic-roll.hbs",
   improvementRollTooltip: "systems/rqg/rolls/improvement-roll/improvement-roll-tooltip.hbs",
+  improvementRollGainTooltip:
+    "systems/rqg/rolls/improvement-roll/improvement-roll-gain-tooltip.hbs",
   improvementRoll: "systems/rqg/rolls/improvement-roll/improvement-roll.hbs",
 
   // Chat
