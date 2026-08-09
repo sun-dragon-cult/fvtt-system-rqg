@@ -49,7 +49,7 @@ export async function showImprovementChatMessage(resolution: ImprovementResoluti
 
       showGainRoll,
       gainLabel: localize("RQG.Roll.ImprovementRoll.Gain"),
-      gainDisplay: showGainRoll ? String(result.gain) : undefined,
+      gainDisplay: showGainRoll ? `${result.gain}${request.valueSuffix}` : undefined,
       gainTooltip,
       valueChange: showGainRoll
         ? localize("RQG.Roll.ImprovementRoll.ValueChange", {
