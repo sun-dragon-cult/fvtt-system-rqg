@@ -1,5 +1,4 @@
 import { type AbilityItem, ItemTypeEnum } from "@item-model/item-types.ts";
-import type { IAbility } from "../../data-model/shared/ability";
 import { RqgItem } from "../../items/rqg-item";
 import { systemId } from "../../system/config";
 import {
@@ -189,15 +188,14 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
       return logger.throw("Tried to improve item that isn't embedded on an actor", this.item);
     }
 
-    const improvementData = this.improvementData;
+    // Rebuilt from live source data rather than trusting the dialog's construction-time snapshot:
+    // the experience check, a skill's category mod, and a Rune's chance toward its 100% cap
+    // (Core p.415) can all have changed through another route while this dialog was still open -
+    // and the applied gain has to be clamped against the same current value it's presented against.
+    const improvementData = buildAbilityImprovementData(this.item);
     const speakerName = getSpeakerDisplayName(this.speaker) || this.item.parent.name || "";
 
-    // Experience is the only source that consumes an experience check, and the check has to be
-    // there to spend (Core p.415). Read live rather than trusting improvementData's construction-
-    // time snapshot, since the check could have been spent through another route while this
-    // dialog was still open.
-    const sourceAbility = this.item._source.system as Partial<IAbility>;
-    if (gainType.startsWith("experience-") && !sourceAbility.hasExperience) {
+    if (gainType.startsWith("experience-") && !improvementData.canExperience) {
       ui.notifications?.error(
         localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
           actorName: speakerName,
@@ -205,7 +203,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
           typeLocName: improvementData.typeLocName,
         }),
       );
-      // No gain to apply and hasExperience is already false here, so skip the write entirely
+      // No gain to apply and canExperience is already false here, so skip the write entirely
       // rather than issuing a no-op Item update.
       return;
     }
