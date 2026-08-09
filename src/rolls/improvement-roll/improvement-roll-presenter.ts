@@ -26,8 +26,8 @@ export async function showImprovementChatMessage(resolution: ImprovementResoluti
 
   // Independent template renders - run in parallel rather than blocking one on the other.
   const [gateTooltip, gainTooltip] = await Promise.all([
-    showGateRoll ? renderGateTooltip(result, speakerUuid) : undefined,
-    showGainRoll ? renderGainTooltip(result, gainRoll, speakerUuid) : undefined,
+    showGateRoll ? renderTooltip(result.request.gateBreakdownChips, speakerUuid) : undefined,
+    showGainRoll ? renderTooltip([gainFormulaChip(result, gainRoll)], speakerUuid) : undefined,
   ]);
 
   const content = await foundry.applications.handlebars.renderTemplate(
@@ -111,29 +111,25 @@ export function getGateDisplay(gate: ImprovementGateSpec): { symbol: string; thr
   return { symbol: ">", threshold: Math.max(gate.threshold, 0) };
 }
 
-/** Tooltip for the gate roll: the adapter's threshold-derivation chips (e.g. skill value − category modifier). */
-async function renderGateTooltip(
-  result: ImprovementResult,
+/** Tooltip for either roll block: the gate's threshold-derivation chips, or the gain's formula chip. */
+async function renderTooltip(
+  chips: ImprovementResult["request"]["gateBreakdownChips"],
   speakerUuid: string | undefined,
 ): Promise<string> {
   return foundry.applications.handlebars.renderTemplate(templatePaths.improvementRollTooltip, {
-    chips: result.request.gateBreakdownChips,
+    chips,
     speakerUuid,
   });
 }
 
 /**
- * Tooltip for the gain roll: a single chip with the formula that produced it, matching how
- * ability-roll-tooltip.hbs shows its base chance as one unmodified chip.
+ * The gain roll's tooltip chip: the formula that produced it, matching how ability-roll-tooltip.hbs
+ * shows its base chance as one unmodified chip.
  */
-async function renderGainTooltip(
+function gainFormulaChip(
   result: ImprovementResult,
   gainRoll: foundry.dice.Roll | undefined,
-  speakerUuid: string | undefined,
-): Promise<string> {
+): ImprovementResult["request"]["gateBreakdownChips"][number] {
   const formula = gainRoll?.formula ?? result.request.gain.formula;
-  return foundry.applications.handlebars.renderTemplate(templatePaths.improvementRollTooltip, {
-    chips: [{ value: formula, label: localize("RQG.Roll.ImprovementRoll.Formula") }],
-    speakerUuid,
-  });
+  return { value: formula, label: localize("RQG.Roll.ImprovementRoll.Formula") };
 }

@@ -31,7 +31,6 @@ const { resolveImprovement } = await import("./improvement-roll");
 
 function buildRequest(overrides: Partial<ImprovementRequest> = {}): ImprovementRequest {
   return {
-    domain: "ability",
     source: "experience",
     name: "Dodge",
     typeLocName: "Skill",
@@ -102,7 +101,6 @@ describe("resolveImprovement", () => {
 
   function buildCharacteristicRequest() {
     return buildRequest({
-      domain: "characteristic",
       valueSuffix: "",
       currentValue: 13,
       gate: { formula: "1d100", comparator: "roll-under", threshold: 45 },

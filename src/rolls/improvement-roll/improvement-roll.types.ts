@@ -6,8 +6,6 @@
  * single chat card. No domain knowledge lives beyond the adapters.
  */
 
-export type ImprovementDomain = "ability" | "characteristic";
-
 export const improvementSources = ["experience", "research", "training"] as const;
 
 export type ImprovementSource = (typeof improvementSources)[number];
@@ -49,7 +47,6 @@ export type ImprovementGainSpec = {
 };
 
 export type ImprovementRequest = {
-  domain: ImprovementDomain;
   source: ImprovementSource;
   /** Name of the improved ability or characteristic. */
   name: string;

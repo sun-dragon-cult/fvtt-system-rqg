@@ -82,7 +82,6 @@ export function buildCharacteristicImprovementRequest(
   const isGated = source !== "training" || improvementData.trainingIsGated;
 
   return {
-    domain: "characteristic",
     source,
     name: improvementData.name,
     typeLocName: improvementData.typeLocName,
@@ -183,17 +182,34 @@ export function buildCharacteristicAdapter(
   return buildCharacteristicAdapterFromSource(actor, sourceChar);
 }
 
+const TRAINABLE_CHARACTERISTICS = ["strength", "constitution", "dexterity", "power", "charisma"];
+const RESEARCHABLE_CHARACTERISTICS = ["strength", "constitution", "dexterity", "charisma"];
+
+const CULT_BONUS_RANK_ORDER: Record<CultRankEnum, number> = {
+  [CultRankEnum.LayMember]: 1,
+  [CultRankEnum.Initiate]: 2,
+  [CultRankEnum.GodTalker]: 3,
+  [CultRankEnum.RunePriest]: 4,
+  [CultRankEnum.RuneLord]: 5,
+  [CultRankEnum.ChiefPriest]: 6,
+  [CultRankEnum.HighPriest]: 7,
+};
+const CULT_BONUS_RANKS: CultRankEnum[] = [
+  CultRankEnum.GodTalker,
+  CultRankEnum.RunePriest,
+  CultRankEnum.ChiefPriest,
+  CultRankEnum.HighPriest,
+];
+
 function buildCharacteristicAdapterFromSource(
   actor: RqgActor,
   sourceChar: SourceCharacteristic,
 ): CharacteristicImprovementData {
   const baseValue: number = sourceChar.value ?? 0;
   const characteristicName = sourceChar.name;
-  const trainable = ["strength", "constitution", "dexterity", "power", "charisma"];
-  const researchable = ["strength", "constitution", "dexterity", "charisma"];
   const canUseExperienceType = characteristicName === "power";
-  const canUseTrainingType = trainable.includes(characteristicName);
-  const canUseResearchType = researchable.includes(characteristicName);
+  const canUseTrainingType = TRAINABLE_CHARACTERISTICS.includes(characteristicName);
+  const canUseResearchType = RESEARCHABLE_CHARACTERISTICS.includes(characteristicName);
 
   const rollmax = Roll.create(sourceChar.formula);
   const speciesRollableMax = rollmax.evaluateSync({ maximize: true }).total || 0;
@@ -205,21 +221,6 @@ function buildCharacteristicAdapterFromSource(
   const speciesMin = Number(diceCount || 0) + Math.floor(Number(bonusNumber || 0) / 6);
   const speciesMax = speciesRollableMax + speciesMin;
   const isPowerCharacteristic = characteristicName === "power";
-  const cultBonusRankOrder: Record<CultRankEnum, number> = {
-    [CultRankEnum.LayMember]: 1,
-    [CultRankEnum.Initiate]: 2,
-    [CultRankEnum.GodTalker]: 3,
-    [CultRankEnum.RunePriest]: 4,
-    [CultRankEnum.RuneLord]: 5,
-    [CultRankEnum.ChiefPriest]: 6,
-    [CultRankEnum.HighPriest]: 7,
-  };
-  const cultBonusRanks: CultRankEnum[] = [
-    CultRankEnum.GodTalker,
-    CultRankEnum.RunePriest,
-    CultRankEnum.ChiefPriest,
-    CultRankEnum.HighPriest,
-  ];
   const qualifyingCultRanks: CultRankEnum[] = [];
   if (isPowerCharacteristic) {
     for (const item of actor.items) {
@@ -228,14 +229,14 @@ function buildCharacteristicAdapterFromSource(
       }
       for (const joinedCult of item.system.joinedCults ?? []) {
         const rank = joinedCult.rank as CultRankEnum;
-        if (cultBonusRanks.includes(rank)) {
+        if (CULT_BONUS_RANKS.includes(rank)) {
           qualifyingCultRanks.push(rank);
         }
       }
     }
   }
   const highestQualifyingCultRank = qualifyingCultRanks.sort(
-    (a: CultRankEnum, b: CultRankEnum) => cultBonusRankOrder[b] - cultBonusRankOrder[a],
+    (a: CultRankEnum, b: CultRankEnum) => CULT_BONUS_RANK_ORDER[b] - CULT_BONUS_RANK_ORDER[a],
   )[0];
   const cultStandingBonus = highestQualifyingCultRank ? 20 : 0;
   const cultBonusLabel = highestQualifyingCultRank

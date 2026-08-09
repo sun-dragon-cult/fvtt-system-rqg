@@ -246,7 +246,6 @@ describe("buildAbilityImprovementRequest", () => {
       speaker,
     );
 
-    expect(request.domain).toBe("ability");
     expect(request.source).toBe("experience");
     expect(request.valueSuffix).toBe("%");
     expect(request.currentValue).toBe(55);

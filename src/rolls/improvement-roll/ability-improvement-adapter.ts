@@ -85,9 +85,9 @@ export function buildAbilityImprovementRequest(
 ): ImprovementRequest {
   const source = getImprovementSourceFromGainType(gainType);
   const isFixed = gainType.endsWith("-fixed");
+  const gate = source === "training" ? undefined : buildAbilityGate(improvementData);
 
   return {
-    domain: "ability",
     source,
     name: improvementData.name,
     typeLocName: improvementData.typeLocName,
@@ -95,14 +95,14 @@ export function buildAbilityImprovementRequest(
     actorName,
     currentValue: improvementData.chance,
     valueSuffix: "%",
-    gate: source === "training" ? undefined : buildAbilityGate(improvementData),
+    gate,
     gain: {
       kind: isFixed ? "fixed" : "random",
       formula: String(getGainFormula(improvementData, source, isFixed)),
     },
     // Runes cannot normally increase over 100% (Core p.415) - Skills and Passions have no such cap.
     maxValue: improvementData.abilityType === "rune" ? 100 : undefined,
-    gateBreakdownChips: source === "training" ? [] : buildAbilityGateBreakdown(improvementData),
+    gateBreakdownChips: gate ? buildAbilityGateBreakdown(improvementData) : [],
     speaker,
   };
 }
@@ -132,9 +132,15 @@ function buildAbilityGate(improvementData: AbilityImprovementData) {
   return {
     formula: "1d100",
     comparator: "roll-over" as const,
-    threshold: Math.min(getGateThreshold(improvementData), 99) - categoryMod,
+    threshold: getCappedGateBase(improvementData) - categoryMod,
     naturalHundredAlwaysSucceeds: true,
   };
+}
+
+/** {@link getGateThreshold} capped at 99 - see {@link buildAbilityGate} for why. Shared with
+ * {@link buildAbilityGateBreakdown} so the two stay in sync by construction rather than by comment. */
+function getCappedGateBase(improvementData: AbilityImprovementData): number {
+  return Math.min(getGateThreshold(improvementData), 99);
 }
 
 function getGainFormula(
@@ -165,9 +171,7 @@ function buildAbilityGateBreakdown(
   const baseLabel = isSkill
     ? localize("RQG.Dialog.improveAbilityDialog.skillValueLabel")
     : improvementData.typeLocName;
-  // Capped the same way as buildAbilityGate's base term, so these chips always sum to the
-  // threshold actually shown in the headline instead of a stale pre-cap number.
-  const baseValue = Math.min(getGateThreshold(improvementData), 99);
+  const baseValue = getCappedGateBase(improvementData);
   const chips: ImprovementDetailRow[] = [{ label: baseLabel, value: String(baseValue) }];
 
   const categoryMod = improvementData.categoryMod ?? 0;
@@ -298,12 +302,12 @@ export function updateAdapterForSkill(
   improvementData.chance = improvementData.categoryMod + unmodifiedSkillChance;
   const skillChance = unmodifiedSkillChance;
   const categoryMod = Number(improvementData.categoryMod);
-  const successfulRawRolls = Array.from({ length: 100 }, (_, i) => i + 1).filter((rawRoll) => {
-    const modifiedRoll = rawRoll + categoryMod;
-    return modifiedRoll > skillChance || modifiedRoll >= 100 || rawRoll >= 100;
-  });
-  improvementData.chanceToGain = successfulRawRolls.length;
-  improvementData.requiredRoll = successfulRawRolls[0] ?? 100;
+  // Closed form of "smallest raw 1-100 roll where roll+categoryMod > skillChance, or roll+categoryMod
+  // >= 100, or roll >= 100": each clause is itself a "roll >= threshold" band, and their union is
+  // just the loosest (smallest) threshold among the three.
+  const requiredRoll = Math.max(1, Math.min(skillChance - categoryMod + 1, 100 - categoryMod, 100));
+  improvementData.chanceToGain = 101 - requiredRoll;
+  improvementData.requiredRoll = requiredRoll;
 
   applyOver75TrainingResearchGate(improvementData);
 }

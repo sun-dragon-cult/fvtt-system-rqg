@@ -21,7 +21,10 @@ import {
   getDefaultCharacteristicImprovementSource,
   isSupportedCharacteristicGainType,
 } from "../../rolls/improvement-roll/characteristic-improvement-adapter";
-import { improvementSources } from "../../rolls/improvement-roll/improvement-roll.types";
+import {
+  getImprovementSourceFromGainType,
+  improvementSources,
+} from "../../rolls/improvement-roll/improvement-roll.types";
 import { resolveImprovement } from "../../rolls/improvement-roll/improvement-roll";
 import { showImprovementChatMessage } from "../../rolls/improvement-roll/improvement-roll-presenter";
 
@@ -171,7 +174,10 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     const improvementData = buildCharacteristicAdapter(this.actor, this.characteristicName);
     const speakerName = getSpeakerDisplayName(this.speaker) || this.actor.name || "";
 
-    if (gainType.startsWith("experience-") && !improvementData.hasExperience) {
+    if (
+      getImprovementSourceFromGainType(gainType) === "experience" &&
+      !improvementData.hasExperience
+    ) {
       ImproveCharacteristicDialog.logger.error(
         localize("RQG.Dialog.improveAbilityDialog.notifications.noExperience", {
           actorName: speakerName,

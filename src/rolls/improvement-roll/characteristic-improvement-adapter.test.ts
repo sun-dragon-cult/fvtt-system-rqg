@@ -219,7 +219,6 @@ describe("buildCharacteristicImprovementRequest", () => {
       speaker,
     );
 
-    expect(request.domain).toBe("characteristic");
     expect(request.valueSuffix).toBe("");
     expect(request.currentValue).toBe(13);
     expect(request.gate).toEqual({
