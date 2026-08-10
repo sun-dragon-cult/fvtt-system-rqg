@@ -93,14 +93,45 @@ components:
   sr-badge:
     rounded: "{rounded.md}"
     padding: "{spacing.4} {spacing.2}"
+  sr-badge-dex:
+    backgroundColor: "{colors.dex-sr-bg}"
+  sr-badge-siz:
+    backgroundColor: "{colors.siz-sr-bg}"
   cult-tab:
-    backgroundColor: "rgba(139, 90, 43, 0.30)"
+    backgroundColor: "{colors.row-active}"
     rounded: "{rounded.md} {rounded.md} 0 0"
   cult-tab-active:
     backgroundColor: transparent
   enc-totals-pill:
     backgroundColor: "{colors.brand-secondary}"
     rounded: "{rounded.full}"
+  sheet-header:
+    backgroundColor: "{colors.surface}"
+    textColor: "{colors.on-surface}"
+  header-divider:
+    backgroundColor: "{colors.border-on-surface}"
+    height: 1px
+  header-input:
+    backgroundColor: "{colors.input-bg-on-surface}"
+  nav-tab-active:
+    backgroundColor: "{colors.brand-primary}"
+    textColor: "{colors.on-surface}"
+  sr-slider-handle:
+    backgroundColor: "{colors.brand-accent}"
+    rounded: "{rounded.full}"
+  heading-underline:
+    backgroundColor: "{colors.heading-border}"
+    height: 2px
+  drop-highlight:
+    backgroundColor: "{colors.info}"
+  warning-highlight:
+    backgroundColor: "{colors.enc-warning}"
+  wounded-indicator:
+    backgroundColor: "{colors.danger}"
+  sheet-critical-state:
+    backgroundColor: "{colors.critical-state-bg}"
+  sheet-edit-mode:
+    backgroundColor: "{colors.edit-mode-bg}"
 ---
 
 ## Brand & Style
@@ -236,6 +267,36 @@ for consolidating into a shared class/mixin during the redesign.
 `sr-badge` (DEX/SIZ strike-rank indicators) and `status-pill` share a
 rounded-rect-with-inset-border look; `enc-totals-pill` is visually distinct
 (full pill, brand-secondary fill) and marks the sticky encumbrance footer.
+`sr-badge-dex` / `sr-badge-siz` are the same shape with a stat-specific fill
+(`dex-sr-bg` yellow, `siz-sr-bg` green) so the two strike-rank badges stay
+visually distinct at a glance.
+
+### Header chrome
+
+`sheet-header` (`surface` bg / `on-surface` text) is the branded bar at the
+top of every item sheet — see the Colors section's dark/light table for its
+themed counterparts. `header-divider` is the hairline border between the
+header and body, and `header-input` is the translucent-overlay treatment for
+any input field sitting directly on the header background. `nav-tab-active`
+covers the header's active-tab styling in light theme, where the accent role
+swaps to `brand-primary` (see Colors → Theming).
+
+### Interactive accents
+
+`sr-slider-handle` (the draggable DEX/SIZ strike-order knob) is the one
+place `brand-accent` appears as a fill rather than a text/border color.
+`drop-highlight` is the pulsing border/overlay shown while dragging an item
+onto the sheet. `warning-highlight` is the encumbrance-overload outline/fill
+(`.warning` in `rqg.css`, V1 and V2 both).
+
+### Sheet state overlays
+
+`wounded-indicator` (`danger`) marks the hit-location "wounded" border and
+the combat "strike" line-through — the same token doubles as the literal
+error/invalid color elsewhere (see Colors → Semantic). `sheet-critical-state`
+tints the whole sheet when `.dead`/`.unconscious`/`.shock`/`.wounded`, and
+`sheet-edit-mode` does the same for `.edit-mode` — both are full-sheet
+background overlays, not component-level accents.
 
 ### Cult tabs
 
