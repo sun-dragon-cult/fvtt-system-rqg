@@ -8,8 +8,8 @@ description: >
   what is not yet migrated to these tokens.
 colors:
   primary: "#854906"
-  brand-accent: "#f3a71e"
-  brand-secondary: "#5c8322"
+  accent: "#f3a71e"
+  secondary: "#5c8322"
   danger: "#901010"
   info: "#3a8fc1"
   surface: "#3e2723"
@@ -103,7 +103,7 @@ components:
   cult-tab-active:
     backgroundColor: transparent
   enc-totals-pill:
-    backgroundColor: "{colors.brand-secondary}"
+    backgroundColor: "{colors.secondary}"
     rounded: "{rounded.full}"
   sheet-header:
     backgroundColor: "{colors.surface}"
@@ -117,7 +117,7 @@ components:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-surface}"
   sr-slider-handle:
-    backgroundColor: "{colors.brand-accent}"
+    backgroundColor: "{colors.accent}"
     rounded: "{rounded.full}"
   heading-underline:
     backgroundColor: "{colors.heading-border}"
@@ -158,8 +158,8 @@ ones. The table below is the source of truth for which is which:
 | Token | CSS custom property |
 |---|---|
 | `colors.primary` | `--rqg-color-main` |
-| `colors.brand-accent` | `--rqg-color-main-bg` |
-| `colors.brand-secondary` | `--rqg-secondary-color` |
+| `colors.accent` | `--rqg-color-main-bg` |
+| `colors.secondary` | `--rqg-secondary-color` |
 | `colors.danger` | `--rqg-highlight` |
 | `colors.info` | `--rqg-drop-highlight-color` |
 | `colors.surface` | `--rqg-color-header-bg` |
@@ -184,11 +184,11 @@ prerequisite for the current token migration.
 
 ## Colors
 
-- **Brand:** `primary` (#854906, dark amber) and `brand-accent`
-  (#f3a71e, orange) are the system's signature pair — used for tab accents,
-  active-state borders, and the main-bg wash behind headers/legends.
-- **Secondary:** `brand-secondary` (#5c8322, olive) marks nature/rune-magic
-  adjacent accents (e.g. the encumbrance-totals pill).
+- **Brand:** `primary` (#854906, dark amber) and `accent` (#f3a71e, orange)
+  are the system's signature pair — used for tab accents, active-state
+  borders, and the main-bg wash behind headers/legends. `secondary`
+  (#5c8322, olive) marks nature/rune-magic-adjacent accents (e.g. the
+  encumbrance-totals pill).
 - **Semantic:** `danger` (#901010) is reused for both the "wounded" state and
   literal error/invalid indicators — one token, two meanings, which is
   acceptable since they're never shown together. `info` (#3a8fc1) is the
@@ -207,7 +207,7 @@ prerequisite for the current token migration.
 
 | Token | Dark (canonical) | Light |
 |---|---|---|
-| `surface` (header bg) | `#3e2723` | `brand-accent` (`#f3a71e`) |
+| `surface` (header bg) | `#3e2723` | `accent` (`#f3a71e`) |
 | `on-surface` (header text) | `#f7f3e8` | `#111` (`color-dark-1`) |
 | `border-on-surface` | `rgba(255,255,255,0.2)` | `rgba(0,0,0,0.4)` |
 
@@ -266,7 +266,7 @@ for consolidating into a shared class/mixin during the redesign.
 
 `sr-badge` (DEX/SIZ strike-rank indicators) and `status-pill` share a
 rounded-rect-with-inset-border look; `enc-totals-pill` is visually distinct
-(full pill, brand-secondary fill) and marks the sticky encumbrance footer.
+(full pill, secondary fill) and marks the sticky encumbrance footer.
 `sr-badge-dex` / `sr-badge-siz` are the same shape with a stat-specific fill
 (`dex-sr-bg` yellow, `siz-sr-bg` green) so the two strike-rank badges stay
 visually distinct at a glance.
@@ -284,7 +284,7 @@ swaps to `primary` (see Colors → Theming).
 ### Interactive accents
 
 `sr-slider-handle` (the draggable DEX/SIZ strike-order knob) is the one
-place `brand-accent` appears as a fill rather than a text/border color.
+place `accent` appears as a fill rather than a text/border color.
 `drop-highlight` is the pulsing border/overlay shown while dragging an item
 onto the sheet. `warning-highlight` is the encumbrance-overload outline/fill
 (`.warning` in `rqg.css`, V1 and V2 both).
