@@ -7,7 +7,7 @@ description: >
   value where the audit found duplicates. See "Known Inconsistencies" for
   what is not yet migrated to these tokens.
 colors:
-  brand-primary: "#854906"
+  primary: "#854906"
   brand-accent: "#f3a71e"
   brand-secondary: "#5c8322"
   danger: "#901010"
@@ -114,7 +114,7 @@ components:
   header-input:
     backgroundColor: "{colors.input-bg-on-surface}"
   nav-tab-active:
-    backgroundColor: "{colors.brand-primary}"
+    backgroundColor: "{colors.primary}"
     textColor: "{colors.on-surface}"
   sr-slider-handle:
     backgroundColor: "{colors.brand-accent}"
@@ -157,7 +157,7 @@ ones. The table below is the source of truth for which is which:
 
 | Token | CSS custom property |
 |---|---|
-| `colors.brand-primary` | `--rqg-color-main` |
+| `colors.primary` | `--rqg-color-main` |
 | `colors.brand-accent` | `--rqg-color-main-bg` |
 | `colors.brand-secondary` | `--rqg-secondary-color` |
 | `colors.danger` | `--rqg-highlight` |
@@ -184,7 +184,7 @@ prerequisite for the current token migration.
 
 ## Colors
 
-- **Brand:** `brand-primary` (#854906, dark amber) and `brand-accent`
+- **Brand:** `primary` (#854906, dark amber) and `brand-accent`
   (#f3a71e, orange) are the system's signature pair — used for tab accents,
   active-state borders, and the main-bg wash behind headers/legends.
 - **Secondary:** `brand-secondary` (#5c8322, olive) marks nature/rune-magic
@@ -279,7 +279,7 @@ themed counterparts. `header-divider` is the hairline border between the
 header and body, and `header-input` is the translucent-overlay treatment for
 any input field sitting directly on the header background. `nav-tab-active`
 covers the header's active-tab styling in light theme, where the accent role
-swaps to `brand-primary` (see Colors → Theming).
+swaps to `primary` (see Colors → Theming).
 
 ### Interactive accents
 
