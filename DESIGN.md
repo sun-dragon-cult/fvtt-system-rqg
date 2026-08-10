@@ -22,6 +22,9 @@ colors:
   enc-warning: "rgba(255, 100, 0, 0.27)"
   dex-sr-bg: "rgba(255, 227, 65, 0.56)"
   siz-sr-bg: "rgba(43, 215, 43, 0.56)"
+  heading-border: "#782e22"
+  critical-state-bg: "#620000d0"
+  edit-mode-bg: "#007300d0"
 typography:
   heading-lg:
     fontFamily: "Norse, Signika, 'Palatino Linotype', serif"
@@ -108,6 +111,45 @@ headings, and Signika for everything functional. The tone is "well-worn
 game table," not clean SaaS: textures (parchment background, wood-grain
 window chrome) and slightly rough edges (double borders, drop shadows) are
 intentional, not incidental.
+
+## Naming Convention
+
+Tokens above are documented by semantic name (e.g. `colors.row-hover`); the
+codebase exposes them as CSS custom properties in `variables.css`/`theme.css`,
+all prefixed `--rqg-`. There is no stricter mechanical rule than that — the
+existing pre-V2 variables already mix `--rqg-color-main`, `--rqg-highlight`,
+and `--rqg-secondary-color` for what would all be "brand/semantic colors" if
+transcribed 1:1 from this doc, so migration PRs keep each token's existing
+CSS name rather than renaming it to match the doc, and pick a plain
+descriptive name (not a mechanical `--rqg-color-<key>` transcription) for new
+ones. The table below is the source of truth for which is which:
+
+| Token | CSS custom property |
+|---|---|
+| `colors.brand-primary` | `--rqg-color-main` |
+| `colors.brand-accent` | `--rqg-color-main-bg` |
+| `colors.brand-secondary` | `--rqg-secondary-color` |
+| `colors.danger` | `--rqg-highlight` |
+| `colors.info` | `--rqg-drop-highlight-color` |
+| `colors.surface` | `--rqg-color-header-bg` |
+| `colors.on-surface` | `--rqg-color-header-text` |
+| `colors.on-surface-variant` | `--rqg-color-header-input-text` |
+| `colors.border-on-surface` | `--rqg-color-header-border` |
+| `colors.input-bg-on-surface` | `--rqg-color-header-input-bg` |
+| `colors.row-hover` | `--rqg-row-hover` |
+| `colors.row-active` | `--rqg-row-active` |
+| `colors.enc-warning` | `--rqg-color-enc-warning` |
+| `colors.dex-sr-bg` | `--rqg-color-dex-sr-bg` |
+| `colors.siz-sr-bg` | `--rqg-color-siz-sr-bg` |
+| `colors.heading-border` | `--rqg-color-heading-border` |
+| `colors.critical-state-bg` | `--rqg-color-critical-state-bg` |
+| `colors.edit-mode-bg` | `--rqg-color-edit-mode-bg` |
+| `rounded.sm` / `DEFAULT` / `md` / `lg` / `xl` / `full` | `--rqg-radius-sm` / `--rqg-radius` / `--rqg-radius-md` / `--rqg-radius-lg` / `--rqg-radius-xl` / `--rqg-radius-full` |
+
+`typography` and `spacing` are not yet exposed as CSS custom properties —
+sheet rules reference literal `rem` values directly today. Introducing
+`--rqg-font-*` / `--rqg-space-*` variables for them is future work, not a
+prerequisite for the current token migration.
 
 ## Colors
 
@@ -219,9 +261,12 @@ literal with the token above, not by adding new one-off values:
   rules instead of `colors.row-hover` / `colors.row-active`.
 - `#901010` appears as a literal in `actorsheet-v2.css` (combat "strike"
   and "wounded-border") even though `colors.danger` already exists.
-- Heading border color `#782e22` (h1/h2/h3 underlines) has no token yet.
+- Heading border color `#782e22` (h1/h2/h3 underlines) now has a token
+  (`colors.heading-border`); migrating the `actorsheet-v2.css` literal to it
+  is tracked by #971.
 - State backgrounds for dead/unconscious/wounded/shock (`#620000d0`) and
-  edit-mode (`#007300d0`) are raw hex with no semantic token.
+  edit-mode (`#007300d0`) now have tokens (`colors.critical-state-bg`,
+  `colors.edit-mode-bg`); migrating the literals is tracked by #971.
 - Font sizes still mix `px`, Foundry's px-based `--font-size-*`, keyword
   sizes (`small`, `x-small`), and the `rem` scale above.
 - Border-radius values outside the `rounded` scale still appear ad hoc in
