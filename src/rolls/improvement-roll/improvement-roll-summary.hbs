@@ -1,0 +1,14 @@
+<div class="improvement-roll-summary">
+  {{#each entries}}
+    <div class="improvement-roll improvement-roll-summary-entry">
+      <div class="improvement-roll-summary-entry-header">
+        {{#if img}}<img src="{{img}}">{{/if}}
+        <i class="fa-fw fa-solid fa-arrow-trend-up improvement-icon"></i>
+        <span class="roll-action">{{name}}</span>
+        <span>{{typeLocName}}</span>
+        <span class="improvement-source-tag">· {{sourceTag}}</span>
+      </div>
+      {{> improvementRollCardBody}}
+    </div>
+  {{/each}}
+</div>

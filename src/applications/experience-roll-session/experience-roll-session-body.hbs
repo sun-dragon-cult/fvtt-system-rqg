@@ -1,0 +1,50 @@
+<section class="experience-roll-session-body">
+  {{#if isEmpty}}
+    <p class="experience-roll-session-empty">{{localize "RQG.Actor.ExperienceRollSession.EmptyState"}}</p>
+  {{else}}
+    {{#each groups}}
+      <fieldset class="experience-roll-session-group">
+        <legend>{{label}}</legend>
+        {{#each rows}}
+          <div class="experience-roll-session-row {{rowStateClass}}">
+            <div class="experience-roll-session-row-name">
+              {{#if img}}<img src="{{img}}">{{/if}}
+              <span>{{name}}</span>
+              <span class="experience-roll-session-row-value">{{currentValueDisplay}}</span>
+            </div>
+
+            {{#if resolved}}
+              <span class="experience-roll-session-outcome success-level-{{resolved.successLevel}}">
+                <i class="fa-solid fa-{{#if resolved.increased}}check{{else}}times{{/if}}"></i>
+                {{resolved.outcomeText}}
+              </span>
+              {{#if resolved.gainDisplay}}
+                <span class="experience-roll-session-chip">
+                  <i class="fa-solid {{resolved.gainIcon}}"></i> +{{resolved.gainDisplay}}
+                </span>
+              {{/if}}
+              {{#if resolved.valueChangeDisplay}}
+                <span class="experience-roll-session-value-change">{{resolved.valueChangeDisplay}}</span>
+              {{/if}}
+            {{else if rollable}}
+              <span class="experience-roll-session-chip" data-tooltip="{{{targetTooltip}}}">
+                <i class="fa-solid fa-bullseye"></i>
+                {{#if comparatorSymbol}}{{comparatorSymbol}} {{/if}}{{targetDisplay}}
+              </span>
+              <span class="experience-roll-session-chip">
+                <i class="fa-solid {{gainIcon}}"></i> +{{gainFormula}}{{valueSuffix}}
+              </span>
+              <button type="button" class="experience-roll-session-roll-btn" data-action="rollRow" data-row-id="{{id}}">
+                {{localize "RQG.Actor.ExperienceRollSession.Roll"}}
+              </button>
+            {{else}}
+              <span class="experience-roll-session-disabled-reason">
+                <i class="fa-solid fa-lock"></i> {{disabledReasonText}}
+              </span>
+            {{/if}}
+          </div>
+        {{/each}}
+      </fieldset>
+    {{/each}}
+  {{/if}}
+</section>

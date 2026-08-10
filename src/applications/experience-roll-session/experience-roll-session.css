@@ -1,0 +1,155 @@
+@layer system.base {
+  .experience-roll-session {
+    & .window-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+    }
+
+    & .experience-roll-session-header {
+      align-items: center;
+      border-bottom: 1px solid var(--color-border-light-secondary);
+      display: flex;
+      gap: 0.5rem;
+      justify-content: space-between;
+      padding-bottom: 0.5rem;
+    }
+
+    /* Same control Foundry's own chat log uses for its message-mode picker (public/gm/blind/self):
+       .split-button + button.ui-control, with aria-pressed carrying the active state. Reusing it
+       gets the border-joining, hover, focus and active treatment for free instead of inventing a
+       one-off toggle look - the only override needed is width/padding, since .ui-control is sized
+       for a single icon glyph and this toggle carries text labels instead. */
+    & .experience-roll-session-gain-toggle {
+      width: max-content;
+
+      & .ui-control {
+        font-size: var(--font-size-12);
+        font-weight: 500;
+        height: auto;
+        padding: 0.25rem 0.7rem;
+        width: auto;
+      }
+    }
+
+    & .experience-roll-session-body {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      gap: 0.65rem;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    & .experience-roll-session-empty {
+      color: var(--color-text-secondary);
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* Each item type gets its own fieldset - the same grouping convention the weapon usage tabs
+       use (.standard-form fieldset/legend, from Foundry's own form CSS), tinted and squared off
+       rather than left as Foundry's plain unfilled, rounded default. POW's odd-one-out math reads
+       as its own small decision instead of one more table row. */
+    & .experience-roll-session-group {
+      background: color-mix(in srgb, var(--color-border-light-secondary) 12%, transparent);
+      border-radius: 0;
+      gap: 0.35rem;
+    }
+
+    /* One flex-wrap line per row: name/value ride the left, target/gain/cult-bonus chips and
+       the Roll button ride the right, wrapping to a second line only when a row (POW, with its
+       extra cult-bonus chip) genuinely doesn't fit - never a mandated two-line layout. */
+    & .experience-roll-session-row {
+      align-items: center;
+      border-bottom: 1px dotted var(--color-border-light-tertiary);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem 0.5rem;
+      padding: 0.35rem 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &.disabled {
+        opacity: 0.6;
+      }
+
+      &.resolved {
+        opacity: 0.8;
+      }
+    }
+
+    & .experience-roll-session-row-name {
+      align-items: center;
+      display: flex;
+      flex: 1 1 auto;
+      gap: 0.35rem;
+      min-width: 8rem;
+
+      & img {
+        border: none;
+        height: 1.5em;
+        width: 1.5em;
+      }
+    }
+
+    & .experience-roll-session-row-value {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-12);
+    }
+
+    /* Target/gain all read as the same pill shape, so the row scans as "here are this check's
+       numbers" rather than differently-styled fragments of text. */
+    & .experience-roll-session-chip {
+      align-items: center;
+      background: color-mix(in srgb, var(--color-text-secondary) 15%, transparent);
+      border-radius: 999px;
+      display: inline-flex;
+      font-size: var(--font-size-13);
+      gap: 0.3rem;
+      padding: 0.08rem 0.55rem;
+      white-space: nowrap;
+
+      &[data-tooltip] {
+        cursor: help;
+      }
+    }
+
+    & .experience-roll-session-roll-btn {
+      margin-left: auto;
+    }
+
+    & .experience-roll-session-disabled-reason {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-12);
+      font-style: italic;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    & .experience-roll-session-outcome {
+      align-items: center;
+      display: inline-flex;
+      font-size: var(--font-size-13);
+      gap: 0.35rem;
+      margin-left: auto;
+
+      &.success-level-2 {
+        color: var(--color-level-success, #1a7f37);
+      }
+
+      &.success-level-3 {
+        color: var(--color-level-error, #b00020);
+      }
+    }
+
+    & .experience-roll-session-value-change {
+      color: var(--color-text-secondary);
+      font-size: var(--font-size-12);
+      font-variant-numeric: tabular-nums;
+    }
+  }
+}

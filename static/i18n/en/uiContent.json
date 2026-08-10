@@ -249,6 +249,16 @@
         "SwitchToPlayMode": "Switch to Play Mode",
         "Badge": "✦ edit mode ✦"
       },
+      "ExperienceRollSession": {
+        "HeaderButton": "Experience Rolls ({count})",
+        "Title": "Experience Roll Session - {actorName}",
+        "RollAll": "Roll All",
+        "Roll": "Roll",
+        "GainFixed": "Fixed",
+        "GainRandom": "Random",
+        "EmptyState": "No pending experience checks.",
+        "SourceNoLongerAvailable": "That experience check is no longer available."
+      },
       "Gear": {
         "AddNewGearUniqueTip": "Add New Gear",
         "AddNewGearCurrencyTip": "Add New Currency",
@@ -1165,7 +1175,10 @@
           "training": "training"
         },
         "ValueChange": "{from} → {to}",
-        "Gain": "Gain"
+        "Gain": "Gain",
+        "SummaryTitle": "Experience Roll Session ({count})",
+        "Increased": "Increased",
+        "FailedToIncrease": "Failed to Increase"
       }
     },
     "Hotbar": {

@@ -14,6 +14,7 @@ import {
   syncImprovementSelectionUi,
 } from "./improve-dialog-shared";
 import {
+  applyCharacteristicGain,
   buildCharacteristicAdapter,
   buildCharacteristicImprovementRequest,
   type CharacteristicImprovementData,
@@ -209,26 +210,12 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     );
     const resolution = await resolveImprovement(request);
     await showImprovementChatMessage(resolution);
-    await this.applyCharacteristicGain(improvementData, resolution.result.gain);
-  }
-
-  private async applyCharacteristicGain(
-    improvementData: CharacteristicImprovementData,
-    gain: number,
-  ): Promise<void> {
-    const charUpdate: any = {
-      system: {
-        characteristics: {
-          [this.characteristicName]: { value: improvementData.chance + gain },
-        },
-      },
-    };
-
-    if (improvementData.hasExperience) {
-      charUpdate.system.characteristics[this.characteristicName].hasExperience = false;
-    }
-
-    await this.actor.update(charUpdate);
+    await applyCharacteristicGain(
+      this.actor,
+      this.characteristicName,
+      improvementData,
+      resolution.result.gain,
+    );
   }
 }
 

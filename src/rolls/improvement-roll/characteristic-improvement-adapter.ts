@@ -65,6 +65,31 @@ export function isSupportedCharacteristicGainType(
 }
 
 /**
+ * Applies a resolved gain to a characteristic: writes the new value and clears hasExperience only
+ * when it was actually set (training/research gains never had it set to begin with).
+ */
+export async function applyCharacteristicGain(
+  actor: RqgActor,
+  characteristicName: keyof Characteristics,
+  improvementData: CharacteristicImprovementData,
+  gain: number,
+): Promise<void> {
+  const charUpdate: any = {
+    system: {
+      characteristics: {
+        [characteristicName]: { value: improvementData.chance + gain },
+      },
+    },
+  };
+
+  if (improvementData.hasExperience) {
+    charUpdate.system.characteristics[characteristicName].hasExperience = false;
+  }
+
+  await actor.update(charUpdate);
+}
+
+/**
  * Maps a chosen gain type onto the shared improvement contract.
  *
  * Characteristic improvements are roll-under: the POW-gain-roll style check gains when the roll

@@ -91,6 +91,7 @@ export const templatePaths = {
   improvementRollGainTooltip:
     "systems/rqg/rolls/improvement-roll/improvement-roll-gain-tooltip.hbs",
   improvementRoll: "systems/rqg/rolls/improvement-roll/improvement-roll.hbs",
+  improvementRollSummary: "systems/rqg/rolls/improvement-roll/improvement-roll-summary.hbs",
 
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
@@ -100,6 +101,12 @@ export const templatePaths = {
 
   // Actor Wizard
   actorWizardApplication: "systems/rqg/applications/actor-wizard-application.hbs",
+
+  // Experience Roll Session
+  experienceRollSessionHeader:
+    "systems/rqg/applications/experience-roll-session/experience-roll-session-header.hbs",
+  experienceRollSessionBody:
+    "systems/rqg/applications/experience-roll-session/experience-roll-session-body.hbs",
 
   // Applications & Dialogs
   dialogRuneMagicCult: "systems/rqg/items/rune-magic-item/rune-magic-cult-dialog.hbs",
@@ -214,6 +221,9 @@ export const loadHandlebarsTemplates = async function () {
     // Item sheet parts
     itemActiveEffects: "systems/rqg/items/sheet-parts/item-active-effects.hbs",
     itemCommonPhysical: "systems/rqg/items/sheet-parts/item-common-physical.hbs",
+
+    // Dice & Rolls
+    improvementRollCardBody: "systems/rqg/rolls/improvement-roll/improvement-roll-card-body.hbs",
 
     // Application sheet parts
     improveDialogSourceChooser:

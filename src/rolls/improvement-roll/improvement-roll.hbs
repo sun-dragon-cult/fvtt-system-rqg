@@ -1,27 +1,3 @@
 <div class="improvement-roll">
-  {{#if showGateRoll}}
-    <div class="dice-roll">
-      <div class="dice-result">
-        <div class="dice-total success-level-{{gateSuccessLevel}}">
-          <div class="outcome">{{gateOutcomeText}}</div>
-          <div data-tooltip="{{gateFormula}}"><i class="fa-solid fa-dice"></i>{{gateTotal}}</div>
-          <div class="target" data-only-owner-visible-uuid="{{speakerUuid}}"><i class="fa-solid fa-bullseye"></i> {{#if comparatorSymbol}}{{comparatorSymbol}} {{/if}}{{threshold}}</div>
-        </div>
-      </div>
-      {{{gateTooltip}}}
-    </div>
-  {{/if}}
-
-  {{#if showGainRoll}}
-    <div class="dice-roll">
-      <div class="dice-result">
-        <div class="dice-total">
-          <div class="outcome">{{gainLabel}}</div>
-          <div><i class="fa-solid fa-dice"></i>{{gainDisplay}}</div>
-        </div>
-      </div>
-      {{{gainTooltip}}}
-    </div>
-    <div class="improvement-value-change" data-only-owner-visible-uuid="{{speakerUuid}}">{{valueChange}}</div>
-  {{/if}}
+  {{> improvementRollCardBody}}
 </div>

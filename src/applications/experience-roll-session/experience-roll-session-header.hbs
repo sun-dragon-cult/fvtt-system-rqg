@@ -1,0 +1,23 @@
+<section class="experience-roll-session-header">
+  <div class="experience-roll-session-gain-toggle split-button" role="group">
+    <button
+      type="button"
+      class="ui-control"
+      data-action="setGainKind"
+      data-gain-kind="fixed"
+      aria-pressed="{{#if (eq gainKind "fixed")}}true{{else}}false{{/if}}"
+      {{#unless canRollAll}}disabled{{/unless}}
+    ><i class="fa-solid fa-hashtag"></i> {{localize "RQG.Actor.ExperienceRollSession.GainFixed"}}</button>
+    <button
+      type="button"
+      class="ui-control"
+      data-action="setGainKind"
+      data-gain-kind="random"
+      aria-pressed="{{#if (eq gainKind "random")}}true{{else}}false{{/if}}"
+      {{#unless canRollAll}}disabled{{/unless}}
+    ><i class="fa-solid fa-dice"></i> {{localize "RQG.Actor.ExperienceRollSession.GainRandom"}}</button>
+  </div>
+  <button type="button" data-action="rollAll" {{#unless canRollAll}}disabled{{/unless}}>
+    <i class="fa-solid fa-dice"></i> {{localize "RQG.Actor.ExperienceRollSession.RollAll"}}
+  </button>
+</section>
