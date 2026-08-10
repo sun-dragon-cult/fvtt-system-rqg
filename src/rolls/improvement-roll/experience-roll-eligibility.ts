@@ -106,6 +106,9 @@ export function getEligibleExperienceRollEntry(
   return item ? buildAbilityEntryIfEligible(item) : undefined;
 }
 
+// Typed against isDocumentSubType's own parameter, not RqgItem: the two call sites below pass the
+// document type actor.items actually yields (iteration and .get() both produce a structurally
+// narrower type than the hand-written RqgItem class), which fails RqgItem's stricter shape.
 function buildAbilityEntryIfEligible<T extends Parameters<typeof isDocumentSubType>[0]>(
   item: T,
 ): ExperienceRollAbilityEntry | undefined {

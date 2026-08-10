@@ -82,13 +82,21 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     this.actor = actor;
   }
 
+  private get actorName(): string {
+    return this.actor.name ?? "";
+  }
+
+  private get speaker(): ChatMessage.SpeakerData {
+    return getSpeakerCompat({ actor: this.actor });
+  }
+
   override get title(): string {
-    return localize("RQG.Actor.ExperienceRollSession.Title", { actorName: this.actor.name ?? "" });
+    return localize("RQG.Actor.ExperienceRollSession.Title", { actorName: this.actorName });
   }
 
   override async _prepareContext(): Promise<ExperienceRollSessionContext> {
-    const actorName = this.actor.name ?? "";
-    const speaker = getSpeakerCompat({ actor: this.actor });
+    const actorName = this.actorName;
+    const speaker = this.speaker;
     const liveEntries = getEligibleExperienceRollEntries(this.actor);
     const liveIds = new Set(liveEntries.map((entry) => entry.id));
 
@@ -132,15 +140,13 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     // rollExperienceRollEntry), the same "rebuild from live source on submit" rule the per-item
     // improve dialogs follow.
     const entry = getEligibleExperienceRollEntry(this.actor, id);
-    const actorName = this.actor.name ?? "";
-    const speaker = getSpeakerCompat({ actor: this.actor });
 
     const resolution = await rollExperienceRollEntry(
       this.actor,
       id,
       this.gainKind,
-      actorName,
-      speaker,
+      this.actorName,
+      this.speaker,
     );
 
     if (!resolution) {
@@ -152,8 +158,9 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     if (entry) {
       this.resolvedThisSession.set(id, { entry, result: resolution.result });
     }
-    await showImprovementChatMessage(resolution);
-    await this.render();
+    // Independent of each other - the chat message doesn't gate the re-render - so run them
+    // concurrently rather than stacking the chat card's dice-so-nice wait behind the render.
+    await Promise.all([showImprovementChatMessage(resolution), this.render()]);
   }
 
   private static async onRollAll(
@@ -163,14 +170,11 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
   ): Promise<void> {
     (target as HTMLButtonElement).disabled = true;
 
-    const actorName = this.actor.name ?? "";
-    const speaker = getSpeakerCompat({ actor: this.actor });
-
     const results = await rollAllExperienceRollEntries(
       this.actor,
       this.gainKind,
-      actorName,
-      speaker,
+      this.actorName,
+      this.speaker,
     );
     if (results.length === 0) {
       await this.render();
@@ -180,11 +184,13 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     for (const { entry, resolution } of results) {
       this.resolvedThisSession.set(entry.id, { entry, result: resolution.result });
     }
-    await showImprovementSummaryChatMessage(
-      results.map(({ resolution }) => resolution),
-      speaker,
-    );
-    await this.render();
+    await Promise.all([
+      showImprovementSummaryChatMessage(
+        results.map(({ resolution }) => resolution),
+        this.speaker,
+      ),
+      this.render(),
+    ]);
   }
 
   private static onSetGainKind(
