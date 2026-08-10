@@ -17,6 +17,7 @@ colors:
   on-surface-variant: "#efe6d8"
   border-on-surface: "rgba(255, 255, 255, 0.2)"
   input-bg-on-surface: "rgba(255, 255, 255, 0.12)"
+  input-border-on-surface: "rgba(255, 255, 255, 0.25)"
   row-hover: "rgba(139, 90, 43, 0.18)"
   row-active: "rgba(139, 90, 43, 0.30)"
   enc-warning: "rgba(255, 100, 0, 0.27)"
@@ -129,6 +130,9 @@ components:
     height: 1px
   header-input:
     backgroundColor: "{colors.input-bg-on-surface}"
+  header-input-border:
+    backgroundColor: "{colors.input-border-on-surface}"
+    height: 1px
   nav-tab-active:
     backgroundColor: "{colors.primary}"
     textColor: "{colors.on-surface}"
@@ -220,6 +224,7 @@ ones. The table below is the source of truth for which is which:
 | `colors.on-surface-variant` | `--rqg-color-header-input-text` |
 | `colors.border-on-surface` | `--rqg-color-header-border` |
 | `colors.input-bg-on-surface` | `--rqg-color-header-input-bg` |
+| `colors.input-border-on-surface` | `--rqg-color-header-input-border` |
 | `colors.row-hover` | `--rqg-row-hover` |
 | `colors.row-active` | `--rqg-row-active` |
 | `colors.enc-warning` | `--rqg-color-enc-warning` |
@@ -271,55 +276,72 @@ prerequisite for the current token migration.
 
 RQG mirrors Foundry's own Application theme setting via `theme.css`'s
 `.theme-dark`/`.theme-light` blocks. (Foundry's separate "Interface" theme
-setting does *not* apply to sheet windows, so it has no token here.) Dark
-is Foundry's default and is what the `colors:` frontmatter above records
-for every token in this table — that's a practical choice (it matches what
-a fresh install renders and what `export` emits), **not** a claim that dark
-is the "real" design and light a fallback. Foundry treats both as
-first-class; `theme.css` defines both in full, and so does this table:
+setting does *not* apply to sheet windows, so it has no token here.) The
+mechanism is exactly what you'd want: each row below is *one* CSS custom
+property, referenced once by consuming rules, whose value is set inside
+`.theme-dark { }` and set again (differently, for the rows that vary)
+inside `.theme-light { }` — no duplicate variables, no JS, the cascade
+does the swap. Several rows resolve to *another* token rather than their
+own literal (`wounded-border`'s light value is literally
+`var(--rqg-highlight)` in the CSS, i.e. `danger`) — those are written as
+`= token-name` below rather than restated as a hex.
 
-| Token | Dark | Light |
-|---|---|---|
-| `surface` (header bg) | `#3e2723` | `accent` (`#f3a71e`) |
-| `on-surface` (header text) | `#f7f3e8` | `#111` |
-| `border-on-surface` (header rule) | `rgba(255,255,255,0.2)` | `rgba(0,0,0,0.4)` |
-| `row-alternate` (odd-row tint) | `rgba(255,255,255,0.05)` | `rgba(0,0,0,0.08)` |
-| `enc-bg` (encumbrance panel) | `#3d2e14` | `#d8b16e` |
-| `enc-legend` | `#4a3820` | `#e4cc9d` |
-| `hl-stats-bg` (hit-location stat chip) | `#1a1a1ab3` | `#ffffffb3` |
-| `hl-stats-bg-severed` | `#3a3a3a` | `#afafaf` |
-| `dex-sr-bg` (DEX strike-rank badge) | `#ffe34190` | `#f2ff009e` |
-| `siz-sr-bg` (SIZ strike-rank badge) | `#2bd72b90` | `#15ff1f5e` |
-| `wounded-bg` (hit-location fill) | `#ff400030` | = `enc-warning` (`#ff640045`) |
-| `wounded-border` | `#cc8060` | = `danger` (`#901010`) |
-| `health-state` | `#ff6b6b` | = `danger` (`#901010`) |
-| `sr-button-bg` | `#4a3820` | `#e1c794` |
-| `unassigned-rm-bg` (unclaimed rune-magic slot) | `#d9c8aa` | `#f0e8d0` |
-| `unassigned-rm-border` | `#7b6245` | `#a8926b` |
-| `unassigned-rm-text` | `#1f1204` | `#2f1f07` |
-| `unassigned-rm-action` | `#3a2208` | `#5a3a10` |
-| `tree-border-strong` | `#8f6a32` | `#7b5a29` |
-| `income-skill-bg` (training/research row) | `#4a3820` | `#e4cc9d` |
-| `income-skill-border` | `#7b6245` | `#a8926b` |
+Dark is Foundry's default, which is why the `colors:` frontmatter above
+records it — a practical choice (it matches a fresh install and what
+`export` emits), **not** a claim that dark is the "real" design and light
+a fallback. Every color token in this doc gets a row below, whether or not
+it actually varies, so nothing is silently constant-by-omission:
 
-Separately, `theme.css` also swaps `--rqg-income-skill-text` between
-Foundry's own `color-light-1`/`color-dark-1` — exactly the same pair
-`on-surface` already resolves to, so it isn't a distinct token here, just
-another consumer of `on-surface`'s existing swap.
+| Token | Dark | Light | Varies |
+|---|---|---|:---:|
+| `primary` | `#854906` | `#854906` | — |
+| `accent` | `#f3a71e` | `#f3a71e` | — |
+| `secondary` | `#5c8322` | `#5c8322` | — |
+| `danger` | `#901010` | `#901010` | — |
+| `info` | `#3a8fc1` | `#3a8fc1` | — |
+| `surface` (header bg) | `#3e2723` | = `accent` (`#f3a71e`) | ✓ |
+| `on-surface` (header text) | `#f7f3e8` | `#111` | ✓ |
+| `on-surface-variant` (header input text) | `#efe6d8` | `#222` | ✓ |
+| `border-on-surface` (header rule) | `rgba(255,255,255,0.2)` | `rgba(0,0,0,0.4)` | ✓ |
+| `input-bg-on-surface` (header input fill) | `rgba(255,255,255,0.12)` | `rgba(0,0,0,0.1)` | ✓ |
+| `input-border-on-surface` | `rgba(255,255,255,0.25)` | `#666` | ✓ |
+| `row-hover` | `rgba(139,90,43,0.18)` | `rgba(139,90,43,0.18)` | — |
+| `row-active` | `rgba(139,90,43,0.30)` | `rgba(139,90,43,0.30)` | — |
+| `enc-warning` | `rgba(255,100,0,0.27)` | `rgba(255,100,0,0.27)` | — |
+| `dex-sr-bg` (DEX strike-rank badge) | `#ffe34190` | `#f2ff009e` | ✓ |
+| `siz-sr-bg` (SIZ strike-rank badge) | `#2bd72b90` | `#15ff1f5e` | ✓ |
+| `heading-border` | `#782e22` | `#782e22` | — |
+| `critical-state-bg` | `#620000d0` | `#620000d0` | — |
+| `edit-mode-bg` | `#007300d0` | `#007300d0` | — |
+| `row-alternate` (odd-row tint) | `rgba(255,255,255,0.05)` | `rgba(0,0,0,0.08)` | ✓ |
+| `enc-bg` (encumbrance panel) | `#3d2e14` | `#d8b16e` | ✓ |
+| `enc-legend` | `#4a3820` | `#e4cc9d` | ✓ |
+| `hl-stats-bg` (hit-location stat chip) | `#1a1a1ab3` | `#ffffffb3` | ✓ |
+| `hl-stats-bg-severed` | `#3a3a3a` | `#afafaf` | ✓ |
+| `wounded-bg` (hit-location fill) | `#ff400030` | = `enc-warning` (`#ff640045`) | ✓ |
+| `wounded-border` | `#cc8060` | = `danger` (`#901010`) | ✓ |
+| `health-state` | `#ff6b6b` | = `danger` (`#901010`) | ✓ |
+| `sr-button-bg` | `#4a3820` | `#e1c794` | ✓ |
+| `unassigned-rm-bg` (unclaimed rune-magic slot) | `#d9c8aa` | `#f0e8d0` | ✓ |
+| `unassigned-rm-border` | `#7b6245` | `#a8926b` | ✓ |
+| `unassigned-rm-text` | `#1f1204` | `#2f1f07` | ✓ |
+| `unassigned-rm-action` | `#3a2208` | `#5a3a10` | ✓ |
+| `tree-border-strong` | `#8f6a32` | `#7b5a29` | ✓ |
+| `income-skill-bg` (training/research row) | `#4a3820` | `#e4cc9d` | ✓ |
+| `income-skill-border` | `#7b6245` | `#a8926b` | ✓ |
 
-The header's active-tab pair (`nav-tab-active`, under Components) swaps
-which of `accent`/`primary` is the fill and which of `on-surface`'s two
-values is the text — see Components → Header chrome for why, and for the
-handful of `--rqg-v2-*` blend-mode/filter tokens (not colors, so outside
-this table) that also flip per theme.
+24 of 35 color tokens vary by theme; 11 are genuinely constant (`theme.css`
+defines them once, with no `.theme-dark`/`.theme-light` override).
 
-Every other token in this doc — `primary`, `accent`, `secondary`, `danger`,
-`info`, `row-hover`, `row-active`, `enc-warning`, `heading-border`,
-`critical-state-bg`, `edit-mode-bg` — is genuinely constant: `theme.css`
-either doesn't mention them at all, or (for `enc-warning`, defined in
-`variables.css`) defines a single value with no `.theme-dark`/`.theme-light`
-override. That's a real absence of variation, not an oversight waiting to
-be filled in.
+Two related swaps live outside this table because they aren't `colors:`
+tokens themselves: `theme.css` also swaps `--rqg-income-skill-text` between
+Foundry's own `color-light-1`/`color-dark-1` — the same pair `on-surface`
+already resolves to, so it's another consumer of `on-surface`'s swap, not a
+distinct token. And the header's active-tab pair (`nav-tab-active`, under
+Components) swaps which of `accent`/`primary` is the fill and which of
+`on-surface`'s two values is the text — see Components → Header chrome for
+why. A handful of `--rqg-v2-*` blend-mode/filter values also flip per
+theme but aren't colors, so they're outside this table too.
 
 ## Typography
 
