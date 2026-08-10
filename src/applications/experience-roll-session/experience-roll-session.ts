@@ -9,7 +9,6 @@ import {
   type ExperienceRollGainKind,
   type ExperienceRollRowGroup,
   getEligibleExperienceRollEntries,
-  getEligibleExperienceRollEntry,
   groupExperienceRollRows,
   rollAllExperienceRollEntries,
   rollExperienceRollEntry,
@@ -133,13 +132,10 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     (target as HTMLButtonElement).disabled = true;
 
     const id = getRequiredDomDataset(target, "row-id");
-    // Snapshot the entry being rolled purely to keep it visible afterwards - the actual roll
-    // re-derives and revalidates eligibility from live actor data itself (see
-    // rollExperienceRollEntry), the same "rebuild from live source on submit" rule the per-item
-    // improve dialogs follow.
-    const entry = getEligibleExperienceRollEntry(this.actor, id);
-
-    const resolution = await rollExperienceRollEntry(
+    // rollExperienceRollEntry re-derives and revalidates eligibility from live actor data itself
+    // (the same "rebuild from live source on submit" rule the per-item improve dialogs follow),
+    // and hands the revalidated entry back so this row can keep showing its outcome afterward.
+    const rolled = await rollExperienceRollEntry(
       this.actor,
       id,
       this.gainKind,
@@ -147,18 +143,16 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
       this.speaker,
     );
 
-    if (!resolution) {
+    if (!rolled) {
       ui.notifications?.error(localize("RQG.Actor.ExperienceRollSession.SourceNoLongerAvailable"));
       await this.render();
       return;
     }
 
-    if (entry) {
-      this.resolvedThisSession.set(id, { entry, result: resolution.result });
-    }
+    this.resolvedThisSession.set(id, { entry: rolled.entry, result: rolled.resolution.result });
     // Independent of each other - the chat message doesn't gate the re-render - so run them
     // concurrently rather than stacking the chat card's dice-so-nice wait behind the render.
-    await Promise.all([showImprovementChatMessage(resolution), this.render()]);
+    await Promise.all([showImprovementChatMessage(rolled.resolution), this.render()]);
   }
 
   private static async onRollAll(

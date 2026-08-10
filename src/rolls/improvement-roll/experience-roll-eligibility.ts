@@ -95,7 +95,7 @@ export function getEligibleExperienceRollEntries(actor: CharacterActor): Experie
  * revalidates against on every roll, so a Roll All batch (or a lone row click) only ever pays for the
  * one entry's adapter build (including POW's dice-formula evaluation) instead of the whole actor's.
  */
-export function getEligibleExperienceRollEntry(
+function getEligibleExperienceRollEntry(
   actor: CharacterActor,
   entryId: string,
 ): ExperienceRollEntry | undefined {
@@ -321,11 +321,17 @@ async function applyExperienceRollGain(
   await entry.item.system.applyChanceGain(gain);
 }
 
+export type ExperienceRollAllResult = {
+  entry: ExperienceRollEntry;
+  resolution: ImprovementResolution;
+};
+
 /**
  * Rolls a single entry by id, re-deriving eligibility from live actor data first - the entry
  * handed in by the caller can have gone stale (another route cleared the flag, or pushed a Rune to
  * its cap) while the session was open, mirroring the per-item improve dialogs' submit-time
- * revalidation.
+ * revalidation. Returns the revalidated entry alongside the resolution so a single-row caller
+ * doesn't need its own separate lookup just to keep that row visible afterward.
  */
 export async function rollExperienceRollEntry(
   actor: CharacterActor,
@@ -333,7 +339,7 @@ export async function rollExperienceRollEntry(
   gainKind: ExperienceRollGainKind,
   actorName: string,
   speaker: ChatMessage.SpeakerData,
-): Promise<ImprovementResolution | undefined> {
+): Promise<ExperienceRollAllResult | undefined> {
   const liveEntry = getEligibleExperienceRollEntry(actor, entryId);
   if (!liveEntry || !liveEntry.rollable) {
     return undefined;
@@ -342,13 +348,8 @@ export async function rollExperienceRollEntry(
   const request = buildExperienceRollRequest(liveEntry, gainKind, actorName, speaker);
   const resolution = await resolveImprovement(request);
   await applyExperienceRollGain(actor, liveEntry, resolution.result.gain);
-  return resolution;
+  return { entry: liveEntry, resolution };
 }
-
-export type ExperienceRollAllResult = {
-  entry: ExperienceRollEntry;
-  resolution: ImprovementResolution;
-};
 
 /**
  * Rolls every currently-rollable entry, sequentially - each write completes before the next
@@ -380,9 +381,13 @@ export async function rollAllExperienceRollEntries(
     if (!entry.rollable) {
       continue;
     }
-    const resolution = await rollExperienceRollEntry(actor, entry.id, gainKind, actorName, speaker);
-    if (resolution) {
-      results.push({ entry, resolution });
+    const rolled = await rollExperienceRollEntry(actor, entry.id, gainKind, actorName, speaker);
+    if (rolled) {
+      // Keeps this batch's own pre-roll snapshot rather than rolled.entry (which reflects
+      // whatever state the actor was in for THIS specific roll) - later rows in the batch would
+      // otherwise show a POW-shifted category modifier baked into a "before" value the player
+      // never saw, since the whole batch's rows were all rendered from the same initial snapshot.
+      results.push({ entry, resolution: rolled.resolution });
     }
   }
   return results;

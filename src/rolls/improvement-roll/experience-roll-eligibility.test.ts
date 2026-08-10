@@ -346,11 +346,11 @@ describe("rollExperienceRollEntry", () => {
     };
     queue = [{ total: 1 }, { total: 2 }]; // gate: 1 <= 40 succeeds; gain: 1d3-1 -> 2
 
-    const resolution = await rollExperienceRollEntry(actor, "power", "random", "Vasana", speaker);
+    const rolled = await rollExperienceRollEntry(actor, "power", "random", "Vasana", speaker);
 
-    expect(resolution).toBeDefined();
-    expect(resolution!.result.request.gate).toMatchObject({ comparator: "roll-under" });
-    expect(resolution!.result.succeeded).toBe(true);
+    expect(rolled).toBeDefined();
+    expect(rolled!.resolution.result.request.gate).toMatchObject({ comparator: "roll-under" });
+    expect(rolled!.resolution.result.succeeded).toBe(true);
     expect(actor.update).toHaveBeenCalledWith(
       expect.objectContaining({
         system: expect.objectContaining({
@@ -367,11 +367,11 @@ describe("rollExperienceRollEntry", () => {
     const actor = characterActor({ items: [skill] });
     queue = [{ total: 99 }, { total: 4 }]; // gate: 99 > threshold succeeds; gain: 4
 
-    const resolution = await rollExperienceRollEntry(actor, "skill1", "random", "Vasana", speaker);
+    const rolled = await rollExperienceRollEntry(actor, "skill1", "random", "Vasana", speaker);
 
-    expect(resolution).toBeDefined();
-    expect(resolution!.result.request.gate).toMatchObject({ comparator: "roll-over" });
-    expect(resolution!.result.succeeded).toBe(true);
+    expect(rolled).toBeDefined();
+    expect(rolled!.resolution.result.request.gate).toMatchObject({ comparator: "roll-over" });
+    expect(rolled!.resolution.result.succeeded).toBe(true);
     expect(skill.system.applyChanceGain).toHaveBeenCalledWith(4);
   });
 
@@ -380,10 +380,10 @@ describe("rollExperienceRollEntry", () => {
     const actor = characterActor({ items: [skill] });
     queue = [{ total: 1 }]; // gate: 1 > 40 fails, no gain roll happens
 
-    const resolution = await rollExperienceRollEntry(actor, "skill1", "random", "Vasana", speaker);
+    const rolled = await rollExperienceRollEntry(actor, "skill1", "random", "Vasana", speaker);
 
-    expect(resolution!.result.succeeded).toBe(false);
-    expect(resolution!.result.gain).toBe(0);
+    expect(rolled!.resolution.result.succeeded).toBe(false);
+    expect(rolled!.resolution.result.gain).toBe(0);
     expect(skill.system.applyChanceGain).toHaveBeenCalledWith(0);
   });
 });
