@@ -216,7 +216,7 @@
         gap: 4px;
         padding: 4px 10px;
         border: 1px solid var(--color-border-dark-secondary, #7b6245);
-        border-radius: 6px 6px 0 0;
+        border-radius: var(--rqg-radius-md) var(--rqg-radius-md) 0 0;
         border-bottom: none;
         cursor: pointer;
         background: var(--rqg-row-active);
