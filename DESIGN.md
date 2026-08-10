@@ -472,23 +472,23 @@ here as a named pattern rather than enumerated tokens.
 
 ## Known Inconsistencies (not yet migrated)
 
-Carried over from the pre-redesign audit — resolve these by replacing the
-literal with the token above, not by adding new one-off values:
+#971's mechanical migration (row-hover/row-active, `danger`, heading-border,
+and the critical-state/edit-mode backgrounds, plus the border-radius scale)
+landed in #995. What's left is tracked in #996, since it risks an actual
+visual change rather than a value-preserving substitution:
 
-- Raw `rgb(139 90 43 / 18%)` / `/ 30%)` still appear as literals in several
-  rules instead of `colors.row-hover` / `colors.row-active`.
-- `#901010` appears as a literal in `actorsheet-v2.css` (combat "strike"
-  and "wounded-border") even though `colors.danger` already exists.
-- Heading border color `#782e22` (h1/h2/h3 underlines) now has a token
-  (`colors.heading-border`); migrating the `actorsheet-v2.css` literal to it
-  is tracked by #971.
-- State backgrounds for dead/unconscious/wounded/shock (`#620000d0`) and
-  edit-mode (`#007300d0`) now have tokens (`colors.critical-state-bg`,
-  `colors.edit-mode-bg`); migrating the literals is tracked by #971.
 - Font sizes still mix `px`, Foundry's px-based `--font-size-*`, keyword
   sizes (`small`, `x-small`), and the `rem` scale above.
-- Border-radius values outside the `rounded` scale still appear ad hoc in
-  a few places (e.g. `50px` used directly instead of `rounded.full`).
+- Spacing still mixes `px`, `rem`, `em`, and `ch` for what are really a
+  handful of intended sizes expressed inconsistently.
+- `rgb(139 90 43 / 32%)` / `/ 50%)` — a brighter variant of `row-hover` /
+  `row-active` used on dodge/spirit-combat rows — has no token yet; worth
+  deciding whether it earns one.
+- `border-radius: 2px` (one spot in `actorsheet-v2.css`) doesn't cleanly
+  map onto the `rounded` scale.
+
+Also carried over, unrelated to the above:
+
 - `income-skill-border` (`--rqg-income-skill-border`) duplicates
   `unassigned-rm-border`'s exact value in both themes (`#7b6245` dark,
   `#a8926b` light) — worth collapsing to one token once a shared name is
