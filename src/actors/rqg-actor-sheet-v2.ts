@@ -69,6 +69,8 @@ import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import type { GearItem } from "@item-model/gear-data-model.ts";
 import type { RqgActiveEffect } from "../active-effect/rqg-active-effect.ts";
 import { ActorWizard } from "../applications/actor-wizard-application";
+import { ExperienceRollSession } from "../applications/experience-roll-session/experience-roll-session";
+import { getEligibleExperienceRollEntries } from "../rolls/improvement-roll/experience-roll-eligibility";
 import { actorWizardFlags } from "../data-model/shared/rqg-document-flags";
 import {
   equippedStatuses,
@@ -209,6 +211,19 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         action: "openActorWizard",
         onClick: () => {
           new ActorWizard(this.actor, {}).render({ force: true });
+        },
+      });
+    }
+    const experienceRollCount = getEligibleExperienceRollEntries(this.actor).length;
+    if (experienceRollCount > 0) {
+      controls.unshift({
+        icon: "fa-solid fa-arrow-trend-up",
+        label: localize("RQG.Actor.ExperienceRollSession.HeaderButton", {
+          count: String(experienceRollCount),
+        }),
+        action: "openExperienceRollSession",
+        onClick: () => {
+          new ExperienceRollSession(this.actor).render({ force: true });
         },
       });
     }
