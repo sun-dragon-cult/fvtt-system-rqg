@@ -219,7 +219,7 @@
         border-radius: 6px 6px 0 0;
         border-bottom: none;
         cursor: pointer;
-        background: rgb(139 90 43 / 30%);
+        background: var(--rqg-row-active);
         font-family: var(--font-primary);
         font-size: 1rem;
 
@@ -428,7 +428,7 @@
       align-items: flex-end;
       background-color: var(--rqg-color-enc-bg);
       border: inset var(--rqg-color-enc-bg);
-      border-radius: 50px;
+      border-radius: var(--rqg-radius-full);
       text-align: center;
       gap: 3rem;
       justify-content: center;
@@ -554,7 +554,7 @@
               display: block;
               max-width: 250px;
               height: 120px;
-              border-radius: 10px;
+              border-radius: var(--rqg-radius-lg);
               object-fit: contain; /* never crops -- tall/wide outliers letterbox instead of losing content */
               filter: drop-shadow(2px 2px 3px rgb(0 0 0 / 70%));
             }
@@ -686,15 +686,15 @@
           }
 
           & [data-characteristic] {
-            border-radius: 4px;
+            border-radius: var(--rqg-radius);
             padding: 2px 4px;
 
             &:hover {
-              background: rgb(139 90 43 / 18%);
+              background: var(--rqg-row-hover);
             }
 
             &:active {
-              background: rgb(139 90 43 / 30%);
+              background: var(--rqg-row-active);
             }
           }
         }
@@ -709,7 +709,7 @@
 
           & .dex-sr,
           & .siz-sr {
-            border-radius: 6px;
+            border-radius: var(--rqg-radius-md);
             border: 1px inset #999;
             padding: 6px;
             line-height: 1;
@@ -736,7 +736,7 @@
           gap: 0.5rem;
           padding: 2px 5px;
           background-color: var(--rqg-color-enc-bg);
-          border-radius: 3px;
+          border-radius: var(--rqg-radius-sm);
           font-size: 14px;
 
           & .locomotion-picker {
@@ -870,18 +870,18 @@
       }
 
       & h1 {
-        font-size: 2em;
-        border-bottom: 2px solid #782e22;
+        font-size: 2rem;
+        border-bottom: 2px solid var(--rqg-color-heading-border);
       }
 
       & h2 {
-        font-size: 1.5em;
-        border-bottom: 1px solid #782e22;
+        font-size: 1.5rem;
+        border-bottom: 1px solid var(--rqg-color-heading-border);
       }
 
       & h3 {
-        font-size: 1.25em;
-        border-bottom: 1px solid #782e22;
+        font-size: 1.25rem;
+        border-bottom: 1px solid var(--rqg-color-heading-border);
       }
     }
 
@@ -979,13 +979,13 @@
     .runes-tab-v2 {
 /* Highlight entire rune card when any clickable child is hovered/active */
       & .rune-card:has([data-item-roll]:hover) {
-        background: rgb(139 90 43 / 18%);
-        border-radius: 4px;
+        background: var(--rqg-row-hover);
+        border-radius: var(--rqg-radius);
       }
 
       & .rune-card:has([data-item-roll]:active) {
-        background: rgb(139 90 43 / 30%);
-        border-radius: 4px;
+        background: var(--rqg-row-active);
+        border-radius: var(--rqg-radius);
       }
 
       & .rune-sections {
@@ -1240,11 +1240,11 @@
         }
 
         &:hover {
-          background: rgb(139 90 43 / 18%);
+          background: var(--rqg-row-hover);
         }
 
         &:active {
-          background: rgb(139 90 43 / 30%);
+          background: var(--rqg-row-active);
         }
 
         & .passion-icon {
@@ -1349,7 +1349,7 @@
 
       & .wounded {
         background-color: var(--rqg-color-wounded-bg);
-        border-color: #901010;
+        border-color: var(--rqg-highlight);
       }
 
       & .strike {
@@ -1403,7 +1403,7 @@
         & .stats {
           position: absolute !important;
           border: 1px solid #666;
-          border-radius: 10px;
+          border-radius: var(--rqg-radius-lg);
           padding: 5px;
           width: fit-content;
           min-width: 5rem;
@@ -1416,7 +1416,7 @@
           }
 
           &:not(.healthy) {
-            border-color: #901010;
+            border-color: var(--rqg-highlight);
             border-width: 2px;
           }
 
@@ -1520,7 +1520,7 @@
           display: flex;
           align-items: center;
           gap: 0.55rem;
-          border-radius: 6px;
+          border-radius: var(--rqg-radius-md);
           border: 1px inset #999;
           padding: 5px calc(0.55rem / 2);
           margin: 0 calc(-0.55rem / 2);
@@ -1632,11 +1632,11 @@
         }
 
         &:hover > * {
-          background: rgb(139 90 43 / 18%);
+          background: var(--rqg-row-hover);
         }
 
         &:active > * {
-          background: rgb(139 90 43 / 30%);
+          background: var(--rqg-row-active);
         }
 
 /* Dodge: single-action row — whole row gets the brighter tint */
@@ -1832,11 +1832,11 @@
         }
 
         &:hover > * {
-          background: rgb(139 90 43 / 18%);
+          background: var(--rqg-row-hover);
         }
 
         &:active > * {
-          background: rgb(139 90 43 / 30%);
+          background: var(--rqg-row-active);
         }
       }
 
@@ -1891,11 +1891,11 @@
         }
 
         &:hover > * {
-          background: rgb(139 90 43 / 18%);
+          background: var(--rqg-row-hover);
         }
 
         &:active > * {
-          background: rgb(139 90 43 / 30%);
+          background: var(--rqg-row-active);
         }
       }
     }
@@ -1937,18 +1937,18 @@
         }
 
         &:hover > * {
-          background: rgb(139 90 43 / 18%);
+          background: var(--rqg-row-hover);
         }
 
         &:active > * {
-          background: rgb(139 90 43 / 30%);
+          background: var(--rqg-row-active);
         }
       }
 
       & input[type="text"] {
         font-size: 12px;
         border: 1px solid transparent;
-        border-radius: 3px;
+        border-radius: var(--rqg-radius-sm);
         width: 100%;
         background: transparent;
         box-shadow: none;
@@ -1981,7 +1981,7 @@
         color: var(--rqg-unassigned-rm-text);
         background: var(--rqg-unassigned-rm-bg);
         border: 1px solid var(--rqg-unassigned-rm-border);
-        border-radius: 3px;
+        border-radius: var(--rqg-radius-sm);
         padding: 4px 8px;
         margin-bottom: 4px;
 
@@ -2087,7 +2087,7 @@
               text-align: center;
               font-size: 12px;
               border: 1px solid transparent;
-              border-radius: 3px;
+              border-radius: var(--rqg-radius-sm);
               background: transparent;
               box-shadow: none;
               transition: none;
@@ -2158,11 +2158,11 @@
         }
 
         &:hover > * {
-          background: rgb(139 90 43 / 18%);
+          background: var(--rqg-row-hover);
         }
 
         &:active > * {
-          background: rgb(139 90 43 / 30%);
+          background: var(--rqg-row-active);
         }
       }
     }
@@ -2180,7 +2180,7 @@
     &.unconscious,
     &.shock,
     &.wounded {
-      background: #620000d0;
+      background: var(--rqg-color-critical-state-bg);
 
       & > .window-content {
         scrollbar-color: rgb(255 255 255 / 70%) transparent;
@@ -2194,7 +2194,7 @@
       }
 
       & .window-header {
-        background-color: #620000d0;
+        background-color: var(--rqg-color-critical-state-bg);
       }
     }
 
@@ -2238,7 +2238,7 @@
           flex: 1 1 auto;
           min-width: 200px;
           border: 1px solid var(--color-border-dark-tertiary, #a8926b);
-          border-radius: 4px;
+          border-radius: var(--rqg-radius);
           padding: 6px 10px;
 
           & legend {
@@ -2271,11 +2271,11 @@
             line-height: var(--input-height);
 
             &:hover {
-              background: rgb(139 90 43 / 18%);
+              background: var(--rqg-row-hover);
             }
 
             &:active {
-              background: rgb(139 90 43 / 30%);
+              background: var(--rqg-row-active);
             }
           }
 
@@ -2428,10 +2428,10 @@
 
 /* When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`) */
     &.edit-mode {
-      background: #007300d0;
+      background: var(--rqg-color-edit-mode-bg);
 
       & .window-header {
-        background-color: #007300d0;
+        background-color: var(--rqg-color-edit-mode-bg);
       }
 
       & > .window-content {
