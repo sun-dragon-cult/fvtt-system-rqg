@@ -44,6 +44,30 @@ function createSkillItem(overrides: Partial<any> = {}) {
   } as any;
 }
 
+/** A resolved ImprovementResult for a 40%-base Sword skill, passed to buildExperienceRollRowView -
+ * shared shape for the "resolved row" tests below, which only vary gain/succeeded/newValue/request.gain. */
+function resolvedResult({ request: requestOverrides, ...overrides }: Partial<any> = {}) {
+  return {
+    request: {
+      source: "experience",
+      name: "Sword",
+      typeLocName: "Skill",
+      actorName: "Vasana",
+      currentValue: 40,
+      valueSuffix: "%",
+      gain: { kind: "random", formula: "1d6" },
+      gateBreakdownChips: [],
+      speaker: {},
+      ...requestOverrides,
+    },
+    succeeded: true,
+    gain: 3,
+    previousValue: 40,
+    newValue: 43,
+    ...overrides,
+  } as any;
+}
+
 function characterActor(overrides: Partial<any> = {}) {
   const neutral = { value: 13 };
   const actor: any = {
@@ -206,23 +230,13 @@ describe("buildExperienceRollRowView", () => {
     const actor = characterActor({ items: [createSkillItem()] });
 
     const entries = getEligibleExperienceRollEntries(actor);
-    const row = buildExperienceRollRowView(entries[0]!, "random", "Vasana", speaker, {
-      request: {
-        source: "experience",
-        name: "Sword",
-        typeLocName: "Skill",
-        actorName: "Vasana",
-        currentValue: 40,
-        valueSuffix: "%",
-        gain: { kind: "random", formula: "1d6" },
-        gateBreakdownChips: [],
-        speaker,
-      } as any,
-      succeeded: true,
-      gain: 3,
-      previousValue: 40,
-      newValue: 43,
-    });
+    const row = buildExperienceRollRowView(
+      entries[0]!,
+      "random",
+      "Vasana",
+      speaker,
+      resolvedResult(),
+    );
 
     expect(row.resolved?.increased).toBe(true);
     expect(row.resolved?.gainDisplay).toBe("3%");
@@ -232,23 +246,17 @@ describe("buildExperienceRollRowView", () => {
     const actor = characterActor({ items: [createSkillItem()] });
 
     const entries = getEligibleExperienceRollEntries(actor);
-    const row = buildExperienceRollRowView(entries[0]!, "random", "Vasana", speaker, {
-      request: {
-        source: "experience",
-        name: "Sword",
-        typeLocName: "Skill",
-        actorName: "Vasana",
-        currentValue: 40,
-        valueSuffix: "%",
-        gain: { kind: "random", formula: "1d6-1" },
-        gateBreakdownChips: [],
-        speaker,
-      } as any,
-      succeeded: true,
-      gain: 0,
-      previousValue: 40,
-      newValue: 40,
-    });
+    const row = buildExperienceRollRowView(
+      entries[0]!,
+      "random",
+      "Vasana",
+      speaker,
+      resolvedResult({
+        request: { gain: { kind: "random", formula: "1d6-1" } },
+        gain: 0,
+        newValue: 40,
+      }),
+    );
 
     expect(row.resolved?.increased).toBe(false);
     expect(row.resolved?.gainDisplay).toBe("0%");
@@ -271,23 +279,13 @@ describe("buildExperienceRollRowView", () => {
 
     const entries = getEligibleExperienceRollEntries(actor);
     // Rolled while "fixed" was selected, but the toggle has since moved to "random".
-    const row = buildExperienceRollRowView(entries[0]!, "random", "Vasana", speaker, {
-      request: {
-        source: "experience",
-        name: "Sword",
-        typeLocName: "Skill",
-        actorName: "Vasana",
-        currentValue: 40,
-        valueSuffix: "%",
-        gain: { kind: "fixed", formula: "3" },
-        gateBreakdownChips: [],
-        speaker,
-      } as any,
-      succeeded: true,
-      gain: 3,
-      previousValue: 40,
-      newValue: 43,
-    });
+    const row = buildExperienceRollRowView(
+      entries[0]!,
+      "random",
+      "Vasana",
+      speaker,
+      resolvedResult({ request: { gain: { kind: "fixed", formula: "3" } } }),
+    );
 
     expect(row.resolved?.gainIcon).toBe("fa-hashtag");
   });

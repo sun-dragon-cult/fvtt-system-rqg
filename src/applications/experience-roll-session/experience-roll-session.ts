@@ -23,7 +23,6 @@ import {
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 type ExperienceRollSessionContext = {
-  actorName: string;
   groups: ExperienceRollRowGroup[];
   isEmpty: boolean;
   gainKind: ExperienceRollGainKind;
@@ -116,7 +115,6 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     const groups = groupExperienceRollRows(rows);
 
     return {
-      actorName,
       groups,
       isEmpty: groups.length === 0,
       gainKind: this.gainKind,
@@ -169,12 +167,13 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     target: HTMLElement,
   ): Promise<void> {
     (target as HTMLButtonElement).disabled = true;
+    const speaker = this.speaker;
 
     const results = await rollAllExperienceRollEntries(
       this.actor,
       this.gainKind,
       this.actorName,
-      this.speaker,
+      speaker,
     );
     if (results.length === 0) {
       await this.render();
@@ -187,7 +186,7 @@ export class ExperienceRollSession extends HandlebarsApplicationMixin(
     await Promise.all([
       showImprovementSummaryChatMessage(
         results.map(({ resolution }) => resolution),
-        this.speaker,
+        speaker,
       ),
       this.render(),
     ]);
