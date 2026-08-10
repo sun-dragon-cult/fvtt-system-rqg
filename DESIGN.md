@@ -25,6 +25,22 @@ colors:
   heading-border: "#782e22"
   critical-state-bg: "#620000d0"
   edit-mode-bg: "#007300d0"
+  row-alternate: "rgba(255, 255, 255, 0.05)"
+  enc-bg: "#3d2e14"
+  enc-legend: "#4a3820"
+  hl-stats-bg: "#1a1a1ab3"
+  hl-stats-bg-severed: "#3a3a3a"
+  wounded-bg: "#ff400030"
+  wounded-border: "#cc8060"
+  health-state: "#ff6b6b"
+  sr-button-bg: "#4a3820"
+  unassigned-rm-bg: "#d9c8aa"
+  unassigned-rm-border: "#7b6245"
+  unassigned-rm-text: "#1f1204"
+  unassigned-rm-action: "#3a2208"
+  tree-border-strong: "#8f6a32"
+  income-skill-bg: "#4a3820"
+  income-skill-border: "#7b6245"
 typography:
   heading-lg:
     fontFamily: "Norse, Signika, 'Palatino Linotype', serif"
@@ -132,6 +148,43 @@ components:
     backgroundColor: "{colors.critical-state-bg}"
   sheet-edit-mode:
     backgroundColor: "{colors.edit-mode-bg}"
+  table-row-alternate:
+    backgroundColor: "{colors.row-alternate}"
+  enc-panel:
+    backgroundColor: "{colors.enc-bg}"
+  enc-panel-legend:
+    backgroundColor: "{colors.enc-legend}"
+  hl-stats-chip:
+    backgroundColor: "{colors.hl-stats-bg}"
+    rounded: "{rounded.md}"
+  hl-stats-chip-severed:
+    backgroundColor: "{colors.hl-stats-bg-severed}"
+  hit-location-wounded:
+    backgroundColor: "{colors.wounded-bg}"
+  hit-location-wounded-border:
+    backgroundColor: "{colors.wounded-border}"
+    height: 2px
+  health-state-indicator:
+    backgroundColor: "{colors.health-state}"
+  sr-button:
+    backgroundColor: "{colors.sr-button-bg}"
+    rounded: "{rounded.md}"
+  unassigned-rune-magic-slot:
+    backgroundColor: "{colors.unassigned-rm-bg}"
+    textColor: "{colors.unassigned-rm-text}"
+  unassigned-rune-magic-border:
+    backgroundColor: "{colors.unassigned-rm-border}"
+    height: 1px
+  unassigned-rune-magic-action:
+    textColor: "{colors.unassigned-rm-action}"
+  tree-divider:
+    backgroundColor: "{colors.tree-border-strong}"
+    height: 1px
+  income-skill-row:
+    backgroundColor: "{colors.income-skill-bg}"
+  income-skill-row-border:
+    backgroundColor: "{colors.income-skill-border}"
+    height: 1px
 ---
 
 ## Brand & Style
@@ -175,6 +228,22 @@ ones. The table below is the source of truth for which is which:
 | `colors.heading-border` | `--rqg-color-heading-border` |
 | `colors.critical-state-bg` | `--rqg-color-critical-state-bg` |
 | `colors.edit-mode-bg` | `--rqg-color-edit-mode-bg` |
+| `colors.row-alternate` | `--rqg-table-alternate-background` |
+| `colors.enc-bg` | `--rqg-color-enc-bg` |
+| `colors.enc-legend` | `--rqg-color-enc-legend` |
+| `colors.hl-stats-bg` | `--rqg-color-hl-stats-bg` |
+| `colors.hl-stats-bg-severed` | `--rqg-color-hl-stats-severed-bg` |
+| `colors.wounded-bg` | `--rqg-color-wounded-bg` |
+| `colors.wounded-border` | `--rqg-color-wounded-border` |
+| `colors.health-state` | `--rqg-color-health-state` |
+| `colors.sr-button-bg` | `--rqg-color-sr-button-bg` |
+| `colors.unassigned-rm-bg` | `--rqg-unassigned-rm-bg` |
+| `colors.unassigned-rm-border` | `--rqg-unassigned-rm-border` |
+| `colors.unassigned-rm-text` | `--rqg-unassigned-rm-text` |
+| `colors.unassigned-rm-action` | `--rqg-unassigned-rm-action` |
+| `colors.tree-border-strong` | `--rqg-tree-border-strong` |
+| `colors.income-skill-bg` | `--rqg-income-skill-bg` |
+| `colors.income-skill-border` | `--rqg-income-skill-border` |
 | `rounded.sm` / `DEFAULT` / `md` / `lg` / `xl` / `full` | `--rqg-radius-sm` / `--rqg-radius` / `--rqg-radius-md` / `--rqg-radius-lg` / `--rqg-radius-xl` / `--rqg-radius-full` |
 
 `typography` and `spacing` are not yet exposed as CSS custom properties —
@@ -198,18 +267,59 @@ prerequisite for the current token migration.
   passions, runes, and reputation — previously this value was duplicated
   ~12 times as a raw `rgb(139 90 43 / 18%)` / `/ 30%)` literal. Anything new
   should reference these tokens, not repeat the literal.
-- **Theming:** colors above are the **dark-theme** (Foundry default)
-  values, matching `body.theme-dark`. RQG mirrors Foundry's own
-  Applications theme setting via `theme.css`'s `.theme-dark`/`.theme-light`
-  blocks — see the table below for the light-theme counterparts. (Foundry's
-  separate "Interface" theme setting does *not* apply to sheet windows, so
-  it has no token here.)
+### Theming — Dark and Light
 
-| Token | Dark (canonical) | Light |
+RQG mirrors Foundry's own Application theme setting via `theme.css`'s
+`.theme-dark`/`.theme-light` blocks. (Foundry's separate "Interface" theme
+setting does *not* apply to sheet windows, so it has no token here.) Dark
+is Foundry's default and is what the `colors:` frontmatter above records
+for every token in this table — that's a practical choice (it matches what
+a fresh install renders and what `export` emits), **not** a claim that dark
+is the "real" design and light a fallback. Foundry treats both as
+first-class; `theme.css` defines both in full, and so does this table:
+
+| Token | Dark | Light |
 |---|---|---|
 | `surface` (header bg) | `#3e2723` | `accent` (`#f3a71e`) |
-| `on-surface` (header text) | `#f7f3e8` | `#111` (`color-dark-1`) |
-| `border-on-surface` | `rgba(255,255,255,0.2)` | `rgba(0,0,0,0.4)` |
+| `on-surface` (header text) | `#f7f3e8` | `#111` |
+| `border-on-surface` (header rule) | `rgba(255,255,255,0.2)` | `rgba(0,0,0,0.4)` |
+| `row-alternate` (odd-row tint) | `rgba(255,255,255,0.05)` | `rgba(0,0,0,0.08)` |
+| `enc-bg` (encumbrance panel) | `#3d2e14` | `#d8b16e` |
+| `enc-legend` | `#4a3820` | `#e4cc9d` |
+| `hl-stats-bg` (hit-location stat chip) | `#1a1a1ab3` | `#ffffffb3` |
+| `hl-stats-bg-severed` | `#3a3a3a` | `#afafaf` |
+| `dex-sr-bg` (DEX strike-rank badge) | `#ffe34190` | `#f2ff009e` |
+| `siz-sr-bg` (SIZ strike-rank badge) | `#2bd72b90` | `#15ff1f5e` |
+| `wounded-bg` (hit-location fill) | `#ff400030` | = `enc-warning` (`#ff640045`) |
+| `wounded-border` | `#cc8060` | = `danger` (`#901010`) |
+| `health-state` | `#ff6b6b` | = `danger` (`#901010`) |
+| `sr-button-bg` | `#4a3820` | `#e1c794` |
+| `unassigned-rm-bg` (unclaimed rune-magic slot) | `#d9c8aa` | `#f0e8d0` |
+| `unassigned-rm-border` | `#7b6245` | `#a8926b` |
+| `unassigned-rm-text` | `#1f1204` | `#2f1f07` |
+| `unassigned-rm-action` | `#3a2208` | `#5a3a10` |
+| `tree-border-strong` | `#8f6a32` | `#7b5a29` |
+| `income-skill-bg` (training/research row) | `#4a3820` | `#e4cc9d` |
+| `income-skill-border` | `#7b6245` | `#a8926b` |
+
+Separately, `theme.css` also swaps `--rqg-income-skill-text` between
+Foundry's own `color-light-1`/`color-dark-1` — exactly the same pair
+`on-surface` already resolves to, so it isn't a distinct token here, just
+another consumer of `on-surface`'s existing swap.
+
+The header's active-tab pair (`nav-tab-active`, under Components) swaps
+which of `accent`/`primary` is the fill and which of `on-surface`'s two
+values is the text — see Components → Header chrome for why, and for the
+handful of `--rqg-v2-*` blend-mode/filter tokens (not colors, so outside
+this table) that also flip per theme.
+
+Every other token in this doc — `primary`, `accent`, `secondary`, `danger`,
+`info`, `row-hover`, `row-active`, `enc-warning`, `heading-border`,
+`critical-state-bg`, `edit-mode-bg` — is genuinely constant: `theme.css`
+either doesn't mention them at all, or (for `enc-warning`, defined in
+`variables.css`) defines a single value with no `.theme-dark`/`.theme-light`
+override. That's a real absence of variation, not an oversight waiting to
+be filled in.
 
 ## Typography
 
@@ -257,10 +367,10 @@ cult tabs, status pills) sits at `sm`–`md`; larger decorative containers
 
 Every V2 item list (skills, spells, weapons, passions, runes, reputation)
 shares one interaction pattern: transparent at rest, `row-hover` on
-`:hover`, `row-active` on `:active`, plus an alternating-row background
-(`--rqg-table-alternate-background`, theme-dependent) on odd rows. This is
-the most duplicated pattern in the codebase and the highest-value target
-for consolidating into a shared class/mixin during the redesign.
+`:hover`, `row-active` on `:active`, plus `table-row-alternate`
+(`row-alternate`, themed — see Theming) on odd rows. This is the most
+duplicated pattern in the codebase and the highest-value target for
+consolidating into a shared class/mixin during the redesign.
 
 ### Badges & pills
 
@@ -287,7 +397,9 @@ swaps to `primary` (see Colors → Theming).
 place `accent` appears as a fill rather than a text/border color.
 `drop-highlight` is the pulsing border/overlay shown while dragging an item
 onto the sheet. `warning-highlight` is the encumbrance-overload outline/fill
-(`.warning` in `rqg.css`, V1 and V2 both).
+(`.warning` in `rqg.css`, V1 and V2 both). `sr-button` (themed —
+`sr-button-bg`) is the strike-rank action button background, distinct from
+the DEX/SIZ badges above.
 
 ### Sheet state overlays
 
@@ -297,6 +409,29 @@ error/invalid color elsewhere (see Colors → Semantic). `sheet-critical-state`
 tints the whole sheet when `.dead`/`.unconscious`/`.shock`/`.wounded`, and
 `sheet-edit-mode` does the same for `.edit-mode` — both are full-sheet
 background overlays, not component-level accents.
+
+### Encumbrance & hit-location chrome
+
+`enc-panel` / `enc-panel-legend` are the encumbrance section's own
+background and fieldset-legend fill (themed — distinct from
+`enc-totals-pill`, which is the sticky footer). `hl-stats-chip` /
+`hl-stats-chip-severed` are the hit-location stat overlay's normal and
+useless/severed backgrounds (themed). `hit-location-wounded` /
+`hit-location-wounded-border` are the wounded hit-location's fill and
+border (themed — the border resolves to `danger` in light theme, see
+Theming); `health-state-indicator` (`health-state`, themed) colors the
+health-state icon.
+
+### Slot & row chrome
+
+`unassigned-rune-magic-slot` (bg + text), `unassigned-rune-magic-border`,
+and `unassigned-rune-magic-action` style an unclaimed rune-magic slot
+(themed throughout). `income-skill-row` / `income-skill-row-border` do the
+same for a training/research income-skill row — `income-skill-border`
+currently duplicates `unassigned-rm-border`'s exact value in both themes,
+see Known Inconsistencies. `tree-divider` (`tree-border-strong`, themed) is
+the stronger divider used in tree/hierarchy layouts (e.g. hit-location
+grouping).
 
 ### Cult tabs
 
@@ -332,3 +467,7 @@ literal with the token above, not by adding new one-off values:
   sizes (`small`, `x-small`), and the `rem` scale above.
 - Border-radius values outside the `rounded` scale still appear ad hoc in
   a few places (e.g. `50px` used directly instead of `rounded.full`).
+- `income-skill-border` (`--rqg-income-skill-border`) duplicates
+  `unassigned-rm-border`'s exact value in both themes (`#7b6245` dark,
+  `#a8926b` light) — worth collapsing to one token once a shared name is
+  picked, rather than two identically-valued CSS variables.
