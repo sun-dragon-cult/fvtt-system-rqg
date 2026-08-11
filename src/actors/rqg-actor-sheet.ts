@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background-enums";
 import {
   type AbilityItem,
@@ -302,12 +303,16 @@ export class RqgActorSheet<
     };
   }
 
-  protected override async _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override async _updateObject(
+    event: Event,
+    formData: AnyMutableObject,
+  ): Promise<unknown> {
     const maxHitPoints = this.actor.system.attributes.hitPoints.max;
 
     if (
       formData["system.attributes.hitPoints.value"] == null || // Actors without hit locations should not get undefined
-      (formData["system.attributes.hitPoints.value"] ?? 0) >= (maxHitPoints ?? 0)
+      ((formData["system.attributes.hitPoints.value"] as number | undefined) ?? 0) >=
+        (maxHitPoints ?? 0)
     ) {
       formData["system.attributes.hitPoints.value"] = maxHitPoints;
     }
@@ -978,7 +983,7 @@ export class RqgActorSheet<
       //   assertItemType(itemData.type, ItemTypeEnum.RuneMagic);
       //   itemData.data.cultId = ""; // clear cult id to avoid errors, player will have to associate this spell with a cult
       // }
-      return this._onDropItemCreate(itemData);
+      return this._onDropItemCreate(itemData, event);
     }
 
     const targetActor = this.actor;
@@ -996,11 +1001,11 @@ export class RqgActorSheet<
     ) {
       // Prompt to confirm giving physical item from one Actor to another,
       // and ask how many if it has a quantity of more than one.
-      return await this.confirmTransferPhysicalItem(itemData, sourceActor);
+      return await this.confirmTransferPhysicalItem(itemData, sourceActor, event);
     } else {
       // Prompt to ensure user wants to copy intangible items
       //(runes, skills, passions, etc) from one Actor to another
-      return await this.confirmCopyIntangibleItem(itemData, sourceActor);
+      return await this.confirmCopyIntangibleItem(itemData, sourceActor, event);
     }
   }
 
@@ -1040,7 +1045,7 @@ export class RqgActorSheet<
         return doc?.toObject();
       }),
     )) as Item.Implementation["_source"][];
-    return this._onDropItemCreate(documents.filter(isTruthy));
+    return this._onDropItemCreate(documents.filter(isTruthy), event);
   }
 
   async _onDropJournalEntryPage(
@@ -1063,6 +1068,7 @@ export class RqgActorSheet<
   private async confirmCopyIntangibleItem(
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
+    event: DragEvent,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
@@ -1101,18 +1107,20 @@ export class RqgActorSheet<
       return false;
     }
 
-    return this.submitConfirmCopyIntangibleItem(incomingItemDataSource);
+    return this.submitConfirmCopyIntangibleItem(incomingItemDataSource, event);
   }
 
   private async submitConfirmCopyIntangibleItem(
     incomingItemDataSource: Item.Implementation["_source"],
+    event: DragEvent,
   ): Promise<RqgItem[]> {
-    return this._onDropItemCreate(incomingItemDataSource);
+    return this._onDropItemCreate(incomingItemDataSource, event);
   }
 
   private async confirmTransferPhysicalItem(
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
+    event: DragEvent,
   ): Promise<RqgItem[] | boolean> {
     const adapter: any = {
       incomingItemDataSource: incomingItemDataSource,
@@ -1153,6 +1161,7 @@ export class RqgActorSheet<
               form,
               incomingItemDataSource,
               sourceActor,
+              event,
             );
           },
         },
@@ -1172,6 +1181,7 @@ export class RqgActorSheet<
     form: HTMLFormElement,
     incomingItemDataSource: Item.Implementation["_source"],
     sourceActor: RqgActor,
+    event: DragEvent,
   ): Promise<RqgItem[] | boolean> {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
@@ -1180,13 +1190,19 @@ export class RqgActorSheet<
     if (data["numtotransfer"]) {
       quantityToTransfer = Number(data["numtotransfer"]);
     }
-    return await this.transferPhysicalItem(incomingItemDataSource, quantityToTransfer, sourceActor);
+    return await this.transferPhysicalItem(
+      incomingItemDataSource,
+      quantityToTransfer,
+      sourceActor,
+      event,
+    );
   }
 
   private async transferPhysicalItem(
     incomingItemDataSource: Item.Implementation["_source"],
     quantityToTransfer: number,
     sourceActor: RqgActor,
+    event: DragEvent,
   ): Promise<RqgItem[] | boolean> {
     if (!incomingItemDataSource || !incomingItemDataSource._id) {
       ui.notifications?.error(localize("RQG.Actor.Notification.NoIncomingItemDataSourceError"));
@@ -1246,7 +1262,7 @@ export class RqgActorSheet<
     } else {
       // Target actor does not have an item of this type with the same name
       incomingItemDataSource.system.quantity = newTargetQty;
-      const targetCreate = await this._onDropItemCreate(incomingItemDataSource);
+      const targetCreate = await this._onDropItemCreate(incomingItemDataSource, event);
       if (targetCreate) {
         if (newSourceQty > 0) {
           // update with new source quantity

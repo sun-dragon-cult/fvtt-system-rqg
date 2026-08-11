@@ -102,14 +102,14 @@ type PhysicalTransferResult =
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   #skillFilterQuery = "";
 
-  private _rqgDragDrop?: foundry.applications.ux.DragDrop.Any;
+  private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
 
   override get actor(): CharacterActor {
     return this.document as CharacterActor;
   }
 
   // Runtime override of ActorSheetV2 _dragDrop; current fvtt-types do not expose this member.
-  protected get _dragDrop(): foundry.applications.ux.DragDrop.Any {
+  protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
       dragSelector: "[data-item-drag-handle][data-item-id]",
       // Include a non-root content drop target for generic Foundry handling.
@@ -230,14 +230,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     return controls;
   }
 
-  // @ts-expect-error TEMP(v14-types) _getFrameButtons exists at runtime in Foundry >=14.361
   override _getFrameButtons(
-    options: unknown,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): foundry.applications.api.ApplicationV2.HeaderControlsEntry[] {
-    // @ts-expect-error TEMP(v14-types) super._getFrameButtons is missing from current type defs
-    const buttons = super._getFrameButtons(
-      options,
-    ) as foundry.applications.api.ApplicationV2.HeaderControlsEntry[];
+    const buttons = super._getFrameButtons(options);
     buttons.unshift(getRqidFrameButton(this as unknown as DocumentSheet<any, any>));
     return buttons;
   }

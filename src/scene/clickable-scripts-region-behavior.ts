@@ -81,7 +81,7 @@ export class ClickableScriptsRegionBehavior extends RegionBehaviorType<Clickable
 
   // *** -------------------------------------- ***
 
-  static override defineSchema(): any {
+  static override defineSchema(): ClickableScriptsRegionBehaviorSchema {
     return defineClickableScriptsRegionBehaviorSchema();
   }
 }

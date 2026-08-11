@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
@@ -99,7 +100,10 @@ export class WeaponSheet extends RqgItemSheet {
     return [];
   }
 
-  protected override async _updateObject(event: Event, formData: any): Promise<any> {
+  protected override async _updateObject(
+    event: Event,
+    formData: AnyMutableObject,
+  ): Promise<unknown> {
     formData["system.usage.oneHand.combatManeuvers"] = this.getUsageCombatManeuvers(
       "oneHand",
       formData,

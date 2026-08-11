@@ -78,10 +78,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     },
   };
 
-  private _rqgDragDrop?: foundry.applications.ux.DragDrop.Any;
+  private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
 
   // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
-  protected get _dragDrop(): foundry.applications.ux.DragDrop.Any {
+  protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
       dropSelector: "[data-dropzone]",
       permissions: {
@@ -110,9 +110,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     return `${localizeItemType(this.document.type)}: ${this.document.name}${parentAddition}`;
   }
 
-  // @ts-expect-error TEMP(v14-types) _getFrameButtons exists at runtime in Foundry >=14.361
-  override _getFrameButtons(options: any): any[] {
-    // @ts-expect-error TEMP(v14-types) super._getFrameButtons is missing from current type defs
+  override _getFrameButtons(
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): foundry.applications.api.ApplicationV2.HeaderControlsEntry[] {
     const buttons = super._getFrameButtons(options);
     buttons.unshift(getRqidFrameButton(this as unknown as DocumentSheet<any, any>));
     return buttons;

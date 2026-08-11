@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
   armorTypeTranslationKeys,
@@ -80,7 +81,7 @@ export class ArmorSheet extends RqgItemSheet {
     html.find("[data-add-hit-location]").change(this.onAddHitLocation.bind(this));
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     formData["name"] =
       `${formData["system.namePrefix"]} ${formData["system.armorType"]} (${formData["system.material"]})`;
     return super._updateObject(event, formData);

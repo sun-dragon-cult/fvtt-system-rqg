@@ -74,7 +74,10 @@ export class DefaultItemIconSettings extends HandlebarsApplicationMixin(
     };
   }
 
-  protected override _onChangeForm(formConfig: any, event: Event): void {
+  protected override _onChangeForm(
+    formConfig: foundry.applications.api.ApplicationV2.FormConfiguration,
+    event: Event,
+  ): void {
     this.updatePreviewFromEvent(event);
     super._onChangeForm(formConfig, event);
   }

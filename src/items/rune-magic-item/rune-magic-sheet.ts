@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { getSelectRuneOptions, isDocumentSubType } from "../../system/util";
 import { RqgItemSheet } from "../rqg-item-sheet";
@@ -78,7 +79,7 @@ export class RuneMagicSheet extends RqgItemSheet {
     return options;
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     return super._updateObject(event, formData);
   }
 }

@@ -59,7 +59,6 @@ import type { SkillItem } from "@item-model/skill-data-model.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 
-import type { PassionItem } from "@item-model/passion-data-model.ts";
 import { handleItemUpdateDocumentsPreUpdate } from "./item-lifecycle-strategy";
 import {
   applyWoundToHitLocation,
@@ -416,7 +415,11 @@ export class RqgItem extends Item {
     return this.system.spellSummaryRest;
   }
 
-  override async _preCreate(data: any, options: any, user: User): Promise<void> {
+  override async _preCreate(
+    data: Item.CreateData,
+    options: Item.Database.PreCreateOptions,
+    user: User,
+  ): Promise<void> {
     if (this.parent && isDocumentSubType<SkillItem>(this, ItemTypeEnum.Skill)) {
       assertDocumentSubType<CharacterActor>(this.parent, ActorTypeEnum.Character);
       // Update the baseChance for Dodge & Jump skills that depend on actor DEX
@@ -437,8 +440,8 @@ export class RqgItem extends Item {
     await super._preCreate(data, options, user);
   }
 
-  protected override _onCreate(itemData: any, options: never, userId: string): void {
-    const item = itemData._id ? game.items?.get(itemData._id) : undefined;
+  protected override _onCreate(itemData: Item.CreateData, options: never, userId: string): void {
+    const item = itemData._id ? game.items?.get(itemData._id as string) : undefined;
     const defaultIcon = foundry.documents.BaseItem.DEFAULT_ICON;
 
     if (item?.img === defaultIcon) {
@@ -457,7 +460,7 @@ export class RqgItem extends Item {
         },
       };
 
-      if (isDocumentSubType<PassionItem>(itemData, ItemTypeEnum.Passion)) {
+      if (itemData.type === ItemTypeEnum.Passion) {
         updateData.system = { subject: itemData.name };
       }
 

@@ -550,10 +550,6 @@ async function showMigrationReportSaveFailureDialog(
       content.replaceChildren(result);
     }
 
-    override async close(options?: any): Promise<this> {
-      return await super.close(options);
-    }
-
     override async _onRender(): Promise<void> {
       this.element
         .querySelector<HTMLButtonElement>(".rqg-migration-close")

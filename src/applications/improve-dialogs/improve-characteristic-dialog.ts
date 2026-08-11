@@ -129,7 +129,10 @@ class ImproveCharacteristicDialog extends HandlebarsApplicationMixin(
     this.syncImprovementSelectionUi();
   }
 
-  protected override _onChangeForm(formConfig: any, event: Event): void {
+  protected override _onChangeForm(
+    formConfig: foundry.applications.api.ApplicationV2.FormConfiguration,
+    event: Event,
+  ): void {
     if (isImprovementSelectionChangeEvent(event)) {
       this.syncImprovementSelectionUi();
     }

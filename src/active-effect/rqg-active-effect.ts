@@ -85,7 +85,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     );
   }
 
-  override async _preCreate(data: any, options: any, user: User): Promise<boolean | void> {
+  override async _preCreate(
+    data: ActiveEffect.CreateData,
+    options: ActiveEffect.Database.PreCreateOptions,
+    user: User,
+  ): Promise<boolean | void> {
     if (RqgActiveEffect.#isOnPhysicalItem(this)) {
       const fieldFromCreateData = foundry.utils.getProperty(
         data,
@@ -112,7 +116,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
   override async _preUpdate(
     changes: Record<string, unknown>,
-    options: any,
+    options: ActiveEffect.Database.PreUpdateOptions,
     user: User,
   ): Promise<boolean | void> {
     if (RqgActiveEffect.#isOnPhysicalItem(this)) {
@@ -130,7 +134,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
   protected override _onUpdate(
     changed: Record<string, unknown>,
-    options: any,
+    options: ActiveEffect.Database.OnUpdateOptions,
     userId: string,
   ): void {
     super._onUpdate(changed as any, options as any, userId as any);

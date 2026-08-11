@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import { RuneTypeEnum } from "@item-model/rune-enums.ts";
@@ -66,7 +67,7 @@ export class RuneSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     const runeType = formData["system.runeType.type"];
     const translatedRuneType = localize(`RQG.Item.Rune.RuneType.${runeType}`);
     formData["name"] = `${formData["system.rune"]} (${translatedRuneType})`;

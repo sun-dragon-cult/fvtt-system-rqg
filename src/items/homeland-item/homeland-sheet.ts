@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { getSelectRuneOptions } from "../../system/util";
 import { RqgItemSheet } from "../rqg-item-sheet";
@@ -52,7 +53,7 @@ export class HomelandSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     const region = formData["system.region"] ? ` (${formData["system.region"]})` : "";
     const newName = formData["system.homeland"] + region;
     if (newName) {

@@ -13,7 +13,7 @@ onlyBuiltDependencies:
   - "utf-8-validate"
 
 allowBuilds:
-  "@league-of-foundry-developers/foundry-vtt-types@https://codeload.github.com/League-of-Foundry-Developers/foundry-vtt-types/tar.gz/4e33ca91e16c624720f2ddf688a80aae33f44172": true
+  "@league-of-foundry-developers/foundry-vtt-types@https://codeload.github.com/League-of-Foundry-Developers/foundry-vtt-types/tar.gz/20f32bcb4be28e89f7b2765adfb702a53e053aaa": true
   '@parcel/watcher': true
   bufferutil: true
   classic-level: true

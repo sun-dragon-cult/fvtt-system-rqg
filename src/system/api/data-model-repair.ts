@@ -30,7 +30,7 @@ type InvalidDocumentCollection = {
 };
 
 /**
- * TEMP(v14-types): `Item.SubType`/`Actor.SubType` include the "base" fallback subtype, but
+ * `Item.SubType`/`Actor.SubType` include the "base" fallback subtype, but
  * `CONFIG.Item.dataModels`/`CONFIG.Actor.dataModels` only contain entries for subtypes with a
  * registered custom DataModel. Look up by an unconstrained string key so "base" (or any other
  * subtype without a custom model) safely resolves to `undefined` instead of a type error.
@@ -81,11 +81,14 @@ type ErrorGroup = {
 };
 
 function getSchemaInfo(ModelClass: {
-  schema: { fields: Record<string, foundry.data.fields.DataField> };
+  schema: { fields: Record<string, foundry.data.fields.DataField.Any> };
 }): Record<string, DataModelFieldInfo> {
   const info: Record<string, DataModelFieldInfo> = {};
 
-  function walkSchema(schema: Record<string, foundry.data.fields.DataField>, path: string): void {
+  function walkSchema(
+    schema: Record<string, foundry.data.fields.DataField.Any>,
+    path: string,
+  ): void {
     for (const [key, field] of Object.entries(schema)) {
       const fieldPath = path ? `${path}.${key}` : key;
 
@@ -122,7 +125,7 @@ function getSchemaInfo(ModelClass: {
           walkSchema(field.element.fields, `${fieldPath}[]`);
         }
       } else if ("fields" in field && field.fields) {
-        walkSchema(field.fields as Record<string, foundry.data.fields.DataField>, fieldPath);
+        walkSchema(field.fields as Record<string, foundry.data.fields.DataField.Any>, fieldPath);
       }
     }
   }
@@ -676,10 +679,6 @@ export async function openDataModelRepairDialog(
       content.replaceChildren(result);
     }
 
-    override async close(options?: any): Promise<this> {
-      return await super.close(options);
-    }
-
     override async _onRender(): Promise<void> {
       this.element
         .querySelector('[data-action="applyFixes"]')
@@ -824,7 +823,7 @@ export async function openDataModelRepairDialog(
   const result = await new Promise<DataModelRepairResult>((resolve) => {
     const application = new DataModelRepairApp();
     const originalClose = application.close.bind(application);
-    application.close = async (closeOptions?: any): Promise<typeof application> => {
+    application.close = async (closeOptions?: any): Promise<typeof application | void> => {
       const closeResult = await originalClose(closeOptions);
       if (application._closeResult.needsReload && options.autoReloadAfterFinish) {
         window.location.reload();

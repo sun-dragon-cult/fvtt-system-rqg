@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import { PassionsEnum } from "@item-model/passion-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -69,12 +70,13 @@ export class PassionSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
+    const passion = formData["system.passion"] as PassionsEnum;
     const subject = formData["system.subject"] ? ` (${formData["system.subject"]})` : "";
-    formData["name"] = formData["system.passion"] + subject;
+    formData["name"] = passion + subject;
 
-    if (Object.values(PassionsEnum).includes(formData["system.passion"])) {
-      formData["img"] = PassionSheet.passionImgUrl.get(formData["system.passion"]);
+    if (passion !== PassionsEnum.Custom) {
+      formData["img"] = PassionSheet.passionImgUrl.get(passion);
     }
 
     return super._updateObject(event, formData);

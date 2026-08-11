@@ -113,8 +113,7 @@ async function createRqidLink(
     rqidLink.classList.add("rqid-missing");
   }
   rqidLink.dataset["tooltipDirection"] = "UP";
-  // @ts-expect-error renderTemplate
-  rqidLink.dataset.tooltip = await foundry.applications.handlebars.renderTemplate(
+  rqidLink.dataset["tooltip"] = await foundry.applications.handlebars.renderTemplate(
     templatePaths.rqidTooltip,
     {
       rqid: rqid,

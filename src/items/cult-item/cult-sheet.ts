@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
 import { CultRankEnum } from "@item-model/cult-enums.ts";
@@ -79,7 +80,7 @@ export class CultSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     const formCultName = formData["system.joinedCults.cultName"];
     const formTagLine = formData["system.joinedCults.tagline"];
     const formrank = formData["system.joinedCults.rank"];
@@ -97,7 +98,7 @@ export class CultSheet extends RqgItemSheet {
       rank: rank,
     }));
 
-    formData["name"] = CultSheet.deriveItemName(formData["system.deity"], cultNames);
+    formData["name"] = CultSheet.deriveItemName(formData["system.deity"] as string, cultNames);
 
     return super._updateObject(event, formData);
   }

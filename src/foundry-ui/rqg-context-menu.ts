@@ -40,7 +40,11 @@ export class RqgContextMenu extends ContextMenu<false> {
     });
   }
 
-  override _setPosition(menu: HTMLElement, target: HTMLElement, options?: any): void {
+  override _setPosition(
+    menu: HTMLElement,
+    target: HTMLElement,
+    options?: ContextMenu.RenderOptions,
+  ): void {
     menu.classList.add(RQG_CONTEXT_MENU_CLASS);
     super._setPosition(menu, target, options);
   }

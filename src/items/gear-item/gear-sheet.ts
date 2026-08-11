@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
   type EquippedStatus,
@@ -58,7 +59,10 @@ export class GearSheet extends RqgItemSheet {
     };
   }
 
-  protected override async _updateObject(event: Event, formData: any): Promise<any> {
+  protected override async _updateObject(
+    event: Event,
+    formData: AnyMutableObject,
+  ): Promise<unknown> {
     if (formData[`system.physicalItemType`] === "unique") {
       formData[`system.quantity`] = 1;
     }

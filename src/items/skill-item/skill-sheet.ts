@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { SkillCategoryEnum } from "@item-model/skill-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -63,10 +64,10 @@ export class SkillSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     formData["name"] = concatenateSkillName(
-      formData["system.skillName"],
-      formData["system.specialization"],
+      formData["system.skillName"] as string,
+      formData["system.specialization"] as string | undefined,
     );
 
     if (!this.document.isEmbedded) {

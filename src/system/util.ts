@@ -361,8 +361,9 @@ export function isFoundryElementInstanceOf(
     element = (element as JQuery).get(0);
   }
 
-  // @ts-expect-error TEMP(v14-types): Foundry v14 runtime provides this helper, but current fvtt-types do not include it yet.
-  return foundry.utils.isElementInstanceOf(element, tagOrClass);
+  // fvtt-types narrows isElementInstanceOf's element param to HTMLElement, but the runtime
+  // helper accepts any Element-like value - which is the whole point of this wrapper.
+  return foundry.utils.isElementInstanceOf(element as HTMLElement, tagOrClass);
 }
 
 export function requireValue<T>(

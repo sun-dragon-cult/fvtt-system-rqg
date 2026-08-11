@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { OccupationalSkill, type OccupationItem } from "@item-model/occupation-data-model.ts";
 import { StandardOfLivingEnum } from "@item-model/occupation-enums.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -107,7 +108,7 @@ export class OccupationSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<any> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     // @ts-expect-error currentTarget.id
     if (event?.currentTarget?.id.startsWith("bonus-")) {
       //@ts-expect-error dataset

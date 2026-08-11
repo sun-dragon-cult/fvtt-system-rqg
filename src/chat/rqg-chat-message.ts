@@ -28,7 +28,11 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  override _onUpdate(data: any, options: any, userId: string) {
+  override _onUpdate(
+    data: ChatMessage.UpdateData,
+    options: ChatMessage.Database.OnUpdateOptions,
+    userId: string,
+  ) {
     if ((ui?.chat as any)?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?
       // @ts-expect-error scrollBottom
@@ -39,8 +43,8 @@ export class RqgChatMessage extends ChatMessage {
   }
 
   /** @inheritDoc */
-  override async renderHTML(...args: any[]): Promise<HTMLElement> {
-    const element = await super.renderHTML(...args);
+  override async renderHTML(options?: ChatMessage.RenderHTMLOptions): Promise<HTMLElement> {
+    const element = await super.renderHTML(options);
     await this.#enrichChatCard(element);
     return element;
   }

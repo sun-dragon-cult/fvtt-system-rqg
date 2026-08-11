@@ -362,7 +362,9 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     this.syncRetrievalPreview();
   }
 
-  override async close(options?: any): Promise<this> {
+  override async close(
+    options?: foundry.applications.api.ApplicationV2.ClosingOptions,
+  ): Promise<this | void> {
     this.unlinkFromParentDocumentApps();
     return await super.close(options);
   }
@@ -384,7 +386,7 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     data["flags.rqg.documentRqidFlags.priority"] =
       Number(data["flags.rqg.documentRqidFlags.priority"]) || 0;
 
-    // @ts-expect-error Document.Any.update() first arg typed as never
+    // @ts-expect-error Document.Any.update() types both params as never, so no real call can satisfy it
     await this.document.update(data);
     await this.syncRqidHeaderIconState();
   }

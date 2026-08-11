@@ -1,3 +1,4 @@
+import type { AnyMutableObject } from "fvtt-types/utils";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { RqgItemSheet } from "../rqg-item-sheet";
 import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
@@ -62,7 +63,7 @@ export class SpiritMagicSheet extends RqgItemSheet {
     };
   }
 
-  protected override _updateObject(event: Event, formData: any): Promise<unknown> {
+  protected override _updateObject(event: Event, formData: AnyMutableObject): Promise<unknown> {
     // Set a concentration value if there isn't one already
     if (formData["system.duration"] === SpellDurationEnum.Temporal) {
       formData["system.concentration"] = formData["system.concentration"]

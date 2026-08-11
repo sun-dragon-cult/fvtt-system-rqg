@@ -11,15 +11,21 @@ export class RqgTokenLayer extends TokenLayer {
   }
 
   /** @override */
-  override _onClickLeft(event: any): void {
+  override _onClickLeft(event: Canvas.Event.Pointer): void {
     super._onClickLeft(event);
-    RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "leftClickSource");
+    RqgTokenLayer.handleBehaviorClick(
+      canvas?.activeLayer?.toLocal(event as unknown as PIXI.IPointData),
+      "leftClickSource",
+    );
   }
 
   /** @override */
-  override _onClickRight(event: any): void {
+  override _onClickRight(event: Canvas.Event.Pointer): void {
     super._onClickRight(event);
-    RqgTokenLayer.handleBehaviorClick(canvas?.activeLayer?.toLocal(event), "rightClickSource");
+    RqgTokenLayer.handleBehaviorClick(
+      canvas?.activeLayer?.toLocal(event as unknown as PIXI.IPointData),
+      "rightClickSource",
+    );
   }
 
   private static handleBehaviorClick(

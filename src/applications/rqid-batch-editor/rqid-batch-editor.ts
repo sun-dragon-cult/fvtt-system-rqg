@@ -81,11 +81,9 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
     },
   };
 
-  override async close(options?: {
-    animate?: boolean;
-    closeKey?: boolean;
-    submitted?: boolean;
-  }): Promise<this> {
+  override async close(
+    options?: foundry.applications.api.ApplicationV2.ClosingOptions,
+  ): Promise<this | void> {
     const closed = await super.close(options);
     this.resolve();
     return closed;

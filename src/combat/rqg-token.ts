@@ -27,7 +27,7 @@ export class RqgToken extends Token {
     if (this.combatant) {
       getCombatantsSharingToken(this.combatant).forEach((combatant: Combatant) => {
         if (typeof combatant.id === "string") {
-          // @ts-expect-error combatatnt type issue
+          // @ts-expect-error combatant type issue
           ui.combat?.hoverCombatant(combatant, false);
         }
       });
