@@ -204,7 +204,7 @@ export const registerHandlebarsHelpers = function () {
     const units = typeof unitsRaw === "string" ? unitsRaw : undefined;
 
     const foundryDurationUnitLabel = (unit: string): string => {
-      const key = `EFFECT.FIELDS.duration.choices.${unit}`;
+      const key = `EFFECT.DURATION.UNITS.${unit}`;
       const localized = localize(key);
       return localized !== key ? localized : unit;
     };
