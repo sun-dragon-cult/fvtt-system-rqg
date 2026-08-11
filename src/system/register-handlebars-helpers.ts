@@ -147,13 +147,18 @@ export const registerHandlebarsHelpers = function () {
       return String(worldTime);
     };
 
+    // Mirrors ActiveEffect#_prepareDuration's own time-vs-combat classification
+    // (client/documents/active-effect.mjs).
+    const timeBasedDurationUnits: readonly string[] = CONST.ACTIVE_EFFECT_TIME_DURATION_UNITS;
+
     const duration =
       (effect as { duration?: Record<string, unknown> } | undefined)?.duration ?? undefined;
-    const durationTypeRaw = duration?.["type"];
-    const durationType =
-      durationTypeRaw === "turns" || durationTypeRaw === "seconds" || durationTypeRaw === "none"
-        ? durationTypeRaw
-        : undefined;
+    const durationUnitsRaw = duration?.["units"];
+    const durationUnits = typeof durationUnitsRaw === "string" ? durationUnitsRaw : undefined;
+    const preferTime =
+      durationUnits !== undefined && timeBasedDurationUnits.includes(durationUnits);
+    // Foundry sets duration.value to Infinity for effects without a duration, so a
+    // non-finite value (rather than a "none" units sentinel, which doesn't exist) means "-".
     const durationValue = toFiniteNumber(duration?.["value"]);
 
     const start = (effect as { start?: Record<string, unknown> } | undefined)?.start;
@@ -164,11 +169,8 @@ export const registerHandlebarsHelpers = function () {
       round !== null ? (turn !== null ? `${round}:${turn}` : String(round)) : undefined;
 
     const formattedTime =
-      time !== null && (durationType === "seconds" || time !== 0)
-        ? formatWorldTime(time)
-        : undefined;
-    const preferTime = durationType === "seconds";
-    if (durationType === "none" || durationValue === null) {
+      time !== null && (preferTime || time !== 0) ? formatWorldTime(time) : undefined;
+    if (durationValue === null) {
       return "-";
     }
     const primary = preferTime ? formattedTime : formattedRound;
