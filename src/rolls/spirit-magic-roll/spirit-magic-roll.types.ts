@@ -4,6 +4,7 @@ export type SpiritMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluat
   powX5: number;
   levelUsed: number;
   magicPointBoost?: number;
+  magicPointSource?: string;
   modifiers?: Modifier[];
   spellName?: string;
   spellImg?: string;

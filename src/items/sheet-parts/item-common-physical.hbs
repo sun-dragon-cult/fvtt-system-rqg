@@ -57,3 +57,31 @@
          name="system.attunedTo"
          value="{{system.attunedTo}}">
 {{/if}}
+
+{{#if isGM}}
+  <label for="stored-magic-points-identified-{{id}}">
+    {{localize "RQG.Item.Gear.StoredMagicPointsIdentified"}}
+  </label>
+  <input id="stored-magic-points-identified-{{id}}"
+         type="checkbox"
+         name="system.storedMagicPoints.identified"
+         {{checked system.storedMagicPoints.identified}}>
+{{/if}}
+
+{{#if (or isGM system.storedMagicPoints.identified)}}
+  <label for="stored-magic-points-value-{{id}}">{{localize "RQG.Item.Gear.StoredMagicPoints"}}</label>
+  <div>
+    <input id="stored-magic-points-value-{{id}}"
+           type="number"
+           name="system.storedMagicPoints.value"
+           value="{{system.storedMagicPoints.value}}"
+           min="0"
+           max="99">
+    / <input id="stored-magic-points-max-{{id}}"
+             type="number"
+             name="system.storedMagicPoints.max"
+             value="{{system.storedMagicPoints.max}}"
+             min="0"
+             max="99">
+  </div>
+{{/if}}

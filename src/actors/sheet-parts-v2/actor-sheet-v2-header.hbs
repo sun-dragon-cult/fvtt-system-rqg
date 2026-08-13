@@ -117,10 +117,15 @@
                      value="{{system.attributes.magicPoints.value}}" size="2">
               / {{system.attributes.magicPoints.max}}
             </span>
+            {{#if hasMagicPointStorageItems}}
+              <a class="mp-storage-toggle" data-action="openMagicPointSources">
+                <span class="mp-storage-icon"></span>
+                <span class="mp-storage-total">{{totalStoredMagicPoints.value}}/{{totalStoredMagicPoints.max}}</span>
+                <i class="fas fa-angle-down"></i>
+              </a>
+            {{/if}}
           </label>
         {{/if}}
-        <i class="norse flex-row flex-align-center">{{#each powCrystals}}
-          <span class="mp-ellipses">{{name}}</span> {{size}}&nbsp;MP<br>{{/each}}</i>
       </div>
 
       <div class="mov-enc">

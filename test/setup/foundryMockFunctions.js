@@ -724,6 +724,7 @@ globalThis.foundry = {
     getProperty: vi.fn((...args) => mockGetProperty(...args)),
     setProperty: vi.fn((...args) => setProperty(...args)),
     getType: vi.fn((...args) => mockGetType(...args)),
+    expandObject: vi.fn((...args) => expandObject(...args)),
   },
   abstract: {
     Document: MockDocument,

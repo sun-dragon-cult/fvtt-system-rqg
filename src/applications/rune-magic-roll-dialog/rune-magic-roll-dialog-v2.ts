@@ -23,6 +23,10 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  getDefaultMagicPointSource,
+  getMagicPointSourceOptions,
+} from "../../system/magic-point-source";
 
 const logger = new RqgLogger("RuneMagicRollDialogV2");
 
@@ -141,6 +145,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.levelUsed ??= this.spellItem.system.points;
     formData.usedRuneId ??= this.spellItem.system.getStrongestEligibleRune()?.id ?? "";
     formData.boost ??= 0;
+    formData.magicPointSource ??= getDefaultMagicPointSource(this.spellItem.actor);
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
@@ -161,6 +166,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       augmentOptions: RuneMagicRollDialogV2.augmentOptions,
       meditateOptions: RuneMagicRollDialogV2.meditateOptions,
       ritualOptions: RuneMagicRollDialogV2.ritualOptions,
+      magicPointSourceOptions: getMagicPointSourceOptions(this.spellItem.actor),
 
       // RollHeader
       rollType: localize("TYPES.Item.runeMagic"),
@@ -239,6 +245,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       usedRuneId: usedRune.id ?? undefined,
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
+      magicPointSource: formDataObject.magicPointSource,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -263,6 +270,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const validationError = spellItem.system.getCastValidationError(
       formDataObject.levelUsed,
       formDataObject.boost,
+      formDataObject.magicPointSource,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);

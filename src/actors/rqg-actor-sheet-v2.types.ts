@@ -92,8 +92,10 @@ export interface RqgActorSheetV2Context {
   /** INT remaining after spirit magic. */
   freeInt: number;
 
-  /** POW crystals list. */
-  powCrystals: { name: string; size: number }[];
+  /** Whether the actor has any Magic Point storage items (see #956) - controls whether the header shows the Magic Point Sources popout button. */
+  hasMagicPointStorageItems: boolean;
+  /** Sum of current/max Magic Points across all storage items, shown next to the header button. */
+  totalStoredMagicPoints: { value: number; max: number };
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

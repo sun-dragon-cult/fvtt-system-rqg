@@ -16,6 +16,21 @@
       mix-blend-mode: var(--rqg-v2-rune-blend-mode);
     }
 
+/* Dimmed only in the gear tab rows, not the header's open-popout button. */
+    & .tab.gear .stored-magic-points {
+      margin-left: 0.3rem;
+      opacity: 0.85;
+      mix-blend-mode: normal;
+    }
+
+/* Flags at a glance that a player wouldn't see everything this row shows - either the item isn't
+       identified yet (row only renders at all for a GM in that case, so this is GM-only there),
+       or it's identified but not attuned, so the player sees the icon but not the actual value/max
+       (shown as "?" instead - see mp-storage-icon.hbs). Saves opening the item sheet to check. */
+    & .stored-magic-points.hidden-from-players {
+      color: var(--color-level-warning, #ee9b3a);
+    }
+
     & .grid .headings {
       mix-blend-mode: var(--rqg-v2-grid-headings-blend-mode);
       min-height: 1.8rem;
@@ -106,6 +121,59 @@
       }
     }
 
+    & .stored-magic-points {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+
+      & .stored-magic-points-icon {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        background-color: currentcolor;
+        mask-image: url("/systems/rqg/assets/images/ui/mp-storage.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+      }
+    }
+
+/* Header button that opens the Magic Point Sources popout - styled like .locomotion-picker
+   (the Walk/Swim/Fly icon + select next to it): plain text color, no extra dimming, so it reads
+   as part of the same row of controls rather than a separate accent-colored element. */
+    & .mp-storage-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      color: inherit;
+      padding: 2px 5px;
+      background-color: var(--rqg-color-enc-bg);
+      border-radius: var(--rqg-radius-sm);
+
+      & .mp-storage-icon {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        background-color: currentcolor;
+        mask-image: url("/systems/rqg/assets/images/ui/mp-storage.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+      }
+
+/* Total available Magic Points across all storage sources. */
+      & .mp-storage-total {
+        font-weight: bold;
+      }
+
+/* fa-angle-down (thin stroke) rather than fa-caret-down (solid filled triangle) - closer in
+         weight to .locomotion-select's native browser dropdown arrow just to its right. */
+      & .fa-angle-down {
+        font-size: 0.7rem;
+      }
+    }
+
 /* Shared "magic capacity limit" status banner, used by the Spirit Magic, Sorcery and Rune Magic tabs. */
     & .magic-limit-banner {
       font-size: small;
@@ -187,14 +255,9 @@
         cursor: grabbing;
       }
 
+/* Glyph rendering (mask-image etc.) comes from the shared, unscoped .grip-icon rule in
+           rqg.css - this just adds the spacing/click-through behavior specific to this context. */
       & .grip-icon {
-        display: inline-block;
-        height: 0.8rem;
-        aspect-ratio: 284.44 / 512;
-        mask-image: url("/systems/rqg/assets/images/ui/grip-drag-dots.svg");
-        mask-size: contain;
-        mask-repeat: no-repeat;
-        background-color: currentcolor;
         margin-right: 3px;
         pointer-events: none;
       }

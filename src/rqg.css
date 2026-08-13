@@ -284,14 +284,6 @@
       background-color: var(--rqg-color-enc-warning);
     }
 
-    .mp-ellipses {
-      text-overflow: ellipsis;
-      max-width: 7rem;
-      white-space: nowrap;
-      overflow: hidden;
-      display: inline-block;
-    }
-
     .masonry {
       display: block;
       columns: 12rem auto;
@@ -1737,6 +1729,96 @@
     & button {
       &:disabled {
         cursor: progress;
+      }
+    }
+  }
+
+/* Shared "grip dots" drag-handle glyph, masked to currentcolor so it tints with whatever
+     ancestor sets color. Unscoped (unlike actorsheet-v2.css's own .item-drag-handle, which is
+     nested under .rqg.character.actor-sheet-v2) so it's usable outside the actor sheet too, e.g.
+     the Magic Point Sources popout's .magic-point-source-handle below. */
+  .grip-icon {
+    display: inline-block;
+    height: 0.8rem;
+    aspect-ratio: 284.44 / 512;
+    mask-image: url("/systems/rqg/assets/images/ui/grip-drag-dots.svg");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    background-color: currentcolor;
+  }
+
+  .rqg.magic-point-sources-app {
+/* Not draggable and no close button: rather than going frameless (which loses Foundry's
+     automatic window chrome - position, z-index/bringToFront, theming, input styling - for
+     free), stay framed and just hide the header entirely. A hidden header can't be dragged
+     (the drag listener is bound to that specific DOM node) and its close button disappears
+     with it. The "Magic Point Source Order" title moves into the content area as plain text
+     instead (see .magic-point-sources-heading below and the template). */
+    & .window-header {
+      display: none;
+    }
+
+    & .magic-point-sources-heading {
+      margin: 0;
+      padding: 0.4rem 0.6rem 0;
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+
+    & .magic-point-sources-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      padding: 0.5rem;
+    }
+
+    & .magic-point-source-row {
+      display: grid;
+      grid-template-columns: 0.1rem 0.9rem minmax(0, 1fr) 2.2rem 3rem;
+      align-items: center;
+      column-gap: 0.3rem;
+      cursor: grab;
+
+      &.dragging {
+        opacity: 0.5;
+      }
+
+      &.drag-over {
+        box-shadow: inset 0 2px 0 var(--rqg-color-main);
+      }
+
+      &.drag-over-after {
+        box-shadow: inset 0 -2px 0 var(--rqg-color-main);
+      }
+
+      & .magic-point-source-handle {
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+
+      &:hover .magic-point-source-handle,
+      &.dragging .magic-point-source-handle {
+        opacity: 0.6;
+      }
+
+      & .magic-point-source-priority {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--rqg-color-main);
+        font-weight: bold;
+        text-align: right;
+      }
+
+      & .magic-point-source-name {
+        white-space: nowrap;
+      }
+
+      & .magic-point-source-max {
+        white-space: nowrap;
+      }
+
+      & input[type="number"] {
+        width: 2.2rem;
       }
     }
   }

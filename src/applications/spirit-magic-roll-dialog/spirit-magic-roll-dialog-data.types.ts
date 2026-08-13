@@ -10,11 +10,13 @@ export type SpiritMagicRollDialogContext = RollHeaderData &
 
     augmentOptions: SelectOptionData<number>[];
     meditateOptions: SelectOptionData<number>[];
+    magicPointSourceOptions: SelectOptionData<string>[];
   };
 
 export type SpiritMagicRollDialogFormData = {
   levelUsed: number;
   boost: number;
+  magicPointSource: string;
   augmentModifier: number;
   meditateModifier: number;
   otherModifier: number;
