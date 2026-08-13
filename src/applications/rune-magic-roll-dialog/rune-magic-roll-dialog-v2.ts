@@ -24,7 +24,7 @@ import {
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import {
-  getDefaultMagicPointSource,
+  AUTO_MAGIC_POINT_SOURCE,
   getMagicPointSourceOptions,
 } from "../../system/magic-point-source";
 
@@ -145,7 +145,12 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.levelUsed ??= this.spellItem.system.points;
     formData.usedRuneId ??= this.spellItem.system.getStrongestEligibleRune()?.id ?? "";
     formData.boost ??= 0;
-    formData.magicPointSource ??= getDefaultMagicPointSource(this.spellItem.actor);
+    // Rune Magic only spends Magic Points when boosting, so the source picker only matters (and
+    // is only shown) once the caster has actually entered a boost - see showMagicPointSource
+    // below. "Auto" (drain stored sources first) is always the sensible default for that rare
+    // case, regardless of any Magic Point Source Order preference set for regular Spirit Magic
+    // Magic Point spending.
+    formData.magicPointSource ??= AUTO_MAGIC_POINT_SOURCE;
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
@@ -154,6 +159,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
 
     const usedRune = eligibleRunes.find((r) => r.id === formData.usedRuneId);
+    const magicPointSourceOptions = getMagicPointSourceOptions(this.spellItem.actor);
 
     return {
       formData: formData,
@@ -166,7 +172,8 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       augmentOptions: RuneMagicRollDialogV2.augmentOptions,
       meditateOptions: RuneMagicRollDialogV2.meditateOptions,
       ritualOptions: RuneMagicRollDialogV2.ritualOptions,
-      magicPointSourceOptions: getMagicPointSourceOptions(this.spellItem.actor),
+      magicPointSourceOptions: magicPointSourceOptions,
+      showMagicPointSource: magicPointSourceOptions.length > 0 && Number(formData.boost) > 0,
 
       // RollHeader
       rollType: localize("TYPES.Item.runeMagic"),

@@ -623,7 +623,7 @@
           "Fumble": "Fumble -50%"
         },
         "MagicPointSourceOptions": {
-          "Auto": "Auto (stored points first, then self)",
+          "Auto": "Auto (use the Magic Point Source Order set in the header)",
           "Self": "Self"
         },
         "MeditateOptions": {

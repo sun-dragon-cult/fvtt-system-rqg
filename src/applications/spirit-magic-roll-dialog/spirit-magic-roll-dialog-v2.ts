@@ -24,7 +24,7 @@ import {
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import {
-  getDefaultMagicPointSource,
+  AUTO_MAGIC_POINT_SOURCE,
   getMagicPointSourceOptions,
 } from "../../system/magic-point-source";
 
@@ -122,7 +122,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.levelUsed ??= this.spellItem.system.points;
     formData.boost ??= 0;
-    formData.magicPointSource ??= getDefaultMagicPointSource(this.spellItem.actor);
+    formData.magicPointSource ??= AUTO_MAGIC_POINT_SOURCE;
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;

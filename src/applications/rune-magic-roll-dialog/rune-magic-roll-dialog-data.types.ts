@@ -26,6 +26,7 @@ export type RuneMagicRollDialogContext = RollHeaderData &
     meditateOptions: SelectOptionData<number>[];
     ritualOptions: SelectOptionData<number>[];
     magicPointSourceOptions: SelectOptionData<string>[];
+    showMagicPointSource: boolean;
   };
 
 export type RuneMagicRollDialogFormData = {
