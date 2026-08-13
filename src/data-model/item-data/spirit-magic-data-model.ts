@@ -8,8 +8,8 @@ import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
+  AUTO_MAGIC_POINT_SOURCE,
   getAvailableMagicPoints,
-  getDefaultMagicPointSource,
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
 import {
@@ -102,9 +102,9 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     const levelUsed = Number(options.levelUsed ?? this.points);
     const boost = Number(options.magicPointBoost ?? 0) || 0;
-    // Quick Roll (no dialog) never sets this, so fall back to the caster's configured default
-    // Magic Point source (e.g. draw from crystals first) instead of always using their own pool.
-    const magicPointSource = options.magicPointSource ?? getDefaultMagicPointSource(actor);
+    // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
+    // instead of always using the caster's own pool - matches the cast dialogs' default.
+    const magicPointSource = options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
     const validationError = this.getCastValidationError(levelUsed, boost, magicPointSource);
     if (validationError) {
       ui.notifications?.warn(validationError);

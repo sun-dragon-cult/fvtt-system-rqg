@@ -2,10 +2,7 @@ import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 import type { PhysicalItem } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { isDocumentSubType } from "./util";
-import {
-  magicPointStorageOrderFlag,
-  preferredMagicPointSourceFlag,
-} from "../data-model/shared/rqg-document-flags";
+import { magicPointStorageOrderFlag } from "../data-model/shared/rqg-document-flags";
 import { systemId } from "./config";
 
 /**
@@ -142,28 +139,6 @@ export function moveSourceBefore(order: string[], id: string, beforeId: string |
   const reordered = [...withoutId];
   reordered.splice(targetIndex, 0, id);
   return reordered;
-}
-
-/**
- * The magic point source the caster picked as their default on the character sheet header
- * (see #956), falling back to "auto" when unset or when it points at an item that no longer
- * qualifies (deleted, or its storedMagicPoints.max was cleared).
- */
-export function getDefaultMagicPointSource(
-  actor: RqgActor | null | undefined,
-): MagicPointSourceSelection {
-  if (!actor) {
-    return AUTO_MAGIC_POINT_SOURCE;
-  }
-  const preferred = actor.getFlag(systemId, preferredMagicPointSourceFlag);
-  if (!preferred) {
-    return AUTO_MAGIC_POINT_SOURCE;
-  }
-  if (preferred === AUTO_MAGIC_POINT_SOURCE || preferred === SELF_MAGIC_POINT_SOURCE) {
-    return preferred;
-  }
-  const isStillValid = getStorageItems(actor).some((i) => i.id === preferred);
-  return isStillValid ? preferred : AUTO_MAGIC_POINT_SOURCE;
 }
 
 /**

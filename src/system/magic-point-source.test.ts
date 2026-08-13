@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getAvailableMagicPoints,
-  getDefaultMagicPointSource,
   getMagicPointDrawOrder,
   getMagicPointSourceOptions,
   getStorageItems,
@@ -15,7 +14,7 @@ import {
 function fakeActor(
   selfMp: number,
   storageItems: any[] = [],
-  flags: { preferredMagicPointSource?: string; magicPointStorageOrder?: string[] } = {},
+  flags: { magicPointStorageOrder?: string[] } = {},
 ) {
   const storedFlags = { ...flags };
   return {
@@ -89,32 +88,6 @@ describe("getMagicPointSourceOptions", () => {
       { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
       { value: "c1", label: "Crystal A" },
     ]);
-  });
-});
-
-describe("getDefaultMagicPointSource", () => {
-  it("defaults to auto when no preference is set", () => {
-    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)]);
-    expect(getDefaultMagicPointSource(actor)).toBe(AUTO_MAGIC_POINT_SOURCE);
-  });
-
-  it("honors a self preference", () => {
-    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)], {
-      preferredMagicPointSource: SELF_MAGIC_POINT_SOURCE,
-    });
-    expect(getDefaultMagicPointSource(actor)).toBe(SELF_MAGIC_POINT_SOURCE);
-  });
-
-  it("honors a preference for a storage item that still qualifies", () => {
-    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)], { preferredMagicPointSource: "c1" });
-    expect(getDefaultMagicPointSource(actor)).toBe("c1");
-  });
-
-  it("falls back to auto when the preferred item no longer qualifies", () => {
-    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)], {
-      preferredMagicPointSource: "no-longer-there",
-    });
-    expect(getDefaultMagicPointSource(actor)).toBe(AUTO_MAGIC_POINT_SOURCE);
   });
 });
 
