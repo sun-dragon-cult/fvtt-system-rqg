@@ -9,6 +9,7 @@ import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spiri
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
   getAvailableMagicPoints,
+  getDefaultMagicPointSource,
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
 import {
@@ -101,7 +102,10 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     const levelUsed = Number(options.levelUsed ?? this.points);
     const boost = Number(options.magicPointBoost ?? 0) || 0;
-    const validationError = this.getCastValidationError(levelUsed, boost, options.magicPointSource);
+    // Quick Roll (no dialog) never sets this, so fall back to the caster's configured default
+    // Magic Point source (e.g. draw from crystals first) instead of always using their own pool.
+    const magicPointSource = options.magicPointSource ?? getDefaultMagicPointSource(actor);
+    const validationError = this.getCastValidationError(levelUsed, boost, magicPointSource);
     if (validationError) {
       ui.notifications?.warn(validationError);
       return;
@@ -125,7 +129,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
     const mpCost = levelUsed + boost;
-    await actor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel, options.magicPointSource);
+    await actor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel, magicPointSource);
   }
 
   /**

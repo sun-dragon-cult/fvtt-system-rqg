@@ -12,6 +12,7 @@ import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.d
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
   getAvailableMagicPoints,
+  getDefaultMagicPointSource,
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
 import type { CultItem } from "./cult-data-model";
@@ -229,11 +230,14 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     assertDocumentSubType<CultItem>(cult, "cult" as Item.SubType);
 
     const levelUsedOrDefault = options.levelUsed ?? this.points;
+    // Quick Roll (no dialog) never sets this, so fall back to the caster's configured default
+    // Magic Point source (e.g. draw from crystals first) instead of always using their own pool.
+    const magicPointSource = options.magicPointSource ?? getDefaultMagicPointSource(actor);
 
     const validationError = this.getCastValidationError(
       levelUsedOrDefault,
       options.magicPointBoost,
-      options.magicPointSource,
+      magicPointSource,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -275,7 +279,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       mpCost,
       usedRune,
       runeMagicItemTyped,
-      options.magicPointSource,
+      magicPointSource,
     );
   }
 
