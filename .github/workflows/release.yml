@@ -16,19 +16,23 @@ jobs:
 
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Install Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           check-latest: true
+          cache: "pnpm"
 
       - name: Init dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Verify Code Quality
+        run: pnpm check:release
 
       - name: Build project
         run: pnpm build
@@ -44,6 +48,27 @@ jobs:
           cp -f static/${{env.manifest-file}} /tmp/${{ env.system-name }}
           cd /tmp/${{ env.system-name }}
           zip -r ../${{ env.system-name }}.zip *
+
+      - name: Verify Package Contents
+        run: |
+          # `|| true` is required: grep exits non-zero when it finds no matches, which
+          # would abort this step (GitHub runs `run:` under `bash -e`) before the
+          # error message below could explain what actually went wrong.
+          MANIFEST_PATHS=$(unzip -Z1 /tmp/${{ env.system-name }}.zip | grep -E "(^|/)${{ env.manifest-file }}$" || true)
+          MANIFEST_COUNT=$(printf '%s\n' "$MANIFEST_PATHS" | grep -c . || true)
+
+          # Foundry and third-party installers (e.g. The Forge) only expect a manifest at
+          # the archive root; extra copies elsewhere break their install/caching. See #1000.
+          if [ "$MANIFEST_COUNT" -ne 1 ] || [ "$MANIFEST_PATHS" != "${{ env.manifest-file }}" ]; then
+            echo "::error::Expected exactly one ${{ env.manifest-file }} at the root of ${{ env.system-name }}.zip, but found $MANIFEST_COUNT: $MANIFEST_PATHS"
+            unzip -Z1 /tmp/${{ env.system-name }}.zip
+            exit 1
+          fi
+
+          if unzip -p /tmp/${{ env.system-name }}.zip "${{ env.manifest-file }}" | grep -q "99999.0.0-localhost"; then
+            echo "::error::${{ env.manifest-file }} in ${{ env.system-name }}.zip still contains the placeholder version 99999.0.0-localhost"
+            exit 1
+          fi
 
       # Update the GitHub release with the manifest and module archive files.
       - name: Update Release With Files
