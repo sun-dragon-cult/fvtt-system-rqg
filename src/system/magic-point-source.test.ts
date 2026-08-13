@@ -1,9 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   AUTO_MAGIC_POINT_SOURCE,
+  feedStorageFromSelf,
   getAvailableMagicPoints,
   getMagicPointDrawOrder,
   getMagicPointSourceOptions,
+  getMaxTransferableToStorage,
   getStorageItems,
   moveSourceBefore,
   SELF_MAGIC_POINT_SOURCE,
@@ -44,6 +46,7 @@ function crystal(
     name,
     type: "gear",
     system: { storedMagicPoints: { value, max, identified }, equippedStatus, attunedTo },
+    update: vi.fn(),
   };
 }
 
@@ -273,5 +276,91 @@ describe("spendMagicPoints", () => {
       { _id: "c1", system: { storedMagicPoints: { value: 0 } } },
     ]);
     expect(actor.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("getMaxTransferableToStorage", () => {
+  it("is capped by self's available points, minus 1", () => {
+    const actor = fakeActor(3, [crystal("c1", "A", 0, 5)]);
+    expect(getMaxTransferableToStorage(actor, actor.items[0])).toBe(2);
+  });
+
+  it("is capped by the item's remaining capacity", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)]);
+    expect(getMaxTransferableToStorage(actor, actor.items[0])).toBe(2);
+  });
+
+  it("is 0 when the item is already full", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 5, 5)]);
+    expect(getMaxTransferableToStorage(actor, actor.items[0])).toBe(0);
+  });
+
+  it("is 0 when self has no points", () => {
+    const actor = fakeActor(0, [crystal("c1", "A", 0, 5)]);
+    expect(getMaxTransferableToStorage(actor, actor.items[0])).toBe(0);
+  });
+
+  it("is 0 when self has only 1 point - never drains self to 0", () => {
+    const actor = fakeActor(1, [crystal("c1", "A", 0, 5)]);
+    expect(getMaxTransferableToStorage(actor, actor.items[0])).toBe(0);
+  });
+});
+
+describe("feedStorageFromSelf", () => {
+  it("moves as much as possible from self into the item", async () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)]);
+    const item = actor.items[0];
+    await feedStorageFromSelf(actor, item);
+
+    expect(actor.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 4 }),
+    );
+    expect(item.update).toHaveBeenCalledWith({ system: { storedMagicPoints: { value: 5 } } });
+  });
+
+  it("caps the transfer at self's available points, not the full remaining capacity", async () => {
+    const actor = fakeActor(3, [crystal("c1", "A", 0, 10)]);
+    const item = actor.items[0];
+    await feedStorageFromSelf(actor, item);
+
+    expect(actor.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 1 }),
+    );
+    expect(item.update).toHaveBeenCalledWith({ system: { storedMagicPoints: { value: 2 } } });
+  });
+
+  it("never drains self all the way to 0", async () => {
+    const actor = fakeActor(2, [crystal("c1", "A", 0, 5)]);
+    const item = actor.items[0];
+    await feedStorageFromSelf(actor, item);
+
+    expect(actor.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 1 }),
+    );
+    expect(item.update).toHaveBeenCalledWith({ system: { storedMagicPoints: { value: 1 } } });
+  });
+
+  it("does nothing when self only has 1 point", async () => {
+    const actor = fakeActor(1, [crystal("c1", "A", 0, 5)]);
+    await feedStorageFromSelf(actor, actor.items[0]);
+
+    expect(actor.update).not.toHaveBeenCalled();
+    expect(actor.items[0].update).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when the item is already full", async () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 5, 5)]);
+    await feedStorageFromSelf(actor, actor.items[0]);
+
+    expect(actor.update).not.toHaveBeenCalled();
+    expect(actor.items[0].update).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when self has no points", async () => {
+    const actor = fakeActor(0, [crystal("c1", "A", 0, 5)]);
+    await feedStorageFromSelf(actor, actor.items[0]);
+
+    expect(actor.update).not.toHaveBeenCalled();
+    expect(actor.items[0].update).not.toHaveBeenCalled();
   });
 });

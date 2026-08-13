@@ -3,7 +3,10 @@ import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data"
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import {
+  feedStorageFromSelf,
   getMagicPointDrawOrder,
+  getMaxTransferableToStorage,
+  getStorageItems,
   MAGIC_POINT_SOURCE_DRAG_TYPE,
   moveSourceBefore,
   SELF_MAGIC_POINT_SOURCE,
@@ -129,6 +132,9 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
       submitOnChange: true,
       closeOnSubmit: false,
     },
+    actions: {
+      feedFromSelf: MagicPointSourcesApp._feedFromSelfAction,
+    },
     position: {
       width: "auto" as const,
       height: "auto" as const,
@@ -153,6 +159,7 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
               name: "",
               value: Number(this.actor.system.attributes.magicPoints.value) || 0,
               max: Number(this.actor.system.attributes.magicPoints.max) || 0,
+              feedMax: 0,
             }
           : {
               id: entry.item.id ?? "",
@@ -160,6 +167,7 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
               name: entry.item.name ?? "",
               value: Number(entry.item.system.storedMagicPoints?.value) || 0,
               max: Number(entry.item.system.storedMagicPoints?.max) || 0,
+              feedMax: getMaxTransferableToStorage(this.actor, entry.item),
             };
       // Depleted sources (0 points left) never get drawn from by "auto", so they're excluded
       // from the priority numbering entirely rather than breaking the sequence.
@@ -216,6 +224,20 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
     }
 
     await app.render();
+  }
+
+  /** Feed button on a single storage-item row - see feedStorageFromSelf. */
+  private static async _feedFromSelfAction(
+    this: MagicPointSourcesApp,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    const itemId = target.dataset["itemId"];
+    requireValue(itemId, "No item id found to feed Magic Points into");
+    const item = getStorageItems(this.actor).find((i) => i.id === itemId);
+    requireValue(item, `Couldn't find storage item [${itemId}] to feed Magic Points into`);
+    await feedStorageFromSelf(this.actor, item);
+    await this.render();
   }
 
   private getRows(): HTMLElement[] {

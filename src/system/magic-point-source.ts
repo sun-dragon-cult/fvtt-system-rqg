@@ -182,6 +182,42 @@ export function getAvailableMagicPoints(
   return Number(item?.system.storedMagicPoints?.value) || 0;
 }
 
+/**
+ * Max points `item` could receive from `actor`'s own pool right now - whichever runs out first:
+ * self's current points (minus 1 - self is never drained all the way to 0 by a manual feed, since
+ * 0 Magic Points knocks the actor unconscious, see hit-location-damage-calculations.ts), or the
+ * item's remaining storage capacity.
+ */
+export function getMaxTransferableToStorage(actor: RqgActor, item: PhysicalItem): number {
+  const selfAvailable = Math.max(0, (Number(actor.system.attributes.magicPoints.value) || 0) - 1);
+  const itemMax = Number(item.system.storedMagicPoints?.max) || 0;
+  const itemValue = Number(item.system.storedMagicPoints?.value) || 0;
+  return Math.max(0, Math.min(selfAvailable, itemMax - itemValue));
+}
+
+/**
+ * Move as many points as possible from `actor`'s own pool into `item`'s storage (per #956's
+ * design doc: anyone who can use the item can refill its storage from their own Magic Points).
+ * One-directional only - there's no UI path back from storage to self; drawing from storage
+ * happens only by spending it on a cast (see spendMagicPoints). RAW paces a manual refill at 1
+ * MP/melee round, but that isn't enforced here: self's pool is planned to auto-replenish over
+ * game time regardless, so it doesn't matter how many rounds this notionally took.
+ */
+export async function feedStorageFromSelf(actor: RqgActor, item: PhysicalItem): Promise<void> {
+  const draw = getMaxTransferableToStorage(actor, item);
+  if (draw <= 0) {
+    return;
+  }
+  const selfValue = Number(actor.system.attributes.magicPoints.value) || 0;
+  const itemValue = Number(item.system.storedMagicPoints?.value) || 0;
+  await Promise.all([
+    actor.update(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": selfValue - draw }),
+    ),
+    item.update({ system: { storedMagicPoints: { value: itemValue + draw } } }),
+  ]);
+}
+
 type MagicPointDraw = { item: PhysicalItem; amount: number };
 
 function resolveMagicPointDraws(
