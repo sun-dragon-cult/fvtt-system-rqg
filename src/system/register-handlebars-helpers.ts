@@ -326,6 +326,13 @@ export const registerHandlebarsHelpers = function () {
     }
   });
 
+  Handlebars.registerHelper("storedMagicPointsTooltip", (identified: boolean): string => {
+    if (!identified) {
+      return localize("RQG.Actor.Gear.StoresMagicPointsUnidentifiedTip");
+    }
+    return localize("RQG.Actor.Gear.StoresMagicPointsTip");
+  });
+
   Handlebars.registerHelper("gearViewIcon", (view: string): string => {
     return CONFIG.RQG.gearViewIcons[view as keyof typeof CONFIG.RQG.gearViewIcons];
   });

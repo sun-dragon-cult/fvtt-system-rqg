@@ -37,6 +37,7 @@ import { ItemTypeEnum, type PhysicalItem } from "@item-model/item-types.ts";
 import { physicalItemTypes } from "../data-model/item-data/i-physical-item";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqg-document-flags";
+import { getStorageItems } from "../system/magic-point-source";
 
 /**
  * Ranks characteristics from their formula, returning CSS class names for styling.
@@ -157,45 +158,16 @@ export function getMainCultInfo(actor: CharacterActor): MainCult {
 }
 
 /**
- * Gets list of POW crystals from active effects.
+ * Gets list of items storing Magic Points (e.g. POW crystals, see #956), for the legacy (v1)
+ * character sheet header's simple inline display.
  * @param actor - The character actor
- * @returns Array of POW crystals with name and size
+ * @returns Array with name and currently available stored Magic Points
  */
 export function getPowCrystals(actor: CharacterActor): { name: string; size: number }[] {
-  const magicPointEffectKey = "system.effect.add.magicPoints.max";
-  type MinimalEffectChange = {
-    key?: string;
-    value?: unknown;
-  };
-
-  const getEffectChanges = (effect: unknown): MinimalEffectChange[] => {
-    const withSystem = effect as { system?: { changes?: unknown } };
-    if (Array.isArray(withSystem.system?.changes)) {
-      return withSystem.system.changes as MinimalEffectChange[];
-    }
-
-    const withLegacyTopLevel = effect as { changes?: unknown };
-    if (Array.isArray(withLegacyTopLevel.changes)) {
-      return withLegacyTopLevel.changes as MinimalEffectChange[];
-    }
-
-    return [];
-  };
-
-  return (
-    actor.appliedEffects &&
-    actor.appliedEffects
-      .filter((e) => getEffectChanges(e).some((c) => c.key === magicPointEffectKey))
-      .map((e) => {
-        const changes = getEffectChanges(e);
-        return {
-          name: e.name ?? "",
-          size: changes
-            .filter((c) => c.key === magicPointEffectKey)
-            .reduce((acc: number, c) => acc + Number(c.value), 0),
-        };
-      })
-  );
+  return getStorageItems(actor).map((item) => ({
+    name: item.name ?? "",
+    size: Number(item.system.storedMagicPoints?.value) || 0,
+  }));
 }
 
 /**

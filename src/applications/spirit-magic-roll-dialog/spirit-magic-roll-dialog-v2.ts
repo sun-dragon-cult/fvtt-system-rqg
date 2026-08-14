@@ -23,6 +23,10 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  AUTO_MAGIC_POINT_SOURCE,
+  getMagicPointSourceOptions,
+} from "../../system/magic-point-source";
 
 export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private computeTotalChance(formData: SpiritMagicRollDialogFormData): number {
@@ -118,6 +122,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.levelUsed ??= this.spellItem.system.points;
     formData.boost ??= 0;
+    formData.magicPointSource ??= AUTO_MAGIC_POINT_SOURCE;
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
@@ -133,6 +138,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
+      magicPointSourceOptions: getMagicPointSourceOptions(this.spellItem.actor),
 
       // RollHeader
       rollType: localize("TYPES.Item.spiritMagic"),
@@ -191,6 +197,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       powX5: formDataObject.powX5,
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
+      magicPointSource: formDataObject.magicPointSource,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -215,6 +222,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const validationError = spellItem.system.getCastValidationError(
       formDataObject.levelUsed,
       Number(formDataObject.boost ?? 0),
+      formDataObject.magicPointSource,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);

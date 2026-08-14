@@ -58,6 +58,42 @@ describe("RuneMagicDataModel chance helpers", () => {
     );
   });
 
+  it("counts a chosen magic point source's stored points for the boost, leaving Rune Points cult-sourced (#956)", () => {
+    const fakeModel = {
+      getCult: () => ({ system: { runePoints: { value: 4 } } }),
+      parent: {
+        actor: {
+          items: [
+            {
+              id: "crystal-1",
+              type: "gear",
+              system: {
+                storedMagicPoints: { value: 4, max: 5, identified: true },
+                equippedStatus: "equipped",
+                attunedTo: "Attuned",
+              },
+            },
+          ],
+          system: { attributes: { magicPoints: { value: 1 } } },
+          getFlag: () => undefined,
+        },
+      },
+    } as unknown as RuneMagicDataModel;
+
+    // Only 1 MP of the caster's own pool - not enough for a boost of 3 without a source.
+    expect(RuneMagicDataModel.prototype.getCastValidationError.call(fakeModel, 3, 3)).toContain(
+      "RQG.Item.RuneMagic.validationNotEnoughMagicPoints",
+    );
+
+    // Picking the crystal covers the boost; Rune Points are still validated against the cult.
+    expect(
+      RuneMagicDataModel.prototype.getCastValidationError.call(fakeModel, 3, 3, "crystal-1"),
+    ).toBeUndefined();
+    expect(
+      RuneMagicDataModel.prototype.getCastValidationError.call(fakeModel, 5, 3, "crystal-1"),
+    ).toContain("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
+  });
+
   it("calculates rune and magic point costs from the roll result", () => {
     expect(RuneMagicDataModel.calculatePointCosts(AbilitySuccessLevelEnum.Critical, 3, 2)).toEqual({
       rp: 0,

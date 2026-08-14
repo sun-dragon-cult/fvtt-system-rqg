@@ -33,6 +33,11 @@ import type { DamageType } from "@item-model/weapon-enums.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skill-formulas";
 import { RqgItem } from "@items/rqg-item.ts";
 import { getConfigStatusEffects, getSpeakerCompat } from "../system/fvtt-type-compat";
+import {
+  type MagicPointSourceSelection,
+  SELF_MAGIC_POINT_SOURCE,
+  spendMagicPoints,
+} from "../system/magic-point-source";
 
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
@@ -219,13 +224,14 @@ export class RqgActor extends Actor {
   }
 
   // TODO should use result: SpiritMagicSuccessLevelEnum
-  public async drawMagicPoints(amount: number, result: AbilitySuccessLevelEnum): Promise<void> {
+  public async drawMagicPoints(
+    amount: number,
+    result: AbilitySuccessLevelEnum,
+    source: MagicPointSourceSelection = SELF_MAGIC_POINT_SOURCE,
+  ): Promise<void> {
     if (result <= AbilitySuccessLevelEnum.Success) {
       assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-      const newMp = (this.system.attributes.magicPoints.value || 0) - amount;
-      await this.update(
-        foundry.utils.expandObject({ "system.attributes.magicPoints.value": newMp }),
-      );
+      await spendMagicPoints(this, amount, source);
       ui.notifications?.info(
         localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount.toString() }),
       );

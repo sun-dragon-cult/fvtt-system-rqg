@@ -1,0 +1,35 @@
+<h2 class="magic-point-sources-heading">{{localize "RQG.Actor.Attributes.MagicPointSources"}}</h2>
+<div class="magic-point-sources-list">
+  {{#each rows}}
+    <div class="magic-point-source-row" data-source-id="{{id}}">
+      <span class="magic-point-source-handle grip-icon"></span>
+      <span class="magic-point-source-priority">{{#if priority}}{{priority}}{{/if}}</span>
+      <span class="magic-point-source-name">
+        {{#if isSelf}}
+          {{localize "RQG.Dialog.Common.MagicPointSourceOptions.Self"}}
+        {{else}}
+          {{name}}
+        {{/if}}
+      </span>
+      <span class="magic-point-source-feed">
+        {{#if feedMax}}
+          <button type="button" class="magic-point-source-feed-button" data-action="feedFromSelf"
+                  data-item-id="{{id}}"
+                  title="{{localize 'RQG.Actor.Attributes.MagicPointSourcesFeedFromSelfHint' amount=feedMax}}">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          </button>
+        {{/if}}
+      </span>
+      {{#if isSelf}}
+        <input type="number" min="0" max="99" size="2"
+               name="system.attributes.magicPoints.value"
+               value="{{value}}">
+      {{else}}
+        <input type="number" min="0" max="{{this.max}}" size="2"
+               name="items.{{id}}.system.storedMagicPoints.value"
+               value="{{value}}">
+      {{/if}}
+      <span class="magic-point-source-max">/ {{this.max}}</span>
+    </div>
+  {{/each}}
+</div>

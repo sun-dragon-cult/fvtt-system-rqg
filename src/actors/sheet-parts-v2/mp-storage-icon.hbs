@@ -1,0 +1,6 @@
+{{#if (and system.storedMagicPoints.max (or @root.isGM system.storedMagicPoints.identified))}}
+  <span class="stored-magic-points{{#unless system.storedMagicPoints.identified}} hidden-from-players{{/unless}}"
+        data-tooltip="{{storedMagicPointsTooltip system.storedMagicPoints.identified}}">
+    <span class="stored-magic-points-icon"></span>{{system.storedMagicPoints.value}}/{{system.storedMagicPoints.max}}
+  </span>
+{{/if}}

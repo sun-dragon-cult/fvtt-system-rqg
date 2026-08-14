@@ -145,7 +145,7 @@ const EMPTY_WARNING_REASONS: Record<AERewriteWarningReason, number> = {
   "document-processing-failure": 0,
 };
 
-function getEffectChanges(effect: AEMigrationEffectLike): AEMigrationChangeLike[] {
+export function getEffectChanges(effect: AEMigrationEffectLike): AEMigrationChangeLike[] {
   // v14 canonical persisted location is `system.changes`.
   // Foundry's own migrateData moves top-level changes → system.changes.
   // The shim only creates top-level as a getter/setter proxy.
@@ -185,7 +185,7 @@ function parseLegacyItemTargetSyntax(key: string): LegacyItemTargetSyntax | unde
   return { itemType, itemName, systemPath };
 }
 
-function getCollectionValues<T>(collectionLike?: CollectionLike<T>): T[] {
+export function getCollectionValues<T>(collectionLike?: CollectionLike<T>): T[] {
   if (!collectionLike) {
     return [];
   }
@@ -275,7 +275,7 @@ function parseNumericValue(rawValue: unknown): number | undefined {
   return undefined;
 }
 
-function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
+export function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
   if (typeof rawType === "number" && Number.isInteger(rawType)) {
     return LEGACY_NUMERIC_TYPE_TO_CANONICAL[rawType];
   }

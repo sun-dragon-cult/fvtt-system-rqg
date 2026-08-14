@@ -1,5 +1,6 @@
 export const documentRqidFlags = "documentRqidFlags" as const;
 export const actorWizardFlags = "actorWizardFlags" as const;
+export const magicPointStorageOrderFlag = "magicPointStorageOrder" as const;
 
 import type { RqidString } from "../../system/api/rqid-api";
 
@@ -44,6 +45,10 @@ export interface RqgActorFlags {
     isActorTemplate?: boolean;
     wizardChoices?: string;
   };
+  /** Full Magic Point draw order for the "auto" source: storage item ids plus the literal
+   *  "self", interleaved by priority and drag-reorderable from the Magic Point Sources popout
+   *  (#956). Entries not listed here fall back to their natural order, self last. */
+  [magicPointStorageOrderFlag]?: string[];
 }
 
 export interface DocumentRqidFlags {

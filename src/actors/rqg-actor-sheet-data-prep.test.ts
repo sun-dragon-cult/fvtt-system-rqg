@@ -30,7 +30,11 @@ function actorWithItems(items: any[]): any {
       characteristics: {
         intelligence: { value: 13 },
       },
+      attributes: {
+        magicPoints: { value: 0, max: 0 },
+      },
     },
+    getFlag: () => undefined,
   };
 }
 
@@ -214,32 +218,35 @@ describe("spirit magic and free INT", () => {
 });
 
 describe("getPowCrystals", () => {
-  it("returns undefined when no applied effects exist", () => {
+  it("returns an empty array when the actor has no storage items", () => {
     const actor = actorWithItems([]);
-    actor.appliedEffects = undefined;
 
-    expect(getPowCrystals(actor)).toBeUndefined();
+    expect(getPowCrystals(actor)).toEqual([]);
   });
 
-  it("extracts names and summed crystal size from active effects", () => {
-    const actor = actorWithItems([]);
-    actor.appliedEffects = [
+  it("extracts names and currently available stored magic points from items", () => {
+    const actor = actorWithItems([
       {
+        id: "c1",
         name: "Crystal A",
+        type: ItemTypeEnum.Gear,
         system: {
-          changes: [
-            { key: "system.effect.add.magicPoints.max", value: "3" },
-            { key: "system.attributes.hitPoints.max", value: "2" },
-          ],
+          storedMagicPoints: { value: 3, max: 5, identified: true },
+          equippedStatus: "equipped",
+          attunedTo: "Attuned",
         },
       },
       {
+        id: "c2",
         name: "Crystal B",
+        type: ItemTypeEnum.Weapon,
         system: {
-          changes: [{ key: "system.effect.add.magicPoints.max", value: 1 }],
+          storedMagicPoints: { value: 1, max: 1, identified: true },
+          equippedStatus: "equipped",
+          attunedTo: "Attuned",
         },
       },
-    ];
+    ]);
 
     expect(getPowCrystals(actor)).toEqual([
       { name: "Crystal A", size: 3 },
@@ -247,30 +254,13 @@ describe("getPowCrystals", () => {
     ]);
   });
 
-  it("ignores legacy magicPoints.max active-effect paths", () => {
-    const actor = actorWithItems([]);
-    actor.appliedEffects = [
-      {
-        name: "Legacy Crystal",
-        system: {
-          changes: [{ key: "system.attributes.magicPoints.max", value: "2" }],
-        },
-      },
-    ];
+  it("ignores items that are not configured as a magic point store", () => {
+    const actor = actorWithItems([
+      { name: "Plain Gear", type: ItemTypeEnum.Gear, system: { storedMagicPoints: { max: 0 } } },
+      { name: "Some Skill", type: ItemTypeEnum.Skill, system: {} },
+    ]);
 
     expect(getPowCrystals(actor)).toEqual([]);
-  });
-
-  it("supports legacy top-level changes as a compatibility fallback", () => {
-    const actor = actorWithItems([]);
-    actor.appliedEffects = [
-      {
-        name: "Legacy Top-Level Crystal",
-        changes: [{ key: "system.effect.add.magicPoints.max", value: "2" }],
-      },
-    ];
-
-    expect(getPowCrystals(actor)).toEqual([{ name: "Legacy Top-Level Crystal", size: 2 }]);
   });
 });
 

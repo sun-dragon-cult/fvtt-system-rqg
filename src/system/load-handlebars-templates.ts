@@ -143,6 +143,8 @@ export const templatePaths = {
   attackFooter: "systems/rqg/applications/attack-flow/attack-footer.hbs",
   rollHeader: "systems/rqg/applications/app-parts/roll-header.hbs",
   rollFooter: "systems/rqg/applications/app-parts/roll-footer.hbs",
+  magicPointSourcesApp:
+    "systems/rqg/applications/magic-point-sources-app/magic-point-sources-app.hbs",
   combatRollHeader: "systems/rqg/applications/attack-flow/combat-roll-header.hbs",
 
   // Settings
@@ -184,6 +186,7 @@ export const loadHandlebarsTemplates = async function () {
     actorSheetV2Skills: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-skills.hbs",
     actorSheetV2Gear: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-gear.hbs",
     actorSheetV2Background: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-background.hbs",
+    actorSheetV2MpStorageIcon: "systems/rqg/actors/sheet-parts-v2/mp-storage-icon.hbs",
 
     actorRuneTab: "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
     actorRuneElements: "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",

@@ -8,6 +8,11 @@ import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
+  AUTO_MAGIC_POINT_SOURCE,
+  getAvailableMagicPoints,
+  type MagicPointSourceSelection,
+} from "../../system/magic-point-source";
+import {
   type SpellItem,
   SpellConcentrationEnum,
   spellItemTypes,
@@ -45,11 +50,15 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     return super.migrateData(source);
   }
 
-  getCastValidationError(levelUsed: number | undefined, boost: number = 0): string | undefined {
+  getCastValidationError(
+    levelUsed: number | undefined,
+    boost: number = 0,
+    magicPointSource?: MagicPointSourceSelection,
+  ): string | undefined {
     const normalizedLevelUsed = levelUsed == null ? undefined : Number(levelUsed);
     const normalizedBoost = Number(boost) || 0;
-    const availableMagicPoints =
-      Number(this.parent?.actor?.system.attributes.magicPoints.value) || 0;
+    const actor = this.parent?.actor;
+    const availableMagicPoints = actor ? getAvailableMagicPoints(actor, magicPointSource) : 0;
 
     if (
       normalizedLevelUsed == null ||
@@ -93,7 +102,10 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     const levelUsed = Number(options.levelUsed ?? this.points);
     const boost = Number(options.magicPointBoost ?? 0) || 0;
-    const validationError = this.getCastValidationError(levelUsed, boost);
+    // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
+    // instead of always using the caster's own pool - matches the cast dialogs' default.
+    const magicPointSource = options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
+    const validationError = this.getCastValidationError(levelUsed, boost, magicPointSource);
     if (validationError) {
       ui.notifications?.warn(validationError);
       return;
@@ -117,7 +129,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
     const mpCost = levelUsed + boost;
-    await actor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel);
+    await actor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel, magicPointSource);
   }
 
   /**

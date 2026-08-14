@@ -81,6 +81,15 @@ import {
 import { ItemTree } from "../items/shared/item-tree";
 import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
 import { getSpeakerCompat } from "../system/fvtt-type-compat";
+import {
+  getStorageItems,
+  getTotalStoredMagicPoints,
+  MAGIC_POINT_SOURCE_DRAG_TYPE,
+} from "../system/magic-point-source";
+import {
+  getMagicPointSourcesAppId,
+  MagicPointSourcesApp,
+} from "../applications/magic-point-sources-app/magic-point-sources-app";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -159,6 +168,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       toggleSR: RqgActorSheetV2._toggleSRAction,
       addPassion: RqgActorSheetV2._addPassionAction,
       addGear: RqgActorSheetV2._addGearAction,
+      openMagicPointSources: RqgActorSheetV2._openMagicPointSourcesAction,
     },
   } satisfies foundry.applications.api.ApplicationV2.DefaultOptions;
 
@@ -245,6 +255,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
     const system = { ...this.actor.system } as CharacterActor["system"];
     const spiritMagicPointSum = CharacterDataModel.getSpiritMagicPointSum(this.actor);
+    const magicPointStorageItems = getStorageItems(this.actor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
@@ -340,7 +351,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       spiritMagicPointSum: spiritMagicPointSum,
       sorcerySkillCount: CharacterDataModel.getSorcerySkillCount(this.actor),
       freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
-      powCrystals: DataPrep.getPowCrystals(this.actor),
+      hasMagicPointStorageItems: magicPointStorageItems.length > 0,
+      totalStoredMagicPoints: getTotalStoredMagicPoints(this.actor, magicPointStorageItems),
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
@@ -1089,6 +1101,28 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     (createdItems[0] as RqgItem)?.sheet?.render({ force: true });
   }
 
+  private static _openMagicPointSourcesAction(
+    this: RqgActorSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): void {
+    // Toggle: if it's already open, close it rather than reopening/refocusing it. The popout's
+    // own outside-click listener deliberately ignores clicks on this button (see
+    // ensureOutsideClickListener) so this handler is the sole owner of that decision - otherwise
+    // the two would race, since pointerdown (which drives that listener) fires before this click
+    // handler does.
+    const existing = foundry.applications.instances.get(getMagicPointSourcesAppId(this.actor));
+    if (existing instanceof MagicPointSourcesApp) {
+      void existing.close();
+      return;
+    }
+
+    const rect = target.getBoundingClientRect();
+    new MagicPointSourcesApp(this.actor, {
+      position: { left: rect.left, top: rect.bottom },
+    }).render({ force: true });
+  }
+
   /**
    * Sync combatants to match the desired set of active SRs.
    * Reuses existing combatants by updating their initiative to minimise
@@ -1324,6 +1358,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   protected override _onDragOver(event: DragEvent): void {
+    // Reordering inside the Magic Point Sources popout (see MagicPointSourcesApp) is never a
+    // valid drop on this sheet. Bail before any highlight logic runs so the sheet-wide glow
+    // never lights up for it, even if the cursor strays over the sheet mid-drag.
+    if (event.dataTransfer?.types.includes(MAGIC_POINT_SOURCE_DRAG_TYPE)) {
+      return;
+    }
+
     super._onDragOver(event);
 
     const eventTarget = getEventTargetElement(event);

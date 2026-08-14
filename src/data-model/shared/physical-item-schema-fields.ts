@@ -32,5 +32,18 @@ export function physicalItemSchemaFields() {
       real: new NumberField({ min: 0, integer: false, nullable: false, initial: 0 }),
       estimated: new NumberField({ min: 0, nullable: false, initial: 0 }),
     }),
+    // Magic points stored in the item (e.g. a POW-storing crystal, Core p.263), spendable as an
+    // alternative source when casting Spirit/Rune Magic. See #956. "identified" gates whether the
+    // player-facing item sheet reveals this at all, and whether it counts as a usable source -
+    // a found crystal shouldn't announce itself as a Magic Point battery until the GM marks it
+    // identified (e.g. via Analyze Magic or similar). Deliberately separate from the
+    // pre-existing "attunedTo" flavor-text field (attunement and identification are different
+    // concepts). This identified-flag pattern can be reused for other item secrets later (e.g.
+    // spell matrices).
+    storedMagicPoints: new SchemaField({
+      value: new NumberField({ integer: true, nullable: true, initial: 0 }),
+      max: new NumberField({ integer: true, nullable: false, initial: 0 }),
+      identified: new BooleanField({ nullable: false, initial: false }),
+    }),
   } as const;
 }

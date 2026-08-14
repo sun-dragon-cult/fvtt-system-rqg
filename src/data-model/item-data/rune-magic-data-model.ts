@@ -10,6 +10,11 @@ import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
+import {
+  AUTO_MAGIC_POINT_SOURCE,
+  getAvailableMagicPoints,
+  type MagicPointSourceSelection,
+} from "../../system/magic-point-source";
 import type { CultItem } from "./cult-data-model";
 import type { RuneItem } from "./rune-data-model";
 import { toRqidString } from "../../system/api/rqid-validation";
@@ -130,11 +135,12 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
   getCastValidationError(
     runePointCost: number | undefined,
     magicPointsBoost: number = 0,
+    magicPointSource?: MagicPointSourceSelection,
   ): string | undefined {
     const cult = this.getCult();
     const actor = this.parent?.actor;
     const availableRunePoints = Number(cult?.system.runePoints.value) || 0;
-    const availableMagicPoints = Number(actor?.system.attributes.magicPoints.value) || 0;
+    const availableMagicPoints = actor ? getAvailableMagicPoints(actor, magicPointSource) : 0;
     if (runePointCost == null || runePointCost > availableRunePoints) {
       return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     }
@@ -224,10 +230,14 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     assertDocumentSubType<CultItem>(cult, "cult" as Item.SubType);
 
     const levelUsedOrDefault = options.levelUsed ?? this.points;
+    // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
+    // instead of always using the caster's own pool - matches the cast dialogs' default.
+    const magicPointSource = options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
 
     const validationError = this.getCastValidationError(
       levelUsedOrDefault,
       options.magicPointBoost,
+      magicPointSource,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -269,6 +279,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       mpCost,
       usedRune,
       runeMagicItemTyped,
+      magicPointSource,
     );
   }
 

@@ -37,6 +37,15 @@
       {{localize "RQG.Actor.Attributes.MagicPoints"}}
     </div>
 
+    {{#if showMagicPointSource}}
+      <label>
+        {{localize "RQG.Dialog.RuneMagicRoll.MagicPointSource"}}
+      </label>
+      <select name="magicPointSource">
+        {{selectOptions magicPointSourceOptions selected=formData.magicPointSource localize=true}}
+      </select>
+    {{/if}}
+
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.Augment"}}
     </label>
