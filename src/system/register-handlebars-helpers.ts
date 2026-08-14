@@ -326,25 +326,12 @@ export const registerHandlebarsHelpers = function () {
     }
   });
 
-  Handlebars.registerHelper(
-    "storedMagicPointsTooltip",
-    (identified: boolean, attunedTo: string | undefined, isGM: boolean): string => {
-      if (!identified) {
-        return localize("RQG.Actor.Gear.StoresMagicPointsUnidentifiedTip");
-      }
-      if (!attunedTo) {
-        // The GM sees the actual value/max regardless of attunement (see mp-storage-icon.hbs),
-        // so their tooltip needs to explain why a player would see "?" there instead; a player
-        // viewing their own item already knows that without the "to players" framing.
-        return localize(
-          isGM
-            ? "RQG.Actor.Gear.StoresMagicPointsUnattunedTip"
-            : "RQG.Actor.Gear.StoresMagicPointsUnattunedTipSelf",
-        );
-      }
-      return localize("RQG.Actor.Gear.StoresMagicPointsTip");
-    },
-  );
+  Handlebars.registerHelper("storedMagicPointsTooltip", (identified: boolean): string => {
+    if (!identified) {
+      return localize("RQG.Actor.Gear.StoresMagicPointsUnidentifiedTip");
+    }
+    return localize("RQG.Actor.Gear.StoresMagicPointsTip");
+  });
 
   Handlebars.registerHelper("gearViewIcon", (view: string): string => {
     return CONFIG.RQG.gearViewIcons[view as keyof typeof CONFIG.RQG.gearViewIcons];

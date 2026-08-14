@@ -23,7 +23,7 @@ const MAGIC_POINT_EFFECT_KEY = "system.effect.add.magicPoints.max";
  */
 export const migrateItemPowCrystalToStoredMagicPoints: ItemMigration = async (
   item: RqgItem,
-  owningActor,
+  _owningActor,
   logger,
 ): Promise<Item.UpdateData> => {
   const updateData: Item.UpdateData = {};
@@ -62,14 +62,9 @@ export const migrateItemPowCrystalToStoredMagicPoints: ItemMigration = async (
   }
 
   // Already known and functional under the old always-active mechanism, so migrating shouldn't
-  // suddenly hide it behind the new identified/attuned gates (see #956 follow-up) - default
-  // attunedTo to the owning actor's name unless it's already attuned to something else.
-  const existingAttunedTo = (item.system as any).attunedTo as string | undefined;
-  const attunedTo = existingAttunedTo?.trim() ? existingAttunedTo : (owningActor?.name ?? "");
-
+  // suddenly hide it behind the new identified gate (see #956 follow-up).
   updateData.system = {
     storedMagicPoints: { value: total, max: total, identified: true },
-    attunedTo,
   } as any;
   if (effectUpdates.length > 0) {
     updateData.effects = effectUpdates as any;

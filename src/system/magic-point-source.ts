@@ -29,19 +29,22 @@ export const MAGIC_POINT_SOURCE_DRAG_TYPE = "application/x-rqg-magic-point-sourc
 export type MagicPointDrawOrderEntry = { type: "self" } | { type: "item"; item: PhysicalItem };
 
 /**
- * A physical item only counts as a usable Magic Point source once it's equipped, its stored
- * points have been identified (e.g. via Analyze Magic - a found crystal shouldn't announce
- * itself as a battery), and it's attuned (attunedTo is set - identifying a crystal doesn't by
- * itself let anyone draw from it; attunement is a separate binding step, same as any other
- * "attuned to" item).
+ * A physical item only counts as a usable Magic Point source once it's equipped (RAW's "physical
+ * contact" requirement, Core p.263 Magic Point Enchantment) and its stored points have been
+ * identified (e.g. via Analyze Magic - a found crystal shouldn't announce itself as a battery).
+ * No attunement gate: that's a house-rule-shaped mistake from earlier design work on this
+ * feature - RAW's attunement process (a week-long POW vs POW struggle) only applies to *Powered*
+ * crystals, a different and separate item variant that amplifies/modifies spells rather than
+ * storing raw Magic Points, and isn't implemented here. A plain MP-storage crystal just needs an
+ * initial attunement attempt to identify it (which grants 1 stored MP) - not an ongoing gate on
+ * every later use. `attunedTo` remains a pre-existing, unrelated flavor-text field.
  */
 function getStorageItemCandidates(actor: RqgActor): PhysicalItem[] {
   return actor.items
     .filter((i) => isDocumentSubType<PhysicalItem>(i, physicalItemTypes))
     .filter((i) => (i.system.storedMagicPoints?.max ?? 0) > 0)
     .filter((i) => i.system.equippedStatus === "equipped")
-    .filter((i) => i.system.storedMagicPoints?.identified === true)
-    .filter((i) => !!i.system.attunedTo?.trim());
+    .filter((i) => i.system.storedMagicPoints?.identified === true);
 }
 
 /**

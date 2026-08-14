@@ -280,8 +280,6 @@
         "CurrencyConversionTipUnder1": "One Lunar is worth {value} {name}.",
         "StoresMagicPointsTip": "Magic Point Storage",
         "StoresMagicPointsUnidentifiedTip": "Magic Point Storage (not identified - hidden from players)",
-        "StoresMagicPointsUnattunedTip": "Magic Point Storage (capacity unknown to players until attuned)",
-        "StoresMagicPointsUnattunedTipSelf": "Magic Point Storage (capacity unknown until attuned)",
         "Name": "Name",
         "EncumbranceAbbr": "ENC",
         "MaxEnc": "Max ENC",

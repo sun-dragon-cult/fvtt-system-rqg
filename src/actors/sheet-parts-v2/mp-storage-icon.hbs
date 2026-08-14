@@ -1,6 +1,6 @@
 {{#if (and system.storedMagicPoints.max (or @root.isGM system.storedMagicPoints.identified))}}
-  <span class="stored-magic-points{{#unless (and system.storedMagicPoints.identified system.attunedTo)}} hidden-from-players{{/unless}}"
-        data-tooltip="{{storedMagicPointsTooltip system.storedMagicPoints.identified system.attunedTo @root.isGM}}">
-    <span class="stored-magic-points-icon"></span>{{#if (or @root.isGM system.attunedTo)}}{{system.storedMagicPoints.value}}/{{system.storedMagicPoints.max}}{{else}}?{{/if}}
+  <span class="stored-magic-points{{#unless system.storedMagicPoints.identified}} hidden-from-players{{/unless}}"
+        data-tooltip="{{storedMagicPointsTooltip system.storedMagicPoints.identified}}">
+    <span class="stored-magic-points-icon"></span>{{system.storedMagicPoints.value}}/{{system.storedMagicPoints.max}}
   </span>
 {{/if}}

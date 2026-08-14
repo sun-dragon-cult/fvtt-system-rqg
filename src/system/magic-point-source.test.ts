@@ -39,13 +39,12 @@ function crystal(
   max: number,
   equippedStatus: string = "equipped",
   identified: boolean = true,
-  attunedTo: string = "Attuned",
 ) {
   return {
     id,
     name,
     type: "gear",
-    system: { storedMagicPoints: { value, max, identified }, equippedStatus, attunedTo },
+    system: { storedMagicPoints: { value, max, identified }, equippedStatus },
     update: vi.fn(),
   };
 }
@@ -140,11 +139,8 @@ describe("getStorageItems ordering", () => {
     expect(getStorageItems(actor).map((i) => i.id)).toEqual(["c1"]);
   });
 
-  it("excludes storage items that aren't attuned, even if identified", () => {
-    const actor = fakeActor(6, [
-      crystal("c1", "Attuned", 1, 1, "equipped", true, "Nisse"),
-      crystal("c2", "Unattuned", 1, 1, "equipped", true, ""),
-    ]);
+  it("does not require attunement - only equipped and identified", () => {
+    const actor = fakeActor(6, [crystal("c1", "Never attuned", 1, 1, "equipped", true)]);
     expect(getStorageItems(actor).map((i) => i.id)).toEqual(["c1"]);
   });
 });
