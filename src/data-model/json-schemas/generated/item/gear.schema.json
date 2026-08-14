@@ -74,6 +74,31 @@
         "real",
         "estimated"
       ]
+    },
+    "storedMagicPoints": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "default": 0
+        },
+        "max": {
+          "type": "integer",
+          "default": 0
+        },
+        "identified": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "max",
+        "identified"
+      ]
     }
   },
   "additionalProperties": false,
@@ -87,6 +112,7 @@
     "attunedTo",
     "encumbrance",
     "equippedStatus",
-    "price"
+    "price",
+    "storedMagicPoints"
   ]
 }

@@ -75,6 +75,31 @@
         "estimated"
       ]
     },
+    "storedMagicPoints": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "default": 0
+        },
+        "max": {
+          "type": "integer",
+          "default": 0
+        },
+        "identified": {
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "max",
+        "identified"
+      ]
+    },
     "size": {
       "type": "integer",
       "minimum": 0,
@@ -141,6 +166,7 @@
     "encumbrance",
     "equippedStatus",
     "price",
+    "storedMagicPoints",
     "size",
     "hitLocationRqidLinks",
     "namePrefix",
