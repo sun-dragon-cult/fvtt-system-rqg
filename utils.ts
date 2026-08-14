@@ -2,29 +2,6 @@ import * as os from "os";
 import * as fs from "fs/promises";
 import { fileURLToPath } from "url";
 
-export async function findManifestJSON(packageType: string): Promise<string> {
-  const manifestJSONPath = `${packageType}.json`;
-
-  try {
-    await fs.access(manifestJSONPath, fs.constants.F_OK);
-    return manifestJSONPath;
-  } catch {
-    // Ignore error
-  }
-
-  const staticFile = `static/${packageType}.json`;
-  try {
-    await fs.access(staticFile, fs.constants.F_OK);
-    return staticFile;
-  } catch {
-    // Ignore error
-  }
-
-  throw new Error(
-    `Could not find manifest JSON at ${JSON.stringify(manifestJSONPath)} or ${JSON.stringify(staticFile)}`,
-  );
-}
-
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace NodeJS {

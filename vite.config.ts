@@ -4,16 +4,12 @@ import { viteStaticCopy } from "vite-plugin-static-copy";
 import { checker } from "vite-plugin-checker";
 import esbuild from "esbuild";
 import * as path from "path";
-import { findFoundryHost, findManifestJSON } from "./utils.ts";
+import { findFoundryHost } from "./utils.ts";
 
 export type PackageType = "module" | "system" | "world";
 
 const packageType: PackageType = "system";
 const packageID: string = "rqg";
-
-const manifestJSONPath = await findManifestJSON(packageType);
-
-const filesToCopy = [manifestJSONPath, "CHANGELOG.md", "README.md", "CONTRIBUTING.md"];
 
 const devServerPort = 30001;
 const scriptsEntrypoint = "./src/rqg.ts";
@@ -63,11 +59,6 @@ const config = Vite.defineConfig(async ({ command, mode }): Promise<Vite.UserCon
             src: "src/**/*.hbs",
             dest: "",
             rename: { stripBase: 1 },
-          },
-          {
-            src: filesToCopy,
-
-            dest: "",
           },
         ],
         silent: true,
