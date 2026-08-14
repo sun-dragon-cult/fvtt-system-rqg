@@ -7,6 +7,7 @@ import {
   type AEMigrationEffectLike,
   getCollectionValues,
   getEffectChanges,
+  normalizeChangeType,
 } from "../shared-ae-migration-utils";
 
 const MAGIC_POINT_EFFECT_KEY = "system.effect.add.magicPoints.max";
@@ -46,13 +47,27 @@ export const migrateItemPowCrystalToStoredMagicPoints: ItemMigration = async (
       continue;
     }
 
-    total += matchingChanges.reduce((sum, c) => sum + (Number(c.value) || 0), 0);
+    // Only ADD-mode changes represent "this many stored points" - the old hack was always ADD,
+    // but an OVERRIDE/MULTIPLY/etc. change on this key (e.g. hand-edited) isn't a plain quantity
+    // to sum. Left in place for manual review rather than blindly summed, matching how
+    // migrateEffectChangesWithSummary already treats non-additive modes elsewhere in this module.
+    const additiveChanges = matchingChanges.filter((c) => normalizeChangeType(c.type) === "add");
+    if (additiveChanges.length < matchingChanges.length) {
+      logger?.warn(`Skipped non-ADD-mode magic point change(s) on item ${item.name}`, {
+        documents: [{ kind: "Item", uuid: item.uuid, label: item.name }],
+      });
+    }
+    if (additiveChanges.length === 0) {
+      continue;
+    }
+
+    total += additiveChanges.reduce((sum, c) => sum + (Number(c.value) || 0), 0);
 
     const effectId = effect._id ?? effect.id;
     if (effectId) {
       effectUpdates.push({
         _id: effectId,
-        system: { changes: changes.filter((c) => c.key !== MAGIC_POINT_EFFECT_KEY) },
+        system: { changes: changes.filter((c) => !additiveChanges.includes(c)) },
       });
     }
   }

@@ -275,7 +275,7 @@ function parseNumericValue(rawValue: unknown): number | undefined {
   return undefined;
 }
 
-function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
+export function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
   if (typeof rawType === "number" && Number.isInteger(rawType)) {
     return LEGACY_NUMERIC_TYPE_TO_CANONICAL[rawType];
   }

@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { migrateItemPowCrystalToStoredMagicPoints } from "./migrate-item-pow-crystal-to-stored-magic-points";
 import type { RqgItem } from "@items/rqg-item.ts";
 
@@ -47,11 +47,15 @@ describe("migrateItemPowCrystalToStoredMagicPoints", () => {
       effects: [
         {
           id: "effect-1",
-          system: { changes: [{ key: "system.effect.add.magicPoints.max", value: 3 }] },
+          system: {
+            changes: [{ key: "system.effect.add.magicPoints.max", type: "add", value: 3 }],
+          },
         },
         {
           id: "effect-2",
-          system: { changes: [{ key: "system.effect.add.magicPoints.max", value: "2" }] },
+          system: {
+            changes: [{ key: "system.effect.add.magicPoints.max", type: "add", value: "2" }],
+          },
         },
       ],
     };
@@ -114,6 +118,71 @@ describe("migrateItemPowCrystalToStoredMagicPoints", () => {
         {
           id: "effect-1",
           system: { changes: [{ key: "system.effect.add.magicPoints.max", value: 3 }] },
+        },
+      ],
+    };
+
+    const updateData = await migrateItemPowCrystalToStoredMagicPoints(
+      mockItem as unknown as RqgItem,
+    );
+
+    expect(updateData).toEqual({});
+  });
+
+  it("skips non-ADD-mode changes instead of summing them, leaving them for manual review", async () => {
+    const warn = vi.fn();
+    const info = vi.fn();
+    const mockItem = {
+      name: "Weird Crystal",
+      id: "item-6",
+      uuid: "Item.item-6",
+      type: "gear",
+      system: { storedMagicPoints: { value: null, max: 0 } },
+      effects: [
+        {
+          id: "effect-1",
+          system: {
+            changes: [
+              { key: "system.effect.add.magicPoints.max", type: "add", value: 3 },
+              { key: "system.effect.add.magicPoints.max", type: "override", value: 99 },
+            ],
+          },
+        },
+      ],
+    };
+
+    const updateData = await migrateItemPowCrystalToStoredMagicPoints(
+      mockItem as unknown as RqgItem,
+      undefined,
+      { warn, info } as any,
+    );
+
+    expect((updateData.system as any).storedMagicPoints).toEqual({
+      value: 3,
+      max: 3,
+      identified: true,
+    });
+    expect((updateData.effects as any[])?.[0]).toEqual({
+      _id: "effect-1",
+      system: {
+        changes: [{ key: "system.effect.add.magicPoints.max", type: "override", value: 99 }],
+      },
+    });
+    expect(warn).toHaveBeenCalled();
+  });
+
+  it("does nothing when the only matching change is non-ADD-mode", async () => {
+    const mockItem = {
+      name: "Override-only Crystal",
+      id: "item-7",
+      type: "gear",
+      system: { storedMagicPoints: { value: null, max: 0 } },
+      effects: [
+        {
+          id: "effect-1",
+          system: {
+            changes: [{ key: "system.effect.add.magicPoints.max", type: "override", value: 5 }],
+          },
         },
       ],
     };

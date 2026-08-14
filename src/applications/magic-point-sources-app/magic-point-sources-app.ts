@@ -50,14 +50,27 @@ function ensureOutsideClickListener(): void {
       if (!(target instanceof Node)) {
         return;
       }
-      // The header toggle button (RqgActorSheetV2._openMagicPointSourcesAction) owns open/close
-      // for its own click - pointerdown fires before that button's click handler runs, so closing
-      // here first would race with (and always win against) the toggle-closed behavior there.
-      if (target instanceof Element && target.closest('[data-action="openMagicPointSources"]')) {
-        return;
-      }
-      for (const app of foundry.applications.instances.values()) {
-        if (app instanceof MagicPointSourcesApp && !app.element.contains(target)) {
+      // The clicked header toggle button (RqgActorSheetV2._openMagicPointSourcesAction) owns
+      // open/close for its *own* actor's popout - pointerdown fires before that button's click
+      // handler runs, so closing that one popout here first would race with (and always win
+      // against) the toggle-closed behavior there. Scoped to just that actor's popout id (via
+      // data-actor-id) rather than skipping the whole loop, so clicking actor B's toggle while
+      // actor A's popout is open still closes A's popout instead of orphaning it.
+      const toggleButton =
+        target instanceof Element
+          ? target.closest<HTMLElement>('[data-action="openMagicPointSources"]')
+          : null;
+      const toggledActorId = toggleButton?.dataset["actorId"];
+      const ownToggleAppId =
+        toggledActorId !== undefined
+          ? `${MAGIC_POINT_SOURCES_APP_ID_PREFIX}-${toggledActorId}`
+          : undefined;
+
+      for (const [appId, app] of foundry.applications.instances.entries()) {
+        if (!(app instanceof MagicPointSourcesApp) || appId === ownToggleAppId) {
+          continue;
+        }
+        if (!app.element.contains(target)) {
           void app.close();
         }
       }

@@ -7,6 +7,7 @@ import {
   getMagicPointSourceOptions,
   getMaxTransferableToStorage,
   getStorageItems,
+  getTotalStoredMagicPoints,
   moveSourceBefore,
   SELF_MAGIC_POINT_SOURCE,
   setMagicPointDrawOrder,
@@ -74,6 +75,19 @@ describe("getAvailableMagicPoints", () => {
   it("ignores items that aren't configured as a magic point store", () => {
     const actor = fakeActor(6, [crystal("c1", "A", 0, 0)]);
     expect(getAvailableMagicPoints(actor, AUTO_MAGIC_POINT_SOURCE)).toBe(6);
+  });
+});
+
+describe("getTotalStoredMagicPoints", () => {
+  it("sums value and max across all storage items, excluding self", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 3, 5), crystal("c2", "B", 2, 2)]);
+    expect(getTotalStoredMagicPoints(actor)).toEqual({ value: 5, max: 7 });
+  });
+
+  it("accepts an already-computed storage items list instead of recomputing it", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)]);
+    const precomputed = getStorageItems(actor);
+    expect(getTotalStoredMagicPoints(actor, precomputed)).toEqual({ value: 3, max: 5 });
   });
 });
 

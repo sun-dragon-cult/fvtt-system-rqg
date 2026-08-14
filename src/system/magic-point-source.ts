@@ -108,9 +108,16 @@ export function getStorageItems(actor: RqgActor): PhysicalItem[] {
 /**
  * Sum of current and max Magic Points across all of the actor's storage items - excludes self's
  * own pool. Shown as a running total next to the Magic Point Sources header icon.
+ *
+ * Accepts an already-computed storageItems list (e.g. from a caller that also needs it for
+ * something else, like a render-time item count) to avoid re-walking the actor's items and
+ * re-resolving the draw order a second time; defaults to computing it when not given.
  */
-export function getTotalStoredMagicPoints(actor: RqgActor): { value: number; max: number } {
-  return getStorageItems(actor).reduce(
+export function getTotalStoredMagicPoints(
+  actor: RqgActor,
+  storageItems: PhysicalItem[] = getStorageItems(actor),
+): { value: number; max: number } {
+  return storageItems.reduce(
     (total, item) => ({
       value: total.value + (Number(item.system.storedMagicPoints?.value) || 0),
       max: total.max + (Number(item.system.storedMagicPoints?.max) || 0),

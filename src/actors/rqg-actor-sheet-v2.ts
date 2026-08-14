@@ -255,6 +255,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
     const system = { ...this.actor.system } as CharacterActor["system"];
     const spiritMagicPointSum = CharacterDataModel.getSpiritMagicPointSum(this.actor);
+    const magicPointStorageItems = getStorageItems(this.actor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
@@ -350,8 +351,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       spiritMagicPointSum: spiritMagicPointSum,
       sorcerySkillCount: CharacterDataModel.getSorcerySkillCount(this.actor),
       freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
-      hasMagicPointStorageItems: getStorageItems(this.actor).length > 0,
-      totalStoredMagicPoints: getTotalStoredMagicPoints(this.actor),
+      hasMagicPointStorageItems: magicPointStorageItems.length > 0,
+      totalStoredMagicPoints: getTotalStoredMagicPoints(this.actor, magicPointStorageItems),
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
