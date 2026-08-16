@@ -525,6 +525,12 @@
       "type": "string",
       "default": ""
     },
+    "alliedSpiritActorUuid": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "attributes": {
       "type": "object",
       "properties": {

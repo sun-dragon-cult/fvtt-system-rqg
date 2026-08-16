@@ -27,6 +27,7 @@ import {
   AUTO_MAGIC_POINT_SOURCE,
   getMagicPointSourceOptions,
 } from "../../system/magic-point-source";
+import { getRunePointSourceOptions, SELF_RUNE_POINT_SOURCE } from "../../system/rune-point-source";
 
 const logger = new RqgLogger("RuneMagicRollDialogV2");
 
@@ -151,6 +152,11 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     // case, regardless of any Magic Point Source Order preference set for regular Spirit Magic
     // Magic Point spending.
     formData.magicPointSource ??= AUTO_MAGIC_POINT_SOURCE;
+    // Rune Points are always spent when casting (unlike the Magic Point boost, which is
+    // optional), so - unlike magicPointSource above - this picker's default doesn't depend on
+    // any other field: "self" is always the safe default, and the picker only even appears when
+    // there's a shared-cult ally to draw from (see showRunePointSource below).
+    formData.runePointSource ??= SELF_RUNE_POINT_SOURCE;
     formData.augmentModifier ??= 0;
     formData.meditateModifier ??= 0;
     formData.otherModifier ??= 0;
@@ -160,6 +166,10 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const usedRune = eligibleRunes.find((r) => r.id === formData.usedRuneId);
     const magicPointSourceOptions = getMagicPointSourceOptions(this.spellItem.actor);
+    const runePointSourceOptions = getRunePointSourceOptions(
+      this.spellItem.actor,
+      this.spellItem.system.getCult(),
+    );
 
     return {
       formData: formData,
@@ -174,6 +184,8 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       ritualOptions: RuneMagicRollDialogV2.ritualOptions,
       magicPointSourceOptions: magicPointSourceOptions,
       showMagicPointSource: magicPointSourceOptions.length > 0 && Number(formData.boost) > 0,
+      runePointSourceOptions: runePointSourceOptions,
+      showRunePointSource: runePointSourceOptions.length > 0,
 
       // RollHeader
       rollType: localize("TYPES.Item.runeMagic"),
@@ -253,6 +265,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
       magicPointSource: formDataObject.magicPointSource,
+      runePointSource: formDataObject.runePointSource,
       modifiers: [
         {
           value: Number(formDataObject.augmentModifier),
@@ -278,6 +291,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formDataObject.levelUsed,
       formDataObject.boost,
       formDataObject.magicPointSource,
+      formDataObject.runePointSource,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);

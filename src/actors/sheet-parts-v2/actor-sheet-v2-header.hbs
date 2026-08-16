@@ -117,7 +117,7 @@
                      value="{{system.attributes.magicPoints.value}}" size="2">
               / {{system.attributes.magicPoints.max}}
             </span>
-            {{#if hasMagicPointStorageItems}}
+            {{#if showMagicPointSourcesButton}}
               <a class="mp-storage-toggle" data-action="openMagicPointSources" data-actor-id="{{id}}">
                 <span class="mp-storage-icon"></span>
                 <span class="mp-storage-total">{{totalStoredMagicPoints.value}}/{{totalStoredMagicPoints.max}}</span>

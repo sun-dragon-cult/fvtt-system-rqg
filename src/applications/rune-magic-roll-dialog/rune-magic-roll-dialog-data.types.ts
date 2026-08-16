@@ -27,6 +27,8 @@ export type RuneMagicRollDialogContext = RollHeaderData &
     ritualOptions: SelectOptionData<number>[];
     magicPointSourceOptions: SelectOptionData<string>[];
     showMagicPointSource: boolean;
+    runePointSourceOptions: SelectOptionData<string>[];
+    showRunePointSource: boolean;
   };
 
 export type RuneMagicRollDialogFormData = {
@@ -34,6 +36,7 @@ export type RuneMagicRollDialogFormData = {
   usedRuneId: string; // id of embedded rune
   boost: number;
   magicPointSource: string;
+  runePointSource: string;
   augmentModifier: number;
   meditateModifier: number;
   otherModifier: number;

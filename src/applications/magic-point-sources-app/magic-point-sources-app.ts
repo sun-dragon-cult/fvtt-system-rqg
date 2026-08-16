@@ -3,7 +3,9 @@ import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data"
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import {
+  ALLY_MAGIC_POINT_SOURCE,
   feedStorageFromSelf,
+  getAlliedBondActor,
   getMagicPointDrawOrder,
   getMaxTransferableToStorage,
   getStorageItems,
@@ -13,7 +15,10 @@ import {
   setMagicPointDrawOrder,
 } from "../../system/magic-point-source";
 import { isFoundryElementInstanceOf, requireValue } from "../../system/util";
-import type { MagicPointSourcesAppContext } from "./magic-point-sources-app.types.ts";
+import type {
+  MagicPointSourcesAppContext,
+  MagicPointSourcesAppRow,
+} from "./magic-point-sources-app.types.ts";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
@@ -164,24 +169,42 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
   override async _prepareContext(): Promise<MagicPointSourcesAppContext> {
     let priority = 0;
     const rows = getMagicPointDrawOrder(this.actor).map((entry) => {
-      const base =
-        entry.type === "self"
-          ? {
-              id: SELF_MAGIC_POINT_SOURCE,
-              isSelf: true,
-              name: "",
-              value: Number(this.actor.system.attributes.magicPoints.value) || 0,
-              max: Number(this.actor.system.attributes.magicPoints.max) || 0,
-              feedMax: 0,
-            }
-          : {
-              id: entry.item.id ?? "",
-              isSelf: false,
-              name: entry.item.name ?? "",
-              value: Number(entry.item.system.storedMagicPoints?.value) || 0,
-              max: Number(entry.item.system.storedMagicPoints?.max) || 0,
-              feedMax: getMaxTransferableToStorage(this.actor, entry.item),
-            };
+      let base: Omit<MagicPointSourcesAppRow, "priority">;
+      switch (entry.type) {
+        case "self":
+          base = {
+            id: SELF_MAGIC_POINT_SOURCE,
+            kind: "self",
+            img: this.actor.img ?? undefined,
+            name: "",
+            value: Number(this.actor.system.attributes.magicPoints.value) || 0,
+            max: Number(this.actor.system.attributes.magicPoints.max) || 0,
+            feedMax: 0,
+          };
+          break;
+        case "ally":
+          base = {
+            id: ALLY_MAGIC_POINT_SOURCE,
+            kind: "ally",
+            img: entry.actor.img ?? undefined,
+            name: entry.actor.name ?? "",
+            value: Number(entry.actor.system.attributes.magicPoints.value) || 0,
+            max: Number(entry.actor.system.attributes.magicPoints.max) || 0,
+            feedMax: 0,
+          };
+          break;
+        case "item":
+          base = {
+            id: entry.item.id ?? "",
+            kind: "item",
+            img: entry.item.img ?? undefined,
+            name: entry.item.name ?? "",
+            value: Number(entry.item.system.storedMagicPoints?.value) || 0,
+            max: Number(entry.item.system.storedMagicPoints?.max) || 0,
+            feedMax: getMaxTransferableToStorage(this.actor, entry.item),
+          };
+          break;
+      }
       // Depleted sources (0 points left) never get drawn from by "auto", so they're excluded
       // from the priority numbering entirely rather than breaking the sequence.
       return { ...base, priority: base.value > 0 ? ++priority : null };
@@ -200,9 +223,11 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
   }
 
   /**
-   * Form fields are named "system.attributes.magicPoints.value" (self) or
-   * "items.<itemId>.system.storedMagicPoints.value" (a storage item), so the submitted data is
-   * split by that prefix and routed to the actor or the specific owning item.
+   * Form fields are named "system.attributes.magicPoints.value" (self),
+   * "items.<itemId>.system.storedMagicPoints.value" (a storage item), or
+   * "ally.system.attributes.magicPoints.value" (a linked Allied Spirit bond partner, #957 - see
+   * getAlliedBondActor), so the submitted data is split by prefix and routed to the actor, the
+   * specific owning item, or the bonded actor.
    */
   protected static async onSubmit(
     _event: SubmitEvent | Event,
@@ -213,8 +238,13 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
     const data = formData.object as Record<string, unknown>;
 
     const actorUpdate: Record<string, unknown> = {};
+    const allyUpdate: Record<string, unknown> = {};
     const itemUpdatesById = new Map<string, Record<string, unknown>>();
     for (const [key, value] of Object.entries(data)) {
+      if (key.startsWith("ally.")) {
+        allyUpdate[key.slice("ally.".length)] = value;
+        continue;
+      }
       const itemFieldMatch = /^items\.([^.]+)\.(.+)$/.exec(key);
       if (!itemFieldMatch) {
         actorUpdate[key] = value;
@@ -234,6 +264,11 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
       const item = app.actor.items.get(itemId);
       requireValue(item, `Couldn't find item [${itemId}] to edit its Magic Point storage`);
       await item.update(itemUpdate);
+    }
+    if (Object.keys(allyUpdate).length > 0) {
+      const ally = getAlliedBondActor(app.actor);
+      requireValue(ally, "Couldn't find the linked Allied Spirit to edit its Magic Points");
+      await ally.update(allyUpdate);
     }
 
     await app.render();

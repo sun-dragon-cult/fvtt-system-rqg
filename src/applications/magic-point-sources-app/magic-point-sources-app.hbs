@@ -4,8 +4,11 @@
     <div class="magic-point-source-row" data-source-id="{{id}}">
       <span class="magic-point-source-handle grip-icon"></span>
       <span class="magic-point-source-priority">{{#if priority}}{{priority}}{{/if}}</span>
+      <span class="magic-point-source-icon">
+        {{#if img}}<img src="{{img}}">{{/if}}
+      </span>
       <span class="magic-point-source-name">
-        {{#if isSelf}}
+        {{#if (eq kind "self")}}
           {{localize "RQG.Dialog.Common.MagicPointSourceOptions.Self"}}
         {{else}}
           {{name}}
@@ -20,9 +23,13 @@
           </button>
         {{/if}}
       </span>
-      {{#if isSelf}}
+      {{#if (eq kind "self")}}
         <input type="number" min="0" max="99" size="2"
                name="system.attributes.magicPoints.value"
+               value="{{value}}">
+      {{else if (eq kind "ally")}}
+        <input type="number" min="0" max="{{this.max}}" size="2"
+               name="ally.system.attributes.magicPoints.value"
                value="{{value}}">
       {{else}}
         <input type="number" min="0" max="{{this.max}}" size="2"

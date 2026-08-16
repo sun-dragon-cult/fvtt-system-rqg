@@ -90,7 +90,7 @@
     },
     "Actor": {
       "Attributes": {
-        "AlliesAndNotes": "Allies & Notes",
+        "AlliesAndNotes": "Notes",
         "StrikeRank": "Strike Rank",
         "SizeAbbr": "SIZ",
         "DexterityAbbr": "DEX",
@@ -381,6 +381,13 @@
         "Stackable": "Stackable",
         "OneUse": "One Use",
         "Chance": "Chance",
+        "AlliedSpiritLabel": "Allied Spirit:",
+        "AllyOfLabel": "Ally of:",
+        "AlliedSpiritDropHint": "Drag an Actor here to link it as this character's Allied Spirit",
+        "UnlinkAlliedSpiritTitle": "Unlink Allied Spirit",
+        "AlliedSpiritDropRequiresActorWarn": "Drop an Actor to link it as an Allied Spirit",
+        "AlliedSpiritDropRequiresCharacterWarn": "Only a Character actor can be linked as an Allied Spirit",
+        "AlliedSpiritCannotLinkSelfWarn": "A character cannot be its own Allied Spirit",
         "CultRank": {
           "layMember": "Lay Member",
           "initiate": "Initiate",
@@ -585,6 +592,7 @@
         "MeditateRitual": "Meditate / Ritual",
         "Meditate": "meditate",
         "MagicPointSource": "Magic Point Source",
+        "RunePointSource": "Rune Point Source",
         "OneUseHeader": "One Use",
         "OneUseDescription": "Casting this spell will reduce both your current and total Rune Points for the cult!"
       },
@@ -623,6 +631,9 @@
         },
         "MagicPointSourceOptions": {
           "Auto": "Auto (use the Magic Point Source Order set in the header)",
+          "Self": "Self"
+        },
+        "RunePointSourceOptions": {
           "Self": "Self"
         },
         "MeditateOptions": {

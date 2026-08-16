@@ -28,6 +28,9 @@ globalThis.game = {
   i18n: {
     format: vi.fn((key, data = {}) => `${key} + ${Object.entries(data).join()}`),
   },
+  actors: {
+    contents: [],
+  },
 };
 
 globalThis.ui = {
@@ -226,9 +229,22 @@ globalThis.navigator.clipboard = {
 };
 
 globalThis.fromUuid = vi.fn(async (_uuid) => null);
+globalThis.fromUuidSync = vi.fn((_uuid) => null);
 globalThis.ChatMessage = null;
 globalThis.Item = null;
+globalThis.Actor = class Actor {};
 globalThis.systemId = "rqg";
+
+// Reset per-test mutations to shared mocks (fromUuidSync return value, game.actors.contents)
+// so tests that configure them (e.g. Allied Spirit bond lookups) don't leak into later tests.
+// Guarded: some test files replace globalThis.game/fromUuidSync entirely with their own mocks.
+afterEach(() => {
+  globalThis.fromUuidSync?.mockReset?.();
+  globalThis.fromUuidSync?.mockReturnValue?.(null);
+  if (globalThis.game?.actors) {
+    globalThis.game.actors.contents = [];
+  }
+});
 
 // Simple Handlebars stub (add real features as needed)
 globalThis.Handlebars = {

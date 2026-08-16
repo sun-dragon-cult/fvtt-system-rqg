@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ArrayFieldShim,
   BooleanFieldShim,
+  DocumentUUIDFieldShim,
   NumberFieldShim,
   SchemaFieldShim,
   StringFieldShim,
@@ -67,6 +68,12 @@ describe("fieldToJsonSchema", () => {
       additionalProperties: false,
       required: ["rqid"],
     });
+  });
+
+  it("converts a nullable DocumentUUIDField into a nullable string type, not an object", () => {
+    const field = new DocumentUUIDFieldShim({ nullable: true });
+
+    expect(fieldToJsonSchema(field)).toEqual({ type: ["string", "null"] });
   });
 
   it("throws for an unsupported field type", () => {

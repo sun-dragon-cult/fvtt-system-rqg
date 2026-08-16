@@ -18,7 +18,8 @@ import {
 } from "../item-data/cult-priority";
 import { isDocumentSubType } from "../../system/util";
 
-const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { BooleanField, DocumentUUIDField, NumberField, SchemaField, StringField } =
+  foundry.data.fields;
 
 function characteristicSchemaField(formula: string) {
   return new SchemaField({
@@ -86,6 +87,16 @@ function defineCharacterSchema() {
     allies: new StringField({ blank: true, nullable: false, initial: "" }),
     editMode: new BooleanField({ nullable: false, initial: true }),
     extendedName: new StringField({ blank: true, nullable: false, initial: "" }),
+
+    /** The Character actor playing this actor's Allied Spirit (Core p.277, #957) - a bonded
+     *  ally sharing Magic Points and Rune Points bidirectionally. Cardinality of one per
+     *  priest is not enforced by code (GM-adjudicated, per the rule). */
+    alliedSpiritActorUuid: new DocumentUUIDField({
+      blank: false,
+      nullable: true,
+      initial: undefined,
+      required: false,
+    }),
 
     attributes: new SchemaField({
       magicPoints: derivedResourceSchemaField(),
