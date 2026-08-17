@@ -454,22 +454,22 @@ describe("Rqid", () => {
     });
   });
 
-  describe("getDefaultRqidIdentifier", () => {
-    it("derives a cult identifier from the full name regardless of system data", () => {
+  describe("getDefaultRqidSlug", () => {
+    it("derives a cult slug from the full name regardless of system data", () => {
       expect(
-        Rqid.getDefaultRqidIdentifier("Orlanth Adventurous (Orlanth)", "cult", {
+        Rqid.getDefaultRqidSlug("Orlanth Adventurous (Orlanth)", "cult", {
           deity: "Orlanth",
         }),
       ).toBe("orlanth-adventurous-orlanth");
     });
 
     it("falls back to the name when no system data is available (e.g. batch editor without a matched document)", () => {
-      expect(Rqid.getDefaultRqidIdentifier("Ernalda", "cult", undefined)).toBe("ernalda");
+      expect(Rqid.getDefaultRqidSlug("Ernalda", "cult", undefined)).toBe("ernalda");
     });
 
-    it("derives an armor identifier from namePrefix, armorType and material", () => {
+    it("derives an armor slug from namePrefix, armorType and material", () => {
       expect(
-        Rqid.getDefaultRqidIdentifier("Fine Bronze Cuirass", "armor", {
+        Rqid.getDefaultRqidSlug("Fine Bronze Cuirass", "armor", {
           namePrefix: "Fine",
           armorType: "Cuirass",
           material: "Bronze",

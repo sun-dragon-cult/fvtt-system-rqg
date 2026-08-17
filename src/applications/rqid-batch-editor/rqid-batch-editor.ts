@@ -141,7 +141,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
           name: itemName,
           rqid: this.batchConfig.existingRqids.get(itemName) ?? "",
           selectedRqid: this.changes.itemName2Rqid.get(itemName),
-          selectedRqidSuffix: this.changes.itemName2Rqid
+          selectedSlug: this.changes.itemName2Rqid
             .get(itemName)
             ?.replace(this.batchConfig.prefixRegex ?? "", ""),
         });
@@ -168,7 +168,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
     return {
       summary: summary,
       itemType: this.batchConfig.itemType,
-      idPrefix: this.batchConfig.idPrefix,
+      prefix: this.batchConfig.prefix,
       existingRqidOptions: existingRqidOptions,
       itemNamesWithoutRqid: itemNamesWithoutRqid,
       buttons: [
@@ -243,10 +243,8 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
     const newRqid = selectedRqid || undefined;
     this.changes.itemName2Rqid.set(name, newRqid);
 
-    const rqidSuffix = selectedRqid
-      ? selectedRqid.replace(this.batchConfig.prefixRegex ?? "", "")
-      : "";
-    this.updateRowInput(target, rqidSuffix);
+    const slug = selectedRqid ? selectedRqid.replace(this.batchConfig.prefixRegex ?? "", "") : "";
+    this.updateRowInput(target, slug);
   }
 
   onClickGuess(target: HTMLElement): void {
@@ -255,10 +253,10 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       RqidBatchEditor.logger.warn("Generate RQID clicked but no item name was found in target.");
       return;
     }
-    const rqidSuffix = Rqid.getDefaultRqidIdentifier(name, this.batchConfig.itemType);
-    const newRqid = rqidSuffix ? this.batchConfig.idPrefix + rqidSuffix : undefined;
+    const slug = Rqid.getDefaultRqidSlug(name, this.batchConfig.itemType);
+    const newRqid = slug ? this.batchConfig.prefix + slug : undefined;
     this.changes.itemName2Rqid.set(name, newRqid);
-    this.updateRowInput(target, rqidSuffix);
+    this.updateRowInput(target, slug);
   }
 
   onTypeRqid(target: HTMLInputElement): void {
@@ -267,8 +265,8 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
 
   private applyTypedRqid(target: HTMLInputElement): void {
     const name = getDomDataset(target, "name") ?? "";
-    const rqidSuffix = toKebabCase(convertFormValueToString(target.value));
-    const newRqid = rqidSuffix ? this.batchConfig.idPrefix + rqidSuffix : undefined;
+    const slug = toKebabCase(convertFormValueToString(target.value));
+    const newRqid = slug ? this.batchConfig.prefix + slug : undefined;
     this.changes.itemName2Rqid.set(name, newRqid);
 
     const rowElement = target.closest(".document-row");
@@ -276,18 +274,18 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       return;
     }
 
-    this.updateRowInput(target, rqidSuffix);
+    this.updateRowInput(target, slug);
   }
 
-  private updateRowInput(target: HTMLElement, rqidSuffix: string): void {
+  private updateRowInput(target: HTMLElement, slug: string): void {
     const rowElement = target.closest(".document-row");
     const rowInput = rowElement?.querySelector(".rqid-input") as HTMLInputElement | null;
     if (!rowInput) {
       return;
     }
 
-    rowInput.value = rqidSuffix;
-    rowInput.classList.toggle("missing", !rqidSuffix);
+    rowInput.value = slug;
+    rowInput.classList.toggle("missing", !slug);
   }
 
   private async onFormSubmit(event: SubmitEvent): Promise<void> {
@@ -535,7 +533,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
   // ---
 
   static async findItemsWithMissingRqids(
-    documentType: Item.SubType,
+    type: Item.SubType,
     prefixRegex: RegExp,
   ): Promise<{
     sceneChangesMap: Map<string, Map<string, ItemChange[]>>;
@@ -575,7 +573,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
 
       actorData.items.forEach((item) => {
         const itemData = item instanceof CONFIG.Item.documentClass ? item.toObject() : item;
-        if (itemData.type !== documentType) {
+        if (itemData.type !== type) {
           return;
         }
         if (
@@ -609,7 +607,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
     RqidBatchEditor.updateProgress(progress, scanningCount, "Find Rqids from World Items");
     worldItems.forEach((item) => {
       const itemData = item.toObject();
-      if (itemData.type !== documentType) {
+      if (itemData.type !== type) {
         RqidBatchEditor.updateProgress(++progress, scanningCount, "Find Rqids from World Items");
         return;
       }
@@ -647,7 +645,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       for (const packIndexData of packIndex) {
         if ("type" in packIndexData) {
           switch (packIndexData.type) {
-            case documentType:
+            case type:
               RqidBatchEditor.collectItemPackRqids(
                 pack,
                 prefixRegex,
@@ -668,7 +666,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
                 await RqidBatchEditor.collectActorPackEmbeddedItemRqids(
                   pack,
                   actors,
-                  documentType,
+                  type,
                   itemNamesWithoutRqid,
                   packActorChangesMap,
                 );
@@ -719,7 +717,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
 
         // Loop over actor items
         tokenActorItems.forEach((item) => {
-          if (item.type !== documentType) {
+          if (item.type !== type) {
             return;
           }
 
@@ -763,11 +761,11 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       items.forEach((item) => {
         const itemName = item.name ?? "";
         const rqgFlags = (item.flags as { rqg?: { documentRqidFlags?: DocumentRqidFlags } })?.rqg;
-        const previousRqidSuffix = existingRqids.get(itemName)?.replace(prefixRegex, "");
-        const previousExpandedName = `${itemName} ➤ ${previousRqidSuffix}`;
+        const previousSlug = existingRqids.get(itemName)?.replace(prefixRegex, "");
+        const previousExpandedName = `${itemName} ➤ ${previousSlug}`;
 
-        const newRqidSuffix = rqgFlags?.documentRqidFlags?.id?.replace(prefixRegex, "");
-        const newExpandedName = `${itemName} ➤ ${newRqidSuffix}`;
+        const newSlug = rqgFlags?.documentRqidFlags?.id?.replace(prefixRegex, "");
+        const newExpandedName = `${itemName} ➤ ${newSlug}`;
 
         if (
           // If existingRqids already has this item name but with another Rqid, then add the new one as well under a different name
@@ -854,7 +852,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
   private static async collectActorPackEmbeddedItemRqids(
     pack: CompendiumCollection.Any,
     actors: RqgActor[],
-    documentType: ItemTypeEnum,
+    type: ItemTypeEnum,
     itemNamesWithoutRqid: Map<string, string | undefined>,
     packActorChangesMap: Map<string, Map<string, ItemChange[]>>,
   ): Promise<void> {
@@ -867,7 +865,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
     for (const actor of actors) {
       const embeddedItemChanges: ItemChange[] = [];
       for (const itemData of actor.items) {
-        if (itemData.type !== documentType) {
+        if (itemData.type !== type) {
           continue;
         }
         if (!itemData?.flags?.rqg?.documentRqidFlags?.id) {
@@ -904,12 +902,10 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       return;
     }
     for (const itemType of itemTypes) {
-      const rqidDocumentName = "i"; // Hardcoded for now until more documents than Item are supported
+      const kind = "i"; // Hardcoded for now until more documents than Item are supported
 
-      const idPrefix = `${rqidDocumentName}.${toKebabCase(itemType)}.`;
-      const prefixRegex = new RegExp(
-        "^" + rqidDocumentName + "\\." + toKebabCase(itemType) + "\\.",
-      );
+      const prefix = `${kind}.${toKebabCase(itemType)}.`;
+      const prefixRegex = new RegExp("^" + kind + "\\." + toKebabCase(itemType) + "\\.");
 
       const {
         sceneChangesMap,
@@ -935,7 +931,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
         },
         {
           itemType,
-          idPrefix,
+          prefix,
           prefixRegex,
           existingRqids: existingRqids,
         },

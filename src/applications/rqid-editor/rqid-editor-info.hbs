@@ -1,5 +1,5 @@
 <div class="rqid-editor-reference scrollable">
-  <fieldset class="rqid-editor-reference-matches" data-rqid-duplicates {{#unless rqidNamePart}}hidden{{/unless}}>
+  <fieldset class="rqid-editor-reference-matches" data-rqid-duplicates {{#unless slug}}hidden{{/unless}}>
     <legend>{{localize "RQG.RQGSystem.MatchingRqidDocuments"}}</legend>
     <div class="fullwidth">
       <details open>
@@ -149,14 +149,14 @@
       </button>
     </div>
 
-    <label data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+    <label data-rqid-dependent {{#unless slug}}hidden{{/unless}}>
       {{localize "RQG.RQGSystem.GetDocumentLikeThis"}}
     </label>
-    <div class="input-button" data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+    <div class="input-button" data-rqid-dependent {{#unless slug}}hidden{{/unless}}>
       <input
         type="text"
         id="rqid-editor-get-document-like-this"
-        value='{{#if fullRqid}}await game.system.api.rqid.fromRqid("{{fullRqid}}","{{flags.rqg.documentRqidFlags.lang}}"){{/if}}'
+        value='{{#if rqid}}await game.system.api.rqid.fromRqid("{{rqid}}","{{flags.rqg.documentRqidFlags.lang}}"){{/if}}'
         readonly
       >
       <button
@@ -171,10 +171,10 @@
       </button>
     </div>
 
-    <label data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+    <label data-rqid-dependent {{#unless slug}}hidden{{/unless}}>
       {{localize "RQG.RQGSystem.JournalLinkToDocumentLikeThis"}}
     </label>
-    <div class="input-button" data-rqid-dependent {{#unless rqidNamePart}}hidden{{/unless}}>
+    <div class="input-button" data-rqid-dependent {{#unless slug}}hidden{{/unless}}>
       <input
         type="text"
         id="rqid-editor-journal-link-to-document-like-this"
