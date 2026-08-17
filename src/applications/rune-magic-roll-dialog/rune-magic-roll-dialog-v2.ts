@@ -25,6 +25,7 @@ import {
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import {
   AUTO_MAGIC_POINT_SOURCE,
+  getAlliedBondActor,
   getMagicPointSourceOptions,
 } from "../../system/magic-point-source";
 import { getRunePointSourceOptions, SELF_RUNE_POINT_SOURCE } from "../../system/rune-point-source";
@@ -170,6 +171,14 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       this.spellItem.actor,
       this.spellItem.system.getCult(),
     );
+    // A bonded ally exists but doesn't have a Cult item matching this spell's exact cult (e.g. a
+    // different subcult of the same deity) - without this, that misconfiguration is silent: the
+    // picker just never appears, indistinguishable from having no bond at all.
+    const alliedBondActor = this.spellItem.actor
+      ? getAlliedBondActor(this.spellItem.actor)
+      : undefined;
+    const showRunePointSourceMismatchWarning =
+      runePointSourceOptions.length === 0 && !!alliedBondActor;
 
     return {
       formData: formData,
@@ -186,6 +195,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       showMagicPointSource: magicPointSourceOptions.length > 0 && Number(formData.boost) > 0,
       runePointSourceOptions: runePointSourceOptions,
       showRunePointSource: runePointSourceOptions.length > 0,
+      showRunePointSourceMismatchWarning: showRunePointSourceMismatchWarning,
 
       // RollHeader
       rollType: localize("TYPES.Item.runeMagic"),

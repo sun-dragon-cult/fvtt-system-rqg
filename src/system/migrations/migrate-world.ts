@@ -12,8 +12,10 @@ import { systemId } from "../config";
 import { tagSkillNameSkillsWithRqid } from "./migrations-item/tag-skill-name-skills-with-rqid";
 import { migrateWorldDialog } from "../../applications/migrate-world-dialog";
 import { migrateWeaponSkillLinks } from "./migrations-item/migrate-weapon-skill-links";
-import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { RqidBatchEditor } from "../../applications/rqid-batch-editor/rqid-batch-editor";
+import {
+  DEFAULT_RQID_BATCH_ITEM_TYPES,
+  RqidBatchEditor,
+} from "../../applications/rqid-batch-editor/rqid-batch-editor";
 import { openDataModelRepairDialog } from "../api/data-model-repair";
 import { migrateRuneItemType } from "./migrations-item/migrate-rune-item-type";
 import { relabelRuneMagicCommandCultSpiritRqid } from "./migrations-item/relabel-rune-magic-command-cult-spirit-rqid";
@@ -59,11 +61,7 @@ export async function migrateWorld(): Promise<void> {
   await runDataModelRepairPreflight();
 
   // Open a dialog to set missing Rqids on selected items
-  await RqidBatchEditor.factory(
-    ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-    ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-    ItemTypeEnum.Rune, // Future needs
-  );
+  await RqidBatchEditor.factory(...DEFAULT_RQID_BATCH_ITEM_TYPES);
 
   const confirmed = await migrateWorldDialog(systemVersion);
   if (!confirmed) {

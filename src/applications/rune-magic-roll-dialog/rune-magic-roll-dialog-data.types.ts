@@ -29,6 +29,7 @@ export type RuneMagicRollDialogContext = RollHeaderData &
     showMagicPointSource: boolean;
     runePointSourceOptions: SelectOptionData<string>[];
     showRunePointSource: boolean;
+    showRunePointSourceMismatchWarning: boolean;
   };
 
 export type RuneMagicRollDialogFormData = {

@@ -22,6 +22,13 @@
       </select>
     {{/if}}
 
+    {{#if showRunePointSourceMismatchWarning}}
+      <label>
+        {{localize "RQG.Dialog.RuneMagicRoll.RunePointSource"}}
+      </label>
+      <div class="warning">{{localize "RQG.Dialog.RuneMagicRoll.RunePointSourceMismatchWarning"}}</div>
+    {{/if}}
+
     {{#if isOneUse}}
       <label>{{localize "RQG.Dialog.RuneMagicRoll.OneUseHeader"}}</label>
       <div class="warning">{{localize "RQG.Dialog.RuneMagicRoll.OneUseDescription"}}</div>

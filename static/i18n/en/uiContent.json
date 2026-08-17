@@ -593,6 +593,7 @@
         "Meditate": "meditate",
         "MagicPointSource": "Magic Point Source",
         "RunePointSource": "Rune Point Source",
+        "RunePointSourceMismatchWarning": "Your Allied Spirit isn't initiated to this same cult, so Rune Points can't be shared for this spell.",
         "OneUseHeader": "One Use",
         "OneUseDescription": "Casting this spell will reduce both your current and total Rune Points for the cult!"
       },
