@@ -1,11 +1,11 @@
 import type { RqgContextMenuEntry } from "../../foundry-ui/rqg-context-menu";
 import { confirmActorItemDelete } from "../confirm-item-delete-dialog";
 import {
-  assertDocumentSubType,
   getDomDataset,
   getRequiredDomDataset,
   localize,
   localizeItemType,
+  resolveCastItem,
   RqgError,
 } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -21,29 +21,29 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
     icon: contextMenuRunes.RollViaChat,
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
-      await item.spiritMagicRoll();
+      const item = resolveCastItem(el, actor) as SpiritMagicItem | undefined;
+      if (!item) {
+        return;
+      }
+      await item.spiritMagicRoll(undefined, actor);
     },
   },
   {
     label: "RQG.Game.RollQuick",
     icon: contextMenuRunes.RollQuick,
     visible: (el: HTMLElement) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
-      return !item.system.isVariable || item.system.points === 1;
+      const item = resolveCastItem(el, actor) as SpiritMagicItem | undefined;
+      return !item || !item.system.isVariable || item.system.points === 1;
     },
     onClick: async (_event: Event, el: HTMLElement) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
+      const item = resolveCastItem(el, actor) as SpiritMagicItem | undefined;
+      if (!item) {
+        return;
+      }
       if (item.system.isVariable && item.system.points > 1) {
-        await item.spiritMagicRoll();
+        await item.spiritMagicRoll(undefined, actor);
       } else {
-        await item.spiritMagicRollImmediate();
+        await item.spiritMagicRollImmediate(undefined, undefined, actor);
       }
     },
   },
@@ -51,13 +51,11 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
     label: "RQG.ContextMenu.ViewDescription",
     icon: contextMenuRunes.ViewDescription,
     visible: (el: HTMLElement) => {
-      const itemId = getDomDataset(el, "item-id");
-      const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
+      const item = resolveCastItem(el, actor) as SpiritMagicItem | undefined;
       return isValidRqidString(item?.system.descriptionRqidLink?.rqid);
     },
     onClick: async (_event: Event, el: HTMLElement) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      const item = actor.items.get(itemId) as SpiritMagicItem | undefined;
+      const item = resolveCastItem(el, actor) as SpiritMagicItem | undefined;
       const rqid = item?.system.descriptionRqidLink?.rqid;
       if (isValidRqidString(rqid)) {
         await Rqid.renderRqidDocument(rqid);
@@ -69,11 +67,16 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
       itemType: localizeItemType(ItemTypeEnum.SpiritMagic),
     }),
     icon: contextMenuRunes.Edit,
-    visible: () => !!game.user?.isGM,
+    // Only the caster's own Spirit Magic items are editable - a spell surfaced from an external
+    // spell source (#1002, e.g. an Allied Spirit bond partner's known spells) isn't this actor's
+    // Item to edit.
+    visible: (el: HTMLElement) => !!game.user?.isGM && !getDomDataset(el, "external-owner-uuid"),
     onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getDomDataset(el, "item-id");
       const item = actor.items.get(itemId ?? "") as SpiritMagicItem | undefined;
-      assertDocumentSubType<SpiritMagicItem>(item, ItemTypeEnum.SpiritMagic);
+      if (!item) {
+        return;
+      }
       if (!item.sheet) {
         const msg = localize("RQG.ContextMenu.Notification.CantEditSpiritMagicError", {
           itemId: itemId!,
@@ -90,7 +93,7 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
       itemType: localizeItemType(ItemTypeEnum.SpiritMagic),
     }),
     icon: contextMenuRunes.Delete,
-    visible: () => !!game.user?.isGM,
+    visible: (el: HTMLElement) => !!game.user?.isGM && !getDomDataset(el, "external-owner-uuid"),
     onClick: (_event: Event, el: HTMLElement) => {
       const itemId = getRequiredDomDataset(el, "item-id");
       void confirmActorItemDelete(actor, itemId);

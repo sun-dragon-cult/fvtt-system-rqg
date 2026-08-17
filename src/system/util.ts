@@ -133,6 +133,29 @@ export function getDomDatasetAmongSiblings(
   return firstItemEl?.dataset[toCamelCase(dataset)];
 }
 
+/**
+ * Resolve the RqgItem targeted by a sheet row's `data-item-id`. Most rows belong to the caster's
+ * own actor - but a row surfaced from an external spell source (e.g. an Allied Spirit bond
+ * partner's known spells, #1002) carries a `data-external-owner-uuid` pointing at the actor that
+ * really embeds the item, since `itemId` alone isn't unique across actors. `casterActor` is always
+ * who the roll/cast itself should be attributed to (the sheet's own actor), independent of which
+ * actor's `items` collection the item is actually resolved from.
+ */
+export function resolveCastItem(
+  el: HTMLElement | Element | Event | JQuery,
+  casterActor: RqgActor,
+): RqgItem | undefined {
+  const itemId = getDomDataset(el, "item-id");
+  if (!itemId) {
+    return undefined;
+  }
+  const ownerUuid = getDomDataset(el, "external-owner-uuid");
+  const owner = ownerUuid
+    ? ((fromUuidSync(ownerUuid) as RqgActor | null) ?? undefined)
+    : casterActor;
+  return owner?.items.get(itemId) as RqgItem | undefined;
+}
+
 export function getHTMLElement(
   el: HTMLElement | Element | Event | JQuery,
 ): HTMLElement | undefined {

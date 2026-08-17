@@ -24,5 +24,6 @@ export type SpiritMagicRollDialogFormData = {
 
   spellItemUuid?: string; // hidden field
   tokenUuid?: string; // hidden field
+  casterActorUuid?: string; // hidden field
   powX5: number; // hidden field
 };

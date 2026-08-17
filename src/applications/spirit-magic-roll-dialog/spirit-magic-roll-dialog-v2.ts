@@ -12,6 +12,7 @@ import {
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { RqgItem } from "@items/rqg-item.ts";
 import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -57,6 +58,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   ];
 
   private spellItem: SpiritMagicItem;
+  private casterActor: CharacterActor;
   private powX5: number;
   private token: TokenDocument | null | undefined;
 
@@ -67,18 +69,25 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     };
   }
 
+  /**
+   * `casterActor` defaults to the spell's own owner - pass it explicitly when the spell is being
+   * cast via an external spell source (#1002, e.g. an Allied Spirit bond partner's known spells)
+   * so POWx5% and the Magic Point source options both reflect the actual caster.
+   */
   constructor(
     spellItem: SpiritMagicItem,
     token?: TokenDocument | null,
+    casterActor?: RqgActor,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
 
-    const actor = spellItem.parent;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+    const caster = casterActor ?? spellItem.parent;
+    assertDocumentSubType<CharacterActor>(caster, ActorTypeEnum.Character);
 
     this.spellItem = spellItem;
-    this.powX5 = (actor.system?.characteristics?.power?.value ?? 0) * 5;
+    this.casterActor = caster;
+    this.powX5 = (caster.system?.characteristics?.power?.value ?? 0) * 5;
     this.token = token;
   }
 
@@ -130,6 +139,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.powX5 ??= this.powX5;
     formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
+    formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
     return {
       formData: formData,
@@ -138,7 +148,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
-      magicPointSourceOptions: getMagicPointSourceOptions(this.spellItem.actor),
+      magicPointSourceOptions: getMagicPointSourceOptions(this.casterActor),
 
       // RollHeader
       rollType: localize("TYPES.Item.spiritMagic"),
@@ -193,6 +203,11 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     }
     assertDocumentSubType<SpiritMagicItem>(spellItem, ItemTypeEnum.SpiritMagic);
 
+    const casterActor = formDataObject.casterActorUuid
+      ? ((await fromUuid(formDataObject.casterActorUuid)) as RqgActor | undefined)
+      : (spellItem.actor ?? undefined);
+    assertDocumentSubType<CharacterActor>(casterActor, ActorTypeEnum.Character);
+
     const options: SpiritMagicRollOptions = {
       powX5: formDataObject.powX5,
       levelUsed: formDataObject.levelUsed,
@@ -217,18 +232,19 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       spellName: spellItem?.name ?? undefined,
       spellImg: spellItem?.img ?? undefined,
       rollMode: rollMode,
-      speaker: getSpeakerCompat({ actor: spellItem.actor ?? undefined, token }),
+      speaker: getSpeakerCompat({ actor: casterActor, token }),
     };
     const validationError = spellItem.system.getCastValidationError(
       formDataObject.levelUsed,
       Number(formDataObject.boost ?? 0),
       formDataObject.magicPointSource,
+      casterActor,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
       return;
     }
 
-    await spellItem.spiritMagicRollImmediate(options, token);
+    await spellItem.spiritMagicRollImmediate(options, token, casterActor);
   }
 }

@@ -388,6 +388,7 @@
         "AlliedSpiritDropRequiresActorWarn": "Drop an Actor to link it as an Allied Spirit",
         "AlliedSpiritDropRequiresCharacterWarn": "Only a Character actor can be linked as an Allied Spirit",
         "AlliedSpiritCannotLinkSelfWarn": "A character cannot be its own Allied Spirit",
+        "FromSourceLabel": "From {name}:",
         "CultRank": {
           "layMember": "Lay Member",
           "initiate": "Initiate",
@@ -441,7 +442,8 @@
         "Variable": "Variable",
         "Range": "Range",
         "Duration": "Duration",
-        "Concentration": "Concentration"
+        "Concentration": "Concentration",
+        "FromSourceLabel": "From {name}:"
       }
     },
     "ContextMenu": {

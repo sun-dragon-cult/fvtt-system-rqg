@@ -18,6 +18,7 @@ import {
   localizeDocumentName,
   range,
   requireValue,
+  resolveCastItem,
   RqgError,
 } from "../system/util";
 
@@ -66,6 +67,7 @@ import {
 import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
+import type { CultItem } from "@item-model/cult-data-model.ts";
 import type { GearItem } from "@item-model/gear-data-model.ts";
 import type { RqgActiveEffect } from "../active-effect/rqg-active-effect.ts";
 import { ActorWizard } from "../applications/actor-wizard-application";
@@ -92,6 +94,7 @@ import {
   getMagicPointSourcesAppId,
   MagicPointSourcesApp,
 } from "../applications/magic-point-sources-app/magic-point-sources-app";
+import { getExternalRuneMagicItems, getExternalSpiritMagicItems } from "../system/spell-source";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -265,6 +268,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // the allied bond (and, on the ally side, re-walk game.actors.contents) themselves.
     const alliedBondActor = alliedSpirit ?? boundPriest;
     const magicPointStorageItems = getStorageItems(this.actor, alliedBondActor);
+    // #1002: Spirit Magic spells known via the linked Allied Spirit bond, not this actor - a live
+    // computed view (never merged into this actor's own Items), see getExternalSpiritMagicItems.
+    const externalSpiritMagic = getExternalSpiritMagicItems(this.actor, alliedBondActor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
@@ -293,6 +299,24 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     );
     const showUiSection = DataPrep.getUiSectionVisibility(this.actor);
     const cultItems = (embeddedItems[ItemTypeEnum.Cult] ?? []) as RqgItem[];
+    // #1002: Rune Magic spells known via the linked Allied Spirit bond, not this actor, attached
+    // per-cult (same "decorate the cult item" pattern as hasAccessToRuneMagic in
+    // organizeEmbeddedItems) - kept in the V2-only sheet rather than shared data-prep since the
+    // legacy V1 sheet never renders this and shouldn't pay for computing it.
+    cultItems.forEach((cult) => {
+      const cultItem = cult as CultItem;
+      const externalRuneMagic = getExternalRuneMagicItems(this.actor, cultItem, alliedBondActor);
+      externalRuneMagic.forEach((runeMagicItem) => {
+        (runeMagicItem as any).externalChance = (
+          runeMagicItem as RuneMagicItem
+        ).system.getDefaultChance(this.actor);
+      });
+      (cultItem as any).externalRuneMagic = externalRuneMagic;
+      (cultItem as any).externalSpellSourceActor =
+        externalRuneMagic.length > 0
+          ? { uuid: alliedBondActor!.uuid ?? "", name: alliedBondActor!.name ?? "" }
+          : undefined;
+    });
     const availableCultTabs = cultItems.map((cult) => `cult-${cult.id}`);
     const requestedCultTab = this.tabGroups["cult-view"] ?? undefined;
     const activeCultTab =
@@ -368,6 +392,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       ),
       alliedSpirit: alliedSpirit ? { uuid: alliedSpirit.uuid ?? "" } : undefined,
       boundPriest: boundPriest ? { uuid: boundPriest.uuid ?? "" } : undefined,
+      // Gates any "From {name}:" divider (#1002) - individual sections (e.g. externalSpiritMagic
+      // below, or a cult's externalRuneMagic) separately check their own item list is non-empty.
+      externalSpellSourceActor: alliedBondActor
+        ? { uuid: alliedBondActor.uuid ?? "", name: alliedBondActor.name ?? "" }
+        : undefined,
+      externalSpiritMagic: externalSpiritMagic,
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
@@ -820,22 +850,21 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       });
     });
 
-    // Roll Spirit Magic
+    // Roll Spirit Magic (own or, via #1002, an external spell source - see resolveCastItem)
     this.element.querySelectorAll<HTMLElement>("[data-spirit-magic-roll]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId) as SpiritMagicItem | undefined;
+      const item = resolveCastItem(el, this.actor) as SpiritMagicItem | undefined;
       assertDocumentSubType<SpiritMagicItem>(
         item,
         ItemTypeEnum.SpiritMagic,
-        `Couldn't find item [${itemId}] to roll Spirit Magic`,
+        `Couldn't find item to roll Spirit Magic`,
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.spiritMagicRoll(this.document.token),
+        onSingle: () => item.spiritMagicRoll(this.document.token, this.actor),
         onDouble: () => {
           if (item.system.isVariable && item.system.points > 1) {
-            return item.spiritMagicRoll(this.document.token);
+            return item.spiritMagicRoll(this.document.token, this.actor);
           } else {
-            return item.spiritMagicRollImmediate(undefined, this.document.token);
+            return item.spiritMagicRollImmediate(undefined, this.document.token, this.actor);
           }
         },
       });
@@ -843,20 +872,19 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Roll Rune Magic
     this.element.querySelectorAll<HTMLElement>("[data-rune-magic-roll]").forEach((el) => {
-      const itemId = getRequiredDomDataset(el, "item-id");
-      const item = this.actor.items.get(itemId) as RuneMagicItem | undefined;
+      const item = resolveCastItem(el, this.actor) as RuneMagicItem | undefined;
       assertDocumentSubType<RuneMagicItem>(
         item,
         ItemTypeEnum.RuneMagic,
-        `Couldn't find item [${itemId}] to roll Rune Magic`,
+        `Couldn't find item to roll Rune Magic`,
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.runeMagicRoll(this.document.token),
+        onSingle: () => item.runeMagicRoll(this.document.token, this.actor),
         onDouble: () => {
           if (item.system.points === 1) {
-            return item.runeMagicRollImmediate({}, this.document.token);
+            return item.runeMagicRollImmediate({}, this.document.token, this.actor);
           } else {
-            return item.runeMagicRoll(this.document.token);
+            return item.runeMagicRoll(this.document.token, this.actor);
           }
         },
       });

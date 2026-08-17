@@ -45,4 +45,5 @@ export type RuneMagicRollDialogFormData = {
 
   spellItemUuid?: string; // hidden field
   tokenUuid?: string; // hidden field
+  casterActorUuid?: string; // hidden field
 };

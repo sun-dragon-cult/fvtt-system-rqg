@@ -1,3 +1,4 @@
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
@@ -54,11 +55,13 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     levelUsed: number | undefined,
     boost: number = 0,
     magicPointSource?: MagicPointSourceSelection,
+    casterActor: RqgActor | undefined = this.parent?.actor ?? undefined,
   ): string | undefined {
     const normalizedLevelUsed = levelUsed == null ? undefined : Number(levelUsed);
     const normalizedBoost = Number(boost) || 0;
-    const actor = this.parent?.actor;
-    const availableMagicPoints = actor ? getAvailableMagicPoints(actor, magicPointSource) : 0;
+    const availableMagicPoints = casterActor
+      ? getAvailableMagicPoints(casterActor, magicPointSource)
+      : 0;
 
     if (
       normalizedLevelUsed == null ||
@@ -76,42 +79,61 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
   }
 
   /**
-   * Open a dialog for a SpiritMagicRoll.
+   * Open a dialog for a SpiritMagicRoll. `casterActor` defaults to the spell's own owner - pass it
+   * explicitly when the spell is being cast via an external spell source (#1002, e.g. an Allied
+   * Spirit bond partner's known spells) so the roll uses the caster's own stats, not the spell
+   * owner's.
    */
-  async spiritMagicRoll(token?: TokenDocument | null): Promise<void> {
+  async spiritMagicRoll(token?: TokenDocument | null, casterActor?: RqgActor): Promise<void> {
     // Dynamic import to avoid circular dependency through SpiritMagicRollDialogV2 → rqgItem.ts
     const { SpiritMagicRollDialogV2 } =
       await import("../../applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2");
-    await new SpiritMagicRollDialogV2(this.parent as unknown as SpiritMagicItem, token).render({
+    await new SpiritMagicRollDialogV2(
+      this.parent as unknown as SpiritMagicItem,
+      token,
+      casterActor,
+    ).render({
       force: true,
     });
   }
 
   /**
-   * Do a SpiritMagicRoll and possibly draw magic points afterward.
+   * Do a SpiritMagicRoll and possibly draw magic points afterward. `casterActor` defaults to the
+   * spell's own owner (same as before #1002); pass it explicitly when casting a spell known via an
+   * external spell source so POWx5% and the Magic Point draw both use the actual caster, not
+   * whoever's Item this is.
    */
   async spiritMagicRollImmediate(
     options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.points },
     token?: TokenDocument | null,
+    casterActor: RqgActor = this.parent?.actor as RqgActor,
   ): Promise<void> {
     const item = this.parent;
-    const actor = item?.actor;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+    assertDocumentSubType<CharacterActor>(
+      casterActor,
+      ActorTypeEnum.Character,
+      "Item is not embedded",
+    );
 
-    const powX5: number = (Number(actor.system.characteristics.power.value) || 0) * 5; // Handle NaN
+    const powX5: number = (Number(casterActor.system.characteristics.power.value) || 0) * 5; // Handle NaN
 
     const levelUsed = Number(options.levelUsed ?? this.points);
     const boost = Number(options.magicPointBoost ?? 0) || 0;
     // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
     // instead of always using the caster's own pool - matches the cast dialogs' default.
     const magicPointSource = options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
-    const validationError = this.getCastValidationError(levelUsed, boost, magicPointSource);
+    const validationError = this.getCastValidationError(
+      levelUsed,
+      boost,
+      magicPointSource,
+      casterActor,
+    );
     if (validationError) {
       ui.notifications?.warn(validationError);
       return;
     }
 
-    const speaker = getSpeakerCompat({ actor, token });
+    const speaker = getSpeakerCompat({ actor: casterActor, token });
 
     // Dynamic import to avoid circular dependency through SpiritMagicRoll → itemTypes.ts → rqgItem.ts
     const { SpiritMagicRoll } = await import("../../rolls/spirit-magic-roll/spirit-magic-roll");
@@ -129,7 +151,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
     const mpCost = levelUsed + boost;
-    await actor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel, magicPointSource);
+    await casterActor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel, magicPointSource);
   }
 
   /**

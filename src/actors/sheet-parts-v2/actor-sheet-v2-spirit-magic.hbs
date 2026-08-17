@@ -65,6 +65,32 @@
       </div>
     </div>
     {{/each}}
+
+    {{#if externalSpiritMagic.length}}
+      <div class="external-spell-divider">{{localize "RQG.Actor.SpiritMagic.FromSourceLabel" name=externalSpellSourceActor.name}}</div>
+      {{#each externalSpiritMagic}}
+      <div class="spirit-magic-row external-item" data-external-owner-uuid="{{@root.externalSpellSourceActor.uuid}}">
+         <div class="spirit-magic contextmenu item"
+           data-item-id="{{id}}"
+           {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+           <img class="row-icon" src="{{img}}">
+        </div>
+        <div class="spirit-magic contextmenu item"
+             data-item-id="{{id}}"
+             data-spirit-magic-roll
+             data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+          {{name}}{{#if system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+        </div>
+        <div class="spirit-magic contextmenu item"
+             data-item-id="{{id}}"
+             data-tooltip="{{spellSummaryTooltip}}"
+             data-spirit-magic-roll>
+          {{spellSummary}}
+        </div>
+        <div class="spirit-magic contextmenu item" data-item-id="{{id}}">—</div>
+      </div>
+      {{/each}}
+    {{/if}}
   </div>
 
 </section>

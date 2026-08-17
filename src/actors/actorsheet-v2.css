@@ -2276,6 +2276,32 @@
       }
     }
 
+/* --- External spell source rows (#1002): Spirit/Rune Magic spells known via the linked Allied
+   Spirit bond partner, not this actor. Rendered as extra rows in the *same* grid as the actor's
+   own spells (not a second nested grid) so columns line up - the divider spans the full row via
+   grid-column, and each subsequent row/cell is just another grid item in source order. Marked
+   with a left accent border on the leading (icon) cell only, rather than recoloring the row - text
+   stays the theme's normal color/contrast (row background/hover/active are untouched, unlike an
+   earlier version of this that overrode them and became unreadable). */
+    & .external-spell-divider {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      color: var(--rqg-unassigned-rm-text);
+      background: var(--rqg-unassigned-rm-bg);
+      border: 1px solid var(--rqg-unassigned-rm-border);
+      border-radius: var(--rqg-radius-sm);
+      padding: 4px 8px;
+      margin: 4px 0 2px;
+      font-weight: 600;
+    }
+
+    & .spirit-magic-row.external-item > *:first-child,
+    & .rune-magic-row.external-item > *:first-child {
+      border-left: 3px solid var(--rqg-unassigned-rm-border);
+      padding-left: 3px;
+    }
+
 /* --- Wounded / injured overall sheet background --- */
     &.dead {
       filter: grayscale(0.8);

@@ -17,6 +17,15 @@ import {
   spendRunePoints,
 } from "../../system/rune-point-source";
 
+/**
+ * `casterActor` defaults to `runeMagicItem`'s own owner (unchanged pre-#1002 behavior) - pass it
+ * explicitly when the spell was cast via an external spell source (#1002, e.g. an Allied Spirit
+ * bond partner's known spells), so Rune/Magic Points are drawn relative to the actual caster (not
+ * the spell owner) and the cult used for Rune Point spending is the caster's own matching cult
+ * (see RuneMagicDataModel.getCastingCult). `runeItem` is expected to already be the caster's own
+ * Rune (see getEligibleRunes) - awardExperience() below flags whichever actor owns `runeItem`,
+ * which falls out correctly for free as long as that's true.
+ */
 export async function handleRollResult(
   result: AbilitySuccessLevelEnum,
   runePointCost: number,
@@ -25,11 +34,12 @@ export async function handleRollResult(
   runeMagicItem: RuneMagicItem,
   magicPointSource: MagicPointSourceSelection = SELF_MAGIC_POINT_SOURCE,
   runePointSource: RunePointSourceSelection = SELF_RUNE_POINT_SOURCE,
+  casterActor: RqgActor | undefined = runeMagicItem.actor ?? undefined,
 ): Promise<void> {
   assertDocumentSubType<RuneItem>(runeItem, ItemTypeEnum.Rune);
   assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
-  const cult = runeMagicItem.actor?.items.get(runeMagicItem.system.cultId ?? "") as
-    CultItem | undefined;
+  assertDocumentSubType<CharacterActor>(casterActor, ActorTypeEnum.Character);
+  const cult = runeMagicItem.system.getCastingCult(casterActor);
   assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
   const isOneUse = runeMagicItem.system?.isOneUse;
 
@@ -38,7 +48,7 @@ export async function handleRollResult(
   await spendRuneAndMagicPoints(
     costs.rp,
     costs.mp,
-    runeMagicItem.actor ?? undefined,
+    casterActor,
     cult,
     isOneUse,
     magicPointSource,
@@ -51,7 +61,7 @@ export async function handleRollResult(
   if (costs.mp > 0 || costs.rp > 0) {
     ui.notifications?.info(
       localize("RQG.Item.RuneMagic.CastingCostInfo", {
-        actorName: runeMagicItem.parent?.name ?? "",
+        actorName: casterActor.name ?? "",
         runePointAmount: costs.rp.toString(),
         magicPointAmount: costs.mp.toString(),
       }),

@@ -106,6 +106,15 @@ export interface RqgActorSheetV2Context {
   /** The Character actor that has *this* actor linked as its Allied Spirit (#957) - the
    *  reciprocal, read-only side of the bond - see getBondedPriest. Undefined otherwise. */
   boundPriest: { uuid: string } | undefined;
+  /** The linked Allied Spirit bond partner (#957, either direction), only when it's the source of
+   *  at least one external spell (#1002) shown somewhere on this sheet - undefined otherwise, even
+   *  if a bond exists, so templates can gate a "From {name}:" divider on this alone. Distinct from
+   *  alliedSpirit/boundPriest above (those gate the link-management UI, not spell sharing). */
+  externalSpellSourceActor: { uuid: string; name: string } | undefined;
+  /** Spirit Magic spells known by the linked Allied Spirit bond partner, not this actor (#1002) -
+   *  never merged into embeddedItems.spiritMagic, so they disappear immediately if the bond is
+   *  unlinked. Empty when there's no bond partner or it knows no Spirit Magic. */
+  externalSpiritMagic: RqgItem[];
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

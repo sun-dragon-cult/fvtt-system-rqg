@@ -758,6 +758,11 @@ export async function organizeEmbeddedItems(
     (cultItem as any).hasAccessToRuneMagic = hasAccessToRuneMagic(cultItem);
   });
 
+  // externalRuneMagic/externalSpellSourceActor (#1002, spells known via the linked Allied Spirit
+  // bond) are decorated onto cult items in rqg-actor-sheet-v2.ts instead of here, since this
+  // function is also used by the legacy V1 sheet (rqg-actor-sheet.ts), which never renders them -
+  // no reason to make it pay for computing them too.
+
   // Enrich item description and GM notes texts for tooltip display
   const enrichItem = async (item: RqgItem) => {
     (item.system as any).enrichedDescription =

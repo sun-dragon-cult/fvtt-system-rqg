@@ -124,6 +124,39 @@
               </div>
             {{/if}}
           {{/each}}
+
+          {{#if externalRuneMagic.length}}
+            <div class="external-spell-divider">{{localize "RQG.Actor.RuneMagic.FromSourceLabel" name=externalSpellSourceActor.name}}</div>
+            {{#each externalRuneMagic}}
+              <div class="rune-magic-row external-item" data-external-owner-uuid="{{../externalSpellSourceActor.uuid}}">
+                <div class="rune-magic contextmenu item"
+                     data-item-id="{{id}}"
+                     {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
+                  <img class="row-icon" src="{{img}}">
+                </div>
+                <div class="rune-magic contextmenu item"
+                     data-item-id="{{id}}"
+                     data-rune-magic-roll
+                     data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+                  {{name}}&nbsp;
+                  {{#if system.isCommon}}
+                    <img class="common" src="systems/rqg/assets/images/items/cult.svg"
+                         data-tooltip="{{localize "RQG.Actor.RuneMagic.CommonRuneMagicTooltip"}}">
+                  {{/if}}
+                  {{#each system.runeRqidLinks}}
+                    <img class="rune" src="{{rqidImgSrc rqid}}" data-tooltip="{{name}}">
+                  {{/each}}
+                </div>
+                   <div class="rune-magic contextmenu item"
+                     data-item-id="{{id}}"
+                     data-tooltip="{{spellSummaryTooltip}}"
+                     data-rune-magic-roll>{{spellSummary}}</div>
+                <div class="rune-magic contextmenu item text-right"
+                     data-item-id="{{id}}"
+                     data-rune-magic-roll>{{externalChance}}%</div>
+              </div>
+            {{/each}}
+          {{/if}}
         </div>
       {{else}}
         <div class="warning p-5 flex-row">
