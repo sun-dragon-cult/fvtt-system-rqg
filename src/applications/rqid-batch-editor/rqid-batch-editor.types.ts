@@ -23,13 +23,13 @@ export interface ItemNameWithoutRqid {
   name: string;
   rqid: string;
   selectedRqid?: string;
-  selectedRqidSuffix?: string;
+  selectedSlug?: string;
 }
 
 export interface RqidBatchEditorData {
   summary: string;
   itemType: string;
-  idPrefix: string;
+  prefix: string;
   existingRqidOptions: SelectOptionData<string>[];
   itemNamesWithoutRqid: ItemNameWithoutRqid[];
   buttons: {
@@ -41,7 +41,7 @@ export interface RqidBatchEditorData {
 
 export interface RqidBatchEditorOptions {
   itemType: ItemTypeEnum;
-  idPrefix: string;
+  prefix: string;
   prefixRegex: RegExp;
   existingRqids: Map<string, string>;
 }

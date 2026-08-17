@@ -3,8 +3,8 @@
     <div class="input-button">
       <label class="rqid-input-group" for="rqid-editor">
         {{#if parentRqid}}<span class="parent-rqid rqid-prefix">{{parentRqid}}.</span>{{/if}}
-        <span class="rqid-prefix">{{rqidDocumentNamePart}}</span>
-        <input type="text" id="rqid-editor" name="rqidNamePart" value="{{rqidNamePart}}" />
+        <span class="rqid-prefix">{{prefix}}</span>
+        <input type="text" id="rqid-editor" name="slug" value="{{slug}}" />
       </label>
       <button type="button" class="generate-rqid" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-generate-default-rqid><i
         class="fas fa-wand-magic-sparkles"></i></button>

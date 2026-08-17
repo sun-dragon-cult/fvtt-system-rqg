@@ -61,10 +61,10 @@ const RQID_DOCUMENT_DEFINITIONS = {
   s: { documentName: "Scene", gameProperty: "scenes", iconConfig: "Scene" },
 } as const;
 
-type RqidDocumentName = keyof typeof RQID_DOCUMENT_DEFINITIONS;
-type NonItemRqidDocumentName = Exclude<RqidDocumentName, "i">;
+type RqidKind = keyof typeof RQID_DOCUMENT_DEFINITIONS;
+type NonItemRqidKind = Exclude<RqidKind, "i">;
 type ItemRqidString = `i.${keyof ItemSubtypeMap}.${string}`;
-type DocumentRqidString = ItemRqidString | `${NonItemRqidDocumentName}.${string}.${string}`;
+type DocumentRqidString = ItemRqidString | `${NonItemRqidKind}.${string}.${string}`;
 
 /**
  * A typed rqid string.
@@ -75,8 +75,8 @@ type DocumentRqidString = ItemRqidString | `${NonItemRqidDocumentName}.${string}
  */
 export type RqidString = DocumentRqidString | `${DocumentRqidString}.${DocumentRqidString}`;
 
-/** Runtime validator for rqid document name (first segment), including item document `i`. */
-export function isRqidDocumentName(value: unknown): value is RqidDocumentName {
+/** Runtime validator for rqid kind (first segment), including item document `i`. */
+export function isRqidKind(value: unknown): value is RqidKind {
   return typeof value === "string" && Object.hasOwn(RQID_DOCUMENT_DEFINITIONS, value);
 }
 
@@ -121,9 +121,9 @@ type IndexCandidate = { pack: CompendiumCollection.Any; indexData: RqidIndexEntr
 
 /**
  * Handles rqid ids. These IDs are a string that is constructed like `i.skill.act`.
- * The first part (rqidDocumentName) is a shorthand to the foundry Document names (like Item, Actor) for the supported documents. See Rqid.documentNameLookup
- * The second part (document type) is the same as the document type in Foundry (like weapon, skill, etc). Can be empty.
- * The third part ()
+ * The first part (kind) is a shorthand to the foundry Document names (like Item, Actor) for the supported documents. See Rqid.documentNameLookup
+ * The second part (type) is the same as the document type in Foundry (like weapon, skill, etc). Can be empty.
+ * The third part (slug) is a unique, kebab-case identifier within that kind+type.
  *
  */
 export class Rqid {
@@ -202,25 +202,25 @@ export class Rqid {
    * `source` chooses where to search: world, packs, or both.
    * `mode` chooses whether to return all matches or only the best (highest priority) per rqid.
    * @param rqidRegex regex used on the rqid
-   * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
+   * @param kind the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    * @param options search source and result mode
    */
   public static async fromRqidRegex(
     rqidRegex: RegExp | undefined,
-    rqidDocumentName: RqidDocumentName | undefined, // like "i", "a", "je"
+    kind: RqidKind | undefined, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
     options: RqidRegexSearchOptions = {},
   ): Promise<RqidEnabledDocument[]> {
-    if (!rqidRegex || !rqidDocumentName) {
+    if (!rqidRegex || !kind) {
       return [];
     }
     const source = options.source ?? "all";
     const mode = options.mode ?? "best";
 
     const [worldDocuments, packDocuments] = await Promise.all([
-      source !== "packs" ? Rqid.documentsFromWorld(rqidRegex, rqidDocumentName, lang) : [],
-      source !== "world" ? Rqid.documentsFromPacks(rqidRegex, rqidDocumentName, lang) : [],
+      source !== "packs" ? Rqid.documentsFromWorld(rqidRegex, kind, lang) : [],
+      source !== "world" ? Rqid.documentsFromPacks(rqidRegex, kind, lang) : [],
     ]);
 
     const result: TaggedRqidDocument[] = [
@@ -241,15 +241,15 @@ export class Rqid {
    * from the World or a Compendium pack. When priorities are equal, the World document
    * takes precedence.
    * @param rqidRegex regex used on the rqid
-   * @param rqidDocumentName the first part of the wanted rqid, for example "i", "a", "je"
+   * @param kind the first part of the wanted rqid, for example "i", "a", "je"
    * @param lang the language to match against ("en", "es", ...)
    */
   public static async fromRqidRegexBest(
     rqidRegex: RegExp | undefined,
-    rqidDocumentName: RqidDocumentName, // like "i", "a", "je"
+    kind: RqidKind, // like "i", "a", "je"
     lang: string = CONFIG.RQG.fallbackLanguage,
   ): Promise<RqidEnabledDocument[]> {
-    return this.fromRqidRegex(rqidRegex, rqidDocumentName, lang, {
+    return this.fromRqidRegex(rqidRegex, kind, lang, {
       source: "all",
       mode: "best",
     });
@@ -370,29 +370,29 @@ export class Rqid {
   }
 
   /**
-   * Compute the default rqid identifier segment (the last `.`-separated part of an item rqid)
-   * from a name, item subtype and optional system data. This is the single source of truth for
-   * how a default rqid identifier is derived, shared by getDefaultRqid (which operates on real
-   * Documents) and the RqidBatchEditor (which mostly only has plain item data available, e.g.
-   * from compendium indexes or actor.toObject()).
+   * Compute the default rqid slug (the last `.`-separated part of an item rqid) from a name,
+   * item type and optional system data. This is the single source of truth for how a default
+   * slug is derived, shared by getDefaultRqid (which operates on real Documents) and the
+   * RqidBatchEditor (which mostly only has plain item data available, e.g. from compendium
+   * indexes or actor.toObject()).
    */
-  public static getDefaultRqidIdentifier(
+  public static getDefaultRqidSlug(
     name: string | null | undefined,
-    itemType?: string,
+    type?: string,
     system?: Record<string, unknown>,
   ): string {
-    let rqidIdentifier = "";
+    let slug = "";
 
-    if (itemType === ItemTypeEnum.Skill) {
-      rqidIdentifier = trimChars(
+    if (type === ItemTypeEnum.Skill) {
+      slug = trimChars(
         toKebabCase(
           `${(system?.["skillName"] as string) ?? ""}-${(system?.["specialization"] as string) ?? ""}`,
         ),
         "-",
       );
     }
-    if (itemType === ItemTypeEnum.Armor) {
-      rqidIdentifier = trimChars(
+    if (type === ItemTypeEnum.Armor) {
+      slug = trimChars(
         toKebabCase(
           `${(system?.["namePrefix"] as string) ?? ""}-${(system?.["armorType"] as string) ?? ""}-${
             (system?.["material"] as string) ?? ""
@@ -401,11 +401,11 @@ export class Rqid {
         "-",
       );
     }
-    if (!rqidIdentifier) {
-      rqidIdentifier = trimChars(toKebabCase(name ?? ""), "-");
+    if (!slug) {
+      slug = trimChars(toKebabCase(name ?? ""), "-");
     }
 
-    return rqidIdentifier;
+    return slug;
   }
 
   /**
@@ -416,14 +416,14 @@ export class Rqid {
       return "";
     }
 
-    const rqidDocumentString = Rqid.getRqidDocumentName(document);
-    const documentSubType = toKebabCase("type" in document ? String(document.type) : "");
+    const kind = Rqid.getKind(document);
+    const type = toKebabCase("type" in document ? String(document.type) : "");
     const itemType = document instanceof Item ? String(document.type) : undefined;
     const system =
       document instanceof Item ? (document.system as Record<string, unknown>) : undefined;
-    const rqidIdentifier = Rqid.getDefaultRqidIdentifier(document.name, itemType, system);
+    const slug = Rqid.getDefaultRqidSlug(document.name, itemType, system);
 
-    return `${rqidDocumentString}.${documentSubType}.${rqidIdentifier}` as RqidString;
+    return `${kind}.${type}.${slug}` as RqidString;
   }
 
   /**
@@ -507,7 +507,7 @@ export class Rqid {
       return undefined;
     }
     const documentRqid = Rqid.documentRqid(rqid);
-    const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
+    const embeddedRqid = Rqid.embeddedRqid(rqid);
 
     const candidateDocuments = (
       Rqid.getGameCollection(documentRqid)?.contents as RqidEnabledDocument[] | undefined
@@ -539,19 +539,19 @@ export class Rqid {
       // TODO Or should this be handled in the compendium browser eventually?
       console.warn(msg + "  Duplicate items: ", candidateDocuments);
     }
-    return this.getEmbeddedOrProvidedDocument(highestPrioDocuments[0]!, embeddedDocumentsRqid);
+    return this.getEmbeddedOrProvidedDocument(highestPrioDocuments[0]!, embeddedRqid);
   }
 
   private static getEmbeddedOrProvidedDocument(
     document: RqidEnabledDocument,
-    embeddedDocumentsRqid: string,
+    embeddedRqid: string,
   ) {
     if (
-      embeddedDocumentsRqid &&
+      embeddedRqid &&
       "getBestEmbeddedDocumentByRqid" in document &&
       typeof document.getBestEmbeddedDocumentByRqid === "function" // Not all documents support embedded rqid documents
     ) {
-      return document.getBestEmbeddedDocumentByRqid(embeddedDocumentsRqid);
+      return document.getBestEmbeddedDocumentByRqid(embeddedRqid);
     } else {
       return document;
     }
@@ -563,14 +563,14 @@ export class Rqid {
    */
   private static async documentsFromWorld(
     rqidRegex: RegExp | undefined,
-    rqidDocumentName: RqidDocumentName,
+    kind: RqidKind,
     lang: string,
   ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
       return [];
     }
 
-    const collection = Rqid.getGameCollection(`${rqidDocumentName}..`);
+    const collection = Rqid.getGameCollection(`${kind}..`);
     const candidateDocuments = (collection?.contents as RqidEnabledDocument[] | undefined)?.filter(
       (d) =>
         rqidRegex.test(Rqid.getDocumentFlag(d)?.id ?? "") && Rqid.getDocumentFlag(d)?.lang === lang,
@@ -635,7 +635,7 @@ export class Rqid {
       return undefined;
     }
     const documentRqid = Rqid.documentRqid(rqid);
-    const embeddedDocumentsRqid = Rqid.embeddedDocumentRqid(rqid);
+    const embeddedRqid = Rqid.embeddedRqid(rqid);
     const documentName = Rqid.getDocumentName(documentRqid);
     const indexCandidates: IndexCandidate[] = [];
 
@@ -678,7 +678,7 @@ export class Rqid {
     if (!highestPrioDocument) {
       return undefined;
     }
-    return this.getEmbeddedOrProvidedDocument(highestPrioDocument, embeddedDocumentsRqid);
+    return this.getEmbeddedOrProvidedDocument(highestPrioDocument, embeddedRqid);
   }
 
   /**
@@ -687,13 +687,13 @@ export class Rqid {
    */
   private static async documentsFromPacks(
     rqidRegex: RegExp,
-    rqidDocumentName: RqidDocumentName,
+    kind: RqidKind,
     lang: string,
   ): Promise<RqidEnabledDocument[]> {
     if (!rqidRegex) {
       return [];
     }
-    const documentName = Rqid.getDocumentName(`${rqidDocumentName}..fake-rqid`);
+    const documentName = Rqid.getDocumentName(`${kind}..fake-rqid`);
     const candidateDocuments: RqidEnabledDocument[] = [];
 
     for (const pack of game.packs ?? []) {
@@ -737,14 +737,14 @@ export class Rqid {
   }
 
   public static getRqidIcon(rqid: string | undefined): string | undefined {
-    const rqidDocumentString = rqid?.split(".")[0];
+    const kind = rqid?.split(".")[0];
 
     // Use RQG default item type images for item documents
-    if (rqidDocumentString === "i") {
-      const itemType = Rqid.getDocumentType(rqid);
+    if (kind === "i") {
+      const type = Rqid.getDocumentType(rqid);
 
       // Special handling for rune items to display the actual rune instead of the default item image
-      if (itemType === ItemTypeEnum.Rune) {
+      if (type === ItemTypeEnum.Rune) {
         const availableRunes = getAvailableRunes();
         const rune = availableRunes.find((r) => r.rqid === rqid);
         if (!rune && availableRunes.length) {
@@ -757,7 +757,7 @@ export class Rqid {
       }
 
       const iconSettings = getDefaultItemIconSettings();
-      const defaultItemIcon = itemType && iconSettings[itemType as keyof typeof iconSettings];
+      const defaultItemIcon = type && iconSettings[type as keyof typeof iconSettings];
       if (defaultItemIcon) {
         // TODO If undefined then the rqid is invalid since all items need a type
         return `<img src="${defaultItemIcon}"/>`;
@@ -765,9 +765,8 @@ export class Rqid {
     }
 
     // Use Foundry default document images
-    const configPart =
-      rqidDocumentString && Rqid.documentLinkIconsConfigName.get(rqidDocumentString);
-    if (!rqidDocumentString || !configPart) {
+    const configPart = kind && Rqid.documentLinkIconsConfigName.get(kind);
+    if (!kind || !configPart) {
       return undefined;
     }
     const linkIcon =
@@ -777,8 +776,8 @@ export class Rqid {
   }
 
   private static readonly documentLinkIconsConfigName = new Map(
-    Object.entries(RQID_DOCUMENT_DEFINITIONS).map(([rqidDocumentName, definition]) => [
-      rqidDocumentName,
+    Object.entries(RQID_DOCUMENT_DEFINITIONS).map(([kind, definition]) => [
+      kind,
       definition.iconConfig,
     ]),
   );
@@ -794,11 +793,11 @@ export class Rqid {
   }
 
   /**
-   *   Translates the first part of a rqid (rqidDocumentName) to what those documents are called in the `game` object.
+   *   Translates the first part of a rqid (kind) to what those documents are called in the `game` object.
    */
   private static getGameProperty(rqid: string | undefined): string {
-    const rqidDocumentName = rqid?.split(".")[0];
-    const gameProperty = rqidDocumentName && Rqid.gamePropertyLookup[rqidDocumentName];
+    const kind = rqid?.split(".")[0];
+    const gameProperty = kind && Rqid.gamePropertyLookup[kind];
     if (!gameProperty) {
       const msg = "Tried to convert rqid with non existing document type";
       throw new RqgError(msg, rqid);
@@ -816,23 +815,21 @@ export class Rqid {
     return game[prop as keyof typeof game] as WorldCollection<Document.WorldType> | undefined;
   }
 
-  private static readonly gamePropertyLookup: { [rqidDocumentName: string]: string } =
-    Object.entries(RQID_DOCUMENT_DEFINITIONS).reduce(
-      (acc: { [rqidDocumentName: string]: string }, [rqidDocumentName, definition]) => {
-        if ("gameProperty" in definition) {
-          acc[rqidDocumentName] = definition.gameProperty;
-        }
-        return acc;
-      },
-      {},
-    );
+  private static readonly gamePropertyLookup: { [kind: string]: string } = Object.entries(
+    RQID_DOCUMENT_DEFINITIONS,
+  ).reduce((acc: { [kind: string]: string }, [kind, definition]) => {
+    if ("gameProperty" in definition) {
+      acc[kind] = definition.gameProperty;
+    }
+    return acc;
+  }, {});
 
   /**
    *   Translates the first part of a rqid to a Foundry document name (like "Item").
    */
   public static getDocumentName(rqid: string | undefined): string {
-    const rqidDocumentName = rqid?.split(".")[0];
-    const documentName = rqidDocumentName && Rqid.documentNameLookup[rqidDocumentName];
+    const kind = rqid?.split(".")[0];
+    const documentName = kind && Rqid.documentNameLookup[kind];
     if (!documentName) {
       const msg = "Tried to convert rqid with non existing document type";
       throw new RqgError(msg, rqid);
@@ -840,44 +837,40 @@ export class Rqid {
     return documentName;
   }
 
-  private static readonly documentNameLookup: { [rqidDocumentName: string]: string } =
-    Object.entries(RQID_DOCUMENT_DEFINITIONS).reduce(
-      (acc: { [rqidDocumentName: string]: string }, [rqidDocumentName, definition]) => {
-        acc[rqidDocumentName] = definition.documentName;
-        return acc;
-      },
-      {},
-    );
+  private static readonly documentNameLookup: { [kind: string]: string } = Object.entries(
+    RQID_DOCUMENT_DEFINITIONS,
+  ).reduce((acc: { [kind: string]: string }, [kind, definition]) => {
+    acc[kind] = definition.documentName;
+    return acc;
+  }, {});
 
   /**
    * Get the document type from the rqid if it exists. For example i.skill.act returns "skill".
    * Does not check if the type is valid in the system.
    */
   public static getDocumentType(rqid: string | undefined): string | undefined {
-    const documentType = rqid?.split(".")[1];
-    return documentType ? documentType : undefined;
+    const type = rqid?.split(".")[1];
+    return type ? type : undefined;
   }
 
   /**
    * Get the first part of a rqid (like "i") from a Document.
    */
-  private static getRqidDocumentName(document: RqidEnabledDocument | Document.Any): string {
-    const documentString = Rqid.rqidDocumentNameLookup[document.documentName];
-    if (!documentString) {
+  private static getKind(document: RqidEnabledDocument | Document.Any): string {
+    const kind = Rqid.kindLookup[document.documentName];
+    if (!kind) {
       const msg = "Tried to convert a unsupported document to rqid";
       throw new RqgError(msg, document);
     }
-    return documentString;
+    return kind;
   }
 
   /**
-   *  Reverse lookup from DocumentType to rqidDocument ("Item" -> "i").
+   *  Reverse lookup from Foundry document name to rqid kind ("Item" -> "i").
    */
-  private static readonly rqidDocumentNameLookup: { [documentName: string]: string } =
-    Object.entries(Rqid.documentNameLookup).reduce(
-      (acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }),
-      {},
-    );
+  private static readonly kindLookup: { [documentName: string]: string } = Object.entries(
+    Rqid.documentNameLookup,
+  ).reduce((acc: { [k: string]: string }, [key, value]) => ({ ...acc, [value]: key }), {});
 
   /**
    * Get the main level document rqid from a rqid that could contain a reference
@@ -892,7 +885,7 @@ export class Rqid {
    * such as `a.character.nisse.i.skill.act` -> `i.skill.act`. Will return an empty string
    * if no embedded rqid exists
    */
-  private static embeddedDocumentRqid(rqid: string): string {
+  private static embeddedRqid(rqid: string): string {
     return rqid.split(".").slice(3, 6).join(".");
   }
 

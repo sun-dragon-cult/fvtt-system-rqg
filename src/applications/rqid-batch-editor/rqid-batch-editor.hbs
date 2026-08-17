@@ -20,8 +20,8 @@
             </select>
           </div>
           <div class="value flexrow">
-            <span class="rqid-prefix">{{../idPrefix}}</span>
-            <input class="rqid-input {{#unless selectedRqidSuffix}}missing{{/unless}}" type="text" value="{{selectedRqidSuffix}}" data-name="{{name}}">
+            <span class="rqid-prefix">{{../prefix}}</span>
+            <input class="rqid-input {{#unless selectedSlug}}missing{{/unless}}" type="text" value="{{selectedSlug}}" data-name="{{name}}">
             <button type="button" class="generate-rqid" data-action="generateRqid" data-name="{{name}}" data-tooltip="{{localize "RQG.RQGSystem.Rqid.GenerateDefault"}}" data-tooltip-class="rqid-batch-editor-tooltip" data-tooltip-direction="RIGHT">
               <i class="fas fa-wand-magic-sparkles"></i>
             </button>

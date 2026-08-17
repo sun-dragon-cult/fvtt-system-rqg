@@ -9,17 +9,17 @@ import type { CultItem } from "@item-model/cult-data-model.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 
-function toCanonicalItemRqid(rqid: string, itemType: "rune" | "rune-magic"): string {
-  const match = rqid.match(new RegExp(`(?:^|\\.)(i\\.${itemType}\\.[^.]+)$`));
+function toCanonicalItemRqid(rqid: string, type: "rune" | "rune-magic"): string {
+  const match = rqid.match(new RegExp(`(?:^|\\.)(i\\.${type}\\.[^.]+)$`));
   return match?.[1] ?? rqid;
 }
 
 function normalizeRqidLinks(
   links: RqidLink[] | undefined,
-  itemType: "rune" | "rune-magic",
+  type: "rune" | "rune-magic",
 ): RqidLink[] {
   return (links ?? []).map((link) => {
-    const rqid = toCanonicalItemRqid(link.rqid, itemType);
+    const rqid = toCanonicalItemRqid(link.rqid, type);
     const normalized: RqidLink = {
       rqid,
       name: link.name,

@@ -1600,7 +1600,7 @@
         width: 100%;
       }
 
-      &[name="rqidNamePart"] {
+      &[name="slug"] {
         width: 12rem;
       }
 

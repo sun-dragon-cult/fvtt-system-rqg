@@ -15,7 +15,7 @@ body.theme-light .rqid-editor {
       display: flex;
       align-items: center;
 
-      & input[name="rqidNamePart"] {
+      & input[name="slug"] {
         width: 15rem;
         padding-left: 0;
       }
@@ -25,7 +25,7 @@ body.theme-light .rqid-editor {
       color: var(--rqid-editor-input-text-color);
     }
 
-    &:has(input[name="rqidNamePart"]:focus) .rqid-prefix {
+    &:has(input[name="slug"]:focus) .rqid-prefix {
       color: var(--rqid-editor-input-focus-text-color);
     }
   }

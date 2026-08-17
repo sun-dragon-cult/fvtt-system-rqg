@@ -6,7 +6,7 @@ import {
   toKebabCase,
   trimChars,
 } from "../../system/util";
-import { Rqid, isRqidDocumentName } from "../../system/api/rqid-api";
+import { Rqid, isRqidKind } from "../../system/api/rqid-api";
 import { templatePaths } from "../../system/load-handlebars-templates";
 
 import Document = foundry.abstract.Document;
@@ -28,7 +28,7 @@ interface RqidEditorData {
   worldDocumentInfo?: (DocumentInfo & { folder: string })[];
   compendiumDocumentInfo?: (DocumentInfo & { compendium: string })[];
   rqidLink?: string;
-  fullRqid?: string;
+  rqid?: string;
   supportedLanguagesOptions: typeof CONFIG.supportedLanguages;
   id: string | null;
   parentId: string;
@@ -36,8 +36,8 @@ interface RqidEditorData {
   uuid: string | null;
   folder: string;
   flags: { rqg: { documentRqidFlags: { lang: string; priority: number } } };
-  rqidDocumentNamePart: string;
-  rqidNamePart: string | undefined;
+  prefix: string;
+  slug: string | undefined;
   parentRqid: string;
   parentMissingRqid: boolean;
   buttons: {
@@ -194,25 +194,21 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
       compendiumDocumentInfo: [],
     };
 
-    let rqidLinkData: Pick<RqidEditorData, "rqidLink" | "fullRqid"> = {};
+    let rqidLinkData: Pick<RqidEditorData, "rqidLink" | "rqid"> = {};
 
     if (documentRqid && documentLang) {
-      const rqidDocumentName = documentRqid.split(".")[0];
+      const kind = documentRqid.split(".")[0];
       const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
-      if (!this.document.isEmbedded && isRqidDocumentName(rqidDocumentName)) {
-        const worldDocuments = await Rqid.fromRqidRegex(
-          rqidSearchRegex,
-          rqidDocumentName,
-          documentLang,
-          { source: "world", mode: "all" },
-        );
-        const compendiumDocuments = await Rqid.fromRqidRegex(
-          rqidSearchRegex,
-          rqidDocumentName,
-          documentLang,
-          { source: "packs", mode: "all" },
-        );
+      if (!this.document.isEmbedded && isRqidKind(kind)) {
+        const worldDocuments = await Rqid.fromRqidRegex(rqidSearchRegex, kind, documentLang, {
+          source: "world",
+          mode: "all",
+        });
+        const compendiumDocuments = await Rqid.fromRqidRegex(rqidSearchRegex, kind, documentLang, {
+          source: "packs",
+          mode: "all",
+        });
 
         const duplicateWorldPriorities = this.getDuplicatePriorities(worldDocuments);
         const duplicateCompendiumPriorities = this.getDuplicatePriorities(compendiumDocuments);
@@ -265,14 +261,14 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
         };
       }
 
-      const fullRqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
+      const rqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
       rqidLinkData = {
-        rqidLink: `@RQID[${fullRqid}]{${this.document.name}}`,
-        fullRqid: fullRqid,
+        rqidLink: `@RQID[${rqid}]{${this.document.name}}`,
+        rqid: rqid,
       };
     }
 
-    const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
+    const [kind, type] = Rqid.getDefaultRqid(this.document).split(".");
 
     return {
       ...duplicateData,
@@ -291,8 +287,8 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
           },
         },
       },
-      rqidDocumentNamePart: `${documentIdPart}.${documentType}.`,
-      rqidNamePart: Rqid.getDocumentFlag(this.document)?.id?.split(".").pop(),
+      prefix: `${kind}.${type}.`,
+      slug: Rqid.getDocumentFlag(this.document)?.id?.split(".").pop(),
       parentRqid: parentRqid,
       parentMissingRqid: this.document.isEmbedded && !parentRqid,
       buttons: [
@@ -350,7 +346,7 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     });
 
     this.element
-      .querySelector<HTMLInputElement>('input[name="rqidNamePart"]')
+      .querySelector<HTMLInputElement>('input[name="slug"]')
       ?.addEventListener("input", () => this.syncRetrievalPreview());
     this.element
       .querySelector<HTMLSelectElement>('select[name="flags.rqg.documentRqidFlags.lang"]')
@@ -376,12 +372,10 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     formData: FormDataExtended,
   ): Promise<void> {
     const data = formData.object as Record<string, unknown>;
-    const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
-    const rqidNamePart = toKebabCase(String(data["rqidNamePart"] ?? "").trim());
-    data["flags.rqg.documentRqidFlags.id"] = rqidNamePart
-      ? `${documentIdPart}.${documentType}.${rqidNamePart}`
-      : null;
-    delete data["rqidNamePart"];
+    const [kind, type] = Rqid.getDefaultRqid(this.document).split(".");
+    const slug = toKebabCase(String(data["slug"] ?? "").trim());
+    data["flags.rqg.documentRqidFlags.id"] = slug ? `${kind}.${type}.${slug}` : null;
+    delete data["slug"];
 
     data["flags.rqg.documentRqidFlags.priority"] =
       Number(data["flags.rqg.documentRqidFlags.priority"]) || 0;
@@ -397,11 +391,11 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
 
   private applyDefaultRqidToForm(): void {
     const defaultRqid = Rqid.getDefaultRqid(this.document);
-    const rqidNamePart = defaultRqid.split(".").pop() ?? "";
+    const slug = defaultRqid.split(".").pop() ?? "";
 
-    const rqidInput = this.element.querySelector<HTMLInputElement>('input[name="rqidNamePart"]');
+    const rqidInput = this.element.querySelector<HTMLInputElement>('input[name="slug"]');
     if (rqidInput) {
-      rqidInput.value = rqidNamePart;
+      rqidInput.value = slug;
     }
 
     const langSelect = this.element.querySelector<HTMLSelectElement>(
@@ -422,7 +416,7 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
   }
 
   private syncRetrievalPreview(): void {
-    const rqidInput = this.element.querySelector<HTMLInputElement>('input[name="rqidNamePart"]');
+    const rqidInput = this.element.querySelector<HTMLInputElement>('input[name="slug"]');
     const langSelect = this.element.querySelector<HTMLSelectElement>(
       'select[name="flags.rqg.documentRqidFlags.lang"]',
     );
@@ -440,10 +434,10 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
       return;
     }
 
-    const rqidNamePart = toKebabCase(rqidInput.value.trim());
+    const slug = toKebabCase(rqidInput.value.trim());
     const dependentElements = this.element.querySelectorAll<HTMLElement>("[data-rqid-dependent]");
 
-    if (!rqidNamePart) {
+    if (!slug) {
       getLikeThisInput.value = "";
       journalLinkInput.value = "";
       dependentElements.forEach((el) => {
@@ -457,16 +451,16 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
       return;
     }
 
-    const [documentIdPart, documentType] = Rqid.getDefaultRqid(this.document).split(".");
+    const [kind, type] = Rqid.getDefaultRqid(this.document).split(".");
     const parentRqid: string = this.document.isEmbedded
       ? (Rqid.getDocumentFlag(this.document.parent)?.id ?? "")
       : "";
-    const documentRqid = `${documentIdPart}.${documentType}.${rqidNamePart}`;
-    const fullRqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
+    const documentRqid = `${kind}.${type}.${slug}`;
+    const rqid = parentRqid ? `${parentRqid}.${documentRqid}` : documentRqid;
     const lang = langSelect?.value ?? CONFIG.RQG.fallbackLanguage;
 
-    getLikeThisInput.value = `await game.system.api.rqid.fromRqid("${fullRqid}","${lang}")`;
-    journalLinkInput.value = `@RQID[${fullRqid}]{${this.document.name}}`;
+    getLikeThisInput.value = `await game.system.api.rqid.fromRqid("${rqid}","${lang}")`;
+    journalLinkInput.value = `@RQID[${rqid}]{${this.document.name}}`;
 
     dependentElements.forEach((el) => {
       el.hidden = false;
@@ -516,14 +510,14 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
       return;
     }
 
-    const rqidDocumentName = documentRqid?.split(".")[0];
-    const canLookup = !!documentRqid && !!rqidDocumentName && !this.document.isEmbedded;
+    const kind = documentRqid?.split(".")[0];
+    const canLookup = !!documentRqid && !!kind && !this.document.isEmbedded;
 
     duplicateElements.forEach((el) => {
       el.hidden = !canLookup;
     });
 
-    if (!canLookup || !isRqidDocumentName(rqidDocumentName)) {
+    if (!canLookup || !isRqidKind(kind)) {
       worldRows.innerHTML = "";
       compRows.innerHTML = "";
       worldWarning.hidden = true;
@@ -534,19 +528,14 @@ export class RqidEditor extends HandlebarsApplicationMixin(ApplicationV2<RqidEdi
     const lookupLang = lang ?? CONFIG.RQG.fallbackLanguage;
     const rqidSearchRegex = new RegExp("^" + escapeRegex(documentRqid) + "$");
 
-    const worldDocuments = await Rqid.fromRqidRegex(rqidSearchRegex, rqidDocumentName, lookupLang, {
+    const worldDocuments = await Rqid.fromRqidRegex(rqidSearchRegex, kind, lookupLang, {
       source: "world",
       mode: "all",
     });
-    const compendiumDocuments = await Rqid.fromRqidRegex(
-      rqidSearchRegex,
-      rqidDocumentName,
-      lookupLang,
-      {
-        source: "packs",
-        mode: "all",
-      },
-    );
+    const compendiumDocuments = await Rqid.fromRqidRegex(rqidSearchRegex, kind, lookupLang, {
+      source: "packs",
+      mode: "all",
+    });
 
     if (requestId !== this.duplicateLookupRequestId) {
       return;
