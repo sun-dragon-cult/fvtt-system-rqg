@@ -390,6 +390,94 @@ describe("Rqid", () => {
     });
   });
 
+  describe("getDefaultRqid", () => {
+    afterEach(() => {
+      globalThis.Item = originalItem;
+    });
+
+    const originalItem = globalThis.Item;
+
+    it("derives a cult identifier from the full item name, keeping subcults of the same deity distinct", () => {
+      // Subcults (e.g. Orlanth Adventurous, Orlanth Thunderous) share a deity but must not share
+      // an rqid - Allied Spirit rune point sharing (rune-point-source.ts) matches cults by their
+      // exact rqid, and subcults are deliberately NOT interchangeable for that purpose even though
+      // they share a deity (see cult-lifecycle.ts, which only merges same-deity cults on one actor).
+      globalThis.Item = class {} as any;
+      const doc = {
+        documentName: "Item",
+        type: "cult",
+        name: "Orlanth Adventurous (Orlanth)",
+        system: { deity: "Orlanth" },
+      };
+      Object.setPrototypeOf(doc, globalThis.Item.prototype);
+
+      expect(Rqid.getDefaultRqid(doc as any)).toBe("i.cult.orlanth-adventurous-orlanth");
+    });
+
+    it("derives the same cult identifier as the base deity when there is no subcult", () => {
+      globalThis.Item = class {} as any;
+      const doc = {
+        documentName: "Item",
+        type: "cult",
+        name: "Ernalda",
+        system: { deity: "Ernalda" },
+      };
+      Object.setPrototypeOf(doc, globalThis.Item.prototype);
+
+      expect(Rqid.getDefaultRqid(doc as any)).toBe("i.cult.ernalda");
+    });
+
+    it("derives a skill identifier from skillName and specialization", () => {
+      globalThis.Item = class {} as any;
+      const doc = {
+        documentName: "Item",
+        type: "skill",
+        name: "Sword (Broadsword)",
+        system: { skillName: "Sword", specialization: "Broadsword" },
+      };
+      Object.setPrototypeOf(doc, globalThis.Item.prototype);
+
+      expect(Rqid.getDefaultRqid(doc as any)).toBe("i.skill.sword-broadsword");
+    });
+
+    it("uses the plain document name for non-special-cased item types", () => {
+      globalThis.Item = class {} as any;
+      const doc = {
+        documentName: "Item",
+        type: "gear",
+        name: "Sturdy Rope",
+        system: {},
+      };
+      Object.setPrototypeOf(doc, globalThis.Item.prototype);
+
+      expect(Rqid.getDefaultRqid(doc as any)).toBe("i.gear.sturdy-rope");
+    });
+  });
+
+  describe("getDefaultRqidIdentifier", () => {
+    it("derives a cult identifier from the full name regardless of system data", () => {
+      expect(
+        Rqid.getDefaultRqidIdentifier("Orlanth Adventurous (Orlanth)", "cult", {
+          deity: "Orlanth",
+        }),
+      ).toBe("orlanth-adventurous-orlanth");
+    });
+
+    it("falls back to the name when no system data is available (e.g. batch editor without a matched document)", () => {
+      expect(Rqid.getDefaultRqidIdentifier("Ernalda", "cult", undefined)).toBe("ernalda");
+    });
+
+    it("derives an armor identifier from namePrefix, armorType and material", () => {
+      expect(
+        Rqid.getDefaultRqidIdentifier("Fine Bronze Cuirass", "armor", {
+          namePrefix: "Fine",
+          armorType: "Cuirass",
+          material: "Bronze",
+        }),
+      ).toBe("fine-cuirass-bronze");
+    });
+  });
+
   describe("setRqid and setDefaultRqid", () => {
     it("sets rqid flag with provided values", async () => {
       const setFlag = vi.fn().mockResolvedValue(undefined);

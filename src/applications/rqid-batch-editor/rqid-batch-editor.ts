@@ -27,6 +27,18 @@ import type {
   RqidBatchEditorOptions,
 } from "./rqid-batch-editor.types";
 
+/**
+ * Item types that must have an rqid for other RQG features to keep working. Used both to gate
+ * world migration (migrateWorld) and as the no-args default for the macro-facing
+ * game.system.api.migration.openRqidBatchEditor - kept as a single list so the two don't drift.
+ */
+export const DEFAULT_RQID_BATCH_ITEM_TYPES: ItemTypeEnum[] = [
+  ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
+  ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+  ItemTypeEnum.Rune, // Rune tab needs rqid to sort opposed rune pairs into the fixed paper-character-sheet order
+  ItemTypeEnum.Cult, // cults need rqid to match the same cult across actors for Allied Spirit's shared rune point pool
+];
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class RqidBatchEditor extends HandlebarsApplicationMixin(
@@ -243,7 +255,7 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       RqidBatchEditor.logger.warn("Generate RQID clicked but no item name was found in target.");
       return;
     }
-    const rqidSuffix = toKebabCase(name);
+    const rqidSuffix = Rqid.getDefaultRqidIdentifier(name, this.batchConfig.itemType);
     const newRqid = rqidSuffix ? this.batchConfig.idPrefix + rqidSuffix : undefined;
     this.changes.itemName2Rqid.set(name, newRqid);
     this.updateRowInput(target, rqidSuffix);

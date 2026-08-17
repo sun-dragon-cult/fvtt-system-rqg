@@ -19,7 +19,10 @@ import { TextEditorHooks } from "./foundry-ui/text-editor-hooks";
 import { RqgJournalEntry } from "./journals/rqg-journal-entry";
 import { getTokenStatusEffects } from "./system/token-status-effects";
 import { RqgSettings } from "./foundry-ui/rqg-settings";
-import { RqidBatchEditor } from "./applications/rqid-batch-editor/rqid-batch-editor";
+import {
+  DEFAULT_RQID_BATCH_ITEM_TYPES,
+  RqidBatchEditor,
+} from "./applications/rqid-batch-editor/rqid-batch-editor";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { initSockets } from "./sockets/rqg-socket";
 import { AbilityRoll } from "./rolls/ability-roll/ability-roll";
@@ -132,11 +135,7 @@ Hooks.once("init", () => {
         const itemTypeEnums = (
           itemTypes.length
             ? itemTypes.map((it) => it as ItemTypeEnum)
-            : [
-                ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
-                ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
-                ItemTypeEnum.Rune, // Future needs
-              ]
+            : DEFAULT_RQID_BATCH_ITEM_TYPES
         ) as Item.SubType[];
         await RqidBatchEditor.factory(...itemTypeEnums);
       },

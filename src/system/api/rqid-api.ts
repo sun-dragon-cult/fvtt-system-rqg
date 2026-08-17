@@ -1,14 +1,7 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { systemId } from "../config";
 import { getDefaultItemIconSettings } from "../settings/default-item-icons";
-import {
-  getAvailableRunes,
-  isDocumentSubType,
-  localize,
-  RqgError,
-  toKebabCase,
-  trimChars,
-} from "../util";
+import { getAvailableRunes, localize, RqgError, toKebabCase, trimChars } from "../util";
 import {
   documentRqidFlags,
   type DocumentRqidFlags,
@@ -377,6 +370,45 @@ export class Rqid {
   }
 
   /**
+   * Compute the default rqid identifier segment (the last `.`-separated part of an item rqid)
+   * from a name, item subtype and optional system data. This is the single source of truth for
+   * how a default rqid identifier is derived, shared by getDefaultRqid (which operates on real
+   * Documents) and the RqidBatchEditor (which mostly only has plain item data available, e.g.
+   * from compendium indexes or actor.toObject()).
+   */
+  public static getDefaultRqidIdentifier(
+    name: string | null | undefined,
+    itemType?: string,
+    system?: Record<string, unknown>,
+  ): string {
+    let rqidIdentifier = "";
+
+    if (itemType === ItemTypeEnum.Skill) {
+      rqidIdentifier = trimChars(
+        toKebabCase(
+          `${(system?.["skillName"] as string) ?? ""}-${(system?.["specialization"] as string) ?? ""}`,
+        ),
+        "-",
+      );
+    }
+    if (itemType === ItemTypeEnum.Armor) {
+      rqidIdentifier = trimChars(
+        toKebabCase(
+          `${(system?.["namePrefix"] as string) ?? ""}-${(system?.["armorType"] as string) ?? ""}-${
+            (system?.["material"] as string) ?? ""
+          }`,
+        ),
+        "-",
+      );
+    }
+    if (!rqidIdentifier) {
+      rqidIdentifier = trimChars(toKebabCase(name ?? ""), "-");
+    }
+
+    return rqidIdentifier;
+  }
+
+  /**
    * Given a Document, create a valid rqid string for the document.
    */
   public static getDefaultRqid(document: RqidEnabledDocument | Document.Any): RqidString | "" {
@@ -386,29 +418,10 @@ export class Rqid {
 
     const rqidDocumentString = Rqid.getRqidDocumentName(document);
     const documentSubType = toKebabCase("type" in document ? String(document.type) : "");
-    let rqidIdentifier = "";
-
-    if (document instanceof Item) {
-      if (isDocumentSubType<SkillItem>(document, ItemTypeEnum.Skill)) {
-        rqidIdentifier = trimChars(
-          toKebabCase(`${document.system.skillName ?? ""}-${document.system.specialization ?? ""}`),
-          "-",
-        );
-      }
-      if (isDocumentSubType<ArmorItem>(document, ItemTypeEnum.Armor)) {
-        rqidIdentifier = trimChars(
-          toKebabCase(
-            `${document.system.namePrefix ?? ""}-${document.system.armorType ?? ""}-${
-              document.system.material ?? ""
-            }`,
-          ),
-          "-",
-        );
-      }
-    }
-    if (!rqidIdentifier) {
-      rqidIdentifier = trimChars(toKebabCase(document.name), "-");
-    }
+    const itemType = document instanceof Item ? String(document.type) : undefined;
+    const system =
+      document instanceof Item ? (document.system as Record<string, unknown>) : undefined;
+    const rqidIdentifier = Rqid.getDefaultRqidIdentifier(document.name, itemType, system);
 
     return `${rqidDocumentString}.${documentSubType}.${rqidIdentifier}` as RqidString;
   }
