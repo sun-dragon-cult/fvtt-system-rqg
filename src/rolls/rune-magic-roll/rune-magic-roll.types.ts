@@ -9,6 +9,7 @@ export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluatio
   levelUsed: number;
   magicPointBoost: number;
   magicPointSource?: string;
+  runePointSource?: string;
   modifiers: Modifier[];
   speaker: ChatMessage.SpeakerData;
   rollMode?: foundry.dice.Roll.Mode;
@@ -17,7 +18,12 @@ export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluatio
 export type RuneMagicRollImmediateOptions = Partial<
   Pick<
     RuneMagicRollOptions,
-    "levelUsed" | "magicPointBoost" | "magicPointSource" | "modifiers" | "rollMode"
+    | "levelUsed"
+    | "magicPointBoost"
+    | "magicPointSource"
+    | "runePointSource"
+    | "modifiers"
+    | "rollMode"
   >
 > & {
   usedRuneId?: string;

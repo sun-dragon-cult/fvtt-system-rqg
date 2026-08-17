@@ -1,8 +1,12 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  ALLY_MAGIC_POINT_SOURCE,
   AUTO_MAGIC_POINT_SOURCE,
   feedStorageFromSelf,
+  getAlliedBondActor,
+  getAlliedSpirit,
   getAvailableMagicPoints,
+  getBondedPriest,
   getMagicPointDrawOrder,
   getMagicPointSourceOptions,
   getMaxTransferableToStorage,
@@ -18,11 +22,23 @@ function fakeActor(
   selfMp: number,
   storageItems: any[] = [],
   flags: { magicPointStorageOrder?: string[] } = {},
+  options: {
+    type?: string;
+    alliedSpiritActorUuid?: string;
+    uuid?: string;
+    isOwner?: boolean;
+  } = {},
 ) {
   const storedFlags = { ...flags };
   return {
+    type: options.type ?? "character",
+    uuid: options.uuid,
+    isOwner: options.isOwner ?? true,
     items: storageItems,
-    system: { attributes: { magicPoints: { value: selfMp } } },
+    system: {
+      attributes: { magicPoints: { value: selfMp } },
+      alliedSpiritActorUuid: options.alliedSpiritActorUuid,
+    },
     update: vi.fn(),
     updateEmbeddedDocuments: vi.fn(),
     getFlag: vi.fn((_scope: string, key: string) => (storedFlags as any)[key]),
@@ -31,6 +47,19 @@ function fakeActor(
       return Promise.resolve();
     }),
   } as any;
+}
+
+/** A fake Allied Spirit ally actor (#957) - `instanceof Actor` per the global stub in
+ *  test/setup/foundryMockFunctions.js, so it passes getAlliedSpirit's type-guard checks. */
+function fakeAlly(mpValue: number, mpMax: number, isOwner: boolean = true, name = "Whiskers") {
+  const ally = Object.create((globalThis as any).Actor.prototype);
+  return Object.assign(ally, {
+    name,
+    uuid: "Actor.ally1",
+    isOwner,
+    system: { attributes: { magicPoints: { value: mpValue, max: mpMax } } },
+    update: vi.fn(),
+  });
 }
 
 function crystal(
@@ -49,6 +78,120 @@ function crystal(
     update: vi.fn(),
   };
 }
+
+describe("getAlliedSpirit", () => {
+  it("returns undefined when no ally is linked", () => {
+    const actor = fakeActor(6);
+    expect(getAlliedSpirit(actor)).toBeUndefined();
+  });
+
+  it("returns undefined when the actor isn't a Character (e.g. no field for it)", () => {
+    const actor = fakeActor(6, [], {}, { type: "creature", alliedSpiritActorUuid: "Actor.x" });
+    expect(getAlliedSpirit(actor)).toBeUndefined();
+  });
+
+  it("returns undefined when the linked uuid doesn't resolve to an Actor", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.missing" });
+    (globalThis as any).fromUuidSync.mockReturnValue(null);
+    expect(getAlliedSpirit(actor)).toBeUndefined();
+  });
+
+  it("returns undefined when the current user isn't Owner on the ally", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    const ally = fakeAlly(4, 6, false);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+    expect(getAlliedSpirit(actor)).toBeUndefined();
+  });
+
+  it("returns the ally when linked, resolvable, and owned", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    const ally = fakeAlly(4, 6, true);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+    expect(getAlliedSpirit(actor)).toBe(ally);
+  });
+});
+
+describe("getBondedPriest", () => {
+  it("returns undefined when no actor in the world links to this one", () => {
+    const ally = fakeActor(4, [], {}, { uuid: "Actor.ally1" });
+    (globalThis as any).game.actors.contents = [
+      fakeActor(6, [], {}, { uuid: "Actor.other", alliedSpiritActorUuid: "Actor.someone-else" }),
+    ];
+    expect(getBondedPriest(ally)).toBeUndefined();
+  });
+
+  it("returns the actor whose alliedSpiritActorUuid points back at this one", () => {
+    const ally = fakeActor(4, [], {}, { uuid: "Actor.ally1" });
+    const priest = fakeActor(
+      6,
+      [],
+      {},
+      { uuid: "Actor.priest1", alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    (globalThis as any).game.actors.contents = [priest];
+    expect(getBondedPriest(ally)).toBe(priest);
+  });
+
+  it("ignores a linking actor that isn't a Character", () => {
+    const ally = fakeActor(4, [], {}, { uuid: "Actor.ally1" });
+    (globalThis as any).game.actors.contents = [
+      fakeActor(
+        6,
+        [],
+        {},
+        {
+          type: "creature",
+          uuid: "Actor.priest1",
+          alliedSpiritActorUuid: "Actor.ally1",
+        },
+      ),
+    ];
+    expect(getBondedPriest(ally)).toBeUndefined();
+  });
+
+  it("returns undefined when the current user doesn't own the linking priest", () => {
+    const ally = fakeActor(4, [], {}, { uuid: "Actor.ally1" });
+    (globalThis as any).game.actors.contents = [
+      fakeActor(
+        6,
+        [],
+        {},
+        {
+          uuid: "Actor.priest1",
+          alliedSpiritActorUuid: "Actor.ally1",
+          isOwner: false,
+        },
+      ),
+    ];
+    expect(getBondedPriest(ally)).toBeUndefined();
+  });
+});
+
+describe("getAlliedBondActor", () => {
+  it("returns the linked ally when this actor is the priest", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    const ally = fakeAlly(4, 6, true);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+    expect(getAlliedBondActor(actor)).toBe(ally);
+  });
+
+  it("returns the bonded priest when this actor is the linked ally", () => {
+    const ally = fakeActor(4, [], {}, { uuid: "Actor.ally1" });
+    const priest = fakeActor(
+      6,
+      [],
+      {},
+      { uuid: "Actor.priest1", alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    (globalThis as any).game.actors.contents = [priest];
+    expect(getAlliedBondActor(ally)).toBe(priest);
+  });
+
+  it("returns undefined when neither direction resolves", () => {
+    const actor = fakeActor(6, [], {}, { uuid: "Actor.lonely" });
+    expect(getAlliedBondActor(actor)).toBeUndefined();
+  });
+});
 
 describe("getAvailableMagicPoints", () => {
   it("defaults to the actor's own pool", () => {
@@ -76,6 +219,28 @@ describe("getAvailableMagicPoints", () => {
     const actor = fakeActor(6, [crystal("c1", "A", 0, 0)]);
     expect(getAvailableMagicPoints(actor, AUTO_MAGIC_POINT_SOURCE)).toBe(6);
   });
+
+  it("returns the linked ally's own Magic Points for the ally source", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6));
+    expect(getAvailableMagicPoints(actor, ALLY_MAGIC_POINT_SOURCE)).toBe(4);
+  });
+
+  it("returns 0 for the ally source when no ally is linked", () => {
+    const actor = fakeActor(6);
+    expect(getAvailableMagicPoints(actor, ALLY_MAGIC_POINT_SOURCE)).toBe(0);
+  });
+
+  it("includes a linked ally's Magic Points in the auto total", () => {
+    const actor = fakeActor(
+      6,
+      [crystal("c1", "A", 3, 5)],
+      {},
+      { alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6));
+    expect(getAvailableMagicPoints(actor, AUTO_MAGIC_POINT_SOURCE)).toBe(13);
+  });
 });
 
 describe("getTotalStoredMagicPoints", () => {
@@ -89,6 +254,24 @@ describe("getTotalStoredMagicPoints", () => {
     const precomputed = getStorageItems(actor);
     expect(getTotalStoredMagicPoints(actor, precomputed)).toEqual({ value: 3, max: 5 });
   });
+
+  it("includes a linked ally's Magic Points, not just storage items", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 3, 5)], {}, { alliedSpiritActorUuid: "x" });
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6));
+    expect(getTotalStoredMagicPoints(actor)).toEqual({ value: 7, max: 11 });
+  });
+
+  it("counts an ally-only actor (no storage items) instead of reading 0/0", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "x" });
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6));
+    expect(getTotalStoredMagicPoints(actor)).toEqual({ value: 4, max: 6 });
+  });
+
+  it("accepts an already-resolved ally instead of re-resolving the bond", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "x" });
+    const ally = fakeAlly(4, 6);
+    expect(getTotalStoredMagicPoints(actor, [], ally)).toEqual({ value: 4, max: 6 });
+  });
 });
 
 describe("getMagicPointSourceOptions", () => {
@@ -97,13 +280,47 @@ describe("getMagicPointSourceOptions", () => {
     expect(getMagicPointSourceOptions(actor)).toEqual([]);
   });
 
-  it("lists auto, self, then each storage item when any exist", () => {
+  it("lists auto, then storage items and self in the actor's draw order", () => {
     const actor = fakeActor(6, [crystal("c1", "Crystal A", 3, 5)]);
+    // Default draw order (no order flag set) is storage items first, self last - see
+    // getMagicPointDrawOrder - and this picker should mirror that exactly.
     expect(getMagicPointSourceOptions(actor)).toEqual([
       { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
+      { value: "c1", label: "Crystal A" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
+    ]);
+  });
+
+  it("follows a custom magicPointStorageOrder flag, not a fixed self-first order", () => {
+    const actor = fakeActor(
+      6,
+      [crystal("c1", "Crystal A", 3, 5), crystal("c2", "Crystal B", 1, 1)],
+      {
+        magicPointStorageOrder: ["c2", "self", "c1"],
+      },
+    );
+    expect(getMagicPointSourceOptions(actor)).toEqual([
+      { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
+      { value: "c2", label: "Crystal B" },
       { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
       { value: "c1", label: "Crystal A" },
     ]);
+  });
+
+  it("is non-empty (auto/self/ally) when only an ally is linked, no storage items", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6, true, "Whiskers"));
+    expect(getMagicPointSourceOptions(actor)).toEqual([
+      { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
+      { value: "ally", label: "Whiskers" },
+    ]);
+  });
+
+  it("omits the ally option when the current user doesn't own it", () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6, false));
+    expect(getMagicPointSourceOptions(actor)).toEqual([]);
   });
 });
 
@@ -184,6 +401,65 @@ describe("getMagicPointDrawOrder", () => {
     const actor = fakeActor(6, [crystal("c1", "A", 1, 1)], {
       magicPointStorageOrder: ["c1"],
     });
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "item", item: actor.items[0] },
+      { type: "self" },
+    ]);
+  });
+
+  it("appends a linked ally last, below self, by default", () => {
+    const actor = fakeActor(
+      6,
+      [crystal("c1", "A", 1, 1)],
+      {},
+      { alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "item", item: actor.items[0] },
+      { type: "self" },
+      { type: "ally", actor: ally },
+    ]);
+  });
+
+  it("places the ally wherever it sits in the order flag", () => {
+    const actor = fakeActor(
+      6,
+      [crystal("c1", "A", 1, 1)],
+      { magicPointStorageOrder: ["ally", "c1", "self"] },
+      { alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "ally", actor: ally },
+      { type: "item", item: actor.items[0] },
+      { type: "self" },
+    ]);
+  });
+
+  it("appends the ally after self when the order flag predates the bond", () => {
+    const actor = fakeActor(
+      6,
+      [crystal("c1", "A", 1, 1)],
+      { magicPointStorageOrder: ["c1", "self"] },
+      { alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "item", item: actor.items[0] },
+      { type: "self" },
+      { type: "ally", actor: ally },
+    ]);
+  });
+
+  it("omits the ally entirely when none is linked", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 1, 1)]);
     expect(getMagicPointDrawOrder(actor)).toEqual([
       { type: "item", item: actor.items[0] },
       { type: "self" },
@@ -286,6 +562,78 @@ describe("spendMagicPoints", () => {
       { _id: "c1", system: { storedMagicPoints: { value: 0 } } },
     ]);
     expect(actor.update).not.toHaveBeenCalled();
+  });
+
+  it("draws from the linked ally, leaving the caster's own pool untouched", async () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    await spendMagicPoints(actor, 3, ALLY_MAGIC_POINT_SOURCE);
+
+    expect(ally.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 1 }),
+    );
+    expect(actor.update).not.toHaveBeenCalled();
+    expect(actor.updateEmbeddedDocuments).not.toHaveBeenCalled();
+  });
+
+  it("an explicit ally draw never overflows to self", async () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    const ally = fakeAlly(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    await spendMagicPoints(actor, 5, ALLY_MAGIC_POINT_SOURCE);
+
+    expect(ally.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 0 }),
+    );
+    expect(actor.update).not.toHaveBeenCalled();
+  });
+
+  it("does nothing when the ally source is picked but no ally resolves", async () => {
+    const actor = fakeActor(6);
+    await spendMagicPoints(actor, 3, ALLY_MAGIC_POINT_SOURCE);
+
+    expect(actor.update).not.toHaveBeenCalled();
+    expect(actor.updateEmbeddedDocuments).not.toHaveBeenCalled();
+  });
+
+  it("auto drains storage and self before falling back to a linked ally", async () => {
+    const actor = fakeActor(
+      3,
+      [crystal("c1", "A", 2, 5)],
+      {},
+      { alliedSpiritActorUuid: "Actor.ally1" },
+    );
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    // 2 from c1, 3 from self, remaining 2 from the ally (below self by default).
+    await spendMagicPoints(actor, 7, AUTO_MAGIC_POINT_SOURCE);
+
+    expect(actor.updateEmbeddedDocuments).toHaveBeenCalledWith("Item", [
+      { _id: "c1", system: { storedMagicPoints: { value: 0 } } },
+    ]);
+    expect(actor.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 0 }),
+    );
+    expect(ally.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 2 }),
+    );
+  });
+
+  it("auto never touches a linked ally when self and storage cover the amount", async () => {
+    const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+
+    await spendMagicPoints(actor, 3, AUTO_MAGIC_POINT_SOURCE);
+
+    expect(ally.update).not.toHaveBeenCalled();
+    expect(actor.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 3 }),
+    );
   });
 });
 

@@ -1774,7 +1774,7 @@
 
     & .magic-point-source-row {
       display: grid;
-      grid-template-columns: 0.1rem 0.9rem minmax(0, 1fr) 1rem 2.2rem 3rem;
+      grid-template-columns: 0.1rem 0.9rem 26px minmax(0, 1fr) 1rem 2.2rem 3rem;
       align-items: center;
       column-gap: 0.3rem;
       cursor: grab;
@@ -1807,6 +1807,20 @@
         color: var(--rqg-color-main);
         font-weight: bold;
         text-align: right;
+      }
+
+      & .magic-point-source-icon {
+        display: block;
+        height: 26px;
+        width: 26px;
+
+        & img {
+          height: 100%;
+          width: 100%;
+          object-fit: contain;
+          border: none;
+          border-radius: var(--rqg-radius-sm);
+        }
       }
 
       & .magic-point-source-name {

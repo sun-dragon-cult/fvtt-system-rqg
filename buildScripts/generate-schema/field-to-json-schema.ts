@@ -33,13 +33,13 @@ export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
     const options = fieldOptions(field);
     const schema: JsonSchemaNode = { type: typeWithNull("string", isNullable(options)) };
     if (options["choices"] && typeof options["choices"] === "object") {
-      schema.enum = Object.keys(options["choices"] as Record<string, unknown>);
+      schema["enum"] = Object.keys(options["choices"] as Record<string, unknown>);
     }
     if (options["blank"] === false) {
-      schema.minLength = 1;
+      schema["minLength"] = 1;
     }
     if (typeof options["initial"] === "string") {
-      schema.default = options["initial"];
+      schema["default"] = options["initial"];
     }
     return schema;
   }
@@ -50,13 +50,13 @@ export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
       type: typeWithNull(options["integer"] === true ? "integer" : "number", isNullable(options)),
     };
     if (typeof options["min"] === "number") {
-      schema.minimum = options["min"];
+      schema["minimum"] = options["min"];
     }
     if (typeof options["max"] === "number") {
-      schema.maximum = options["max"];
+      schema["maximum"] = options["max"];
     }
     if (typeof options["initial"] === "number") {
-      schema.default = options["initial"];
+      schema["default"] = options["initial"];
     }
     return schema;
   }
@@ -65,7 +65,7 @@ export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
     const options = fieldOptions(field);
     const schema: JsonSchemaNode = { type: typeWithNull("boolean", isNullable(options)) };
     if (typeof options["initial"] === "boolean") {
-      schema.default = options["initial"];
+      schema["default"] = options["initial"];
     }
     return schema;
   }
@@ -82,8 +82,13 @@ export function fieldToJsonSchema(field: unknown): JsonSchemaNode {
     return schemaToJsonSchema(field.fields, isNullable(fieldOptions(field)));
   }
 
-  if (field instanceof ObjectFieldShim || field instanceof DocumentUUIDFieldShim) {
+  if (field instanceof ObjectFieldShim) {
     return { type: typeWithNull("object", isNullable(fieldOptions(field))) };
+  }
+
+  if (field instanceof DocumentUUIDFieldShim) {
+    // Stores a plain uuid string (e.g. "Actor.abc123"), not the referenced document itself.
+    return { type: typeWithNull("string", isNullable(fieldOptions(field))) };
   }
 
   const kind = (field as { constructor?: { name?: string } })?.constructor?.name ?? typeof field;
@@ -125,7 +130,7 @@ export function schemaToJsonSchema(
     additionalProperties: false,
   };
   if (required.length > 0) {
-    schema.required = required;
+    schema["required"] = required;
   }
   return schema;
 }

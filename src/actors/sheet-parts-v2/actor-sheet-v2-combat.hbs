@@ -413,7 +413,39 @@
   </div>{{!-- /.combat-weapons-column --}}
   </div>{{!-- /.combat-tab-row --}}
 
-  {{!-- Allies & Notes --}}
+  {{!-- Allied Spirit bond (#957): actor-wide, editable only in edit mode. --}}
+  <div class="spirit-bond-row fullwidth">
+    {{#edit-mode system.editMode "all"}}
+      <div class="allied-spirit-link{{#unless alliedSpirit}} empty{{/unless}}" data-allied-spirit-dropzone
+           data-tooltip="{{localize "RQG.Actor.RuneMagic.AlliedSpiritDropHint"}}">
+        {{#if alliedSpirit}}
+          <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
+          {{toAnchor alliedSpirit.uuid}}
+          <a data-action="unlinkAlliedSpirit" data-tooltip="{{localize "RQG.Actor.RuneMagic.UnlinkAlliedSpiritTitle"}}">
+            <i class="fas fa-unlink"></i>
+          </a>
+        {{else}}
+          <img class="rune allied-spirit-icon" src="systems/rqg/assets/images/runes/spirit.svg">
+          <span class="allied-spirit-hint">{{localize "RQG.Actor.RuneMagic.AlliedSpiritDropHint"}}</span>
+        {{/if}}
+      </div>
+    {{else}}
+      {{#if alliedSpirit}}
+        <div class="allied-spirit-link view-only">
+          <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
+          {{toAnchor alliedSpirit.uuid}}
+        </div>
+      {{/if}}
+    {{/edit-mode}}
+    {{#if boundPriest}}
+      <div class="allied-spirit-link view-only">
+        <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AllyOfLabel"}}</span>
+        {{toAnchor boundPriest.uuid}}
+      </div>
+    {{/if}}
+  </div>
+
+  {{!-- Notes --}}
   <div class="allies-section fullwidth">
     <h2 class="section-heading">{{localize "RQG.Actor.Attributes.AlliesAndNotes"}}</h2>
     <prose-mirror name="system.allies" value="{{system.allies}}" toggled>{{{enrichedAllies}}}</prose-mirror>

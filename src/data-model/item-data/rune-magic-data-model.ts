@@ -15,6 +15,11 @@ import {
   getAvailableMagicPoints,
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
+import {
+  getAvailableRunePoints,
+  type RunePointSourceSelection,
+  SELF_RUNE_POINT_SOURCE,
+} from "../../system/rune-point-source";
 import type { CultItem } from "./cult-data-model";
 import type { RuneItem } from "./rune-data-model";
 import { toRqidString } from "../../system/api/rqid-validation";
@@ -136,10 +141,11 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     runePointCost: number | undefined,
     magicPointsBoost: number = 0,
     magicPointSource?: MagicPointSourceSelection,
+    runePointSource: RunePointSourceSelection = SELF_RUNE_POINT_SOURCE,
   ): string | undefined {
     const cult = this.getCult();
     const actor = this.parent?.actor;
-    const availableRunePoints = Number(cult?.system.runePoints.value) || 0;
+    const availableRunePoints = getAvailableRunePoints(actor, cult, runePointSource);
     const availableMagicPoints = actor ? getAvailableMagicPoints(actor, magicPointSource) : 0;
     if (runePointCost == null || runePointCost > availableRunePoints) {
       return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
@@ -233,11 +239,13 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
     // instead of always using the caster's own pool - matches the cast dialogs' default.
     const magicPointSource = options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
+    const runePointSource = options.runePointSource ?? SELF_RUNE_POINT_SOURCE;
 
     const validationError = this.getCastValidationError(
       levelUsedOrDefault,
       options.magicPointBoost,
       magicPointSource,
+      runePointSource,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -280,6 +288,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       usedRune,
       runeMagicItemTyped,
       magicPointSource,
+      runePointSource,
     );
   }
 

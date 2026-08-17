@@ -11,6 +11,11 @@ import {
   SELF_MAGIC_POINT_SOURCE,
   spendMagicPoints,
 } from "../../system/magic-point-source";
+import {
+  type RunePointSourceSelection,
+  SELF_RUNE_POINT_SOURCE,
+  spendRunePoints,
+} from "../../system/rune-point-source";
 
 export async function handleRollResult(
   result: AbilitySuccessLevelEnum,
@@ -19,6 +24,7 @@ export async function handleRollResult(
   runeItem: RuneItem,
   runeMagicItem: RuneMagicItem,
   magicPointSource: MagicPointSourceSelection = SELF_MAGIC_POINT_SOURCE,
+  runePointSource: RunePointSourceSelection = SELF_RUNE_POINT_SOURCE,
 ): Promise<void> {
   assertDocumentSubType<RuneItem>(runeItem, ItemTypeEnum.Rune);
   assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
@@ -36,6 +42,7 @@ export async function handleRollResult(
     cult,
     isOneUse,
     magicPointSource,
+    runePointSource,
   );
   if (result <= AbilitySuccessLevelEnum.Success) {
     await runeItem.awardExperience();
@@ -59,31 +66,18 @@ async function spendRuneAndMagicPoints(
   cult: CultItem,
   isOneUse: boolean,
   magicPointSource: MagicPointSourceSelection,
+  runePointSource: RunePointSourceSelection,
 ) {
   assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
   assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
   // At this point if the current Rune Points or Magic Points are zero
   // it's too late. That validation happened earlier.
-  // Rune Points always come from the cult tied to the spell - unlike Magic Points, they don't
-  // get a source picker (see #956).
-  const newRunePointTotal = (cult.system.runePoints.value || 0) - runePoints;
-  let newRunePointMaxTotal = cult.system.runePoints.max || 0;
-  if (isOneUse) {
-    newRunePointMaxTotal -= runePoints;
-    if (newRunePointMaxTotal < (cult.system.runePoints.max || 0)) {
-      ui.notifications?.info(
-        localize("RQG.Item.RuneMagic.SpentOneUseRunePoints", {
-          actorName: actor?.name,
-          runePoints: runePoints.toString(),
-          cultName: cult.name,
-        }),
-      );
-    }
-  }
-  const updateCultItemRunePoints: Item.UpdateData = {
-    _id: cult?.id,
-    system: { runePoints: { value: newRunePointTotal, max: newRunePointMaxTotal } },
-  } as any; // runePoints is a cult-specific field not in the base Item update type
-  await actor?.updateEmbeddedDocuments("Item", [updateCultItemRunePoints]);
-  await spendMagicPoints(actor, magicPoints, magicPointSource);
+  // Rune Points and Magic Points are drawn from independent documents (the cult Item vs. the
+  // caster's/ally's Magic Points) with no data dependency between them, so they can be
+  // written concurrently rather than one awaited after the other - mirrors spendMagicPoints'
+  // own use of Promise.all for the same reason.
+  await Promise.all([
+    spendRunePoints(actor, cult, runePoints, runePointSource, isOneUse),
+    spendMagicPoints(actor, magicPoints, magicPointSource),
+  ]);
 }

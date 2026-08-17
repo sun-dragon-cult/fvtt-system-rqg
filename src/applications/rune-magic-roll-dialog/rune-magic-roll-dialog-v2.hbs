@@ -13,6 +13,15 @@
       {{localize "RQG.Actor.RuneMagic.RunePoints"}}
     </div>
 
+    {{#if showRunePointSource}}
+      <label>
+        {{localize "RQG.Dialog.RuneMagicRoll.RunePointSource"}}
+      </label>
+      <select name="runePointSource">
+        {{selectOptions runePointSourceOptions selected=formData.runePointSource localize=true}}
+      </select>
+    {{/if}}
+
     {{#if isOneUse}}
       <label>{{localize "RQG.Dialog.RuneMagicRoll.OneUseHeader"}}</label>
       <div class="warning">{{localize "RQG.Dialog.RuneMagicRoll.OneUseDescription"}}</div>

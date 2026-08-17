@@ -82,6 +82,8 @@ import { ItemTree } from "../items/shared/item-tree";
 import { confirmActorItemDelete } from "./confirm-item-delete-dialog";
 import { getSpeakerCompat } from "../system/fvtt-type-compat";
 import {
+  getAlliedSpirit,
+  getBondedPriest,
   getStorageItems,
   getTotalStoredMagicPoints,
   MAGIC_POINT_SOURCE_DRAG_TYPE,
@@ -169,6 +171,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       addPassion: RqgActorSheetV2._addPassionAction,
       addGear: RqgActorSheetV2._addGearAction,
       openMagicPointSources: RqgActorSheetV2._openMagicPointSourcesAction,
+      unlinkAlliedSpirit: RqgActorSheetV2._unlinkAlliedSpiritAction,
     },
   } satisfies foundry.applications.api.ApplicationV2.DefaultOptions;
 
@@ -255,7 +258,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // duplicate() on a DataModel only returns _source data, missing prepare-phase derived values.
     const system = { ...this.actor.system } as CharacterActor["system"];
     const spiritMagicPointSum = CharacterDataModel.getSpiritMagicPointSum(this.actor);
-    const magicPointStorageItems = getStorageItems(this.actor);
+    const alliedSpirit = getAlliedSpirit(this.actor);
+    const boundPriest = getBondedPriest(this.actor);
+    // Already resolved above (alliedSpirit tries this direction first, boundPriest the other) -
+    // pass it through rather than letting getStorageItems/getTotalStoredMagicPoints re-resolve
+    // the allied bond (and, on the ally side, re-walk game.actors.contents) themselves.
+    const alliedBondActor = alliedSpirit ?? boundPriest;
+    const magicPointStorageItems = getStorageItems(this.actor, alliedBondActor);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
@@ -351,8 +360,14 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       spiritMagicPointSum: spiritMagicPointSum,
       sorcerySkillCount: CharacterDataModel.getSorcerySkillCount(this.actor),
       freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
-      hasMagicPointStorageItems: magicPointStorageItems.length > 0,
-      totalStoredMagicPoints: getTotalStoredMagicPoints(this.actor, magicPointStorageItems),
+      showMagicPointSourcesButton: magicPointStorageItems.length > 0 || alliedBondActor != null,
+      totalStoredMagicPoints: getTotalStoredMagicPoints(
+        this.actor,
+        magicPointStorageItems,
+        alliedBondActor,
+      ),
+      alliedSpirit: alliedSpirit ? { uuid: alliedSpirit.uuid ?? "" } : undefined,
+      boundPriest: boundPriest ? { uuid: boundPriest.uuid ?? "" } : undefined,
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
@@ -1123,6 +1138,16 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }).render({ force: true });
   }
 
+  private static async _unlinkAlliedSpiritAction(this: RqgActorSheetV2): Promise<void> {
+    if (!this.actor.isOwner) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
+      );
+      return;
+    }
+    await this.actor.update({ system: { alliedSpiritActorUuid: null } });
+  }
+
   /**
    * Sync combatants to match the desired set of active SRs.
    * Reuses existing combatants by updating their initiative to minimise
@@ -1328,9 +1353,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this._clearDragState();
   }
 
-  private _getDropzoneFromEvent(event: DragEvent): HTMLElement | null {
+  private _getDropzoneFromEvent(
+    event: DragEvent,
+    selector: string = "[data-dropzone]",
+  ): HTMLElement | null {
     const directTarget = getEventTargetElement(event);
-    const directDropzone = directTarget?.closest<HTMLElement>("[data-dropzone]") ?? null;
+    const directDropzone = directTarget?.closest<HTMLElement>(selector) ?? null;
     if (directDropzone) {
       return directDropzone;
     }
@@ -1339,17 +1367,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       if (!isFoundryElementInstanceOf(pathNode, HTMLElement)) {
         continue;
       }
-      if (pathNode.matches("[data-dropzone]")) {
+      if (pathNode.matches(selector)) {
         return pathNode;
       }
-      const parentDropzone = pathNode.closest<HTMLElement>("[data-dropzone]");
+      const parentDropzone = pathNode.closest<HTMLElement>(selector);
       if (parentDropzone) {
         return parentDropzone;
       }
     }
 
     const hitElement = event.view?.document?.elementFromPoint(event.clientX, event.clientY);
-    const hitDropzone = hitElement?.closest<HTMLElement>("[data-dropzone]") ?? null;
+    const hitDropzone = hitElement?.closest<HTMLElement>(selector) ?? null;
     if (hitDropzone) {
       return hitDropzone;
     }
@@ -1373,7 +1401,10 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // dragover — browsers block reading the payload, and sidebar drags expose no
     // reliable hints. Acceptance is validated against the real payload on drop,
     // where a rejected drop produces an explicit notification.
-    const candidateDropzone = this._getDropzoneFromEvent(event);
+    const candidateDropzone = this._getDropzoneFromEvent(
+      event,
+      "[data-dropzone], [data-allied-spirit-dropzone]",
+    );
     this._setActiveDropzone(candidateDropzone);
 
     // When hovering a nested dropzone, the item-reorder indicators (which only
@@ -2147,6 +2178,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       return;
     }
 
+    if (this._getDropzoneFromEvent(event, "[data-allied-spirit-dropzone]")) {
+      await this._onDropAlliedSpirit(event);
+      return;
+    }
+
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
       event,
     ) as ActorSheet.DropData;
@@ -2164,10 +2200,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
 
     // The character sheet body only accepts these document kinds. Anything else
-    // (e.g. a Journal Entry dropped outside the background tab's dropzones) would
-    // otherwise be silently ignored by the parent handler, so reject it with a
-    // clear, localized reason instead.
-    const bodySupportedDocumentNames = ["Item", "Folder", "ActiveEffect", "Actor"];
+    // (e.g. a Journal Entry dropped outside the background tab's dropzones, or an
+    // Actor dropped outside the Allied Spirit dropzone) would otherwise be
+    // silently ignored by the parent handler, so reject it with a clear,
+    // localized reason instead.
+    const bodySupportedDocumentNames = ["Item", "Folder", "ActiveEffect"];
     if (data?.type && !bodySupportedDocumentNames.includes(data.type)) {
       ui.notifications?.warn(
         localize("RQG.Actor.Notification.CantDropDocumentHereWarn", {
@@ -2179,6 +2216,47 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // For all other types, delegate to parent
     await super._onDrop(event);
+  }
+
+  /**
+   * Link the dropped Actor as this actor's Allied Spirit (#957) - just a pointer field, no
+   * validation of the ally's own stats/cult; that's GM-adjudicated roleplay, same as the bond
+   * itself.
+   */
+  private async _onDropAlliedSpirit(event: DragEvent): Promise<void> {
+    if (!this.actor.isOwner) {
+      ui.notifications?.warn(
+        localize("RQG.Actor.Notification.NotActorOwnerWarn", { actorName: this.actor.name }),
+      );
+      return;
+    }
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as ActorSheet.DropData;
+    // fvtt-types' DropData.Actor is only typed as { type: "Actor" }, missing the uuid Foundry
+    // actually includes for a standard document-link drag - read it the same untyped way the
+    // compendium branch above reads its own extra fields (e.g. "collection").
+    const droppedActorUuid = hasOwnProperty(data, "uuid") ? data.uuid : undefined;
+    if (data?.type !== "Actor" || typeof droppedActorUuid !== "string") {
+      ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritDropRequiresActorWarn"));
+      return;
+    }
+    const droppedActor = await fromUuid(droppedActorUuid);
+    if (
+      !(droppedActor instanceof Actor) ||
+      !isDocumentSubType<CharacterActor>(
+        droppedActor as unknown as RqgActor,
+        ActorTypeEnum.Character,
+      )
+    ) {
+      ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritDropRequiresCharacterWarn"));
+      return;
+    }
+    if (droppedActor.uuid === this.actor.uuid) {
+      ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritCannotLinkSelfWarn"));
+      return;
+    }
+    await this.actor.update({ system: { alliedSpiritActorUuid: droppedActor.uuid } });
   }
 
   private async _onDropCompendium(event: DragEvent, data: ActorSheet.DropData): Promise<RqgItem[]> {

@@ -92,10 +92,20 @@ export interface RqgActorSheetV2Context {
   /** INT remaining after spirit magic. */
   freeInt: number;
 
-  /** Whether the actor has any Magic Point storage items (see #956) - controls whether the header shows the Magic Point Sources popout button. */
-  hasMagicPointStorageItems: boolean;
+  /** Whether the actor has any Magic Point storage items (see #956) or a usable Allied Spirit
+   *  bond partner (#957, either direction - see getAlliedBondActor) - controls whether the header
+   *  shows the Magic Point Sources popout button (it's also the "Magic Point Source Order" list,
+   *  not just storage items). */
+  showMagicPointSourcesButton: boolean;
   /** Sum of current/max Magic Points across all storage items, shown next to the header button. */
   totalStoredMagicPoints: { value: number; max: number };
+  /** The linked Allied Spirit actor (#957), only when usable by the current user (owned) - see
+   *  getAlliedSpirit. Undefined otherwise, including when no ally is linked at all. Shown in the
+   *  header as the actor-managed side of the bond. */
+  alliedSpirit: { uuid: string } | undefined;
+  /** The Character actor that has *this* actor linked as its Allied Spirit (#957) - the
+   *  reciprocal, read-only side of the bond - see getBondedPriest. Undefined otherwise. */
+  boundPriest: { uuid: string } | undefined;
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

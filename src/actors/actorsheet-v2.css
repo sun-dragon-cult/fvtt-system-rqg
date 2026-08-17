@@ -851,6 +851,7 @@
           }
         }
       }
+
     }
 
 /* --- Vertical tab navigation (rotated left edge, matching V1) --- */
@@ -1810,6 +1811,51 @@
 
         &.default-usage {
           font-weight: bold;
+        }
+      }
+
+      & .spirit-bond-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin-top: 1rem;
+
+        & .allied-spirit-link {
+          display: flex;
+          gap: 0.5rem;
+          align-items: center;
+          color: var(--rqg-unassigned-rm-text);
+          background: var(--rqg-unassigned-rm-bg);
+          border: 1px solid var(--rqg-unassigned-rm-border);
+          border-radius: var(--rqg-radius-sm);
+          padding: 4px 8px;
+
+          &.empty {
+            opacity: 0.7;
+            border-style: dashed;
+          }
+
+          &.view-only {
+            cursor: default;
+          }
+
+          & .allied-spirit-icon {
+            height: 20px;
+            width: 20px;
+            object-fit: contain;
+            vertical-align: middle;
+            flex: 0 0 auto;
+          }
+
+          & .allied-spirit-label {
+            opacity: 0.8;
+          }
+
+          & [data-action="unlinkAlliedSpirit"] {
+            color: var(--rqg-unassigned-rm-action);
+            text-shadow: none;
+            margin-left: auto;
+          }
         }
       }
 
