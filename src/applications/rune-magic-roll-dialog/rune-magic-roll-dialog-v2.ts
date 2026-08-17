@@ -1,3 +1,5 @@
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import {
@@ -41,7 +43,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   }
 
   private computeTotalChance(formData: RuneMagicRollDialogFormData): number {
-    const eligibleRunes = this.spellItem.system.getEligibleRunes();
+    const eligibleRunes = this.spellItem.system.getEligibleRunes(this.casterActor);
     const usedRune = eligibleRunes.find((r) => r.id === formData.usedRuneId);
     return this.spellItem.system.getCastChance(usedRune, [
       { value: formData.augmentModifier },
@@ -87,15 +89,25 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   ];
 
   private spellItem: RuneMagicItem;
+  private casterActor: CharacterActor;
   private token: TokenDocument | null | undefined;
 
+  /**
+   * `casterActor` defaults to the spell's own owner - pass it explicitly when the spell is being
+   * cast via an external spell source (#1002, e.g. an Allied Spirit bond partner's known spells)
+   * so eligible Runes, chances, and the MP/RP source pickers all reflect the actual caster.
+   */
   constructor(
     spellItem: RuneMagicItem,
     token?: TokenDocument | null,
+    casterActor?: RqgActor,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
+    const caster = casterActor ?? spellItem.parent;
+    assertDocumentSubType<CharacterActor>(caster, ActorTypeEnum.Character);
     this.spellItem = spellItem;
+    this.casterActor = caster;
     this.token = token;
   }
 
@@ -134,18 +146,19 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       {}) as RuneMagicRollDialogFormData;
 
     const speaker = getSpeakerCompat({
-      actor: this.spellItem.actor ?? undefined,
+      actor: this.casterActor,
       token: this.token,
     });
 
-    const eligibleRunes = this.spellItem.system.getEligibleRunes();
+    const eligibleRunes = this.spellItem.system.getEligibleRunes(this.casterActor);
 
     const eligibleRuneOptions = eligibleRunes.map((rune) => ({
       value: rune.id ?? "",
       label: rune.name ?? "",
     }));
     formData.levelUsed ??= this.spellItem.system.points;
-    formData.usedRuneId ??= this.spellItem.system.getStrongestEligibleRune()?.id ?? "";
+    formData.usedRuneId ??=
+      this.spellItem.system.getStrongestEligibleRune(this.casterActor)?.id ?? "";
     formData.boost ??= 0;
     // Rune Magic only spends Magic Points when boosting, so the source picker only matters (and
     // is only shown) once the caster has actually entered a boost - see showMagicPointSource
@@ -164,19 +177,18 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
+    formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
     const usedRune = eligibleRunes.find((r) => r.id === formData.usedRuneId);
-    const magicPointSourceOptions = getMagicPointSourceOptions(this.spellItem.actor);
+    const magicPointSourceOptions = getMagicPointSourceOptions(this.casterActor);
     const runePointSourceOptions = getRunePointSourceOptions(
-      this.spellItem.actor,
-      this.spellItem.system.getCult(),
+      this.casterActor,
+      this.spellItem.system.getCastingCult(this.casterActor),
     );
     // A bonded ally exists but doesn't have a Cult item matching this spell's exact cult (e.g. a
     // different subcult of the same deity) - without this, that misconfiguration is silent: the
     // picker just never appears, indistinguishable from having no bond at all.
-    const alliedBondActor = this.spellItem.actor
-      ? getAlliedBondActor(this.spellItem.actor)
-      : undefined;
+    const alliedBondActor = getAlliedBondActor(this.casterActor);
     const showRunePointSourceMismatchWarning =
       runePointSourceOptions.length === 0 && !!alliedBondActor;
 
@@ -254,7 +266,12 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     }
     assertDocumentSubType<RuneMagicItem>(spellItem, ItemTypeEnum.RuneMagic);
 
-    const eligibleRunes = spellItem.system.getEligibleRunes();
+    const casterActor = formDataObject.casterActorUuid
+      ? ((await fromUuid(formDataObject.casterActorUuid)) as RqgActor | undefined)
+      : (spellItem.actor ?? undefined);
+    assertDocumentSubType<CharacterActor>(casterActor, ActorTypeEnum.Character);
+
+    const eligibleRunes = spellItem.system.getEligibleRunes(casterActor);
 
     const usedRune = eligibleRunes.find((r) => r.id === formDataObject.usedRuneId);
     if (!usedRune) {
@@ -262,10 +279,10 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return logger.throw(msg, formDataObject);
     }
 
-    if (!spellItem.system.getCult()) {
+    if (!spellItem.system.getCastingCult(casterActor)) {
       const msg = "No cult to cast the rune magic spell";
       return logger.throw(msg, {
-        actorId: spellItem.actor?.id,
+        actorId: casterActor.id,
         spellItemId: spellItem.id,
         cultId: spellItem.system.cultId,
       });
@@ -302,12 +319,13 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formDataObject.boost,
       formDataObject.magicPointSource,
       formDataObject.runePointSource,
+      casterActor,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
       return;
     }
 
-    await spellItem.runeMagicRollImmediate(options, token);
+    await spellItem.runeMagicRollImmediate(options, token, casterActor);
   }
 }

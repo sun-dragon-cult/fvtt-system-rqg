@@ -1,3 +1,4 @@
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { PassionSheet } from "./passion-item/passion-sheet";
 import { PassionSheetV2 } from "./passion-item/passion-sheet-v2";
 import {
@@ -271,43 +272,53 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Open a dialog for a SpiritMagicRoll
+   * Open a dialog for a SpiritMagicRoll. `casterActor` defaults to this item's own owner - pass it
+   * explicitly when casting via an external spell source (#1002).
    */
-  public async spiritMagicRoll(token?: TokenDocument | null): Promise<void> {
+  public async spiritMagicRoll(
+    token?: TokenDocument | null,
+    casterActor?: RqgActor,
+  ): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await this.system.spiritMagicRoll(token);
+    await this.system.spiritMagicRoll(token, casterActor);
   }
 
   /**
-   * Do a SpiritMagicRoll and possibly draw magic points afterward
+   * Do a SpiritMagicRoll and possibly draw magic points afterward. `casterActor` defaults to this
+   * item's own owner - pass it explicitly when casting via an external spell source (#1002).
    */
   public async spiritMagicRollImmediate(
     options: Omit<SpiritMagicRollOptions, "powX5"> = {
       levelUsed: (this as SpiritMagicItem).system.points,
     },
     token?: TokenDocument | null,
+    casterActor?: RqgActor,
   ): Promise<void> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await this.system.spiritMagicRollImmediate(options, token);
+    await this.system.spiritMagicRollImmediate(options, token, casterActor);
   }
 
   /**
-   * Open a dialog for a RuneMagicRoll
+   * Open a dialog for a RuneMagicRoll. `casterActor` defaults to this item's own owner - pass it
+   * explicitly when casting via an external spell source (#1002).
    */
-  public async runeMagicRoll(token?: TokenDocument | null): Promise<void> {
+  public async runeMagicRoll(token?: TokenDocument | null, casterActor?: RqgActor): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await this.system.runeMagicRoll(token);
+    await this.system.runeMagicRoll(token, casterActor);
   }
 
   /**
-   * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to used rune.
+   * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to
+   * used rune. `casterActor` defaults to this item's own owner - pass it explicitly when casting
+   * via an external spell source (#1002).
    */
   public async runeMagicRollImmediate(
     options: RuneMagicRollImmediateOptions = {},
     token?: TokenDocument | null,
+    casterActor?: RqgActor,
   ): Promise<void> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await this.system.runeMagicRollImmediate(options, token);
+    await this.system.runeMagicRollImmediate(options, token, casterActor);
   }
 
   /**

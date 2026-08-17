@@ -30,8 +30,22 @@ export const ALLY_RUNE_POINT_SOURCE = "ally";
  * cult copied onto two different actors' sheets shares this id, unlike `deity` which is just
  * display text and can vary (e.g. subcults).
  */
-function getCultRqid(cult: CultItem): RqidString | undefined {
+export function getCultRqid(cult: CultItem): RqidString | undefined {
   return cult.getFlag(systemId, documentRqidFlags)?.id;
+}
+
+/**
+ * `cult`'s matching Cult item on `actor`, matched by rqid (e.g. the same compendium cult copied
+ * onto two different actors' sheets) - the shared primitive behind both getAlliedCultItem (below)
+ * and RuneMagicDataModel.getCastingCult (#1002, rune-magic-data-model.ts), which resolve this in
+ * opposite directions (bond-partner's cult given mine vs. an arbitrary caster's cult given the
+ * spell's own).
+ */
+export function findMatchingCultByRqid(actor: RqgActor, cult: CultItem): CultItem | undefined {
+  const cultRqid = getCultRqid(cult);
+  return cultRqid
+    ? (actor.getBestEmbeddedDocumentByRqid(cultRqid) as CultItem | undefined)
+    : undefined;
 }
 
 /**
@@ -40,17 +54,20 @@ function getCultRqid(cult: CultItem): RqidString | undefined {
  * spirit is an initiate of the cult and can sacrifice for Rune points, just as a normal
  * initiate" - the ally only shares Rune Points for the cult it's actually initiated to, not any
  * cult either side happens to belong to.
+ *
+ * Accepts an already-resolved `ally` (e.g. from a caller that also needs it for something else)
+ * to avoid re-resolving the allied bond a second time - getBondedPriest's reverse-lookup side in
+ * particular walks game.actors.contents.
  */
 export function getAlliedCultItem(
   actor: RqgActor,
   cult: CultItem,
+  ally: RqgActor | undefined = getAlliedBondActor(actor),
 ): { actor: RqgActor; cult: CultItem } | undefined {
-  const ally = getAlliedBondActor(actor);
-  const cultRqid = getCultRqid(cult);
-  if (!ally || !cultRqid) {
+  if (!ally) {
     return undefined;
   }
-  const allyCult = ally.getBestEmbeddedDocumentByRqid(cultRqid) as CultItem | undefined;
+  const allyCult = findMatchingCultByRqid(ally, cult);
   return allyCult ? { actor: ally, cult: allyCult } : undefined;
 }
 

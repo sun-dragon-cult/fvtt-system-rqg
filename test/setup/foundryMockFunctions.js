@@ -217,6 +217,9 @@ globalThis.CONFIG = {
   ],
   RQG: {
     fallbackLanguage: "en",
+    runeRqid: {
+      magic: "i.rune.magic-condition",
+    },
   },
 };
 

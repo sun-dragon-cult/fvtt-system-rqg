@@ -60,6 +60,32 @@ describe("SpiritMagicDataModel cast validation", () => {
   });
 });
 
+describe("SpiritMagicDataModel cast validation with an external caster (#1002)", () => {
+  it("checks the caster's own available Magic Points, not the spell owner's", () => {
+    const fakeModel = {
+      points: 3,
+      parent: { actor: { system: { attributes: { magicPoints: { value: 0 } } } } },
+    } as unknown as SpiritMagicDataModel;
+    const casterActor = { system: { attributes: { magicPoints: { value: 6 } } } } as any;
+
+    // The item's own owner has 0 MP and would fail...
+    expect(SpiritMagicDataModel.prototype.getCastValidationError.call(fakeModel, 2, 1)).toContain(
+      "RQG.Item.SpiritMagic.NotEnoughMagicPoints",
+    );
+
+    // ...but an explicit external caster with enough MP succeeds.
+    expect(
+      SpiritMagicDataModel.prototype.getCastValidationError.call(
+        fakeModel,
+        2,
+        1,
+        undefined,
+        casterActor,
+      ),
+    ).toBeUndefined();
+  });
+});
+
 describe("SpiritMagicDataModel.migrateData", () => {
   it("rewrites a legacy string-typed isRitual value to a real boolean", () => {
     const migrated = SpiritMagicDataModel.migrateData({ isRitual: "true," });

@@ -44,6 +44,7 @@ describe("RuneMagicDataModel chance helpers", () => {
   it("validates available rune and magic points for casting", () => {
     const fakeModel = {
       getCult: () => ({ system: { runePoints: { value: 4 } } }),
+      getCastingCult: () => ({ system: { runePoints: { value: 4 } } }),
       parent: { actor: { system: { attributes: { magicPoints: { value: 7 } } } } },
     } as unknown as RuneMagicDataModel;
 
@@ -61,6 +62,7 @@ describe("RuneMagicDataModel chance helpers", () => {
   it("counts a chosen magic point source's stored points for the boost, leaving Rune Points cult-sourced (#956)", () => {
     const fakeModel = {
       getCult: () => ({ system: { runePoints: { value: 4 } } }),
+      getCastingCult: () => ({ system: { runePoints: { value: 4 } } }),
       parent: {
         actor: {
           items: [
@@ -115,6 +117,104 @@ describe("RuneMagicDataModel chance helpers", () => {
       mp: 0,
       exp: false,
     });
+  });
+});
+
+describe("RuneMagicDataModel.getCastingCult (#1002)", () => {
+  it("returns the spell's own cult unchanged when casterActor is the spell's own owner", () => {
+    const ownActor = {};
+    const ownCult = { id: "cult1", system: { runePoints: { value: 4 } } };
+    const fakeModel = {
+      getCult: () => ownCult,
+      parent: { actor: ownActor },
+    } as unknown as RuneMagicDataModel;
+
+    expect(RuneMagicDataModel.prototype.getCastingCult.call(fakeModel, ownActor as any)).toBe(
+      ownCult,
+    );
+  });
+
+  it("matches the caster's own Cult item by rqid when casterActor is a different actor", () => {
+    const casterCult = { id: "cult-on-caster", system: { runePoints: { value: 2 } } };
+    const casterActor = {
+      uuid: "Actor.caster",
+      getBestEmbeddedDocumentByRqid: (rqid: string) =>
+        rqid === "je.orlanth" ? casterCult : undefined,
+    } as any;
+    const fakeModel = {
+      getCult: () => ({
+        id: "cult-on-owner",
+        getFlag: (_scope: string, key: string) =>
+          key === "documentRqidFlags" ? { id: "je.orlanth" } : undefined,
+      }),
+      parent: {
+        actor: { uuid: "Actor.owner" /* the spell's own owner, distinct from casterActor */ },
+      },
+    } as unknown as RuneMagicDataModel;
+
+    expect(RuneMagicDataModel.prototype.getCastingCult.call(fakeModel, casterActor)).toBe(
+      casterCult,
+    );
+  });
+
+  it("returns undefined when the caster has no matching cult", () => {
+    const casterActor = {
+      uuid: "Actor.caster",
+      getBestEmbeddedDocumentByRqid: () => undefined,
+    } as any;
+    const fakeModel = {
+      getCult: () => ({
+        id: "cult-on-owner",
+        getFlag: (_scope: string, key: string) =>
+          key === "documentRqidFlags" ? { id: "je.orlanth" } : undefined,
+      }),
+      parent: { actor: { uuid: "Actor.owner" } },
+    } as unknown as RuneMagicDataModel;
+
+    expect(
+      RuneMagicDataModel.prototype.getCastingCult.call(fakeModel, casterActor),
+    ).toBeUndefined();
+  });
+
+  it("returns undefined when the spell has no cult at all", () => {
+    const fakeModel = {
+      getCult: () => undefined,
+      parent: { actor: {} },
+    } as unknown as RuneMagicDataModel;
+
+    expect(RuneMagicDataModel.prototype.getCastingCult.call(fakeModel, {} as any)).toBeUndefined();
+  });
+});
+
+describe("RuneMagicDataModel.getEligibleRunes with an external caster (#1002)", () => {
+  it("searches the caster's own Runes and cult, not the spell owner's", () => {
+    const casterWaterRune = { id: "caster-water", system: { chance: 60 } };
+    const casterActor = {
+      getBestEmbeddedDocumentByRqid: (rqid: string) =>
+        rqid === "i.rune.water" ? casterWaterRune : undefined,
+    } as any;
+    const fakeModel = {
+      runeRqidLinks: [{ rqid: "i.rune.water" }],
+      getCastingCult: () => ({
+        system: { runeRqidLinks: [{ rqid: "i.rune.magic" }] },
+      }),
+      parent: { actor: {/* the spell's own owner */} },
+    } as unknown as RuneMagicDataModel;
+
+    expect(RuneMagicDataModel.prototype.getEligibleRunes.call(fakeModel, casterActor)).toEqual([
+      casterWaterRune,
+    ]);
+  });
+
+  it("is empty when the caster has no matching cult to cast under", () => {
+    const casterActor = { getBestEmbeddedDocumentByRqid: () => undefined } as any;
+    const fakeModel = {
+      runeRqidLinks: [{ rqid: "i.rune.water" }],
+      getCastingCult: () => undefined,
+      parent: { actor: {} },
+    } as unknown as RuneMagicDataModel;
+
+    expect(RuneMagicDataModel.prototype.getEligibleRunes.call(fakeModel, casterActor)).toEqual([]);
   });
 });
 

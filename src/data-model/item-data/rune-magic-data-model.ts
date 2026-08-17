@@ -1,3 +1,4 @@
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
@@ -16,6 +17,7 @@ import {
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
 import {
+  findMatchingCultByRqid,
   getAvailableRunePoints,
   type RunePointSourceSelection,
   SELF_RUNE_POINT_SOURCE,
@@ -68,10 +70,40 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     return isDocumentSubType<CultItem>(cult, "cult" as Item.SubType) ? cult : undefined;
   }
 
-  getEligibleRunes(): RuneItem[] {
-    const actor = this.parent?.actor;
-    const cult = this.getCult();
-    if (!actor || !cult) {
+  /**
+   * The cult this spell is cast under, from `casterActor`'s point of view - the spell's own cult
+   * (`getCult()`, a local-id lookup) when `casterActor` is this Item's own owner, or that same
+   * cult matched by rqid onto `casterActor`'s own Cult items when the spell is being cast via an
+   * external spell source (#1002, e.g. an Allied Spirit bond partner's known spells). `cultId` is a
+   * local Foundry document id, only meaningful on the actor the spell Item actually lives on - it
+   * can't be resolved directly against a different actor, hence the rqid fallback via
+   * findMatchingCultByRqid (rune-point-source.ts, shared with getAlliedCultItem's reverse
+   * direction of this same match).
+   */
+  getCastingCult(casterActor: RqgActor): CultItem | undefined {
+    const ownCult = this.getCult();
+    if (!ownCult) {
+      return undefined;
+    }
+    // Compare by uuid, not object identity - casterActor may have round-tripped through
+    // fromUuid/fromUuidSync (e.g. resolved from a roll dialog's hidden form field) rather than
+    // being the exact same in-memory reference as this.parent?.actor.
+    if (casterActor.uuid === this.parent?.actor?.uuid) {
+      return ownCult;
+    }
+    return findMatchingCultByRqid(casterActor, ownCult);
+  }
+
+  /**
+   * `casterActor` defaults to this Item's own owner (unchanged pre-#1002 behavior) - pass it
+   * explicitly to find the Runes the actual caster would roll against when casting via an external
+   * spell source, so the caster's own Rune chance is used, never the spell owner's.
+   */
+  getEligibleRunes(
+    casterActor: RqgActor | undefined = this.parent?.actor ?? undefined,
+  ): RuneItem[] {
+    const cult = casterActor ? this.getCastingCult(casterActor) : undefined;
+    if (!casterActor || !cult) {
       return [];
     }
 
@@ -84,7 +116,9 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       : runeMagicRuneRqids;
 
     return usableRuneRqids
-      .map((runeRqid) => actor.getBestEmbeddedDocumentByRqid(toRqidString(runeRqid)) as RuneItem)
+      .map(
+        (runeRqid) => casterActor.getBestEmbeddedDocumentByRqid(toRqidString(runeRqid)) as RuneItem,
+      )
       .filter(isTruthy);
   }
 
@@ -99,16 +133,16 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     });
   }
 
-  getStrongestEligibleRune(): RuneItem | undefined {
-    return RuneMagicDataModel.getStrongestRune(this.getEligibleRunes());
+  getStrongestEligibleRune(casterActor?: RqgActor): RuneItem | undefined {
+    return RuneMagicDataModel.getStrongestRune(this.getEligibleRunes(casterActor));
   }
 
   getBaseChance(usedRune: RuneItem | null | undefined): number {
     return Number(usedRune?.system.chance ?? 0);
   }
 
-  getDefaultChance(): number {
-    return this.getBaseChance(this.getStrongestEligibleRune());
+  getDefaultChance(casterActor?: RqgActor): number {
+    return this.getBaseChance(this.getStrongestEligibleRune(casterActor));
   }
 
   static calculateCastChanceFromBaseChance(
@@ -142,11 +176,13 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     magicPointsBoost: number = 0,
     magicPointSource?: MagicPointSourceSelection,
     runePointSource: RunePointSourceSelection = SELF_RUNE_POINT_SOURCE,
+    casterActor: RqgActor | undefined = this.parent?.actor ?? undefined,
   ): string | undefined {
-    const cult = this.getCult();
-    const actor = this.parent?.actor;
-    const availableRunePoints = getAvailableRunePoints(actor, cult, runePointSource);
-    const availableMagicPoints = actor ? getAvailableMagicPoints(actor, magicPointSource) : 0;
+    const cult = casterActor ? this.getCastingCult(casterActor) : undefined;
+    const availableRunePoints = getAvailableRunePoints(casterActor, cult, runePointSource);
+    const availableMagicPoints = casterActor
+      ? getAvailableMagicPoints(casterActor, magicPointSource)
+      : 0;
     if (runePointCost == null || runePointCost > availableRunePoints) {
       return game.i18n?.format("RQG.Item.RuneMagic.validationNotEnoughRunePoints");
     }
@@ -201,39 +237,50 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
   }
 
   /**
-   * Open a dialog for a RuneMagicRoll.
+   * Open a dialog for a RuneMagicRoll. `casterActor` defaults to the spell's own owner - pass it
+   * explicitly when the spell is being cast via an external spell source (#1002, e.g. an Allied
+   * Spirit bond partner's known spells) so the roll uses the caster's own Rune chance, not the
+   * spell owner's.
    */
-  async runeMagicRoll(token?: TokenDocument | null): Promise<void> {
+  async runeMagicRoll(token?: TokenDocument | null, casterActor?: RqgActor): Promise<void> {
     // Dynamic import to avoid circular dependency through RuneMagicRollDialogV2 → rqgItem.ts
     const { RuneMagicRollDialogV2 } =
       await import("../../applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2");
-    await new RuneMagicRollDialogV2(this.parent as unknown as RuneMagicItem, token).render({
+    await new RuneMagicRollDialogV2(
+      this.parent as unknown as RuneMagicItem,
+      token,
+      casterActor,
+    ).render({
       force: true,
     });
   }
 
   /**
    * Do a runeMagicRoll and possibly draw rune and magic points afterward.
-   * Also adds experience to the used rune.
+   * Also adds experience to the used rune. `casterActor` defaults to this Item's own owner (same
+   * as before #1002); pass it explicitly to roll and pay for the cast as the actual caster, when
+   * casting a spell known via an external spell source rather than the actor that owns this Item.
    */
   async runeMagicRollImmediate(
     options: RuneMagicRollImmediateOptions = {},
     token?: TokenDocument | null,
+    casterActor: RqgActor = this.parent?.actor as RqgActor,
   ): Promise<void> {
     const item = this.parent;
-    const actor = item?.parent;
-    assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character, "Item is not embedded");
+    assertDocumentSubType<CharacterActor>(
+      casterActor,
+      ActorTypeEnum.Character,
+      "Item is not embedded",
+    );
 
     // Dynamic imports to avoid circular dependencies through rqgItem.ts
     const { handleRollResult } = await import("../../items/rune-magic-item/rune-magic-casting");
     const { RuneMagicRoll } = await import("../../rolls/rune-magic-roll/rune-magic-roll");
 
-    const cult = actor.items.find((i) => i.id === this.cultId) as RqgItem | undefined;
+    const cult = this.getCastingCult(casterActor);
     if (!cult) {
       return logger.throw("Rune Magic item isn't connected to a cult", item);
     }
-    // Use string literal "cult" to avoid circular dep through ItemTypeEnum → itemTypes.ts → runeMagic.ts → rqgItem.ts
-    assertDocumentSubType<CultItem>(cult, "cult" as Item.SubType);
 
     const levelUsedOrDefault = options.levelUsed ?? this.points;
     // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
@@ -246,6 +293,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       options.magicPointBoost,
       magicPointSource,
       runePointSource,
+      casterActor,
     );
     if (validationError) {
       ui.notifications?.warn(validationError);
@@ -254,15 +302,15 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
     const runeMagicItemTyped = item as unknown as RuneMagicItem;
     const usedRune = options.usedRuneId
-      ? this.getEligibleRunes().find((r) => r.id === options.usedRuneId)
-      : this.getStrongestEligibleRune();
+      ? this.getEligibleRunes(casterActor).find((r) => r.id === options.usedRuneId)
+      : this.getStrongestEligibleRune(casterActor);
     if (!usedRune) {
       const msg = "Could not find a rune to use for rune magic";
       ui.notifications?.warn(msg);
       return;
     }
 
-    const speaker = getSpeakerCompat({ actor, token });
+    const speaker = getSpeakerCompat({ actor: casterActor, token });
 
     const runeMagicRoll = await RuneMagicRoll.rollAndShow({
       usedRuneName: usedRune.name ?? "",
@@ -289,6 +337,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       runeMagicItemTyped,
       magicPointSource,
       runePointSource,
+      casterActor,
     );
   }
 
