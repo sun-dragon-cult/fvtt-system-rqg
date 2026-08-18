@@ -228,10 +228,11 @@ export class RqgActor extends Actor {
     amount: number,
     result: AbilitySuccessLevelEnum,
     source: MagicPointSourceSelection = SELF_MAGIC_POINT_SOURCE,
+    avoidRelease: boolean = false,
   ): Promise<void> {
     if (result <= AbilitySuccessLevelEnum.Success) {
       assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-      await spendMagicPoints(this, amount, source);
+      await spendMagicPoints(this, amount, source, avoidRelease);
       ui.notifications?.info(
         localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount.toString() }),
       );

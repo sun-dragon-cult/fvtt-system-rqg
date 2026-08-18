@@ -416,7 +416,7 @@
   {{!-- Allied Spirit bond (#957): actor-wide, editable only in edit mode. --}}
   <div class="spirit-bond-row fullwidth">
     {{#edit-mode system.editMode "all"}}
-      <div class="allied-spirit-link{{#unless alliedSpirit}} empty{{/unless}}" data-allied-spirit-dropzone
+      <div class="bond-actor-link allied-spirit-link{{#unless alliedSpirit}} empty{{/unless}}" data-allied-spirit-dropzone
            data-tooltip="{{localize "RQG.Actor.RuneMagic.AlliedSpiritDropHint"}}">
         {{#if alliedSpirit}}
           <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
@@ -431,19 +431,44 @@
       </div>
     {{else}}
       {{#if alliedSpirit}}
-        <div class="allied-spirit-link view-only">
+        <div class="bond-actor-link allied-spirit-link view-only">
           <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AlliedSpiritLabel"}}</span>
           {{toAnchor alliedSpirit.uuid}}
         </div>
       {{/if}}
     {{/edit-mode}}
     {{#if boundPriest}}
-      <div class="allied-spirit-link view-only">
+      <div class="bond-actor-link allied-spirit-link view-only">
         <span class="allied-spirit-label">{{localize "RQG.Actor.RuneMagic.AllyOfLabel"}}</span>
         {{toAnchor boundPriest.uuid}}
       </div>
     {{/if}}
+    {{!-- Bound Spirits (#999) - managed on each item's own sheet; read-only summary here. --}}
+    {{#each boundSpirits}}
+      <div class="bond-actor-link allied-spirit-link view-only">
+        <span class="allied-spirit-label">{{toAnchor itemUuid}}:</span>
+        {{toAnchor spiritUuid}}
+      </div>
+    {{/each}}
   </div>
+
+  {{#if boundSpiritCount}}
+    <div class="magic-limit-banner fullwidth">
+      {{#if (gt boundSpiritCount boundSpiritCap)}}
+        <span class="warning"
+              data-tooltip="{{localize 'RQG.Actor.RuneMagic.BoundSpiritCapExceeded'
+                  count=boundSpiritCount cap=boundSpiritCap
+                  exceededBy=(difference boundSpiritCount boundSpiritCap)}}">{{localize "RQG.Actor.RuneMagic.BoundSpiritCapExceeded"
+              count=boundSpiritCount cap=boundSpiritCap
+              exceededBy=(difference boundSpiritCount boundSpiritCap)}}</span>
+      {{else if (eq boundSpiritCount boundSpiritCap)}}
+        <span>{{localize "RQG.Actor.RuneMagic.BoundSpiritCapReached" count=boundSpiritCount}}</span>
+      {{else}}
+        <span>{{localize "RQG.Actor.RuneMagic.BoundSpiritCapFormula"
+            count=boundSpiritCount cap=boundSpiritCap}}</span>
+      {{/if}}
+    </div>
+  {{/if}}
 
   {{!-- Notes --}}
   <div class="allies-section fullwidth">

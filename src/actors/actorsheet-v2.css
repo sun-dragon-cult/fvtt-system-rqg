@@ -23,6 +23,12 @@
       mix-blend-mode: normal;
     }
 
+/* Bound-spirit indicator matches the MP storage icon's gear-tab dimming above. */
+    & .tab.gear .bound-spirit-indicator {
+      opacity: 0.85;
+      mix-blend-mode: normal;
+    }
+
 /* Flags at a glance that a player wouldn't see everything this row shows - either the item isn't
        identified yet (row only renders at all for a GM in that case, so this is GM-only there),
        or it's identified but not attuned, so the player sees the icon but not the actual value/max
@@ -138,6 +144,24 @@
       }
     }
 
+/* Gear-row indicator for an item with at least one bound spirit (#999). */
+    & .bound-spirit-indicator {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 0.3rem;
+
+      & .bound-spirit-indicator-icon {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: currentcolor;
+        mask-image: url("/systems/rqg/assets/images/runes/spirit.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+      }
+    }
+
 /* Header button that opens the Magic Point Sources popout - styled like .locomotion-picker
    (the Walk/Swim/Fly icon + select next to it): plain text color, no extra dimming, so it reads
    as part of the same row of controls rather than a separate accent-colored element. */
@@ -178,6 +202,32 @@
     & .magic-limit-banner {
       font-size: small;
       padding: 2px 0;
+    }
+
+/* External spell source rows (#1002, #999): spells known via the Allied Spirit bond or a bound
+   spirit, not this actor. Rendered as extra rows in the *same* grid as the actor's own spells
+   so columns line up - the divider spans the full row via grid-column. */
+    & .external-spell-divider {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--rqg-unassigned-rm-text);
+      background: var(--rqg-unassigned-rm-bg);
+      border: 1px solid var(--rqg-unassigned-rm-border);
+      border-radius: var(--rqg-radius-sm);
+      padding: 4px 8px;
+      margin: 4px 0 2px;
+      font-weight: 600;
+
+/* Portrait(s) inline between "From"/"in" and their names - smaller than .row-icon. */
+      & .external-spell-divider-icon {
+        width: 18px;
+        height: 18px;
+        object-fit: contain;
+        border: none;
+        border-radius: var(--rqg-radius-sm);
+      }
     }
 
 /* Dark fill visible behind both nav and parchment transparent areas */
@@ -1820,21 +1870,9 @@
         gap: 4px;
         margin-top: 1rem;
 
+/* Base chip styling (.bond-actor-link) is shared with the item sheet's Bound Spirit link -
+           see rqg.css. */
         & .allied-spirit-link {
-          display: flex;
-          gap: 0.5rem;
-          align-items: center;
-          color: var(--rqg-unassigned-rm-text);
-          background: var(--rqg-unassigned-rm-bg);
-          border: 1px solid var(--rqg-unassigned-rm-border);
-          border-radius: var(--rqg-radius-sm);
-          padding: 4px 8px;
-
-          &.empty {
-            opacity: 0.7;
-            border-style: dashed;
-          }
-
           &.view-only {
             cursor: default;
           }
@@ -2274,26 +2312,6 @@
           background: var(--rqg-row-active);
         }
       }
-    }
-
-/* --- External spell source rows (#1002): Spirit/Rune Magic spells known via the linked Allied
-   Spirit bond partner, not this actor. Rendered as extra rows in the *same* grid as the actor's
-   own spells (not a second nested grid) so columns line up - the divider spans the full row via
-   grid-column, and each subsequent row/cell is just another grid item in source order. Marked
-   with a left accent border on the leading (icon) cell only, rather than recoloring the row - text
-   stays the theme's normal color/contrast (row background/hover/active are untouched, unlike an
-   earlier version of this that overrode them and became unreadable). */
-    & .external-spell-divider {
-      grid-column: 1 / -1;
-      display: flex;
-      align-items: center;
-      color: var(--rqg-unassigned-rm-text);
-      background: var(--rqg-unassigned-rm-bg);
-      border: 1px solid var(--rqg-unassigned-rm-border);
-      border-radius: var(--rqg-radius-sm);
-      padding: 4px 8px;
-      margin: 4px 0 2px;
-      font-weight: 600;
     }
 
     & .spirit-magic-row.external-item > *:first-child,

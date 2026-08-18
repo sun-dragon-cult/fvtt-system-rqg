@@ -246,6 +246,11 @@ export class CharacterDataModel extends RqgActorDataModel<
     );
   }
 
+  /** RAW cap on bound spirits (#999, RQG p.250) - CHA÷3, GM-adjudicated, not enforced. */
+  static getBoundSpiritCap(actor: CharacterActor): number {
+    return Math.floor((actor.system.characteristics.charisma.value ?? 0) / 3);
+  }
+
   static getSortedCults(actor: CharacterActor): CultItem[] {
     return actor.items
       .filter((i) => isDocumentSubType<CultItem>(i, ItemTypeEnum.Cult))

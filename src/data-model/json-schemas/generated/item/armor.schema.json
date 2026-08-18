@@ -100,6 +100,12 @@
         "identified"
       ]
     },
+    "boundSpiritActorUuids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "size": {
       "type": "integer",
       "minimum": 0,
@@ -167,6 +173,7 @@
     "equippedStatus",
     "price",
     "storedMagicPoints",
+    "boundSpiritActorUuids",
     "size",
     "hitLocationRqidLinks",
     "namePrefix",

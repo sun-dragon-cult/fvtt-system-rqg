@@ -106,15 +106,30 @@ export interface RqgActorSheetV2Context {
   /** The Character actor that has *this* actor linked as its Allied Spirit (#957) - the
    *  reciprocal, read-only side of the bond - see getBondedPriest. Undefined otherwise. */
   boundPriest: { uuid: string } | undefined;
+  /** Spirits bound in this actor's own items (#999), summarized alongside the Allied Spirit
+   *  bond. See getBoundSpiritItems. */
+  boundSpirits: { itemUuid: string; spiritUuid: string }[];
+  /** Number of usable bound-spirit items - see boundSpirits. */
+  boundSpiritCount: number;
+  /** CHA÷3, the RAW cap on bound spirits (RQG p.250) - GM-adjudicated, not enforced. */
+  boundSpiritCap: number;
   /** The linked Allied Spirit bond partner (#957, either direction), only when it's the source of
    *  at least one external spell (#1002) shown somewhere on this sheet - undefined otherwise, even
    *  if a bond exists, so templates can gate a "From {name}:" divider on this alone. Distinct from
    *  alliedSpirit/boundPriest above (those gate the link-management UI, not spell sharing). */
-  externalSpellSourceActor: { uuid: string; name: string } | undefined;
+  externalSpellSourceActor: { uuid: string; name: string; img: string } | undefined;
   /** Spirit Magic spells known by the linked Allied Spirit bond partner, not this actor (#1002) -
    *  never merged into embeddedItems.spiritMagic, so they disappear immediately if the bond is
    *  unlinked. Empty when there's no bond partner or it knows no Spirit Magic. */
   externalSpiritMagic: RqgItem[];
+  /** Spirit Magic spells known by each of this actor's bound spirits (#999), one group per
+   *  spirit - see getBoundSpiritSpiritMagicItems. */
+  boundSpiritSpiritMagic: {
+    sourceActor: { uuid: string; name: string; img: string };
+    sourceItemName: string;
+    sourceItemImg: string;
+    items: RqgItem[];
+  }[];
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

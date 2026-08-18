@@ -56,6 +56,7 @@ import { spiritMagicMenuOptions } from "./context-menus/spirit-magic-context-men
 import { runeMagicMenuOptions } from "./context-menus/rune-magic-context-menu";
 import { gearMenuOptions } from "./context-menus/gear-context-menu";
 import {
+  extractDroppedActor,
   getDroppedDocumentRqidLink,
   hasRqid,
   isAllowedDocumentNames,
@@ -86,6 +87,8 @@ import { getSpeakerCompat } from "../system/fvtt-type-compat";
 import {
   getAlliedSpirit,
   getBondedPriest,
+  getBondRoleConflict,
+  getBoundSpiritItems,
   getStorageItems,
   getTotalStoredMagicPoints,
   MAGIC_POINT_SOURCE_DRAG_TYPE,
@@ -94,7 +97,11 @@ import {
   getMagicPointSourcesAppId,
   MagicPointSourcesApp,
 } from "../applications/magic-point-sources-app/magic-point-sources-app";
-import { getExternalRuneMagicItems, getExternalSpiritMagicItems } from "../system/spell-source";
+import {
+  getBoundSpiritSpiritMagicItems,
+  getExternalRuneMagicItems,
+  getExternalSpiritMagicItems,
+} from "../system/spell-source";
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
@@ -268,9 +275,15 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // the allied bond (and, on the ally side, re-walk game.actors.contents) themselves.
     const alliedBondActor = alliedSpirit ?? boundPriest;
     const magicPointStorageItems = getStorageItems(this.actor, alliedBondActor);
+    // #999: spirits bound in this actor's own items - shown as a summary alongside the Allied
+    // Spirit bond, with a CHA÷3 cap warning (RQG p.250, GM-adjudicated, not enforced).
+    const boundSpiritItems = getBoundSpiritItems(this.actor, alliedBondActor);
+    const boundSpiritCap = CharacterDataModel.getBoundSpiritCap(this.actor);
     // #1002: Spirit Magic spells known via the linked Allied Spirit bond, not this actor - a live
     // computed view (never merged into this actor's own Items), see getExternalSpiritMagicItems.
     const externalSpiritMagic = getExternalSpiritMagicItems(this.actor, alliedBondActor);
+    // #999: Spirit Magic spells known by each bound spirit, one group per spirit.
+    const boundSpiritSpiritMagic = getBoundSpiritSpiritMagicItems(this.actor, boundSpiritItems);
     const incorrectRunes: RqgItem[] = [];
     const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
     const itemTree = new ItemTree(this.actor.items.contents);
@@ -314,7 +327,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       (cultItem as any).externalRuneMagic = externalRuneMagic;
       (cultItem as any).externalSpellSourceActor =
         externalRuneMagic.length > 0
-          ? { uuid: alliedBondActor!.uuid ?? "", name: alliedBondActor!.name ?? "" }
+          ? {
+              uuid: alliedBondActor!.uuid ?? "",
+              name: alliedBondActor!.name ?? "",
+              img: alliedBondActor!.img ?? "",
+            }
           : undefined;
     });
     const availableCultTabs = cultItems.map((cult) => `cult-${cult.id}`);
@@ -384,20 +401,42 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       spiritMagicPointSum: spiritMagicPointSum,
       sorcerySkillCount: CharacterDataModel.getSorcerySkillCount(this.actor),
       freeInt: CharacterDataModel.getFreeInt(this.actor, spiritMagicPointSum),
-      showMagicPointSourcesButton: magicPointStorageItems.length > 0 || alliedBondActor != null,
+      showMagicPointSourcesButton:
+        magicPointStorageItems.length > 0 || alliedBondActor != null || boundSpiritItems.length > 0,
       totalStoredMagicPoints: getTotalStoredMagicPoints(
         this.actor,
         magicPointStorageItems,
         alliedBondActor,
+        boundSpiritItems,
       ),
       alliedSpirit: alliedSpirit ? { uuid: alliedSpirit.uuid ?? "" } : undefined,
       boundPriest: boundPriest ? { uuid: boundPriest.uuid ?? "" } : undefined,
+      boundSpirits: boundSpiritItems.map(({ item, spiritActor }) => ({
+        itemUuid: item.uuid ?? "",
+        spiritUuid: spiritActor.uuid ?? "",
+      })),
+      boundSpiritCount: boundSpiritItems.length,
+      boundSpiritCap: boundSpiritCap,
       // Gates any "From {name}:" divider (#1002) - individual sections (e.g. externalSpiritMagic
       // below, or a cult's externalRuneMagic) separately check their own item list is non-empty.
       externalSpellSourceActor: alliedBondActor
-        ? { uuid: alliedBondActor.uuid ?? "", name: alliedBondActor.name ?? "" }
+        ? {
+            uuid: alliedBondActor.uuid ?? "",
+            name: alliedBondActor.name ?? "",
+            img: alliedBondActor.img ?? "",
+          }
         : undefined,
       externalSpiritMagic: externalSpiritMagic,
+      boundSpiritSpiritMagic: boundSpiritSpiritMagic.map(({ sourceActor, sourceItem, items }) => ({
+        sourceActor: {
+          uuid: sourceActor.uuid ?? "",
+          name: sourceActor.name ?? "",
+          img: sourceActor.img ?? "",
+        },
+        sourceItemName: sourceItem.name ?? "",
+        sourceItemImg: sourceItem.img ?? "",
+        items,
+      })),
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
@@ -2258,20 +2297,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       );
       return;
     }
-    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
-      event,
-    ) as ActorSheet.DropData;
-    // fvtt-types' DropData.Actor is only typed as { type: "Actor" }, missing the uuid Foundry
-    // actually includes for a standard document-link drag - read it the same untyped way the
-    // compendium branch above reads its own extra fields (e.g. "collection").
-    const droppedActorUuid = hasOwnProperty(data, "uuid") ? data.uuid : undefined;
-    if (data?.type !== "Actor" || typeof droppedActorUuid !== "string") {
+    const droppedActor = await extractDroppedActor(event);
+    if (!droppedActor) {
       ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritDropRequiresActorWarn"));
       return;
     }
-    const droppedActor = await fromUuid(droppedActorUuid);
     if (
-      !(droppedActor instanceof Actor) ||
       !isDocumentSubType<CharacterActor>(
         droppedActor as unknown as RqgActor,
         ActorTypeEnum.Character,
@@ -2282,6 +2313,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     }
     if (droppedActor.uuid === this.actor.uuid) {
       ui.notifications?.warn(localize("RQG.Actor.RuneMagic.AlliedSpiritCannotLinkSelfWarn"));
+      return;
+    }
+    // Refuse an actor that's already bound as a spirit in one of this actor's own items (#999) -
+    // the same actor filling both roles at once would be double-counted as a Magic Point source
+    // and race on itself when spent (see getBoundSpiritItems).
+    if (getBondRoleConflict(this.actor, droppedActor as unknown as RqgActor) === "boundSpirit") {
+      ui.notifications?.warn(
+        localize("RQG.Actor.RuneMagic.AlliedSpiritAlreadyBoundWarn", {
+          spiritName: droppedActor.name ?? "",
+        }),
+      );
       return;
     }
     await this.actor.update({ system: { alliedSpiritActorUuid: droppedActor.uuid } });

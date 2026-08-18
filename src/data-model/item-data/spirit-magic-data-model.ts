@@ -10,6 +10,7 @@ import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spiri
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
   AUTO_MAGIC_POINT_SOURCE,
+  confirmBoundSpiritDrain,
   getAvailableMagicPoints,
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
@@ -133,6 +134,16 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       return;
     }
 
+    const mpCost = levelUsed + boost;
+    const boundSpiritDrainDecision = await confirmBoundSpiritDrain(
+      casterActor,
+      mpCost,
+      magicPointSource,
+    );
+    if (!boundSpiritDrainDecision.proceed) {
+      return;
+    }
+
     const speaker = getSpeakerCompat({ actor: casterActor, token });
 
     // Dynamic import to avoid circular dependency through SpiritMagicRoll → itemTypes.ts → rqgItem.ts
@@ -150,8 +161,12 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     if (spiritMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
-    const mpCost = levelUsed + boost;
-    await casterActor.drawMagicPoints(mpCost, spiritMagicRoll.successLevel, magicPointSource);
+    await casterActor.drawMagicPoints(
+      mpCost,
+      spiritMagicRoll.successLevel,
+      magicPointSource,
+      boundSpiritDrainDecision.avoidRelease,
+    );
   }
 
   /**

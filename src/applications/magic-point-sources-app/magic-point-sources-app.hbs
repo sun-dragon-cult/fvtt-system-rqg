@@ -13,6 +13,19 @@
         {{else}}
           {{name}}
         {{/if}}
+        {{#if (eq kind "self")}}
+          <span class="magic-point-source-rune-icon man"
+                data-tooltip="{{localize "RQG.Dialog.Common.MagicPointSourceOptions.Self"}}"></span>
+        {{else if (eq kind "ally")}}
+          <span class="magic-point-source-rune-icon spirit"
+                data-tooltip="{{localize "RQG.Actor.Attributes.MagicPointSourcesAlliedSpiritHint"}}"></span>
+        {{else if (eq kind "boundSpirit")}}
+          <span class="magic-point-source-rune-icon spirit"
+                data-tooltip="{{localize "RQG.Actor.Attributes.MagicPointSourcesBoundSpiritHint"}}"></span>
+          {{localize "RQG.Actor.Attributes.MagicPointSourcesInLabel"}}
+          <img class="magic-point-source-item-icon" src="{{itemImg}}">
+          {{itemName}}
+        {{/if}}
       </span>
       <span class="magic-point-source-feed">
         {{#if feedMax}}
@@ -30,6 +43,11 @@
       {{else if (eq kind "ally")}}
         <input type="number" min="0" max="{{this.max}}" size="2"
                name="ally.system.attributes.magicPoints.value"
+               value="{{value}}">
+      {{else if (eq kind "boundSpirit")}}
+        {{!-- ":" (not ".") separates {{id}} from the field path - a spirit's uuid contains ".". --}}
+        <input type="number" min="0" max="{{this.max}}" size="2"
+               name="{{id}}:system.attributes.magicPoints.value"
                value="{{value}}">
       {{else}}
         <input type="number" min="0" max="{{this.max}}" size="2"

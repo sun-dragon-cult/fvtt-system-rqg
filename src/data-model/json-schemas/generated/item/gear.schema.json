@@ -99,6 +99,12 @@
         "max",
         "identified"
       ]
+    },
+    "boundSpiritActorUuids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "additionalProperties": false,
@@ -113,6 +119,7 @@
     "encumbrance",
     "equippedStatus",
     "price",
-    "storedMagicPoints"
+    "storedMagicPoints",
+    "boundSpiritActorUuids"
   ]
 }

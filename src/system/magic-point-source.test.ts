@@ -2,11 +2,16 @@ import { describe, expect, it, vi } from "vitest";
 import {
   ALLY_MAGIC_POINT_SOURCE,
   AUTO_MAGIC_POINT_SOURCE,
+  boundSpiritSourceId,
+  confirmBoundSpiritDrain,
   feedStorageFromSelf,
   getAlliedBondActor,
   getAlliedSpirit,
   getAvailableMagicPoints,
   getBondedPriest,
+  getBoundSpiritActorByUuid,
+  getBoundSpiritActors,
+  getBoundSpiritDrainWarnings,
   getMagicPointDrawOrder,
   getMagicPointSourceOptions,
   getMaxTransferableToStorage,
@@ -17,6 +22,13 @@ import {
   setMagicPointDrawOrder,
   spendMagicPoints,
 } from "./magic-point-source";
+
+// #999: DialogV2 has no shared mock in test/setup/foundryMockFunctions.js - confirmBoundSpiritDrain
+// is the only thing in this file that calls it, so it's added here rather than globally.
+(globalThis as any).foundry.applications.api.DialogV2 = {
+  confirm: vi.fn(async () => true),
+  wait: vi.fn(async () => "keepBound"),
+};
 
 function fakeActor(
   selfMp: number,
@@ -49,17 +61,28 @@ function fakeActor(
   } as any;
 }
 
-/** A fake Allied Spirit ally actor (#957) - `instanceof Actor` per the global stub in
- *  test/setup/foundryMockFunctions.js, so it passes getAlliedSpirit's type-guard checks. */
-function fakeAlly(mpValue: number, mpMax: number, isOwner: boolean = true, name = "Whiskers") {
-  const ally = Object.create((globalThis as any).Actor.prototype);
-  return Object.assign(ally, {
+/** A fake bond-partner actor (Allied Spirit #957 or bound spirit #999) - `instanceof Actor` per
+ *  the global stub in test/setup/foundryMockFunctions.js, so it passes getAlliedSpirit's/
+ *  getBoundSpiritActors' type-guard checks. */
+function fakeBondActor(
+  mpValue: number,
+  mpMax: number,
+  isOwner: boolean = true,
+  name = "Whiskers",
+  uuid = "Actor.ally1",
+) {
+  const actor = Object.create((globalThis as any).Actor.prototype);
+  return Object.assign(actor, {
     name,
-    uuid: "Actor.ally1",
+    uuid,
     isOwner,
     system: { attributes: { magicPoints: { value: mpValue, max: mpMax } } },
     update: vi.fn(),
   });
+}
+
+function fakeAlly(mpValue: number, mpMax: number, isOwner: boolean = true, name = "Whiskers") {
+  return fakeBondActor(mpValue, mpMax, isOwner, name, "Actor.ally1");
 }
 
 function crystal(
@@ -75,6 +98,38 @@ function crystal(
     name,
     type: "gear",
     system: { storedMagicPoints: { value, max, identified }, equippedStatus },
+    update: vi.fn(),
+  };
+}
+
+/** A fake spirit trapped via a Binding Enchantment (#999) - see fakeBondActor. */
+function fakeSpirit(
+  mpValue: number,
+  mpMax: number,
+  isOwner: boolean = true,
+  name = "Wisp",
+  uuid = "Actor.spirit1",
+) {
+  return fakeBondActor(mpValue, mpMax, isOwner, name, uuid);
+}
+
+/** A fake item holding one or more spirits via a Binding Enchantment (#999) - e.g. a tiara set
+ *  with several bound crystals. */
+function boundSpiritItem(
+  id: string,
+  name: string,
+  equippedStatus: string = "equipped",
+  boundSpiritActorUuids: string[] = ["Actor.spirit1"],
+) {
+  return {
+    id,
+    name,
+    type: "gear",
+    system: {
+      equippedStatus,
+      boundSpiritActorUuids,
+      storedMagicPoints: { value: 0, max: 0, identified: false },
+    },
     update: vi.fn(),
   };
 }
@@ -271,6 +326,14 @@ describe("getTotalStoredMagicPoints", () => {
     const actor = fakeActor(6, [], {}, { alliedSpiritActorUuid: "x" });
     const ally = fakeAlly(4, 6);
     expect(getTotalStoredMagicPoints(actor, [], ally)).toEqual({ value: 4, max: 6 });
+  });
+
+  it("doesn't double-count a spirit that's both the Allied Spirit and listed as bound in an item (#999)", () => {
+    const item = boundSpiritItem("i1", "Ring", "equipped", ["Actor.ally1"]);
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+    const actor = fakeActor(6, [item], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+    expect(getTotalStoredMagicPoints(actor)).toEqual({ value: 4, max: 6 });
   });
 });
 
@@ -720,5 +783,390 @@ describe("feedStorageFromSelf", () => {
 
     expect(actor.update).not.toHaveBeenCalled();
     expect(actor.items[0].update).not.toHaveBeenCalled();
+  });
+});
+
+describe("getBoundSpiritActors", () => {
+  it("is empty when the item has no bound spirits", () => {
+    const item = boundSpiritItem("i1", "Ring", "equipped", []);
+    expect(getBoundSpiritActors(item as any)).toEqual([]);
+  });
+
+  it("omits a uuid that doesn't resolve to an Actor", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    (globalThis as any).fromUuidSync.mockReturnValue(null);
+    expect(getBoundSpiritActors(item as any)).toEqual([]);
+  });
+
+  it("omits a spirit the current user isn't Owner on", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4, false));
+    expect(getBoundSpiritActors(item as any)).toEqual([]);
+  });
+
+  it("returns the spirit when linked, resolvable, and owned", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 4, true);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    expect(getBoundSpiritActors(item as any)).toEqual([spirit]);
+  });
+
+  it("returns every resolvable spirit, in array order, for an item bound with several (e.g. a tiara set with several bound crystals)", () => {
+    const item = boundSpiritItem("i1", "Tiara", "equipped", [
+      "Actor.spirit1",
+      "Actor.spirit2",
+      "Actor.spirit3",
+    ]);
+    const spirit1 = fakeSpirit(2, 4, true, "Wisp");
+    const spirit2 = fakeSpirit(1, 2, true, "Ember");
+    const spirit3 = fakeSpirit(3, 3, false, "Unowned"); // not Owner - excluded
+    (globalThis as any).fromUuidSync.mockImplementation(
+      (uuid: string) =>
+        ({ "Actor.spirit1": spirit1, "Actor.spirit2": spirit2, "Actor.spirit3": spirit3 })[uuid],
+    );
+
+    expect(getBoundSpiritActors(item as any)).toEqual([spirit1, spirit2]);
+  });
+});
+
+describe("getBoundSpiritActorByUuid", () => {
+  it("resolves one specific spirit bound in the item, by uuid", () => {
+    const item = boundSpiritItem("i1", "Tiara", "equipped", ["Actor.spirit1", "Actor.spirit2"]);
+    const spirit2 = fakeSpirit(1, 2, true, "Ember", "Actor.spirit2");
+    (globalThis as any).fromUuidSync.mockImplementation((uuid: string) =>
+      uuid === "Actor.spirit2" ? spirit2 : fakeSpirit(2, 4, true, "Wisp"),
+    );
+
+    expect(getBoundSpiritActorByUuid(item as any, "Actor.spirit2")).toBe(spirit2);
+  });
+
+  it("returns undefined for a uuid that isn't actually bound in this item", () => {
+    const item = boundSpiritItem("i1", "Ring", "equipped", ["Actor.spirit1"]);
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+
+    expect(getBoundSpiritActorByUuid(item as any, "Actor.someone-else")).toBeUndefined();
+  });
+});
+
+describe("getMagicPointDrawOrder — bound spirits (#999)", () => {
+  it("defaults to storage items, then bound spirits, then self", () => {
+    const actor = fakeActor(6, [crystal("c1", "A", 1, 1), boundSpiritItem("i1", "Ring")]);
+    const spirit = fakeSpirit(2, 4);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "item", item: actor.items[0] },
+      { type: "boundSpirit", item: actor.items[1], spiritActor: spirit },
+      { type: "self" },
+    ]);
+  });
+
+  it("excludes a bound-spirit item that isn't equipped", () => {
+    const actor = fakeActor(6, [boundSpiritItem("i1", "Ring", "carried")]);
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+    expect(getMagicPointDrawOrder(actor)).toEqual([{ type: "self" }]);
+  });
+
+  it("places a bound spirit wherever it sits in the order flag, keyed by boundSpiritSourceId", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 4);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item], {
+      magicPointStorageOrder: [boundSpiritSourceId(item as any, spirit), "self"],
+    });
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "boundSpirit", item: actor.items[0], spiritActor: spirit },
+      { type: "self" },
+    ]);
+  });
+
+  it("yields one draw-order entry per spirit for an item bound with several (e.g. a tiara set with several bound crystals)", () => {
+    const item = boundSpiritItem("i1", "Tiara", "equipped", ["Actor.spirit1", "Actor.spirit2"]);
+    const spirit1 = fakeSpirit(2, 4, true, "Wisp", "Actor.spirit1");
+    const spirit2 = fakeSpirit(1, 2, true, "Ember", "Actor.spirit2");
+    (globalThis as any).fromUuidSync.mockImplementation(
+      (uuid: string) => ({ "Actor.spirit1": spirit1, "Actor.spirit2": spirit2 })[uuid],
+    );
+    const actor = fakeActor(6, [item]);
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "boundSpirit", item: actor.items[0], spiritActor: spirit1 },
+      { type: "boundSpirit", item: actor.items[0], spiritActor: spirit2 },
+      { type: "self" },
+    ]);
+  });
+
+  it("excludes a spirit that's also the actor's Allied Spirit bond partner, even if it's also listed as bound in an item (avoids double-counted totals and a spendMagicPoints write race)", () => {
+    const item = boundSpiritItem("i1", "Ring", "equipped", ["Actor.ally1"]);
+    const ally = fakeAlly(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(ally);
+    const actor = fakeActor(6, [item], {}, { alliedSpiritActorUuid: "Actor.ally1" });
+
+    expect(getMagicPointDrawOrder(actor)).toEqual([
+      { type: "self" },
+      { type: "ally", actor: ally },
+    ]);
+  });
+});
+
+describe("getMagicPointSourceOptions — bound spirits (#999)", () => {
+  it("lists a bound spirit by its own name, keyed by boundSpiritSourceId", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const actor = fakeActor(6, [item]);
+    const spirit = fakeSpirit(2, 4, true, "Wisp");
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+
+    expect(getMagicPointSourceOptions(actor)).toEqual([
+      { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
+      { value: boundSpiritSourceId(item as any, spirit), label: "Wisp" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
+    ]);
+  });
+});
+
+describe("getAvailableMagicPoints — bound spirits (#999)", () => {
+  it("returns the bound spirit's own Magic Points for its source id", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 4);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    expect(getAvailableMagicPoints(actor, boundSpiritSourceId(item as any, spirit))).toBe(2);
+  });
+
+  it("includes a bound spirit's Magic Points in the auto total", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const actor = fakeActor(6, [crystal("c1", "A", 3, 5), item]);
+    (globalThis as any).fromUuidSync.mockReturnValue(fakeSpirit(2, 4));
+
+    expect(getAvailableMagicPoints(actor, AUTO_MAGIC_POINT_SOURCE)).toBe(11);
+  });
+});
+
+describe("spendMagicPoints — bound spirits (#999)", () => {
+  it("draws from the bound spirit, leaving the caster's own pool untouched", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 3, boundSpiritSourceId(item as any, spirit));
+
+    expect(spirit.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 1 }),
+    );
+    expect(actor.update).not.toHaveBeenCalled();
+    expect(item.update).not.toHaveBeenCalled();
+  });
+
+  it("releases the spirit (removes its uuid from boundSpiritActorUuids) when drained to 0, and notifies", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(3, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 3, boundSpiritSourceId(item as any, spirit));
+
+    expect(spirit.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 0 }),
+    );
+    expect(item.update).toHaveBeenCalledWith({ system: { boundSpiritActorUuids: [] } });
+    expect((globalThis as any).ui.notifications.info).toHaveBeenCalled();
+  });
+
+  it("releasing one bound spirit leaves any others bound in the same item untouched", async () => {
+    const item = boundSpiritItem("i1", "Tiara", "equipped", ["Actor.spirit1", "Actor.spirit2"]);
+    const spirit1 = fakeSpirit(2, 6, true, "Wisp", "Actor.spirit1");
+    const spirit2 = fakeSpirit(4, 6, true, "Ember", "Actor.spirit2");
+    (globalThis as any).fromUuidSync.mockImplementation(
+      (uuid: string) => ({ "Actor.spirit1": spirit1, "Actor.spirit2": spirit2 })[uuid],
+    );
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 2, boundSpiritSourceId(item as any, spirit1));
+
+    expect(item.update).toHaveBeenCalledWith({
+      system: { boundSpiritActorUuids: ["Actor.spirit2"] },
+    });
+    expect(spirit2.update).not.toHaveBeenCalled();
+  });
+
+  it("does not release the spirit when it still has points left", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 3, boundSpiritSourceId(item as any, spirit));
+
+    expect(item.update).not.toHaveBeenCalled();
+  });
+
+  it("an explicit bound-spirit draw never overflows to self", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 5, boundSpiritSourceId(item as any, spirit));
+
+    expect(spirit.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 0 }),
+    );
+    expect(actor.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("spendMagicPoints — avoidRelease (#999)", () => {
+  it("in auto mode, leaves 1 MP in the bound spirit and draws the rest from the next source", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 3, AUTO_MAGIC_POINT_SOURCE, true);
+
+    // Only 1 of the spirit's 2 MP is drawn (leaving 1, not draining to 0); the other 2 needed
+    // come from self, which is next in the default draw order.
+    expect(spirit.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 1 }),
+    );
+    expect(item.update).not.toHaveBeenCalled();
+    expect(actor.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 4 }),
+    );
+  });
+
+  it("for an explicit single bound-spirit source with nothing else to draw from, accepts a shortfall rather than releasing", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 5, boundSpiritSourceId(item as any, spirit), true);
+
+    expect(spirit.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 1 }),
+    );
+    expect(item.update).not.toHaveBeenCalled();
+    expect(actor.update).not.toHaveBeenCalled();
+  });
+
+  it("does nothing extra when the spirit has more than 1 point to spare", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    await spendMagicPoints(actor, 2, boundSpiritSourceId(item as any, spirit), true);
+
+    expect(spirit.update).toHaveBeenCalledWith(
+      foundry.utils.expandObject({ "system.attributes.magicPoints.value": 2 }),
+    );
+    expect(item.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("getBoundSpiritDrainWarnings (#999)", () => {
+  it("is empty when the draw wouldn't drain the bound spirit to 0", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    expect(getBoundSpiritDrainWarnings(actor, 2, boundSpiritSourceId(item as any, spirit))).toEqual(
+      [],
+    );
+  });
+
+  it("flags a bound spirit that a draw would zero out", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    expect(getBoundSpiritDrainWarnings(actor, 2, boundSpiritSourceId(item as any, spirit))).toEqual(
+      [{ item, spiritActor: spirit, amount: 2 }],
+    );
+  });
+
+  it("is empty for a non-positive amount", () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(0, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+
+    expect(getBoundSpiritDrainWarnings(actor, 0, boundSpiritSourceId(item as any, spirit))).toEqual(
+      [],
+    );
+  });
+});
+
+describe("confirmBoundSpiritDrain (#999)", () => {
+  it("proceeds without prompting when no bound spirit would be drained to 0", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(4, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+    (globalThis as any).foundry.applications.api.DialogV2.wait.mockClear();
+
+    const decision = await confirmBoundSpiritDrain(
+      actor,
+      2,
+      boundSpiritSourceId(item as any, spirit),
+    );
+
+    expect(decision).toEqual({ proceed: true, avoidRelease: false });
+    expect((globalThis as any).foundry.applications.api.DialogV2.wait).not.toHaveBeenCalled();
+  });
+
+  it("prompts and returns {proceed:true, avoidRelease:true} when the player chooses to keep the spirit bound", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+    (globalThis as any).foundry.applications.api.DialogV2.wait.mockResolvedValueOnce("keepBound");
+
+    const decision = await confirmBoundSpiritDrain(
+      actor,
+      2,
+      boundSpiritSourceId(item as any, spirit),
+    );
+
+    expect(decision).toEqual({ proceed: true, avoidRelease: true });
+    expect((globalThis as any).foundry.applications.api.DialogV2.wait).toHaveBeenCalled();
+  });
+
+  it("returns {proceed:true, avoidRelease:false} when the player chooses to release the spirit", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+    (globalThis as any).foundry.applications.api.DialogV2.wait.mockResolvedValueOnce("release");
+
+    const decision = await confirmBoundSpiritDrain(
+      actor,
+      2,
+      boundSpiritSourceId(item as any, spirit),
+    );
+
+    expect(decision).toEqual({ proceed: true, avoidRelease: false });
+  });
+
+  it("returns {proceed:false} when the player cancels (or closes the dialog)", async () => {
+    const item = boundSpiritItem("i1", "Ring");
+    const spirit = fakeSpirit(2, 6);
+    (globalThis as any).fromUuidSync.mockReturnValue(spirit);
+    const actor = fakeActor(6, [item]);
+    (globalThis as any).foundry.applications.api.DialogV2.wait.mockResolvedValueOnce(null);
+
+    const decision = await confirmBoundSpiritDrain(
+      actor,
+      2,
+      boundSpiritSourceId(item as any, spirit),
+    );
+
+    expect(decision).toEqual({ proceed: false, avoidRelease: false });
   });
 });

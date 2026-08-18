@@ -9,8 +9,12 @@ import {
 } from "../system/util";
 import { decorateRqidFrameButton, getRqidFrameButton } from "../documents/rqid-sheet-button";
 import type { RqgItem } from "./rqg-item";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { PhysicalItem } from "@item-model/item-types.ts";
+import { getBondRoleConflict, getBoundSpiritActors } from "../system/magic-point-source";
 import {
   extractDropInfo,
+  extractDroppedActor,
   getAllowedDropDocumentNames,
   hasRqid,
   isAllowedDocumentNames,
@@ -54,6 +58,8 @@ export interface RqgItemSheetContext {
   isEmbedded: boolean;
   /** The item's active effects collection, used by the Active Effects tab partial. */
   effects: unknown;
+  /** The spirits bound in this item (#999) that are currently usable. */
+  boundSpiritActors: { uuid: string; name: string; img: string }[];
   /** Tab data prepared by _prepareTabs, used by tab-navigation template. */
   tabs?: Record<string, foundry.applications.api.ApplicationV2.Tab>;
   /** Active tab for the current part, set by _preparePartContext. */
@@ -76,6 +82,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     window: {
       resizable: true,
     },
+    actions: {
+      unlinkBoundSpirit: RqgItemSheetV2._unlinkBoundSpiritAction,
+    },
   };
 
   private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
@@ -83,7 +92,9 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
   protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
-      dropSelector: "[data-dropzone]",
+      // [data-bound-spirit-dropzone] (#999) is checked before the generic Item/JournalEntry
+      // switch below, same two-tier pattern as RqgActorSheetV2's Allied Spirit dropzone.
+      dropSelector: "[data-dropzone], [data-bound-spirit-dropzone]",
       permissions: {
         drop: () => this.isEditable,
       },
@@ -120,6 +131,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
   // @ts-expect-error Return type is intentionally narrowed from the fvtt-types RenderContext
   override async _prepareContext(): Promise<RqgItemSheetContext> {
+    // Only physical items have boundSpiritActorUuids; getBoundSpiritActors reads it via a plain
+    // property access, which is undefined (and so harmlessly resolves to no spirits) for every
+    // other item type - no type-narrowing needed here.
+    const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -130,6 +145,11 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
       system: foundry.utils.duplicate(this.document._source.system),
+      boundSpiritActors: boundSpiritActors.map((spiritActor) => ({
+        uuid: spiritActor.uuid ?? "",
+        name: spiritActor.name ?? "",
+        img: spiritActor.img ?? "",
+      })),
     };
   }
 
@@ -306,6 +326,13 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
 
     event.preventDefault();
     event.stopPropagation();
+
+    const target = event.target;
+    if (target instanceof Element && target.closest("[data-bound-spirit-dropzone]")) {
+      await this._onDropBoundSpirit(event);
+      return;
+    }
+
     this.render();
 
     const droppedDocumentData = foundry.applications.ux.TextEditor.implementation.getDragEventData(
@@ -351,6 +378,73 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       return [this.document];
     }
     return false;
+  }
+
+  /** The item's currently-stored bound-spirit uuids (#999), for _onDropBoundSpirit/
+   *  _unlinkBoundSpiritAction to append to or filter. */
+  private getBoundSpiritActorUuids(): string[] {
+    return (
+      (this.document.system as { boundSpiritActorUuids?: string[] }).boundSpiritActorUuids ?? []
+    );
+  }
+
+  /** Bind the dropped Actor as another spirit trapped in this item (#999), appended to
+   *  boundSpiritActorUuids. Mirrors RqgActorSheetV2._onDropAlliedSpirit. */
+  protected async _onDropBoundSpirit(event: DragEvent): Promise<void> {
+    if (!this.isEditable) {
+      return;
+    }
+    const droppedActor = await extractDroppedActor(event);
+    if (!droppedActor) {
+      ui.notifications?.warn(localize("RQG.Item.Gear.BoundSpiritDropRequiresActorWarn"));
+      return;
+    }
+    // Refuse an actor that's already this item's owner's Allied Spirit bond partner (either
+    // direction, #957) - the same actor filling both roles at once would be double-counted as a
+    // Magic Point source and race on itself when spent (see getBoundSpiritItems).
+    const ownerActor = this.document.actor as unknown as RqgActor | null | undefined;
+    if (
+      ownerActor &&
+      getBondRoleConflict(ownerActor, droppedActor as unknown as RqgActor) === "ally"
+    ) {
+      ui.notifications?.warn(
+        localize("RQG.Item.Gear.BoundSpiritAlreadyAlliedWarn", {
+          spiritName: droppedActor.name ?? "",
+        }),
+      );
+      return;
+    }
+    const boundSpiritActorUuids = this.getBoundSpiritActorUuids();
+    if (boundSpiritActorUuids.includes(droppedActor.uuid ?? "")) {
+      ui.notifications?.warn(
+        localize("RQG.Item.Gear.BoundSpiritAlreadyBoundWarn", {
+          spiritName: droppedActor.name ?? "",
+        }),
+      );
+      return;
+    }
+    await this.document.update({
+      system: { boundSpiritActorUuids: [...boundSpiritActorUuids, droppedActor.uuid ?? ""] },
+    });
+  }
+
+  /** Unlink action for one chip in the Bound Spirit list - see _onDropBoundSpirit. */
+  private static async _unlinkBoundSpiritAction(
+    this: RqgItemSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
+    if (!this.isEditable) {
+      return;
+    }
+    const spiritUuid = getRequiredDomDataset(target, "unlink-bound-spirit-uuid");
+    await this.document.update({
+      system: {
+        boundSpiritActorUuids: this.getBoundSpiritActorUuids().filter(
+          (uuid) => uuid !== spiritUuid,
+        ),
+      },
+    });
   }
 
   /**

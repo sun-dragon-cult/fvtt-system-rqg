@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { getExternalRuneMagicItems, getExternalSpiritMagicItems } from "./spell-source";
+import {
+  getBoundSpiritSpiritMagicItems,
+  getExternalRuneMagicItems,
+  getExternalSpiritMagicItems,
+} from "./spell-source";
 
 function fakeActor(
   items: any[] = [],
@@ -61,6 +65,67 @@ describe("getExternalSpiritMagicItems", () => {
     const actor = fakeActor([], { alliedSpiritActorUuid: "Actor.ally1" });
 
     expect(getExternalSpiritMagicItems(actor)).toEqual([spellA, spellB]);
+  });
+});
+
+/** A fake bound spirit actor (#999) - `instanceof Actor` per the global stub, so it passes
+ *  getBoundSpiritActors' type-guard checks. */
+function fakeSpirit(
+  items: any[] = [],
+  uuid = "Actor.spirit1",
+  isOwner: boolean = true,
+  name = "Wisp",
+) {
+  const spirit = Object.create((globalThis as any).Actor.prototype);
+  return Object.assign(spirit, { name, uuid, isOwner, items });
+}
+
+describe("getBoundSpiritSpiritMagicItems", () => {
+  it("is empty when there are no bound spirits", () => {
+    expect(getBoundSpiritSpiritMagicItems(fakeActor(), [])).toEqual([]);
+  });
+
+  it("returns one group per bound spirit that knows Spirit Magic, sorted within each group", () => {
+    const spellB = fakeSpiritMagicItem("b", 2);
+    const spellA = fakeSpiritMagicItem("a", 1);
+    const otherItem = { id: "x", type: "skill", sort: 0 };
+    const spirit1 = fakeSpirit([spellB, otherItem, spellA], "Actor.spirit1", true, "Wisp");
+    const spirit2Spell = fakeSpiritMagicItem("c", 0);
+    const spirit2 = fakeSpirit([spirit2Spell], "Actor.spirit2", true, "Ember");
+    const item1 = { id: "i1", name: "Bronze Key" } as any;
+    const item2 = { id: "i2", name: "Golden Pot" } as any;
+
+    const boundSpirits = [
+      { item: item1, spiritActor: spirit1 },
+      { item: item2, spiritActor: spirit2 },
+    ];
+
+    expect(getBoundSpiritSpiritMagicItems(fakeActor(), boundSpirits)).toEqual([
+      { sourceActor: spirit1, sourceItem: item1, items: [spellA, spellB] },
+      { sourceActor: spirit2, sourceItem: item2, items: [spirit2Spell] },
+    ]);
+  });
+
+  it("omits a bound spirit that knows no Spirit Magic", () => {
+    const spirit = fakeSpirit([{ id: "x", type: "skill", sort: 0 }]);
+    const boundSpirits = [{ item: { id: "i1" } as any, spiritActor: spirit }];
+
+    expect(getBoundSpiritSpiritMagicItems(fakeActor(), boundSpirits)).toEqual([]);
+  });
+
+  it("lists the same spirit only once, under the first item it's found in, even if bound into more than one item", () => {
+    const spell = fakeSpiritMagicItem("a", 1);
+    const spirit = fakeSpirit([spell], "Actor.spirit1");
+    const item1 = { id: "i1", name: "Bronze Key" } as any;
+    const item2 = { id: "i2", name: "Golden Pot" } as any;
+    const boundSpirits = [
+      { item: item1, spiritActor: spirit },
+      { item: item2, spiritActor: spirit },
+    ];
+
+    expect(getBoundSpiritSpiritMagicItems(fakeActor(), boundSpirits)).toEqual([
+      { sourceActor: spirit, sourceItem: item1, items: [spell] },
+    ]);
   });
 });
 
