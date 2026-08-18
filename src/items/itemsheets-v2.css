@@ -102,13 +102,13 @@
     }
 
 /* Base chip styling (.bond-actor-link) is shared with the actor sheet's Allied Spirit link -
-       see rqg.css. */
-    & .bound-spirit-link {
-      & [data-action="unlinkBoundSpirit"] {
-        color: var(--rqg-unassigned-rm-action);
-        text-shadow: none;
-        margin-left: auto;
-      }
+       see rqg.css. Matrix Spell dropzone (#959) is a single link, unlike the Bound Spirit list,
+       but shares the same unlink-chip styling. */
+    & .bound-spirit-link [data-action="unlinkBoundSpirit"],
+    & .matrix-spell-link [data-action="unlinkMatrixSpell"] {
+      color: var(--rqg-unassigned-rm-action);
+      text-shadow: none;
+      margin-left: auto;
     }
   }
 }

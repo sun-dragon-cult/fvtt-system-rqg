@@ -110,3 +110,40 @@
     </div>
   {{/unless}}
 </div>
+
+{{!-- Matrix Spell (Core p.264-265, #959) - a single Spirit Magic spell link, unlike Bound
+     Spirit(s) above. The spell's own mechanics are resolved live from spellRqidLink at cast time
+     (resolveMatrixSpellItem, spell-matrix.ts); only the enchanted level is stored here. --}}
+<label for="matrix-spell-{{id}}">{{localize "RQG.Item.Gear.MatrixSpell"}}</label>
+<div id="matrix-spell-{{id}}"
+     class="matrix-spell-dropzone"
+     data-matrix-spell-dropzone
+     data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}">
+  {{#if system.matrixSpell.spellRqidLink.rqid}}
+    <div class="bond-actor-link matrix-spell-link">
+      <span data-rqid-link="{{system.matrixSpell.spellRqidLink.rqid}}">
+        {{system.matrixSpell.spellRqidLink.name}}
+      </span>
+      {{#if isEditable}}
+        <a data-action="unlinkMatrixSpell"
+           data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=system.matrixSpell.spellRqidLink.name}}">
+          <i class="fas fa-unlink"></i>
+        </a>
+      {{/if}}
+    </div>
+  {{else}}
+    <div class="bond-actor-link matrix-spell-link empty">
+      <span class="matrix-spell-hint">{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}</span>
+    </div>
+  {{/if}}
+</div>
+
+{{#if isGM}}
+  <label for="matrix-spell-points-{{id}}">{{localize "RQG.Item.Gear.MatrixSpellPoints"}}</label>
+  <input id="matrix-spell-points-{{id}}"
+         type="number"
+         name="system.matrixSpell.points"
+         value="{{system.matrixSpell.points}}"
+         min="0"
+         max="99">
+{{/if}}

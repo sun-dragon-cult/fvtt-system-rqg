@@ -16,12 +16,15 @@ import {
   extractDropInfo,
   extractDroppedActor,
   getAllowedDropDocumentNames,
+  getDroppedDocumentRqidLink,
   hasRqid,
   isAllowedDocumentNames,
   onDragEnter,
   onDragLeave,
   updateRqidLink,
 } from "../documents/drag-drop";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RqgActiveEffect } from "../active-effect/rqg-active-effect.ts";
 import type { DeepPartial } from "fvtt-types/utils";
 
@@ -84,6 +87,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     },
     actions: {
       unlinkBoundSpirit: RqgItemSheetV2._unlinkBoundSpiritAction,
+      unlinkMatrixSpell: RqgItemSheetV2._unlinkMatrixSpellAction,
     },
   };
 
@@ -92,9 +96,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
   protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
-      // [data-bound-spirit-dropzone] (#999) is checked before the generic Item/JournalEntry
-      // switch below, same two-tier pattern as RqgActorSheetV2's Allied Spirit dropzone.
-      dropSelector: "[data-dropzone], [data-bound-spirit-dropzone]",
+      // [data-bound-spirit-dropzone] (#999) and [data-matrix-spell-dropzone] (#959) are checked
+      // before the generic Item/JournalEntry switch below, same two-tier pattern as
+      // RqgActorSheetV2's Allied Spirit dropzone.
+      dropSelector: "[data-dropzone], [data-bound-spirit-dropzone], [data-matrix-spell-dropzone]",
       permissions: {
         drop: () => this.isEditable,
       },
@@ -332,6 +337,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       await this._onDropBoundSpirit(event);
       return;
     }
+    if (target instanceof Element && target.closest("[data-matrix-spell-dropzone]")) {
+      await this._onDropMatrixSpell(event);
+      return;
+    }
 
     this.render();
 
@@ -444,6 +453,46 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           (uuid) => uuid !== spiritUuid,
         ),
       },
+    });
+  }
+
+  /** Set the dropped Spirit Magic spell as this item's Spell Matrix Enchantment (Core p.264-265,
+   *  #959) - a single link, replacing whatever was there before. Only `spellRqidLink` and the
+   *  initial `points` (seeded from the dropped spell's own level) are stored; the spell's other
+   *  mechanics are resolved live at cast time (resolveMatrixSpellItem, spell-matrix.ts). */
+  protected async _onDropMatrixSpell(event: DragEvent): Promise<void> {
+    if (!this.isEditable) {
+      return;
+    }
+    const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+      event,
+    ) as Item.DropData;
+    const droppedItem = (await Item.implementation.fromDropData(data)) as RqgItem | undefined;
+    const spellRqidLink =
+      droppedItem?.type === ItemTypeEnum.SpiritMagic
+        ? getDroppedDocumentRqidLink(droppedItem)
+        : undefined;
+    if (!spellRqidLink) {
+      ui.notifications?.warn(localize("RQG.Item.Gear.MatrixSpellDropRequiresSpiritMagicWarn"));
+      return;
+    }
+    await this.document.update({
+      system: {
+        matrixSpell: {
+          spellRqidLink: spellRqidLink,
+          points: (droppedItem as unknown as SpiritMagicItem).system.points,
+        },
+      },
+    });
+  }
+
+  /** Unlink action for the Matrix Spell link - see _onDropMatrixSpell. */
+  private static async _unlinkMatrixSpellAction(this: RqgItemSheetV2): Promise<void> {
+    if (!this.isEditable) {
+      return;
+    }
+    await this.document.update({
+      system: { matrixSpell: { spellRqidLink: { rqid: "", name: "" }, points: 0 } },
     });
   }
 

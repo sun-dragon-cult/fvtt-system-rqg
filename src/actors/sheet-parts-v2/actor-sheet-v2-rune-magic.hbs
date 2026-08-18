@@ -126,7 +126,7 @@
           {{/each}}
 
           {{#if externalRuneMagic.length}}
-            {{> externalSpellDivider fromLabelKey="RQG.Actor.RuneMagic.FromLabel"
+            {{> externalSpellDivider labelKey="RQG.Actor.RuneMagic.AlliedSpiritFromLabel"
                 name=externalSpellSourceActor.name img=externalSpellSourceActor.img}}
             {{#each externalRuneMagic}}
               <div class="rune-magic-row external-item" data-external-owner-uuid="{{../externalSpellSourceActor.uuid}}">

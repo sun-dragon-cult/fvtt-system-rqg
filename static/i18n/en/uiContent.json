@@ -395,7 +395,7 @@
         "BoundSpiritCapExceeded": "Bound spirits exceed the CHA÷3 limit by {exceededBy}! ({count} bound, CHA÷3 limit is {cap}).",
         "BoundSpiritCapReached": "Bound spirit limit reached — {count} bound (CHA÷3 limit).",
         "BoundSpiritCapFormula": "{count} of {cap} bound spirits (CHA÷3 limit).",
-        "FromLabel": "From",
+        "AlliedSpiritFromLabel": "Allied Spirit",
         "CultRank": {
           "layMember": "Lay Member",
           "initiate": "Initiate",
@@ -450,7 +450,9 @@
         "Range": "Range",
         "Duration": "Duration",
         "Concentration": "Concentration",
-        "FromLabel": "From",
+        "AlliedSpiritFromLabel": "Allied Spirit",
+        "BoundSpiritFromLabel": "Bound Spirit",
+        "MatrixFromLabel": "Matrix",
         "InLabel": "in"
       }
     },
@@ -832,6 +834,13 @@
         "BoundSpiritDrainConfirmContent": "Casting this would drain {spiritNames} to 0 Magic Points, releasing it from its binding. Keep it bound by leaving 1 Magic Point (drawing the rest from elsewhere if possible), release it fully, or cancel the cast.",
         "BoundSpiritDrainKeepBoundBtn": "Keep Bound (leave 1 MP)",
         "BoundSpiritDrainReleaseBtn": "Release",
+        "MatrixSpell": "Matrix Spell",
+        "MatrixSpellDropHint": "Drag a Spirit Magic spell here to enchant this item as its Spell Matrix",
+        "MatrixSpellPoints": "Matrix Points",
+        "MatrixSpellDropRequiresSpiritMagicWarn": "Drop a Spirit Magic spell to make this item its Spell Matrix",
+        "MatrixSpellIndicatorTooltip": "Spell Matrix: {spellName} ({points})",
+        "MatrixSpellNotFoundWarn": "Couldn't find the Spirit Magic spell \"{name}\" ({rqid}) - is the compendium it came from still installed?",
+        "UnlinkMatrixSpellTitle": "Remove {spellName} from this item's Spell Matrix",
         "HitPointsAbbr": "HP",
         "CurrentHitPoints": "Current Hit Points",
         "HitPointLocation": "Hit Point Location",

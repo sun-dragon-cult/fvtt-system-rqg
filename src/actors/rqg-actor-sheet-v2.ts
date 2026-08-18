@@ -66,6 +66,7 @@ import {
   updateRqidLink,
 } from "../documents/drag-drop";
 import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
+import { getMatrixSpellSources, resolveMatrixSpellItem } from "../system/spell-matrix";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
@@ -284,8 +285,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const externalSpiritMagic = getExternalSpiritMagicItems(this.actor, alliedBondActor);
     // #999: Spirit Magic spells known by each bound spirit, one group per spirit.
     const boundSpiritSpiritMagic = getBoundSpiritSpiritMagicItems(this.actor, boundSpiritItems);
+    // #959: Spirit Magic spells enchanted into the actor's own Spell Matrix items, one group per
+    // item - see getMatrixSpellSources.
     const incorrectRunes: RqgItem[] = [];
-    const embeddedItems = await DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes);
+    const [matrixSpellSources, embeddedItems] = await Promise.all([
+      getMatrixSpellSources(this.actor),
+      DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes),
+    ]);
     const itemTree = new ItemTree(this.actor.items.contents);
     const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
       .filter((item) => foundry.utils.getProperty(item, "system.physicalItemType") === "unique")
@@ -437,6 +443,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         sourceItemImg: sourceItem.img ?? "",
         items,
       })),
+      matrixSpellSources: matrixSpellSources.map(({ sourceItem, item }) => ({
+        sourceItemId: sourceItem.id ?? "",
+        sourceItemName: sourceItem.name ?? "",
+        sourceItemImg: sourceItem.img ?? "",
+        item,
+      })),
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
@@ -503,6 +515,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
   /** True when the active drag originates from this actor's own items (reorder only, no sheet glow). */
   private _isSameActorDrag = false;
+
+  /** Shared single/double-click cast logic for Spirit Magic - a double click rolls the spell
+   *  immediately unless it's a variable spell with more than 1 point enchanted/matrix-stored, in
+   *  which case it still needs the points-to-use dialog (spiritMagicRoll) instead. Used both for
+   *  the caster's own (and #1002 external) items and for #959 Matrix Spells. */
+  private _castSpiritMagicItem(item: SpiritMagicItem, immediate: boolean): Promise<void> {
+    if (!immediate || (item.system.isVariable && item.system.points > 1)) {
+      return item.spiritMagicRoll(this.document.token, this.actor);
+    }
+    return item.spiritMagicRollImmediate(undefined, this.document.token, this.actor);
+  }
 
   private _bindSingleDoubleClick(
     el: HTMLElement,
@@ -898,14 +921,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         `Couldn't find item to roll Spirit Magic`,
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.spiritMagicRoll(this.document.token, this.actor),
-        onDouble: () => {
-          if (item.system.isVariable && item.system.points > 1) {
-            return item.spiritMagicRoll(this.document.token, this.actor);
-          } else {
-            return item.spiritMagicRollImmediate(undefined, this.document.token, this.actor);
-          }
-        },
+        onSingle: () => this._castSpiritMagicItem(item, false),
+        onDouble: () => this._castSpiritMagicItem(item, true),
       });
     });
 
@@ -926,6 +943,25 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
             return item.runeMagicRoll(this.document.token, this.actor);
           }
         },
+      });
+    });
+
+    // Cast Matrix Spell (#959) - unlike the Spirit/Rune Magic rolls above, the spell isn't an
+    // actual embedded Item (a physical item can't embed another Item in Foundry), so it's resolved
+    // live from spellRqidLink on each click instead of eagerly at bind time - see
+    // resolveMatrixSpellItem (spell-matrix.ts).
+    this.element.querySelectorAll<HTMLElement>("[data-matrix-spell-cast]").forEach((el) => {
+      const matrixItem = resolveCastItem(el, this.actor) as PhysicalItem | undefined;
+      requireValue(matrixItem, `Couldn't find item to cast its Matrix Spell`);
+      const castMatrixSpell = async (immediate: boolean) => {
+        const spellItem = await resolveMatrixSpellItem(matrixItem);
+        if (spellItem) {
+          await this._castSpiritMagicItem(spellItem, immediate);
+        }
+      };
+      this._bindSingleDoubleClick(el, {
+        onSingle: () => castMatrixSpell(false),
+        onDouble: () => castMatrixSpell(true),
       });
     });
 

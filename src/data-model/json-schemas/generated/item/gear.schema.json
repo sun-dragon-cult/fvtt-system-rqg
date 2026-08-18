@@ -105,6 +105,47 @@
       "items": {
         "type": "string"
       }
+    },
+    "matrixSpell": {
+      "type": "object",
+      "properties": {
+        "spellRqidLink": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "rqid": {
+              "type": "string",
+              "default": ""
+            },
+            "name": {
+              "type": "string",
+              "default": ""
+            },
+            "bonus": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "rqid",
+            "name"
+          ]
+        },
+        "points": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "points"
+      ]
     }
   },
   "additionalProperties": false,
@@ -120,6 +161,7 @@
     "equippedStatus",
     "price",
     "storedMagicPoints",
-    "boundSpiritActorUuids"
+    "boundSpiritActorUuids",
+    "matrixSpell"
   ]
 }
