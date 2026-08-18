@@ -1,5 +1,6 @@
 import { equippedStatuses, physicalItemProperties } from "../item-data/i-physical-item";
 import { enumChoices } from "./enum-choices";
+import { rqidLinkSchemaField } from "./rqid-link-field";
 
 const { ArrayField, BooleanField, DocumentUUIDField, NumberField, SchemaField, StringField } =
   foundry.data.fields;
@@ -51,5 +52,17 @@ export function physicalItemSchemaFields() {
     boundSpiritActorUuids: new ArrayField(
       new DocumentUUIDField({ blank: false, nullable: false, required: true }),
     ),
+    // Spirit Magic spell stored via a Spell Matrix Enchantment (Core p.264-265, #959) - anyone in
+    // physical contact with this item can cast the spell at their own POW×5% using their own
+    // Magic Points, regardless of whether they know it themselves. Deliberately not a full spell
+    // copy: `points` is the level enchanted into the matrix (fixed once, but GM-editable to allow
+    // correcting mistakes - see item-common-physical.hbs), while the spell's other mechanics
+    // (range/duration/concentration/isVariable/...) never diverge per matrix instance, so they're
+    // resolved live from `spellRqidLink.rqid` via resolveMatrixSpellItem (spell-matrix.ts) instead
+    // of being duplicated here.
+    matrixSpell: new SchemaField({
+      spellRqidLink: rqidLinkSchemaField({ nullable: true }),
+      points: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    }),
   } as const;
 }

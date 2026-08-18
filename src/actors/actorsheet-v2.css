@@ -23,8 +23,9 @@
       mix-blend-mode: normal;
     }
 
-/* Bound-spirit indicator matches the MP storage icon's gear-tab dimming above. */
-    & .tab.gear .bound-spirit-indicator {
+/* Bound-spirit and matrix-spell indicators match the MP storage icon's gear-tab dimming above. */
+    & .tab.gear .bound-spirit-indicator,
+    & .tab.gear .matrix-spell-indicator {
       opacity: 0.85;
       mix-blend-mode: normal;
     }
@@ -156,6 +157,26 @@
         height: 20px;
         background-color: currentcolor;
         mask-image: url("/systems/rqg/assets/images/runes/spirit.svg");
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+      }
+    }
+
+/* Gear-row indicator for an item enchanted as a Spell Matrix (#959) - clickable, casts the
+   stored spell (single click opens the roll dialog, double click quick-rolls). */
+    & .matrix-spell-indicator {
+      display: inline-flex;
+      align-items: center;
+      margin-left: 0.3rem;
+      cursor: pointer;
+
+      & .matrix-spell-indicator-icon {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: currentcolor;
+        mask-image: url("/systems/rqg/assets/images/items/spirit-magic.svg");
         mask-size: contain;
         mask-repeat: no-repeat;
         mask-position: center;

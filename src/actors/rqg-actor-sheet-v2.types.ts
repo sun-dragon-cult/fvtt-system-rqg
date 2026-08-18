@@ -130,6 +130,14 @@ export interface RqgActorSheetV2Context {
     sourceItemImg: string;
     items: RqgItem[];
   }[];
+  /** Spirit Magic spells enchanted into this actor's own Spell Matrix items (#959), one group per
+   *  item - see getMatrixSpellSources. */
+  matrixSpellSources: {
+    sourceItemId: string;
+    sourceItemName: string;
+    sourceItemImg: string;
+    item: RqgItem;
+  }[];
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

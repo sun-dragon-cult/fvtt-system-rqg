@@ -1,16 +1,17 @@
-{{!-- Partial: "From [img] {name}:" divider, or "From [img] {name} in [img] {itemName}:" when
-     itemName is given (#999, a bound spirit's item). Shared by the Rune Magic and Spirit Magic
-     tabs' external-spell-source sections.
+{{!-- Partial: "{label}: [img] {name}" divider, or "{label}: [img] {name} {inLabel} [img] {itemName}"
+     when itemName is given (#999, a bound spirit's item). Shared by the Rune Magic and Spirit Magic
+     tabs' external-spell-source sections (Allied Spirit, Bound Spirit, and #959 Spell Matrix) - the
+     label names which kind of source it is, since "From {name}" alone doesn't distinguish them.
 
-     Params: fromLabelKey, inLabelKey (localization keys, namespaced per tab), name, img,
+     Params: labelKey, inLabelKey (localization keys, namespaced per tab), name, img,
      itemName (optional), itemImg (optional). --}}
 <div class="external-spell-divider">
-  {{localize fromLabelKey}}
+  {{localize labelKey}}:
   <img class="external-spell-divider-icon" src="{{img}}">
   {{name}}
   {{#if itemName}}
     {{localize inLabelKey}}
     <img class="external-spell-divider-icon" src="{{itemImg}}">
     {{itemName}}
-  {{/if}}:
+  {{/if}}
 </div>

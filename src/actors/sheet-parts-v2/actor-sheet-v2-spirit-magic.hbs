@@ -67,21 +67,28 @@
     {{/each}}
 
     {{#if externalSpiritMagic.length}}
-      {{> externalSpellDivider fromLabelKey="RQG.Actor.SpiritMagic.FromLabel"
+      {{> externalSpellDivider labelKey="RQG.Actor.SpiritMagic.AlliedSpiritFromLabel"
           name=externalSpellSourceActor.name img=externalSpellSourceActor.img}}
       {{#each externalSpiritMagic}}
         {{> spiritMagicExternalRow item=this ownerUuid=@root.externalSpellSourceActor.uuid}}
       {{/each}}
     {{/if}}
 
-    {{!-- Bound Spirits (#999): one "From [img] {spiritName} in [img] {itemName}:" group per spirit. --}}
+    {{!-- Bound Spirits (#999): one "Bound Spirit: [img] {spiritName} in [img] {itemName}" group per spirit. --}}
     {{#each boundSpiritSpiritMagic}}
-      {{> externalSpellDivider fromLabelKey="RQG.Actor.SpiritMagic.FromLabel"
+      {{> externalSpellDivider labelKey="RQG.Actor.SpiritMagic.BoundSpiritFromLabel"
           inLabelKey="RQG.Actor.SpiritMagic.InLabel"
           name=sourceActor.name img=sourceActor.img itemName=sourceItemName itemImg=sourceItemImg}}
       {{#each items}}
         {{> spiritMagicExternalRow item=this ownerUuid=../sourceActor.uuid}}
       {{/each}}
+    {{/each}}
+
+    {{!-- Spell Matrix Enchantments (#959): one "Matrix: [img] {itemName}" group per enchanted item. --}}
+    {{#each matrixSpellSources}}
+      {{> externalSpellDivider labelKey="RQG.Actor.SpiritMagic.MatrixFromLabel"
+          name=sourceItemName img=sourceItemImg}}
+      {{> matrixSpellSpiritMagicRow item=item sourceItemId=sourceItemId}}
     {{/each}}
   </div>
 
