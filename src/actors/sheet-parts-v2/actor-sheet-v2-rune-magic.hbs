@@ -126,7 +126,8 @@
           {{/each}}
 
           {{#if externalRuneMagic.length}}
-            <div class="external-spell-divider">{{localize "RQG.Actor.RuneMagic.FromSourceLabel" name=externalSpellSourceActor.name}}</div>
+            {{> externalSpellDivider fromLabelKey="RQG.Actor.RuneMagic.FromLabel"
+                name=externalSpellSourceActor.name img=externalSpellSourceActor.img}}
             {{#each externalRuneMagic}}
               <div class="rune-magic-row external-item" data-external-owner-uuid="{{../externalSpellSourceActor.uuid}}">
                 <div class="rune-magic contextmenu item"

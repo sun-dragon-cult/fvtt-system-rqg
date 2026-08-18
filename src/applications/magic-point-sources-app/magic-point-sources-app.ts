@@ -1,11 +1,14 @@
 import type { DeepPartial } from "fvtt-types/utils";
+import type { PhysicalItem } from "@item-model/item-types.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import {
   ALLY_MAGIC_POINT_SOURCE,
+  boundSpiritSourceId,
   feedStorageFromSelf,
   getAlliedBondActor,
+  getBoundSpiritActorByUuid,
   getMagicPointDrawOrder,
   getMaxTransferableToStorage,
   getStorageItems,
@@ -204,6 +207,22 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
             feedMax: getMaxTransferableToStorage(this.actor, entry.item),
           };
           break;
+        case "boundSpirit":
+          // No feed button - a bound spirit's Magic Points aren't refilled from self.
+          // itemName/itemImg let the row read "{name} in {itemName}", since an actor can have
+          // several bound spirits.
+          base = {
+            id: boundSpiritSourceId(entry.item, entry.spiritActor),
+            kind: "boundSpirit",
+            img: entry.spiritActor.img ?? undefined,
+            name: entry.spiritActor.name ?? "",
+            value: Number(entry.spiritActor.system.attributes.magicPoints.value) || 0,
+            max: Number(entry.spiritActor.system.attributes.magicPoints.max) || 0,
+            feedMax: 0,
+            itemName: entry.item.name ?? "",
+            itemImg: entry.item.img ?? undefined,
+          };
+          break;
       }
       // Depleted sources (0 points left) never get drawn from by "auto", so they're excluded
       // from the priority numbering entirely rather than breaking the sequence.
@@ -224,10 +243,11 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
 
   /**
    * Form fields are named "system.attributes.magicPoints.value" (self),
-   * "items.<itemId>.system.storedMagicPoints.value" (a storage item), or
-   * "ally.system.attributes.magicPoints.value" (a linked Allied Spirit bond partner, #957 - see
-   * getAlliedBondActor), so the submitted data is split by prefix and routed to the actor, the
-   * specific owning item, or the bonded actor.
+   * "items.<itemId>.system.storedMagicPoints.value" (a storage item),
+   * "ally.system.attributes.magicPoints.value" (a linked Allied Spirit bond partner, #957), or
+   * "boundSpirit:<itemId>:<spiritUuid>:system.attributes.magicPoints.value" (a bound spirit,
+   * #999 - ":" separates the id from the field path since a spirit's uuid contains "."), so the
+   * submitted data is split by prefix and routed to the right document.
    */
   protected static async onSubmit(
     _event: SubmitEvent | Event,
@@ -240,9 +260,31 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
     const actorUpdate: Record<string, unknown> = {};
     const allyUpdate: Record<string, unknown> = {};
     const itemUpdatesById = new Map<string, Record<string, unknown>>();
+    const boundSpiritUpdatesById = new Map<
+      string,
+      { itemId: string; spiritUuid: string; update: Record<string, unknown> }
+    >();
     for (const [key, value] of Object.entries(data)) {
       if (key.startsWith("ally.")) {
         allyUpdate[key.slice("ally.".length)] = value;
+        continue;
+      }
+      if (key.startsWith("boundSpirit:")) {
+        // Split the whole key, not just the "boundSpirit:" id part - the field path never
+        // contains ":", so this always yields exactly ["boundSpirit", itemId, spiritUuid,
+        // fieldPath].
+        const [, itemId, spiritUuid, fieldPath] = key.split(":");
+        requireValue(itemId, `Malformed bound spirit field name [${key}]`);
+        requireValue(spiritUuid, `Malformed bound spirit field name [${key}]`);
+        requireValue(fieldPath, `Malformed bound spirit field name [${key}]`);
+        const entryId = `${itemId}:${spiritUuid}`;
+        const spiritUpdateEntry = boundSpiritUpdatesById.get(entryId) ?? {
+          itemId,
+          spiritUuid,
+          update: {},
+        };
+        spiritUpdateEntry.update[fieldPath] = value;
+        boundSpiritUpdatesById.set(entryId, spiritUpdateEntry);
         continue;
       }
       const itemFieldMatch = /^items\.([^.]+)\.(.+)$/.exec(key);
@@ -270,6 +312,19 @@ export class MagicPointSourcesApp extends HandlebarsApplicationMixin(
       requireValue(ally, "Couldn't find the linked Allied Spirit to edit its Magic Points");
       await ally.update(allyUpdate);
     }
+    // Independent Actor documents - write concurrently (mirrors spendMagicPoints).
+    await Promise.all(
+      Array.from(boundSpiritUpdatesById.values()).map(({ itemId, spiritUuid, update }) => {
+        const item = app.actor.items.get(itemId) as unknown as PhysicalItem | undefined;
+        requireValue(item, `Couldn't find item [${itemId}] to edit its bound spirit`);
+        const spiritActor = getBoundSpiritActorByUuid(item, spiritUuid);
+        requireValue(
+          spiritActor,
+          `Couldn't find the spirit [${spiritUuid}] bound in item [${itemId}] to edit it`,
+        );
+        return spiritActor.update(update);
+      }),
+    );
 
     await app.render();
   }

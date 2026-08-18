@@ -85,3 +85,28 @@
              max="99">
   </div>
 {{/if}}
+
+{{!-- Bound Spirit(s) (#999) - unlike storedMagicPoints above, never gated behind isGM/identified.
+     A list, not a single link: an item can hold more than one; the dropzone always appends. --}}
+<label for="bound-spirit-{{id}}">{{localize "RQG.Item.Gear.BoundSpirit"}}</label>
+<div id="bound-spirit-{{id}}"
+     class="bound-spirit-list"
+     data-bound-spirit-dropzone
+     data-tooltip="{{localize "RQG.Item.Gear.BoundSpiritDropHint"}}">
+  {{#each boundSpiritActors}}
+    <div class="bond-actor-link bound-spirit-link">
+      {{toAnchor uuid}}
+      {{#if ../isEditable}}
+        <a data-action="unlinkBoundSpirit" data-unlink-bound-spirit-uuid="{{uuid}}"
+           data-tooltip="{{localize "RQG.Item.Gear.UnlinkBoundSpiritTitle" spiritName=name}}">
+          <i class="fas fa-unlink"></i>
+        </a>
+      {{/if}}
+    </div>
+  {{/each}}
+  {{#unless boundSpiritActors.length}}
+    <div class="bond-actor-link bound-spirit-link empty">
+      <span class="bound-spirit-hint">{{localize "RQG.Item.Gear.BoundSpiritDropHint"}}</span>
+    </div>
+  {{/unless}}
+</div>

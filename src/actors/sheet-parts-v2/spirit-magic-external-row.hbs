@@ -1,0 +1,26 @@
+{{!-- Partial: one Spirit Magic spell row for a spell known via an external source (the Allied
+     Spirit bond, or a bound spirit, #999) rather than by this actor. Both `item` and `ownerUuid`
+     are passed explicitly (not read off the ambient context) - matching this codebase's existing
+     rqidLink=this convention for partials invoked with hash params.
+
+     Params: item (the spell), ownerUuid. --}}
+<div class="spirit-magic-row external-item" data-external-owner-uuid="{{ownerUuid}}">
+  <div class="spirit-magic contextmenu item"
+    data-item-id="{{item.id}}"
+    {{#if item.system.descriptionRqidLink.rqid}}data-rqid-link="{{item.system.descriptionRqidLink.rqid}}"{{/if}}>
+    <img class="row-icon" src="{{item.img}}">
+  </div>
+  <div class="spirit-magic contextmenu item"
+       data-item-id="{{item.id}}"
+       data-spirit-magic-roll
+       data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+    {{item.name}}{{#if item.system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+  </div>
+  <div class="spirit-magic contextmenu item"
+       data-item-id="{{item.id}}"
+       data-tooltip="{{item.spellSummaryTooltip}}"
+       data-spirit-magic-roll>
+    {{item.spellSummary}}
+  </div>
+  <div class="spirit-magic contextmenu item" data-item-id="{{item.id}}">—</div>
+</div>

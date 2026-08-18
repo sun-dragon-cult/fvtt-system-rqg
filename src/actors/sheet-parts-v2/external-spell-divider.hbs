@@ -1,0 +1,16 @@
+{{!-- Partial: "From [img] {name}:" divider, or "From [img] {name} in [img] {itemName}:" when
+     itemName is given (#999, a bound spirit's item). Shared by the Rune Magic and Spirit Magic
+     tabs' external-spell-source sections.
+
+     Params: fromLabelKey, inLabelKey (localization keys, namespaced per tab), name, img,
+     itemName (optional), itemImg (optional). --}}
+<div class="external-spell-divider">
+  {{localize fromLabelKey}}
+  <img class="external-spell-divider-icon" src="{{img}}">
+  {{name}}
+  {{#if itemName}}
+    {{localize inLabelKey}}
+    <img class="external-spell-divider-icon" src="{{itemImg}}">
+    {{itemName}}
+  {{/if}}:
+</div>

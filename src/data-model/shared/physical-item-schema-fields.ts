@@ -1,7 +1,8 @@
 import { equippedStatuses, physicalItemProperties } from "../item-data/i-physical-item";
 import { enumChoices } from "./enum-choices";
 
-const { BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
+const { ArrayField, BooleanField, DocumentUUIDField, NumberField, SchemaField, StringField } =
+  foundry.data.fields;
 
 /**
  * Returns the Foundry data field definitions shared by all physical item types
@@ -45,5 +46,10 @@ export function physicalItemSchemaFields() {
       max: new NumberField({ integer: true, nullable: false, initial: 0 }),
       identified: new BooleanField({ nullable: false, initial: false }),
     }),
+    // Spirits trapped in this item via a Binding Enchantment (Core p.249, #999) - an item can
+    // hold more than one (e.g. a tiara set with several bound crystals).
+    boundSpiritActorUuids: new ArrayField(
+      new DocumentUUIDField({ blank: false, nullable: false, required: true }),
+    ),
   } as const;
 }

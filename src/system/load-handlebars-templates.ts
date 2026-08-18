@@ -187,6 +187,9 @@ export const loadHandlebarsTemplates = async function () {
     actorSheetV2Gear: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-gear.hbs",
     actorSheetV2Background: "systems/rqg/actors/sheet-parts-v2/actor-sheet-v2-background.hbs",
     actorSheetV2MpStorageIcon: "systems/rqg/actors/sheet-parts-v2/mp-storage-icon.hbs",
+    actorSheetV2BoundSpiritIcon: "systems/rqg/actors/sheet-parts-v2/bound-spirit-icon.hbs",
+    externalSpellDivider: "systems/rqg/actors/sheet-parts-v2/external-spell-divider.hbs",
+    spiritMagicExternalRow: "systems/rqg/actors/sheet-parts-v2/spirit-magic-external-row.hbs",
 
     actorRuneTab: "systems/rqg/actors/sheet-parts/runes-tab/runes-tab.hbs",
     actorRuneElements: "systems/rqg/actors/sheet-parts/runes-tab/runes-elemental.hbs",

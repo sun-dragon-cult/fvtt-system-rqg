@@ -13,6 +13,7 @@ import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.d
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
   AUTO_MAGIC_POINT_SOURCE,
+  confirmBoundSpiritDrain,
   getAvailableMagicPoints,
   type MagicPointSourceSelection,
 } from "../../system/magic-point-source";
@@ -300,6 +301,15 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       return;
     }
 
+    const boundSpiritDrainDecision = await confirmBoundSpiritDrain(
+      casterActor,
+      options.magicPointBoost ?? 0,
+      magicPointSource,
+    );
+    if (!boundSpiritDrainDecision.proceed) {
+      return;
+    }
+
     const runeMagicItemTyped = item as unknown as RuneMagicItem;
     const usedRune = options.usedRuneId
       ? this.getEligibleRunes(casterActor).find((r) => r.id === options.usedRuneId)
@@ -338,6 +348,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       magicPointSource,
       runePointSource,
       casterActor,
+      boundSpiritDrainDecision.avoidRelease,
     );
   }
 

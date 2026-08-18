@@ -35,6 +35,7 @@ export async function handleRollResult(
   magicPointSource: MagicPointSourceSelection = SELF_MAGIC_POINT_SOURCE,
   runePointSource: RunePointSourceSelection = SELF_RUNE_POINT_SOURCE,
   casterActor: RqgActor | undefined = runeMagicItem.actor ?? undefined,
+  avoidRelease: boolean = false,
 ): Promise<void> {
   assertDocumentSubType<RuneItem>(runeItem, ItemTypeEnum.Rune);
   assertDocumentSubType<RuneMagicItem>(runeMagicItem, ItemTypeEnum.RuneMagic);
@@ -53,6 +54,7 @@ export async function handleRollResult(
     isOneUse,
     magicPointSource,
     runePointSource,
+    avoidRelease,
   );
   if (result <= AbilitySuccessLevelEnum.Success) {
     await runeItem.awardExperience();
@@ -77,6 +79,7 @@ async function spendRuneAndMagicPoints(
   isOneUse: boolean,
   magicPointSource: MagicPointSourceSelection,
   runePointSource: RunePointSourceSelection,
+  avoidRelease: boolean = false,
 ) {
   assertDocumentSubType<CultItem>(cult, ItemTypeEnum.Cult);
   assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
@@ -88,6 +91,6 @@ async function spendRuneAndMagicPoints(
   // own use of Promise.all for the same reason.
   await Promise.all([
     spendRunePoints(actor, cult, runePoints, runePointSource, isOneUse),
-    spendMagicPoints(actor, magicPoints, magicPointSource),
+    spendMagicPoints(actor, magicPoints, magicPointSource, avoidRelease),
   ]);
 }

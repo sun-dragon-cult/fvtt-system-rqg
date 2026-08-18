@@ -68,6 +68,24 @@ export function parseDropzoneList(rawValue: string | undefined): string[] {
   );
 }
 
+/** Resolve the Actor dropped in `event`, or undefined if it wasn't a valid Actor document link.
+ *  Shared by RqgActorSheetV2._onDropAlliedSpirit (#957) and RqgItemSheetV2._onDropBoundSpirit
+ *  (#999). */
+export async function extractDroppedActor(event: DragEvent): Promise<Actor | undefined> {
+  const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(
+    event,
+  ) as ActorSheet.DropData;
+  // fvtt-types' DropData.Actor is only typed as { type: "Actor" }, missing the uuid Foundry
+  // actually includes for a standard document-link drag - read it the same untyped way a
+  // compendium drop reads its own extra fields (e.g. "collection").
+  const droppedActorUuid = hasOwnProperty(data, "uuid") ? data.uuid : undefined;
+  if (data?.type !== "Actor" || typeof droppedActorUuid !== "string") {
+    return undefined;
+  }
+  const droppedActor = await fromUuid(droppedActorUuid);
+  return droppedActor instanceof Actor ? droppedActor : undefined;
+}
+
 export function isAllowedDocumentNames(
   documentName: string | undefined,
   allowedDocumentNames: string[] | undefined,

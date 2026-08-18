@@ -39,6 +39,27 @@
         0 0 0.4em var(--rqg-themed-highlight);
       font-weight: bold;
     }
+
+/* Shared chip styling for a linked-actor reference: the actor sheet's Allied Spirit link
+       (#957, .allied-spirit-link) and the item sheet's Bound Spirit link (#999,
+       .bound-spirit-link) both extend this rather than each declaring their own copy. Lives in
+       system.base so either sheet's own layer (system.actor-v2/system.item-v2) can still
+       override it. */
+    & .bond-actor-link {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      color: var(--rqg-unassigned-rm-text);
+      background: var(--rqg-unassigned-rm-bg);
+      border: 1px solid var(--rqg-unassigned-rm-border);
+      border-radius: var(--rqg-radius-sm);
+      padding: 4px 8px;
+
+      &.empty {
+        opacity: 0.7;
+        border-style: dashed;
+      }
+    }
   }
 
   #interface img[src="icons/svg/mystery-man.svg"] {
@@ -1825,6 +1846,42 @@
 
       & .magic-point-source-name {
         white-space: nowrap;
+      }
+
+/* Marks a "self", "ally", or "boundSpirit" row - Man rune / spirit rune, recolored via
+         mask-image/currentcolor so it reads correctly in both themes. */
+      & .magic-point-source-rune-icon {
+        display: inline-block;
+        margin-left: 0.2rem;
+        height: 0.8rem;
+        width: 0.8rem;
+        vertical-align: baseline;
+        mask-size: contain;
+        mask-repeat: no-repeat;
+        mask-position: center;
+        background-color: currentcolor;
+        opacity: 0.75;
+
+        &.man {
+          mask-image: url("/systems/rqg/assets/images/runes/man.svg");
+        }
+
+        &.spirit {
+          mask-image: url("/systems/rqg/assets/images/runes/spirit.svg");
+        }
+      }
+
+/* The bound spirit's item portrait, inline after "in" - same footprint as
+         .magic-point-source-rune-icon, but a real image, not a recolored mask. */
+      & .magic-point-source-item-icon {
+        display: inline-block;
+        margin-left: 0.2rem;
+        height: 0.8rem;
+        width: 0.8rem;
+        object-fit: contain;
+        vertical-align: baseline;
+        border: none;
+        border-radius: var(--rqg-radius-sm);
       }
 
       & .magic-point-source-max {
