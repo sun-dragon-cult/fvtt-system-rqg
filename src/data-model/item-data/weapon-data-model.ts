@@ -105,7 +105,9 @@ function defineWeaponSchema() {
       initial: undefined,
       choices: weaponUsageChoices(),
     }),
-    hitPoints: resourceSchemaField(),
+    // nullableMax: a natural/body-part weapon (hitPointLocation set) has no independent max HP of
+    // its own - see the sheet's blanking logic below and #1012.
+    hitPoints: resourceSchemaField({ nullableMax: true }),
     hitPointLocation: new StringField({ blank: true, nullable: false, initial: "" }),
     isNatural: new BooleanField({ nullable: false, initial: false }),
     rate: new NumberField({ integer: true, min: 0, max: 5, nullable: false, initial: 0 }),
