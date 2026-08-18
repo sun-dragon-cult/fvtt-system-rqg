@@ -626,14 +626,14 @@
           "default": 0
         },
         "max": {
-          "type": "integer",
+          "type": [
+            "integer",
+            "null"
+          ],
           "default": 0
         }
       },
-      "additionalProperties": false,
-      "required": [
-        "max"
-      ]
+      "additionalProperties": false
     },
     "hitPointLocation": {
       "type": "string",
