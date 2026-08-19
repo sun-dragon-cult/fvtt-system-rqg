@@ -1,0 +1,11 @@
+name: Migrate isMatrix Spells
+type: script
+img: icons/tools/scribal/magnifying-glass.webp
+scope: global
+flags:
+  rqg:
+    documentRqidFlags:
+      id: m..migrate-is-matrix-spells
+      lang: en
+      priority: 0
+command: "file:macros/migrate-is-matrix-spells.js"
