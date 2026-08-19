@@ -18,7 +18,7 @@
 
 /* Dimmed only in the gear tab rows, not the header's open-popout button. */
     & .tab.gear .stored-magic-points {
-      margin-left: 0.3rem;
+      margin-left: 0.25rem;
       opacity: 0.85;
       mix-blend-mode: normal;
     }
@@ -131,7 +131,7 @@
     & .stored-magic-points {
       display: inline-flex;
       align-items: center;
-      gap: 2px;
+      gap: 0.125rem;
 
       & .stored-magic-points-icon {
         display: inline-block;
@@ -149,7 +149,7 @@
     & .bound-spirit-indicator {
       display: inline-flex;
       align-items: center;
-      margin-left: 0.3rem;
+      margin-left: 0.25rem;
 
       & .bound-spirit-indicator-icon {
         display: inline-block;
@@ -168,7 +168,7 @@
     & .matrix-spell-indicator {
       display: inline-flex;
       align-items: center;
-      margin-left: 0.3rem;
+      margin-left: 0.25rem;
       cursor: pointer;
 
       & .matrix-spell-indicator-icon {
@@ -189,10 +189,10 @@
     & .mp-storage-toggle {
       display: inline-flex;
       align-items: center;
-      gap: 2px;
+      gap: 0.125rem;
       cursor: pointer;
       color: inherit;
-      padding: 2px 5px;
+      padding: 0.125rem 0.375rem;
       background-color: var(--rqg-color-enc-bg);
       border-radius: var(--rqg-radius-sm);
 
@@ -221,8 +221,8 @@
 
 /* Shared "magic capacity limit" status banner, used by the Spirit Magic, Sorcery and Rune Magic tabs. */
     & .magic-limit-banner {
-      font-size: small;
-      padding: 2px 0;
+      font-size: 0.875rem;
+      padding: 0.125rem 0;
     }
 
 /* External spell source rows (#1002, #999): spells known via the Allied Spirit bond or a bound
@@ -232,13 +232,13 @@
       grid-column: 1 / -1;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 0.25rem;
       color: var(--rqg-unassigned-rm-text);
       background: var(--rqg-unassigned-rm-bg);
       border: 1px solid var(--rqg-unassigned-rm-border);
       border-radius: var(--rqg-radius-sm);
-      padding: 4px 8px;
-      margin: 4px 0 2px;
+      padding: 0.25rem 0.5rem;
+      margin: 0.25rem 0 0.125rem;
       font-weight: 600;
 
 /* Portrait(s) inline between "From"/"in" and their names - smaller than .row-icon. */
@@ -329,7 +329,7 @@
 /* Glyph rendering (mask-image etc.) comes from the shared, unscoped .grip-icon rule in
            rqg.css - this just adds the spacing/click-through behavior specific to this context. */
       & .grip-icon {
-        margin-right: 3px;
+        margin-right: 0.25rem;
         pointer-events: none;
       }
     }
@@ -347,8 +347,8 @@
         justify-content: center;
         display: flex;
         align-items: center;
-        gap: 4px;
-        padding: 4px 10px;
+        gap: 0.25rem;
+        padding: 0.25rem 0.75rem;
         border: 1px solid var(--color-border-dark-secondary, #7b6245);
         border-radius: var(--rqg-radius-md) var(--rqg-radius-md) 0 0;
         border-bottom: none;
@@ -506,12 +506,12 @@
       grid-template-columns: auto min-content max-content min-content;
 
       & .row-icon {
-        margin-right: 4px;
+        margin-right: 0.25rem;
       }
 
       & i.fa-folder-open {
         color: var(--rqg-tree-border-strong);
-        margin-right: 5px;
+        margin-right: 0.375rem;
         position: relative;
         bottom: -7px;
         left: -2px;
@@ -533,8 +533,8 @@
         &.container {
           border-top: 3px solid var(--rqg-tree-border-strong);
           border-left: 3px solid var(--rqg-tree-border-strong);
-          margin-top: 5px;
-          padding-top: 5px;
+          margin-top: 0.375rem;
+          padding-top: 0.375rem;
           font-style: normal;
           background-color: rgb(255 255 255 / 5%);
         }
@@ -558,7 +558,7 @@
       display: flex;
       position: sticky;
       bottom: 0;
-      padding: 5px;
+      padding: 0.375rem;
       align-items: flex-end;
       background-color: var(--rqg-color-enc-bg);
       border: inset var(--rqg-color-enc-bg);
@@ -662,7 +662,7 @@
 
 /* --- Header --- */
     .sheet-header {
-      padding: 4px 4%;
+      padding: 0.25rem 4%;
       align-items: start;
       height: fit-content;
 
@@ -674,8 +674,8 @@
         & .profile {
           grid-row: 1 / 3;
           grid-column: profile-start / profile-end;
-          margin-right: 15px;
-          margin-top: 8px; /* clearance from the window top */
+          margin-right: 1rem;
+          margin-top: 0.5rem; /* clearance from the window top */
 
           & .profile-frame {
             position: relative;
@@ -713,13 +713,13 @@
             margin-left: 1rem;
 
             & input[name="name"] {
-              font-size: 35px;
+              font-size: 2.1875rem;
               border: none;
               width: 100%;
               height: 39px;
               padding-top: 0;
               padding-bottom: 0;
-              margin-top: -8px;
+              margin-top: -0.5rem;
               margin-left: -0.8rem;
 
               &:hover {
@@ -728,7 +728,7 @@
             }
 
             & input[name="system.extendedName"] {
-              font-size: 16px;
+              font-size: 1rem;
               font-style: italic;
               border: none;
               width: 100%;
@@ -741,12 +741,12 @@
             }
 
             & .name-display {
-              font-size: 35px;
+              font-size: 2.1875rem;
               line-height: 1;
             }
 
             & .extended-name-display {
-              font-size: 16px;
+              font-size: 1rem;
               font-style: italic;
               color: var(--color-text-secondary);
             }
@@ -774,7 +774,7 @@
         & .characteristics {
           grid-row: 2;
           grid-column: name-rune-start / name-rune-end;
-          margin-top: -2px;
+          margin-top: -0.125rem;
           min-height: 80px; /* prevents responsive font shrink from also shrinking this row,
             which let the portrait bleed into the strike-rank row below at narrow widths */
           display: grid;
@@ -793,7 +793,7 @@
           & .value {
             font-size: min(22px, 3cqw);
             font-weight: bold;
-            margin-top: -4px;
+            margin-top: -0.25rem;
             text-align: center;
           }
 
@@ -807,11 +807,11 @@
 
           & input:not(.value) {
             background-color: transparent;
-            font-size: 12px;
+            font-size: 0.75rem;
             width: 8ch;
             min-width: 0;
             text-align: center;
-            margin-top: -4px;
+            margin-top: -0.25rem;
 
             &:focus {
               border: 1px solid grey;
@@ -821,7 +821,7 @@
 
           & [data-characteristic] {
             border-radius: var(--rqg-radius);
-            padding: 2px 4px;
+            padding: 0.125rem 0.25rem;
 
             &:hover {
               background: var(--rqg-row-hover);
@@ -839,13 +839,13 @@
           display: flex;
           justify-content: space-between;
           align-items: end;
-          margin-top: -4px;
+          margin-top: -0.25rem;
 
           & .dex-sr,
           & .siz-sr {
             border-radius: var(--rqg-radius-md);
             border: 1px inset #999;
-            padding: 6px;
+            padding: 0.375rem;
             line-height: 1;
             text-box: trim-both cap alphabetic;
           }
@@ -868,10 +868,10 @@
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 2px 5px;
+          padding: 0.125rem 0.375rem;
           background-color: var(--rqg-color-enc-bg);
           border-radius: var(--rqg-radius-sm);
-          font-size: 14px;
+          font-size: 0.875rem;
 
           & .locomotion-picker {
             display: flex;
@@ -886,7 +886,7 @@
             border: none;
             background-color: var(--rqg-color-enc-bg);
             color: inherit;
-            font-size: 13px;
+            font-size: 0.8125rem;
             padding: 0 2px;
             width: auto;
 
@@ -904,7 +904,7 @@
           & > span {
             display: inline-flex;
             align-items: center;
-            gap: 2px;
+            gap: 0.125rem;
           }
 
           & input.mov-value-input {
@@ -918,7 +918,7 @@
           }
 
           & .enc-factor-label {
-            font-size: 12px;
+            font-size: 0.75rem;
           }
         }
       }
@@ -935,8 +935,8 @@
 
 /* Keep a little breathing room between vertical labels and scrollbar track without
        changing the effective nav column width. */
-      padding-inline-end: 6px;
-      margin-inline-end: -6px;
+      padding-inline-end: 0.375rem;
+      margin-inline-end: -0.375rem;
     }
 
     .sheet-content {
@@ -955,7 +955,7 @@
       position: relative;
       flex-direction: row;
       border: none;
-      padding: 8px 0;
+      padding: 0.5rem 0;
       margin: 0;
       display: block;
       line-height: 20px;
@@ -986,7 +986,7 @@
 
 /* --- Sheet body --- */
     .sheet-body {
-      padding: 8px 4%;
+      padding: 0.5rem 4%;
     }
 
 /* --- Common element styles --- */
@@ -1144,7 +1144,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 2px;
+        gap: 0.125rem;
         cursor: pointer;
 
         & img.rune {
@@ -1154,13 +1154,13 @@
         }
 
         & .rune-name {
-          font-size: 11px;
+          font-size: 0.6875rem;
           line-height: 1;
           white-space: nowrap;
         }
 
         & .rune-chance {
-          font-size: 14px;
+          font-size: 0.875rem;
           font-weight: bold;
           line-height: 1;
         }
@@ -1168,7 +1168,7 @@
         & input[type="number"] {
           width: 5ch;
           text-align: center;
-          font-size: 12px;
+          font-size: 0.75rem;
         }
 
         &.standalone {
@@ -1360,7 +1360,7 @@
       & .passions-list {
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 0.125rem;
       }
 
       & .passion-row {
@@ -1368,7 +1368,7 @@
         grid-template-columns: 28px 1fr auto;
         align-items: center;
         gap: 0.5rem;
-        padding: 2px 6px;
+        padding: 0.125rem 0.375rem;
 
         &:nth-child(odd) {
           background: var(--rqg-table-alternate-background);
@@ -1412,12 +1412,12 @@
         & .passion-chance-edit {
           display: flex;
           align-items: center;
-          gap: 2px;
+          gap: 0.125rem;
 
           & input[type="number"] {
             width: 5ch;
             text-align: center;
-            font-size: 12px;
+            font-size: 0.75rem;
           }
         }
       }
@@ -1478,7 +1478,7 @@
 
       & .hit-location-dice-error {
         width: 22rem;
-        padding: 0.3rem;
+        padding: 0.25rem;
         margin-bottom: 0.5rem;
       }
 
@@ -1539,7 +1539,7 @@
           position: absolute !important;
           border: 1px solid #666;
           border-radius: var(--rqg-radius-lg);
-          padding: 5px;
+          padding: 0.375rem;
           width: fit-content;
           min-width: 5rem;
           max-width: 7rem;
@@ -1634,8 +1634,8 @@
       & .sr-buttons {
         display: flex;
         align-items: center;
-        gap: 0.55rem;
-        margin-bottom: 0.4rem;
+        gap: 0.5rem;
+        margin-bottom: 0.375rem;
 
         & button {
           width: 1.7rem;
@@ -1654,11 +1654,11 @@
         & .siz {
           display: flex;
           align-items: center;
-          gap: 0.55rem;
+          gap: 0.5rem;
           border-radius: var(--rqg-radius-md);
           border: 1px inset #999;
-          padding: 5px calc(0.55rem / 2);
-          margin: 0 calc(-0.55rem / 2);
+          padding: 0.375rem 0.25rem;
+          margin: 0 -0.25rem;
           line-height: 1;
           text-box: trim-both cap alphabetic;
         }
@@ -1706,7 +1706,7 @@
             mask-size: contain;
             mask-repeat: no-repeat;
             background-color: currentcolor;
-            margin-right: 2px;
+            margin-right: 0.125rem;
             pointer-events: none;
           }
         }
@@ -1723,7 +1723,7 @@
 
 /* Restore padding lost because display:contents bypasses .grid > * selector */
         & > * {
-          padding: 2px;
+          padding: 0.125rem;
           position: relative;
           display: flex;
           align-items: center;
@@ -1776,11 +1776,11 @@
 
 /* Dodge: single-action row — whole row gets the brighter tint */
         &.dodge-row:hover > * {
-          background: rgb(139 90 43 / 32%) !important;
+          background: var(--rqg-row-hover-emphasis) !important;
         }
 
         &.dodge-row:active > * {
-          background: rgb(139 90 43 / 50%) !important;
+          background: var(--rqg-row-active-emphasis) !important;
         }
 
 /* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together only when
@@ -1789,7 +1789,7 @@
           & > :nth-child(2),
           & > :nth-child(3),
           & > :nth-child(4) {
-            background: rgb(139 90 43 / 32%) !important;
+            background: var(--rqg-row-hover-emphasis) !important;
           }
         }
 
@@ -1797,7 +1797,7 @@
           & > :nth-child(2),
           & > :nth-child(3),
           & > :nth-child(4) {
-            background: rgb(139 90 43 / 50%) !important;
+            background: var(--rqg-row-active-emphasis) !important;
           }
         }
 
@@ -1811,7 +1811,7 @@
         & >[data-weapon-roll]:not(:empty):hover,
         & >[data-item-roll]:hover,
         & >[data-damage-roll]:hover {
-          background: rgb(139 90 43 / 32%) !important;
+          background: var(--rqg-row-hover-emphasis) !important;
         }
 
         & .usage[data-item-roll]:active,
@@ -1819,7 +1819,7 @@
         & > [data-weapon-roll]:not(:empty):active,
         & > [data-item-roll]:active,
         & > [data-damage-roll]:active {
-          background: rgb(139 90 43 / 50%) !important;
+          background: var(--rqg-row-active-emphasis) !important;
         }
       }
 
@@ -1845,9 +1845,9 @@
 
       & select.projectile {
         border: none;
-        font-size: small;
+        font-size: 0.875rem;
         font-style: italic;
-        padding: 4px 0;
+        padding: 0.25rem 0;
         background-color: #ffffff2b;
 
         &:hover {
@@ -1874,7 +1874,7 @@
 
       & .usage {
         line-height: 1.5rem;
-        column-gap: 0.3rem;
+        column-gap: 0.25rem;
 
         &.missile {
           line-height: 3rem;
@@ -1888,7 +1888,7 @@
       & .spirit-bond-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 4px;
+        gap: 0.25rem;
         margin-top: 1rem;
 
 /* Base chip styling (.bond-actor-link) is shared with the item sheet's Bound Spirit link -
@@ -1929,7 +1929,7 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
-        margin-bottom: 8px;
+        margin-bottom: 0.5rem;
 
         & .skill-filter-input {
           position: relative;
@@ -1961,8 +1961,8 @@
           display: flex;
           flex-wrap: wrap;
           align-items: center;
-          padding: 4px 8px;
-          gap: 0.4rem;
+          padding: 0.25rem 0.5rem;
+          gap: 0.375rem;
         }
       }
 
@@ -1988,7 +1988,7 @@
         display: contents;
 
         & > * {
-          padding: 2px;
+          padding: 0.125rem;
           position: relative;
           display: flex;
           align-items: center;
@@ -2019,12 +2019,12 @@
       & .skill-gained-edit {
         display: flex;
         align-items: center;
-        gap: 2px;
+        gap: 0.125rem;
 
         & input[type="number"] {
           width: 5ch;
           text-align: center;
-          font-size: 12px;
+          font-size: 0.75rem;
         }
       }
     }
@@ -2047,7 +2047,7 @@
         display: contents;
 
         & > * {
-          padding: 2px;
+          padding: 0.125rem;
           position: relative;
           display: flex;
           align-items: center;
@@ -2089,7 +2089,7 @@
         display: contents;
 
         & > * {
-          padding: 2px;
+          padding: 0.125rem;
           position: relative;
           display: flex;
           align-items: center;
@@ -2114,7 +2114,7 @@
       }
 
       & input[type="text"] {
-        font-size: 12px;
+        font-size: 0.75rem;
         border: 1px solid transparent;
         border-radius: var(--rqg-radius-sm);
         width: 100%;
@@ -2150,8 +2150,8 @@
         background: var(--rqg-unassigned-rm-bg);
         border: 1px solid var(--rqg-unassigned-rm-border);
         border-radius: var(--rqg-radius-sm);
-        padding: 4px 8px;
-        margin-bottom: 4px;
+        padding: 0.25rem 0.5rem;
+        margin-bottom: 0.25rem;
 
         & a {
           color: var(--rqg-unassigned-rm-action);
@@ -2163,7 +2163,7 @@
           font-weight: 600;
 
           & i {
-            margin-right: 0.35rem;
+            margin-right: 0.375rem;
           }
         }
 
@@ -2176,7 +2176,7 @@
         margin-bottom: 1.5rem;
 
         & .cult-header {
-          padding: 4px 6px;
+          padding: 0.25rem 0.375rem;
           cursor: pointer;
 
           & h2 {
@@ -2198,7 +2198,7 @@
             flex-direction: column;
             gap: 0.25rem;
             font-size: 0.85em;
-            padding: 2px 0;
+            padding: 0.125rem 0;
 
             & .cult-meta-row {
               display: flex;
@@ -2253,7 +2253,7 @@
             & input[type="number"] {
               width: 3em;
               text-align: center;
-              font-size: 12px;
+              font-size: 0.75rem;
               border: 1px solid transparent;
               border-radius: var(--rqg-radius-sm);
               background: transparent;
@@ -2283,7 +2283,7 @@
         display: contents;
 
         & > * {
-          padding: 2px;
+          padding: 0.125rem;
           position: relative;
           display: flex;
           align-items: center;
@@ -2338,7 +2338,7 @@
     & .spirit-magic-row.external-item > *:first-child,
     & .rune-magic-row.external-item > *:first-child {
       border-left: 3px solid var(--rqg-unassigned-rm-border);
-      padding-left: 3px;
+      padding-left: 0.25rem;
     }
 
 /* --- Wounded / injured overall sheet background --- */
@@ -2413,11 +2413,11 @@
           min-width: 200px;
           border: 1px solid var(--color-border-dark-tertiary, #a8926b);
           border-radius: var(--rqg-radius);
-          padding: 6px 10px;
+          padding: 0.375rem 0.75rem;
 
           & legend {
             font-weight: bold;
-            padding: 0 4px;
+            padding: 0 0.25rem;
             font-size: 0.9em;
           }
         }
@@ -2425,7 +2425,7 @@
         & .key-value-grid {
           display: grid;
           grid-template-columns: auto 1fr;
-          gap: 4px 0.75rem;
+          gap: 0.25rem 0.75rem;
           align-items: center;
           font-size: 0.85em;
 
@@ -2550,7 +2550,7 @@
         }
 
         & > * {
-          padding: 2px 4px;
+          padding: 0.125rem 0.25rem;
           position: relative;
           display: flex;
           align-items: center;
@@ -2574,7 +2574,7 @@
       & .effect-change {
         display: grid;
         grid-template-columns: minmax(0, 1fr) 11ch 3ch;
-        gap: 0 6px;
+        gap: 0 0.375rem;
         align-items: center;
 
         & > * {
@@ -2592,7 +2592,7 @@
 /* --- Edit mode badge in window header --- */
     .edit-mode-badge {
       opacity: 0.7;
-      padding: 1px 6px;
+      padding: 1px 0.375rem;
       white-space: nowrap;
       pointer-events: none;
       user-select: none;

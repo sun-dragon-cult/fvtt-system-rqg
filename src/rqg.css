@@ -138,11 +138,11 @@
   }
 
   .small-size {
-    font-size: small;
+    font-size: 0.875rem;
   }
 
   .x-small-size {
-    font-size: x-small;
+    font-size: 0.75rem;
   }
 
   .align-flex-baseline {
@@ -349,7 +349,7 @@
       background: rgb(0 0 0 / 10%);
       border: 2px groove var(--color-text-light-highlight);
       border-radius: 3px;
-      font-size: 14px;
+      font-size: 0.875rem;
       line-height: 28px;
       font-family: var(--font-primary);
     }
@@ -876,7 +876,7 @@
 
     &#context-menu {
       width: fit-content;
-      font-size: 14px;
+      font-size: 0.875rem;
       cursor: default;
       text-align: left;
       text-shadow: initial;
@@ -1234,7 +1234,7 @@
 
   .app {
     &.sheet.journal-sheet {
-      font-size: 16px;
+      font-size: 1rem;
 
       & h3,
       & h4 {

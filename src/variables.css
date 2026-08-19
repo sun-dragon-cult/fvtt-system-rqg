@@ -26,6 +26,12 @@
      (skills, spells, weapons, passions, runes, reputation). */
   --rqg-row-hover: rgb(139 90 43 / 18%);
   --rqg-row-active: rgb(139 90 43 / 30%);
+
+/* Brighter row-hover/row-active variant for weapon-list rows where a single
+     click target (dodge, spirit-combat roll cells) needs to stand out more than
+     the default row tint. */
+  --rqg-row-hover-emphasis: rgb(139 90 43 / 32%);
+  --rqg-row-active-emphasis: rgb(139 90 43 / 50%);
   --rqg-color-heading-border: #782e22; /* h1/h2/h3 underline on V2 sheets */
   --rqg-color-critical-state-bg: #620000d0; /* dead/unconscious/shock/wounded sheet background */
   --rqg-color-edit-mode-bg: #007300d0; /* edit-mode sheet background */
