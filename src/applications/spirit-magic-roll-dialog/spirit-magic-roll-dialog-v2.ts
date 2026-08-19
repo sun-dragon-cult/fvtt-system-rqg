@@ -138,6 +138,9 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.powX5 ??= this.powX5;
     formData.spellItemUuid ??= this.spellItem.uuid ?? undefined;
+    formData.spellItemJson ??= this.spellItem.isEmbedded
+      ? undefined
+      : JSON.stringify(this.spellItem.toObject());
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
     formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
@@ -189,9 +192,19 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         )?.dataset["rollMode"],
       ) ?? getDefaultRollMode();
 
-    const spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
+    let spellItem: RqgItem | PartialAbilityItem | undefined = (await fromUuid(
       formDataObject.spellItemUuid ?? "",
     )) as RqgItem | undefined;
+
+    // spellItemUuid doesn't round-trip for an unembedded/transient spell (e.g. a Matrix Spell
+    // resolution, #959, see resolveMatrixSpellItem) - fall back to the JSON snapshot taken at
+    // dialog-open time, same "unpersisted item survives as JSON" idiom as reputationItemJson in
+    // ability-roll-dialog-v2.ts.
+    if (!spellItem && formDataObject.spellItemJson) {
+      spellItem = new CONFIG.Item.documentClass(
+        JSON.parse(formDataObject.spellItemJson),
+      ) as unknown as RqgItem;
+    }
 
     const token = formDataObject.tokenUuid
       ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)

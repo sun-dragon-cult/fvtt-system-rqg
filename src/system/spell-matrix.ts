@@ -18,6 +18,12 @@ import { isDocumentSubType, localize } from "./util";
  *
  * Returns undefined (and warns) if the item has no matrix spell set, or the rqid can't be resolved
  * - e.g. the wiki-rqg compendium isn't installed, or the spell's rqid was renamed upstream.
+ *
+ * The returned item is never embedded/persisted anywhere (`.isEmbedded` is false), so its `.uuid`
+ * isn't resolvable via fromUuid - callers that need it to survive a round-trip through a form
+ * submission (e.g. SpiritMagicRollDialogV2's onSubmit) can't rely on the uuid for that; see
+ * spellItemJson there for the fallback (same "unpersisted item survives as JSON" idiom already used
+ * for Reputation's PartialAbilityItem in ability-roll-dialog-v2.ts).
  */
 export async function resolveMatrixSpellItem(
   item: PhysicalItem,

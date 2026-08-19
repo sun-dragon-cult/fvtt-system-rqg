@@ -23,6 +23,10 @@ export type SpiritMagicRollDialogFormData = {
   otherModifierDescription: string;
 
   spellItemUuid?: string; // hidden field
+  // Set only when spellItem is unembedded (e.g. a transient Matrix Spell resolution, #959) -
+  // spellItemUuid alone can't round-trip through fromUuid for those. Same "unpersisted item
+  // survives as JSON" idiom as reputationItemJson in ability-roll-dialog-data.types.ts.
+  spellItemJson?: string; // hidden field
   tokenUuid?: string; // hidden field
   casterActorUuid?: string; // hidden field
   powX5: number; // hidden field
