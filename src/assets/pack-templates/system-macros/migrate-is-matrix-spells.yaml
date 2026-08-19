@@ -1,0 +1,11 @@
+name: Migrate isMatrix Spells to Spell Matrix Items
+type: script
+img: icons/svg/upgrade.svg
+scope: global
+flags:
+  rqg:
+    documentRqidFlags:
+      id: m..migrate-is-matrix-spells
+      lang: en
+      priority: 0
+command: "file:macros/migrate-is-matrix-spells.js"
