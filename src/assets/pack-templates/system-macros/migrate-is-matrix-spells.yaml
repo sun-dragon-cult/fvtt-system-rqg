@@ -1,6 +1,6 @@
-name: Migrate isMatrix Spells to Spell Matrix Items
+name: Migrate isMatrix Spells
 type: script
-img: icons/svg/upgrade.svg
+img: icons/tools/scribal/magnifying-glass.webp
 scope: global
 flags:
   rqg:
