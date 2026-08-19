@@ -20,6 +20,8 @@ colors:
   input-border-on-surface: "rgba(255, 255, 255, 0.25)"
   row-hover: "rgba(139, 90, 43, 0.18)"
   row-active: "rgba(139, 90, 43, 0.30)"
+  row-hover-emphasis: "rgba(139, 90, 43, 0.32)"
+  row-active-emphasis: "rgba(139, 90, 43, 0.50)"
   enc-warning: "rgba(255, 100, 0, 0.27)"
   dex-sr-bg: "rgba(255, 227, 65, 0.56)"
   siz-sr-bg: "rgba(43, 215, 43, 0.56)"
@@ -103,6 +105,10 @@ components:
     backgroundColor: "{colors.row-hover}"
   table-row-active:
     backgroundColor: "{colors.row-active}"
+  table-row-hover-emphasis:
+    backgroundColor: "{colors.row-hover-emphasis}"
+  table-row-active-emphasis:
+    backgroundColor: "{colors.row-active-emphasis}"
   status-pill:
     textColor: "{colors.on-surface}"
     rounded: "{rounded.md}"
@@ -227,6 +233,8 @@ ones. The table below is the source of truth for which is which:
 | `colors.input-border-on-surface` | `--rqg-color-header-input-border` |
 | `colors.row-hover` | `--rqg-row-hover` |
 | `colors.row-active` | `--rqg-row-active` |
+| `colors.row-hover-emphasis` | `--rqg-row-hover-emphasis` |
+| `colors.row-active-emphasis` | `--rqg-row-active-emphasis` |
 | `colors.enc-warning` | `--rqg-color-enc-warning` |
 | `colors.dex-sr-bg` | `--rqg-color-dex-sr-bg` |
 | `colors.siz-sr-bg` | `--rqg-color-siz-sr-bg` |
@@ -252,9 +260,16 @@ ones. The table below is the source of truth for which is which:
 | `rounded.sm` / `DEFAULT` / `md` / `lg` / `xl` / `full` | `--rqg-radius-sm` / `--rqg-radius` / `--rqg-radius-md` / `--rqg-radius-lg` / `--rqg-radius-xl` / `--rqg-radius-full` |
 
 `typography` and `spacing` are not yet exposed as CSS custom properties —
-sheet rules reference literal `rem` values directly today. Introducing
-`--rqg-font-*` / `--rqg-space-*` variables for them is future work, not a
-prerequisite for the current token migration.
+sheet rules reference literal `rem` values directly today. That was an
+acceptable gap when only a handful of call sites existed; #996's harmonization
+pass grew it substantially (some individual spacing/font-size values now
+repeat 15-35+ times across `actorsheet-v2.css`/`rqg.css`), so it's a
+larger deferral than it once was, but colors needed `--rqg-*` custom
+properties for a reason spacing/font-size don't have: dark/light theme
+swapping. Introducing `--rqg-font-*` / `--rqg-space-*` variables remains
+future work, not a prerequisite for token migration — a distinct refactor
+(naming, lint enforcement, cross-file rollout) from harmonizing the raw
+values themselves.
 
 ## Colors
 
@@ -271,7 +286,12 @@ prerequisite for the current token migration.
   tint for *every* hoverable/clickable row across skills, spells, weapons,
   passions, runes, and reputation — previously this value was duplicated
   ~12 times as a raw `rgb(139 90 43 / 18%)` / `/ 30%)` literal. Anything new
-  should reference these tokens, not repeat the literal.
+  should reference these tokens, not repeat the literal. `row-hover-emphasis` /
+  `row-active-emphasis` are a brighter variant of the same pair, used where a
+  single click target within a multi-cell row (dodge, spirit-combat roll
+  cells) needs to stand out more than the row's own hover/active tint —
+  previously duplicated ~6 times as a raw `rgb(139 90 43 / 32%)` / `/ 50%)`
+  literal in `actorsheet-v2.css`.
 ### Theming — Dark and Light
 
 RQG mirrors Foundry's own Application theme setting via `theme.css`'s
@@ -307,6 +327,8 @@ it actually varies, so nothing is silently constant-by-omission:
 | `input-border-on-surface` | `rgba(255,255,255,0.25)` | `#666` | ✓ |
 | `row-hover` | `rgba(139,90,43,0.18)` | `rgba(139,90,43,0.18)` | — |
 | `row-active` | `rgba(139,90,43,0.30)` | `rgba(139,90,43,0.30)` | — |
+| `row-hover-emphasis` | `rgba(139,90,43,0.32)` | `rgba(139,90,43,0.32)` | — |
+| `row-active-emphasis` | `rgba(139,90,43,0.50)` | `rgba(139,90,43,0.50)` | — |
 | `enc-warning` | `rgba(255,100,0,0.27)` | `rgba(255,100,0,0.27)` | — |
 | `dex-sr-bg` (DEX strike-rank badge) | `#ffe34190` | `#f2ff009e` | ✓ |
 | `siz-sr-bg` (SIZ strike-rank badge) | `#2bd72b90` | `#15ff1f5e` | ✓ |
@@ -330,7 +352,7 @@ it actually varies, so nothing is silently constant-by-omission:
 | `income-skill-bg` (training/research row) | `#4a3820` | `#e4cc9d` | ✓ |
 | `income-skill-border` | `#7b6245` | `#a8926b` | ✓ |
 
-24 of 35 color tokens vary by theme; 11 are genuinely constant (`theme.css`
+24 of 37 color tokens vary by theme; 13 are genuinely constant (`theme.css`
 defines them once, with no `.theme-dark`/`.theme-light` override).
 
 Two related swaps live outside this table because they aren't `colors:`
@@ -356,12 +378,13 @@ Two families, two jobs:
 All sizes are expressed in `rem`, not `px`. This is deliberate: Foundry's
 "Font Size" accessibility slider (User Interface Configuration) sets the
 root `<html>` `font-size` directly, so `rem`-based type scales
-automatically with it, while `px`-based type does not. The current
-stylesheets mix both (`--font-size-*` Foundry tokens are px, and several
-sheet-specific declarations hardcode `px`), which is the root cause of the
-"fonts don't all scale together" issue observed when adjusting that slider.
-Migrating remaining `px` font-sizes onto this scale resolves it without any
-new settings UI.
+automatically with it, while `px`-based type does not. `actorsheet-v2.css`
+and `rqg.css` used to mix the two — raw `px` font-sizes and the keyword
+sizes `small`/`x-small` didn't track the slider — which #996 migrated onto
+this `rem` scale. See Known Inconsistencies for the handful of
+viewport/font-relative sizes that were deliberately left alone because they
+already track correctly (or because forcing them onto a flat `rem` value
+would be a visual change, not a value-preserving one).
 
 ## Layout & Spacing
 
@@ -370,6 +393,10 @@ gaps/padding scattered across `2px, 3px, 4px, 5px, 6px, 8px, 0.25rem,
 0.3rem, 0.5rem, 0.55rem, 0.75rem`, which are really 5–6 intended sizes
 expressed inconsistently. The scale above canonicalizes to the nearest step;
 new spacing should pick from it rather than adding another one-off value.
+#996 rounded `actorsheet-v2.css`'s padding/margin/gap literals (`px` and
+off-grid `rem`) onto this scale; see Known Inconsistencies for the few spots
+left alone because a `calc()` or a matching border/margin ties them to
+another value, and for why `rqg.css`'s own spacing wasn't part of this pass.
 
 Grid-based layouts (skill/weapon/gear tables) use fixed `px`/`ch` column
 widths for icon and number columns — these stay in `px`/`ch` deliberately,
@@ -474,16 +501,51 @@ here as a named pattern rather than enumerated tokens.
 
 #971's mechanical migration (row-hover/row-active, `danger`, heading-border,
 and the critical-state/edit-mode backgrounds, plus the border-radius scale)
-landed in #995. What's left is tracked in #996, since it risks an actual
-visual change rather than a value-preserving substitution:
+landed in #995. #996 closed the three items #995 deliberately left out
+(font sizes, spacing, and the row-tint brighter variant — now
+`row-hover-emphasis`/`row-active-emphasis`, see Colors → Row interaction),
+migrating `actorsheet-v2.css`'s raw `px`/keyword font sizes and `px`/`rem`
+spacing onto the `rem` scale documented above. A few things were
+deliberately left alone rather than guessed at, since changing them changes
+the rendered size/position, not just the unit:
 
-- Font sizes still mix `px`, Foundry's px-based `--font-size-*`, keyword
-  sizes (`small`, `x-small`), and the `rem` scale above.
-- Spacing still mixes `px`, `rem`, `em`, and `ch` for what are really a
-  handful of intended sizes expressed inconsistently.
-- `rgb(139 90 43 / 32%)` / `/ 50%)` — a brighter variant of `row-hover` /
-  `row-active` used on dodge/spirit-combat rows — has no token yet; worth
-  deciding whether it earns one.
+- **Font sizes:** relative units (`em`, `%`) and `clamp()`/`cqw`/`cqh`-driven
+  sizes (SR badges, portrait sizing, vertical-tab labels) are untouched —
+  they already scale correctly (their base is inherited or viewport-relative,
+  not a fixed `px`), and forcing them onto the flat `rem` scale would be a
+  value change, not a value-preserving one. Foundry's own `--font-size-*`
+  custom properties (`var(--font-size-12)` etc.) are also untouched: despite
+  the name, current Foundry versions define them in `rem` already (see
+  `FoundryVTT/public/less2/variables.less`), so they don't have the
+  `px`-doesn't-scale bug either, and they additionally shrink at Foundry's
+  480px window-width breakpoint, a responsive behavior a flat `rem` literal
+  would silently drop.
+- **Spacing:** a few spots keep one literal driving another via `calc()` or a
+  matching border/margin pair, so an individual value can't be rounded onto
+  the scale without breaking the relationship: the gear-row cell
+  padding/negative-margin that offsets half of `.grid.item-list`'s
+  `column-gap` (`padding: 2px 4.5px` / `margin-inline: -2.5px` /
+  `column-gap: 5px`), the charname-input `margin-left: -0.8rem` nudge (tuned
+  against that input's own oversized font, not the spacing scale), and the
+  vertical-tab active-state `margin: 0 -3px` (matched to that state's own
+  `3px` border width). The SR-badge `.dex`/`.siz` padding/margin, previously
+  `calc(0.55rem / 2)` against a `0.55rem` gap, no longer needs the `calc()`:
+  both values rounded onto the scale (`0.5rem` gap, `0.25rem` half), so
+  they're now the plain literals `0.375rem 0.25rem` / `0 -0.25rem`.
+  `padding-inline: 0.4rem` on the Active Effects tab (deliberately matching
+  an undocumented bleed amount elsewhere) and the `img.rune`/`img.common`
+  rune-magic-row icon margins (`margin: 0 1px`, twice) were left for the same
+  reason — no scale step to round to without breaking what they're matching.
+  `rqg.css`'s own padding/margin/gap (as
+  opposed to the two keyword font-size classes below) was left alone
+  entirely: unlike `actorsheet-v2.css`, it wasn't part of #971/#995's
+  audited scope, and much of it backs V1 sheets and other non-V2 chrome the
+  `spacing:` scale was never extracted from.
+- Font-size migration also resolved the two keyword sizes flagged as
+  ambiguous: `.small-size`/`.x-small-size` (`rqg.css`) now use `0.875rem`/
+  `0.75rem` — the standard CSS absolute-size ratios for `small`/`x-small`
+  relative to `medium` (8/9 and 3/4), which happen to land exactly on
+  `body-md`/`body-sm` and `label`/`body-sm`.
 - `border-radius: 2px` (one spot in `actorsheet-v2.css`) doesn't cleanly
   map onto the `rounded` scale.
 
