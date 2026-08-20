@@ -2078,7 +2078,10 @@
         grid-template-columns: [col-start] 30px auto auto 1fr [col-end];
       }
 
-      & .spirit-magic-points-input {
+      /* The extra [type="number"] raises specificity above the generic
+         `.grid input[type="number"]` width:100% rule (which otherwise wins over the
+         single-class .spirit-magic-points-input selector) without needing !important. */
+      & input.spirit-magic-points-input[type="number"] {
         width: 3ch;
         text-align: center;
         margin-right: 0.25rem;
