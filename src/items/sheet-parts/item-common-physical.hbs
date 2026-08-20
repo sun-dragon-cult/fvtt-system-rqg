@@ -111,39 +111,47 @@
   {{/unless}}
 </div>
 
-{{!-- Matrix Spell (Core p.264-265, #959) - a single Spirit Magic spell link, unlike Bound
-     Spirit(s) above. The spell's own mechanics are resolved live from spellRqidLink at cast time
-     (resolveMatrixSpellItem, spell-matrix.ts); only the enchanted level is stored here. --}}
+{{!-- Matrix Spell(s) (Core p.264-265, #959) - a list, not a single link, like Bound Spirit(s)
+     above: an item can hold more than one enchanted spell (e.g. one 4-point and one 1-point
+     spell), and the dropzone always appends another. Each spell's own mechanics are resolved live
+     from spellRqidLink at cast time (resolveMatrixSpellItem, spell-matrix.ts); only the enchanted
+     level (points) is stored per entry here. --}}
 <label for="matrix-spell-{{id}}">{{localize "RQG.Item.Gear.MatrixSpell"}}</label>
 <div id="matrix-spell-{{id}}"
      class="matrix-spell-dropzone"
      data-matrix-spell-dropzone
      data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}">
-  {{#if system.matrixSpell.spellRqidLink.rqid}}
+  {{#each system.matrixSpells}}
     <div class="bond-actor-link matrix-spell-link">
-      <span data-rqid-link="{{system.matrixSpell.spellRqidLink.rqid}}">
-        {{system.matrixSpell.spellRqidLink.name}}
+      <span data-rqid-link="{{this.spellRqidLink.rqid}}">
+        {{this.spellRqidLink.name}}
       </span>
-      {{#if isEditable}}
+      {{#if ../isGM}}
+        {{#if this.isVariable}}
+          <input type="number"
+                 data-matrix-spell-points
+                 data-index="{{@index}}"
+                 data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellPoints"}}"
+                 value="{{this.points}}"
+                 min="0"
+                 max="99">
+        {{else}}
+          <span class="matrix-spell-points-readonly"
+                data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellPoints"}}">{{this.points}}</span>
+        {{/if}}
+      {{/if}}
+      {{#if ../isEditable}}
         <a data-action="unlinkMatrixSpell"
-           data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=system.matrixSpell.spellRqidLink.name}}">
+           data-index="{{@index}}"
+           data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=this.spellRqidLink.name}}">
           <i class="fas fa-unlink"></i>
         </a>
       {{/if}}
     </div>
-  {{else}}
+  {{/each}}
+  {{#unless system.matrixSpells.length}}
     <div class="bond-actor-link matrix-spell-link empty">
       <span class="matrix-spell-hint">{{localize "RQG.Item.Gear.MatrixSpellDropHint"}}</span>
     </div>
-  {{/if}}
+  {{/unless}}
 </div>
-
-{{#if isGM}}
-  <label for="matrix-spell-points-{{id}}">{{localize "RQG.Item.Gear.MatrixSpellPoints"}}</label>
-  <input id="matrix-spell-points-{{id}}"
-         type="number"
-         name="system.matrixSpell.points"
-         value="{{system.matrixSpell.points}}"
-         min="0"
-         max="99">
-{{/if}}

@@ -12,6 +12,7 @@ import type { RqgItem } from "./rqg-item";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { PhysicalItem } from "@item-model/item-types.ts";
 import { getBondRoleConflict, getBoundSpiritActors } from "../system/magic-point-source";
+import { resolveMatrixSpellItem } from "../system/spell-matrix";
 import {
   extractDropInfo,
   extractDroppedActor,
@@ -31,6 +32,9 @@ import type { DeepPartial } from "fvtt-types/utils";
 /** Shorthand types for ApplicationV2 lifecycle method parameters. */
 export type AppV2RenderContext = DeepPartial<foundry.applications.api.ApplicationV2.RenderContext>;
 export type AppV2RenderOptions = DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>;
+
+/** One stored Matrix Spell entry (#959) as persisted on a physical item's `system.matrixSpells`. */
+type MatrixSpellStorageEntry = { spellRqidLink: RqidLink; points: number };
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ItemSheetV2 = foundry.applications.sheets.ItemSheetV2;
@@ -140,6 +144,30 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     // property access, which is undefined (and so harmlessly resolves to no spirits) for every
     // other item type - no type-narrowing needed here.
     const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
+    const system = foundry.utils.duplicate(this.document._source.system) as {
+      matrixSpells?: (MatrixSpellStorageEntry & { isVariable?: boolean })[];
+    };
+    if (system.matrixSpells) {
+      // Only a variable spell's (e.g. Bladesharp 1-4) enchanted level is a per-matrix choice -
+      // for a fixed-level spell the points are intrinsic to the spell itself, so
+      // item-common-physical.hbs shows it read-only rather than as an editable input. isVariable
+      // isn't stored per matrix entry (see physical-item-schema-fields.ts), so it's resolved from
+      // each entry's canonical spell here, display-only - never submitted back (no `name=` on the
+      // read-only branch), so this doesn't risk persisting a stale/wrong value onto the document.
+      // canonicalCache is shared across entries so two entries enchanted with the same spell only
+      // resolve its canonical rqid once (see resolveMatrixSpellItem, spell-matrix.ts).
+      const canonicalCache = new Map<string, Promise<RqgItem | undefined>>();
+      system.matrixSpells = await Promise.all(
+        system.matrixSpells.map(async (entry, index) => {
+          const resolved = await resolveMatrixSpellItem(
+            this.document as unknown as PhysicalItem,
+            index,
+            canonicalCache,
+          );
+          return { ...entry, isVariable: resolved?.system.isVariable ?? false };
+        }),
+      );
+    }
     return {
       id: this.document.id ?? "",
       uuid: this.document.uuid,
@@ -149,7 +177,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       isEditable: this.isEditable,
       isEmbedded: this.document.isEmbedded,
       effects: this.document.effects,
-      system: foundry.utils.duplicate(this.document._source.system),
+      system,
       boundSpiritActors: boundSpiritActors.map((spiritActor) => ({
         uuid: spiritActor.uuid ?? "",
         name: spiritActor.name ?? "",
@@ -233,6 +261,19 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           const newName = selectElem?.selectedOptions[0]?.innerText?.trim() ?? "";
           const newRqidLink = { rqid: newRqid, name: newName };
           await this.document.update({ [`system.${targetProperty}`]: newRqidLink });
+        }
+      });
+    });
+
+    // Edit a Matrix Spell entry's enchanted points (#959, GM-only, see item-common-physical.hbs)
+    this.element.querySelectorAll<HTMLInputElement>("[data-matrix-spell-points]").forEach((el) => {
+      el.addEventListener("change", async (event) => {
+        const input = event.currentTarget as HTMLInputElement;
+        const index = Number(getRequiredDomDataset(input, "index"));
+        const matrixSpells = [...this.getMatrixSpells()];
+        if (matrixSpells[index]) {
+          matrixSpells[index] = { ...matrixSpells[index], points: Number(input.value) || 0 };
+          await this.document.update({ system: { matrixSpells } });
         }
       });
     });
@@ -397,6 +438,14 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     );
   }
 
+  /** The item's currently-stored Matrix Spell entries (#959), for _onDropMatrixSpell/
+   *  _unlinkMatrixSpellAction/the points-edit listener to append to, splice, or patch. */
+  private getMatrixSpells(): MatrixSpellStorageEntry[] {
+    return (
+      (this.document.system as { matrixSpells?: MatrixSpellStorageEntry[] }).matrixSpells ?? []
+    );
+  }
+
   /** Bind the dropped Actor as another spirit trapped in this item (#999), appended to
    *  boundSpiritActorUuids. Mirrors RqgActorSheetV2._onDropAlliedSpirit. */
   protected async _onDropBoundSpirit(event: DragEvent): Promise<void> {
@@ -456,10 +505,11 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     });
   }
 
-  /** Set the dropped Spirit Magic spell as this item's Spell Matrix Enchantment (Core p.264-265,
-   *  #959) - a single link, replacing whatever was there before. Only `spellRqidLink` and the
-   *  initial `points` (seeded from the dropped spell's own level) are stored; the spell's other
-   *  mechanics are resolved live at cast time (resolveMatrixSpellItem, spell-matrix.ts). */
+  /** Add the dropped Spirit Magic spell as another Spell Matrix Enchantment entry on this item
+   *  (Core p.264-265, #959) - appended alongside any spells already enchanted into it, since an
+   *  item can hold more than one (e.g. one 4-point and one 1-point spell). Only `spellRqidLink`
+   *  and the initial `points` (seeded from the dropped spell's own level) are stored; the spell's
+   *  other mechanics are resolved live at cast time (resolveMatrixSpellItem, spell-matrix.ts). */
   protected async _onDropMatrixSpell(event: DragEvent): Promise<void> {
     if (!this.isEditable) {
       return;
@@ -476,24 +526,28 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       ui.notifications?.warn(localize("RQG.Item.Gear.MatrixSpellDropRequiresSpiritMagicWarn"));
       return;
     }
+    const newEntry = {
+      spellRqidLink: spellRqidLink,
+      points: (droppedItem as unknown as SpiritMagicItem).system.points,
+    };
     await this.document.update({
-      system: {
-        matrixSpell: {
-          spellRqidLink: spellRqidLink,
-          points: (droppedItem as unknown as SpiritMagicItem).system.points,
-        },
-      },
+      system: { matrixSpells: [...this.getMatrixSpells(), newEntry] },
     });
   }
 
-  /** Unlink action for the Matrix Spell link - see _onDropMatrixSpell. */
-  private static async _unlinkMatrixSpellAction(this: RqgItemSheetV2): Promise<void> {
+  /** Remove one entry from the Matrix Spell list by index - see _onDropMatrixSpell. */
+  private static async _unlinkMatrixSpellAction(
+    this: RqgItemSheetV2,
+    _event: PointerEvent,
+    target: HTMLElement,
+  ): Promise<void> {
     if (!this.isEditable) {
       return;
     }
-    await this.document.update({
-      system: { matrixSpell: { spellRqidLink: { rqid: "", name: "" }, points: 0 } },
-    });
+    const index = Number(getRequiredDomDataset(target, "index"));
+    const matrixSpells = [...this.getMatrixSpells()];
+    matrixSpells.splice(index, 1);
+    await this.document.update({ system: { matrixSpells } });
   }
 
   /**

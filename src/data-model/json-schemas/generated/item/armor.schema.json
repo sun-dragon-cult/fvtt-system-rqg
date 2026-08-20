@@ -106,46 +106,49 @@
         "type": "string"
       }
     },
-    "matrixSpell": {
-      "type": "object",
-      "properties": {
-        "spellRqidLink": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "properties": {
-            "rqid": {
-              "type": "string",
-              "default": ""
+    "matrixSpells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "spellRqidLink": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "rqid": {
+                "type": "string",
+                "default": ""
+              },
+              "name": {
+                "type": "string",
+                "default": ""
+              },
+              "bonus": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
             },
-            "name": {
-              "type": "string",
-              "default": ""
-            },
-            "bonus": {
-              "type": [
-                "integer",
-                "null"
-              ]
-            }
+            "additionalProperties": false,
+            "required": [
+              "rqid",
+              "name"
+            ]
           },
-          "additionalProperties": false,
-          "required": [
-            "rqid",
-            "name"
-          ]
+          "points": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0
+          }
         },
-        "points": {
-          "type": "integer",
-          "minimum": 0,
-          "default": 0
-        }
-      },
-      "additionalProperties": false,
-      "required": [
-        "points"
-      ]
+        "additionalProperties": false,
+        "required": [
+          "points"
+        ]
+      }
     },
     "size": {
       "type": "integer",
@@ -215,7 +218,7 @@
     "price",
     "storedMagicPoints",
     "boundSpiritActorUuids",
-    "matrixSpell",
+    "matrixSpells",
     "size",
     "hitLocationRqidLinks",
     "namePrefix",

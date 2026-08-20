@@ -443,11 +443,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         sourceItemImg: sourceItem.img ?? "",
         items,
       })),
-      matrixSpellSources: matrixSpellSources.map(({ sourceItem, item }) => ({
+      matrixSpellSources: matrixSpellSources.map(({ sourceItem, entries }) => ({
         sourceItemId: sourceItem.id ?? "",
         sourceItemName: sourceItem.name ?? "",
         sourceItemImg: sourceItem.img ?? "",
-        item,
+        entries,
       })),
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
@@ -953,8 +953,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     this.element.querySelectorAll<HTMLElement>("[data-matrix-spell-cast]").forEach((el) => {
       const matrixItem = resolveCastItem(el, this.actor) as PhysicalItem | undefined;
       requireValue(matrixItem, `Couldn't find item to cast its Matrix Spell`);
+      const entryIndex = Number(getRequiredDomDataset(el, "matrix-spell-index"));
       const castMatrixSpell = async (immediate: boolean) => {
-        const spellItem = await resolveMatrixSpellItem(matrixItem);
+        const spellItem = await resolveMatrixSpellItem(matrixItem, entryIndex);
         if (spellItem) {
           await this._castSpiritMagicItem(spellItem, immediate);
         }

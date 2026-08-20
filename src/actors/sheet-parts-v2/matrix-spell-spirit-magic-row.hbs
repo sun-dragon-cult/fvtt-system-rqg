@@ -7,7 +7,9 @@
      target via resolveCastItem's actor.items.get(data-item-id), which here would return the
      physical matrix item (sourceItemId), not a SpiritMagicItem - so it isn't wired up for this row.
 
-     Params: item (the resolved transient spell), sourceItemId (the matrix item's id). --}}
+     Params: item (the resolved transient spell), sourceItemId (the matrix item's id),
+     entryIndex (which matrixSpells array entry on that item this spell came from - an item can
+     hold more than one, see resolveMatrixSpellItem). --}}
 <div class="spirit-magic-row external-item">
   <div class="spirit-magic item">
     <img class="row-icon" src="{{item.img}}">
@@ -15,13 +17,15 @@
   <div class="spirit-magic item"
        data-matrix-spell-cast
        data-item-id="{{sourceItemId}}"
+       data-matrix-spell-index="{{entryIndex}}"
        data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
     {{item.name}}
   </div>
   <div class="spirit-magic item"
        data-tooltip="{{item.spellSummaryTooltip}}"
        data-matrix-spell-cast
-       data-item-id="{{sourceItemId}}">
+       data-item-id="{{sourceItemId}}"
+       data-matrix-spell-index="{{entryIndex}}">
     {{item.spellSummary}}
   </div>
   <div class="spirit-magic item">—</div>
