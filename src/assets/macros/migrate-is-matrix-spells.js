@@ -112,10 +112,12 @@ async function migrateIsMatrixSpells() {
               type: "gear",
               img: item.img,
               system: {
-                matrixSpell: {
-                  spellRqidLink: { rqid, name: item.name },
-                  points: item.system.points,
-                },
+                matrixSpells: [
+                  {
+                    spellRqidLink: { rqid, name: item.name },
+                    points: item.system.points,
+                  },
+                ],
               },
             },
           ]);

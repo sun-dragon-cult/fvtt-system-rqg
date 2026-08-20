@@ -94,16 +94,24 @@
       min-height: 100px;
     }
 
-/* Bound Spirit dropzone (#999) - a list of chips. */
-    & .bound-spirit-list {
+/* Bound Spirit dropzone (#999) and Matrix Spell dropzone (#959) - both lists of chips. */
+    & .bound-spirit-list,
+    & .matrix-spell-dropzone {
       display: flex;
       flex-wrap: wrap;
       gap: 0.4rem;
     }
 
+/* Read-only points display for a non-variable matrix spell entry (#959) - stands in for the
+       editable number input a variable spell gets, so it needs roughly the same footprint. */
+    & .matrix-spell-points-readonly {
+      min-width: 1.5em;
+      text-align: center;
+      opacity: 0.75;
+    }
+
 /* Base chip styling (.bond-actor-link) is shared with the actor sheet's Allied Spirit link -
-       see rqg.css. Matrix Spell dropzone (#959) is a single link, unlike the Bound Spirit list,
-       but shares the same unlink-chip styling. */
+       see rqg.css. Matrix Spell chips (#959) share the same unlink-chip styling as Bound Spirit. */
     & .bound-spirit-link [data-action="unlinkBoundSpirit"],
     & .matrix-spell-link [data-action="unlinkMatrixSpell"] {
       color: var(--rqg-unassigned-rm-action);

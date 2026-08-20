@@ -1,8 +1,15 @@
-{{#if system.matrixSpell.spellRqidLink.rqid}}
+{{!-- An item can hold more than one Spell Matrix entry (#959). With exactly one, the badge stays
+     clickable to cast it directly, same as before; with more than one, casting a specific entry
+     is ambiguous from a single icon click, so it becomes an info-only badge listing all of them -
+     cast from the Spirit Magic tab instead, which lists one row per entry. --}}
+{{#if system.matrixSpells.length}}
   <span class="matrix-spell-indicator"
-        data-matrix-spell-cast
-        data-item-id="{{id}}"
-        data-tooltip="{{localize 'RQG.Item.Gear.MatrixSpellIndicatorTooltip' spellName=system.matrixSpell.spellRqidLink.name points=system.matrixSpell.points}}">
+        {{#if (eq system.matrixSpells.length 1)}}
+          data-matrix-spell-cast
+          data-item-id="{{id}}"
+          data-matrix-spell-index="0"
+        {{/if}}
+        data-tooltip="{{matrixSpellsTooltip system.matrixSpells}}">
     <span class="matrix-spell-indicator-icon"></span>
   </span>
 {{/if}}

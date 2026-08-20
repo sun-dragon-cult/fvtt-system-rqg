@@ -333,6 +333,22 @@ export const registerHandlebarsHelpers = function () {
     return localize("RQG.Actor.Gear.StoresMagicPointsTip");
   });
 
+  // Joins the tooltip text for every Spell Matrix entry on an item (#959, an item can hold more
+  // than one) into one multi-line tooltip for the Gear tab's matrix-spell indicator icon.
+  Handlebars.registerHelper(
+    "matrixSpellsTooltip",
+    (matrixSpells: { spellRqidLink?: { name?: string }; points?: number }[]): string => {
+      return (matrixSpells ?? [])
+        .map((entry) =>
+          localize("RQG.Item.Gear.MatrixSpellIndicatorTooltip", {
+            spellName: entry.spellRqidLink?.name ?? "",
+            points: String(entry.points ?? 0),
+          }),
+        )
+        .join("<br>");
+    },
+  );
+
   Handlebars.registerHelper("gearViewIcon", (view: string): string => {
     return CONFIG.RQG.gearViewIcons[view as keyof typeof CONFIG.RQG.gearViewIcons];
   });

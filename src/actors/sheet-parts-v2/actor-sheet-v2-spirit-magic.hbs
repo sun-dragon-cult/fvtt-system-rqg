@@ -88,7 +88,9 @@
     {{#each matrixSpellSources}}
       {{> externalSpellDivider labelKey="RQG.Actor.SpiritMagic.MatrixFromLabel"
           name=sourceItemName img=sourceItemImg}}
-      {{> matrixSpellSpiritMagicRow item=item sourceItemId=sourceItemId}}
+      {{#each entries}}
+        {{> matrixSpellSpiritMagicRow item=item sourceItemId=../sourceItemId entryIndex=entryIndex}}
+      {{/each}}
     {{/each}}
   </div>
 
