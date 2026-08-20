@@ -1419,13 +1419,20 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // but are not valid drop areas, so dragging into them should clear indicators.
     const dropArea = this.element.querySelector<HTMLElement>(".sheet-content") ?? this.element;
     const rect = dropArea.getBoundingClientRect();
-    const leftSheet =
+    const outsideBounds =
       event.clientX < rect.left ||
       event.clientX > rect.right ||
       event.clientY < rect.top ||
       event.clientY > rect.bottom;
 
-    if (leftSheet) {
+    // A bounds check alone misses the case where a floating Item Sheet window overlaps
+    // this sheet on screen: the cursor can stay geometrically inside our rect while it's
+    // actually now over the other window's (topmost) DOM, so we'd never clear the glow.
+    // Hit-test what's really under the cursor and confirm it's still part of this sheet.
+    const hitElement = event.view?.document?.elementFromPoint(event.clientX, event.clientY);
+    const stillInsideSheet = !!hitElement && this.element.contains(hitElement);
+
+    if (outsideBounds || !stillInsideSheet) {
       this._clearDropIndicators();
       this._clearDragState();
     }
