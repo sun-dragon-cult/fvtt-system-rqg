@@ -95,6 +95,8 @@
         "SizeAbbr": "SIZ",
         "DexterityAbbr": "DEX",
         "MagicPoints": "Magic Points",
+        "MagicPointRecoveryTooltip": "Recovers {pointsPerDay} magic points per day",
+        "MagicPointRecoveryTimePerPoint": "1 point every {duration}",
         "MagicPointSources": "Magic Point Source Order",
         "MagicPointSourcesFeedFromSelfHint": "Move {amount} Magic Points from Self into this storage item",
         "MagicPointSourcesAlliedSpiritHint": "Allied Spirit",

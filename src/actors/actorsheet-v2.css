@@ -219,6 +219,23 @@
       }
     }
 
+/* Icon next to "Magic Points" showing the recovery rate on hover (#512) - kept as a small icon
+   rather than inline text since the header row is already tight (characteristics, SR badges, MP,
+   MP storage toggle, and movement/encumbrance all share this line). Custom two-tone SVG (white
+   circle badge + dark counter-clockwise arrow baked in) rather than mask-image, since this needs
+   two explicit colors, not one recolorable silhouette - the white circle makes it stand out
+   against the busy parchment background, similar to how .mp-storage-icon's sun already does. */
+    & .mp-recovery-rate-icon {
+      display: inline-block;
+      width: 1.1rem;
+      height: 1.1rem;
+      margin: 0 0.125rem;
+      background-image: url("/systems/rqg/assets/images/ui/mp-recovery.svg");
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+
 /* Shared "magic capacity limit" status banner, used by the Spirit Magic, Sorcery and Rune Magic tabs. */
     & .magic-limit-banner {
       font-size: 0.875rem;

@@ -71,6 +71,28 @@ export class RqgCalculations {
     return con ? Math.ceil(con / 6) : 0;
   }
 
+  /** RAW baseline (p.54) is a full recovery (= max/POW magic points) over 24 hours - stated as
+   *  both "1/4 of MP every six hours" and "1/24 per hour", i.e. proportional to max, not a flat
+   *  rate. recoveryRateFactor scales that linearly (2 = twice as fast, 0.5 = half as fast) to
+   *  cover gifts/HeroQuest effects. */
+  public static magicPointRecoveryPointsPerDay(
+    maxMagicPoints: number | null | undefined,
+    recoveryRateFactor: number | null | undefined,
+  ): number {
+    return (maxMagicPoints ?? 0) * (recoveryRateFactor ?? 0);
+  }
+
+  /** Time to recover a single magic point, split into whole hours + remainder minutes for
+   *  display (e.g. "1 point every 2h 40m"). */
+  public static magicPointRecoveryTimePerPoint(
+    maxMagicPoints: number | null | undefined,
+    recoveryRateFactor: number | null | undefined,
+  ): { hours: number; minutes: number } {
+    const pointsPerDay = this.magicPointRecoveryPointsPerDay(maxMagicPoints, recoveryRateFactor);
+    const totalMinutes = pointsPerDay > 0 ? Math.round((24 * 60) / pointsPerDay) : 0;
+    return { hours: Math.floor(totalMinutes / 60), minutes: totalMinutes % 60 };
+  }
+
   public static skillCategoryModifiers(
     str: number | null | undefined,
     siz: number | null | undefined,
