@@ -100,6 +100,9 @@ function defineCharacterSchema() {
 
     attributes: new SchemaField({
       magicPoints: derivedResourceSchemaField(),
+      /** 1 = RAW baseline (1 point/24h, p.54); 2 = twice as fast, 0.5 = half as fast.
+       *  Lets Humakti gifts / HeroQuest effects speed up or slow down recovery (#512). */
+      magicPointRecoveryRateFactor: new NumberField({ nullable: false, initial: 1, min: 0 }),
       hitPoints: derivedResourceSchemaField(),
       move: new SchemaField({
         currentLocomotion: new StringField({
@@ -355,6 +358,17 @@ export class CharacterDataModel extends RqgActorDataModel<
     if (system.attributes.magicPoints) {
       const magicPointsFromEffects = system.effect.add.magicPoints.max ?? 0;
       system.attributes.magicPoints.max = (pow ?? 0) + magicPointsFromEffects;
+      system.attributes.magicPointRecoveryPointsPerDay =
+        RqgCalculations.magicPointRecoveryPointsPerDay(
+          system.attributes.magicPoints.max,
+          system.attributes.magicPointRecoveryRateFactor,
+        );
+      const timePerPoint = RqgCalculations.magicPointRecoveryTimePerPoint(
+        system.attributes.magicPoints.max,
+        system.attributes.magicPointRecoveryRateFactor,
+      );
+      system.attributes.magicPointRecoveryHoursPerPoint = timePerPoint.hours;
+      system.attributes.magicPointRecoveryMinutesPerPoint = timePerPoint.minutes;
     }
     if (system.attributes.hitPoints) {
       const hitPointsFromEffects = system.effect.add.hitPoints.max ?? 0;

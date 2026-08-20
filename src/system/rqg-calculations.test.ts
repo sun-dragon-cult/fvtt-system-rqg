@@ -98,3 +98,66 @@ describe("damage bonus calculations are correct for", () => {
     expect(hp).toBe("0");
   });
 });
+
+describe("magic point recovery points per day are correct for", () => {
+  it("normal (RAW baseline) rate factor recovers full max in a day", () => {
+    expect(RqgCalculations.magicPointRecoveryPointsPerDay(18, 1)).toBe(18);
+  });
+
+  it("doubled rate factor", () => {
+    expect(RqgCalculations.magicPointRecoveryPointsPerDay(18, 2)).toBe(36);
+  });
+
+  it("halved rate factor", () => {
+    expect(RqgCalculations.magicPointRecoveryPointsPerDay(11, 0.5)).toBe(5.5);
+  });
+
+  it("zero rate factor", () => {
+    expect(RqgCalculations.magicPointRecoveryPointsPerDay(18, 0)).toBe(0);
+  });
+
+  it("no max magic points", () => {
+    expect(RqgCalculations.magicPointRecoveryPointsPerDay(undefined, 1)).toBe(0);
+  });
+
+  it("undefined rate factor", () => {
+    expect(RqgCalculations.magicPointRecoveryPointsPerDay(18, undefined)).toBe(0);
+  });
+});
+
+describe("magic point recovery time per point is correct for", () => {
+  it("round POW at normal rate (exact whole hours)", () => {
+    expect(RqgCalculations.magicPointRecoveryTimePerPoint(12, 1)).toStrictEqual({
+      hours: 2,
+      minutes: 0,
+    });
+  });
+
+  it("POW with a minute remainder", () => {
+    expect(RqgCalculations.magicPointRecoveryTimePerPoint(18, 1)).toStrictEqual({
+      hours: 1,
+      minutes: 20,
+    });
+  });
+
+  it("fast enough recovery to be under an hour per point", () => {
+    expect(RqgCalculations.magicPointRecoveryTimePerPoint(18, 2)).toStrictEqual({
+      hours: 0,
+      minutes: 40,
+    });
+  });
+
+  it("no max magic points", () => {
+    expect(RqgCalculations.magicPointRecoveryTimePerPoint(undefined, 1)).toStrictEqual({
+      hours: 0,
+      minutes: 0,
+    });
+  });
+
+  it("zero rate factor", () => {
+    expect(RqgCalculations.magicPointRecoveryTimePerPoint(18, 0)).toStrictEqual({
+      hours: 0,
+      minutes: 0,
+    });
+  });
+});

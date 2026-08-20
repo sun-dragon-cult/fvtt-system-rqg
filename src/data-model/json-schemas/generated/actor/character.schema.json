@@ -554,6 +554,11 @@
             "max"
           ]
         },
+        "magicPointRecoveryRateFactor": {
+          "type": "number",
+          "minimum": 0,
+          "default": 1
+        },
         "hitPoints": {
           "type": "object",
           "properties": {
@@ -679,6 +684,7 @@
       "additionalProperties": false,
       "required": [
         "magicPoints",
+        "magicPointRecoveryRateFactor",
         "hitPoints",
         "move",
         "heroPoints",

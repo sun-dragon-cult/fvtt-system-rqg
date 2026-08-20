@@ -783,6 +783,18 @@ export function formatListByWorldLanguage(
 }
 
 /**
+ * Foundry's core UI language setting (what {@link foundry.helpers.Localization} / `localize()`
+ * resolves to), not the rqg world language setting used for rqid-linked content translation.
+ * Use this for `Intl.*` formatting embedded in localized UI strings, so numbers/durations match
+ * the surrounding text's language rather than the raw (and possibly different) browser locale.
+ */
+export function getUserLanguage(): string {
+  return (
+    (game.settings?.get("core", "language") as unknown as string) ?? CONFIG.RQG.fallbackLanguage
+  );
+}
+
+/**
  * Convert a list of strings to a string using language sensitive formatting. Use the user language setting.
  *
  * Output can look like `one, two, and three` given `["one", "two", "three"]`
@@ -791,9 +803,7 @@ export function formatListByUserLanguage(
   list: string[],
   concatType: ListFormatType = "conjunction",
 ): string {
-  const userLanguage =
-    (game.settings?.get("core", "language") as unknown as string) ?? CONFIG.RQG.fallbackLanguage;
-  return formatListByLanguage(userLanguage, list, concatType);
+  return formatListByLanguage(getUserLanguage(), list, concatType);
 }
 
 function formatListByLanguage(

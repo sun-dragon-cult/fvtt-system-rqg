@@ -3,6 +3,7 @@ import {
   assertDocumentSubType,
   formatListByUserLanguage,
   getAvailableRunes,
+  getUserLanguage,
   localize,
   localizeDynamic,
   localizeItemType,
@@ -82,6 +83,20 @@ export const registerHandlebarsHelpers = function () {
       // eslint-disable-next-line no-irregular-whitespace
     }).format(total)} ${unit}`;
   });
+
+  Handlebars.registerHelper(
+    "magicPointRecoveryDuration",
+    (hours: number, minutes: number): string => {
+      const duration: Partial<Record<Intl.DurationFormatUnit, number>> = {};
+      if (hours) {
+        duration.hours = hours;
+      }
+      if (minutes || !hours) {
+        duration.minutes = minutes;
+      }
+      return new Intl.DurationFormat(getUserLanguage(), { style: "long" }).format(duration);
+    },
+  );
 
   Handlebars.registerHelper("decimalMultiply", (quantity, value, decimals) => {
     const fractionDigits = isNaN(decimals) ? undefined : Number(decimals);

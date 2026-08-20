@@ -33,6 +33,9 @@ interface CharacteristicDerivedAttributes {
   damageBonus: string;
   healingRate: number | undefined;
   spiritCombatDamage: string;
+  magicPointRecoveryPointsPerDay: number;
+  magicPointRecoveryHoursPerPoint: number;
+  magicPointRecoveryMinutesPerPoint: number;
 }
 
 type DerivedAttributes = ItemDependentDerivedAttributes & CharacteristicDerivedAttributes;
