@@ -384,13 +384,24 @@ export function moveSourceBefore(order: string[], id: string, beforeId: string |
   return reordered;
 }
 
+/** " (value/max MP)" suffix appended to a source option's label, e.g. " (14/20 MP)" - lets the
+ *  picker show how many points are actually available from each source without opening it. */
+function magicPointsSuffix(
+  points: { value?: number | null; max?: number | null } | undefined | null,
+): string {
+  const value = Number(points?.value) || 0;
+  const max = Number(points?.max) || 0;
+  return ` (${value}/${max} MP)`;
+}
+
 /**
  * Options for a magic-point-source picker, excluding "auto" - only populated (non-empty) when the
  * actor actually has one or more storage items or a usable Allied Spirit bond partner (#957),
  * since the dialog should only show a picker at all when there is more than one possible source.
  * "Self"/ally/storage-item options are listed in the same order as the Magic Point Source Order
  * popout (see getMagicPointDrawOrder) - "auto" is pinned first regardless, since it's a
- * meta-option ("let the system decide") rather than a specific source pick.
+ * meta-option ("let the system decide") rather than a specific source pick, so it doesn't get a
+ * points suffix like the specific sources below it do.
  */
 export function getMagicPointSourceOptions(
   actor: RqgActor | null | undefined,
@@ -406,21 +417,27 @@ export function getMagicPointSourceOptions(
         case "self":
           return {
             value: SELF_MAGIC_POINT_SOURCE,
-            label: "RQG.Dialog.Common.MagicPointSourceOptions.Self",
+            label: `${localize("RQG.Dialog.Common.MagicPointSourceOptions.Self")}${magicPointsSuffix(actor!.system.attributes.magicPoints)}`,
           };
         case "ally":
           // Just the bond partner's name, not a templated "Allied Spirit (Name)" label: this
           // option shows up from either side of the bond (see getAlliedBondActor), and "Allied
           // Spirit" would read backwards when an ally casts using its bonded priest's Magic
           // Points.
-          return { value: ALLY_MAGIC_POINT_SOURCE, label: entry.actor.name ?? "" };
+          return {
+            value: ALLY_MAGIC_POINT_SOURCE,
+            label: `${entry.actor.name ?? ""}${magicPointsSuffix(entry.actor.system.attributes.magicPoints)}`,
+          };
         case "item":
-          return { value: entry.item.id ?? "", label: entry.item.name ?? "" };
+          return {
+            value: entry.item.id ?? "",
+            label: `${entry.item.name ?? ""}${magicPointsSuffix(entry.item.system.storedMagicPoints)}`,
+          };
         case "boundSpirit":
           // The bound spirit's own name, like ally - see the "ally" case above.
           return {
             value: boundSpiritSourceId(entry.item, entry.spiritActor),
-            label: entry.spiritActor.name ?? "",
+            label: `${entry.spiritActor.name ?? ""}${magicPointsSuffix(entry.spiritActor.system.attributes.magicPoints)}`,
           };
       }
     }),

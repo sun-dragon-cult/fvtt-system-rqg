@@ -39,6 +39,7 @@ function fakeActor(
     alliedSpiritActorUuid?: string;
     uuid?: string;
     isOwner?: boolean;
+    selfMpMax?: number;
   } = {},
 ) {
   const storedFlags = { ...flags };
@@ -48,7 +49,7 @@ function fakeActor(
     isOwner: options.isOwner ?? true,
     items: storageItems,
     system: {
-      attributes: { magicPoints: { value: selfMp } },
+      attributes: { magicPoints: { value: selfMp, max: options.selfMpMax ?? selfMp } },
       alliedSpiritActorUuid: options.alliedSpiritActorUuid,
     },
     update: vi.fn(),
@@ -349,8 +350,8 @@ describe("getMagicPointSourceOptions", () => {
     // getMagicPointDrawOrder - and this picker should mirror that exactly.
     expect(getMagicPointSourceOptions(actor)).toEqual([
       { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
-      { value: "c1", label: "Crystal A" },
-      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
+      { value: "c1", label: "Crystal A (3/5 MP)" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self +  (6/6 MP)" },
     ]);
   });
 
@@ -364,9 +365,9 @@ describe("getMagicPointSourceOptions", () => {
     );
     expect(getMagicPointSourceOptions(actor)).toEqual([
       { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
-      { value: "c2", label: "Crystal B" },
-      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
-      { value: "c1", label: "Crystal A" },
+      { value: "c2", label: "Crystal B (1/1 MP)" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self +  (6/6 MP)" },
+      { value: "c1", label: "Crystal A (3/5 MP)" },
     ]);
   });
 
@@ -375,8 +376,8 @@ describe("getMagicPointSourceOptions", () => {
     (globalThis as any).fromUuidSync.mockReturnValue(fakeAlly(4, 6, true, "Whiskers"));
     expect(getMagicPointSourceOptions(actor)).toEqual([
       { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
-      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
-      { value: "ally", label: "Whiskers" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self +  (6/6 MP)" },
+      { value: "ally", label: "Whiskers (4/6 MP)" },
     ]);
   });
 
@@ -919,8 +920,8 @@ describe("getMagicPointSourceOptions — bound spirits (#999)", () => {
 
     expect(getMagicPointSourceOptions(actor)).toEqual([
       { value: "auto", label: "RQG.Dialog.Common.MagicPointSourceOptions.Auto" },
-      { value: boundSpiritSourceId(item as any, spirit), label: "Wisp" },
-      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self" },
+      { value: boundSpiritSourceId(item as any, spirit), label: "Wisp (2/4 MP)" },
+      { value: "self", label: "RQG.Dialog.Common.MagicPointSourceOptions.Self +  (6/6 MP)" },
     ]);
   });
 });
