@@ -282,10 +282,13 @@ export class RqgActor extends Actor {
    * the current `game.time.worldTime` and, if any whole points have accrued since, persists the
    * recovered points (clamped to `magicPoints.max`, which already reflects POW + any genuine
    * effects - see #1028 discussion) and the advanced checkpoint in a single write. A no-op (no
-   * write) when nothing has changed, so it's safe to call on every sheet render.
+   * write) when nothing has changed, so it's safe to call on every sheet render. Only applies to
+   * player-owned actors: a GM-only-owned NPC could otherwise silently recover between the moment a
+   * GM preps it and whenever the party actually reaches it in-game, changing state the GM set up
+   * on purpose without them noticing.
    */
   public async catchUpMagicPointRecovery(): Promise<void> {
-    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)) {
+    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) || !this.hasPlayerOwner) {
       return;
     }
     const currentWorldTime = game.time?.worldTime;
@@ -330,10 +333,13 @@ export class RqgActor extends Actor {
    * healLocationNaturally). A no-op (no write) when nothing has changed, so it's safe to call on
    * every sheet render. Doesn't attempt to detect whether the character was actually resting
    * (Core p.149 requires it for natural healing to apply) - left to the GM's judgement, same as
-   * every other narrow RAW edge case this codebase doesn't build UI/logic around.
+   * every other narrow RAW edge case this codebase doesn't build UI/logic around. Only applies to
+   * player-owned actors: a GM-only-owned NPC staged for a future scene could otherwise heal itself
+   * in the background while the party takes their time getting there, changing state the GM set up
+   * on purpose without them noticing.
    */
   public async catchUpNaturalHealing(): Promise<void> {
-    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)) {
+    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) || !this.hasPlayerOwner) {
       return;
     }
     const currentWorldTime = game.time?.worldTime;
@@ -367,6 +373,16 @@ export class RqgActor extends Actor {
             await hitLocation.update(hitLocationUpdates as any);
           }
           if (actorUpdates.system) {
+            // Carry the final checkpoint on every per-location write, not just the trailing one
+            // below: _preUpdate's settleHealingCheckpoint treats any hitPoints.value change with
+            // no checkpoint field as an unrelated edit and stamps it to "now", which would
+            // silently strand the wrong checkpoint (discarding the carried-forward partial-week
+            // remainder) if a later location's write in this loop throws.
+            foundry.utils.setProperty(
+              actorUpdates,
+              "system.attributes.healingSettledWorldTime",
+              newSettledWorldTime,
+            );
             await this.update(actorUpdates as any);
           }
           for (const usefulLeg of usefulLegs) {
