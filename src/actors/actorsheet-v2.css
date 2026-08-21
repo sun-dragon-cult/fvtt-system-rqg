@@ -1647,6 +1647,121 @@
         }
       }
 
+/* --- Quadruped hit location layout --- */
+      & .quadruped {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+        width: 24rem;
+
+        &::before {
+          content: "";
+          background: center/contain no-repeat url("/systems/rqg/assets/images/runes/horse.svg");
+          position: absolute;
+          inset: 0;
+          filter: invert(1);
+          mix-blend-mode: overlay;
+        }
+
+        & .actor-state {
+          grid-column: 4;
+          grid-row: 1;
+          place-self: start end;
+
+          & img {
+            height: 5rem;
+            filter: brightness(0) invert(14%) sepia(33%) saturate(5726%) hue-rotate(350deg)
+              brightness(99%) contrast(105%) drop-shadow(3px 3px 3px #000000b5);
+          }
+        }
+
+        & .stats {
+          position: relative;
+          border: 1px solid #666;
+          border-radius: var(--rqg-radius-lg);
+          padding: 0.375rem;
+          background-color: var(--rqg-color-hl-stats-bg);
+
+          &.useless,
+          &.severed {
+            background-color: var(--rqg-color-hl-stats-severed-bg);
+          }
+
+          &:not(.healthy) {
+            border-color: var(--rqg-highlight);
+            border-width: 2px;
+          }
+
+          & .roll-range {
+            font-size: 80%;
+          }
+
+          & .hl-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 0.5rem;
+          }
+
+          & .hl-status-row {
+            text-align: left;
+
+            & .health-state {
+              white-space: nowrap;
+            }
+          }
+
+          & .hl-stat-row {
+            display: flex;
+          }
+
+          & .hl-wounds-row {
+            display: flex;
+            justify-content: space-between;
+
+            & [data-action="addWound"] {
+              cursor: pointer;
+            }
+          }
+
+          &.head {
+            grid-column: 1;
+            grid-row: 1;
+          }
+
+          &.forequarter {
+            grid-column: 2;
+            grid-row: 1;
+          }
+
+          &.hindquarter {
+            grid-column: 3;
+            grid-row: 1;
+          }
+
+          &.left-foreleg {
+            grid-column: 1;
+            grid-row: 2;
+          }
+
+          &.right-foreleg {
+            grid-column: 2;
+            grid-row: 2;
+          }
+
+          &.left-hind-leg {
+            grid-column: 3;
+            grid-row: 2;
+          }
+
+          &.right-hind-leg {
+            grid-column: 4;
+            grid-row: 2;
+          }
+        }
+      }
+
 /* --- SR buttons --- */
       & .sr-buttons {
         display: flex;

@@ -29,6 +29,15 @@ export const RQG_CONFIG = {
       "i.hit-location.left-leg" as RqidString,
       "i.hit-location.right-leg" as RqidString,
     ] as RqidString[],
+    quadruped: [
+      "i.hit-location.head" as RqidString,
+      "i.hit-location.forequarter" as RqidString,
+      "i.hit-location.hindquarter" as RqidString,
+      "i.hit-location.left-foreleg" as RqidString,
+      "i.hit-location.right-foreleg" as RqidString,
+      "i.hit-location.left-hind-leg" as RqidString,
+      "i.hit-location.right-hind-leg" as RqidString,
+    ] as RqidString[],
   },
 
   fallbackLanguage: "en",
