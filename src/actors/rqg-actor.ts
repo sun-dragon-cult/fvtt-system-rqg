@@ -3,6 +3,7 @@ import { ItemTypeEnum, type PhysicalItem } from "@item-model/item-types.ts";
 import { RqgActorSheet } from "./rqg-actor-sheet";
 import { RqgActorSheetV2 } from "./rqg-actor-sheet-v2";
 import { DamageCalculations } from "../items/hit-location-item/hit-location-damage-calculations";
+import { HealingCalculations } from "../items/hit-location-item/hit-location-healing-calculations";
 import {
   assertDocumentSubType,
   getSpeakerDisplayName,
@@ -240,21 +241,40 @@ export class RqgActor extends Actor {
     }
   }
 
-  private _magicPointsWriteQueue: Promise<unknown> = Promise.resolve();
+  private _writeQueues = new Map<string, Promise<unknown>>();
 
   /**
-   * Serializes read-then-write operations on this actor's `magicPoints.value` (#1028 review
-   * finding: passive recovery catch-up and an explicit spend/draw both read the current value,
-   * compute an absolute new one, then write it - if both are in flight at once, whichever write
-   * lands last silently clobbers the other). Queuing every such operation through here means each
-   * one only reads `this.system` once its turn arrives, after any prior queued write has both
-   * been sent and locally applied - never against a stale pre-write snapshot. Used by this method
-   * and by the self/ally/bound-spirit draws in magic-point-source.ts.
+   * Serializes read-then-write operations on one of this actor's resource fields, keyed by
+   * `queueKey` (#1028 review finding: a passive recovery catch-up and an explicit spend/damage/
+   * heal action both read the current value, compute an absolute new one, then write it - if both
+   * are in flight at once, whichever write lands last silently clobbers the other). Queuing every
+   * such operation through here means each one only reads `this.system` once its turn arrives,
+   * after any prior queued write *for that key* has both been sent and locally applied - never
+   * against a stale pre-write snapshot. Different keys (e.g. "magicPoints" vs "hitPoints") queue
+   * independently and don't block each other. See `serializeMagicPointsWrite`/
+   * `serializeHitPointsWrite` for the two resources currently using this.
    */
-  public async serializeMagicPointsWrite<T>(operation: () => Promise<T>): Promise<T> {
-    const run = this._magicPointsWriteQueue.then(operation, operation);
-    this._magicPointsWriteQueue = run.catch(() => undefined);
+  private async serializeWrite<T>(queueKey: string, operation: () => Promise<T>): Promise<T> {
+    const queue = this._writeQueues.get(queueKey) ?? Promise.resolve();
+    const run = queue.then(operation, operation);
+    this._writeQueues.set(
+      queueKey,
+      run.catch(() => undefined),
+    );
     return run;
+  }
+
+  /** `serializeWrite` for `magicPoints.value` - used by `catchUpMagicPointRecovery` and by the
+   *  self/ally/bound-spirit draws in magic-point-source.ts. */
+  public async serializeMagicPointsWrite<T>(operation: () => Promise<T>): Promise<T> {
+    return this.serializeWrite("magicPoints", operation);
+  }
+
+  /** `serializeWrite` for `hitPoints.value` - used by `catchUpNaturalHealing` (#436) and should
+   *  also guard damage/heal application (`applyDamageToActorTotalHp`, `healWound`'s actor-hp
+   *  bump) against racing it, the same way magicPoints' draws already guard against catch-up. */
+  public async serializeHitPointsWrite<T>(operation: () => Promise<T>): Promise<T> {
+    return this.serializeWrite("hitPoints", operation);
   }
 
   /**
@@ -295,6 +315,70 @@ export class RqgActor extends Actor {
         foundry.utils.expandObject({
           "system.attributes.magicPoints.value": newValue,
           "system.attributes.magicPointRecoverySettledWorldTime": newSettledWorldTime,
+        }),
+      );
+    });
+  }
+
+  /**
+   * Passive natural Hit Point healing catch-up (#436, following #1028's pattern): diffs the
+   * actor's healing checkpoint against the current `game.time.worldTime` and, for each whole week
+   * that has elapsed, applies `healingRate` points to every wounded hit location (Core p.148-149:
+   * healing is per hit location, not a single pooled value - spread evenly among that location's
+   * wounds, remainder to the lightest one; a severed/useless location's hit points still heal, but
+   * its function is never restored by natural healing - see HealingCalculations.
+   * healLocationNaturally). A no-op (no write) when nothing has changed, so it's safe to call on
+   * every sheet render. Doesn't attempt to detect whether the character was actually resting
+   * (Core p.149 requires it for natural healing to apply) - left to the GM's judgement, same as
+   * every other narrow RAW edge case this codebase doesn't build UI/logic around.
+   */
+  public async catchUpNaturalHealing(): Promise<void> {
+    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)) {
+      return;
+    }
+    const currentWorldTime = game.time?.worldTime;
+    if (currentWorldTime == null) {
+      return;
+    }
+    await this.serializeHitPointsWrite(async () => {
+      const attributes = this.system.attributes;
+      if (!attributes.hitPoints) {
+        return;
+      }
+      const settledWorldTime = attributes.healingSettledWorldTime;
+      const { weeksElapsed, newSettledWorldTime } = RqgCalculations.healingWeeksElapsed(
+        settledWorldTime,
+        currentWorldTime,
+      );
+      if (weeksElapsed === 0 && newSettledWorldTime === settledWorldTime) {
+        return;
+      }
+      const weeklyHealPoints = weeksElapsed * (attributes.healingRate ?? 0);
+      if (weeklyHealPoints > 0) {
+        const woundedLocations = this.items.filter(
+          (item) =>
+            isDocumentSubType<HitLocationItem>(item, ItemTypeEnum.HitLocation) &&
+            item.system.wounds.length > 0,
+        ) as HitLocationItem[];
+        for (const hitLocation of woundedLocations) {
+          const { hitLocationUpdates, actorUpdates, usefulLegs } =
+            HealingCalculations.healLocationNaturally(weeklyHealPoints, hitLocation, this);
+          if (hitLocationUpdates.system) {
+            await hitLocation.update(hitLocationUpdates as any);
+          }
+          if (actorUpdates.system) {
+            await this.update(actorUpdates as any);
+          }
+          for (const usefulLeg of usefulLegs) {
+            if (usefulLeg?._id != null) {
+              await this.items.get(usefulLeg._id)?.update(usefulLeg as any);
+            }
+          }
+        }
+      }
+      await this.update(
+        foundry.utils.expandObject({
+          "system.attributes.healingSettledWorldTime": newSettledWorldTime,
         }),
       );
     });
@@ -551,9 +635,10 @@ export class RqgActor extends Actor {
   private isHealthAffectingActorUpdate(
     changes: Actor.UpdateData,
     changesMagicPointsValue: boolean,
+    changesHitPointsValue: boolean,
   ): boolean {
     return (
-      foundry.utils.hasProperty(changes, "system.attributes.hitPoints.value") ||
+      changesHitPointsValue ||
       changesMagicPointsValue ||
       foundry.utils.hasProperty(changes, "system.attributes.health")
     );
@@ -586,6 +671,29 @@ export class RqgActor extends Actor {
     foundry.utils.setProperty(
       changes,
       "system.attributes.magicPointRecoverySettledWorldTime",
+      currentWorldTime,
+    );
+  }
+
+  /**
+   * Same fix as settleMagicPointRecoveryCheckpoint, for Hit Points (#436): any write to
+   * hitPoints.value that isn't catchUpNaturalHealing's own - damage, a heal spell, First Aid, a
+   * manual sheet edit - needs to settle the healing checkpoint to *now* too, or a stale checkpoint
+   * could later attribute unrelated dead time as natural healing on top of a value that was just
+   * changed for a different reason.
+   */
+  private settleHealingCheckpoint(changes: Actor.UpdateData, changesHitPointsValue: boolean): void {
+    const changesCheckpoint = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.healingSettledWorldTime",
+    );
+    const currentWorldTime = game.time?.worldTime;
+    if (!changesHitPointsValue || changesCheckpoint || currentWorldTime == null) {
+      return;
+    }
+    foundry.utils.setProperty(
+      changes,
+      "system.attributes.healingSettledWorldTime",
       currentWorldTime,
     );
   }
@@ -799,14 +907,20 @@ export class RqgActor extends Actor {
       changes,
       "system.attributes.magicPoints.value",
     );
+    const changesHitPointsValue = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.hitPoints.value",
+    );
     this._healthBeforeActorUpdate = this.isHealthAffectingActorUpdate(
       changes,
       changesMagicPointsValue,
+      changesHitPointsValue,
     )
       ? this.getHealthTransitionSnapshot()
       : undefined;
 
     this.settleMagicPointRecoveryCheckpoint(changes, changesMagicPointsValue);
+    this.settleHealingCheckpoint(changes, changesHitPointsValue);
 
     const actorDex =
       (changes as DeepPartial<CharacterActor>)?.system?.characteristics?.dexterity?.value ??

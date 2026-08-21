@@ -585,6 +585,12 @@
             "max"
           ]
         },
+        "healingSettledWorldTime": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
         "move": {
           "type": "object",
           "properties": {

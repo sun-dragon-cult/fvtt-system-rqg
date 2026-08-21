@@ -125,6 +125,36 @@ export class RqgCalculations {
     return { pointsRecovered, newSettledWorldTime };
   }
 
+  private static readonly SECONDS_PER_WEEK = 7 * 24 * 60 * 60;
+
+  /** Pure floor-and-carry step for natural Hit Point healing (#436, following #1028's pattern),
+   *  but on a fixed weekly cadence rather than a rate-derived one: Core p.148-149 is explicit that
+   *  healing "is recovered in each hit location at the end of each week" - a lump at the week
+   *  boundary, not prorated across it. Returns how many whole weeks have elapsed since
+   *  `settledWorldTime`, plus that settled time advanced by just those whole weeks - not all the
+   *  way to `currentWorldTime` - so leftover days short of a full week carry forward toward the
+   *  next one instead of being discarded. Doesn't know about healingRate or any actor/hit-location
+   *  state - turning `weeksElapsed` into actual healed points, per hit location, is the caller's
+   *  job. A `null` settled time (never settled) recovers nothing and seeds it to `currentWorldTime`,
+   *  avoiding retroactive healing for actors predating this field. */
+  public static healingWeeksElapsed(
+    settledWorldTime: number | null | undefined,
+    currentWorldTime: number,
+  ): { weeksElapsed: number; newSettledWorldTime: number } {
+    if (settledWorldTime == null) {
+      return { weeksElapsed: 0, newSettledWorldTime: currentWorldTime };
+    }
+    const weeksElapsed = Math.max(
+      0,
+      Math.floor((currentWorldTime - settledWorldTime) / this.SECONDS_PER_WEEK),
+    );
+    if (weeksElapsed <= 0) {
+      return { weeksElapsed: 0, newSettledWorldTime: settledWorldTime };
+    }
+    const newSettledWorldTime = settledWorldTime + weeksElapsed * this.SECONDS_PER_WEEK;
+    return { weeksElapsed, newSettledWorldTime };
+  }
+
   public static skillCategoryModifiers(
     str: number | null | undefined,
     siz: number | null | undefined,

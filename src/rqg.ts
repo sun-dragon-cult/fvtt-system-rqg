@@ -37,7 +37,7 @@ import { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region
 import { RqgTokenLayer } from "./scene/rqg-token-layer";
 import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
-import { initCharacterMagicPointRecovery } from "./actors/magic-point-recovery";
+import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -102,7 +102,7 @@ Hooks.once("init", () => {
   RqgTokenRuler.init();
   RqgToken.init();
   RqgActor.init();
-  initCharacterMagicPointRecovery();
+  initCharacterPassiveRecovery();
   RqgItem.init();
   RqgHotbar.init();
   RqgJournalEntry.init();

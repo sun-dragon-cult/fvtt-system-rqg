@@ -228,3 +228,50 @@ describe("magic point recovery catch-up is correct for", () => {
     });
   });
 });
+
+describe("natural healing weeks elapsed is correct for", () => {
+  const secondsPerWeek = 7 * 24 * 60 * 60;
+
+  it("never-settled (null) checkpoint seeds to now and heals nothing", () => {
+    expect(RqgCalculations.healingWeeksElapsed(null, 99_999)).toStrictEqual({
+      weeksElapsed: 0,
+      newSettledWorldTime: 99_999,
+    });
+  });
+
+  it("no time elapsed heals nothing and leaves the checkpoint in place", () => {
+    expect(RqgCalculations.healingWeeksElapsed(1000, 1000)).toStrictEqual({
+      weeksElapsed: 0,
+      newSettledWorldTime: 1000,
+    });
+  });
+
+  it("elapsed time short of one week heals nothing and doesn't consume the checkpoint", () => {
+    expect(RqgCalculations.healingWeeksElapsed(0, secondsPerWeek - 60)).toStrictEqual({
+      weeksElapsed: 0,
+      newSettledWorldTime: 0,
+    });
+  });
+
+  it("exactly one week's worth of elapsed time", () => {
+    expect(RqgCalculations.healingWeeksElapsed(0, secondsPerWeek)).toStrictEqual({
+      weeksElapsed: 1,
+      newSettledWorldTime: secondsPerWeek,
+    });
+  });
+
+  it("multiple whole weeks", () => {
+    expect(RqgCalculations.healingWeeksElapsed(0, secondsPerWeek * 3)).toStrictEqual({
+      weeksElapsed: 3,
+      newSettledWorldTime: secondsPerWeek * 3,
+    });
+  });
+
+  it("carries a leftover partial-week remainder forward instead of discarding it", () => {
+    const current = secondsPerWeek + 2 * 24 * 60 * 60; // one full week plus 2 extra days
+    expect(RqgCalculations.healingWeeksElapsed(0, current)).toStrictEqual({
+      weeksElapsed: 1,
+      newSettledWorldTime: secondsPerWeek, // the 2 leftover days stay uncommitted
+    });
+  });
+});

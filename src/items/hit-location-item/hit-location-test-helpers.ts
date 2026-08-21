@@ -51,3 +51,24 @@ export function applyTestHealing(
     hitLocation.system.wounds.reduce((acc: number, val: number) => acc + val, 0);
   return healingEffects;
 }
+
+export function applyTestNaturalHealing(
+  weeklyHealPoints: number,
+  hitLocation: RqgItem,
+  actor: RqgActor,
+): HealingEffects {
+  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+  assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
+  const healingEffects = HealingCalculations.healLocationNaturally(
+    weeklyHealPoints,
+    hitLocation,
+    actor,
+  );
+  foundry.utils.mergeObject(hitLocation, healingEffects.hitLocationUpdates);
+  foundry.utils.mergeObject(actor, healingEffects.actorUpdates);
+  actor.system.attributes.health = DamageCalculations.getCombinedActorHealth(actor);
+  hitLocation.system.hitPoints.value =
+    hitLocation.system.hitPoints.max! -
+    hitLocation.system.wounds.reduce((acc: number, val: number) => acc + val, 0);
+  return healingEffects;
+}
