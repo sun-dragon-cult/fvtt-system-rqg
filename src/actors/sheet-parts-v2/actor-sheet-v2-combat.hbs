@@ -74,8 +74,50 @@
               {{#if (eq system.attributes.health "unconscious")}}<img src="systems/rqg/assets/images/token-effects/unconscious.svg">{{/if}}
             </div>
           </div>
+        {{else if (eq bodyType "quadruped")}}
+          <div class="quadruped">
+            {{#each embeddedItems.hitLocation}}
+              <div class="hit-location contextmenu item stats {{rqidName}} {{system.hitLocationHealthState}}" data-item-id="{{id}}">
+                <div class="hl-header-row">
+                  <div class="flex-1"></div>
+                  <div class="roll-range"><i class="fa-solid fa-dice-d20"></i> {{#if (eq system.dieFrom system.dieTo)}}{{system.dieFrom}}{{else}}{{system.dieFrom}}-{{system.dieTo}}{{/if}}</div>
+                </div>
+                <b>{{name}}</b>
+                {{#unless (eq system.hitLocationHealthState "healthy")}}
+                  {{#unless (eq system.hitLocationHealthState "wounded")}}
+                    <div class="hl-status-row">
+                      <i class="health-state">{{toLowerCase
+                        (localizeDynamic "RQG.Item.HitLocation.HealthStatusEnum." system.hitLocationHealthState)}}</i>
+                    </div>
+                  {{/unless}}
+                {{/unless}}
+                <div class="hl-stat-row">
+                  <div>
+                    {{localize "RQG.Actor.Health.ArmorPointsAbbr"}}<br>
+                    {{localize "RQG.Actor.Health.HitPointsAbbr"}}
+                  </div>
+                  <div class="flex-1">
+                    &nbsp;{{system.armorPoints}}<br>
+                    <span class="nowrap{{#unless (eq system.hitPoints.value system.hitPoints.max)}} strike{{/unless}}">
+                      &nbsp;{{system.hitPoints.max}}&nbsp;
+                    </span>
+                    {{#unless (eq system.hitPoints.value system.hitPoints.max)}} <span class="ml-5">{{system.hitPoints.value}}</span>{{/unless}}
+                  </div>
+                </div>
+                <div class="hl-wounds-row">
+                  <div class="health-state break-word" data-action="healWound" title="{{localize "RQG.Actor.Health.HealWound"}}">{{#if system.woundsString}}<i class="fas fa-heart-pulse"></i> {{system.woundsString}}{{/if}}</div>
+                  <div class="ml-5" title="{{localize "RQG.Actor.Health.AddWound"}}" data-action="addWound"><i class="fas fa-burst"></i></div>
+                </div>
+              </div>
+            {{/each}}
+            <div class="actor-state">
+              {{#if (eq system.attributes.health "shock")}}<img src="systems/rqg/assets/images/token-effects/shock.svg">{{/if}}
+              {{#if (eq system.attributes.health "dead")}}<img src="systems/rqg/assets/images/token-effects/dead.svg">{{/if}}
+              {{#if (eq system.attributes.health "unconscious")}}<img src="systems/rqg/assets/images/token-effects/unconscious.svg">{{/if}}
+            </div>
+          </div>
         {{else}}
-          {{!-- Default (non-humanoid) hit locations grid --}}
+          {{!-- Default (non-humanoid, non-quadruped) hit locations grid --}}
           <div class="grid hit-location item-list">
             <div class="headings"></div>
             <div class="head1-4">

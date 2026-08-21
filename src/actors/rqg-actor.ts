@@ -458,20 +458,22 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Return the bodyType of an actor. Currently only "humanoid" or "other"
+   * Return the bodyType of an actor. Currently "humanoid", "quadruped", or "other"
    */
   public getBodyType(): string {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const actorHitlocationRqids = this.items
       .filter((i) => isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation))
       .map((hl: HitLocationItem) => hl.flags?.rqg?.documentRqidFlags?.id ?? "") as string[];
-    if (
-      CONFIG.RQG.bodytypes.humanoid.length === actorHitlocationRqids.length &&
-      CONFIG.RQG.bodytypes.humanoid.every((hitLocationRqid) =>
-        actorHitlocationRqids.includes(hitLocationRqid),
-      )
-    ) {
+
+    const matchesBodytype = (bodytypeRqids: string[]): boolean =>
+      bodytypeRqids.length === actorHitlocationRqids.length &&
+      bodytypeRqids.every((hitLocationRqid) => actorHitlocationRqids.includes(hitLocationRqid));
+
+    if (matchesBodytype(CONFIG.RQG.bodytypes.humanoid)) {
       return "humanoid";
+    } else if (matchesBodytype(CONFIG.RQG.bodytypes.quadruped)) {
+      return "quadruped";
     } else {
       return "other";
     }
