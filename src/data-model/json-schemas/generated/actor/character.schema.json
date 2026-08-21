@@ -559,6 +559,12 @@
           "minimum": 0,
           "default": 1
         },
+        "magicPointRecoverySettledWorldTime": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
         "hitPoints": {
           "type": "object",
           "properties": {

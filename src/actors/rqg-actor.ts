@@ -32,6 +32,7 @@ import type { ActorHealthState } from "../data-model/actor-data/attributes";
 import type { DamageType } from "@item-model/weapon-enums.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skill-formulas";
 import { RqgItem } from "@items/rqg-item.ts";
+import { RqgCalculations } from "../system/rqg-calculations";
 import { getConfigStatusEffects, getSpeakerCompat } from "../system/fvtt-type-compat";
 import {
   type MagicPointSourceSelection,
@@ -237,6 +238,66 @@ export class RqgActor extends Actor {
         localize("RQG.Dialog.SpiritMagicRoll.SuccessfullyCastInfo", { amount: amount.toString() }),
       );
     }
+  }
+
+  private _magicPointsWriteQueue: Promise<unknown> = Promise.resolve();
+
+  /**
+   * Serializes read-then-write operations on this actor's `magicPoints.value` (#1028 review
+   * finding: passive recovery catch-up and an explicit spend/draw both read the current value,
+   * compute an absolute new one, then write it - if both are in flight at once, whichever write
+   * lands last silently clobbers the other). Queuing every such operation through here means each
+   * one only reads `this.system` once its turn arrives, after any prior queued write has both
+   * been sent and locally applied - never against a stale pre-write snapshot. Used by this method
+   * and by the self/ally/bound-spirit draws in magic-point-source.ts.
+   */
+  public async serializeMagicPointsWrite<T>(operation: () => Promise<T>): Promise<T> {
+    const run = this._magicPointsWriteQueue.then(operation, operation);
+    this._magicPointsWriteQueue = run.catch(() => undefined);
+    return run;
+  }
+
+  /**
+   * Passive Magic Point recovery catch-up (#1028): diffs the actor's recovery checkpoint against
+   * the current `game.time.worldTime` and, if any whole points have accrued since, persists the
+   * recovered points (clamped to `magicPoints.max`, which already reflects POW + any genuine
+   * effects - see #1028 discussion) and the advanced checkpoint in a single write. A no-op (no
+   * write) when nothing has changed, so it's safe to call on every sheet render.
+   */
+  public async catchUpMagicPointRecovery(): Promise<void> {
+    if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character)) {
+      return;
+    }
+    const currentWorldTime = game.time?.worldTime;
+    if (currentWorldTime == null) {
+      return;
+    }
+    await this.serializeMagicPointsWrite(async () => {
+      const attributes = this.system.attributes;
+      if (!attributes.magicPoints) {
+        return;
+      }
+      const settledWorldTime = attributes.magicPointRecoverySettledWorldTime;
+      const { pointsRecovered, newSettledWorldTime } = RqgCalculations.magicPointRecoveryCatchUp(
+        settledWorldTime,
+        currentWorldTime,
+        attributes.magicPoints.max,
+        attributes.magicPointRecoveryRateFactor,
+      );
+      if (pointsRecovered === 0 && newSettledWorldTime === settledWorldTime) {
+        return;
+      }
+      const newValue = Math.min(
+        (attributes.magicPoints.value ?? 0) + pointsRecovered,
+        attributes.magicPoints.max ?? 0,
+      );
+      await this.update(
+        foundry.utils.expandObject({
+          "system.attributes.magicPoints.value": newValue,
+          "system.attributes.magicPointRecoverySettledWorldTime": newSettledWorldTime,
+        }),
+      );
+    });
   }
 
   /**
@@ -487,11 +548,45 @@ export class RqgActor extends Actor {
     };
   }
 
-  private isHealthAffectingActorUpdate(changes: Actor.UpdateData): boolean {
+  private isHealthAffectingActorUpdate(
+    changes: Actor.UpdateData,
+    changesMagicPointsValue: boolean,
+  ): boolean {
     return (
       foundry.utils.hasProperty(changes, "system.attributes.hitPoints.value") ||
-      foundry.utils.hasProperty(changes, "system.attributes.magicPoints.value") ||
+      changesMagicPointsValue ||
       foundry.utils.hasProperty(changes, "system.attributes.health")
+    );
+  }
+
+  /**
+   * Any write to magicPoints.value that isn't catchUpMagicPointRecovery's own (#1028 follow-up) -
+   * a manual sheet edit, a spend, a future drain effect, anything - needs to settle the recovery
+   * checkpoint to *now* too. Otherwise the checkpoint stays wherever it last was (possibly stale,
+   * from well before this change), and the next catch-up attributes however much dead time sits
+   * between that stale checkpoint and now as recovered points on top of the value this update is
+   * setting - e.g. manually draining an actor's Magic Points, then having a catch-up run some time
+   * later, could instantly refund most or all of the drain by crediting the recovery gap that
+   * actually predates the drain. catchUpMagicPointRecovery's own writes always set the checkpoint
+   * explicitly (to a precisely carried-forward value, not just "now"), so this only fires for
+   * updates that change the value without also specifying a checkpoint.
+   */
+  private settleMagicPointRecoveryCheckpoint(
+    changes: Actor.UpdateData,
+    changesMagicPointsValue: boolean,
+  ): void {
+    const changesCheckpoint = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.magicPointRecoverySettledWorldTime",
+    );
+    const currentWorldTime = game.time?.worldTime;
+    if (!changesMagicPointsValue || changesCheckpoint || currentWorldTime == null) {
+      return;
+    }
+    foundry.utils.setProperty(
+      changes,
+      "system.attributes.magicPointRecoverySettledWorldTime",
+      currentWorldTime,
     );
   }
 
@@ -700,9 +795,18 @@ export class RqgActor extends Actor {
   ): Promise<boolean | void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
 
-    this._healthBeforeActorUpdate = this.isHealthAffectingActorUpdate(changes)
+    const changesMagicPointsValue = foundry.utils.hasProperty(
+      changes,
+      "system.attributes.magicPoints.value",
+    );
+    this._healthBeforeActorUpdate = this.isHealthAffectingActorUpdate(
+      changes,
+      changesMagicPointsValue,
+    )
       ? this.getHealthTransitionSnapshot()
       : undefined;
+
+    this.settleMagicPointRecoveryCheckpoint(changes, changesMagicPointsValue);
 
     const actorDex =
       (changes as DeepPartial<CharacterActor>)?.system?.characteristics?.dexterity?.value ??

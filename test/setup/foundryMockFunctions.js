@@ -518,9 +518,9 @@ function mockGetType(variable) {
   return "Unknown";
 }
 
-function mockGetProperty(object, key) {
+function mockGetProperty(object, key, missing = undefined) {
   if (!key || !object) {
-    return undefined;
+    return missing;
   }
   if (key in object) {
     return object[key];
@@ -528,19 +528,24 @@ function mockGetProperty(object, key) {
   let target = object;
   for (const p of key.split(".")) {
     if (!target) {
-      return undefined;
+      return missing;
     }
     const type = typeof target;
     if (type !== "object" && type !== "function") {
-      return undefined;
+      return missing;
     }
     if (p in target) {
       target = target[p];
     } else {
-      return undefined;
+      return missing;
     }
   }
   return target;
+}
+
+function mockHasProperty(object, key) {
+  const missing = Symbol("missing");
+  return mockGetProperty(object, key, missing) !== missing;
 }
 
 // ------------------------------------------------
@@ -741,6 +746,7 @@ globalThis.foundry = {
   utils: {
     mergeObject: vi.fn((...args) => mockMergeObject(...args)),
     getProperty: vi.fn((...args) => mockGetProperty(...args)),
+    hasProperty: vi.fn((...args) => mockHasProperty(...args)),
     setProperty: vi.fn((...args) => setProperty(...args)),
     getType: vi.fn((...args) => mockGetType(...args)),
     expandObject: vi.fn((...args) => expandObject(...args)),

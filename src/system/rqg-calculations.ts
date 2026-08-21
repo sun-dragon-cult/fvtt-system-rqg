@@ -93,6 +93,38 @@ export class RqgCalculations {
     return { hours: Math.floor(totalMinutes / 60), minutes: totalMinutes % 60 };
   }
 
+  /** Pure floor-and-carry step for passive Magic Point recovery (#1028): given the last-settled
+   *  `game.time.worldTime` (seconds) and the current one, returns how many whole points have
+   *  accrued since, plus that settled time advanced by just those whole points - not all the way
+   *  to `currentWorldTime` - so leftover minutes short of a full point carry forward toward the
+   *  next one instead of being discarded. Doesn't know about the actor's current Magic Point
+   *  value or max - clamping recovered points to max is the caller's job (see #1028 discussion:
+   *  `magicPoints.max` already reflects POW + genuine effects, and should be trusted as-is rather
+   *  than re-derived here). A `null` settled time (never settled) recovers nothing and seeds it
+   *  to `currentWorldTime`, avoiding retroactive recovery for actors predating this field. */
+  public static magicPointRecoveryCatchUp(
+    settledWorldTime: number | null | undefined,
+    currentWorldTime: number,
+    maxMagicPoints: number | null | undefined,
+    recoveryRateFactor: number | null | undefined,
+  ): { pointsRecovered: number; newSettledWorldTime: number } {
+    if (settledWorldTime == null) {
+      return { pointsRecovered: 0, newSettledWorldTime: currentWorldTime };
+    }
+    const pointsPerDay = this.magicPointRecoveryPointsPerDay(maxMagicPoints, recoveryRateFactor);
+    if (pointsPerDay <= 0) {
+      return { pointsRecovered: 0, newSettledWorldTime: settledWorldTime };
+    }
+    const minutesPerPoint = (24 * 60) / pointsPerDay;
+    const elapsedMinutes = (currentWorldTime - settledWorldTime) / 60;
+    const pointsRecovered = Math.max(0, Math.floor(elapsedMinutes / minutesPerPoint));
+    if (pointsRecovered <= 0) {
+      return { pointsRecovered: 0, newSettledWorldTime: settledWorldTime };
+    }
+    const newSettledWorldTime = settledWorldTime + pointsRecovered * minutesPerPoint * 60;
+    return { pointsRecovered, newSettledWorldTime };
+  }
+
   public static skillCategoryModifiers(
     str: number | null | undefined,
     siz: number | null | undefined,

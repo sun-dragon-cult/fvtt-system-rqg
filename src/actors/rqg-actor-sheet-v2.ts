@@ -572,6 +572,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       this.element.classList.toggle(state, health === state);
     }
 
+    // Passive Magic Point recovery catch-up (#1028). A no-op write when nothing has accrued, so
+    // it's safe to run on every render; restricted to an owner so non-owner observers don't
+    // attempt (and fail) the write.
+    if (this.actor.isOwner) {
+      void this.actor.catchUpMagicPointRecovery();
+    }
+
     // Right-click the portrait to see it larger, via Foundry's native image popout --
     // the same action as the sidebar's "Show Player Artwork" context menu entry.
     const portraitImg = this.element.querySelector<HTMLImageElement>(
