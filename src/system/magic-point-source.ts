@@ -517,6 +517,19 @@ export function getMaxTransferableToStorage(actor: RqgActor, item: PhysicalItem)
   return Math.max(0, Math.min(selfAvailable, itemMax - itemValue));
 }
 
+/** Deduct `amount` from `target`'s own magicPoints.value, serialized against any other
+ *  concurrent read-then-write of the same actor's magicPoints.value (#1028 review finding). */
+async function debitMagicPoints(target: RqgActor, amount: number): Promise<void> {
+  await target.serializeMagicPointsWrite(async () => {
+    await target.update(
+      foundry.utils.expandObject({
+        "system.attributes.magicPoints.value":
+          (Number(target.system.attributes.magicPoints.value) || 0) - amount,
+      }),
+    );
+  });
+}
+
 /**
  * Move as many points as possible from `actor`'s own pool into `item`'s storage (per #956's
  * design doc: anyone who can use the item can refill its storage from their own Magic Points).
@@ -530,12 +543,9 @@ export async function feedStorageFromSelf(actor: RqgActor, item: PhysicalItem): 
   if (draw <= 0) {
     return;
   }
-  const selfValue = Number(actor.system.attributes.magicPoints.value) || 0;
   const itemValue = Number(item.system.storedMagicPoints?.value) || 0;
   await Promise.all([
-    actor.update(
-      foundry.utils.expandObject({ "system.attributes.magicPoints.value": selfValue - draw }),
-    ),
+    debitMagicPoints(actor, draw),
     item.update({ system: { storedMagicPoints: { value: itemValue + draw } } }),
   ]);
 }
@@ -792,22 +802,8 @@ export async function spendMagicPoints(
           })),
         )
       : undefined,
-    allyDraw
-      ? allyDraw.actor.update(
-          foundry.utils.expandObject({
-            "system.attributes.magicPoints.value":
-              (Number(allyDraw.actor.system.attributes.magicPoints.value) || 0) - allyDraw.amount,
-          }),
-        )
-      : undefined,
-    selfAmount > 0
-      ? actor.update(
-          foundry.utils.expandObject({
-            "system.attributes.magicPoints.value":
-              (Number(actor.system.attributes.magicPoints.value) || 0) - selfAmount,
-          }),
-        )
-      : undefined,
+    allyDraw ? debitMagicPoints(allyDraw.actor, allyDraw.amount) : undefined,
+    selfAmount > 0 ? debitMagicPoints(actor, selfAmount) : undefined,
     ...boundSpiritDraws.map(({ item, spiritActor, amount: draw }) =>
       spendBoundSpiritMagicPoints(item, spiritActor, draw),
     ),
@@ -821,25 +817,29 @@ async function spendBoundSpiritMagicPoints(
   spiritActor: RqgActor,
   draw: number,
 ): Promise<void> {
-  const remaining = (Number(spiritActor.system.attributes.magicPoints.value) || 0) - draw;
-  const spiritUpdate = spiritActor.update(
-    foundry.utils.expandObject({ "system.attributes.magicPoints.value": Math.max(0, remaining) }),
-  );
-  if (remaining <= 0) {
-    const remainingSpiritUuids = (item.system.boundSpiritActorUuids ?? []).filter(
-      (uuid) => uuid !== spiritActor.uuid,
-    );
-    await Promise.all([
-      spiritUpdate,
-      item.update({ system: { boundSpiritActorUuids: remainingSpiritUuids } }),
-    ]);
-    ui.notifications?.info(
-      localize("RQG.Item.Gear.BoundSpiritReleasedInfo", {
-        spiritName: spiritActor.name ?? "",
-        itemName: item.name ?? "",
+  await spiritActor.serializeMagicPointsWrite(async () => {
+    const remaining = (Number(spiritActor.system.attributes.magicPoints.value) || 0) - draw;
+    const spiritUpdate = spiritActor.update(
+      foundry.utils.expandObject({
+        "system.attributes.magicPoints.value": Math.max(0, remaining),
       }),
     );
-  } else {
-    await spiritUpdate;
-  }
+    if (remaining <= 0) {
+      const remainingSpiritUuids = (item.system.boundSpiritActorUuids ?? []).filter(
+        (uuid) => uuid !== spiritActor.uuid,
+      );
+      await Promise.all([
+        spiritUpdate,
+        item.update({ system: { boundSpiritActorUuids: remainingSpiritUuids } }),
+      ]);
+      ui.notifications?.info(
+        localize("RQG.Item.Gear.BoundSpiritReleasedInfo", {
+          spiritName: spiritActor.name ?? "",
+          itemName: item.name ?? "",
+        }),
+      );
+    } else {
+      await spiritUpdate;
+    }
+  });
 }

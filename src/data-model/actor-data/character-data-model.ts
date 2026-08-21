@@ -103,6 +103,15 @@ function defineCharacterSchema() {
       /** 1 = RAW baseline (1 point/24h, p.54); 2 = twice as fast, 0.5 = half as fast.
        *  Lets Humakti gifts / HeroQuest effects speed up or slow down recovery (#512). */
       magicPointRecoveryRateFactor: new NumberField({ nullable: false, initial: 1, min: 0 }),
+      /** `game.time.worldTime` (seconds) as of the last passive-recovery catch-up (#1028).
+       *  `null` means "never settled yet" - distinct from a real timestamp of 0 - so the first
+       *  catch-up for a pre-existing actor can seed it to "now" instead of granting retroactive
+       *  recovery for all elapsed time before the field existed. */
+      magicPointRecoverySettledWorldTime: new NumberField({
+        nullable: true,
+        initial: null,
+        required: false,
+      }),
       hitPoints: derivedResourceSchemaField(),
       move: new SchemaField({
         currentLocomotion: new StringField({

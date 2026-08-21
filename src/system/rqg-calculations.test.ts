@@ -161,3 +161,70 @@ describe("magic point recovery time per point is correct for", () => {
     });
   });
 });
+
+describe("magic point recovery catch-up is correct for", () => {
+  // 18 max MP at normal rate = 1 point every 80 minutes (4800 seconds), per the time-per-point tests above.
+  const minutesPerPoint = 80;
+  const secondsPerPoint = minutesPerPoint * 60;
+
+  it("never-settled (null) checkpoint seeds to now and recovers nothing", () => {
+    expect(RqgCalculations.magicPointRecoveryCatchUp(null, 99_999, 18, 1)).toStrictEqual({
+      pointsRecovered: 0,
+      newSettledWorldTime: 99_999,
+    });
+  });
+
+  it("no time elapsed recovers nothing and leaves the checkpoint in place", () => {
+    expect(RqgCalculations.magicPointRecoveryCatchUp(1000, 1000, 18, 1)).toStrictEqual({
+      pointsRecovered: 0,
+      newSettledWorldTime: 1000,
+    });
+  });
+
+  it("elapsed time short of one point recovers nothing and doesn't consume the checkpoint", () => {
+    expect(RqgCalculations.magicPointRecoveryCatchUp(0, secondsPerPoint - 60, 18, 1)).toStrictEqual(
+      {
+        pointsRecovered: 0,
+        newSettledWorldTime: 0,
+      },
+    );
+  });
+
+  it("exactly one point's worth of elapsed time", () => {
+    expect(RqgCalculations.magicPointRecoveryCatchUp(0, secondsPerPoint, 18, 1)).toStrictEqual({
+      pointsRecovered: 1,
+      newSettledWorldTime: secondsPerPoint,
+    });
+  });
+
+  it("multiple whole points", () => {
+    expect(RqgCalculations.magicPointRecoveryCatchUp(0, secondsPerPoint * 3, 18, 1)).toStrictEqual({
+      pointsRecovered: 3,
+      newSettledWorldTime: secondsPerPoint * 3,
+    });
+  });
+
+  it("carries a leftover partial-point remainder forward instead of discarding it", () => {
+    const current = secondsPerPoint + 40 * 60; // one full point plus 40 extra minutes
+    expect(RqgCalculations.magicPointRecoveryCatchUp(0, current, 18, 1)).toStrictEqual({
+      pointsRecovered: 1,
+      newSettledWorldTime: secondsPerPoint, // the 40 leftover minutes stay uncommitted
+    });
+  });
+
+  it("zero rate factor recovers nothing and leaves the checkpoint in place", () => {
+    expect(RqgCalculations.magicPointRecoveryCatchUp(0, secondsPerPoint * 3, 18, 0)).toStrictEqual({
+      pointsRecovered: 0,
+      newSettledWorldTime: 0,
+    });
+  });
+
+  it("no max magic points recovers nothing", () => {
+    expect(
+      RqgCalculations.magicPointRecoveryCatchUp(0, secondsPerPoint * 3, undefined, 1),
+    ).toStrictEqual({
+      pointsRecovered: 0,
+      newSettledWorldTime: 0,
+    });
+  });
+});

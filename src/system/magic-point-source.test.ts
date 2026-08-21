@@ -54,6 +54,7 @@ function fakeActor(
     },
     update: vi.fn(),
     updateEmbeddedDocuments: vi.fn(),
+    serializeMagicPointsWrite: vi.fn((operation: () => Promise<unknown>) => operation()),
     getFlag: vi.fn((_scope: string, key: string) => (storedFlags as any)[key]),
     setFlag: vi.fn((_scope: string, key: string, value: unknown) => {
       (storedFlags as any)[key] = value;
@@ -79,6 +80,7 @@ function fakeBondActor(
     isOwner,
     system: { attributes: { magicPoints: { value: mpValue, max: mpMax } } },
     update: vi.fn(),
+    serializeMagicPointsWrite: vi.fn((operation: () => Promise<unknown>) => operation()),
   });
 }
 
