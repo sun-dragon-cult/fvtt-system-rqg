@@ -6,9 +6,11 @@ function createCharacterActor(overrides: {
   magicPoints?: { value: number; max: number };
   magicPointRecoveryRateFactor?: number;
   magicPointRecoverySettledWorldTime?: number | null;
+  hasPlayerOwner?: boolean;
 }): any {
   const actor = new RqgActor({ name: "Test Actor", type: ActorTypeEnum.Character }) as any;
   actor.type = ActorTypeEnum.Character;
+  actor.hasPlayerOwner = overrides.hasPlayerOwner ?? true;
   actor.system = {
     attributes: {
       magicPoints: overrides.magicPoints ?? { value: 5, max: 18 },
@@ -75,6 +77,18 @@ describe("RqgActor.catchUpMagicPointRecovery", () => {
     const actor = createCharacterActor({});
     actor.type = "creature";
     (game as any).time = { worldTime: 999_999 };
+
+    await actor.catchUpMagicPointRecovery();
+
+    expect(actor.update).not.toHaveBeenCalled();
+  });
+
+  it("is a no-op for an actor with no player owner", async () => {
+    const actor = createCharacterActor({
+      magicPointRecoverySettledWorldTime: 0,
+      hasPlayerOwner: false,
+    });
+    (game as any).time = { worldTime: 80 * 60 * 3 };
 
     await actor.catchUpMagicPointRecovery();
 

@@ -1,6 +1,10 @@
 import { mockActor as mockActorOriginal } from "../../../test/mocks/mockActor.ts";
 import { HealingCalculations } from "./hit-location-healing-calculations";
-import { applyTestDamage, applyTestHealing } from "./hit-location-test-helpers";
+import {
+  applyTestDamage,
+  applyTestHealing,
+  applyTestNaturalHealing,
+} from "./hit-location-test-helpers";
 import { DamageCalculations } from "./hit-location-damage-calculations";
 import { assertDocumentSubType } from "../../system/util";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
@@ -285,5 +289,79 @@ describe("HealingCalculations", () => {
         mockActor as unknown as RqgActor,
       ),
     ).toThrow();
+  });
+
+  describe("healLocationNaturally (#436)", () => {
+    it("splits weekly healing evenly across multiple wounds on the same location", () => {
+      // Small hits well under the limb's 2x-HP single-blow cap, so each registers at full value.
+      applyTestDamage(3, true, mockLeftLeg, mockActor);
+      applyTestDamage(2, true, mockLeftLeg, mockActor);
+      expect(mockLeftLeg.system.wounds).toStrictEqual([3, 2]);
+      const actorTotalHp = mockActor.system.attributes.hitPoints.value!;
+
+      const { hitLocationUpdates, actorUpdates } = applyTestNaturalHealing(
+        2,
+        mockLeftLeg,
+        mockActor,
+      );
+
+      expect(hitLocationUpdates.system).toMatchObject({ wounds: [2, 1] });
+      expect(actorUpdates).toStrictEqual({
+        system: { attributes: { hitPoints: { value: actorTotalHp + 2 } } },
+      });
+    });
+
+    it("gives any remainder to the lightest wound", () => {
+      applyTestDamage(3, true, mockLeftLeg, mockActor);
+      applyTestDamage(2, true, mockLeftLeg, mockActor);
+
+      const { hitLocationUpdates } = applyTestNaturalHealing(3, mockLeftLeg, mockActor);
+
+      // 3 split across 2 wounds = 1 each + 1 remainder to the lightest (2-point) wound.
+      expect(hitLocationUpdates.system).toMatchObject({ wounds: [2] });
+    });
+
+    it("still heals a severed location's wounds but never restores its function", () => {
+      applyTestDamage(33, true, mockLeftLeg, mockActor);
+      expect(mockLeftLeg.system.hitLocationHealthState).toBe("severed");
+      expect(mockLeftLeg.system.wounds).toStrictEqual([10]);
+
+      const { hitLocationUpdates } = applyTestNaturalHealing(10, mockLeftLeg, mockActor);
+
+      expect(hitLocationUpdates.system).toMatchObject({
+        wounds: [],
+        hitLocationHealthState: "severed",
+      });
+    });
+
+    it("clamps each wound's share to what that wound still needs", () => {
+      applyTestDamage(2, true, mockLeftLeg, mockActor);
+
+      const { hitLocationUpdates } = applyTestNaturalHealing(10, mockLeftLeg, mockActor);
+
+      expect(hitLocationUpdates.system).toMatchObject({ wounds: [] });
+    });
+
+    it("is a no-op when the location has no wounds", () => {
+      const result = HealingCalculations.healLocationNaturally(
+        5,
+        mockLeftLeg as unknown as RqgItem,
+        mockActor as unknown as RqgActor,
+      );
+
+      expect(result).toStrictEqual({ hitLocationUpdates: {}, actorUpdates: {}, usefulLegs: [] });
+    });
+
+    it("is a no-op when there are no weekly heal points to apply", () => {
+      applyTestDamage(3, true, mockLeftLeg, mockActor);
+
+      const result = HealingCalculations.healLocationNaturally(
+        0,
+        mockLeftLeg as unknown as RqgItem,
+        mockActor as unknown as RqgActor,
+      );
+
+      expect(result).toStrictEqual({ hitLocationUpdates: {}, actorUpdates: {}, usefulLegs: [] });
+    });
   });
 });

@@ -113,6 +113,15 @@ function defineCharacterSchema() {
         required: false,
       }),
       hitPoints: derivedResourceSchemaField(),
+      /** `game.time.worldTime` (seconds) as of the last natural-healing catch-up (#436, following
+       *  #1028's pattern). `null` means "never settled yet", so the first catch-up for a
+       *  pre-existing actor seeds it to "now" instead of granting retroactive healing for all
+       *  elapsed time before the field existed. */
+      healingSettledWorldTime: new NumberField({
+        nullable: true,
+        initial: null,
+        required: false,
+      }),
       move: new SchemaField({
         currentLocomotion: new StringField({
           blank: false,

@@ -572,11 +572,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       this.element.classList.toggle(state, health === state);
     }
 
-    // Passive Magic Point recovery catch-up (#1028). A no-op write when nothing has accrued, so
-    // it's safe to run on every render; restricted to an owner so non-owner observers don't
-    // attempt (and fail) the write.
+    // Passive Magic Point recovery / natural Hit Point healing catch-up (#1028, #436). A no-op
+    // write when nothing has accrued, so it's safe to run on every render; restricted to an owner
+    // so non-owner observers don't attempt (and fail) the write.
     if (this.actor.isOwner) {
       void this.actor.catchUpMagicPointRecovery();
+      void this.actor.catchUpNaturalHealing();
     }
 
     // Right-click the portrait to see it larger, via Foundry's native image popout --
