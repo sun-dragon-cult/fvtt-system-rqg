@@ -163,13 +163,12 @@
       }
     }
 
-/* Gear-row indicator for an item enchanted as a Spell Matrix (#959) - clickable, casts the
-   stored spell (single click opens the roll dialog, double click quick-rolls). */
+/* Gear-row indicator for an item enchanted as a Spell Matrix (#959) - info-only, shows the
+   stored spell(s) via tooltip. Cast from the Spirit Magic tab instead. */
     & .matrix-spell-indicator {
       display: inline-flex;
       align-items: center;
       margin-left: 0.25rem;
-      cursor: pointer;
 
       & .matrix-spell-indicator-icon {
         display: inline-block;

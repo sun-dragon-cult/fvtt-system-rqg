@@ -1,14 +1,7 @@
-{{!-- An item can hold more than one Spell Matrix entry (#959). With exactly one, the badge stays
-     clickable to cast it directly, same as before; with more than one, casting a specific entry
-     is ambiguous from a single icon click, so it becomes an info-only badge listing all of them -
-     cast from the Spirit Magic tab instead, which lists one row per entry. --}}
+{{!-- Info-only badge listing the item's enchanted Spell Matrix entries (#959). Cast from the
+     Spirit Magic tab instead, which lists one row per entry. --}}
 {{#if system.matrixSpells.length}}
   <span class="matrix-spell-indicator"
-        {{#if (eq system.matrixSpells.length 1)}}
-          data-matrix-spell-cast
-          data-item-id="{{id}}"
-          data-matrix-spell-index="0"
-        {{/if}}
         data-tooltip="{{matrixSpellsTooltip system.matrixSpells}}">
     <span class="matrix-spell-indicator-icon"></span>
   </span>
