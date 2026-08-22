@@ -1463,6 +1463,14 @@
         "settingName": "Show Hero Points",
         "settingHint": "Show an input field to track the optional rule of hero points."
       },
+      "NaturalHealingEnabled": {
+        "settingName": "Automatic Natural Healing",
+        "settingHint": "If enabled, wounded hit locations on player-owned characters automatically recover their healing rate as game time passes. Disable this if you'd rather apply natural healing by hand, for example to enforce that a character was actually resting."
+      },
+      "MagicPointRecoveryEnabled": {
+        "settingName": "Automatic Magic Point Recovery",
+        "settingHint": "If enabled, player-owned characters automatically recover Magic Points as game time passes. Disable this if you'd rather apply Magic Point recovery by hand."
+      },
       "WorldMigrationVersion": {
         "settingName": "World Migration Version",
         "settingHint": "The RQG system version this world has been migrated to."

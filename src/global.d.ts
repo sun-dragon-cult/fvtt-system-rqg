@@ -148,6 +148,8 @@ declare global {
     "rqg.allowCombatWithoutToken": boolean;
     "rqg.matchEffectSuspensionToEquippedStatusDefault": boolean;
     "rqg.showActorActiveEffectsTab": boolean;
+    "rqg.naturalHealingEnabled": boolean;
+    "rqg.magicPointRecoveryEnabled": boolean;
   }
 
   interface ConfiguredCombatant {

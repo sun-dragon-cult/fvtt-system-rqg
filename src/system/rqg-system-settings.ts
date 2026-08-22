@@ -139,6 +139,24 @@ export const registerRqgSystemSettings = function () {
     default: false,
   });
 
+  game.settings?.register(systemId, "naturalHealingEnabled", {
+    name: "RQG.Settings.NaturalHealingEnabled.settingName",
+    hint: "RQG.Settings.NaturalHealingEnabled.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
+  game.settings?.register(systemId, "magicPointRecoveryEnabled", {
+    name: "RQG.Settings.MagicPointRecoveryEnabled.settingName",
+    hint: "RQG.Settings.MagicPointRecoveryEnabled.settingHint",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   game.settings?.register(systemId, "actor-wizard-feature-flag", {
     name: "Feature Flag: Enable Actor Wizard",
     hint: "For RnD use only",
