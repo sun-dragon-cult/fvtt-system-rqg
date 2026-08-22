@@ -285,10 +285,15 @@ export class RqgActor extends Actor {
    * write) when nothing has changed, so it's safe to call on every sheet render. Only applies to
    * player-owned actors: a GM-only-owned NPC could otherwise silently recover between the moment a
    * GM preps it and whenever the party actually reaches it in-game, changing state the GM set up
-   * on purpose without them noticing.
+   * on purpose without them noticing. A GM can turn this off entirely with the
+   * `magicPointRecoveryEnabled` world setting (#1035) for tables that want to gate recovery on
+   * resting by hand instead.
    */
   public async catchUpMagicPointRecovery(): Promise<void> {
     if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) || !this.hasPlayerOwner) {
+      return;
+    }
+    if ((game.settings?.get(systemId, "magicPointRecoveryEnabled") ?? true) === false) {
       return;
     }
     const currentWorldTime = game.time?.worldTime;
@@ -336,10 +341,15 @@ export class RqgActor extends Actor {
    * every other narrow RAW edge case this codebase doesn't build UI/logic around. Only applies to
    * player-owned actors: a GM-only-owned NPC staged for a future scene could otherwise heal itself
    * in the background while the party takes their time getting there, changing state the GM set up
-   * on purpose without them noticing.
+   * on purpose without them noticing. A GM can turn this off entirely with the
+   * `naturalHealingEnabled` world setting (#1035) for tables that want to gate healing on resting
+   * by hand instead.
    */
   public async catchUpNaturalHealing(): Promise<void> {
     if (!isDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character) || !this.hasPlayerOwner) {
+      return;
+    }
+    if ((game.settings?.get(systemId, "naturalHealingEnabled") ?? true) === false) {
       return;
     }
     const currentWorldTime = game.time?.worldTime;

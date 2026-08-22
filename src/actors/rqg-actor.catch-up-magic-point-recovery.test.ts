@@ -94,4 +94,16 @@ describe("RqgActor.catchUpMagicPointRecovery", () => {
 
     expect(actor.update).not.toHaveBeenCalled();
   });
+
+  it("is a no-op when the magicPointRecoveryEnabled world setting is off (#1035)", async () => {
+    const actor = createCharacterActor({ magicPointRecoverySettledWorldTime: 0 });
+    (game as any).time = { worldTime: 80 * 60 * 3 };
+    const originalSettings = (game as any).settings;
+    (game as any).settings = { get: vi.fn().mockReturnValue(false) };
+
+    await actor.catchUpMagicPointRecovery();
+
+    expect(actor.update).not.toHaveBeenCalled();
+    (game as any).settings = originalSettings;
+  });
 });

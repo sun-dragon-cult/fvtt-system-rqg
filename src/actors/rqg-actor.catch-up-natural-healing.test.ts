@@ -183,4 +183,17 @@ describe("RqgActor.catchUpNaturalHealing", () => {
 
     expect(actor.update).not.toHaveBeenCalled();
   });
+
+  it("is a no-op when the naturalHealingEnabled world setting is off (#1035)", async () => {
+    const secondsPerWeek = 7 * 24 * 60 * 60;
+    const actor = createCharacterActor({ healingSettledWorldTime: 0 });
+    (game as any).time = { worldTime: secondsPerWeek };
+    const originalSettings = (game as any).settings;
+    (game as any).settings = { get: vi.fn().mockReturnValue(false) };
+
+    await actor.catchUpNaturalHealing();
+
+    expect(actor.update).not.toHaveBeenCalled();
+    (game as any).settings = originalSettings;
+  });
 });
