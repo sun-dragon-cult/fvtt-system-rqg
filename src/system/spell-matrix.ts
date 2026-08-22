@@ -84,17 +84,19 @@ export type MatrixSpellSource = {
 
 /**
  * Every enchanted Spell Matrix item among the actor's own physical items, one group per item, each
- * resolved to its entries' live SpiritMagicItems (see resolveMatrixSpellItem). Anyone in physical
- * contact with the item could cast it, but for sheet display purposes this only looks at the
- * viewing actor's own items - items on other actors are out of scope here. Entries whose spell
- * can't be resolved (already warned about by resolveMatrixSpellItem) are omitted; items left with
- * no resolvable entries are omitted entirely.
+ * resolved to its entries' live SpiritMagicItems (see resolveMatrixSpellItem). Requires physical
+ * contact with the item (mirroring the equipped requirement for bound spirits and POW crystals in
+ * magic-point-source.ts), so only equipped matrices are included. For sheet display purposes this
+ * only looks at the viewing actor's own items - items on other actors are out of scope here.
+ * Entries whose spell can't be resolved (already warned about by resolveMatrixSpellItem) are
+ * omitted; items left with no resolvable entries are omitted entirely.
  */
 export async function getMatrixSpellSources(actor: RqgActor): Promise<MatrixSpellSource[]> {
   const matrixItems = actor.items.filter(
     (i) =>
       isDocumentSubType<PhysicalItem>(i, physicalItemTypes) &&
-      (i.system.matrixSpells?.length ?? 0) > 0,
+      (i.system.matrixSpells?.length ?? 0) > 0 &&
+      i.system.equippedStatus === "equipped",
   ) as PhysicalItem[];
 
   // Shared across every entry resolved below, so items/entries enchanted with the same spell
