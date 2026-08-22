@@ -733,7 +733,10 @@ async function getActorMigrationUpdates(
 
 /**
  * Wrap `item` so `.effects` reflects any effects changes already staged by earlier migrations in
- * this same pass (via `pendingUpdateData.effects`), instead of the original persisted state.
+ * this same pass (via `pendingUpdateData.effects`), instead of the original persisted state. Each
+ * matched effect is overlaid with every top-level field of its pending patch (e.g. `duration`/
+ * `start` from migrateItemActiveEffectDurationUnits), with `system` merged rather than replaced
+ * wholesale so untouched sibling system fields survive.
  * Needed because e.g. migrateItemPowCrystalToStoredMagicPoints looks for an effect key that
  * migrateItemActiveEffectPaths only just renamed earlier in the same loop - without this, a
  * legacy-format item going through both migrations for the first time in one pass would have its
@@ -766,6 +769,7 @@ export function patchItemEffectsForPendingUpdates(
     }
     return {
       ...(effect as object),
+      ...(patch as object),
       _id: id,
       system: { ...(effect as any).system, ...(patch as any).system },
     } as AEMigrationEffectLike;

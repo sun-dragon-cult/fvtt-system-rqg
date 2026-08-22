@@ -66,6 +66,35 @@ describe("patchItemEffectsForPendingUpdates", () => {
     );
     expect((patched as any).name).toBe("Magic crystal");
   });
+
+  it("overlays non-system top-level patch fields too, e.g. duration/start from migrateItemActiveEffectDurationUnits", () => {
+    const item = legacyCrystalItem();
+    const pendingUpdateData = {
+      effects: [
+        {
+          _id: "effect-1",
+          duration: { value: 10, units: "rounds" },
+          start: {
+            time: 0,
+            round: null,
+            turn: null,
+            combat: null,
+            combatant: null,
+            initiative: null,
+          },
+        },
+      ],
+    };
+
+    const patched = patchItemEffectsForPendingUpdates(item as RqgItem, pendingUpdateData as any);
+
+    expect((patched as any).effects[0].duration).toEqual({ value: 10, units: "rounds" });
+    expect((patched as any).effects[0].start.time).toBe(0);
+    // The original system.changes (untouched by this patch) must still be visible.
+    expect((patched as any).effects[0].system.changes[0].key).toBe(
+      "system.attributes.magicPoints.max",
+    );
+  });
 });
 
 describe("migrateItemActiveEffectPaths + migrateItemPowCrystalToStoredMagicPoints sequencing", () => {
