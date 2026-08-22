@@ -4,6 +4,7 @@ import { systemId } from "../config";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { MigrationLogger } from "../logging/migration-logger";
 import { RqgLogger } from "../logging/rqg-logger";
+import { type AEMigrationEffectLike, getCollectionValues } from "./shared-ae-migration-utils";
 
 const applyMigrationsLogger = new RqgLogger("Migration");
 
@@ -730,6 +731,56 @@ async function getActorMigrationUpdates(
 
 /* -------------------------------------------- */
 
+/**
+ * Wrap `item` so `.effects` reflects any effects changes already staged by earlier migrations in
+ * this same pass (via `pendingUpdateData.effects`), instead of the original persisted state.
+ * Needed because e.g. migrateItemPowCrystalToStoredMagicPoints looks for an effect key that
+ * migrateItemActiveEffectPaths only just renamed earlier in the same loop - without this, a
+ * legacy-format item going through both migrations for the first time in one pass would have its
+ * key renamed but never get converted, since the later migration would still see the old key.
+ * Every property other than `.effects` reads through to the real item unchanged.
+ */
+export function patchItemEffectsForPendingUpdates(
+  item: RqgItem,
+  pendingUpdateData: Item.UpdateData,
+): RqgItem {
+  const pendingEffects = (pendingUpdateData as Record<string, unknown>)?.["effects"];
+  if (!Array.isArray(pendingEffects) || pendingEffects.length === 0) {
+    return item;
+  }
+
+  const pendingById = new Map<string, Record<string, unknown>>();
+  for (const patch of pendingEffects) {
+    const id = (patch as Record<string, unknown>)?.["_id"];
+    if (typeof id === "string") {
+      pendingById.set(id, patch as Record<string, unknown>);
+    }
+  }
+
+  const originalEffects = getCollectionValues<AEMigrationEffectLike>((item as any).effects);
+  const patchedEffects = originalEffects.map((effect) => {
+    const id = (effect as any)?._id ?? (effect as any)?.id;
+    const patch = typeof id === "string" ? pendingById.get(id) : undefined;
+    if (!patch) {
+      return effect;
+    }
+    return {
+      ...(effect as object),
+      _id: id,
+      system: { ...(effect as any).system, ...(patch as any).system },
+    } as AEMigrationEffectLike;
+  });
+
+  return new Proxy(item, {
+    get(target, prop, receiver) {
+      if (prop === "effects") {
+        return patchedEffects;
+      }
+      return Reflect.get(target, prop, receiver);
+    },
+  }) as RqgItem;
+}
+
 async function getItemMigrationUpdates(
   item: RqgItem,
   itemMigrations: ItemMigration[],
@@ -742,7 +793,8 @@ async function getItemMigrationUpdates(
   for (const fn of itemMigrations) {
     const migrationName = getMigrationFunctionName(fn);
     const scopedLogger = logger?.withMigration(migrationName);
-    const fnUpdate = await fn(item, owningActor, scopedLogger);
+    const patchedItem = patchItemEffectsForPendingUpdates(item, updateData);
+    const fnUpdate = await fn(patchedItem, owningActor, scopedLogger);
     if (!foundry.utils.isEmpty(pruneNoopUpdateData(fnUpdate, itemSourceData))) {
       migrationNames.add(migrationName);
     }
