@@ -775,14 +775,19 @@ export function patchItemEffectsForPendingUpdates(
     } as AEMigrationEffectLike;
   });
 
-  return new Proxy(item, {
-    get(target, prop, receiver) {
-      if (prop === "effects") {
-        return patchedEffects;
-      }
-      return Reflect.get(target, prop, receiver);
-    },
-  }) as RqgItem;
+  // A real embedded item's `effects` is a non-configurable, non-writable own property
+  // (Foundry's EmbeddedCollectionField), so a Proxy targeting `item` directly can't override
+  // the get trap's return value for it - the engine enforces that non-configurable data
+  // properties report their actual value, and throws otherwise. Use `item` as the prototype
+  // of a fresh object instead and shadow only `effects` as an own property on top of it;
+  // every other property still resolves through the prototype chain to the real item.
+  const patched: RqgItem = Object.create(item);
+  Object.defineProperty(patched, "effects", {
+    value: patchedEffects,
+    enumerable: true,
+    configurable: true,
+  });
+  return patched;
 }
 
 async function getItemMigrationUpdates(
