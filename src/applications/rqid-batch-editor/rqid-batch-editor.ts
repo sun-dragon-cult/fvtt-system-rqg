@@ -998,9 +998,10 @@ export class RqidBatchEditor extends HandlebarsApplicationMixin(
       RqidBatchEditor.logger.info(`${message} ${pct}`);
     }
 
-    if (!RqidBatchEditor.updateProgressBar?.active) {
+    if (!RqidBatchEditor.updateProgressBar) {
       RqidBatchEditor.updateProgressBar = ui.notifications?.info(message, {
         progress: true,
+        permanent: true,
         console: false,
       });
     }
