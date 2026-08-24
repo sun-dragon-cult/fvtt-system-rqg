@@ -454,7 +454,7 @@
         "Concentration": "Concentration",
         "AlliedSpiritFromLabel": "Allied Spirit",
         "BoundSpiritFromLabel": "Bound Spirit",
-        "MatrixFromLabel": "Matrix",
+        "MatrixSourceTooltip": "Matrix: {itemName}",
         "InLabel": "in"
       }
     },

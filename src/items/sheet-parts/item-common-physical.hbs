@@ -115,7 +115,8 @@
      above: an item can hold more than one enchanted spell (e.g. one 4-point and one 1-point
      spell), and the dropzone always appends another. Each spell's own mechanics are resolved live
      from spellRqidLink at cast time (resolveMatrixSpellItem, spell-matrix.ts); only the enchanted
-     level (points) is stored per entry here. --}}
+     level (points) is stored per entry here. Listed alphabetically - use `this.storageIndex`,
+     not `@index`, for the real array position. --}}
 <label for="matrix-spell-{{id}}">{{localize "RQG.Item.Gear.MatrixSpell"}}</label>
 <div id="matrix-spell-{{id}}"
      class="matrix-spell-dropzone"
@@ -130,7 +131,7 @@
         {{#if this.isVariable}}
           <input type="number"
                  data-matrix-spell-points
-                 data-index="{{@index}}"
+                 data-index="{{this.storageIndex}}"
                  data-tooltip="{{localize "RQG.Item.Gear.MatrixSpellPoints"}}"
                  value="{{this.points}}"
                  min="0"
@@ -142,7 +143,7 @@
       {{/if}}
       {{#if ../isEditable}}
         <a data-action="unlinkMatrixSpell"
-           data-index="{{@index}}"
+           data-index="{{this.storageIndex}}"
            data-tooltip="{{localize "RQG.Item.Gear.UnlinkMatrixSpellTitle" spellName=this.spellRqidLink.name}}">
           <i class="fas fa-unlink"></i>
         </a>

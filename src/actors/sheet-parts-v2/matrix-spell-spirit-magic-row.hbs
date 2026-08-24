@@ -1,17 +1,18 @@
-{{!-- Partial: one Spirit Magic spell row for a spell enchanted into one of this actor's own
-     Spell Matrix items (#959). Unlike spiritMagicExternalRow.hbs, `item` isn't an actual
-     embedded/owned Item - it's resolved live from the matrix item's rqid on each click, so this
-     uses data-matrix-spell-cast + the matrix item's own id (see rqg-actor-sheet-v2.ts) rather than
-     data-spirit-magic-roll/data-external-owner-uuid. It deliberately omits the "contextmenu" class
-     other Spirit Magic rows use: the shared spiritMagicMenuOptions context menu resolves its
-     target via resolveCastItem's actor.items.get(data-item-id), which here would return the
-     physical matrix item (sourceItemId), not a SpiritMagicItem - so it isn't wired up for this row.
+{{!-- `item` isn't a real embedded Item, it's resolved live from the matrix item's rqid, so this
+     uses data-matrix-spell-cast/data-matrix-spell-drag-handle instead of the native equivalents,
+     and omits "contextmenu" (the shared context menu would resolve the wrong document via
+     data-item-id).
 
-     Params: item (the resolved transient spell), sourceItemId (the matrix item's id),
-     entryIndex (which matrixSpells array entry on that item this spell came from - an item can
-     hold more than one, see resolveMatrixSpellItem). --}}
-<div class="spirit-magic-row external-item">
+     Params: item, sourceItemId (matrix item's id), entryIndex, sourceItemName, sourceItemImg. --}}
+<div class="spirit-magic-row" data-item-id="{{sourceItemId}}" data-matrix-spell-row-index="{{entryIndex}}">
   <div class="spirit-magic item">
+    {{!-- GM-only, matching the rest of the list (#1048 lifts this sheet-wide). --}}
+    {{#if @root.isGM}}
+      <span class="item-drag-handle item draggable"
+            data-matrix-spell-drag-handle
+            data-item-id="{{sourceItemId}}"
+            data-matrix-spell-index="{{entryIndex}}"><span class="grip-icon"></span></span>
+    {{/if}}
     <img class="row-icon" src="{{item.img}}">
   </div>
   <div class="spirit-magic item"
@@ -20,6 +21,8 @@
        data-matrix-spell-index="{{entryIndex}}"
        data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
     {{item.name}}
+    <img class="matrix-source-badge" src="{{sourceItemImg}}"
+         data-tooltip="{{localize 'RQG.Actor.SpiritMagic.MatrixSourceTooltip' itemName=sourceItemName}}">
   </div>
   <div class="spirit-magic item"
        data-tooltip="{{item.spellSummaryTooltip}}"

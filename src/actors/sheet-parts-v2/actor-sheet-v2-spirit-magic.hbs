@@ -30,40 +30,46 @@
       <div class="head3">{{localize "RQG.Actor.SpiritMagic.SpellSummary"}}</div>
        <div class="head4">{{localize "RQG.Actor.SpiritMagic.SpellFocus"}}</div>
 
-    {{#each embeddedItems.spiritMagic}}
-    <div class="spirit-magic-row">
-       <div class="spirit-magic contextmenu item"
-         data-item-id="{{id}}"
-         {{#if system.descriptionRqidLink.rqid}}data-rqid-link="{{system.descriptionRqidLink.rqid}}"{{/if}}>
-         {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{img}}">
-      </div>
-      <div class="spirit-magic contextmenu item"
-           data-item-id="{{id}}"
-           data-spirit-magic-roll
-           data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
-        {{name}}{{#if system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
-      </div>
-      {{#if (and system.isVariable ../system.editMode)}}
-        <div class="spirit-magic contextmenu item"
-             data-item-id="{{id}}"
-             data-tooltip="{{spellSummaryTooltip}}">
-          <input type="number" class="spirit-magic-points-input" min="0" step="1"
-                 data-item-edit-value="system.points" data-item-id="{{id}}" value="{{system.points}}">
-          {{#if (eq system.points 1)}}{{localize "RQG.Item.Spell.Point"}}{{else}}{{localize "RQG.Item.Spell.Points"}}{{/if}}
-          {{localize "RQG.Item.SpiritMagic.Variable"}}{{#if spellSummaryRest}}, {{spellSummaryRest}}{{/if}}
-        </div>
+    {{!-- Own spells + matrix entries, interleaved by sort. --}}
+    {{#each spiritMagicRows}}
+      {{#if isMatrixRow}}
+        {{> matrixSpellSpiritMagicRow item=item sourceItemId=sourceItemId entryIndex=entryIndex
+            sourceItemName=sourceItemName sourceItemImg=sourceItemImg}}
       {{else}}
-        <div class="spirit-magic contextmenu item"
-             data-item-id="{{id}}"
-           data-tooltip="{{spellSummaryTooltip}}"
-             data-spirit-magic-roll>
-          {{spellSummary}}
+      <div class="spirit-magic-row" data-item-id="{{item.id}}">
+         <div class="spirit-magic contextmenu item"
+           data-item-id="{{item.id}}"
+           {{#if item.system.descriptionRqidLink.rqid}}data-rqid-link="{{item.system.descriptionRqidLink.rqid}}"{{/if}}>
+           {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{item.id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{item.img}}">
         </div>
-      {{/if}}
-      <div class="spirit-magic contextmenu item" data-item-id="{{id}}">
-        <input type="text" data-item-edit-value="system.spellFocus" data-item-id="{{id}}" value="{{system.spellFocus}}" placeholder="—">
+        <div class="spirit-magic contextmenu item"
+             data-item-id="{{item.id}}"
+             data-spirit-magic-roll
+             data-tooltip="{{localize 'RQG.Game.RollTitle'}}">
+          {{item.name}}{{#if item.system.isMatrix}} {{localize "RQG.Item.SpiritMagic.MatrixIndicator"}}{{/if}}
+        </div>
+        {{#if (and item.system.isVariable ../system.editMode)}}
+          <div class="spirit-magic contextmenu item"
+               data-item-id="{{item.id}}"
+               data-tooltip="{{item.spellSummaryTooltip}}">
+            <input type="number" class="spirit-magic-points-input" min="0" step="1"
+                   data-item-edit-value="system.points" data-item-id="{{item.id}}" value="{{item.system.points}}">
+            {{#if (eq item.system.points 1)}}{{localize "RQG.Item.Spell.Point"}}{{else}}{{localize "RQG.Item.Spell.Points"}}{{/if}}
+            {{localize "RQG.Item.SpiritMagic.Variable"}}{{#if item.spellSummaryRest}}, {{item.spellSummaryRest}}{{/if}}
+          </div>
+        {{else}}
+          <div class="spirit-magic contextmenu item"
+               data-item-id="{{item.id}}"
+             data-tooltip="{{item.spellSummaryTooltip}}"
+               data-spirit-magic-roll>
+            {{item.spellSummary}}
+          </div>
+        {{/if}}
+        <div class="spirit-magic contextmenu item" data-item-id="{{item.id}}">
+          <input type="text" data-item-edit-value="system.spellFocus" data-item-id="{{item.id}}" value="{{item.system.spellFocus}}" placeholder="—">
+        </div>
       </div>
-    </div>
+      {{/if}}
     {{/each}}
 
     {{#if externalSpiritMagic.length}}
@@ -81,15 +87,6 @@
           name=sourceActor.name img=sourceActor.img itemName=sourceItemName itemImg=sourceItemImg}}
       {{#each items}}
         {{> spiritMagicExternalRow item=this ownerUuid=../sourceActor.uuid}}
-      {{/each}}
-    {{/each}}
-
-    {{!-- Spell Matrix Enchantments (#959): one "Matrix: [img] {itemName}" group per enchanted item. --}}
-    {{#each matrixSpellSources}}
-      {{> externalSpellDivider labelKey="RQG.Actor.SpiritMagic.MatrixFromLabel"
-          name=sourceItemName img=sourceItemImg}}
-      {{#each entries}}
-        {{> matrixSpellSpiritMagicRow item=item sourceItemId=../sourceItemId entryIndex=entryIndex}}
       {{/each}}
     {{/each}}
   </div>
