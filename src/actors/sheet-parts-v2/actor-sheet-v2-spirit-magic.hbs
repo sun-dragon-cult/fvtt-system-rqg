@@ -40,7 +40,7 @@
          <div class="spirit-magic contextmenu item"
            data-item-id="{{item.id}}"
            {{#if item.system.descriptionRqidLink.rqid}}data-rqid-link="{{item.system.descriptionRqidLink.rqid}}"{{/if}}>
-           {{#if @root.isGM}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{item.id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{item.img}}">
+           {{#if @root.isEditable}}<span class="item-drag-handle item draggable" data-item-drag-handle data-item-id="{{item.id}}"><span class="grip-icon"></span></span>{{/if}}<img class="row-icon" src="{{item.img}}">
         </div>
         <div class="spirit-magic contextmenu item"
              data-item-id="{{item.id}}"

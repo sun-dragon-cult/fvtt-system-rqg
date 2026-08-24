@@ -6,8 +6,7 @@
      Params: item, sourceItemId (matrix item's id), entryIndex, sourceItemName, sourceItemImg. --}}
 <div class="spirit-magic-row" data-item-id="{{sourceItemId}}" data-matrix-spell-row-index="{{entryIndex}}">
   <div class="spirit-magic item">
-    {{!-- GM-only, matching the rest of the list (#1048 lifts this sheet-wide). --}}
-    {{#if @root.isGM}}
+    {{#if @root.isEditable}}
       <span class="item-drag-handle item draggable"
             data-matrix-spell-drag-handle
             data-item-id="{{sourceItemId}}"
