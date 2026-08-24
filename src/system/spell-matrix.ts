@@ -8,7 +8,7 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { Rqid } from "./api/rqid-api";
 import { isDocumentSubType, localize } from "./util";
 
-/** One stored Spell Matrix entry (#959). `sort` orders it among the actor's own spells (#1047). */
+/** One stored Spell Matrix entry. `sort` orders it among the actor's own spells. */
 export type MatrixSpellStorageEntry = { spellRqidLink: RqidLink; points: number; sort: number };
 
 /**
@@ -68,7 +68,6 @@ export async function resolveMatrixSpellItem(
   return new CONFIG.Item.documentClass(data) as unknown as SpiritMagicItem;
 }
 
-/** Actor's equipped items holding at least one Spell Matrix entry (#959). */
 function getEquippedMatrixItems(actor: RqgActor): PhysicalItem[] {
   return actor.items.filter(
     (i) =>
@@ -79,7 +78,7 @@ function getEquippedMatrixItems(actor: RqgActor): PhysicalItem[] {
 }
 
 /** A matrix entry's sort/name, read directly off storage - no Rqid resolution. Use
- *  getMatrixSpellRows instead when the resolved SpiritMagicItem is actually needed (#1047). */
+ *  getMatrixSpellRows instead when the resolved SpiritMagicItem is actually needed. */
 export type MatrixSpellSlot = {
   sourceItem: PhysicalItem;
   entryIndex: number;
@@ -87,7 +86,6 @@ export type MatrixSpellSlot = {
   name: string;
 };
 
-/** Every Spell Matrix entry's sort/name, unresolved - see MatrixSpellSlot. */
 export function getMatrixSpellSlots(actor: RqgActor): MatrixSpellSlot[] {
   return getEquippedMatrixItems(actor).flatMap((sourceItem) =>
     (sourceItem.system.matrixSpells ?? []).map((entry, entryIndex) => ({
@@ -99,7 +97,7 @@ export function getMatrixSpellSlots(actor: RqgActor): MatrixSpellSlot[] {
   );
 }
 
-/** One Spell Matrix entry (#959), resolved to its live SpiritMagicItem. */
+/** One Spell Matrix entry, resolved to its live SpiritMagicItem. */
 export type MatrixSpellRow = {
   sourceItem: PhysicalItem;
   entryIndex: number;
@@ -107,8 +105,7 @@ export type MatrixSpellRow = {
   sort: number;
 };
 
-/** Every Spell Matrix spell across the actor's equipped items, resolved and flattened (#1047 -
- *  listed alongside owned spells, not grouped by item). */
+/** Flattened, not grouped by item. */
 export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRow[]> {
   const matrixItems = getEquippedMatrixItems(actor);
 
@@ -131,8 +128,7 @@ export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRo
   return rows.flat();
 }
 
-/** Sort value for a newly-enchanted matrix entry: past everything else, so it appends at the
- *  end (#1047). 0 when there's no actor yet. */
+/** Past everything else, so a newly-enchanted entry appends at the end. 0 with no actor yet. */
 export function getNextSpiritMagicSort(actor: RqgActor | null | undefined): number {
   if (!actor) {
     return 0;

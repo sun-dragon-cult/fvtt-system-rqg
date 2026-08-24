@@ -172,8 +172,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           };
         }),
       );
-      // Displayed alphabetically (#1047); storageIndex (set above) keeps edit/unlink actions
-      // pointed at the real, unsorted array index.
+      // Displayed alphabetically; storageIndex keeps edit/unlink actions pointed at the real
+      // array index.
       system.matrixSpells.sort((a, b) =>
         (a.spellRqidLink?.name ?? "").localeCompare(b.spellRqidLink?.name ?? ""),
       );

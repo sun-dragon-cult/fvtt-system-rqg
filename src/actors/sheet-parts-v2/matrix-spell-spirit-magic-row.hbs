@@ -1,8 +1,7 @@
-{{!-- Row for a Spell Matrix entry (#959, #1047) - `item` isn't a real embedded Item, it's
-     resolved live from the matrix item's rqid, so this uses data-matrix-spell-cast/
-     data-matrix-spell-drag-handle instead of the native equivalents, and omits "contextmenu"
-     (the shared context menu would resolve the wrong document via data-item-id). Badge marks it
-     as matrix-derived.
+{{!-- `item` isn't a real embedded Item, it's resolved live from the matrix item's rqid, so this
+     uses data-matrix-spell-cast/data-matrix-spell-drag-handle instead of the native equivalents,
+     and omits "contextmenu" (the shared context menu would resolve the wrong document via
+     data-item-id).
 
      Params: item, sourceItemId (matrix item's id), entryIndex, sourceItemName, sourceItemImg. --}}
 <div class="spirit-magic-row" data-item-id="{{sourceItemId}}" data-matrix-spell-row-index="{{entryIndex}}">

@@ -2270,7 +2270,7 @@
         }
       }
 
-/* Marks a matrix spell as matrix-derived (#1047); margin matches the row icon-to-name gap. */
+/* Margin matches the row icon-to-name gap. */
       & .matrix-source-badge {
         margin-left: 0.35rem;
         flex: 0 0 auto;

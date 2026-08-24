@@ -61,7 +61,7 @@ export function physicalItemSchemaFields() {
     // while the spell's other mechanics (range/duration/concentration/isVariable/...) never diverge
     // per matrix instance, so they're resolved live from `spellRqidLink.rqid` via
     // resolveMatrixSpellItem (spell-matrix.ts) instead of being duplicated here.
-    // `sort` (#1047) orders this entry among the actor's own Spirit Magic spells.
+    // `sort` orders this entry among the actor's own Spirit Magic spells.
     matrixSpells: new ArrayField(
       new SchemaField({
         spellRqidLink: rqidLinkSchemaField({ nullable: true }),

@@ -30,7 +30,7 @@
       <div class="head3">{{localize "RQG.Actor.SpiritMagic.SpellSummary"}}</div>
        <div class="head4">{{localize "RQG.Actor.SpiritMagic.SpellFocus"}}</div>
 
-    {{!-- Own spells + matrix entries, interleaved by sort (#1047, see spiritMagicRows). --}}
+    {{!-- Own spells + matrix entries, interleaved by sort. --}}
     {{#each spiritMagicRows}}
       {{#if isMatrixRow}}
         {{> matrixSpellSpiritMagicRow item=item sourceItemId=sourceItemId entryIndex=entryIndex

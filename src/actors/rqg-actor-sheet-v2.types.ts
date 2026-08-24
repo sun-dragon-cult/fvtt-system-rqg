@@ -144,8 +144,7 @@ export interface RqgActorSheetV2Context {
     sourceItemImg: string;
     items: RqgItem[];
   }[];
-  /** The Spirit Magic tab's own-spells list (#1047) - owned Items and matrix entries, one
-   *  sort-ordered list. See SpiritMagicListRow. */
+  /** The Spirit Magic tab's own-spells list - see SpiritMagicListRow. */
   spiritMagicRows: SpiritMagicListRow[];
 
   /** Enriched biography HTML. */
