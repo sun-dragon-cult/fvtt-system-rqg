@@ -14,6 +14,20 @@ export type RqgSheetHeaderControl = foundry.applications.api.ApplicationV2.Heade
   onClick?: () => Promise<void> | void;
 };
 
+/** One row of the Spirit Magic tab's own-spells list - see RqgActorSheetV2Context.spiritMagicRows. */
+export type SpiritMagicListRow =
+  | { isMatrixRow: false; sort: number; item: RqgItem }
+  | {
+      isMatrixRow: true;
+      sort: number;
+      item: RqgItem;
+      /** Which entry on sourceItemId's system.matrixSpells this is - see getMatrixSpellRows. */
+      entryIndex: number;
+      sourceItemId: string;
+      sourceItemName: string;
+      sourceItemImg: string;
+    };
+
 /**
  * Context passed to all V2 actor sheet parts.
  */
@@ -130,14 +144,13 @@ export interface RqgActorSheetV2Context {
     sourceItemImg: string;
     items: RqgItem[];
   }[];
-  /** Spirit Magic spells enchanted into this actor's own Spell Matrix items (#959), one group per
-   *  item (an item can hold more than one matrix spell) - see getMatrixSpellSources. */
-  matrixSpellSources: {
-    sourceItemId: string;
-    sourceItemName: string;
-    sourceItemImg: string;
-    entries: { entryIndex: number; item: RqgItem }[];
-  }[];
+  /** One row on the Spirit Magic tab's own-spells list (#1047): either an owned spiritMagic Item,
+   *  or a spell enchanted into one of the actor's equipped Spell Matrix items (#959, resolved live
+   *  - see getMatrixSpellRows). Both kinds share one `sort`-ordered list and one drag-reorderable
+   *  sequence (RqgActorSheetV2._getSpiritMagicSortSiblings/_reorderSpiritMagic) - the matrix kind
+   *  just carries extra fields identifying which matrix entry it came from, and renders with a
+   *  small source-item badge (matrixSpellSpiritMagicRow.hbs) instead of the owned-row markup. */
+  spiritMagicRows: SpiritMagicListRow[];
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

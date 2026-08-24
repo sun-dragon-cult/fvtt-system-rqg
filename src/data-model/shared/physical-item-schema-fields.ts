@@ -61,10 +61,16 @@ export function physicalItemSchemaFields() {
     // while the spell's other mechanics (range/duration/concentration/isVariable/...) never diverge
     // per matrix instance, so they're resolved live from `spellRqidLink.rqid` via
     // resolveMatrixSpellItem (spell-matrix.ts) instead of being duplicated here.
+    // `sort` (#1047) places an entry among the actor's own Spirit Magic spells on the Spirit
+    // Magic tab - the same CONST.SORT_INTEGER_DENSITY-spaced integer scheme Foundry uses for
+    // embedded Items' own `sort` field, just stored here instead since a matrix entry isn't a
+    // Document of its own. See getMatrixSpellRows (spell-matrix.ts) and RqgActorSheetV2's
+    // _getSpiritMagicSortSiblings/_reorderSpiritMagic for how the two sort spaces interleave.
     matrixSpells: new ArrayField(
       new SchemaField({
         spellRqidLink: rqidLinkSchemaField({ nullable: true }),
         points: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+        sort: new NumberField({ integer: true, nullable: false, initial: 0 }),
       }),
     ),
   } as const;

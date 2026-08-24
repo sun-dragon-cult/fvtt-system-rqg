@@ -2267,6 +2267,19 @@
           box-shadow: none;
         }
       }
+
+/* Source-item badge (#1047): shown on a matrix spell's name in place of a "Matrix: ..." divider
+   when its item holds only that one spell - see matrixSpellSpiritMagicRow.hbs. */
+      & .matrix-source-badge {
+        width: 14px;
+        height: 14px;
+        object-fit: contain;
+        border: none;
+        border-radius: var(--rqg-radius-sm);
+        margin-left: 0.25rem;
+        opacity: 0.85;
+        flex: 0 0 auto;
+      }
     }
 
 /* --- Rune Magic tab --- */
