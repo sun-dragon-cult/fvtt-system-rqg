@@ -20,7 +20,9 @@
      one, see resolveMatrixSpellItem), sourceItemName, sourceItemImg. --}}
 <div class="spirit-magic-row" data-item-id="{{sourceItemId}}" data-matrix-spell-row-index="{{entryIndex}}">
   <div class="spirit-magic item">
-    {{#if @root.isEditable}}
+    {{!-- GM-only, matching every other drag handle in this list today (#1048 tracks lifting that
+         to @root.isEditable sheet-wide; this row should follow once that lands). --}}
+    {{#if @root.isGM}}
       <span class="item-drag-handle item draggable"
             data-matrix-spell-drag-handle
             data-item-id="{{sourceItemId}}"
