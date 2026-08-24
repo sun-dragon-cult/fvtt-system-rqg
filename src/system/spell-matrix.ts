@@ -71,6 +71,44 @@ export async function resolveMatrixSpellItem(
   return new CONFIG.Item.documentClass(data) as unknown as SpiritMagicItem;
 }
 
+/** The actor's own physical items that currently offer a Spell Matrix spell (#959) - equipped
+ *  (mirroring the physical-contact requirement for bound spirits and POW crystals in
+ *  magic-point-source.ts) and holding at least one enchanted entry. Shared by every function below
+ *  that needs to enumerate matrix entries. */
+function getEquippedMatrixItems(actor: RqgActor): PhysicalItem[] {
+  return actor.items.filter(
+    (i) =>
+      isDocumentSubType<PhysicalItem>(i, physicalItemTypes) &&
+      (i.system.matrixSpells?.length ?? 0) > 0 &&
+      i.system.equippedStatus === "equipped",
+  ) as PhysicalItem[];
+}
+
+/** One Spell Matrix entry's identity, `sort`, and display name (#1047) - read directly off the
+ *  stored `matrixSpells` entry, no Rqid.fromRqid/compendium lookup. Cheap enough for the "sort
+ *  alphabetically" button and every drag/drop (RqgActorSheetV2's _getSpiritMagicSortSiblings) and
+ *  for placing a newly-enchanted entry (getNextSpiritMagicSort); use getMatrixSpellRows instead
+ *  when the full resolved SpiritMagicItem (icon, spell summary, ...) is actually needed to render
+ *  or cast it. */
+export type MatrixSpellSlot = {
+  sourceItem: PhysicalItem;
+  entryIndex: number;
+  sort: number;
+  name: string;
+};
+
+/** Every Spell Matrix entry's identity/sort/name (#1047) - see MatrixSpellSlot. */
+export function getMatrixSpellSlots(actor: RqgActor): MatrixSpellSlot[] {
+  return getEquippedMatrixItems(actor).flatMap((sourceItem) =>
+    (sourceItem.system.matrixSpells ?? []).map((entry, entryIndex) => ({
+      sourceItem,
+      entryIndex,
+      sort: entry.sort ?? 0,
+      name: entry.spellRqidLink?.name ?? "",
+    })),
+  );
+}
+
 /** One Spell Matrix entry (#959), resolved to its live SpiritMagicItem, alongside enough context
  *  (`sourceItem`, `entryIndex`) to cast it and to write a new `sort` back onto the right
  *  `matrixSpells` array entry when the actor sheet reorders it (RqgActorSheetV2's
@@ -95,12 +133,7 @@ export type MatrixSpellRow = {
  * (already warned about by resolveMatrixSpellItem) are omitted.
  */
 export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRow[]> {
-  const matrixItems = actor.items.filter(
-    (i) =>
-      isDocumentSubType<PhysicalItem>(i, physicalItemTypes) &&
-      (i.system.matrixSpells?.length ?? 0) > 0 &&
-      i.system.equippedStatus === "equipped",
-  ) as PhysicalItem[];
+  const matrixItems = getEquippedMatrixItems(actor);
 
   // Shared across every entry resolved below, so items/entries enchanted with the same spell
   // (e.g. two matrices both holding Bladesharp) only resolve that spell's canonical rqid once.
@@ -125,17 +158,17 @@ export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRo
  * The `sort` a newly-enchanted matrix spell entry (#1047, RqgItemSheetV2._onDropMatrixSpell)
  * should get: past everything the actor's Spirit Magic tab already shows (owned spells and other
  * matrix entries alike), so it appends at the end instead of colliding with an existing `sort` and
- * forcing an immediate reindex. `undefined` when the item isn't on an actor yet (e.g. a sidebar/
+ * forcing an immediate reindex. Returns 0 when the item isn't on an actor yet (e.g. a sidebar/
  * compendium template) - there's no existing order to append after, so the entry just gets the
  * schema's `initial: 0` until it's equipped onto someone.
  */
-export async function getNextSpiritMagicSort(actor: RqgActor | null | undefined): Promise<number> {
+export function getNextSpiritMagicSort(actor: RqgActor | null | undefined): number {
   if (!actor) {
     return 0;
   }
   const ownedSorts = actor.items
     .filter((i) => i.type === ItemTypeEnum.SpiritMagic)
     .map((i) => i.sort ?? 0);
-  const matrixSorts = (await getMatrixSpellRows(actor)).map((row) => row.sort);
+  const matrixSorts = getMatrixSpellSlots(actor).map((slot) => slot.sort);
   return Math.max(0, ...ownedSorts, ...matrixSorts) + CONST.SORT_INTEGER_DENSITY;
 }

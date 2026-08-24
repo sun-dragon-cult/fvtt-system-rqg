@@ -72,6 +72,7 @@ import {
 import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
 import {
   getMatrixSpellRows,
+  getMatrixSpellSlots,
   resolveMatrixSpellItem,
   type MatrixSpellStorageEntry,
 } from "../system/spell-matrix";
@@ -144,6 +145,13 @@ type SpiritMagicSortSibling =
       sourceItem: PhysicalItem;
       entryIndex: number;
     };
+
+/** Identifies one Spirit Magic sibling (owned Item or matrix entry) without needing the resolved
+ *  SpiritMagicSortSibling itself - shared shape between a drag source (_reorderSpiritMagic's
+ *  `source` param) and a drop-target row's dataset (_resolveSpiritMagicSibling). See
+ *  _findSpiritMagicSibling. */
+type SpiritMagicSiblingId =
+  { kind: "owned"; itemId: string } | { kind: "matrix"; sourceItemId: string; entryIndex: number };
 
 /** Custom drag payload for reordering a Spell Matrix entry (#1047, see _onMatrixSpellDragStart) -
  *  it isn't a real embedded Item, so it can't ride Foundry's native "Item" drag/drop handling. */
@@ -1713,7 +1721,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         return "into";
       }
 
-      const rect = dropCell.getBoundingClientRect();
+      const rect = RqgActorSheetV2._realBoundingRect(dropCell);
       const upperBoundary = rect.top + rect.height / 3;
       const lowerBoundary = rect.bottom - rect.height / 3;
       if (event.clientY >= upperBoundary && event.clientY <= lowerBoundary) {
@@ -1721,8 +1729,21 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
     }
 
-    const rect = dropCell.getBoundingClientRect();
+    const rect = RqgActorSheetV2._realBoundingRect(dropCell);
     return event.clientY < rect.top + rect.height / 2 ? "before" : "after";
+  }
+
+  /** Several row wrappers across the sheet are `display: contents` (their children render as if
+   *  direct grid children - e.g. `.spirit-magic-row`, `.gear-row`, `.skill-row`), which makes their
+   *  own getBoundingClientRect() degenerate (all zero). Fall back to the first real child's rect in
+   *  that case, so drop-position math above stays correct regardless of which element - a row
+   *  wrapper or an inner cell - was passed in. */
+  private static _realBoundingRect(element: HTMLElement): DOMRect {
+    const rect = element.getBoundingClientRect();
+    if (rect.width || rect.height) {
+      return rect;
+    }
+    return (element.firstElementChild as HTMLElement | null)?.getBoundingClientRect() ?? rect;
   }
 
   private _isLocationContainerDropTarget(
@@ -1886,7 +1907,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    *  and Spell Matrix entries together (they share one visual list - see spiritMagicRows),
    *  assigning fresh `sort` values across both by spell name. */
   private static async _sortSpiritMagicAlphabetically(actor: RqgActor): Promise<void> {
-    const siblings = await RqgActorSheetV2._getSpiritMagicSortSiblings(actor);
+    const siblings = RqgActorSheetV2._getSpiritMagicSortSiblings(actor);
     const ordered = [...siblings].sort((a, b) => a.name.localeCompare(b.name));
     const updates = ordered.map((sibling, index) => ({
       target: sibling,
@@ -1899,12 +1920,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    *  Magic tab, wrapped for foundry.utils.performIntegerSort - a generic algorithm that only needs
    *  objects carrying a `sort` property, not real Documents, which is exactly what lets a matrix
    *  entry (plain data on another Item's `matrixSpells` array, not a Document of its own)
-   *  interleave with owned Items in one sequence. See SpiritMagicSortSibling. */
-  private static async _getSpiritMagicSortSiblings(
-    actor: RqgActor,
-  ): Promise<SpiritMagicSortSibling[]> {
+   *  interleave with owned Items in one sequence. See SpiritMagicSortSibling. Uses
+   *  getMatrixSpellSlots rather than getMatrixSpellRows - sort math only needs each entry's
+   *  already-stored sort/name, not its resolved SpiritMagicItem, so this stays synchronous and
+   *  skips a compendium/world lookup per entry on every drag-drop and "sort alphabetically" click. */
+  private static _getSpiritMagicSortSiblings(actor: RqgActor): SpiritMagicSortSibling[] {
     const ownedItems = actor.items.filter((i) => i.type === ItemTypeEnum.SpiritMagic) as RqgItem[];
-    const matrixRows = await getMatrixSpellRows(actor);
+    const matrixSlots = getMatrixSpellSlots(actor);
     return [
       ...ownedItems.map((item): SpiritMagicSortSibling => ({
         kind: "owned",
@@ -1912,12 +1934,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         name: item.name ?? "",
         item,
       })),
-      ...matrixRows.map((row): SpiritMagicSortSibling => ({
+      ...matrixSlots.map((slot): SpiritMagicSortSibling => ({
         kind: "matrix",
-        sort: row.sort,
-        name: row.item.name ?? "",
-        sourceItem: row.sourceItem,
-        entryIndex: row.entryIndex,
+        sort: slot.sort,
+        name: slot.name,
+        sourceItem: slot.sourceItem,
+        entryIndex: slot.entryIndex,
       })),
     ];
   }
@@ -1971,13 +1993,21 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     await Promise.all(updatePromises);
   }
 
-  /** `.spirit-magic-row` is `display: contents` (its children render as if they were direct
-   *  children of the grid - see actorsheet-v2.css), so it generates no box of its own:
-   *  getBoundingClientRect() on it is degenerate (all zero). _getSameActorDropAction needs a real
-   *  rendered element to compare the drop's clientY against, so give it the row's first real
-   *  child instead of the row itself. */
-  private static _spiritMagicDropRectElement(row: HTMLElement): HTMLElement {
-    return (row.firstElementChild as HTMLElement | null) ?? row;
+  /** Find the sibling identified by `id` (an owned Item's id, or a matrix entry's host item id +
+   *  entry index) - shared by _resolveSpiritMagicSibling (identifies a drop-target row) and
+   *  _reorderSpiritMagic (identifies the drag source, already in this shape). */
+  private static _findSpiritMagicSibling(
+    id: SpiritMagicSiblingId,
+    siblings: SpiritMagicSortSibling[],
+  ): SpiritMagicSortSibling | undefined {
+    return id.kind === "owned"
+      ? siblings.find((s) => s.kind === "owned" && s.item.id === id.itemId)
+      : siblings.find(
+          (s) =>
+            s.kind === "matrix" &&
+            s.sourceItem.id === id.sourceItemId &&
+            s.entryIndex === id.entryIndex,
+        );
   }
 
   /** Resolve a Spirit Magic row element (owned or matrix - see actor-sheet-v2-spirit-magic.hbs /
@@ -1991,13 +2021,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       return undefined;
     }
     const matrixIndexStr = row.dataset["matrixSpellRowIndex"];
-    if (matrixIndexStr !== undefined) {
-      const entryIndex = Number(matrixIndexStr);
-      return siblings.find(
-        (s) => s.kind === "matrix" && s.sourceItem.id === itemId && s.entryIndex === entryIndex,
-      );
-    }
-    return siblings.find((s) => s.kind === "owned" && s.item.id === itemId);
+    const id: SpiritMagicSiblingId =
+      matrixIndexStr !== undefined
+        ? { kind: "matrix", sourceItemId: itemId, entryIndex: Number(matrixIndexStr) }
+        : { kind: "owned", itemId };
+    return RqgActorSheetV2._findSpiritMagicSibling(id, siblings);
   }
 
   /** Reorder one Spirit Magic row (owned or matrix - #1047) relative to another, sharing one
@@ -2006,22 +2034,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    *  dropped on/near, and `dropAction` which side of it. */
   private static async _reorderSpiritMagic(
     actor: RqgActor,
-    source:
-      | { kind: "owned"; itemId: string }
-      | { kind: "matrix"; sourceItemId: string; entryIndex: number },
+    source: SpiritMagicSiblingId,
     dropRow: HTMLElement,
     dropAction: "before" | "after",
   ): Promise<void> {
-    const siblings = await RqgActorSheetV2._getSpiritMagicSortSiblings(actor);
-    const resolvedSource =
-      source.kind === "owned"
-        ? siblings.find((s) => s.kind === "owned" && s.item.id === source.itemId)
-        : siblings.find(
-            (s) =>
-              s.kind === "matrix" &&
-              s.sourceItem.id === source.sourceItemId &&
-              s.entryIndex === source.entryIndex,
-          );
+    const siblings = RqgActorSheetV2._getSpiritMagicSortSiblings(actor);
+    const resolvedSource = RqgActorSheetV2._findSpiritMagicSibling(source, siblings);
     const target = RqgActorSheetV2._resolveSpiritMagicSibling(dropRow, siblings);
     if (!resolvedSource || !target || target === resolvedSource) {
       return;
@@ -2086,11 +2104,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
           ".spirit-magic-row[data-item-id]",
         );
         if (spiritMagicDropRow) {
-          const dropAction = this._getSameActorDropAction(
-            event,
-            RqgActorSheetV2._spiritMagicDropRectElement(spiritMagicDropRow),
-            null,
-          );
+          const dropAction = this._getSameActorDropAction(event, spiritMagicDropRow, null);
           if (dropAction === "before" || dropAction === "after") {
             await RqgActorSheetV2._reorderSpiritMagic(
               this.actor,
@@ -2646,11 +2660,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       return;
     }
 
-    const dropAction = this._getSameActorDropAction(
-      event,
-      RqgActorSheetV2._spiritMagicDropRectElement(dropRow),
-      null,
-    );
+    const dropAction = this._getSameActorDropAction(event, dropRow, null);
     if (dropAction !== "before" && dropAction !== "after") {
       return;
     }

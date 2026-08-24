@@ -542,7 +542,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     const newEntry = {
       spellRqidLink: spellRqidLink,
       points: (droppedItem as unknown as SpiritMagicItem).system.points,
-      sort: await getNextSpiritMagicSort(this.document.actor as unknown as RqgActor | null),
+      sort: getNextSpiritMagicSort(this.document.actor as unknown as RqgActor | null),
     };
     await this.document.update({
       system: { matrixSpells: [...this.getMatrixSpells(), newEntry] },
