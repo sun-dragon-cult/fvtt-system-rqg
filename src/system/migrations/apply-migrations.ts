@@ -1488,7 +1488,10 @@ function updateProgressBar(
   const message = `${prefix} ${index} / ${totalCount}`;
 
   if (!progressState.progressBar) {
-    progressState.progressBar = ui.notifications?.info(message, { progress: true });
+    progressState.progressBar = ui.notifications?.info(message, {
+      progress: true,
+      permanent: true,
+    });
   }
 
   progressState.progressBar?.update?.({ message, pct });
