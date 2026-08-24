@@ -144,12 +144,8 @@ export interface RqgActorSheetV2Context {
     sourceItemImg: string;
     items: RqgItem[];
   }[];
-  /** One row on the Spirit Magic tab's own-spells list (#1047): either an owned spiritMagic Item,
-   *  or a spell enchanted into one of the actor's equipped Spell Matrix items (#959, resolved live
-   *  - see getMatrixSpellRows). Both kinds share one `sort`-ordered list and one drag-reorderable
-   *  sequence (RqgActorSheetV2._getSpiritMagicSortSiblings/_reorderSpiritMagic) - the matrix kind
-   *  just carries extra fields identifying which matrix entry it came from, and renders with a
-   *  small source-item badge (matrixSpellSpiritMagicRow.hbs) instead of the owned-row markup. */
+  /** The Spirit Magic tab's own-spells list (#1047) - owned Items and matrix entries, one
+   *  sort-ordered list. See SpiritMagicListRow. */
   spiritMagicRows: SpiritMagicListRow[];
 
   /** Enriched biography HTML. */

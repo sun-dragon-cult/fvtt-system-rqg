@@ -172,11 +172,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           };
         }),
       );
-      // Displayed alphabetically (#1047) - matrixSpells is stored in enchant order, which has no
-      // meaning to a player/GM. `storageIndex` (set above, before sorting) is what
-      // _onRender's points-edit listener and _unlinkMatrixSpellAction key off - see
-      // item-common-physical.hbs's data-index - so reordering this array for display doesn't
-      // desync those from the real, unsorted system.matrixSpells array.
+      // Displayed alphabetically (#1047); storageIndex (set above) keeps edit/unlink actions
+      // pointed at the real, unsorted array index.
       system.matrixSpells.sort((a, b) =>
         (a.spellRqidLink?.name ?? "").localeCompare(b.spellRqidLink?.name ?? ""),
       );

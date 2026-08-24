@@ -30,10 +30,7 @@
       <div class="head3">{{localize "RQG.Actor.SpiritMagic.SpellSummary"}}</div>
        <div class="head4">{{localize "RQG.Actor.SpiritMagic.SpellFocus"}}</div>
 
-    {{!-- Spirit Magic tab own-spells list (#1047): owned spiritMagic Items and Spell Matrix
-         entries (#959, resolved live - see getMatrixSpellRows) interleaved by `sort`, one shared
-         drag-reorderable sequence rather than matrix spells grouped separately under their item -
-         see spiritMagicRows/_reorderSpiritMagic (rqg-actor-sheet-v2.ts). --}}
+    {{!-- Own spells + matrix entries, interleaved by sort (#1047, see spiritMagicRows). --}}
     {{#each spiritMagicRows}}
       {{#if isMatrixRow}}
         {{> matrixSpellSpiritMagicRow item=item sourceItemId=sourceItemId entryIndex=entryIndex

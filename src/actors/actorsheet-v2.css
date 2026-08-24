@@ -1041,9 +1041,8 @@
     }
 
     /* Shared icon size for item-list row icons across Spirit Magic, Rune Magic, Sorcery,
-       Skills, Gear, Passion, and the Background tab's reputation icon. Also used by the Spell
-       Matrix source badge (#1047, .matrix-source-badge below) so it reads as a second icon, not a
-       dimmed overlay. */
+       Skills, Gear, Passion, and the Background tab's reputation icon. Also the Spell Matrix
+       source badge (#1047). */
     .row-icon,
     .matrix-source-badge {
       width: 26px;
@@ -2271,11 +2270,7 @@
         }
       }
 
-/* Source-item badge (#1047): shown on a matrix spell's name, marking it as matrix-derived since
-   matrix entries no longer get their own "Matrix: ..." divider - see
-   matrixSpellSpiritMagicRow.hbs. Sizing/border shared with .row-icon above, so it reads as a
-   second icon at full strength, not a dimmed overlay; margin-left matches the gap between the
-   row's own icon and the spell name. */
+/* Marks a matrix spell as matrix-derived (#1047); margin matches the row icon-to-name gap. */
       & .matrix-source-badge {
         margin-left: 0.35rem;
         flex: 0 0 auto;

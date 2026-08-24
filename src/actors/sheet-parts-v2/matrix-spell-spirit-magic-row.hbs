@@ -1,27 +1,13 @@
-{{!-- Partial: one Spirit Magic spell row for a spell enchanted into one of this actor's own,
-     equipped Spell Matrix items (#959) - listed as an ordinary row among the actor's own known
-     spells (#1047), sharing one `sort`-ordered, drag-reorderable list with them (see
-     spiritMagicRows, rqg-actor-sheet-v2.ts) rather than grouped under a "Matrix: ..." divider by
-     item. `item` isn't an actual embedded/owned Item - it's resolved live from the matrix item's
-     rqid on each click, so this uses data-matrix-spell-cast + the matrix item's own id rather than
-     data-spirit-magic-roll/data-external-owner-uuid. It deliberately omits the "contextmenu" class
-     other Spirit Magic rows use: the shared spiritMagicMenuOptions context menu resolves its
-     target via resolveCastItem's actor.items.get(data-item-id), which here would return the
-     physical matrix item (sourceItemId), not a SpiritMagicItem - so it isn't wired up for this row.
-     A small badge on the name (sourceItemName/sourceItemImg) marks it as matrix-derived, since
-     there's no divider to say so any more. The drag handle carries data-matrix-spell-drag-handle
-     (not data-item-drag-handle - sourceItemId isn't this spell's own id, so the generic Item-drag
-     handling in RqgActorSheetV2._onDragStart would resolve the wrong document) so
-     _onDragStart/_onDrop can reorder it alongside owned spiritMagic Items via a custom drag
-     payload - see _reorderSpiritMagic.
+{{!-- Row for a Spell Matrix entry (#959, #1047) - `item` isn't a real embedded Item, it's
+     resolved live from the matrix item's rqid, so this uses data-matrix-spell-cast/
+     data-matrix-spell-drag-handle instead of the native equivalents, and omits "contextmenu"
+     (the shared context menu would resolve the wrong document via data-item-id). Badge marks it
+     as matrix-derived.
 
-     Params: item (the resolved transient spell), sourceItemId (the matrix item's id), entryIndex
-     (which matrixSpells array entry on that item this spell came from - an item can hold more than
-     one, see resolveMatrixSpellItem), sourceItemName, sourceItemImg. --}}
+     Params: item, sourceItemId (matrix item's id), entryIndex, sourceItemName, sourceItemImg. --}}
 <div class="spirit-magic-row" data-item-id="{{sourceItemId}}" data-matrix-spell-row-index="{{entryIndex}}">
   <div class="spirit-magic item">
-    {{!-- GM-only, matching every other drag handle in this list today (#1048 tracks lifting that
-         to @root.isEditable sheet-wide; this row should follow once that lands). --}}
+    {{!-- GM-only, matching the rest of the list (#1048 lifts this sheet-wide). --}}
     {{#if @root.isGM}}
       <span class="item-drag-handle item draggable"
             data-matrix-spell-drag-handle

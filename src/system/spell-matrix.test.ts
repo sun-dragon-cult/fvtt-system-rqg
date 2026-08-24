@@ -122,8 +122,7 @@ describe("getNextSpiritMagicSort", () => {
   });
 
   it("lands one density step past the highest sort among owned spells and matrix entries", () => {
-    // Reads sort straight off the stored matrixSpells entries (no Rqid.fromRqid resolution needed
-    // just to place a new entry), so this doesn't need to mock spell resolution at all.
+    // No spell resolution needed, so no Rqid mock either.
     (globalThis as any).CONST = { SORT_INTEGER_DENSITY: 100000 };
     const ownedSpell = { id: "s1", type: ItemTypeEnum.SpiritMagic, sort: 150000 };
     const matrixItem = fakeMatrixItem("m1", [{ rqid: "spell.heal", name: "Heal", sort: 250000 }]);
