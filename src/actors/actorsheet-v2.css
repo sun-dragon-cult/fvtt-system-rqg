@@ -1041,8 +1041,10 @@
     }
 
     /* Shared icon size for item-list row icons across Spirit Magic, Rune Magic, Sorcery,
-       Skills, Gear, Passion, and the Background tab's reputation icon. */
-    .row-icon {
+       Skills, Gear, Passion, and the Background tab's reputation icon. Also the Spell Matrix
+       source badge (#1047). */
+    .row-icon,
+    .matrix-source-badge {
       width: 26px;
       height: 26px;
       object-fit: contain;
@@ -2266,6 +2268,12 @@
           border-color: rgb(255 255 255 / 40%);
           box-shadow: none;
         }
+      }
+
+/* Margin matches the row icon-to-name gap. */
+      & .matrix-source-badge {
+        margin-left: 0.35rem;
+        flex: 0 0 auto;
       }
     }
 

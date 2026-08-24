@@ -1,4 +1,8 @@
-import type { RqgSheetHeaderControl, RqgActorSheetV2Context } from "./rqg-actor-sheet-v2.types";
+import type {
+  RqgSheetHeaderControl,
+  RqgActorSheetV2Context,
+  SpiritMagicListRow,
+} from "./rqg-actor-sheet-v2.types";
 import type { DeepPartial } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
 import { CharacterDataModel } from "../data-model/actor-data/character-data-model";
@@ -66,7 +70,12 @@ import {
   updateRqidLink,
 } from "../documents/drag-drop";
 import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
-import { getMatrixSpellSources, resolveMatrixSpellItem } from "../system/spell-matrix";
+import {
+  getMatrixSpellRows,
+  getMatrixSpellSlots,
+  resolveMatrixSpellItem,
+  type MatrixSpellStorageEntry,
+} from "../system/spell-matrix";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import type { CultItem } from "@item-model/cult-data-model.ts";
@@ -121,6 +130,29 @@ type PhysicalTransferResult =
   | { kind: "failed" }
   | { kind: "cancelled" };
 
+/** For foundry.utils.performIntegerSort, which needs a plain `sort` field, not a real Document. */
+type SpiritMagicSortSibling =
+  | { kind: "owned"; sort: number; name: string; item: RqgItem }
+  | {
+      kind: "matrix";
+      sort: number;
+      name: string;
+      sourceItem: PhysicalItem;
+      entryIndex: number;
+    };
+
+/** Lightweight identifier, so a lookup doesn't need the full resolved sibling. */
+type SpiritMagicSiblingId =
+  { kind: "owned"; itemId: string } | { kind: "matrix"; sourceItemId: string; entryIndex: number };
+
+/** Not a real Item, so it can't use Foundry's native Item drag/drop. */
+type RqgMatrixSpellSortDragData = {
+  type: "RqgMatrixSpellSort";
+  actorUuid: string;
+  sourceItemId: string;
+  entryIndex: number;
+};
+
 export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   #skillFilterQuery = "";
 
@@ -133,7 +165,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   // Runtime override of ActorSheetV2 _dragDrop; current fvtt-types do not expose this member.
   protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
-      dragSelector: "[data-item-drag-handle][data-item-id]",
+      // Also matches Spell Matrix drag handles (not real Items).
+      dragSelector:
+        "[data-item-drag-handle][data-item-id], [data-matrix-spell-drag-handle][data-item-id]",
       // Include a non-root content drop target for generic Foundry handling.
       // Do not include the root selector here: if html.matches(dropSelector),
       // Foundry binds only the root and skips descendant dropzones.
@@ -285,13 +319,27 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const externalSpiritMagic = getExternalSpiritMagicItems(this.actor, alliedBondActor);
     // #999: Spirit Magic spells known by each bound spirit, one group per spirit.
     const boundSpiritSpiritMagic = getBoundSpiritSpiritMagicItems(this.actor, boundSpiritItems);
-    // #959: Spirit Magic spells enchanted into the actor's own Spell Matrix items, one group per
-    // item - see getMatrixSpellSources.
+    // #959: Spirit Magic spells enchanted into the actor's own Spell Matrix items - see
+    // getMatrixSpellRows.
     const incorrectRunes: RqgItem[] = [];
-    const [matrixSpellSources, embeddedItems] = await Promise.all([
-      getMatrixSpellSources(this.actor),
+    const [matrixSpellRows, embeddedItems] = await Promise.all([
+      getMatrixSpellRows(this.actor),
       DataPrep.organizeEmbeddedItems(this.actor, incorrectRunes),
     ]);
+    const spiritMagicRows: SpiritMagicListRow[] = [
+      ...((embeddedItems[ItemTypeEnum.SpiritMagic] ?? []) as RqgItem[]).map(
+        (item): SpiritMagicListRow => ({ isMatrixRow: false, sort: item.sort ?? 0, item }),
+      ),
+      ...matrixSpellRows.map((row): SpiritMagicListRow => ({
+        isMatrixRow: true,
+        sort: row.sort,
+        item: row.item,
+        entryIndex: row.entryIndex,
+        sourceItemId: row.sourceItem.id ?? "",
+        sourceItemName: row.sourceItem.name ?? "",
+        sourceItemImg: row.sourceItem.img ?? "",
+      })),
+    ].sort((a, b) => a.sort - b.sort);
     const itemTree = new ItemTree(this.actor.items.contents);
     const uniqueGearItems = ((embeddedItems[ItemTypeEnum.Gear] ?? []) as GearItem[])
       .filter((item) => foundry.utils.getProperty(item, "system.physicalItemType") === "unique")
@@ -443,12 +491,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         sourceItemImg: sourceItem.img ?? "",
         items,
       })),
-      matrixSpellSources: matrixSpellSources.map(({ sourceItem, entries }) => ({
-        sourceItemId: sourceItem.id ?? "",
-        sourceItemName: sourceItem.name ?? "",
-        sourceItemImg: sourceItem.img ?? "",
-        entries,
-      })),
+      spiritMagicRows: spiritMagicRows,
 
       enrichedBiography: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
         system.background.biography ?? "",
@@ -1364,9 +1407,17 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   }
 
   protected override async _onDragStart(event: DragEvent): Promise<void> {
+    const eventTarget = getEventTargetElement(event);
+
+    // Matrix entries aren't real Items - skip super._onDragStart's Item-drag handling.
+    const matrixHandle = eventTarget?.closest("[data-matrix-spell-drag-handle]");
+    if (isFoundryElementInstanceOf(matrixHandle, HTMLElement)) {
+      this._onMatrixSpellDragStart(event, matrixHandle);
+      return;
+    }
+
     await super._onDragStart(event);
 
-    const eventTarget = getEventTargetElement(event);
     const dragHandle = eventTarget?.closest("[data-item-drag-handle], [data-weapon-drag-handle]");
     if (!isFoundryElementInstanceOf(dragHandle, HTMLElement)) {
       return;
@@ -1390,6 +1441,32 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     if (item.img) {
       const iconElement = itemContainer.querySelector<HTMLImageElement>("img[data-item-id], img");
       const imgSrc = iconElement?.currentSrc || iconElement?.src || item.img;
+      this._activeDragPreview = this._buildDragPreview(imgSrc);
+      event.dataTransfer.setDragImage(this._activeDragPreview, 18, 18);
+    }
+  }
+
+  private _onMatrixSpellDragStart(event: DragEvent, matrixHandle: HTMLElement): void {
+    const sourceItemId = matrixHandle.dataset["itemId"];
+    const entryIndexStr = matrixHandle.dataset["matrixSpellIndex"];
+    if (!sourceItemId || entryIndexStr === undefined || !event.dataTransfer) {
+      return;
+    }
+    const dragData: RqgMatrixSpellSortDragData = {
+      type: "RqgMatrixSpellSort",
+      actorUuid: this.actor.uuid ?? "",
+      sourceItemId,
+      entryIndex: Number(entryIndexStr),
+    };
+    event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+
+    // Suppress sheet-level glow for same-actor reorders; clear when the drag operation ends.
+    this._isSameActorDrag = true;
+
+    const itemContainer = matrixHandle.closest("[data-item-id]");
+    const iconElement = itemContainer?.querySelector<HTMLImageElement>("img.row-icon, img");
+    const imgSrc = iconElement?.currentSrc || iconElement?.src;
+    if (imgSrc) {
       this._activeDragPreview = this._buildDragPreview(imgSrc);
       event.dataTransfer.setDragImage(this._activeDragPreview, 18, 18);
     }
@@ -1623,7 +1700,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         return "into";
       }
 
-      const rect = dropCell.getBoundingClientRect();
+      const rect = RqgActorSheetV2._realBoundingRect(dropCell);
       const upperBoundary = rect.top + rect.height / 3;
       const lowerBoundary = rect.bottom - rect.height / 3;
       if (event.clientY >= upperBoundary && event.clientY <= lowerBoundary) {
@@ -1631,8 +1708,18 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       }
     }
 
-    const rect = dropCell.getBoundingClientRect();
+    const rect = RqgActorSheetV2._realBoundingRect(dropCell);
     return event.clientY < rect.top + rect.height / 2 ? "before" : "after";
+  }
+
+  /** `display: contents` rows (e.g. `.spirit-magic-row`) have a degenerate own rect - fall back
+   *  to the first real child. */
+  private static _realBoundingRect(element: HTMLElement): DOMRect {
+    const rect = element.getBoundingClientRect();
+    if (rect.width || rect.height) {
+      return rect;
+    }
+    return (element.firstElementChild as HTMLElement | null)?.getBoundingClientRect() ?? rect;
   }
 
   private _isLocationContainerDropTarget(
@@ -1772,6 +1859,11 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       return;
     }
 
+    if (itemType === ItemTypeEnum.SpiritMagic) {
+      await RqgActorSheetV2._sortSpiritMagicAlphabetically(actor);
+      return;
+    }
+
     const itemsToSort = actor.items.filter((i) => i.type === itemType) as RqgItem[];
     itemsToSort.sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     itemsToSort.forEach((item, index) => {
@@ -1782,6 +1874,137 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     });
     const updateData = itemsToSort.map((item) => ({ _id: item.id, sort: item.sort }));
     await actor.updateEmbeddedDocuments("Item", updateData);
+  }
+
+  /** Alphabetizes owned spells and matrix entries together. */
+  private static async _sortSpiritMagicAlphabetically(actor: RqgActor): Promise<void> {
+    const siblings = RqgActorSheetV2._getSpiritMagicSortSiblings(actor);
+    const ordered = [...siblings].sort((a, b) => a.name.localeCompare(b.name));
+    const updates = ordered.map((sibling, index) => ({
+      target: sibling,
+      update: { sort: (index + 1) * CONST.SORT_INTEGER_DENSITY },
+    }));
+    await RqgActorSheetV2._applySpiritMagicSortUpdates(actor, updates);
+  }
+
+  /** Uses getMatrixSpellSlots, not getMatrixSpellRows - sort math needs no spell resolution. */
+  private static _getSpiritMagicSortSiblings(actor: RqgActor): SpiritMagicSortSibling[] {
+    const ownedItems = actor.items.filter((i) => i.type === ItemTypeEnum.SpiritMagic) as RqgItem[];
+    const matrixSlots = getMatrixSpellSlots(actor);
+    return [
+      ...ownedItems.map((item): SpiritMagicSortSibling => ({
+        kind: "owned",
+        sort: item.sort ?? 0,
+        name: item.name ?? "",
+        item,
+      })),
+      ...matrixSlots.map((slot): SpiritMagicSortSibling => ({
+        kind: "matrix",
+        sort: slot.sort,
+        name: slot.name,
+        sourceItem: slot.sourceItem,
+        entryIndex: slot.entryIndex,
+      })),
+    ];
+  }
+
+  /** Dispatches performIntegerSort's updates: owned items batch into one update call; matrix
+   *  entries group by host item (one `.update()` per host, not per entry). */
+  private static async _applySpiritMagicSortUpdates(
+    actor: RqgActor,
+    updates: { target: SpiritMagicSortSibling; update: { sort: number } }[],
+  ): Promise<void> {
+    const itemUpdates: { _id: string; sort: number }[] = [];
+    const matrixSpellsByHost = new Map<string, MatrixSpellStorageEntry[]>();
+
+    for (const { target, update } of updates) {
+      if (target.kind === "owned") {
+        if (target.item.id) {
+          itemUpdates.push({ _id: target.item.id, sort: update.sort });
+        }
+        continue;
+      }
+      const hostId = target.sourceItem.id;
+      if (!hostId) {
+        continue;
+      }
+      let matrixSpells = matrixSpellsByHost.get(hostId);
+      if (!matrixSpells) {
+        matrixSpells = foundry.utils.deepClone(
+          target.sourceItem.system.matrixSpells ?? [],
+        ) as MatrixSpellStorageEntry[];
+        matrixSpellsByHost.set(hostId, matrixSpells);
+      }
+      const entry = matrixSpells[target.entryIndex];
+      if (entry) {
+        matrixSpells[target.entryIndex] = { ...entry, sort: update.sort };
+      }
+    }
+
+    const updatePromises: Promise<unknown>[] = [];
+    if (itemUpdates.length) {
+      updatePromises.push(actor.updateEmbeddedDocuments("Item", itemUpdates));
+    }
+    for (const [hostId, matrixSpells] of matrixSpellsByHost) {
+      const hostItem = actor.items.get(hostId);
+      if (hostItem) {
+        updatePromises.push(hostItem.update({ system: { matrixSpells } }));
+      }
+    }
+    await Promise.all(updatePromises);
+  }
+
+  /** Shared by row lookup and drag-source lookup, to avoid duplicating the match logic. */
+  private static _findSpiritMagicSibling(
+    id: SpiritMagicSiblingId,
+    siblings: SpiritMagicSortSibling[],
+  ): SpiritMagicSortSibling | undefined {
+    return id.kind === "owned"
+      ? siblings.find((s) => s.kind === "owned" && s.item.id === id.itemId)
+      : siblings.find(
+          (s) =>
+            s.kind === "matrix" &&
+            s.sourceItem.id === id.sourceItemId &&
+            s.entryIndex === id.entryIndex,
+        );
+  }
+
+  private static _resolveSpiritMagicSibling(
+    row: HTMLElement,
+    siblings: SpiritMagicSortSibling[],
+  ): SpiritMagicSortSibling | undefined {
+    const itemId = row.dataset["itemId"];
+    if (!itemId) {
+      return undefined;
+    }
+    const matrixIndexStr = row.dataset["matrixSpellRowIndex"];
+    const id: SpiritMagicSiblingId =
+      matrixIndexStr !== undefined
+        ? { kind: "matrix", sourceItemId: itemId, entryIndex: Number(matrixIndexStr) }
+        : { kind: "owned", itemId };
+    return RqgActorSheetV2._findSpiritMagicSibling(id, siblings);
+  }
+
+  private static async _reorderSpiritMagic(
+    actor: RqgActor,
+    source: SpiritMagicSiblingId,
+    dropRow: HTMLElement,
+    dropAction: "before" | "after",
+  ): Promise<void> {
+    const siblings = RqgActorSheetV2._getSpiritMagicSortSiblings(actor);
+    const resolvedSource = RqgActorSheetV2._findSpiritMagicSibling(source, siblings);
+    const target = RqgActorSheetV2._resolveSpiritMagicSibling(dropRow, siblings);
+    if (!resolvedSource || !target || target === resolvedSource) {
+      return;
+    }
+
+    const updates = foundry.utils.performIntegerSort(resolvedSource, {
+      target,
+      siblings: siblings.filter((s) => s !== resolvedSource),
+      sortBefore: dropAction === "before",
+    }) as { target: SpiritMagicSortSibling; update: { sort: number } }[];
+
+    await RqgActorSheetV2._applySpiritMagicSortUpdates(actor, updates);
   }
 
   protected override async _onDropItem(event: DragEvent, item: RqgItem): Promise<RqgItem | null> {
@@ -1821,8 +2044,28 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // Same actor drop — sort/reorder within this actor.
     if (sameActorDrop) {
-      // Try to determine drag context for position-aware sorting
       const eventTarget = getEventTargetElement(event);
+
+      // Matrix rows aren't real Items and won't match dropCell below - route separately.
+      if (resolvedItem.type === ItemTypeEnum.SpiritMagic) {
+        const spiritMagicDropRow = eventTarget?.closest<HTMLElement>(
+          ".spirit-magic-row[data-item-id]",
+        );
+        if (spiritMagicDropRow) {
+          const dropAction = this._getSameActorDropAction(event, spiritMagicDropRow, null);
+          if (dropAction === "before" || dropAction === "after") {
+            await RqgActorSheetV2._reorderSpiritMagic(
+              this.actor,
+              { kind: "owned", itemId: resolvedItem.id ?? "" },
+              spiritMagicDropRow,
+              dropAction,
+            );
+          }
+          return resolvedItem;
+        }
+      }
+
+      // Try to determine drag context for position-aware sorting
       const dropCell =
         eventTarget?.closest<HTMLElement>(".location-row[data-item-id]") ??
         eventTarget?.closest<HTMLElement>(".contextmenu.item[data-item-id]");
@@ -2306,6 +2549,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       event,
     ) as ActorSheet.DropData;
 
+    // Not a real Item - custom payload for reordering a matrix entry.
+    if ((data as { type?: string } | null)?.type === "RqgMatrixSpellSort") {
+      await this._onDropMatrixSpellReorder(event, data as unknown as RqgMatrixSpellSortDragData);
+      return;
+    }
+
     // Handle compendium drops specially to embed all items from the pack
     if (data?.type === "Compendium") {
       if (!this.actor.isOwner) {
@@ -2335,6 +2584,38 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
 
     // For all other types, delegate to parent
     await super._onDrop(event);
+  }
+
+  private async _onDropMatrixSpellReorder(
+    event: DragEvent,
+    data: RqgMatrixSpellSortDragData,
+  ): Promise<void> {
+    if (!this.actor.isOwner || data.actorUuid !== this.actor.uuid) {
+      // No cross-actor reorder.
+      return;
+    }
+    const sourceItem = this.actor.items.get(data.sourceItemId) as PhysicalItem | undefined;
+    if (!sourceItem) {
+      return;
+    }
+
+    const eventTarget = getEventTargetElement(event);
+    const dropRow = eventTarget?.closest<HTMLElement>(".spirit-magic-row[data-item-id]");
+    if (!isFoundryElementInstanceOf(dropRow, HTMLElement)) {
+      return;
+    }
+
+    const dropAction = this._getSameActorDropAction(event, dropRow, null);
+    if (dropAction !== "before" && dropAction !== "after") {
+      return;
+    }
+
+    await RqgActorSheetV2._reorderSpiritMagic(
+      this.actor,
+      { kind: "matrix", sourceItemId: sourceItem.id ?? "", entryIndex: data.entryIndex },
+      dropRow,
+      dropAction,
+    );
   }
 
   /**

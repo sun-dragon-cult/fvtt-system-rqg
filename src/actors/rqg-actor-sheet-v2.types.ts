@@ -14,6 +14,20 @@ export type RqgSheetHeaderControl = foundry.applications.api.ApplicationV2.Heade
   onClick?: () => Promise<void> | void;
 };
 
+/** One row of the Spirit Magic tab's own-spells list - see RqgActorSheetV2Context.spiritMagicRows. */
+export type SpiritMagicListRow =
+  | { isMatrixRow: false; sort: number; item: RqgItem }
+  | {
+      isMatrixRow: true;
+      sort: number;
+      item: RqgItem;
+      /** Which entry on sourceItemId's system.matrixSpells this is - see getMatrixSpellRows. */
+      entryIndex: number;
+      sourceItemId: string;
+      sourceItemName: string;
+      sourceItemImg: string;
+    };
+
 /**
  * Context passed to all V2 actor sheet parts.
  */
@@ -130,14 +144,8 @@ export interface RqgActorSheetV2Context {
     sourceItemImg: string;
     items: RqgItem[];
   }[];
-  /** Spirit Magic spells enchanted into this actor's own Spell Matrix items (#959), one group per
-   *  item (an item can hold more than one matrix spell) - see getMatrixSpellSources. */
-  matrixSpellSources: {
-    sourceItemId: string;
-    sourceItemName: string;
-    sourceItemImg: string;
-    entries: { entryIndex: number; item: RqgItem }[];
-  }[];
+  /** The Spirit Magic tab's own-spells list - see SpiritMagicListRow. */
+  spiritMagicRows: SpiritMagicListRow[];
 
   /** Enriched biography HTML. */
   enrichedBiography: string;

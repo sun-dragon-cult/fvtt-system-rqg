@@ -2,10 +2,14 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { PhysicalItem } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { RqgItem } from "../items/rqg-item";
+import type { RqidLink } from "../data-model/shared/rqid-link";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { Rqid } from "./api/rqid-api";
 import { isDocumentSubType, localize } from "./util";
+
+/** One stored Spell Matrix entry. `sort` orders it among the actor's own spells. */
+export type MatrixSpellStorageEntry = { spellRqidLink: RqidLink; points: number; sort: number };
 
 /**
  * Resolve one Spirit Magic spell stored in a Spell Matrix Enchantment (Core p.264-265, #959) into
@@ -27,7 +31,7 @@ import { isDocumentSubType, localize } from "./util";
  * for Reputation's PartialAbilityItem in ability-roll-dialog-v2.ts).
  *
  * Accepts an optional `canonicalCache`, shared across sibling calls (e.g. every entry resolved by
- * one getMatrixSpellSources call, or one item sheet render), so entries pointing at the same rqid
+ * one getMatrixSpellRows call, or one item sheet render), so entries pointing at the same rqid
  * - a common case, e.g. two matrices both enchanted with Bladesharp - only pay Rqid.fromRqid's
  * world/compendium lookup once instead of once per entry.
  */
@@ -64,59 +68,74 @@ export async function resolveMatrixSpellItem(
   return new CONFIG.Item.documentClass(data) as unknown as SpiritMagicItem;
 }
 
-/** One resolved Spell Matrix entry within a MatrixSpellSource group - `entryIndex` identifies
- *  which array entry on `sourceItem.system.matrixSpells` this resolved from (needed to cast the
- *  right one, since an item can hold more than one matrix spell). */
-export type MatrixSpellEntry = {
-  entryIndex: number;
-  item: SpiritMagicItem;
-};
-
-/** One item's Spell Matrix Enchantment(s) (#959), resolved for display under its own
- *  "From {itemName}:" group in the Spirit Magic tab - see actor-sheet-v2-spirit-magic.hbs.
- *  Grouped by `sourceItem` the same way getBoundSpiritSpiritMagicItems groups by bound spirit
- *  (spell-source.ts), so an item holding more than one matrix spell gets one divider with all its
- *  entries listed underneath, not a repeated divider per entry. */
-export type MatrixSpellSource = {
-  sourceItem: PhysicalItem;
-  entries: MatrixSpellEntry[];
-};
-
-/**
- * Every enchanted Spell Matrix item among the actor's own physical items, one group per item, each
- * resolved to its entries' live SpiritMagicItems (see resolveMatrixSpellItem). Requires physical
- * contact with the item (mirroring the equipped requirement for bound spirits and POW crystals in
- * magic-point-source.ts), so only equipped matrices are included. For sheet display purposes this
- * only looks at the viewing actor's own items - items on other actors are out of scope here.
- * Entries whose spell can't be resolved (already warned about by resolveMatrixSpellItem) are
- * omitted; items left with no resolvable entries are omitted entirely.
- */
-export async function getMatrixSpellSources(actor: RqgActor): Promise<MatrixSpellSource[]> {
-  const matrixItems = actor.items.filter(
+function getEquippedMatrixItems(actor: RqgActor): PhysicalItem[] {
+  return actor.items.filter(
     (i) =>
       isDocumentSubType<PhysicalItem>(i, physicalItemTypes) &&
       (i.system.matrixSpells?.length ?? 0) > 0 &&
       i.system.equippedStatus === "equipped",
   ) as PhysicalItem[];
+}
+
+/** A matrix entry's sort/name, read directly off storage - no Rqid resolution. Use
+ *  getMatrixSpellRows instead when the resolved SpiritMagicItem is actually needed. */
+export type MatrixSpellSlot = {
+  sourceItem: PhysicalItem;
+  entryIndex: number;
+  sort: number;
+  name: string;
+};
+
+export function getMatrixSpellSlots(actor: RqgActor): MatrixSpellSlot[] {
+  return getEquippedMatrixItems(actor).flatMap((sourceItem) =>
+    (sourceItem.system.matrixSpells ?? []).map((entry, entryIndex) => ({
+      sourceItem,
+      entryIndex,
+      sort: entry.sort ?? 0,
+      name: entry.spellRqidLink?.name ?? "",
+    })),
+  );
+}
+
+/** One Spell Matrix entry, resolved to its live SpiritMagicItem. */
+export type MatrixSpellRow = {
+  sourceItem: PhysicalItem;
+  entryIndex: number;
+  item: SpiritMagicItem;
+  sort: number;
+};
+
+/** Flattened, not grouped by item. */
+export async function getMatrixSpellRows(actor: RqgActor): Promise<MatrixSpellRow[]> {
+  const matrixItems = getEquippedMatrixItems(actor);
 
   // Shared across every entry resolved below, so items/entries enchanted with the same spell
   // (e.g. two matrices both holding Bladesharp) only resolve that spell's canonical rqid once.
   const canonicalCache = new Map<string, Promise<RqgItem | undefined>>();
 
-  const sources = await Promise.all(
+  const rows = await Promise.all(
     matrixItems.map(async (sourceItem) => {
       const spellEntries = sourceItem.system.matrixSpells ?? [];
       const resolved = await Promise.all(
-        spellEntries.map(async (_entry, entryIndex) => {
+        spellEntries.map(async (entry, entryIndex) => {
           const item = await resolveMatrixSpellItem(sourceItem, entryIndex, canonicalCache);
-          return item ? { entryIndex, item } : undefined;
+          return item ? { sourceItem, entryIndex, item, sort: entry.sort ?? 0 } : undefined;
         }),
       );
-      return {
-        sourceItem,
-        entries: resolved.filter((entry): entry is MatrixSpellEntry => entry != null),
-      };
+      return resolved.filter((row): row is MatrixSpellRow => row != null);
     }),
   );
-  return sources.filter((source) => source.entries.length > 0);
+  return rows.flat();
+}
+
+/** Past everything else, so a newly-enchanted entry appends at the end. 0 with no actor yet. */
+export function getNextSpiritMagicSort(actor: RqgActor | null | undefined): number {
+  if (!actor) {
+    return 0;
+  }
+  const ownedSorts = actor.items
+    .filter((i) => i.type === ItemTypeEnum.SpiritMagic)
+    .map((i) => i.sort ?? 0);
+  const matrixSorts = getMatrixSpellSlots(actor).map((slot) => slot.sort);
+  return Math.max(0, ...ownedSorts, ...matrixSorts) + CONST.SORT_INTEGER_DENSITY;
 }

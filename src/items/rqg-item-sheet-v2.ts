@@ -12,7 +12,11 @@ import type { RqgItem } from "./rqg-item";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { PhysicalItem } from "@item-model/item-types.ts";
 import { getBondRoleConflict, getBoundSpiritActors } from "../system/magic-point-source";
-import { resolveMatrixSpellItem } from "../system/spell-matrix";
+import {
+  getNextSpiritMagicSort,
+  resolveMatrixSpellItem,
+  type MatrixSpellStorageEntry,
+} from "../system/spell-matrix";
 import {
   extractDropInfo,
   extractDroppedActor,
@@ -32,9 +36,6 @@ import type { DeepPartial } from "fvtt-types/utils";
 /** Shorthand types for ApplicationV2 lifecycle method parameters. */
 export type AppV2RenderContext = DeepPartial<foundry.applications.api.ApplicationV2.RenderContext>;
 export type AppV2RenderOptions = DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>;
-
-/** One stored Matrix Spell entry (#959) as persisted on a physical item's `system.matrixSpells`. */
-type MatrixSpellStorageEntry = { spellRqidLink: RqidLink; points: number };
 
 const { HandlebarsApplicationMixin } = foundry.applications.api;
 const ItemSheetV2 = foundry.applications.sheets.ItemSheetV2;
@@ -145,7 +146,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     // other item type - no type-narrowing needed here.
     const boundSpiritActors = getBoundSpiritActors(this.document as unknown as PhysicalItem);
     const system = foundry.utils.duplicate(this.document._source.system) as {
-      matrixSpells?: (MatrixSpellStorageEntry & { isVariable?: boolean })[];
+      matrixSpells?: (MatrixSpellStorageEntry & { isVariable?: boolean; storageIndex?: number })[];
     };
     if (system.matrixSpells) {
       // Only a variable spell's (e.g. Bladesharp 1-4) enchanted level is a per-matrix choice -
@@ -164,8 +165,17 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
             index,
             canonicalCache,
           );
-          return { ...entry, isVariable: resolved?.system.isVariable ?? false };
+          return {
+            ...entry,
+            isVariable: resolved?.system.isVariable ?? false,
+            storageIndex: index,
+          };
         }),
+      );
+      // Displayed alphabetically; storageIndex keeps edit/unlink actions pointed at the real
+      // array index.
+      system.matrixSpells.sort((a, b) =>
+        (a.spellRqidLink?.name ?? "").localeCompare(b.spellRqidLink?.name ?? ""),
       );
     }
     return {
@@ -529,6 +539,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     const newEntry = {
       spellRqidLink: spellRqidLink,
       points: (droppedItem as unknown as SpiritMagicItem).system.points,
+      sort: getNextSpiritMagicSort(this.document.actor as unknown as RqgActor | null),
     };
     await this.document.update({
       system: { matrixSpells: [...this.getMatrixSpells(), newEntry] },
