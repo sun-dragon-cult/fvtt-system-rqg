@@ -2268,14 +2268,15 @@
         }
       }
 
-/* Source-item badge (#1047): shown on a matrix spell's name in place of a "Matrix: ..." divider
-   when its item holds only that one spell - see matrixSpellSpiritMagicRow.hbs. */
+/* Source-item badge (#1047): shown on a matrix spell's name, marking it as matrix-derived since
+   matrix entries no longer get their own "Matrix: ..." divider - see
+   matrixSpellSpiritMagicRow.hbs. Sized to match .row-icon so it reads as a second icon, not a
+   small overlay. */
       & .matrix-source-badge {
-        width: 14px;
-        height: 14px;
+        width: 26px;
+        height: 26px;
         object-fit: contain;
         border: none;
-        border-radius: var(--rqg-radius-sm);
         margin-left: 0.25rem;
         opacity: 0.85;
         flex: 0 0 auto;
