@@ -57,7 +57,7 @@ import {
 } from "@items/item-lifecycle-strategy.ts";
 import { ActorTemplatePicker } from "../applications/actor-template-picker/actor-template-picker";
 import { templatePaths } from "../system/load-handlebars-templates";
-import { tagsFlag } from "../data-model/shared/rqg-document-flags";
+import { cloneActorFromTemplate } from "../system/api/actor-template-api";
 
 import Actor = foundry.documents.Actor;
 
@@ -151,9 +151,9 @@ export class RqgActor extends Actor {
             dialog: foundry.applications.api.DialogV2.Any,
           ) => {
             const fd = new foundry.applications.ux.FormDataExtended(button.form as HTMLFormElement);
-            const startFrom = (fd.object as { startFrom?: string }).startFrom;
+            const submitted = fd.object as { name?: string; folder?: string; startFrom?: string };
 
-            if (startFrom !== "template") {
+            if (submitted.startFrom !== "template") {
               return createBlank(event, button);
             }
 
@@ -171,46 +171,10 @@ export class RqgActor extends Actor {
               return createBlank(event, button);
             }
 
-            const nameField = button.form?.elements.namedItem("name") as
-              HTMLInputElement | undefined;
-            const folderField = button.form?.elements.namedItem("folder") as
-              HTMLSelectElement | undefined;
-            const updateData = {
-              name: nameField?.value?.trim() || templateActor.name,
-              folder: folderField?.value || undefined,
-            };
-
-            // clone() would otherwise recreate a compendium-sourced template into its own pack.
-            let cloned: RqgActor | undefined;
-            if (templateActor.pack) {
-              requireValue(templateActor.id, "Template actor has no id");
-              cloned = (await game.actors?.importFromCompendium(
-                game.packs.get(
-                  templateActor.pack,
-                ) as foundry.documents.collections.CompendiumCollection<"Actor">,
-                templateActor.id,
-                updateData,
-                { renderSheet: false },
-              )) as RqgActor | undefined;
-            } else {
-              cloned = (await templateActor.clone(updateData, {
-                save: true,
-                keepId: false,
-              })) as RqgActor | undefined;
-            }
-            // A clone is a specific actor, not a new template - drop the picker's gate tag.
-            const clonedTags = cloned?.getFlag(systemId, tagsFlag) as string[] | undefined;
-            if (clonedTags?.includes(RQG_CONFIG.actorTemplateGateTag)) {
-              const remainingTags = clonedTags.filter(
-                (tag) => tag !== RQG_CONFIG.actorTemplateGateTag,
-              );
-              if (remainingTags.length) {
-                await cloned?.setFlag(systemId, tagsFlag, remainingTags);
-              } else {
-                await cloned?.unsetFlag(systemId, tagsFlag);
-              }
-            }
-
+            const cloned = await cloneActorFromTemplate(templateActor, {
+              name: submitted.name?.trim() || templateActor.name,
+              folder: submitted.folder || undefined,
+            });
             void cloned?.sheet?.render(true);
             return cloned;
           },

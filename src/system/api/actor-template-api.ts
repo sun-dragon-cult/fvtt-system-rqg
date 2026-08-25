@@ -1,10 +1,11 @@
+import type { RqgActor } from "../../actors/rqg-actor";
 import {
   documentRqidFlags,
   tagsFlag,
   type DocumentRqidFlags,
 } from "../../data-model/shared/rqg-document-flags";
 import { RQG_CONFIG, systemId } from "../config";
-import { localize } from "../util";
+import { localize, requireValue } from "../util";
 
 /** True if `tag` is `filterTag` itself, or a colon-hierarchical child of it. */
 export function tagMatchesFilter(tag: string, filterTag: string): boolean {
@@ -15,7 +16,7 @@ export function actorTagsMatchFilter(tags: string[] | undefined, filterTag: stri
   return (tags ?? []).some((tag) => tagMatchesFilter(tag, filterTag));
 }
 
-export function isActorTemplate(tags: string[] | undefined): boolean {
+export function isActorTemplate(tags: string[] | undefined): tags is string[] {
   return (tags ?? []).includes(RQG_CONFIG.actorTemplateGateTag);
 }
 
@@ -40,21 +41,21 @@ type ActorTemplateIndexEntry = {
   flags?: { rqg?: { tags?: string[]; documentRqidFlags?: DocumentRqidFlags } };
 };
 
-function toEntry(
-  uuid: string,
-  name: string,
-  img: string | null | undefined,
-  tags: string[],
-  source: string,
-  rqid: DocumentRqidFlags | undefined,
-): ActorTemplateEntry {
+function toEntry(params: {
+  uuid: string;
+  name: string;
+  img: string | null | undefined;
+  tags: string[];
+  source: string;
+  rqid: DocumentRqidFlags | undefined;
+}): ActorTemplateEntry {
   return {
-    uuid,
-    name,
-    img,
-    tags: tags.filter((tag) => tag !== RQG_CONFIG.actorTemplateGateTag),
-    source,
-    rqid,
+    uuid: params.uuid,
+    name: params.name,
+    img: params.img,
+    tags: params.tags.filter((tag) => tag !== RQG_CONFIG.actorTemplateGateTag),
+    source: params.source,
+    rqid: params.rqid,
   };
 }
 
@@ -117,17 +118,19 @@ export async function getActorTemplates(): Promise<ActorTemplateEntry[]> {
       const folderPath = getFolderPath(actor.folder);
       const source = folderPath ? `${worldLabel} — ${folderPath}` : worldLabel;
       const rqid = actor.getFlag(systemId, documentRqidFlags);
-      results.push(toEntry(actor.uuid, actor.name, actor.img, tags ?? [], source, rqid));
+      results.push(
+        toEntry({ uuid: actor.uuid, name: actor.name, img: actor.img, tags, source, rqid }),
+      );
     }
   }
 
-  for (const pack of game.packs ?? []) {
-    if (pack.documentClass?.documentName !== "Actor") {
-      continue;
-    }
-    if (!pack.indexed) {
-      await pack.getIndex();
-    }
+  const actorPacks = [...(game.packs ?? [])].filter(
+    (pack) => pack.documentClass?.documentName === "Actor",
+  );
+  // Load every un-indexed pack's index concurrently rather than one at a time.
+  await Promise.all(actorPacks.filter((pack) => !pack.indexed).map((pack) => pack.getIndex()));
+
+  for (const pack of actorPacks) {
     const packSource = `${getPackSourceLabel(pack)} — ${pack.title}`;
     const indexEntries = [...pack.index.values()] as ActorTemplateIndexEntry[];
     for (const entry of indexEntries) {
@@ -136,7 +139,9 @@ export async function getActorTemplates(): Promise<ActorTemplateEntry[]> {
         const folderPath = entry.folder ? getFolderPath(pack.folders.get(entry.folder)) : "";
         const source = folderPath ? `${packSource} / ${folderPath}` : packSource;
         const rqid = entry.flags?.rqg?.documentRqidFlags;
-        results.push(toEntry(entry.uuid, entry.name, entry.img, tags ?? [], source, rqid));
+        results.push(
+          toEntry({ uuid: entry.uuid, name: entry.name, img: entry.img, tags, source, rqid }),
+        );
       }
     }
   }
@@ -144,4 +149,46 @@ export async function getActorTemplates(): Promise<ActorTemplateEntry[]> {
   const worldLanguage: string =
     game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
   return results.sort((a, b) => compareTemplates(a, b, worldLanguage));
+}
+
+/**
+ * Clones `templateActor` into a new world actor and drops the picker's gate tag from the clone -
+ * a template instance is a specific actor, not itself a new template.
+ */
+export async function cloneActorFromTemplate(
+  templateActor: RqgActor,
+  updateData: { name?: string; folder?: string },
+): Promise<RqgActor | undefined> {
+  // clone() would otherwise recreate a compendium-sourced template into its own pack.
+  let cloned: RqgActor | undefined;
+  if (templateActor.pack) {
+    requireValue(templateActor.id, "Template actor has no id");
+    cloned = (await game.actors?.importFromCompendium(
+      game.packs.get(
+        templateActor.pack,
+      ) as foundry.documents.collections.CompendiumCollection<"Actor">,
+      templateActor.id,
+      updateData,
+      { renderSheet: false },
+    )) as RqgActor | undefined;
+  } else {
+    cloned = (await templateActor.clone(updateData, {
+      save: true,
+      keepId: false,
+    })) as RqgActor | undefined;
+  }
+  if (!cloned) {
+    return undefined;
+  }
+
+  const tags = cloned.getFlag(systemId, tagsFlag) as string[] | undefined;
+  if (isActorTemplate(tags)) {
+    const remainingTags = tags.filter((tag) => tag !== RQG_CONFIG.actorTemplateGateTag);
+    if (remainingTags.length) {
+      await cloned.setFlag(systemId, tagsFlag, remainingTags);
+    } else {
+      await cloned.unsetFlag(systemId, tagsFlag);
+    }
+  }
+  return cloned;
 }

@@ -10,7 +10,6 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 interface ActorTemplatePickerRow extends ActorTemplateEntry {
-  tagsAttr: string;
   /** `source` plus rqid lang/priority. */
   sourceDisplay: string;
 }
@@ -57,25 +56,37 @@ function collectFacetPaths(templates: ActorTemplateEntry[], facetKey: string): S
 
 /** One filter facet per tag namespace, with a selectable row for every ancestor level too. */
 export function buildFacets(templates: ActorTemplateEntry[]): TemplateFacet[] {
-  const facetKeys = new Set<string>();
+  const pathsByFacet = new Map<string, Set<string>>();
   for (const template of templates) {
     for (const tag of template.tags) {
       const separatorIndex = tag.indexOf(":");
-      if (separatorIndex !== -1) {
-        facetKeys.add(tag.slice(0, separatorIndex));
+      if (separatorIndex === -1) {
+        continue;
+      }
+      const key = tag.slice(0, separatorIndex);
+      let paths = pathsByFacet.get(key);
+      if (!paths) {
+        paths = new Set();
+        pathsByFacet.set(key, paths);
+      }
+      const segments = tag.slice(separatorIndex + 1).split(":");
+      for (let depth = 1; depth <= segments.length; depth++) {
+        paths.add(segments.slice(0, depth).join(":"));
       }
     }
   }
-  return [...facetKeys].sort().map((key) => ({
-    key,
-    options: [...collectFacetPaths(templates, key)].sort().map((path) => {
-      const segments = path.split(":");
-      return {
-        value: `${key}:${path}`,
-        label: `${INDENT.repeat(segments.length - 1)}${segments[segments.length - 1]}`,
-      };
-    }),
-  }));
+  return [...pathsByFacet.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, paths]) => ({
+      key,
+      options: [...paths].sort().map((path) => {
+        const segments = path.split(":");
+        return {
+          value: `${key}:${path}`,
+          label: `${INDENT.repeat(segments.length - 1)}${segments[segments.length - 1]}`,
+        };
+      }),
+    }));
 }
 
 /** Facet option values (`"<key>:<path>"`) still reachable given every *other* active facet filter. */
@@ -98,6 +109,7 @@ export class ActorTemplatePicker extends HandlebarsApplicationMixin(
   private readonly resolvePick: (uuid: string | undefined) => void;
   private resolved = false;
   private templates: ActorTemplateEntry[] = [];
+  private templatesByUuid = new Map<string, ActorTemplateEntry>();
   private searchFilter?: foundry.applications.ux.SearchFilter;
 
   private constructor(resolvePick: (uuid: string | undefined) => void) {
@@ -140,10 +152,10 @@ export class ActorTemplatePicker extends HandlebarsApplicationMixin(
   override async _prepareContext(): Promise<ActorTemplatePickerContext> {
     if (!this.templates.length) {
       this.templates = await getActorTemplates();
+      this.templatesByUuid = new Map(this.templates.map((template) => [template.uuid, template]));
     }
     const rows: ActorTemplatePickerRow[] = this.templates.map((template) => ({
       ...template,
-      tagsAttr: template.tags.join("|"),
       sourceDisplay: buildSourceDisplay(template),
     }));
     return {
@@ -187,11 +199,13 @@ export class ActorTemplatePicker extends HandlebarsApplicationMixin(
       .map((select) => select.value)
       .filter((value) => value !== "");
     for (const row of html.querySelectorAll<HTMLElement>("[data-uuid]")) {
-      const name = row.dataset["name"] ?? "";
-      const tags = (row.dataset["tags"] ?? "").split("|").filter(Boolean);
-      const matchesQuery = foundry.applications.ux.SearchFilter.testQuery(rgx, name);
+      const template = this.templatesByUuid.get(row.dataset["uuid"] ?? "");
+      const matchesQuery = foundry.applications.ux.SearchFilter.testQuery(
+        rgx,
+        template?.name ?? "",
+      );
       const matchesFacets = facetFilters.every((filterTag) =>
-        actorTagsMatchFilter(tags, filterTag),
+        actorTagsMatchFilter(template?.tags, filterTag),
       );
       row.hidden = !(matchesQuery && matchesFacets);
     }
