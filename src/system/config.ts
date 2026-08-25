@@ -19,6 +19,9 @@ export const RQG_CONFIG = {
     magic: "i.rune.magic-condition" as RqidString,
   },
 
+  // Tag that gates an actor's visibility in the Create Actor template picker
+  actorTemplateGateTag: "role:template",
+
   bodytypes: {
     humanoid: [
       "i.hit-location.head" as RqidString,

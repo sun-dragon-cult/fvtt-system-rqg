@@ -6,6 +6,7 @@ import { DamageCalculations } from "../items/hit-location-item/hit-location-dama
 import { HealingCalculations } from "../items/hit-location-item/hit-location-healing-calculations";
 import {
   assertDocumentSubType,
+  getDocumentFromUuid,
   getSpeakerDisplayName,
   getTokenFromActor,
   isDocumentSubType,
@@ -54,6 +55,9 @@ import {
   handleActorPrepareDerivedData,
   handleActorPrepareEmbeddedDocuments,
 } from "@items/item-lifecycle-strategy.ts";
+import { ActorTemplatePicker } from "../applications/actor-template-picker/actor-template-picker";
+import { templatePaths } from "../system/load-handlebars-templates";
+import { cloneActorFromTemplate } from "../system/api/actor-template-api";
 
 import Actor = foundry.documents.Actor;
 
@@ -70,6 +74,9 @@ export class RqgActor extends Actor {
   static init() {
     CONFIG.Actor.documentClass = RqgActor;
     CONFIG.Actor.dataModels["character"] = CharacterDataModel;
+
+    // So the template picker (#778/#636) can find flagged actors via the index alone.
+    CONFIG.Actor.compendiumIndexFields.push("flags.rqg.tags");
 
     const Actors = foundry.documents.collections.Actors;
 
@@ -88,6 +95,97 @@ export class RqgActor extends Actor {
       label: "RQG.SheetName.Actor.CharacterV2",
       makeDefault: true,
     });
+  }
+
+  /** Adds a "Start from: Blank / Template" field to the native Create Actor dialog (#778/#636). */
+  static override async createDialog<
+    Options extends Actor.CreateDialogOptions | undefined = undefined,
+  >(
+    data?: Actor.CreateDialogData,
+    createOptions?: Actor.Database.CreateDocumentsOperation,
+    options?: Options,
+  ): Promise<Actor.CreateDialogReturn<Options>> {
+    const content = await foundry.applications.handlebars.renderTemplate(
+      templatePaths.actorCreateDialogContent,
+      {},
+    );
+
+    const createBlank = async (
+      _event: Event,
+      button: HTMLButtonElement,
+    ): Promise<RqgActor | undefined> => {
+      const fd = new foundry.applications.ux.FormDataExtended(button.form as HTMLFormElement);
+      const submitted = foundry.utils.mergeObject(data ?? {}, fd.object, { inplace: false }) as {
+        name?: string;
+        type?: string;
+        folder?: string;
+        startFrom?: string;
+      };
+      delete submitted.startFrom;
+      if (!submitted.folder) {
+        delete submitted.folder;
+      }
+      if (!submitted.name?.trim()) {
+        submitted.name = this.defaultName({
+          type: submitted.type as any,
+          parent: createOptions?.parent,
+          pack: createOptions?.pack,
+        });
+      }
+      const doc = (await this.create(submitted as Actor.CreateData, {
+        renderSheet: false,
+        ...createOptions,
+      })) as RqgActor | undefined;
+      void doc?.sheet?.render(true);
+      return doc;
+    };
+
+    const mergedOptions = foundry.utils.mergeObject(
+      options ?? {},
+      {
+        context: { content },
+        ok: {
+          callback: async (
+            event: Event,
+            button: HTMLButtonElement,
+            dialog: foundry.applications.api.DialogV2.Any,
+          ) => {
+            const fd = new foundry.applications.ux.FormDataExtended(button.form as HTMLFormElement);
+            const submitted = foundry.utils.mergeObject(data ?? {}, fd.object, {
+              inplace: false,
+            }) as { name?: string; folder?: string; startFrom?: string };
+
+            if (submitted.startFrom !== "template") {
+              return createBlank(event, button);
+            }
+
+            void dialog.close();
+            const templateUuid = await ActorTemplatePicker.pick();
+            if (!templateUuid) {
+              // The create dialog is already closed - canceling the picker aborts creation entirely.
+              return undefined;
+            }
+            const templateActor = await getDocumentFromUuid<RqgActor>(templateUuid);
+            if (!templateActor) {
+              const msg = `RQG | Couldn't find the chosen template actor [${templateUuid}]`;
+              ui.notifications?.error(msg, { console: false });
+              console.error(msg);
+              return createBlank(event, button);
+            }
+
+            const cloned = await cloneActorFromTemplate(templateActor, {
+              name: submitted.name?.trim() || templateActor.name,
+              folder: submitted.folder || undefined,
+            });
+            void cloned?.sheet?.render(true);
+            return cloned;
+          },
+        },
+      },
+      { inplace: false },
+    ) as unknown as Options;
+
+    return super.createDialog(data, createOptions, mergedOptions);
   }
 
   /**

@@ -1,0 +1,41 @@
+<section class="actor-template-picker">
+  <input type="search" name="search" placeholder="{{localize 'RQG.Dialog.ActorTemplatePicker.SearchPlaceholder'}}" autofocus>
+
+  {{#if facets.length}}
+    <div class="actor-template-picker-facets">
+      {{#each facets}}
+        <select data-facet="{{key}}">
+          <option value="">{{key}}: {{localize 'RQG.Dialog.ActorTemplatePicker.Any'}}</option>
+          {{selectOptions options localize=false}}
+        </select>
+      {{/each}}
+    </div>
+  {{/if}}
+
+  <ol class="actor-template-picker-list">
+    {{#each templates}}
+      <li class="actor-template-picker-entry" data-action="selectTemplate" data-uuid="{{uuid}}">
+        {{#if img}}
+          <img src="{{img}}" alt="">
+        {{/if}}
+        <div class="actor-template-picker-text">
+          <div class="actor-template-picker-headline">
+            <span class="actor-template-picker-name">{{name}}</span>
+            <span class="actor-template-picker-source" title="{{sourceDisplay}}">{{sourceDisplay}}</span>
+          </div>
+          {{#if tags.length}}
+            <div class="actor-template-picker-pills">
+              {{#each tags}}
+                <span class="actor-template-picker-pill">{{this}}</span>
+              {{/each}}
+            </div>
+          {{/if}}
+        </div>
+      </li>
+    {{/each}}
+  </ol>
+
+  {{#unless hasTemplates}}
+    <p class="actor-template-picker-empty">{{localize 'RQG.Dialog.ActorTemplatePicker.Empty'}}</p>
+  {{/unless}}
+</section>
