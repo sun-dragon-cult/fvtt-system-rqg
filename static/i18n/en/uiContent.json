@@ -628,7 +628,7 @@
       "ActorTemplatePicker": {
         "Title": "Create Actor from Template",
         "SearchPlaceholder": "Search templates...",
-        "Empty": "No template actors were found. Templates are actors flagged for this picker by a compendium module.",
+        "Empty": "No template actors were found. Update your RQG wiki module to version 2.1.0 or later - it tags its bestiary and adventurer actors so they show up here automatically.",
         "SourceWorld": "World",
         "Any": "Any"
       },
