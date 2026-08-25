@@ -620,6 +620,18 @@
         "SummaryRuneMagic": "The RQG System uses a System ID (Rqid). This allows the system to identify FoundryVTT documents for example skills. This page will allow you to set the id for existing rune magic documents that do not yet have a Rqid. The Rqid should use the English translation of the name to support localization across all languages.<br><br><b>Currently only the common rune magic spells need a Rqid (Command Cult Spirit, Divination, Sanctify, Summon Cult Spirit, Dismiss Magic, Extension, Multispell, Find Enemy, Heal Wound, Soul Sight, Spirit Block, and Warding)</b>",
         "ButtonUpdate": "Update"
       },
+      "ActorCreate": {
+        "StartFrom": "Start from",
+        "Blank": "Blank",
+        "ChooseTemplate": "Choose template..."
+      },
+      "ActorTemplatePicker": {
+        "Title": "Choose a Template",
+        "SearchPlaceholder": "Search templates...",
+        "Empty": "No template actors were found. Templates are actors flagged for this picker by a compendium module.",
+        "SourceWorld": "World",
+        "Any": "Any"
+      },
       "Common": {
         "yes": "yes",
         "no": "no",

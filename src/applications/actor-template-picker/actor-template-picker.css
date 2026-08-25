@@ -1,0 +1,121 @@
+.actor-template-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  min-height: 0;
+
+  & .actor-template-picker-facets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+
+    & select {
+      flex: 0 0 auto;
+      width: auto;
+      font-size: var(--font-size-13, 0.8125rem);
+    }
+  }
+
+  & input[type="search"] {
+    font-size: var(--font-size-14, 0.875rem);
+    line-height: 1.8rem;
+  }
+
+  & .actor-template-picker-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Not a <button> - Foundry's fixed button height clips multi-line content. */
+  & .actor-template-picker-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    cursor: var(--cursor-pointer, pointer);
+    border-bottom: 1px solid var(--color-cool-4, #444);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--color-cool-3, rgb(255 255 255 / 8%));
+    }
+
+    &[hidden] {
+      display: none;
+    }
+
+    & img {
+      flex: 0 0 auto;
+      width: 2.5rem;
+      height: 2.5rem;
+      object-fit: cover;
+      border: none;
+      margin-top: 0.1rem;
+    }
+  }
+
+  & .actor-template-picker-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  & .actor-template-picker-headline {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  & .actor-template-picker-name {
+    flex: 0 0 auto;
+    max-width: 65%;
+    font-size: var(--font-size-16, 1rem);
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  & .actor-template-picker-source {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: var(--font-size-12, 0.75rem);
+    opacity: 0.7;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+  }
+
+  & .actor-template-picker-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    margin-top: 0.1rem;
+  }
+
+  & .actor-template-picker-pill {
+    flex: 0 0 auto;
+    line-height: 1.2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--color-cool-4, #666);
+    border-radius: 999px;
+    font-size: var(--font-size-11, 0.6875rem);
+    opacity: 0.8;
+  }
+
+  & .actor-template-picker-empty {
+    text-align: center;
+    opacity: 0.7;
+  }
+}

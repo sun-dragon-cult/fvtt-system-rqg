@@ -102,6 +102,10 @@ export const templatePaths = {
   // Actor Wizard
   actorWizardApplication: "systems/rqg/applications/actor-wizard-application.hbs",
 
+  // Create Actor dialog template picker (#778/#636)
+  actorTemplatePicker: "systems/rqg/applications/actor-template-picker/actor-template-picker.hbs",
+  actorCreateDialogContent: "systems/rqg/actors/rqg-actor-create-dialog-content.hbs",
+
   // Experience Roll Session
   experienceRollSessionHeader:
     "systems/rqg/applications/experience-roll-session/experience-roll-session-header.hbs",
