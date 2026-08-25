@@ -626,7 +626,7 @@
         "ChooseTemplate": "Choose template..."
       },
       "ActorTemplatePicker": {
-        "Title": "Choose a Template",
+        "Title": "Create Actor from Template",
         "SearchPlaceholder": "Search templates...",
         "Empty": "No template actors were found. Templates are actors flagged for this picker by a compendium module.",
         "SourceWorld": "World",

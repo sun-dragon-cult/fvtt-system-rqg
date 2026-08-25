@@ -57,6 +57,7 @@ import {
 } from "@items/item-lifecycle-strategy.ts";
 import { ActorTemplatePicker } from "../applications/actor-template-picker/actor-template-picker";
 import { templatePaths } from "../system/load-handlebars-templates";
+import { tagsFlag } from "../data-model/shared/rqg-document-flags";
 
 import Actor = foundry.documents.Actor;
 
@@ -144,7 +145,11 @@ export class RqgActor extends Actor {
       {
         context: { content },
         ok: {
-          callback: async (event: Event, button: HTMLButtonElement) => {
+          callback: async (
+            event: Event,
+            button: HTMLButtonElement,
+            dialog: foundry.applications.api.DialogV2.Any,
+          ) => {
             const fd = new foundry.applications.ux.FormDataExtended(button.form as HTMLFormElement);
             const startFrom = (fd.object as { startFrom?: string }).startFrom;
 
@@ -152,9 +157,11 @@ export class RqgActor extends Actor {
               return createBlank(event, button);
             }
 
+            void dialog.close();
             const templateUuid = await ActorTemplatePicker.pick();
             if (!templateUuid) {
-              return createBlank(event, button);
+              // The create dialog is already closed - canceling the picker aborts creation entirely.
+              return undefined;
             }
             const templateActor = await getDocumentFromUuid<RqgActor>(templateUuid);
             if (!templateActor) {
@@ -191,6 +198,19 @@ export class RqgActor extends Actor {
                 keepId: false,
               })) as RqgActor | undefined;
             }
+            // A clone is a specific actor, not a new template - drop the picker's gate tag.
+            const clonedTags = cloned?.getFlag(systemId, tagsFlag) as string[] | undefined;
+            if (clonedTags?.includes(RQG_CONFIG.actorTemplateGateTag)) {
+              const remainingTags = clonedTags.filter(
+                (tag) => tag !== RQG_CONFIG.actorTemplateGateTag,
+              );
+              if (remainingTags.length) {
+                await cloned?.setFlag(systemId, tagsFlag, remainingTags);
+              } else {
+                await cloned?.unsetFlag(systemId, tagsFlag);
+              }
+            }
+
             void cloned?.sheet?.render(true);
             return cloned;
           },

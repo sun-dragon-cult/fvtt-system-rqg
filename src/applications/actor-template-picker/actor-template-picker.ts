@@ -35,29 +35,60 @@ interface ActorTemplatePickerContext extends foundry.applications.api.Applicatio
   facets: TemplateFacet[];
 }
 
-/** Groups every distinct tag by its colon-hierarchical namespace into one filter facet each. */
-function buildFacets(templates: ActorTemplateEntry[]): TemplateFacet[] {
-  const valuesByFacet = new Map<string, Set<string>>();
+const INDENT = "\u00A0\u00A0"; // non-breaking - a leading regular space can get collapsed in <option> text
+
+/** Colon-path segments (with every ancestor depth) for one facet's tags across `templates`. */
+function collectFacetPaths(templates: ActorTemplateEntry[], facetKey: string): Set<string> {
+  const paths = new Set<string>();
   for (const template of templates) {
     for (const tag of template.tags) {
       const separatorIndex = tag.indexOf(":");
-      if (separatorIndex === -1) {
+      if (separatorIndex === -1 || tag.slice(0, separatorIndex) !== facetKey) {
         continue;
       }
-      const key = tag.slice(0, separatorIndex);
-      const value = tag.slice(separatorIndex + 1);
-      if (!valuesByFacet.has(key)) {
-        valuesByFacet.set(key, new Set());
+      const segments = tag.slice(separatorIndex + 1).split(":");
+      for (let depth = 1; depth <= segments.length; depth++) {
+        paths.add(segments.slice(0, depth).join(":"));
       }
-      valuesByFacet.get(key)?.add(value);
     }
   }
-  return [...valuesByFacet.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([key, values]) => ({
-      key,
-      options: [...values].sort().map((value) => ({ value: `${key}:${value}`, label: value })),
-    }));
+  return paths;
+}
+
+/** One filter facet per tag namespace, with a selectable row for every ancestor level too. */
+export function buildFacets(templates: ActorTemplateEntry[]): TemplateFacet[] {
+  const facetKeys = new Set<string>();
+  for (const template of templates) {
+    for (const tag of template.tags) {
+      const separatorIndex = tag.indexOf(":");
+      if (separatorIndex !== -1) {
+        facetKeys.add(tag.slice(0, separatorIndex));
+      }
+    }
+  }
+  return [...facetKeys].sort().map((key) => ({
+    key,
+    options: [...collectFacetPaths(templates, key)].sort().map((path) => {
+      const segments = path.split(":");
+      return {
+        value: `${key}:${path}`,
+        label: `${INDENT.repeat(segments.length - 1)}${segments[segments.length - 1]}`,
+      };
+    }),
+  }));
+}
+
+/** Facet option values (`"<key>:<path>"`) still reachable given every *other* active facet filter. */
+export function computeAvailableFacetValues(
+  templates: ActorTemplateEntry[],
+  activeFilters: string[],
+  facetKey: string,
+): Set<string> {
+  const otherFilters = activeFilters.filter((filter) => !filter.startsWith(`${facetKey}:`));
+  const reachable = templates.filter((template) =>
+    otherFilters.every((filter) => actorTagsMatchFilter(template.tags, filter)),
+  );
+  return new Set([...collectFacetPaths(reachable, facetKey)].map((path) => `${facetKey}:${path}`));
 }
 
 /** Searchable/tag-filterable picker for choosing a template actor to clone (#778/#636). */
@@ -163,6 +194,30 @@ export class ActorTemplatePicker extends HandlebarsApplicationMixin(
         actorTagsMatchFilter(tags, filterTag),
       );
       row.hidden = !(matchesQuery && matchesFacets);
+    }
+    this._updateFacetAvailability(facetFilters);
+  }
+
+  /**
+   * Hides options that no other active filter's result set could still contain, so the list stays
+   * scannable. The current selection is kept visible (disabled, not hidden) rather than yanked out
+   * from under the user - that would silently jump the select to a different value.
+   */
+  private _updateFacetAvailability(activeFilters: string[]): void {
+    for (const select of this.element.querySelectorAll<HTMLSelectElement>("select[data-facet]")) {
+      const facetKey = select.dataset["facet"];
+      if (!facetKey) {
+        continue;
+      }
+      const available = computeAvailableFacetValues(this.templates, activeFilters, facetKey);
+      for (const option of select.options) {
+        if (option.value === "") {
+          continue;
+        }
+        const isAvailable = available.has(option.value);
+        option.disabled = !isAvailable;
+        option.hidden = !isAvailable && option.value !== select.value;
+      }
     }
   }
 

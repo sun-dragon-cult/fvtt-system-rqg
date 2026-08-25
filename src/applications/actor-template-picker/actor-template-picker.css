@@ -9,6 +9,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
+    margin-top: 0.4rem;
 
     & select {
       flex: 0 0 auto;
