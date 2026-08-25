@@ -151,7 +151,9 @@ export class RqgActor extends Actor {
             dialog: foundry.applications.api.DialogV2.Any,
           ) => {
             const fd = new foundry.applications.ux.FormDataExtended(button.form as HTMLFormElement);
-            const submitted = fd.object as { name?: string; folder?: string; startFrom?: string };
+            const submitted = foundry.utils.mergeObject(data ?? {}, fd.object, {
+              inplace: false,
+            }) as { name?: string; folder?: string; startFrom?: string };
 
             if (submitted.startFrom !== "template") {
               return createBlank(event, button);

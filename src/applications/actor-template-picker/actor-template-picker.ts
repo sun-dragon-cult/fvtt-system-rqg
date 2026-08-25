@@ -36,6 +36,14 @@ interface ActorTemplatePickerContext extends foundry.applications.api.Applicatio
 
 const INDENT = "\u00A0\u00A0"; // non-breaking - a leading regular space can get collapsed in <option> text
 
+/** Adds every ancestor-depth path of a colon-separated tag value (e.g. "uz:dark-troll" -> "uz", "uz:dark-troll") into `paths`. */
+function addAncestorPaths(paths: Set<string>, value: string): void {
+  const segments = value.split(":");
+  for (let depth = 1; depth <= segments.length; depth++) {
+    paths.add(segments.slice(0, depth).join(":"));
+  }
+}
+
 /** Colon-path segments (with every ancestor depth) for one facet's tags across `templates`. */
 function collectFacetPaths(templates: ActorTemplateEntry[], facetKey: string): Set<string> {
   const paths = new Set<string>();
@@ -45,10 +53,7 @@ function collectFacetPaths(templates: ActorTemplateEntry[], facetKey: string): S
       if (separatorIndex === -1 || tag.slice(0, separatorIndex) !== facetKey) {
         continue;
       }
-      const segments = tag.slice(separatorIndex + 1).split(":");
-      for (let depth = 1; depth <= segments.length; depth++) {
-        paths.add(segments.slice(0, depth).join(":"));
-      }
+      addAncestorPaths(paths, tag.slice(separatorIndex + 1));
     }
   }
   return paths;
@@ -69,10 +74,7 @@ export function buildFacets(templates: ActorTemplateEntry[]): TemplateFacet[] {
         paths = new Set();
         pathsByFacet.set(key, paths);
       }
-      const segments = tag.slice(separatorIndex + 1).split(":");
-      for (let depth = 1; depth <= segments.length; depth++) {
-        paths.add(segments.slice(0, depth).join(":"));
-      }
+      addAncestorPaths(paths, tag.slice(separatorIndex + 1));
     }
   }
   return [...pathsByFacet.entries()]
