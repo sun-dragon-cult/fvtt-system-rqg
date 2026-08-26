@@ -7,7 +7,8 @@ import Document = foundry.abstract.Document;
 /**
  * The kind of macros that can be created by dropping a document onto the Hotbar.
  */
-type MacroAction = "abilityRoll" | "rollTable" | "toggleSheet";
+type MacroAction =
+  "abilityRoll" | "attack" | "spiritMagicRoll" | "runeMagicRoll" | "rollTable" | "toggleSheet";
 
 export class RqgHotbar extends Hotbar {
   static init() {
@@ -19,8 +20,27 @@ export class RqgHotbar extends Hotbar {
    */
   static macroActions = new Map<MacroAction, (doc: Document.Any) => string>([
     ["abilityRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.abilityRoll();`],
+    ["attack", (doc) => `const item = await fromUuid("${doc.uuid}"); item.attack();`],
+    [
+      "spiritMagicRoll",
+      (doc) => `const item = await fromUuid("${doc.uuid}"); item.spiritMagicRoll();`,
+    ],
+    ["runeMagicRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.runeMagicRoll();`],
     ["rollTable", (doc) => `(await fromUuid("${doc.uuid}")).draw()`],
     ["toggleSheet", (doc) => `Hotbar.toggleDocumentSheet("${doc.uuid}")`],
+  ]);
+
+  /**
+   * Item types that have a dedicated action to perform (roll, cast, attack) instead of just
+   * toggling the item sheet when dropped onto the Hotbar.
+   */
+  static itemActions = new Map<Item.SubType, MacroAction>([
+    [ItemTypeEnum.Weapon, "attack"],
+    [ItemTypeEnum.SpiritMagic, "spiritMagicRoll"],
+    [ItemTypeEnum.RuneMagic, "runeMagicRoll"],
+    [ItemTypeEnum.Passion, "abilityRoll"],
+    [ItemTypeEnum.Rune, "abilityRoll"],
+    [ItemTypeEnum.Skill, "abilityRoll"],
   ]);
 
   /**
@@ -44,36 +64,18 @@ export class RqgHotbar extends Hotbar {
   }
 
   getMacroCommandAndName(doc: Document.Any): { command: string | undefined; name: string } {
-    // Item that can be sent to chat
-    // if (
-    //   doc.documentName === "Item" &&
-    //   [
-    //     ItemTypeEnum.RuneMagic,
-    //     ItemTypeEnum.ShamanicAbility,
-    //     ItemTypeEnum.SorceryMagic,
-    //     ItemTypeEnum.SpiritMagic,
-    //     ItemTypeEnum.Weapon,
-    //   ].includes(doc.type)
-    // ) {
-    //   const actorName = doc?.parent?.prototypeToken?.name;
-    //   const translationKey = actorName
-    //     ? "RQG.Hotbar.MacroName.ToChatEmbedded"
-    //     : "RQG.Hotbar.MacroName.ToChat";
-    //   const name = localize(translationKey, { name: doc.name, actor: actorName });
-    //   return { command: RqgHotbar.macroActions.get("toChat")?.(doc), name: name };
-    // }
+    const actorName = (doc.parent as Actor | null)?.prototypeToken?.name;
 
-    // Items that can show an AbilityRollDialog
-    if (
-      doc.documentName === "Item" &&
-      [ItemTypeEnum.Passion, ItemTypeEnum.Rune, ItemTypeEnum.Skill].includes((doc as Item).type)
-    ) {
-      const actorName = (doc.parent as Actor | null)?.prototypeToken?.name;
-      const translationKey = actorName
-        ? "RQG.Hotbar.MacroName.ToChatEmbedded"
-        : "RQG.Hotbar.MacroName.ToChat";
-      const name = localize(translationKey, { name: doc.name ?? "", actor: actorName ?? "" });
-      return { command: RqgHotbar.macroActions.get("abilityRoll")?.(doc), name: name };
+    // Items with a dedicated action (roll, cast spell, attack) instead of the item sheet
+    if (doc.documentName === "Item") {
+      const macroAction = RqgHotbar.itemActions.get((doc as Item).type);
+      if (macroAction) {
+        const translationKey = actorName
+          ? "RQG.Hotbar.MacroName.ToChatEmbedded"
+          : "RQG.Hotbar.MacroName.ToChat";
+        const name = localize(translationKey, { name: doc.name ?? "", actor: actorName ?? "" });
+        return { command: RqgHotbar.macroActions.get(macroAction)?.(doc), name: name };
+      }
     }
 
     // Roll table (draw a result and send to chat)
@@ -85,7 +87,6 @@ export class RqgHotbar extends Hotbar {
     }
 
     // Default - toggle the display of the document sheet
-    const actorName = (doc.parent as Actor | null)?.prototypeToken?.name;
     const translationKey = actorName
       ? "RQG.Hotbar.MacroName.ToggleSheetEmbedded"
       : "RQG.Hotbar.MacroName.ToggleSheet";
