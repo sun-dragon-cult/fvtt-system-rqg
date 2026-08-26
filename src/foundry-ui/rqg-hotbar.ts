@@ -17,7 +17,8 @@ type MacroAction =
   | "runeMagicRoll"
   | "rollTable"
   | "toggleSheet"
-  | "openJournalPage";
+  | "openJournalPage"
+  | "viewScene";
 
 export class RqgHotbar extends Hotbar {
   static init() {
@@ -82,6 +83,7 @@ export class RqgHotbar extends Hotbar {
       (doc) =>
         `const page = await fromUuid("${doc.uuid}"); page.parent.sheet.render(true, { pageId: page.id });`,
     ],
+    ["viewScene", (doc) => `const scene = await fromUuid("${doc.uuid}"); scene.view();`],
   ]);
 
   /**
@@ -176,6 +178,14 @@ export class RqgHotbar extends Hotbar {
       return {
         command: RqgHotbar.macroActions.get("openJournalPage")?.(doc),
         name: localize("RQG.Hotbar.MacroName.OpenJournalPage", { name: doc.name ?? "" }),
+      };
+    }
+
+    // Scene - view it on the canvas, instead of opening its configuration sheet.
+    if (doc.documentName === "Scene") {
+      return {
+        command: RqgHotbar.macroActions.get("viewScene")?.(doc),
+        name: localize("RQG.Hotbar.MacroName.ViewScene", { name: doc.name ?? "" }),
       };
     }
 
