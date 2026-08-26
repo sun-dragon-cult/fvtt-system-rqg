@@ -1257,6 +1257,9 @@
         "RollTable": "Roll table {name}",
         "ToggleSheet": "Display Sheet {name}",
         "ToggleSheetEmbedded": "Display Sheet {name} ({actor})"
+      },
+      "Warning": {
+        "NotAddableToMacroBar": "{name} can't be added to the macro bar - there's no action to perform with it on its own"
       }
     },
     "Foundry": {

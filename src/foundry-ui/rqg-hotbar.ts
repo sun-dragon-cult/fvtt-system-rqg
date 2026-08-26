@@ -1,5 +1,8 @@
 import { localize } from "../system/util";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import { weaponUsageTypes } from "../data-model/shared/weapon-usage-choices";
+import { hasLinkedSkillReference } from "../items/weapon-item/weapon-skill-links";
 
 import Hotbar = foundry.applications.ui.Hotbar;
 import Document = foundry.abstract.Document;
@@ -45,9 +48,25 @@ export class RqgHotbar extends Hotbar {
 
   /**
    * Create a Macro document that with a macroAction depending on what document is dropped.
-   *
+   * Returns undefined (adding nothing to the Hotbar) for weapons with no attackable usage type,
+   * e.g. plain ammunition like arrows - a javelin still gets a macro since it can be thrown itself.
    */
   override async _createDocumentSheetToggle(doc: Document.Any): Promise<Macro.Implementation> {
+    if (doc.documentName === "Item" && (doc as Item).type === ItemTypeEnum.Weapon) {
+      const weapon = doc as unknown as WeaponItem;
+      const isAttackable = weaponUsageTypes.some((usageType) =>
+        hasLinkedSkillReference(weapon, usageType),
+      );
+      if (!isAttackable) {
+        ui.notifications?.warn(
+          localize("RQG.Hotbar.Warning.NotAddableToMacroBar", { name: doc.name ?? "" }),
+        );
+        // @ts-expect-error Returning undefined intentionally skips adding a macro to the Hotbar,
+        // which is what the Foundry core caller already does when this returns a falsy value.
+        return undefined;
+      }
+    }
+
     const { command, name } = this.getMacroCommandAndName(doc);
 
     // @ts-expect-error create
