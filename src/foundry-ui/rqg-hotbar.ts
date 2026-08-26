@@ -1,4 +1,4 @@
-import { localize } from "../system/util";
+import { isDocumentSubType, localize } from "../system/util";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { weaponUsageTypes } from "../data-model/shared/weapon-usage-choices";
@@ -52,10 +52,10 @@ export class RqgHotbar extends Hotbar {
    * e.g. plain ammunition like arrows - a javelin still gets a macro since it can be thrown itself.
    */
   override async _createDocumentSheetToggle(doc: Document.Any): Promise<Macro.Implementation> {
-    if (doc.documentName === "Item" && (doc as Item).type === ItemTypeEnum.Weapon) {
-      const weapon = doc as unknown as WeaponItem;
+    const item = doc.documentName === "Item" ? (doc as Item) : undefined;
+    if (isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon)) {
       const isAttackable = weaponUsageTypes.some((usageType) =>
-        hasLinkedSkillReference(weapon, usageType),
+        hasLinkedSkillReference(item, usageType),
       );
       if (!isAttackable) {
         ui.notifications?.warn(
