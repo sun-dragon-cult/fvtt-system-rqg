@@ -11,7 +11,13 @@ import Document = foundry.abstract.Document;
  * The kind of macros that can be created by dropping a document onto the Hotbar.
  */
 type MacroAction =
-  "abilityRoll" | "attack" | "spiritMagicRoll" | "runeMagicRoll" | "rollTable" | "toggleSheet";
+  | "abilityRoll"
+  | "attack"
+  | "spiritMagicRoll"
+  | "runeMagicRoll"
+  | "rollTable"
+  | "toggleSheet"
+  | "openJournalPage";
 
 export class RqgHotbar extends Hotbar {
   static init() {
@@ -71,6 +77,11 @@ export class RqgHotbar extends Hotbar {
     ["runeMagicRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.runeMagicRoll();`],
     ["rollTable", (doc) => `(await fromUuid("${doc.uuid}")).draw()`],
     ["toggleSheet", (doc) => `Hotbar.toggleDocumentSheet("${doc.uuid}")`],
+    [
+      "openJournalPage",
+      (doc) =>
+        `const page = await fromUuid("${doc.uuid}"); page.parent.sheet.render(true, { pageId: page.id });`,
+    ],
   ]);
 
   /**
@@ -156,6 +167,15 @@ export class RqgHotbar extends Hotbar {
       return {
         command: RqgHotbar.macroActions.get("rollTable")?.(doc),
         name: localize("RQG.Hotbar.MacroName.RollTable", { name: doc.name ?? "" }),
+      };
+    }
+
+    // Journal Entry Page - open the parent Journal Entry sheet with this page selected,
+    // instead of the page's own standalone editor.
+    if (doc.documentName === "JournalEntryPage") {
+      return {
+        command: RqgHotbar.macroActions.get("openJournalPage")?.(doc),
+        name: localize("RQG.Hotbar.MacroName.OpenJournalPage", { name: doc.name ?? "" }),
       };
     }
 
