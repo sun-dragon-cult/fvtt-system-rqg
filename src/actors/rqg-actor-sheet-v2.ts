@@ -165,9 +165,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   // Runtime override of ActorSheetV2 _dragDrop; current fvtt-types do not expose this member.
   protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
-      // Also matches Spell Matrix drag handles (not real Items).
+      // Also matches Spell Matrix and weapon-row drag handles (separate attributes).
       dragSelector:
-        "[data-item-drag-handle][data-item-id], [data-matrix-spell-drag-handle][data-item-id]",
+        "[data-item-drag-handle][data-item-id], [data-matrix-spell-drag-handle][data-item-id], [data-weapon-drag-handle][data-item-id]",
       // Include a non-root content drop target for generic Foundry handling.
       // Do not include the root selector here: if html.matches(dropSelector),
       // Foundry binds only the root and skips descendant dropzones.
