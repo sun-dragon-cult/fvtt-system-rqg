@@ -420,7 +420,9 @@ export class Rqid {
     const type = toKebabCase("type" in document ? String(document.type) : "");
     const itemType = document instanceof Item ? String(document.type) : undefined;
     const system =
-      document instanceof Item ? (document.system as Record<string, unknown>) : undefined;
+      document instanceof Item
+        ? (document.system as unknown as Record<string, unknown>)
+        : undefined;
     const slug = Rqid.getDefaultRqidSlug(document.name, itemType, system);
 
     return `${kind}.${type}.${slug}` as RqidString;

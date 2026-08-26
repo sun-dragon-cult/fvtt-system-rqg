@@ -212,12 +212,12 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
     }
   }
 
-  protected override async _onDropDocument(
+  protected override async _onDropItemOrJournal(
     event: DragEvent,
     data: ActorSheet.DropData,
   ): Promise<boolean | RqgItem[]> {
     if (!isItemDropData(data)) {
-      return super._onDropDocument(event, data);
+      return super._onDropItemOrJournal(event, data);
     }
 
     const allowedDropDocumentTypes = getAllowedDropDocumentTypes(event);
@@ -266,7 +266,7 @@ export class OccupationSheetV2 extends RqgItemSheetV2 {
       return [this.document];
     }
 
-    return super._onDropDocument(event, data);
+    return super._onDropItemOrJournal(event, data);
   }
 
   protected static override async onSubmit(

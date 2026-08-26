@@ -99,7 +99,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
   private _rqgDragDrop?: foundry.applications.ux.DragDrop.Implementation;
 
   // Override ItemSheetV2 drag-drop controller to use explicit dropzones and callbacks.
-  protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
+  protected override get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
       // [data-bound-spirit-dropzone] (#999) and [data-matrix-spell-dropzone] (#959) are checked
       // before the generic Item/JournalEntry switch below, same two-tier pattern as
@@ -311,9 +311,10 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       el.addEventListener("click", async () => {
         const initialChange: ActiveEffect.ChangeData = {
           key: "",
-          // @ts-expect-error TEMP(v14-types) legacy ActiveEffect change shape
           type: "add",
           value: "",
+          phase: "initial",
+          priority: null,
         };
 
         const effectData = {
@@ -356,7 +357,7 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     });
   }
 
-  // Runtime override of ItemSheetV2 drag/drop hooks; current fvtt-types do not expose these members.
+  // Runtime override of ItemSheetV2 drag-enter/leave hooks; current fvtt-types do not expose these members.
   protected _onDragEnter(event: DragEvent): void {
     onDragEnter(event);
   }
@@ -365,14 +366,14 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     onDragLeave(event);
   }
 
-  protected _onDragOver(event: DragEvent): void {
+  protected override _onDragOver(event: DragEvent): void {
     event.preventDefault();
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = "link";
     }
   }
 
-  protected async _onDrop(event: DragEvent): Promise<unknown> {
+  protected override async _onDrop(event: DragEvent): Promise<void> {
     type HandledDropEvent = DragEvent & { _rqgDropHandled?: boolean };
     const handledEvent = event as HandledDropEvent;
     if (handledEvent._rqgDropHandled) {
@@ -408,7 +409,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       case "Item":
       case "JournalEntry":
       case "JournalEntryPage":
-        return await this._onDropDocument(event, droppedDocumentData);
+        await this._onDropItemOrJournal(event, droppedDocumentData);
+        return;
       default:
         isAllowedDocumentNames(droppedDocumentData?.type, [
           "Item",
@@ -418,7 +420,8 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
     }
   }
 
-  protected async _onDropDocument(
+  // Named distinctly from ItemSheetV2's own _onDropDocument (ActiveEffect-specific in v14 fvtt-types).
+  protected async _onDropItemOrJournal(
     event: DragEvent,
     data: ActorSheet.DropData,
   ): Promise<boolean | RqgItem[]> {

@@ -20,7 +20,6 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     // ActiveEffectTypeDataModelBase polyfill (see rqg-active-effect-data-model.ts) doesn't statically expose.
     // @ts-expect-error TEMP(v14-types)
     CONFIG.ActiveEffect.dataModels["base"] = RqgActiveEffectDataModel;
-    CONFIG.ActiveEffect.legacyTransferral = false;
 
     Hooks.on(
       "renderActiveEffectConfig",
@@ -208,7 +207,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
    * Prefix the rqid with ~ to use it as a regex and apply the effect to all matching items,
    * like "~i.hit-location:system.naturalAp" to affect all hit location items on the actor.
    */
-  static _applyChangeCustom(
+  static override _applyChangeCustom(
     targetDoc: Actor.Implementation,
     change: ActiveEffect.ChangeData,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -219,7 +218,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     changes: AnyMutableObject,
   ): void {
     const effect = (change as any).effect as RqgActiveEffect | undefined;
-    const [rqidOrPattern, path, deprecated] = change.key.split(":"); // ex i.hit-location.head:system.naturalAp
+    const [rqidOrPattern, path, deprecated] = (change.key ?? "").split(":"); // ex i.hit-location.head:system.naturalAp
     if (deprecated) {
       logMisconfiguration(
         `Legacy Active Effect key syntax is no longer supported: [${change.key}]. Update to "rqid:system.path".`,

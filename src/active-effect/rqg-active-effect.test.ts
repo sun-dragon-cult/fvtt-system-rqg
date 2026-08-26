@@ -53,7 +53,8 @@ describe("RqgActiveEffect._applyChangeCustom", () => {
       actor as any,
       {
         key: "i.weapon.short-spear:system.effect.add.melee.attack",
-        mode: 0 as any,
+        type: "add",
+        phase: "initial",
         priority: 0,
         value: "50",
       },

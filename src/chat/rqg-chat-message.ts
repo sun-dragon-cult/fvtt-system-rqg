@@ -35,7 +35,6 @@ export class RqgChatMessage extends ChatMessage {
   ) {
     if ((ui?.chat as any)?.isAtBottom) {
       // TODO how to make it work without releasing the execution thread?
-      // @ts-expect-error scrollBottom
       setTimeout(() => ui?.chat?.scrollBottom(), 0);
     }
 

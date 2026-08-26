@@ -162,8 +162,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     return this.document as CharacterActor;
   }
 
-  // Runtime override of ActorSheetV2 _dragDrop; current fvtt-types do not expose this member.
-  protected get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
+  protected override get _dragDrop(): foundry.applications.ux.DragDrop.Implementation {
     this._rqgDragDrop ??= new foundry.applications.ux.DragDrop.implementation({
       // Also matches Spell Matrix and weapon-row drag handles (separate attributes).
       dragSelector:

@@ -150,9 +150,10 @@ export class RqgItemSheet<
         el.addEventListener("click", async () => {
           const initialChange: ActiveEffect.ChangeData = {
             key: "",
-            // @ts-expect-error TEMP(v14-types) legacy ActiveEffect change shape
             type: "add",
             value: "",
+            phase: "initial",
+            priority: null,
           };
 
           const effectData = {
