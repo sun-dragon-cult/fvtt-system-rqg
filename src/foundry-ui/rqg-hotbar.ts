@@ -16,6 +16,46 @@ type MacroAction =
 export class RqgHotbar extends Hotbar {
   static init() {
     CONFIG.ui.hotbar = RqgHotbar;
+    Hooks.on("hotbarDrop", RqgHotbar.onHotbarDrop);
+  }
+
+  /**
+   * Foundry doesn't resolve a dropped Compendium pack to a Document - there's no "Compendium"
+   * document type - so the core Hotbar silently does nothing when one is dropped. Create a macro
+   * that opens the compendium here instead, and cancel the (otherwise no-op) default handling.
+   *
+   * Must return synchronously: Hooks.call checks `=== false` on the direct return value, so an
+   * async function (which always returns a Promise) could never cancel the default handling.
+   */
+  static onHotbarDrop(
+    _hotbar: foundry.applications.ui.Hotbar.Any,
+    data: Macro.DropData,
+    slot: number,
+  ): boolean | void {
+    const dropData = data as unknown as { type?: string; collection?: string };
+    if (dropData.type !== "Compendium" || !dropData.collection) {
+      return;
+    }
+
+    void RqgHotbar.createCompendiumOpenMacro(dropData.collection, slot);
+    return false;
+  }
+
+  private static async createCompendiumOpenMacro(collection: string, slot: number): Promise<void> {
+    const pack = game.packs?.get(collection);
+    if (!pack) {
+      return;
+    }
+
+    const macro = await Macro.implementation.create({
+      name: localize("RQG.Hotbar.MacroName.OpenCompendium", { name: pack.title }),
+      type: CONST.MACRO_TYPES.SCRIPT,
+      img: "icons/svg/book.svg",
+      command: `game.packs.get("${collection}")?.render(true);`,
+    });
+    if (macro) {
+      await game.user?.assignHotbarMacro(macro, slot);
+    }
   }
 
   /**
@@ -48,22 +88,23 @@ export class RqgHotbar extends Hotbar {
 
   /**
    * Create a Macro document that with a macroAction depending on what document is dropped.
-   * Returns undefined (adding nothing to the Hotbar) for weapons with no attackable usage type,
-   * e.g. plain ammunition like arrows - a javelin still gets a macro since it can be thrown itself.
+   * Returns undefined (adding nothing to the Hotbar) for documents with no reasonable hotbar
+   * action: a Folder (dropping one just toggled a not-very-useful sheet), and a weapon with no
+   * attackable usage type, e.g. plain ammunition like arrows - a javelin still gets a macro
+   * since it can be thrown itself.
    */
   override async _createDocumentSheetToggle(doc: Document.Any): Promise<Macro.Implementation> {
+    if (doc.documentName === "Folder") {
+      return this.notAddableToMacroBar(doc);
+    }
+
     const item = doc.documentName === "Item" ? (doc as Item) : undefined;
     if (isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon)) {
       const isAttackable = weaponUsageTypes.some((usageType) =>
         hasLinkedSkillReference(item, usageType),
       );
       if (!isAttackable) {
-        ui.notifications?.warn(
-          localize("RQG.Hotbar.Warning.NotAddableToMacroBar", { name: doc.name ?? "" }),
-        );
-        // @ts-expect-error Returning undefined intentionally skips adding a macro to the Hotbar,
-        // which is what the Foundry core caller already does when this returns a falsy value.
-        return undefined;
+        return this.notAddableToMacroBar(doc);
       }
     }
 
@@ -76,6 +117,19 @@ export class RqgHotbar extends Hotbar {
       img: this.getMacroImg(doc),
       command: command,
     });
+  }
+
+  /**
+   * Warn instead of creating a Macro for a document that has no reasonable standalone hotbar
+   * action. Returning undefined skips adding anything to the Hotbar, which is what the Foundry
+   * core caller already does when this returns a falsy value.
+   */
+  notAddableToMacroBar(doc: Document.Any): Macro.Implementation {
+    ui.notifications?.warn(
+      localize("RQG.Hotbar.Warning.NotAddableToMacroBar", { name: doc.name ?? "" }),
+    );
+    // @ts-expect-error Intentionally undefined - see the method doc comment above.
+    return undefined;
   }
 
   getMacroImg(doc: Document.Any): string | undefined {
