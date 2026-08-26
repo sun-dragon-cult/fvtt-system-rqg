@@ -132,6 +132,12 @@
             {{/if}}
           </label>
         {{/if}}
+        {{#edit-mode system.editMode "gm"}}
+          <label data-tooltip="{{localize 'RQG.Actor.Attributes.CreatureExplanation'}}">
+            <input type="checkbox" name="system.attributes.isCreature" {{checked system.attributes.isCreature}}>
+            {{localize "RQG.Actor.Attributes.CreatureQ"}}
+          </label>
+        {{/edit-mode}}
       </div>
 
       <div class="mov-enc">
