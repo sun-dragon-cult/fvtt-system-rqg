@@ -1256,7 +1256,13 @@
         "ToChatEmbedded": "Use {name} ({actor})",
         "RollTable": "Roll table {name}",
         "ToggleSheet": "Display Sheet {name}",
-        "ToggleSheetEmbedded": "Display Sheet {name} ({actor})"
+        "ToggleSheetEmbedded": "Display Sheet {name} ({actor})",
+        "OpenCompendium": "Open Compendium {name}",
+        "OpenJournalPage": "Open {name}",
+        "ViewScene": "View {name}"
+      },
+      "Warning": {
+        "NotAddableToMacroBar": "{name} can't be added to the macro bar - there's no action to perform with it on its own"
       }
     },
     "Foundry": {
