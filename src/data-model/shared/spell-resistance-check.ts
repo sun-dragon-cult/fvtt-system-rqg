@@ -1,31 +1,42 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { warnIfMultipleTargets } from "../../system/util";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
+import { SpellResistanceCheckEnum } from "../item-data/spell";
 
 /**
- * After a spell with `resistanceCheck === "single"` is cast successfully, open a POW vs POW
- * ResistanceRollDialogV2 pre-filled against the caster's current single target (#757).
- * Shared between Rune Magic and Spirit Magic post-cast hooks. This is deliberately a standalone
- * step (not folded into point-spending/experience bookkeeping) so it stays a clean pass/fail
- * "gate" that a future spell-effect trigger (#443) can sit behind.
+ * Post-cast hook shared by Rune Magic and Spirit Magic. When a resisted spell is cast
+ * successfully, open a POW vs POW ResistanceRollDialogV2 pre-filled caster-vs-target (#757).
+ * Deliberately a standalone step (not folded into point-spending/experience bookkeeping) so a
+ * future spell-effect trigger (#443) can sit behind it.
+ *
+ * The resistance roll yields a graded success level (critical … fumble), not a bare pass/fail:
+ * some spells key effects off the degree, and even a failed roll can carry an effect. Whatever
+ * consumes the outcome must read `ResistanceRoll.successLevel`.
  *
  * Silently does nothing with zero targets (not every spell targets someone), and warns (without
  * rolling) on more than one target - the caster should pick a single target before casting.
  */
-export async function promptResistanceRollForSuccessfulCast(
+export async function maybePromptResistanceRollForCast(
+  resistanceCheck: SpellResistanceCheckEnum,
+  castSuccessLevel: AbilitySuccessLevelEnum,
   casterActor: RqgActor,
   token: TokenDocument | null | undefined,
   spellName: string | undefined,
 ): Promise<void> {
+  if (
+    resistanceCheck !== SpellResistanceCheckEnum.Single ||
+    castSuccessLevel > AbilitySuccessLevelEnum.Success
+  ) {
+    return;
+  }
+
   const targetCount = game.user?.targets.size ?? 0;
   if (targetCount > 1) {
     warnIfMultipleTargets();
     return;
   }
-  if (targetCount === 0) {
-    return;
-  }
   const targetTokenUuid = game.user?.targets.first()?.document?.uuid;
-  if (!targetTokenUuid) {
+  if (targetCount === 0 || !targetTokenUuid) {
     return;
   }
 
