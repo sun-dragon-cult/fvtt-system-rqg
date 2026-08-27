@@ -21,7 +21,8 @@
       "character": "Character"
     },
     "ChatMessage": {
-      "combat": "Combat"
+      "combat": "Combat",
+      "resistanceRequest": "Resistance Request"
     },
     "RegionBehavior": {
       "clickableScripts": "Click to Execute Script"
@@ -511,6 +512,9 @@
         "AttackerFumble": "Attacker Fumble",
         "DefenderFumble": "Defender Fumble",
         "ApplyNaturalWeaponDamageNotImplemented": "Automatically applying damage to natural weapons is not supported yet.<br>Please manually add {weaponDamage} damage to the appropriate hit location, AP is not subtracted from {weaponDamage}.<br>Then close this notification."
+      },
+      "ResistanceRequest": {
+        "Roll": "Roll"
       }
     },
     "Dialog": {
@@ -588,6 +592,22 @@
           "6": "Very simple action (*6)"
         }
       },
+      "ResistanceRoll": {
+        "Title": "Resistance Roll",
+        "Active": "Active",
+        "Passive": "Passive",
+        "TokenOrActor": "Token/Actor",
+        "SourceManual": "Manual value...",
+        "Characteristic": "Characteristic",
+        "ManualName": "Name",
+        "ManualLabel": "Label",
+        "ManualValue": "Value"
+      },
+      "ResistanceRequest": {
+        "Title": "Request Resistance Roll",
+        "ModifierDefaults": "Modifier defaults (recipient may change)",
+        "SendRequest": "Send Request"
+      },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
         "LevelUsed": "Level",
@@ -648,6 +668,7 @@
         "TargetedToken": "targeted token",
         "Tokens": "tokens",
         "Actors": "actors",
+        "Other": "other",
         "AugmentOptions": {
           "None": "None",
           "CriticalSuccess": "Critical Success +50%",
@@ -1098,6 +1119,11 @@
         "Points": "Points",
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
+        "ResistanceCheck": "Resistance Check",
+        "ResistanceCheckEnum": {
+          "none": "None",
+          "single": "Single target (POW vs POW)"
+        },
         "DurationEnum": {
           "undefined": "None",
           "instant": "Instant",
@@ -1218,6 +1244,11 @@
           "6": "very simple action"
         }
       },
+      "ResistanceRoll": {
+        "Title": "Resistance Roll",
+        "Vs": "vs",
+        "Opposes": "opposes {targetName}"
+      },
       "HitLocationRoll": {
         "FallbackHitLocationName": "Hit Location"
       },
@@ -1322,6 +1353,7 @@
       "RollCharacteristicQuick": "Direct Roll *5 (dbl click)",
       "RollTitle": "Roll via Dialog (click), Direct Roll (dbl click)",
       "InitiateCombat": "Initiate combat",
+      "RequestResistanceRoll": "Request Resistance Roll",
       "WeaponUsage": {
         "oneHand": "1H",
         "offHand": "offH",
@@ -1504,6 +1536,10 @@
       "ShowActorActiveEffectsTab": {
         "settingName": "Show Actor Active Effects Tab",
         "settingHint": "If enabled, a GM-only Active Effects debug tab is shown on the actor sheet."
+      },
+      "ShowResistanceRequestTokenHudButton": {
+        "settingName": "Resistance Request Button on Token HUD",
+        "settingHint": "If enabled, GMs get a 'Request Resistance Roll' button on the Token HUD to start a resistance request straight from a token on the canvas."
       },
       "TokenRulerSettings": {
         "dialogTitle": "Token Ruler Settings",

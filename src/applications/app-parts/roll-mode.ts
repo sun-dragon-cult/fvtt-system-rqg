@@ -89,3 +89,16 @@ export function getSelectedRollModeFromClickEvent(event: MouseEvent): RollMode |
   const elementWithRollMode = target.closest<HTMLElement>("[data-roll-mode]");
   return getSelectedRollMode(elementWithRollMode?.dataset["rollMode"]);
 }
+
+/**
+ * Read whichever roll-mode toggle button is pressed on a roll-dialog form at submit time,
+ * falling back to the configured default.
+ */
+export function resolveRollModeFromForm(form: HTMLFormElement | undefined | null): RollMode {
+  return (
+    getSelectedRollMode(
+      form?.querySelector<HTMLButtonElement>('button[data-action="rollMode"][aria-pressed="true"]')
+        ?.dataset["rollMode"],
+    ) ?? getDefaultRollMode()
+  );
+}

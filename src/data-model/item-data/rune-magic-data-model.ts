@@ -2,6 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
+import { promptResistanceRollForSuccessfulCast } from "../shared/spell-resistance-check";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
@@ -32,6 +33,7 @@ import {
   spellItemTypes,
   SpellDurationEnum,
   SpellRangeEnum,
+  SpellResistanceCheckEnum,
 } from "./spell";
 
 export type RuneMagicItem = RqgItem & { system: Item.SystemOfType<"runeMagic"> };
@@ -350,6 +352,17 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       casterActor,
       boundSpiritDrainDecision.avoidRelease,
     );
+
+    if (
+      this.resistanceCheck === SpellResistanceCheckEnum.Single &&
+      runeMagicRoll.successLevel <= AbilitySuccessLevelEnum.Success
+    ) {
+      await promptResistanceRollForSuccessfulCast(
+        casterActor,
+        token,
+        runeMagicItemTyped.name ?? undefined,
+      );
+    }
   }
 
   /**

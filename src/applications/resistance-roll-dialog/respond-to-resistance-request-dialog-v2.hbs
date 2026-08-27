@@ -1,0 +1,31 @@
+<div class="scrollable">
+  <div class="key-value-grid p-0">
+    <label>{{localize "RQG.Dialog.Common.Character"}}</label>
+    <div>{{speakerName}}</div>
+
+    <label>{{localize "RQG.Dialog.ResistanceRoll.Active"}}</label>
+    <div>{{activeLabel}}</div>
+
+    <label>{{localize "RQG.Dialog.ResistanceRoll.Passive"}}</label>
+    <div>{{passiveLabel}}</div>
+  </div>
+
+  <div class="key-value-grid p-0">
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
+    <select name="augmentModifier">
+      {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
+    </select>
+
+    <label>{{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}</label>
+    <select name="meditateModifier">
+      {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
+    </select>
+
+    <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
+    <div>
+      <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
+    </div>
+  </div>
+
+  <input type="hidden" value="{{formData.chatMessageUuid}}" name="chatMessageUuid">
+</div>

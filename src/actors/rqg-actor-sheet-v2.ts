@@ -770,6 +770,15 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
       });
     });
 
+    // GM-only: request a resistance-table check from this actor's owner (Combat tab)
+    this.element.querySelectorAll<HTMLElement>("[data-request-resistance-roll]").forEach((el) => {
+      el.addEventListener("click", async () => {
+        const { openResistanceRequest } =
+          await import("../applications/resistance-roll-dialog/open-resistance-request");
+        await openResistanceRequest(this.document.token?.uuid || this.actor.uuid || "");
+      });
+    });
+
     // Handle in-grid editing of runes
     this.element.querySelectorAll<HTMLElement>("[data-rune-grid-edit]").forEach((el) => {
       el.addEventListener("change", async (event) => {

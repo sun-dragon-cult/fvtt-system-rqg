@@ -2,9 +2,11 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
+import { promptResistanceRollForSuccessfulCast } from "../shared/spell-resistance-check";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
@@ -20,6 +22,7 @@ import {
   spellItemTypes,
   SpellDurationEnum,
   SpellRangeEnum,
+  SpellResistanceCheckEnum,
 } from "./spell";
 
 export type SpiritMagicItem = RqgItem & { system: Item.SystemOfType<"spiritMagic"> };
@@ -167,6 +170,13 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       magicPointSource,
       boundSpiritDrainDecision.avoidRelease,
     );
+
+    if (
+      this.resistanceCheck === SpellResistanceCheckEnum.Single &&
+      spiritMagicRoll.successLevel <= AbilitySuccessLevelEnum.Success
+    ) {
+      await promptResistanceRollForSuccessfulCast(casterActor, token, item?.name ?? undefined);
+    }
   }
 
   /**

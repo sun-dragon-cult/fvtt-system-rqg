@@ -141,6 +141,21 @@ export class RqgCombatTracker<
           }
         },
       },
+      {
+        label: "RQG.Game.RequestResistanceRoll",
+        icon: '<i class="fa-solid fa-scale-unbalanced fa-fw"></i>',
+        visible: () => game.user?.isGM ?? false,
+        onClick: async (_event: Event, li: HTMLElement) => {
+          const combatant = getCombatant(li);
+          const uuid = combatant?.token?.uuid ?? combatant?.actor?.uuid;
+          if (!uuid) {
+            return;
+          }
+          const { openResistanceRequest } =
+            await import("../applications/resistance-roll-dialog/open-resistance-request");
+          await openResistanceRequest(uuid);
+        },
+      },
     ];
     return entries as unknown as ContextMenu.Entry<HTMLElement>[];
   }

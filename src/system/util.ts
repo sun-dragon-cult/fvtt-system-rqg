@@ -974,3 +974,12 @@ export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefine
     return "";
   }
 }
+
+/**
+ * Warn the user if more than one token is targeted where a dialog can only sensibly use one.
+ */
+export function warnIfMultipleTargets(): void {
+  if ((game.user?.targets.size ?? 0) > 1) {
+    ui.notifications?.info("Please target one token only");
+  }
+}

@@ -1,7 +1,7 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { getSelectRuneOptions, isDocumentSubType } from "../../system/util";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
-import { SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
+import { SpellDurationEnum, SpellRangeEnum, SpellResistanceCheckEnum } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { CultItem } from "@item-model/cult-data-model.ts";
@@ -12,6 +12,7 @@ interface RuneMagicSheetContext extends RqgItemSheetContext {
   allRuneOptions: SelectOptionData<string>[];
   rangeOptions: SelectOptionData<SpellRangeEnum>[];
   durationOptions: SelectOptionData<SpellDurationEnum>[];
+  resistanceCheckOptions: SelectOptionData<SpellResistanceCheckEnum>[];
   actorCultOptions: SelectOptionData<string>[];
 }
 
@@ -57,6 +58,10 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
       durationOptions: Object.values(SpellDurationEnum).map((range) => ({
         value: range,
         label: "RQG.Item.Spell.DurationEnum." + (range || "undefined"),
+      })),
+      resistanceCheckOptions: Object.values(SpellResistanceCheckEnum).map((value) => ({
+        value: value,
+        label: "RQG.Item.Spell.ResistanceCheckEnum." + value,
       })),
       actorCultOptions: this.getActorCultOptions(),
       allRuneOptions: getSelectRuneOptions("RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder"),

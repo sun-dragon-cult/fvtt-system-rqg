@@ -1,5 +1,10 @@
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
-import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "@item-model/spell.ts";
+import {
+  SpellConcentrationEnum,
+  SpellDurationEnum,
+  SpellRangeEnum,
+  SpellResistanceCheckEnum,
+} from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
@@ -8,6 +13,7 @@ interface SpiritMagicSheetContext extends RqgItemSheetContext {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];
   durationOptions: SelectOptionData<SpellDurationEnum>[];
   concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
+  resistanceCheckOptions: SelectOptionData<SpellResistanceCheckEnum>[];
 }
 
 export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
@@ -56,6 +62,10 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
       concentrationOptions: Object.values(SpellConcentrationEnum).map((range) => ({
         value: range,
         label: "RQG.Item.Spell.ConcentrationEnum." + (range || "undefined"),
+      })),
+      resistanceCheckOptions: Object.values(SpellResistanceCheckEnum).map((value) => ({
+        value: value,
+        label: "RQG.Item.Spell.ResistanceCheckEnum." + value,
       })),
     };
 

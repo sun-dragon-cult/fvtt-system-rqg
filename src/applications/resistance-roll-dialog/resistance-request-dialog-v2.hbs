@@ -1,0 +1,68 @@
+<div class="scrollable">
+  <fieldset>
+    <legend>{{localize "RQG.Dialog.ResistanceRoll.Active"}}</legend>
+    <div class="key-value-grid p-0">
+      <label>{{localize "RQG.Dialog.ResistanceRoll.TokenOrActor"}}</label>
+      <select name="targetTokenOrActorUuid">
+        {{selectOptions activeTokenOrActorOptions selected=formData.targetTokenOrActorUuid localize=false}}
+      </select>
+
+      <label>{{localize "RQG.Dialog.ResistanceRoll.Characteristic"}}</label>
+      <select name="activeCharacteristics">
+        {{selectOptions characteristicOptions selected=formData.activeCharacteristics localize=false}}
+      </select>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "RQG.Dialog.ResistanceRoll.Passive"}}</legend>
+    <div class="key-value-grid p-0">
+      <label>{{localize "RQG.Dialog.ResistanceRoll.TokenOrActor"}}</label>
+      <select name="passiveTokenOrActorUuid">
+        {{selectOptions passiveTokenOrActorOptions selected=formData.passiveTokenOrActorUuid localize=false}}
+      </select>
+
+      {{#unless (eq formData.passiveTokenOrActorUuid "manual")}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.Characteristic"}}</label>
+        <select name="passiveCharacteristics">
+          {{selectOptions characteristicOptions selected=formData.passiveCharacteristics localize=false}}
+        </select>
+      {{else}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualName"}}</label>
+        <input type="text" value="{{formData.passiveManualName}}" name="passiveManualName">
+
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
+        <input type="text" value="{{formData.passiveManualLabel}}" name="passiveManualLabel" list="resistance-manual-label-suggestions">
+
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualValue"}}</label>
+        <input type="number" value="{{formData.passiveManualValue}}" name="passiveManualValue">
+      {{/unless}}
+    </div>
+  </fieldset>
+
+  <datalist id="resistance-manual-label-suggestions">
+    <option value="POT">
+    <option value="{{localize 'RQG.Actor.Characteristics.strength'}}">
+    <option value="{{localize 'RQG.Actor.Characteristics.size'}}">
+  </datalist>
+
+  <fieldset>
+    <legend>{{localize "RQG.Dialog.ResistanceRequest.ModifierDefaults"}}</legend>
+    <div class="key-value-grid p-0">
+      <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
+      <select name="augmentModifier">
+        {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
+      </select>
+
+      <label>{{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}</label>
+      <select name="meditateModifier">
+        {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
+      </select>
+
+      <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
+      <div>
+        <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
+      </div>
+    </div>
+  </fieldset>
+</div>

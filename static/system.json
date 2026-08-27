@@ -56,7 +56,8 @@
       "character": {}
     },
     "ChatMessage": {
-      "combat": {}
+      "combat": {},
+      "resistanceRequest": {}
     },
     "Item": {
       "armor": {},
