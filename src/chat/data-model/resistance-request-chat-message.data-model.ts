@@ -26,10 +26,8 @@ const resistanceRequestChatMessageSchema = {
     initial: undefined,
     required: false,
   }),
-  // GM-prefilled defaults for the recipient's Augment/Meditate/Other modifiers - the recipient can
-  // still change them before rolling, same as ResistanceRollDialogV2.
-  augmentModifier: new NumberField({ nullable: false, required: false, initial: 0 }),
-  meditateModifier: new NumberField({ nullable: false, required: false, initial: 0 }),
+  // The GM's situational modifier for the contest - seeds the roller's Other modifier, which they
+  // can still change before rolling.
   otherModifier: new NumberField({ nullable: false, required: false, initial: 0 }),
   otherModifierDescription: new StringField({
     blank: true,

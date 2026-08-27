@@ -9,12 +9,10 @@ import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
 import { activateChatTab, localize } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import {
-  augmentOptions,
   filterToPlayerOwnedOptions,
   getBaseTokenOrActorOptions,
   getCharacteristicOptions,
   getTokenOrActorOptions,
-  meditateOptions,
   resolveActorFromUuid,
   resolveCharacteristicSide,
 } from "./resistance-roll-shared.ts";
@@ -133,8 +131,6 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     formData.passiveManualLabel ??= "";
     formData.passiveManualValue ??= 0;
 
-    formData.augmentModifier ??= "0";
-    formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
 
@@ -160,8 +156,6 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       activeTokenOrActorOptions: activeTokenOrActorOptions,
       passiveTokenOrActorOptions: passiveTokenOrActorOptions,
       characteristicOptions: getCharacteristicOptions(),
-      augmentOptions: augmentOptions,
-      meditateOptions: meditateOptions,
 
       // RollHeader
       rollType: localize("RQG.Dialog.ResistanceRequest.Title"),
@@ -188,8 +182,6 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       "",
     );
     return computeResistanceTargetChance(active.value, passive.value, [
-      Number(formData.augmentModifier),
-      Number(formData.meditateModifier),
       Number(formData.otherModifier),
     ]);
   }
@@ -239,8 +231,6 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       passiveValue: passive.value,
       passiveLabel: passive.label,
       passiveActorName: passive.actorName,
-      augmentModifier: Number(formDataObject.augmentModifier) || 0,
-      meditateModifier: Number(formDataObject.meditateModifier) || 0,
       otherModifier: Number(formDataObject.otherModifier) || 0,
       otherModifierDescription: formDataObject.otherModifierDescription || undefined,
       resistanceRoll: undefined,

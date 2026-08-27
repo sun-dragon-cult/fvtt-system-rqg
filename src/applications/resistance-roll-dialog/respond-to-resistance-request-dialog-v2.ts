@@ -138,9 +138,10 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     this.activeValue = active.value;
     this.passiveValue = this.requestChatMessage.system.passiveValue;
 
-    // Defaults come from the GM's request, but the recipient can still change them before rolling.
-    formData.augmentModifier ??= String(this.requestChatMessage.system.augmentModifier ?? 0);
-    formData.meditateModifier ??= String(this.requestChatMessage.system.meditateModifier ?? 0);
+    // Augment/Meditate are the roller's own tactical choices. Only the situational Other modifier
+    // is seeded from the GM's request; the recipient can still change it before rolling.
+    formData.augmentModifier ??= "0";
+    formData.meditateModifier ??= "0";
     formData.otherModifier ??= String(this.requestChatMessage.system.otherModifier ?? 0);
     formData.otherModifierDescription ??=
       this.requestChatMessage.system.otherModifierDescription ||

@@ -15,8 +15,6 @@ export type ResistanceRequestDialogContext = RollHeaderData & {
   activeTokenOrActorOptions: SelectOptionData<string>[];
   passiveTokenOrActorOptions: SelectOptionData<string>[];
   characteristicOptions: SelectOptionData<string>[];
-  augmentOptions: SelectOptionData<number>[];
-  meditateOptions: SelectOptionData<number>[];
   totalChance: number;
 };
 
@@ -34,9 +32,7 @@ export type ResistanceRequestDialogFormData = {
   passiveManualLabel: string;
   passiveManualValue: number;
 
-  // Prefilled defaults for the recipient's modifiers - they can still change them before rolling.
-  augmentModifier: string;
-  meditateModifier: string;
+  // GM's situational modifier for the contest - sent as the roller's starting Other modifier.
   otherModifier: string;
   otherModifierDescription: string;
 };

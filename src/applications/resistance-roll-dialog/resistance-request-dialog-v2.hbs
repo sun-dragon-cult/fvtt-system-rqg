@@ -47,22 +47,13 @@
   </datalist>
 
   <fieldset>
-    <legend>{{localize "RQG.Dialog.ResistanceRequest.ModifierDefaults"}}</legend>
+    <legend>{{localize "RQG.Dialog.ResistanceRequest.SituationalModifier"}}</legend>
     <div class="key-value-grid p-0">
-      <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
-      <select name="augmentModifier">
-        {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
-      </select>
-
-      <label>{{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}</label>
-      <select name="meditateModifier">
-        {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
-      </select>
-
       <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
       <div>
         <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
       </div>
     </div>
+    <p class="hint">{{localize "RQG.Dialog.ResistanceRequest.SituationalModifierHint"}}</p>
   </fieldset>
 </div>

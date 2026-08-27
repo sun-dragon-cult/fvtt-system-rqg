@@ -605,7 +605,8 @@
       },
       "ResistanceRequest": {
         "Title": "Request Resistance Roll",
-        "ModifierDefaults": "Modifier defaults (recipient may change)",
+        "SituationalModifier": "Situational modifier",
+        "SituationalModifierHint": "Sent to the roller as a starting Other modifier. They pick their own Augment and Meditate when they roll.",
         "SendRequest": "Send Request"
       },
       "SpiritMagicRoll": {

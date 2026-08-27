@@ -17,9 +17,7 @@ export interface ResistanceRequestDataSourceData {
   passiveLabel: string;
   /** The obstacle/disease/passive character's name, if any - feeds the "opposes X" flavor line. */
   passiveActorName: string | undefined;
-  /** GM-prefilled defaults for the recipient's modifiers - still editable before rolling. */
-  augmentModifier: number;
-  meditateModifier: number;
+  /** The GM's situational modifier for the contest - seeds the roller's Other modifier. */
   otherModifier: number;
   otherModifierDescription: string | undefined;
   resistanceRoll: string | object | undefined; // JSONField can be string or parsed object
