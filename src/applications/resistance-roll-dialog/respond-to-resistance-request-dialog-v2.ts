@@ -215,9 +215,6 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     }
 
     const { actor, token } = RespondToResistanceRequestDialogV2.resolveTarget(requestChatMessage!);
-    const activeCharacteristicNames = decodeCharacteristics(
-      requestChatMessage!.system.activeCharacteristics,
-    );
     const active = RespondToResistanceRequestDialogV2.resolveActive(
       actor,
       requestChatMessage!.system.activeCharacteristics,
@@ -264,14 +261,13 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     activateChatTab();
     await updateChatMessage(requestChatMessage!, messageData);
 
-    // Both characteristics of a combo (e.g. Knockback's STR+SIZ) get checked, not just the first.
+    // Only POW earns an experience check from a resistance roll.
     if (
       isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character) &&
-      roll.successLevel != null
+      roll.successLevel != null &&
+      decodeCharacteristics(requestChatMessage!.system.activeCharacteristics).includes("power")
     ) {
-      for (const characteristicName of activeCharacteristicNames) {
-        await actor.checkExperience(characteristicName, roll.successLevel);
-      }
+      await actor.checkExperience("power", roll.successLevel);
     }
   }
 }

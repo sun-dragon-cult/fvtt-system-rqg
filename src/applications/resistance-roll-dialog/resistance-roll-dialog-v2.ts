@@ -297,16 +297,15 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       throw new RqgError("Evaluated ResistanceRoll didn't give successLevel");
     }
 
-    // Award POW-experience (or any other characteristic-use bookkeeping) to whichever actor's
-    // characteristic(s) were actually used as the active side, not necessarily the dialog's own
-    // actor - both characteristics of a combo (e.g. Knockback's STR+SIZ) get checked.
-    const activeCharacteristicNames = decodeCharacteristics(formDataObject.activeCharacteristics);
-    if (formDataObject.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE) {
+    // Only POW earns an experience check from a resistance roll, credited to whichever actor
+    // supplied the active side.
+    if (
+      formDataObject.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE &&
+      decodeCharacteristics(formDataObject.activeCharacteristics).includes("power")
+    ) {
       const activeActor = resolveActorFromUuid(formDataObject.activeTokenOrActorUuid);
       if (activeActor && isDocumentSubType<CharacterActor>(activeActor, ActorTypeEnum.Character)) {
-        for (const characteristicName of activeCharacteristicNames) {
-          await activeActor.checkExperience(characteristicName, roll.successLevel);
-        }
+        await activeActor.checkExperience("power", roll.successLevel);
       }
     }
   }
