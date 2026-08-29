@@ -21,6 +21,17 @@ export type ResistanceRollDialogPrefill = {
   description?: string;
 };
 
+/**
+ * Canvas-derived starting point for a GM-opened {@link ResistanceRollDialogV2}
+ * (`ResistanceRollDialogV2.openForGm`) - just the two sides' token/actor uuids, which the GM
+ * then adjusts before rolling. Unlike {@link ResistanceRollDialogPrefill} nothing here is
+ * authoritative; there is no self-actor and no spell dictating the characteristics.
+ */
+export type ResistanceRollSeed = {
+  activeUuid?: string | undefined;
+  passiveUuid?: string | undefined;
+};
+
 export type ResistanceRollDialogContext = RollHeaderData &
   RollFooterData & {
     formData: ResistanceRollDialogFormData;

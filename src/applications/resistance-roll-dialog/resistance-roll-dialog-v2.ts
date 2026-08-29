@@ -4,6 +4,7 @@ import type {
   ResistanceRollDialogContext,
   ResistanceRollDialogFormData,
   ResistanceRollDialogPrefill,
+  ResistanceRollSeed,
   ResistanceRollSidePrefill,
 } from "./resistance-roll-dialog-data.types.ts";
 import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
@@ -99,24 +100,39 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     };
   }
 
-  private actor: RqgActor;
+  // The actor whose sheet/token this dialog was opened from - the "self" default for the active
+  // side. Undefined when the GM opens the dialog cold (see openForGm): both sides come from the
+  // seed / the pickers instead.
+  private actor: RqgActor | undefined;
   private token: TokenDocument | null | undefined;
   private prefill: ResistanceRollDialogPrefill | undefined;
+  private seed: ResistanceRollSeed | undefined;
   // Applied once on the first _prepareContext only - _prepareContext reruns on every form change
-  // (RqgInteractiveRollApplicationBase re-renders on change), and re-applying the prefill on every
-  // one of those reruns would stomp over whatever the user just picked.
-  private prefillApplied = false;
+  // (RqgInteractiveRollApplicationBase re-renders on change), and re-applying the prefill/seed on
+  // every one of those reruns would stomp over whatever the user just picked.
+  private seedApplied = false;
 
   constructor(
-    actor: RqgActor,
+    actor?: RqgActor | null,
     token?: TokenDocument | null,
     prefill?: ResistanceRollDialogPrefill,
+    seed?: ResistanceRollSeed,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
     super(options);
-    this.actor = actor;
+    this.actor = actor ?? undefined;
     this.token = token;
     this.prefill = prefill;
+    this.seed = seed;
+  }
+
+  /**
+   * Open the dialog with no "self" actor, for a GM staging a resistance roll they will roll
+   * themselves (an NPC's POW-vs-POW, a poison's POT-vs-CON, an improvised STR contest). The
+   * seed pre-picks the two sides from canvas context; the GM adjusts before rolling.
+   */
+  static async openForGm(seed: ResistanceRollSeed = {}): Promise<void> {
+    await new ResistanceRollDialogV2(undefined, undefined, undefined, seed).render({ force: true });
   }
 
   static override DEFAULT_OPTIONS = {
@@ -153,14 +169,25 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ??
       {}) as ResistanceRollDialogFormData;
 
-    const selfUuid = this.token?.uuid || this.actor.uuid || "";
+    const selfUuid = this.token?.uuid || this.actor?.uuid || "";
     const tokenOrActorOptions = getTokenOrActorOptions(
       selfUuid,
-      this.token?.name ?? this.actor.name ?? "",
+      this.token?.name ?? this.actor?.name ?? "",
       this.actor,
     );
     const defaultTargetUuid =
       game.user?.targets.size === 1 ? (game.user.targets.first()?.document?.uuid ?? "") : "";
+
+    // Seed the two sides before the ??= defaults so a GM-opened dialog with no "self" still
+    // lands on the canvas-derived token/actors; a spell prefill (applied below) overrides.
+    if (!this.seedApplied) {
+      if (this.seed?.activeUuid) {
+        formData.activeTokenOrActorUuid = this.seed.activeUuid;
+      }
+      if (this.seed?.passiveUuid) {
+        formData.passiveTokenOrActorUuid = this.seed.passiveUuid;
+      }
+    }
 
     formData.activeTokenOrActorUuid ??= selfUuid;
     formData.activeCharacteristics ??= defaultCharacteristic;
@@ -172,20 +199,26 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.passiveManualLabel ??= "";
     formData.passiveManualValue ??= 0;
 
-    if (!this.prefillApplied) {
+    if (!this.seedApplied) {
       applyPrefill(formData, "active", this.prefill?.active);
       applyPrefill(formData, "passive", this.prefill?.passive);
-      this.prefillApplied = true;
+      this.seedApplied = true;
     }
 
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
-    formData.actorUuid ??= this.actor.uuid ?? "";
+    formData.actorUuid ??= this.actor?.uuid ?? "";
     formData.tokenUuid ??= this.token?.uuid ?? "";
 
-    const speaker = getSpeakerCompat({ actor: this.actor, token: this.token });
+    // No self actor (GM cold-open) -> speak as whoever is on the acting side of the roll.
+    const speakerActor =
+      this.actor ??
+      (formData.activeTokenOrActorUuid && formData.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE
+        ? resolveActorFromUuid(formData.activeTokenOrActorUuid)
+        : undefined);
+    const speaker = getSpeakerCompat({ actor: speakerActor, token: this.token });
     const totalChance = ResistanceRollDialogV2.computeTotalChance(formData);
     const active = ResistanceRollDialogV2.resolveSide(formData, "active");
     const passive = ResistanceRollDialogV2.resolveSide(formData, "passive");
@@ -278,24 +311,25 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const rollMode = resolveRollModeFromForm(form);
 
-    // Independent lookups from unrelated uuids - resolved concurrently.
-    const [actor, token] = (await Promise.all([
-      fromUuid(formDataObject.actorUuid),
-      formDataObject.tokenUuid ? fromUuid(formDataObject.tokenUuid) : undefined,
-    ])) as [RqgActor | undefined, TokenDocument | undefined];
-    if (!actor) {
-      ui.notifications?.error("Could not find an actor to roll a resistance roll for.");
-      return;
-    }
-
     // The Roll button is disabled until this passes; a submit that slips through anyway (stale
     // state, Enter key) bails silently rather than showing an error the UI already prevents.
     if (!ResistanceRollDialogV2.canRoll(formDataObject)) {
       return;
     }
 
+    // Independent lookups from unrelated uuids - resolved concurrently. A GM cold-open has no
+    // self actor/token; the speaker then falls back to the acting side's actor below.
+    const [selfActor, token] = (await Promise.all([
+      formDataObject.actorUuid ? fromUuid(formDataObject.actorUuid) : undefined,
+      formDataObject.tokenUuid ? fromUuid(formDataObject.tokenUuid) : undefined,
+    ])) as [RqgActor | undefined, TokenDocument | undefined];
+
     const active = ResistanceRollDialogV2.resolveSide(formDataObject, "active");
     const passive = ResistanceRollDialogV2.resolveSide(formDataObject, "passive");
+    const activeActor =
+      formDataObject.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE
+        ? resolveActorFromUuid(formDataObject.activeTokenOrActorUuid)
+        : undefined;
 
     const options: ResistanceRollOptions = {
       activeValue: active.value,
@@ -309,7 +343,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
         formDataObject.otherModifier,
         formDataObject.otherModifierDescription,
       ),
-      speaker: getSpeakerCompat({ actor, token }),
+      speaker: getSpeakerCompat({ actor: selfActor ?? activeActor, token }),
       rollMode: rollMode,
     };
 
@@ -321,13 +355,11 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     // Only POW earns an experience check from a resistance roll, credited to whichever actor
     // supplied the active side.
     if (
-      formDataObject.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE &&
-      decodeCharacteristics(formDataObject.activeCharacteristics).includes("power")
+      activeActor &&
+      decodeCharacteristics(formDataObject.activeCharacteristics).includes("power") &&
+      isDocumentSubType<CharacterActor>(activeActor, ActorTypeEnum.Character)
     ) {
-      const activeActor = resolveActorFromUuid(formDataObject.activeTokenOrActorUuid);
-      if (activeActor && isDocumentSubType<CharacterActor>(activeActor, ActorTypeEnum.Character)) {
-        await activeActor.checkExperience("power", roll.successLevel);
-      }
+      await activeActor.checkExperience("power", roll.successLevel);
     }
   }
 }
