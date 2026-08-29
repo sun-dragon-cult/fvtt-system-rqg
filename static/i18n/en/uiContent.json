@@ -606,8 +606,7 @@
         "ManualLabelPlaceholder": "POT, STR, SIZ, POW…",
         "ManualValue": "Value",
         "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT.",
-        "ModifiersLegend": "Active modifiers",
-        "ModifiersHint": "Augment and Meditate are the rolling character's own; the last field is a situational adjustment. All raise the success chance."
+        "ModifiersLegend": "Active modifiers"
       },
       "ResistanceRequest": {
         "Title": "Request Resistance Roll",
