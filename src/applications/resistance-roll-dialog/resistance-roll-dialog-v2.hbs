@@ -65,7 +65,7 @@
   </datalist>
 
   <fieldset>
-    <legend>{{localize "RQG.Dialog.Common.Modifiers"}}</legend>
+    <legend>{{localize "RQG.Dialog.ResistanceRoll.ModifiersLegend"}}</legend>
     <div class="key-value-grid p-0">
       <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
       <select name="augmentModifier">
@@ -82,6 +82,7 @@
         <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
       </div>
     </div>
+    <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ModifiersHint"}}</p>
   </fieldset>
 
   <input type="hidden" value="{{formData.actorUuid}}" name="actorUuid">
