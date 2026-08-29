@@ -605,12 +605,10 @@
         "ManualLabel": "Characteristic",
         "ManualLabelPlaceholder": "POT, STR, SIZ, POW…",
         "ManualValue": "Value",
-        "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT.",
-        "ModifiersLegend": "Active modifiers"
+        "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT."
       },
       "ResistanceRequest": {
         "Title": "Request Resistance Roll",
-        "SituationalModifier": "Situational modifier",
         "SituationalModifierHint": "Sent to the Active side as a starting Other modifier. They pick their own Augment and Meditate when they roll.",
         "SendRequest": "Send Request"
       },

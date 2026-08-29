@@ -1953,6 +1953,14 @@
     & .scrollable > * + * {
       margin-top: 0.6rem;
     }
+
+    /* Read-only value cells and the "N %" wrapper share the input row height so the
+       characteristic/modifier rows line up in one grid. */
+    & .key-value-grid > div {
+      display: flex;
+      align-items: center;
+      min-height: var(--input-height);
+    }
   }
 
   #tooltip.chance-breakdown-tooltip,

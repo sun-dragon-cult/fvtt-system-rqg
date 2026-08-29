@@ -11,7 +11,13 @@
       <select name="activeCharacteristics">
         {{selectOptions characteristicOptions selected=formData.activeCharacteristics localize=false}}
       </select>
+
+      <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
+      <div>
+        <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
+      </div>
     </div>
+    <p class="hint">{{localize "RQG.Dialog.ResistanceRequest.SituationalModifierHint"}}</p>
   </fieldset>
 
   <fieldset>
@@ -51,15 +57,4 @@
     <option value="{{localize 'RQG.Actor.Characteristics.size'}}">
     <option value="{{localize 'RQG.Actor.Characteristics.power'}}">
   </datalist>
-
-  <fieldset>
-    <legend>{{localize "RQG.Dialog.ResistanceRequest.SituationalModifier"}}</legend>
-    <div class="key-value-grid p-0">
-      <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
-      <div>
-        <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
-      </div>
-    </div>
-    <p class="hint">{{localize "RQG.Dialog.ResistanceRequest.SituationalModifierHint"}}</p>
-  </fieldset>
 </div>
