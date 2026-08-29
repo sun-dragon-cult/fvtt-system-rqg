@@ -185,6 +185,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.passiveTokenOrActorUuid ??= defaultTargetUuid || MANUAL_SOURCE_VALUE;
     formData.passiveCharacteristics ??= defaultCharacteristic;
+    formData.passiveManualName ??= "";
     formData.passiveManualLabel ??= "";
     formData.passiveManualValue ??= 0;
 
@@ -264,6 +265,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       fields.manualLabel,
       fields.manualValue,
       fallbackLabel,
+      side === "passive" ? formData.passiveManualName : undefined,
     );
   }
 

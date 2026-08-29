@@ -51,6 +51,8 @@ export type ResistanceRollDialogFormData = {
   passiveTokenOrActorUuid: string;
   /** One characteristic name, or two joined by "+" (e.g. "size+dexterity"). */
   passiveCharacteristics: string;
+  /** Names a Manual passive for the "opposes X" flavor line, e.g. "Noxious Gas". */
+  passiveManualName: string;
   passiveManualLabel: string;
   passiveManualValue: number;
 
