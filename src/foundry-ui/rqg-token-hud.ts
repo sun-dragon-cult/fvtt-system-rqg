@@ -21,7 +21,7 @@ export class RqgTokenHud {
     }
 
     const label = localize("RQG.Game.RequestResistanceRoll");
-    // No data-action - AppV2 would warn about an unregistered handler; the click listener drives it.
+    // Injected via the render hook, so it drives its own click listener rather than the HUD's data-action map.
     const button = document.createElement("button");
     button.type = "button";
     button.className = "control-icon";

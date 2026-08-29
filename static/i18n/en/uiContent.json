@@ -1543,7 +1543,7 @@
         "settingHint": "If enabled, a GM-only Active Effects debug tab is shown on the actor sheet."
       },
       "ShowResistanceRequestTokenHudButton": {
-        "settingName": "Resistance Request Button on Token HUD",
+        "settingName": "Resistance Request on Token HUD",
         "settingHint": "If enabled, GMs get a 'Request Resistance Roll' button on the Token HUD to start a resistance request straight from a token on the canvas."
       },
       "TokenRulerSettings": {
