@@ -611,7 +611,7 @@
       "ResistanceRequest": {
         "Title": "Request Resistance Roll",
         "SituationalModifier": "Situational modifier",
-        "SituationalModifierHint": "Sent to the roller as a starting Other modifier. They pick their own Augment and Meditate when they roll.",
+        "SituationalModifierHint": "Sent to the Active side as a starting Other modifier. They pick their own Augment and Meditate when they roll.",
         "SendRequest": "Send Request"
       },
       "SpiritMagicRoll": {
