@@ -1,10 +1,6 @@
 import { localize } from "../../system/util";
 
-/**
- * The "opposes X" / "active vs passive" / "Resistance Roll" header markup, shared between an
- * actual ResistanceRoll's flavor and a resistance-request chat card's flavor, so both look the
- * same whether the roll happened directly or via a GM request.
- */
+/** Shared flavor markup for a resistance roll and a resistance-request card. */
 export function buildResistanceRollFlavor(
   activeLabel: string,
   passiveLabel: string,

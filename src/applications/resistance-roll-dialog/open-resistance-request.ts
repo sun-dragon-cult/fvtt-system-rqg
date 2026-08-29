@@ -4,18 +4,9 @@ import type { ResistanceRequestSeed } from "./resistance-request-dialog-data.typ
 import type { ResistanceRollSeed } from "./resistance-roll-dialog-data.types.ts";
 
 /**
- * Single GM entry point for the resistance-table flow, shared by every UI surface that offers it
- * (actor sheet Combat tab, token HUD, combat tracker, Actors sidebar).
- *
- * Picks the dialog from canvas state:
- * - a player-owned actor is on one side -> {@link ResistanceRequestDialogV2}: post a roll-request
- *   card to that player (invoked player = active; an invoked NPC with a player-owned target =
- *   that player acting against the NPC);
- * - neither side is player-owned -> {@link ResistanceRollDialogV2}: nobody to hand a card to
- *   (its Roll button is owner-gated), so the GM rolls it directly - an NPC's POW-vs-POW, a
- *   poison's POT-vs-CON, an improvised STR contest.
- *
- * Either way the current single target fills the side the invocation didn't.
+ * GM entry point for the resistance-table flow (actor sheet, token HUD, combat tracker, Actors
+ * sidebar). Delegates to a player via {@link ResistanceRequestDialogV2} when one is involved,
+ * otherwise opens {@link ResistanceRollDialogV2} for the GM to roll directly.
  */
 export async function openResistanceRequest(invokedTokenOrActorUuid?: string): Promise<void> {
   if (!game.user?.isGM) {
@@ -31,8 +22,7 @@ export async function openResistanceRequest(invokedTokenOrActorUuid?: string): P
     !!invokedTokenOrActorUuid && !!resolveActorFromUuid(invokedTokenOrActorUuid)?.hasPlayerOwner;
   const targetIsPlayerOwned = !!targetUuid && !!resolveActorFromUuid(targetUuid)?.hasPlayerOwner;
 
-  // No player on either side: a request card would only ever be actionable by the GM, so open
-  // the direct roll dialog for the GM to roll instead.
+  // Nobody to delegate to - the GM rolls it directly.
   if (!invokedIsPlayerOwned && !targetIsPlayerOwned) {
     const seed: ResistanceRollSeed = invokedTokenOrActorUuid
       ? { activeUuid: invokedTokenOrActorUuid, passiveUuid: targetUuid }
@@ -44,13 +34,11 @@ export async function openResistanceRequest(invokedTokenOrActorUuid?: string): P
 
   let seed: ResistanceRequestSeed;
   if (invokedIsPlayerOwned) {
-    // The invoked player is the one asked to roll; the target, if any, is what they resist.
     seed = { activeUuid: invokedTokenOrActorUuid, passiveUuid: targetUuid };
   } else if (invokedTokenOrActorUuid) {
-    // Invoked on an NPC while a player is targeted: that player acts against the NPC.
+    // NPC invoked, player targeted: the player acts against the NPC.
     seed = { passiveUuid: invokedTokenOrActorUuid, activeUuid: targetUuid };
   } else {
-    // No invocation context (e.g. a keybinding), only a player-owned target.
     seed = { activeUuid: targetUuid };
   }
 

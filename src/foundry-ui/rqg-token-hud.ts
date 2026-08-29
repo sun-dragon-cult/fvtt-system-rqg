@@ -1,11 +1,7 @@
 import { systemId } from "../system/config";
 import { localize } from "../system/util";
 
-/**
- * Adds a GM-only "Request Resistance Roll" button to the Token HUD's left column, so the GM can
- * start a resistance request straight from a token on the canvas. Hidden when the
- * `showResistanceRequestTokenHudButton` client setting is off.
- */
+/** GM-only "Request Resistance Roll" button on the Token HUD, gated by a client setting. */
 export class RqgTokenHud {
   static init() {
     Hooks.on("renderTokenHUD", RqgTokenHud.onRenderTokenHUD);
@@ -25,8 +21,7 @@ export class RqgTokenHud {
     }
 
     const label = localize("RQG.Game.RequestResistanceRoll");
-    // No data-action - AppV2 would warn about an unregistered handler; the click listener below
-    // drives it directly instead.
+    // No data-action - AppV2 would warn about an unregistered handler; the click listener drives it.
     const button = document.createElement("button");
     button.type = "button";
     button.className = "control-icon";

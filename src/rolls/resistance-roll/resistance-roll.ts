@@ -9,11 +9,7 @@ import type { AnyObject, EmptyObject } from "fvtt-types/utils";
 
 import Roll = foundry.dice.Roll;
 
-/**
- * A roll on the Resistance Table (RQG core rulebook p.145-147): active vs passive characteristic
- * (or sum of characteristics) folded into a single d100 target%, resolved with the same
- * success-band mechanic as skill/characteristic rolls.
- */
+/** A roll on the RQG Resistance Table (p.145-147): active vs passive characteristic as a d100 target%. */
 export class ResistanceRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: ResistanceRollOptions;
 
@@ -93,9 +89,7 @@ export class ResistanceRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
     });
   }
 
-  // Html for what the roll is about. A small "opposes <name>" line (mirroring the attack chat
-  // card's "attacks <name>") comes first when the passive side came from a targeted actor, then
-  // the bold "active vs passive" header naming the characteristic(s) rolled.
+  // Html for what the roll is about
   get flavor(): string {
     return buildResistanceRollFlavor(
       this.options.activeLabel,

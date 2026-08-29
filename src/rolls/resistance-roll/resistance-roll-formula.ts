@@ -1,9 +1,4 @@
-/**
- * The resistance-table formula (core rulebook p.145-147): active vs passive characteristic (or
- * sum of characteristics), plus any modifiers, folded into a single d100 target%. Shared by
- * `ResistanceRoll.targetChance` and every dialog's live target-% preview, so a future RAW tweak
- * only needs to change one place.
- */
+/** The resistance-table formula (p.145-147): active vs passive + modifiers, as a d100 target%. */
 export function computeResistanceTargetChance(
   activeValue: number,
   passiveValue: number,

@@ -5,7 +5,7 @@ import type { Characteristics } from "../../data-model/actor-data/characteristic
 /** Sentinel value for the token/actor dropdown meaning "type in a value by hand instead". */
 export const MANUAL_SOURCE_VALUE = "manual";
 
-/** Prefill for one side (active or passive) of a resistance roll, e.g. from a spell's post-cast hook. */
+/** Prefill for one side of a resistance roll. */
 export type ResistanceRollSidePrefill =
   | {
       source: "tokenOrActor";
@@ -17,16 +17,11 @@ export type ResistanceRollSidePrefill =
 export type ResistanceRollDialogPrefill = {
   active?: ResistanceRollSidePrefill;
   passive?: ResistanceRollSidePrefill;
-  /** Shown in the roll header, e.g. the name of the spell that triggered this check. */
+  /** Shown in the roll header, e.g. the triggering spell's name. */
   description?: string;
 };
 
-/**
- * Canvas-derived starting point for a GM-opened {@link ResistanceRollDialogV2}
- * (`ResistanceRollDialogV2.openForGm`) - just the two sides' token/actor uuids, which the GM
- * then adjusts before rolling. Unlike {@link ResistanceRollDialogPrefill} nothing here is
- * authoritative; there is no self-actor and no spell dictating the characteristics.
- */
+/** Canvas-derived side uuids for a GM-opened dialog (openForGm); the GM adjusts before rolling. */
 export type ResistanceRollSeed = {
   activeUuid?: string | undefined;
   passiveUuid?: string | undefined;
@@ -64,6 +59,6 @@ export type ResistanceRollDialogFormData = {
   otherModifier: string;
   otherModifierDescription: string;
 
-  actorUuid: string; // hidden field - the actor whose sheet/token this dialog was opened from
+  actorUuid: string; // hidden field
   tokenUuid: string; // hidden field
 };

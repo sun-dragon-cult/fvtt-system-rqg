@@ -12,9 +12,7 @@ import type { Modifier } from "../../rolls/resistance-roll/resistance-roll.types
 
 export { augmentOptions, meditateOptions } from "../app-parts/augment-meditate-options";
 
-// Shared between ResistanceRollDialogV2, ResistanceRequestDialogV2 and
-// RespondToResistanceRequestDialogV2 - the token/actor + characteristic(s) picking logic is
-// identical no matter which of those dialogs is resolving a side's value.
+// Side-resolution logic shared by all three resistance dialogs.
 
 export const characteristicNames: (keyof Characteristics)[] = [
   "strength",
@@ -37,12 +35,8 @@ export function decodeCharacteristics(value: string): (keyof Characteristics)[] 
   return value ? (value.split("+") as (keyof Characteristics)[]) : [];
 }
 
-// The Characteristic dropdown also lists the only characteristic combinations the resistance
-// table is actually used for in RAW (Knockback: STR+SIZ vs SIZ+DEX; Grapple-throw: STR+DEX vs
-// SIZ+DEX) directly, instead of a separate "+ Characteristic" picker, since there are only ever
-// these three. Anything else goes through the Manual value entry.
-// Memoized (locale/actor-independent, only built once) since it's read on every render of every
-// resistance dialog, and each entry needs its label joined from a localize() call.
+// Includes the three characteristic combos the resistance table uses (knockback, grapple-throw);
+// anything else goes through Manual value. Memoized - read on every render of every dialog.
 let characteristicOptionsCache: SelectOptionData<string>[] | undefined;
 
 export function getCharacteristicOptions(): SelectOptionData<string>[] {
@@ -66,11 +60,7 @@ export function getCharacteristicOptions(): SelectOptionData<string>[] {
   return characteristicOptionsCache;
 }
 
-/**
- * The targeted-token/owned-token/owned-actor groups shared by every side of every resistance
- * dialog - built once per render and reused for both the Active and Passive pickers (they only
- * differ in which "self" entry and whether a Manual option gets added on top of this).
- */
+/** Targeted / owned token + actor options, shared by both pickers of every resistance dialog. */
 export function getBaseTokenOrActorOptions(): SelectOptionData<string>[] {
   warnIfMultipleTargets();
 
@@ -108,14 +98,9 @@ export function getBaseTokenOrActorOptions(): SelectOptionData<string>[] {
 }
 
 /**
- * Build one side's token/actor dropdown options, mirroring the attack/defence dialogs'
- * attacker/defender pickers: the current single target (if any) first, then the user's own
- * tokens on the scene, then the user's own actors without a scene token, then a manual entry.
- * `selfUuid`/`selfName`/`selfActor` are an actor/token that should always appear (even if not
- * otherwise owned/on-scene/allowed) so a dialog can default to whoever's sheet it was opened
- * from - pass empty strings to skip this (e.g. the GM's request dialog has no "self").
- * `baseOptions` lets a caller building both the Active and Passive dropdowns in one render pass
- * the shared token/actor scan in once instead of repeating it per side.
+ * One side's token/actor options: current target, owned tokens, owned actors, then Manual.
+ * `selfUuid`/`selfName`/`selfActor` force an entry that would otherwise be absent (pass "" to skip).
+ * `baseOptions` lets a caller share one scan across both sides.
  */
 export function getTokenOrActorOptions(
   selfUuid: string,
@@ -140,8 +125,7 @@ export function getTokenOrActorOptions(
       label: localize("RQG.Dialog.ResistanceRoll.SourceManual"),
       group: localize("RQG.Dialog.Common.Other"),
     };
-    // Manual sits right after the self entry rather than at the end: the Tokens/Actors groups
-    // can grow long, and Manual shouldn't get buried below them.
+    // Manual sits near the top so it isn't buried under long Tokens/Actors groups.
     options.splice(selfIsMissing ? 1 : 0, 0, manualOption);
   }
 
@@ -164,10 +148,8 @@ export function resolveCharacteristicLabel(name: keyof Characteristics): string 
 }
 
 /**
- * Resolve a side's numeric value + display label, either from an actor/token's characteristic(s)
- * (summed for the two-characteristic combos) or from a manual label/value pair. `manualName`
- * lets a manual entry play the same role an actor-sourced passive's name does (the "opposes X"
- * flavor line) - e.g. naming a disease or obstacle instead of leaving it anonymous.
+ * A side's value + label, from an actor's characteristic(s) or a manual label/value pair.
+ * `manualName` names a manual source for the "opposes X" flavor line.
  */
 export function resolveCharacteristicSide(
   tokenOrActorUuid: string,
@@ -196,22 +178,14 @@ export function resolveCharacteristicSide(
   return { value, label, actorName: sourceActor.name ?? undefined };
 }
 
-/**
- * Restrict token/actor options to ones with an actual player owner. A GM owns every token, so the
- * unfiltered list would let them pick an NPC/monster as who should roll a resistance *request* -
- * nobody but the GM could ever click that card's Roll button. Only meant for the request dialog's
- * Active picker; every other use of `getTokenOrActorOptions` legitimately wants any owned token.
- */
+/** Keep only player-owned actors - for the request dialog's active picker (a GM owns every token). */
 export function filterToPlayerOwnedOptions(
   options: SelectOptionData<string>[],
 ): SelectOptionData<string>[] {
   return options.filter((option) => resolveActorFromUuid(option.value)?.hasPlayerOwner);
 }
 
-/**
- * Build the Augment/Meditate/Other modifier list from a roll dialog's form fields, in the shape
- * `ResistanceRoll` expects - shared by every dialog that actually performs the roll.
- */
+/** The Augment/Meditate/Other modifier list in the shape `ResistanceRoll` expects. */
 export function buildResistanceModifiers(
   augmentModifier: unknown,
   meditateModifier: unknown,

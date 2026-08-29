@@ -102,7 +102,7 @@ export class RqgChatMessage extends ChatMessage {
 
     if (clickedButton?.dataset["rollResistanceRequest"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
-      await handleRollResistanceRequest(clickedButton); // Open the resistance request response dialog
+      await handleRollResistanceRequest(clickedButton);
     }
   }
 

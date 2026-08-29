@@ -17,5 +17,5 @@ export type RespondToResistanceRequestDialogFormData = {
   otherModifier: string;
   otherModifierDescription: string;
 
-  chatMessageUuid: string; // hidden field - the resistanceRequest chat message being answered
+  chatMessageUuid: string; // hidden field
 };

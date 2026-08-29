@@ -39,9 +39,7 @@ type SideFields = {
   manualValue: number;
 };
 
-// The four fields making up a side are always named `${side}TokenOrActorUuid`,
-// `${side}Characteristics`, `${side}ManualLabel`, `${side}ManualValue` - read/write them via that
-// naming convention instead of branching on `side` per field.
+// Side fields are named `${side}TokenOrActorUuid` / `${side}Characteristics` / `${side}ManualLabel` / `${side}ManualValue`.
 function getSideFields(formData: ResistanceRollDialogFormData, side: Side): SideFields {
   return {
     tokenOrActorUuid: formData[`${side}TokenOrActorUuid`],
@@ -100,16 +98,12 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     };
   }
 
-  // The actor whose sheet/token this dialog was opened from - the "self" default for the active
-  // side. Undefined when the GM opens the dialog cold (see openForGm): both sides come from the
-  // seed / the pickers instead.
+  // The sheet/token this was opened from; undefined for a GM cold-open (openForGm).
   private actor: RqgActor | undefined;
   private token: TokenDocument | null | undefined;
   private prefill: ResistanceRollDialogPrefill | undefined;
   private seed: ResistanceRollSeed | undefined;
-  // Applied once on the first _prepareContext only - _prepareContext reruns on every form change
-  // (RqgInteractiveRollApplicationBase re-renders on change), and re-applying the prefill/seed on
-  // every one of those reruns would stomp over whatever the user just picked.
+  // Seed/prefill are first-render only; _prepareContext reruns on every form change.
   private seedApplied = false;
 
   constructor(
@@ -126,11 +120,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     this.seed = seed;
   }
 
-  /**
-   * Open the dialog with no "self" actor, for a GM staging a resistance roll they will roll
-   * themselves (an NPC's POW-vs-POW, a poison's POT-vs-CON, an improvised STR contest). The
-   * seed pre-picks the two sides from canvas context; the GM adjusts before rolling.
-   */
+  /** Open with no self actor, for a GM rolling a resistance check directly; the seed pre-picks the sides. */
   static async openForGm(seed: ResistanceRollSeed = {}): Promise<void> {
     await new ResistanceRollDialogV2(undefined, undefined, undefined, seed).render({ force: true });
   }
@@ -178,8 +168,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const defaultTargetUuid =
       game.user?.targets.size === 1 ? (game.user.targets.first()?.document?.uuid ?? "") : "";
 
-    // Seed the two sides before the ??= defaults so a GM-opened dialog with no "self" still
-    // lands on the canvas-derived token/actors; a spell prefill (applied below) overrides.
+    // Seed before the ??= defaults; a spell prefill (below) still wins.
     if (!this.seedApplied) {
       if (this.seed?.activeUuid) {
         formData.activeTokenOrActorUuid = this.seed.activeUuid;
@@ -212,7 +201,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.actorUuid ??= this.actor?.uuid ?? "";
     formData.tokenUuid ??= this.token?.uuid ?? "";
 
-    // No self actor (GM cold-open) -> speak as whoever is on the acting side of the roll.
+    // GM cold-open: speak as the acting side.
     const speakerActor =
       this.actor ??
       (formData.activeTokenOrActorUuid && formData.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE
@@ -248,10 +237,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     };
   }
 
-  /**
-   * Both sides usable: a picked token/actor whose characteristic(s) resolve, or a manual entry
-   * with a label. Gates the Roll button so an empty/0-value side can't be rolled.
-   */
+  /** Both sides resolve to a value/label - gates the Roll button. */
   private static canRoll(formData: ResistanceRollDialogFormData): boolean {
     const sideResolved = (side: Side): boolean => {
       const fields = getSideFields(formData, side);
@@ -311,14 +297,12 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const rollMode = resolveRollModeFromForm(form);
 
-    // The Roll button is disabled until this passes; a submit that slips through anyway (stale
-    // state, Enter key) bails silently rather than showing an error the UI already prevents.
+    // Roll is disabled until valid; a stray submit just bails.
     if (!ResistanceRollDialogV2.canRoll(formDataObject)) {
       return;
     }
 
-    // Independent lookups from unrelated uuids - resolved concurrently. A GM cold-open has no
-    // self actor/token; the speaker then falls back to the acting side's actor below.
+    // A GM cold-open has no self actor/token; speaker falls back to the acting actor below.
     const [selfActor, token] = (await Promise.all([
       formDataObject.actorUuid ? fromUuid(formDataObject.actorUuid) : undefined,
       formDataObject.tokenUuid ? fromUuid(formDataObject.tokenUuid) : undefined,
@@ -352,8 +336,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       throw new RqgError("Evaluated ResistanceRoll didn't give successLevel");
     }
 
-    // Only POW earns an experience check from a resistance roll, credited to whichever actor
-    // supplied the active side.
+    // Only POW earns experience, credited to the active side.
     if (
       activeActor &&
       decodeCharacteristics(formDataObject.activeCharacteristics).includes("power") &&

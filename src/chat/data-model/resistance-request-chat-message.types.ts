@@ -10,14 +10,14 @@ export type ResistanceRequestChatMessage = ChatMessage & {
 export interface ResistanceRequestDataSourceData {
   state: ResistanceRequestState;
   targetTokenOrActorUuid: string;
-  /** One characteristic name, or two joined by "+" (e.g. "strength+size") - what the target rolls. */
+  /** One characteristic name, or two joined by "+" (e.g. "strength+size"). */
   activeCharacteristics: string;
-  /** Snapshotted passive value/label set by the GM when the request was sent (e.g. a disease's POT). */
+  /** Passive value/label snapshotted when the GM sent the request. */
   passiveValue: number;
   passiveLabel: string;
-  /** The obstacle/disease/passive character's name, if any - feeds the "opposes X" flavor line. */
+  /** Passive side's name, if any - feeds the "opposes X" flavor line. */
   passiveActorName: string | undefined;
-  /** The GM's situational modifier for the contest - seeds the roller's Other modifier. */
+  /** GM's situational modifier; seeds the roller's Other modifier. */
   otherModifier: number;
   otherModifierDescription: string | undefined;
   resistanceRoll: string | object | undefined; // JSONField can be string or parsed object

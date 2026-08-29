@@ -3,10 +3,7 @@ import type { RqgContextMenuEntry } from "./rqg-context-menu";
 import ActorDirectory = foundry.applications.sidebar.tabs.ActorDirectory;
 import ContextMenu = foundry.applications.ux.ContextMenu;
 
-/**
- * Actors sidebar with an extra GM-only "Request Resistance Roll" context-menu entry, so the GM
- * can start a resistance request without a token on the scene or opening the actor sheet.
- */
+/** Actors sidebar plus a GM-only "Request Resistance Roll" context-menu entry. */
 export class RqgActorDirectory<
   RenderContext extends ActorDirectory.RenderContext = ActorDirectory.RenderContext,
   Configuration extends ActorDirectory.Configuration = ActorDirectory.Configuration,

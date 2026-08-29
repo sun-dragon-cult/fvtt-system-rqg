@@ -33,12 +33,8 @@ import { RqgLogger } from "../../system/logging/rqg-logger";
 const logger = new RqgLogger("RespondToResistanceRequestDialogV2");
 
 /**
- * Recipient-facing dialog (#758 option C): answers a GM-posted resistance-request chat card. The
- * Active side (who rolls, with what characteristic(s)) and the Passive side's value are both
- * fixed by the request - the recipient only picks their own Augment/Meditate/Other modifiers,
- * same as ResistanceRollDialogV2, before rolling. On submit the roll is written back onto the
- * original chat message (via a socket update if the GM, not the recipient, authored it) instead
- * of creating a new one.
+ * The recipient answers a resistance-request card: both sides are fixed by the request, they only
+ * pick their own modifiers. The roll is written back onto the original message, not a new one.
  */
 export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -107,8 +103,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     };
   }
 
-  // Takes the already-resolved actor rather than re-deriving it via resolveTarget() itself, so
-  // callers that need both only look the target up once.
+  // Takes the resolved actor so callers look the target up once.
   private static resolveActive(
     actor: RqgActor | undefined,
     activeCharacteristics: string,
@@ -138,8 +133,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     this.activeValue = active.value;
     this.passiveValue = this.requestChatMessage.system.passiveValue;
 
-    // Augment/Meditate are the roller's own tactical choices. Only the situational Other modifier
-    // is seeded from the GM's request; the recipient can still change it before rolling.
+    // Augment/Meditate are the roller's own choices; only Other is seeded from the request.
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
     formData.otherModifier ??= String(this.requestChatMessage.system.otherModifier ?? 0);

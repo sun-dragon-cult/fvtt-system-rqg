@@ -23,11 +23,8 @@ import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 /**
- * GM-facing dialog (#758 option C): pick who should roll (an actor/token's characteristic(s))
- * and what they're resisting (another actor's characteristic(s), or a manual value/label such as
- * a disease's POT), then post a chat card only that recipient (and the GM) can act on. Unlike
- * ResistanceRollDialogV2 this dialog never rolls anything itself - it only creates the request;
- * RespondToResistanceRequestDialogV2 is what the recipient uses to actually roll.
+ * GM builds a resistance-table check and posts it as a chat card the recipient rolls (via
+ * RespondToResistanceRequestDialogV2). Never rolls anything itself.
  */
 export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -88,19 +85,13 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       ? (fromUuidSync(initialTargetUuid) as TokenDocument | RqgActor | undefined)
       : undefined;
 
-    // Both sides share the same underlying targeted/owned-token/owned-actor scan - computed once
-    // here and handed to both calls below instead of each re-scanning it independently.
+    // One token/actor scan, shared by both pickers.
     const baseTokenOrActorOptions = getBaseTokenOrActorOptions();
 
-    // The active side is who gets asked to roll, so it's restricted to tokens/actors with an
-    // actual player owner - a GM owns every token, so without this an NPC/monster could be picked
-    // as the recipient and nobody but the GM could ever click that card's Roll button.
+    // Active side = the request recipient, so it's limited to player-owned actors (a GM owns
+    // every token) and has no Manual entry.
     const initialTargetActor = resolveActorFromUuid(initialTargetUuid);
     const initialTargetHasPlayerOwner = !!initialTargetActor?.hasPlayerOwner;
-    // No Manual entry - the active side must be a real actor/token, since it's who the request
-    // card is addressed to. `initialTargetUuid` is guaranteed to appear (even if not otherwise
-    // owned-via-token/actor-setting) so the sheet this dialog was opened from is always pickable -
-    // unless it has no player owner, in which case the GM must explicitly pick someone instead.
     const activeTokenOrActorOptions = getTokenOrActorOptions(
       initialTargetHasPlayerOwner ? initialTargetUuid : "",
       initialTargetHasPlayerOwner ? (initialTargetTokenOrActor?.name ?? "") : "",
@@ -108,9 +99,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       false,
       filterToPlayerOwnedOptions(baseTokenOrActorOptions),
     );
-    // Manual is the common case here (a GM-known value like a disease's POT), so it's included.
-    // A seeded passive (e.g. the NPC whose token HUD the request was opened from) is guaranteed to
-    // appear even if it's not on the current scene / not otherwise owned.
+    // Passive side includes Manual (a GM-known POT etc.); the seeded passive is always listed.
     const seededPassiveUuid = this.seed.passiveUuid ?? "";
     const seededPassive = seededPassiveUuid
       ? (fromUuidSync(seededPassiveUuid) as TokenDocument | RqgActor | undefined)
@@ -168,11 +157,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     };
   }
 
-  /**
-   * Both sides resolved to a usable value/label - the active token/actor is picked and its
-   * characteristic(s) sum to something, and the passive side is either a real actor or a manual
-   * entry with a label. Gates the Send button so a bad request can never be posted.
-   */
+  /** Both sides resolve to a value/label - gates the Send button. */
   private static canSendRequest(formData: ResistanceRequestDialogFormData): boolean {
     if (!formData.targetTokenOrActorUuid) {
       return false;
@@ -251,8 +236,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       formDataObject.passiveManualName,
     );
 
-    // The Send button is disabled until this passes, so reaching here invalid needs an odd path
-    // (e.g. a stale submit) - bail silently rather than surfacing an error the UI already prevents.
+    // Send is disabled until valid; a stray submit just bails.
     if (!ResistanceRequestDialogV2.canSendRequest(formDataObject)) {
       return;
     }
@@ -269,9 +253,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       resistanceRoll: undefined,
     };
 
-    // Shown as the message author instead of the GM, so the card reads as the recipient's roll
-    // request even though the GM is the one who posted it. Rendered concurrently with the chat
-    // content below since neither depends on the other.
+    // Author the card as the recipient, not the GM.
     const [content, targetTokenOrActor] = await Promise.all([
       foundry.applications.handlebars.renderTemplate(
         templatePaths.resistanceRequestChatMessage,

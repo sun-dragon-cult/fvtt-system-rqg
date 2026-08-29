@@ -1,5 +1,4 @@
-// Shared Augment/Meditate modifier options for any roll dialog that lets a player augment their
-// roll (RAW allows this for characteristic rolls, resistance rolls, etc. - core rulebook p.146).
+// Augment/Meditate modifier options shared by every roll dialog.
 export const augmentOptions: SelectOptionData<number>[] = [
   { value: 0, label: "RQG.Dialog.Common.AugmentOptions.None" },
   { value: 50, label: "RQG.Dialog.Common.AugmentOptions.CriticalSuccess" },

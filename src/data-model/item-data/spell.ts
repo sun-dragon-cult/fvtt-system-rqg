@@ -32,8 +32,6 @@ export const SpellConcentrationEnum = {
 export type SpellConcentrationEnum =
   (typeof SpellConcentrationEnum)[keyof typeof SpellConcentrationEnum];
 
-// Only None/Single are handled; areaOneRoll (Harmony/Inviolable) and perTarget (Turn Undead etc.)
-// are planned - see #1066.
 export const SpellResistanceCheckEnum = {
   None: "none",
   Single: "single",
@@ -51,7 +49,7 @@ export interface Spell {
   isRitual: boolean;
   /** Requires POW sacrifice by caster (possibly from others see core book p249) */
   isEnchantment: boolean;
-  /** POW vs POW resistance roll against the caster's target after a successful cast (p.145-147, 254) */
+  /** Whether a successful cast triggers a POW-vs-POW resistance roll by the target. */
   resistanceCheck: SpellResistanceCheckEnum;
   descriptionRqidLink: RqidLink | undefined;
 }

@@ -18,16 +18,14 @@ const resistanceRequestChatMessageSchema = {
   activeCharacteristics: new StringField({ blank: false, nullable: false, required: true }),
   passiveValue: new NumberField({ nullable: false, required: true, initial: 0 }),
   passiveLabel: new StringField({ blank: false, nullable: false, required: true }),
-  // The obstacle/disease/passive character's name, if any - either an actor's own name, or a
-  // GM-typed one for a Manual passive value. Feeds the roll's "opposes X" flavor line.
+  // Passive side's name (actor or GM-typed); feeds the "opposes X" flavor line.
   passiveActorName: new StringField({
     blank: true,
     nullable: true,
     initial: undefined,
     required: false,
   }),
-  // The GM's situational modifier for the contest - seeds the roller's Other modifier, which they
-  // can still change before rolling.
+  // GM's situational modifier; seeds the roller's Other modifier.
   otherModifier: new NumberField({ nullable: false, required: false, initial: 0 }),
   otherModifierDescription: new StringField({
     blank: true,

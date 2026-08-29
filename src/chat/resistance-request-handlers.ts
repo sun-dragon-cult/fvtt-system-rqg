@@ -1,9 +1,6 @@
 import { getRequiredDomDataset } from "../system/util";
 
-/**
- * Open the dialog to respond to (and roll) a GM-posted resistance-request chat card (#758
- * option C).
- */
+/** Open the dialog to respond to a resistance-request chat card. */
 export async function handleRollResistanceRequest(clickedButton: HTMLButtonElement): Promise<void> {
   const chatMessageId = getRequiredDomDataset(clickedButton, "message-id");
   const { RespondToResistanceRequestDialogV2 } =
