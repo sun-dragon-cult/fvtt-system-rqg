@@ -215,7 +215,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       requestChatMessage!.system.activeCharacteristics,
     );
     if (!actor || !active.label) {
-      ui.notifications?.error("Could not find who this resistance request is for.");
+      ui.notifications?.error(localize("RQG.Notification.Error.ResistanceRequestTargetNotFound"));
       return;
     }
 

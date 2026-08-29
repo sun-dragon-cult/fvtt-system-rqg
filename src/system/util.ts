@@ -977,6 +977,6 @@ export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefine
 
 export function warnIfMultipleTargets(): void {
   if ((game.user?.targets.size ?? 0) > 1) {
-    ui.notifications?.info("Please target one token only");
+    ui.notifications?.info(localize("RQG.Notification.Warn.TargetOneTokenOnly"));
   }
 }
