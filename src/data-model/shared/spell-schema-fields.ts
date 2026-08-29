@@ -3,7 +3,7 @@ import {
   SpellConcentrationEnum,
   SpellDurationEnum,
   SpellRangeEnum,
-  SpellResistanceCheckEnum,
+  SpellResistedByEnum,
 } from "../item-data/spell";
 import { enumChoices } from "./enum-choices";
 
@@ -36,11 +36,11 @@ export function spellSchemaFields() {
     }),
     isRitual: new BooleanField({ nullable: false, initial: false }),
     isEnchantment: new BooleanField({ nullable: false, initial: false }),
-    resistanceCheck: new StringField({
+    resistedBy: new StringField({
       blank: false,
       nullable: false,
-      initial: SpellResistanceCheckEnum.None,
-      choices: enumChoices(SpellResistanceCheckEnum, "RQG.Item.Spell.ResistanceCheckEnum."),
+      initial: SpellResistedByEnum.None,
+      choices: enumChoices(SpellResistedByEnum, "RQG.Item.Spell.ResistedByEnum."),
     }),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
   } as const;

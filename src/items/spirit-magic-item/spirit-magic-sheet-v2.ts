@@ -3,7 +3,7 @@ import {
   SpellConcentrationEnum,
   SpellDurationEnum,
   SpellRangeEnum,
-  SpellResistanceCheckEnum,
+  SpellResistedByEnum,
 } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
@@ -13,7 +13,7 @@ interface SpiritMagicSheetContext extends RqgItemSheetContext {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];
   durationOptions: SelectOptionData<SpellDurationEnum>[];
   concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
-  resistanceCheckOptions: SelectOptionData<SpellResistanceCheckEnum>[];
+  resistedByOptions: SelectOptionData<SpellResistedByEnum>[];
 }
 
 export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
@@ -63,9 +63,9 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
         value: range,
         label: "RQG.Item.Spell.ConcentrationEnum." + (range || "undefined"),
       })),
-      resistanceCheckOptions: Object.values(SpellResistanceCheckEnum).map((value) => ({
+      resistedByOptions: Object.values(SpellResistedByEnum).map((value) => ({
         value: value,
-        label: "RQG.Item.Spell.ResistanceCheckEnum." + value,
+        label: "RQG.Item.Spell.ResistedByEnum." + value,
       })),
     };
 

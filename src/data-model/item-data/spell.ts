@@ -32,14 +32,23 @@ export const SpellConcentrationEnum = {
 export type SpellConcentrationEnum =
   (typeof SpellConcentrationEnum)[keyof typeof SpellConcentrationEnum];
 
-// Only None/Single are handled; areaOneRoll (Harmony/Inviolable) and perTarget (Turn Undead etc.)
-// are planned - see #1066.
-export const SpellResistanceCheckEnum = {
+// How an unwilling target can stop a spell taking effect. Only `None` and `ResistanceRoll` are
+// implemented; the rest are declared so content is authored once, and are inert (treated as "no
+// automated step") until their own issues wire them up - see #1068.
+export const SpellResistedByEnum = {
   None: "none",
-  Single: "single",
+  // one resistance roll, single target
+  ResistanceRoll: "resistanceRoll",
+  // caster rolls one d100; every target in the radius is checked against that one roll
+  ResistanceRollArea: "resistanceRollArea",
+  // a separate resistance roll per target in the area
+  ResistanceRollPerTarget: "resistanceRollPerTarget",
+  // gated on winning one round of spirit combat (target typically willing/weak - e.g. Bind Ghost)
+  SpiritCombatRound: "spiritCombatRound",
+  // gated on driving the target to 0 magic points in spirit combat (e.g. Spirit Binding, Control X)
+  SpiritCombatDefeat: "spiritCombatDefeat",
 } as const;
-export type SpellResistanceCheckEnum =
-  (typeof SpellResistanceCheckEnum)[keyof typeof SpellResistanceCheckEnum];
+export type SpellResistedByEnum = (typeof SpellResistedByEnum)[keyof typeof SpellResistedByEnum];
 
 // Se core book p247
 export interface Spell {
@@ -51,7 +60,7 @@ export interface Spell {
   isRitual: boolean;
   /** Requires POW sacrifice by caster (possibly from others see core book p249) */
   isEnchantment: boolean;
-  /** POW vs POW resistance roll against the caster's target after a successful cast (p.145-147, 254) */
-  resistanceCheck: SpellResistanceCheckEnum;
+  /** How an unwilling target can resist the spell after a successful cast (p.145-147, 254) */
+  resistedBy: SpellResistedByEnum;
   descriptionRqidLink: RqidLink | undefined;
 }

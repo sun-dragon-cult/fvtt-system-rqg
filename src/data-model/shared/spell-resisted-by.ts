@@ -1,7 +1,7 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { warnIfMultipleTargets } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import { SpellResistanceCheckEnum } from "../item-data/spell";
+import { SpellResistedByEnum } from "../item-data/spell";
 
 /**
  * Post-cast hook shared by Rune Magic and Spirit Magic. When a resisted spell is cast
@@ -13,18 +13,20 @@ import { SpellResistanceCheckEnum } from "../item-data/spell";
  * some spells key effects off the degree, and even a failed roll can carry an effect. Whatever
  * consumes the outcome must read `ResistanceRoll.successLevel`.
  *
- * Silently does nothing with zero targets (not every spell targets someone), and warns (without
- * rolling) on more than one target - the caster should pick a single target before casting.
+ * Only `ResistanceRoll` is handled; the area / spirit-combat `resistedBy` modes are inert here
+ * until their own issues wire them up (#1068). Silently does nothing with zero targets (not every
+ * spell targets someone), and warns (without rolling) on more than one target - the caster should
+ * pick a single target before casting.
  */
 export async function maybePromptResistanceRollForCast(
-  resistanceCheck: SpellResistanceCheckEnum,
+  resistedBy: SpellResistedByEnum,
   castSuccessLevel: AbilitySuccessLevelEnum,
   casterActor: RqgActor,
   token: TokenDocument | null | undefined,
   spellName: string | undefined,
 ): Promise<void> {
   if (
-    resistanceCheck !== SpellResistanceCheckEnum.Single ||
+    resistedBy !== SpellResistedByEnum.ResistanceRoll ||
     castSuccessLevel > AbilitySuccessLevelEnum.Success
   ) {
     return;

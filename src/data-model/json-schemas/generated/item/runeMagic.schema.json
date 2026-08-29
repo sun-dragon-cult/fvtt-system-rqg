@@ -50,11 +50,15 @@
       "type": "boolean",
       "default": false
     },
-    "resistanceCheck": {
+    "resistedBy": {
       "type": "string",
       "enum": [
         "none",
-        "single"
+        "resistanceRoll",
+        "resistanceRollArea",
+        "resistanceRollPerTarget",
+        "spiritCombatRound",
+        "spiritCombatDefeat"
       ],
       "minLength": 1,
       "default": "none"
@@ -134,7 +138,7 @@
     "concentration",
     "isRitual",
     "isEnchantment",
-    "resistanceCheck",
+    "resistedBy",
     "cultId",
     "runeRqidLinks",
     "isStackable",
