@@ -4,11 +4,13 @@ import {
   getActorLinkDecoration,
   localize,
   normalizeOtherModifierDescriptionForRoll,
+  toSignedString,
   warnIfMultipleTargets,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import type { Modifier } from "../../rolls/resistance-roll/resistance-roll.types.ts";
+import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
 
 export { augmentOptions, meditateOptions } from "../app-parts/augment-meditate-options";
 
@@ -200,4 +202,34 @@ export function buildResistanceModifiers(
       description: normalizeOtherModifierDescriptionForRoll(otherModifierDescription),
     },
   ];
+}
+
+type ResolvedSide = { value: number; label: string };
+
+/**
+ * `<br>`-joined breakdown for a resistance dialog's target% box tooltip, e.g.
+ * "STR 13 vs POT 5: 90% / +20% Augment / = 110%".
+ */
+export function buildResistanceChanceBreakdown(
+  active: ResolvedSide,
+  passive: ResolvedSide,
+  modifiers: Modifier[],
+): string {
+  const esc = (value: unknown): string => foundry.utils.escapeHTML(String(value ?? ""));
+  const side = (s: ResolvedSide): string => (s.label ? `${esc(s.label)} ${s.value}` : `${s.value}`);
+  const baseChance = computeResistanceTargetChance(active.value, passive.value);
+  const totalChance = computeResistanceTargetChance(
+    active.value,
+    passive.value,
+    modifiers.map((m) => Number(m.value)),
+  );
+  const vs = esc(localize("RQG.Roll.ResistanceRoll.Vs"));
+  return [
+    `<strong>${esc(localize("RQG.Dialog.Common.TargetChance"))}</strong>`,
+    `${side(active)} ${vs} ${side(passive)}: ${baseChance}%`,
+    ...modifiers
+      .filter((m) => Number.isFinite(Number(m.value)) && Number(m.value) !== 0)
+      .map((m) => `${toSignedString(Number(m.value))}% ${esc(m.description)}`),
+    `= ${totalChance}%`,
+  ].join("<br>");
 }

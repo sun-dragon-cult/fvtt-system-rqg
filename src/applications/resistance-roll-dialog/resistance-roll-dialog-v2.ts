@@ -16,6 +16,7 @@ import { ResistanceRoll } from "../../rolls/resistance-roll/resistance-roll";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
 import {
   augmentOptions,
+  buildResistanceChanceBreakdown,
   buildResistanceModifiers,
   decodeCharacteristics,
   defaultCharacteristic,
@@ -224,10 +225,28 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
       // RollFooter
       totalChance: totalChance,
+      totalChanceTooltip: ResistanceRollDialogV2.buildChanceBreakdown(formData, active, passive),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
       disableRoll: !ResistanceRollDialogV2.canRoll(formData),
     };
+  }
+
+  private static buildChanceBreakdown(
+    formData: ResistanceRollDialogFormData,
+    active: { value: number; label: string },
+    passive: { value: number; label: string },
+  ): string {
+    return buildResistanceChanceBreakdown(
+      active,
+      passive,
+      buildResistanceModifiers(
+        formData.augmentModifier,
+        formData.meditateModifier,
+        formData.otherModifier,
+        formData.otherModifierDescription,
+      ),
+    );
   }
 
   /** Both sides resolve to a value/label - gates the Roll button. */
@@ -275,6 +294,15 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as ResistanceRollDialogFormData;
     this.updateTotalChanceDisplay(ResistanceRollDialogV2.computeTotalChance(formData));
+
+    const targetChanceBox = this.element.querySelector<HTMLElement>("[data-target-chance-box]");
+    if (targetChanceBox) {
+      targetChanceBox.dataset["tooltip"] = ResistanceRollDialogV2.buildChanceBreakdown(
+        formData,
+        ResistanceRollDialogV2.resolveSide(formData, "active"),
+        ResistanceRollDialogV2.resolveSide(formData, "passive"),
+      );
+    }
 
     const rollButton = this.element.querySelector<HTMLButtonElement>("button[data-ability-roll]");
     if (rollButton) {

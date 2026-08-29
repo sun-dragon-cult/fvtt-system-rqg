@@ -12,6 +12,7 @@ export type ResistanceRequestDialogContext = RollHeaderData & {
   passiveTokenOrActorOptions: SelectOptionData<string>[];
   characteristicOptions: SelectOptionData<string>[];
   totalChance: number;
+  totalChanceTooltip?: string;
   /** Disables the Send button while a side is unresolved. */
   canSendRequest: boolean;
 };

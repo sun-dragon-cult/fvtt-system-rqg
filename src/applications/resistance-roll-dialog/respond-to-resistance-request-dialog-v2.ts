@@ -17,6 +17,7 @@ import { ResistanceRoll } from "../../rolls/resistance-roll/resistance-roll";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
 import {
   augmentOptions,
+  buildResistanceChanceBreakdown,
   buildResistanceModifiers,
   decodeCharacteristics,
   meditateOptions,
@@ -47,6 +48,8 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
   private requestChatMessage: ResistanceRequestChatMessage;
   private activeValue = 0;
   private passiveValue = 0;
+  private activeLabel = "";
+  private passiveLabel = "";
 
   constructor(
     chatMessageId: string,
@@ -132,6 +135,8 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     );
     this.activeValue = active.value;
     this.passiveValue = this.requestChatMessage.system.passiveValue;
+    this.activeLabel = active.label;
+    this.passiveLabel = this.requestChatMessage.system.passiveLabel;
 
     // Augment/Meditate are the roller's own choices; only Other is seeded from the request.
     formData.augmentModifier ??= "0";
@@ -143,19 +148,18 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     formData.chatMessageUuid ??= this.requestChatMessage.uuid ?? "";
 
     const speaker = getSpeakerCompat({ actor: actor, token: token });
-    const passiveLabel = this.requestChatMessage.system.passiveLabel;
 
     return {
       formData: formData,
       speakerName: getSpeakerDisplayName(speaker),
-      activeLabel: active.label,
-      passiveLabel: passiveLabel,
+      activeLabel: this.activeLabel,
+      passiveLabel: this.passiveLabel,
       augmentOptions: augmentOptions,
       meditateOptions: meditateOptions,
 
       // RollHeader
       rollType: localize("RQG.Roll.ResistanceRoll.Title"),
-      rollName: `${active.label || "?"} ${localize("RQG.Roll.ResistanceRoll.Vs")} ${passiveLabel || "?"}`,
+      rollName: `${this.activeLabel || "?"} ${localize("RQG.Roll.ResistanceRoll.Vs")} ${this.passiveLabel || "?"}`,
       baseChance: "",
 
       // RollFooter
@@ -164,9 +168,23 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         this.passiveValue,
         formData,
       ),
+      totalChanceTooltip: this.buildChanceBreakdown(formData),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
+  }
+
+  private buildChanceBreakdown(formData: RespondToResistanceRequestDialogFormData): string {
+    return buildResistanceChanceBreakdown(
+      { value: this.activeValue, label: this.activeLabel },
+      { value: this.passiveValue, label: this.passiveLabel },
+      buildResistanceModifiers(
+        formData.augmentModifier,
+        formData.meditateModifier,
+        formData.otherModifier,
+        formData.otherModifierDescription,
+      ),
+    );
   }
 
   private static computeTotalChance(
@@ -191,6 +209,11 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         formData,
       ),
     );
+
+    const targetChanceBox = this.element.querySelector<HTMLElement>("[data-target-chance-box]");
+    if (targetChanceBox) {
+      targetChanceBox.dataset["tooltip"] = this.buildChanceBreakdown(formData);
+    }
   }
 
   private static async onSubmit(

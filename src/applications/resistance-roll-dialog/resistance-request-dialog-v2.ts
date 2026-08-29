@@ -9,6 +9,8 @@ import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
 import { activateChatTab, localize } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import {
+  buildResistanceChanceBreakdown,
+  buildResistanceModifiers,
   defaultCharacteristic,
   filterToPlayerOwnedOptions,
   getBaseTokenOrActorOptions,
@@ -153,8 +155,31 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       baseChance: "",
 
       totalChance: totalChance,
+      totalChanceTooltip: ResistanceRequestDialogV2.buildChanceBreakdown(formData),
       canSendRequest: ResistanceRequestDialogV2.canSendRequest(formData),
     };
+  }
+
+  private static buildChanceBreakdown(formData: ResistanceRequestDialogFormData): string {
+    const active = resolveCharacteristicSide(
+      formData.targetTokenOrActorUuid,
+      formData.activeCharacteristics,
+      "",
+      0,
+      "",
+    );
+    const passive = resolveCharacteristicSide(
+      formData.passiveTokenOrActorUuid,
+      formData.passiveCharacteristics,
+      formData.passiveManualLabel,
+      formData.passiveManualValue,
+      "",
+    );
+    return buildResistanceChanceBreakdown(
+      active,
+      passive,
+      buildResistanceModifiers("0", "0", formData.otherModifier, formData.otherModifierDescription),
+    );
   }
 
   /** Both sides resolve to a value/label - gates the Send button. */
@@ -204,6 +229,11 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as ResistanceRequestDialogFormData;
     this.updateTotalChanceDisplay(ResistanceRequestDialogV2.computeTotalChance(formData));
+
+    const targetChanceBox = this.element.querySelector<HTMLElement>("[data-target-chance-box]");
+    if (targetChanceBox) {
+      targetChanceBox.dataset["tooltip"] = ResistanceRequestDialogV2.buildChanceBreakdown(formData);
+    }
 
     const sendButton = this.element.querySelector<HTMLButtonElement>(
       "button[data-send-resistance-request]",
