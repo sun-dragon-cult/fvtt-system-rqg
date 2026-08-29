@@ -17,5 +17,5 @@
       </button>
     {{/each}}
   </div>
-  <button data-ability-roll>{{localize "RQG.Game.Roll"}}</button>
+  <button data-ability-roll {{#if disableRoll}}disabled{{/if}}>{{localize "RQG.Game.Roll"}}</button>
 </footer>

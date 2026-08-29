@@ -599,9 +599,13 @@
         "TokenOrActor": "Token/Actor",
         "SourceManual": "Manual value...",
         "Characteristic": "Characteristic",
+        "Potency": "POT",
         "ManualName": "Name",
-        "ManualLabel": "Label",
-        "ManualValue": "Value"
+        "ManualNamePlaceholder": "Poison, disease, trap…",
+        "ManualLabel": "Characteristic",
+        "ManualLabelPlaceholder": "POT, STR, SIZ, POW…",
+        "ManualValue": "Value",
+        "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT."
       },
       "ResistanceRequest": {
         "Title": "Request Resistance Roll",

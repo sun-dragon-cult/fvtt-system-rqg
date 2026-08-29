@@ -19,12 +19,16 @@
         </select>
       {{else}}
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
-        <input type="text" value="{{formData.activeManualLabel}}" name="activeManualLabel" list="resistance-manual-label-suggestions">
+        <input type="text" value="{{formData.activeManualLabel}}" name="activeManualLabel" list="resistance-manual-label-suggestions"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualLabelPlaceholder'}}">
 
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualValue"}}</label>
         <input type="number" value="{{formData.activeManualValue}}" name="activeManualValue">
       {{/unless}}
     </div>
+    {{#if (eq formData.activeTokenOrActorUuid "manual")}}
+      <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
+    {{/if}}
   </fieldset>
 
   <fieldset>
@@ -42,18 +46,23 @@
         </select>
       {{else}}
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
-        <input type="text" value="{{formData.passiveManualLabel}}" name="passiveManualLabel" list="resistance-manual-label-suggestions">
+        <input type="text" value="{{formData.passiveManualLabel}}" name="passiveManualLabel" list="resistance-manual-label-suggestions"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualLabelPlaceholder'}}">
 
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualValue"}}</label>
         <input type="number" value="{{formData.passiveManualValue}}" name="passiveManualValue">
       {{/unless}}
     </div>
+    {{#if (eq formData.passiveTokenOrActorUuid "manual")}}
+      <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
+    {{/if}}
   </fieldset>
 
   <datalist id="resistance-manual-label-suggestions">
-    <option value="POT">
+    <option value="{{localize 'RQG.Dialog.ResistanceRoll.Potency'}}">
     <option value="{{localize 'RQG.Actor.Characteristics.strength'}}">
     <option value="{{localize 'RQG.Actor.Characteristics.size'}}">
+    <option value="{{localize 'RQG.Actor.Characteristics.power'}}">
   </datalist>
 
   <div class="key-value-grid p-0">

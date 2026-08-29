@@ -26,6 +26,9 @@ export const characteristicNames: (keyof Characteristics)[] = [
   "charisma",
 ];
 
+/** The characteristic a resistance side starts on before the GM/player picks one. */
+export const defaultCharacteristic: keyof Characteristics = "strength";
+
 export function encodeCharacteristics(names: (keyof Characteristics)[]): string {
   return names.join("+");
 }

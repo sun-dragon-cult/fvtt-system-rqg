@@ -16,6 +16,8 @@ export type ResistanceRequestDialogContext = RollHeaderData & {
   passiveTokenOrActorOptions: SelectOptionData<string>[];
   characteristicOptions: SelectOptionData<string>[];
   totalChance: number;
+  /** False while the active or passive side is still unresolved - disables the Send button. */
+  canSendRequest: boolean;
 };
 
 export type ResistanceRequestDialogFormData = {

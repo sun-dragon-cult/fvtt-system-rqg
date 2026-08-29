@@ -17,6 +17,7 @@ import {
   augmentOptions,
   buildResistanceModifiers,
   decodeCharacteristics,
+  defaultCharacteristic,
   encodeCharacteristics,
   getCharacteristicOptions,
   getTokenOrActorOptions,
@@ -162,12 +163,12 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       game.user?.targets.size === 1 ? (game.user.targets.first()?.document?.uuid ?? "") : "";
 
     formData.activeTokenOrActorUuid ??= selfUuid;
-    formData.activeCharacteristics ??= "";
+    formData.activeCharacteristics ??= defaultCharacteristic;
     formData.activeManualLabel ??= "";
     formData.activeManualValue ??= 0;
 
     formData.passiveTokenOrActorUuid ??= defaultTargetUuid || MANUAL_SOURCE_VALUE;
-    formData.passiveCharacteristics ??= "";
+    formData.passiveCharacteristics ??= defaultCharacteristic;
     formData.passiveManualLabel ??= "";
     formData.passiveManualValue ??= 0;
 
@@ -210,7 +211,24 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       totalChance: totalChance,
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
+      disableRoll: !ResistanceRollDialogV2.canRoll(formData),
     };
+  }
+
+  /**
+   * Both sides usable: a picked token/actor whose characteristic(s) resolve, or a manual entry
+   * with a label. Gates the Roll button so an empty/0-value side can't be rolled.
+   */
+  private static canRoll(formData: ResistanceRollDialogFormData): boolean {
+    const sideResolved = (side: Side): boolean => {
+      const fields = getSideFields(formData, side);
+      if (fields.tokenOrActorUuid === MANUAL_SOURCE_VALUE) {
+        return !!fields.manualLabel;
+      }
+      return !!resolveCharacteristicSide(fields.tokenOrActorUuid, fields.characteristics, "", 0, "")
+        .label;
+    };
+    return sideResolved("active") && sideResolved("passive");
   }
 
   private static resolveSide(
@@ -244,6 +262,11 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as ResistanceRollDialogFormData;
     this.updateTotalChanceDisplay(ResistanceRollDialogV2.computeTotalChance(formData));
+
+    const rollButton = this.element.querySelector<HTMLButtonElement>("button[data-ability-roll]");
+    if (rollButton) {
+      rollButton.disabled = !ResistanceRollDialogV2.canRoll(formData);
+    }
   }
 
   private static async onSubmit(
@@ -265,16 +288,14 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    const active = ResistanceRollDialogV2.resolveSide(formDataObject, "active");
-    const passive = ResistanceRollDialogV2.resolveSide(formDataObject, "passive");
-    const isSideResolved = (uuid: string, label: string) => uuid === MANUAL_SOURCE_VALUE || !!label;
-    if (
-      !isSideResolved(formDataObject.activeTokenOrActorUuid, active.label) ||
-      !isSideResolved(formDataObject.passiveTokenOrActorUuid, passive.label)
-    ) {
-      ui.notifications?.error("Pick an Active and a Passive value to roll a resistance roll.");
+    // The Roll button is disabled until this passes; a submit that slips through anyway (stale
+    // state, Enter key) bails silently rather than showing an error the UI already prevents.
+    if (!ResistanceRollDialogV2.canRoll(formDataObject)) {
       return;
     }
+
+    const active = ResistanceRollDialogV2.resolveSide(formDataObject, "active");
+    const passive = ResistanceRollDialogV2.resolveSide(formDataObject, "passive");
 
     const options: ResistanceRollOptions = {
       activeValue: active.value,

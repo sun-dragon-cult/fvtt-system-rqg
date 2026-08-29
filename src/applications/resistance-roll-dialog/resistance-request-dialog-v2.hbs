@@ -29,21 +29,27 @@
         </select>
       {{else}}
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualName"}}</label>
-        <input type="text" value="{{formData.passiveManualName}}" name="passiveManualName">
+        <input type="text" value="{{formData.passiveManualName}}" name="passiveManualName"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualNamePlaceholder'}}">
 
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
-        <input type="text" value="{{formData.passiveManualLabel}}" name="passiveManualLabel" list="resistance-manual-label-suggestions">
+        <input type="text" value="{{formData.passiveManualLabel}}" name="passiveManualLabel" list="resistance-manual-label-suggestions"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualLabelPlaceholder'}}">
 
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualValue"}}</label>
         <input type="number" value="{{formData.passiveManualValue}}" name="passiveManualValue">
       {{/unless}}
     </div>
+    {{#if (eq formData.passiveTokenOrActorUuid "manual")}}
+      <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
+    {{/if}}
   </fieldset>
 
   <datalist id="resistance-manual-label-suggestions">
-    <option value="POT">
+    <option value="{{localize 'RQG.Dialog.ResistanceRoll.Potency'}}">
     <option value="{{localize 'RQG.Actor.Characteristics.strength'}}">
     <option value="{{localize 'RQG.Actor.Characteristics.size'}}">
+    <option value="{{localize 'RQG.Actor.Characteristics.power'}}">
   </datalist>
 
   <fieldset>

@@ -3,5 +3,5 @@
     <i class="fa-solid fa-bullseye"></i><br>
     <span data-total-chance>{{totalChance}}%</span>
   </div>
-  <button data-send-resistance-request>{{localize "RQG.Dialog.ResistanceRequest.SendRequest"}}</button>
+  <button data-send-resistance-request {{#unless canSendRequest}}disabled{{/unless}}>{{localize "RQG.Dialog.ResistanceRequest.SendRequest"}}</button>
 </footer>

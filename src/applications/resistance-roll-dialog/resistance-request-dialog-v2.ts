@@ -9,6 +9,7 @@ import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
 import { activateChatTab, localize } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import {
+  defaultCharacteristic,
   filterToPlayerOwnedOptions,
   getBaseTokenOrActorOptions,
   getCharacteristicOptions,
@@ -123,10 +124,10 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     );
 
     formData.targetTokenOrActorUuid ??= initialTargetHasPlayerOwner ? initialTargetUuid : "";
-    formData.activeCharacteristics ??= "";
+    formData.activeCharacteristics ??= defaultCharacteristic;
 
     formData.passiveTokenOrActorUuid ??= this.seed.passiveUuid || MANUAL_SOURCE_VALUE;
-    formData.passiveCharacteristics ??= "";
+    formData.passiveCharacteristics ??= defaultCharacteristic;
     formData.passiveManualName ??= "";
     formData.passiveManualLabel ??= "";
     formData.passiveManualValue ??= 0;
@@ -163,7 +164,35 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       baseChance: "",
 
       totalChance: totalChance,
+      canSendRequest: ResistanceRequestDialogV2.canSendRequest(formData),
     };
+  }
+
+  /**
+   * Both sides resolved to a usable value/label - the active token/actor is picked and its
+   * characteristic(s) sum to something, and the passive side is either a real actor or a manual
+   * entry with a label. Gates the Send button so a bad request can never be posted.
+   */
+  private static canSendRequest(formData: ResistanceRequestDialogFormData): boolean {
+    if (!formData.targetTokenOrActorUuid) {
+      return false;
+    }
+    const active = resolveCharacteristicSide(
+      formData.targetTokenOrActorUuid,
+      formData.activeCharacteristics,
+      "",
+      0,
+      "",
+    );
+    const passive = resolveCharacteristicSide(
+      formData.passiveTokenOrActorUuid,
+      formData.passiveCharacteristics,
+      formData.passiveManualLabel,
+      formData.passiveManualValue,
+      "",
+      formData.passiveManualName,
+    );
+    return !!active.label && !!passive.label;
   }
 
   private static computeTotalChance(formData: ResistanceRequestDialogFormData): number {
@@ -190,6 +219,13 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as ResistanceRequestDialogFormData;
     this.updateTotalChanceDisplay(ResistanceRequestDialogV2.computeTotalChance(formData));
+
+    const sendButton = this.element.querySelector<HTMLButtonElement>(
+      "button[data-send-resistance-request]",
+    );
+    if (sendButton) {
+      sendButton.disabled = !ResistanceRequestDialogV2.canSendRequest(formData);
+    }
   }
 
   private static async onSubmit(
@@ -215,12 +251,9 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       formDataObject.passiveManualName,
     );
 
-    if (!formDataObject.targetTokenOrActorUuid || !active.label) {
-      ui.notifications?.error("Pick who should roll and which characteristic(s) they roll with.");
-      return;
-    }
-    if (!passive.label) {
-      ui.notifications?.error("Pick or enter what the roll resists.");
+    // The Send button is disabled until this passes, so reaching here invalid needs an odd path
+    // (e.g. a stale submit) - bail silently rather than surfacing an error the UI already prevents.
+    if (!ResistanceRequestDialogV2.canSendRequest(formDataObject)) {
       return;
     }
 
