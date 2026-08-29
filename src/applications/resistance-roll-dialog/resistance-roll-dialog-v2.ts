@@ -8,7 +8,7 @@ import type {
   ResistanceRollSidePrefill,
 } from "./resistance-roll-dialog-data.types.ts";
 import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
-import { getSpeakerDisplayName, isDocumentSubType, localize, RqgError } from "../../system/util";
+import { isDocumentSubType, localize, RqgError } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import type { ResistanceRollOptions } from "../../rolls/resistance-roll/resistance-roll.types";
@@ -202,13 +202,6 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.actorUuid ??= this.actor?.uuid ?? "";
     formData.tokenUuid ??= this.token?.uuid ?? "";
 
-    // GM cold-open: speak as the acting side.
-    const speakerActor =
-      this.actor ??
-      (formData.activeTokenOrActorUuid && formData.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE
-        ? resolveActorFromUuid(formData.activeTokenOrActorUuid)
-        : undefined);
-    const speaker = getSpeakerCompat({ actor: speakerActor, token: this.token });
     const totalChance = ResistanceRollDialogV2.computeTotalChance(formData);
     const active = ResistanceRollDialogV2.resolveSide(formData, "active");
     const passive = ResistanceRollDialogV2.resolveSide(formData, "passive");
@@ -216,7 +209,6 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     return {
       formData: formData,
 
-      speakerName: getSpeakerDisplayName(speaker),
       activeTokenOrActorOptions: tokenOrActorOptions,
       passiveTokenOrActorOptions: tokenOrActorOptions,
       characteristicOptions: getCharacteristicOptions(),

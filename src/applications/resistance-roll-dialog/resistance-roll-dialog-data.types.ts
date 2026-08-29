@@ -31,7 +31,6 @@ export type ResistanceRollDialogContext = RollHeaderData &
   RollFooterData & {
     formData: ResistanceRollDialogFormData;
 
-    speakerName: string;
     activeTokenOrActorOptions: SelectOptionData<string>[];
     passiveTokenOrActorOptions: SelectOptionData<string>[];
     characteristicOptions: SelectOptionData<string>[];

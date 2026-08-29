@@ -1948,7 +1948,8 @@
     }
   }
 
-  .rqg.form.roll-dialog.resistance-request-dialog {
+  .rqg.form.roll-dialog.resistance-request-dialog,
+  .rqg.form.roll-dialog.resistance-roll-dialog {
     & .scrollable > * + * {
       margin-top: 0.6rem;
     }
