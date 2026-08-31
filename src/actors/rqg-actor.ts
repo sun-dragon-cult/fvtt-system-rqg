@@ -592,12 +592,14 @@ export class RqgActor extends Actor {
   public async checkExperience(
     characteristicName: string,
     result: AbilitySuccessLevelEnum | undefined,
+    chance?: number,
   ): Promise<void> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     if (
       result != null &&
       result <= AbilitySuccessLevelEnum.Success &&
-      characteristicName === "power"
+      characteristicName === "power" &&
+      (chance == null || chance < 95) // a roll made at 95%+ is too easy to count as stress
     ) {
       ui.notifications?.info(localize("RQG.Actor.AwardExperience.PowExperienceInfo"), {
         permanent: true,

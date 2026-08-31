@@ -12,6 +12,8 @@ export interface ResistanceRequestDataSourceData {
   targetTokenOrActorUuid: string;
   /** One characteristic name, or two joined by "+" (e.g. "strength+size"). */
   activeCharacteristics: string;
+  /** Encoded passive characteristic(s), or "" when the passive side is a manual value. */
+  passiveCharacteristics: string;
   /** Passive value/label snapshotted when the GM sent the request. */
   passiveValue: number;
   passiveLabel: string;

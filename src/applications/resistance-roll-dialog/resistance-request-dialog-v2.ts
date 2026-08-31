@@ -275,6 +275,10 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       state: "Requested",
       targetTokenOrActorUuid: formDataObject.targetTokenOrActorUuid,
       activeCharacteristics: formDataObject.activeCharacteristics,
+      passiveCharacteristics:
+        formDataObject.passiveTokenOrActorUuid === MANUAL_SOURCE_VALUE
+          ? ""
+          : formDataObject.passiveCharacteristics,
       passiveValue: passive.value,
       passiveLabel: passive.label,
       passiveActorName: passive.actorName,

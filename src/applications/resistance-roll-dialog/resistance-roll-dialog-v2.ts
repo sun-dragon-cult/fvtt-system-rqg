@@ -8,9 +8,8 @@ import type {
   ResistanceRollSidePrefill,
 } from "./resistance-roll-dialog-data.types.ts";
 import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
-import { isDocumentSubType, localize, RqgError } from "../../system/util";
+import { localize, RqgError } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import type { ResistanceRollOptions } from "../../rolls/resistance-roll/resistance-roll.types";
 import { ResistanceRoll } from "../../rolls/resistance-roll/resistance-roll";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
@@ -18,7 +17,7 @@ import {
   augmentOptions,
   buildResistanceChanceBreakdown,
   buildResistanceModifiers,
-  decodeCharacteristics,
+  creditResistanceRollPowExperience,
   defaultCharacteristic,
   encodeCharacteristics,
   getCharacteristicOptions,
@@ -358,13 +357,11 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       throw new RqgError("Evaluated ResistanceRoll didn't give successLevel");
     }
 
-    // Only POW earns experience, credited to the active side.
-    if (
-      activeActor &&
-      decodeCharacteristics(formDataObject.activeCharacteristics).includes("power") &&
-      isDocumentSubType<CharacterActor>(activeActor, ActorTypeEnum.Character)
-    ) {
-      await activeActor.checkExperience("power", roll.successLevel);
-    }
+    await creditResistanceRollPowExperience(
+      activeActor,
+      formDataObject.activeCharacteristics,
+      formDataObject.passiveCharacteristics,
+      roll,
+    );
   }
 }

@@ -4,14 +4,8 @@ import type {
   RespondToResistanceRequestDialogContext,
   RespondToResistanceRequestDialogFormData,
 } from "./respond-to-resistance-request-dialog-data.types.ts";
-import {
-  activateChatTab,
-  getSpeakerDisplayName,
-  isDocumentSubType,
-  localize,
-} from "../../system/util";
+import { activateChatTab, getSpeakerDisplayName, localize } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import type { ResistanceRollOptions } from "../../rolls/resistance-roll/resistance-roll.types";
 import { ResistanceRoll } from "../../rolls/resistance-roll/resistance-roll";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
@@ -19,6 +13,7 @@ import {
   augmentOptions,
   buildResistanceChanceBreakdown,
   buildResistanceModifiers,
+  creditResistanceRollPowExperience,
   decodeCharacteristics,
   meditateOptions,
   resolveCharacteristicLabel,
@@ -279,13 +274,11 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     activateChatTab();
     await updateChatMessage(requestChatMessage!, messageData);
 
-    // Only POW earns an experience check from a resistance roll.
-    if (
-      isDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character) &&
-      roll.successLevel != null &&
-      decodeCharacteristics(requestChatMessage!.system.activeCharacteristics).includes("power")
-    ) {
-      await actor.checkExperience("power", roll.successLevel);
-    }
+    await creditResistanceRollPowExperience(
+      actor,
+      requestChatMessage!.system.activeCharacteristics,
+      requestChatMessage!.system.passiveCharacteristics,
+      roll,
+    );
   }
 }

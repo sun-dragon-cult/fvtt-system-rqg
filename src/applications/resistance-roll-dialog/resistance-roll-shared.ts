@@ -2,15 +2,19 @@ import { systemId } from "../../system/config";
 import { MANUAL_SOURCE_VALUE } from "./resistance-roll-dialog-data.types.ts";
 import {
   getActorLinkDecoration,
+  isDocumentSubType,
   localize,
   normalizeOtherModifierDescriptionForRoll,
   toSignedString,
   warnIfMultipleTargets,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
+import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import type { Modifier } from "../../rolls/resistance-roll/resistance-roll.types.ts";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs.ts";
+import type { ResistanceRoll } from "../../rolls/resistance-roll/resistance-roll.ts";
 
 export { augmentOptions, meditateOptions } from "../app-parts/augment-meditate-options";
 
@@ -202,6 +206,33 @@ export function buildResistanceModifiers(
       description: normalizeOtherModifierDescriptionForRoll(otherModifierDescription),
     },
   ];
+}
+
+// Only a known POW-vs-POW success under 95% is awarded outright; other POW rolls get the reminder.
+export async function creditResistanceRollPowExperience(
+  activeActor: RqgActor | undefined,
+  activeCharacteristicsEncoded: string,
+  passiveCharacteristicsEncoded: string | undefined,
+  roll: ResistanceRoll,
+): Promise<void> {
+  if (
+    !activeActor ||
+    !isDocumentSubType<CharacterActor>(activeActor, ActorTypeEnum.Character) ||
+    roll.successLevel == null ||
+    !decodeCharacteristics(activeCharacteristicsEncoded).includes("power")
+  ) {
+    return;
+  }
+
+  const powVsPow = decodeCharacteristics(passiveCharacteristicsEncoded ?? "").includes("power");
+  if (powVsPow) {
+    if (roll.successLevel <= AbilitySuccessLevelEnum.Success && roll.targetChance < 95) {
+      await activeActor.awardPowExperience();
+    }
+    return;
+  }
+
+  await activeActor.checkExperience("power", roll.successLevel, roll.targetChance);
 }
 
 type ResolvedSide = { value: number; label: string };

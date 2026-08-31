@@ -16,6 +16,8 @@ const resistanceRequestChatMessageSchema = {
     required: true,
   }),
   activeCharacteristics: new StringField({ blank: false, nullable: false, required: true }),
+  // "" when the passive side is a manual value rather than an actor characteristic.
+  passiveCharacteristics: new StringField({ blank: true, nullable: false, required: false }),
   passiveValue: new NumberField({ nullable: false, required: true, initial: 0 }),
   passiveLabel: new StringField({ blank: false, nullable: false, required: true }),
   // Passive side's name (actor or GM-typed); feeds the "opposes X" flavor line.
