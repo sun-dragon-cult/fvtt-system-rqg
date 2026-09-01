@@ -64,6 +64,7 @@ export class ResistanceRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "??" : Math.round(this.total! * 100) / 100,
       target: isPrivate ? undefined : this.targetChance,
+      showTarget: !isPrivate,
       successLevel: isPrivate ? "private" : this.successLevel,
       successLevelText: isPrivate
         ? undefined
