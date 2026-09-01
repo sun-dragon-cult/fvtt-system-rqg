@@ -1123,10 +1123,14 @@
         "Points": "Points",
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
-        "ResistanceCheck": "Resistance Check",
-        "ResistanceCheckEnum": {
+        "ResistedBy": "Resisted By",
+        "ResistedByEnum": {
           "none": "None",
-          "single": "Single target (POW vs POW)"
+          "resistanceRoll": "Resistance roll (single target)",
+          "resistanceRollArea": "Resistance roll, whole area (not yet automated)",
+          "resistanceRollPerTarget": "Resistance roll, per target (not yet automated)",
+          "spiritCombatRound": "Spirit combat, one round (not yet automated)",
+          "spiritCombatDefeat": "Spirit combat, until defeated (not yet automated)"
         },
         "DurationEnum": {
           "undefined": "None",

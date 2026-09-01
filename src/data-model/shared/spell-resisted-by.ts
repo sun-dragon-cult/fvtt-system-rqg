@@ -1,21 +1,23 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { warnIfMultipleTargets } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import { SpellResistanceCheckEnum } from "../item-data/spell";
+import { SpellResistedByEnum } from "../item-data/spell";
 
 /**
  * Post-cast hook for Rune/Spirit Magic: on a successful cast of a resisted spell, open a
  * POW-vs-POW ResistanceRollDialogV2 caster-vs-target. No-op with no target; warns on multiple.
+ * Only `ResistanceRoll` is handled; the area / spirit-combat modes are inert until #1068's
+ * follow-ups wire them up.
  */
 export async function maybePromptResistanceRollForCast(
-  resistanceCheck: SpellResistanceCheckEnum,
+  resistedBy: SpellResistedByEnum,
   castSuccessLevel: AbilitySuccessLevelEnum,
   casterActor: RqgActor,
   token: TokenDocument | null | undefined,
   spellName: string | undefined,
 ): Promise<void> {
   if (
-    resistanceCheck !== SpellResistanceCheckEnum.Single ||
+    resistedBy !== SpellResistedByEnum.ResistanceRoll ||
     castSuccessLevel > AbilitySuccessLevelEnum.Success
   ) {
     return;
