@@ -910,11 +910,6 @@
         & .context-icon-img {
           height: 16pt;
         }
-
-        & .context-icon-fa {
-          font-size: 16pt;
-          color: white;
-        }
       }
     }
 
