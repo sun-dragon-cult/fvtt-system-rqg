@@ -170,7 +170,14 @@
   {{!-- Combat Section --}}
   {{#if showUiSection.combat}}
     <div class="combat-section">
-      <h2 class="section-heading">{{localize "RQG.Actor.Nav.Combat"}}</h2>
+      <h2 class="section-heading">
+        <span>{{localize "RQG.Actor.Nav.Combat"}}</span>
+        {{#if @root.isGM}}
+          <button type="button" class="ui-control icon fa-solid fa-scale-unbalanced" data-request-resistance-roll
+                  data-tooltip="{{localize 'RQG.Game.RequestResistanceRoll'}}"
+                  aria-label="{{localize 'RQG.Game.RequestResistanceRoll'}}"></button>
+        {{/if}}
+      </h2>
 
       {{!-- SR Buttons (only visible when in combat) --}}
       {{#if isInCombat}}

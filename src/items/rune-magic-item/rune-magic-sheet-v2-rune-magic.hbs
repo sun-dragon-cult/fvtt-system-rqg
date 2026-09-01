@@ -18,6 +18,11 @@
     <input type="checkbox" id="is-enchantment-{{id}}" name="system.isEnchantment" {{checked
       system.isEnchantment}}>
 
+    <label for="resistance-check-{{id}}" class="mp">{{localize "RQG.Item.Spell.ResistanceCheck"}}</label>
+    <select id="resistance-check-{{id}}" name="system.resistanceCheck">
+      {{selectOptions resistanceCheckOptions selected=system.resistanceCheck localize=true}}
+    </select>
+
     <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.Stackable"}}</label>
     <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
 

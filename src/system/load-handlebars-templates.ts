@@ -81,6 +81,8 @@ export const templatePaths = {
   characteristicRollTooltip:
     "systems/rqg/rolls/characteristic-roll/characteristic-roll-tooltip.hbs",
   characteristicRoll: "systems/rqg/rolls/characteristic-roll/characteristic-roll.hbs",
+  resistanceRollTooltip: "systems/rqg/rolls/resistance-roll/resistance-roll-tooltip.hbs",
+  resistanceRoll: "systems/rqg/rolls/resistance-roll/resistance-roll.hbs",
   hitLocationRoll: "systems/rqg/rolls/hit-location-roll/hit-location-roll.hbs",
   hitLocationTooltip: "systems/rqg/rolls/hit-location-roll/hit-location-roll-tooltip.hbs",
   spiritMagicRollTooltip: "systems/rqg/rolls/spirit-magic-roll/spirit-magic-roll-tooltip.hbs",
@@ -96,6 +98,7 @@ export const templatePaths = {
   // Chat
   chatMessage: "systems/rqg/chat/chat-message.hbs",
   attackChatMessage: "systems/rqg/applications/attack-flow/attack-chat-template.hbs",
+  resistanceRequestChatMessage: "systems/rqg/chat/resistance-request-chat-template.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 
@@ -137,6 +140,14 @@ export const templatePaths = {
   abilityRollDialogV2: "systems/rqg/applications/ability-roll-dialog/ability-roll-dialog-v2.hbs",
   characteristicRollDialogV2:
     "systems/rqg/applications/characteristic-roll-dialog/characteristic-roll-dialog-v2.hbs",
+  resistanceRollDialogV2:
+    "systems/rqg/applications/resistance-roll-dialog/resistance-roll-dialog-v2.hbs",
+  resistanceRequestDialogV2:
+    "systems/rqg/applications/resistance-roll-dialog/resistance-request-dialog-v2.hbs",
+  resistanceRequestFooter:
+    "systems/rqg/applications/resistance-roll-dialog/resistance-request-footer.hbs",
+  respondToResistanceRequestDialogV2:
+    "systems/rqg/applications/resistance-roll-dialog/respond-to-resistance-request-dialog-v2.hbs",
   spiritMagicRollDialogV2:
     "systems/rqg/applications/spirit-magic-roll-dialog/spirit-magic-roll-dialog-v2.hbs",
   runeMagicRollDialogV2:

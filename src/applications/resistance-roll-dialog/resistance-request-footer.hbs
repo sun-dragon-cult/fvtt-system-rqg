@@ -1,6 +1,6 @@
 <footer class="flexrow flex-wrap gap1rem">
   <div class="target-box" data-target-chance-box
-       data-tooltip="{{#if totalChanceTooltip}}{{{totalChanceTooltip}}}{{else}}{{localize "RQG.Dialog.Common.TargetChance"}}{{/if}}"
+       data-tooltip="{{#if totalChanceTooltip}}{{{totalChanceTooltip}}}{{else}}{{localize 'RQG.Dialog.Common.TargetChance'}}{{/if}}"
        {{#if totalChanceTooltip}}data-tooltip-class="chance-breakdown-tooltip"{{/if}}>
     <i class="fa-solid fa-bullseye"></i><br>
     <span data-total-chance>{{totalChance}}%</span>
@@ -19,5 +19,5 @@
       {{/each}}
     </div>
   {{/if}}
-  <button data-ability-roll {{#if disableRoll}}disabled{{/if}}>{{localize "RQG.Game.Roll"}}</button>
+  <button data-send-resistance-request {{#unless canSendRequest}}disabled{{/unless}}>{{localize "RQG.Dialog.ResistanceRequest.SendRequest"}}</button>
 </footer>

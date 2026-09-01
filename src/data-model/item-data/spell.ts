@@ -32,6 +32,13 @@ export const SpellConcentrationEnum = {
 export type SpellConcentrationEnum =
   (typeof SpellConcentrationEnum)[keyof typeof SpellConcentrationEnum];
 
+export const SpellResistanceCheckEnum = {
+  None: "none",
+  Single: "single",
+} as const;
+export type SpellResistanceCheckEnum =
+  (typeof SpellResistanceCheckEnum)[keyof typeof SpellResistanceCheckEnum];
+
 // Se core book p247
 export interface Spell {
   /** Learned strength */
@@ -42,5 +49,7 @@ export interface Spell {
   isRitual: boolean;
   /** Requires POW sacrifice by caster (possibly from others see core book p249) */
   isEnchantment: boolean;
+  /** Whether a successful cast triggers a POW-vs-POW resistance roll by the target. */
+  resistanceCheck: SpellResistanceCheckEnum;
   descriptionRqidLink: RqidLink | undefined;
 }

@@ -9,4 +9,6 @@ export type RollFooterData = {
   totalChanceTooltip?: string;
   rollMode: foundry.dice.Roll.Mode; // read in onSubmit by checking aria-pressed state
   rollModes: RollModeOption[];
+  /** Greys out the Roll button while invalid. */
+  disableRoll?: boolean;
 };

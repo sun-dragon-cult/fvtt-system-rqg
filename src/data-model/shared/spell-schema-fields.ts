@@ -1,5 +1,10 @@
 import { rqidLinkSchemaField } from "./rqid-link-field";
-import { SpellConcentrationEnum, SpellDurationEnum, SpellRangeEnum } from "../item-data/spell";
+import {
+  SpellConcentrationEnum,
+  SpellDurationEnum,
+  SpellRangeEnum,
+  SpellResistanceCheckEnum,
+} from "../item-data/spell";
 import { enumChoices } from "./enum-choices";
 
 const { BooleanField, NumberField, StringField } = foundry.data.fields;
@@ -31,6 +36,12 @@ export function spellSchemaFields() {
     }),
     isRitual: new BooleanField({ nullable: false, initial: false }),
     isEnchantment: new BooleanField({ nullable: false, initial: false }),
+    resistanceCheck: new StringField({
+      blank: false,
+      nullable: false,
+      initial: SpellResistanceCheckEnum.None,
+      choices: enumChoices(SpellResistanceCheckEnum, "RQG.Item.Spell.ResistanceCheckEnum."),
+    }),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
   } as const;
 }

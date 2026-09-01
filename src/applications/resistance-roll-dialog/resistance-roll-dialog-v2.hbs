@@ -1,0 +1,84 @@
+<div class="scrollable">
+  <fieldset>
+    <legend>{{localize "RQG.Dialog.ResistanceRoll.Active"}}</legend>
+    <div class="key-value-grid p-0">
+      <label>{{localize "RQG.Dialog.ResistanceRoll.TokenOrActor"}}</label>
+      <select name="activeTokenOrActorUuid">
+        {{selectOptions activeTokenOrActorOptions selected=formData.activeTokenOrActorUuid localize=false}}
+      </select>
+
+      {{#unless (eq formData.activeTokenOrActorUuid "manual")}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.Characteristic"}}</label>
+        <select name="activeCharacteristics">
+          {{selectOptions characteristicOptions selected=formData.activeCharacteristics localize=false}}
+        </select>
+      {{else}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
+        <input type="text" value="{{formData.activeManualLabel}}" name="activeManualLabel" list="resistance-manual-label-suggestions"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualLabelPlaceholder'}}">
+
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualValue"}}</label>
+        <input type="number" value="{{formData.activeManualValue}}" name="activeManualValue">
+      {{/unless}}
+
+      <label>{{localize "RQG.Dialog.CharacteristicRoll.Augment"}}</label>
+      <select name="augmentModifier">
+        {{selectOptions augmentOptions selected=formData.augmentModifier localize=true}}
+      </select>
+
+      <label>{{localize "RQG.Dialog.CharacteristicRoll.Meditate"}}</label>
+      <select name="meditateModifier">
+        {{selectOptions meditateOptions selected=formData.meditateModifier localize=true}}
+      </select>
+
+      <input type="text" style="text-align:end;font-weight:bold;" value="{{formData.otherModifierDescription}}" name="otherModifierDescription">
+      <div>
+        <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
+      </div>
+    </div>
+    {{#if (eq formData.activeTokenOrActorUuid "manual")}}
+      <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
+    {{/if}}
+  </fieldset>
+
+  <fieldset>
+    <legend>{{localize "RQG.Dialog.ResistanceRoll.Passive"}}</legend>
+    <div class="key-value-grid p-0">
+      <label>{{localize "RQG.Dialog.ResistanceRoll.TokenOrActor"}}</label>
+      <select name="passiveTokenOrActorUuid">
+        {{selectOptions passiveTokenOrActorOptions selected=formData.passiveTokenOrActorUuid localize=false}}
+      </select>
+
+      {{#unless (eq formData.passiveTokenOrActorUuid "manual")}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.Characteristic"}}</label>
+        <select name="passiveCharacteristics">
+          {{selectOptions characteristicOptions selected=formData.passiveCharacteristics localize=false}}
+        </select>
+      {{else}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualName"}}</label>
+        <input type="text" value="{{formData.passiveManualName}}" name="passiveManualName"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualNamePlaceholder'}}">
+
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
+        <input type="text" value="{{formData.passiveManualLabel}}" name="passiveManualLabel" list="resistance-manual-label-suggestions"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualLabelPlaceholder'}}">
+
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualValue"}}</label>
+        <input type="number" value="{{formData.passiveManualValue}}" name="passiveManualValue">
+      {{/unless}}
+    </div>
+    {{#if (eq formData.passiveTokenOrActorUuid "manual")}}
+      <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
+    {{/if}}
+  </fieldset>
+
+  <datalist id="resistance-manual-label-suggestions">
+    <option value="{{localize 'RQG.Dialog.ResistanceRoll.Potency'}}">
+    <option value="{{localize 'RQG.Actor.Characteristics.strength'}}">
+    <option value="{{localize 'RQG.Actor.Characteristics.size'}}">
+    <option value="{{localize 'RQG.Actor.Characteristics.power'}}">
+  </datalist>
+
+  <input type="hidden" value="{{formData.actorUuid}}" name="actorUuid">
+  <input type="hidden" value="{{formData.tokenUuid}}" name="tokenUuid">
+</div>

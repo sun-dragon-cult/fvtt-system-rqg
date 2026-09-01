@@ -2,6 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
+import { maybePromptResistanceRollForCast } from "../shared/spell-resistance-check";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
@@ -166,6 +167,14 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       spiritMagicRoll.successLevel,
       magicPointSource,
       boundSpiritDrainDecision.avoidRelease,
+    );
+
+    await maybePromptResistanceRollForCast(
+      this.resistanceCheck,
+      spiritMagicRoll.successLevel,
+      casterActor,
+      token,
+      item?.name ?? undefined,
     );
   }
 

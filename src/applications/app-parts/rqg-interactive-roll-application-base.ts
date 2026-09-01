@@ -79,6 +79,14 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
     this.getLivePreviewFormBehaviorConfig().updateLivePreview();
   }
 
+  /** Update the footer target% in place, without a re-render. */
+  protected updateTotalChanceDisplay(totalChance: number): void {
+    const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
+    if (totalChanceElement) {
+      totalChanceElement.textContent = `${totalChance}%`;
+    }
+  }
+
   override get element(): HTMLFormElement {
     return super.element as HTMLFormElement;
   }

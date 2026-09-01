@@ -50,6 +50,15 @@
       "type": "boolean",
       "default": false
     },
+    "resistanceCheck": {
+      "type": "string",
+      "enum": [
+        "none",
+        "single"
+      ],
+      "minLength": 1,
+      "default": "none"
+    },
     "descriptionRqidLink": {
       "type": [
         "object",
@@ -125,6 +134,7 @@
     "concentration",
     "isRitual",
     "isEnchantment",
+    "resistanceCheck",
     "cultId",
     "runeRqidLinks",
     "isStackable",

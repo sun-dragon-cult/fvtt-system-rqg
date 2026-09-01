@@ -15,6 +15,8 @@ import { nameGeneration } from "./system/api/name-generation.js";
 import { openDataModelRepairDialog } from "./system/api/data-model-repair";
 import { Rqid } from "./system/api/rqid-api.js";
 import { RqgHotbar } from "./foundry-ui/rqg-hotbar";
+import { RqgActorDirectory } from "./foundry-ui/rqg-actor-directory";
+import { RqgTokenHud } from "./foundry-ui/rqg-token-hud";
 import { TextEditorHooks } from "./foundry-ui/text-editor-hooks";
 import { RqgJournalEntry } from "./journals/rqg-journal-entry";
 import { getTokenStatusEffects } from "./system/token-status-effects";
@@ -31,6 +33,7 @@ import { SpiritMagicRoll } from "./rolls/spirit-magic-roll/spirit-magic-roll";
 import { RuneMagicRoll } from "./rolls/rune-magic-roll/rune-magic-roll";
 import { HitLocationRoll } from "./rolls/hit-location-roll/hit-location-roll";
 import { DamageRoll } from "./rolls/damage-roll/damage-roll";
+import { ResistanceRoll } from "./rolls/resistance-roll/resistance-roll";
 import { RqgRollTableSheet } from "./roll-tables/rqg-roll-table-sheet";
 import { RqgTokenRuler } from "./combat/rqg-token-ruler";
 import { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior";
@@ -92,6 +95,7 @@ Hooks.once("init", () => {
     RuneMagicRoll,
     HitLocationRoll,
     DamageRoll,
+    ResistanceRoll,
   ];
 
   Rqid.init();
@@ -105,6 +109,8 @@ Hooks.once("init", () => {
   initCharacterPassiveRecovery();
   RqgItem.init();
   RqgHotbar.init();
+  RqgActorDirectory.init();
+  RqgTokenHud.init();
   RqgJournalEntry.init();
   TextEditorHooks.init();
   RqgSettings.init();

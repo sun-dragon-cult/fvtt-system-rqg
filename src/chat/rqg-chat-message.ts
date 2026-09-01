@@ -5,14 +5,18 @@ import {
   handleRollDamageAndHitLocation,
   handleRollFumble,
 } from "./attack-flow-handlers";
+import { handleRollResistanceRequest } from "./resistance-request-handlers";
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/damage-roll/damage-roll";
 import { HitLocationRoll } from "../rolls/hit-location-roll/hit-location-roll";
+import { ResistanceRoll } from "../rolls/resistance-roll/resistance-roll";
 
 import { templatePaths } from "../system/load-handlebars-templates";
 import { CombatChatMessageData } from "./data-model/combat-chat-message.data-model.ts";
 import type { CombatDataProperties } from "./data-model/combat-chat-message.types.ts";
+import { ResistanceRequestChatMessageData } from "./data-model/resistance-request-chat-message.data-model.ts";
+import type { ResistanceRequestDataProperties } from "./data-model/resistance-request-chat-message.types.ts";
 
 // TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {
@@ -21,6 +25,7 @@ export class RqgChatMessage extends ChatMessage {
     CONFIG.ChatMessage.template = templatePaths.chatMessage;
 
     CONFIG.ChatMessage.dataModels["combat"] = CombatChatMessageData;
+    CONFIG.ChatMessage.dataModels["resistanceRequest"] = ResistanceRequestChatMessageData;
 
     Hooks.on("ready", () => {
       // one listener for sidebar chat, popped out chat & chat notification
@@ -94,6 +99,11 @@ export class RqgChatMessage extends ChatMessage {
     // *************************
     // *** END - Attack Flow ***
     // *************************
+
+    if (clickedButton?.dataset["rollResistanceRequest"] != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleRollResistanceRequest(clickedButton);
+    }
   }
 
   private static commonClickHandling(clickEvent: MouseEvent, clickedButton: HTMLButtonElement) {
@@ -115,6 +125,12 @@ export class RqgChatMessage extends ChatMessage {
     await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
     await this.#enrichHtmlWithRoll(html, "damageRoll", "[data-damage-roll-html]");
     await this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]");
+    await this.#enrichHtmlWithRoll(
+      html,
+      "resistanceRoll",
+      "[data-resistance-roll-html]",
+      ResistanceRoll,
+    );
 
     this.#hideHtmlElementsByOwnership(html);
 
@@ -165,13 +181,16 @@ export class RqgChatMessage extends ChatMessage {
     html: HTMLElement,
     systemDataRollName: string,
     domSelector: string,
+    RollClass: any = AbilityRoll,
   ): Promise<void> {
     const rollJson = (this.system as any)[systemDataRollName];
-    const roll = safeFromJSON<AbilityRoll>(AbilityRoll, rollJson);
+    const roll = safeFromJSON<AbilityRoll | ResistanceRoll>(RollClass, rollJson);
     if (roll?.isEvaluated) {
       const element = html.querySelector<HTMLElement>(domSelector);
       if (element) {
-        element.innerHTML = await roll.render();
+        // A blind roll's result is obscured for everyone but the GM.
+        const isPrivate = !!this.blind && !game.user?.isGM;
+        element.innerHTML = await roll.render({ isPrivate });
       }
     }
   }
@@ -243,6 +262,16 @@ export class RqgChatMessage extends ChatMessage {
           `HitLocationRoll: ${hitLocationRoll.formula} = ${hitLocationRoll.total} = ${hitLocationRoll.hitLocationName}`,
         );
       }
+    } else if (this.isResistanceRequestMessage()) {
+      const resistanceRoll = safeFromJSON<ResistanceRoll>(
+        ResistanceRoll,
+        this.system.resistanceRoll,
+      );
+      if (resistanceRoll?.isEvaluated) {
+        content.push(
+          `ResistanceRoll: ${resistanceRoll.total} / ${resistanceRoll.targetChance} = ${localize(`RQG.Game.AbilityResultEnum.${resistanceRoll.successLevel}`)}`,
+        );
+      }
     }
 
     // Author and timestamp TODO users locale (don't have that), or maybe Gloranthan time formatting?
@@ -258,5 +287,9 @@ export class RqgChatMessage extends ChatMessage {
 
   isCombatMessage(): this is CombatDataProperties {
     return this.type === "combat";
+  }
+
+  isResistanceRequestMessage(): this is ResistanceRequestDataProperties {
+    return this.type === "resistanceRequest";
   }
 }

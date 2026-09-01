@@ -157,6 +157,15 @@ export const registerRqgSystemSettings = function () {
     default: true,
   });
 
+  game.settings?.register(systemId, "showResistanceRequestTokenHudButton", {
+    name: "RQG.Settings.ShowResistanceRequestTokenHudButton.settingName",
+    hint: "RQG.Settings.ShowResistanceRequestTokenHudButton.settingHint",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true,
+  });
+
   game.settings?.register(systemId, "actor-wizard-feature-flag", {
     name: "Feature Flag: Enable Actor Wizard",
     hint: "For RnD use only",

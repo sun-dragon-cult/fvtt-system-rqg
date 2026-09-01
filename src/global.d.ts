@@ -33,6 +33,7 @@ import type { SpiritMagicDataModel } from "./data-model/item-data/spirit-magic-d
 import type { WeaponDataModel } from "./data-model/item-data/weapon-data-model";
 import type { CharacterDataModel } from "./data-model/actor-data/character-data-model";
 import type { CombatChatMessageData } from "./chat/data-model/combat-chat-message.data-model.ts";
+import type { ResistanceRequestChatMessageData } from "./chat/data-model/resistance-request-chat-message.data-model.ts";
 import type { Dice3D } from "./module-integrations/dice-so-nice";
 
 // Namespace imports for Foundry document types (from fvtt-types)
@@ -105,6 +106,7 @@ declare global {
     };
     ChatMessage: {
       combat: typeof CombatChatMessageData;
+      resistanceRequest: typeof ResistanceRequestChatMessageData;
     };
     RegionBehavior: {
       clickableScripts: typeof ClickableScriptsRegionBehavior;
@@ -150,6 +152,7 @@ declare global {
     "rqg.showActorActiveEffectsTab": boolean;
     "rqg.naturalHealingEnabled": boolean;
     "rqg.magicPointRecoveryEnabled": boolean;
+    "rqg.showResistanceRequestTokenHudButton": boolean;
   }
 
   interface ConfiguredCombatant {

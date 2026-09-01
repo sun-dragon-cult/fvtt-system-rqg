@@ -1,0 +1,9 @@
+<div class="rqg chat-card">
+  {{#if (eq state 'Requested')}}
+    <button class="resistance-request-roll" data-only-owner-visible-uuid="{{targetTokenOrActorUuid}}"
+            data-roll-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Roll"}}
+    </button>
+  {{else}}
+    <span data-resistance-roll-html></span>
+  {{/if}}
+</div>

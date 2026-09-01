@@ -973,6 +973,10 @@
         color: var(--color-text-dark-inactive);
         cursor: progress;
       }
+
+      & button.resistance-request-roll {
+        width: 100%;
+      }
     }
 
     &.chat-content {
@@ -1936,6 +1940,21 @@
       color: var(--color-level-error);
       border: 1px solid var(--color-level-error);
       background-color: transparent;
+    }
+  }
+
+  .rqg.form.roll-dialog.resistance-request-dialog,
+  .rqg.form.roll-dialog.resistance-roll-dialog {
+    & .scrollable > * + * {
+      margin-top: 0.6rem;
+    }
+
+    /* Read-only value cells and the "N %" wrapper share the input row height so the
+       characteristic/modifier rows line up in one grid. */
+    & .key-value-grid > div {
+      display: flex;
+      align-items: center;
+      min-height: var(--input-height);
     }
   }
 
