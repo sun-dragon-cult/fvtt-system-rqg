@@ -39,9 +39,9 @@ export const SpellResistedByEnum = {
   None: "none",
   // one resistance roll, single target
   ResistanceRoll: "resistanceRoll",
-  // caster rolls one d100; every target in the radius is checked against that one roll
+  // caster rolls one d100; every target in the radius is checked against that one roll (e.g. Harmony)
   ResistanceRollArea: "resistanceRollArea",
-  // a separate resistance roll per target in the area
+  // a separate resistance roll per target in the area (e.g. Turn Undead)
   ResistanceRollPerTarget: "resistanceRollPerTarget",
   // gated on winning one round of spirit combat (target typically willing/weak - e.g. Bind Ghost)
   SpiritCombatRound: "spiritCombatRound",
