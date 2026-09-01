@@ -28,9 +28,9 @@
     <label for="is-enchantment-{{id}}">{{localize "RQG.Item.Spell.Enchantment"}}</label>
     <input type="checkbox" id="is-enchantment-{{id}}" name="system.isEnchantment" {{checked system.isEnchantment}}>
 
-    <label for="resistance-check-{{id}}" class="mp">{{localize "RQG.Item.Spell.ResistanceCheck"}}</label>
-    <select id="resistance-check-{{id}}" name="system.resistanceCheck">
-      {{selectOptions resistanceCheckOptions selected=system.resistanceCheck localize=true}}
+    <label for="resisted-by-{{id}}" class="mp">{{localize "RQG.Item.Spell.ResistedBy"}}</label>
+    <select id="resisted-by-{{id}}" name="system.resistedBy">
+      {{selectOptions resistedByOptions selected=system.resistedBy localize=true}}
     </select>
 
     <label for="is-matrix-{{id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
