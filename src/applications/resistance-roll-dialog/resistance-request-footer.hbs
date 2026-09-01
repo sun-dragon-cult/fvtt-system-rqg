@@ -5,5 +5,19 @@
     <i class="fa-solid fa-bullseye"></i><br>
     <span data-total-chance>{{totalChance}}%</span>
   </div>
+  {{#if rollModes.length}}
+    <div data-roll-mode-parent class="split-button flex-none">
+      {{#each rollModes as |mode|}}
+        <button type="button"
+                class="ui-control icon {{mode.icon}}"
+                data-action="rollMode"
+                data-roll-mode="{{mode.id}}"
+                aria-pressed="{{#if (eq ../rollMode mode.id)}}true{{else}}false{{/if}}"
+                data-tooltip="{{localize mode.label}}"
+                aria-label="{{localize mode.label}}">
+        </button>
+      {{/each}}
+    </div>
+  {{/if}}
   <button data-send-resistance-request {{#unless canSendRequest}}disabled{{/unless}}>{{localize "RQG.Dialog.ResistanceRequest.SendRequest"}}</button>
 </footer>

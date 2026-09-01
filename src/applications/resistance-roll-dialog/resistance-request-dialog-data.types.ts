@@ -1,4 +1,5 @@
 import type { RollHeaderData } from "../app-parts/roll-header.types.ts";
+import type { RollFooterData } from "../app-parts/roll-footer.types.ts";
 
 /** Canvas-derived seed for {@link ResistanceRequestDialogV2}: `activeUuid` is always player-owned. */
 export type ResistanceRequestSeed = {
@@ -6,16 +7,17 @@ export type ResistanceRequestSeed = {
   passiveUuid?: string | undefined;
 };
 
-export type ResistanceRequestDialogContext = RollHeaderData & {
-  formData: ResistanceRequestDialogFormData;
-  activeTokenOrActorOptions: SelectOptionData<string>[];
-  passiveTokenOrActorOptions: SelectOptionData<string>[];
-  characteristicOptions: SelectOptionData<string>[];
-  totalChance: number;
-  totalChanceTooltip?: string;
-  /** Disables the Send button while a side is unresolved. */
-  canSendRequest: boolean;
-};
+export type ResistanceRequestDialogContext = RollHeaderData &
+  Pick<RollFooterData, "rollMode" | "rollModes"> & {
+    formData: ResistanceRequestDialogFormData;
+    activeTokenOrActorOptions: SelectOptionData<string>[];
+    passiveTokenOrActorOptions: SelectOptionData<string>[];
+    characteristicOptions: SelectOptionData<string>[];
+    totalChance: number;
+    totalChanceTooltip?: string;
+    /** Disables the Send button while a side is unresolved. */
+    canSendRequest: boolean;
+  };
 
 export type ResistanceRequestDialogFormData = {
   /** Who is asked to roll - always a real actor, never manual. */

@@ -22,6 +22,8 @@ export interface ResistanceRequestDataSourceData {
   /** GM's situational modifier; seeds the roller's Other modifier. */
   otherModifier: number;
   otherModifierDescription: string | undefined;
+  /** GM's chosen roll mode; seeds (but doesn't lock) the roller's selection. */
+  rollMode: string;
   resistanceRoll: string | object | undefined; // JSONField can be string or parsed object
 }
 

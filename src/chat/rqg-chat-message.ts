@@ -130,6 +130,7 @@ export class RqgChatMessage extends ChatMessage {
       "resistanceRoll",
       "[data-resistance-roll-html]",
       ResistanceRoll,
+      !!this.blind && !game.user?.isGM,
     );
 
     this.#hideHtmlElementsByOwnership(html);
@@ -182,13 +183,14 @@ export class RqgChatMessage extends ChatMessage {
     systemDataRollName: string,
     domSelector: string,
     RollClass: any = AbilityRoll,
+    isPrivate = false,
   ): Promise<void> {
     const rollJson = (this.system as any)[systemDataRollName];
     const roll = safeFromJSON<AbilityRoll | ResistanceRoll>(RollClass, rollJson);
     if (roll?.isEvaluated) {
       const element = html.querySelector<HTMLElement>(domSelector);
       if (element) {
-        element.innerHTML = await roll.render();
+        element.innerHTML = await roll.render({ isPrivate });
       }
     }
   }

@@ -6,8 +6,10 @@ import {
   localize,
   normalizeOtherModifierDescriptionForRoll,
   toSignedString,
+  usersIdsThatOwnActor,
   warnIfMultipleTargets,
 } from "../../system/util";
+import { getDefaultRollMode } from "../app-parts/roll-mode";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
@@ -263,4 +265,36 @@ export function buildResistanceChanceBreakdown(
       .map((m) => `${toSignedString(Number(m.value))}% ${esc(m.description)}`),
     `= ${totalChance}%`,
   ].join("<br>");
+}
+
+// "self"/"ic" make no sense when a GM asks a player to roll and needs to see the result.
+export const RESISTANCE_REQUEST_ROLL_MODES: readonly string[] = ["public", "gm", "blind"];
+
+/** A resistance dialog's starting roll mode: the stored one if it's still offered, else the client default, else public. */
+export function initialResistanceRollMode(stored: string | undefined): foundry.dice.Roll.Mode {
+  if (stored && RESISTANCE_REQUEST_ROLL_MODES.includes(stored)) {
+    return stored as foundry.dice.Roll.Mode;
+  }
+  const clientDefault = getDefaultRollMode();
+  return (
+    RESISTANCE_REQUEST_ROLL_MODES.includes(clientDefault) ? clientDefault : "public"
+  ) as foundry.dice.Roll.Mode;
+}
+
+/**
+ * Chat visibility for a resistance request/response. The target's owners always see the card
+ * (they roll it); "gm" also whispers the GMs, "blind" hides the outcome until a GM reveals it.
+ */
+export function resolveResistanceRequestVisibility(
+  mode: string,
+  targetActor: RqgActor | undefined,
+): { whisper: string[]; blind: boolean } {
+  if (mode !== "gm" && mode !== "blind") {
+    return { whisper: [], blind: false };
+  }
+  const gmIds = (game.users?.filter((u) => u.isGM) ?? [])
+    .map((u) => u.id)
+    .filter((id): id is string => !!id);
+  const whisper = [...new Set([...gmIds, ...usersIdsThatOwnActor(targetActor ?? null)])];
+  return { whisper, blind: mode === "blind" };
 }

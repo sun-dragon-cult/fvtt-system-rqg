@@ -26,7 +26,7 @@ export function getConfiguredRollModes(): RollMode[] {
   return [...new Set(resolved)];
 }
 
-export function getConfiguredRollModeOptions(): RollModeOption[] {
+export function getConfiguredRollModeOptions(allowed?: readonly string[]): RollModeOption[] {
   const chatMessageConfig = CONFIG.ChatMessage as unknown as {
     modes?: Record<string, { label?: string; icon?: string }>;
   };
@@ -38,7 +38,7 @@ export function getConfiguredRollModeOptions(): RollModeOption[] {
   const options: RollModeOption[] = [];
   for (const [modeKey, modeConfig] of Object.entries(modes)) {
     const id = resolveRollMode(modeKey);
-    if (!id) {
+    if (!id || (allowed && !allowed.includes(id))) {
       continue;
     }
 

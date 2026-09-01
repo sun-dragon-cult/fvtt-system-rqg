@@ -16,12 +16,16 @@ import {
   getBaseTokenOrActorOptions,
   getCharacteristicOptions,
   getTokenOrActorOptions,
+  initialResistanceRollMode,
+  RESISTANCE_REQUEST_ROLL_MODES,
   resolveActorFromUuid,
   resolveCharacteristicSide,
+  resolveResistanceRequestVisibility,
 } from "./resistance-roll-shared.ts";
 import { buildResistanceRollFlavor } from "../../rolls/resistance-roll/resistance-roll-flavor.ts";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import { getConfiguredRollModeOptions, resolveRollModeFromForm } from "../app-parts/roll-mode";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 
 /**
@@ -44,6 +48,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
   ) {
     super(options);
     this.seed = seed;
+    this.rollMode = initialResistanceRollMode(undefined);
   }
 
   static override DEFAULT_OPTIONS = {
@@ -157,6 +162,8 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       totalChance: totalChance,
       totalChanceTooltip: ResistanceRequestDialogV2.buildChanceBreakdown(formData),
       canSendRequest: ResistanceRequestDialogV2.canSendRequest(formData),
+      rollMode: this.rollMode,
+      rollModes: getConfiguredRollModeOptions(RESISTANCE_REQUEST_ROLL_MODES),
     };
   }
 
@@ -271,6 +278,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       return;
     }
 
+    const rollMode = resolveRollModeFromForm(form);
     const chatSystemData = {
       state: "Requested",
       targetTokenOrActorUuid: formDataObject.targetTokenOrActorUuid,
@@ -284,6 +292,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       passiveActorName: passive.actorName,
       otherModifier: Number(formDataObject.otherModifier) || 0,
       otherModifierDescription: formDataObject.otherModifierDescription || undefined,
+      rollMode: rollMode,
       resistanceRoll: undefined,
     };
 
@@ -305,6 +314,11 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     const targetActor =
       targetTokenOrActor instanceof TokenDocument ? targetTokenOrActor.actor : targetTokenOrActor;
 
+    const { whisper, blind } = resolveResistanceRequestVisibility(
+      rollMode,
+      targetActor ?? undefined,
+    );
+
     activateChatTab();
     const cm = await ChatMessage.create({
       type: "resistanceRequest",
@@ -312,6 +326,8 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       flavor: flavor,
       content: content,
       speaker: getSpeakerCompat({ actor: targetActor ?? undefined, token: targetToken }),
+      whisper: whisper,
+      blind: blind,
     } as any);
     if (cm && !Array.isArray(cm)) {
       cm.render(true);

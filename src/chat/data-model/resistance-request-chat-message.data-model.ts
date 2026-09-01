@@ -35,6 +35,8 @@ const resistanceRequestChatMessageSchema = {
     initial: undefined,
     required: false,
   }),
+  // GM's chosen roll mode; seeds the roller's selection.
+  rollMode: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   resistanceRoll: new JSONField({
     blank: false,
     nullable: true,

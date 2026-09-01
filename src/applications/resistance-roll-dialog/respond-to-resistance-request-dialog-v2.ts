@@ -15,11 +15,15 @@ import {
   buildResistanceModifiers,
   creditResistanceRollPowExperience,
   decodeCharacteristics,
+  initialResistanceRollMode,
   meditateOptions,
+  RESISTANCE_REQUEST_ROLL_MODES,
   resolveCharacteristicLabel,
   resolveCharacteristicValue,
+  resolveResistanceRequestVisibility,
 } from "./resistance-roll-shared.ts";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import { getConfiguredRollModeOptions, resolveRollModeFromForm } from "../app-parts/roll-mode";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { updateChatMessage } from "../../sockets/socketable-requests";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
@@ -56,6 +60,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       logger.throw("No resistance request chat message found", { chatMessageId });
     }
     this.requestChatMessage = requestChatMessage!;
+    this.rollMode = initialResistanceRollMode(this.requestChatMessage.system.rollMode);
   }
 
   static override DEFAULT_OPTIONS = {
@@ -163,6 +168,8 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         formData,
       ),
       totalChanceTooltip: this.buildChanceBreakdown(formData),
+      rollMode: this.rollMode,
+      rollModes: getConfiguredRollModeOptions(RESISTANCE_REQUEST_ROLL_MODES),
     };
   }
 
@@ -247,19 +254,29 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         formDataObject.otherModifierDescription,
       ),
       speaker: getSpeakerCompat({ actor: actor, token: token }),
+      rollMode: resolveRollModeFromForm(form),
     };
 
     const roll = new ResistanceRoll(undefined, {}, options);
     await roll.evaluate();
 
+    const { whisper, blind } = resolveResistanceRequestVisibility(
+      options.rollMode ?? "public",
+      actor,
+    );
+
     if (game.dice3d) {
-      await game.dice3d.showForRoll(roll, game.user, true, null, false);
+      await game.dice3d.showForRoll(roll, game.user, true, whisper.length ? whisper : null, blind);
     }
 
     const messageData = requestChatMessage!.toObject();
     foundry.utils.mergeObject(
       messageData,
-      { system: { state: "Rolled", resistanceRoll: roll.toJSON() } },
+      {
+        system: { state: "Rolled", resistanceRoll: roll.toJSON() },
+        whisper: whisper,
+        blind: blind,
+      },
       { overwrite: true },
     );
     messageData.content = await foundry.applications.handlebars.renderTemplate(
