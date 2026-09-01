@@ -19,7 +19,6 @@ import {
   resolveCharacteristicLabel,
   resolveCharacteristicValue,
 } from "./resistance-roll-shared.ts";
-import { getConfiguredRollModeOptions, resolveRollModeFromForm } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { updateChatMessage } from "../../sockets/socketable-requests";
@@ -164,8 +163,6 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         formData,
       ),
       totalChanceTooltip: this.buildChanceBreakdown(formData),
-      rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(),
     };
   }
 
@@ -250,7 +247,6 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         formDataObject.otherModifierDescription,
       ),
       speaker: getSpeakerCompat({ actor: actor, token: token }),
-      rollMode: resolveRollModeFromForm(form),
     };
 
     const roll = new ResistanceRoll(undefined, {}, options);
