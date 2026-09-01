@@ -270,15 +270,13 @@ export function buildResistanceChanceBreakdown(
 // "self"/"ic" make no sense when a GM asks a player to roll and needs to see the result.
 export const RESISTANCE_REQUEST_ROLL_MODES: readonly string[] = ["public", "gm", "blind"];
 
+const isRequestRollMode = (mode: string | undefined): mode is foundry.dice.Roll.Mode =>
+  !!mode && RESISTANCE_REQUEST_ROLL_MODES.includes(mode);
+
 /** A resistance dialog's starting roll mode: the stored one if it's still offered, else the client default, else public. */
-export function initialResistanceRollMode(stored: string | undefined): foundry.dice.Roll.Mode {
-  if (stored && RESISTANCE_REQUEST_ROLL_MODES.includes(stored)) {
-    return stored as foundry.dice.Roll.Mode;
-  }
-  const clientDefault = getDefaultRollMode();
-  return (
-    RESISTANCE_REQUEST_ROLL_MODES.includes(clientDefault) ? clientDefault : "public"
-  ) as foundry.dice.Roll.Mode;
+export function initialResistanceRollMode(stored?: string): foundry.dice.Roll.Mode {
+  const candidate = isRequestRollMode(stored) ? stored : getDefaultRollMode();
+  return isRequestRollMode(candidate) ? candidate : ("public" as foundry.dice.Roll.Mode);
 }
 
 /**
@@ -287,14 +285,12 @@ export function initialResistanceRollMode(stored: string | undefined): foundry.d
  */
 export function resolveResistanceRequestVisibility(
   mode: string,
-  targetActor: RqgActor | undefined,
+  targetActor: RqgActor | null | undefined,
 ): { whisper: string[]; blind: boolean } {
   if (mode !== "gm" && mode !== "blind") {
     return { whisper: [], blind: false };
   }
-  const gmIds = (game.users?.filter((u) => u.isGM) ?? [])
-    .map((u) => u.id)
-    .filter((id): id is string => !!id);
+  const gmIds = ChatMessage.getWhisperRecipients("GM").map((user) => user.id);
   const whisper = [...new Set([...gmIds, ...usersIdsThatOwnActor(targetActor ?? null)])];
   return { whisper, blind: mode === "blind" };
 }

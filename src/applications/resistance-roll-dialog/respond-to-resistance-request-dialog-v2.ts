@@ -241,6 +241,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       return;
     }
 
+    const rollMode = resolveRollModeFromForm(form);
     const options: ResistanceRollOptions = {
       activeValue: active.value,
       activeLabel: active.label,
@@ -254,16 +255,13 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
         formDataObject.otherModifierDescription,
       ),
       speaker: getSpeakerCompat({ actor: actor, token: token }),
-      rollMode: resolveRollModeFromForm(form),
+      rollMode: rollMode,
     };
 
     const roll = new ResistanceRoll(undefined, {}, options);
     await roll.evaluate();
 
-    const { whisper, blind } = resolveResistanceRequestVisibility(
-      options.rollMode ?? "public",
-      actor,
-    );
+    const { whisper, blind } = resolveResistanceRequestVisibility(rollMode, actor);
 
     if (game.dice3d) {
       await game.dice3d.showForRoll(roll, game.user, true, whisper.length ? whisper : null, blind);

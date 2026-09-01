@@ -314,10 +314,7 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     const targetActor =
       targetTokenOrActor instanceof TokenDocument ? targetTokenOrActor.actor : targetTokenOrActor;
 
-    const { whisper, blind } = resolveResistanceRequestVisibility(
-      rollMode,
-      targetActor ?? undefined,
-    );
+    const { whisper, blind } = resolveResistanceRequestVisibility(rollMode, targetActor);
 
     activateChatTab();
     const cm = await ChatMessage.create({

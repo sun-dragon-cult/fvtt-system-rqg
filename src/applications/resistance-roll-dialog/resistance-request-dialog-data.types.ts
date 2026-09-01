@@ -8,13 +8,11 @@ export type ResistanceRequestSeed = {
 };
 
 export type ResistanceRequestDialogContext = RollHeaderData &
-  Pick<RollFooterData, "rollMode" | "rollModes"> & {
+  Pick<RollFooterData, "rollMode" | "rollModes" | "totalChance" | "totalChanceTooltip"> & {
     formData: ResistanceRequestDialogFormData;
     activeTokenOrActorOptions: SelectOptionData<string>[];
     passiveTokenOrActorOptions: SelectOptionData<string>[];
     characteristicOptions: SelectOptionData<string>[];
-    totalChance: number;
-    totalChanceTooltip?: string;
     /** Disables the Send button while a side is unresolved. */
     canSendRequest: boolean;
   };
