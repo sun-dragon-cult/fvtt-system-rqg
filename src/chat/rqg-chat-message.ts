@@ -5,12 +5,17 @@ import {
   handleRollDamageAndHitLocation,
   handleRollFumble,
 } from "./attack-flow-handlers";
-import { handleRollResistanceRequest } from "./resistance-request-handlers";
+import {
+  handleAcceptResistanceRequest,
+  handleRollResistanceRequest,
+} from "./resistance-request-handlers";
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/damage-roll/damage-roll";
 import { HitLocationRoll } from "../rolls/hit-location-roll/hit-location-roll";
 import { ResistanceRoll } from "../rolls/resistance-roll/resistance-roll";
+import { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
+import { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
 
 import { templatePaths } from "../system/load-handlebars-templates";
 import { CombatChatMessageData } from "./data-model/combat-chat-message.data-model.ts";
@@ -104,6 +109,11 @@ export class RqgChatMessage extends ChatMessage {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleRollResistanceRequest(clickedButton);
     }
+
+    if (clickedButton?.dataset["acceptResistanceRequest"] != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleAcceptResistanceRequest(clickedButton);
+    }
   }
 
   private static commonClickHandling(clickEvent: MouseEvent, clickedButton: HTMLButtonElement) {
@@ -131,6 +141,12 @@ export class RqgChatMessage extends ChatMessage {
       "[data-resistance-roll-html]",
       ResistanceRoll,
     );
+    await this.#enrichHtmlWithRoll(
+      html,
+      "castRoll",
+      "[data-cast-roll-html]",
+      this.#castRollClass(),
+    );
 
     this.#hideHtmlElementsByOwnership(html);
 
@@ -157,6 +173,8 @@ export class RqgChatMessage extends ChatMessage {
   /**
    * Optionally hide the display of chat html elements which should not be shown to user.
    * The data-only-owner-visible-uuid value should be a document uuid that can be checked for ownership.
+   * data-hide-from-owner-uuid is its inverse - everyone *but* that document's owners sees it, for
+   * the rarer case of keeping one participant in the dark rather than the rest of the table.
    */
   #hideHtmlElementsByOwnership(html: HTMLElement | undefined): void {
     if (game.user?.isGM) {
@@ -175,6 +193,34 @@ export class RqgChatMessage extends ChatMessage {
         el.classList.add("dont-display");
       }
     });
+
+    html?.querySelectorAll("[data-hide-from-owner-uuid]").forEach((el: Element) => {
+      if (!(el instanceof HTMLElement)) {
+        return;
+      }
+      const uuid = el.dataset["hideFromOwnerUuid"];
+      if (!uuid || !(fromUuidSync(uuid) as any)?.isOwner) {
+        return;
+      }
+      // Owning the exempt document wins - you never lose sight of your own side of an exchange.
+      const exemptUuid = el.dataset["hideUnlessOwnerUuid"];
+      if (exemptUuid && (fromUuidSync(exemptUuid) as any)?.isOwner) {
+        return;
+      }
+      el.classList.add("dont-display");
+    });
+  }
+
+  /** A resistance-request card can carry the spell cast that triggered it. */
+  #castRollClass(): typeof SpiritMagicRoll | typeof RuneMagicRoll | undefined {
+    switch ((this.system as any)?.castRollType) {
+      case "spiritMagic":
+        return SpiritMagicRoll;
+      case "runeMagic":
+        return RuneMagicRoll;
+      default:
+        return undefined;
+    }
   }
 
   async #enrichHtmlWithRoll(
@@ -183,6 +229,9 @@ export class RqgChatMessage extends ChatMessage {
     domSelector: string,
     RollClass: any = AbilityRoll,
   ): Promise<void> {
+    if (!RollClass) {
+      return;
+    }
     const rollJson = (this.system as any)[systemDataRollName];
     const roll = safeFromJSON<AbilityRoll | ResistanceRoll>(RollClass, rollJson);
     if (roll?.isEvaluated) {

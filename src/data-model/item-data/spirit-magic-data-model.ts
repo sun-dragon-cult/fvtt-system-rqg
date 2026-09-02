@@ -2,7 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
-import { maybePromptResistanceRollForCast } from "../shared/spell-resisted-by";
+import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/spell-resisted-by";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
@@ -135,6 +135,15 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       return;
     }
 
+    const resistedSpellTarget = await resolveResistedSpellCastTarget(
+      this.resistedBy,
+      casterActor,
+      item?.name ?? undefined,
+    );
+    if (!resistedSpellTarget.proceed) {
+      return;
+    }
+
     const mpCost = levelUsed + boost;
     const boundSpiritDrainDecision = await confirmBoundSpiritDrain(
       casterActor,
@@ -149,7 +158,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
 
     // Dynamic import to avoid circular dependency through SpiritMagicRoll → itemTypes.ts → rqgItem.ts
     const { SpiritMagicRoll } = await import("../../rolls/spirit-magic-roll/spirit-magic-roll");
-    const spiritMagicRoll = await SpiritMagicRoll.rollAndShow({
+    const spiritMagicRoll = await SpiritMagicRoll.roll({
       powX5: powX5,
       levelUsed: levelUsed,
       magicPointBoost: boost,
@@ -162,19 +171,21 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     if (spiritMagicRoll.successLevel == null) {
       throw new RqgError("Evaluated AbilityRoll didn't give successLevel");
     }
+
+    await postSpellCastResult({
+      target: resistedSpellTarget,
+      resistedBy: this.resistedBy,
+      castRoll: spiritMagicRoll,
+      castRollType: "spiritMagic",
+      casterActor: casterActor,
+      casterToken: token,
+    });
+
     await casterActor.drawMagicPoints(
       mpCost,
       spiritMagicRoll.successLevel,
       magicPointSource,
       boundSpiritDrainDecision.avoidRelease,
-    );
-
-    await maybePromptResistanceRollForCast(
-      this.resistedBy,
-      spiritMagicRoll.successLevel,
-      casterActor,
-      token,
-      item?.name ?? undefined,
     );
   }
 

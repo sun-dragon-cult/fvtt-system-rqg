@@ -160,10 +160,10 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       spellSummaryTooltip: this.spellItem.spellSummaryTooltip ?? "",
       baseChance: (this.powX5 ?? 0) + "%",
 
-      // RollFooter
+      // RollFooter - a player's cast always posts a shared card, so only a GM picks a mode.
       totalChance: this.computeTotalChance(formData),
       rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(),
+      rollModes: game.user?.isGM ? getConfiguredRollModeOptions() : [],
     };
   }
 

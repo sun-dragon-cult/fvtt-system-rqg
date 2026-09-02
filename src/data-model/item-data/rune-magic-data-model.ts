@@ -2,7 +2,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
-import { maybePromptResistanceRollForCast } from "../shared/spell-resisted-by";
+import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/spell-resisted-by";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
@@ -302,6 +302,15 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       return;
     }
 
+    const resistedSpellTarget = await resolveResistedSpellCastTarget(
+      this.resistedBy,
+      casterActor,
+      item?.name ?? undefined,
+    );
+    if (!resistedSpellTarget.proceed) {
+      return;
+    }
+
     const boundSpiritDrainDecision = await confirmBoundSpiritDrain(
       casterActor,
       options.magicPointBoost ?? 0,
@@ -323,7 +332,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
     const speaker = getSpeakerCompat({ actor: casterActor, token });
 
-    const runeMagicRoll = await RuneMagicRoll.rollAndShow({
+    const runeMagicRoll = await RuneMagicRoll.roll({
       usedRuneName: usedRune.name ?? "",
       usedRuneChance: Number(usedRune.system.chance ?? 0),
       spellName: runeMagicItemTyped.name ?? "",
@@ -338,6 +347,16 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     if (runeMagicRoll.successLevel == null) {
       return logger.throw("Evaluated RuneMagicRoll didn't give successLevel");
     }
+
+    await postSpellCastResult({
+      target: resistedSpellTarget,
+      resistedBy: this.resistedBy,
+      castRoll: runeMagicRoll,
+      castRollType: "runeMagic",
+      casterActor: casterActor,
+      casterToken: token,
+    });
+
     const mpCost = options.magicPointBoost ?? 0;
     const rpCost = options.levelUsed ?? this.points;
     await handleRollResult(
@@ -350,14 +369,6 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       runePointSource,
       casterActor,
       boundSpiritDrainDecision.avoidRelease,
-    );
-
-    await maybePromptResistanceRollForCast(
-      this.resistedBy,
-      runeMagicRoll.successLevel,
-      casterActor,
-      token,
-      runeMagicItemTyped.name ?? undefined,
     );
   }
 

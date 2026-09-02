@@ -19,17 +19,27 @@ export class RuneMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: RuneMagicRollOptions;
 
   public static async rollAndShow(options: RuneMagicRollOptions) {
+    const roll = await RuneMagicRoll.roll(options);
+    await roll.postToChat();
+    return roll;
+  }
+
+  /** Evaluate without posting - for callers that embed the roll in a card of their own. */
+  public static async roll(options: RuneMagicRollOptions) {
     const roll = new RuneMagicRoll(undefined, {}, options);
     await roll.evaluate();
+    return roll;
+  }
+
+  public async postToChat(): Promise<void> {
     activateChatTab();
-    const msg = await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker }, {
-      messageMode: options.rollMode,
+    const msg = await this.toMessage({ flavor: this.flavor, speaker: this.options.speaker }, {
+      messageMode: this.options.rollMode,
       create: true,
     } as unknown as Record<string, unknown>);
     if (msg?.id != null) {
       await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
     }
-    return roll;
   }
 
   constructor(formula: string = "1d100", data?: D, options?: RuneMagicRollOptions) {

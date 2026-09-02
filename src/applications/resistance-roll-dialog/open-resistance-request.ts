@@ -32,14 +32,15 @@ export async function openResistanceRequest(invokedTokenOrActorUuid?: string): P
     return;
   }
 
+  // The dialog's "who rolls" toggle can flip this; the seed just picks the common framing.
   let seed: ResistanceRequestSeed;
   if (invokedIsPlayerOwned) {
-    seed = { activeUuid: invokedTokenOrActorUuid, passiveUuid: targetUuid };
+    seed = { activeUuid: invokedTokenOrActorUuid, passiveUuid: targetUuid, rollerSide: "active" };
   } else if (invokedTokenOrActorUuid) {
     // NPC invoked, player targeted: the player acts against the NPC.
-    seed = { passiveUuid: invokedTokenOrActorUuid, activeUuid: targetUuid };
+    seed = { passiveUuid: invokedTokenOrActorUuid, activeUuid: targetUuid, rollerSide: "active" };
   } else {
-    seed = { activeUuid: targetUuid };
+    seed = { activeUuid: targetUuid, rollerSide: "active" };
   }
 
   const { ResistanceRequestDialogV2 } = await import("./resistance-request-dialog-v2.ts");

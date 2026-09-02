@@ -1,9 +1,37 @@
 <div class="rqg chat-card">
+  {{#if castRoll}}
+    <div class="flex-column gap03rem"
+         {{#if spellHiddenFromUuid}}data-hide-from-owner-uuid="{{spellHiddenFromUuid}}"
+         data-hide-unless-owner-uuid="{{spellCasterUuid}}"{{/if}}>
+      <span data-cast-roll-html></span>
+    </div>
+    {{#if resistanceFlavor}}
+      <div class="resistance-request-flavor">{{{resistanceFlavor}}}</div>
+    {{/if}}
+  {{/if}}
+
   {{#if (eq state 'Requested')}}
-    <button class="resistance-request-roll" data-only-owner-visible-uuid="{{targetTokenOrActorUuid}}"
-            data-roll-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Roll"}}
-    </button>
+    {{!-- "Resist" only reads as a choice next to Accept; alone it is just the roll. --}}
+    <div class="flexrow gap1rem" data-only-owner-visible-uuid="{{targetTokenOrActorUuid}}">
+      {{#if allowVoluntaryAccept}}
+        <button class="resistance-request-roll"
+                data-roll-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Resist"}}
+        </button>
+        <button class="resistance-request-accept"
+                data-accept-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Accept"}}
+        </button>
+      {{else}}
+        <button class="resistance-request-roll"
+                data-roll-resistance-request>{{localize "RQG.ChatMessage.ResistanceRequest.Roll"}}
+        </button>
+      {{/if}}
+    </div>
+  {{else if (eq state 'Accepted')}}
+    <p class="resistance-request-accepted">{{localize "RQG.ChatMessage.ResistanceRequest.AcceptedNotice"}}</p>
   {{else}}
     <span data-resistance-roll-html></span>
+    {{#if outcomeDescription}}
+      <div class="outcome-description">{{outcomeDescription}}</div>
+    {{/if}}
   {{/if}}
 </div>

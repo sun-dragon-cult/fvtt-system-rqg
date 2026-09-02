@@ -52,6 +52,11 @@ export function getConfiguredRollModeOptions(allowed?: readonly string[]): RollM
   return options;
 }
 
+/** Modes that keep a roll from the table at large ("public" and "ic" are shown to everyone). */
+export function isHiddenRollMode(mode: string | undefined): boolean {
+  return mode === "gm" || mode === "blind" || mode === "self";
+}
+
 export function getDefaultRollMode(): RollMode {
   const fromMessageMode = resolveRollMode((game.settings as any)?.get("core", "messageMode"));
   if (fromMessageMode) {

@@ -222,8 +222,9 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         { value: formData.meditateModifier },
         { value: formData.otherModifier },
       ]),
+      // A player's cast always posts a shared card, so only a GM picks a mode.
       rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(),
+      rollModes: game.user?.isGM ? getConfiguredRollModeOptions() : [],
     };
   }
 

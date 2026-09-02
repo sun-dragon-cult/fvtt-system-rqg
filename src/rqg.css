@@ -974,8 +974,16 @@
         cursor: progress;
       }
 
-      & button.resistance-request-roll {
+      /* flex wins inside the Resist/Accept row; width covers a lone button. */
+      & button.resistance-request-roll,
+      & button.resistance-request-accept {
         width: 100%;
+        flex: 1;
+      }
+
+      /* Stands in for the message flavor, which the combined card gives to the spell. */
+      & .resistance-request-flavor {
+        margin: 0.4rem 0 0.2rem;
       }
     }
 

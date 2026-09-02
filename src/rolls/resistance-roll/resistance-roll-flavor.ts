@@ -4,12 +4,16 @@ import { localize } from "../../system/util";
 export function buildResistanceRollFlavor(
   activeLabel: string,
   passiveLabel: string,
-  passiveActorName?: string,
+  opposingActorName?: string,
+  description?: string,
 ): string {
   const resistanceTranslation = localize("RQG.Roll.ResistanceRoll.Title");
-  const opposesLine = passiveActorName
-    ? `<span>${localize("RQG.Roll.ResistanceRoll.Opposes", { targetName: `<b>${passiveActorName}</b>` })}</span><br>`
+  const opposesLine = opposingActorName
+    ? `<span>${localize("RQG.Roll.ResistanceRoll.Opposes", { targetName: `<b>${opposingActorName}</b>` })}</span><br>`
     : "";
-  return `${opposesLine}<span class="roll-action">${activeLabel} ${localize("RQG.Roll.ResistanceRoll.Vs")} ${passiveLabel}</span>
+  const descriptionLine = description
+    ? `<span class="roll-action">${foundry.utils.escapeHTML(description)}</span><br>`
+    : "";
+  return `${descriptionLine}${opposesLine}<span class="roll-action">${activeLabel} ${localize("RQG.Roll.ResistanceRoll.Vs")} ${passiveLabel}</span>
           <span>${resistanceTranslation}</span><br>`;
 }

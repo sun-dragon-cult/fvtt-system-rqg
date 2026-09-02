@@ -37,6 +37,10 @@ import {
   SpellResistedByEnum,
 } from "../src/data-model/item-data/spell";
 import { AbilitySuccessLevelEnum } from "../src/rolls/ability-roll/ability-roll.defs";
+import {
+  resistanceRequestRollerSide,
+  resistanceRequestState,
+} from "../src/chat/data-model/resistance-request-chat-message.defs";
 
 // --- Characteristics (defined inline in schema, no separate enum) ---
 const characteristics = [
@@ -102,12 +106,16 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   "RQG.Actor.RuneMagic.CultRank.": Object.values(CultRankEnum),
   "RQG.Actor.Skill.SkillCategory.": Object.values(SkillCategoryEnum),
 
+  // ChatMessage
+  "RQG.ChatMessage.ResistanceRequest.State.": [...resistanceRequestState],
+
   // Dialog
   "RQG.Dialog.Attack.HitLocationFormulaOptions.": [...hitLocationFormulaOptions],
   "RQG.Dialog.CharacteristicRoll.RollDifficultyLevel.": [...rollDifficultyLevels],
   "RQG.Dialog.Common.AugmentOptions.": [...augmentOptions],
   "RQG.Dialog.Common.MeditateOptions.": [...meditateOptions],
   "RQG.Dialog.Common.RitualOptions.": [...ritualOptions],
+  "RQG.Dialog.ResistanceRequest.RollerSideOptions.": [...resistanceRequestRollerSide],
 
   // Game
   "RQG.Game.AbilityResultEnum.": Object.values(AbilitySuccessLevelEnum).map(String),

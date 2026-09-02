@@ -282,12 +282,16 @@ export function initialResistanceRollMode(stored?: string): foundry.dice.Roll.Mo
 /**
  * Chat visibility for a resistance request/response. The target's owners always see the card
  * (they roll it); "gm" also whispers the GMs, "blind" hides the outcome until a GM reveals it.
+ *
+ * An unanswered request is whispered whatever the mode: it is a question put to one player, not
+ * yet a result. The mode only opens it up once they have rolled.
  */
 export function resolveResistanceRequestVisibility(
   mode: string,
   targetActor: RqgActor | null | undefined,
+  stillUnanswered = false,
 ): { whisper: string[]; blind: boolean } {
-  if (mode !== "gm" && mode !== "blind") {
+  if (!stillUnanswered && mode !== "gm" && mode !== "blind") {
     return { whisper: [], blind: false };
   }
   const gmIds = ChatMessage.getWhisperRecipients("GM").map((user) => user.id);

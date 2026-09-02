@@ -514,7 +514,19 @@
         "ApplyNaturalWeaponDamageNotImplemented": "Automatically applying damage to natural weapons is not supported yet.<br>Please manually add {weaponDamage} damage to the appropriate hit location, AP is not subtracted from {weaponDamage}.<br>Then close this notification."
       },
       "ResistanceRequest": {
-        "Roll": "Roll"
+        "Roll": "Roll",
+        "Resist": "Resist",
+        "Accept": "Accept",
+        "AcceptedNotice": "Chose not to resist — the spell takes effect.",
+        "SpellOvercame": "{casterName} overcame {targetName} — the spell takes effect.",
+        "SpellNotOvercame": "{casterName} failed to overcome {targetName} — the spell has no effect.",
+        "SpellTakesEffect": "{targetName} failed to resist — the spell takes effect.",
+        "SpellResisted": "{targetName} resisted — the spell has no effect.",
+        "State": {
+          "Requested": "Requested",
+          "Rolled": "Rolled",
+          "Accepted": "Accepted"
+        }
       }
     },
     "Dialog": {
@@ -605,12 +617,21 @@
         "ManualLabel": "Characteristic",
         "ManualLabelPlaceholder": "POT, STR, SIZ, POW…",
         "ManualValue": "Value",
-        "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT."
+        "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT.",
+        "ResistingModifierHint": "You are resisting, so your Augment, Meditate and Other modifiers lower the active side's chance of overcoming you."
       },
       "ResistanceRequest": {
         "Title": "Request Resistance Roll",
-        "SituationalModifierHint": "Sent to the Active side as a starting Other modifier. They pick their own Augment and Meditate when they roll.",
-        "SendRequest": "Send Request"
+        "SituationalModifierHint": "Applies to the Active side. The recipient picks their own Augment and Meditate when they roll.",
+        "SendRequest": "Send Request",
+        "RollerSide": "Roll requested from",
+        "RollerSideOptions": {
+          "active": "Active side",
+          "passive": "Resisting side"
+        },
+        "CastOnSelfTitle": "No Target Selected",
+        "CastOnSelfContent": "No target selected. Cast <b>{spellName}</b> on yourself? Casting on yourself counts as accepting the spell, so there is no resistance roll.",
+        "CastOnSelf": "Cast on self"
       },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
@@ -1488,7 +1509,9 @@
         "NameGenRqidNotSupported": "Name Generation: The RQG System ID \"{rqid}\" is not supported for name generation.",
         "NameGenRqidNotFound": "Name Generation: The RQG System ID \"{rqid}\" was not found as a Roll Table or Journal Entry or the Journal Entry was not formatted properly as a Name Base.",
         "NameBaseNotLongEnough": "Name Generation: The RQG System ID \"{rqid}\" references a Name Base Journal Entry that was not long enough to generate a name after {attempts} attempts.  Consider adding more entries.",
-        "TargetOneTokenOnly": "Please target one token only"
+        "TargetOneTokenOnly": "Please target one token only",
+        "ResistedSpellSingleTargetOnly": "{spellName} currently supports a single target — select one or clear your targets.",
+        "NotOwnerOfResistanceRequest": "This resistance request is not yours to answer."
       }
     },
     "Settings": {
