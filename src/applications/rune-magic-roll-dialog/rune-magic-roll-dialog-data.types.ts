@@ -17,6 +17,8 @@ export type RuneMagicRollDialogContext = RollHeaderData &
     formData: RuneMagicRollDialogFormData;
 
     speakerName: string;
+    /** Comma-joined names of the current targets, or "" when nothing is targeted. */
+    targetName: string;
     isStackable: boolean;
     isOneUse: boolean;
 

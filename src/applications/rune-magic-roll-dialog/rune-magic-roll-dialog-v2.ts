@@ -5,6 +5,7 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import {
   assertDocumentSubType,
   getSpeakerDisplayName,
+  getTargetedTokenNames,
   localize,
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
@@ -196,6 +197,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formData: formData,
 
       speakerName: getSpeakerDisplayName(speaker),
+      targetName: getTargetedTokenNames(),
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,

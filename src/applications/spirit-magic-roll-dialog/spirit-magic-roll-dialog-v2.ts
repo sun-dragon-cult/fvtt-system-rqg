@@ -7,6 +7,7 @@ import type {
 import {
   assertDocumentSubType,
   getSpeakerDisplayName,
+  getTargetedTokenNames,
   localize,
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
@@ -148,6 +149,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       formData: formData,
 
       speakerName: getSpeakerDisplayName(speaker),
+      targetName: getTargetedTokenNames(),
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,

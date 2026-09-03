@@ -1,9 +1,14 @@
 <div class="scrollable">
   <div class="key-value-grid p-0">
     <label>
-      {{localize "RQG.Dialog.Common.Character"}}
+      {{localize "RQG.Dialog.Common.Caster"}}
     </label>
     <div>{{speakerName}}</div>
+
+    <label>
+      {{localize "RQG.Dialog.Common.Target"}}
+    </label>
+    <div>{{#if targetName}}{{targetName}}{{else}}{{localize "RQG.Dialog.Common.NoTarget"}}{{/if}}</div>
 
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}

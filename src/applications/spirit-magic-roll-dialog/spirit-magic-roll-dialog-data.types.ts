@@ -6,6 +6,8 @@ export type SpiritMagicRollDialogContext = RollHeaderData &
     formData: SpiritMagicRollDialogFormData;
 
     speakerName: string;
+    /** Comma-joined names of the current targets, or "" when nothing is targeted. */
+    targetName: string;
     isVariable: boolean;
 
     augmentOptions: SelectOptionData<number>[];
