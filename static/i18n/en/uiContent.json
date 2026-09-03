@@ -1518,7 +1518,8 @@
         "NameBaseNotLongEnough": "Name Generation: The RQG System ID \"{rqid}\" references a Name Base Journal Entry that was not long enough to generate a name after {attempts} attempts.  Consider adding more entries.",
         "TargetOneTokenOnly": "Please target one token only",
         "ResistedSpellSingleTargetOnly": "{spellName} currently supports a single target — select one or clear your targets.",
-        "NotOwnerOfResistanceRequest": "This resistance request is not yours to answer."
+        "NotOwnerOfResistanceRequest": "This resistance request is not yours to answer.",
+        "ResistanceRequestAlreadyAnswered": "This resistance request has already been answered."
       }
     },
     "Settings": {

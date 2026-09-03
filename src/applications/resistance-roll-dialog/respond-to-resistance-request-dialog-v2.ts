@@ -336,11 +336,24 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       logger.throw("Resistance request chat message not found", formDataObject);
     }
 
+    // The card may have been answered elsewhere while this dialog sat open - from the same card's
+    // Accept, or by a GM on another client - and a roll now would overwrite that outcome.
+    if (requestChatMessage!.system.state !== "Requested") {
+      ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
+      return;
+    }
+
     const { actor, token } = RespondToResistanceRequestDialogV2.resolveTarget(requestChatMessage!);
     const sides = RespondToResistanceRequestDialogV2.resolveSides(requestChatMessage!, actor);
     const rollerLabel = sides.rollerIsPassive ? sides.passiveLabel : sides.activeLabel;
     if (!actor || !rollerLabel) {
       ui.notifications?.error(localize("RQG.Notification.Error.ResistanceRequestTargetNotFound"));
+      return;
+    }
+
+    // Hiding the button in the DOM isn't a permission check - match the Accept handler's.
+    if (!game.user?.isGM && !actor.isOwner) {
+      ui.notifications?.warn(localize("RQG.Notification.Warn.NotOwnerOfResistanceRequest"));
       return;
     }
 

@@ -12,6 +12,13 @@ export async function handleRollResistanceRequest(clickedButton: HTMLButtonEleme
   const { RespondToResistanceRequestDialogV2 } =
     await import("../applications/resistance-roll-dialog/respond-to-resistance-request-dialog-v2");
 
+  const requestChatMessage = game.messages?.get(chatMessageId) as
+    ResistanceRequestChatMessage | undefined;
+  if (requestChatMessage && requestChatMessage.system.state !== "Requested") {
+    ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
+    return;
+  }
+
   const existing = foundry.applications.instances.get(
     RespondToResistanceRequestDialogV2.idForChatMessage(chatMessageId),
   );
@@ -28,6 +35,15 @@ export async function handleAcceptResistanceRequest(
     ResistanceRequestChatMessage | undefined;
   if (!requestChatMessage) {
     return logger.throw("No resistance request chat message found", { chatMessageId });
+  }
+
+  // A stale card can still show the buttons after someone else has answered it.
+  if (
+    requestChatMessage.system.state !== "Requested" ||
+    !requestChatMessage.system.allowVoluntaryAccept
+  ) {
+    ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
+    return;
   }
 
   const targetTokenOrActor = await fromUuid(requestChatMessage.system.targetTokenOrActorUuid);
