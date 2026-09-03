@@ -13,6 +13,10 @@
           {{selectOptions characteristicOptions selected=formData.activeCharacteristics localize=false}}
         </select>
       {{else}}
+        <label>{{localize "RQG.Dialog.ResistanceRoll.ManualName"}}</label>
+        <input type="text" value="{{formData.activeManualName}}" name="activeManualName"
+               placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualNamePlaceholder'}}">
+
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualLabel"}}</label>
         <input type="text" value="{{formData.activeManualLabel}}" name="activeManualLabel" list="resistance-manual-label-suggestions"
                placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualLabelPlaceholder'}}">
@@ -40,6 +44,12 @@
       <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
     {{/if}}
   </fieldset>
+
+  <button type="button" class="resistance-swap-sides" data-action="swapSides"
+          data-tooltip="{{localize 'RQG.Dialog.ResistanceRoll.SwapSidesHint'}}">
+    <i class="fa-solid fa-arrow-right-arrow-left" inert></i>
+    {{localize "RQG.Dialog.ResistanceRequest.SwapSides"}}
+  </button>
 
   <fieldset>
     <legend>{{localize "RQG.Dialog.ResistanceRoll.Passive"}}</legend>

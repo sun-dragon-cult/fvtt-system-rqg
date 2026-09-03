@@ -2,9 +2,13 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import { localize } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { SpellResistedByEnum } from "../item-data/spell";
+import {
+  canChooseSpellCastRollMode,
+  getDefaultRollMode,
+  isHiddenRollMode,
+} from "../../applications/app-parts/roll-mode";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
-import type { ResistanceRequestCastRollType } from "../../chat/data-model/resistance-request-chat-message.types";
 
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
 export type ResistedSpellTarget = {
@@ -46,7 +50,7 @@ export async function resolveResistedSpellCastTarget(
         spellName: spellName ?? "",
       }),
       yes: { label: "RQG.Dialog.ResistanceRequest.CastOnSelf", icon: "fa-solid fa-user" },
-      no: { label: "Cancel", icon: "fa-solid fa-xmark", default: true },
+      no: { label: "COMMON.Cancel", icon: "fa-solid fa-xmark", default: true },
     });
     return castOnSelf ? { proceed: true, selfCast: true } : { proceed: false, selfCast: false };
   }
@@ -76,16 +80,12 @@ export async function postSpellCastResult(params: {
   target: ResistedSpellTarget;
   resistedBy: SpellResistedByEnum;
   castRoll: SpiritMagicRoll | RuneMagicRoll;
-  castRollType: ResistanceRequestCastRollType;
   casterActor: RqgActor;
   casterToken: TokenDocument | null | undefined;
 }): Promise<void> {
-  const { target, resistedBy, castRoll, castRollType, casterActor, casterToken } = params;
-  const { getDefaultRollMode, isHiddenRollMode } =
-    await import("../../applications/app-parts/roll-mode");
-
+  const { target, resistedBy, castRoll, casterActor, casterToken } = params;
   // Only a GM can hide a cast; a player's always posts a card the whole table can follow.
-  const castRollMode = game.user?.isGM
+  const castRollMode = canChooseSpellCastRollMode()
     ? (castRoll.options.rollMode ?? getDefaultRollMode())
     : ("public" as foundry.dice.Roll.Mode);
   castRoll.options.rollMode = castRollMode;
@@ -121,9 +121,11 @@ export async function postSpellCastResult(params: {
     rollerSide: "passive",
     rollerCharacteristics: "power",
     frozenValue: caster.value,
-    frozenLabel: caster.label,
-    // A hidden cast gives the target nothing to identify who or what is testing them.
+    frozenCharacteristics: "power",
+    // A hidden cast gives the target nothing to identify who or what is testing them, so the
+    // caster neither names nor speaks the card.
     frozenActorName: hidden ? undefined : caster.actorName,
+    frozenTokenOrActorUuid: hidden ? undefined : casterUuid,
     activeLabel: caster.label,
     passiveLabel: caster.label,
     otherModifier: 0,
@@ -137,7 +139,6 @@ export async function postSpellCastResult(params: {
       ? undefined
       : {
           castRoll: castRoll,
-          castRollType: castRollType,
           casterTokenOrActorUuid: casterUuid,
         },
   });

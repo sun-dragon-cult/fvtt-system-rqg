@@ -62,7 +62,6 @@ const resistanceRequestChatMessageSchema = {
   // Set when the card also carries the spell cast that triggered it; the message flavor is then the
   // spell's, so the "opposes X / POW vs POW" lines move into the card body.
   castRoll: new JSONField({ blank: false, nullable: true, required: false, initial: undefined }),
-  castRollType: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   resistanceFlavor: new StringField({
     blank: true,
     nullable: false,

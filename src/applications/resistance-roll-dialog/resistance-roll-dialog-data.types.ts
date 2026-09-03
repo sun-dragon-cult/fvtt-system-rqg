@@ -43,6 +43,8 @@ export type ResistanceRollDialogFormData = {
   activeTokenOrActorUuid: string;
   /** One characteristic name, or two joined by "+" (e.g. "strength+size"). */
   activeCharacteristics: string;
+  /** Names a Manual active for the chat card's speaker, e.g. "Noxious Gas". */
+  activeManualName: string;
   activeManualLabel: string;
   activeManualValue: number;
 

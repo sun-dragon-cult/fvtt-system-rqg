@@ -14,8 +14,8 @@ import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/ut
 import { DamageRoll } from "../rolls/damage-roll/damage-roll";
 import { HitLocationRoll } from "../rolls/hit-location-roll/hit-location-roll";
 import { ResistanceRoll } from "../rolls/resistance-roll/resistance-roll";
-import { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
-import { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
+
+import Roll = foundry.dice.Roll;
 
 import { templatePaths } from "../system/load-handlebars-templates";
 import { CombatChatMessageData } from "./data-model/combat-chat-message.data-model.ts";
@@ -130,23 +130,22 @@ export class RqgChatMessage extends ChatMessage {
     // Bind action handlers on each rendered card so chat popouts/detached windows work too.
     html.addEventListener("click", RqgChatMessage.clickHandler);
 
-    // Enrich the combat chat message with evaluated rolls
-    await this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]");
-    await this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]");
-    await this.#enrichHtmlWithRoll(html, "damageRoll", "[data-damage-roll-html]");
-    await this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]");
-    await this.#enrichHtmlWithRoll(
-      html,
-      "resistanceRoll",
-      "[data-resistance-roll-html]",
-      ResistanceRoll,
-    );
-    await this.#enrichHtmlWithRoll(
-      html,
-      "castRoll",
-      "[data-cast-roll-html]",
-      this.#castRollClass(),
-    );
+    // Enrich the combat chat message with evaluated rolls. They target disjoint slots, so the
+    // renders can overlap. Roll.fromData redirects to the serialized class, which is how the
+    // spell cast slot resolves to whichever magic roll produced it.
+    await Promise.all([
+      this.#enrichHtmlWithRoll(html, "attackRoll", "[data-attack-roll-html]"),
+      this.#enrichHtmlWithRoll(html, "defenceRoll", "[data-defence-roll-html]"),
+      this.#enrichHtmlWithRoll(html, "damageRoll", "[data-damage-roll-html]"),
+      this.#enrichHtmlWithRoll(html, "hitLocationRoll", "[data-hit-location-roll-html]"),
+      this.#enrichHtmlWithRoll(
+        html,
+        "resistanceRoll",
+        "[data-resistance-roll-html]",
+        ResistanceRoll,
+      ),
+      this.#enrichHtmlWithRoll(html, "castRoll", "[data-cast-roll-html]", Roll),
+    ]);
 
     this.#hideHtmlElementsByOwnership(html);
 
@@ -174,7 +173,10 @@ export class RqgChatMessage extends ChatMessage {
    * Optionally hide the display of chat html elements which should not be shown to user.
    * The data-only-owner-visible-uuid value should be a document uuid that can be checked for ownership.
    * data-hide-from-owner-uuid is its inverse - everyone *but* that document's owners sees it, for
-   * the rarer case of keeping one participant in the dark rather than the rest of the table.
+   * the rarer case of keeping one participant in the dark rather than the rest of the table. It
+   * pairs with data-hide-unless-owner-uuid, which exempts one document's owners from that hiding
+   * and does nothing on its own. Both are a courtesy screen, not a secret: the markup still reaches
+   * the client, so never hide anything there that a player must not be able to read.
    */
   #hideHtmlElementsByOwnership(html: HTMLElement | undefined): void {
     if (game.user?.isGM) {
@@ -211,27 +213,12 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  /** A resistance-request card can carry the spell cast that triggered it. */
-  #castRollClass(): typeof SpiritMagicRoll | typeof RuneMagicRoll | undefined {
-    switch ((this.system as any)?.castRollType) {
-      case "spiritMagic":
-        return SpiritMagicRoll;
-      case "runeMagic":
-        return RuneMagicRoll;
-      default:
-        return undefined;
-    }
-  }
-
   async #enrichHtmlWithRoll(
     html: HTMLElement,
     systemDataRollName: string,
     domSelector: string,
     RollClass: any = AbilityRoll,
   ): Promise<void> {
-    if (!RollClass) {
-      return;
-    }
     const rollJson = (this.system as any)[systemDataRollName];
     const roll = safeFromJSON<AbilityRoll | ResistanceRoll>(RollClass, rollJson);
     if (roll?.isEvaluated) {

@@ -19,6 +19,7 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import {
+  canChooseSpellCastRollMode,
   getConfiguredRollModeOptions,
   getDefaultRollMode,
   getSelectedRollMode,
@@ -65,8 +66,6 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private casterActor: CharacterActor;
   private powX5: number;
   private token: TokenDocument | null | undefined;
-
-  protected override watchesUserTargets = true;
 
   protected override onUserTargetsChanged(): void {
     applySpellCastTargetNote(
@@ -182,7 +181,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       // RollFooter - a player's cast always posts a shared card, so only a GM picks a mode.
       totalChance: this.computeTotalChance(formData),
       rollMode: this.rollMode,
-      rollModes: game.user?.isGM ? getConfiguredRollModeOptions() : [],
+      rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
     };
   }
 

@@ -19,13 +19,8 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
   protected rollMode: foundry.dice.Roll.Mode = getDefaultRollMode();
 
   /**
-   * Opt in to being told when the user retargets, for dialogs that show or gate on the target.
-   * Subclasses set this and override {@link onUserTargetsChanged}.
-   */
-  protected watchesUserTargets = false;
-
-  /**
-   * The user's targets changed while this dialog is open. Patch in place where the affected markup
+   * The user's targets changed while this dialog is open. Override to keep target-dependent UI in
+   * step; dialogs that don't care inherit a no-op. Patch in place where the affected markup
    * is text or a disabled state; re-render where it isn't, e.g. a select whose options come from
    * the target - a re-render costs the focus of whatever field is being typed into.
    */
@@ -115,7 +110,7 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
   }
 
   private bindUserTargetHook(): void {
-    if (!this.watchesUserTargets || this._targetHookId != null) {
+    if (this._targetHookId != null) {
       return;
     }
     // Fires for every user's targeting, so react only to this one's.

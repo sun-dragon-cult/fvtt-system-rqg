@@ -44,7 +44,7 @@ export class RqgSettings<
       },
       no: {
         action: "cancel",
-        label: "Cancel",
+        label: "COMMON.Cancel",
         icon: "fa-solid fa-xmark",
         default: true,
       },

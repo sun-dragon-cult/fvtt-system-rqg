@@ -20,6 +20,7 @@ import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dia
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import {
+  canChooseSpellCastRollMode,
   getConfiguredRollModeOptions,
   getDefaultRollMode,
   getSelectedRollMode,
@@ -39,8 +40,6 @@ import { getRunePointSourceOptions, SELF_RUNE_POINT_SOURCE } from "../../system/
 const logger = new RqgLogger("RuneMagicRollDialogV2");
 
 export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
-  protected override watchesUserTargets = true;
-
   protected override onUserTargetsChanged(): void {
     applySpellCastTargetNote(
       this.element,
@@ -243,7 +242,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       ]),
       // A player's cast always posts a shared card, so only a GM picks a mode.
       rollMode: this.rollMode,
-      rollModes: game.user?.isGM ? getConfiguredRollModeOptions() : [],
+      rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
     };
   }
 

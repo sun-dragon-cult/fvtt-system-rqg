@@ -2,11 +2,13 @@ import type { RollHeaderData } from "../app-parts/roll-header.types.ts";
 import type { RollFooterData } from "../app-parts/roll-footer.types.ts";
 import type { ResistanceRequestRollerSide } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 
-/** Canvas-derived seed for {@link ResistanceRequestDialogV2}: the roller side is always player-owned. */
+/**
+ * Canvas-derived seed for {@link ResistanceRequestDialogV2}: the invoked token/actor is the active
+ * side and the target resists. Either side can be the recipient, so long as it is player-owned.
+ */
 export type ResistanceRequestSeed = {
   activeUuid?: string | undefined;
   passiveUuid?: string | undefined;
-  rollerSide?: ResistanceRequestRollerSide | undefined;
 };
 
 export type ResistanceRequestDialogContext = RollHeaderData &
@@ -16,9 +18,9 @@ export type ResistanceRequestDialogContext = RollHeaderData &
     passiveTokenOrActorOptions: SelectOptionData<string>[];
     characteristicOptions: SelectOptionData<string>[];
     rollerSideOptions: SelectOptionData<string>[];
-    /** Which fieldset offers the Manual entry - the one the recipient doesn't supply. */
-    activeIsManualCapable: boolean;
-    passiveIsManualCapable: boolean;
+    /** Which side is currently on Manual entry - only ever the one the recipient doesn't supply. */
+    activeIsManual: boolean;
+    passiveIsManual: boolean;
     /** Disables the Send button while a side is unresolved. */
     canSendRequest: boolean;
   };

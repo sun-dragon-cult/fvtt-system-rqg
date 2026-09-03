@@ -18,13 +18,7 @@ import Roll = foundry.dice.Roll;
 export class RuneMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: RuneMagicRollOptions;
 
-  public static async rollAndShow(options: RuneMagicRollOptions) {
-    const roll = await RuneMagicRoll.roll(options);
-    await roll.postToChat();
-    return roll;
-  }
-
-  /** Evaluate without posting - for callers that embed the roll in a card of their own. */
+  /** Evaluate without posting; postSpellCastResult decides which card carries the result. */
   public static async roll(options: RuneMagicRollOptions) {
     const roll = new RuneMagicRoll(undefined, {}, options);
     await roll.evaluate();

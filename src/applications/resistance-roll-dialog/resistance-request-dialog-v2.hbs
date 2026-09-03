@@ -14,7 +14,7 @@
         {{selectOptions activeTokenOrActorOptions selected=formData.activeTokenOrActorUuid localize=false}}
       </select>
 
-      {{#if (and activeIsManualCapable (eq formData.activeTokenOrActorUuid "manual"))}}
+      {{#if activeIsManual}}
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualName"}}</label>
         <input type="text" value="{{formData.activeManualName}}" name="activeManualName"
                placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualNamePlaceholder'}}">
@@ -37,11 +37,17 @@
         <input type="number" value="{{formData.otherModifier}}" name="otherModifier"> %
       </div>
     </div>
-    {{#if (and activeIsManualCapable (eq formData.activeTokenOrActorUuid "manual"))}}
+    {{#if activeIsManual}}
       <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
     {{/if}}
     <p class="hint">{{localize "RQG.Dialog.ResistanceRequest.SituationalModifierHint"}}</p>
   </fieldset>
+
+  <button type="button" class="resistance-swap-sides" data-action="swapSides"
+          data-tooltip="{{localize 'RQG.Dialog.ResistanceRequest.SwapSidesHint'}}">
+    <i class="fa-solid fa-arrow-right-arrow-left" inert></i>
+    {{localize "RQG.Dialog.ResistanceRequest.SwapSides"}}
+  </button>
 
   <fieldset>
     <legend>{{localize "RQG.Dialog.ResistanceRoll.Passive"}}</legend>
@@ -51,7 +57,7 @@
         {{selectOptions passiveTokenOrActorOptions selected=formData.passiveTokenOrActorUuid localize=false}}
       </select>
 
-      {{#if (and passiveIsManualCapable (eq formData.passiveTokenOrActorUuid "manual"))}}
+      {{#if passiveIsManual}}
         <label>{{localize "RQG.Dialog.ResistanceRoll.ManualName"}}</label>
         <input type="text" value="{{formData.passiveManualName}}" name="passiveManualName"
                placeholder="{{localize 'RQG.Dialog.ResistanceRoll.ManualNamePlaceholder'}}">
@@ -69,7 +75,7 @@
         </select>
       {{/if}}
     </div>
-    {{#if (and passiveIsManualCapable (eq formData.passiveTokenOrActorUuid "manual"))}}
+    {{#if passiveIsManual}}
       <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ManualHint"}}</p>
     {{/if}}
   </fieldset>

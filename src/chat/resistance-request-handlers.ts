@@ -52,14 +52,31 @@ export async function handleAcceptResistanceRequest(
     return;
   }
 
-  const messageData = requestChatMessage.toObject();
   // Accepting lets the spell take effect, so the target learns what they let through.
+  await answerResistanceRequest(requestChatMessage, { state: "Accepted" }, { revealSpell: true });
+}
+
+/**
+ * Settle a resistance request: patch its system data, re-render the card from it, and write it back.
+ * `revealSpell` lifts the concealment a combined cast card puts on the target - the spell took
+ * effect, so they now know what it was. Shared so Resist and Accept can't drift apart.
+ */
+export async function answerResistanceRequest(
+  requestChatMessage: ResistanceRequestChatMessage,
+  systemPatch: Record<string, unknown>,
+  options: { revealSpell: boolean; whisper?: string[]; blind?: boolean },
+): Promise<void> {
+  const messageData = requestChatMessage.toObject();
   foundry.utils.mergeObject(
     messageData,
-    { system: { state: "Accepted", spellHiddenFromUuid: "" } },
+    {
+      system: { ...systemPatch, ...(options.revealSpell ? { spellHiddenFromUuid: "" } : {}) },
+      ...(options.whisper !== undefined ? { whisper: options.whisper } : {}),
+      ...(options.blind !== undefined ? { blind: options.blind } : {}),
+    },
     { overwrite: true },
   );
-  if (requestChatMessage.system.castFlavor) {
+  if (options.revealSpell && requestChatMessage.system.castFlavor) {
     messageData.flavor = requestChatMessage.system.castFlavor;
   }
   messageData.content = await foundry.applications.handlebars.renderTemplate(

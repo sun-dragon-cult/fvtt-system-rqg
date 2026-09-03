@@ -2,7 +2,6 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import { activateChatTab } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type {
-  ResistanceRequestCastRollType,
   ResistanceRequestDataSourceData,
   ResistanceRequestRollerSide,
 } from "../../chat/data-model/resistance-request-chat-message.types.ts";
@@ -22,8 +21,14 @@ export type CreateResistanceRequestParams = {
   rollerCharacteristics: string;
   /** The opposing side, snapshotted now. */
   frozenValue: number;
-  frozenLabel: string;
   frozenActorName?: string | undefined;
+  /**
+   * Encoded characteristic(s) the frozen side is putting up, "" for a Manual value. Only used to
+   * spot a POW vs POW check, which earns the roller a POW gain roll outright (RQG p.418).
+   */
+  frozenCharacteristics?: string | undefined;
+  /** The frozen side's token/actor, so it can speak the card when it is the active side. */
+  frozenTokenOrActorUuid?: string | undefined;
   /** Labels for the flavor line, in RAW active-vs-passive order. */
   activeLabel: string;
   passiveLabel: string;
@@ -42,7 +47,6 @@ export type CreateResistanceRequestParams = {
   spellCast?:
     | {
         castRoll: SpellCastRoll;
-        castRollType: ResistanceRequestCastRollType;
         casterTokenOrActorUuid: string;
       }
     | undefined;
@@ -55,10 +59,18 @@ export async function createResistanceRequest(
   const rollerIsPassive = params.rollerSide === "passive";
   const spellCast = params.spellCast;
 
-  // The combined card is the caster's (like an attack card); a standalone request is the recipient's.
-  const speakerUuid = spellCast?.casterTokenOrActorUuid ?? params.targetTokenOrActorUuid;
+  // The active side speaks, like an attack card. A Manual hazard has a name but no document, so it
+  // speaks through an alias; a concealed cast has neither and falls back to the recipient.
+  const activeSideUuid = rollerIsPassive
+    ? (spellCast?.casterTokenOrActorUuid ?? params.frozenTokenOrActorUuid ?? "")
+    : params.targetTokenOrActorUuid;
+  const speakerAlias = rollerIsPassive && !activeSideUuid ? params.frozenActorName : undefined;
+  const speakerUuid = activeSideUuid || (speakerAlias ? "" : params.targetTokenOrActorUuid);
+
   const [speakerTokenOrActor, targetTokenOrActor] = await Promise.all([
-    fromUuid(speakerUuid) as Promise<TokenDocument | RqgActor | undefined>,
+    speakerUuid
+      ? (fromUuid(speakerUuid) as Promise<TokenDocument | RqgActor | undefined>)
+      : undefined,
     fromUuid(params.targetTokenOrActorUuid) as Promise<TokenDocument | RqgActor | undefined>,
   ]);
 
@@ -71,13 +83,12 @@ export async function createResistanceRequest(
     targetTokenOrActor instanceof TokenDocument ? targetTokenOrActor.actor : targetTokenOrActor
   ) as RqgActor | undefined;
 
-  // "opposes X" names whoever the speaker is up against: the resister on the caster's combined
-  // card, the frozen side on a request the recipient speaks. The combined card's message flavor
-  // already names the spell, so the body doesn't repeat it.
+  // "opposes X" names the passive side, since the active side is the one speaking. The combined
+  // card's message flavor already names the spell, so the body doesn't repeat it.
   const resistanceFlavor = buildResistanceRollFlavor(
     params.activeLabel,
     params.passiveLabel,
-    spellCast ? (targetActor?.name ?? undefined) : params.frozenActorName,
+    rollerIsPassive ? (targetActor?.name ?? undefined) : params.frozenActorName,
     spellCast ? undefined : params.description,
   );
 
@@ -85,8 +96,12 @@ export async function createResistanceRequest(
     state: "Requested",
     targetTokenOrActorUuid: params.targetTokenOrActorUuid,
     rollerSide: params.rollerSide,
-    activeCharacteristics: rollerIsPassive ? "" : params.rollerCharacteristics,
-    passiveCharacteristics: rollerIsPassive ? params.rollerCharacteristics : "",
+    activeCharacteristics: rollerIsPassive
+      ? (params.frozenCharacteristics ?? "")
+      : params.rollerCharacteristics,
+    passiveCharacteristics: rollerIsPassive
+      ? params.rollerCharacteristics
+      : (params.frozenCharacteristics ?? ""),
     activeValue: rollerIsPassive ? params.frozenValue : 0,
     activeLabel: params.activeLabel,
     passiveValue: rollerIsPassive ? 0 : params.frozenValue,
@@ -100,7 +115,6 @@ export async function createResistanceRequest(
     rollMode: params.rollMode,
     resistanceRoll: undefined,
     castRoll: spellCast ? spellCast.castRoll.toJSON() : undefined,
-    castRollType: spellCast?.castRollType ?? "",
     resistanceFlavor: spellCast ? resistanceFlavor : "",
     // Only the target is kept in the dark - the rest of the table follows the cast as it would an
     // attack. "" on a standalone request, which has no spell to hide.
@@ -134,7 +148,11 @@ export async function createResistanceRequest(
     system: chatSystemData,
     flavor: flavor,
     content: content,
-    speaker: getSpeakerCompat({ actor: speakerActor ?? undefined, token: speakerToken }),
+    speaker: getSpeakerCompat({
+      actor: speakerActor ?? undefined,
+      token: speakerToken,
+      alias: speakerAlias,
+    }),
     whisper: whisper,
     blind: blind,
   } as any);

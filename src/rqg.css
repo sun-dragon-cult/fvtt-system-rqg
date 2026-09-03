@@ -1054,12 +1054,6 @@
   }
 
   .chat-message {
-    & .acting-img {
-      width: 25px;
-      flex: unset;
-      border: none;
-    }
-
     & .roll-action {
       font-size: var(--font-size-18);
       font-weight: bold;
@@ -1963,6 +1957,15 @@
       display: flex;
       align-items: center;
       min-height: var(--input-height);
+    }
+
+    /* Sits between the two side fieldsets, narrow so it reads as a control on the divide. */
+    & .resistance-swap-sides {
+      display: flex;
+      width: auto;
+      margin-inline: auto;
+      align-items: center;
+      gap: 0.4rem;
     }
   }
 

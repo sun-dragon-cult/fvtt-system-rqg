@@ -17,13 +17,7 @@ import Roll = foundry.dice.Roll;
 export class SpiritMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: SpiritMagicRollOptions;
 
-  public static async rollAndShow(options: SpiritMagicRollOptions) {
-    const roll = await SpiritMagicRoll.roll(options);
-    await roll.postToChat();
-    return roll;
-  }
-
-  /** Evaluate without posting - for callers that embed the roll in a card of their own. */
+  /** Evaluate without posting; postSpellCastResult decides which card carries the result. */
   public static async roll(options: SpiritMagicRollOptions) {
     const roll = new SpiritMagicRoll(undefined, {}, options);
     await roll.evaluate();

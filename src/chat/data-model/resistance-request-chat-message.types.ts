@@ -1,12 +1,10 @@
 import type {
-  resistanceRequestCastRollType,
   resistanceRequestRollerSide,
   resistanceRequestState,
 } from "./resistance-request-chat-message.defs";
 
 export type ResistanceRequestState = (typeof resistanceRequestState)[number];
 export type ResistanceRequestRollerSide = (typeof resistanceRequestRollerSide)[number];
-export type ResistanceRequestCastRollType = (typeof resistanceRequestCastRollType)[number];
 
 // Narrowed actor type for subtype "resistanceRequest"
 export type ResistanceRequestChatMessage = ChatMessage & {
@@ -37,7 +35,6 @@ export interface ResistanceRequestDataSourceData {
   description: string | undefined;
   /** The spell cast that triggered this, rendered as a row above the resistance roll. */
   castRoll: string | object | undefined;
-  castRollType: ResistanceRequestCastRollType | "";
   /** "opposes X / POW vs POW" markup, shown in the body when the flavor slot holds the spell. */
   resistanceFlavor: string;
   /** The spell's flavor without the concealment wrapper, so a reveal can rebuild it. */

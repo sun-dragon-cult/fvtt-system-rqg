@@ -618,6 +618,7 @@
         "ManualLabelPlaceholder": "POT, STR, SIZ, POW…",
         "ManualValue": "Value",
         "ManualHint": "Stand-in for something with no sheet — e.g. a poison's POT.",
+        "SwapSidesHint": "Exchange the Active and Passive sides. Use it to put a poison's POT or another hazard on the Active side. Augment and Meditate are cleared, since they belonged to the side that moved.",
         "ResistingModifierHint": "You are resisting, so your Augment, Meditate and Other modifiers lower the active side's chance of overcoming you."
       },
       "ResistanceRequest": {
@@ -625,6 +626,8 @@
         "SituationalModifierHint": "Applies to the Active side. The recipient picks their own Augment and Meditate when they roll.",
         "SendRequest": "Send Request",
         "RollerSide": "Roll requested from",
+        "SwapSides": "Swap sides",
+        "SwapSidesHint": "Exchange the Active and Passive sides, keeping the same player on the dice. Use it to put a poison's POT or another hazard on the Active side.",
         "RollerSideOptions": {
           "active": "Active side",
           "passive": "Resisting side"
@@ -692,9 +695,9 @@
         "Halved": "Halved Chance",
         "Modifiers": "Modifiers",
         "Character": "Character",
-      "Caster": "Caster",
-      "Target": "Target",
-      "NoTarget": "No target selected",
+        "Caster": "Caster",
+        "Target": "Target",
+        "NoTarget": "No target selected",
         "AttackingActor": "Attacker",
         "DefendingActor": "Defender",
         "TargetedToken": "targeted token",

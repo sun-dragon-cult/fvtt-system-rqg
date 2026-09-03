@@ -40,18 +40,16 @@ function buildSideOptions(
   isFrozenSide: boolean,
   baseOptions: SelectOptionData<string>[],
 ): SelectOptionData<string>[] {
-  const selectedActor = resolveActorFromUuid(selectedUuid);
-  const canForce =
-    !!selectedUuid &&
-    selectedUuid !== MANUAL_SOURCE_VALUE &&
-    (isFrozenSide || !!selectedActor?.hasPlayerOwner);
-  const forcedUuid = canForce ? selectedUuid : "";
-  const forced = forcedUuid
-    ? (fromUuidSync(forcedUuid) as TokenDocument | RqgActor | undefined)
-    : undefined;
+  const selected =
+    selectedUuid && selectedUuid !== MANUAL_SOURCE_VALUE
+      ? (fromUuidSync(selectedUuid) as TokenDocument | RqgActor | undefined)
+      : undefined;
+  const selectedActor = (selected instanceof TokenDocument ? selected.actor : selected) as
+    RqgActor | undefined;
+  const canForce = !!selected && (isFrozenSide || !!selectedActor?.hasPlayerOwner);
   return getTokenOrActorOptions(
-    forcedUuid,
-    forced?.name ?? "",
+    canForce ? selectedUuid : "",
+    canForce ? (selected?.name ?? "") : "",
     canForce ? selectedActor : undefined,
     isFrozenSide,
     baseOptions,
@@ -71,6 +69,8 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
   }
 
   private seed: ResistanceRequestSeed;
+  /** Set by the swap button, applied on the next render against the live form values. */
+  private pendingSwap = false;
 
   constructor(
     seed: ResistanceRequestSeed = {},
@@ -89,6 +89,9 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       handler: ResistanceRequestDialogV2.onSubmit,
       submitOnChange: false,
       closeOnSubmit: true,
+    },
+    actions: {
+      swapSides: ResistanceRequestDialogV2.onSwapSidesAction,
     },
     position: {
       width: "auto" as const,
@@ -121,6 +124,66 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       : formData.activeTokenOrActorUuid;
   }
 
+  /** The side snapshotted when the request is sent - the only one that may be Manual. */
+  private static frozenUuid(formData: ResistanceRequestDialogFormData): string {
+    return ResistanceRequestDialogV2.rollerIsPassive(formData)
+      ? formData.activeTokenOrActorUuid
+      : formData.passiveTokenOrActorUuid;
+  }
+
+  /**
+   * Exchange the two sides, keeping the same actor as the recipient - so swapping a PC from active
+   * to passive puts the hazard on the attacking side without handing the dice to someone else.
+   */
+  private static async onSwapSidesAction(this: ResistanceRequestDialogV2): Promise<void> {
+    this.pendingSwap = true;
+    await this.render();
+  }
+
+  /** Manual isn't a uuid, so it never reaches fromUuidSync. */
+  private static sideHasPlayerOwner(sideUuid: string): boolean {
+    return (
+      !!sideUuid &&
+      sideUuid !== MANUAL_SOURCE_VALUE &&
+      !!resolveActorFromUuid(sideUuid)?.hasPlayerOwner
+    );
+  }
+
+  /** Move each side's whole entry across, so a swap keeps its characteristic and Manual value. */
+  private static swapSides(formData: ResistanceRequestDialogFormData): void {
+    const active = {
+      uuid: formData.activeTokenOrActorUuid,
+      characteristics: formData.activeCharacteristics,
+      manualName: formData.activeManualName,
+      manualLabel: formData.activeManualLabel,
+      manualValue: formData.activeManualValue,
+    };
+    formData.activeTokenOrActorUuid = formData.passiveTokenOrActorUuid;
+    formData.activeCharacteristics = formData.passiveCharacteristics;
+    formData.activeManualName = formData.passiveManualName;
+    formData.activeManualLabel = formData.passiveManualLabel;
+    formData.activeManualValue = formData.passiveManualValue;
+    formData.passiveTokenOrActorUuid = active.uuid;
+    formData.passiveCharacteristics = active.characteristics;
+    formData.passiveManualName = active.manualName;
+    formData.passiveManualLabel = active.manualLabel;
+    formData.passiveManualValue = active.manualValue;
+  }
+
+  /**
+   * "Whenever possible, let the player be the one to make the roll, whether they are the active
+   * side or the passive side" - so start on whichever seeded side a player owns.
+   */
+  private initialRollerSide(): ResistanceRequestRollerSide {
+    const activeIsPlayerOwned = ResistanceRequestDialogV2.sideHasPlayerOwner(
+      this.seed.activeUuid ?? "",
+    );
+    const passiveIsPlayerOwned = ResistanceRequestDialogV2.sideHasPlayerOwner(
+      this.seed.passiveUuid ?? "",
+    );
+    return !activeIsPlayerOwned && passiveIsPlayerOwned ? "passive" : "active";
+  }
+
   private static resolveSides(formData: ResistanceRequestDialogFormData): {
     active: ResolvedSide;
     passive: ResolvedSide;
@@ -150,8 +213,8 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       new foundry.applications.ux.FormDataExtended(this.form!, {}).object) ??
       {}) as ResistanceRequestDialogFormData;
 
-    formData.rollerSide ??= this.seed.rollerSide ?? "active";
-    const rollerIsPassive = ResistanceRequestDialogV2.rollerIsPassive(formData);
+    formData.rollerSide ??= this.initialRollerSide();
+    let rollerIsPassive = ResistanceRequestDialogV2.rollerIsPassive(formData);
 
     const defaultTargetUuid =
       game.user?.targets.size === 1 ? (game.user.targets.first()?.document?.uuid ?? "") : "";
@@ -168,6 +231,36 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       formData.passiveTokenOrActorUuid ??= seededFrozenUuid || MANUAL_SOURCE_VALUE;
     }
 
+    formData.activeCharacteristics ??= defaultCharacteristic;
+    formData.passiveCharacteristics ??= defaultCharacteristic;
+    formData.activeManualName ??= "";
+    formData.activeManualLabel ??= "";
+    formData.activeManualValue ??= 0;
+    formData.passiveManualName ??= "";
+    formData.passiveManualLabel ??= "";
+    formData.passiveManualValue ??= 0;
+
+    // The swap button exchanges the sides and follows the recipient across, so the same player
+    // keeps the dice while the other side becomes the attacker.
+    if (this.pendingSwap) {
+      this.pendingSwap = false;
+      ResistanceRequestDialogV2.swapSides(formData);
+      formData.rollerSide = rollerIsPassive ? "active" : "passive";
+      rollerIsPassive = !rollerIsPassive;
+    }
+
+    // Changing the toggle by hand can land the recipient on a Manual or NPC side, leaving nobody to
+    // send to. Swapping keeps the player as the recipient and moves the frozen value across. Two
+    // player-owned sides need no swap, so the toggle only moves the dice and leaves the odds alone.
+    if (
+      !ResistanceRequestDialogV2.sideHasPlayerOwner(
+        ResistanceRequestDialogV2.rollerUuid(formData),
+      ) &&
+      ResistanceRequestDialogV2.sideHasPlayerOwner(ResistanceRequestDialogV2.frozenUuid(formData))
+    ) {
+      ResistanceRequestDialogV2.swapSides(formData);
+    }
+
     // One token/actor scan, shared by both pickers.
     const baseTokenOrActorOptions = getBaseTokenOrActorOptions();
     const rollerOptions = buildSideOptions(
@@ -177,12 +270,12 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     );
     // The frozen side includes Manual (a GM-known POT etc.).
     const frozenOptions = buildSideOptions(
-      rollerIsPassive ? formData.activeTokenOrActorUuid : formData.passiveTokenOrActorUuid,
+      ResistanceRequestDialogV2.frozenUuid(formData),
       true,
       baseTokenOrActorOptions,
     );
 
-    // Flipping the toggle can leave the recipient's picker on a value it no longer offers.
+    // Neither side can take the request - fall back to any player-owned actor so Send can unlock.
     if (
       !rollerOptions.some(
         (option) => option.value === ResistanceRequestDialogV2.rollerUuid(formData),
@@ -195,15 +288,6 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
         formData.activeTokenOrActorUuid = fallback;
       }
     }
-
-    formData.activeCharacteristics ??= defaultCharacteristic;
-    formData.passiveCharacteristics ??= defaultCharacteristic;
-    formData.activeManualName ??= "";
-    formData.activeManualLabel ??= "";
-    formData.activeManualValue ??= 0;
-    formData.passiveManualName ??= "";
-    formData.passiveManualLabel ??= "";
-    formData.passiveManualValue ??= 0;
 
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
@@ -219,8 +303,8 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
         value: side,
         label: `RQG.Dialog.ResistanceRequest.RollerSideOptions.${side}`,
       })),
-      activeIsManualCapable: rollerIsPassive,
-      passiveIsManualCapable: !rollerIsPassive,
+      activeIsManual: rollerIsPassive && formData.activeTokenOrActorUuid === MANUAL_SOURCE_VALUE,
+      passiveIsManual: !rollerIsPassive && formData.passiveTokenOrActorUuid === MANUAL_SOURCE_VALUE,
 
       // RollHeader
       rollType: localize("RQG.Dialog.ResistanceRequest.Title"),
@@ -294,17 +378,25 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
     const rollerIsPassive = ResistanceRequestDialogV2.rollerIsPassive(formDataObject);
     const { active, passive } = ResistanceRequestDialogV2.resolveSides(formDataObject);
     const frozen = rollerIsPassive ? active : passive;
-    const rollerSide: ResistanceRequestRollerSide = rollerIsPassive ? "passive" : "active";
-
+    const frozenUuid = rollerIsPassive
+      ? formDataObject.activeTokenOrActorUuid
+      : formDataObject.passiveTokenOrActorUuid;
     await createResistanceRequest({
       targetTokenOrActorUuid: ResistanceRequestDialogV2.rollerUuid(formDataObject),
-      rollerSide: rollerSide,
+      rollerSide: formDataObject.rollerSide,
       rollerCharacteristics: rollerIsPassive
         ? formDataObject.passiveCharacteristics
         : formDataObject.activeCharacteristics,
       frozenValue: frozen.value,
-      frozenLabel: frozen.label,
       frozenActorName: frozen.actorName,
+      // A Manual value has no characteristic behind it, so it can never be a POW vs POW check.
+      frozenCharacteristics:
+        frozenUuid === MANUAL_SOURCE_VALUE
+          ? ""
+          : rollerIsPassive
+            ? formDataObject.activeCharacteristics
+            : formDataObject.passiveCharacteristics,
+      frozenTokenOrActorUuid: frozenUuid === MANUAL_SOURCE_VALUE ? undefined : frozenUuid,
       activeLabel: active.label,
       passiveLabel: passive.label,
       otherModifier: Number(formDataObject.otherModifier) || 0,
