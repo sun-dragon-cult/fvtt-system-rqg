@@ -8,7 +8,10 @@
     <label>
       {{localize "RQG.Dialog.Common.Target"}}
     </label>
-    <div>{{#if targetName}}{{targetName}}{{else}}{{localize "RQG.Dialog.Common.NoTarget"}}{{/if}}</div>
+    <div>
+      <span data-target-names>{{targetName}}</span>
+      <span data-target-note class="{{targetNoteClass}}" {{#unless targetNote}}hidden{{/unless}}>{{targetNote}}</span>
+    </div>
 
     <label>
       {{localize "RQG.Dialog.RuneMagicRoll.LevelUsed"}}

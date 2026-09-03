@@ -633,6 +633,10 @@
         "CastOnSelfContent": "No target selected. Cast <b>{spellName}</b> on yourself? Casting on yourself counts as accepting the spell, so there is no resistance roll.",
         "CastOnSelf": "Cast on self"
       },
+      "SpellCast": {
+        "SingleTargetOnly": "only one target",
+        "WillAskToCastOnSelf": "will ask to cast on yourself"
+      },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
         "LevelUsed": "Level",

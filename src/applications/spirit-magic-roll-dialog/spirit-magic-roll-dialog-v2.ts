@@ -7,7 +7,6 @@ import type {
 import {
   assertDocumentSubType,
   getSpeakerDisplayName,
-  getTargetedTokenNames,
   localize,
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
@@ -25,6 +24,10 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  applySpellCastTargetNote,
+  buildSpellCastTargetNote,
+} from "../app-parts/spell-cast-target-note";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getMagicPointSourceOptions,
@@ -62,6 +65,15 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private casterActor: CharacterActor;
   private powX5: number;
   private token: TokenDocument | null | undefined;
+
+  protected override watchesUserTargets = true;
+
+  protected override onUserTargetsChanged(): void {
+    applySpellCastTargetNote(
+      this.element,
+      buildSpellCastTargetNote(this.spellItem.system.resistedBy),
+    );
+  }
 
   protected override getLivePreviewFormBehaviorConfig() {
     return {
@@ -145,11 +157,16 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
     formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
+    const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+
     return {
       formData: formData,
 
       speakerName: getSpeakerDisplayName(speaker),
-      targetName: getTargetedTokenNames(),
+      targetName: targetNote.targetName,
+      targetNote: targetNote.targetNote,
+      targetNoteClass: targetNote.targetNoteClass,
+      disableRoll: targetNote.tooManyTargets,
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,

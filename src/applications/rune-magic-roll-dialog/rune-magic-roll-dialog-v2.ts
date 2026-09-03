@@ -5,7 +5,6 @@ import { templatePaths } from "../../system/load-handlebars-templates";
 import {
   assertDocumentSubType,
   getSpeakerDisplayName,
-  getTargetedTokenNames,
   localize,
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
@@ -27,6 +26,10 @@ import {
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import {
+  applySpellCastTargetNote,
+  buildSpellCastTargetNote,
+} from "../app-parts/spell-cast-target-note";
+import {
   AUTO_MAGIC_POINT_SOURCE,
   getAlliedBondActor,
   getMagicPointSourceOptions,
@@ -36,6 +39,15 @@ import { getRunePointSourceOptions, SELF_RUNE_POINT_SOURCE } from "../../system/
 const logger = new RqgLogger("RuneMagicRollDialogV2");
 
 export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override watchesUserTargets = true;
+
+  protected override onUserTargetsChanged(): void {
+    applySpellCastTargetNote(
+      this.element,
+      buildSpellCastTargetNote(this.spellItem.system.resistedBy),
+    );
+  }
+
   protected override getLivePreviewFormBehaviorConfig() {
     return {
       submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
@@ -193,11 +205,16 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const showRunePointSourceMismatchWarning =
       runePointSourceOptions.length === 0 && !!alliedBondActor;
 
+    const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+
     return {
       formData: formData,
 
       speakerName: getSpeakerDisplayName(speaker),
-      targetName: getTargetedTokenNames(),
+      targetName: targetNote.targetName,
+      targetNote: targetNote.targetNote,
+      targetNoteClass: targetNote.targetNoteClass,
+      disableRoll: targetNote.tooManyTargets,
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,
