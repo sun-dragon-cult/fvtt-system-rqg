@@ -518,7 +518,6 @@
         "Resist": "Resist",
         "Accept": "Accept",
         "AcceptedNotice": "Chose not to resist — the spell takes effect.",
-        "AcceptedNoticeGeneric": "Chose not to resist.",
         "SpellOvercame": "{casterName} overcame {targetName} — the spell takes effect.",
         "SpellNotOvercame": "{casterName} failed to overcome {targetName} — the spell has no effect.",
         "SpellTakesEffect": "{targetName} failed to resist — the spell takes effect.",

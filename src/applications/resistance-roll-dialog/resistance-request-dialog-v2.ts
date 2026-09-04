@@ -402,9 +402,9 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       otherModifier: Number(formDataObject.otherModifier) || 0,
       otherModifierDescription: formDataObject.otherModifierDescription || undefined,
       rollMode: resolveRollModeFromForm(form),
-      // Declining to resist is only the resisting side's to offer - an active roller has nothing
-      // to accept.
-      allowVoluntaryAccept: rollerIsPassive,
+      // RAW p.242 gives voluntary acceptance to spells alone - a poison or a trap is resisted or
+      // it isn't, so a GM's request is never declinable.
+      allowVoluntaryAccept: false,
     });
   }
 }

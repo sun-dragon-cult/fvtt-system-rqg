@@ -27,13 +27,7 @@
       {{/if}}
     </div>
   {{else if (eq state 'Accepted')}}
-    <p class="resistance-request-accepted">
-      {{#if isSpellCast}}
-        {{localize "RQG.ChatMessage.ResistanceRequest.AcceptedNotice"}}
-      {{else}}
-        {{localize "RQG.ChatMessage.ResistanceRequest.AcceptedNoticeGeneric"}}
-      {{/if}}
-    </p>
+    <p class="resistance-request-accepted">{{localize "RQG.ChatMessage.ResistanceRequest.AcceptedNotice"}}</p>
   {{else}}
     <span data-resistance-roll-html></span>
     {{#if outcomeDescription}}
