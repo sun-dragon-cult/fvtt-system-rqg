@@ -15,6 +15,7 @@ import {
   normalizeOtherModifierDescriptionForRoll,
   requireValue,
   toSignedString,
+  warnIfMultipleTargets,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -52,6 +53,11 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   ): boolean {
     const damageFormula = weaponItem.system.usage[usageType]?.damage ?? "";
     return /db(\/2)?/i.test(damageFormula.replaceAll(" ", ""));
+  }
+
+  /** Aimed blow options come from the target's hit locations, so a select can't be patched in place. */
+  protected override onUserTargetsChanged(): void {
+    void this.render();
   }
 
   protected override getLivePreviewFormBehaviorConfig() {
@@ -293,9 +299,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       ? -Math.floor(naturalAttackChance / 2)
       : 0;
 
-    if ((game.user?.targets.size ?? 0) > 1) {
-      ui.notifications?.info("Please target one token only");
-    }
+    warnIfMultipleTargets();
 
     const target = game.user?.targets.first();
 
@@ -317,6 +321,11 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.proneAttackerPrev = rawProneAttackerPrev === true || rawProneAttackerPrev === "true";
     formData.hitLocationFormulaBeforeProne ??= "1d20";
     formData.aimedBlow = formData.aimedBlow ? Number(formData.aimedBlow) : 0;
+
+    const aimedBlowOptions = AttackDialogV2.getAimedBlowOptions(target);
+    if (!aimedBlowOptions.some((option) => option.value === formData.aimedBlow)) {
+      formData.aimedBlow = 0;
+    }
 
     const proneAttacker = !!formData.proneAttacker;
 
@@ -358,7 +367,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       augmentOptions: AttackDialogV2.augmentOptions,
       damageBonusSourceOptions: damageBonusSourceOptions,
       hitLocationFormulaOptions: AttackDialogV2.getHitLocationFormulaOptions(formData.aimedBlow),
-      aimedBlowOptions: AttackDialogV2.getAimedBlowOptions(target),
+      aimedBlowOptions: aimedBlowOptions,
       weaponIsNatural: this.weaponItem.system.isNatural,
       selectedWeaponUsageHasDamageBonus: selectedWeaponUsageHasDamageBonus,
       isSelectedWeaponBroken: !hasValidSkillForSelectedUsage,
@@ -655,9 +664,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const target = game.user?.targets.first();
 
-    if ((game.user?.targets.size ?? 0) > 1) {
-      ui.notifications?.info("Please target one token only");
-    }
+    warnIfMultipleTargets();
 
     const hitLocationRollOptions: HitLocationRollOptions = {
       hitLocationNames: [], // hitLocationNames are added in defenceDialog when the target definitely selected
