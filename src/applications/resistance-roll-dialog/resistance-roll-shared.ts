@@ -210,16 +210,20 @@ export function buildResistanceModifiers(
   ];
 }
 
-// Only a known POW-vs-POW success under 95% is awarded outright; other POW rolls get the reminder.
+/**
+ * Winning a POW vs POW contest under 95% earns the roller a POW gain roll outright (RQG p.418,
+ * extended to the resisting side as a house rule); other POW rolls only get the reminder.
+ */
 export async function creditResistanceRollPowExperience(
-  activeActor: RqgActor | undefined,
+  rollerActor: RqgActor | undefined,
   activeCharacteristicsEncoded: string,
   passiveCharacteristicsEncoded: string | undefined,
+  rollerIsPassive: boolean,
   roll: ResistanceRoll,
 ): Promise<void> {
   if (
-    !activeActor ||
-    !isDocumentSubType<CharacterActor>(activeActor, ActorTypeEnum.Character) ||
+    !rollerActor ||
+    !isDocumentSubType<CharacterActor>(rollerActor, ActorTypeEnum.Character) ||
     roll.successLevel == null ||
     !decodeCharacteristics(activeCharacteristicsEncoded).includes("power")
   ) {
@@ -228,13 +232,20 @@ export async function creditResistanceRollPowExperience(
 
   const powVsPow = decodeCharacteristics(passiveCharacteristicsEncoded ?? "").includes("power");
   if (powVsPow) {
-    if (roll.successLevel <= AbilitySuccessLevelEnum.Success && roll.targetChance < 95) {
-      await activeActor.awardPowExperience();
+    // The success level tracks the active side, so the passive side wins when that roll fails.
+    const activeWon = roll.successLevel <= AbilitySuccessLevelEnum.Success;
+    const rollerWon = rollerIsPassive ? !activeWon : activeWon;
+    // Measured from the winner's own odds - the passive side's are the inverse.
+    const rollerChance = rollerIsPassive ? 100 - roll.targetChance : roll.targetChance;
+    if (rollerWon && rollerChance < 95) {
+      await rollerActor.awardPowExperience();
     }
     return;
   }
 
-  await activeActor.checkExperience("power", roll.successLevel, roll.targetChance);
+  if (!rollerIsPassive) {
+    await rollerActor.checkExperience("power", roll.successLevel, roll.targetChance);
+  }
 }
 
 type ResolvedSide = { value: number; label: string };
@@ -282,12 +293,16 @@ export function initialResistanceRollMode(stored?: string): foundry.dice.Roll.Mo
 /**
  * Chat visibility for a resistance request/response. The target's owners always see the card
  * (they roll it); "gm" also whispers the GMs, "blind" hides the outcome until a GM reveals it.
+ *
+ * An unanswered request is whispered whatever the mode: it is a question put to one player, not
+ * yet a result. The mode only opens it up once they have rolled.
  */
 export function resolveResistanceRequestVisibility(
   mode: string,
   targetActor: RqgActor | null | undefined,
+  stillUnanswered = false,
 ): { whisper: string[]; blind: boolean } {
-  if (mode !== "gm" && mode !== "blind") {
+  if (!stillUnanswered && mode !== "gm" && mode !== "blind") {
     return { whisper: [], blind: false };
   }
   const gmIds = ChatMessage.getWhisperRecipients("GM").map((user) => user.id);

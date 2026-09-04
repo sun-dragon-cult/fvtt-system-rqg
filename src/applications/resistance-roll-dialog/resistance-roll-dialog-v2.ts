@@ -35,15 +35,17 @@ type Side = "active" | "passive";
 type SideFields = {
   tokenOrActorUuid: string;
   characteristics: string;
+  manualName: string;
   manualLabel: string;
   manualValue: number;
 };
 
-// Side fields are named `${side}TokenOrActorUuid` / `${side}Characteristics` / `${side}ManualLabel` / `${side}ManualValue`.
+// Side fields are named `${side}TokenOrActorUuid` / `${side}Characteristics` / `${side}ManualName` / `${side}ManualLabel` / `${side}ManualValue`.
 function getSideFields(formData: ResistanceRollDialogFormData, side: Side): SideFields {
   return {
     tokenOrActorUuid: formData[`${side}TokenOrActorUuid`],
     characteristics: formData[`${side}Characteristics`],
+    manualName: formData[`${side}ManualName`],
     manualLabel: formData[`${side}ManualLabel`],
     manualValue: formData[`${side}ManualValue`],
   };
@@ -59,6 +61,9 @@ function setSideFields(
   }
   if (fields.characteristics !== undefined) {
     formData[`${side}Characteristics`] = fields.characteristics;
+  }
+  if (fields.manualName !== undefined) {
+    formData[`${side}ManualName`] = fields.manualName;
   }
   if (fields.manualLabel !== undefined) {
     formData[`${side}ManualLabel`] = fields.manualLabel;
@@ -105,6 +110,8 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private seed: ResistanceRollSeed | undefined;
   // Seed/prefill are first-render only; _prepareContext reruns on every form change.
   private seedApplied = false;
+  /** Set by the swap button, applied on the next render against the live form values. */
+  private pendingSwap = false;
 
   constructor(
     actor?: RqgActor | null,
@@ -133,6 +140,9 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       handler: ResistanceRollDialogV2.onSubmit,
       submitOnChange: false,
       closeOnSubmit: true,
+    },
+    actions: {
+      swapSides: ResistanceRollDialogV2.onSwapSidesAction,
     },
     position: {
       width: "auto" as const,
@@ -180,6 +190,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.activeTokenOrActorUuid ??= selfUuid;
     formData.activeCharacteristics ??= defaultCharacteristic;
+    formData.activeManualName ??= "";
     formData.activeManualLabel ??= "";
     formData.activeManualValue ??= 0;
 
@@ -197,6 +208,12 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
+
+    if (this.pendingSwap) {
+      this.pendingSwap = false;
+      ResistanceRollDialogV2.swapSides(formData);
+    }
+
     formData.otherModifier ??= "0";
     formData.otherModifierDescription ??= localize("RQG.Dialog.Common.OtherModifier");
     formData.actorUuid ??= this.actor?.uuid ?? "";
@@ -261,6 +278,24 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
     return sideResolved("active") && sideResolved("passive");
   }
 
+  /**
+   * Exchange the two sides, so a hazard entered as a Manual value can become the attacking side.
+   * Augment and Meditate stay behind - they belong to the actor that just moved, and carrying them
+   * over would quietly boost whatever took its place.
+   */
+  private static async onSwapSidesAction(this: ResistanceRollDialogV2): Promise<void> {
+    this.pendingSwap = true;
+    await this.render();
+  }
+
+  private static swapSides(formData: ResistanceRollDialogFormData): void {
+    const active = getSideFields(formData, "active");
+    setSideFields(formData, "active", getSideFields(formData, "passive"));
+    setSideFields(formData, "passive", active);
+    formData.augmentModifier = "0";
+    formData.meditateModifier = "0";
+  }
+
   private static resolveSide(
     formData: ResistanceRollDialogFormData,
     side: Side,
@@ -275,7 +310,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       fields.manualLabel,
       fields.manualValue,
       fallbackLabel,
-      side === "passive" ? formData.passiveManualName : undefined,
+      fields.manualName,
     );
   }
 
@@ -331,10 +366,28 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const active = ResistanceRollDialogV2.resolveSide(formDataObject, "active");
     const passive = ResistanceRollDialogV2.resolveSide(formDataObject, "passive");
-    const activeActor =
-      formDataObject.activeTokenOrActorUuid !== MANUAL_SOURCE_VALUE
-        ? resolveActorFromUuid(formDataObject.activeTokenOrActorUuid)
-        : undefined;
+
+    const activeIsManual = formDataObject.activeTokenOrActorUuid === MANUAL_SOURCE_VALUE;
+    const activeTokenOrActor = activeIsManual
+      ? undefined
+      : ((await fromUuid(formDataObject.activeTokenOrActorUuid)) as
+          TokenDocument | RqgActor | undefined);
+    const activeToken =
+      activeTokenOrActor instanceof TokenDocument ? activeTokenOrActor : undefined;
+    const activeActor = (activeToken ? activeToken.actor : activeTokenOrActor) as
+      RqgActor | undefined;
+
+    // The active side speaks, like an attack card - after a swap that is no longer necessarily the
+    // sheet this was opened from. A Manual hazard has a name but no document, so it speaks by alias;
+    // without one the speaker would fall through to whatever token happens to be selected.
+    let speaker;
+    if (activeIsManual) {
+      speaker = getSpeakerCompat({ alias: active.actorName || active.label });
+    } else if (activeActor) {
+      speaker = getSpeakerCompat({ actor: activeActor, token: activeToken });
+    } else {
+      speaker = getSpeakerCompat({ actor: selfActor, token: token });
+    }
 
     const options: ResistanceRollOptions = {
       activeValue: active.value,
@@ -348,7 +401,7 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
         formDataObject.otherModifier,
         formDataObject.otherModifierDescription,
       ),
-      speaker: getSpeakerCompat({ actor: selfActor ?? activeActor, token }),
+      speaker: speaker,
       rollMode: rollMode,
     };
 
@@ -361,7 +414,23 @@ export class ResistanceRollDialogV2 extends RqgInteractiveRollApplicationBase {
       activeActor,
       formDataObject.activeCharacteristics,
       formDataObject.passiveCharacteristics,
+      false,
       roll,
     );
+
+    // The resisting side earns its own gain roll when it holds; needs ownership to write the tick.
+    const passiveActor =
+      formDataObject.passiveTokenOrActorUuid !== MANUAL_SOURCE_VALUE
+        ? resolveActorFromUuid(formDataObject.passiveTokenOrActorUuid)
+        : undefined;
+    if (passiveActor?.isOwner) {
+      await creditResistanceRollPowExperience(
+        passiveActor,
+        formDataObject.activeCharacteristics,
+        formDataObject.passiveCharacteristics,
+        true,
+        roll,
+      );
+    }
   }
 }

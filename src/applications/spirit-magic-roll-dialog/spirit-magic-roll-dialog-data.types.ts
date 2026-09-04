@@ -6,6 +6,10 @@ export type SpiritMagicRollDialogContext = RollHeaderData &
     formData: SpiritMagicRollDialogFormData;
 
     speakerName: string;
+    /** Target names plus any note about an unusual target count - see buildSpellCastTargetNote. */
+    targetName: string;
+    targetNote: string;
+    targetNoteClass: string;
     isVariable: boolean;
 
     augmentOptions: SelectOptionData<number>[];

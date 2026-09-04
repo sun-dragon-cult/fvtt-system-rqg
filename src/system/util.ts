@@ -975,6 +975,14 @@ export function getActorLinkDecoration(actor: RqgActor | Actor | null | undefine
   }
 }
 
+/** Comma-joined names of the user's current targets, for showing what a roll is aimed at. */
+export function getTargetedTokenNames(): string {
+  return [...(game.user?.targets ?? [])]
+    .map((token) => token.document?.name ?? "")
+    .filter(isTruthy)
+    .join(", ");
+}
+
 export function warnIfMultipleTargets(): void {
   if ((game.user?.targets.size ?? 0) > 1) {
     ui.notifications?.info(localize("RQG.Notification.Warn.TargetOneTokenOnly"));

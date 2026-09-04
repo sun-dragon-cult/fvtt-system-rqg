@@ -974,8 +974,16 @@
         cursor: progress;
       }
 
-      & button.resistance-request-roll {
+      /* flex wins inside the Resist/Accept row; width covers a lone button. */
+      & button.resistance-request-roll,
+      & button.resistance-request-accept {
         width: 100%;
+        flex: 1;
+      }
+
+      /* Stands in for the message flavor, which the combined card gives to the spell. */
+      & .resistance-request-flavor {
+        margin: 0.4rem 0 0.2rem;
       }
     }
 
@@ -1046,12 +1054,6 @@
   }
 
   .chat-message {
-    & .acting-img {
-      width: 25px;
-      flex: unset;
-      border: none;
-    }
-
     & .roll-action {
       font-size: var(--font-size-18);
       font-weight: bold;
@@ -1955,6 +1957,15 @@
       display: flex;
       align-items: center;
       min-height: var(--input-height);
+    }
+
+    /* Sits between the two side fieldsets, narrow so it reads as a control on the divide. */
+    & .resistance-swap-sides {
+      display: flex;
+      width: auto;
+      margin-inline: auto;
+      align-items: center;
+      gap: 0.4rem;
     }
   }
 

@@ -20,11 +20,16 @@ import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dia
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import {
+  canChooseSpellCastRollMode,
   getConfiguredRollModeOptions,
   getDefaultRollMode,
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  applySpellCastTargetNote,
+  buildSpellCastTargetNote,
+} from "../app-parts/spell-cast-target-note";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getAlliedBondActor,
@@ -35,6 +40,13 @@ import { getRunePointSourceOptions, SELF_RUNE_POINT_SOURCE } from "../../system/
 const logger = new RqgLogger("RuneMagicRollDialogV2");
 
 export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
+  protected override onUserTargetsChanged(): void {
+    applySpellCastTargetNote(
+      this.element,
+      buildSpellCastTargetNote(this.spellItem.system.resistedBy),
+    );
+  }
+
   protected override getLivePreviewFormBehaviorConfig() {
     return {
       submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
@@ -192,10 +204,16 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     const showRunePointSourceMismatchWarning =
       runePointSourceOptions.length === 0 && !!alliedBondActor;
 
+    const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+
     return {
       formData: formData,
 
       speakerName: getSpeakerDisplayName(speaker),
+      targetName: targetNote.targetName,
+      targetNote: targetNote.targetNote,
+      targetNoteClass: targetNote.targetNoteClass,
+      disableRoll: targetNote.tooManyTargets,
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,
@@ -222,8 +240,9 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         { value: formData.meditateModifier },
         { value: formData.otherModifier },
       ]),
+      // A player's cast always posts a shared card, so only a GM picks a mode.
       rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(),
+      rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
     };
   }
 

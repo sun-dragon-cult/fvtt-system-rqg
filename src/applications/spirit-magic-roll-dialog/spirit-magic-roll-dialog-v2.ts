@@ -19,11 +19,16 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import {
+  canChooseSpellCastRollMode,
   getConfiguredRollModeOptions,
   getDefaultRollMode,
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  applySpellCastTargetNote,
+  buildSpellCastTargetNote,
+} from "../app-parts/spell-cast-target-note";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getMagicPointSourceOptions,
@@ -61,6 +66,13 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private casterActor: CharacterActor;
   private powX5: number;
   private token: TokenDocument | null | undefined;
+
+  protected override onUserTargetsChanged(): void {
+    applySpellCastTargetNote(
+      this.element,
+      buildSpellCastTargetNote(this.spellItem.system.resistedBy),
+    );
+  }
 
   protected override getLivePreviewFormBehaviorConfig() {
     return {
@@ -144,10 +156,16 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
     formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
+    const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+
     return {
       formData: formData,
 
       speakerName: getSpeakerDisplayName(speaker),
+      targetName: targetNote.targetName,
+      targetNote: targetNote.targetNote,
+      targetNoteClass: targetNote.targetNoteClass,
+      disableRoll: targetNote.tooManyTargets,
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
@@ -160,10 +178,10 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       spellSummaryTooltip: this.spellItem.spellSummaryTooltip ?? "",
       baseChance: (this.powX5 ?? 0) + "%",
 
-      // RollFooter
+      // RollFooter - a player's cast always posts a shared card, so only a GM picks a mode.
       totalChance: this.computeTotalChance(formData),
       rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(),
+      rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
     };
   }
 

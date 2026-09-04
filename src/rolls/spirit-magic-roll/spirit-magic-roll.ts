@@ -17,18 +17,22 @@ import Roll = foundry.dice.Roll;
 export class SpiritMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   declare options: SpiritMagicRollOptions;
 
-  public static async rollAndShow(options: SpiritMagicRollOptions) {
+  /** Evaluate without posting; postSpellCastResult decides which card carries the result. */
+  public static async roll(options: SpiritMagicRollOptions) {
     const roll = new SpiritMagicRoll(undefined, {}, options);
     await roll.evaluate();
+    return roll;
+  }
+
+  public async postToChat(): Promise<void> {
     activateChatTab();
-    const msg = await roll.toMessage({ flavor: roll.flavor, speaker: options.speaker }, {
-      messageMode: options.rollMode,
+    const msg = await this.toMessage({ flavor: this.flavor, speaker: this.options.speaker }, {
+      messageMode: this.options.rollMode,
       create: true,
     } as unknown as Record<string, unknown>);
     if (msg?.id != null) {
       await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
     }
-    return roll;
   }
 
   constructor(formula: string = "1d100", data?: D, options?: SpiritMagicRollOptions) {

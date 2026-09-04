@@ -15,7 +15,16 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
 ) {
   private _skipNextChangeRerender = false;
   private _livePreviewHandlersBoundTo?: HTMLFormElement;
+  private _targetHookId: number | undefined;
   protected rollMode: foundry.dice.Roll.Mode = getDefaultRollMode();
+
+  /**
+   * The user's targets changed while this dialog is open. Override to keep target-dependent UI in
+   * step; dialogs that don't care inherit a no-op. Patch in place where the affected markup
+   * is text or a disabled state; re-render where it isn't, e.g. a select whose options come from
+   * the target - a re-render costs the focus of whatever field is being typed into.
+   */
+  protected onUserTargetsChanged(): void {}
 
   protected onRollModeParentClick(_event: MouseEvent): void {
     // Subclasses can opt in by overriding applySelectedRollMode.
@@ -97,6 +106,29 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
   ): Promise<void> {
     await super._onRender(context, options);
     this.bindLivePreviewHandlers(this.element);
+    this.bindUserTargetHook();
+  }
+
+  private bindUserTargetHook(): void {
+    if (this._targetHookId != null) {
+      return;
+    }
+    // Fires for every user's targeting, so react only to this one's.
+    this._targetHookId = Hooks.on("targetToken", (user: User) => {
+      if (user?.id === game.user?.id) {
+        this.onUserTargetsChanged();
+      }
+    }) as unknown as number;
+  }
+
+  protected override _onClose(
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): void {
+    if (this._targetHookId != null) {
+      Hooks.off("targetToken", this._targetHookId);
+      this._targetHookId = undefined;
+    }
+    super._onClose(options);
   }
 
   protected override _onChangeForm(

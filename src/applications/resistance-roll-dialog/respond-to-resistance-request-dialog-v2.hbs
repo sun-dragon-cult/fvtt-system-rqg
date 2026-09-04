@@ -25,5 +25,9 @@
     </div>
   </div>
 
+  {{#if rollerIsPassive}}
+    <p class="hint">{{localize "RQG.Dialog.ResistanceRoll.ResistingModifierHint"}}</p>
+  {{/if}}
+
   <input type="hidden" value="{{formData.chatMessageUuid}}" name="chatMessageUuid">
 </div>

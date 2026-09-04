@@ -7,6 +7,8 @@ export type RespondToResistanceRequestDialogContext = RollHeaderData &
     speakerName: string;
     activeLabel: string;
     passiveLabel: string;
+    /** Marks the recipient's own row and explains that their modifiers work against the active side. */
+    rollerIsPassive: boolean;
     augmentOptions: SelectOptionData<number>[];
     meditateOptions: SelectOptionData<number>[];
   };

@@ -4,9 +4,16 @@ import type {
   RespondToResistanceRequestDialogContext,
   RespondToResistanceRequestDialogFormData,
 } from "./respond-to-resistance-request-dialog-data.types.ts";
-import { activateChatTab, getSpeakerDisplayName, localize } from "../../system/util";
+import {
+  getSpeakerDisplayName,
+  localize,
+  normalizeOtherModifierDescriptionForRoll,
+} from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { ResistanceRollOptions } from "../../rolls/resistance-roll/resistance-roll.types";
+import type {
+  Modifier,
+  ResistanceRollOptions,
+} from "../../rolls/resistance-roll/resistance-roll.types";
 import { ResistanceRoll } from "../../rolls/resistance-roll/resistance-roll";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula.ts";
 import {
@@ -25,11 +32,24 @@ import {
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getConfiguredRollModeOptions, resolveRollModeFromForm } from "../app-parts/roll-mode";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
-import { updateChatMessage } from "../../sockets/socketable-requests";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { answerResistanceRequest } from "../../chat/resistance-request-handlers";
+import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 
 const logger = new RqgLogger("RespondToResistanceRequestDialogV2");
+
+const RESPOND_DIALOG_ID_PREFIX = "resistance-request-respond";
+
+type ResolvedRequestSides = {
+  activeValue: number;
+  activeLabel: string;
+  passiveValue: number;
+  passiveLabel: string;
+  /** The recipient supplies the passive side, so their own modifiers work against the active side. */
+  rollerIsPassive: boolean;
+  opposingActorName?: string | undefined;
+};
 
 /**
  * The recipient answers a resistance-request card: both sides are fixed by the request, they only
@@ -44,16 +64,16 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
   }
 
   private requestChatMessage: ResistanceRequestChatMessage;
-  private activeValue = 0;
-  private passiveValue = 0;
-  private activeLabel = "";
-  private passiveLabel = "";
+  private sides: ResolvedRequestSides;
 
   constructor(
     chatMessageId: string,
     options?: Partial<foundry.applications.types.ApplicationConfiguration>,
   ) {
-    super(options);
+    super({
+      ...options,
+      id: RespondToResistanceRequestDialogV2.idForChatMessage(chatMessageId),
+    });
     const requestChatMessage = game.messages?.get(chatMessageId ?? "") as
       ResistanceRequestChatMessage | undefined;
     if (!requestChatMessage) {
@@ -61,10 +81,19 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     }
     this.requestChatMessage = requestChatMessage!;
     this.rollMode = initialResistanceRollMode(this.requestChatMessage.system.rollMode);
+    this.sides = RespondToResistanceRequestDialogV2.resolveSides(
+      this.requestChatMessage,
+      RespondToResistanceRequestDialogV2.resolveTarget(this.requestChatMessage).actor,
+    );
+  }
+
+  /** The window id a request card's dialog gets - one per card, so clicking twice can't stack two. */
+  static idForChatMessage(chatMessageId: string): string {
+    return `${RESPOND_DIALOG_ID_PREFIX}-${chatMessageId}`;
   }
 
   static override DEFAULT_OPTIONS = {
-    id: `resistance-request-respond-{id}`,
+    id: `${RESPOND_DIALOG_ID_PREFIX}-{id}`,
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "resistance-roll-dialog"],
     form: {
@@ -106,11 +135,11 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
   }
 
   // Takes the resolved actor so callers look the target up once.
-  private static resolveActive(
+  private static resolveRollerSide(
     actor: RqgActor | undefined,
-    activeCharacteristics: string,
+    characteristicsEncoded: string,
   ): { value: number; label: string } {
-    const names = decodeCharacteristics(activeCharacteristics);
+    const names = decodeCharacteristics(characteristicsEncoded);
     if (!actor || names.length === 0) {
       return { value: 0, label: "" };
     }
@@ -118,6 +147,78 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       value: names.reduce((sum, name) => sum + resolveCharacteristicValue(actor, name), 0),
       label: names.map((name) => resolveCharacteristicLabel(name)).join(" + "),
     };
+  }
+
+  /** The recipient's side is read live off their sheet; the opposing side was frozen when sent. */
+  private static resolveSides(
+    requestChatMessage: ResistanceRequestChatMessage,
+    actor: RqgActor | undefined,
+  ): ResolvedRequestSides {
+    const system = requestChatMessage.system;
+    const rollerIsPassive = system.rollerSide === "passive";
+    const roller = RespondToResistanceRequestDialogV2.resolveRollerSide(
+      actor,
+      rollerIsPassive ? system.passiveCharacteristics : system.activeCharacteristics,
+    );
+
+    return rollerIsPassive
+      ? {
+          activeValue: system.activeValue,
+          activeLabel: system.activeLabel,
+          passiveValue: roller.value,
+          passiveLabel: roller.label,
+          rollerIsPassive: true,
+          opposingActorName: system.activeActorName,
+        }
+      : {
+          activeValue: roller.value,
+          activeLabel: roller.label,
+          passiveValue: system.passiveValue,
+          passiveLabel: system.passiveLabel,
+          rollerIsPassive: false,
+          opposingActorName: system.passiveActorName,
+        };
+  }
+
+  /**
+   * The recipient's Augment/Meditate/Other always strengthen the recipient, so they subtract from
+   * the active side's chance when the recipient is the one resisting. The request's own modifier
+   * always belongs to the active side.
+   */
+  private static buildModifiers(
+    formData: RespondToResistanceRequestDialogFormData,
+    sides: ResolvedRequestSides,
+    requestChatMessage: ResistanceRequestChatMessage,
+  ): Modifier[] {
+    const rollerModifiers = buildResistanceModifiers(
+      formData.augmentModifier,
+      formData.meditateModifier,
+      formData.otherModifier,
+      formData.otherModifierDescription,
+    );
+    if (!sides.rollerIsPassive) {
+      return rollerModifiers;
+    }
+
+    const requestModifier = Number(requestChatMessage.system.otherModifier) || 0;
+    return [
+      ...rollerModifiers.map((modifier) => ({ ...modifier, value: -modifier.value })),
+      ...(requestModifier
+        ? [
+            {
+              value: requestModifier,
+              description: normalizeOtherModifierDescriptionForRoll(
+                requestChatMessage.system.otherModifierDescription ?? "",
+              ),
+            },
+          ]
+        : []),
+    ];
+  }
+
+  /** The side's label, named with the actor it came from so both sides read alike. */
+  private static describeSide(label: string, actorName: string | undefined): string {
+    return label && actorName ? `${label} (${actorName})` : label;
   }
 
   override async _prepareContext(): Promise<RespondToResistanceRequestDialogContext> {
@@ -128,86 +229,87 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     const { actor, token } = RespondToResistanceRequestDialogV2.resolveTarget(
       this.requestChatMessage,
     );
-    const active = RespondToResistanceRequestDialogV2.resolveActive(
-      actor,
-      this.requestChatMessage.system.activeCharacteristics,
-    );
-    this.activeValue = active.value;
-    this.passiveValue = this.requestChatMessage.system.passiveValue;
-    this.activeLabel = active.label;
-    this.passiveLabel = this.requestChatMessage.system.passiveLabel;
+    this.sides = RespondToResistanceRequestDialogV2.resolveSides(this.requestChatMessage, actor);
 
-    // Augment/Meditate are the roller's own choices; only Other is seeded from the request.
+    // Augment/Meditate are the roller's own choices; Other is only seeded when it's theirs to use.
     formData.augmentModifier ??= "0";
     formData.meditateModifier ??= "0";
-    formData.otherModifier ??= String(this.requestChatMessage.system.otherModifier ?? 0);
+    formData.otherModifier ??= this.sides.rollerIsPassive
+      ? "0"
+      : String(this.requestChatMessage.system.otherModifier ?? 0);
     formData.otherModifierDescription ??=
-      this.requestChatMessage.system.otherModifierDescription ||
+      (this.sides.rollerIsPassive ? "" : this.requestChatMessage.system.otherModifierDescription) ||
       localize("RQG.Dialog.Common.OtherModifier");
     formData.chatMessageUuid ??= this.requestChatMessage.uuid ?? "";
 
     const speaker = getSpeakerCompat({ actor: actor, token: token });
+    const opposingName = this.sides.opposingActorName;
+    const rollerName = actor?.name ?? undefined;
+    const activeLabel = RespondToResistanceRequestDialogV2.describeSide(
+      this.sides.activeLabel,
+      this.sides.rollerIsPassive ? opposingName : rollerName,
+    );
+    const passiveLabel = RespondToResistanceRequestDialogV2.describeSide(
+      this.sides.passiveLabel,
+      this.sides.rollerIsPassive ? rollerName : opposingName,
+    );
 
     return {
       formData: formData,
       speakerName: getSpeakerDisplayName(speaker),
-      activeLabel: this.activeLabel,
-      passiveLabel: this.passiveLabel,
+      activeLabel: activeLabel,
+      passiveLabel: passiveLabel,
+      rollerIsPassive: this.sides.rollerIsPassive,
       augmentOptions: augmentOptions,
       meditateOptions: meditateOptions,
 
       // RollHeader
       rollType: localize("RQG.Roll.ResistanceRoll.Title"),
-      rollName: `${this.activeLabel || "?"} ${localize("RQG.Roll.ResistanceRoll.Vs")} ${this.passiveLabel || "?"}`,
+      rollName:
+        this.requestChatMessage.system.description ||
+        `${this.sides.activeLabel || "?"} ${localize("RQG.Roll.ResistanceRoll.Vs")} ${this.sides.passiveLabel || "?"}`,
       baseChance: "",
 
       // RollFooter
-      totalChance: RespondToResistanceRequestDialogV2.computeTotalChance(
-        this.activeValue,
-        this.passiveValue,
-        formData,
-      ),
+      totalChance: this.computeTotalChance(formData),
       totalChanceTooltip: this.buildChanceBreakdown(formData),
       rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(RESISTANCE_REQUEST_ROLL_MODES),
+      // A combined cast card keeps the visibility it was posted with, so offering a mode here
+      // would be a control that does nothing.
+      rollModes: this.requestChatMessage.system.castRoll
+        ? []
+        : getConfiguredRollModeOptions(RESISTANCE_REQUEST_ROLL_MODES),
     };
   }
 
   private buildChanceBreakdown(formData: RespondToResistanceRequestDialogFormData): string {
     return buildResistanceChanceBreakdown(
-      { value: this.activeValue, label: this.activeLabel },
-      { value: this.passiveValue, label: this.passiveLabel },
-      buildResistanceModifiers(
-        formData.augmentModifier,
-        formData.meditateModifier,
-        formData.otherModifier,
-        formData.otherModifierDescription,
+      { value: this.sides.activeValue, label: this.sides.activeLabel },
+      { value: this.sides.passiveValue, label: this.sides.passiveLabel },
+      RespondToResistanceRequestDialogV2.buildModifiers(
+        formData,
+        this.sides,
+        this.requestChatMessage,
       ),
     );
   }
 
-  private static computeTotalChance(
-    activeValue: number,
-    passiveValue: number,
-    formData: RespondToResistanceRequestDialogFormData,
-  ): number {
-    return computeResistanceTargetChance(activeValue, passiveValue, [
-      Number(formData.augmentModifier),
-      Number(formData.meditateModifier),
-      Number(formData.otherModifier),
-    ]);
+  private computeTotalChance(formData: RespondToResistanceRequestDialogFormData): number {
+    return computeResistanceTargetChance(
+      this.sides.activeValue,
+      this.sides.passiveValue,
+      RespondToResistanceRequestDialogV2.buildModifiers(
+        formData,
+        this.sides,
+        this.requestChatMessage,
+      ).map((modifier) => modifier.value),
+    );
   }
 
   private updateLivePreview(): void {
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as RespondToResistanceRequestDialogFormData;
-    this.updateTotalChanceDisplay(
-      RespondToResistanceRequestDialogV2.computeTotalChance(
-        this.activeValue,
-        this.passiveValue,
-        formData,
-      ),
-    );
+    this.updateTotalChanceDisplay(this.computeTotalChance(formData));
 
     const targetChanceBox = this.element.querySelector<HTMLElement>("[data-target-chance-box]");
     if (targetChanceBox) {
@@ -231,28 +333,38 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       logger.throw("Resistance request chat message not found", formDataObject);
     }
 
+    // The card may have been answered elsewhere while this dialog sat open - from the same card's
+    // Accept, or by a GM on another client - and a roll now would overwrite that outcome.
+    if (requestChatMessage!.system.state !== "Requested") {
+      ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
+      return;
+    }
+
     const { actor, token } = RespondToResistanceRequestDialogV2.resolveTarget(requestChatMessage!);
-    const active = RespondToResistanceRequestDialogV2.resolveActive(
-      actor,
-      requestChatMessage!.system.activeCharacteristics,
-    );
-    if (!actor || !active.label) {
+    const sides = RespondToResistanceRequestDialogV2.resolveSides(requestChatMessage!, actor);
+    const rollerLabel = sides.rollerIsPassive ? sides.passiveLabel : sides.activeLabel;
+    if (!actor || !rollerLabel) {
       ui.notifications?.error(localize("RQG.Notification.Error.ResistanceRequestTargetNotFound"));
+      return;
+    }
+
+    // Hiding the button in the DOM isn't a permission check - match the Accept handler's.
+    if (!game.user?.isGM && !actor.isOwner) {
+      ui.notifications?.warn(localize("RQG.Notification.Warn.NotOwnerOfResistanceRequest"));
       return;
     }
 
     const rollMode = resolveRollModeFromForm(form);
     const options: ResistanceRollOptions = {
-      activeValue: active.value,
-      activeLabel: active.label,
-      passiveValue: requestChatMessage!.system.passiveValue,
-      passiveLabel: requestChatMessage!.system.passiveLabel,
-      passiveActorName: requestChatMessage!.system.passiveActorName,
-      modifiers: buildResistanceModifiers(
-        formDataObject.augmentModifier,
-        formDataObject.meditateModifier,
-        formDataObject.otherModifier,
-        formDataObject.otherModifierDescription,
+      activeValue: sides.activeValue,
+      activeLabel: sides.activeLabel,
+      passiveValue: sides.passiveValue,
+      passiveLabel: sides.passiveLabel,
+      passiveActorName: sides.rollerIsPassive ? undefined : sides.opposingActorName,
+      modifiers: RespondToResistanceRequestDialogV2.buildModifiers(
+        formDataObject,
+        sides,
+        requestChatMessage!,
       ),
       speaker: getSpeakerCompat({ actor: actor, token: token }),
       rollMode: rollMode,
@@ -261,34 +373,61 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     const roll = new ResistanceRoll(undefined, {}, options);
     await roll.evaluate();
 
-    const { whisper, blind } = resolveResistanceRequestVisibility(rollMode, actor);
+    // A combined cast card was already posted publicly, so re-whispering it now would only hide a
+    // roll everyone has seen - it keeps the visibility it was created with.
+    const { whisper, blind } = requestChatMessage!.system.castRoll
+      ? {
+          whisper: (requestChatMessage!.whisper ?? []) as unknown as string[],
+          blind: !!requestChatMessage!.blind,
+        }
+      : resolveResistanceRequestVisibility(rollMode, actor);
 
     if (game.dice3d) {
       await game.dice3d.showForRoll(roll, game.user, true, whisper.length ? whisper : null, blind);
     }
 
-    const messageData = requestChatMessage!.toObject();
-    foundry.utils.mergeObject(
-      messageData,
-      {
-        system: { state: "Rolled", resistanceRoll: roll.toJSON() },
-        whisper: whisper,
-        blind: blind,
-      },
-      { overwrite: true },
-    );
-    messageData.content = await foundry.applications.handlebars.renderTemplate(
-      templatePaths.resistanceRequestChatMessage,
-      messageData.system,
-    );
+    // The roll is the active side's, so its success level says whether the *caster* got through -
+    // "Failure" on a resister's card means they held. Spell it out rather than leave the badge to
+    // be read either way.
+    const activeOvercame =
+      roll.successLevel != null && roll.successLevel <= AbilitySuccessLevelEnum.Success;
+    const targetName = actor.name ?? "";
+    // A hidden cast withholds the caster's name, so fall back to phrasing that doesn't need it.
+    const casterName = sides.rollerIsPassive ? sides.opposingActorName : undefined;
+    let outcomeDescription = "";
+    if (requestChatMessage!.system.isSpellCast) {
+      outcomeDescription = casterName
+        ? localize(
+            activeOvercame
+              ? "RQG.ChatMessage.ResistanceRequest.SpellOvercame"
+              : "RQG.ChatMessage.ResistanceRequest.SpellNotOvercame",
+            { casterName: casterName, targetName: targetName },
+          )
+        : localize(
+            activeOvercame
+              ? "RQG.ChatMessage.ResistanceRequest.SpellTakesEffect"
+              : "RQG.ChatMessage.ResistanceRequest.SpellResisted",
+            { targetName: targetName },
+          );
+    }
 
-    activateChatTab();
-    await updateChatMessage(requestChatMessage!, messageData);
+    // A spell that lands is felt, so the target learns what it was. One they turned aside stays
+    // a mystery, so only an overcome reveals it.
+    await answerResistanceRequest(
+      requestChatMessage!,
+      {
+        state: "Rolled",
+        resistanceRoll: roll.toJSON(),
+        outcomeDescription: outcomeDescription,
+      },
+      { revealSpell: activeOvercame, whisper: whisper, blind: blind },
+    );
 
     await creditResistanceRollPowExperience(
       actor,
       requestChatMessage!.system.activeCharacteristics,
       requestChatMessage!.system.passiveCharacteristics,
+      sides.rollerIsPassive,
       roll,
     );
   }
