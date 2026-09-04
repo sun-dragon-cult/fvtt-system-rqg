@@ -2,8 +2,10 @@ import { rqidLinkSchemaField } from "./rqid-link-field";
 import {
   SpellConcentrationEnum,
   SpellDurationEnum,
+  SpellEffectTierEnum,
   SpellRangeEnum,
   SpellResistedByEnum,
+  SpellTargetKindEnum,
 } from "../item-data/spell";
 import { enumChoices } from "./enum-choices";
 
@@ -41,6 +43,20 @@ export function spellSchemaFields() {
       nullable: false,
       initial: SpellResistedByEnum.None,
       choices: enumChoices(SpellResistedByEnum, "RQG.Item.Spell.ResistedByEnum."),
+    }),
+    // #1080's survey enums - declared so content is authored once, ahead of #1079's application
+    // machinery that will actually consume them.
+    targetKind: new StringField({
+      blank: false,
+      nullable: false,
+      initial: SpellTargetKindEnum.None,
+      choices: enumChoices(SpellTargetKindEnum, "RQG.Item.Spell.TargetKindEnum."),
+    }),
+    effectTier: new StringField({
+      blank: false,
+      nullable: false,
+      initial: SpellEffectTierEnum.None,
+      choices: enumChoices(SpellEffectTierEnum, "RQG.Item.Spell.EffectTierEnum."),
     }),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
   } as const;
