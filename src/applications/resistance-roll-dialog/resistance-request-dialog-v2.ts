@@ -402,7 +402,9 @@ export class ResistanceRequestDialogV2 extends RqgInteractiveRollApplicationBase
       otherModifier: Number(formDataObject.otherModifier) || 0,
       otherModifierDescription: formDataObject.otherModifierDescription || undefined,
       rollMode: resolveRollModeFromForm(form),
-      allowVoluntaryAccept: false,
+      // Declining to resist is only the resisting side's to offer - an active roller has nothing
+      // to accept.
+      allowVoluntaryAccept: rollerIsPassive,
     });
   }
 }

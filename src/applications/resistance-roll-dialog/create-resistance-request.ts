@@ -59,12 +59,15 @@ export async function createResistanceRequest(
   const rollerIsPassive = params.rollerSide === "passive";
   const spellCast = params.spellCast;
 
-  // The active side speaks, like an attack card. A Manual hazard has a name but no document, so it
-  // speaks through an alias; a concealed cast has neither and falls back to the recipient.
+  // The active side speaks, like an attack card. A Manual hazard has no document, so it speaks
+  // through an alias - its own name, or its label when unnamed. A concealed cast stays anonymous.
   const activeSideUuid = rollerIsPassive
     ? (spellCast?.casterTokenOrActorUuid ?? params.frozenTokenOrActorUuid ?? "")
     : params.targetTokenOrActorUuid;
-  const speakerAlias = rollerIsPassive && !activeSideUuid ? params.frozenActorName : undefined;
+  const speakerAlias =
+    rollerIsPassive && !activeSideUuid
+      ? params.frozenActorName || (params.isSpellCast ? undefined : params.activeLabel)
+      : undefined;
   const speakerUuid = activeSideUuid || (speakerAlias ? "" : params.targetTokenOrActorUuid);
 
   const [speakerTokenOrActor, targetTokenOrActor] = await Promise.all([

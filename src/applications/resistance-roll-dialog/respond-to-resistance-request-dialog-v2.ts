@@ -274,7 +274,11 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       totalChance: this.computeTotalChance(formData),
       totalChanceTooltip: this.buildChanceBreakdown(formData),
       rollMode: this.rollMode,
-      rollModes: getConfiguredRollModeOptions(RESISTANCE_REQUEST_ROLL_MODES),
+      // A combined cast card keeps the visibility it was posted with, so offering a mode here
+      // would be a control that does nothing.
+      rollModes: this.requestChatMessage.system.castRoll
+        ? []
+        : getConfiguredRollModeOptions(RESISTANCE_REQUEST_ROLL_MODES),
     };
   }
 
