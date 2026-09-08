@@ -63,6 +63,36 @@
       "minLength": 1,
       "default": "none"
     },
+    "targetKind": {
+      "type": "string",
+      "enum": [
+        "none",
+        "self",
+        "creature",
+        "spirit",
+        "weapon",
+        "object",
+        "hitLocation",
+        "area",
+        "radius",
+        "spellOrEffect",
+        "creates",
+        "ritual"
+      ],
+      "minLength": 1,
+      "default": "none"
+    },
+    "effectTier": {
+      "type": "string",
+      "enum": [
+        "none",
+        "reminder",
+        "declarative",
+        "macro"
+      ],
+      "minLength": 1,
+      "default": "none"
+    },
     "descriptionRqidLink": {
       "type": [
         "object",
@@ -139,6 +169,8 @@
     "isRitual",
     "isEnchantment",
     "resistedBy",
+    "targetKind",
+    "effectTier",
     "cultId",
     "runeRqidLinks",
     "isStackable",

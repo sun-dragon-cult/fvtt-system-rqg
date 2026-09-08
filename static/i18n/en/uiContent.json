@@ -1163,6 +1163,28 @@
           "spiritCombatRound": "Spirit combat, one round (not yet automated)",
           "spiritCombatDefeat": "Spirit combat, until defeated (not yet automated)"
         },
+        "TargetKind": "Target Kind",
+        "TargetKindEnum": {
+          "none": "None (not yet automated)",
+          "self": "Self / caster (not yet automated)",
+          "creature": "A creature (not yet automated)",
+          "spirit": "A spirit / undead entity (not yet automated)",
+          "weapon": "A weapon (not yet automated)",
+          "object": "A non-weapon object (not yet automated)",
+          "hitLocation": "A hit location (not yet automated)",
+          "area": "An area of ground (not yet automated)",
+          "radius": "A filtered radius around the caster (not yet automated)",
+          "spellOrEffect": "Another spell or effect (not yet automated)",
+          "creates": "Nothing - the spell creates something (not yet automated)",
+          "ritual": "A social/ritual state (not yet automated)"
+        },
+        "EffectTier": "Effect Tier",
+        "EffectTierEnum": {
+          "none": "None - nothing to automate",
+          "reminder": "Reminder (not yet automated)",
+          "declarative": "Declarative (not yet automated)",
+          "macro": "Macro (not yet automated)"
+        },
         "DurationEnum": {
           "undefined": "None",
           "instant": "Instant",

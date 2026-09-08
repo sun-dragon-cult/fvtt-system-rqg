@@ -50,6 +50,41 @@ export const SpellResistedByEnum = {
 } as const;
 export type SpellResistedByEnum = (typeof SpellResistedByEnum)[keyof typeof SpellResistedByEnum];
 
+// What a spell's effect attaches to - decides where #1079's Active Effect gets created (or
+// whether one can be at all). Frozen from the #1080 survey against RBM + Core's sample sorcery
+// list, not derived from Bladesharp alone - see #1080 for the corpus sample that ruled out a
+// smaller enum. Three kinds break the "target is a token" assumption on purpose:
+// `spellOrEffect` (Dispel Magic, Countermagic - no item/actor binding, always macro tier),
+// `creates` (summonings, Create Fissure - the spell makes a new document, nothing pre-existing is
+// bound), and `area` (no Region/MeasuredTemplate binding exists yet, so this is a marker for
+// future work, never a #1079 selector target). Only `weapon`, `object`, `hitLocation` (item-bound)
+// and `self`/`creature`/`spirit` (actor-bound) have a #1079 selector today.
+export const SpellTargetKindEnum = {
+  None: "none", // no meaningful target concept at all (rare - most "no target" spells are `self`)
+  Self: "self", // always the caster's own actor
+  Creature: "creature", // a targeted living actor
+  Spirit: "spirit", // a targeted spirit/undead/otherworldly entity actor
+  Weapon: "weapon", // an equipped weapon item, filtered by damage class etc
+  Object: "object", // a non-weapon physical item (gear/armor)
+  HitLocation: "hitLocation", // a specific hit location on the target actor
+  Area: "area", // an area of ground, not bound to any actor/item document
+  Radius: "radius", // every actor matching a filter within a radius of the caster
+  SpellOrEffect: "spellOrEffect", // targets another spell/Active Effect on the target
+  Creates: "creates", // the spell creates a document rather than affecting one
+  Ritual: "ritual", // a social/ritual state change with no mechanical binding
+} as const;
+export type SpellTargetKindEnum = (typeof SpellTargetKindEnum)[keyof typeof SpellTargetKindEnum];
+
+// How much of #1079's application machinery a spell's effect goes through. Data on the spell, not
+// a code branch - most spells are not `macro`. See #1079 for the mechanism behind each tier.
+export const SpellEffectTierEnum = {
+  None: "none", // nothing to automate (Truespeak, Divination, most rituals)
+  Reminder: "reminder", // GM-adjudicated effect worth tracking - chat note + duration only
+  Declarative: "declarative", // Active Effect from the effects pack (Bladesharp, Protection...)
+  Macro: "macro", // rqid-referenced Macro (Sever Spirit, Turn Undead, Heal Wound, summonings)
+} as const;
+export type SpellEffectTierEnum = (typeof SpellEffectTierEnum)[keyof typeof SpellEffectTierEnum];
+
 // Se core book p247
 export interface Spell {
   /** Learned strength */
@@ -62,5 +97,9 @@ export interface Spell {
   isEnchantment: boolean;
   /** How an unwilling target can resist the spell after a successful cast (p.145-147, 254) */
   resistedBy: SpellResistedByEnum;
+  /** What the spell's effect attaches to (#1080) */
+  targetKind: SpellTargetKindEnum;
+  /** How much of #1079's application machinery this spell's effect goes through */
+  effectTier: SpellEffectTierEnum;
   descriptionRqidLink: RqidLink | undefined;
 }

@@ -1,7 +1,13 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { getSelectRuneOptions, isDocumentSubType } from "../../system/util";
 import { RqgItemSheetV2, type RqgItemSheetContext } from "../rqg-item-sheet-v2";
-import { SpellDurationEnum, SpellRangeEnum, SpellResistedByEnum } from "@item-model/spell.ts";
+import {
+  SpellDurationEnum,
+  SpellEffectTierEnum,
+  SpellRangeEnum,
+  SpellResistedByEnum,
+  SpellTargetKindEnum,
+} from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type { CultItem } from "@item-model/cult-data-model.ts";
@@ -13,6 +19,8 @@ interface RuneMagicSheetContext extends RqgItemSheetContext {
   rangeOptions: SelectOptionData<SpellRangeEnum>[];
   durationOptions: SelectOptionData<SpellDurationEnum>[];
   resistedByOptions: SelectOptionData<SpellResistedByEnum>[];
+  targetKindOptions: SelectOptionData<SpellTargetKindEnum>[];
+  effectTierOptions: SelectOptionData<SpellEffectTierEnum>[];
   actorCultOptions: SelectOptionData<string>[];
 }
 
@@ -23,7 +31,7 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
 
   static override DEFAULT_OPTIONS = {
     classes: [systemId, "item-sheet", "sheet", "runeMagic"],
-    position: { width: 600, height: 530 },
+    position: { width: 600, height: 650 },
     window: { resizable: true },
     form: { handler: RuneMagicSheetV2.onSubmit, submitOnChange: true, closeOnSubmit: false },
   };
@@ -62,6 +70,14 @@ export class RuneMagicSheetV2 extends RqgItemSheetV2 {
       resistedByOptions: Object.values(SpellResistedByEnum).map((value) => ({
         value: value,
         label: "RQG.Item.Spell.ResistedByEnum." + value,
+      })),
+      targetKindOptions: Object.values(SpellTargetKindEnum).map((value) => ({
+        value: value,
+        label: "RQG.Item.Spell.TargetKindEnum." + value,
+      })),
+      effectTierOptions: Object.values(SpellEffectTierEnum).map((value) => ({
+        value: value,
+        label: "RQG.Item.Spell.EffectTierEnum." + value,
       })),
       actorCultOptions: this.getActorCultOptions(),
       allRuneOptions: getSelectRuneOptions("RQG.Item.RuneMagic.AddRuneMagicRunePlaceholder"),

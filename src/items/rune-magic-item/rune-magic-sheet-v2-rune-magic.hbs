@@ -23,6 +23,16 @@
       {{selectOptions resistedByOptions selected=system.resistedBy localize=true}}
     </select>
 
+    <label for="target-kind-{{id}}" class="mp">{{localize "RQG.Item.Spell.TargetKind"}}</label>
+    <select id="target-kind-{{id}}" name="system.targetKind">
+      {{selectOptions targetKindOptions selected=system.targetKind localize=true}}
+    </select>
+
+    <label for="effect-tier-{{id}}" class="mp">{{localize "RQG.Item.Spell.EffectTier"}}</label>
+    <select id="effect-tier-{{id}}" name="system.effectTier">
+      {{selectOptions effectTierOptions selected=system.effectTier localize=true}}
+    </select>
+
     <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.Stackable"}}</label>
     <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
 

@@ -35,6 +35,8 @@ import {
   SpellDurationEnum,
   SpellConcentrationEnum,
   SpellResistedByEnum,
+  SpellTargetKindEnum,
+  SpellEffectTierEnum,
 } from "../src/data-model/item-data/spell";
 import { AbilitySuccessLevelEnum } from "../src/rolls/ability-roll/ability-roll.defs";
 import {
@@ -156,6 +158,8 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   ],
   "RQG.Item.Spell.RangeEnum.": [...Object.values(SpellRangeEnum).filter(Boolean), "undefined"],
   "RQG.Item.Spell.ResistedByEnum.": [...Object.values(SpellResistedByEnum)],
+  "RQG.Item.Spell.TargetKindEnum.": [...Object.values(SpellTargetKindEnum)],
+  "RQG.Item.Spell.EffectTierEnum.": [...Object.values(SpellEffectTierEnum)],
 
   // Item - Weapon
   "RQG.Item.Weapon.combatManeuver.": [...combatManeuverNames],
