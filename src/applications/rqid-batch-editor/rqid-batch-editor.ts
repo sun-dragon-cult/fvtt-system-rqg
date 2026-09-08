@@ -35,6 +35,7 @@ import type {
 export const DEFAULT_RQID_BATCH_ITEM_TYPES: ItemTypeEnum[] = [
   ItemTypeEnum.Skill, // weapon skills need Rqid for weapon -> skill link
   ItemTypeEnum.RuneMagic, // common spells need Rqid for visualisation in spell list
+  ItemTypeEnum.SpiritMagic, // spell-list visualisation, rqid-keyed incompatibleWith, and the #1086 targetKind/effectTier resync
   ItemTypeEnum.Rune, // Rune tab needs rqid to sort opposed rune pairs into the fixed paper-character-sheet order
   ItemTypeEnum.Cult, // cults need rqid to match the same cult across actors for Allied Spirit's shared rune point pool
 ];
