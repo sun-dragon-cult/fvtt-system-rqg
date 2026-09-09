@@ -7,21 +7,27 @@ export type RoutedKeyWarningReason =
   | Extract<FieldModeContractResult, { ok: false }>["reason"];
 
 /**
- * Every warning reason a routed key can produce. Kept exhaustive so the i18n audit
- * (buildScripts/i18n-dynamic-key-map.ts) can derive the locale keys from it.
+ * Every warning reason a routed key can produce. The `Record<RoutedKeyWarningReason, true>` type
+ * makes omitting a reason a compile error, so the i18n audit
+ * (buildScripts/i18n-dynamic-key-map.ts) - which derives its locale keys from this - can never
+ * silently miss one.
  */
-export const ALL_ROUTED_KEY_WARNING_REASONS: readonly RoutedKeyWarningReason[] = [
-  "missing-path",
-  "empty-selector",
-  "path-not-system",
-  "empty-regex",
-  "invalid-regex",
-  "invalid-rqid",
-  "item-local-outside-item",
-  "no-match",
-  "pad-multiply-noop",
-  "pad-override-discards-stacking",
-];
+const ROUTED_KEY_WARNING_REASONS: Record<RoutedKeyWarningReason, true> = {
+  "missing-path": true,
+  "empty-selector": true,
+  "path-not-system": true,
+  "empty-regex": true,
+  "invalid-regex": true,
+  "invalid-rqid": true,
+  "item-local-outside-item": true,
+  "no-match": true,
+  "pad-multiply-noop": true,
+  "pad-override-discards-stacking": true,
+};
+
+export const ALL_ROUTED_KEY_WARNING_REASONS = Object.keys(
+  ROUTED_KEY_WARNING_REASONS,
+) as RoutedKeyWarningReason[];
 
 const I18N_PREFIX = "RQG.Foundry.ActiveEffect.RoutedKey.";
 

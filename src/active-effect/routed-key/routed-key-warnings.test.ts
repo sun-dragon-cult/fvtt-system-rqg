@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import enLocale from "../../../static/i18n/en/uiContent.json";
 import {
   ALL_ROUTED_KEY_WARNING_REASONS,
   RoutedKeyWarningTracker,
@@ -14,13 +15,18 @@ describe("routedKeyWarningI18nKey", () => {
     );
   });
 
-  it("covers every reason the modules can produce", () => {
-    // guards against a new reason being added without a matching locale key
+  it("has a locale key for every reason it lists", () => {
+    // ROUTED_KEY_WARNING_REASONS is typed Record<RoutedKeyWarningReason, true>, so a missing
+    // reason is a compile error; this asserts each listed reason resolves to a real locale key.
     expect(new Set(ALL_ROUTED_KEY_WARNING_REASONS).size).toBe(
       ALL_ROUTED_KEY_WARNING_REASONS.length,
     );
-    expect(ALL_ROUTED_KEY_WARNING_REASONS).toContain("invalid-regex");
-    expect(ALL_ROUTED_KEY_WARNING_REASONS).toContain("pad-multiply-noop");
+    for (const reason of ALL_ROUTED_KEY_WARNING_REASONS) {
+      const message = routedKeyWarningI18nKey(reason)
+        .split(".")
+        .reduce<unknown>((node, part) => (node as Record<string, unknown>)?.[part], enLocale);
+      expect(message).toBeTypeOf("string");
+    }
   });
 });
 
