@@ -43,6 +43,10 @@ import {
   resistanceRequestRollerSide,
   resistanceRequestState,
 } from "../src/chat/data-model/resistance-request-chat-message.defs";
+import {
+  ALL_ROUTED_KEY_WARNING_REASONS,
+  routedKeyWarningI18nSuffix,
+} from "../src/active-effect/routed-key/routed-key-warnings";
 
 // --- Characteristics (defined inline in schema, no separate enum) ---
 const characteristics = [
@@ -160,6 +164,11 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   "RQG.Item.Spell.ResistedByEnum.": [...Object.values(SpellResistedByEnum)],
   "RQG.Item.Spell.TargetKindEnum.": [...Object.values(SpellTargetKindEnum)],
   "RQG.Item.Spell.EffectTierEnum.": [...Object.values(SpellEffectTierEnum)],
+
+  // Active Effect - routed key warnings (#920)
+  "RQG.Foundry.ActiveEffect.RoutedKey.": ALL_ROUTED_KEY_WARNING_REASONS.map(
+    routedKeyWarningI18nSuffix,
+  ),
 
   // Item - Weapon
   "RQG.Item.Weapon.combatManeuver.": [...combatManeuverNames],
