@@ -1,6 +1,9 @@
 import { isValidRqidString } from "../../system/api/rqid-validation";
 import type { ParseRoutedKeyResult } from "./routed-key.types";
 
+// the common case by far - a native (non-@) key - so hand back one shared object
+const NOT_ROUTED: ParseRoutedKeyResult = { routed: false };
+
 const ROUTED_PREFIX = "@";
 const ITEM_LOCAL_SELECTOR = ".";
 const REGEX_SELECTOR_PREFIX = "~";
@@ -18,7 +21,7 @@ const SYSTEM_PATH_PREFIX = "system.";
  */
 export function parseRoutedKey(key: unknown): ParseRoutedKeyResult {
   if (typeof key !== "string" || !key.startsWith(ROUTED_PREFIX)) {
-    return { routed: false };
+    return NOT_ROUTED;
   }
 
   const body = key.slice(ROUTED_PREFIX.length);

@@ -67,5 +67,5 @@ export interface RoutedTargetContext {
   readonly owningItem?: RoutedTargetItemLike | undefined;
 }
 
-export type ResolveRoutedTargetResult<TItem extends RoutedTargetItemLike = RoutedTargetItemLike> =
-  { readonly items: TItem[] } | { readonly error: RoutedTargetError };
+export type ResolveRoutedTargetResult =
+  { readonly items: RoutedTargetItemLike[] } | { readonly error: RoutedTargetError };

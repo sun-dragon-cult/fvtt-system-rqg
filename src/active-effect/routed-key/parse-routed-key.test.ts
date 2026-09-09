@@ -3,10 +3,7 @@ import { parseRoutedKey } from "./parse-routed-key";
 
 describe("parseRoutedKey", () => {
   it("passes native (non-@) keys straight through", () => {
-    for (const key of ["system.baseChance", "name", "system.effect.add.melee.attack", "", "@"]) {
-      if (key === "@") {
-        continue;
-      }
+    for (const key of ["system.baseChance", "name", "system.effect.add.melee.attack", ""]) {
       expect(parseRoutedKey(key)).toEqual({ routed: false });
     }
   });

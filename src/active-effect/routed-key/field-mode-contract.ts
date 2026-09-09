@@ -1,5 +1,5 @@
 /**
- * Field-family mode contracts for routed changes (#920).
+ * Field-family mode contract for routed changes (#920).
  *
  * `system.effect.add.*` paths are "pads": zero-initialised, non-persisted delta accumulators that
  * are folded into a derived value in `prepareDerivedData` (see character-data-model.ts). Foundry
@@ -18,58 +18,8 @@
 
 const PAD_PATH_PREFIX = "system.effect.add.";
 
-export type NormalizedChangeType =
-  "add" | "subtract" | "multiply" | "downgrade" | "upgrade" | "override" | "custom";
-
-/** Legacy numeric `change.mode` -> v14 string type. */
-const LEGACY_MODE_TO_TYPE: Record<number, NormalizedChangeType> = {
-  0: "custom",
-  1: "multiply",
-  2: "add",
-  3: "downgrade",
-  4: "upgrade",
-  5: "override",
-};
-
-const KNOWN_TYPES = new Set<NormalizedChangeType>([
-  "add",
-  "subtract",
-  "multiply",
-  "downgrade",
-  "upgrade",
-  "override",
-  "custom",
-]);
-
-/**
- * Read a change's application type, tolerating both the v14 string `type` and the legacy numeric
- * `mode`. Defaults to `"add"` (Foundry's own default) when neither is usable.
- */
-export function normalizeChangeType(change: {
-  type?: unknown;
-  mode?: unknown;
-}): NormalizedChangeType {
-  if (typeof change.type === "string") {
-    if (KNOWN_TYPES.has(change.type as NormalizedChangeType)) {
-      return change.type as NormalizedChangeType;
-    }
-    if (change.type.startsWith("custom.")) {
-      return "custom";
-    }
-  }
-  if (typeof change.mode === "number" && change.mode in LEGACY_MODE_TO_TYPE) {
-    return LEGACY_MODE_TO_TYPE[change.mode]!;
-  }
-  return "add";
-}
-
-export type FieldModeContractResult =
-  | { readonly ok: true }
-  | {
-      readonly ok: false;
-      readonly reason: "pad-multiply-noop" | "pad-override-discards-stacking";
-      readonly detail: Readonly<Record<string, string>>;
-    };
+/** A routed change whose mode does not make sense against the target field. */
+export type FieldModeViolation = "pad-multiply-noop" | "pad-override-discards-stacking";
 
 /** True when `systemPath` targets a `system.effect.add.*` pad. */
 export function isPadPath(systemPath: string): boolean {
@@ -77,21 +27,22 @@ export function isPadPath(systemPath: string): boolean {
 }
 
 /**
- * Check whether `changeType` is meaningful against `systemPath`. Only pads are constrained; every
- * other path returns `{ ok: true }` so native Foundry behaviour is preserved.
+ * Check whether a change of type `changeType` (the canonical v14 `change.type` string) is
+ * meaningful against `systemPath`. Returns the violation, or `null` when the change is fine.
+ * Only pads are constrained; every other path returns `null` so native Foundry behaviour is kept.
  */
 export function checkFieldModeContract(
   systemPath: string,
-  changeType: NormalizedChangeType,
-): FieldModeContractResult {
+  changeType: string,
+): FieldModeViolation | null {
   if (!isPadPath(systemPath)) {
-    return { ok: true };
+    return null;
   }
   if (changeType === "multiply") {
-    return { ok: false, reason: "pad-multiply-noop", detail: { systemPath } };
+    return "pad-multiply-noop";
   }
   if (changeType === "override") {
-    return { ok: false, reason: "pad-override-discards-stacking", detail: { systemPath } };
+    return "pad-override-discards-stacking";
   }
-  return { ok: true };
+  return null;
 }

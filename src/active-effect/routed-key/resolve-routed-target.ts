@@ -14,16 +14,16 @@ import type {
  *
  * Never throws. Regex validity is already guaranteed by {@link parseRoutedKey}.
  */
-export function resolveRoutedTarget<TItem extends RoutedTargetItemLike>(
+export function resolveRoutedTarget(
   selector: RoutedSelector,
   context: RoutedTargetContext,
-): ResolveRoutedTargetResult<TItem> {
+): ResolveRoutedTargetResult {
   switch (selector.kind) {
     case "item-local": {
       if (!context.owningItem) {
         return { error: { reason: "item-local-outside-item" } };
       }
-      return { items: [context.owningItem as TItem] };
+      return { items: [context.owningItem] };
     }
 
     case "rqid": {
@@ -31,20 +31,22 @@ export function resolveRoutedTarget<TItem extends RoutedTargetItemLike>(
       if (!best) {
         return { error: { reason: "no-match", detail: { selector: `@${selector.rqid}` } } };
       }
-      return { items: [best as TItem] };
+      return { items: [best] };
     }
 
     case "regex": {
-      const matches = (context.targetActor?.getEmbeddedDocumentsByRqidRegex(selector.pattern) ??
-        []) as TItem[];
+      // the actor helper returns a fresh array from `.filter()`, so sorting it in place is safe
+      const matches = context.targetActor?.getEmbeddedDocumentsByRqidRegex(selector.pattern) ?? [];
       if (matches.length === 0) {
         return { error: { reason: "no-match", detail: { selector: `@~${selector.pattern}` } } };
       }
-      return { items: [...matches].sort(byId) };
+      return { items: matches.sort(byId) };
     }
   }
 }
 
 function byId(a: RoutedTargetItemLike, b: RoutedTargetItemLike): number {
-  return (a.id ?? "").localeCompare(b.id ?? "");
+  const idA = a.id ?? "";
+  const idB = b.id ?? "";
+  return idA < idB ? -1 : idA > idB ? 1 : 0;
 }
