@@ -7,7 +7,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 ## Project Baseline
 
 - System: RuneQuest Glorantha (`rqg`) for Foundry VTT.
-- Runtime target: Foundry v14.
+- Runtime target: Foundry v14+.
 - Main stack: TypeScript, Handlebars templates, CSS.
 - Foundry v14 source code is available for reference when investigating Foundry internals (e.g. client APIs, application lifecycle, context menus). The exact path varies per machine; read `FOUNDRY_V14_APP` from `.env.local` to locate it.
 - Foundry v14 API reference: `https://foundryvtt.com/api/` — use to verify public API shape, method signatures, and document lifecycle.
@@ -16,7 +16,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 - RQG rules reference: `https://rqwiki.chaosium.com/rules/` — consult when implementing an unfamiliar game mechanic (skills, runes, passions, combat, spirit magic, rune magic).
 - RQG rules reference docs (private, contains copyrighted rulebook excerpts — not part of this repo): topic-scoped, page-cited rule summaries verified against the actual rulebook PDFs (Core, RBM, Bestiary). Read `RQG_RULES_DOCS` from `.env.local` to locate the local clone (repo: `sun-dragon-cult/rqg-rules-reference`), then prefer these files over the wiki or memory for formulas/thresholds: `core-resolution.md` (D100 resolution), `characteristics.md` (HP/MP/RP/damage bonus/ENC formulas), `strike-rank.md` (initiative), `combat.md` (melee/parry/wound severity), `magic.md` (Spirit Magic/Rune Magic/Sorcery/Spirit Combat), `progression.md` (experience/training/research). Read only the file relevant to the task at hand. If `RQG_RULES_DOCS` isn't set or the clone is missing, fall back to the wiki link above.
 - RQG rules formulas/thresholds: when implementing or verifying a game mechanic, cite the specific page and book of the actual rulebook (e.g. "Core p.144" or "RBM p.107") rather than relying on memory. Core = *RuneQuest: Roleplaying in Glorantha* (2nd printing); RBM = *Red Book of Magic* (supersedes Core on magic rules where the two disagree).
-- Some repo docs/scripts mention v13 for local dual-version workflows; treat v14 as the implementation target unless explicitly requested otherwise.
+- Only Foundry v14 is currently run for dev and testing. The build scripts still carry multi-version plumbing (`pnpm dev 13` / `pnpm foundry 13`, the `3001X → vX` port convention, `FOUNDRY_V13_*` in `.env.example`) — keep it: it's unused now but makes standing up v15 side-by-side easy when it ships. Treat v14 as the implementation target unless explicitly told otherwise.
 
 ## Default Engineering Rules
 

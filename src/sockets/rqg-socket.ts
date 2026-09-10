@@ -16,7 +16,7 @@ export function initSockets() {
 export async function socketRequest(payload: SocketActionPayload): Promise<any> {
   // TODO Add a race between a timeout and the Promise to clear the pendingRequests
   return new Promise((resolve) => {
-    const messageId = randomID();
+    const messageId = foundry.utils.randomID();
     pendingRequests.set(messageId, resolve);
     getSocket().emit(eventNameSpace, { messageId: messageId, payload: payload });
   });
