@@ -70,8 +70,8 @@ importers:
         specifier: ^17.7.0
         version: 17.7.0
       js-yaml:
-        specifier: ^5.2.1
-        version: 5.2.1
+        specifier: ^5.2.2
+        version: 5.2.2
       lint-staged:
         specifier: ^17.1.0
         version: 17.1.0
@@ -713,7 +713,7 @@ packages:
       '@pixi/core': 7.4.3
 
   '@pixi/basis@https://codeload.github.com/foundry-vtt-types/pixi-basis/tar.gz/d0956799d7c23f59e12b7b2ec4dc21c041180b0e':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/foundry-vtt-types/pixi-basis/tar.gz/d0956799d7c23f59e12b7b2ec4dc21c041180b0e}
+    resolution: {gitHosted: true, integrity: sha512-QoO9YjDjI3htr2Pbn8TPr6i7dBOEtgR+Czjuxb4dW4TC6O/mVmVjg8QQa4YUhoVp+i0HLrnCqLOYWXIajgQr5g==, tarball: https://codeload.github.com/foundry-vtt-types/pixi-basis/tar.gz/d0956799d7c23f59e12b7b2ec4dc21c041180b0e}
     version: 7.4.3
     peerDependencies:
       '@pixi/assets': github:foundry-vtt-types/pixi-assets#main
@@ -737,7 +737,7 @@ packages:
     resolution: {integrity: sha512-QGmwJUNQy/vVEHzL6VGQvnwawLZ1wceZMI8HwJAT4/I2uAzbBeFDdmCS8WsTpSWLZjF/DszDc1D8BFp4pVJ5UQ==}
 
   '@pixi/core@https://codeload.github.com/foundry-vtt-types/pixi-core/tar.gz/b2554df0b43183980830a08d92a960ede78ad25e':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/foundry-vtt-types/pixi-core/tar.gz/b2554df0b43183980830a08d92a960ede78ad25e}
+    resolution: {gitHosted: true, integrity: sha512-Ev8Q69VPwQSkfsiAaW4Yan1p//OWwGnRe+KJmh9NRe3qTkuD3nNyrPw6fTZBQnlfvhNcGAbjFxUUe1zrhLITvg==, tarball: https://codeload.github.com/foundry-vtt-types/pixi-core/tar.gz/b2554df0b43183980830a08d92a960ede78ad25e}
     version: 7.4.3
 
   '@pixi/display@7.4.3':
@@ -861,7 +861,7 @@ packages:
       '@pixi/sprite': 7.4.3
 
   '@pixi/particle-emitter@https://codeload.github.com/foundry-vtt-types/pixi-particle-emitter/tar.gz/9bd3cb53826b2c7d4c407db183f4dd93edd50aae':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/foundry-vtt-types/pixi-particle-emitter/tar.gz/9bd3cb53826b2c7d4c407db183f4dd93edd50aae}
+    resolution: {gitHosted: true, integrity: sha512-Rimi4VTTmgiTwH9mzKDuStyPYRmP4an0xhWxTSvHsLpc7JN2T/D5E4i9TdnfAf84mKnGdhYk28x91ulQ5eHqqg==, tarball: https://codeload.github.com/foundry-vtt-types/pixi-particle-emitter/tar.gz/9bd3cb53826b2c7d4c407db183f4dd93edd50aae}
     version: 5.0.8
     peerDependencies:
       '@pixi/constants': '>=6.0.4 <8.0.0'
@@ -943,14 +943,14 @@ packages:
     resolution: {integrity: sha512-tHsAD0iOUb6QSGGw+c8cyRBvxsq/NlfzIFBZLEHhWZ+Bx4a0MmXup6I/yJDGmyPCYE+ctCcAfY13wKAzdiVFgQ==}
 
   '@pixi/ticker@https://codeload.github.com/foundry-vtt-types/pixi-ticker/tar.gz/6a2756560f67a81fafbb1914b56d8974b6f34085':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/foundry-vtt-types/pixi-ticker/tar.gz/6a2756560f67a81fafbb1914b56d8974b6f34085}
+    resolution: {gitHosted: true, integrity: sha512-42+PstwwKeJ9MPIxaWT0U+S90F+/BVKpIwmoBSZHXx8IJx+D6zKZAZe1A04VjM5uYndxw8Mm7Kb8XDSZ1GFBXA==, tarball: https://codeload.github.com/foundry-vtt-types/pixi-ticker/tar.gz/6a2756560f67a81fafbb1914b56d8974b6f34085}
     version: 7.4.3
 
   '@pixi/utils@7.4.3':
     resolution: {integrity: sha512-NO3Y9HAn2UKS1YdxffqsPp+kDpVm8XWvkZcS/E+rBzY9VTLnNOI7cawSRm+dacdET3a8Jad3aDKEDZ0HmAqAFA==}
 
   '@pixi/utils@https://codeload.github.com/foundry-vtt-types/pixi-utils/tar.gz/8274a744f353ec7a7d9313748ceab22455df8837':
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/foundry-vtt-types/pixi-utils/tar.gz/8274a744f353ec7a7d9313748ceab22455df8837}
+    resolution: {gitHosted: true, integrity: sha512-WD1SfcxCtnv5g9cgozxiSOGwBD+ddYeb5U7c5NTh7PDSaOar0QgkZZbmxaAWex2gnvDDJE2RuVUAoHfOEQtOzA==, tarball: https://codeload.github.com/foundry-vtt-types/pixi-utils/tar.gz/8274a744f353ec7a7d9313748ceab22455df8837}
     version: 7.4.3
 
   '@pkgr/core@0.3.6':
@@ -2022,8 +2022,8 @@ packages:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
     hasBin: true
 
-  js-yaml@5.2.1:
-    resolution: {integrity: sha512-zfLtNfQqxVqq3uaTqSkh4x4hZw3KHobGUA0fJUj4wawW8bsQLTVqpHdXSIzidh7o+4lEW36tANuAGdaFx6Zgnw==}
+  js-yaml@5.2.2:
+    resolution: {integrity: sha512-dayzUzKkJ1MkuUtZglSebU43utNXH0OWQByK9rKOOuYIO8M5TV1y+n8ALMdG0rdzBnfNkOmZEqrURepb0ejqBw==}
     hasBin: true
 
   json-buffer@3.0.1:
@@ -2362,7 +2362,7 @@ packages:
     hasBin: true
 
   pixi.js@https://codeload.github.com/foundry-vtt-types/pixi.js/tar.gz/a8414afd3a1141c3ef94e62079e7861723029c2c:
-    resolution: {gitHosted: true, tarball: https://codeload.github.com/foundry-vtt-types/pixi.js/tar.gz/a8414afd3a1141c3ef94e62079e7861723029c2c}
+    resolution: {gitHosted: true, integrity: sha512-dViD7L6o+RL1voeTnA3T3DDo69fsRIt2VNlAlncQlMSKu12qsiy17OJPr0mDbnUfk4wvhu/iczFHjsEryWt9Iw==, tarball: https://codeload.github.com/foundry-vtt-types/pixi.js/tar.gz/a8414afd3a1141c3ef94e62079e7861723029c2c}
     version: 7.4.3
 
   playwright-core@1.61.1:
@@ -5020,7 +5020,7 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  js-yaml@5.2.1:
+  js-yaml@5.2.2:
     dependencies:
       argparse: 2.0.1
 
