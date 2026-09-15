@@ -1,7 +1,12 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
 
-function installActiveEffectStub() {
+/**
+ * Install the Foundry globals `RqgActiveEffect` needs at class-definition time, then import it.
+ * The import must happen after the stubs, hence the dynamic import and `vi.resetModules()` in
+ * `afterEach`. Returns the subject plus the stub, so tests can assert native delegation.
+ */
+async function loadSubject() {
   class ActiveEffectStub {
     static SubType = {};
 
@@ -19,7 +24,10 @@ function installActiveEffectStub() {
     static applyChange = vi.fn(() => ({ __nativeApplyChangeCalled: true }));
   }
   (globalThis as any).ActiveEffect = ActiveEffectStub;
-  return ActiveEffectStub;
+  (globalThis as any).Item = class Item {};
+
+  const { RqgActiveEffect } = await import("./rqg-active-effect");
+  return { RqgActiveEffect, ActiveEffectStub, warn: vi.mocked(ui.notifications!.warn) };
 }
 
 function makeCharacterActor(overrides: Record<string, unknown> = {}) {
@@ -32,6 +40,23 @@ function makeCharacterActor(overrides: Record<string, unknown> = {}) {
     getRollData: vi.fn(() => ({})),
     ...overrides,
   });
+}
+
+// Mirrors core's DataField#applyChange dispatch closely enough to matter here: unknown/custom
+// types fall to DataField#_applyChangeCustom, which fires a hook nobody listens to and returns
+// undefined - and applyChangeField then writes nothing.
+function fieldApplyChange(value: number, _doc: unknown, change: any): number | undefined {
+  const delta = Number(change.value);
+  switch (change.type) {
+    case "add":
+      return value + delta;
+    case "multiply":
+      return value * delta;
+    case "upgrade":
+      return Math.max(value, delta);
+    default:
+      return undefined;
+  }
 }
 
 function makeWeaponItem(overrides: Record<string, unknown> = {}) {
@@ -47,12 +72,7 @@ function makeWeaponItem(overrides: Record<string, unknown> = {}) {
     type: "weapon",
     system: {
       getFieldForProperty: vi.fn((fieldPath: string) =>
-        fieldPath === "effect.add.melee.attack"
-          ? {
-              applyChange: (value: number, _doc: unknown, change: any) =>
-                value + Number(change.value),
-            }
-          : undefined,
+        fieldPath === "effect.add.melee.attack" ? { applyChange: fieldApplyChange } : undefined,
       ),
       effect: effectData,
     },
@@ -61,17 +81,18 @@ function makeWeaponItem(overrides: Record<string, unknown> = {}) {
 }
 
 const originalItem = (globalThis as any).Item;
+const originalActiveEffect = (globalThis as any).ActiveEffect;
 
 afterEach(() => {
   (globalThis as any).Item = originalItem;
+  (globalThis as any).ActiveEffect = originalActiveEffect;
+  vi.mocked(ui.notifications!.warn).mockClear();
   vi.resetModules();
 });
 
 describe("RqgActiveEffect.applyChange", () => {
   it("delegates non-routed keys straight to the native implementation", async () => {
-    const ActiveEffectStub = installActiveEffectStub();
-    (globalThis as any).Item = class Item {};
-    const { RqgActiveEffect } = await import("./rqg-active-effect");
+    const { RqgActiveEffect, ActiveEffectStub } = await loadSubject();
 
     const actor = makeCharacterActor();
     const change = {
@@ -89,9 +110,7 @@ describe("RqgActiveEffect.applyChange", () => {
   });
 
   it("routes an @rqid key to the matching embedded item, honouring the change's own mode", async () => {
-    installActiveEffectStub();
-    (globalThis as any).Item = class Item {};
-    const { RqgActiveEffect } = await import("./rqg-active-effect");
+    const { RqgActiveEffect } = await loadSubject();
 
     const item = makeWeaponItem();
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
@@ -114,12 +133,10 @@ describe("RqgActiveEffect.applyChange", () => {
   });
 
   it("routes @. to the effect's owning item without touching the actor lookup", async () => {
-    installActiveEffectStub();
-    (globalThis as any).Item = class Item {};
+    const { RqgActiveEffect } = await loadSubject();
+
     const item = makeWeaponItem();
     Object.setPrototypeOf(item, (globalThis as any).Item.prototype);
-    const { RqgActiveEffect } = await import("./rqg-active-effect");
-
     const actor = makeCharacterActor();
     const effect = { parent: item, uuid: "Effect.abc", disabled: false };
 
@@ -137,9 +154,7 @@ describe("RqgActiveEffect.applyChange", () => {
   });
 
   it("warns once and does not apply MULTIPLY against a pad", async () => {
-    installActiveEffectStub();
-    (globalThis as any).Item = class Item {};
-    const { RqgActiveEffect } = await import("./rqg-active-effect");
+    const { RqgActiveEffect, warn } = await loadSubject();
 
     const applyChangeSpy = vi.fn(
       (value: number, _doc: unknown, change: any) => value * Number(change.value),
@@ -149,8 +164,6 @@ describe("RqgActiveEffect.applyChange", () => {
       fieldPath === "effect.add.melee.attack" ? { applyChange: applyChangeSpy } : undefined,
     );
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
-    const warn = vi.fn();
-    (globalThis as any).ui = { notifications: { warn } };
 
     RqgActiveEffect.applyChange(actor, {
       key: "@i.weapon.short-spear:system.effect.add.melee.attack",
@@ -164,13 +177,30 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(item.system.effect.add.melee.attack).toBe(0);
     expect(warn).toHaveBeenCalledTimes(1);
   });
+
+  it("applies a routed key left on CUSTOM mode as ADD instead of silently dropping it", async () => {
+    const { RqgActiveEffect, warn } = await loadSubject();
+
+    const item = makeWeaponItem();
+    const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
+
+    RqgActiveEffect.applyChange(actor, {
+      key: "@i.weapon.short-spear:system.effect.add.melee.attack",
+      type: "custom",
+      phase: "initial",
+      priority: 0,
+      value: "7",
+    } as any);
+
+    // core's field-level custom handler would have written nothing at all
+    expect(item.system.effect.add.melee.attack).toBe(7);
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
   it("still applies writes via the legacy 'rqid:path' syntax, forcing add", async () => {
-    installActiveEffectStub();
-    (globalThis as any).Item = class Item {};
-    const { RqgActiveEffect } = await import("./rqg-active-effect");
+    const { RqgActiveEffect, warn } = await loadSubject();
 
     const item = makeWeaponItem();
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
@@ -192,5 +222,7 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     expect(actor.getBestEmbeddedDocumentByRqid).toHaveBeenCalledWith("i.weapon.short-spear");
     expect(item.system.getFieldForProperty).toHaveBeenCalledWith("effect.add.melee.attack");
     expect(item.system.effect.add.melee.attack).toBe(50);
+    // the deprecation notice is console-only - a GM cannot fix pack content from a toast
+    expect(warn).not.toHaveBeenCalled();
   });
 });

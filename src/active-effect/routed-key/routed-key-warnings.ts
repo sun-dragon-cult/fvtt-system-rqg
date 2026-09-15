@@ -7,7 +7,13 @@ export type RoutedKeyWarningReason =
   | FieldModeViolation
   // the resolved target document has no field at the routed system path (PR b's own check -
   // parsing and target resolution can't detect this, only the actual item schema can)
-  | "field-not-found";
+  | "field-not-found"
+  // a routed key still on CUSTOM mode - applied as ADD, but the mode should be changed
+  | "custom-mode-on-routed-key"
+  // a legacy (un-prefixed) CUSTOM-mode key that is not a valid routed key even with `@` prepended
+  | "legacy-key-unparseable"
+  // a legacy key that still works through the deprecating shim, pending the #920 migration
+  | "legacy-syntax-deprecated";
 
 const I18N_PREFIX = "RQG.Foundry.ActiveEffect.RoutedKey.";
 
@@ -31,6 +37,9 @@ const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "pad-multiply-noop": "PadMultiplyNoop",
   "pad-override-discards-stacking": "PadOverrideDiscardsStacking",
   "field-not-found": "FieldNotFound",
+  "custom-mode-on-routed-key": "CustomModeOnRoutedKey",
+  "legacy-key-unparseable": "LegacyKeyUnparseable",
+  "legacy-syntax-deprecated": "LegacySyntaxDeprecated",
 };
 
 /** i18n suffixes for the audit map (buildScripts/i18n-dynamic-key-map.ts). */
@@ -51,9 +60,14 @@ export function routedKeyWarningI18nKey(reason: RoutedKeyWarningReason): string 
  * Tracks which routed-key change rows have already produced a warning, so a misconfigured key
  * warns once rather than on every data-preparation cycle (#920: "warn once per effect row").
  *
- * Intended to be instantiated per data-preparation pass and discarded afterwards, so it never
- * grows unbounded and re-warns naturally when the underlying effect changes. Identity is the
- * routed key string, not a row index, so reordering an effect's changes does not lose a warning.
+ * Identity is (effect uuid, routed key, reason) - not a row index - so reordering an effect's
+ * changes does not lose or duplicate a warning.
+ *
+ * `RqgActiveEffect` holds one instance for the life of the client session rather than one per
+ * data-preparation pass: `applyChange` is static and core drives the prep loop, so there is no
+ * pass boundary to hook. The trade-off is deliberate - a GM who dismisses the toast will not see
+ * it again until reload, which is preferable to re-warning on every prep cycle (several per
+ * item update). Entries are short strings and only accumulate for genuinely broken content.
  */
 export class RoutedKeyWarningTracker {
   readonly #seen = new Set<string>();

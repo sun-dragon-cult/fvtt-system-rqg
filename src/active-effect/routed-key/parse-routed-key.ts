@@ -1,4 +1,4 @@
-import { isValidRqidString } from "../../system/api/rqid-validation";
+import { toRqidString } from "../../system/api/rqid-validation";
 import type { ParseRoutedKeyResult } from "./routed-key.types";
 
 // the common case by far - a native (non-@) key - so hand back one shared object
@@ -65,9 +65,14 @@ export function parseRoutedKey(key: unknown): ParseRoutedKeyResult {
     return { routed: true, selector: { kind: "regex", pattern }, systemPath };
   }
 
-  if (!isValidRqidString(selectorRaw)) {
+  // `toRqidString`, not `isValidRqidString`: it also rejects legacy weapon-skill-reference rqids,
+  // which the actor lookup cannot use. Normalizing here means the parser can never accept a
+  // selector the resolver would then fail to use (which would surface as a misleading "nothing
+  // matched"), and the resolver gets a validated rqid it does not have to re-check.
+  const rqid = toRqidString(selectorRaw);
+  if (rqid === undefined) {
     return { routed: true, error: { reason: "invalid-rqid", detail: { key, rqid: selectorRaw } } };
   }
 
-  return { routed: true, selector: { kind: "rqid", rqid: selectorRaw }, systemPath };
+  return { routed: true, selector: { kind: "rqid", rqid }, systemPath };
 }

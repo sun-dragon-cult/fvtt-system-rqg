@@ -1380,10 +1380,13 @@
           "InvalidRegex": "Routed Active Effect key [{key}] has an invalid regex [{pattern}]: {message}",
           "InvalidRqid": "Routed Active Effect key [{key}] has an invalid rqid selector [{rqid}].",
           "ItemLocalOutsideItem": "The '@.:' Active Effect key targets the owning item, but this effect is not on an item.",
-          "NoMatch": "No document matched the routed Active Effect selector [{selector}]. Add a matching item, or fix the selector.",
+          "NoMatch": "No item on {actorName} matched the routed Active Effect selector [{selector}]. Add a matching item, or fix the selector.",
           "PadMultiplyNoop": "MULTIPLY has no effect on [{systemPath}] — it is a zero-initialised accumulator, so 0 × n = 0. Use ADD, or UPGRADE to keep only the highest.",
           "PadOverrideDiscardsStacking": "OVERRIDE on [{systemPath}] replaces the accumulated value and discards other effects' contributions. Use ADD, or UPGRADE to keep only the highest.",
-          "FieldNotFound": "Routed Active Effect key [{key}] resolved a target document, but it has no field at [{systemPath}]."
+          "FieldNotFound": "Routed Active Effect key [{key}] resolved a target document, but it has no field at [{systemPath}].",
+          "CustomModeOnRoutedKey": "Routed Active Effect key [{key}] is set to CUSTOM mode, which does nothing on its own. It has been applied as ADD - change the effect's mode to ADD to silence this warning.",
+          "LegacyKeyUnparseable": "Active Effect key [{key}] uses the old CUSTOM-mode syntax but could not be read as '<rqid>:system.path'. Rewrite it as '@<rqid>:system.path'.",
+          "LegacySyntaxDeprecated": "Active Effect key [{key}] uses the deprecated CUSTOM-mode syntax and was applied as ADD. Rewrite it as '@{key}' with ADD mode."
         }
       },
       "CombatTracker": {
