@@ -6,6 +6,7 @@
  */
 
 import { RqgLogger, type LogOptions } from "./rqg-logger";
+import type { RqgErrorEntry } from "../error-registry";
 import type {
   MigrationChangeRow,
   MigrationDocumentLink,
@@ -74,8 +75,28 @@ export class MigrationLogger extends RqgLogger {
     );
   }
 
-  override error(message: string, options?: MigrationLogOptions): void {
-    super.error(message, { notify: false, ...options });
+  // Widens `error`'s string overload to accept MigrationLogOptions (documents/changes/etc.) —
+  // pure passthrough, kept in sync with the base's overload set only for typing. The actual
+  // behaviour (notify-suppression, report capture) lives solely in reportStringError below;
+  // coded registry errors (logger.error(ERR.x, ...)) aren't part of migration reporting and
+  // fall straight through to the base logger.
+  override error(entry: RqgErrorEntry, ...debugData: unknown[]): void;
+  override error(message: string, options?: MigrationLogOptions, ...debugData: unknown[]): void;
+  override error(errorOrMessage: RqgErrorEntry | string, ...rest: unknown[]): void {
+    if (typeof errorOrMessage === "string") {
+      const [options, ...debugData] = rest as [MigrationLogOptions?, ...unknown[]];
+      super.error(errorOrMessage, options, ...debugData);
+    } else {
+      super.error(errorOrMessage, ...rest);
+    }
+  }
+
+  protected override reportStringError(
+    message: string,
+    options: MigrationLogOptions | undefined,
+    debugData: unknown[],
+  ): void {
+    super.reportStringError(message, { notify: false, ...options }, debugData);
     this.captureToResult(
       "error",
       message,

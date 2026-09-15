@@ -5,6 +5,7 @@ import type { CultItem } from "@item-model/cult-data-model.ts";
 import { CultRankEnum } from "@item-model/cult-enums.ts";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import {
   getImprovementSourceFromGainType,
   type ImprovementDetailRow,
@@ -313,10 +314,10 @@ function getActorSourceCharacteristicOrThrow(
     !Number.isFinite(Number(sourceChar.value)) ||
     typeof sourceChar.formula !== "string"
   ) {
-    return logger.throw(
-      "Tried to improve characteristic without complete source characteristic data",
-      { actor, characteristicName },
-    );
+    return logger.throw(ERR.improveCharacteristicNoData, {
+      actorUuid: actor.uuid,
+      characteristicName,
+    });
   }
 
   return {

@@ -3,6 +3,7 @@ import { templatePaths } from "../system/load-handlebars-templates";
 import { updateChatMessage } from "../sockets/socketable-requests";
 import type { ResistanceRequestChatMessage } from "./data-model/resistance-request-chat-message.types.ts";
 import { RqgLogger } from "../system/logging/rqg-logger";
+import { ERR } from "../system/error-registry";
 
 const logger = new RqgLogger("ResistanceRequestHandlers");
 
@@ -34,7 +35,8 @@ export async function handleAcceptResistanceRequest(
   const requestChatMessage = game.messages?.get(chatMessageId) as
     ResistanceRequestChatMessage | undefined;
   if (!requestChatMessage) {
-    return logger.throw("No resistance request chat message found", { chatMessageId });
+    logger.error(ERR.resistanceMessageMissing, { chatMessageId });
+    return;
   }
 
   // A stale card can still show the buttons after someone else has answered it.

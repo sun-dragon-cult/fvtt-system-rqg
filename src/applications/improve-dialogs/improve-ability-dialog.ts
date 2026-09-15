@@ -12,6 +12,7 @@ import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import {
   buildImproveDialogButtons,
   buildImproveDialogSourceState,
@@ -191,7 +192,7 @@ class ImproveAbilityDialog extends HandlebarsApplicationMixin(
     }
 
     if (!this.item.parent) {
-      return logger.throw("Tried to improve item that isn't embedded on an actor", this.item);
+      return logger.throw(ERR.improveTargetNotEmbedded, { itemUuid: this.item.uuid });
     }
 
     // Rebuilt from live source data rather than trusting the dialog's construction-time snapshot:
@@ -250,16 +251,14 @@ export async function showImproveAbilityDialog(
   speaker: ChatMessage.SpeakerData,
 ): Promise<void> {
   if (!item) {
-    return logger.throw("Tried to show improve ability dialog without ability item");
+    return logger.throw(ERR.improveWithoutAbilityItem);
   }
   if (
     !isDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill) &&
     !isDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion) &&
     !isDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune)
   ) {
-    logger.error(
-      "Call to submitImproveAbilityDialog with item that was not a Passion, Rune, or Skill",
-    );
+    logger.error(ERR.improveTargetNotAbility);
     return;
   }
 

@@ -6,6 +6,7 @@ import type { RqgItem } from "../items/rqg-item";
 import type { PartialAbilityItem } from "../applications/ability-roll-dialog/ability-roll-dialog-data.types.ts";
 import { RqgLogger } from "./logging/rqg-logger";
 import { RqgError } from "./rqg-error";
+import { ERR } from "./error-registry";
 
 export { RqgError };
 
@@ -118,7 +119,8 @@ export function getDomDatasetAmongSiblings(
   const elem = getHTMLElement(el);
   let firstItemEl = elem;
   if (!elem) {
-    return logger.throw(`Called getFormDatasetAmongSiblings with a nonexistent element`, el);
+    logger.error(ERR.siblingElementMissing, { el });
+    return undefined;
   }
   // Get the itemId on the provided DOM element
   const itemId = elem.dataset["itemId"];
@@ -470,7 +472,7 @@ export async function getDocumentFromUuid<T>(
 export async function getRequiredDocumentFromUuid<T>(documentUuid: string | undefined): Promise<T> {
   const document = await getDocumentFromUuid<T>(documentUuid);
   if (!document) {
-    return logger.throw(`Actor could not be found from uuid [${documentUuid}]`, documentUuid); // TODO translate
+    return logger.throw(ERR.referencedActorMissing, { documentUuid });
   }
   return document;
 }
@@ -487,7 +489,7 @@ export async function getRequiredRqgActorFromUuid<T>(actorUuid: string | undefin
   }
   const rqgActor = rqgActorOrTokenDocument.actor;
   if (!rqgActor) {
-    logger.throw(`TokenDocument didn't contain actor`, rqgActorOrTokenDocument); // TODO translate
+    logger.throw(ERR.tokenHasNoActor, { tokenUuid: rqgActorOrTokenDocument.uuid });
   }
   return rqgActor as unknown as T;
 }

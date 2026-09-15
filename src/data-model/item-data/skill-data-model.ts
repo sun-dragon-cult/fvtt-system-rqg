@@ -6,6 +6,7 @@ import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { enumChoices } from "../shared/enum-choices";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { SkillCategoryEnum } from "./skill-enums";
 
 export type SkillItem = RqgItem & { system: Item.SystemOfType<"skill"> };
@@ -50,7 +51,8 @@ export class SkillDataModel extends AbilityDataModel<
   override async applyChanceGain(gain: number): Promise<void> {
     const item = this.parent;
     if (!item) {
-      logger.throw("Tried to improve a skill item that isn't embedded on an actor", item);
+      logger.error(ERR.improveTargetNotEmbedded);
+      return;
     }
 
     const newGainedChance = Number(item._source.system.gainedChance) + gain;
