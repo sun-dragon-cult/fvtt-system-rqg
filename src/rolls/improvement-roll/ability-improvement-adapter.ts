@@ -14,6 +14,7 @@ import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneItem } from "@item-model/rune-data-model.ts";
 import type { SkillItem } from "@item-model/skill-data-model.ts";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import {
   getImprovementSourceFromGainType,
   type ImprovementDetailRow,
@@ -264,7 +265,7 @@ function getAbilityType(item: RqgItem): AbilityType {
   if (isDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune)) {
     return "rune";
   }
-  return logger.throw("Expected ability item type (skill, passion, or rune)", item);
+  return logger.throw(ERR.improveTargetNotAbility, { itemUuid: item.uuid });
 }
 
 export function updateAdapterForSkill(
@@ -275,7 +276,7 @@ export function updateAdapterForSkill(
   improvementData.abilityType = "skill";
   const actor = item.parent;
   if (!actor) {
-    return logger.throw("Tried to improve a skill item that isn't embedded on an actor", item);
+    return logger.throw(ERR.improveTargetNotEmbedded, { itemUuid: item.uuid });
   }
   assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
 
@@ -364,8 +365,5 @@ export function configureAdapterForAbilityItem(
     return;
   }
 
-  logger.throw(
-    "Call to submitImproveAbilityDialog with item that was not a Passion, Rune, or Skill",
-    item,
-  );
+  logger.throw(ERR.improveTargetNotAbility, { itemUuid: item.uuid });
 }

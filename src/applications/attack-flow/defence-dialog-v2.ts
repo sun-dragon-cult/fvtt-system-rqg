@@ -40,6 +40,7 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import { toRqidString } from "../../system/api/rqid-validation";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { getWeaponEffectModifier } from "@items/weapon-item/weapon-skill-links";
 
@@ -164,7 +165,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const attackChatMessage = game.messages?.get(chatMessageId ?? "") as RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
-      logger.throw("No attackChatMessage to defend", { chatMessageId });
+      logger.throw(ERR.attackMessageMissing, { chatMessageId });
     }
     this.attackChatMessage = attackChatMessage!;
   }
@@ -217,8 +218,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const attackRollData = this.attackChatMessage?.system.attackRoll;
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
     if (!attackRoll) {
-      const msg = "No attack roll present - cannot defend";
-      logger.throw(msg, { attackChatMessageId: this.attackChatMessage.id });
+      logger.throw(ERR.attackRollMissing, { attackChatMessageId: this.attackChatMessage.id });
     }
 
     const defendingUuid =
@@ -227,8 +227,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       Object.values(defenderOptions)[0]?.value;
 
     if (!defendingUuid) {
-      const msg = "No defending token or actor UUID available";
-      logger.throw(msg, { attackChatMessageId: this.attackChatMessage.id });
+      logger.throw(ERR.noDefenderResolved, { attackChatMessageId: this.attackChatMessage.id });
     }
 
     formData.defendingTokenOrActorUuid = defendingUuid!;
@@ -501,8 +500,9 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
-      const msg = "Attack chat message not found";
-      logger.throw(msg, formDataObject);
+      // The dialog already closed above - nothing to retry against, so just notify and stop.
+      logger.error(ERR.attackMessageMissing, formDataObject);
+      return;
     }
 
     const messageData = attackChatMessage!.toObject();
@@ -693,7 +693,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       await defenceRoll.evaluate();
     }
     if (formDataObject.defence !== "ignore" && defenceRoll?.successLevel == null) {
-      logger.throw("Evaluated DefenceRoll didn't give successLevel", formDataObject);
+      logger.throw(ERR.rollHasNoSuccessLevel, { roll: "DefenceRoll", formDataObject });
     }
 
     const attackingWeapon = (await fromUuid(
@@ -994,8 +994,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const usages: SelectOptionData<UsageType>[] = [];
 
     if (!isDocumentSubType<WeaponItem>(parryingWeapon, ItemTypeEnum.Weapon)) {
-      const msg = "No parrying weapon selected";
-      console.error("RQG | ", msg);
+      // Not an error - the defender may not be parrying with a weapon at all (e.g. dodging).
       return usages;
     }
 

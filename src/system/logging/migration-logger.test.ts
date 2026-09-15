@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { MigrationLogger } from "./migration-logger";
 import type { MigrationResult } from "../migrations/apply-migrations";
+import { ERR } from "../error-registry";
 
 describe("MigrationLogger capture resilience", () => {
   let migrationResult: MigrationResult;
@@ -88,5 +89,29 @@ describe("MigrationLogger capture resilience", () => {
 
     expect(migrationResult.logEntries).toHaveLength(1);
     expect(migrationResult.logEntries[0]!.migrationName).toBe("migrateWeaponSkillLinks");
+  });
+
+  it("should forward debugData to the base logger for a coded registry error", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    logger.error(ERR.runeMagicChatBadResult, { result: "unexpected" });
+
+    expect(consoleError).toHaveBeenCalledWith(expect.any(String), { result: "unexpected" });
+    // Coded errors aren't migration reporting — they go to the base logger only.
+    expect(migrationResult.logEntries).toHaveLength(0);
+
+    consoleError.mockRestore();
+  });
+
+  it("should attribute a coded error's caller site to the real call site, not the wrapper", () => {
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
+
+    logger.error(ERR.runeMagicChatBadResult);
+
+    const [line] = consoleError.mock.calls[0] as [string];
+    expect(line).toMatch(/migration-logger\.test\.ts/);
+    expect(line).not.toMatch(/\(migration-logger\.ts\)/);
+
+    consoleError.mockRestore();
   });
 });

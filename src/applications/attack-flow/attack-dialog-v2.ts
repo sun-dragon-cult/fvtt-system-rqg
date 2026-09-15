@@ -33,6 +33,7 @@ import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { HitLocationRollOptions } from "../../rolls/hit-location-roll/hit-location-roll.types";
 import { HitLocationRoll } from "../../rolls/hit-location-roll/hit-location-roll";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import {
@@ -197,8 +198,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     const allowCombatWithoutToken = game.settings?.get(systemId, "allowCombatWithoutToken");
 
     if (!attackingToken && !allowCombatWithoutToken) {
-      const msg = localize("RQG.Dialog.Attack.NoTokenToAttackWith");
-      logger.throw(msg, { weaponItem: this.weaponItem?.id });
+      logger.throw(ERR.noTokenToAttackWith, { weaponItem: this.weaponItem?.id });
     }
   }
 
@@ -237,19 +237,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       {}) as AttackDialogFormData;
 
     const attackingTokenOrActor = getTokenOrActorFromItem(this.weaponItem);
-    if (!attackingTokenOrActor) {
-      const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
-      this.close();
-      return logger.throw(msg, { weaponItem: this.weaponItem?.id });
-    }
     const attackingTokenOrActorUuid =
       attackingTokenOrActor instanceof Token
         ? attackingTokenOrActor.document.uuid
-        : attackingTokenOrActor.uuid;
+        : attackingTokenOrActor?.uuid;
     if (!attackingTokenOrActorUuid) {
-      const msg = localize("RQG.Dialog.Attack.WeaponNotEmbedded");
       this.close();
-      return logger.throw(msg, { weaponItem: this.weaponItem?.id });
+      return logger.throw(ERR.weaponNotEmbedded, { weaponItem: this.weaponItem?.id });
     }
     formData.attackingTokenOrActorUuid = attackingTokenOrActorUuid;
 
@@ -263,9 +257,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         : availableUsageTypes[0];
 
     if (!selectedUsageType) {
-      const msg = localize("RQG.Dialog.Attack.NoWeaponToAttackWith");
       this.close();
-      return logger.throw(msg, { weaponItem: this.weaponItem?.id });
+      return logger.throw(ERR.noWeaponToAttackWith, { weaponItem: this.weaponItem?.id });
     }
 
     formData.usageType = selectedUsageType;
@@ -855,7 +848,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const weaponOwner = weapon.parent;
     if (!weaponOwner) {
-      logger.throw("weapon did not have an owner", { weaponItem: weapon.id });
+      logger.throw(ERR.weaponHasNoOwner, { weaponItem: weapon.id });
     }
     assertDocumentSubType<CharacterActor>(weaponOwner, ActorTypeEnum.Character);
 

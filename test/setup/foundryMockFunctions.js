@@ -27,6 +27,9 @@ globalThis.game = {
   settings: new Map(),
   i18n: {
     format: vi.fn((key, data = {}) => `${key} + ${Object.entries(data).join()}`),
+    localize: vi.fn((key) => key),
+    translations: {},
+    _fallback: {},
   },
   actors: {
     contents: [],

@@ -10,6 +10,7 @@ import {
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { RqgItem } from "@items/rqg-item.ts";
 import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import type {
@@ -294,13 +295,11 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const usedRune = eligibleRunes.find((r) => r.id === formDataObject.usedRuneId);
     if (!usedRune) {
-      const msg = "No rune to cast the rune magic spell";
-      return logger.throw(msg, formDataObject);
+      return logger.throw(ERR.noRuneToCast, formDataObject);
     }
 
     if (!spellItem.system.getCastingCult(casterActor)) {
-      const msg = "No cult to cast the rune magic spell";
-      return logger.throw(msg, {
+      return logger.throw(ERR.runeMagicHasNoCult, {
         actorId: casterActor.id,
         spellItemId: spellItem.id,
         cultId: spellItem.system.cultId,
