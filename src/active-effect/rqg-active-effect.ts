@@ -1,13 +1,25 @@
 import { isDocumentSubType, localize, logMisconfiguration } from "../system/util";
 import { RqgLogger } from "../system/logging/rqg-logger";
-import { Rqid } from "../system/api/rqid-api";
 import { toRqidString } from "../system/api/rqid-validation";
 import { systemId } from "../system/config";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
+import { parseRoutedKey } from "./routed-key/parse-routed-key";
+import { resolveRoutedTarget } from "./routed-key/resolve-routed-target";
+import { checkFieldModeContract } from "./routed-key/field-mode-contract";
+import {
+  RoutedKeyWarningTracker,
+  routedKeyWarningI18nKey,
+  type RoutedKeyWarningReason,
+} from "./routed-key/routed-key-warnings";
 
 import type { AnyMutableObject } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
 import type { RqgItem } from "@items/rqg-item.ts";
+import type {
+  RoutedSelector,
+  RoutedTargetActorLike,
+  RoutedTargetItemLike,
+} from "./routed-key/routed-key.types";
 import { RqgActiveEffectDataModel } from "./data-model/rqg-active-effect-data-model";
 
 export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
@@ -200,12 +212,54 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return parent.system.equippedStatus === "equipped";
   }
 
+  /** De-dupes routed-key misconfiguration warnings by (effect, key, reason) - see #920 plan. */
+  static readonly #routedKeyWarnings = new RoutedKeyWarningTracker();
+
+  /** De-dupes the legacy-syntax deprecation notice by (effect, key). */
+  static readonly #deprecationWarned = new Set<string>();
+
   /**
-   * CUSTOM application mode will apply an ADD effect to a specified item.
-   * The format of the key should be "<rqid>:<propertyPath>" like "i.skill.dodge:system.baseChance"
-   * The effect will try to find an embedded item with the specified rqid.
-   * Prefix the rqid with ~ to use it as a regex and apply the effect to all matching items,
-   * like "~i.hit-location:system.naturalAp" to affect all hit location items on the actor.
+   * `@`-routed keys (#920) send a change to a *different* embedded document than the one the
+   * effect sits on, and work across every native application mode (ADD, UPGRADE, ...). Any key
+   * not starting with `@` is untouched and behaves exactly as core Foundry.
+   *
+   *   `@<rqid>:<systemPath>`    one embedded item, best match by rqid
+   *   `@~<regex>:<systemPath>`  every embedded item whose rqid matches
+   *   `@.:<systemPath>`         the item this effect is parented to
+   */
+  static override applyChange(
+    targetDoc: ActiveEffect.ChangeTarget,
+    change: ActiveEffect.ChangeData,
+    options?: ActiveEffect.ApplyChangeOptions,
+  ): AnyMutableObject {
+    const parsed = parseRoutedKey(change.key);
+    if (!parsed.routed) {
+      return super.applyChange(targetDoc, change, options);
+    }
+
+    const effect = (change as { effect?: RqgActiveEffect }).effect;
+
+    if ("error" in parsed) {
+      RqgActiveEffect.#warnRoutedKey(effect, change, parsed.error.reason, parsed.error.detail);
+      return {};
+    }
+
+    return RqgActiveEffect.#applyRoutedChange(
+      targetDoc,
+      parsed.selector,
+      parsed.systemPath,
+      change,
+      effect,
+      options?.replacementData ?? {},
+      options?.modifyTarget ?? true,
+    );
+  }
+
+  /**
+   * @deprecated Legacy CUSTOM-mode syntax, superseded by `@`-routed keys (#920): use
+   * "@<rqid>:system.path" / "@~<regex>:system.path" instead of "<rqid>:system.path" /
+   * "~<regex>:system.path". Kept for one release as a shim for content the #920 migration
+   * misses (unlinked packs, hand-authored GM effects); delete once that window has passed.
    */
   static override _applyChangeCustom(
     targetDoc: Actor.Implementation,
@@ -217,11 +271,12 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     changes: AnyMutableObject,
   ): void {
-    const effect = (change as any).effect as RqgActiveEffect | undefined;
-    const [rqidOrPattern, path, deprecated] = (change.key ?? "").split(":"); // ex i.hit-location.head:system.naturalAp
-    if (deprecated) {
+    const effect = (change as { effect?: RqgActiveEffect }).effect;
+    const legacyKey = change.key ?? "";
+    const parsed = parseRoutedKey(`@${legacyKey}`);
+    if (!parsed.routed || "error" in parsed) {
       logMisconfiguration(
-        `Legacy Active Effect key syntax is no longer supported: [${change.key}]. Update to "rqid:system.path".`,
+        `Legacy Active Effect key [${change.key}] could not be parsed. Update to "@${change.key}".`,
         !effect?.disabled,
         change,
         effect,
@@ -229,107 +284,113 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return;
     }
 
-    const isMultiMatch = rqidOrPattern !== undefined && rqidOrPattern.startsWith("~");
-    const rqid = isMultiMatch ? rqidOrPattern.slice(1) : rqidOrPattern;
-
-    const items = [];
-    if (isDocumentSubType<CharacterActor>(targetDoc, ActorTypeEnum.Character)) {
-      if (isMultiMatch) {
-        items.push(...targetDoc.getEmbeddedDocumentsByRqidRegex(rqid ?? ""));
-      } else {
-        const bestMatch = targetDoc.getBestEmbeddedDocumentByRqid(toRqidString(rqid));
-        if (bestMatch) {
-          items.push(bestMatch);
-        }
-      }
-    }
-
-    if (items.length === 0) {
-      logMisconfiguration(
-        localize("RQG.Foundry.ActiveEffect.TargetItemNotFound", {
-          rqid: rqidOrPattern ?? "",
-          actorName: targetDoc.name,
-          itemName: Rqid.getDocumentName(rqid),
-        }),
-        !effect?.disabled,
-        change,
-        effect,
+    const seenDeprecation = `${effect?.uuid ?? "?"} ${legacyKey}`;
+    if (!RqgActiveEffect.#deprecationWarned.has(seenDeprecation)) {
+      RqgActiveEffect.#deprecationWarned.add(seenDeprecation);
+      RqgActiveEffect.logger.warn(
+        `Active Effect key [${change.key}] uses deprecated syntax. Update to "@${change.key}".`,
+        { notify: false },
       );
-      return;
     }
 
-    for (const item of items) {
+    const replacementData =
+      typeof (targetDoc as { getRollData?: () => Record<string, unknown> }).getRollData ===
+      "function"
+        ? (targetDoc as { getRollData: () => Record<string, unknown> }).getRollData()
+        : {};
+
+    // legacy syntax always meant "add", regardless of what mode reaching _applyChangeCustom implies
+    RqgActiveEffect.#applyRoutedChange(
+      targetDoc,
+      parsed.selector,
+      parsed.systemPath,
+      { ...change, type: "add" },
+      effect,
+      replacementData,
+      true,
+    );
+  }
+
+  static #applyRoutedChange(
+    targetDoc: ActiveEffect.ChangeTarget,
+    selector: RoutedSelector,
+    systemPath: string,
+    change: ActiveEffect.ChangeData,
+    effect: RqgActiveEffect | undefined,
+    replacementData: Record<string, unknown>,
+    modifyTarget: boolean,
+  ): AnyMutableObject {
+    const owningItem: RoutedTargetItemLike | undefined =
+      effect?.parent instanceof Item ? effect.parent : undefined;
+
+    const targetActor: RoutedTargetActorLike | undefined =
+      targetDoc instanceof Actor &&
+      isDocumentSubType<CharacterActor>(targetDoc, ActorTypeEnum.Character)
+        ? {
+            getBestEmbeddedDocumentByRqid: (rqid) =>
+              targetDoc.getBestEmbeddedDocumentByRqid(toRqidString(rqid)),
+            getEmbeddedDocumentsByRqidRegex: (pattern) =>
+              targetDoc.getEmbeddedDocumentsByRqidRegex(pattern),
+          }
+        : undefined;
+
+    const resolved = resolveRoutedTarget(selector, { targetActor, owningItem });
+    if ("error" in resolved) {
+      RqgActiveEffect.#warnRoutedKey(effect, change, resolved.error.reason, resolved.error.detail);
+      return {};
+    }
+
+    const fieldPath = systemPath.slice("system.".length);
+    for (const target of resolved.items) {
+      const item = target as unknown as RqgItem;
       const systemModel = item.system as unknown as {
-        getFieldForProperty?: (path: string) => unknown;
+        getFieldForProperty?: (path: string) => foundry.data.fields.DataField.Any | undefined;
       };
 
-      if (!path?.startsWith("system.")) {
-        logMisconfiguration(
-          `Active Effect item target key [${change.key}] must target an item system path.`,
-          !effect?.disabled,
-          change,
-          effect,
-        );
-        continue;
-      }
-
-      const fieldPath = path.slice("system.".length);
       const field = systemModel.getFieldForProperty?.(fieldPath);
       if (!field) {
-        logMisconfiguration(
-          `Active Effect item target key [${change.key}] could not resolve item system field [${path}].`,
-          !effect?.disabled,
-          change,
-          effect,
-        );
-        continue;
-      }
-
-      const replacementData =
-        typeof (targetDoc as any).getRollData === "function"
-          ? (targetDoc as any).getRollData()
-          : {};
-      const addChange = {
-        ...change,
-        key: path,
-        type: "add",
-      } as ActiveEffect.ChangeData & { type: string };
-
-      const activeEffectClass = ActiveEffect as typeof ActiveEffect & {
-        applyChangeField?: (
-          targetDoc: object,
-          changeData: ActiveEffect.ChangeData,
-          options: {
-            field: unknown;
-            replacementData: Record<string, unknown>;
-            modifyTarget: boolean;
-          },
-        ) => unknown;
-      };
-      if (typeof activeEffectClass.applyChangeField !== "function") {
-        logMisconfiguration(
-          `Active Effect item target key [${change.key}] could not be applied because core applyChangeField is unavailable.`,
-          !effect?.disabled,
-          change,
-          effect,
-        );
-        continue;
-      }
-
-      try {
-        activeEffectClass.applyChangeField(item as RqgItem, addChange, {
-          field,
-          replacementData,
-          modifyTarget: true,
+        RqgActiveEffect.#warnRoutedKey(effect, change, "field-not-found", {
+          key: change.key ?? "",
+          systemPath,
         });
+        continue;
+      }
+
+      const violation = checkFieldModeContract(systemPath, change.type ?? "");
+      if (violation) {
+        RqgActiveEffect.#warnRoutedKey(effect, change, violation, { systemPath });
+        continue;
+      }
+
+      const itemChange = { ...change, key: systemPath };
+      try {
+        ActiveEffect.applyChangeField(item, itemChange, { field, replacementData, modifyTarget });
       } catch (e) {
         RqgActiveEffect.logger.warn(
-          `Active Effect on item [${item.name}] in actor [${targetDoc.name}] failed while applying [${change.key}] via applyChangeField.`,
+          `Routed Active Effect key [${change.key}] failed while applying to item [${item.name}].`,
           { notify: false },
           change,
           e,
         );
       }
     }
+
+    return {};
+  }
+
+  static #warnRoutedKey(
+    effect: RqgActiveEffect | undefined,
+    change: ActiveEffect.ChangeData,
+    reason: RoutedKeyWarningReason,
+    detail: Readonly<Record<string, string>> | undefined,
+  ): void {
+    const changeKey = change.key ?? "";
+    if (
+      !RqgActiveEffect.#routedKeyWarnings.shouldWarn(effect?.uuid ?? undefined, changeKey, reason)
+    ) {
+      return;
+    }
+    const message = localize(routedKeyWarningI18nKey(reason), { key: changeKey, ...detail });
+    logMisconfiguration(message, !effect?.disabled, change, effect);
   }
 }

@@ -2,7 +2,12 @@ import type { RoutedKeyErrorReason, RoutedTargetErrorReason } from "./routed-key
 import type { FieldModeViolation } from "./field-mode-contract";
 
 export type RoutedKeyWarningReason =
-  RoutedKeyErrorReason | RoutedTargetErrorReason | FieldModeViolation;
+  | RoutedKeyErrorReason
+  | RoutedTargetErrorReason
+  | FieldModeViolation
+  // the resolved target document has no field at the routed system path (PR b's own check -
+  // parsing and target resolution can't detect this, only the actual item schema can)
+  | "field-not-found";
 
 const I18N_PREFIX = "RQG.Foundry.ActiveEffect.RoutedKey.";
 
@@ -25,6 +30,7 @@ const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "no-match": "NoMatch",
   "pad-multiply-noop": "PadMultiplyNoop",
   "pad-override-discards-stacking": "PadOverrideDiscardsStacking",
+  "field-not-found": "FieldNotFound",
 };
 
 /** i18n suffixes for the audit map (buildScripts/i18n-dynamic-key-map.ts). */
