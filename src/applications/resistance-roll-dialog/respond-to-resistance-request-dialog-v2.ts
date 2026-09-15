@@ -34,6 +34,7 @@ import { getConfiguredRollModeOptions, resolveRollModeFromForm } from "../app-pa
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { ResistanceRequestChatMessage } from "../../chat/data-model/resistance-request-chat-message.types.ts";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { answerResistanceRequest } from "../../chat/resistance-request-handlers";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 
@@ -77,7 +78,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     const requestChatMessage = game.messages?.get(chatMessageId ?? "") as
       ResistanceRequestChatMessage | undefined;
     if (!requestChatMessage) {
-      logger.throw("No resistance request chat message found", { chatMessageId });
+      logger.throw(ERR.resistanceMessageMissing, { chatMessageId });
     }
     this.requestChatMessage = requestChatMessage!;
     this.rollMode = initialResistanceRollMode(this.requestChatMessage.system.rollMode);
@@ -330,7 +331,8 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     const requestChatMessage = (await fromUuid(formDataObject.chatMessageUuid)) as
       ResistanceRequestChatMessage | undefined;
     if (!requestChatMessage) {
-      logger.throw("Resistance request chat message not found", formDataObject);
+      logger.error(ERR.resistanceMessageMissing, formDataObject);
+      return;
     }
 
     // The card may have been answered elsewhere while this dialog sat open - from the same card's

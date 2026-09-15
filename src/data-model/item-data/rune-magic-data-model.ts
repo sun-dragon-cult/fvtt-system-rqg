@@ -8,6 +8,7 @@ import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
 import { localize, assertDocumentSubType, isDocumentSubType, isTruthy } from "../../system/util";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
@@ -199,6 +200,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     runePointCost: number,
     magicPointsUsed: number,
   ): RpAndMpCost {
+    const boosted = magicPointsUsed >= 1 ? 1 : 0;
     switch (result) {
       case AbilitySuccessLevelEnum.Critical:
         return {
@@ -215,26 +217,24 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
           exp: true,
         };
 
-      case AbilitySuccessLevelEnum.Failure: {
-        const boosted = magicPointsUsed >= 1 ? 1 : 0;
+      case AbilitySuccessLevelEnum.Failure:
         return {
           mp: boosted,
           rp: 0,
           exp: false,
         };
-      }
 
-      case AbilitySuccessLevelEnum.Fumble: {
-        const boosted = magicPointsUsed >= 1 ? 1 : 0;
+      case AbilitySuccessLevelEnum.Fumble:
         return {
           mp: boosted,
           rp: runePointCost,
           exp: false,
         };
-      }
 
       default:
-        return logger.throw("Got unexpected result from roll in runeMagicChat");
+        // Unreachable for a valid success level; fall back to the most conservative cost.
+        logger.error(ERR.runeMagicChatBadResult, { result });
+        return { mp: boosted, rp: 0, exp: false };
     }
   }
 
@@ -281,7 +281,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
     const cult = this.getCastingCult(casterActor);
     if (!cult) {
-      return logger.throw("Rune Magic item isn't connected to a cult", item);
+      return logger.throw(ERR.runeMagicHasNoCult, { itemUuid: item?.uuid });
     }
 
     const levelUsedOrDefault = options.levelUsed ?? this.points;
@@ -345,7 +345,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       rollMode: options?.rollMode,
     });
     if (runeMagicRoll.successLevel == null) {
-      return logger.throw("Evaluated RuneMagicRoll didn't give successLevel");
+      return logger.throw(ERR.rollHasNoSuccessLevel, { roll: "RuneMagicRoll" });
     }
 
     await postSpellCastResult({

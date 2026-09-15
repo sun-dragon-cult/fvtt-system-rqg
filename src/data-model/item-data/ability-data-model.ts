@@ -10,6 +10,7 @@ import type { AbilityItem } from "./item-types";
 import type { SkillItem } from "./skill-data-model";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 
 const logger = new RqgLogger("AbilityDataModel");
 type AbilitySchema = ReturnType<typeof abilitySchemaFields>;
@@ -50,9 +51,7 @@ export abstract class AbilityDataModel<
   ): Promise<void> {
     const item = this.parent;
     if (!item?.isEmbedded) {
-      const msg = "Item is not embedded";
-      ui.notifications?.error(msg);
-      logger.throw(msg, item);
+      logger.throw(ERR.abilityItemNotEmbedded, { itemUuid: item?.uuid });
     }
 
     const chance: number = Number(this.chance) || 0; // Handle NaN
@@ -71,7 +70,7 @@ export abstract class AbilityDataModel<
       rollMode: options?.rollMode,
     });
     if (abilityRoll.successLevel == null) {
-      logger.throw("Evaluated AbilityRoll didn't give successLevel", { abilityRoll });
+      logger.throw(ERR.rollHasNoSuccessLevel, { roll: "AbilityRoll", abilityRoll });
     }
     await this.checkExperience(abilityRoll.successLevel);
   }
@@ -123,7 +122,8 @@ export abstract class AbilityDataModel<
   async applyChanceGain(gain: number): Promise<void> {
     const item = this.parent;
     if (!item) {
-      logger.throw("Tried to improve item that isn't embedded on an actor", item);
+      logger.error(ERR.improveTargetNotEmbedded);
+      return;
     }
 
     const newChance = Number(item._source.system.chance) + gain;

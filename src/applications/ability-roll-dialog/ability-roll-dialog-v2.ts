@@ -17,6 +17,7 @@ import {
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import { RqgItem } from "@items/rqg-item.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
@@ -106,8 +107,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
   ) {
     super(options);
     if (!abilityItem) {
-      const msg = "No AbilityItem to roll for";
-      logger.throw(msg);
+      logger.throw(ERR.noAbilityItemToRoll);
     }
 
     this.abilityItem = abilityItem;
@@ -326,7 +326,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
       const roll = await AbilityRoll.rollAndShow(options);
       if (roll.successLevel == null) {
-        logger.throw("Evaluated AbilityRoll didn't give successLevel", roll, options);
+        logger.throw(ERR.rollHasNoSuccessLevel, { roll: "AbilityRoll" }, roll, options);
       }
     }
   }

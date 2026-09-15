@@ -1547,7 +1547,16 @@
     "Notification": {
       "Error": {
         "GMOnlyOperation": "This operation is only allowed for GMs",
-        "ResistanceRequestTargetNotFound": "Could not find who this resistance request is for."
+        "ResistanceRequestTargetNotFound": "Could not find who this resistance request is for.",
+        "Unexpected": "An unexpected error occurred. Please report it with the code shown.",
+        "WeaponHasNoOwner": "This weapon is not owned by an actor. Add it to a character before attacking with it.",
+        "RuneMagicHasNoCult": "This Rune Magic spell is not connected to a cult. Link it to a cult on the item sheet.",
+        "ImproveCharacteristicNoData": "This characteristic is missing its value or roll formula. Check the actor's sheet.",
+        "AttackMessageMissing": "The attack this refers to is no longer available — its chat message was removed.",
+        "AttackRollMissing": "This attack chat message has no roll data and cannot be defended against.",
+        "ResistanceMessageMissing": "The resistance request this refers to is no longer available — its chat message was removed.",
+        "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
+        "TokenHasNoActor": "This token has no actor associated with it."
       },
       "Warn": {
         "NameGenRqidNotSupported": "Name Generation: The RQG System ID \"{rqid}\" is not supported for name generation.",
