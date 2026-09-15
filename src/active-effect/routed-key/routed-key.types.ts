@@ -10,9 +10,12 @@
  * Any key not starting with `@` is a native Foundry key and is never touched by this code.
  */
 
+import type { RqidString } from "../../system/api/rqid-api";
+
 /** Which document(s) a routed key points at. */
 export type RoutedSelector =
-  | { readonly kind: "rqid"; readonly rqid: string }
+  // already normalized by the parser, so the resolver never re-validates it
+  | { readonly kind: "rqid"; readonly rqid: RqidString }
   | { readonly kind: "regex"; readonly pattern: string }
   | { readonly kind: "item-local" };
 
@@ -52,7 +55,7 @@ export interface RoutedTargetError {
  * testable.
  */
 export interface RoutedTargetActorLike {
-  getBestEmbeddedDocumentByRqid(rqid: string | undefined): RoutedTargetItemLike | undefined;
+  getBestEmbeddedDocumentByRqid(rqid: RqidString | undefined): RoutedTargetItemLike | undefined;
   getEmbeddedDocumentsByRqidRegex(pattern: string): RoutedTargetItemLike[];
 }
 
