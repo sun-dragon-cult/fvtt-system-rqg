@@ -1385,8 +1385,8 @@
           "PadOverrideDiscardsStacking": "OVERRIDE on [{systemPath}] replaces the accumulated value and discards other effects' contributions. Use ADD, or UPGRADE to keep only the highest.",
           "FieldNotFound": "Routed Active Effect key [{key}] resolved a target document, but it has no field at [{systemPath}].",
           "CustomModeOnRoutedKey": "Routed Active Effect key [{key}] is set to CUSTOM mode, which does nothing on its own. It has been applied as ADD - change the effect's mode to ADD to silence this warning.",
-          "LegacyKeyUnparseable": "Active Effect key [{key}] uses the old CUSTOM-mode syntax but could not be read as '<rqid>:system.path'. Rewrite it as '@<rqid>:system.path'.",
-          "LegacySyntaxDeprecated": "Active Effect key [{key}] uses the deprecated CUSTOM-mode syntax and was applied as ADD. Rewrite it as '@{key}' with ADD mode."
+          "LegacySyntaxDeprecated": "Active Effect key [{key}] uses the deprecated CUSTOM-mode syntax and was applied as ADD. Rewrite it as '@{key}' with ADD mode.",
+          "UnsupportedChangeType": "Routed Active Effect key [{key}] uses the change mode [{changeType}], which RQG cannot route. It was skipped to avoid resetting the target field. Use ADD, SUBTRACT, MULTIPLY, OVERRIDE, UPGRADE or DOWNGRADE."
         }
       },
       "CombatTracker": {

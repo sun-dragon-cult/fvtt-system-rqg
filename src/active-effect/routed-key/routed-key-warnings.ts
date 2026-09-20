@@ -10,10 +10,10 @@ export type RoutedKeyWarningReason =
   | "field-not-found"
   // a routed key still on CUSTOM mode - applied as ADD, but the mode should be changed
   | "custom-mode-on-routed-key"
-  // a legacy (un-prefixed) CUSTOM-mode key that is not a valid routed key even with `@` prepended
-  | "legacy-key-unparseable"
   // a legacy key that still works through the deprecating shim, pending the #920 migration
-  | "legacy-syntax-deprecated";
+  | "legacy-syntax-deprecated"
+  // a change type that is neither native nor CUSTOM - applying it would reset the field (see below)
+  | "unsupported-change-type";
 
 const I18N_PREFIX = "RQG.Foundry.ActiveEffect.RoutedKey.";
 
@@ -38,8 +38,8 @@ const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "pad-override-discards-stacking": "PadOverrideDiscardsStacking",
   "field-not-found": "FieldNotFound",
   "custom-mode-on-routed-key": "CustomModeOnRoutedKey",
-  "legacy-key-unparseable": "LegacyKeyUnparseable",
   "legacy-syntax-deprecated": "LegacySyntaxDeprecated",
+  "unsupported-change-type": "UnsupportedChangeType",
 };
 
 /** i18n suffixes for the audit map (buildScripts/i18n-dynamic-key-map.ts). */

@@ -4,7 +4,7 @@ import { systemId } from "../system/config";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 import { parseRoutedKey } from "./routed-key/parse-routed-key";
 import { resolveRoutedTarget } from "./routed-key/resolve-routed-target";
-import { checkFieldModeContract } from "./routed-key/field-mode-contract";
+import { checkFieldModeContract, isNativeChangeType } from "./routed-key/field-mode-contract";
 import {
   RoutedKeyWarningTracker,
   routedKeyWarningI18nKey,
@@ -248,18 +248,19 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   static override _applyChangeCustom(
     targetDoc: Actor.Implementation,
     change: ActiveEffect.ChangeData,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     currentP: unknown,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     deltaP: unknown,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     changes: AnyMutableObject,
   ): void {
     const effect = (change as { effect?: RqgActiveEffect }).effect;
     const legacyKey = change.key ?? "";
     const parsed = parseRoutedKey(`@${legacyKey}`);
     if (!parsed.routed || "error" in parsed) {
-      RqgActiveEffect.#warnRoutedKey(effect, change, "legacy-key-unparseable", undefined);
+      // Not RQG's legacy syntax at all. Core routes *any* CUSTOM-type change whose key resolves to
+      // no field here, so this is also a module's `applyActiveEffect` hook effect - warning about
+      // rqid syntax would be a false positive, and swallowing it would break that hook. #1097
+      // catches genuinely mistyped routed keys at author time instead.
+      super._applyChangeCustom(targetDoc, change, currentP, deltaP, changes);
       return;
     }
 
@@ -313,6 +314,15 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       changeType = "add";
     }
 
+    // Anything else non-native (a module-registered type, a `custom.<n>` shim form) has no
+    // `DataField#applyChange` branch, so applying it would reset the target field to its initial
+    // value - see isNativeChangeType. Core would have dispatched to `CHANGE_TYPES[type].handler`
+    // for a registered type; routing cannot, since that handler expects to pick its own target.
+    if (!isNativeChangeType(changeType)) {
+      RqgActiveEffect.#warnRoutedKey(effect, change, "unsupported-change-type", { changeType });
+      return {};
+    }
+
     // the contract is a property of (path, mode), so it holds for every resolved target
     const violation = checkFieldModeContract(systemPath, changeType);
     if (violation) {
@@ -324,13 +334,20 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const itemChange = { ...change, key: systemPath, type: changeType };
     for (const target of resolved.items) {
       const item = target as unknown as RqgItem;
-      const field = item.system.getFieldForProperty(fieldPath);
-      if (!field) {
-        RqgActiveEffect.#warnRoutedKey(effect, change, "field-not-found", { systemPath });
-        continue;
-      }
-
       try {
+        // The DataModel check guards the lookup the way core does
+        // (client/documents/active-effect.mjs): a `@~<regex>:` selector fans out over whatever
+        // carries a matching rqid flag, and a module-added item type need not have a DataModel
+        // `system`. Either way the routed path does not exist on this document.
+        const field =
+          item.system instanceof foundry.abstract.DataModel
+            ? item.system.getFieldForProperty(fieldPath)
+            : undefined;
+        if (!field) {
+          RqgActiveEffect.#warnRoutedKey(effect, change, "field-not-found", { systemPath });
+          continue;
+        }
+
         ActiveEffect.applyChangeField(item, itemChange, {
           field,
           replacementData: options?.replacementData,

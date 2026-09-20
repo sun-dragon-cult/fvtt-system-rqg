@@ -6,6 +6,8 @@ import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
  * The import must happen after the stubs, hence the dynamic import and `vi.resetModules()` in
  * `afterEach`. Returns the subject plus the stub, so tests can assert native delegation.
  */
+class DataModelStub {}
+
 async function loadSubject() {
   class ActiveEffectStub {
     static SubType = {};
@@ -22,9 +24,13 @@ async function loadSubject() {
     }
 
     static applyChange = vi.fn(() => ({ __nativeApplyChangeCalled: true }));
+
+    static _applyChangeCustom = vi.fn();
   }
   (globalThis as any).ActiveEffect = ActiveEffectStub;
   (globalThis as any).Item = class Item {};
+  // the shared mock has no foundry.abstract.DataModel, which the routed field lookup guards on
+  (globalThis as any).foundry.abstract.DataModel = DataModelStub;
 
   const { RqgActiveEffect } = await import("./rqg-active-effect");
   return { RqgActiveEffect, ActiveEffectStub, warn: vi.mocked(ui.notifications!.warn) };
@@ -42,9 +48,13 @@ function makeCharacterActor(overrides: Record<string, unknown> = {}) {
   });
 }
 
-// Mirrors core's DataField#applyChange dispatch closely enough to matter here: unknown/custom
-// types fall to DataField#_applyChangeCustom, which fires a hook nobody listens to and returns
-// undefined - and applyChangeField then writes nothing.
+// Mirrors core's DataField#applyChange dispatch. The default branch matters most: an unhandled
+// type falls to DataField#_applyChangeCustom, which fires a hook nobody listens to and returns
+// undefined, and applyChange then *cleans* that undefined to the field's initial value and hands
+// it back - so applyChangeField writes a 0 over whatever was there. Modelled here so a routed
+// change with a non-native type can be shown to wipe the target if it is not filtered out.
+const FIELD_INITIAL = 0;
+
 function fieldApplyChange(value: number, _doc: unknown, change: any): number | undefined {
   const delta = Number(change.value);
   switch (change.type) {
@@ -55,7 +65,7 @@ function fieldApplyChange(value: number, _doc: unknown, change: any): number | u
     case "upgrade":
       return Math.max(value, delta);
     default:
-      return undefined;
+      return FIELD_INITIAL;
   }
 }
 
@@ -66,26 +76,31 @@ function makeWeaponItem(overrides: Record<string, unknown> = {}) {
       missile: { attack: 0, parry: 0 },
     },
   };
+  // routing guards with `system instanceof foundry.abstract.DataModel`, like core does
+  const system = Object.create(DataModelStub.prototype);
+  Object.assign(system, {
+    getFieldForProperty: vi.fn((fieldPath: string) =>
+      fieldPath === "effect.add.melee.attack" ? { applyChange: fieldApplyChange } : undefined,
+    ),
+    effect: effectData,
+  });
   return {
     id: "weapon1",
     name: "Short Spear",
     type: "weapon",
-    system: {
-      getFieldForProperty: vi.fn((fieldPath: string) =>
-        fieldPath === "effect.add.melee.attack" ? { applyChange: fieldApplyChange } : undefined,
-      ),
-      effect: effectData,
-    },
+    system,
     ...overrides,
   };
 }
 
 const originalItem = (globalThis as any).Item;
 const originalActiveEffect = (globalThis as any).ActiveEffect;
+const originalDataModel = (globalThis as any).foundry.abstract.DataModel;
 
 afterEach(() => {
   (globalThis as any).Item = originalItem;
   (globalThis as any).ActiveEffect = originalActiveEffect;
+  (globalThis as any).foundry.abstract.DataModel = originalDataModel;
   vi.mocked(ui.notifications!.warn).mockClear();
   vi.resetModules();
 });
@@ -196,6 +211,51 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(item.system.effect.add.melee.attack).toBe(7);
     expect(warn).toHaveBeenCalledTimes(1);
   });
+  it("warns and skips a non-native change type instead of resetting the field", async () => {
+    const { RqgActiveEffect, warn } = await loadSubject();
+
+    const item = makeWeaponItem();
+    item.system.effect.add.melee.attack = 4;
+    const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
+
+    RqgActiveEffect.applyChange(actor, {
+      key: "@i.weapon.short-spear:system.effect.add.melee.attack",
+      type: "somemodule.special",
+      phase: "initial",
+      priority: 0,
+      value: "5",
+    } as any);
+
+    // core would fall through to DataField#_applyChangeCustom, whose undefined return is cleaned
+    // to the field's initial value and then written - silently wiping the pad
+    expect(item.system.effect.add.melee.attack).toBe(4);
+    expect(item.system.getFieldForProperty).not.toHaveBeenCalled();
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
+
+  it("skips a fanned-out target whose system is not a DataModel rather than throwing", async () => {
+    const { RqgActiveEffect, warn } = await loadSubject();
+
+    const foreignItem = { id: "foreign", name: "Module Item", type: "module-thing", system: {} };
+    const item = makeWeaponItem();
+    const actor = makeCharacterActor({
+      getEmbeddedDocumentsByRqidRegex: vi.fn(() => [foreignItem, item]),
+    });
+
+    expect(() =>
+      RqgActiveEffect.applyChange(actor, {
+        key: "@~^i\\.weapon\\.:system.effect.add.melee.attack",
+        type: "add",
+        phase: "initial",
+        priority: 0,
+        value: "5",
+      } as any),
+    ).not.toThrow();
+
+    // the well-formed sibling still gets its change
+    expect(item.system.effect.add.melee.attack).toBe(5);
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
@@ -223,6 +283,27 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     expect(item.system.getFieldForProperty).toHaveBeenCalledWith("effect.add.melee.attack");
     expect(item.system.effect.add.melee.attack).toBe(50);
     // the deprecation notice is console-only - a GM cannot fix pack content from a toast
+    expect(warn).not.toHaveBeenCalled();
+  });
+
+  it("delegates a change that is not RQG's legacy syntax back to core", async () => {
+    const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
+
+    const actor = makeCharacterActor();
+    const change = {
+      key: "flags.someModule.someFlag",
+      type: "custom",
+      phase: "initial",
+      priority: 0,
+      value: "1",
+    };
+    const changes = {};
+    RqgActiveEffect._applyChangeCustom(actor, change as any, 1, 2, changes as any);
+
+    // core sends every unresolvable CUSTOM change here, so a module's applyActiveEffect hook
+    // effect must keep working - and must not be told to rewrite itself as an rqid key
+    expect(ActiveEffectStub._applyChangeCustom).toHaveBeenCalledWith(actor, change, 1, 2, changes);
+    expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
     expect(warn).not.toHaveBeenCalled();
   });
 });

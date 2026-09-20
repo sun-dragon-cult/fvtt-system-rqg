@@ -43,8 +43,8 @@ export function getTokenStatusEffects(): StatusEffectsById {
       duration: twoMinutesDuration(),
       changes: [
         {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
+          key: "@~^i\\.hit-location\\.:system.naturalAp",
+          type: "add",
           value: "1",
         },
       ],
@@ -55,8 +55,8 @@ export function getTokenStatusEffects(): StatusEffectsById {
       duration: twoMinutesDuration(),
       changes: [
         {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
+          key: "@~^i\\.hit-location\\.:system.naturalAp",
+          type: "add",
           value: "2",
         },
       ],
@@ -67,8 +67,8 @@ export function getTokenStatusEffects(): StatusEffectsById {
       duration: twoMinutesDuration(),
       changes: [
         {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
+          key: "@~^i\\.hit-location\\.:system.naturalAp",
+          type: "add",
           value: "3",
         },
       ],
@@ -79,8 +79,8 @@ export function getTokenStatusEffects(): StatusEffectsById {
       duration: twoMinutesDuration(),
       changes: [
         {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
+          key: "@~^i\\.hit-location\\.:system.naturalAp",
+          type: "add",
           value: "4",
         },
       ],
