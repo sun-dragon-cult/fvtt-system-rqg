@@ -123,6 +123,21 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(result.summary.migratedChanges).toBe(1);
   });
 
+  it("leaves a legacy key on subtract for manual review rather than rewriting it as add", () => {
+    const effect = {
+      system: {
+        changes: [{ key: "system.attributes.magicPoints.max", type: "subtract", value: 3 }],
+      },
+    };
+
+    const result = migrateEffectChangesWithSummary(effect);
+
+    expect(result.changed).toBe(false);
+    expect(effect.system.changes[0]!.key).toBe("system.attributes.magicPoints.max");
+    expect(effect.system.changes[0]!.type).toBe("subtract");
+    expect(result.summary.warningReasons["non-additive-mode"]).toBe(1);
+  });
+
   it("does not let transformMode rescue unrecognized change types", () => {
     const effect = {
       system: {
@@ -152,7 +167,7 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
   it("repairs legacy change.type values on non-legacy keys in the combined helper", () => {
     const effect = {
       system: {
-        changes: [{ key: "system.effect.add.magicPoints.max", type: "subtract", value: 3 }],
+        changes: [{ key: "system.effect.add.magicPoints.max", type: 2, value: 3 }],
       },
     };
 
@@ -161,6 +176,20 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(changed).toBe(true);
     expect(effect.system.changes[0]!.key).toBe("system.effect.add.magicPoints.max");
     expect(effect.system.changes[0]!.type).toBe("add");
+  });
+
+  it("leaves a v14 subtract change type alone instead of flipping its sign", () => {
+    const effect = {
+      system: {
+        changes: [{ key: "system.effect.add.magicPoints.max", type: "subtract", value: 3 }],
+      },
+    };
+
+    const changed = migrateEffectTypesAndPaths(effect);
+
+    expect(changed).toBe(false);
+    expect(effect.system.changes[0]!.type).toBe("subtract");
+    expect(effect.system.changes[0]!.value).toBe(3);
   });
 
   it("reports changed when only change.type normalization occurs", () => {
