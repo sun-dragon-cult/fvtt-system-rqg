@@ -286,6 +286,50 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
+  it("warns about a bare rqid with no system path instead of silently dropping it", async () => {
+    const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
+
+    const actor = makeCharacterActor();
+    RqgActiveEffect._applyChangeCustom(
+      actor,
+      {
+        key: "i.skill.worship-etyries",
+        type: "custom",
+        phase: "initial",
+        priority: 20,
+        value: "20",
+      } as any,
+      undefined,
+      undefined,
+      {} as any,
+    );
+
+    // the selector is a valid rqid, so this was meant as a routed key - say what is missing
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(ActiveEffectStub._applyChangeCustom).not.toHaveBeenCalled();
+  });
+
+  it("warns when a legacy key's path is not a system path", async () => {
+    const { RqgActiveEffect, warn } = await loadSubject();
+
+    const actor = makeCharacterActor();
+    RqgActiveEffect._applyChangeCustom(
+      actor,
+      {
+        key: "i.skill.dodge:baseChance",
+        type: "custom",
+        phase: "initial",
+        priority: 0,
+        value: "5",
+      } as any,
+      undefined,
+      undefined,
+      {} as any,
+    );
+
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
+
   it("delegates a change that is not RQG's legacy syntax back to core", async () => {
     const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
 

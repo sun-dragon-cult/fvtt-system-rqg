@@ -1,4 +1,5 @@
 import { isDocumentSubType, localize, logMisconfiguration } from "../system/util";
+import { isValidRqidString } from "../system/api/rqid-validation";
 import { RqgLogger } from "../system/logging/rqg-logger";
 import { systemId } from "../system/config";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
@@ -256,11 +257,20 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const legacyKey = change.key ?? "";
     const parsed = parseRoutedKey(`@${legacyKey}`);
     if (!parsed.routed || "error" in parsed) {
-      // Not RQG's legacy syntax at all. Core routes *any* CUSTOM-type change whose key resolves to
-      // no field here, so this is also a module's `applyActiveEffect` hook effect - warning about
-      // rqid syntax would be a false positive, and swallowing it would break that hook. #1097
-      // catches genuinely mistyped routed keys at author time instead.
-      super._applyChangeCustom(targetDoc, change, currentP, deltaP, changes);
+      // Core routes *any* CUSTOM-type change whose key resolves to no field here, so this is also
+      // where a module's `applyActiveEffect` hook effect arrives. Tell the two apart by the
+      // selector rather than by "did parsing fail": a selector that is a valid rqid or a `~regex`
+      // was meant as an RQG routed key, so report what is actually wrong with it, and anything
+      // else goes back to core so its hook still fires.
+      const selector = legacyKey.split(":", 1)[0] ?? "";
+      if (selector.startsWith("~") || isValidRqidString(selector)) {
+        const reason = "error" in parsed ? parsed.error.reason : "missing-path";
+        const detail = "error" in parsed ? parsed.error.detail : undefined;
+        // detail carries the `@`-prefixed key parseRoutedKey was handed; report what the GM typed
+        RqgActiveEffect.#warnRoutedKey(effect, change, reason, { ...detail, key: legacyKey });
+      } else {
+        super._applyChangeCustom(targetDoc, change, currentP, deltaP, changes);
+      }
       return;
     }
 
