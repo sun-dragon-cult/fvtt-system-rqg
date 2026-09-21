@@ -1,5 +1,5 @@
 /**
- * Field-family mode contract for routed changes (#920).
+ * Field-family mode contract, for routed and direct changes alike (#920).
  *
  * `system.effect.add.*` paths are "pads": zero-initialised, non-persisted delta accumulators that
  * are folded into a derived value in `prepareDerivedData` (see character-data-model.ts). Foundry
@@ -18,7 +18,7 @@
 
 const PAD_PATH_PREFIX = "system.effect.add.";
 
-/** A routed change whose mode does not make sense against the target field. */
+/** A change whose mode does not make sense against the target field. */
 export type FieldModeViolation = "pad-multiply-noop" | "pad-override-discards-stacking";
 
 /** True when `systemPath` targets a `system.effect.add.*` pad. */

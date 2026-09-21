@@ -119,6 +119,32 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
   });
 
+  it("warns and skips MULTIPLY against an actor's own pad, without routing", async () => {
+    const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
+
+    const actor = makeCharacterActor();
+    const change = routedChange("system.effect.add.magicPoints.max", "multiply", "2");
+    const result = RqgActiveEffect.applyChange(actor, change);
+
+    // core would apply this as 0 * 2 = 0 and say nothing
+    expect(ActiveEffectStub.applyChange).not.toHaveBeenCalled();
+    expect(result).toEqual({});
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
+
+  it("warns and skips OVERRIDE against an actor's own pad", async () => {
+    const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
+
+    const actor = makeCharacterActor();
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange("system.effect.add.hitPoints.max", "override", "3"),
+    );
+
+    expect(ActiveEffectStub.applyChange).not.toHaveBeenCalled();
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
+
   it("routes an @rqid key to the matching embedded item, honouring the change's own mode", async () => {
     const { RqgActiveEffect } = await loadSubject();
 
