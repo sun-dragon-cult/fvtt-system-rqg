@@ -1,13 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ActorTypeEnum } from "../data-model/actor-data/rqg-actor-data";
 
-/**
- * Install the Foundry globals `RqgActiveEffect` needs at class-definition time, then import it.
- * The import must happen after the stubs, hence the dynamic import and `vi.resetModules()` in
- * `afterEach`. Returns the subject plus the stub, so tests can assert native delegation.
- */
 class DataModelStub {}
 
+/** Install the globals the class needs at definition time, then import it - hence the dynamic import. */
 async function loadSubject() {
   class ActiveEffectStub {
     static SubType = {};
@@ -36,6 +32,14 @@ async function loadSubject() {
   return { RqgActiveEffect, ActiveEffectStub, warn: vi.mocked(ui.notifications!.warn) };
 }
 
+function routedChange(key: string, type: string, value: string, extra: object = {}) {
+  return { key, type, phase: "initial", priority: 0, value, ...extra } as any;
+}
+
+function applyLegacyCustom(subject: any, actor: object, key: string, value: string) {
+  subject._applyChangeCustom(actor, routedChange(key, "custom", value), undefined, undefined, {});
+}
+
 function makeCharacterActor(overrides: Record<string, unknown> = {}) {
   const actor = Object.create((globalThis as any).Actor.prototype);
   return Object.assign(actor, {
@@ -48,11 +52,8 @@ function makeCharacterActor(overrides: Record<string, unknown> = {}) {
   });
 }
 
-// Mirrors core's DataField#applyChange dispatch. The default branch matters most: an unhandled
-// type falls to DataField#_applyChangeCustom, which fires a hook nobody listens to and returns
-// undefined, and applyChange then *cleans* that undefined to the field's initial value and hands
-// it back - so applyChangeField writes a 0 over whatever was there. Modelled here so a routed
-// change with a non-native type can be shown to wipe the target if it is not filtered out.
+// Mirrors core's DataField#applyChange dispatch, including the default branch cleaning an
+// unhandled type's undefined to the field's initial - i.e. wiping whatever was there.
 const FIELD_INITIAL = 0;
 
 function fieldApplyChange(value: number, _doc: unknown, change: any): number | undefined {
@@ -110,14 +111,8 @@ describe("RqgActiveEffect.applyChange", () => {
     const { RqgActiveEffect, ActiveEffectStub } = await loadSubject();
 
     const actor = makeCharacterActor();
-    const change = {
-      key: "system.baseChance",
-      type: "add",
-      phase: "initial",
-      priority: 0,
-      value: "10",
-    };
-    const result = RqgActiveEffect.applyChange(actor, change as any);
+    const change = routedChange("system.baseChance", "add", "10");
+    const result = RqgActiveEffect.applyChange(actor, change);
 
     expect(ActiveEffectStub.applyChange).toHaveBeenCalledWith(actor, change, undefined);
     expect(result).toEqual({ __nativeApplyChangeCalled: true });
@@ -132,13 +127,7 @@ describe("RqgActiveEffect.applyChange", () => {
 
     RqgActiveEffect.applyChange(
       actor,
-      {
-        key: "@i.weapon.short-spear:system.effect.add.melee.attack",
-        type: "add",
-        phase: "initial",
-        priority: 0,
-        value: "5",
-      } as any,
+      routedChange("@i.weapon.short-spear:system.effect.add.melee.attack", "add", "5"),
       { replacementData: { foo: "bar" } },
     );
 
@@ -155,14 +144,10 @@ describe("RqgActiveEffect.applyChange", () => {
     const actor = makeCharacterActor();
     const effect = { parent: item, uuid: "Effect.abc", disabled: false };
 
-    RqgActiveEffect.applyChange(actor, {
-      key: "@.:system.effect.add.melee.attack",
-      type: "add",
-      phase: "initial",
-      priority: 0,
-      value: "3",
-      effect,
-    } as any);
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange("@.:system.effect.add.melee.attack", "add", "3", { effect }),
+    );
 
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
     expect(item.system.effect.add.melee.attack).toBe(3);
@@ -180,13 +165,10 @@ describe("RqgActiveEffect.applyChange", () => {
     );
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
 
-    RqgActiveEffect.applyChange(actor, {
-      key: "@i.weapon.short-spear:system.effect.add.melee.attack",
-      type: "multiply",
-      phase: "initial",
-      priority: 0,
-      value: "2",
-    } as any);
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange("@i.weapon.short-spear:system.effect.add.melee.attack", "multiply", "2"),
+    );
 
     expect(applyChangeSpy).not.toHaveBeenCalled();
     expect(item.system.effect.add.melee.attack).toBe(0);
@@ -199,13 +181,10 @@ describe("RqgActiveEffect.applyChange", () => {
     const item = makeWeaponItem();
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
 
-    RqgActiveEffect.applyChange(actor, {
-      key: "@i.weapon.short-spear:system.effect.add.melee.attack",
-      type: "custom",
-      phase: "initial",
-      priority: 0,
-      value: "7",
-    } as any);
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange("@i.weapon.short-spear:system.effect.add.melee.attack", "custom", "7"),
+    );
 
     // core's field-level custom handler would have written nothing at all
     expect(item.system.effect.add.melee.attack).toBe(7);
@@ -218,22 +197,22 @@ describe("RqgActiveEffect.applyChange", () => {
     item.system.effect.add.melee.attack = 4;
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
 
-    RqgActiveEffect.applyChange(actor, {
-      key: "@i.weapon.short-spear:system.effect.add.melee.attack",
-      type: "somemodule.special",
-      phase: "initial",
-      priority: 0,
-      value: "5",
-    } as any);
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange(
+        "@i.weapon.short-spear:system.effect.add.melee.attack",
+        "somemodule.special",
+        "5",
+      ),
+    );
 
-    // core would fall through to DataField#_applyChangeCustom, whose undefined return is cleaned
-    // to the field's initial value and then written - silently wiping the pad
+    // core would clean the undefined return to the field's initial and write it, wiping the pad
     expect(item.system.effect.add.melee.attack).toBe(4);
     expect(item.system.getFieldForProperty).not.toHaveBeenCalled();
     expect(warn).toHaveBeenCalledTimes(1);
   });
 
-  it("skips a fanned-out target whose system is not a DataModel rather than throwing", async () => {
+  it("skips a target whose system is not a DataModel without losing its siblings", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
 
     const foreignItem = { id: "foreign", name: "Module Item", type: "module-thing", system: {} };
@@ -242,19 +221,15 @@ describe("RqgActiveEffect.applyChange", () => {
       getEmbeddedDocumentsByRqidRegex: vi.fn(() => [foreignItem, item]),
     });
 
-    expect(() =>
-      RqgActiveEffect.applyChange(actor, {
-        key: "@~^i\\.weapon\\.:system.effect.add.melee.attack",
-        type: "add",
-        phase: "initial",
-        priority: 0,
-        value: "5",
-      } as any),
-    ).not.toThrow();
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange("@~^i\\.weapon\\.:system.effect.add.melee.attack", "add", "5"),
+    );
 
-    // the well-formed sibling still gets its change
-    expect(item.system.effect.add.melee.attack).toBe(5);
+    // without the guard the lookup throws into the catch, which logs without notifying
     expect(warn).toHaveBeenCalledTimes(1);
+    // and the well-formed sibling still gets its change
+    expect(item.system.effect.add.melee.attack).toBe(5);
   });
 });
 
@@ -265,18 +240,11 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     const item = makeWeaponItem();
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
 
-    RqgActiveEffect._applyChangeCustom(
+    applyLegacyCustom(
+      RqgActiveEffect,
       actor,
-      {
-        key: "i.weapon.short-spear:system.effect.add.melee.attack",
-        type: "custom",
-        phase: "initial",
-        priority: 0,
-        value: "50",
-      } as any,
-      undefined,
-      undefined,
-      {} as any,
+      "i.weapon.short-spear:system.effect.add.melee.attack",
+      "50",
     );
 
     expect(actor.getBestEmbeddedDocumentByRqid).toHaveBeenCalledWith("i.weapon.short-spear");
@@ -290,19 +258,7 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
 
     const actor = makeCharacterActor();
-    RqgActiveEffect._applyChangeCustom(
-      actor,
-      {
-        key: "i.skill.worship-etyries",
-        type: "custom",
-        phase: "initial",
-        priority: 20,
-        value: "20",
-      } as any,
-      undefined,
-      undefined,
-      {} as any,
-    );
+    applyLegacyCustom(RqgActiveEffect, actor, "i.skill.worship-etyries", "20");
 
     // the selector is a valid rqid, so this was meant as a routed key - say what is missing
     expect(warn).toHaveBeenCalledTimes(1);
@@ -313,19 +269,7 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     const { RqgActiveEffect, warn } = await loadSubject();
 
     const actor = makeCharacterActor();
-    RqgActiveEffect._applyChangeCustom(
-      actor,
-      {
-        key: "i.skill.dodge:baseChance",
-        type: "custom",
-        phase: "initial",
-        priority: 0,
-        value: "5",
-      } as any,
-      undefined,
-      undefined,
-      {} as any,
-    );
+    applyLegacyCustom(RqgActiveEffect, actor, "i.skill.dodge:baseChance", "5");
 
     expect(warn).toHaveBeenCalledTimes(1);
   });
@@ -334,18 +278,11 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
 
     const actor = makeCharacterActor();
-    const change = {
-      key: "flags.someModule.someFlag",
-      type: "custom",
-      phase: "initial",
-      priority: 0,
-      value: "1",
-    };
+    const change = routedChange("flags.someModule.someFlag", "custom", "1");
     const changes = {};
     RqgActiveEffect._applyChangeCustom(actor, change as any, 1, 2, changes as any);
 
-    // core sends every unresolvable CUSTOM change here, so a module's applyActiveEffect hook
-    // effect must keep working - and must not be told to rewrite itself as an rqid key
+    // a module's applyActiveEffect hook effect must keep working, and not be told to use an rqid
     expect(ActiveEffectStub._applyChangeCustom).toHaveBeenCalledWith(actor, change, 1, 2, changes);
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
     expect(warn).not.toHaveBeenCalled();

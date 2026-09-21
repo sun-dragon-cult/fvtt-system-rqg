@@ -18,12 +18,8 @@ export type RoutedKeyWarningReason =
 const I18N_PREFIX = "RQG.Foundry.ActiveEffect.RoutedKey.";
 
 /**
- * The i18n suffix for every routed-key warning reason.
- *
- * A `Record<RoutedKeyWarningReason, string>` so omitting a reason is a compile error, and the
- * suffix is written out literally (not derived by a case transform) so the i18n audit, which
- * builds its locale keys from `Object.values(...)` in buildScripts/i18n-dynamic-key-map.ts,
- * checks the exact string that has to exist in uiContent.json.
+ * The i18n suffix for every routed-key warning reason. A `Record` so a missing reason is a compile
+ * error, and spelled out literally (not case-transformed) so the i18n audit sees the real key.
  */
 const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "missing-path": "MissingPath",
@@ -57,17 +53,10 @@ export function routedKeyWarningI18nKey(reason: RoutedKeyWarningReason): string 
 }
 
 /**
- * Tracks which routed-key change rows have already produced a warning, so a misconfigured key
- * warns once rather than on every data-preparation cycle (#920: "warn once per effect row").
- *
- * Identity is (effect uuid, routed key, reason) - not a row index - so reordering an effect's
- * changes does not lose or duplicate a warning.
- *
- * `RqgActiveEffect` holds one instance for the life of the client session rather than one per
- * data-preparation pass: `applyChange` is static and core drives the prep loop, so there is no
- * pass boundary to hook. The trade-off is deliberate - a GM who dismisses the toast will not see
- * it again until reload, which is preferable to re-warning on every prep cycle (several per
- * item update). Entries are short strings and only accumulate for genuinely broken content.
+ * Warns once per (effect uuid, routed key, reason) instead of on every data-preparation cycle.
+ * Keyed on the routed key rather than a row index, so reordering an effect's changes is harmless.
+ * One instance lives for the client session - `applyChange` is static, so there is no prep-pass
+ * boundary to hook.
  */
 export class RoutedKeyWarningTracker {
   readonly #seen = new Set<string>();

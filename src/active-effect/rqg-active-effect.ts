@@ -1,11 +1,15 @@
 import { isDocumentSubType, localize, logMisconfiguration } from "../system/util";
-import { isValidRqidString } from "../system/api/rqid-validation";
 import { RqgLogger } from "../system/logging/rqg-logger";
 import { systemId } from "../system/config";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
-import { parseRoutedKey } from "./routed-key/parse-routed-key";
+import {
+  isRoutedSelectorShaped,
+  parseRoutedKey,
+  parseRoutedKeyBody,
+} from "./routed-key/parse-routed-key";
 import { resolveRoutedTarget } from "./routed-key/resolve-routed-target";
-import { checkFieldModeContract, isNativeChangeType } from "./routed-key/field-mode-contract";
+import { checkFieldModeContract } from "./routed-key/field-mode-contract";
+import { isNativeChangeType } from "./routed-key/change-type-contract";
 import {
   RoutedKeyWarningTracker,
   routedKeyWarningI18nKey,
@@ -212,9 +216,8 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   static readonly #routedKeyWarnings = new RoutedKeyWarningTracker();
 
   /**
-   * `@`-routed keys (#920) send a change to a *different* embedded document than the one the
-   * effect sits on, and work across every native application mode (ADD, UPGRADE, ...). Any key
-   * not starting with `@` is untouched and behaves exactly as core Foundry.
+   * `@`-routed keys (#920) send a change to a different embedded document, across every native
+   * mode. Any key not starting with `@` is untouched and behaves exactly as core Foundry.
    *
    *   `@<rqid>:<systemPath>`    one embedded item, best match by rqid
    *   `@~<regex>:<systemPath>`  every embedded item whose rqid matches
@@ -241,10 +244,8 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   }
 
   /**
-   * @deprecated Legacy CUSTOM-mode syntax, superseded by `@`-routed keys (#920): use
-   * "@<rqid>:system.path" / "@~<regex>:system.path" instead of "<rqid>:system.path" /
-   * "~<regex>:system.path". Kept for one release as a shim for content the #920 migration
-   * misses (unlinked packs, hand-authored GM effects); delete once that window has passed.
+   * @deprecated Pre-#920 syntax: use "@<rqid>:system.path" instead of "<rqid>:system.path". Kept
+   * one release for content the #920 migration misses (unlinked packs, hand-authored effects).
    */
   static override _applyChangeCustom(
     targetDoc: Actor.Implementation,
@@ -254,31 +255,21 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     changes: AnyMutableObject,
   ): void {
     const effect = (change as { effect?: RqgActiveEffect }).effect;
-    const legacyKey = change.key ?? "";
-    const parsed = parseRoutedKey(`@${legacyKey}`);
-    if (!parsed.routed || "error" in parsed) {
-      // Core routes *any* CUSTOM-type change whose key resolves to no field here, so this is also
-      // where a module's `applyActiveEffect` hook effect arrives. Tell the two apart by the
-      // selector rather than by "did parsing fail": a selector that is a valid rqid or a `~regex`
-      // was meant as an RQG routed key, so report what is actually wrong with it, and anything
-      // else goes back to core so its hook still fires.
-      const selector = legacyKey.split(":", 1)[0] ?? "";
-      if (selector.startsWith("~") || isValidRqidString(selector)) {
-        const reason = "error" in parsed ? parsed.error.reason : "missing-path";
-        const detail = "error" in parsed ? parsed.error.detail : undefined;
-        // detail carries the `@`-prefixed key parseRoutedKey was handed; report what the GM typed
-        RqgActiveEffect.#warnRoutedKey(effect, change, reason, { ...detail, key: legacyKey });
-      } else {
+    const parsed = parseRoutedKeyBody(change.key ?? "");
+    if ("error" in parsed) {
+      // core sends every unresolvable CUSTOM change here, so only claim routed-looking selectors
+      if (!isRoutedSelectorShaped(parsed.error.selectorRaw)) {
         super._applyChangeCustom(targetDoc, change, currentP, deltaP, changes);
+        return;
       }
+      RqgActiveEffect.#warnRoutedKey(effect, change, parsed.error.reason, parsed.error.detail);
       return;
     }
 
     // console-only: a GM cannot fix pack content from a toast, and PR c's migration rewrites it
     RqgActiveEffect.#warnRoutedKey(effect, change, "legacy-syntax-deprecated", undefined, false);
 
-    // Core passes no options to _applyChangeCustom, so unlike applyChange this path has to
-    // rebuild the replacement data. That asymmetry disappears with the shim.
+    // core passes no options here, so the replacement data has to be rebuilt
     RqgActiveEffect.#applyRoutedChange(
       targetDoc,
       // legacy syntax always meant "add", whatever mode routed the change here
@@ -296,6 +287,28 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   ): AnyMutableObject {
     const { selector, systemPath } = parsed;
     const effect = (change as { effect?: RqgActiveEffect }).effect;
+
+    // Type and mode are properties of (path, type) alone, so they are checked before resolving the
+    // target - otherwise a misconfigured row pays for a full embedded-item scan on every prep cycle.
+    // CUSTOM would write nothing at all; PR c's migration rewrites the mode.
+    let changeType = change.type ?? "";
+    if (changeType === "custom") {
+      RqgActiveEffect.#warnRoutedKey(effect, change, "custom-mode-on-routed-key");
+      changeType = "add";
+    }
+
+    // any other type has no applyChange branch, and applying it would reset the field to `initial`
+    if (!isNativeChangeType(changeType)) {
+      RqgActiveEffect.#warnRoutedKey(effect, change, "unsupported-change-type", { changeType });
+      return {};
+    }
+
+    const violation = checkFieldModeContract(systemPath, changeType);
+    if (violation) {
+      RqgActiveEffect.#warnRoutedKey(effect, change, violation, { systemPath });
+      return {};
+    }
+
     // the `instanceof` narrows away TokenDocument, which isDocumentSubType does not accept
     const targetActor =
       targetDoc instanceof Actor &&
@@ -313,42 +326,12 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return {};
     }
 
-    // A routed key left on CUSTOM mode would otherwise vanish: core's field-level custom handler
-    // only fires the `applyActiveEffect` hook, which RQG does not listen to, so `applyChangeField`
-    // gets `undefined` back and writes nothing. Routed keys have always meant ADD, so keep
-    // applying that and flag the mode. PR c's migration should rewrite the mode alongside the
-    // key, leaving this as a safety net for pack content and hand-authored effects it misses.
-    let changeType = change.type ?? "";
-    if (changeType === "custom") {
-      RqgActiveEffect.#warnRoutedKey(effect, change, "custom-mode-on-routed-key");
-      changeType = "add";
-    }
-
-    // Anything else non-native (a module-registered type, a `custom.<n>` shim form) has no
-    // `DataField#applyChange` branch, so applying it would reset the target field to its initial
-    // value - see isNativeChangeType. Core would have dispatched to `CHANGE_TYPES[type].handler`
-    // for a registered type; routing cannot, since that handler expects to pick its own target.
-    if (!isNativeChangeType(changeType)) {
-      RqgActiveEffect.#warnRoutedKey(effect, change, "unsupported-change-type", { changeType });
-      return {};
-    }
-
-    // the contract is a property of (path, mode), so it holds for every resolved target
-    const violation = checkFieldModeContract(systemPath, changeType);
-    if (violation) {
-      RqgActiveEffect.#warnRoutedKey(effect, change, violation, { systemPath });
-      return {};
-    }
-
     const fieldPath = systemPath.slice("system.".length);
     const itemChange = { ...change, key: systemPath, type: changeType };
     for (const target of resolved.items) {
       const item = target as unknown as RqgItem;
       try {
-        // The DataModel check guards the lookup the way core does
-        // (client/documents/active-effect.mjs): a `@~<regex>:` selector fans out over whatever
-        // carries a matching rqid flag, and a module-added item type need not have a DataModel
-        // `system`. Either way the routed path does not exist on this document.
+        // guarded like core does - a regex fan-out can reach an item type without a DataModel
         const field =
           item.system instanceof foundry.abstract.DataModel
             ? item.system.getFieldForProperty(fieldPath)

@@ -46,27 +46,3 @@ export function checkFieldModeContract(
   }
   return null;
 }
-
-/**
- * The change types core implements as a `DataField#applyChange` branch, i.e. everything in
- * `CONST.ACTIVE_EFFECT_CHANGE_TYPES` except `custom`.
- *
- * Listed here rather than read from `CONST` so the check works in unit tests (which do not mock
- * the Foundry globals) and so adding a type is a deliberate edit - a routed change whose type has
- * no branch falls through to `DataField#_applyChangeCustom`, which is not a no-op: it returns
- * `undefined`, `DataField#applyChange` then cleans that to the field's *initial* value, and
- * `applyChangeField` writes it. A skill would silently reset to 0.
- */
-const NATIVE_CHANGE_TYPES: ReadonlySet<string> = new Set([
-  "add",
-  "subtract",
-  "multiply",
-  "override",
-  "upgrade",
-  "downgrade",
-]);
-
-/** True when `changeType` is a change type core can apply to a DataField on its own. */
-export function isNativeChangeType(changeType: string): boolean {
-  return NATIVE_CHANGE_TYPES.has(changeType);
-}
