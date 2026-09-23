@@ -233,11 +233,13 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const effect = (change as { effect?: RqgActiveEffect }).effect;
 
     if (!parsed.routed) {
-      // the contract is a property of (path, type), so the actor's own pads are checked too
-      const violation = checkFieldModeContract(change.key ?? "", change.type ?? "");
+      // the contract is a property of the change alone, so the actor's own pads are checked too
+      const violation = checkFieldModeContract(change.key ?? "", change.type ?? "", change.value);
       if (violation) {
         RqgActiveEffect.#warnMisconfiguration(effect, change, violation, {
           systemPath: change.key ?? "",
+          changeType: (change.type ?? "").toUpperCase(),
+          value: String(change.value ?? ""),
         });
         return {};
       }
@@ -313,7 +315,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const { selector, systemPath } = parsed;
     const effect = (change as { effect?: RqgActiveEffect }).effect;
 
-    // Type and mode are properties of (path, type) alone, so they are checked before resolving the
+    // Type and mode are properties of the change alone, so they are checked before resolving the
     // target - otherwise a misconfigured row pays for a full embedded-item scan on every prep cycle.
     // CUSTOM would write nothing at all; PR c's migration rewrites the mode.
     let changeType = change.type ?? "";
@@ -322,7 +324,8 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       changeType = "add";
     }
 
-    // any other type has no applyChange branch, and applying it would reset the field to `initial`
+    // registered custom types are not routable: they bypass their handler here, and a DataField has
+    // no branch for them, so applying one would reset the field to `initial`
     if (!isNativeChangeType(changeType)) {
       RqgActiveEffect.#warnMisconfiguration(effect, change, "unsupported-change-type", {
         changeType,
@@ -330,9 +333,13 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return {};
     }
 
-    const violation = checkFieldModeContract(systemPath, changeType);
+    const violation = checkFieldModeContract(systemPath, changeType, change.value);
     if (violation) {
-      RqgActiveEffect.#warnMisconfiguration(effect, change, violation, { systemPath });
+      RqgActiveEffect.#warnMisconfiguration(effect, change, violation, {
+        systemPath,
+        changeType: changeType.toUpperCase(),
+        value: String(change.value ?? ""),
+      });
       return {};
     }
 
