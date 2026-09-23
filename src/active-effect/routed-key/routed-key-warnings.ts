@@ -32,7 +32,6 @@ const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "no-match": "NoMatch",
   "pad-multiply-noop": "PadMultiplyNoop",
   "pad-override-discards-stacking": "PadOverrideDiscardsStacking",
-  "pad-bound-wrong-sign-noop": "PadBoundWrongSignNoop",
   "field-not-found": "FieldNotFound",
   "custom-mode-on-routed-key": "CustomModeOnRoutedKey",
   "legacy-syntax-deprecated": "LegacySyntaxDeprecated",

@@ -32,20 +32,6 @@ describe("checkFieldModeContract", () => {
     );
   });
 
-  it("flags upgrade with a negative value and downgrade with a positive one as no-ops", () => {
-    const pad = "system.effect.add.melee.attack";
-    expect(checkFieldModeContract(pad, "upgrade", "-5")).toBe("pad-bound-wrong-sign-noop");
-    expect(checkFieldModeContract(pad, "downgrade", 3)).toBe("pad-bound-wrong-sign-noop");
-  });
-
-  it("allows upgrade with a positive value, downgrade with a negative one, and formulas", () => {
-    const pad = "system.effect.add.melee.attack";
-    expect(checkFieldModeContract(pad, "upgrade", "5")).toBeNull();
-    expect(checkFieldModeContract(pad, "downgrade", "-20")).toBeNull();
-    expect(checkFieldModeContract(pad, "downgrade", "@mod")).toBeNull();
-    expect(checkFieldModeContract("system.baseChance", "downgrade", "3")).toBeNull();
-  });
-
   it("flags override on a pad as discarding stacking", () => {
     expect(checkFieldModeContract("system.effect.add.magicPoints.max", "override")).toBe(
       "pad-override-discards-stacking",

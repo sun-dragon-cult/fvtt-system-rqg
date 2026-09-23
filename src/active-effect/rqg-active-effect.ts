@@ -233,13 +233,11 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const effect = (change as { effect?: RqgActiveEffect }).effect;
 
     if (!parsed.routed) {
-      // the contract is a property of the change alone, so the actor's own pads are checked too
-      const violation = checkFieldModeContract(change.key ?? "", change.type ?? "", change.value);
+      // the contract is a property of (path, type), so the actor's own pads are checked too
+      const violation = checkFieldModeContract(change.key ?? "", change.type ?? "");
       if (violation) {
         RqgActiveEffect.#warnMisconfiguration(effect, change, violation, {
           systemPath: change.key ?? "",
-          changeType: (change.type ?? "").toUpperCase(),
-          value: String(change.value ?? ""),
         });
         return {};
       }
@@ -315,7 +313,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const { selector, systemPath } = parsed;
     const effect = (change as { effect?: RqgActiveEffect }).effect;
 
-    // Type and mode are properties of the change alone, so they are checked before resolving the
+    // Type and mode are properties of (path, type) alone, so they are checked before resolving the
     // target - otherwise a misconfigured row pays for a full embedded-item scan on every prep cycle.
     // CUSTOM would write nothing at all; PR c's migration rewrites the mode.
     let changeType = change.type ?? "";
@@ -333,13 +331,9 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return {};
     }
 
-    const violation = checkFieldModeContract(systemPath, changeType, change.value);
+    const violation = checkFieldModeContract(systemPath, changeType);
     if (violation) {
-      RqgActiveEffect.#warnMisconfiguration(effect, change, violation, {
-        systemPath,
-        changeType: changeType.toUpperCase(),
-        value: String(change.value ?? ""),
-      });
+      RqgActiveEffect.#warnMisconfiguration(effect, change, violation, { systemPath });
       return {};
     }
 
