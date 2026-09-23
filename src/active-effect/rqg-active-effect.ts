@@ -8,7 +8,6 @@ import {
   parseRoutedKeyBody,
 } from "./routed-key/parse-routed-key";
 import { resolveRoutedTarget } from "./routed-key/resolve-routed-target";
-import { checkFieldModeContract } from "./routed-key/field-mode-contract";
 import { isNativeChangeType } from "./routed-key/change-type-contract";
 import {
   RoutedKeyWarningTracker,
@@ -217,8 +216,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
   /**
    * `@`-routed keys (#920) send a change to a different embedded document, across every native
-   * mode. Any key not starting with `@` behaves exactly as core Foundry, apart from the pad mode
-   * contract, which holds wherever the target is a pad.
+   * mode. Any key not starting with `@` is untouched and behaves exactly as core Foundry.
    *
    *   `@<rqid>:<systemPath>`    one embedded item, best match by rqid
    *   `@~<regex>:<systemPath>`  every embedded item whose rqid matches
@@ -230,27 +228,14 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     options?: ActiveEffect.ApplyChangeOptions,
   ): AnyMutableObject {
     const parsed = parseRoutedKey(change.key);
-    const effect = (change as { effect?: RqgActiveEffect }).effect;
-
     if (!parsed.routed) {
-      // the contract is a property of (path, type), so the actor's own pads are checked too
-      const violation = checkFieldModeContract(change.key ?? "", change.type ?? "");
-      if (violation) {
-        RqgActiveEffect.#warnMisconfiguration(effect, change, violation, {
-          systemPath: change.key ?? "",
-        });
-        return {};
-      }
       return super.applyChange(targetDoc, change, options);
     }
 
+    const effect = (change as { effect?: RqgActiveEffect }).effect;
+
     if ("error" in parsed) {
-      RqgActiveEffect.#warnMisconfiguration(
-        effect,
-        change,
-        parsed.error.reason,
-        parsed.error.detail,
-      );
+      RqgActiveEffect.#warnRoutedKey(effect, change, parsed.error.reason, parsed.error.detail);
       return {};
     }
 
@@ -276,23 +261,12 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
         super._applyChangeCustom(targetDoc, change, currentP, deltaP, changes);
         return;
       }
-      RqgActiveEffect.#warnMisconfiguration(
-        effect,
-        change,
-        parsed.error.reason,
-        parsed.error.detail,
-      );
+      RqgActiveEffect.#warnRoutedKey(effect, change, parsed.error.reason, parsed.error.detail);
       return;
     }
 
     // console-only: a GM cannot fix pack content from a toast, and PR c's migration rewrites it
-    RqgActiveEffect.#warnMisconfiguration(
-      effect,
-      change,
-      "legacy-syntax-deprecated",
-      undefined,
-      false,
-    );
+    RqgActiveEffect.#warnRoutedKey(effect, change, "legacy-syntax-deprecated", undefined, false);
 
     // core passes no options here, so the replacement data has to be rebuilt
     RqgActiveEffect.#applyRoutedChange(
@@ -313,27 +287,21 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     const { selector, systemPath } = parsed;
     const effect = (change as { effect?: RqgActiveEffect }).effect;
 
-    // Type and mode are properties of (path, type) alone, so they are checked before resolving the
-    // target - otherwise a misconfigured row pays for a full embedded-item scan on every prep cycle.
+    // The type is a property of the change alone, so it is checked before resolving the target -
+    // otherwise a misconfigured row pays for a full embedded-item scan on every prep cycle.
     // CUSTOM would write nothing at all; PR c's migration rewrites the mode.
     let changeType = change.type ?? "";
     if (changeType === "custom") {
-      RqgActiveEffect.#warnMisconfiguration(effect, change, "custom-mode-on-routed-key");
+      RqgActiveEffect.#warnRoutedKey(effect, change, "custom-mode-on-routed-key");
       changeType = "add";
     }
 
     // registered custom types are not routable: they bypass their handler here, and a DataField has
     // no branch for them, so applying one would reset the field to `initial`
     if (!isNativeChangeType(changeType)) {
-      RqgActiveEffect.#warnMisconfiguration(effect, change, "unsupported-change-type", {
+      RqgActiveEffect.#warnRoutedKey(effect, change, "unsupported-change-type", {
         changeType,
       });
-      return {};
-    }
-
-    const violation = checkFieldModeContract(systemPath, changeType);
-    if (violation) {
-      RqgActiveEffect.#warnMisconfiguration(effect, change, violation, { systemPath });
       return {};
     }
 
@@ -347,7 +315,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
     const resolved = resolveRoutedTarget(selector, { targetActor, owningItem });
     if ("error" in resolved) {
-      RqgActiveEffect.#warnMisconfiguration(effect, change, resolved.error.reason, {
+      RqgActiveEffect.#warnRoutedKey(effect, change, resolved.error.reason, {
         actorName: targetDoc.name ?? "",
         ...resolved.error.detail,
       });
@@ -365,7 +333,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
             ? item.system.getFieldForProperty(fieldPath)
             : undefined;
         if (!field) {
-          RqgActiveEffect.#warnMisconfiguration(effect, change, "field-not-found", { systemPath });
+          RqgActiveEffect.#warnRoutedKey(effect, change, "field-not-found", { systemPath });
           continue;
         }
 
@@ -387,7 +355,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return {};
   }
 
-  static #warnMisconfiguration(
+  static #warnRoutedKey(
     effect: RqgActiveEffect | undefined,
     change: ActiveEffect.ChangeData,
     reason: RoutedKeyWarningReason,

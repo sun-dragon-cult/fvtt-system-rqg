@@ -119,32 +119,6 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(actor.getBestEmbeddedDocumentByRqid).not.toHaveBeenCalled();
   });
 
-  it("warns and skips MULTIPLY against an actor's own pad, without routing", async () => {
-    const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
-
-    const actor = makeCharacterActor();
-    const change = routedChange("system.effect.add.magicPoints.max", "multiply", "2");
-    const result = RqgActiveEffect.applyChange(actor, change);
-
-    // core would apply this as 0 * 2 = 0 and say nothing
-    expect(ActiveEffectStub.applyChange).not.toHaveBeenCalled();
-    expect(result).toEqual({});
-    expect(warn).toHaveBeenCalledTimes(1);
-  });
-
-  it("warns and skips OVERRIDE against an actor's own pad", async () => {
-    const { RqgActiveEffect, ActiveEffectStub, warn } = await loadSubject();
-
-    const actor = makeCharacterActor();
-    RqgActiveEffect.applyChange(
-      actor,
-      routedChange("system.effect.add.hitPoints.max", "override", "3"),
-    );
-
-    expect(ActiveEffectStub.applyChange).not.toHaveBeenCalled();
-    expect(warn).toHaveBeenCalledTimes(1);
-  });
-
   it("routes an @rqid key to the matching embedded item, honouring the change's own mode", async () => {
     const { RqgActiveEffect } = await loadSubject();
 
@@ -179,16 +153,11 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(item.system.effect.add.melee.attack).toBe(3);
   });
 
-  it("warns once and does not apply MULTIPLY against a pad", async () => {
+  it("applies MULTIPLY to a pad natively, so it acts on whatever has accumulated", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
 
-    const applyChangeSpy = vi.fn(
-      (value: number, _doc: unknown, change: any) => value * Number(change.value),
-    );
     const item = makeWeaponItem();
-    item.system.getFieldForProperty = vi.fn((fieldPath: string) =>
-      fieldPath === "effect.add.melee.attack" ? { applyChange: applyChangeSpy } : undefined,
-    );
+    item.system.effect.add.melee.attack = 5;
     const actor = makeCharacterActor({ getBestEmbeddedDocumentByRqid: vi.fn(() => item) });
 
     RqgActiveEffect.applyChange(
@@ -196,9 +165,8 @@ describe("RqgActiveEffect.applyChange", () => {
       routedChange("@i.weapon.short-spear:system.effect.add.melee.attack", "multiply", "2"),
     );
 
-    expect(applyChangeSpy).not.toHaveBeenCalled();
-    expect(item.system.effect.add.melee.attack).toBe(0);
-    expect(warn).toHaveBeenCalledTimes(1);
+    expect(item.system.effect.add.melee.attack).toBe(10);
+    expect(warn).not.toHaveBeenCalled();
   });
 
   it("applies a routed key left on CUSTOM mode as ADD instead of silently dropping it", async () => {

@@ -9,8 +9,8 @@ import {
 describe("routedKeyWarningI18nKey", () => {
   it("maps a reason to its RoutedKey locale key", () => {
     expect(routedKeyWarningI18nKey("no-match")).toBe("RQG.Foundry.ActiveEffect.RoutedKey.NoMatch");
-    expect(routedKeyWarningI18nKey("pad-override-discards-stacking")).toBe(
-      "RQG.Foundry.ActiveEffect.RoutedKey.PadOverrideDiscardsStacking",
+    expect(routedKeyWarningI18nKey("field-not-found")).toBe(
+      "RQG.Foundry.ActiveEffect.RoutedKey.FieldNotFound",
     );
   });
 
@@ -28,15 +28,15 @@ describe("RoutedKeyWarningTracker", () => {
   it("warns once per (effect, change key, reason)", () => {
     const tracker = new RoutedKeyWarningTracker();
     const key = "@.:system.effect.add.melee.attack";
-    expect(tracker.shouldWarn("Effect.abc", key, "pad-multiply-noop")).toBe(true);
-    expect(tracker.shouldWarn("Effect.abc", key, "pad-multiply-noop")).toBe(false);
+    expect(tracker.shouldWarn("Effect.abc", key, "field-not-found")).toBe(true);
+    expect(tracker.shouldWarn("Effect.abc", key, "field-not-found")).toBe(false);
     // different key
     expect(
-      tracker.shouldWarn("Effect.abc", "@.:system.effect.add.missile.attack", "pad-multiply-noop"),
+      tracker.shouldWarn("Effect.abc", "@.:system.effect.add.missile.attack", "field-not-found"),
     ).toBe(true);
     // different reason on the same key
     expect(tracker.shouldWarn("Effect.abc", key, "no-match")).toBe(true);
     // different effect
-    expect(tracker.shouldWarn("Effect.def", key, "pad-multiply-noop")).toBe(true);
+    expect(tracker.shouldWarn("Effect.def", key, "field-not-found")).toBe(true);
   });
 });

@@ -1,9 +1,4 @@
-/**
- * Which `change.type` values a routed change can be applied with (#920).
- *
- * Separate from the pad mode contract in field-mode-contract.ts: that answers "is this mode
- * meaningful against this path", this answers "can core dispatch this type to a DataField at all".
- */
+/** Which `change.type` values a routed change can be applied with (#920). */
 
 /**
  * The types core implements as a `DataField#applyChange` branch - everything in

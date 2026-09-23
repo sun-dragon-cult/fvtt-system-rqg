@@ -1,10 +1,8 @@
 import type { RoutedKeyErrorReason, RoutedTargetErrorReason } from "./routed-key.types";
-import type { FieldModeViolation } from "./field-mode-contract";
 
 export type RoutedKeyWarningReason =
   | RoutedKeyErrorReason
   | RoutedTargetErrorReason
-  | FieldModeViolation
   // the resolved target document has no field at the routed system path (PR b's own check -
   // parsing and target resolution can't detect this, only the actual item schema can)
   | "field-not-found"
@@ -30,8 +28,6 @@ const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "invalid-rqid": "InvalidRqid",
   "item-local-outside-item": "ItemLocalOutsideItem",
   "no-match": "NoMatch",
-  "pad-multiply-noop": "PadMultiplyNoop",
-  "pad-override-discards-stacking": "PadOverrideDiscardsStacking",
   "field-not-found": "FieldNotFound",
   "custom-mode-on-routed-key": "CustomModeOnRoutedKey",
   "legacy-syntax-deprecated": "LegacySyntaxDeprecated",
