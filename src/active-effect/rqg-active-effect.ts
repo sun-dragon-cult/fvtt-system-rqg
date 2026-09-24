@@ -355,12 +355,19 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return {};
   }
 
+  /** A token actor's effects are copies of its base actor's, which already raised the toast. */
+  static #isOnTokenActor(effect: RqgActiveEffect | undefined): boolean {
+    const parent = effect?.parent;
+    const actor = parent instanceof Item ? parent.parent : parent;
+    return actor instanceof Actor && actor.isToken;
+  }
+
   static #warnRoutedKey(
     effect: RqgActiveEffect | undefined,
     change: ActiveEffect.ChangeData,
     reason: RoutedKeyWarningReason,
     detail?: Readonly<Record<string, string>>,
-    notify: boolean = !effect?.disabled,
+    notify: boolean = !effect?.disabled && !RqgActiveEffect.#isOnTokenActor(effect),
   ): void {
     const changeKey = change.key ?? "";
     if (

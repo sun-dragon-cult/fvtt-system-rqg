@@ -185,6 +185,26 @@ describe("RqgActiveEffect.applyChange", () => {
     consoleWarn.mockRestore();
   });
 
+  it("logs but does not toast for an unlinked token's copy of an effect", async () => {
+    const { RqgActiveEffect, warn } = await loadSubject();
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const tokenActor = makeCharacterActor({ isToken: true });
+    const effect = {
+      parent: tokenActor,
+      uuid: "Scene.s1.Token.t1.Actor.a1.ActiveEffect.e1",
+      disabled: false,
+    };
+    RqgActiveEffect.applyChange(
+      tokenActor,
+      routedChange("@.:system.effect.add.melee.attack", "add", "1", { effect }),
+    );
+
+    expect(consoleWarn).toHaveBeenCalledTimes(1);
+    expect(warn).not.toHaveBeenCalled();
+    consoleWarn.mockRestore();
+  });
+
   it("applies a routed key left on CUSTOM mode as ADD instead of silently dropping it", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
 
