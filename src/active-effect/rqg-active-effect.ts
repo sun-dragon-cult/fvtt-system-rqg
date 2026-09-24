@@ -369,6 +369,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return;
     }
     const message = localize(routedKeyWarningI18nKey(reason), { key: changeKey, ...detail });
-    logMisconfiguration(message, notify, change, effect);
+    // copies of one effect on several actors or tokens share an _id, so the uuid tells them apart
+    logMisconfiguration(message, notify, effect?.uuid ?? "(no effect)", change, effect);
   }
 }

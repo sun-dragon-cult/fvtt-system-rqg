@@ -169,6 +169,22 @@ describe("RqgActiveEffect.applyChange", () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
+  it("names the effect's uuid in the console warning, so copies with one _id can be told apart", async () => {
+    const { RqgActiveEffect } = await loadSubject();
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    const actor = makeCharacterActor();
+    const effect = { parent: actor, uuid: "Actor.a1.ActiveEffect.e1", disabled: false };
+    RqgActiveEffect.applyChange(
+      actor,
+      routedChange("@.:system.effect.add.melee.attack", "add", "1", { effect }),
+    );
+
+    expect(consoleWarn).toHaveBeenCalledTimes(1);
+    expect(consoleWarn.mock.calls[0]).toContain("Actor.a1.ActiveEffect.e1");
+    consoleWarn.mockRestore();
+  });
+
   it("applies a routed key left on CUSTOM mode as ADD instead of silently dropping it", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
 
