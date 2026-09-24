@@ -10,9 +10,12 @@
  * Any key not starting with `@` is a native Foundry key and is never touched by this code.
  */
 
+import type { RqidString } from "../../system/api/rqid-api";
+
 /** Which document(s) a routed key points at. */
 export type RoutedSelector =
-  | { readonly kind: "rqid"; readonly rqid: string }
+  // already normalized by the parser, so the resolver never re-validates it
+  | { readonly kind: "rqid"; readonly rqid: RqidString }
   | { readonly kind: "regex"; readonly pattern: string }
   | { readonly kind: "item-local" };
 
@@ -27,14 +30,19 @@ export type RoutedKeyErrorReason =
 
 export interface RoutedKeyError {
   readonly reason: RoutedKeyErrorReason;
-  /** Interpolation values for the warning message. */
+  /** The selector as written, so a caller can tell a routed key apart from a native one. */
+  readonly selectorRaw: string;
+  /** Interpolation values for the warning message. `key` is supplied by the warning helper. */
   readonly detail?: Readonly<Record<string, string>>;
 }
 
+/** The result of parsing the part after `@`. See {@link ParseRoutedKeyResult} for whole keys. */
+export type RoutedKeyBodyResult =
+  | { readonly selector: RoutedSelector; readonly systemPath: string }
+  | { readonly error: RoutedKeyError };
+
 export type ParseRoutedKeyResult =
-  | { readonly routed: false }
-  | { readonly routed: true; readonly selector: RoutedSelector; readonly systemPath: string }
-  | { readonly routed: true; readonly error: RoutedKeyError };
+  { readonly routed: false } | (RoutedKeyBodyResult & { readonly routed: true });
 
 /** Why a parsed routed key could not be resolved to a target document. */
 export type RoutedTargetErrorReason =
@@ -52,7 +60,7 @@ export interface RoutedTargetError {
  * testable.
  */
 export interface RoutedTargetActorLike {
-  getBestEmbeddedDocumentByRqid(rqid: string | undefined): RoutedTargetItemLike | undefined;
+  getBestEmbeddedDocumentByRqid(rqid: RqidString | undefined): RoutedTargetItemLike | undefined;
   getEmbeddedDocumentsByRqidRegex(pattern: string): RoutedTargetItemLike[];
 }
 

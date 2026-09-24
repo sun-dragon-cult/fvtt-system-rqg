@@ -1372,7 +1372,6 @@
         "EarlyExpiryWarningTooltip": "This effect has both Duration and Expiry Event configured. It expires when the duration has elapsed and the selected event occurs, so it may persist past the listed duration until that event happens.",
         "KeyValueMode": "Key - Value - Mode",
         "NewActiveEffectName": "New Active Effect",
-        "TargetItemNotFound": "Could not find any embedded item with Rqid {rqid} on actor {actorName}. Please either add a {itemName} item with that Rqid or modify the item that has this active effect",
         "RoutedKey": {
           "MissingPath": "Routed Active Effect key [{key}] needs a selector and a system path separated by ':' — for example '@.:system.effect.add.melee.attack'.",
           "EmptySelector": "Routed Active Effect key [{key}] has no selector before ':'. Use '@.:', '@<rqid>:', or '@~<regex>:'.",
@@ -1380,10 +1379,13 @@
           "EmptyRegex": "Routed Active Effect key [{key}] has an empty regex. Use '@~<pattern>:system.path'.",
           "InvalidRegex": "Routed Active Effect key [{key}] has an invalid regex [{pattern}]: {message}",
           "InvalidRqid": "Routed Active Effect key [{key}] has an invalid rqid selector [{rqid}].",
-          "ItemLocalOutsideItem": "The '@.:' Active Effect key targets the owning item, but this effect is not on an item.",
-          "NoMatch": "No document matched the routed Active Effect selector [{selector}]. Add a matching item, or fix the selector.",
-          "PadMultiplyNoop": "MULTIPLY has no effect on [{systemPath}] — it is a zero-initialised accumulator, so 0 × n = 0. Use ADD, or UPGRADE to keep only the highest.",
-          "PadOverrideDiscardsStacking": "OVERRIDE on [{systemPath}] replaces the accumulated value and discards other effects' contributions. Use ADD, or UPGRADE to keep only the highest."
+          "ItemLocalOutsideItem": "Active Effect key [{key}] uses '@.:' to target the owning item, but this effect is not on an item.",
+          "LoadSummary": "Misconfigured Active Effect changes found while loading the world: {count}. See the console (F12) for details.",
+          "NoMatch": "No item on {actorName} matched the routed Active Effect selector [{selector}]. Add a matching item, or fix the selector.",
+          "FieldNotFound": "Routed Active Effect key [{key}] resolved a target document, but it has no field at [{systemPath}].",
+          "CustomModeOnRoutedKey": "Routed Active Effect key [{key}] is set to CUSTOM mode, which does nothing on its own. It has been applied as ADD - change the effect's mode to ADD to silence this warning.",
+          "LegacySyntaxDeprecated": "Active Effect key [{key}] uses the deprecated CUSTOM-mode syntax and was applied as ADD. Rewrite it as '@{key}' with ADD mode.",
+          "UnsupportedChangeType": "Routed Active Effect key [{key}] uses the change mode [{changeType}], which RQG cannot route. It was skipped to avoid resetting the target field. Use ADD, SUBTRACT, MULTIPLY, OVERRIDE, UPGRADE or DOWNGRADE."
         }
       },
       "CombatTracker": {

@@ -15,10 +15,10 @@ interface AEPathMapping {
 }
 
 export interface AEPathRewriteRule extends AEPathMapping {
-  allowedModes?: ActiveEffectChangeType[];
+  allowedModes?: MigratableChangeType[];
   validateValue?: (value: unknown) => number | undefined;
   transformValue?: (value: number) => number;
-  transformMode?: (mode: ActiveEffectChangeType) => ActiveEffectChangeType;
+  transformMode?: (mode: MigratableChangeType) => MigratableChangeType;
 }
 
 export type AERewriteWarningReason =
@@ -101,6 +101,13 @@ type LegacyItemTargetSyntax = {
   systemPath: string;
 };
 
+/**
+ * Change types a migration may write. `subtract` is a real v14 type (core dispatches it, and
+ * `NumberField#_applyChangeSubtract` is `value - delta`), but the global `ActiveEffectChangeType`
+ * excludes it - see global.d.ts.
+ */
+export type MigratableChangeType = ActiveEffectChangeType | "subtract";
+
 const LEGACY_NUMERIC_TYPE_TO_CANONICAL: Record<number, ActiveEffectChangeType> = {
   0: "custom",
   1: "multiply",
@@ -110,13 +117,14 @@ const LEGACY_NUMERIC_TYPE_TO_CANONICAL: Record<number, ActiveEffectChangeType> =
   5: "override",
 };
 
-const CANONICAL_CHANGE_TYPES = new Set<ActiveEffectChangeType>([
+const CANONICAL_CHANGE_TYPES = new Set<MigratableChangeType>([
   "custom",
   "multiply",
   "add",
   "downgrade",
   "upgrade",
   "override",
+  "subtract",
 ]);
 
 export const AE_LEGACY_PATH_MAPPINGS: AEPathMapping[] = [
@@ -275,7 +283,7 @@ function parseNumericValue(rawValue: unknown): number | undefined {
   return undefined;
 }
 
-export function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | undefined {
+export function normalizeChangeType(rawType: unknown): MigratableChangeType | undefined {
   if (typeof rawType === "number" && Number.isInteger(rawType)) {
     return LEGACY_NUMERIC_TYPE_TO_CANONICAL[rawType];
   }
@@ -284,12 +292,8 @@ export function normalizeChangeType(rawType: unknown): ActiveEffectChangeType | 
     return undefined;
   }
 
-  if (rawType === "subtract") {
-    return "add";
-  }
-
-  if (CANONICAL_CHANGE_TYPES.has(rawType as ActiveEffectChangeType)) {
-    return rawType as ActiveEffectChangeType;
+  if (CANONICAL_CHANGE_TYPES.has(rawType as MigratableChangeType)) {
+    return rawType as MigratableChangeType;
   }
 
   const customNumericMatch = /^custom\.(-?\d+)$/.exec(rawType);
@@ -496,8 +500,8 @@ export function migrateEffectChangeTypes(effect: AEMigrationEffectLike): boolean
 /**
  * Normalize change.type values and rewrite legacy effect keys in one pass.
  *
- * - Legacy change.type values (numeric, subtract, custom.X) are normalized to their
- *   canonical v14 string equivalents.
+ * - Legacy change.type values (numeric, custom.X) are normalized to their canonical v14
+ *   string equivalents. `subtract` is canonical in v14 and is left as it is.
  * - Legacy attribute paths (e.g. system.attributes.magicPoints.max) are rewritten to their
  *   current equivalents using the default path rewrite rules.
  * - Legacy item-target syntax (<itemType>:<itemName>:<systemPath>) is rewritten to

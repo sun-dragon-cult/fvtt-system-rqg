@@ -16,6 +16,21 @@ function twoMinutesDuration(): CONFIG.StatusEffect["duration"] {
   return { value: 2, units: "minutes", expiry: null } as unknown as CONFIG.StatusEffect["duration"];
 }
 
+/** The Protection N status effects. Exported so the i18n audit can expand their name keys. */
+export const protectionPoints = [1, 2, 3, 4] as const;
+
+/** Protection N: adds N natural AP to every hit location, via a `@`-routed change (#920). */
+function protectionEffect(points: (typeof protectionPoints)[number]): TokenStatusEffectSeed {
+  return {
+    name: `RQG.TokenEffects.StatusProtection${points}`,
+    img: `systems/rqg/assets/images/token-effects/protection${points}.svg`,
+    duration: twoMinutesDuration(),
+    changes: [
+      { key: "@~^i\\.hit-location\\.:system.naturalAp", type: "add", value: String(points) },
+    ],
+  };
+}
+
 export function getTokenStatusEffects(): StatusEffectsById {
   const effects = {
     dead: {
@@ -37,54 +52,10 @@ export function getTokenStatusEffects(): StatusEffectsById {
       name: "EFFECT.StatusBleeding",
       img: "systems/rqg/assets/images/token-effects/bleeding.svg",
     },
-    protection1: {
-      name: "RQG.TokenEffects.StatusProtection1",
-      img: "systems/rqg/assets/images/token-effects/protection1.svg",
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
-          value: "1",
-        },
-      ],
-    },
-    protection2: {
-      name: "RQG.TokenEffects.StatusProtection2",
-      img: "systems/rqg/assets/images/token-effects/protection2.svg",
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
-          value: "2",
-        },
-      ],
-    },
-    protection3: {
-      name: "RQG.TokenEffects.StatusProtection3",
-      img: "systems/rqg/assets/images/token-effects/protection3.svg",
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
-          value: "3",
-        },
-      ],
-    },
-    protection4: {
-      name: "RQG.TokenEffects.StatusProtection4",
-      img: "systems/rqg/assets/images/token-effects/protection4.svg",
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "~^i\\.hit-location\\.:system.naturalAp",
-          type: "custom",
-          value: "4",
-        },
-      ],
-    },
+    protection1: protectionEffect(1),
+    protection2: protectionEffect(2),
+    protection3: protectionEffect(3),
+    protection4: protectionEffect(4),
     strength: {
       name: "RQG.TokenEffects.StatusStrength",
       img: "systems/rqg/assets/images/token-effects/strength.svg",

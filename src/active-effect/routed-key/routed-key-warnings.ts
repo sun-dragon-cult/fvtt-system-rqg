@@ -1,18 +1,23 @@
 import type { RoutedKeyErrorReason, RoutedTargetErrorReason } from "./routed-key.types";
-import type { FieldModeViolation } from "./field-mode-contract";
 
 export type RoutedKeyWarningReason =
-  RoutedKeyErrorReason | RoutedTargetErrorReason | FieldModeViolation;
+  | RoutedKeyErrorReason
+  | RoutedTargetErrorReason
+  // the resolved target document has no field at the routed system path (PR b's own check -
+  // parsing and target resolution can't detect this, only the actual item schema can)
+  | "field-not-found"
+  // a routed key still on CUSTOM mode - applied as ADD, but the mode should be changed
+  | "custom-mode-on-routed-key"
+  // a legacy key that still works through the deprecating shim, pending the #920 migration
+  | "legacy-syntax-deprecated"
+  // a change type that is neither native nor CUSTOM - applying it would reset the field (see below)
+  | "unsupported-change-type";
 
 const I18N_PREFIX = "RQG.Foundry.ActiveEffect.RoutedKey.";
 
 /**
- * The i18n suffix for every routed-key warning reason.
- *
- * A `Record<RoutedKeyWarningReason, string>` so omitting a reason is a compile error, and the
- * suffix is written out literally (not derived by a case transform) so the i18n audit, which
- * builds its locale keys from `Object.values(...)` in buildScripts/i18n-dynamic-key-map.ts,
- * checks the exact string that has to exist in uiContent.json.
+ * The i18n suffix for every routed-key warning reason. A `Record` so a missing reason is a compile
+ * error, and spelled out literally (not case-transformed) so the i18n audit sees the real key.
  */
 const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "missing-path": "MissingPath",
@@ -23,8 +28,10 @@ const REASON_I18N_SUFFIX: Record<RoutedKeyWarningReason, string> = {
   "invalid-rqid": "InvalidRqid",
   "item-local-outside-item": "ItemLocalOutsideItem",
   "no-match": "NoMatch",
-  "pad-multiply-noop": "PadMultiplyNoop",
-  "pad-override-discards-stacking": "PadOverrideDiscardsStacking",
+  "field-not-found": "FieldNotFound",
+  "custom-mode-on-routed-key": "CustomModeOnRoutedKey",
+  "legacy-syntax-deprecated": "LegacySyntaxDeprecated",
+  "unsupported-change-type": "UnsupportedChangeType",
 };
 
 /** i18n suffixes for the audit map (buildScripts/i18n-dynamic-key-map.ts). */
@@ -42,12 +49,10 @@ export function routedKeyWarningI18nKey(reason: RoutedKeyWarningReason): string 
 }
 
 /**
- * Tracks which routed-key change rows have already produced a warning, so a misconfigured key
- * warns once rather than on every data-preparation cycle (#920: "warn once per effect row").
- *
- * Intended to be instantiated per data-preparation pass and discarded afterwards, so it never
- * grows unbounded and re-warns naturally when the underlying effect changes. Identity is the
- * routed key string, not a row index, so reordering an effect's changes does not lose a warning.
+ * Warns once per (effect uuid, routed key, reason) instead of on every data-preparation cycle.
+ * Keyed on the routed key rather than a row index, so reordering an effect's changes is harmless.
+ * One instance lives for the client session - `applyChange` is static, so there is no prep-pass
+ * boundary to hook.
  */
 export class RoutedKeyWarningTracker {
   readonly #seen = new Set<string>();
