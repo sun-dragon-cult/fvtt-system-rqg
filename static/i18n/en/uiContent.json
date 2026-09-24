@@ -1380,6 +1380,7 @@
           "InvalidRegex": "Routed Active Effect key [{key}] has an invalid regex [{pattern}]: {message}",
           "InvalidRqid": "Routed Active Effect key [{key}] has an invalid rqid selector [{rqid}].",
           "ItemLocalOutsideItem": "Active Effect key [{key}] uses '@.:' to target the owning item, but this effect is not on an item.",
+          "LoadSummary": "Misconfigured Active Effect changes found while loading the world: {count}. See the console (F12) for details.",
           "NoMatch": "No item on {actorName} matched the routed Active Effect selector [{selector}]. Add a matching item, or fix the selector.",
           "FieldNotFound": "Routed Active Effect key [{key}] resolved a target document, but it has no field at [{systemPath}].",
           "CustomModeOnRoutedKey": "Routed Active Effect key [{key}] is set to CUSTOM mode, which does nothing on its own. It has been applied as ADD - change the effect's mode to ADD to silence this warning.",

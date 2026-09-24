@@ -1,4 +1,9 @@
-import { isDocumentSubType, localize, logMisconfiguration } from "../system/util";
+import {
+  isDocumentSubType,
+  localize,
+  logMisconfiguration,
+  notifyMisconfiguration,
+} from "../system/util";
 import { RqgLogger } from "../system/logging/rqg-logger";
 import { systemId } from "../system/config";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
@@ -355,7 +360,10 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return {};
   }
 
-  /** A token actor's effects are copies of its base actor's, which already raised the toast. */
+  /** Toasts owed before the UI exists, shown as one GM summary at `ready`. */
+  static #loadWarningCount = 0;
+
+  /** A token actor's effects are copies of its base actor's, which raises the toast instead. */
   static #isOnTokenActor(effect: RqgActiveEffect | undefined): boolean {
     const parent = effect?.parent;
     const actor = parent instanceof Item ? parent.parent : parent;
@@ -377,6 +385,31 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     }
     const message = localize(routedKeyWarningI18nKey(reason), { key: changeKey, ...detail });
     // copies of one effect on several actors or tokens share an _id, so the uuid tells them apart
-    logMisconfiguration(message, notify, effect?.uuid ?? "(no effect)", change, effect);
+    logMisconfiguration(message, false, effect?.uuid ?? "(no effect)", change, effect);
+    if (!notify) {
+      return;
+    }
+    // world documents are prepared before the UI exists, and a toast raised then is dropped
+    if (ui.notifications) {
+      notifyMisconfiguration(message);
+    } else {
+      RqgActiveEffect.#deferToLoadSummary();
+    }
+  }
+
+  static #deferToLoadSummary(): void {
+    if (RqgActiveEffect.#loadWarningCount++ > 0) {
+      return;
+    }
+    Hooks.once("ready", () => {
+      if (game.user?.isGM) {
+        ui.notifications?.warn(
+          localize("RQG.Foundry.ActiveEffect.RoutedKey.LoadSummary", {
+            count: String(RqgActiveEffect.#loadWarningCount),
+          }),
+        );
+      }
+      RqgActiveEffect.#loadWarningCount = 0;
+    });
   }
 }

@@ -205,6 +205,45 @@ describe("RqgActiveEffect.applyChange", () => {
     consoleWarn.mockRestore();
   });
 
+  it("folds warnings raised before the UI exists into one GM summary at ready", async () => {
+    const { RqgActiveEffect, warn } = await loadSubject();
+    const readyCallbacks: Array<() => void> = [];
+    (globalThis as any).Hooks = {
+      once: vi.fn((hook: string, fn: () => void) => hook === "ready" && readyCallbacks.push(fn)),
+    };
+    const notifications = ui.notifications;
+    (globalThis as any).ui.notifications = undefined;
+    (globalThis as any).game.user = { isGM: true };
+    const consoleWarn = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    try {
+      const actor = makeCharacterActor();
+      for (const id of ["e1", "e2"]) {
+        const effect = { parent: actor, uuid: `Actor.a1.ActiveEffect.${id}`, disabled: false };
+        RqgActiveEffect.applyChange(
+          actor,
+          routedChange("@.:system.effect.add.melee.attack", "add", "1", { effect }),
+        );
+      }
+      (globalThis as any).ui.notifications = notifications;
+
+      // both are logged at once, but no toast is attempted before the UI exists
+      expect(consoleWarn).toHaveBeenCalledTimes(2);
+      expect(warn).not.toHaveBeenCalled();
+      expect(readyCallbacks).toHaveLength(1);
+
+      readyCallbacks[0]!();
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0]![0]).toContain("RoutedKey.LoadSummary");
+      expect(warn.mock.calls[0]![0]).toContain("count,2");
+    } finally {
+      (globalThis as any).ui.notifications = notifications;
+      delete (globalThis as any).game.user;
+      delete (globalThis as any).Hooks;
+      consoleWarn.mockRestore();
+    }
+  });
+
   it("applies a routed key left on CUSTOM mode as ADD instead of silently dropping it", async () => {
     const { RqgActiveEffect, warn } = await loadSubject();
 

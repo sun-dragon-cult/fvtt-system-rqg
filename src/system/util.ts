@@ -243,8 +243,12 @@ export function logMisconfiguration(msg: string, notify: boolean, ...debugData: 
   // TODO only for GM? game.user.isGM &&
   logger.warn(msg, undefined, ...debugData);
   if (notify) {
-    ui.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
+    notifyMisconfiguration(msg);
   }
+}
+
+export function notifyMisconfiguration(msg: string): void {
+  ui.notifications?.warn(`${msg} - Misconfiguration: Contact the GM!`, { console: false });
 }
 
 /**
