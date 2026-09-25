@@ -270,8 +270,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return;
     }
 
-    // console-only: a GM cannot fix pack content from a toast, and PR c's migration rewrites it
-    RqgActiveEffect.#warnRoutedKey(effect, change, "legacy-syntax-deprecated", undefined, false);
+    RqgActiveEffect.#warnRoutedKey(effect, change, "legacy-syntax-deprecated");
 
     // core passes no options here, so the replacement data has to be rebuilt
     RqgActiveEffect.#applyRoutedChange(
@@ -294,7 +293,7 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
 
     // The type is a property of the change alone, so it is checked before resolving the target -
     // otherwise a misconfigured row pays for a full embedded-item scan on every prep cycle.
-    // CUSTOM would write nothing at all; PR c's migration rewrites the mode.
+    // CUSTOM would write nothing at all, so it is applied as ADD.
     let changeType = change.type ?? "";
     if (changeType === "custom") {
       RqgActiveEffect.#warnRoutedKey(effect, change, "custom-mode-on-routed-key");
