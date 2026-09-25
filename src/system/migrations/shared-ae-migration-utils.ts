@@ -1,5 +1,6 @@
 import { systemId } from "../config";
 import { documentRqidFlags } from "../../data-model/shared/rqg-document-flags";
+import { parseRoutedKeyBody } from "../../active-effect/routed-key/parse-routed-key";
 
 /**
  * Shared Active Effect migration helpers.
@@ -469,6 +470,40 @@ export function migrateEffectLegacyItemTargetSyntax(
 }
 
 /**
+ * Rewrite the deprecated CUSTOM-mode routed syntax `<selector>:<system.path>` to
+ * `@<selector>:<system.path>` with ADD, which is what the CUSTOM shim applied it as. Only rewrites
+ * what the shim would apply: on any other mode core never routed the key, so it stays inert.
+ *
+ * @returns the number of rewritten changes
+ */
+export function migrateEffectLegacyRoutedKeys(effect: AEMigrationEffectLike): number {
+  const changes = getEffectChanges(effect);
+  let rewritten = 0;
+  const migratedChanges = changes.map((change) => {
+    const persistedChange = toPersistedChangeData(change);
+    const key = persistedChange.key;
+    if (
+      typeof key !== "string" ||
+      key.startsWith("@") ||
+      normalizeChangeType(persistedChange.type) !== "custom" ||
+      "error" in parseRoutedKeyBody(key)
+    ) {
+      return persistedChange;
+    }
+    rewritten += 1;
+    persistedChange.key = `@${key}`;
+    persistedChange.type = "add";
+    return persistedChange;
+  });
+
+  if (rewritten > 0) {
+    setEffectChanges(effect, migratedChanges);
+  }
+
+  return rewritten;
+}
+
+/**
  * Repair malformed or legacy change.type values in a single effect.
  *
  * @returns true if any type values were normalized
@@ -506,6 +541,8 @@ export function migrateEffectChangeTypes(effect: AEMigrationEffectLike): boolean
  *   current equivalents using the default path rewrite rules.
  * - Legacy item-target syntax (<itemType>:<itemName>:<systemPath>) is rewritten to
  *   rqid-based syntax when a unique actor item match can be found.
+ * - CUSTOM-mode routed keys (<rqid>:<systemPath>, ~<regex>:<systemPath>) get the `@` prefix
+ *   and ADD mode. Runs last so it also picks up the item-target rewrites.
  */
 export function migrateEffectTypesAndPaths(
   effect: AEMigrationEffectLike,
@@ -514,7 +551,8 @@ export function migrateEffectTypesAndPaths(
   const migratedTypes = migrateEffectChangeTypes(effect);
   const migratedPaths = migrateEffectChanges(effect);
   const migratedLegacyItemTargets = migrateEffectLegacyItemTargetSyntax(effect, owningActor);
-  return migratedTypes || migratedPaths || migratedLegacyItemTargets;
+  const migratedRoutedKeys = migrateEffectLegacyRoutedKeys(effect) > 0;
+  return migratedTypes || migratedPaths || migratedLegacyItemTargets || migratedRoutedKeys;
 }
 
 export function migrateEffectTypesAndPathsWithSummary(
@@ -527,8 +565,11 @@ export function migrateEffectTypesAndPathsWithSummary(
   const migratedLegacyItemTargets = options.dryRun
     ? false
     : migrateEffectLegacyItemTargetSyntax(effect, owningActor);
+  const migratedRoutedKeys = options.dryRun ? 0 : migrateEffectLegacyRoutedKeys(effect);
+  pathRewrite.summary.migratedChanges += migratedRoutedKeys;
   return {
-    changed: migratedTypes || pathRewrite.changed || migratedLegacyItemTargets,
+    changed:
+      migratedTypes || pathRewrite.changed || migratedLegacyItemTargets || migratedRoutedKeys > 0,
     summary: pathRewrite.summary,
   };
 }

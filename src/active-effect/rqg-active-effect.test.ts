@@ -319,8 +319,9 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     expect(actor.getBestEmbeddedDocumentByRqid).toHaveBeenCalledWith("i.weapon.short-spear");
     expect(item.system.getFieldForProperty).toHaveBeenCalledWith("effect.add.melee.attack");
     expect(item.system.effect.add.melee.attack).toBe(50);
-    // the deprecation notice is console-only - a GM cannot fix pack content from a toast
-    expect(warn).not.toHaveBeenCalled();
+    // what the migration could not reach (locked packs, module content) is surfaced to be fixed
+    expect(warn).toHaveBeenCalledTimes(1);
+    expect(warn.mock.calls[0]![0]).toContain("LegacySyntaxDeprecated");
   });
 
   it("warns about a bare rqid with no system path instead of silently dropping it", async () => {

@@ -8,7 +8,7 @@ export type RoutedKeyWarningReason =
   | "field-not-found"
   // a routed key still on CUSTOM mode - applied as ADD, but the mode should be changed
   | "custom-mode-on-routed-key"
-  // a legacy key that still works through the deprecating shim, pending the #920 migration
+  // a legacy key the #920 migration did not reach, still applied through the deprecating shim
   | "legacy-syntax-deprecated"
   // a change type that is neither native nor CUSTOM - applying it would reset the field (see below)
   | "unsupported-change-type";

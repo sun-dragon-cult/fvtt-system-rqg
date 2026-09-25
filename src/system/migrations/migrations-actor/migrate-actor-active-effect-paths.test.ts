@@ -232,6 +232,38 @@ describe("migrateActorActiveEffectPaths", () => {
     );
   });
 
+  it("should rewrite a CUSTOM-mode itemType:itemName key all the way to an @-routed ADD key", () => {
+    const mockActor = {
+      name: "Actor Data",
+      id: "actor-legacy-key-custom-1",
+      effects: [
+        {
+          id: "effect-1",
+          name: "Legacy Key Effect",
+          system: {
+            changes: [{ key: "skill:Dodge:system.baseChance", type: "custom", value: 3 }],
+          },
+        },
+      ],
+      items: [
+        {
+          id: "item-1",
+          type: "skill",
+          name: "Dodge",
+          flags: { rqg: { documentRqidFlags: { id: "i.skill.dodge" } } },
+        },
+      ],
+    };
+
+    const updateData = migrateActorActiveEffectPaths(mockActor as unknown as RqgActor);
+
+    expect((updateData.effects as any[])?.[0].system.changes[0]).toEqual({
+      key: "@i.skill.dodge:system.baseChance",
+      type: "add",
+      value: 3,
+    });
+  });
+
   it("should keep legacy itemType:itemName key when actor match is ambiguous", () => {
     const mockActor = {
       name: "Actor Data",

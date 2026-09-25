@@ -192,6 +192,72 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(effect.system.changes[0]!.value).toBe(3);
   });
 
+  it("rewrites CUSTOM-mode rqid and regex keys to @-routed ADD keys", () => {
+    const effect = {
+      system: {
+        changes: [
+          { key: "i.skill.dodge:system.baseChance", type: "custom", value: "5" },
+          { key: "~^i\\.hit-location\\.:system.naturalAp", type: 0, value: "1" },
+        ],
+      },
+    };
+
+    const result = migrateEffectTypesAndPathsWithSummary(effect);
+
+    expect(result.changed).toBe(true);
+    expect(effect.system.changes).toEqual([
+      { key: "@i.skill.dodge:system.baseChance", type: "add", value: "5" },
+      { key: "@~^i\\.hit-location\\.:system.naturalAp", type: "add", value: "1" },
+    ]);
+    expect(result.summary.migratedChanges).toBe(2);
+  });
+
+  it("is idempotent for rewritten routed keys", () => {
+    const effect = {
+      system: {
+        changes: [{ key: "i.skill.dodge:system.baseChance", type: "custom", value: "5" }],
+      },
+    };
+
+    migrateEffectTypesAndPaths(effect);
+    const secondPass = migrateEffectTypesAndPathsWithSummary(effect);
+
+    expect(secondPass.changed).toBe(false);
+    expect(secondPass.summary.migratedChanges).toBe(0);
+    expect(effect.system.changes[0]!.key).toBe("@i.skill.dodge:system.baseChance");
+  });
+
+  it("leaves keys the CUSTOM shim never routed untouched", () => {
+    const changes = [
+      // core never sent a non-CUSTOM change to the shim, so the key was inert
+      { key: "i.skill.dodge:system.baseChance", type: "add", value: "5" },
+      // not a system path, so the shim warned instead of applying it
+      { key: "i.skill.dodge:baseChance", type: "custom", value: "5" },
+      // another package's CUSTOM key
+      { key: "flags.some-module.bonus", type: "custom", value: "5" },
+      { key: "@i.skill.dodge:system.baseChance", type: "custom", value: "5" },
+    ];
+    const effect = { system: { changes: structuredClone(changes) } };
+
+    const result = migrateEffectTypesAndPathsWithSummary(effect);
+
+    expect(result.changed).toBe(false);
+    expect(effect.system.changes).toEqual(changes);
+  });
+
+  it("does not rewrite routed keys in a dry run", () => {
+    const effect = {
+      system: {
+        changes: [{ key: "i.skill.dodge:system.baseChance", type: "custom", value: "5" }],
+      },
+    };
+
+    const result = migrateEffectTypesAndPathsWithSummary(effect, undefined, { dryRun: true });
+
+    expect(result.changed).toBe(false);
+    expect(effect.system.changes[0]!.key).toBe("i.skill.dodge:system.baseChance");
+  });
+
   it("reports changed when only change.type normalization occurs", () => {
     const effect = {
       system: {

@@ -25,7 +25,8 @@ export const migrateActiveEffectActiveEffectPaths: ActiveEffectMigration = async
   logger,
 ): Promise<ActiveEffect.UpdateData> => {
   const updateData: ActiveEffect.UpdateData = {};
-  const effectAsAny = effect as any;
+  // source data: prepareBaseData fills in each change's default priority, which must not be persisted
+  const effectAsAny = effect.toObject() as any;
   const rewriteResult = migrateEffectTypesAndPathsWithSummary(effectAsAny);
 
   if (rewriteResult.summary.warningCount > 0) {
