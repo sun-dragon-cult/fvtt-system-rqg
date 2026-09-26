@@ -43,6 +43,10 @@ import {
   resistanceRequestRollerSide,
   resistanceRequestState,
 } from "../src/chat/data-model/resistance-request-chat-message.defs";
+import {
+  spellTargetOutcomeResolvedBy,
+  spellTargetOutcomeState,
+} from "../src/data-model/shared/spell-cast-outcome.defs";
 import { ROUTED_KEY_WARNING_I18N_SUFFIXES } from "../src/active-effect/routed-key/routed-key-warnings";
 import { protectionPoints } from "../src/system/token-status-effects";
 
@@ -112,6 +116,9 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
 
   // ChatMessage
   "RQG.ChatMessage.ResistanceRequest.State.": [...resistanceRequestState],
+  "RQG.ChatMessage.SpellCast.State.": [...spellTargetOutcomeState],
+  "RQG.ChatMessage.SpellCast.ResolvedBy.": [...spellTargetOutcomeResolvedBy],
+  "RQG.ChatMessage.SpellCast.Ruling.": ["affected", "unaffected", "dismissed"],
 
   // Dialog
   "RQG.Dialog.Attack.HitLocationFormulaOptions.": [...hitLocationFormulaOptions],

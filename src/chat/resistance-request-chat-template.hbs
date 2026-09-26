@@ -1,10 +1,6 @@
 <div class="rqg chat-card">
   {{#if castRoll}}
-    <div class="flex-column gap03rem"
-         {{#if spellHiddenFromUuid}}data-hide-from-owner-uuid="{{spellHiddenFromUuid}}"
-         data-hide-unless-owner-uuid="{{spellCasterUuid}}"{{/if}}>
-      <span data-cast-roll-html></span>
-    </div>
+    {{> spellCastRollRow hiddenFromUuid=spellHiddenFromUuid casterUuid=spellCasterUuid}}
     {{#if resistanceFlavor}}
       <div class="resistance-request-flavor">{{{resistanceFlavor}}}</div>
     {{/if}}

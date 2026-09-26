@@ -4,18 +4,10 @@ import { SpellResistedByEnum } from "../item-data/spell";
 
 import Roll = foundry.dice.Roll;
 
-export const spellTargetOutcomeState = ["pending", "affected", "unaffected", "dismissed"] as const;
-export type SpellTargetOutcomeState = (typeof spellTargetOutcomeState)[number];
-
-export const spellTargetOutcomeResolvedBy = [
-  "castOnly",
-  "castFailed",
-  "selfCast",
-  "accepted",
-  "resistanceRoll",
-  "gmRuling",
-] as const;
-export type SpellTargetOutcomeResolvedBy = (typeof spellTargetOutcomeResolvedBy)[number];
+import type {
+  SpellTargetOutcomeResolvedBy,
+  SpellTargetOutcomeState,
+} from "./spell-cast-outcome.defs";
 
 /** Whether a spell took effect on one of its targets - the one thing a spell effect branches on. */
 export interface SpellTargetOutcome {

@@ -1,7 +1,7 @@
 import {
   spellTargetOutcomeResolvedBy,
   spellTargetOutcomeState,
-} from "../../data-model/shared/spell-cast-outcome";
+} from "../../data-model/shared/spell-cast-outcome.defs";
 
 const { ArrayField, NumberField, SchemaField, StringField } = foundry.data.fields;
 

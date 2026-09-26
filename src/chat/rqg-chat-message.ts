@@ -9,6 +9,8 @@ import {
   handleAcceptResistanceRequest,
   handleRollResistanceRequest,
 } from "./resistance-request-handlers";
+import { handleSpellCastRuling, renderSpellCastTargets } from "./spell-cast-handlers";
+import { getSpellCastOutcome } from "../data-model/shared/spell-cast-outcome";
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/damage-roll/damage-roll";
@@ -51,6 +53,17 @@ export class RqgChatMessage extends ChatMessage {
     }
 
     super._onUpdate(data, options, userId);
+
+    // A hidden cast's target row is read off this request, so its cast message is now stale.
+    const spellCastMessageId = this.isResistanceRequestMessage()
+      ? this.system.spellCastMessageId
+      : "";
+    const spellCastMessage = spellCastMessageId
+      ? game.messages?.get(spellCastMessageId)
+      : undefined;
+    if (spellCastMessage) {
+      void ui.chat?.updateMessage(spellCastMessage as ChatMessage.Implementation);
+    }
   }
 
   /** @inheritDoc */
@@ -116,6 +129,11 @@ export class RqgChatMessage extends ChatMessage {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleAcceptResistanceRequest(clickedButton);
     }
+
+    if (clickedButton?.dataset["spellCastRuling"] != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleSpellCastRuling(clickedButton);
+    }
   }
 
   private static commonClickHandling(clickEvent: MouseEvent, clickedButton: HTMLButtonElement) {
@@ -147,6 +165,7 @@ export class RqgChatMessage extends ChatMessage {
         ResistanceRoll,
       ),
       this.#enrichHtmlWithRoll(html, "castRoll", "[data-cast-roll-html]", Roll),
+      this.#enrichSpellCastCard(html),
     ]);
 
     this.#hideHtmlElementsByOwnership(html);
@@ -213,6 +232,23 @@ export class RqgChatMessage extends ChatMessage {
       }
       el.classList.add("dont-display");
     });
+  }
+
+  /** A spellCast card keeps its roll in `rolls` and derives its target rows at render time. */
+  async #enrichSpellCastCard(html: HTMLElement): Promise<void> {
+    if (this.type !== "spellCast") {
+      return;
+    }
+    const castRoll = this.rolls[0];
+    const rollSlot = html.querySelector<HTMLElement>("[data-cast-roll-html]");
+    if (castRoll && rollSlot) {
+      rollSlot.innerHTML = await castRoll.render({ isPrivate: !!this.blind && !game.user?.isGM });
+    }
+    const targetsSlot = html.querySelector<HTMLElement>("[data-spell-cast-targets]");
+    const outcome = getSpellCastOutcome(this as any);
+    if (targetsSlot && outcome?.targets.length) {
+      targetsSlot.innerHTML = await renderSpellCastTargets(outcome);
+    }
   }
 
   async #enrichHtmlWithRoll(

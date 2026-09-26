@@ -1,0 +1,16 @@
+{{#each targets}}
+  <li class="spell-cast-target {{state}}" data-target-uuid="{{uuid}}">
+    <span class="spell-cast-target-name">{{name}}</span>
+    <span class="spell-cast-target-state"
+          {{#if resolvedByLabel}}data-tooltip="{{resolvedByLabel}}"{{/if}}>{{stateLabel}}</span>
+    {{#if @root.isGM}}
+      <span class="spell-cast-ruling">
+        {{#each @root.rulings}}
+          <button type="button" class="{{#if (eq state ../state)}}active{{/if}}"
+                  data-spell-cast-ruling="{{state}}"
+                  data-tooltip="{{label}}" aria-label="{{label}}"><i class="{{icon}}"></i></button>
+        {{/each}}
+      </span>
+    {{/if}}
+  </li>
+{{/each}}
