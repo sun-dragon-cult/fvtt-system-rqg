@@ -22,7 +22,8 @@
     },
     "ChatMessage": {
       "combat": "Combat",
-      "resistanceRequest": "Resistance Request"
+      "resistanceRequest": "Resistance Request",
+      "spellCast": "Spell Cast"
     },
     "RegionBehavior": {
       "clickableScripts": "Click to Execute Script"

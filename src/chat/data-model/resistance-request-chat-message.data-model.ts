@@ -81,6 +81,15 @@ const resistanceRequestChatMessageSchema = {
   // The spell's own flavor, kept unwrapped so the message flavor can be rebuilt without its
   // concealment wrapper once the target is allowed to see what hit them.
   castFlavor: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
+  // The spell cast on a combined card, for getSpellCastOutcome.
+  spellUuid: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
+  // A hidden cast's whispered spellCast message, whose outcome this anonymous card settles.
+  spellCastMessageId: new StringField({
+    blank: true,
+    nullable: false,
+    required: false,
+    initial: "",
+  }),
   // The caster, who is never concealed from - see spellHiddenFromUuid.
   spellCasterUuid: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   // Set to the target's uuid to conceal the spell's name and cast roll from them alone. Cleared

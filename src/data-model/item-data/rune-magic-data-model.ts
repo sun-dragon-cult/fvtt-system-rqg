@@ -354,6 +354,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       castRoll: runeMagicRoll,
       casterActor: casterActor,
       casterToken: token,
+      spellUuid: item?.uuid ?? "",
     });
 
     const mpCost = options.magicPointBoost ?? 0;

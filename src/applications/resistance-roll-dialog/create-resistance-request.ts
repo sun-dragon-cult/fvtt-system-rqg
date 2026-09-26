@@ -48,8 +48,11 @@ export type CreateResistanceRequestParams = {
     | {
         castRoll: SpellCastRoll;
         casterTokenOrActorUuid: string;
+        spellUuid: string;
       }
     | undefined;
+  /** A hidden cast's whispered spellCast message, whose outcome this card settles. */
+  spellCastMessageId?: string | undefined;
 };
 
 /** Post a resistance-table check as a chat card the recipient answers. Never rolls anything. */
@@ -122,6 +125,8 @@ export async function createResistanceRequest(
     // Only the target is kept in the dark - the rest of the table follows the cast as it would an
     // attack. "" on a standalone request, which has no spell to hide.
     castFlavor: spellCast ? spellCast.castRoll.flavor : "",
+    spellUuid: spellCast ? spellCast.spellUuid : "",
+    spellCastMessageId: params.spellCastMessageId ?? "",
     spellCasterUuid: spellCast ? spellCast.casterTokenOrActorUuid : "",
     spellHiddenFromUuid: spellCast ? params.targetTokenOrActorUuid : "",
     isSpellCast: !!params.isSpellCast,

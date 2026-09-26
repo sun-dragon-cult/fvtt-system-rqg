@@ -34,6 +34,7 @@ import type { WeaponDataModel } from "./data-model/item-data/weapon-data-model";
 import type { CharacterDataModel } from "./data-model/actor-data/character-data-model";
 import type { CombatChatMessageData } from "./chat/data-model/combat-chat-message.data-model.ts";
 import type { ResistanceRequestChatMessageData } from "./chat/data-model/resistance-request-chat-message.data-model.ts";
+import type { SpellCastChatMessageData } from "./chat/data-model/spell-cast-chat-message.data-model.ts";
 import type { Dice3D } from "./module-integrations/dice-so-nice";
 
 // Namespace imports for Foundry document types (from fvtt-types)
@@ -107,6 +108,7 @@ declare global {
     ChatMessage: {
       combat: typeof CombatChatMessageData;
       resistanceRequest: typeof ResistanceRequestChatMessageData;
+      spellCast: typeof SpellCastChatMessageData;
     };
     RegionBehavior: {
       clickableScripts: typeof ClickableScriptsRegionBehavior;

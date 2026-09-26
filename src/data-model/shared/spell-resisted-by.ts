@@ -9,6 +9,7 @@ import {
 } from "../../applications/app-parts/roll-mode";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
+import { buildCastTargetOutcomes, type SpellCastTarget } from "./spell-cast-outcome";
 
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
 export type ResistedSpellTarget = {
@@ -16,31 +17,43 @@ export type ResistedSpellTarget = {
   targetTokenUuid?: string | undefined;
   /** The caster is the target, which counts as accepting - no resistance roll. */
   selfCast: boolean;
+  /** Every token targeted when the spell was cast, whatever the resistedBy mode. */
+  targets: SpellCastTarget[];
 };
-
-const PROCEED_WITHOUT_TARGET: ResistedSpellTarget = { proceed: true, selfCast: false };
 
 /**
  * Pre-cast target check for a resisted spell, run before any points are spent. Unresisted spells
- * pass straight through - targeting is only constrained where a resistance roll depends on it.
+ * pass straight through - targeting is only constrained where a resistance roll depends on it -
+ * but their targets are still recorded for the cast outcome.
  */
 export async function resolveResistedSpellCastTarget(
   resistedBy: SpellResistedByEnum,
   casterActor: RqgActor,
   spellName: string | undefined,
 ): Promise<ResistedSpellTarget> {
+  const targets = [...(game.user?.targets ?? [])];
+  const castTargets: SpellCastTarget[] = targets.flatMap((token) =>
+    token.document?.uuid
+      ? [
+          {
+            tokenUuid: token.document.uuid,
+            isCaster: token.document.actor?.uuid === casterActor.uuid,
+          },
+        ]
+      : [],
+  );
+
   if (resistedBy !== SpellResistedByEnum.ResistanceRoll) {
-    return PROCEED_WITHOUT_TARGET;
+    return { proceed: true, selfCast: false, targets: castTargets };
   }
 
-  const targets = [...(game.user?.targets ?? [])];
   if (targets.length > 1) {
     ui.notifications?.warn(
       localize("RQG.Notification.Warn.ResistedSpellSingleTargetOnly", {
         spellName: spellName ?? "",
       }),
     );
-    return { proceed: false, selfCast: false };
+    return { proceed: false, selfCast: false, targets: castTargets };
   }
 
   if (targets.length === 0) {
@@ -52,7 +65,7 @@ export async function resolveResistedSpellCastTarget(
       yes: { label: "RQG.Dialog.ResistanceRequest.CastOnSelf", icon: "fa-solid fa-user" },
       no: { label: "COMMON.Cancel", icon: "fa-solid fa-xmark", default: true },
     });
-    return castOnSelf ? { proceed: true, selfCast: true } : { proceed: false, selfCast: false };
+    return { proceed: !!castOnSelf, selfCast: !!castOnSelf, targets: castTargets };
   }
 
   const targetToken = targets[0]?.document;
@@ -60,21 +73,24 @@ export async function resolveResistedSpellCastTarget(
     proceed: true,
     targetTokenUuid: targetToken?.uuid ?? undefined,
     selfCast: targetToken?.actor?.uuid === casterActor.uuid,
+    targets: castTargets,
   };
 }
 
 /**
  * Posts the cast roll to chat, in one of three shapes:
  *
- * - unresisted, failed or self-cast: the plain roll message;
+ * - unresisted, failed or self-cast: a `spellCast` message carrying the roll and its outcome;
  * - resisted and open: one combined card carrying the cast roll, the target's Resist/Accept and
  *   their resistance roll, the way an attack card carries attack and defence. The spell's name and
  *   cast roll are concealed from everyone but the caster, so the target chooses without knowing
  *   whether an ally is healing them or an enemy is not;
- * - resisted and hidden (GM only): the cast roll whispered per its mode, plus a bare request card
- *   naming neither the caster nor the spell - the target knows they are being tested, nothing more.
+ * - resisted and hidden (GM only): the `spellCast` message whispered per its mode, plus a bare
+ *   request card naming neither the caster nor the spell - the target knows they are being tested,
+ *   nothing more. The request links back to the cast message, which it settles.
  *
- * Only `ResistanceRoll` is handled; the area / per-target / spirit-combat modes are inert.
+ * Only `ResistanceRoll` has a resolution step; the area / per-target / spirit-combat modes leave
+ * their targets pending.
  */
 export async function postSpellCastResult(params: {
   target: ResistedSpellTarget;
@@ -82,8 +98,9 @@ export async function postSpellCastResult(params: {
   castRoll: SpiritMagicRoll | RuneMagicRoll;
   casterActor: RqgActor;
   casterToken: TokenDocument | null | undefined;
+  spellUuid: string;
 }): Promise<void> {
-  const { target, resistedBy, castRoll, casterActor, casterToken } = params;
+  const { target, resistedBy, castRoll, casterActor, casterToken, spellUuid } = params;
   // Only a GM can hide a cast; a player's always posts a card the whole table can follow.
   const castRollMode = canChooseSpellCastRollMode()
     ? (castRoll.options.rollMode ?? getDefaultRollMode())
@@ -97,8 +114,25 @@ export async function postSpellCastResult(params: {
     !target.selfCast &&
     !!target.targetTokenUuid;
 
+  const casterUuid = casterToken?.uuid ?? casterActor.uuid ?? "";
+  const postCastMessage = () =>
+    castRoll.postToChat({
+      type: "spellCast",
+      system: {
+        spellUuid: spellUuid,
+        casterTokenOrActorUuid: casterUuid,
+        castSuccessLevel: castRoll.successLevel ?? null,
+        targets: buildCastTargetOutcomes({
+          castSuccessLevel: castRoll.successLevel ?? AbilitySuccessLevelEnum.Fumble,
+          resistedBy: resistedBy,
+          targets: target.targets,
+          casterTokenOrActorUuid: casterUuid,
+        }),
+      },
+    });
+
   if (!willBeResisted) {
-    await castRoll.postToChat();
+    await postCastMessage();
     return;
   }
 
@@ -108,13 +142,10 @@ export async function postSpellCastResult(params: {
     import("../../applications/resistance-roll-dialog/resistance-roll-shared"),
   ]);
 
-  const casterUuid = casterToken?.uuid ?? casterActor.uuid ?? "";
   const caster = resolveCharacteristicSide(casterUuid, "power", "", 0, "");
   const hidden = isHiddenRollMode(castRollMode);
 
-  if (hidden) {
-    await castRoll.postToChat();
-  }
+  const castMessage = hidden ? await postCastMessage() : undefined;
 
   await createResistanceRequest({
     targetTokenOrActorUuid: target.targetTokenUuid!,
@@ -140,6 +171,8 @@ export async function postSpellCastResult(params: {
       : {
           castRoll: castRoll,
           casterTokenOrActorUuid: casterUuid,
+          spellUuid: spellUuid,
         },
+    spellCastMessageId: castMessage?.id ?? undefined,
   });
 }
