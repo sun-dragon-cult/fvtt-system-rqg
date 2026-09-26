@@ -3,6 +3,7 @@ import {
   resistanceRequestState,
 } from "./resistance-request-chat-message.defs.ts";
 import { enumChoices } from "../../data-model/shared/enum-choices";
+import { spellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
 
 const { BooleanField, NumberField, StringField, DocumentUUIDField, JSONField } =
   foundry.data.fields;
@@ -70,13 +71,13 @@ const resistanceRequestChatMessageSchema = {
   }),
   // A spell cast reads its outcome in terms of the spell taking effect, a GM request doesn't.
   isSpellCast: new BooleanField({ nullable: false, required: false, initial: false }),
-  // Plain-language result, written when the roll lands - the success badge alone is ambiguous
-  // about whose roll failed.
-  outcomeDescription: new StringField({
+  // A GM's override of whether the spell took effect; "" when none.
+  gmRuling: new StringField({
     blank: true,
     nullable: false,
     required: false,
     initial: "",
+    choices: ["", ...spellTargetRulingState],
   }),
   // The spell's own flavor, kept unwrapped so the message flavor can be rebuilt without its
   // concealment wrapper once the target is allowed to see what hit them.

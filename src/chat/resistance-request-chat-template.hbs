@@ -6,7 +6,7 @@
     {{/if}}
   {{/if}}
 
-  {{#if (eq state 'Requested')}}
+  {{#if (and (eq state 'Requested') (not gmRuling))}}
     {{!-- "Resist" only reads as a choice next to Accept; alone it is just the roll. --}}
     <div class="flexrow gap1rem" data-only-owner-visible-uuid="{{targetTokenOrActorUuid}}">
       {{#if allowVoluntaryAccept}}
@@ -22,12 +22,11 @@
         </button>
       {{/if}}
     </div>
-  {{else if (eq state 'Accepted')}}
-    <p class="resistance-request-accepted">{{localize "RQG.ChatMessage.ResistanceRequest.AcceptedNotice"}}</p>
-  {{else}}
+  {{else if (eq state 'Rolled')}}
     <span data-resistance-roll-html></span>
-    {{#if outcomeDescription}}
-      <div class="outcome-description">{{outcomeDescription}}</div>
-    {{/if}}
+  {{/if}}
+
+  {{#if isSpellCast}}
+    <div data-spell-cast-targets></div>
   {{/if}}
 </div>

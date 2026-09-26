@@ -1,16 +1,30 @@
-{{#each targets}}
+{{#*inline "targetRow"}}
   <li class="spell-cast-target {{state}}" data-target-uuid="{{uuid}}">
-    <span class="spell-cast-target-name">{{name}}</span>
-    <span class="spell-cast-target-state"
-          {{#if resolvedByLabel}}data-tooltip="{{resolvedByLabel}}"{{/if}}>{{stateLabel}}</span>
-    {{#if @root.isGM}}
-      <span class="spell-cast-ruling">
-        {{#each @root.rulings}}
-          <button type="button" class="{{#if (eq state ../state)}}active{{/if}}"
-                  data-spell-cast-ruling="{{state}}"
-                  data-tooltip="{{label}}" aria-label="{{label}}"><i class="{{icon}}"></i></button>
-        {{/each}}
-      </span>
-    {{/if}}
+    <div class="spell-cast-target-summary">
+      <span class="spell-cast-target-name">{{name}}</span>
+      <span class="spell-cast-target-state">{{stateLabel}}</span>
+      {{#if @root.isGM}}
+        <span class="spell-cast-ruling">
+          {{#each @root.rulings}}
+            <button type="button" class="{{#if (eq state ../state)}}active{{/if}}"
+                    data-spell-cast-ruling="{{state}}"
+                    data-tooltip="{{label}}" aria-label="{{label}}"><i class="{{icon}}"></i></button>
+          {{/each}}
+        </span>
+      {{/if}}
+    </div>
+    {{#if reasonLabel}}<div class="spell-cast-target-reason">{{reasonLabel}}</div>{{/if}}
   </li>
-{{/each}}
+{{/inline}}
+
+{{!-- The decided targets share the result box the combat cards use; pending ones sit below it. --}}
+{{#if decided.length}}
+  <ul class="spell-cast-targets outcome-description">
+    {{#each decided}}{{> targetRow}}{{/each}}
+  </ul>
+{{/if}}
+{{#if pending.length}}
+  <ul class="spell-cast-targets">
+    {{#each pending}}{{> targetRow}}{{/each}}
+  </ul>
+{{/if}}

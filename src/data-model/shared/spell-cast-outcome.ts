@@ -7,6 +7,7 @@ import Roll = foundry.dice.Roll;
 import type {
   SpellTargetOutcomeResolvedBy,
   SpellTargetOutcomeState,
+  SpellTargetRulingState,
 } from "./spell-cast-outcome.defs";
 
 /** Whether a spell took effect on one of its targets - the one thing a spell effect branches on. */
@@ -92,6 +93,7 @@ export function buildCastTargetOutcomes(params: {
 type ResistanceRequestOutcomeSource = {
   state: string;
   targetTokenOrActorUuid: string;
+  gmRuling?: SpellTargetRulingState | "" | undefined;
 };
 
 /** The outcome a resistance request card settles, read off its state rather than stored twice. */
@@ -100,6 +102,14 @@ export function deriveResistanceRequestTargetOutcome(
   resistanceSuccessLevel: AbilitySuccessLevelEnum | undefined,
 ): SpellTargetOutcome {
   const base = { targetTokenOrActorUuid: request.targetTokenOrActorUuid };
+  if (request.gmRuling) {
+    return {
+      ...base,
+      state: request.gmRuling,
+      resolvedBy: "gmRuling",
+      casterSuccessLevel: undefined,
+    };
+  }
   switch (request.state) {
     case "Accepted":
       return { ...base, state: "affected", resolvedBy: "accepted", casterSuccessLevel: undefined };
@@ -129,7 +139,7 @@ function rollSuccessLevel(json: unknown): AbilitySuccessLevelEnum | undefined {
   return safeFromJSON<Roll & { successLevel?: AbilitySuccessLevelEnum }>(Roll, json)?.successLevel;
 }
 
-function outcomeFromResistanceRequest(request: OutcomeMessage): SpellTargetOutcome {
+export function getResistanceRequestTargetOutcome(request: OutcomeMessage): SpellTargetOutcome {
   return deriveResistanceRequestTargetOutcome(
     request.system,
     rollSuccessLevel(request.system.resistanceRoll),
@@ -160,7 +170,7 @@ export function getSpellCastOutcome(
           (r) => r.system.targetTokenOrActorUuid === target.targetTokenOrActorUuid,
         );
         return request && target.state === "pending"
-          ? outcomeFromResistanceRequest(request)
+          ? getResistanceRequestTargetOutcome(request)
           : {
               targetTokenOrActorUuid: target.targetTokenOrActorUuid,
               state: target.state,
@@ -176,7 +186,7 @@ export function getSpellCastOutcome(
       spellUuid: system.spellUuid,
       casterTokenOrActorUuid: system.spellCasterUuid,
       castSuccessLevel: rollSuccessLevel(system.castRoll),
-      targets: [outcomeFromResistanceRequest(message)],
+      targets: [getResistanceRequestTargetOutcome(message)],
     };
   }
 

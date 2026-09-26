@@ -10,3 +10,7 @@ export const spellTargetOutcomeResolvedBy = [
   "gmRuling",
 ] as const;
 export type SpellTargetOutcomeResolvedBy = (typeof spellTargetOutcomeResolvedBy)[number];
+
+/** The states a GM can rule a target into. */
+export const spellTargetRulingState = ["affected", "unaffected", "dismissed"] as const;
+export type SpellTargetRulingState = (typeof spellTargetRulingState)[number];

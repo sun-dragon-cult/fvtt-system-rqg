@@ -183,7 +183,10 @@ export function resolveCharacteristicSide(
 
   const value = names.reduce((sum, name) => sum + resolveCharacteristicValue(sourceActor, name), 0);
   const label = names.map((name) => resolveCharacteristicLabel(name)).join(" + ");
-  return { value, label, actorName: sourceActor.name ?? undefined };
+  // A token's own name, like the attack card uses - it tells unlinked tokens apart and keeps a
+  // GM-renamed token's actor hidden.
+  const name = (fromUuidSync(tokenOrActorUuid) as { name?: string | null } | null)?.name;
+  return { value, label, actorName: name ?? sourceActor.name ?? undefined };
 }
 
 /** Keep only player-owned actors - for the request dialog's active picker (a GM owns every token). */

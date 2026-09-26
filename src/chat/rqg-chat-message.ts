@@ -10,7 +10,11 @@ import {
   handleRollResistanceRequest,
 } from "./resistance-request-handlers";
 import { handleSpellCastRuling, renderSpellCastTargets } from "./spell-cast-handlers";
-import { getSpellCastOutcome } from "../data-model/shared/spell-cast-outcome";
+import {
+  getResistanceRequestTargetOutcome,
+  getSpellCastOutcome,
+  type SpellTargetOutcome,
+} from "../data-model/shared/spell-cast-outcome";
 import { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import { isFoundryElementInstanceOf, localize, safeFromJSON } from "../system/util";
 import { DamageRoll } from "../rolls/damage-roll/damage-roll";
@@ -234,20 +238,26 @@ export class RqgChatMessage extends ChatMessage {
     });
   }
 
-  /** A spellCast card keeps its roll in `rolls` and derives its target rows at render time. */
+  /** A spell's target rows are derived at render time, so a linked card's answer shows here too. */
   async #enrichSpellCastCard(html: HTMLElement): Promise<void> {
-    if (this.type !== "spellCast") {
-      return;
+    let targets: SpellTargetOutcome[] = [];
+    if (this.type === "spellCast") {
+      // Unlike the combined card, the cast roll lives in `rolls` rather than system data.
+      const castRoll = this.rolls[0];
+      const rollSlot = html.querySelector<HTMLElement>("[data-cast-roll-html]");
+      if (castRoll && rollSlot) {
+        rollSlot.innerHTML = await castRoll.render({ isPrivate: !!this.blind && !game.user?.isGM });
+      }
+      targets = getSpellCastOutcome(this as any)?.targets ?? [];
+    } else if (this.isResistanceRequestMessage() && this.system.isSpellCast) {
+      targets = [getResistanceRequestTargetOutcome(this as any)].filter(
+        (target) => target.state !== "pending",
+      );
     }
-    const castRoll = this.rolls[0];
-    const rollSlot = html.querySelector<HTMLElement>("[data-cast-roll-html]");
-    if (castRoll && rollSlot) {
-      rollSlot.innerHTML = await castRoll.render({ isPrivate: !!this.blind && !game.user?.isGM });
-    }
+
     const targetsSlot = html.querySelector<HTMLElement>("[data-spell-cast-targets]");
-    const outcome = getSpellCastOutcome(this as any);
-    if (targetsSlot && outcome?.targets.length) {
-      targetsSlot.innerHTML = await renderSpellCastTargets(outcome);
+    if (targetsSlot && targets.length) {
+      targetsSlot.innerHTML = await renderSpellCastTargets(targets);
     }
   }
 

@@ -991,21 +991,44 @@
         margin: 0.4rem 0 0.2rem;
       }
 
-      & .spell-cast-targets {
+      & ul.spell-cast-targets {
         list-style: none;
         margin: 0.3rem 0 0;
         padding: 0;
 
-        &:empty {
-          display: none;
+        &.outcome-description {
+          margin: 0.3rem -0.2rem;
+          padding: 0.4rem;
+
+          /* The box keeps its light background in both themes, so the level colors are too pale. */
+          & .spell-cast-target-state {
+            font-weight: bold;
+            color: #3d3d3d;
+          }
+
+          & .affected .spell-cast-target-state {
+            color: #1f5a14;
+          }
+
+          & .unaffected .spell-cast-target-state {
+            color: #8a1c1c;
+          }
         }
       }
 
       & .spell-cast-target {
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
         padding: 0.15rem 0;
+
+        & .spell-cast-target-summary {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+
+        & .spell-cast-target-reason {
+          color: var(--color-text-secondary);
+          font-size: var(--font-size-11);
+        }
 
         & .spell-cast-target-name {
           flex: 1;

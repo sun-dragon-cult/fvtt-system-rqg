@@ -94,7 +94,7 @@ export async function createResistanceRequest(
   const resistanceFlavor = buildResistanceRollFlavor(
     params.activeLabel,
     params.passiveLabel,
-    rollerIsPassive ? (targetActor?.name ?? undefined) : params.frozenActorName,
+    rollerIsPassive ? (targetTokenOrActor?.name ?? undefined) : params.frozenActorName,
     spellCast ? undefined : params.description,
   );
 
@@ -130,7 +130,7 @@ export async function createResistanceRequest(
     spellCasterUuid: spellCast ? spellCast.casterTokenOrActorUuid : "",
     spellHiddenFromUuid: spellCast ? params.targetTokenOrActorUuid : "",
     isSpellCast: !!params.isSpellCast,
-    outcomeDescription: "",
+    gmRuling: "",
   };
 
   const content = await foundry.applications.handlebars.renderTemplate(

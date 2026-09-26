@@ -245,7 +245,7 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
 
     const speaker = getSpeakerCompat({ actor: actor, token: token });
     const opposingName = this.sides.opposingActorName;
-    const rollerName = actor?.name ?? undefined;
+    const rollerName = token?.name ?? actor?.name ?? undefined;
     const activeLabel = RespondToResistanceRequestDialogV2.describeSide(
       this.sides.activeLabel,
       this.sides.rollerIsPassive ? opposingName : rollerName,
@@ -336,8 +336,8 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     }
 
     // The card may have been answered elsewhere while this dialog sat open - from the same card's
-    // Accept, or by a GM on another client - and a roll now would overwrite that outcome.
-    if (requestChatMessage!.system.state !== "Requested") {
+    // Accept, by a GM on another client, or by a GM ruling - and a roll now would overwrite that.
+    if (requestChatMessage!.system.state !== "Requested" || requestChatMessage!.system.gmRuling) {
       ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
       return;
     }
@@ -389,29 +389,9 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
     }
 
     // The roll is the active side's, so its success level says whether the *caster* got through -
-    // "Failure" on a resister's card means they held. Spell it out rather than leave the badge to
-    // be read either way.
+    // "Failure" on a resister's card means they held.
     const activeOvercame =
       roll.successLevel != null && roll.successLevel <= AbilitySuccessLevelEnum.Success;
-    const targetName = actor.name ?? "";
-    // A hidden cast withholds the caster's name, so fall back to phrasing that doesn't need it.
-    const casterName = sides.rollerIsPassive ? sides.opposingActorName : undefined;
-    let outcomeDescription = "";
-    if (requestChatMessage!.system.isSpellCast) {
-      outcomeDescription = casterName
-        ? localize(
-            activeOvercame
-              ? "RQG.ChatMessage.ResistanceRequest.SpellOvercame"
-              : "RQG.ChatMessage.ResistanceRequest.SpellNotOvercame",
-            { casterName: casterName, targetName: targetName },
-          )
-        : localize(
-            activeOvercame
-              ? "RQG.ChatMessage.ResistanceRequest.SpellTakesEffect"
-              : "RQG.ChatMessage.ResistanceRequest.SpellResisted",
-            { targetName: targetName },
-          );
-    }
 
     // A spell that lands is felt, so the target learns what it was. One they turned aside stays
     // a mystery, so only an overcome reveals it.
@@ -420,7 +400,6 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       {
         state: "Rolled",
         resistanceRoll: roll.toJSON(),
-        outcomeDescription: outcomeDescription,
       },
       { revealSpell: activeOvercame, whisper: whisper, blind: blind },
     );
