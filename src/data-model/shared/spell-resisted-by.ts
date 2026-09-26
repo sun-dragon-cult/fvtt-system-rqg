@@ -9,6 +9,7 @@ import {
 } from "../../applications/app-parts/roll-mode";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
+import { templatePaths } from "../../system/load-handlebars-templates";
 import { buildCastTargetOutcomes, type SpellCastTarget } from "./spell-cast-outcome";
 
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
@@ -90,7 +91,7 @@ export async function resolveResistedSpellCastTarget(
  *   nothing more. The request links back to the cast message, which it settles.
  *
  * Only `ResistanceRoll` has a resolution step; the area / per-target / spirit-combat modes leave
- * their targets pending.
+ * their targets pending for a GM ruling on the cast card.
  */
 export async function postSpellCastResult(params: {
   target: ResistedSpellTarget;
@@ -115,9 +116,13 @@ export async function postSpellCastResult(params: {
     !!target.targetTokenUuid;
 
   const casterUuid = casterToken?.uuid ?? casterActor.uuid ?? "";
-  const postCastMessage = () =>
+  const postCastMessage = async () =>
     castRoll.postToChat({
       type: "spellCast",
+      content: await foundry.applications.handlebars.renderTemplate(
+        templatePaths.spellCastChatMessage,
+        {},
+      ),
       system: {
         spellUuid: spellUuid,
         casterTokenOrActorUuid: casterUuid,

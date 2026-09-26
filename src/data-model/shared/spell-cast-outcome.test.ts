@@ -117,6 +117,15 @@ describe("deriveResistanceRequestTargetOutcome", () => {
     });
   });
 
+  it("lets a GM ruling override whatever the request says", () => {
+    expect(
+      deriveResistanceRequestTargetOutcome(
+        { ...request("Rolled"), gmRuling: "unaffected" },
+        Success,
+      ),
+    ).toMatchObject({ state: "unaffected", resolvedBy: "gmRuling", casterSuccessLevel: undefined });
+  });
+
   it("reads a failed resistance roll as the target holding", () => {
     expect(deriveResistanceRequestTargetOutcome(request("Rolled"), Failure)).toMatchObject({
       state: "unaffected",

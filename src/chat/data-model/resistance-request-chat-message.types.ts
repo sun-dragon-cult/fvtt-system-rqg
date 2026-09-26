@@ -1,3 +1,4 @@
+import type { SpellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
 import type {
   resistanceRequestRollerSide,
   resistanceRequestState,
@@ -49,8 +50,8 @@ export interface ResistanceRequestDataSourceData {
   spellCasterUuid: string;
   /** Whether the outcome should be phrased as the spell taking effect. */
   isSpellCast: boolean;
-  /** Plain-language result, filled in once the roll lands. */
-  outcomeDescription: string;
+  /** A GM's override of whether the spell took effect; "" when none. */
+  gmRuling: SpellTargetRulingState | "";
   /** Request author's situational modifier; always applies to the active side. */
   otherModifier: number;
   otherModifierDescription: string | undefined;

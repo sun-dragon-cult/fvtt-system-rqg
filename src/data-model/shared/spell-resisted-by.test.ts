@@ -22,6 +22,10 @@ vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () =
 (globalThis as any).foundry.applications ??= {};
 (globalThis as any).foundry.applications.api ??= {};
 (globalThis as any).foundry.applications.api.DialogV2 = { confirm: vi.fn(async () => true) };
+(globalThis as any).foundry.applications.handlebars ??= {};
+(globalThis as any).foundry.applications.handlebars.renderTemplate = vi.fn(
+  async () => "<div></div>",
+);
 
 const casterActor = { uuid: "Actor.caster" } as any;
 
@@ -197,6 +201,7 @@ describe("postSpellCastResult", () => {
     expect(createResistanceRequest).not.toHaveBeenCalled();
     expect(postedCastMessage(castRoll)).toEqual({
       type: "spellCast",
+      content: "<div></div>",
       system: {
         spellUuid: "Actor.caster.Item.spell",
         casterTokenOrActorUuid: "Scene.s.Token.caster",

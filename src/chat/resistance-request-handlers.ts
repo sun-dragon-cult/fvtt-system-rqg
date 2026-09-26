@@ -15,7 +15,10 @@ export async function handleRollResistanceRequest(clickedButton: HTMLButtonEleme
 
   const requestChatMessage = game.messages?.get(chatMessageId) as
     ResistanceRequestChatMessage | undefined;
-  if (requestChatMessage && requestChatMessage.system.state !== "Requested") {
+  if (
+    requestChatMessage &&
+    (requestChatMessage.system.state !== "Requested" || requestChatMessage.system.gmRuling)
+  ) {
     ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
     return;
   }
@@ -42,6 +45,7 @@ export async function handleAcceptResistanceRequest(
   // A stale card can still show the buttons after someone else has answered it.
   if (
     requestChatMessage.system.state !== "Requested" ||
+    !!requestChatMessage.system.gmRuling ||
     !requestChatMessage.system.allowVoluntaryAccept
   ) {
     ui.notifications?.warn(localize("RQG.Notification.Warn.ResistanceRequestAlreadyAnswered"));
@@ -87,5 +91,10 @@ export async function answerResistanceRequest(
   );
 
   activateChatTab();
-  await updateChatMessage(requestChatMessage, messageData);
+  // A GM may update any message, and needn't wait on an author who might be offline.
+  if (game.user?.isGM) {
+    await requestChatMessage.update(messageData as ChatMessage.UpdateData);
+  } else {
+    await updateChatMessage(requestChatMessage, messageData);
+  }
 }

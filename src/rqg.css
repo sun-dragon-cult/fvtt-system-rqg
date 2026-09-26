@@ -15,10 +15,10 @@
 
 /* stylelint-disable no-descending-specificity, no-duplicate-selectors */
 @layer system.base {
-/* *** Start of theme specific styles *** */
+  /* *** Start of theme specific styles *** */
 
   .rqg {
-/* Chrome anchors the datalist dropdown arrow on line-height; fix vertical centering */
+    /* Chrome anchors the datalist dropdown arrow on line-height; fix vertical centering */
     & input[list] {
       line-height: 1rem;
     }
@@ -41,7 +41,7 @@
       font-weight: bold;
     }
 
-/* Shared chip styling for a linked-actor reference: the actor sheet's Allied Spirit link
+    /* Shared chip styling for a linked-actor reference: the actor sheet's Allied Spirit link
        (#957, .allied-spirit-link) and the item sheet's Bound Spirit link (#999,
        .bound-spirit-link) both extend this rather than each declaring their own copy. Lives in
        system.base so either sheet's own layer (system.actor-v2/system.item-v2) can still
@@ -67,15 +67,18 @@
     filter: invert(var(--rqg-svg-invert-param));
   }
 
-  img[src*="systems/rqg"][src*="assets/images"][src$=".svg"]:not(#token-hud img, #context-menu img) {
-/* Make them black for light backgrounds, but exclude the token-hud images.
+  img[src*="systems/rqg"][src*="assets/images"][src$=".svg"]:not(
+      #token-hud img,
+      #context-menu img
+    ) {
+    /* Make them black for light backgrounds, but exclude the token-hud images.
    Split into two attribute selectors because The Forge duplicates the "assets"
    path segment (systems/rqg/assets/assets/images/...), breaking a single
    contiguous "systems/rqg/assets/images" match. */
     filter: invert(var(--rqg-svg-invert-param));
   }
 
-/* *** End of theme specific styles *** */
+  /* *** End of theme specific styles *** */
 
   ::-webkit-scrollbar {
     width: 6px;
@@ -99,14 +102,16 @@
     scrollbar-color: var(--rqg-color-main-bg) #111;
   }
 
-/* Hide LastPass input icon */
+  /* Hide LastPass input icon */
   [data-lastpass-icon-root],
   [data-lastpass-root] {
     display: none !important;
   }
 
   .combat-sidebar .combat-tracker-header div.encounter-controls .encounter-title {
-    margin-left: calc(3 * var(--control-width)); /* Offset "Round 1" to account for removed buttons */
+    margin-left: calc(
+      3 * var(--control-width)
+    ); /* Offset "Round 1" to account for removed buttons */
   }
 
   .norse {
@@ -562,7 +567,7 @@
       &.spirit-combat {
         grid-template-columns: [col-start] 30px auto min-content [col-end];
 
-/* Alternating row background */
+        /* Alternating row background */
         & > *:nth-child(6n + 1),
         & > *:nth-child(6n + 2),
         & > *:nth-child(6n + 3) {
@@ -573,7 +578,7 @@
       &.combat {
         grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
 
-/* Alternating row background for 6 columns */
+        /* Alternating row background for 6 columns */
         & > *:nth-child(12n + 14),
         & > *:nth-child(12n + 15),
         & > *:nth-child(12n + 16),
@@ -587,7 +592,7 @@
           color: var(--rqg-highlight);
         }
 
-/* Set-token-SR-in-combat button */
+        /* Set-token-SR-in-combat button */
         & button.sr {
           height: 1.5rem;
           line-height: unset;
@@ -611,7 +616,7 @@
       &.spiritmagic {
         grid-template-columns: [col-start] 30px auto auto repeat(7, min-content) [col-end];
 
-/* Alternating row background for 10 columns */
+        /* Alternating row background for 10 columns */
         & > *:nth-child(20n + 22),
         & > *:nth-child(20n + 23),
         & > *:nth-child(20n + 24),
@@ -629,7 +634,7 @@
       &.gear {
         grid-template-columns: [col-start] 30px auto repeat(5, max-content) [col-end];
 
-/* Alternating row background for 7 columns */
+        /* Alternating row background for 7 columns */
         & > *:nth-child(14n + 16),
         & > *:nth-child(14n + 17),
         & > *:nth-child(14n + 18),
@@ -652,7 +657,7 @@
       &.weapon {
         grid-template-columns: [col-start] 30px auto auto repeat(10, max-content) [col-end];
 
-/* Alternating row background for 13 columns */
+        /* Alternating row background for 13 columns */
         & > *:nth-child(26n + 28),
         & > *:nth-child(26n + 29),
         & > *:nth-child(26n + 30),
@@ -719,7 +724,7 @@
         }
       }
 
-/* Explicit widths for yes/no and start/duration — min-content squeezes them narrower
+      /* Explicit widths for yes/no and start/duration — min-content squeezes them narrower
          than their header text. minmax(0, …) tracks can shrink below content instead of
          forcing the grid wider than the tab. */
       &.activeeffects {
@@ -731,7 +736,7 @@
       &.skill {
         grid-template-columns: [col-start] 30px auto min-content [col-end];
 
-/* Alternating row background */
+        /* Alternating row background */
         & > *:nth-child(6n + 1),
         & > *:nth-child(6n + 2),
         & > *:nth-child(6n + 3) {
@@ -742,7 +747,7 @@
       &.skill-select {
         grid-template-columns: [col-start] 30px 30px auto min-content [col-end];
 
-/* Alternating row background */
+        /* Alternating row background */
         & > *:nth-child(8n + 1),
         & > *:nth-child(8n + 2),
         & > *:nth-child(8n + 3),
@@ -754,7 +759,7 @@
       &.skill-edit-mode {
         grid-template-columns: [col-start] 30px auto 50px min-content [col-end];
 
-/* Alternating row background */
+        /* Alternating row background */
         & > *:nth-child(8n + 1),
         & > *:nth-child(8n + 2),
         & > *:nth-child(8n + 3),
@@ -771,7 +776,7 @@
         gap: 0;
         grid-template-columns: [col-start] auto [col-end];
 
-/* Alternating row background */
+        /* Alternating row background */
         & > *:nth-child(2n + 1) {
           background: var(--rqg-table-alternate-background);
         }
@@ -955,7 +960,7 @@
       padding: 0;
     }
 
-/* Default text size in chat */
+    /* Default text size in chat */
     &.chat-card {
       font-size: var(--font-size-12);
 
@@ -984,6 +989,87 @@
       /* Stands in for the message flavor, which the combined card gives to the spell. */
       & .resistance-request-flavor {
         margin: 0.4rem 0 0.2rem;
+      }
+
+      & ul.spell-cast-targets {
+        list-style: none;
+        margin: 0.3rem 0 0;
+        padding: 0;
+
+        &.outcome-description {
+          margin: 0.3rem -0.2rem;
+          padding: 0.4rem;
+
+          /* The box keeps its light background in both themes, so the level colors are too pale. */
+          & .spell-cast-target-state {
+            font-weight: bold;
+            color: #3d3d3d;
+          }
+
+          & .affected .spell-cast-target-state {
+            color: #1f5a14;
+          }
+
+          & .unaffected .spell-cast-target-state {
+            color: #8a1c1c;
+          }
+        }
+      }
+
+      & .spell-cast-target {
+        padding: 0.15rem 0;
+
+        & .spell-cast-target-summary {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+
+        & .spell-cast-target-reason {
+          color: var(--color-text-secondary);
+          font-size: var(--font-size-11);
+        }
+
+        & .spell-cast-target-name {
+          flex: 1;
+          font-weight: bold;
+        }
+
+        & .spell-cast-target-state {
+          color: var(--color-text-secondary);
+        }
+
+        &.affected .spell-cast-target-state {
+          color: var(--color-level-success);
+        }
+
+        &.unaffected .spell-cast-target-state {
+          color: var(--color-level-error);
+        }
+
+        &.dismissed {
+          opacity: 0.6;
+
+          & .spell-cast-target-name {
+            text-decoration: line-through;
+          }
+        }
+
+        & .spell-cast-ruling {
+          display: flex;
+          gap: 0.15rem;
+
+          & button {
+            width: 1.6rem;
+            height: 1.6rem;
+            padding: 0;
+            font-size: var(--font-size-11);
+
+            &.active {
+              box-shadow: 0 0 0.3em var(--color-shadow-primary);
+            }
+          }
+        }
       }
     }
 
@@ -1123,7 +1209,7 @@
           font-size: var(--font-size-14);
         }
 
-/* Crit */
+        /* Crit */
         &.success-level-0 {
           background-color: #6fd042cc;
           border: 4px outset #ffcf00;
@@ -1131,24 +1217,24 @@
           box-shadow: inset 3px 5px 12px 3px #ffd800cc;
         }
 
-/* Special Success */
+        /* Special Success */
         &.success-level-1 {
           background-color: #6fd042cc;
           border: 4px groove #ffcf00;
           border-radius: 10px;
         }
 
-/* Success */
+        /* Success */
         &.success-level-2 {
           background-color: #6fd042cc;
         }
 
-/* Fail */
+        /* Fail */
         &.success-level-3 {
           background-color: #cecbc5cc;
         }
 
-/* Fumble */
+        /* Fumble */
         &.success-level-4 {
           background-color: #e23333cc;
           box-shadow: inset 0 0 3px 0 black;
@@ -1507,7 +1593,7 @@
     color: var(--color-level-error);
   }
 
-/* Style the extra line in the settings tab */
+  /* Style the extra line in the settings tab */
   .setting-links {
     margin-top: -5px;
     gap: 0.2rem;
@@ -1521,7 +1607,7 @@
     }
   }
 
-/* Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy */
+  /* Almost a copy of Foundry a.content-link. Foundry uses that for both styling and finding click handler so need a copy */
   .rqid-content-link {
     border-radius: 9px;
     background: var(--content-link-background);
@@ -1710,7 +1796,7 @@
     }
   }
 
-/* .rqidlink has equal specificity to .key-value-grid — placing it after ensures this wins. */
+  /* .rqidlink has equal specificity to .key-value-grid — placing it after ensures this wins. */
   .rqidlink input[type="number"] {
     width: 2rem;
   }
@@ -1761,7 +1847,7 @@
     }
   }
 
-/* Shared "grip dots" drag-handle glyph, masked to currentcolor so it tints with whatever
+  /* Shared "grip dots" drag-handle glyph, masked to currentcolor so it tints with whatever
      ancestor sets color. Unscoped (unlike actorsheet-v2.css's own .item-drag-handle, which is
      nested under .rqg.character.actor-sheet-v2) so it's usable outside the actor sheet too, e.g.
      the Magic Point Sources popout's .magic-point-source-handle below. */
@@ -1776,7 +1862,7 @@
   }
 
   .rqg.magic-point-sources-app {
-/* Not draggable and no close button: rather than going frameless (which loses Foundry's
+    /* Not draggable and no close button: rather than going frameless (which loses Foundry's
      automatic window chrome - position, z-index/bringToFront, theming, input styling - for
      free), stay framed and just hide the header entirely. A hidden header can't be dragged
      (the drag listener is bound to that specific DOM node) and its close button disappears
@@ -1855,7 +1941,7 @@
         white-space: nowrap;
       }
 
-/* Marks a "self", "ally", or "boundSpirit" row - Man rune / spirit rune, recolored via
+      /* Marks a "self", "ally", or "boundSpirit" row - Man rune / spirit rune, recolored via
          mask-image/currentcolor so it reads correctly in both themes. */
       & .magic-point-source-rune-icon {
         display: inline-block;
@@ -1878,7 +1964,7 @@
         }
       }
 
-/* The bound spirit's item portrait, inline after "in" - same footprint as
+      /* The bound spirit's item portrait, inline after "in" - same footprint as
          .magic-point-source-rune-icon, but a real image, not a recolored mask. */
       & .magic-point-source-item-icon {
         display: inline-block;

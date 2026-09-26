@@ -1,0 +1,6 @@
+{{!-- The cast roll, filled in at render time from the message. Params: hiddenFromUuid, casterUuid. --}}
+<div class="flex-column gap03rem"
+     {{#if hiddenFromUuid}}data-hide-from-owner-uuid="{{hiddenFromUuid}}"
+     data-hide-unless-owner-uuid="{{casterUuid}}"{{/if}}>
+  <span data-cast-roll-html></span>
+</div>

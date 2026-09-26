@@ -99,6 +99,8 @@ export const templatePaths = {
   chatMessage: "systems/rqg/chat/chat-message.hbs",
   attackChatMessage: "systems/rqg/applications/attack-flow/attack-chat-template.hbs",
   resistanceRequestChatMessage: "systems/rqg/chat/resistance-request-chat-template.hbs",
+  spellCastChatMessage: "systems/rqg/chat/spell-cast-chat-template.hbs",
+  spellCastTargets: "systems/rqg/chat/spell-cast-targets.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 
@@ -245,6 +247,9 @@ export const loadHandlebarsTemplates = async function () {
     // Item sheet parts
     itemActiveEffects: "systems/rqg/items/sheet-parts/item-active-effects.hbs",
     itemCommonPhysical: "systems/rqg/items/sheet-parts/item-common-physical.hbs",
+
+    // Chat
+    spellCastRollRow: "systems/rqg/chat/spell-cast-roll-row.hbs",
 
     // Dice & Rolls
     improvementRollCardBody: "systems/rqg/rolls/improvement-roll/improvement-roll-card-body.hbs",
