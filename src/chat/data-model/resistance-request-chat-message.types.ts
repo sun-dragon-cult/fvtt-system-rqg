@@ -41,6 +41,10 @@ export interface ResistanceRequestDataSourceData {
   castFlavor: string;
   /** Target's uuid while the spell is concealed from them; cleared when it takes effect. */
   spellHiddenFromUuid: string;
+  /** The spell cast on a combined card; "" otherwise. */
+  spellUuid: string;
+  /** A hidden cast's whispered spellCast message, whose outcome this card settles; "" otherwise. */
+  spellCastMessageId: string;
   /** The caster, exempt from that concealment even if they also own the target. */
   spellCasterUuid: string;
   /** Whether the outcome should be phrased as the spell taking effect. */

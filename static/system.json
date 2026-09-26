@@ -57,7 +57,8 @@
     },
     "ChatMessage": {
       "combat": {},
-      "resistanceRequest": {}
+      "resistanceRequest": {},
+      "spellCast": {}
     },
     "Item": {
       "armor": {},

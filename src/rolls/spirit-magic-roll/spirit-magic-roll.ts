@@ -24,15 +24,22 @@ export class SpiritMagicRoll<D extends AnyObject = EmptyObject> extends Roll<D> 
     return roll;
   }
 
-  public async postToChat(): Promise<void> {
+  /** `messageData` is merged into the created message, e.g. its `spellCast` type and system data. */
+  public async postToChat(
+    messageData: Record<string, unknown> = {},
+  ): Promise<ChatMessage | undefined> {
     activateChatTab();
-    const msg = await this.toMessage({ flavor: this.flavor, speaker: this.options.speaker }, {
-      messageMode: this.options.rollMode,
-      create: true,
-    } as unknown as Record<string, unknown>);
+    const msg = (await this.toMessage(
+      { ...messageData, flavor: this.flavor, speaker: this.options.speaker },
+      {
+        messageMode: this.options.rollMode,
+        create: true,
+      } as unknown as Record<string, unknown>,
+    )) as ChatMessage | undefined;
     if (msg?.id != null) {
       await game.dice3d?.waitFor3DAnimationByMessageID(msg.id);
     }
+    return msg;
   }
 
   constructor(formula: string = "1d100", data?: D, options?: SpiritMagicRollOptions) {

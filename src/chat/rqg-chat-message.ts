@@ -22,6 +22,7 @@ import { CombatChatMessageData } from "./data-model/combat-chat-message.data-mod
 import type { CombatDataProperties } from "./data-model/combat-chat-message.types.ts";
 import { ResistanceRequestChatMessageData } from "./data-model/resistance-request-chat-message.data-model.ts";
 import type { ResistanceRequestDataProperties } from "./data-model/resistance-request-chat-message.types.ts";
+import { SpellCastChatMessageData } from "./data-model/spell-cast-chat-message.data-model.ts";
 
 // TODO how to type this so combat subtype data is typed?
 export class RqgChatMessage extends ChatMessage {
@@ -31,6 +32,7 @@ export class RqgChatMessage extends ChatMessage {
 
     CONFIG.ChatMessage.dataModels["combat"] = CombatChatMessageData;
     CONFIG.ChatMessage.dataModels["resistanceRequest"] = ResistanceRequestChatMessageData;
+    CONFIG.ChatMessage.dataModels["spellCast"] = SpellCastChatMessageData;
 
     Hooks.on("ready", () => {
       // one listener for sidebar chat, popped out chat & chat notification

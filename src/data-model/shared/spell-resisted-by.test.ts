@@ -53,7 +53,15 @@ describe("resolveResistedSpellCastTarget", () => {
       "Bladesharp",
     );
 
-    expect(result).toEqual({ proceed: true, selfCast: false });
+    // still recorded, for the cast outcome
+    expect(result).toEqual({
+      proceed: true,
+      selfCast: false,
+      targets: [
+        { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
+        { tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
+      ],
+    });
     expect(ui.notifications?.warn).not.toHaveBeenCalled();
     expect((globalThis as any).foundry.applications.api.DialogV2.confirm).not.toHaveBeenCalled();
   });
@@ -84,6 +92,7 @@ describe("resolveResistedSpellCastTarget", () => {
       proceed: true,
       targetTokenUuid: "Scene.s.Token.victim",
       selfCast: false,
+      targets: [{ tokenUuid: "Scene.s.Token.victim", isCaster: false }],
     });
   });
 
@@ -109,7 +118,7 @@ describe("resolveResistedSpellCastTarget", () => {
       "Heal",
     );
 
-    expect(result).toEqual({ proceed: true, selfCast: true });
+    expect(result).toEqual({ proceed: true, selfCast: true, targets: [] });
   });
 
   it("aborts the cast when that offer is declined, so no points are spent", async () => {
@@ -121,7 +130,7 @@ describe("resolveResistedSpellCastTarget", () => {
       "Heal",
     );
 
-    expect(result).toEqual({ proceed: false, selfCast: false });
+    expect(result).toEqual({ proceed: false, selfCast: false, targets: [] });
   });
 
   it("aborts when the offer is dismissed rather than answered", async () => {
@@ -146,7 +155,7 @@ describe("postSpellCastResult", () => {
       options: { rollMode: rollMode },
       successLevel: successLevel,
       flavor: "Demoralize",
-      postToChat: vi.fn(async () => undefined),
+      postToChat: vi.fn(async () => ({ id: "castMessage" })),
       toJSON: vi.fn(() => ({ formula: "1d100" })),
     } as any;
   }
@@ -155,6 +164,7 @@ describe("postSpellCastResult", () => {
     proceed: true,
     targetTokenUuid: "Scene.s.Token.victim",
     selfCast: false,
+    targets: [{ tokenUuid: "Scene.s.Token.victim", isCaster: false }],
   };
 
   async function post(overrides: Record<string, unknown> = {}) {
@@ -165,6 +175,7 @@ describe("postSpellCastResult", () => {
       castRoll: castRoll,
       casterActor: casterActor,
       casterToken: casterToken,
+      spellUuid: "Actor.caster.Item.spell",
       ...overrides,
     } as any);
     return castRoll;
@@ -175,30 +186,85 @@ describe("postSpellCastResult", () => {
     (globalThis as any).game.user = { isGM: true };
   });
 
-  it("posts the plain roll and asks for no resistance when the cast failed", async () => {
+  function postedCastMessage(castRoll: any) {
+    return castRoll.postToChat.mock.calls[0][0];
+  }
+
+  it("posts a spellCast message with every target unaffected when the cast failed", async () => {
     const castRoll = await post({ castRoll: fakeCastRoll("public", 4) });
 
     expect(castRoll.postToChat).toHaveBeenCalledOnce();
     expect(createResistanceRequest).not.toHaveBeenCalled();
+    expect(postedCastMessage(castRoll)).toEqual({
+      type: "spellCast",
+      system: {
+        spellUuid: "Actor.caster.Item.spell",
+        casterTokenOrActorUuid: "Scene.s.Token.caster",
+        castSuccessLevel: 4,
+        targets: [
+          {
+            targetTokenOrActorUuid: "Scene.s.Token.victim",
+            state: "unaffected",
+            resolvedBy: "castFailed",
+            casterSuccessLevel: 4,
+          },
+        ],
+      },
+    });
   });
 
-  it("posts the plain roll for a self cast, since casting on yourself is accepting", async () => {
+  it("posts a spellCast message for a self cast, since casting on yourself is accepting", async () => {
     const castRoll = await post({
-      target: { proceed: true, targetTokenUuid: "Scene.s.Token.caster", selfCast: true },
+      target: { proceed: true, selfCast: true, targets: [] },
     });
 
-    expect(castRoll.postToChat).toHaveBeenCalledOnce();
     expect(createResistanceRequest).not.toHaveBeenCalled();
+    expect(postedCastMessage(castRoll).system.targets).toEqual([
+      {
+        targetTokenOrActorUuid: "Scene.s.Token.caster",
+        state: "affected",
+        resolvedBy: "selfCast",
+        casterSuccessLevel: 2,
+      },
+    ]);
   });
 
-  it("posts the plain roll for a spell that is not resisted at all", async () => {
+  it("marks every target affected for a spell that is not resisted at all", async () => {
     const castRoll = await post({
       resistedBy: SpellResistedByEnum.None,
-      target: { proceed: true, selfCast: false },
+      target: {
+        proceed: true,
+        selfCast: false,
+        targets: [
+          { tokenUuid: "Scene.s.Token.a", isCaster: false },
+          { tokenUuid: "Scene.s.Token.b", isCaster: false },
+        ],
+      },
     });
 
-    expect(castRoll.postToChat).toHaveBeenCalledOnce();
     expect(createResistanceRequest).not.toHaveBeenCalled();
+    expect(
+      postedCastMessage(castRoll).system.targets.map((t: any) => [t.state, t.resolvedBy]),
+    ).toEqual([
+      ["affected", "castOnly"],
+      ["affected", "castOnly"],
+    ]);
+  });
+
+  it("leaves targets pending for a mode with no resolution step yet", async () => {
+    const castRoll = await post({
+      resistedBy: SpellResistedByEnum.ResistanceRollArea,
+      target: {
+        proceed: true,
+        selfCast: false,
+        targets: [{ tokenUuid: "Scene.s.Token.a", isCaster: false }],
+      },
+    });
+
+    expect(postedCastMessage(castRoll).system.targets[0]).toMatchObject({
+      state: "pending",
+      resolvedBy: undefined,
+    });
   });
 
   it("builds one public combined card carrying the cast roll, without posting it separately", async () => {
@@ -220,7 +286,9 @@ describe("postSpellCastResult", () => {
     expect(request.spellCast).toEqual({
       castRoll: castRoll,
       casterTokenOrActorUuid: "Scene.s.Token.caster",
+      spellUuid: "Actor.caster.Item.spell",
     });
+    expect(request.spellCastMessageId).toBeUndefined();
     // The spell's name must never reach the responder dialog's title.
     expect(request.description).toBeUndefined();
   });
@@ -229,8 +297,11 @@ describe("postSpellCastResult", () => {
     const castRoll = await post({ castRoll: fakeCastRoll("gm", 2) });
 
     expect(castRoll.postToChat).toHaveBeenCalledOnce();
+    expect(postedCastMessage(castRoll).system.targets[0].state).toBe("pending");
     const request = vi.mocked(createResistanceRequest).mock.calls[0]![0];
     expect(request.spellCast).toBeUndefined();
+    // the anonymous card settles the whispered cast message's outcome
+    expect(request.spellCastMessageId).toBe("castMessage");
     expect(request.frozenActorName).toBeUndefined();
     expect(request.frozenTokenOrActorUuid).toBeUndefined();
     // "self" would hide the request from the very person who has to answer it.
