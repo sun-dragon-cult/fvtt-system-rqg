@@ -38,6 +38,7 @@ function temporalDuration(spell: RqgItem): { value: number; units: string } | un
 export async function applySpellEffect(
   spell: RqgItem,
   targetActor: RqgActor,
+  targetName: string,
   cast: SpellEffectCast,
 ): Promise<string[] | undefined> {
   const spellName = spell.name ?? "";
@@ -56,7 +57,7 @@ export async function applySpellEffect(
       ui.notifications?.warn(
         localize("RQG.ChatMessage.SpellCast.NoSpellEffectTarget", {
           spellName: spellName,
-          targetName: targetActor.name ?? "",
+          targetName: targetName,
         }),
       );
       return undefined;

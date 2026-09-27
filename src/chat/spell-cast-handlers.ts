@@ -192,7 +192,9 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
   const level = Number(options["levelUsed"] ?? 0);
   const boost = Number(options["magicPointBoost"] ?? 0);
   const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
-  const effectUuids = await applySpellEffect(spell, targetActor, {
+  // The token's own name, as the rest of the chat text uses.
+  const targetName = (targetDoc as { name?: string } | null)?.name ?? targetActor.name ?? "";
+  const effectUuids = await applySpellEffect(spell, targetActor, targetName, {
     casterUuid:
       (message.system as any).casterTokenOrActorUuid ??
       (message.system as any).spellCasterUuid ??
