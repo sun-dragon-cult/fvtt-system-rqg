@@ -59,6 +59,7 @@ function usageEffectSchemaField() {
   return new SchemaField({
     attack: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
     parry: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    damage: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
   });
 }
 
@@ -213,10 +214,19 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
 
     const { damageFormula, damageBonusPlaceholder } =
       getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+    // Magical damage (Bladesharp, Dullblade, ...) is added once, never doubled by a special - Core p.202.
+    const magicDamage = this.effect.add[usage === "missile" ? "missile" : "melee"].damage;
+    const magicDamagePart = magicDamage
+      ? formatDamagePart(
+          String(Math.abs(magicDamage)),
+          "RQG.Roll.DamageRoll.MagicDamage",
+          magicDamage < 0 ? "-" : "+",
+        )
+      : "";
 
     if (damageDegree === "normal") {
       const wd = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
-      return `${wd}${damageBonusPlaceholder}`;
+      return `${wd}${damageBonusPlaceholder}${magicDamagePart}`;
     }
 
     if (damageDegree === "special") {
@@ -229,7 +239,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${wd}${damageBonusPlaceholder}${specialDamage}`;
+          return `${wd}${damageBonusPlaceholder}${specialDamage}${magicDamagePart}`;
         }
         case "slash":
         case "impale": {
@@ -239,7 +249,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${wd}${specialDamage}${damageBonusPlaceholder}`;
+          return `${wd}${specialDamage}${damageBonusPlaceholder}${magicDamagePart}`;
         }
         default: {
           return undefined; // parry or special
@@ -269,7 +279,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
+          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}${magicDamagePart}`;
         }
 
         case "slash":
@@ -279,7 +289,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}`;
+          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}${magicDamagePart}`;
         }
 
         default: {

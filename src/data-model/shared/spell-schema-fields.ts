@@ -59,6 +59,9 @@ export function spellSchemaFields() {
       choices: enumChoices(SpellEffectTierEnum, "RQG.Item.Spell.EffectTierEnum."),
     }),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
+    // The spell's Active Effect template; unset falls back to the naming convention, see
+    // resolveSpellEffectRqid.
+    effectRqidLink: rqidLinkSchemaField({ nullable: true }),
   } as const;
 }
 

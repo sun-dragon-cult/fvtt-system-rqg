@@ -51,6 +51,8 @@ type ItemSubtypeMap = {
 
 const RQID_DOCUMENT_DEFINITIONS = {
   a: { documentName: "Actor", gameProperty: "actors", iconConfig: "Actor" },
+  // ActiveEffects have no world collection, so they only resolve from compendium packs.
+  ae: { documentName: "ActiveEffect", iconConfig: "ActiveEffect" },
   c: { documentName: "Card", gameProperty: "cards", iconConfig: "Cards" },
   i: { documentName: "Item", gameProperty: "items", iconConfig: "Item" },
   je: { documentName: "JournalEntry", gameProperty: "journal", iconConfig: "JournalEntry" },
@@ -130,6 +132,9 @@ export class Rqid {
   public static init(): void {
     // Include rqid flags in index for compendium packs
 
+    // Core declares no index fields for ActiveEffect, but compendium indexing still reads them.
+    const activeEffectConfig = CONFIG.ActiveEffect as { compendiumIndexFields?: string[] };
+    (activeEffectConfig.compendiumIndexFields ??= []).push("flags.rqg.documentRqidFlags");
     CONFIG.Actor.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
     CONFIG.Cards.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
     CONFIG.Item.compendiumIndexFields.push("flags.rqg.documentRqidFlags");
@@ -813,6 +818,10 @@ export class Rqid {
   private static getGameCollection(
     rqid: string | undefined,
   ): WorldCollection<Document.WorldType> | undefined {
+    const kind = rqid?.split(".")[0];
+    if (isRqidKind(kind) && !(kind in Rqid.gamePropertyLookup)) {
+      return undefined; // a known kind that only lives in packs (or embedded)
+    }
     const prop = Rqid.getGameProperty(rqid);
     return game[prop as keyof typeof game] as WorldCollection<Document.WorldType> | undefined;
   }
