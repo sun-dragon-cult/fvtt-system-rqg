@@ -1029,6 +1029,7 @@
           display: flex;
           align-items: center;
           gap: 0.4rem;
+          margin-top: 0.2rem;
         }
 
         & .spell-cast-target-reason {
