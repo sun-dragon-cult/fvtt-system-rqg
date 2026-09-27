@@ -551,6 +551,19 @@
           "affected": "GM ruling: the spell takes effect",
           "unaffected": "GM ruling: the spell has no effect",
           "dismissed": "Dismiss this target"
+        },
+        "NotApplied": {
+          "strongerActive": "No effect: an equal or stronger casting is already active",
+          "incompatibleActive": "No effect: an incompatible spell is already active"
+        },
+        "NotAppliedDetail": {
+          "strongerActive": "{effectName} is already active on {parentName}, so {spellName} has no effect.",
+          "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}."
+        },
+        "TargetOption": {
+          "replaces": "{itemName} (replaces {effectName})",
+          "strongerActive": "{itemName} (no effect: {effectName} is active)",
+          "incompatibleActive": "{itemName} (no effect: incompatible with {effectName})"
         }
       }
     },
@@ -1654,6 +1667,12 @@
       "ShowActorActiveEffectsTab": {
         "settingName": "Show Actor Active Effects Tab",
         "settingHint": "If enabled, a GM-only Active Effects debug tab is shown on the actor sheet."
+      },
+      "SpellStackingRule": {
+        "settingName": "Recast Spells Take Effect",
+        "settingHint": "Whether a spell applied to something that already has the same spell, or one incompatible with it, takes effect. Only if stronger (the rules): the new casting replaces the same spell if it is stronger, and otherwise has no effect. Always (an alternative from the official Q&A): each new casting replaces the previous one and any incompatible spell.",
+        "strongestTakesEffect": "Only if stronger",
+        "latestDisplaces": "Always"
       },
       "ShowResistanceRequestTokenHudButton": {
         "settingName": "Resistance Request on Token HUD",

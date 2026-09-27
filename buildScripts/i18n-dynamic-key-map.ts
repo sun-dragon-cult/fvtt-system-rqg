@@ -50,6 +50,10 @@ import {
 } from "../src/data-model/shared/spell-cast-outcome.defs";
 import { ROUTED_KEY_WARNING_I18N_SUFFIXES } from "../src/active-effect/routed-key/routed-key-warnings";
 import { protectionPoints } from "../src/system/token-status-effects";
+import {
+  spellEffectBlockedReasons,
+  spellStackingRules,
+} from "../src/active-effect/data-model/spell-effect.defs";
 
 // --- Characteristics (defined inline in schema, no separate enum) ---
 const characteristics = [
@@ -124,6 +128,9 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
     "resistanceHeld",
   ],
   "RQG.ChatMessage.SpellCast.Ruling.": [...spellTargetRulingState],
+  "RQG.ChatMessage.SpellCast.NotApplied.": [...spellEffectBlockedReasons],
+  "RQG.ChatMessage.SpellCast.NotAppliedDetail.": [...spellEffectBlockedReasons],
+  "RQG.ChatMessage.SpellCast.TargetOption.": [...spellEffectBlockedReasons],
 
   // Dialog
   "RQG.Dialog.Attack.HitLocationFormulaOptions.": [...hitLocationFormulaOptions],
@@ -188,4 +195,7 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   // Roll
   "RQG.Roll.AbilityRoll.SubsequentDefenceRoll.": [...subsequentDefenceRolls],
   "RQG.Roll.CharacteristicRoll.RollDifficultyLevel.": [...rollDifficultyLevels],
+
+  // Settings - choices built from the enum at registration
+  "RQG.Settings.SpellStackingRule.": [...spellStackingRules],
 };

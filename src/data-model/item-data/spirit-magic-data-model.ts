@@ -25,15 +25,12 @@ import {
 
 export type SpiritMagicItem = RqgItem & { system: Item.SystemOfType<"spiritMagic"> };
 
-const { ArrayField, BooleanField, StringField } = foundry.data.fields;
+const { BooleanField, StringField } = foundry.data.fields;
 
 function defineSpiritMagicSchema() {
   return {
     ...spellSchemaFields(),
     isVariable: new BooleanField({ nullable: false, initial: false }),
-    incompatibleWith: new ArrayField(
-      new StringField({ blank: true, nullable: false, initial: "" }),
-    ),
     spellFocus: new StringField({ blank: true, nullable: false, initial: "" }),
     isMatrix: new BooleanField({ nullable: false, initial: false }),
   } as const;

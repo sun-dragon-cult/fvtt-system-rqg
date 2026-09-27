@@ -1,3 +1,4 @@
+import { spellEffectBlockedReasons } from "../../active-effect/data-model/spell-effect.defs";
 import {
   spellTargetOutcomeResolvedBy,
   spellTargetOutcomeState,
@@ -32,6 +33,13 @@ const spellCastChatMessageSchema = {
       casterSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
       // The spell effects applied to this target, so Apply only runs once.
       effectUuids: new ArrayField(new StringField({ blank: false, nullable: false })),
+      // Set instead when Apply found the spell couldn't take effect there; "" otherwise.
+      effectBlockedReason: new StringField({
+        blank: true,
+        nullable: false,
+        initial: "",
+        choices: ["", ...spellEffectBlockedReasons],
+      }),
     }),
   ),
 } as const;

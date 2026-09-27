@@ -4,6 +4,7 @@ import {
 } from "./resistance-request-chat-message.defs.ts";
 import { enumChoices } from "../../data-model/shared/enum-choices";
 import { spellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
+import { spellEffectBlockedReasons } from "../../active-effect/data-model/spell-effect.defs";
 
 const { ArrayField, BooleanField, NumberField, StringField, DocumentUUIDField, JSONField } =
   foundry.data.fields;
@@ -73,6 +74,14 @@ const resistanceRequestChatMessageSchema = {
   isSpellCast: new BooleanField({ nullable: false, required: false, initial: false }),
   // The spell effects applied to the target from this card, so Apply only runs once.
   appliedEffectUuids: new ArrayField(new StringField({ blank: false, nullable: false })),
+  // Set instead when Apply found the spell couldn't take effect on the target; "" otherwise.
+  effectBlockedReason: new StringField({
+    blank: true,
+    nullable: false,
+    required: false,
+    initial: "",
+    choices: ["", ...spellEffectBlockedReasons],
+  }),
   // A GM's override of whether the spell took effect; "" when none.
   gmRuling: new StringField({
     blank: true,

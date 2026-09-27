@@ -18,6 +18,7 @@ import type { RqgItem } from "./items/rqg-item.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
+import type { SpellStackingRule } from "./active-effect/data-model/spell-effect.defs";
 import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
 import type { CultDataModel } from "./data-model/item-data/cult-data-model";
@@ -152,6 +153,7 @@ declare global {
     "rqg.allowCombatWithoutToken": boolean;
     "rqg.matchEffectSuspensionToEquippedStatusDefault": boolean;
     "rqg.showActorActiveEffectsTab": boolean;
+    "rqg.spellStackingRule": SpellStackingRule;
     "rqg.naturalHealingEnabled": boolean;
     "rqg.magicPointRecoveryEnabled": boolean;
     "rqg.showResistanceRequestTokenHudButton": boolean;

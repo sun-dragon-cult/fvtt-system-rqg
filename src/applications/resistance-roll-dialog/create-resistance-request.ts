@@ -132,6 +132,7 @@ export async function createResistanceRequest(
     isSpellCast: !!params.isSpellCast,
     gmRuling: "",
     appliedEffectUuids: [],
+    effectBlockedReason: "",
   };
 
   const content = await foundry.applications.handlebars.renderTemplate(

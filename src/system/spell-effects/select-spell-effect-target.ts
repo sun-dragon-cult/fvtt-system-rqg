@@ -79,13 +79,15 @@ export function findSpellTargetCandidates<T extends { type: string; system: unkn
 export async function chooseSpellTargetItem<T extends Item>(
   candidates: T[],
   spellName: string,
+  optionLabel: (item: T) => string = (item) => item.name ?? "",
 ): Promise<T | undefined> {
   if (candidates.length <= 1) {
     return candidates[0];
   }
   const options = candidates
     .map(
-      (item) => `<option value="${item.id}">${foundry.utils.escapeHTML(item.name ?? "")}</option>`,
+      (item) =>
+        `<option value="${item.id}">${foundry.utils.escapeHTML(optionLabel(item))}</option>`,
     )
     .join("");
   const itemId = await foundry.applications.api.DialogV2.prompt({
