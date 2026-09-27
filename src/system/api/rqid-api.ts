@@ -422,7 +422,9 @@ export class Rqid {
     }
 
     const kind = Rqid.getKind(document);
-    const type = toKebabCase("type" in document ? String(document.type) : "");
+    // Core's default subtype ("base") says nothing, so it's left empty like having no subtype.
+    const documentType = "type" in document ? String(document.type) : "";
+    const type = toKebabCase(documentType === "base" ? "" : documentType);
     const itemType = document instanceof Item ? String(document.type) : undefined;
     const system =
       document instanceof Item
