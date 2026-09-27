@@ -1669,10 +1669,10 @@
         "settingHint": "If enabled, a GM-only Active Effects debug tab is shown on the actor sheet."
       },
       "SpellStackingRule": {
-        "settingName": "Recasting Spells",
-        "settingHint": "What happens when a spell is applied to something that already has the same spell, or a spell incompatible with it. By the rules, a new casting only takes effect if it is stronger than the same spell already there. The Q&A also allows letting each new casting replace the previous one.",
-        "strongestTakesEffect": "Strongest takes effect (rules as written)",
-        "latestDisplaces": "Latest casting replaces the previous one"
+        "settingName": "Recast Spells Take Effect",
+        "settingHint": "Whether a spell applied to something that already has the same spell, or one incompatible with it, takes effect. Only if stronger (the rules): the new casting replaces the same spell if it is stronger, and otherwise has no effect. Always (an alternative from the official Q&A): each new casting replaces the previous one and any incompatible spell.",
+        "strongestTakesEffect": "Only if stronger",
+        "latestDisplaces": "Always"
       },
       "ShowResistanceRequestTokenHudButton": {
         "settingName": "Resistance Request on Token HUD",

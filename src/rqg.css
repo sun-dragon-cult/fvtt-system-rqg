@@ -1027,13 +1027,15 @@
 
         & .spell-cast-target-detail {
           display: flex;
+          flex-wrap: wrap;
           align-items: center;
           gap: 0.4rem;
           margin-top: 0.2rem;
         }
 
+        /* Never shrinks, so a long not-applied label wraps below it rather than squeezing it. */
         & .spell-cast-target-reason {
-          flex: 1;
+          flex: 1 0 auto;
           color: var(--color-text-secondary);
           font-size: var(--font-size-11);
         }
@@ -1072,7 +1074,8 @@
           font-size: var(--font-size-11);
         }
 
-        & .spell-cast-applied {
+        & .spell-cast-applied,
+        & .spell-cast-not-applied {
           font-style: italic;
           font-size: var(--font-size-11);
         }

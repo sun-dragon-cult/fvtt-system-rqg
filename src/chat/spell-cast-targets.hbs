@@ -18,7 +18,7 @@
       {{#if applied}}
         <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Applied"}}</span>
       {{else if blockedLabel}}
-        <span class="spell-cast-applied">{{blockedLabel}}</span>
+        <span class="spell-cast-not-applied">{{blockedLabel}}</span>
       {{else if canApply}}
         <button type="button" class="spell-cast-apply"
                 data-apply-spell-effect>{{localize "RQG.ChatMessage.SpellCast.ApplyEffect"}}</button>
