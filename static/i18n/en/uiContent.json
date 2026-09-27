@@ -1083,6 +1083,8 @@
         "ShowInfoCircle": {
           "DropToConnectJournal": "Drop a Journal Entry on this field to connect.",
           "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
+          "DropToConnectEffect": "Drop a spell's Active Effect here to connect it.",
+          "DropToReplaceEffect": "Drop a spell's Active Effect here to replace it.",
           "DropToConnectCult": "Drop a Cult Item on this field to connect.",
           "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
           "DropToConnectRune": "Drop a Rune Item on this field to connect.",
@@ -1204,6 +1206,7 @@
           "ritual": "A social/ritual state (not yet automated)"
         },
         "EffectTier": "Effect Tier",
+        "SpellEffect": "Spell Effect",
         "EffectTierEnum": {
           "none": "None - nothing to automate",
           "reminder": "Reminder (not yet automated)",

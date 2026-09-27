@@ -43,6 +43,16 @@
       {{selectOptions effectTierOptions selected=system.effectTier localize=true}}
     </select>
 
+    <label class="mp">{{localize "RQG.Item.Spell.SpellEffect"}}</label>
+    {{> rqidLinkDropzone
+      rqidLink=system.effectRqidLink
+      dropzoneData="effectRqidLink"
+      dropDocumentNames="ActiveEffect"
+      showDeleteFromPropertyName="effectRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectEffect"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceEffect"
+    }}
+
     <label for="is-matrix-{{id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
     <input type="checkbox" id="is-matrix-{{id}}" name="system.isMatrix" {{checked system.isMatrix}}>
 

@@ -411,11 +411,18 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
       case "JournalEntryPage":
         await this._onDropItemOrJournal(event, droppedDocumentData);
         return;
+      // Only as a link, e.g. a spell's effectRqidLink - never embedded by dropping it on the sheet.
+      case "ActiveEffect":
+        if (target instanceof Element && target.closest("[data-dropzone]")) {
+          await this._onDropItemOrJournal(event, droppedDocumentData);
+        }
+        return;
       default:
         isAllowedDocumentNames(droppedDocumentData?.type, [
           "Item",
           "JournalEntry",
           "JournalEntryPage",
+          "ActiveEffect",
         ]);
     }
   }
