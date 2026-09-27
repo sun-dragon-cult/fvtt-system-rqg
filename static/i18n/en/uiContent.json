@@ -1407,6 +1407,7 @@
         "Name": "Name",
         "Disabled": "Suspended",
         "MatchSuspensionToEquippedStatus": "Match Equipped Suspension",
+        "SpellLevel": "Spell Level",
         "Start": "Start",
         "Duration": "Duration",
         "DeleteEffect": "Delete Effect",
