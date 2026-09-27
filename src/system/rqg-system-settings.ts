@@ -1,5 +1,6 @@
 import { DefaultItemIconSettings } from "../applications/default-item-icon-settings";
 import { systemId } from "./config";
+import { spellStackingRules } from "../active-effect/data-model/spell-effect.defs";
 import { defaultItemIconsObject } from "./settings/default-item-icons";
 import TokenRulerSettings from "../applications/settings/token-ruler-settings";
 import { defaultTokenRulerSettings } from "./settings/default-token-ruler-settings";
@@ -128,6 +129,18 @@ export const registerRqgSystemSettings = function () {
     config: true,
     type: Boolean,
     default: false,
+  });
+
+  game.settings?.register(systemId, "spellStackingRule", {
+    name: "RQG.Settings.SpellStackingRule.settingName",
+    hint: "RQG.Settings.SpellStackingRule.settingHint",
+    scope: "world",
+    config: true,
+    type: String,
+    choices: Object.fromEntries(
+      spellStackingRules.map((rule) => [rule, `RQG.Settings.SpellStackingRule.${rule}`]),
+    ),
+    default: "strongestTakesEffect",
   });
 
   game.settings?.register(systemId, "showActorActiveEffectsTab", {

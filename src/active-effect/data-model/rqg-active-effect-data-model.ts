@@ -1,3 +1,4 @@
+import { rqidLinkArraySchemaField } from "../../data-model/shared/rqid-link-field";
 import { spellTargetConditionOps, spellTargetOnNoMatch } from "./spell-effect.defs";
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
@@ -48,6 +49,9 @@ function rqgActiveEffectSchemaFields() {
       },
       { nullable: true, initial: null },
     ),
+    // Spells this effect can't share a document with, e.g. Bladesharp with Fireblade. Copied with
+    // the template, so either side listing the other is enough.
+    incompatibleSpellRqidLinks: rqidLinkArraySchemaField(),
     // Set on a copy applied by a cast: what was cast, by whom and how strongly.
     spell: new SchemaField(
       {
@@ -79,5 +83,6 @@ export class RqgActiveEffectDataModel extends ActiveEffectTypeDataModelBase {
   // Declared for type-safe access on effect.system.
   declare matchSuspensionToEquippedStatus: foundry.data.fields.SchemaField.InnerAssignmentType<RqgActiveEffectSchemaFields>["matchSuspensionToEquippedStatus"];
   declare spellTarget: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["spellTarget"];
+  declare incompatibleSpellRqidLinks: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["incompatibleSpellRqidLinks"];
   declare spell: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["spell"];
 }

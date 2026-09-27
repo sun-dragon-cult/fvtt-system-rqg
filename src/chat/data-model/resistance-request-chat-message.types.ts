@@ -1,4 +1,5 @@
 import type { SpellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
+import type { SpellEffectBlockedReason } from "../../active-effect/data-model/spell-effect.defs";
 import type {
   resistanceRequestRollerSide,
   resistanceRequestState,
@@ -52,6 +53,8 @@ export interface ResistanceRequestDataSourceData {
   isSpellCast: boolean;
   /** The spell effects applied to the target from this card, so Apply only runs once. */
   appliedEffectUuids: string[];
+  /** Why Apply left the target without the effect; "" when it didn't. */
+  effectBlockedReason: SpellEffectBlockedReason | "";
   /** A GM's override of whether the spell took effect; "" when none. */
   gmRuling: SpellTargetRulingState | "";
   /** Request author's situational modifier; always applies to the active side. */

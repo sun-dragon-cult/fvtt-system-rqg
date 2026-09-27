@@ -1,12 +1,18 @@
 import { localize } from "../util";
 import { Rqid } from "../api/rqid-api";
-import { RQG_CONFIG } from "../config";
+import { RQG_CONFIG, systemId } from "../config";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
 import {
   chooseSpellTargetItem,
   findSpellTargetCandidates,
   type SpellTargetRule,
 } from "./select-spell-effect-target";
+import {
+  decideSpellEffectStacking,
+  type ExistingSpellEffect,
+  type SpellEffectStacking,
+} from "./spell-effect-stacking";
+import type { SpellEffectBlockedReason } from "../../active-effect/data-model/spell-effect.defs";
 import { SpellDurationEnum } from "../../data-model/item-data/spell";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -21,6 +27,50 @@ export type SpellEffectCast = {
   casterSuccessLevel: number | undefined;
 };
 
+/** What Apply did - undefined from applySpellEffect when it did nothing and can be retried. */
+export type SpellEffectApplied =
+  | { outcome: "applied"; effectUuids: string[] }
+  | { outcome: "blocked"; reason: SpellEffectBlockedReason };
+
+function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] {
+  return (links ?? []).map((link) => link.rqid ?? "").filter((rqid) => !!rqid);
+}
+
+function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[] {
+  return parent.effects.contents.flatMap((effect: any) => {
+    const spell = effect.system?.spell;
+    return spell
+      ? [
+          {
+            id: effect.id ?? "",
+            name: effect.name ?? "",
+            spellRqid: spell.spellRqid ?? "",
+            level: spell.level ?? 0,
+            incompatibleSpellRqids: linkedRqids(effect.system.incompatibleSpellRqidLinks),
+            expired: !!effect.duration?.expired,
+          },
+        ]
+      : [];
+  });
+}
+
+function pickerLabel(item: RqgItem, stacking: SpellEffectStacking): string {
+  const itemName = item.name ?? "";
+  if (stacking.outcome === "blocked") {
+    return localize(`RQG.ChatMessage.SpellCast.TargetOption.${stacking.reason}`, {
+      itemName: itemName,
+      effectName: stacking.by.name,
+    });
+  }
+  const replaced = stacking.displaced.find((effect) => !effect.expired);
+  return replaced
+    ? localize("RQG.ChatMessage.SpellCast.TargetOption.replaces", {
+        itemName: itemName,
+        effectName: replaced.name,
+      })
+    : itemName;
+}
+
 function temporalDuration(spell: RqgItem): { value: number; units: string } | undefined {
   if ((spell.system as { duration?: string }).duration !== SpellDurationEnum.Temporal) {
     return undefined;
@@ -33,14 +83,15 @@ function temporalDuration(spell: RqgItem): { value: number; units: string } | un
 /**
  * Attach a copy of a spell's Active Effect template to the target - the only thing that creates a
  * spell effect, so every one carries its provenance. Warns and returns undefined when the spell has
- * no template or the target has nothing it can attach to. Run on a client that owns the target.
+ * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
+ * incompatible spell already there keeps it from taking effect. Run on a client that owns the target.
  */
 export async function applySpellEffect(
   spell: RqgItem,
   targetActor: RqgActor,
   targetName: string,
   cast: SpellEffectCast,
-): Promise<string[] | undefined> {
+): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
@@ -49,6 +100,15 @@ export async function applySpellEffect(
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NoSpellEffect", { spellName }));
     return undefined;
   }
+
+  const castStacking = {
+    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
+    level: cast.level,
+    incompatibleSpellRqids: linkedRqids((template.system as any).incompatibleSpellRqidLinks),
+  };
+  const stackingRule = game.settings?.get(systemId, "spellStackingRule") ?? "strongestTakesEffect";
+  const stackingOn = (doc: RqgActor | RqgItem) =>
+    decideSpellEffectStacking(castStacking, existingSpellEffects(doc), stackingRule);
 
   let parent: RqgActor | RqgItem | undefined = targetActor;
   if (rule.documentType) {
@@ -62,10 +122,24 @@ export async function applySpellEffect(
       );
       return undefined;
     }
-    parent = await chooseSpellTargetItem(candidates as RqgItem[], spellName);
+    parent = await chooseSpellTargetItem(candidates as RqgItem[], spellName, (item) =>
+      pickerLabel(item, stackingOn(item)),
+    );
     if (!parent) {
       return undefined;
     }
+  }
+
+  const stacking = stackingOn(parent);
+  if (stacking.outcome === "blocked") {
+    ui.notifications?.warn(
+      localize(`RQG.ChatMessage.SpellCast.NotAppliedDetail.${stacking.reason}`, {
+        spellName: spellName,
+        effectName: stacking.by.name,
+        parentName: parent.name ?? "",
+      }),
+    );
+    return { outcome: "blocked", reason: stacking.reason };
   }
 
   const data = template.toObject() as any;
@@ -88,6 +162,12 @@ export async function applySpellEffect(
     casterSuccessLevel: cast.casterSuccessLevel ?? null,
   };
 
+  if (stacking.displaced.length) {
+    await (parent as RqgItem).deleteEmbeddedDocuments(
+      "ActiveEffect",
+      stacking.displaced.map((effect) => effect.id),
+    );
+  }
   const created = (await (parent as RqgItem).createEmbeddedDocuments("ActiveEffect", [data])) ?? [];
-  return created.map((effect) => effect.uuid);
+  return { outcome: "applied", effectUuids: created.map((effect) => effect.uuid) };
 }

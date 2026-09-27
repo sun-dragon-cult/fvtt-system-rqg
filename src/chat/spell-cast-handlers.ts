@@ -34,14 +34,20 @@ function reasonKey(target: SpellTargetOutcome): string | undefined {
 }
 
 /** The spell effects already applied to a target from this card. */
-function appliedEffectUuids(message: ChatMessage, targetUuid: string): string[] {
+/** What Apply did for one target - effect uuids, or why the spell couldn't take effect. */
+function appliedEffect(
+  message: ChatMessage,
+  targetUuid: string,
+): { effectUuids: string[]; blockedReason: string } {
   const system = message.system as any;
-  if (message.type === "spellCast") {
-    return (
-      system.targets.find((t: any) => t.targetTokenOrActorUuid === targetUuid)?.effectUuids ?? []
-    );
-  }
-  return system.appliedEffectUuids ?? [];
+  const record =
+    message.type === "spellCast"
+      ? system.targets.find((t: any) => t.targetTokenOrActorUuid === targetUuid)
+      : { effectUuids: system.appliedEffectUuids, effectBlockedReason: system.effectBlockedReason };
+  return {
+    effectUuids: record?.effectUuids ?? [],
+    blockedReason: record?.effectBlockedReason ?? "",
+  };
 }
 
 /**
@@ -66,15 +72,18 @@ export async function renderSpellCastTargets(
   const spell = applicableSpell(message);
   const rows = targets.map((target) => {
     const reason = reasonKey(target);
-    const applied = appliedEffectUuids(message, target.targetTokenOrActorUuid).length > 0;
+    const { effectUuids, blockedReason } = appliedEffect(message, target.targetTokenOrActorUuid);
+    const isOwner = isOwnedByUser(target.targetTokenOrActorUuid);
     return {
-      applied: applied,
+      applied: effectUuids.length > 0,
+      // Why it was blocked tells what's already on the target, so only its owners see it.
+      blockedLabel:
+        blockedReason && isOwner
+          ? localize(`RQG.ChatMessage.SpellCast.NotApplied.${blockedReason}`)
+          : "",
       // Only the target's owner applies it, so a hostile target's items are listed to the GM alone.
       canApply:
-        !!spell &&
-        target.state === "affected" &&
-        !applied &&
-        isOwnedByUser(target.targetTokenOrActorUuid),
+        !!spell && target.state === "affected" && !effectUuids.length && !blockedReason && isOwner,
       uuid: target.targetTokenOrActorUuid,
       name:
         (fromUuidSync(target.targetTokenOrActorUuid) as { name?: string } | null)?.name ??
@@ -175,7 +184,8 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     return;
   }
   // A stale card can still show the button after someone else applied it.
-  if (appliedEffectUuids(message, targetUuid).length) {
+  const previous = appliedEffect(message, targetUuid);
+  if (previous.effectUuids.length || previous.blockedReason) {
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.AlreadyApplied"));
     return;
   }
@@ -194,7 +204,7 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
   const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
   // The token's own name, as the rest of the chat text uses.
   const targetName = (targetDoc as { name?: string } | null)?.name ?? targetActor.name ?? "";
-  const effectUuids = await applySpellEffect(spell, targetActor, targetName, {
+  const applied = await applySpellEffect(spell, targetActor, targetName, {
     casterUuid:
       (message.system as any).casterTokenOrActorUuid ??
       (message.system as any).spellCasterUuid ??
@@ -205,20 +215,22 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     runePointsSpent: isRuneMagic ? level : 0,
     casterSuccessLevel: outcome.casterSuccessLevel,
   });
-  if (!effectUuids) {
+  if (!applied) {
     return;
   }
 
+  const effectUuids = applied.outcome === "applied" ? applied.effectUuids : [];
+  const effectBlockedReason = applied.outcome === "blocked" ? applied.reason : "";
   const systemPatch =
     message.type === "spellCast"
       ? {
           targets: (message.toObject().system as any).targets.map((target: any) =>
             target.targetTokenOrActorUuid === targetUuid
-              ? { ...target, effectUuids: effectUuids }
+              ? { ...target, effectUuids: effectUuids, effectBlockedReason: effectBlockedReason }
               : target,
           ),
         }
-      : { appliedEffectUuids: effectUuids };
+      : { appliedEffectUuids: effectUuids, effectBlockedReason: effectBlockedReason };
   // A target's owner may be neither the author nor a GM, so the author's client records it.
   if (game.user?.isGM || message.isAuthor) {
     await message.update({ system: systemPatch } as any);
