@@ -33,6 +33,16 @@
       {{selectOptions effectTierOptions selected=system.effectTier localize=true}}
     </select>
 
+    <label class="mp">{{localize "RQG.Item.Spell.SpellEffect"}}</label>
+    {{> rqidLinkDropzone
+      rqidLink=system.effectRqidLink
+      dropzoneData="effectRqidLink"
+      dropDocumentNames="ActiveEffect"
+      showDeleteFromPropertyName="effectRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectEffect"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceEffect"
+    }}
+
     <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.Stackable"}}</label>
     <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
 
