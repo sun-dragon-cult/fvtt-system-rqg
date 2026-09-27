@@ -9,7 +9,11 @@ import {
   handleAcceptResistanceRequest,
   handleRollResistanceRequest,
 } from "./resistance-request-handlers";
-import { handleSpellCastRuling, renderSpellCastTargets } from "./spell-cast-handlers";
+import {
+  handleApplySpellEffect,
+  handleSpellCastRuling,
+  renderSpellCastTargets,
+} from "./spell-cast-handlers";
 import {
   getResistanceRequestTargetOutcome,
   getSpellCastOutcome,
@@ -132,6 +136,11 @@ export class RqgChatMessage extends ChatMessage {
     if (clickedButton?.dataset["acceptResistanceRequest"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleAcceptResistanceRequest(clickedButton);
+    }
+
+    if (clickedButton?.dataset["applySpellEffect"] != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleApplySpellEffect(clickedButton);
     }
 
     if (clickedButton?.dataset["spellCastRuling"] != null) {
@@ -257,7 +266,7 @@ export class RqgChatMessage extends ChatMessage {
 
     const targetsSlot = html.querySelector<HTMLElement>("[data-spell-cast-targets]");
     if (targetsSlot && targets.length) {
-      targetsSlot.innerHTML = await renderSpellCastTargets(targets);
+      targetsSlot.innerHTML = await renderSpellCastTargets(targets, this);
     }
   }
 

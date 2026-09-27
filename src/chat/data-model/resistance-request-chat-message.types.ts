@@ -50,6 +50,8 @@ export interface ResistanceRequestDataSourceData {
   spellCasterUuid: string;
   /** Whether the outcome should be phrased as the spell taking effect. */
   isSpellCast: boolean;
+  /** The spell effects applied to the target from this card, so Apply only runs once. */
+  appliedEffectUuids: string[];
   /** A GM's override of whether the spell took effect; "" when none. */
   gmRuling: SpellTargetRulingState | "";
   /** Request author's situational modifier; always applies to the active side. */

@@ -147,6 +147,12 @@ export const RQG_CONFIG = {
 
   minTotalHitPoints: 3, // The minimum hit points for an actor.
 
+  // How long a "temporal" spell's Active Effect lasts
+  spellEffectDuration: {
+    spiritMagicTemporal: { value: 2, units: "minutes" }, // Core p.256: ten melee rounds
+    runeMagicTemporal: { value: 15, units: "minutes" }, // Core p.317
+  },
+
   rqid: {
     prefixes: {
       // TODO remove from here, is defined in class Rqid
