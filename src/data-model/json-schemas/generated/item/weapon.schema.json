@@ -171,12 +171,17 @@
                 "parry": {
                   "type": "integer",
                   "default": 0
+                },
+                "damage": {
+                  "type": "integer",
+                  "default": 0
                 }
               },
               "additionalProperties": false,
               "required": [
                 "attack",
-                "parry"
+                "parry",
+                "damage"
               ]
             },
             "missile": {
@@ -189,12 +194,17 @@
                 "parry": {
                   "type": "integer",
                   "default": 0
+                },
+                "damage": {
+                  "type": "integer",
+                  "default": 0
                 }
               },
               "additionalProperties": false,
               "required": [
                 "attack",
-                "parry"
+                "parry",
+                "damage"
               ]
             }
           },

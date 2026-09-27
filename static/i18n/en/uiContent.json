@@ -1346,7 +1346,8 @@
         "WeaponDamage": "weapon damage",
         "DamageBonus": "damage bonus",
         "SpecialDamage": "special damage",
-        "ExtraDamage": "extra damage"
+        "ExtraDamage": "extra damage",
+        "MagicDamage": "magic damage"
       },
       "ImprovementRoll": {
         "Source": {

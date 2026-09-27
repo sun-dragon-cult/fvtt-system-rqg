@@ -358,3 +358,24 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
     expect(warn).not.toHaveBeenCalled();
   });
 });
+
+describe("RqgActiveEffect.getReplacementData", () => {
+  it("adds a cast spell's level, so @level resolves in its changes", async () => {
+    const { RqgActiveEffect } = await loadSubject();
+    const effect = { system: { spell: { level: 4 } } };
+
+    expect(RqgActiveEffect.prototype.getReplacementData.call(effect, { pow: 12 })).toEqual({
+      pow: 12,
+      level: 4,
+    });
+  });
+
+  it("passes the base data through for an effect that isn't a cast spell", async () => {
+    const { RqgActiveEffect } = await loadSubject();
+    const base = { pow: 12 };
+
+    expect(
+      RqgActiveEffect.prototype.getReplacementData.call({ system: { spell: null } }, base),
+    ).toBe(base);
+  });
+});

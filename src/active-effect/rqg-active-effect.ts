@@ -20,7 +20,7 @@ import {
   type RoutedKeyWarningReason,
 } from "./routed-key/routed-key-warnings";
 
-import type { AnyMutableObject } from "fvtt-types/utils";
+import type { AnyMutableObject, AnyObject } from "fvtt-types/utils";
 import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg-actor-data";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { RoutedSelector } from "./routed-key/routed-key.types";
@@ -214,6 +214,12 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
       return true;
     }
     return parent.system.equippedStatus === "equipped";
+  }
+
+  /** A cast spell's level resolves `@level` in its changes, e.g. Bladesharp's `@level * 5`. */
+  override getReplacementData(baseData: AnyObject): AnyObject {
+    const level = (this.system as RqgActiveEffectDataModel).spell?.level;
+    return level == null ? baseData : { ...baseData, level: level };
   }
 
   /** De-dupes routed-key misconfiguration warnings by (effect, key, reason) - see #920 plan. */

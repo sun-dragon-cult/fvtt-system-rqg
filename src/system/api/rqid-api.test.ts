@@ -388,6 +388,19 @@ describe("Rqid", () => {
 
       await expect(Rqid.fromRqidCount("i.skill.jump", "en", { source: "all" })).resolves.toBe(2);
     });
+
+    it("finds ActiveEffects in packs only, since they have no world collection", async () => {
+      const effectPack = {
+        documentClass: { documentName: "ActiveEffect" },
+        indexed: true,
+        getIndex: vi.fn(),
+        index: [{ flags: { rqg: { documentRqidFlags: { id: "ae..bladesharp", lang: "en" } } } }],
+      };
+
+      game = { ...originalGame, packs: [effectPack] } as any;
+
+      await expect(Rqid.fromRqidCount("ae..bladesharp", "en", { source: "all" })).resolves.toBe(1);
+    });
   });
 
   describe("getDefaultRqid", () => {

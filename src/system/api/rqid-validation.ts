@@ -16,7 +16,7 @@ const ITEM_SUBTYPES = [
   "spirit-magic",
 ] as const;
 
-const NON_ITEM_RQID_PREFIX_PATTERN = "(?:a|c|je|jp|m|p|rt|s)";
+const NON_ITEM_RQID_PREFIX_PATTERN = "(?:ae|a|c|je|jp|m|p|rt|s)";
 const DOC_RQID_PATTERN = `(?:${NON_ITEM_RQID_PREFIX_PATTERN}\\.[^.]*\\.[^.]+|i\\.(${ITEM_SUBTYPES.join("|")})\\.[^.]+)`;
 
 const ITEM_PATTERN = new RegExp(`^i\\.(${ITEM_SUBTYPES.join("|")})\\.[^.]+$`);
