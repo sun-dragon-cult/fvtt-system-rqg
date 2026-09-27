@@ -25,6 +25,7 @@ import { ActorTypeEnum, type CharacterActor } from "../data-model/actor-data/rqg
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { RoutedSelector } from "./routed-key/routed-key.types";
 import { RqgActiveEffectDataModel } from "./data-model/rqg-active-effect-data-model";
+import { renameForSpellLevel } from "../system/spell-effects/spell-effect-name";
 
 export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
   private static readonly logger = new RqgLogger("RqgActiveEffect");
@@ -36,6 +37,28 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     // ActiveEffectTypeDataModelBase polyfill (see rqg-active-effect-data-model.ts) doesn't statically expose.
     // @ts-expect-error TEMP(v14-types)
     CONFIG.ActiveEffect.dataModels["base"] = RqgActiveEffectDataModel;
+
+    // Registered first, so it lands above the equipped-suspension checkbox added below.
+    Hooks.on(
+      "renderActiveEffectConfig",
+      (app: foundry.applications.sheets.ActiveEffectConfig, html: HTMLElement | JQuery) => {
+        const spell = (app.document.system as RqgActiveEffectDataModel | undefined)?.spell;
+        const form = html instanceof HTMLElement ? html : (html.get(0) as HTMLElement | undefined);
+        const disabledGroup = form
+          ?.querySelector<HTMLInputElement>('input[name="disabled"]')
+          ?.closest(".form-group");
+        if (!spell || !disabledGroup || form?.querySelector('[name="system.spell.level"]')) {
+          return;
+        }
+        const levelGroup = document.createElement("div");
+        levelGroup.classList.add("form-group");
+        levelGroup.innerHTML = `
+          <label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>
+          <input type="number" name="system.spell.level" min="0" step="1" value="${spell.level}">
+        `;
+        disabledGroup.parentElement?.insertBefore(levelGroup, disabledGroup);
+      },
+    );
 
     Hooks.on(
       "renderActiveEffectConfig",
@@ -134,8 +157,23 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     options: ActiveEffect.Database.PreUpdateOptions,
     user: User,
   ): Promise<boolean | void> {
+    const expandedChanges = foundry.utils.expandObject(changes as object);
+    const spell = (this.system as RqgActiveEffectDataModel).spell;
+    const nextLevel = foundry.utils.getProperty(expandedChanges, "system.spell.level");
+    const nextName = foundry.utils.getProperty(expandedChanges, "name");
+    if (
+      spell &&
+      typeof nextLevel === "number" &&
+      nextLevel !== spell.level &&
+      (nextName === undefined || nextName === this.name)
+    ) {
+      const renamed = renameForSpellLevel(this.name ?? "", spell, nextLevel);
+      if (renamed) {
+        changes["name"] = renamed;
+      }
+    }
+
     if (RqgActiveEffect.#isOnPhysicalItem(this)) {
-      const expandedChanges = foundry.utils.expandObject(changes as object);
       const nextMatchSuspensionToEquippedStatus =
         foundry.utils.getProperty(expandedChanges, "system.matchSuspensionToEquippedStatus") ??
         RqgActiveEffect.#getMatchSuspensionToEquippedStatus(this);

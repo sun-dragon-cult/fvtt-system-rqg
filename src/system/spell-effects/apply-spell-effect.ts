@@ -2,6 +2,7 @@ import { localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { RQG_CONFIG, systemId } from "../config";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
+import { spellEffectName } from "./spell-effect-name";
 import {
   chooseSpellTargetItem,
   findSpellTargetCandidates,
@@ -145,7 +146,7 @@ export async function applySpellEffect(
   const data = template.toObject() as any;
   delete data._id;
   delete data.flags?.rqg?.documentRqidFlags;
-  data.name = `${spellName} (${cast.level})`;
+  data.name = spellEffectName(spellName, cast.level);
   data.origin = spell.uuid;
   data.transfer = true;
   data.disabled = false;
