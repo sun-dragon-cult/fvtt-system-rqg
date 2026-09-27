@@ -5,7 +5,7 @@ import {
 import { enumChoices } from "../../data-model/shared/enum-choices";
 import { spellTargetRulingState } from "../../data-model/shared/spell-cast-outcome.defs";
 
-const { BooleanField, NumberField, StringField, DocumentUUIDField, JSONField } =
+const { ArrayField, BooleanField, NumberField, StringField, DocumentUUIDField, JSONField } =
   foundry.data.fields;
 
 const resistanceRequestChatMessageSchema = {
@@ -71,6 +71,8 @@ const resistanceRequestChatMessageSchema = {
   }),
   // A spell cast reads its outcome in terms of the spell taking effect, a GM request doesn't.
   isSpellCast: new BooleanField({ nullable: false, required: false, initial: false }),
+  // The spell effects applied to the target from this card, so Apply only runs once.
+  appliedEffectUuids: new ArrayField(new StringField({ blank: false, nullable: false })),
   // A GM's override of whether the spell took effect; "" when none.
   gmRuling: new StringField({
     blank: true,

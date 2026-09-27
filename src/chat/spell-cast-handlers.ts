@@ -1,12 +1,24 @@
-import { getRequiredDomDataset, localize } from "../system/util";
+import { getRequiredDomDataset, localize, safeFromJSON } from "../system/util";
 import { templatePaths } from "../system/load-handlebars-templates";
-import type { SpellTargetOutcome } from "../data-model/shared/spell-cast-outcome";
+import {
+  getResistanceRequestTargetOutcome,
+  getSpellCastOutcome,
+  type SpellTargetOutcome,
+} from "../data-model/shared/spell-cast-outcome";
+import { resolveSpellEffectRqid } from "../system/spell-effects/resolve-spell-effect-rqid";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
+import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
+import { updateChatMessage } from "../sockets/socketable-requests";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { RqgItem } from "@items/rqg-item.ts";
 import {
   spellTargetRulingState,
   type SpellTargetRulingState,
 } from "../data-model/shared/spell-cast-outcome.defs";
 import type { ResistanceRequestChatMessage } from "./data-model/resistance-request-chat-message.types.ts";
 import { answerResistanceRequest } from "./resistance-request-handlers";
+
+import Roll = foundry.dice.Roll;
 
 const rulingIcons: Record<SpellTargetRulingState, string> = {
   affected: "fa-solid fa-check",
@@ -21,11 +33,48 @@ function reasonKey(target: SpellTargetOutcome): string | undefined {
   return target.resolvedBy;
 }
 
+/** The spell effects already applied to a target from this card. */
+function appliedEffectUuids(message: ChatMessage, targetUuid: string): string[] {
+  const system = message.system as any;
+  if (message.type === "spellCast") {
+    return (
+      system.targets.find((t: any) => t.targetTokenOrActorUuid === targetUuid)?.effectUuids ?? []
+    );
+  }
+  return system.appliedEffectUuids ?? [];
+}
+
+/**
+ * The spell a card can apply an effect from - one linked to an effect. A hidden cast's anonymous
+ * request names no spell.
+ */
+function applicableSpell(message: ChatMessage): RqgItem | undefined {
+  const spellUuid = (message.system as any).spellUuid as string | undefined;
+  const spell = spellUuid ? (fromUuidSync(spellUuid) as RqgItem | null) : undefined;
+  return spell && resolveSpellEffectRqid(spell as any) ? spell : undefined;
+}
+
+function isOwnedByUser(uuid: string): boolean {
+  return !!(fromUuidSync(uuid) as { isOwner?: boolean } | null)?.isOwner;
+}
+
 /** Target outcome rows, the same on every card that decides a spell. */
-export async function renderSpellCastTargets(targets: SpellTargetOutcome[]): Promise<string> {
+export async function renderSpellCastTargets(
+  targets: SpellTargetOutcome[],
+  message: ChatMessage,
+): Promise<string> {
+  const spell = applicableSpell(message);
   const rows = targets.map((target) => {
     const reason = reasonKey(target);
+    const applied = appliedEffectUuids(message, target.targetTokenOrActorUuid).length > 0;
     return {
+      applied: applied,
+      // Only the target's owner applies it, so a hostile target's items are listed to the GM alone.
+      canApply:
+        !!spell &&
+        target.state === "affected" &&
+        !applied &&
+        isOwnedByUser(target.targetTokenOrActorUuid),
       uuid: target.targetTokenOrActorUuid,
       name:
         (fromUuidSync(target.targetTokenOrActorUuid) as { name?: string } | null)?.name ??
@@ -97,4 +146,81 @@ function ruleOnResistanceRequest(
     { gmRuling: state },
     { revealSpell: state === "affected" },
   );
+}
+
+/** The cast roll's options: level and points spent. */
+function castRollOptions(message: ChatMessage): Record<string, any> {
+  const castRoll =
+    message.type === "spellCast"
+      ? message.rolls[0]
+      : safeFromJSON<Roll>(Roll, (message.system as any).castRoll);
+  return (castRoll?.options ?? {}) as Record<string, any>;
+}
+
+/** Apply a spell's Active Effect to a target the spell took effect on, once. */
+export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): Promise<void> {
+  const targetUuid = getRequiredDomDataset(clickedButton, "target-uuid");
+  const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
+  const spell = message ? applicableSpell(message) : undefined;
+  if (!message || !spell || !isOwnedByUser(targetUuid)) {
+    return;
+  }
+  const outcome =
+    message.type === "spellCast"
+      ? getSpellCastOutcome(message as any)?.targets.find(
+          (t) => t.targetTokenOrActorUuid === targetUuid,
+        )
+      : getResistanceRequestTargetOutcome(message as any);
+  if (outcome?.state !== "affected") {
+    return;
+  }
+  // A stale card can still show the button after someone else applied it.
+  if (appliedEffectUuids(message, targetUuid).length) {
+    ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.AlreadyApplied"));
+    return;
+  }
+
+  const targetDoc = await fromUuid(targetUuid);
+  const targetActor = (
+    targetDoc instanceof TokenDocument ? targetDoc.actor : targetDoc
+  ) as RqgActor | null;
+  if (!targetActor) {
+    return;
+  }
+
+  const options = castRollOptions(message);
+  const level = Number(options["levelUsed"] ?? 0);
+  const boost = Number(options["magicPointBoost"] ?? 0);
+  const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
+  const effectUuids = await applySpellEffect(spell, targetActor, {
+    casterUuid:
+      (message.system as any).casterTokenOrActorUuid ??
+      (message.system as any).spellCasterUuid ??
+      "",
+    castMessageId: message.id ?? "",
+    level: level,
+    magicPointsSpent: isRuneMagic ? boost : level + boost,
+    runePointsSpent: isRuneMagic ? level : 0,
+    casterSuccessLevel: outcome.casterSuccessLevel,
+  });
+  if (!effectUuids) {
+    return;
+  }
+
+  const systemPatch =
+    message.type === "spellCast"
+      ? {
+          targets: (message.toObject().system as any).targets.map((target: any) =>
+            target.targetTokenOrActorUuid === targetUuid
+              ? { ...target, effectUuids: effectUuids }
+              : target,
+          ),
+        }
+      : { appliedEffectUuids: effectUuids };
+  // A target's owner may be neither the author nor a GM, so the author's client records it.
+  if (game.user?.isGM || message.isAuthor) {
+    await message.update({ system: systemPatch } as any);
+  } else {
+    await updateChatMessage(message, { system: systemPatch } as any);
+  }
 }

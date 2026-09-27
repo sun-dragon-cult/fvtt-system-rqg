@@ -30,6 +30,8 @@ const spellCastChatMessageSchema = {
         choices: [...spellTargetOutcomeResolvedBy],
       }),
       casterSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
+      // The spell effects applied to this target, so Apply only runs once.
+      effectUuids: new ArrayField(new StringField({ blank: false, nullable: false })),
     }),
   ),
 } as const;

@@ -1025,7 +1025,14 @@
           gap: 0.4rem;
         }
 
+        & .spell-cast-target-detail {
+          display: flex;
+          align-items: center;
+          gap: 0.4rem;
+        }
+
         & .spell-cast-target-reason {
+          flex: 1;
           color: var(--color-text-secondary);
           font-size: var(--font-size-11);
         }
@@ -1053,6 +1060,19 @@
           & .spell-cast-target-name {
             text-decoration: line-through;
           }
+        }
+
+        & button.spell-cast-apply {
+          width: auto;
+          flex: 0 0 auto;
+          height: 1.6rem;
+          padding: 0 0.5rem;
+          font-size: var(--font-size-11);
+        }
+
+        & .spell-cast-applied {
+          font-style: italic;
+          font-size: var(--font-size-11);
         }
 
         & .spell-cast-ruling {

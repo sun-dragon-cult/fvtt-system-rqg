@@ -13,7 +13,15 @@
         </span>
       {{/if}}
     </div>
-    {{#if reasonLabel}}<div class="spell-cast-target-reason">{{reasonLabel}}</div>{{/if}}
+    <div class="spell-cast-target-detail">
+      <span class="spell-cast-target-reason">{{reasonLabel}}</span>
+      {{#if applied}}
+        <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Applied"}}</span>
+      {{else if canApply}}
+        <button type="button" class="spell-cast-apply"
+                data-apply-spell-effect>{{localize "RQG.ChatMessage.SpellCast.ApplyEffect"}}</button>
+      {{/if}}
+    </div>
   </li>
 {{/inline}}
 

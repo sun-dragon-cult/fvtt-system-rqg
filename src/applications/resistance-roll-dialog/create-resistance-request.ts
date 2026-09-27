@@ -131,6 +131,7 @@ export async function createResistanceRequest(
     spellHiddenFromUuid: spellCast ? params.targetTokenOrActorUuid : "",
     isSpellCast: !!params.isSpellCast,
     gmRuling: "",
+    appliedEffectUuids: [],
   };
 
   const content = await foundry.applications.handlebars.renderTemplate(
