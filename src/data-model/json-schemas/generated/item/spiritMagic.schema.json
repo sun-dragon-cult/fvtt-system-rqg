@@ -151,13 +151,6 @@
       "type": "boolean",
       "default": false
     },
-    "incompatibleWith": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "default": ""
-      }
-    },
     "spellFocus": {
       "type": "string",
       "default": ""
@@ -179,7 +172,6 @@
     "targetKind",
     "effectTier",
     "isVariable",
-    "incompatibleWith",
     "spellFocus",
     "isMatrix"
   ]
