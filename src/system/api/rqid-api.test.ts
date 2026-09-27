@@ -410,6 +410,13 @@ describe("Rqid", () => {
 
     const originalItem = globalThis.Item;
 
+    it("leaves the default subtype out, so an Active Effect gets ae..<slug>", () => {
+      globalThis.Item = class {} as any;
+      const effect = { documentName: "ActiveEffect", type: "base", name: "Bladesharp" };
+
+      expect(Rqid.getDefaultRqid(effect as any)).toBe("ae..bladesharp");
+    });
+
     it("derives a cult identifier from the full item name, keeping subcults of the same deity distinct", () => {
       // Subcults (e.g. Orlanth Adventurous, Orlanth Thunderous) share a deity but must not share
       // an rqid - Allied Spirit rune point sharing (rune-point-source.ts) matches cults by their

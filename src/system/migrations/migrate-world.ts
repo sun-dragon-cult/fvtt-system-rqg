@@ -27,6 +27,7 @@ import { migrateActorActiveEffectDurationUnits } from "./migrations-actor/migrat
 import { migrateItemActiveEffectDurationUnits } from "./migrations-item/migrate-item-active-effect-duration-units";
 import { migrateItemPowCrystalToStoredMagicPoints } from "./migrations-item/migrate-item-pow-crystal-to-stored-magic-points";
 import { migrateActiveEffectDurationUnits } from "./migrations-effect/migrate-active-effect-duration-units";
+import { resyncSpellFieldsFromCompendium } from "./migrations-item/resync-spell-fields-from-compendium";
 import { templatePaths } from "../load-handlebars-templates";
 import type { MigrationDocumentLink, MigrationLogEntry } from "./apply-migrations";
 import { RqgLogger } from "../logging/rqg-logger";
@@ -160,6 +161,7 @@ export async function applyDefaultWorldMigrations(
     migrateItemActiveEffectPaths,
     migrateItemActiveEffectDurationUnits,
     migrateItemPowCrystalToStoredMagicPoints,
+    resyncSpellFieldsFromCompendium,
   ];
   const worldActorMigrations: ActorMigration[] = actorMigrations ?? [
     migrateActorActiveEffectPaths,
