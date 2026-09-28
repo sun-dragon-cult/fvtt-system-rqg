@@ -56,6 +56,19 @@ function filterSpells(form: HTMLFormElement, search: string): void {
   }
 }
 
+/** Step the selection to the next or previous visible spell. */
+function moveSelection(form: HTMLFormElement, step: 1 | -1): void {
+  const select = form.elements.namedItem("spellUuid") as HTMLSelectElement | null;
+  const visible = [...(select?.options ?? [])].filter((option) => !option.hidden);
+  const current = visible.findIndex((option) => option.selected);
+  const next = visible[Math.min(Math.max(current + step, 0), visible.length - 1)];
+  if (select && next) {
+    select.value = next.value;
+    next.scrollIntoView({ block: "nearest" });
+    syncLevel(form);
+  }
+}
+
 /**
  * Let the GM put a spell effect on a token without casting the spell, e.g. one cast off-screen.
  * Stacking and durations work as for a cast; there is no caster.
@@ -67,13 +80,14 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     return false;
   }
   const content =
+    `<div class="rqg-add-spell-effect-search">` +
     `<input type="search" name="search" autofocus` +
     ` placeholder="${foundry.utils.escapeHTML(localize("RQG.TokenHud.AddSpellEffectSearch"))}">` +
-    `<select name="spellUuid" size="12" class="rqg-add-spell-effect-list"` +
+    `<select name="spellUuid" size="12" tabindex="-1"` +
     ` aria-label="${foundry.utils.escapeHTML(localize("RQG.TokenHud.AddSpellEffectSpell"))}">` +
     spellOptions(spells, ItemTypeEnum.SpiritMagic, localize("TYPES.Item.spiritMagic")) +
     spellOptions(spells, ItemTypeEnum.RuneMagic, localize("TYPES.Item.runeMagic")) +
-    `</select>` +
+    `</select></div>` +
     `<div class="form-group"><label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>` +
     `<input type="number" name="level" min="0" step="1"></div>`;
 
@@ -88,16 +102,27 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
       }
       filterSpells(form, "");
       const select = form.elements.namedItem("spellUuid") as HTMLSelectElement;
-      select.addEventListener("change", () => syncLevel(form));
-      // A double-click picks the spell, as Enter in the search field does.
+      const search = form.elements.namedItem("search") as HTMLInputElement;
+      // Focus stays in the search field: Chromium greys a focused list's selected text whatever
+      // the CSS says, so a click selects without focusing the list and the arrow keys step it.
+      select.addEventListener("mousedown", (event) => {
+        const option = (event.target as HTMLElement).closest("option");
+        if (option) {
+          event.preventDefault();
+          select.value = option.value;
+          syncLevel(form);
+        }
+      });
       select.addEventListener("dblclick", () =>
         form.requestSubmit(form.querySelector<HTMLButtonElement>("button[data-action=ok]")),
       );
-      form
-        .querySelector<HTMLInputElement>("input[name=search]")
-        ?.addEventListener("input", (event) =>
-          filterSpells(form, (event.target as HTMLInputElement).value),
-        );
+      search.addEventListener("input", () => filterSpells(form, search.value));
+      search.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          moveSelection(form, event.key === "ArrowDown" ? 1 : -1);
+        }
+      });
     },
     rejectClose: false,
   } as any)) as { spellUuid?: string; level?: number } | null;
