@@ -143,6 +143,11 @@
     opacity: 1;
   }
 
+  .rqg-add-spell-effect-list {
+    width: 100%;
+    height: auto;
+  }
+
   .norse {
     font-family: Norse, Signika, "Palatino Linotype", serif;
     font-variant: small-caps;

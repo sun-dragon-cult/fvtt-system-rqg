@@ -36,6 +36,26 @@ function syncLevel(form: HTMLFormElement | null | undefined): void {
   level.readOnly = option.dataset["variable"] !== "true";
 }
 
+/** Show only the spells whose name contains the search text, keeping a visible one selected. */
+function filterSpells(form: HTMLFormElement, search: string): void {
+  const select = form.elements.namedItem("spellUuid") as HTMLSelectElement | null;
+  if (!select) {
+    return;
+  }
+  const term = search.trim().toLocaleLowerCase();
+  for (const option of select.options) {
+    option.hidden = !!term && !option.text.toLocaleLowerCase().includes(term);
+  }
+  for (const group of select.querySelectorAll("optgroup")) {
+    group.hidden = [...group.querySelectorAll("option")].every((option) => option.hidden);
+  }
+  if (!select.selectedOptions[0] || select.selectedOptions[0].hidden) {
+    const firstVisible = [...select.options].find((option) => !option.hidden);
+    select.value = firstVisible?.value ?? "";
+    syncLevel(form);
+  }
+}
+
 /**
  * Let the GM put a spell effect on a token without casting the spell, e.g. one cast off-screen.
  * Stacking and durations work as for a cast; there is no caster.
@@ -47,11 +67,13 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     return false;
   }
   const content =
-    `<div class="form-group"><label>${localize("RQG.TokenHud.AddSpellEffectSpell")}</label>` +
-    `<select name="spellUuid">` +
+    `<input type="search" name="search" autofocus` +
+    ` placeholder="${foundry.utils.escapeHTML(localize("RQG.TokenHud.AddSpellEffectSearch"))}">` +
+    `<select name="spellUuid" size="12" class="rqg-add-spell-effect-list"` +
+    ` aria-label="${foundry.utils.escapeHTML(localize("RQG.TokenHud.AddSpellEffectSpell"))}">` +
     spellOptions(spells, ItemTypeEnum.SpiritMagic, localize("TYPES.Item.spiritMagic")) +
     spellOptions(spells, ItemTypeEnum.RuneMagic, localize("TYPES.Item.runeMagic")) +
-    `</select></div>` +
+    `</select>` +
     `<div class="form-group"><label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>` +
     `<input type="number" name="level" min="0" step="1"></div>`;
 
@@ -61,10 +83,21 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     ok: { label: "RQG.TokenHud.AddSpellEffectButton", icon: "fas fa-plus" },
     render: (_event: Event, dialog: foundry.applications.api.DialogV2) => {
       const form = dialog.element.querySelector("form");
-      syncLevel(form);
+      if (!form) {
+        return;
+      }
+      filterSpells(form, "");
+      const select = form.elements.namedItem("spellUuid") as HTMLSelectElement;
+      select.addEventListener("change", () => syncLevel(form));
+      // A double-click picks the spell, as Enter in the search field does.
+      select.addEventListener("dblclick", () =>
+        form.requestSubmit(form.querySelector<HTMLButtonElement>("button[data-action=ok]")),
+      );
       form
-        ?.querySelector("select[name=spellUuid]")
-        ?.addEventListener("change", () => syncLevel(form));
+        .querySelector<HTMLInputElement>("input[name=search]")
+        ?.addEventListener("input", (event) =>
+          filterSpells(form, (event.target as HTMLInputElement).value),
+        );
     },
     rejectClose: false,
   } as any)) as { spellUuid?: string; level?: number } | null;

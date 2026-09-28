@@ -1850,6 +1850,7 @@
       "AddSpellEffect": "Add a spell effect",
       "AddSpellEffectTitle": "Add a Spell Effect to {targetName}",
       "AddSpellEffectSpell": "Spell",
+      "AddSpellEffectSearch": "Search spells…",
       "AddSpellEffectButton": "Add",
       "NoSpellsWithEffects": "No spells with effects were found in the compendiums."
     }
