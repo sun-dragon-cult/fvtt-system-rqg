@@ -114,8 +114,8 @@
     ); /* Offset "Round 1" to account for removed buttons */
   }
 
-  /* The applied spell effects sit above the manual status effects in the Token HUD palette. */
-  /* The HUD looks the same in both themes, so the divider keeps core's dark-theme hr in both. */
+  /* Divides the applied spell effects from the manual status effects in the Token HUD palette.
+     The HUD looks the same in both themes, so it keeps core's dark-theme hr in both. */
   #token-hud .palette.status-effects .rqg-spell-effects-divider {
     grid-column: 1 / -1;
     width: 100%;
