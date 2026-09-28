@@ -129,6 +129,20 @@
     cursor: default;
   }
 
+  #token-hud .palette.status-effects .rqg-add-spell-effect {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    color: var(--control-icon-color);
+    font-size: var(--font-size-14);
+    opacity: 0.5;
+  }
+
+  #token-hud .palette.status-effects .rqg-add-spell-effect:hover {
+    opacity: 1;
+  }
+
   .norse {
     font-family: Norse, Signika, "Palatino Linotype", serif;
     font-variant: small-caps;

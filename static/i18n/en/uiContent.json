@@ -1846,7 +1846,12 @@
       "SpellEffectRemaining": "{remaining} left",
       "SpellEffectControls": "Click to open, right-click to remove",
       "RemoveSpellEffectTitle": "Remove {effectName}",
-      "RemoveSpellEffectContent": "Are you sure you want to remove {effectName}?"
+      "RemoveSpellEffectContent": "Are you sure you want to remove {effectName}?",
+      "AddSpellEffect": "Add a spell effect",
+      "AddSpellEffectTitle": "Add a Spell Effect to {targetName}",
+      "AddSpellEffectSpell": "Spell",
+      "AddSpellEffectButton": "Add",
+      "NoSpellsWithEffects": "No spells with effects were found in the compendiums."
     }
   }
 }

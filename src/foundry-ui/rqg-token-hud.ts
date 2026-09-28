@@ -1,5 +1,6 @@
 import { systemId } from "../system/config";
 import { localize } from "../system/util";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { spellEffectHudEntries, type SpellEffectHudEntry } from "./token-hud-spell-effects";
 
 /**
@@ -20,12 +21,12 @@ export class RqgTokenHud {
       return;
     }
     const entries = spellEffectHudEntries(actor.allApplicableEffects() as any, actor);
-    if (!entries.length) {
+    // Players see what's on their token; only the GM adds, opens or removes a spell effect.
+    const isGM = !!game.user?.isGM;
+    if (!entries.length && !isGM) {
       return;
     }
 
-    // Players see what's on their token; only the GM opens or removes a spell effect.
-    const isGM = !!game.user?.isGM;
     const icons = entries.map((entry) => {
       const icon = document.createElement("img");
       icon.className = [
@@ -80,7 +81,32 @@ export class RqgTokenHud {
     });
     const divider = document.createElement("hr");
     divider.className = "rqg-spell-effects-divider";
-    palette.prepend(...icons, divider);
+    palette.prepend(
+      ...icons,
+      ...(isGM ? [RqgTokenHud.addSpellEffectButton(hud, actor)] : []),
+      divider,
+    );
+  }
+
+  private static addSpellEffectButton(
+    hud: foundry.applications.hud.TokenHUD,
+    actor: RqgActor,
+  ): HTMLButtonElement {
+    const label = localize("RQG.TokenHud.AddSpellEffect");
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "effect-control rqg-add-spell-effect";
+    button.dataset["tooltip"] = label;
+    button.setAttribute("aria-label", label);
+    button.innerHTML = '<i class="fa-solid fa-plus" inert></i>';
+    button.addEventListener("click", async (event) => {
+      event.preventDefault();
+      const { addSpellEffectFromHud } = await import("./add-spell-effect-dialog");
+      if (await addSpellEffectFromHud(actor, hud.document?.name ?? actor.name ?? "")) {
+        void hud.render();
+      }
+    });
+    return button;
   }
 
   private static spellEffectTooltip(entry: SpellEffectHudEntry, isGM: boolean): string {
