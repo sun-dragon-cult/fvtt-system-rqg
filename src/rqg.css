@@ -114,6 +114,21 @@
     ); /* Offset "Round 1" to account for removed buttons */
   }
 
+  /* Divides the applied spell effects from the manual status effects in the Token HUD palette.
+     The HUD looks the same in both themes, so it keeps core's dark-theme hr in both. */
+  #token-hud .palette.status-effects .rqg-spell-effects-divider {
+    grid-column: 1 / -1;
+    width: 100%;
+    height: 2px;
+    margin: 0.2rem 0;
+    border: 0;
+    background-image: linear-gradient(90deg, transparent 0%, #e7d1b1 50%, transparent 100%);
+  }
+
+  #token-hud .palette.status-effects .rqg-spell-effect.read-only {
+    cursor: default;
+  }
+
   .norse {
     font-family: Norse, Signika, "Palatino Linotype", serif;
     font-variant: small-caps;

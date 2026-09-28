@@ -1840,6 +1840,13 @@
         "WeaponV2": "Weapon Item Sheet V2"
       },
       "RollTable": "Rollable Table Sheet"
+    },
+    "TokenHud": {
+      "SpellEffectOn": "On {itemName}",
+      "SpellEffectRemaining": "{remaining} left",
+      "SpellEffectControls": "Click to open, right-click to remove",
+      "RemoveSpellEffectTitle": "Remove {effectName}",
+      "RemoveSpellEffectContent": "Are you sure you want to remove {effectName}?"
     }
   }
 }
