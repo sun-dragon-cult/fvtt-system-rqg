@@ -129,6 +129,46 @@
     cursor: default;
   }
 
+  #token-hud .palette.status-effects .rqg-add-spell-effect {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    color: var(--control-icon-color);
+    font-size: var(--font-size-14);
+    opacity: 0.5;
+  }
+
+  #token-hud .palette.status-effects .rqg-add-spell-effect:hover {
+    opacity: 1;
+  }
+
+  /* The search field sits flush on top of the list it filters. */
+  .rqg-add-spell-effect-search {
+    display: flex;
+    flex-direction: column;
+
+    & input[type="search"] {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    & select {
+      width: 100%;
+      height: auto;
+      border-top: none;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+
+    /* Only the background marks the selection; the gradient stops Chromium greying it out. */
+    & option:checked {
+      background: var(--color-text-selection-bg)
+        linear-gradient(var(--color-text-selection-bg), var(--color-text-selection-bg));
+      color: inherit;
+    }
+  }
+
   .norse {
     font-family: Norse, Signika, "Palatino Linotype", serif;
     font-variant: small-caps;
