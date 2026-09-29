@@ -2,12 +2,6 @@ type TokenStatusEffectSeed = Omit<CONFIG.StatusEffect, "id" | "changes">;
 
 export type StatusEffectsById = Record<string, CONFIG.StatusEffect>;
 
-function twoMinutesDuration(): CONFIG.StatusEffect["duration"] {
-  // TEMP(v14-types): fvtt-types still models legacy duration fields, but Foundry v14 runtime
-  // accepts unit-based duration data.
-  return { value: 2, units: "minutes", expiry: null } as unknown as CONFIG.StatusEffect["duration"];
-}
-
 export function getTokenStatusEffects(): StatusEffectsById {
   const effects = {
     dead: {
@@ -29,18 +23,6 @@ export function getTokenStatusEffects(): StatusEffectsById {
       name: "EFFECT.StatusBleeding",
       img: "systems/rqg/assets/images/token-effects/bleeding.svg",
     },
-    ironhand: {
-      name: "RQG.TokenEffects.StatusIronhand",
-      img: "systems/rqg/assets/images/token-effects/ironhand.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    parry: {
-      name: "RQG.TokenEffects.StatusParry",
-      img: "systems/rqg/assets/images/token-effects/parry.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
     sleep: {
       name: "EFFECT.StatusAsleep",
       img: "systems/rqg/assets/images/token-effects/asleep.svg",
@@ -49,17 +31,53 @@ export function getTokenStatusEffects(): StatusEffectsById {
       name: "EFFECT.StatusProne",
       img: "systems/rqg/assets/images/token-effects/prone.svg",
     },
-    deaf: {
-      name: "EFFECT.StatusDeaf",
-      img: "icons/svg/deaf.svg",
+    restrain: {
+      name: "RQG.TokenEffects.StatusImmobilized",
+      img: "icons/svg/net.svg",
+    },
+    helpless: {
+      name: "RQG.TokenEffects.StatusHelpless",
+      img: "icons/svg/paralysis.svg",
     },
     blind: {
       name: "EFFECT.StatusBlind",
       img: "icons/svg/blind.svg",
     },
+    deaf: {
+      name: "EFFECT.StatusDeaf",
+      img: "icons/svg/deaf.svg",
+    },
     silence: {
       name: "EFFECT.StatusSilenced",
       img: "icons/svg/silenced.svg",
+    },
+    concentrating: {
+      name: "RQG.TokenEffects.StatusConcentrating",
+      img: "icons/svg/eye.svg",
+    },
+    spiritCombat: {
+      name: "RQG.TokenEffects.StatusSpiritCombat",
+      img: "icons/svg/aura.svg",
+    },
+    discorporate: {
+      name: "RQG.TokenEffects.StatusDiscorporate",
+      img: "icons/svg/portal.svg",
+    },
+    possessed: {
+      name: "RQG.TokenEffects.StatusPossessed",
+      img: "icons/svg/cowled.svg",
+    },
+    invisible: {
+      name: "EFFECT.StatusInvisible",
+      img: "icons/svg/invisible.svg",
+    },
+    fly: {
+      name: "EFFECT.StatusFlying",
+      img: "icons/svg/wing.svg",
+    },
+    burning: {
+      name: "EFFECT.StatusBurning",
+      img: "icons/svg/fire.svg",
     },
     fear: {
       name: "EFFECT.StatusFear",
@@ -76,46 +94,6 @@ export function getTokenStatusEffects(): StatusEffectsById {
     curse: {
       name: "EFFECT.StatusCursed",
       img: "icons/svg/sun.svg",
-    },
-    restrain: {
-      name: "EFFECT.StatusRestrained",
-      img: "icons/svg/net.svg",
-    },
-    number1: {
-      name: "1",
-      img: "systems/rqg/assets/images/token-effects/one.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    number2: {
-      name: "2",
-      img: "systems/rqg/assets/images/token-effects/two.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    number3: {
-      name: "3",
-      img: "systems/rqg/assets/images/token-effects/three.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    number4: {
-      name: "4",
-      img: "systems/rqg/assets/images/token-effects/four.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    number5: {
-      name: "5",
-      img: "systems/rqg/assets/images/token-effects/five.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    number6: {
-      name: "6",
-      img: "systems/rqg/assets/images/token-effects/six.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
     },
   } satisfies Record<string, TokenStatusEffectSeed>;
 

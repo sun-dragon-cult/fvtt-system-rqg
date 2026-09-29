@@ -1706,8 +1706,12 @@
       }
     },
     "TokenEffects": {
-      "StatusIronhand": "Ironhand",
-      "StatusParry": "Parry"
+      "StatusImmobilized": "Immobilized",
+      "StatusHelpless": "Helpless",
+      "StatusConcentrating": "Concentrating",
+      "StatusSpiritCombat": "In Spirit Combat",
+      "StatusDiscorporate": "Discorporate",
+      "StatusPossessed": "Possessed"
     },
     "Migration": {
       "Dialog": {
