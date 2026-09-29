@@ -1,12 +1,4 @@
-type TokenStatusEffectSeed = Omit<CONFIG.StatusEffect, "id" | "changes"> & {
-  changes?: Array<{
-    key: string;
-    value: string;
-    type?: string;
-    mode?: number;
-    priority?: number;
-  }>;
-};
+type TokenStatusEffectSeed = Omit<CONFIG.StatusEffect, "id" | "changes">;
 
 export type StatusEffectsById = Record<string, CONFIG.StatusEffect>;
 
@@ -14,21 +6,6 @@ function twoMinutesDuration(): CONFIG.StatusEffect["duration"] {
   // TEMP(v14-types): fvtt-types still models legacy duration fields, but Foundry v14 runtime
   // accepts unit-based duration data.
   return { value: 2, units: "minutes", expiry: null } as unknown as CONFIG.StatusEffect["duration"];
-}
-
-/** The Protection N status effects. Exported so the i18n audit can expand their name keys. */
-export const protectionPoints = [1, 2, 3, 4] as const;
-
-/** Protection N: adds N natural AP to every hit location, via a `@`-routed change (#920). */
-function protectionEffect(points: (typeof protectionPoints)[number]): TokenStatusEffectSeed {
-  return {
-    name: `RQG.TokenEffects.StatusProtection${points}`,
-    img: `systems/rqg/assets/images/token-effects/protection${points}.svg`,
-    duration: twoMinutesDuration(),
-    changes: [
-      { key: "@~^i\\.hit-location\\.:system.naturalAp", type: "add", value: String(points) },
-    ],
-  };
 }
 
 export function getTokenStatusEffects(): StatusEffectsById {
@@ -52,117 +29,9 @@ export function getTokenStatusEffects(): StatusEffectsById {
       name: "EFFECT.StatusBleeding",
       img: "systems/rqg/assets/images/token-effects/bleeding.svg",
     },
-    protection1: protectionEffect(1),
-    protection2: protectionEffect(2),
-    protection3: protectionEffect(3),
-    protection4: protectionEffect(4),
-    strength: {
-      name: "RQG.TokenEffects.StatusStrength",
-      img: "systems/rqg/assets/images/token-effects/strength.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "system.characteristics.strength.value",
-          type: "add",
-          value: "8",
-        },
-      ],
-    },
-    befuddled: {
-      name: "RQG.TokenEffects.StatusBefuddled",
-      img: "systems/rqg/assets/images/token-effects/befuddled.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    bladesharp: {
-      name: "RQG.TokenEffects.StatusBladesharp",
-      img: "systems/rqg/assets/images/token-effects/bladesharp.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    bludgeon: {
-      name: "RQG.TokenEffects.StatusBludgeon",
-      img: "systems/rqg/assets/images/token-effects/bludgeon.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    coordination: {
-      name: "RQG.TokenEffects.StatusCoordination",
-      img: "systems/rqg/assets/images/token-effects/coordination.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "system.characteristics.dexterity.value",
-          type: "add",
-          value: "3",
-        },
-      ],
-    },
-    countermagic: {
-      name: "RQG.TokenEffects.StatusCountermagic",
-      img: "systems/rqg/assets/images/token-effects/countermagic.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    demoralize: {
-      name: "RQG.TokenEffects.StatusDemoralize",
-      img: "systems/rqg/assets/images/token-effects/demoralize.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    dullblade: {
-      name: "RQG.TokenEffects.StatusDullblade",
-      img: "systems/rqg/assets/images/token-effects/dullblade.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    fanaticism: {
-      name: "RQG.TokenEffects.StatusFanaticism",
-      img: "systems/rqg/assets/images/token-effects/fanaticism.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    fireblade: {
-      name: "RQG.TokenEffects.StatusFireblade",
-      img: "systems/rqg/assets/images/token-effects/fireblade.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    glamour: {
-      name: "RQG.TokenEffects.StatusGlamour",
-      img: "systems/rqg/assets/images/token-effects/glamour.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    glue: {
-      name: "RQG.TokenEffects.StatusGlue",
-      img: "systems/rqg/assets/images/token-effects/glue.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
     ironhand: {
       name: "RQG.TokenEffects.StatusIronhand",
       img: "systems/rqg/assets/images/token-effects/ironhand.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    lantern: {
-      name: "RQG.TokenEffects.StatusLantern",
-      img: "systems/rqg/assets/images/token-effects/lantern.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    light: {
-      name: "RQG.TokenEffects.StatusLight",
-      img: "systems/rqg/assets/images/token-effects/light.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    mobility: {
-      name: "RQG.TokenEffects.StatusMobility",
-      img: "systems/rqg/assets/images/token-effects/mobility.svg",
       disabled: false,
       duration: twoMinutesDuration(),
     },
@@ -171,37 +40,6 @@ export function getTokenStatusEffects(): StatusEffectsById {
       img: "systems/rqg/assets/images/token-effects/parry.svg",
       disabled: false,
       duration: twoMinutesDuration(),
-    },
-    shimmer: {
-      name: "RQG.TokenEffects.StatusShimmer",
-      img: "systems/rqg/assets/images/token-effects/shimmer.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    slow: {
-      name: "RQG.TokenEffects.StatusSlow",
-      img: "systems/rqg/assets/images/token-effects/slow.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    spiritscreen: {
-      name: "RQG.TokenEffects.StatusSpiritScreen",
-      img: "systems/rqg/assets/images/token-effects/spirit-screen.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-    },
-    vigor: {
-      name: "RQG.TokenEffects.StatusVigor",
-      img: "systems/rqg/assets/images/token-effects/vigor.svg",
-      disabled: false,
-      duration: twoMinutesDuration(),
-      changes: [
-        {
-          key: "system.characteristics.constitution.value",
-          type: "add",
-          value: "3",
-        },
-      ],
     },
     sleep: {
       name: "EFFECT.StatusAsleep",

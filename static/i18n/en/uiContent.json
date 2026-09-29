@@ -1706,31 +1706,8 @@
       }
     },
     "TokenEffects": {
-      "StatusProtection1": "Protection 1",
-      "StatusProtection2": "Protection 2",
-      "StatusProtection3": "Protection 3",
-      "StatusProtection4": "Protection 4",
-      "StatusStrength": "Strength",
-      "StatusBefuddled": "Befuddled",
-      "StatusBladesharp": "Bladesharp",
-      "StatusBludgeon": "Bludgeon",
-      "StatusCoordination": "Coordination",
-      "StatusCountermagic": "Countermagic",
-      "StatusDemoralize": "Demoralize",
-      "StatusDullblade": "Dullblade",
-      "StatusFanaticism": "Fanaticism",
-      "StatusFireblade": "Fireblade",
-      "StatusGlamour": "Glamour",
-      "StatusGlue": "Glue",
       "StatusIronhand": "Ironhand",
-      "StatusLantern": "Lantern",
-      "StatusLight": "Light",
-      "StatusMobility": "Mobility",
-      "StatusParry": "Parry",
-      "StatusShimmer": "Shimmer",
-      "StatusSlow": "Slow",
-      "StatusSpiritScreen": "Spirit Screen",
-      "StatusVigor": "Vigor"
+      "StatusParry": "Parry"
     },
     "Migration": {
       "Dialog": {
