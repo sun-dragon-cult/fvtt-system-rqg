@@ -1,5 +1,9 @@
 import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { SpellEffectTierEnum, SpellTargetKindEnum } from "../../../data-model/item-data/spell";
+import {
+  SpellEffectTierEnum,
+  SpellResistedByEnum,
+  SpellTargetKindEnum,
+} from "../../../data-model/item-data/spell";
 import { Rqid } from "../../api/rqid-api";
 import { isValidRqidString } from "../../api/rqid-validation";
 import { escapeRegex } from "../../util";
@@ -9,6 +13,7 @@ type SpellSurveyFields = {
   effectRqidLink?: { rqid?: string; name?: string } | null;
   targetKind?: string;
   effectTier?: string;
+  resistedBy?: string;
 };
 
 // One lookup per rqid and language, however many actors know the spell.
@@ -28,7 +33,8 @@ function compendiumSpell(rqid: string, lang: string): Promise<RqgItem | undefine
 }
 
 /**
- * Fill a spell's effect link and survey fields from its compendium spell, matched by rqid (#1086).
+ * Fill a spell's effect link, survey fields and resistedBy from its compendium spell, matched by rqid
+ * (#1086).
  * Only fills what is unset - an empty link, or "none" - so a GM's own choice is never overwritten.
  */
 export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promise<Item.UpdateData> {
@@ -40,7 +46,8 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
   const needsLink = !isValidRqidString(system.effectRqidLink?.rqid);
   const needsTargetKind = system.targetKind === SpellTargetKindEnum.None;
   const needsEffectTier = system.effectTier === SpellEffectTierEnum.None;
-  if (!rqidFlags?.id || !(needsLink || needsTargetKind || needsEffectTier)) {
+  const needsResistedBy = system.resistedBy === SpellResistedByEnum.None;
+  if (!rqidFlags?.id || !(needsLink || needsTargetKind || needsEffectTier || needsResistedBy)) {
     return {};
   }
 
@@ -71,6 +78,11 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
     needsEffectTier && firstSet((from) => from.effectTier, SpellEffectTierEnum.None);
   if (effectTier) {
     patch["effectTier"] = effectTier;
+  }
+  const resistedBy =
+    needsResistedBy && firstSet((from) => from.resistedBy, SpellResistedByEnum.None);
+  if (resistedBy) {
+    patch["resistedBy"] = resistedBy;
   }
   return Object.keys(patch).length ? { system: patch } : {};
 }
