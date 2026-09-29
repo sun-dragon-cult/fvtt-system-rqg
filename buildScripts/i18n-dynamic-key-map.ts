@@ -49,7 +49,6 @@ import {
   spellTargetRulingState,
 } from "../src/data-model/shared/spell-cast-outcome.defs";
 import { ROUTED_KEY_WARNING_I18N_SUFFIXES } from "../src/active-effect/routed-key/routed-key-warnings";
-import { protectionPoints } from "../src/system/token-status-effects";
 import {
   spellEffectBlockedReasons,
   spellStackingRules,
@@ -184,9 +183,6 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
 
   // Active Effect - routed key warnings (#920)
   "RQG.Foundry.ActiveEffect.RoutedKey.": [...ROUTED_KEY_WARNING_I18N_SUFFIXES],
-
-  // Token status effects - Protection N, built by a factory from protectionPoints
-  "RQG.TokenEffects.StatusProtection": protectionPoints.map(String),
 
   // Item - Weapon
   "RQG.Item.Weapon.combatManeuver.": [...combatManeuverNames],
