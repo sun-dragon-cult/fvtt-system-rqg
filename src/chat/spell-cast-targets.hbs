@@ -3,7 +3,7 @@
     <div class="spell-cast-target-summary">
       <span class="spell-cast-target-name">{{name}}</span>
       <span class="spell-cast-target-state">{{stateLabel}}</span>
-      {{#if @root.isGM}}
+      {{#if canRule}}
         <span class="spell-cast-ruling">
           {{#each @root.rulings}}
             <button type="button" class="{{#if (eq state ../state)}}active{{/if}}"
