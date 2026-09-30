@@ -70,7 +70,9 @@
   img[src*="systems/rqg"][src*="assets/images"][src$=".svg"]:not(
       #token-hud img,
       #context-menu img
-    ) {
+    ),
+  /* The wiki modules' spell icons (modules/wiki-en-rqg/icons/spells/...) are white glyphs too. */
+  img[src*="-rqg/icons/spells/"][src$=".svg"]:not(#token-hud img, #context-menu img) {
     /* Make them black for light backgrounds, but exclude the token-hud images.
    Split into two attribute selectors because The Forge duplicates the "assets"
    path segment (systems/rqg/assets/assets/images/...), breaking a single
