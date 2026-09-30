@@ -41,6 +41,7 @@ import { RqgTokenLayer } from "./scene/rqg-token-layer";
 import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
+import { removeSpellEffects } from "./system/spell-effects/remove-spell-effects";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -150,6 +151,9 @@ Hooks.once("init", () => {
     },
     rqid: Rqid,
     names: nameGeneration,
+    spellEffects: {
+      removeSpellEffects,
+    },
   };
 });
 

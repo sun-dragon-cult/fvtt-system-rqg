@@ -4,6 +4,8 @@ import { decideSpellEffectStacking, type ExistingSpellEffect } from "./spell-eff
 const bladesharp = "i.spirit-magic.bladesharp";
 const fireblade = "i.spirit-magic.fireblade";
 const dullblade = "i.spirit-magic.dullblade";
+const fanaticism = "i.spirit-magic.fanaticism";
+const demoralize = "i.spirit-magic.demoralize";
 
 const existing = (
   spellRqid: string,
@@ -15,14 +17,21 @@ const existing = (
   spellRqid,
   level,
   incompatibleSpellRqids: [],
+  cancelsSpellRqids: [],
   expired: false,
   ...extra,
 });
 
-const cast = (spellRqid: string, level: number, incompatibleSpellRqids: string[] = []) => ({
+const cast = (
+  spellRqid: string,
+  level: number,
+  incompatibleSpellRqids: string[] = [],
+  cancelsSpellRqids: string[] = [],
+) => ({
   spellRqid,
   level,
   incompatibleSpellRqids,
+  cancelsSpellRqids,
 });
 
 describe("decideSpellEffectStacking - strongest takes effect", () => {
@@ -119,5 +128,65 @@ describe("decideSpellEffectStacking - latest displaces", () => {
         rule,
       ),
     ).toEqual({ outcome: "apply", displaced: [incompatible] });
+  });
+});
+
+describe("decideSpellEffectStacking - cancellation", () => {
+  it("cancels an opposing spell, whichever side lists it", () => {
+    const demoralized = existing(demoralize, 2);
+    expect(
+      decideSpellEffectStacking(
+        cast(fanaticism, 2, [], [demoralize]),
+        [demoralized],
+        "strongestTakesEffect",
+      ),
+    ).toEqual({ outcome: "cancel", cancelled: [demoralized] });
+    const fanatic = existing(fanaticism, 2, { cancelsSpellRqids: [demoralize] });
+    expect(
+      decideSpellEffectStacking(cast(demoralize, 2), [fanatic], "strongestTakesEffect"),
+    ).toEqual({ outcome: "cancel", cancelled: [fanatic] });
+  });
+
+  it("cancels under either stacking rule, before incompatibility", () => {
+    const demoralized = existing(demoralize, 2, { incompatibleSpellRqids: [fanaticism] });
+    expect(
+      decideSpellEffectStacking(
+        cast(fanaticism, 2, [], [demoralize]),
+        [demoralized],
+        "latestDisplaces",
+      ),
+    ).toEqual({ outcome: "cancel", cancelled: [demoralized] });
+    expect(
+      decideSpellEffectStacking(
+        cast(fanaticism, 2, [], [demoralize]),
+        [demoralized],
+        "strongestTakesEffect",
+      ),
+    ).toMatchObject({ outcome: "cancel" });
+  });
+
+  it("doesn't cancel an expired effect, which is cleared away instead", () => {
+    const expired = existing(demoralize, 2, {
+      expired: true,
+      incompatibleSpellRqids: [fanaticism],
+    });
+    expect(
+      decideSpellEffectStacking(
+        cast(fanaticism, 2, [], [demoralize]),
+        [expired],
+        "strongestTakesEffect",
+      ),
+    ).toEqual({ outcome: "apply", displaced: [expired] });
+  });
+
+  it("doesn't cancel another casting of the same spell", () => {
+    const same = existing(fanaticism, 2);
+    expect(
+      decideSpellEffectStacking(
+        cast(fanaticism, 2, [], [fanaticism]),
+        [same],
+        "strongestTakesEffect",
+      ),
+    ).toMatchObject({ outcome: "blocked", reason: "strongerActive" });
   });
 });

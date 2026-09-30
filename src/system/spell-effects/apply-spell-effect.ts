@@ -48,6 +48,7 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
             spellRqid: spell.spellRqid ?? "",
             level: spell.level ?? 0,
             incompatibleSpellRqids: linkedRqids(effect.system.incompatibleSpellRqidLinks),
+            cancelsSpellRqids: linkedRqids(effect.system.cancelsSpellRqidLinks),
             expired: !!effect.duration?.expired,
           },
         ]
@@ -57,6 +58,12 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
 
 function pickerLabel(item: RqgItem, stacking: SpellEffectStacking): string {
   const itemName = item.name ?? "";
+  if (stacking.outcome === "cancel") {
+    return localize("RQG.ChatMessage.SpellCast.TargetOption.cancelledActive", {
+      itemName: itemName,
+      effectName: stacking.cancelled.map((effect) => effect.name).join(", "),
+    });
+  }
   if (stacking.outcome === "blocked") {
     return localize(`RQG.ChatMessage.SpellCast.TargetOption.${stacking.reason}`, {
       itemName: itemName,
@@ -85,7 +92,7 @@ function temporalDuration(spell: RqgItem): { value: number; units: string } | un
  * Attach a copy of a spell's Active Effect template to the target - the only thing that creates a
  * spell effect, so every one carries its provenance. Warns and returns undefined when the spell has
  * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
- * incompatible spell already there keeps it from taking effect. Run on a client that owns the target.
+ * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a client that owns the target.
  */
 export async function applySpellEffect(
   spell: RqgItem,
@@ -106,6 +113,7 @@ export async function applySpellEffect(
     spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     level: cast.level,
     incompatibleSpellRqids: linkedRqids((template.system as any).incompatibleSpellRqidLinks),
+    cancelsSpellRqids: linkedRqids((template.system as any).cancelsSpellRqidLinks),
   };
   const stackingRule = game.settings?.get(systemId, "spellStackingRule") ?? "strongestTakesEffect";
   const stackingOn = (doc: RqgActor | RqgItem) =>
@@ -132,6 +140,20 @@ export async function applySpellEffect(
   }
 
   const stacking = stackingOn(parent);
+  if (stacking.outcome === "cancel") {
+    await (parent as RqgItem).deleteEmbeddedDocuments(
+      "ActiveEffect",
+      stacking.cancelled.map((effect) => effect.id),
+    );
+    ui.notifications?.info(
+      localize("RQG.ChatMessage.SpellCast.NotAppliedDetail.cancelledActive", {
+        spellName: spellName,
+        effectName: stacking.cancelled.map((effect) => effect.name).join(", "),
+        parentName: parent.name ?? "",
+      }),
+    );
+    return { outcome: "blocked", reason: "cancelledActive" };
+  }
   if (stacking.outcome === "blocked") {
     ui.notifications?.warn(
       localize(`RQG.ChatMessage.SpellCast.NotAppliedDetail.${stacking.reason}`, {

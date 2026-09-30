@@ -554,16 +554,19 @@
         },
         "NotApplied": {
           "strongerActive": "No effect: an equal or stronger casting is already active",
-          "incompatibleActive": "No effect: an incompatible spell is already active"
+          "incompatibleActive": "No effect: an incompatible spell is already active",
+          "cancelledActive": "Cancelled an opposing spell, so neither remains"
         },
         "NotAppliedDetail": {
           "strongerActive": "{effectName} is already active on {parentName}, so {spellName} has no effect.",
-          "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}."
+          "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}.",
+          "cancelledActive": "{spellName} and {effectName} cancel each other on {parentName}, so neither remains."
         },
         "TargetOption": {
           "replaces": "{itemName} (replaces {effectName})",
           "strongerActive": "{itemName} (no effect: {effectName} is active)",
-          "incompatibleActive": "{itemName} (no effect: incompatible with {effectName})"
+          "incompatibleActive": "{itemName} (no effect: incompatible with {effectName})",
+          "cancelledActive": "{itemName} (cancels {effectName})"
         }
       }
     },
