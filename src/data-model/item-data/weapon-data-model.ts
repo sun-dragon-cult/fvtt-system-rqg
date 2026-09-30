@@ -60,6 +60,15 @@ function usageEffectSchemaField() {
     attack: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
     parry: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
     damage: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    // Magical damage dice like Slash's "+(2)d6", concatenated by ADD changes.
+    damageDice: new StringField({ blank: true, nullable: false, initial: "", persisted: false }),
+  });
+}
+
+function usageEffectMultiplierSchemaField() {
+  return new SchemaField({
+    // How many times the weapon's own damage dice are rolled, e.g. 2 for True Sword.
+    damage: new NumberField({ nullable: false, min: 0, initial: 1, persisted: false }),
   });
 }
 
@@ -92,6 +101,10 @@ function defineWeaponSchema() {
       add: new SchemaField({
         melee: usageEffectSchemaField(),
         missile: usageEffectSchemaField(),
+      }),
+      multiply: new SchemaField({
+        melee: usageEffectMultiplierSchemaField(),
+        missile: usageEffectMultiplierSchemaField(),
       }),
     }),
     usage: new SchemaField({
@@ -212,17 +225,29 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
       return undefined;
     }
 
-    const { damageFormula, damageBonusPlaceholder } =
-      getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
-    // Magical damage (Bladesharp, Dullblade, ...) is added once, never doubled by a special - Core p.202.
-    const magicDamage = this.effect.add[usage === "missile" ? "missile" : "melee"].damage;
-    const magicDamagePart = magicDamage
-      ? formatDamagePart(
-          String(Math.abs(magicDamage)),
-          "RQG.Roll.DamageRoll.MagicDamage",
-          magicDamage < 0 ? "-" : "+",
-        )
-      : "";
+    const effectGroup = usage === "missile" ? "missile" : "melee";
+    const normalized = getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
+    const { damageBonusPlaceholder } = normalized;
+    // The weapon dice are rolled that many times, but not the damage bonus (True Sword, RBM p.100).
+    const diceMultiplier = Math.max(
+      1,
+      Math.trunc(this.effect.multiply?.[effectGroup]?.damage ?? 1),
+    );
+    const damageFormula = normalized.damageFormula
+      ? Array(diceMultiplier).fill(normalized.damageFormula).join("+")
+      : normalized.damageFormula;
+    // Magical damage (Bladesharp, Dullblade, Slash, ...) is added once, never doubled by a special - Core p.202.
+    const magicDamage = this.effect.add[effectGroup].damage;
+    const magicDice = (this.effect.add[effectGroup].damageDice ?? "").replace(/^\+/, "");
+    const magicDamagePart =
+      (magicDamage
+        ? formatDamagePart(
+            String(Math.abs(magicDamage)),
+            "RQG.Roll.DamageRoll.MagicDamage",
+            magicDamage < 0 ? "-" : "+",
+          )
+        : "") +
+      (magicDice ? formatDamagePart(magicDice, "RQG.Roll.DamageRoll.MagicDamage", "+") : "");
 
     if (damageDegree === "normal") {
       const wd = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");

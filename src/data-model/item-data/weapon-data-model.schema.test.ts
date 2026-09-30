@@ -30,16 +30,28 @@ describe("WeaponDataModel effect schema", () => {
 });
 
 describe("WeaponDataModel.getDamageFormula magic damage", () => {
-  const weapon = (magicDamage: number) =>
+  const weapon = (magicDamage: number, damageDice = "", diceMultiplier = 1) =>
     ({
-      usage: { oneHand: { damage: "1d8+1" } },
-      effect: { add: { melee: { damage: magicDamage }, missile: { damage: 0 } } },
+      usage: { oneHand: { damage: "1d8+1+db" } },
+      effect: {
+        add: {
+          melee: { damage: magicDamage, damageDice: damageDice },
+          missile: { damage: 0, damageDice: "" },
+        },
+        multiply: { melee: { damage: diceMultiplier }, missile: { damage: 1 } },
+      },
       parent: { parent: { type: "character", system: { attributes: { damageBonus: "1d4" } } } },
       getMaximisedDamageBonusValue: () => "4",
     }) as any;
-  const formula = (magicDamage: number, degree: string, type: string) =>
+  const formula = (
+    magicDamage: number,
+    degree: string,
+    type: string,
+    damageDice = "",
+    diceMultiplier = 1,
+  ) =>
     WeaponDataModel.prototype.getDamageFormula.call(
-      weapon(magicDamage),
+      weapon(magicDamage, damageDice, diceMultiplier),
       "oneHand",
       degree as any,
       type as any,
@@ -57,5 +69,17 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
 
   it("adds nothing when there is no magic damage", () => {
     expect(formula(0, "normal", "slash")).not.toContain("MagicDamage");
+  });
+
+  it("adds magical damage dice once, even on a slashing special", () => {
+    const result = formula(0, "special", "slash", "+(2)d6")!;
+    expect(result.match(/\(2\)d6/g)).toHaveLength(1);
+    expect(result).toMatch(/SpecialDamage.*\+\(2\)d6\[RQG\.Roll\.DamageRoll\.MagicDamage/);
+  });
+
+  it("rolls the weapon dice twice but the damage bonus once with a multiplier of 2", () => {
+    const result = formula(0, "normal", "slash", "", 2)!;
+    expect(result).toMatch(/^\(1d8\+1\+1d8\+1\)\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
+    expect(result.match(/db/g)).toHaveLength(1);
   });
 });

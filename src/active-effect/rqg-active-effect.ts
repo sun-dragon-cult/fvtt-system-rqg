@@ -56,7 +56,14 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
           <label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>
           <input type="number" name="system.spell.level" min="0" step="1" value="${spell.level}">
         `;
+        const magicPointsGroup = document.createElement("div");
+        magicPointsGroup.classList.add("form-group");
+        magicPointsGroup.innerHTML = `
+          <label>${localize("RQG.Foundry.ActiveEffect.MagicPointsSpent")}</label>
+          <input type="number" name="system.spell.magicPointsSpent" min="0" step="1" value="${spell.magicPointsSpent}">
+        `;
         disabledGroup.parentElement?.insertBefore(levelGroup, disabledGroup);
+        disabledGroup.parentElement?.insertBefore(magicPointsGroup, disabledGroup);
       },
     );
 
@@ -254,10 +261,15 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return parent.system.equippedStatus === "equipped";
   }
 
-  /** A cast spell's level resolves `@level` in its changes, e.g. Bladesharp's `@level * 5`. */
+  /**
+   * A cast spell resolves `@level` and `@magicPointsSpent` in its changes, e.g. Bladesharp's
+   * `@level * 5`. For rune magic, the magic points spent are the boost (Axe Trance).
+   */
   override getReplacementData(baseData: AnyObject): AnyObject {
-    const level = (this.system as RqgActiveEffectDataModel).spell?.level;
-    return level == null ? baseData : { ...baseData, level: level };
+    const spell = (this.system as RqgActiveEffectDataModel).spell;
+    return spell == null
+      ? baseData
+      : { ...baseData, level: spell.level, magicPointsSpent: spell.magicPointsSpent };
   }
 
   /** De-dupes routed-key misconfiguration warnings by (effect, key, reason) - see #920 plan. */

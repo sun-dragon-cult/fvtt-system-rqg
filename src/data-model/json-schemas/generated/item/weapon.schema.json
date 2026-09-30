@@ -175,13 +175,18 @@
                 "damage": {
                   "type": "integer",
                   "default": 0
+                },
+                "damageDice": {
+                  "type": "string",
+                  "default": ""
                 }
               },
               "additionalProperties": false,
               "required": [
                 "attack",
                 "parry",
-                "damage"
+                "damage",
+                "damageDice"
               ]
             },
             "missile": {
@@ -198,12 +203,55 @@
                 "damage": {
                   "type": "integer",
                   "default": 0
+                },
+                "damageDice": {
+                  "type": "string",
+                  "default": ""
                 }
               },
               "additionalProperties": false,
               "required": [
                 "attack",
                 "parry",
+                "damage",
+                "damageDice"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "melee",
+            "missile"
+          ]
+        },
+        "multiply": {
+          "type": "object",
+          "properties": {
+            "melee": {
+              "type": "object",
+              "properties": {
+                "damage": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "damage"
+              ]
+            },
+            "missile": {
+              "type": "object",
+              "properties": {
+                "damage": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
                 "damage"
               ]
             }
@@ -217,7 +265,8 @@
       },
       "additionalProperties": false,
       "required": [
-        "add"
+        "add",
+        "multiply"
       ]
     },
     "usage": {

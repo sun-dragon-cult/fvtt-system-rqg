@@ -1411,6 +1411,7 @@
         "Disabled": "Suspended",
         "MatchSuspensionToEquippedStatus": "Match Equipped Suspension",
         "SpellLevel": "Spell Level",
+        "MagicPointsSpent": "Magic Points Spent",
         "Start": "Start",
         "Duration": "Duration",
         "DeleteEffect": "Delete Effect",
