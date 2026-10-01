@@ -77,17 +77,15 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
     expect(result).toMatch(/SpecialDamage.*\+\(2\)d6\[RQG\.Roll\.DamageRoll\.MagicDamage/);
   });
 
-  it("rolls the weapon dice twice but the damage bonus once with a multiplier of 2", () => {
+  it("adds the extra weapon dice once as magic damage, without the damage bonus, with a multiplier of 2", () => {
     const result = formula(0, "normal", "slash", "", 2)!;
-    expect(result).toMatch(/^\(1d8\+1\+1d8\+1\)\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
+    expect(result).toMatch(/^\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
+    expect(result).toMatch(/\+\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.MagicDamage/);
     expect(result.match(/db/g)).toHaveLength(1);
   });
 
   it("adds only one extra set of weapon dice on a slashing special with a multiplier of 2 (Core p.204)", () => {
-    const result = formula(0, "special", "slash", "", 2)!;
-    expect(result).toMatch(/^\(1d8\+1\+1d8\+1\)\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
-    expect(result).toMatch(/\+\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.SpecialDamage/);
-    expect(result.match(/1d8/g)).toHaveLength(3);
+    expect(formula(0, "special", "slash", "", 2)!.match(/1d8/g)).toHaveLength(3);
   });
 
   describe("criticals", () => {
@@ -117,12 +115,13 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
       "leaves only magical dice in a critical %s, since the roll is no longer maximised",
       (type) => {
         const result = formula(2, "maxSpecial", type, "+(2)d6", 2)!;
-        const parts = [...result.matchAll(/([^[\]]*)\[([^\]]+)\]/g)];
-        const diced = parts.filter(([, f]) => /\d*d\d/.test(f!)).map(([, , label]) => label);
-        expect(diced.length).toBeGreaterThan(0);
-        expect(diced.every((label) => label!.startsWith("RQG.Roll.DamageRoll.MagicDamage"))).toBe(
-          true,
+        const withoutMagic = result.replace(
+          /[^[\]]*\[RQG\.Roll\.DamageRoll\.MagicDamage[^\]]*\]/g,
+          "",
         );
+        expect(withoutMagic).not.toMatch(/d\d/);
+        expect(result).toMatch(/\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.MagicDamage/);
+        expect(result).toMatch(/\(2\)d6\[RQG\.Roll\.DamageRoll\.MagicDamage/);
       },
     );
 

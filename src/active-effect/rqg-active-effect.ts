@@ -50,20 +50,18 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
         if (!spell || !disabledGroup || form?.querySelector('[name="system.spell.level"]')) {
           return;
         }
-        const levelGroup = document.createElement("div");
-        levelGroup.classList.add("form-group");
-        levelGroup.innerHTML = `
-          <label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>
-          <input type="number" name="system.spell.level" min="0" step="1" value="${spell.level}">
-        `;
-        const magicPointsGroup = document.createElement("div");
-        magicPointsGroup.classList.add("form-group");
-        magicPointsGroup.innerHTML = `
-          <label>${localize("RQG.Foundry.ActiveEffect.MagicPointsSpent")}</label>
-          <input type="number" name="system.spell.magicPointsSpent" min="0" step="1" value="${spell.magicPointsSpent}">
-        `;
-        disabledGroup.parentElement?.insertBefore(levelGroup, disabledGroup);
-        disabledGroup.parentElement?.insertBefore(magicPointsGroup, disabledGroup);
+        for (const [labelKey, field] of [
+          ["RQG.Foundry.ActiveEffect.SpellLevel", "level"],
+          ["RQG.Foundry.ActiveEffect.MagicPointsSpent", "magicPointsSpent"],
+        ] as const) {
+          const group = document.createElement("div");
+          group.classList.add("form-group");
+          group.innerHTML = `
+            <label>${localize(labelKey)}</label>
+            <input type="number" name="system.spell.${field}" min="0" step="1" value="${spell[field]}">
+          `;
+          disabledGroup.before(group);
+        }
       },
     );
 
