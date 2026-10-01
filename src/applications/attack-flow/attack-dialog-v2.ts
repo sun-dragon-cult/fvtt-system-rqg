@@ -41,6 +41,7 @@ import {
   resolveLinkedSkill,
   resolveLinkedSkillChanceData,
 } from "@items/weapon-item/weapon-skill-links";
+import { spendProjectileSpells } from "@items/weapon-item/spelled-projectile";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import Token = foundry.canvas.placeables.Token;
@@ -569,6 +570,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       weaponItem,
     );
 
+    let attackProjectileDamage = "";
     if (formDataObject.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
       if (!projectileItem || projectileItem?.system.quantity <= 0) {
@@ -591,9 +593,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
           );
         }
         await projectileItem?.update({ system: { quantity: newQuantity } });
-        // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
-        await this.render(); // Make sure ammo count is updated in the dialog
       }
+      if (projectileItem !== weaponItem) {
+        attackProjectileDamage = projectileItem.system.getMagicDamageFormula("missile", "");
+        await spendProjectileSpells(projectileItem, weaponItem);
+      }
+      // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
+      await this.render(); // Make sure ammo count is updated in the dialog
     }
 
     const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${formDataObject.usageType}`);
@@ -690,6 +696,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       actorDamagedApplied: false,
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
+      attackProjectileDamage: attackProjectileDamage,
       attackDamageBonus: attackDamageBonusForChat,
       attackRoll: attackRoll.toJSON(),
       defenceRoll: undefined,

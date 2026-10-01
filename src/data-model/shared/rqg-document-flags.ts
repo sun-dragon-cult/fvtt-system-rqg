@@ -2,11 +2,14 @@ export const documentRqidFlags = "documentRqidFlags" as const;
 export const actorWizardFlags = "actorWizardFlags" as const;
 export const tagsFlag = "tags" as const;
 export const magicPointStorageOrderFlag = "magicPointStorageOrder" as const;
+export const splitFromProjectileIdFlag = "splitFromProjectileId" as const;
 
 import type { RqidString } from "../../system/api/rqid-api";
 
 export interface RqgItemFlags {
   [documentRqidFlags]: DocumentRqidFlags;
+  /** On a missile split off its stack to carry a spell: the id of that stack. */
+  [splitFromProjectileIdFlag]?: string;
 }
 
 export interface RqgJournalEntryFlags {

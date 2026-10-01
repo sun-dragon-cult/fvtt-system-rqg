@@ -5,6 +5,7 @@ import type { Usage, UsageType, WeaponItem } from "@item-model/weapon-data-model
 import { Rqid } from "../../system/api/rqid-api";
 import { toRqidString } from "../../system/api/rqid-validation";
 import { isDocumentSubType, localize, logMisconfiguration } from "../../system/util";
+import { getLoadedProjectile } from "./spelled-projectile";
 
 export type WeaponChanceMode = "attack" | "parry";
 
@@ -81,7 +82,11 @@ export function getWeaponEffectModifier(
   mode: WeaponChanceMode,
 ): number {
   const effectGroup = getWeaponEffectGroup(usageType);
-  return Number(weaponItem.system.effect?.add?.[effectGroup]?.[mode] ?? 0);
+  const projectile = usageType === "missile" ? getLoadedProjectile(weaponItem) : undefined;
+  return (
+    Number(weaponItem.system.effect?.add?.[effectGroup]?.[mode] ?? 0) +
+    Number(projectile?.system.effect?.add?.missile?.[mode] ?? 0)
+  );
 }
 
 export function resolveLinkedSkillChanceData(

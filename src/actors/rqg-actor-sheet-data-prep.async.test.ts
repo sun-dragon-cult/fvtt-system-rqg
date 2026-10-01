@@ -346,13 +346,21 @@ it("places runes missing document rqid in invalid/extra list", async () => {
 });
 
 describe("getEquippedProjectileOptions", () => {
-  it("returns default option + equipped projectile weapons", () => {
+  it("returns default option + equipped projectile weapons, naming the spells on them", () => {
     const actor = actorWithItems([
       {
         id: "proj-equipped",
         name: "Arrow",
         type: ItemTypeEnum.Weapon,
         system: { isProjectile: true, equippedStatus: "equipped", quantity: 12 },
+        effects: { contents: [] },
+      },
+      {
+        id: "proj-speedart",
+        name: "Arrow",
+        type: ItemTypeEnum.Weapon,
+        system: { isProjectile: true, equippedStatus: "equipped", quantity: 1 },
+        effects: { contents: [{ name: "Speedart", disabled: false, system: { spell: {} } }] },
       },
       {
         id: "proj-carried",
@@ -378,6 +386,10 @@ describe("getEquippedProjectileOptions", () => {
       {
         value: "proj-equipped",
         label: "Arrow (12)",
+      },
+      {
+        value: "proj-speedart",
+        label: "Arrow (1) – Speedart",
       },
     ]);
   });

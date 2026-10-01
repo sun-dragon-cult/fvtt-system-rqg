@@ -201,6 +201,36 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
   }
 
   /**
+   * The weapon's magical damage as formula parts. Magical damage is added once and never doubled or
+   * maximised by a special (Core p.203, p.204): Bladesharp/Dullblade/Speedart's flat damage, Slash's
+   * dice, and True Sword's extra rolls of the weapon dice (RBM p.100).
+   */
+  getMagicDamageFormula(effectGroup: "melee" | "missile", weaponDice: string): string {
+    const magicDamage = this.effect.add[effectGroup].magicDamage;
+    const diceMultiplier = Math.max(1, Math.trunc(this.effect.multiply[effectGroup].damage));
+    const extraWeaponDice = weaponDice
+      ? Array(diceMultiplier - 1)
+          .fill(weaponDice)
+          .join("+")
+      : "";
+    return (
+      (magicDamage
+        ? formatDamagePart(
+            String(Math.abs(magicDamage)),
+            "RQG.Roll.DamageRoll.MagicDamage",
+            magicDamage < 0 ? "-" : "+",
+          )
+        : "") +
+      formatDamagePart(extraWeaponDice, "RQG.Roll.DamageRoll.MagicDamage", "+") +
+      formatDamagePart(
+        this.effect.add[effectGroup].magicDamageDice.replace(/^\+/, ""),
+        "RQG.Roll.DamageRoll.MagicDamage",
+        "+",
+      )
+    );
+  }
+
+  /**
    * Get a damage Roll depending on weapon usage and success level.
    * The damageBonus description & actual formula is added in applyDamageBonusToFormula
    * during combat calculations. From here it's only a placeholder like "+db".
@@ -234,29 +264,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     const effectGroup = usage === "missile" ? "missile" : "melee";
     const { damageFormula, damageBonusPlaceholder } =
       getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
-    // Magical damage is added once and never doubled or maximised by a special (Core p.203, p.204):
-    // Bladesharp/Dullblade's flat damage, Slash's dice, and True Sword's extra rolls of the weapon dice (RBM p.100).
-    const magicDamage = this.effect.add[effectGroup].magicDamage;
-    const diceMultiplier = Math.max(1, Math.trunc(this.effect.multiply[effectGroup].damage));
-    const extraWeaponDice = damageFormula
-      ? Array(diceMultiplier - 1)
-          .fill(damageFormula)
-          .join("+")
-      : "";
-    const magicDamagePart =
-      (magicDamage
-        ? formatDamagePart(
-            String(Math.abs(magicDamage)),
-            "RQG.Roll.DamageRoll.MagicDamage",
-            magicDamage < 0 ? "-" : "+",
-          )
-        : "") +
-      formatDamagePart(extraWeaponDice, "RQG.Roll.DamageRoll.MagicDamage", "+") +
-      formatDamagePart(
-        this.effect.add[effectGroup].magicDamageDice.replace(/^\+/, ""),
-        "RQG.Roll.DamageRoll.MagicDamage",
-        "+",
-      );
+    const magicDamagePart = this.getMagicDamageFormula(effectGroup, damageFormula);
 
     if (damageDegree === "normal") {
       const wd = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");

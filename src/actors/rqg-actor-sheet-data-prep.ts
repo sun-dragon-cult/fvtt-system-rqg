@@ -38,6 +38,7 @@ import { physicalItemTypes } from "../data-model/item-data/i-physical-item";
 import { systemId } from "../system/config";
 import { documentRqidFlags } from "../data-model/shared/rqg-document-flags";
 import { getStorageItems } from "../system/magic-point-source";
+import { projectileLabel } from "@items/weapon-item/spelled-projectile";
 
 /**
  * Ranks characteristics from their formula, returning CSS class names for styling.
@@ -1003,7 +1004,7 @@ export function getEquippedProjectileOptions(actor: CharacterActor): SelectOptio
       )
       .map((i) => ({
         value: i.id ?? "",
-        label: `${i.name ?? ""} (${i.system.quantity})`,
+        label: projectileLabel(i),
       })),
   ];
 }
