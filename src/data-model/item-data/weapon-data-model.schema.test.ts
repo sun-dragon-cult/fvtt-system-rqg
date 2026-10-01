@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { WeaponDataModel } from "./weapon-data-model";
 
 type DataSchema = foundry.data.fields.DataSchema;
@@ -81,5 +81,40 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
     const result = formula(0, "normal", "slash", "", 2)!;
     expect(result).toMatch(/^\(1d8\+1\+1d8\+1\)\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
     expect(result.match(/db/g)).toHaveLength(1);
+  });
+
+  it("adds only one extra set of weapon dice on a slashing special with a multiplier of 2 (Core p.204)", () => {
+    const result = formula(0, "special", "slash", "", 2)!;
+    expect(result).toMatch(/^\(1d8\+1\+1d8\+1\)\[RQG\.Roll\.DamageRoll\.WeaponDamage/);
+    expect(result).toMatch(/\+\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.SpecialDamage/);
+    expect(result.match(/1d8/g)).toHaveLength(3);
+  });
+
+  describe("criticals", () => {
+    beforeAll(() => {
+      // 1d8+1 maximised is 9
+      vi.stubGlobal(
+        "Roll",
+        class {
+          total?: number;
+          evaluateSync() {
+            this.total = 9;
+          }
+        },
+      );
+    });
+    afterAll(() => {
+      vi.unstubAllGlobals();
+    });
+
+    it("maximises two sets and rolls the extra weapon dice once on a critical impale with a multiplier of 2", () => {
+      const result = formula(0, "maxSpecial", "impale", "", 2)!;
+      expect(result.match(/\b9\[/g)).toHaveLength(2);
+      expect(result).toMatch(/\+\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.MagicDamage/);
+    });
+
+    it("leaves a critical alone when the multiplier is 1", () => {
+      expect(formula(0, "maxSpecial", "impale")).not.toContain("MagicDamage");
+    });
   });
 });

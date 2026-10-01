@@ -236,7 +236,14 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     const damageFormula = normalized.damageFormula
       ? Array(diceMultiplier).fill(normalized.damageFormula).join("+")
       : normalized.damageFormula;
-    // Magical damage (Bladesharp, Dullblade, Slash, ...) is added once, never doubled by a special - Core p.202.
+    // True Sword's extra weapon dice are magical damage, so a special doesn't double them (Core p.203, p.204).
+    const extraWeaponDice =
+      normalized.damageFormula && diceMultiplier > 1
+        ? Array(diceMultiplier - 1)
+            .fill(normalized.damageFormula)
+            .join("+")
+        : "";
+    // Magical damage (Bladesharp, Dullblade, Slash, ...) is added once, never doubled by a special - Core p.203, p.204.
     const magicDamage = this.effect.add[effectGroup].damage;
     const magicDice = (this.effect.add[effectGroup].damageDice ?? "").replace(/^\+/, "");
     const magicDamagePart =
@@ -270,7 +277,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         case "impale": {
           const wd = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");
           const specialDamage = formatDamagePart(
-            damageFormula,
+            normalized.damageFormula,
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
@@ -290,7 +297,10 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         "+",
       );
 
-      const damageFormulaRoll = new Roll(damageFormula);
+      const extraWeaponDiceDamage = extraWeaponDice
+        ? formatDamagePart(extraWeaponDice, "RQG.Roll.DamageRoll.MagicDamage", "+")
+        : "";
+      const damageFormulaRoll = new Roll(normalized.damageFormula);
       damageFormulaRoll.evaluateSync({ maximize: true });
       const evaluatedWeaponDamage = formatDamagePart(
         damageFormulaRoll.total?.toString() ?? "",
@@ -304,7 +314,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}${magicDamagePart}`;
+          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}${extraWeaponDiceDamage}${magicDamagePart}`;
         }
 
         case "slash":
@@ -314,7 +324,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
             "RQG.Roll.DamageRoll.SpecialDamage",
             "+",
           );
-          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}${magicDamagePart}`;
+          return `${evaluatedWeaponDamage}${evaluatedDamageBonus}${evaluatedSpecialDamage}${extraWeaponDiceDamage}${magicDamagePart}`;
         }
 
         default: {
