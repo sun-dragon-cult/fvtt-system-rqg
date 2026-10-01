@@ -60,6 +60,12 @@ function applicableSpell(message: ChatMessage): RqgItem | undefined {
   return spell && resolveSpellEffectRqid(spell as any) ? spell : undefined;
 }
 
+/** Applied, or blocked by what was already on the target - Apply is used up either way. */
+function isEffectSettled(message: ChatMessage, targetUuid: string): boolean {
+  const { effectUuids, blockedReason } = appliedEffect(message, targetUuid);
+  return effectUuids.length > 0 || !!blockedReason;
+}
+
 function isOwnedByUser(uuid: string): boolean {
   return !!(fromUuidSync(uuid) as { isOwner?: boolean } | null)?.isOwner;
 }
@@ -76,6 +82,8 @@ export async function renderSpellCastTargets(
     const isOwner = isOwnedByUser(target.targetTokenOrActorUuid);
     return {
       applied: effectUuids.length > 0,
+      // A ruling can't undo an effect that's already on the target, so it stops being offered.
+      canRule: !!game.user?.isGM && !effectUuids.length && !blockedReason,
       // Why it was blocked tells what's already on the target, so only its owners see it.
       blockedLabel:
         blockedReason && isOwner
@@ -94,7 +102,6 @@ export async function renderSpellCastTargets(
     };
   });
   return foundry.applications.handlebars.renderTemplate(templatePaths.spellCastTargets, {
-    isGM: !!game.user?.isGM,
     rulings: spellTargetRulingState.map((state) => ({
       state: state,
       icon: rulingIcons[state],
@@ -113,7 +120,7 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
   const state = getRequiredDomDataset(clickedButton, "spell-cast-ruling") as SpellTargetRulingState;
   const targetUuid = getRequiredDomDataset(clickedButton, "target-uuid");
   const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
-  if (!message || !spellTargetRulingState.includes(state)) {
+  if (!message || !spellTargetRulingState.includes(state) || isEffectSettled(message, targetUuid)) {
     return;
   }
 
@@ -133,6 +140,9 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
       (m as ResistanceRequestChatMessage).system.targetTokenOrActorUuid === targetUuid,
   );
   if (linkedRequest) {
+    if (isEffectSettled(linkedRequest, targetUuid)) {
+      return;
+    }
     await ruleOnResistanceRequest(linkedRequest as ResistanceRequestChatMessage, state);
     return;
   }
@@ -184,8 +194,7 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     return;
   }
   // A stale card can still show the button after someone else applied it.
-  const previous = appliedEffect(message, targetUuid);
-  if (previous.effectUuids.length || previous.blockedReason) {
+  if (isEffectSettled(message, targetUuid)) {
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.AlreadyApplied"));
     return;
   }
