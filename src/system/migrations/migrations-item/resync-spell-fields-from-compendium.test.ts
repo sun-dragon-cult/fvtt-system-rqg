@@ -17,6 +17,7 @@ const spell = (
       effectRqidLink: { rqid: "", name: "" },
       targetKind: "none",
       effectTier: "none",
+      resistedBy: "none",
       ...system,
     },
     flags: rqid ? { rqg: { documentRqidFlags: { id: rqid, lang } } } : {},
@@ -50,12 +51,13 @@ describe("resyncSpellFieldsFromCompendium", () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
-  it("fills an unset link, target kind and effect tier from the compendium spell", async () => {
+  it("fills an unset link, target kind, effect tier and resistedBy from the compendium spell", async () => {
     const lookup = packsContain(
       compendium("i.spirit-magic.fill-all", {
         effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
         targetKind: "weapon",
         effectTier: "declarative",
+        resistedBy: "resistanceRoll",
       }),
     );
 
@@ -64,6 +66,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
         effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
         targetKind: "weapon",
         effectTier: "declarative",
+        resistedBy: "resistanceRoll",
       },
     });
     expect(lookup).toHaveBeenCalledWith(expect.any(RegExp), "i", "en", {
@@ -78,11 +81,13 @@ describe("resyncSpellFieldsFromCompendium", () => {
         effectRqidLink: { rqid: "ae..keep", name: "Keep" },
         targetKind: "weapon",
         effectTier: "declarative",
+        resistedBy: "resistanceRoll",
       }),
     );
     const copy = spell("i.spirit-magic.keep", {
       effectRqidLink: { rqid: "ae..homebrew", name: "Homebrew" },
       targetKind: "creature",
+      resistedBy: "resistanceRollArea",
     });
 
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
