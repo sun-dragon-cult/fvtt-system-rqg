@@ -175,7 +175,7 @@
         width: 20px;
         height: 20px;
         background-color: currentcolor;
-        mask-image: url("/systems/rqg/assets/images/items/spirit-magic.svg");
+        mask-image: url("/systems/rqg/assets/images/ui/spell-matrix.svg");
         mask-size: contain;
         mask-repeat: no-repeat;
         mask-position: center;
