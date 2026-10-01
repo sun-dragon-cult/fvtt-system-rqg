@@ -113,6 +113,19 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
       expect(result).toMatch(/\+\(1d8\+1\)\[RQG\.Roll\.DamageRoll\.MagicDamage/);
     });
 
+    it.each(["slash", "impale", "crush"])(
+      "leaves only magical dice in a critical %s, since the roll is no longer maximised",
+      (type) => {
+        const result = formula(2, "maxSpecial", type, "+(2)d6", 2)!;
+        const parts = [...result.matchAll(/([^[\]]*)\[([^\]]+)\]/g)];
+        const diced = parts.filter(([, f]) => /\d*d\d/.test(f!)).map(([, , label]) => label);
+        expect(diced.length).toBeGreaterThan(0);
+        expect(diced.every((label) => label!.startsWith("RQG.Roll.DamageRoll.MagicDamage"))).toBe(
+          true,
+        );
+      },
+    );
+
     it("leaves a critical alone when the multiplier is 1", () => {
       expect(formula(0, "maxSpecial", "impale")).not.toContain("MagicDamage");
     });
