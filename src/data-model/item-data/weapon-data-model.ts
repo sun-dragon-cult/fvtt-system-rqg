@@ -59,7 +59,22 @@ function usageEffectSchemaField() {
   return new SchemaField({
     attack: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
     parry: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-    damage: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    // Magical damage, added once and never doubled by a special or maximised by a critical
+    // (Core p.203, p.204): Bladesharp's +N, and dice like Slash's "+(2)d6" concatenated by ADD changes.
+    magicDamage: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    magicDamageDice: new StringField({
+      blank: true,
+      nullable: false,
+      initial: "",
+      persisted: false,
+    }),
+  });
+}
+
+function usageEffectMultiplierSchemaField() {
+  return new SchemaField({
+    // How many times the weapon's own damage dice are rolled, e.g. 2 for True Sword.
+    damage: new NumberField({ nullable: false, min: 0, initial: 1, persisted: false }),
   });
 }
 
@@ -92,6 +107,10 @@ function defineWeaponSchema() {
       add: new SchemaField({
         melee: usageEffectSchemaField(),
         missile: usageEffectSchemaField(),
+      }),
+      multiply: new SchemaField({
+        melee: usageEffectMultiplierSchemaField(),
+        missile: usageEffectMultiplierSchemaField(),
       }),
     }),
     usage: new SchemaField({
@@ -212,17 +231,32 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
       return undefined;
     }
 
+    const effectGroup = usage === "missile" ? "missile" : "melee";
     const { damageFormula, damageBonusPlaceholder } =
       getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
-    // Magical damage (Bladesharp, Dullblade, ...) is added once, never doubled by a special - Core p.202.
-    const magicDamage = this.effect.add[usage === "missile" ? "missile" : "melee"].damage;
-    const magicDamagePart = magicDamage
-      ? formatDamagePart(
-          String(Math.abs(magicDamage)),
-          "RQG.Roll.DamageRoll.MagicDamage",
-          magicDamage < 0 ? "-" : "+",
-        )
+    // Magical damage is added once and never doubled or maximised by a special (Core p.203, p.204):
+    // Bladesharp/Dullblade's flat damage, Slash's dice, and True Sword's extra rolls of the weapon dice (RBM p.100).
+    const magicDamage = this.effect.add[effectGroup].magicDamage;
+    const diceMultiplier = Math.max(1, Math.trunc(this.effect.multiply[effectGroup].damage));
+    const extraWeaponDice = damageFormula
+      ? Array(diceMultiplier - 1)
+          .fill(damageFormula)
+          .join("+")
       : "";
+    const magicDamagePart =
+      (magicDamage
+        ? formatDamagePart(
+            String(Math.abs(magicDamage)),
+            "RQG.Roll.DamageRoll.MagicDamage",
+            magicDamage < 0 ? "-" : "+",
+          )
+        : "") +
+      formatDamagePart(extraWeaponDice, "RQG.Roll.DamageRoll.MagicDamage", "+") +
+      formatDamagePart(
+        this.effect.add[effectGroup].magicDamageDice.replace(/^\+/, ""),
+        "RQG.Roll.DamageRoll.MagicDamage",
+        "+",
+      );
 
     if (damageDegree === "normal") {
       const wd = formatDamagePart(damageFormula, "RQG.Roll.DamageRoll.WeaponDamage");

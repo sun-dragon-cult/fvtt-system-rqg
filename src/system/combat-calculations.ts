@@ -124,7 +124,7 @@ export async function combatOutcome(
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;
   const damageFormulaWithDb = applyDamageBonusToFormula(damageFormulaWithExtraDamage, damageBonus);
 
-  const damageRoll = await evaluateDamageRoll(damageFormulaWithDb, damageDegree);
+  const damageRoll = await evaluateDamageRoll(damageFormulaWithDb);
 
   const { weaponDamage, defenderHitLocationDamage, affectParryingHitLocation } = calculateDamages(
     defence,
@@ -244,14 +244,11 @@ function createEmptyCombatOutcome(): CombatOutcome {
   };
 }
 
-// TODO maximize maybe not needed if item getDamageFormula replaces maxSpecial with numbers?
-async function evaluateDamageRoll(
-  damageFormula: string,
-  damageDegree: DamageDegree,
-): Promise<Roll> {
+// A critical's maximised parts are already numbers in the formula; what's left is magical damage, rolled.
+async function evaluateDamageRoll(damageFormula: string): Promise<Roll> {
   const damageRoll = new DamageRoll(damageFormula);
   try {
-    await damageRoll.evaluate({ maximize: damageDegree === "maxSpecial" });
+    await damageRoll.evaluate();
     requireValue(damageRoll.total, "damage roll was not yet evaluated?");
   } catch (e) {
     ui.notifications?.error(`Failed to evaluate damage roll: ${damageFormula}`);

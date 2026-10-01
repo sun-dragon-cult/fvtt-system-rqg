@@ -172,16 +172,21 @@
                   "type": "integer",
                   "default": 0
                 },
-                "damage": {
+                "magicDamage": {
                   "type": "integer",
                   "default": 0
+                },
+                "magicDamageDice": {
+                  "type": "string",
+                  "default": ""
                 }
               },
               "additionalProperties": false,
               "required": [
                 "attack",
                 "parry",
-                "damage"
+                "magicDamage",
+                "magicDamageDice"
               ]
             },
             "missile": {
@@ -195,15 +200,58 @@
                   "type": "integer",
                   "default": 0
                 },
-                "damage": {
+                "magicDamage": {
                   "type": "integer",
                   "default": 0
+                },
+                "magicDamageDice": {
+                  "type": "string",
+                  "default": ""
                 }
               },
               "additionalProperties": false,
               "required": [
                 "attack",
                 "parry",
+                "magicDamage",
+                "magicDamageDice"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "melee",
+            "missile"
+          ]
+        },
+        "multiply": {
+          "type": "object",
+          "properties": {
+            "melee": {
+              "type": "object",
+              "properties": {
+                "damage": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "damage"
+              ]
+            },
+            "missile": {
+              "type": "object",
+              "properties": {
+                "damage": {
+                  "type": "number",
+                  "minimum": 0,
+                  "default": 1
+                }
+              },
+              "additionalProperties": false,
+              "required": [
                 "damage"
               ]
             }
@@ -217,7 +265,8 @@
       },
       "additionalProperties": false,
       "required": [
-        "add"
+        "add",
+        "multiply"
       ]
     },
     "usage": {

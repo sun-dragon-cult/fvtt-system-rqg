@@ -360,13 +360,14 @@ describe("RqgActiveEffect._applyChangeCustom (deprecated legacy shim)", () => {
 });
 
 describe("RqgActiveEffect.getReplacementData", () => {
-  it("adds a cast spell's level, so @level resolves in its changes", async () => {
+  it("adds a cast spell's level and magic points, so @level and @magicPointsSpent resolve", async () => {
     const { RqgActiveEffect } = await loadSubject();
-    const effect = { system: { spell: { level: 4 } } };
+    const effect = { system: { spell: { level: 1, magicPointsSpent: 3 } } };
 
     expect(RqgActiveEffect.prototype.getReplacementData.call(effect, { pow: 12 })).toEqual({
       pow: 12,
-      level: 4,
+      level: 1,
+      magicPointsSpent: 3,
     });
   });
 

@@ -50,13 +50,18 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
         if (!spell || !disabledGroup || form?.querySelector('[name="system.spell.level"]')) {
           return;
         }
-        const levelGroup = document.createElement("div");
-        levelGroup.classList.add("form-group");
-        levelGroup.innerHTML = `
-          <label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>
-          <input type="number" name="system.spell.level" min="0" step="1" value="${spell.level}">
-        `;
-        disabledGroup.parentElement?.insertBefore(levelGroup, disabledGroup);
+        for (const [labelKey, field] of [
+          ["RQG.Foundry.ActiveEffect.SpellLevel", "level"],
+          ["RQG.Foundry.ActiveEffect.MagicPointsSpent", "magicPointsSpent"],
+        ] as const) {
+          const group = document.createElement("div");
+          group.classList.add("form-group");
+          group.innerHTML = `
+            <label>${localize(labelKey)}</label>
+            <input type="number" name="system.spell.${field}" min="0" step="1" value="${spell[field]}">
+          `;
+          disabledGroup.before(group);
+        }
       },
     );
 
@@ -254,10 +259,15 @@ export class RqgActiveEffect extends ActiveEffect<ActiveEffect.SubType> {
     return parent.system.equippedStatus === "equipped";
   }
 
-  /** A cast spell's level resolves `@level` in its changes, e.g. Bladesharp's `@level * 5`. */
+  /**
+   * A cast spell resolves `@level` and `@magicPointsSpent` in its changes, e.g. Bladesharp's
+   * `@level * 5`. For rune magic, the magic points spent are the boost (Axe Trance).
+   */
   override getReplacementData(baseData: AnyObject): AnyObject {
-    const level = (this.system as RqgActiveEffectDataModel).spell?.level;
-    return level == null ? baseData : { ...baseData, level: level };
+    const spell = (this.system as RqgActiveEffectDataModel).spell;
+    return spell == null
+      ? baseData
+      : { ...baseData, level: spell.level, magicPointsSpent: spell.magicPointsSpent };
   }
 
   /** De-dupes routed-key misconfiguration warnings by (effect, key, reason) - see #920 plan. */
