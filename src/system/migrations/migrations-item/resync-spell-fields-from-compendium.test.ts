@@ -134,4 +134,33 @@ describe("resyncSpellFieldsFromCompendium", () => {
     expect(await resyncSpellFieldsFromCompendium(source)).toEqual({});
     expect(lookup).toHaveBeenCalledTimes(1);
   });
+
+  it("replaces a default spell icon with the compendium spell's own, and keeps a chosen one", async () => {
+    const wikiIcon = "modules/wiki-en-rqg/icons/spells/bladesharp.svg";
+    packsContain(Object.assign(compendium("i.spirit-magic.icon", {}), { img: wikiIcon }));
+    const withIcon = (img: string) => Object.assign(spell("i.spirit-magic.icon", {}), { img: img });
+
+    expect(
+      await resyncSpellFieldsFromCompendium(
+        withIcon("systems/rqg/assets/images/items/spirit-magic.svg"),
+      ),
+    ).toEqual({ img: wikiIcon });
+    expect(await resyncSpellFieldsFromCompendium(withIcon("worlds/w/my-icon.webp"))).toEqual({});
+  });
+
+  it("doesn't copy the compendium spell's icon when that is a default one too", async () => {
+    packsContain(
+      Object.assign(compendium("i.spirit-magic.plain", {}), {
+        img: "systems/rqg/assets/images/items/spirit-magic.svg",
+      }),
+    );
+
+    expect(
+      await resyncSpellFieldsFromCompendium(
+        Object.assign(spell("i.spirit-magic.plain", {}), {
+          img: "systems/rqg/assets/images/items/spirit-magic.svg",
+        }),
+      ),
+    ).toEqual({});
+  });
 });
