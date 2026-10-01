@@ -258,6 +258,53 @@ describe("shared-ae-migration-utils path rewrite framework", () => {
     expect(effect.system.changes[0]!.key).toBe("i.skill.dodge:system.baseChance");
   });
 
+  it("renames the weapon damage pad to magicDamage, keeping routing and change type", () => {
+    const effect = {
+      system: {
+        changes: [
+          { key: "@.:system.effect.add.melee.damage", type: "add", value: "4" },
+          {
+            key: "@i.weapon.broadsword:system.effect.add.missile.damage",
+            type: "subtract",
+            value: "2",
+          },
+          { key: "system.effect.add.melee.damage", type: "add", value: "1" },
+          { key: "@~^i\\.weapon\\.:system.effect.add.melee.attack", type: "add", value: "5" },
+        ],
+      },
+    };
+
+    const result = migrateEffectTypesAndPathsWithSummary(effect);
+
+    expect(result.changed).toBe(true);
+    expect(effect.system.changes).toEqual([
+      { key: "@.:system.effect.add.melee.magicDamage", type: "add", value: "4" },
+      {
+        key: "@i.weapon.broadsword:system.effect.add.missile.magicDamage",
+        type: "subtract",
+        value: "2",
+      },
+      { key: "system.effect.add.melee.magicDamage", type: "add", value: "1" },
+      { key: "@~^i\\.weapon\\.:system.effect.add.melee.attack", type: "add", value: "5" },
+    ]);
+    expect(result.summary.migratedChanges).toBe(3);
+  });
+
+  it("is idempotent for renamed damage pad keys, and skips them in a dry run", () => {
+    const effect = {
+      system: { changes: [{ key: "@.:system.effect.add.melee.damage", type: "add", value: "4" }] },
+    };
+
+    expect(migrateEffectTypesAndPathsWithSummary(effect, undefined, { dryRun: true }).changed).toBe(
+      false,
+    );
+    migrateEffectTypesAndPaths(effect);
+    const secondPass = migrateEffectTypesAndPathsWithSummary(effect);
+
+    expect(secondPass.changed).toBe(false);
+    expect(effect.system.changes[0]!.key).toBe("@.:system.effect.add.melee.magicDamage");
+  });
+
   it("reports changed when only change.type normalization occurs", () => {
     const effect = {
       system: {

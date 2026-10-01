@@ -59,9 +59,15 @@ function usageEffectSchemaField() {
   return new SchemaField({
     attack: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
     parry: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-    damage: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
-    // Magical damage dice like Slash's "+(2)d6", concatenated by ADD changes.
-    damageDice: new StringField({ blank: true, nullable: false, initial: "", persisted: false }),
+    // Magical damage, added once and never doubled by a special or maximised by a critical
+    // (Core p.203, p.204): Bladesharp's +N, and dice like Slash's "+(2)d6" concatenated by ADD changes.
+    magicDamage: new NumberField({ integer: true, nullable: false, initial: 0, persisted: false }),
+    magicDamageDice: new StringField({
+      blank: true,
+      nullable: false,
+      initial: "",
+      persisted: false,
+    }),
   });
 }
 
@@ -230,7 +236,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
       getNormalizedDamageFormulaAndDamageBonus(weaponDamage);
     // Magical damage is added once and never doubled or maximised by a special (Core p.203, p.204):
     // Bladesharp/Dullblade's flat damage, Slash's dice, and True Sword's extra rolls of the weapon dice (RBM p.100).
-    const magicDamage = this.effect.add[effectGroup].damage;
+    const magicDamage = this.effect.add[effectGroup].magicDamage;
     const diceMultiplier = Math.max(1, Math.trunc(this.effect.multiply[effectGroup].damage));
     const extraWeaponDice = damageFormula
       ? Array(diceMultiplier - 1)
@@ -247,7 +253,7 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
         : "") +
       formatDamagePart(extraWeaponDice, "RQG.Roll.DamageRoll.MagicDamage", "+") +
       formatDamagePart(
-        this.effect.add[effectGroup].damageDice.replace(/^\+/, ""),
+        this.effect.add[effectGroup].magicDamageDice.replace(/^\+/, ""),
         "RQG.Roll.DamageRoll.MagicDamage",
         "+",
       );

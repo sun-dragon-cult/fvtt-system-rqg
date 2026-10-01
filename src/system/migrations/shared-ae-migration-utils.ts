@@ -503,6 +503,43 @@ export function migrateEffectLegacyRoutedKeys(effect: AEMigrationEffectLike): nu
   return rewritten;
 }
 
+const RENAMED_TARGET_PATHS: Record<string, string> = {
+  "system.effect.add.melee.damage": "system.effect.add.melee.magicDamage",
+  "system.effect.add.missile.damage": "system.effect.add.missile.magicDamage",
+};
+
+/**
+ * Rename target paths whose field was renamed, keeping any `@<selector>:` routing prefix and the
+ * change type.
+ *
+ * @returns the number of rewritten changes
+ */
+export function migrateEffectRenamedTargetPaths(effect: AEMigrationEffectLike): number {
+  const changes = getEffectChanges(effect);
+  let rewritten = 0;
+  const migratedChanges = changes.map((change) => {
+    const persistedChange = toPersistedChangeData(change);
+    const key = persistedChange.key;
+    if (typeof key !== "string") {
+      return persistedChange;
+    }
+    const separator = key.startsWith("@") ? key.lastIndexOf(":") + 1 : 0;
+    const renamed = RENAMED_TARGET_PATHS[key.slice(separator)];
+    if (!renamed) {
+      return persistedChange;
+    }
+    rewritten += 1;
+    persistedChange.key = key.slice(0, separator) + renamed;
+    return persistedChange;
+  });
+
+  if (rewritten > 0) {
+    setEffectChanges(effect, migratedChanges);
+  }
+
+  return rewritten;
+}
+
 /**
  * Repair malformed or legacy change.type values in a single effect.
  *
@@ -542,7 +579,9 @@ export function migrateEffectChangeTypes(effect: AEMigrationEffectLike): boolean
  * - Legacy item-target syntax (<itemType>:<itemName>:<systemPath>) is rewritten to
  *   rqid-based syntax when a unique actor item match can be found.
  * - CUSTOM-mode routed keys (<rqid>:<systemPath>, ~<regex>:<systemPath>) get the `@` prefix
- *   and ADD mode. Runs last so it also picks up the item-target rewrites.
+ *   and ADD mode. Runs after the item-target rewrites so it also picks those up.
+ * - Renamed target paths (system.effect.add.melee.damage -> magicDamage) are rewritten last,
+ *   so they also cover keys the earlier steps just routed.
  */
 export function migrateEffectTypesAndPaths(
   effect: AEMigrationEffectLike,
@@ -552,7 +591,14 @@ export function migrateEffectTypesAndPaths(
   const migratedPaths = migrateEffectChanges(effect);
   const migratedLegacyItemTargets = migrateEffectLegacyItemTargetSyntax(effect, owningActor);
   const migratedRoutedKeys = migrateEffectLegacyRoutedKeys(effect) > 0;
-  return migratedTypes || migratedPaths || migratedLegacyItemTargets || migratedRoutedKeys;
+  const migratedRenamedPaths = migrateEffectRenamedTargetPaths(effect) > 0;
+  return (
+    migratedTypes ||
+    migratedPaths ||
+    migratedLegacyItemTargets ||
+    migratedRoutedKeys ||
+    migratedRenamedPaths
+  );
 }
 
 export function migrateEffectTypesAndPathsWithSummary(
@@ -566,10 +612,15 @@ export function migrateEffectTypesAndPathsWithSummary(
     ? false
     : migrateEffectLegacyItemTargetSyntax(effect, owningActor);
   const migratedRoutedKeys = options.dryRun ? 0 : migrateEffectLegacyRoutedKeys(effect);
-  pathRewrite.summary.migratedChanges += migratedRoutedKeys;
+  const migratedRenamedPaths = options.dryRun ? 0 : migrateEffectRenamedTargetPaths(effect);
+  pathRewrite.summary.migratedChanges += migratedRoutedKeys + migratedRenamedPaths;
   return {
     changed:
-      migratedTypes || pathRewrite.changed || migratedLegacyItemTargets || migratedRoutedKeys > 0,
+      migratedTypes ||
+      pathRewrite.changed ||
+      migratedLegacyItemTargets ||
+      migratedRoutedKeys > 0 ||
+      migratedRenamedPaths > 0,
     summary: pathRewrite.summary,
   };
 }

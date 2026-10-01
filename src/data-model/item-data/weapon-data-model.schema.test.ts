@@ -15,7 +15,7 @@ describe("WeaponDataModel effect schema", () => {
     const add = getNestedSchema(effect["add"]);
 
     const groups = ["melee", "missile"] as const;
-    const keys = ["attack", "parry", "damage"] as const;
+    const keys = ["attack", "parry", "magicDamage"] as const;
 
     for (const group of groups) {
       const groupSchema = getNestedSchema(add[group]);
@@ -35,8 +35,8 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
       usage: { oneHand: { damage: "1d8+1+db" } },
       effect: {
         add: {
-          melee: { damage: magicDamage, damageDice: damageDice },
-          missile: { damage: 0, damageDice: "" },
+          melee: { magicDamage, magicDamageDice: damageDice },
+          missile: { magicDamage: 0, magicDamageDice: "" },
         },
         multiply: { melee: { damage: diceMultiplier }, missile: { damage: 1 } },
       },
