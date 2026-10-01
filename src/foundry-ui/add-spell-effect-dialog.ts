@@ -139,5 +139,9 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     runePointsSpent: 0,
     casterSuccessLevel: undefined,
   });
-  return applied?.outcome === "applied";
+  // A cancellation removes the opposing effect, so the palette changes then too.
+  return (
+    applied?.outcome === "applied" ||
+    (applied?.outcome === "blocked" && applied.reason === "cancelledActive")
+  );
 }

@@ -25,5 +25,9 @@ export const spellStackingRules = ["strongestTakesEffect", "latestDisplaces"] as
 export type SpellStackingRule = (typeof spellStackingRules)[number];
 
 /** Why Apply left a target without the effect - recorded on the card, so Apply is used up. */
-export const spellEffectBlockedReasons = ["strongerActive", "incompatibleActive"] as const;
+export const spellEffectBlockedReasons = [
+  "strongerActive",
+  "incompatibleActive",
+  "cancelledActive",
+] as const;
 export type SpellEffectBlockedReason = (typeof spellEffectBlockedReasons)[number];

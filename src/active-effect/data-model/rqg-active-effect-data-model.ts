@@ -52,6 +52,9 @@ function rqgActiveEffectSchemaFields() {
     // Spells this effect can't share a document with, e.g. Bladesharp with Fireblade. Copied with
     // the template, so either side listing the other is enough.
     incompatibleSpellRqidLinks: rqidLinkArraySchemaField(),
+    // Spells this effect cancels, e.g. Fanaticism and Demoralize: a cast removes the other and
+    // doesn't take effect itself (RBM p.112, 114). Either side listing the other is enough.
+    cancelsSpellRqidLinks: rqidLinkArraySchemaField(),
     // Set on a copy applied by a cast: what was cast, by whom and how strongly.
     spell: new SchemaField(
       {
@@ -84,5 +87,6 @@ export class RqgActiveEffectDataModel extends ActiveEffectTypeDataModelBase {
   declare matchSuspensionToEquippedStatus: foundry.data.fields.SchemaField.InnerAssignmentType<RqgActiveEffectSchemaFields>["matchSuspensionToEquippedStatus"];
   declare spellTarget: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["spellTarget"];
   declare incompatibleSpellRqidLinks: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["incompatibleSpellRqidLinks"];
+  declare cancelsSpellRqidLinks: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["cancelsSpellRqidLinks"];
   declare spell: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["spell"];
 }
