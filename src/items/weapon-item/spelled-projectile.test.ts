@@ -78,6 +78,23 @@ describe("splitOffProjectile", () => {
     expect(created.effects).toEqual([{ id: "e2" }]);
     expect(created.flags.rqg.splitFromProjectileId).toBe("stack");
     expect(split.id).toBe("split");
+    expect(actor.updateEmbeddedDocuments).not.toHaveBeenCalled();
+  });
+
+  it("loads the split missile in the launchers that had the stack loaded", async () => {
+    const stack = makeItem({ id: "stack", system: { quantity: 20 } });
+    const bow = makeItem({ id: "bow", system: { isProjectile: false, projectileId: "stack" } });
+    const sling = makeItem({
+      id: "sling",
+      system: { isProjectile: false, projectileId: "stones" },
+    });
+    const actor = makeActor([stack, bow, sling]);
+
+    await splitOffProjectile(stack);
+
+    expect(actor.updateEmbeddedDocuments).toHaveBeenCalledWith("Item", [
+      { _id: "bow", system: { projectileId: "split" } },
+    ]);
   });
 
   it.each([

@@ -35,7 +35,7 @@ export function projectileLabel(item: WeaponItem): string {
 
 /**
  * The item a spell cast on one missile should attach to: the projectile itself when it is a single
- * one, else a new one-missile item split off the stack.
+ * one, else a new one-missile item split off the stack, which the stack's launchers then load.
  */
 export async function splitOffProjectile(item: WeaponItem): Promise<WeaponItem> {
   const actor = item.parent;
@@ -50,7 +50,21 @@ export async function splitOffProjectile(item: WeaponItem): Promise<WeaponItem> 
 
   await item.update({ system: { quantity: item.system.quantity - 1 } });
   const [created] = (await actor.createEmbeddedDocuments("Item", [data])) ?? [];
-  return (created as WeaponItem | undefined) ?? item;
+  if (!created) {
+    return item;
+  }
+  await reloadLaunchers(actor, item.id ?? "", created.id ?? "");
+  return created as WeaponItem;
+}
+
+/** Load the launchers that had one projectile loaded with another instead. */
+async function reloadLaunchers(actor: Actor, fromId: string, toId: string): Promise<void> {
+  const reloads = actor.items.contents
+    .filter((item: any) => item.type === ItemTypeEnum.Weapon && item.system.projectileId === fromId)
+    .map((launcher) => ({ _id: launcher.id, system: { projectileId: toId } }));
+  if (reloads.length) {
+    await actor.updateEmbeddedDocuments("Item", reloads);
+  }
 }
 
 /**
@@ -77,15 +91,7 @@ async function returnToStack(projectile: WeaponItem): Promise<void> {
       system: { quantity: stack.system.quantity + projectile.system.quantity },
     });
   }
-  const reloads = actor.items.contents
-    .filter(
-      (item: any) =>
-        item.type === ItemTypeEnum.Weapon && item.system.projectileId === projectile.id,
-    )
-    .map((launcher) => ({ _id: launcher.id, system: { projectileId: stack.id } }));
-  if (reloads.length) {
-    await actor.updateEmbeddedDocuments("Item", reloads);
-  }
+  await reloadLaunchers(actor, projectile.id ?? "", stack.id ?? "");
   await actor.deleteEmbeddedDocuments("Item", [projectile.id ?? ""]);
 }
 
