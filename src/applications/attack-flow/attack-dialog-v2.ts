@@ -630,7 +630,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       }
       if (projectileItem !== weaponItem) {
         attackProjectileDamage = projectileItem.system.getMagicDamageFormula("missile", "");
-        await spendProjectileSpells(projectileItem, weaponItem);
+        await spendProjectileSpells(projectileItem);
       }
       // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
       await this.render(); // Make sure ammo count is updated in the dialog

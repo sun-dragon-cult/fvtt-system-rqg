@@ -1,5 +1,6 @@
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { systemId } from "../../system/config";
+import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-flags";
 
 // Speedart, Multimissile, Firearrow and the like are cast on one missile and used up when it is
@@ -54,17 +55,17 @@ export async function splitOffProjectile(item: WeaponItem): Promise<WeaponItem> 
 
 /**
  * The spells on a fired projectile are spent. A missile split off a stack goes back to it (or is
- * gone, if it was used up) and the launcher is loaded from the stack again.
+ * gone, if it was used up) and its launcher is loaded from the stack again.
  */
-export async function spendProjectileSpells(
-  projectile: WeaponItem,
-  launcher: WeaponItem,
-): Promise<void> {
+export async function spendProjectileSpells(projectile: WeaponItem): Promise<void> {
   const spent = spellEffects(projectile).map((effect) => effect.id ?? "");
   if (spent.length) {
     await projectile.deleteEmbeddedDocuments("ActiveEffect", spent);
   }
+  await returnToStack(projectile);
+}
 
+async function returnToStack(projectile: WeaponItem): Promise<void> {
   const actor = projectile.parent;
   const stack = actor?.items.get(projectile.getFlag(systemId, splitFromProjectileIdFlag) ?? "") as
     WeaponItem | undefined;
@@ -76,8 +77,36 @@ export async function spendProjectileSpells(
       system: { quantity: stack.system.quantity + projectile.system.quantity },
     });
   }
-  await actor.deleteEmbeddedDocuments("Item", [projectile.id ?? ""]);
-  if (launcher.system.projectileId !== stack.id) {
-    await launcher.update({ system: { projectileId: stack.id } });
+  const reloads = actor.items.contents
+    .filter(
+      (item: any) =>
+        item.type === ItemTypeEnum.Weapon && item.system.projectileId === projectile.id,
+    )
+    .map((launcher) => ({ _id: launcher.id, system: { projectileId: stack.id } }));
+  if (reloads.length) {
+    await actor.updateEmbeddedDocuments("Item", reloads);
   }
+  await actor.deleteEmbeddedDocuments("Item", [projectile.id ?? ""]);
+}
+
+/**
+ * A split-off missile whose spells have all run out goes back to its stack. Foundry marks an
+ * expired effect on the active GM's client, so this runs there only.
+ */
+export function initSpelledProjectiles(): void {
+  Hooks.on("updateActiveEffect", (effect: ActiveEffect, changed: any, _options, userId: string) => {
+    if (userId !== game.user?.id || changed.duration?.expired !== true) {
+      return;
+    }
+    const item = effect.parent as WeaponItem | null;
+    if (
+      !(item instanceof Item) ||
+      !item.getFlag(systemId, splitFromProjectileIdFlag) ||
+      !(effect.system as { spell?: unknown })?.spell ||
+      spellEffects(item).some((spell) => spell.active)
+    ) {
+      return;
+    }
+    void spendProjectileSpells(item);
+  });
 }

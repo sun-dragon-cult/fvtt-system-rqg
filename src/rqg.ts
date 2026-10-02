@@ -35,6 +35,7 @@ import { RqgTokenLayer } from "./scene/rqg-token-layer";
 import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
+import { initSpelledProjectiles } from "./items/weapon-item/spelled-projectile";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -101,6 +102,7 @@ Hooks.once("init", () => {
   RqgToken.init();
   RqgActor.init();
   initCharacterPassiveRecovery();
+  initSpelledProjectiles();
   RqgItem.init();
   RqgHotbar.init();
   RqgActorDirectory.init();
