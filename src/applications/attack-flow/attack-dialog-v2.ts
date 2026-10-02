@@ -41,7 +41,11 @@ import {
   resolveLinkedSkill,
   resolveLinkedSkillChanceData,
 } from "@items/weapon-item/weapon-skill-links";
-import { spendProjectileSpells } from "@items/weapon-item/spelled-projectile";
+import {
+  getLoadedProjectile,
+  projectileSpellNames,
+  spendProjectileSpells,
+} from "@items/weapon-item/spelled-projectile";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import Token = foundry.canvas.placeables.Token;
@@ -570,6 +574,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       weaponItem,
     );
 
+    // Read before firing, since firing spends the projectile's spells
+    const firedProjectile =
+      formDataObject.usageType === "missile" ? getLoadedProjectile(weaponItem) : undefined;
+    const projectileModifier = Number(firedProjectile?.system.effect.add.missile.attack ?? 0);
+    const projectileSpells = firedProjectile ? projectileSpellNames(firedProjectile) : "";
+
     let attackProjectileDamage = "";
     if (formDataObject.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
@@ -614,8 +624,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       naturalSkill: Number(skillChanceData.skillChance ?? 0),
       modifiers: [
         {
-          value: Number(skillChanceData.weaponEffectModifier ?? 0),
+          value: Number(skillChanceData.weaponEffectModifier ?? 0) - projectileModifier,
           description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
+        {
+          value: projectileModifier,
+          description: projectileSpells || localize("RQG.Roll.AbilityRoll.WeaponEffect"),
         },
         {
           value: Number(formDataObject.augmentModifier),

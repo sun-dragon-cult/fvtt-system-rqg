@@ -17,13 +17,19 @@ function spellEffects(item: WeaponItem): ActiveEffect[] {
   return item.effects.contents.filter((effect: any) => !!effect.system?.spell);
 }
 
+/** The names of the spells active on a projectile, e.g. "Speedart". */
+export function projectileSpellNames(item: WeaponItem): string {
+  return spellEffects(item)
+    .filter((effect) => !effect.disabled)
+    .map((effect) => effect.name)
+    .join(", ");
+}
+
 /** The projectile's name and count, plus the spells on it, so enchanted ones can be told apart. */
 export function projectileLabel(item: WeaponItem): string {
-  const spells = spellEffects(item)
-    .filter((effect) => !effect.disabled)
-    .map((effect) => effect.name);
+  const spells = projectileSpellNames(item);
   const label = `${item.name ?? ""} (${item.system.quantity})`;
-  return spells.length ? `${label} – ${spells.join(", ")}` : label;
+  return spells ? `${label} – ${spells}` : label;
 }
 
 /**
