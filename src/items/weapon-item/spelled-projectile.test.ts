@@ -100,6 +100,7 @@ describe("splitOffProjectile", () => {
   it.each([
     ["a single missile", { quantity: 1 }],
     ["a weapon that is not a projectile", { quantity: 3, isProjectile: false }],
+    ["a thrown weapon", { quantity: 3, isThrownWeapon: true }],
   ])("leaves %s whole", async (_label, system) => {
     const item = makeItem({ id: "item", system });
     const actor = makeActor([item]);

@@ -39,7 +39,13 @@ export function projectileLabel(item: WeaponItem): string {
  */
 export async function splitOffProjectile(item: WeaponItem): Promise<WeaponItem> {
   const actor = item.parent;
-  if (!item.system.isProjectile || item.system.quantity <= 1 || !actor) {
+  // Thrown weapons are kept as separate items, each with its own hit points
+  if (
+    !item.system.isProjectile ||
+    item.system.isThrownWeapon ||
+    item.system.quantity <= 1 ||
+    !actor
+  ) {
     return item;
   }
   const data = item.toObject() as any;
