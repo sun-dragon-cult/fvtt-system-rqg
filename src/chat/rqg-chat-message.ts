@@ -368,7 +368,7 @@ export class RqgChatMessage extends ChatMessage {
     }
 
     // Author and timestamp TODO users locale (don't have that), or maybe Gloranthan time formatting?
-    const time = new Date(this.timestamp).toLocaleDateString("en-US", {
+    const time = new Date(this.timestamp ?? 0).toLocaleDateString("en-US", {
       hour: "numeric",
       minute: "numeric",
       second: "numeric",
