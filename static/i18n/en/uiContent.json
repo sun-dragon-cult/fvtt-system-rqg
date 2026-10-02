@@ -590,6 +590,7 @@
         "OutOfAmmoWarn": "You don't have any {projectileName} to {combatManeuverName}!",
         "OutOfAmmo": "Out of Ammo",
         "AmmoQuantity": "Ammo Quantity",
+        "Ammo": "Ammunition",
         "AimedBlow": "Aimed Blow",
         "HitLocationFormula": "Hit Location Formula",
         "HitLocationFormulaOptions": {

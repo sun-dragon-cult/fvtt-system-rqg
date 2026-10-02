@@ -41,6 +41,7 @@ import {
   resolveLinkedSkill,
   resolveLinkedSkillChanceData,
 } from "@items/weapon-item/weapon-skill-links";
+import { getEquippedProjectileOptions } from "@actors/rqg-actor-sheet-data-prep.ts";
 import {
   getLoadedProjectile,
   projectileSpellNames,
@@ -276,6 +277,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     let isOutOfAmmo = false;
     let ammoQuantity: number = 1;
+    const projectileOptions =
+      formData.usageType === "missile" &&
+      this.weaponItem.system.isProjectileWeapon &&
+      isDocumentSubType<CharacterActor>(this.weaponItem.parent, ActorTypeEnum.Character)
+        ? getEquippedProjectileOptions(this.weaponItem.parent)
+        : [];
 
     if (formData.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(this.weaponItem);
@@ -354,6 +361,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       formData: formData,
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
+      projectileOptions: projectileOptions,
+      selectedProjectileId: this.weaponItem.system.projectileId,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
       attackingWeaponOptions: AttackDialogV2.getWeaponOptions(
@@ -399,6 +408,9 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         return false;
       case "usageType":
         void this.onUsageChange(event);
+        return false;
+      case "projectileId":
+        void this.onProjectileChange(event);
         return false;
       default:
         break;
@@ -504,6 +516,18 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     });
 
     this.warnIfSelectedWeaponHasBrokenSkill(this.weaponItem);
+
+    this.render();
+  }
+
+  private async onProjectileChange(event: Event): Promise<void> {
+    const projectileSelectElement = event.target;
+    requireValue(projectileSelectElement, "Projectile select not working - programming error");
+    assertHtmlElement<HTMLSelectElement>(projectileSelectElement);
+
+    await this.weaponItem.update({
+      system: { projectileId: projectileSelectElement.value },
+    });
 
     this.render();
   }
