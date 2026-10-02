@@ -18,6 +18,7 @@ import type { RqgItem } from "./items/rqg-item.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
+import type { RqgToken } from "./combat/rqg-token.ts";
 import type { SpellStackingRule } from "./active-effect/data-model/spell-effect.defs";
 import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
@@ -129,15 +130,9 @@ declare global {
     ChatMessage: { [systemId]?: RqgChatMessageDataSource };
   }
 
-  // TEMP(v14-types): We previously augmented PlaceableObjectClassConfig.Token with `typeof RqgToken`
-  // to get RqgToken-specific typing from CONFIG.Token.objectClass / canvas.tokens.placeables etc.
-  // As of fvtt-types main (confirmed with any entry, even the base Token class), this triggers an
-  // internal generic-constraint bug in placeable-object.d.mts:
-  // "_GetKey<PlaceableObjectClassConfig, Name, DefaultPlaceables[Name]> does not satisfy the
-  // constraint 'abstract new (...args: never) => any'". This is an upstream fvtt-types bug, not
-  // something fixable from our augmentation. Removed the augmentation until upstream fixes it;
-  // call sites that need RqgToken-specific members should narrow via `instanceof RqgToken` or use
-  // the base `Token` type when the RqgToken-specific members aren't actually needed.
+  interface PlaceableObjectClassConfig {
+    Token: typeof RqgToken;
+  }
 
   interface SettingConfig {
     "rqg.autoActivateChatTab": boolean;

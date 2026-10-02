@@ -64,8 +64,8 @@ importers:
         specifier: ^5.5.6
         version: 5.5.6(@types/eslint@9.6.1)(eslint-config-prettier@10.1.8(eslint@10.7.0(jiti@2.6.1)(supports-color@10.2.2)))(eslint@10.7.0(jiti@2.6.1)(supports-color@10.2.2))(prettier@3.9.5)
       fvtt-types:
-        specifier: 14.366.0-beta.20260824132140
-        version: 14.366.0-beta.20260824132140(03a6acae851f3e3094b46590cdbc8b9c)
+        specifier: 14.366.0-beta.20261001000223
+        version: 14.366.0-beta.20261001000223(03a6acae851f3e3094b46590cdbc8b9c)
       globals:
         specifier: ^17.7.0
         version: 17.7.0
@@ -1774,11 +1774,11 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  fvtt-types@14.366.0-beta.20260824132140:
-    resolution: {integrity: sha512-m5D1Lv4LJdciNtKmBIAFyHZ5NSc/G2mUHm5h2JaN90DCDRW0ZuzDHi4yt53yfuCOWDb2sps5cyotAJ1GpZjQ2Q==}
+  fvtt-types@14.366.0-beta.20261001000223:
+    resolution: {integrity: sha512-t8i0UpuSST2IOsuSCruFIs4thk6IdpZ0VmRahwIG/TvUGoHXqa8ZqU9w2RkqCJF8kHwczUaG51lyIEV4xYIdxw==}
     peerDependencies:
       '@typescript/native-preview': '*'
-      typescript: '>=5.4'
+      typescript: '>=5.9'
     peerDependenciesMeta:
       '@typescript/native-preview':
         optional: true
@@ -4761,7 +4761,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  fvtt-types@14.366.0-beta.20260824132140(03a6acae851f3e3094b46590cdbc8b9c):
+  fvtt-types@14.366.0-beta.20261001000223(03a6acae851f3e3094b46590cdbc8b9c):
     dependencies:
       '@codemirror/lang-html': 6.4.12
       '@codemirror/lang-javascript': 6.2.5

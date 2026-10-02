@@ -35,9 +35,6 @@ const GAIN_TOOLTIP_SOURCE_LABEL_KEYS: Record<ImprovementSource, string> = {
   training: "RQG.Dialog.improveAbilityDialog.throughTraining",
 };
 
-// TEMP(v14-types): fvtt-types doesn't know about messageMode yet - rollMode is deprecated since v14.
-const PUBLIC_MESSAGE_MODE = { messageMode: "public" } as unknown as Record<string, unknown>;
-
 /** Per-entry view model shared by the single-card and roll-all summary templates - everything
  * #910's showImprovementChatMessage needs to render one improvement's two roll blocks. */
 type ImprovementCardView = {
@@ -141,7 +138,7 @@ export async function showImprovementChatMessage(resolution: ImprovementResoluti
       content: content,
       rolls: [resolution.gateRoll, resolution.gainRoll].filter(isTruthy),
     },
-    PUBLIC_MESSAGE_MODE,
+    { messageMode: "public" },
   );
 
   if (message?.id != null) {
@@ -183,7 +180,7 @@ export async function showImprovementSummaryChatMessage(
         .flatMap((resolution) => [resolution.gateRoll, resolution.gainRoll])
         .filter(isTruthy),
     },
-    PUBLIC_MESSAGE_MODE,
+    { messageMode: "public" },
   );
 
   if (message?.id != null) {

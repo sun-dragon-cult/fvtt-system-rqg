@@ -16,7 +16,6 @@ export class RqgCombat extends Combat {
   /**
    * Reset all combatant SR, remove duplicate combatants and set the turn back to zero
    */
-  // @ts-expect-error return void is really return this
   override async resetAll({ updateTurn = true } = {}): Promise<this> {
     const currentId = this.combatant?.id;
     const tokenIds = new Set(); // --- RQG code
