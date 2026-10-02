@@ -118,8 +118,8 @@ const ActorSheetV2 = foundry.applications.sheets.ActorSheetV2;
 
 /** Click behavior options used by single/double click bindings. */
 type SingleDoubleClickOptions = {
-  onSingle: () => Promise<void> | void;
-  onDouble?: () => Promise<void> | void;
+  onSingle: () => Promise<unknown> | void;
+  onDouble?: () => Promise<unknown> | void;
   shouldHandleEvent?: (ev: MouseEvent) => boolean;
   timeout?: number;
 };
@@ -562,7 +562,7 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    *  immediately unless it's a variable spell with more than 1 point enchanted/matrix-stored, in
    *  which case it still needs the points-to-use dialog (spiritMagicRoll) instead. Used both for
    *  the caster's own (and #1002 external) items and for #959 Matrix Spells. */
-  private _castSpiritMagicItem(item: SpiritMagicItem, immediate: boolean): Promise<void> {
+  private _castSpiritMagicItem(item: SpiritMagicItem, immediate: boolean): Promise<unknown> {
     if (!immediate || (item.system.isVariable && item.system.points > 1)) {
       return item.spiritMagicRoll(this.document.token, this.actor);
     }

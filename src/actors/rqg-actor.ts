@@ -238,10 +238,11 @@ export class RqgActor extends Actor {
     characteristicName: keyof Characteristics,
     token?: TokenDocument | null,
     options: Omit<CharacteristicRollOptions, "characteristicValue" | "characteristicName"> = {},
-  ): Promise<void> {
+  ): Promise<CharacteristicRoll> {
     const rollOptions = this.getCharacteristicRollDefaults(characteristicName, token, options);
     const characteristicRoll = await CharacteristicRoll.rollAndShow(rollOptions);
     await this.checkExperience(rollOptions.characteristicName, characteristicRoll.successLevel);
+    return characteristicRoll;
   }
 
   private getCharacteristicRollDefaults(
@@ -288,7 +289,7 @@ export class RqgActor extends Actor {
   public async reputationRollImmediate(
     token?: TokenDocument | null,
     options: Omit<AbilityRollOptions, "naturalSkill"> = {},
-  ): Promise<void> {
+  ): Promise<AbilityRoll> {
     const reputationItem = this.createReputationFakeItem(token);
     const speaker = getSpeakerCompat({ actor: this, token });
 
@@ -304,7 +305,7 @@ export class RqgActor extends Actor {
       { overwrite: false },
     );
 
-    await AbilityRoll.rollAndShow(combinedOptions);
+    return await AbilityRoll.rollAndShow(combinedOptions);
   }
 
   private createReputationFakeItem(token?: TokenDocument | null): PartialAbilityItem {

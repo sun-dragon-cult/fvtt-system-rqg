@@ -8,6 +8,7 @@ import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
+import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
   AUTO_MAGIC_POINT_SOURCE,
@@ -106,7 +107,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     options: Omit<SpiritMagicRollOptions, "powX5"> = { levelUsed: this.points },
     token?: TokenDocument | null,
     casterActor: RqgActor = this.parent?.actor as RqgActor,
-  ): Promise<void> {
+  ): Promise<SpiritMagicRoll | undefined> {
     const item = this.parent;
     assertDocumentSubType<CharacterActor>(
       casterActor,
@@ -184,6 +185,7 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       magicPointSource,
       boundSpiritDrainDecision.avoidRelease,
     );
+    return spiritMagicRoll;
   }
 
   /**

@@ -23,7 +23,7 @@ import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { PassionItem } from "@item-model/passion-data-model.ts";
 import type { RuneMagicItem } from "@item-model/rune-magic-data-model.ts";
 import { compareCultsByPriority, hasAccessToRuneMagic } from "@item-model/cult-priority.ts";
-import { getWeaponEffectModifier } from "../items/weapon-item/weapon-skill-links";
+import { getWeaponUsageChanceInfo } from "../items/weapon-item/weapon-skill-links";
 import {
   assertDocumentSubType,
   formatListByWorldLanguage,
@@ -802,44 +802,18 @@ export async function organizeEmbeddedItems(
     // DataModel SchemaField getters return fresh objects on each access,
     // so mutating them directly would be lost by the time the template reads them.
     const usages: Record<string, any> = foundry.utils.deepClone(weapon.system.usage);
-    const actorStr = actor.system.characteristics.strength.value ?? 0;
-    const actorDex = actor.system.characteristics.dexterity.value ?? 0;
     // TODO extra data is added to the Usage object for the sheet, look at typing
     for (const [usageType, usage] of Object.entries(usages) as [UsageType, Record<string, any>][]) {
       if (!foundry.utils.isEmpty(usage["skillRqidLink"]?.rqid)) {
-        const skillItem = actor.getBestEmbeddedDocumentByRqid(usage["skillRqidLink"].rqid);
-        usage["skillId"] = skillItem?.id;
-        const skillChance = Number((skillItem as SkillItem | undefined)?.system?.chance ?? 0);
-        usage["skillChance"] = skillChance;
-        // Add weapon effect modifier and calculate total chance for display
-        const weaponEffectModifier = skillItem
-          ? getWeaponEffectModifier(weapon as WeaponItem, usageType, "attack")
-          : 0;
-        usage["weaponEffectModifier"] = Number(weaponEffectModifier);
-        usage["totalChance"] = Math.max(0, skillChance + Number(weaponEffectModifier));
-        usage["skillHasExperience"] = !!(skillItem as SkillItem | undefined)?.system?.hasExperience;
-        usage["unusable"] = false;
-        usage["underMinSTR"] = false;
-        usage["underMinDEX"] = false;
-        if (actorStr < usage["minStrength"]) {
-          usage["underMinSTR"] = true;
-        }
-        if (actorDex < usage["minDexterity"]) {
-          usage["underMinDEX"] = true;
-        }
-        if (usage["underMinSTR"]) {
-          usage["unusable"] = true;
-        }
-        if (usage["underMinDEX"]) {
-          // STR can compensate for being under DEX min on 2 for 1 basis
-          const deficiency = usage["minDexterity"] - actorDex;
-          const strover = Math.floor((actorStr - usage["minStrength"]) / 2);
-          if (usage["minStrength"] == null) {
-            usage["unusable"] = true;
-          } else {
-            usage["unusable"] = deficiency > strover;
-          }
-        }
+        const info = getWeaponUsageChanceInfo(actor, weapon, usageType);
+        usage["skillId"] = info.skillItem?.id;
+        usage["skillChance"] = info.skillChance;
+        usage["weaponEffectModifier"] = info.weaponEffectModifier;
+        usage["totalChance"] = info.totalChance;
+        usage["skillHasExperience"] = !!info.skillItem?.system?.hasExperience;
+        usage["unusable"] = info.unusable;
+        usage["underMinSTR"] = info.underMinSTR;
+        usage["underMinDEX"] = info.underMinDEX;
       }
     }
     // Shadow the DataModel getter so the template sees our enriched usage data

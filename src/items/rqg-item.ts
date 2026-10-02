@@ -36,6 +36,9 @@ import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs
 import type { AbilityRollOptions } from "../rolls/ability-roll/ability-roll.types";
 import type { SpiritMagicRollOptions } from "../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import type { RuneMagicRollImmediateOptions } from "../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { AbilityRoll } from "../rolls/ability-roll/ability-roll";
+import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
+import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
 import { GearDataModel } from "@item-model/gear-data-model";
 import { ArmorDataModel } from "@item-model/armor-data-model";
 import { WeaponDataModel } from "@item-model/weapon-data-model";
@@ -266,9 +269,9 @@ export class RqgItem extends Item {
   public async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
     token?: TokenDocument | null,
-  ): Promise<void> {
+  ): Promise<AbilityRoll> {
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await this.system.abilityRollImmediate(options, token);
+    return await this.system.abilityRollImmediate(options, token);
   }
 
   /**
@@ -293,9 +296,9 @@ export class RqgItem extends Item {
     },
     token?: TokenDocument | null,
     casterActor?: RqgActor,
-  ): Promise<void> {
+  ): Promise<SpiritMagicRoll | undefined> {
     assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await this.system.spiritMagicRollImmediate(options, token, casterActor);
+    return await this.system.spiritMagicRollImmediate(options, token, casterActor);
   }
 
   /**
@@ -316,9 +319,9 @@ export class RqgItem extends Item {
     options: RuneMagicRollImmediateOptions = {},
     token?: TokenDocument | null,
     casterActor?: RqgActor,
-  ): Promise<void> {
+  ): Promise<RuneMagicRoll | undefined> {
     assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await this.system.runeMagicRollImmediate(options, token, casterActor);
+    return await this.system.runeMagicRollImmediate(options, token, casterActor);
   }
 
   /**

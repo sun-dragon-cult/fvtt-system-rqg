@@ -48,7 +48,7 @@ export abstract class AbilityDataModel<
   async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
     token?: TokenDocument | null,
-  ): Promise<void> {
+  ): Promise<AbilityRoll> {
     const item = this.parent;
     if (!item?.isEmbedded) {
       logger.throw(ERR.abilityItemNotEmbedded, { itemUuid: item?.uuid });
@@ -73,6 +73,7 @@ export abstract class AbilityDataModel<
       logger.throw(ERR.rollHasNoSuccessLevel, { roll: "AbilityRoll", abilityRoll });
     }
     await this.checkExperience(abilityRoll.successLevel);
+    return abilityRoll;
   }
 
   /**

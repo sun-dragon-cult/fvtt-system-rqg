@@ -11,6 +11,7 @@ import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import {
@@ -267,7 +268,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     options: RuneMagicRollImmediateOptions = {},
     token?: TokenDocument | null,
     casterActor: RqgActor = this.parent?.actor as RqgActor,
-  ): Promise<void> {
+  ): Promise<RuneMagicRoll | undefined> {
     const item = this.parent;
     assertDocumentSubType<CharacterActor>(
       casterActor,
@@ -370,6 +371,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       casterActor,
       boundSpiritDrainDecision.avoidRelease,
     );
+    return runeMagicRoll;
   }
 
   /**
