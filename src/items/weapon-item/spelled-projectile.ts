@@ -20,7 +20,7 @@ function spellEffects(item: WeaponItem): ActiveEffect[] {
 /** The names of the spells active on a projectile, e.g. "Speedart". */
 export function projectileSpellNames(item: WeaponItem): string {
   return spellEffects(item)
-    .filter((effect) => !effect.disabled)
+    .filter((effect) => effect.active)
     .map((effect) => effect.name)
     .join(", ");
 }

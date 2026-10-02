@@ -360,7 +360,7 @@ describe("getEquippedProjectileOptions", () => {
         name: "Arrow",
         type: ItemTypeEnum.Weapon,
         system: { isProjectile: true, equippedStatus: "equipped", quantity: 1 },
-        effects: { contents: [{ name: "Speedart", disabled: false, system: { spell: {} } }] },
+        effects: { contents: [{ name: "Speedart", active: true, system: { spell: {} } }] },
       },
       {
         id: "proj-carried",

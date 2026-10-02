@@ -139,14 +139,14 @@ describe("spendProjectileSpells", () => {
 });
 
 describe("projectileLabel", () => {
-  it("names the active spells on a projectile", () => {
+  it("names the active spells on a projectile, leaving out disabled and expired ones", () => {
     const arrow = makeItem({
       id: "arrow",
       name: "Arrow",
       effects: [
-        { name: "Speedart", disabled: false, system: { spell: {} } },
-        { name: "Bladesharp 2", disabled: true, system: { spell: {} } },
-        { name: "Not a spell", disabled: false, system: {} },
+        { name: "Speedart", active: true, system: { spell: {} } },
+        { name: "Bladesharp 2", active: false, system: { spell: {} } },
+        { name: "Not a spell", active: true, system: {} },
       ],
     });
 
