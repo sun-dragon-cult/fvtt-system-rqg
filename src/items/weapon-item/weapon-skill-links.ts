@@ -101,3 +101,50 @@ export function resolveLinkedSkillChanceData(
     weaponEffectModifier,
   };
 }
+
+export type WeaponUsageChanceInfo = {
+  skillItem: SkillItem | undefined;
+  skillChance: number;
+  weaponEffectModifier: number;
+  totalChance: number;
+  underMinSTR: boolean;
+  underMinDEX: boolean;
+  unusable: boolean;
+};
+
+/** Attack chance and STR/DEX requirement status for one usage of a weapon wielded by `actor`. */
+export function getWeaponUsageChanceInfo(
+  actor: RqgActor,
+  weaponItem: WeaponItem,
+  usageType: UsageType,
+): WeaponUsageChanceInfo {
+  const usage = weaponItem.system.usage[usageType] as Usage;
+  const actorStr = actor.system.characteristics.strength.value ?? 0;
+  const actorDex = actor.system.characteristics.dexterity.value ?? 0;
+  const skillRqid = toRqidString(usage.skillRqidLink?.rqid);
+  const skillItem = skillRqid
+    ? (actor.getBestEmbeddedDocumentByRqid(skillRqid) as SkillItem | undefined)
+    : undefined;
+  const skillChance = Number(skillItem?.system?.chance ?? 0);
+  const weaponEffectModifier = skillItem
+    ? getWeaponEffectModifier(weaponItem, usageType, "attack")
+    : 0;
+  const underMinSTR = actorStr < usage.minStrength;
+  const underMinDEX = actorDex < usage.minDexterity;
+  let unusable = underMinSTR;
+  if (underMinDEX) {
+    // STR can compensate for being under DEX min on 2 for 1 basis
+    const deficiency = usage.minDexterity - actorDex;
+    const strOver = Math.floor((actorStr - usage.minStrength) / 2);
+    unusable = usage.minStrength == null || deficiency > strOver;
+  }
+  return {
+    skillItem,
+    skillChance,
+    weaponEffectModifier,
+    totalChance: Math.max(0, skillChance + weaponEffectModifier),
+    underMinSTR,
+    underMinDEX,
+    unusable,
+  };
+}

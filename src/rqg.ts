@@ -6,13 +6,12 @@ import { registerHandlebarsHelpers } from "./system/register-handlebars-helpers"
 import { RqgActiveEffect } from "./active-effect/rqg-active-effect";
 import { RqgCombat } from "./combat/rqg-combat";
 import { RQG_CONFIG, systemId } from "./system/config";
-import { applyDefaultWorldMigrations, migrateWorld } from "./system/migrations/migrate-world";
+import { migrateWorld } from "./system/migrations/migrate-world";
 import { RqgCombatTracker } from "./combat/rqg-combat-tracker";
 import { RqgToken } from "./combat/rqg-token";
 import { cacheAvailableHitLocations, cacheAvailableRunes } from "./system/util";
 import { RqgChatMessage } from "./chat/rqg-chat-message";
-import { nameGeneration } from "./system/api/name-generation.js";
-import { openDataModelRepairDialog } from "./system/api/data-model-repair";
+import { createRqgApi } from "./system/api/rqg-api";
 import { Rqid } from "./system/api/rqid-api.js";
 import { RqgHotbar } from "./foundry-ui/rqg-hotbar";
 import { RqgActorDirectory } from "./foundry-ui/rqg-actor-directory";
@@ -21,11 +20,6 @@ import { TextEditorHooks } from "./foundry-ui/text-editor-hooks";
 import { RqgJournalEntry } from "./journals/rqg-journal-entry";
 import { getTokenStatusEffects } from "./system/token-status-effects";
 import { RqgSettings } from "./foundry-ui/rqg-settings";
-import {
-  DEFAULT_RQID_BATCH_ITEM_TYPES,
-  RqidBatchEditor,
-} from "./applications/rqid-batch-editor/rqid-batch-editor";
-import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { initSockets } from "./sockets/rqg-socket";
 import { AbilityRoll } from "./rolls/ability-roll/ability-roll";
 import { CharacteristicRoll } from "./rolls/characteristic-roll/characteristic-roll";
@@ -41,7 +35,6 @@ import { RqgTokenLayer } from "./scene/rqg-token-layer";
 import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
-import { removeSpellEffects } from "./system/spell-effects/remove-spell-effects";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -132,29 +125,7 @@ Hooks.once("init", () => {
   registerHandlebarsHelpers();
   registerRqgSystemSettings();
 
-  // Define the system.api
-  (game.system as any).api = {
-    migration: {
-      applyWorldMigrations: applyDefaultWorldMigrations,
-      openDataModelRepairDialog,
-      /**
-       * Show an application that lets you set rqid for items.
-       */
-      openRqidBatchEditor: async (...itemTypes: string[]): Promise<void> => {
-        const itemTypeEnums = (
-          itemTypes.length
-            ? itemTypes.map((it) => it as ItemTypeEnum)
-            : DEFAULT_RQID_BATCH_ITEM_TYPES
-        ) as Item.SubType[];
-        await RqidBatchEditor.factory(...itemTypeEnums);
-      },
-    },
-    rqid: Rqid,
-    names: nameGeneration,
-    spellEffects: {
-      removeSpellEffects,
-    },
-  };
+  (game.system as any).api = createRqgApi();
 });
 
 Hooks.once("i18nInit", () => {
