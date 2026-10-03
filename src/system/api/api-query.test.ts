@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { abilities, attributes, spells, weaponUsages } from "./api-query";
+import { abilities, spells, weaponUsages } from "./api-query";
 import { getAlliedBondActor } from "../magic-point-source";
 import { getExternalSpiritMagicItems } from "../spell-source";
 
@@ -167,34 +167,5 @@ describe("spells", () => {
       matrix: { itemId: "g1", entryIndex: 0 },
     });
     expect(result[3]).toMatchObject({ type: "runeMagic", cultId: "c1", cultName: "Orlanth" });
-  });
-});
-
-describe("attributes", () => {
-  it("collects resources and rune points per cult", () => {
-    const actor = mockActor([item("c1", "cult", "Orlanth", { runePoints: { value: 2, max: 3 } })], {
-      attributes: {
-        hitPoints: { value: 12, max: 14 },
-        magicPoints: { value: 9, max: 15 },
-        heroPoints: 1,
-        dexStrikeRank: 3,
-        sizStrikeRank: 2,
-        damageBonus: "1d4",
-        health: "healthy",
-      },
-      background: { reputation: 15 },
-    });
-
-    expect(attributes(actor)).toEqual({
-      hitPoints: { value: 12, max: 14 },
-      magicPoints: { value: 9, max: 15 },
-      runePoints: [{ cultId: "c1", cultName: "Orlanth", value: 2, max: 3 }],
-      heroPoints: 1,
-      reputation: 15,
-      dexStrikeRank: 3,
-      sizStrikeRank: 2,
-      damageBonus: "1d4",
-      health: "healthy",
-    });
   });
 });

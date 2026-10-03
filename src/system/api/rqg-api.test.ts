@@ -44,8 +44,6 @@ describe("game.system.api", () => {
         },
         "query": {
           "abilities": "function",
-          "attributes": "function",
-          "characteristics": "function",
           "spells": "function",
           "weaponUsages": "function",
         },
