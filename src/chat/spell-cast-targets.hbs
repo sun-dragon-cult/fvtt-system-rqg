@@ -17,6 +17,8 @@
       <span class="spell-cast-target-reason">{{reasonLabel}}</span>
       {{#if applied}}
         <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Applied"}}</span>
+      {{else if resolved}}
+        <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SpellCast.Resolved"}}</span>
       {{else if blockedLabel}}
         <span class="spell-cast-not-applied">{{blockedLabel}}</span>
       {{else if canApply}}

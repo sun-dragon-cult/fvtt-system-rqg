@@ -80,13 +80,15 @@ export async function renderSpellCastTargets(
     const reason = reasonKey(target);
     const { effectUuids, blockedReason } = appliedEffect(message, target.targetTokenOrActorUuid);
     const isOwner = isOwnedByUser(target.targetTokenOrActorUuid);
+    const resolved = blockedReason === "resolved";
     return {
       applied: effectUuids.length > 0,
+      resolved: resolved,
       // A ruling can't undo an effect that's already on the target, so it stops being offered.
       canRule: !!game.user?.isGM && !effectUuids.length && !blockedReason,
       // Why it was blocked tells what's already on the target, so only its owners see it.
       blockedLabel:
-        blockedReason && isOwner
+        blockedReason && !resolved && isOwner
           ? localize(`RQG.ChatMessage.SpellCast.NotApplied.${blockedReason}`)
           : "",
       // Only the target's owner applies it, so a hostile target's items are listed to the GM alone.
@@ -229,7 +231,12 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
   }
 
   const effectUuids = applied.outcome === "applied" ? applied.effectUuids : [];
-  const effectBlockedReason = applied.outcome === "blocked" ? applied.reason : "";
+  const effectBlockedReason =
+    applied.outcome === "blocked"
+      ? applied.reason
+      : applied.outcome === "resolved"
+        ? "resolved"
+        : "";
   const systemPatch =
     message.type === "spellCast"
       ? {

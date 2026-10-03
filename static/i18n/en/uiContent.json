@@ -528,6 +528,7 @@
         "UnknownTarget": "Unknown target",
         "ApplyEffect": "Apply",
         "Applied": "Applied",
+        "Resolved": "Done",
         "AlreadyApplied": "This spell effect has already been applied.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NoSpellEffectTarget": "{targetName} has nothing {spellName} can be cast on.",

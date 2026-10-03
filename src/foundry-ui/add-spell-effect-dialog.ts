@@ -139,9 +139,10 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     runePointsSpent: 0,
     casterSuccessLevel: undefined,
   });
-  // A cancellation removes the opposing effect, so the palette changes then too.
+  // A cancellation or a spell macro (e.g. Dispel Magic) removes effects, so the palette changes then too.
   return (
     applied?.outcome === "applied" ||
+    applied?.outcome === "resolved" ||
     (applied?.outcome === "blocked" && applied.reason === "cancelledActive")
   );
 }

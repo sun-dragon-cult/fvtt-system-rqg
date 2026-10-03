@@ -1,4 +1,4 @@
-import { spellEffectBlockedReasons } from "../../active-effect/data-model/spell-effect.defs";
+import { spellEffectSettledReasons } from "../../active-effect/data-model/spell-effect.defs";
 import {
   spellTargetOutcomeResolvedBy,
   spellTargetOutcomeState,
@@ -38,7 +38,7 @@ const spellCastChatMessageSchema = {
         blank: true,
         nullable: false,
         initial: "",
-        choices: ["", ...spellEffectBlockedReasons],
+        choices: ["", ...spellEffectSettledReasons],
       }),
     }),
   ),

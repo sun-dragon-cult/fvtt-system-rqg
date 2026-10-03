@@ -33,7 +33,33 @@ export type SpellEffectCast = {
 /** What Apply did - undefined from applySpellEffect when it did nothing and can be retried. */
 export type SpellEffectApplied =
   | { outcome: "applied"; effectUuids: string[] }
-  | { outcome: "blocked"; reason: SpellEffectBlockedReason };
+  | { outcome: "blocked"; reason: SpellEffectBlockedReason }
+  | { outcome: "resolved" };
+
+/**
+ * The scope a spell's macro runs with when its effectRqidLink points to a Macro - a contract with
+ * content modules, so changing it is a breaking change. The macro runs on the client of whoever
+ * clicked Apply (the target's owner) and returns a SpellEffectApplied; "resolved" means it did its
+ * work without leaving an effect.
+ */
+export type SpellMacroScope = {
+  spell: RqgItem;
+  targetActor: RqgActor;
+  targetName: string;
+  cast: SpellEffectCast;
+};
+
+const spellEffectOutcomes: readonly string[] = ["applied", "blocked", "resolved"];
+
+async function runSpellMacro(
+  macro: Macro,
+  scope: SpellMacroScope,
+): Promise<SpellEffectApplied | undefined> {
+  const result = (await macro.execute(scope as any)) as SpellEffectApplied | undefined;
+  return spellEffectOutcomes.includes((result as { outcome?: string } | undefined)?.outcome ?? "")
+    ? result
+    : undefined;
+}
 
 function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] {
   return (links ?? []).map((link) => link.rqid ?? "").filter((rqid) => !!rqid);
@@ -95,7 +121,8 @@ function temporalDuration(spell: RqgItem): { value: number; units: string } | un
 
 /**
  * Attach a copy of a spell's Active Effect template to the target - the only thing that creates a
- * spell effect, so every one carries its provenance. Warns and returns undefined when the spell has
+ * spell effect, so every one carries its provenance. A spell linked to a Macro instead (the macro
+ * tier) runs it and returns what it returns. Warns and returns undefined when the spell has
  * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
  * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a client that owns the target.
  */
@@ -108,6 +135,9 @@ export async function applySpellEffect(
   const spellName = spell.name ?? "";
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
+  if (template instanceof Macro) {
+    return runSpellMacro(template, { spell, targetActor, targetName, cast });
+  }
   const rule = (template as any)?.system?.spellTarget as SpellTargetRule | null | undefined;
   if (!(template instanceof ActiveEffect) || !rule) {
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NoSpellEffect", { spellName }));
