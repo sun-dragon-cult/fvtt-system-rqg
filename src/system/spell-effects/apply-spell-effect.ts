@@ -1,4 +1,4 @@
-import { localize } from "../util";
+import { isDocumentSubType, localize } from "../util";
 import { Rqid } from "../api/rqid-api";
 import { RQG_CONFIG, systemId } from "../config";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
@@ -18,6 +18,8 @@ import { SpellDurationEnum } from "../../data-model/item-data/spell";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 
 export type SpellEffectCast = {
   casterUuid: string;
@@ -57,7 +59,10 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
 }
 
 function pickerLabel(item: RqgItem, stacking: SpellEffectStacking): string {
-  const itemName = item.name ?? "";
+  const itemName =
+    isDocumentSubType<WeaponItem>(item, ItemTypeEnum.Weapon) && item.system.isProjectile
+      ? projectileLabel(item)
+      : (item.name ?? "");
   if (stacking.outcome === "cancel") {
     return localize("RQG.ChatMessage.SpellCast.TargetOption.cancelledActive", {
       itemName: itemName,
@@ -136,6 +141,9 @@ export async function applySpellEffect(
     );
     if (!parent) {
       return undefined;
+    }
+    if (isDocumentSubType<WeaponItem>(parent, ItemTypeEnum.Weapon)) {
+      parent = await splitOffProjectile(parent);
     }
   }
 

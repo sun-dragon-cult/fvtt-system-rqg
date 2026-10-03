@@ -32,9 +32,14 @@
         <span class="invalid-selection-warning">{{localize "RQG.Dialog.Attack.NoValidSkillForWeaponUsage"}}</span>
       {{/if}}
       {{#if (eq formData.usageType "missile")}}
+        {{#if projectileOptions.length}}
+          <select name="projectileId" class="projectile" aria-label="{{localize "RQG.Dialog.Attack.Ammo"}}">
+            {{selectOptions projectileOptions selected=selectedProjectileId localize=false}}
+          </select>
+        {{/if}}
         {{#if isOutOfAmmo}}
           <span>{{localize "RQG.Dialog.Attack.OutOfAmmo"}}</span>
-        {{else}}
+        {{else unless projectileOptions.length}}
           <span>{{localize "RQG.Dialog.Attack.AmmoQuantity"}} {{ammoQuantity}}</span>
         {{/if}}
       {{/if}}

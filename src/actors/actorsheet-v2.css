@@ -1996,6 +1996,12 @@
         &:hover {
           outline: 1px solid var(--color-border-light-2);
         }
+
+        /* The dropdown is drawn on the browser's own popup, which ignores the sheet's background. */
+        & option {
+          color: var(--color-text-primary);
+          background-color: var(--background);
+        }
       }
 
       & input.quantity {

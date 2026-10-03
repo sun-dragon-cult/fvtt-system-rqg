@@ -47,6 +47,7 @@ export async function combatOutcome(
   attackWeaponUsageType: UsageType,
   attackDamageBonus: string,
   attackExtraDamage: string,
+  attackProjectileDamage: string,
   defenceDamageBonus: string,
   parryingWeapon: RqgItem | undefined | null,
   parryWeaponUsageType: UsageType | undefined,
@@ -118,7 +119,8 @@ export async function combatOutcome(
   }
   const extraDamageFormula =
     weaponDoingDamageDesignation === "attackingWeapon"
-      ? formatDamagePart(attackExtraDamage, "RQG.Roll.DamageRoll.ExtraDamage", "+")
+      ? formatDamagePart(attackExtraDamage, "RQG.Roll.DamageRoll.ExtraDamage", "+") +
+        attackProjectileDamage
       : "";
   const damageFormulaWithExtraDamage = `${damageFormula}${extraDamageFormula}`;
   const damageBonus = weaponDoingDamage === parryingWeapon ? defenceDamageBonus : attackDamageBonus;

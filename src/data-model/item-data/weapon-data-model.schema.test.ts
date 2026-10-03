@@ -42,6 +42,7 @@ describe("WeaponDataModel.getDamageFormula magic damage", () => {
       },
       parent: { parent: { type: "character", system: { attributes: { damageBonus: "1d4" } } } },
       getMaximisedDamageBonusValue: () => "4",
+      getMagicDamageFormula: WeaponDataModel.prototype.getMagicDamageFormula,
     }) as any;
   const formula = (
     magicDamage: number,

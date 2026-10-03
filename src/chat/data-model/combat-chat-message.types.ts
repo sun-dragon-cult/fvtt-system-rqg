@@ -17,6 +17,8 @@ export interface CombatDataSourceData {
   attackRoll: string | object; // JSONField can be string or parsed object
   attackCombatManeuver: CombatManeuver;
   attackExtraDamage: string | undefined;
+  /** Magic damage of the fired projectile, recorded on firing since its spells are spent then. */
+  attackProjectileDamage: string;
   attackDamageBonus: string | undefined;
   actorDamagedApplied: boolean;
   weaponDamageApplied: boolean;

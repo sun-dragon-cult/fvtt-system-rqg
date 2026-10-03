@@ -41,6 +41,12 @@ import {
   resolveLinkedSkill,
   resolveLinkedSkillChanceData,
 } from "@items/weapon-item/weapon-skill-links";
+import { getEquippedProjectileOptions } from "@actors/rqg-actor-sheet-data-prep.ts";
+import {
+  getLoadedProjectile,
+  projectileSpellNames,
+  spendProjectileSpells,
+} from "@items/weapon-item/spelled-projectile";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import Token = foundry.canvas.placeables.Token;
@@ -271,6 +277,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     let isOutOfAmmo = false;
     let ammoQuantity: number = 1;
+    const projectileOptions =
+      formData.usageType === "missile" &&
+      this.weaponItem.system.isProjectileWeapon &&
+      isDocumentSubType<CharacterActor>(this.weaponItem.parent, ActorTypeEnum.Character)
+        ? getEquippedProjectileOptions(this.weaponItem.parent)
+        : [];
 
     if (formData.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(this.weaponItem);
@@ -349,6 +361,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       formData: formData,
       ammoQuantity: ammoQuantity,
       isOutOfAmmo: isOutOfAmmo,
+      projectileOptions: projectileOptions,
+      selectedProjectileId: this.weaponItem.system.projectileId,
       attackerOptions: AttackDialogV2.getAttackerOptions(),
       defendingTokenName: target?.name ?? localize("RQG.Dialog.Attack.NoTargetSelected"),
       attackingWeaponOptions: AttackDialogV2.getWeaponOptions(
@@ -394,6 +408,9 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         return false;
       case "usageType":
         void this.onUsageChange(event);
+        return false;
+      case "projectileId":
+        void this.onProjectileChange(event);
         return false;
       default:
         break;
@@ -503,6 +520,18 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     this.render();
   }
 
+  private async onProjectileChange(event: Event): Promise<void> {
+    const projectileSelectElement = event.target;
+    requireValue(projectileSelectElement, "Projectile select not working - programming error");
+    assertHtmlElement<HTMLSelectElement>(projectileSelectElement);
+
+    await this.weaponItem.update({
+      system: { projectileId: projectileSelectElement.value },
+    });
+
+    this.render();
+  }
+
   /**
    * Create a type "combat" ChatMessage when the form is submitted.
    */
@@ -569,6 +598,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       weaponItem,
     );
 
+    // Read before firing, since firing spends the projectile's spells
+    const firedProjectile =
+      formDataObject.usageType === "missile" ? getLoadedProjectile(weaponItem) : undefined;
+    const projectileModifier = Number(firedProjectile?.system.effect.add.missile.attack ?? 0);
+    const projectileSpells = firedProjectile ? projectileSpellNames(firedProjectile) : "";
+
+    let attackProjectileDamage = "";
     if (formDataObject.usageType === "missile") {
       const projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
       if (!projectileItem || projectileItem?.system.quantity <= 0) {
@@ -591,9 +627,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
           );
         }
         await projectileItem?.update({ system: { quantity: newQuantity } });
-        // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
-        await this.render(); // Make sure ammo count is updated in the dialog
       }
+      if (projectileItem !== weaponItem) {
+        attackProjectileDamage = projectileItem.system.getMagicDamageFormula("missile", "");
+        await spendProjectileSpells(projectileItem);
+      }
+      // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
+      await this.render(); // Make sure ammo count is updated in the dialog
     }
 
     const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${formDataObject.usageType}`);
@@ -608,8 +648,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       naturalSkill: Number(skillChanceData.skillChance ?? 0),
       modifiers: [
         {
-          value: Number(skillChanceData.weaponEffectModifier ?? 0),
+          value: Number(skillChanceData.weaponEffectModifier ?? 0) - projectileModifier,
           description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
+        {
+          value: projectileModifier,
+          description: projectileSpells || localize("RQG.Roll.AbilityRoll.WeaponEffect"),
         },
         {
           value: Number(formDataObject.augmentModifier),
@@ -690,6 +734,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       actorDamagedApplied: false,
       weaponDamageApplied: false,
       attackExtraDamage: formDataObject.attackExtraDamage,
+      attackProjectileDamage: attackProjectileDamage,
       attackDamageBonus: attackDamageBonusForChat,
       attackRoll: attackRoll.toJSON(),
       defenceRoll: undefined,

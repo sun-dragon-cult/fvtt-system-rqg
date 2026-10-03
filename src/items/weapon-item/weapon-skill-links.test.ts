@@ -341,6 +341,20 @@ describe("weapon skill link handling", () => {
     expect(getWeaponEffectModifier(weapon, "missile", "parry")).toBe(13);
   });
 
+  it("adds the loaded projectile's missile attack modifier to a launcher's missile attack", () => {
+    const arrow = makeWeapon();
+    arrow.id = "arrow";
+    arrow.system.effect.add.missile.attack = 15;
+    const bow = makeWeapon();
+    bow.system.isProjectileWeapon = true;
+    bow.system.projectileId = "arrow";
+    bow.parent = { items: withItemGet([arrow]) };
+    bow.system.effect.add.missile.attack = 5;
+
+    expect(getWeaponEffectModifier(bow, "missile", "attack")).toBe(20);
+    expect(getWeaponEffectModifier(bow, "oneHand", "attack")).toBe(0);
+  });
+
   it("resolves linked skill chance data including weapon effect modifier", () => {
     const embeddedSkill = makeSkill({ id: "embedded-bite", name: "Bite", rqid: "i.skill.bite" });
     const actor = {

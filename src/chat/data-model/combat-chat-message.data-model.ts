@@ -36,6 +36,7 @@ const combatChatMessageSchema = {
     description: { blank: false, nullable: false },
   }),
   attackExtraDamage: new StringField({ blank: false, nullable: true, initial: undefined }),
+  attackProjectileDamage: new StringField({ blank: true, nullable: false, initial: "" }),
   attackDamageBonus: new StringField({ blank: false, nullable: true, initial: undefined }),
   actorDamagedApplied: new BooleanField({ blank: false, nullable: false, initial: false }),
   weaponDamageApplied: new BooleanField({ blank: false, nullable: false, initial: false }),

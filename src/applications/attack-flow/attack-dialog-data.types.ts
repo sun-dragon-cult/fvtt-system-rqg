@@ -8,6 +8,9 @@ export type AttackDialogContext = CombatRollHeaderPartData &
 
     ammoQuantity: number;
     isOutOfAmmo: boolean;
+    /** The launcher's ammo choices, empty for weapons that aren't launchers. */
+    projectileOptions: SelectOptionData<string>[];
+    selectedProjectileId: string;
     usageTypeOptions: SelectOptionData<UsageType>[];
     augmentOptions: SelectOptionData<number>[];
     defendingTokenName: string;

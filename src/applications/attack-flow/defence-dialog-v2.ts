@@ -707,6 +707,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const parryWeaponUsageType = formDataObject.parryingWeaponUsage;
     const attackDamageBonus = attackChatMessage?.system.attackDamageBonus ?? "";
     const attackExtraDamage = attackChatMessage?.system.attackExtraDamage ?? "";
+    const attackProjectileDamage = attackChatMessage?.system.attackProjectileDamage ?? "";
     const defendDamageBonus = defendingActor?.system?.attributes?.damageBonus ?? "";
     const attackingWeaponDamageType = (attackChatMessage?.system.attackCombatManeuver.damageType ??
       "") as DamageType;
@@ -734,6 +735,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       attackWeaponUsageType as UsageType,
       attackDamageBonus,
       attackExtraDamage,
+      attackProjectileDamage,
       defendDamageBonus,
       selectedParryingWeapon,
       parryWeaponUsageType,
