@@ -932,6 +932,10 @@ export class RqgActor extends Actor {
     userId: string,
   ) {
     super._onCreate(data, options, userId);
+    // Runs on every client; only the creator may write the rolled values
+    if (userId !== game.user?.id) {
+      return;
+    }
 
     if (
       !this.prototypeToken.actorLink &&

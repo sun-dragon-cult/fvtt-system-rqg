@@ -20,6 +20,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
+import { runSpellMacro } from "./run-spell-macro";
 
 export type SpellEffectCast = {
   casterUuid: string;
@@ -39,8 +40,8 @@ export type SpellEffectApplied =
 /**
  * The scope a spell's macro runs with when its effectRqidLink points to a Macro - a contract with
  * content modules, so changing it is a breaking change. The macro runs on the client of whoever
- * clicked Apply (the target's owner) and returns a SpellEffectApplied; "resolved" means it did its
- * work without leaving an effect.
+ * clicked Apply (the target's owner), or the active GM's when the Macro has `flags.rqg.runAsGm`,
+ * and returns a SpellEffectApplied; "resolved" means it did its work without leaving an effect.
  */
 export type SpellMacroScope = {
   spell: RqgItem;
@@ -48,18 +49,6 @@ export type SpellMacroScope = {
   targetName: string;
   cast: SpellEffectCast;
 };
-
-const spellEffectOutcomes: readonly string[] = ["applied", "blocked", "resolved"];
-
-async function runSpellMacro(
-  macro: Macro,
-  scope: SpellMacroScope,
-): Promise<SpellEffectApplied | undefined> {
-  const result = (await macro.execute(scope as any)) as SpellEffectApplied | undefined;
-  return spellEffectOutcomes.includes((result as { outcome?: string } | undefined)?.outcome ?? "")
-    ? result
-    : undefined;
-}
 
 function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] {
   return (links ?? []).map((link) => link.rqid ?? "").filter((rqid) => !!rqid);

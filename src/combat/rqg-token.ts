@@ -40,13 +40,13 @@ export class RqgToken extends Token {
     userId: string,
   ): void {
     super._onCreate(data, options, userId);
-    this.actor?.updateTokenEffectFromHealth();
     assertDocumentSubType<CharacterActor>(
       this.actor,
       ActorTypeEnum.Character,
       "Expected CharacterActor on Token creation",
     );
     if (userId === game.user?.id) {
+      void this.actor?.updateTokenEffectFromHealth();
       if (!this.document.actorLink) {
         if (this.actor) {
           void initializeAllCharacteristics(this.actor);
