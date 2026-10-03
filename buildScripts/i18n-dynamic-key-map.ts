@@ -51,6 +51,7 @@ import {
 import { ROUTED_KEY_WARNING_I18N_SUFFIXES } from "../src/active-effect/routed-key/routed-key-warnings";
 import {
   spellEffectBlockedReasons,
+  spellStackingBlockedReasons,
   spellStackingRules,
 } from "../src/active-effect/data-model/spell-effect.defs";
 
@@ -128,8 +129,8 @@ export const dynamicKeyMap: Record<string, readonly string[]> = {
   ],
   "RQG.ChatMessage.SpellCast.Ruling.": [...spellTargetRulingState],
   "RQG.ChatMessage.SpellCast.NotApplied.": [...spellEffectBlockedReasons],
-  "RQG.ChatMessage.SpellCast.NotAppliedDetail.": [...spellEffectBlockedReasons],
-  "RQG.ChatMessage.SpellCast.TargetOption.": [...spellEffectBlockedReasons],
+  "RQG.ChatMessage.SpellCast.NotAppliedDetail.": [...spellStackingBlockedReasons],
+  "RQG.ChatMessage.SpellCast.TargetOption.": [...spellStackingBlockedReasons],
 
   // Dialog
   "RQG.Dialog.Attack.HitLocationFormulaOptions.": [...hitLocationFormulaOptions],

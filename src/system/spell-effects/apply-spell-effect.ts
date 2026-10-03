@@ -21,6 +21,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellMacro } from "./run-spell-macro";
+import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
   casterUuid: string;
@@ -124,8 +125,9 @@ export async function applySpellEffect(
   const spellName = spell.name ?? "";
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
+  const scope = { spell, targetActor, targetName, cast };
   if (template instanceof Macro) {
-    return runSpellMacro(template, { spell, targetActor, targetName, cast });
+    return (await interceptIncomingSpell(scope)) ?? runSpellMacro(template, scope);
   }
   const rule = (template as any)?.system?.spellTarget as SpellTargetRule | null | undefined;
   if (!(template instanceof ActiveEffect) || !rule) {
@@ -161,9 +163,14 @@ export async function applySpellEffect(
     if (!parent) {
       return undefined;
     }
-    if (isDocumentSubType<WeaponItem>(parent, ItemTypeEnum.Weapon)) {
-      parent = await splitOffProjectile(parent);
-    }
+  }
+  // Only once Apply can no longer back out, since a protective macro may use up its effects
+  const intercepted = await interceptIncomingSpell(scope);
+  if (intercepted) {
+    return intercepted;
+  }
+  if (isDocumentSubType<WeaponItem>(parent, ItemTypeEnum.Weapon)) {
+    parent = await splitOffProjectile(parent);
   }
 
   const stacking = stackingOn(parent);

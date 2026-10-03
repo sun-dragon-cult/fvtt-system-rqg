@@ -557,7 +557,8 @@
         "NotApplied": {
           "strongerActive": "No effect: an equal or stronger casting is already active",
           "incompatibleActive": "No effect: an incompatible spell is already active",
-          "cancelledActive": "Cancelled an opposing spell, so neither remains"
+          "cancelledActive": "Cancelled an opposing spell, so neither remains",
+          "intercepted": "No effect: stopped by a protective spell"
         },
         "NotAppliedDetail": {
           "strongerActive": "{effectName} is already active on {parentName}, so {spellName} has no effect.",
@@ -1840,6 +1841,7 @@
       "AddSpellEffectSpell": "Spell",
       "AddSpellEffectSearch": "Search spells…",
       "AddSpellEffectButton": "Add",
+      "AddSpellEffectSelfCast": "Cast by {targetName}",
       "NoSpellsWithEffects": "No spells with effects were found in the compendiums."
     }
   }
