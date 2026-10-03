@@ -14,9 +14,12 @@ import { hasLinkedSkillReference } from "../../items/weapon-item/weapon-skill-li
 import { resolveMatrixSpellItem } from "../spell-matrix";
 import { RqgLogger } from "../logging/rqg-logger";
 import { type ActorRef, findItem, type ItemRef, resolveActor, resolveItem } from "./api-resolve";
-import { type CastableSpell, type CharacteristicName, spells } from "./api-query";
+import type { Characteristics } from "../../data-model/actor-data/characteristics";
+import { type CastableSpell, spells } from "./api-query";
 
 const logger = new RqgLogger("Api");
+
+export type CharacteristicName = keyof Characteristics;
 
 export type RollOptions = {
   /** Who rolls. Only needed when the item is given by name/id/rqid, or to pick the speaking token. */

@@ -9,8 +9,6 @@ import type { SpiritMagicItem } from "@item-model/spirit-magic-data-model.ts";
 import type { UsageType, WeaponItem } from "@item-model/weapon-data-model.ts";
 import type { EquippedStatus } from "@item-model/i-physical-item.ts";
 import { abilityItemTypes, ItemTypeEnum } from "@item-model/item-types.ts";
-import type { Characteristics } from "../../data-model/actor-data/characteristics";
-import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/rqg-actor-data";
 import { weaponUsageTypes } from "../../data-model/shared/weapon-usage-choices";
 import {
   getWeaponUsageChanceInfo,
@@ -23,7 +21,6 @@ import {
   getExternalSpiritMagicItems,
 } from "../spell-source";
 import { getMatrixSpellSlots } from "../spell-matrix";
-import { assertDocumentSubType } from "../util";
 import { type ActorRef, resolveActor } from "./api-resolve";
 
 export type AbilityType = (typeof abilityItemTypes)[number];
@@ -66,22 +63,6 @@ export function abilities(
       };
     })
     .sort((a, b) => a.name.localeCompare(b.name));
-}
-
-export type CharacteristicName = keyof Characteristics;
-
-export function characteristics(actorRef?: ActorRef): Record<CharacteristicName, number | null> {
-  const { actor } = resolveActor(actorRef);
-  const c = actor.system.characteristics;
-  return {
-    strength: c.strength.value,
-    constitution: c.constitution.value,
-    size: c.size.value,
-    dexterity: c.dexterity.value,
-    intelligence: c.intelligence.value,
-    power: c.power.value,
-    charisma: c.charisma.value,
-  };
 }
 
 export type WeaponUsageInfo = {
@@ -245,42 +226,5 @@ function runeSpell(
     sourceName,
     uuid: item.uuid ?? undefined,
     matrix: undefined,
-  };
-}
-
-export type ActorAttributesInfo = {
-  hitPoints: { value: number | null; max: number };
-  magicPoints: { value: number | null; max: number };
-  runePoints: { cultId: string; cultName: string; value: number | null; max: number | null }[];
-  heroPoints: number;
-  reputation: number;
-  dexStrikeRank: number | null;
-  sizStrikeRank: number | null;
-  damageBonus: string;
-  health: string;
-};
-
-export function attributes(actorRef?: ActorRef): ActorAttributesInfo {
-  const { actor } = resolveActor(actorRef);
-  assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
-  const a = actor.system.attributes;
-  const cults = (actor.items.contents as RqgItem[]).filter(
-    (i): i is CultItem => i.type === ItemTypeEnum.Cult,
-  );
-  return {
-    hitPoints: { value: a.hitPoints.value, max: a.hitPoints.max },
-    magicPoints: { value: a.magicPoints.value, max: a.magicPoints.max },
-    runePoints: cults.map((cult) => ({
-      cultId: cult.id ?? "",
-      cultName: cult.name ?? "",
-      value: cult.system.runePoints.value,
-      max: cult.system.runePoints.max,
-    })),
-    heroPoints: a.heroPoints,
-    reputation: actor.system.background.reputation ?? 0,
-    dexStrikeRank: a.dexStrikeRank ?? null,
-    sizStrikeRank: a.sizStrikeRank ?? null,
-    damageBonus: a.damageBonus ?? "",
-    health: a.health,
   };
 }
