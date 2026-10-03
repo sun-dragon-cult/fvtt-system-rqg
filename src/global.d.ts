@@ -3,6 +3,7 @@ import type { RqgConfig, systemId } from "./system/config";
 import type {
   CardFlags,
   MacroFlags,
+  RqgActiveEffectFlags,
   PlaylistFlags,
   RqgActorFlags,
   RqgItemFlags,
@@ -15,6 +16,8 @@ import type { TokenRulerSettingsType } from "./applications/settings/token-ruler
 import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
 import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
+import type { RunSpellMacroQueryData } from "./system/spell-effects/run-spell-macro.ts";
+import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
@@ -64,6 +67,12 @@ declare global {
   }
 
   namespace CONFIG {
+    interface Queries {
+      "rqg.runSpellMacro": (
+        data: RunSpellMacroQueryData,
+      ) => Promise<SpellEffectApplied | undefined>;
+    }
+
     // Declare the RQG custom "Norse" font so it can be assigned to
     // CONFIG.fontDefinitions, which strips its index signature via RemoveIndexSignatures.
     interface FontDefinitions {
@@ -118,6 +127,7 @@ declare global {
   }
 
   interface FlagConfig {
+    ActiveEffect: { [systemId]?: RqgActiveEffectFlags };
     Actor: { [systemId]?: RqgActorFlags };
     Card: { [systemId]?: CardFlags };
     Item: { [systemId]?: RqgItemFlags };
