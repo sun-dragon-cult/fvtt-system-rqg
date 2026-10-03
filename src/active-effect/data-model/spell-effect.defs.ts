@@ -31,3 +31,7 @@ export const spellEffectBlockedReasons = [
   "cancelledActive",
 ] as const;
 export type SpellEffectBlockedReason = (typeof spellEffectBlockedReasons)[number];
+
+/** What the card records when Apply left no effect: a blocked reason, or a spell macro that did its work. */
+export const spellEffectSettledReasons = [...spellEffectBlockedReasons, "resolved"] as const;
+export type SpellEffectSettledReason = (typeof spellEffectSettledReasons)[number];
