@@ -38,6 +38,8 @@ export interface RqgActiveEffectFlags {
   [documentRqidFlags]?: DocumentRqidFlags;
   /** The effect holds a summoned creature in the world, so its token goes when the effect ends. */
   removeTokenWhenEnded?: boolean;
+  /** The rqid of a macro that decides whether a spell cast at the effect's actor gets through. */
+  onIncomingSpell?: string;
 }
 
 export interface RollTableFlags {

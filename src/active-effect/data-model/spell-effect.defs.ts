@@ -24,12 +24,19 @@ export type SpellTargetOnNoMatch = (typeof spellTargetOnNoMatch)[number];
 export const spellStackingRules = ["strongestTakesEffect", "latestDisplaces"] as const;
 export type SpellStackingRule = (typeof spellStackingRules)[number];
 
-/** Why Apply left a target without the effect - recorded on the card, so Apply is used up. */
-export const spellEffectBlockedReasons = [
+/** Why the spell already on the target keeps a new casting from taking effect (stacking). */
+export const spellStackingBlockedReasons = [
   "strongerActive",
   "incompatibleActive",
   "cancelledActive",
 ] as const;
+export type SpellStackingBlockedReason = (typeof spellStackingBlockedReasons)[number];
+
+/**
+ * Why Apply left a target without the effect - recorded on the card, so Apply is used up:
+ * stacking, or a protective effect on the target that stopped the spell (incoming-spell.ts).
+ */
+export const spellEffectBlockedReasons = [...spellStackingBlockedReasons, "intercepted"] as const;
 export type SpellEffectBlockedReason = (typeof spellEffectBlockedReasons)[number];
 
 /** What the card records when Apply left no effect: a blocked reason, or a spell macro that did its work. */

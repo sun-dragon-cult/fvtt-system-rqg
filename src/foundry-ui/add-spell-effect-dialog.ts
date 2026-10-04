@@ -71,7 +71,8 @@ function moveSelection(form: HTMLFormElement, step: 1 | -1): void {
 
 /**
  * Let the GM put a spell effect on a token without casting the spell, e.g. one cast off-screen.
- * Stacking and durations work as for a cast; there is no caster.
+ * Stacking, durations and the target's protective effects work as for a cast by someone else, or
+ * by the target itself when "Cast by" is ticked.
  */
 export async function addSpellEffectFromHud(actor: RqgActor, targetName: string): Promise<boolean> {
   const spells = await compendiumSpellsWithEffects();
@@ -89,7 +90,10 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     spellOptions(spells, ItemTypeEnum.RuneMagic, localize("TYPES.Item.runeMagic")) +
     `</select></div>` +
     `<div class="form-group"><label>${localize("RQG.Foundry.ActiveEffect.SpellLevel")}</label>` +
-    `<input type="number" name="level" min="0" step="1"></div>`;
+    `<input type="number" name="level" min="0" step="1"></div>` +
+    `<div class="form-group"><label>${foundry.utils.escapeHTML(
+      localize("RQG.TokenHud.AddSpellEffectSelfCast", { targetName }),
+    )}</label><input type="checkbox" name="selfCast"></div>`;
 
   const picked = (await foundry.applications.api.DialogV2.input({
     window: { title: localize("RQG.TokenHud.AddSpellEffectTitle", { targetName }) },
@@ -125,24 +129,30 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
       });
     },
     rejectClose: false,
-  } as any)) as { spellUuid?: string; level?: number } | null;
+  } as any)) as { spellUuid?: string; level?: number; selfCast?: boolean } | null;
 
   const spell = spells.find((s) => s.uuid === picked?.spellUuid);
   if (!picked || !spell) {
     return false;
   }
+  const level = Math.max(0, Math.trunc(Number(picked.level) || 0));
+  const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
+  // The points an unboosted cast spends, so the spell's strength counts against Countermagic. A
+  // spell the target cast on itself isn't stopped by its own protective spells.
   const applied = await applySpellEffect(spell, actor, targetName, {
-    casterUuid: "",
+    casterUuid: picked.selfCast ? (actor.uuid ?? "") : "",
     castMessageId: "",
-    level: Math.max(0, Math.trunc(Number(picked.level) || 0)),
-    magicPointsSpent: 0,
-    runePointsSpent: 0,
+    level: level,
+    magicPointsSpent: isRuneMagic ? 0 : level,
+    runePointsSpent: isRuneMagic ? level : 0,
     casterSuccessLevel: undefined,
   });
-  // A cancellation or a spell macro (e.g. Dispel Magic) removes effects, so the palette changes then too.
+  // A cancellation, a spell macro (e.g. Dispel Magic) or a protective effect used up by the spell
+  // (e.g. Countermagic) removes effects, so the palette changes then too.
   return (
     applied?.outcome === "applied" ||
     applied?.outcome === "resolved" ||
-    (applied?.outcome === "blocked" && applied.reason === "cancelledActive")
+    (applied?.outcome === "blocked" &&
+      (applied.reason === "cancelledActive" || applied.reason === "intercepted"))
   );
 }

@@ -1,5 +1,5 @@
 import type {
-  SpellEffectBlockedReason,
+  SpellStackingBlockedReason,
   SpellStackingRule,
 } from "../../active-effect/data-model/spell-effect.defs";
 
@@ -16,7 +16,7 @@ export type ExistingSpellEffect = {
 
 export type SpellEffectStacking =
   | { outcome: "apply"; displaced: ExistingSpellEffect[] }
-  | { outcome: "blocked"; reason: SpellEffectBlockedReason; by: ExistingSpellEffect }
+  | { outcome: "blocked"; reason: SpellStackingBlockedReason; by: ExistingSpellEffect }
   | { outcome: "cancel"; cancelled: ExistingSpellEffect[] };
 
 /** Whether a new cast lands on its target document, and which existing spell effects it removes. */
