@@ -391,18 +391,6 @@ export class RqgActor extends Actor {
     });
   }
 
-  /** Take magic points from this actor's own pool, down to 0. */
-  public async spendMagicPoints(points: number): Promise<void> {
-    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-    await this.serializeMagicPointsWrite(async () => {
-      const value = this.system.attributes.magicPoints.value ?? 0;
-      const newValue = Math.max(0, value - Math.max(0, points));
-      if (newValue !== value) {
-        await this.update({ system: { attributes: { magicPoints: { value: newValue } } } });
-      }
-    });
-  }
-
   /** `serializeWrite` for `hitPoints.value` - used by `catchUpNaturalHealing` (#436) and should
    *  also guard damage/heal application (`applyDamageToActorTotalHp`, `healWound`'s actor-hp
    *  bump) against racing it, the same way magicPoints' draws already guard against catch-up. */

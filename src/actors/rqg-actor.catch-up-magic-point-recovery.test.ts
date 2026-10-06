@@ -149,13 +149,3 @@ describe("RqgActor.gainMagicPoints", () => {
     expect(actor.update).not.toHaveBeenCalled();
   });
 });
-
-describe("RqgActor.spendMagicPoints", () => {
-  it("takes points down to 0", async () => {
-    const actor = createCharacterActor({ magicPoints: { value: 3, max: 18 } });
-    await actor.spendMagicPoints(5);
-    expect(actor.update).toHaveBeenCalledWith({
-      system: { attributes: { magicPoints: { value: 0 } } },
-    });
-  });
-});
