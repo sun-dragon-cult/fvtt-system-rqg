@@ -27,10 +27,8 @@ export function createRqgApi() {
     },
     query: {
       abilities: query.abilities,
-      characteristics: query.characteristics,
       weaponUsages: query.weaponUsages,
       spells: query.spells,
-      attributes: query.attributes,
     },
     /** Compare with `roll.successLevel`, lower is better. */
     SuccessLevel: AbilitySuccessLevelEnum,
