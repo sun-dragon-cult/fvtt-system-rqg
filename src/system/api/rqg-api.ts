@@ -9,7 +9,6 @@ import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
 import * as query from "./api-query";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
-import { nameGeneration } from "./name-generation";
 import { Rqid } from "./rqid-api";
 
 /**
@@ -61,7 +60,6 @@ export function createRqgApi() {
       setDefaultRqid: Rqid.setDefaultRqid.bind(Rqid),
       renderRqidDocument: Rqid.renderRqidDocument.bind(Rqid),
     },
-    names: nameGeneration,
     spellEffects: {
       removeSpellEffects,
     },
