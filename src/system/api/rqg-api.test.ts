@@ -57,6 +57,9 @@ describe("game.system.api", () => {
           "setRqid": "function",
         },
         "spellEffects": {
+          "castStrength": "function",
+          "effectRemovalCost": "function",
+          "list": "function",
           "removeSpellEffects": "function",
         },
       }

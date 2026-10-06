@@ -101,5 +101,7 @@ export interface Spell {
   targetKind: SpellTargetKindEnum;
   /** How much of #1079's application machinery this spell's effect goes through */
   effectTier: SpellEffectTierEnum;
+  /** Not stopped by spell barriers such as Countermagic and Shield */
+  passesSpellBarriers: boolean;
   descriptionRqidLink: RqidLink | undefined;
 }

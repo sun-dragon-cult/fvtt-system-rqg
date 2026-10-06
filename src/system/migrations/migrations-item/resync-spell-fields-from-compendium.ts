@@ -18,6 +18,7 @@ type SpellSurveyFields = {
   targetKind?: string;
   effectTier?: string;
   resistedBy?: string;
+  passesSpellBarriers?: boolean;
 };
 
 // One lookup per rqid and language, however many actors know the spell.
@@ -45,10 +46,10 @@ function isDefaultSpellIcon(
 }
 
 /**
- * Fill a spell's effect link, survey fields, resistedBy and icon from its compendium spell, matched
- * by rqid (#1086).
- * Only fills what is unset - an empty link, "none", or a default icon - so a GM's own choice is
- * never overwritten.
+ * Fill a spell's effect link, survey fields, resistedBy, passesSpellBarriers and icon from its
+ * compendium spell, matched by rqid (#1086).
+ * Only fills what is unset - an empty link, "none", false, or a default icon - so a GM's own choice
+ * is never overwritten.
  */
 export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promise<Item.UpdateData> {
   if (itemData.type !== ItemTypeEnum.SpiritMagic && itemData.type !== ItemTypeEnum.RuneMagic) {
@@ -61,10 +62,18 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
   const needsTargetKind = system.targetKind === SpellTargetKindEnum.None;
   const needsEffectTier = system.effectTier === SpellEffectTierEnum.None;
   const needsResistedBy = system.resistedBy === SpellResistedByEnum.None;
+  const needsPassesSpellBarriers = !system.passesSpellBarriers;
   const needsImg = isDefaultSpellIcon(itemData.img, spellType);
   if (
     !rqidFlags?.id ||
-    !(needsLink || needsTargetKind || needsEffectTier || needsResistedBy || needsImg)
+    !(
+      needsLink ||
+      needsTargetKind ||
+      needsEffectTier ||
+      needsResistedBy ||
+      needsPassesSpellBarriers ||
+      needsImg
+    )
   ) {
     return {};
   }
@@ -102,6 +111,9 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
     needsResistedBy && firstSet((from) => from.resistedBy, SpellResistedByEnum.None);
   if (resistedBy) {
     patch["resistedBy"] = resistedBy;
+  }
+  if (needsPassesSpellBarriers && sources.some((from) => from.passesSpellBarriers === true)) {
+    patch["passesSpellBarriers"] = true;
   }
   const img =
     needsImg &&

@@ -73,6 +73,25 @@ describe("RqgActor.catchUpMagicPointRecovery", () => {
     });
   });
 
+  it("keeps points held above max, only advancing the checkpoint", async () => {
+    const actor = createCharacterActor({
+      magicPoints: { value: 21, max: 18 },
+      magicPointRecoverySettledWorldTime: 0,
+    });
+    (game as any).time = { worldTime: 80 * 60 * 3 };
+
+    await actor.catchUpMagicPointRecovery();
+
+    expect(actor.update).toHaveBeenCalledWith({
+      system: {
+        attributes: {
+          magicPoints: { value: 21 },
+          magicPointRecoverySettledWorldTime: 80 * 60 * 3,
+        },
+      },
+    });
+  });
+
   it("is a no-op for a non-character actor", async () => {
     const actor = createCharacterActor({});
     actor.type = "creature";
@@ -105,5 +124,38 @@ describe("RqgActor.catchUpMagicPointRecovery", () => {
 
     expect(actor.update).not.toHaveBeenCalled();
     (game as any).settings = originalSettings;
+  });
+});
+
+describe("RqgActor.gainMagicPoints", () => {
+  const updatedValue = (actor: any) =>
+    actor.update.mock.calls[0]?.[0].system.attributes.magicPoints.value;
+
+  it("adds points up to max", async () => {
+    const actor = createCharacterActor({ magicPoints: { value: 15, max: 18 } });
+    await actor.gainMagicPoints(5);
+    expect(updatedValue(actor)).toBe(18);
+  });
+
+  it("goes above max when allowed", async () => {
+    const actor = createCharacterActor({ magicPoints: { value: 15, max: 18 } });
+    await actor.gainMagicPoints(5, { allowAboveMax: true });
+    expect(updatedValue(actor)).toBe(20);
+  });
+
+  it("never lowers points already above max", async () => {
+    const actor = createCharacterActor({ magicPoints: { value: 20, max: 18 } });
+    await actor.gainMagicPoints(2);
+    expect(actor.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("RqgActor.spendMagicPoints", () => {
+  it("takes points down to 0", async () => {
+    const actor = createCharacterActor({ magicPoints: { value: 3, max: 18 } });
+    await actor.spendMagicPoints(5);
+    expect(actor.update).toHaveBeenCalledWith({
+      system: { attributes: { magicPoints: { value: 0 } } },
+    });
   });
 });

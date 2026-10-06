@@ -58,6 +58,8 @@ export function spellSchemaFields() {
       initial: SpellEffectTierEnum.None,
       choices: enumChoices(SpellEffectTierEnum, "RQG.Item.Spell.EffectTierEnum."),
     }),
+    // Spells that attack defences themselves, like Dispel Magic (RBM p.112) and Dismiss Magic (p.44)
+    passesSpellBarriers: new BooleanField({ nullable: false, initial: false }),
     descriptionRqidLink: rqidLinkSchemaField({ nullable: true }),
     // The spell's Active Effect template. Copies on actors get it from their compendium spell by a
     // migration, never by guessing from the spell's name.
