@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      foswig:
-        specifier: ^3.0.1
-        version: 3.0.1
     devDependencies:
       '@commitlint/cli':
         specifier: ^21.2.1
@@ -1757,9 +1753,6 @@ packages:
 
   flatted@3.4.2:
     resolution: {integrity: sha512-PjDse7RzhcPkIJwy5t7KPWQSZ9cAbzQXcafsetQoD7sOJRQlGikNbx7yZp2OotDnJyrDcbyRq3Ttb18iYOqkxA==}
-
-  foswig@3.0.1:
-    resolution: {integrity: sha512-dYTbKXy9P1TEaRZWfoaBTczAVfIYHNi071wqXgd2oZMTBR3QtzfsrU6jHODGI2nCeQmcPCNc0tUCrTH6y4fe9A==}
 
   fsevents@2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
@@ -4750,8 +4743,6 @@ snapshots:
       hookified: 1.15.1
 
   flatted@3.4.2: {}
-
-  foswig@3.0.1: {}
 
   fsevents@2.3.2:
     optional: true

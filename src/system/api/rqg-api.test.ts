@@ -33,15 +33,6 @@ describe("game.system.api", () => {
           "openDataModelRepairDialog": "function",
           "openRqidBatchEditor": "function",
         },
-        "names": {
-          "Generate": "function",
-          "GenerateFromNameBase": "function",
-          "GenerateFromRollTable": "function",
-          "GetNameBase": "function",
-          "GetNameBases": "function",
-          "ResolveTableResult": "function",
-          "defaultConstraints": "object",
-        },
         "query": {
           "abilities": "function",
           "attributes": "function",
