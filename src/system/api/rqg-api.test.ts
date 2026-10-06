@@ -58,37 +58,11 @@ describe("game.system.api", () => {
           "spiritMagic": "function",
         },
         "rqid": {
-          "compareCandidatesPrio": "function",
-          "compareRqidPrio": "function",
-          "compareTaggedByPriorityAndSource": "function",
-          "documentFromPacks": "function",
-          "documentFromWorld": "function",
-          "documentLinkIconsConfigName": "object",
-          "documentNameLookup": "object",
-          "documentRqid": "function",
-          "documentsFromPacks": "function",
-          "documentsFromWorld": "function",
-          "embeddedRqid": "function",
-          "filterBestRqid": "function",
-          "filterBestTaggedRqid": "function",
           "fromRqid": "function",
           "fromRqidCount": "function",
           "fromRqidRegex": "function",
           "fromRqidRegexBest": "function",
-          "gamePropertyLookup": "object",
           "getDefaultRqid": "function",
-          "getDefaultRqidSlug": "function",
-          "getDocumentFlag": "function",
-          "getDocumentName": "function",
-          "getDocumentType": "function",
-          "getEmbeddedOrProvidedDocument": "function",
-          "getGameCollection": "function",
-          "getGameProperty": "function",
-          "getKind": "function",
-          "getMaxPackDocumentPriority": "function",
-          "getRqidIcon": "function",
-          "init": "function",
-          "kindLookup": "object",
           "renderRqidDocument": "function",
           "setDefaultRqid": "function",
           "setRqid": "function",
@@ -98,5 +72,10 @@ describe("game.system.api", () => {
         },
       }
     `);
+  });
+
+  it("keeps rqid functions that call other Rqid statics working when called detached", async () => {
+    const { fromRqidRegexBest } = createRqgApi().rqid;
+    await expect(fromRqidRegexBest(undefined, "i")).resolves.toEqual([]);
   });
 });

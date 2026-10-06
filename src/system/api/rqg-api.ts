@@ -50,7 +50,17 @@ export function createRqgApi() {
         await RqidBatchEditor.factory(...itemTypeEnums);
       },
     },
-    rqid: Rqid,
+    // Bound, since several of these call other Rqid statics through `this`
+    rqid: {
+      fromRqid: Rqid.fromRqid.bind(Rqid),
+      fromRqidRegex: Rqid.fromRqidRegex.bind(Rqid),
+      fromRqidRegexBest: Rqid.fromRqidRegexBest.bind(Rqid),
+      fromRqidCount: Rqid.fromRqidCount.bind(Rqid),
+      getDefaultRqid: Rqid.getDefaultRqid.bind(Rqid),
+      setRqid: Rqid.setRqid.bind(Rqid),
+      setDefaultRqid: Rqid.setDefaultRqid.bind(Rqid),
+      renderRqidDocument: Rqid.renderRqidDocument.bind(Rqid),
+    },
     names: nameGeneration,
     spellEffects: {
       removeSpellEffects,

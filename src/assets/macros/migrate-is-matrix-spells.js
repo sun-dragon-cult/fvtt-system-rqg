@@ -24,7 +24,7 @@ async function migrateIsMatrixSpells() {
   for (const actor of game.actors ?? []) {
     for (const item of actor.items) {
       if (item.type === "spiritMagic" && item.system.isMatrix) {
-        const rqid = game.system.api.rqid.getDocumentFlag(item)?.id;
+        const rqid = item.getFlag("rqg", "documentRqidFlags")?.id;
         candidates.push({ actor, item, rqid });
       }
     }
