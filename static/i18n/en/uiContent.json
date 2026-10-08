@@ -1226,6 +1226,7 @@
           "ritual": "A social/ritual state (not yet automated)"
         },
         "EffectTier": "Effect Tier",
+        "PassesSpellBarriers": "Gets through Countermagic and Shield",
         "SpellEffect": "Spell Effect",
         "EffectTierEnum": {
           "none": "None - nothing to automate",

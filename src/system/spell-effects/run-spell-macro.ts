@@ -2,7 +2,12 @@ import { localize } from "../util";
 import { systemId } from "../config";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
-import type { SpellEffectApplied, SpellEffectCast, SpellMacroScope } from "./apply-spell-effect";
+import {
+  spellMacroScope,
+  type SpellEffectApplied,
+  type SpellEffectCast,
+  type SpellMacroScope,
+} from "./apply-spell-effect";
 
 /** What a player's client sends the GM to run a spell macro flagged runAsGm. */
 export type RunSpellMacroQueryData = {
@@ -64,12 +69,10 @@ async function handleRunSpellMacroQuery(
   if (!(macro instanceof Macro) || !macro.getFlag(systemId, "runAsGm") || !spell || !targetActor) {
     return undefined;
   }
-  return executeSpellMacro(macro, {
-    spell: spell as RqgItem,
-    targetActor: targetActor as RqgActor,
-    targetName: data.targetName,
-    cast: data.cast,
-  });
+  return executeSpellMacro(
+    macro,
+    spellMacroScope(spell as RqgItem, targetActor as RqgActor, data.targetName, data.cast),
+  );
 }
 
 export function initRunSpellMacroQuery(): void {

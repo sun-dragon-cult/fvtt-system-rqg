@@ -6,6 +6,7 @@ import {
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
+import { castStrength, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import * as query from "./api-query";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
@@ -59,7 +60,10 @@ export function createRqgApi() {
       renderRqidDocument: Rqid.renderRqidDocument.bind(Rqid),
     },
     spellEffects: {
+      list: listSpellEffects,
       removeSpellEffects,
+      castStrength,
+      effectRemovalCost,
     },
   };
 }

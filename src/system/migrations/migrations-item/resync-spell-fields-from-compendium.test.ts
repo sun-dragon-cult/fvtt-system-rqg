@@ -115,6 +115,20 @@ describe("resyncSpellFieldsFromCompendium", () => {
     });
   });
 
+  it("marks a spell that gets through spell barriers when its compendium spell does", async () => {
+    packsContain(
+      compendium("i.spirit-magic.dispel-magic", {
+        effectTier: "macro",
+        passesSpellBarriers: true,
+      }),
+    );
+    const copy = spell("i.spirit-magic.dispel-magic", { effectTier: "macro" });
+
+    expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
+      system: { passesSpellBarriers: true },
+    });
+  });
+
   it("copies nothing the compendium spell doesn't have either", async () => {
     packsContain(compendium("i.spirit-magic.unclassified", {}));
 

@@ -93,6 +93,10 @@
       "minLength": 1,
       "default": "none"
     },
+    "passesSpellBarriers": {
+      "type": "boolean",
+      "default": false
+    },
     "descriptionRqidLink": {
       "type": [
         "object",
@@ -171,6 +175,7 @@
     "resistedBy",
     "targetKind",
     "effectTier",
+    "passesSpellBarriers",
     "isVariable",
     "spellFocus",
     "isMatrix"

@@ -369,6 +369,28 @@ export class RqgActor extends Actor {
     return this.serializeWrite("magicPoints", operation);
   }
 
+  /**
+   * Add magic points to this actor's own pool, up to its maximum. With `allowAboveMax` they may go
+   * above it, as with Absorption (RBM p.10). Never lowers points already above the maximum.
+   */
+  public async gainMagicPoints(
+    points: number,
+    { allowAboveMax = false }: { allowAboveMax?: boolean } = {},
+  ): Promise<void> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    await this.serializeMagicPointsWrite(async () => {
+      const magicPoints = this.system.attributes.magicPoints;
+      const value = magicPoints.value ?? 0;
+      const gained = value + Math.max(0, points);
+      const newValue = allowAboveMax
+        ? gained
+        : Math.max(value, Math.min(gained, magicPoints.max ?? 0));
+      if (newValue !== value) {
+        await this.update({ system: { attributes: { magicPoints: { value: newValue } } } });
+      }
+    });
+  }
+
   /** `serializeWrite` for `hitPoints.value` - used by `catchUpNaturalHealing` (#436) and should
    *  also guard damage/heal application (`applyDamageToActorTotalHp`, `healWound`'s actor-hp
    *  bump) against racing it, the same way magicPoints' draws already guard against catch-up. */
@@ -414,9 +436,11 @@ export class RqgActor extends Actor {
       if (pointsRecovered === 0 && newSettledWorldTime === settledWorldTime) {
         return;
       }
-      const newValue = Math.min(
-        (attributes.magicPoints.value ?? 0) + pointsRecovered,
-        attributes.magicPoints.max ?? 0,
+      const currentValue = attributes.magicPoints.value ?? 0;
+      // Points held above max (Absorption, RBM p.10) are not recovery's to take away
+      const newValue = Math.max(
+        currentValue,
+        Math.min(currentValue + pointsRecovered, attributes.magicPoints.max ?? 0),
       );
       await this.update(
         foundry.utils.expandObject({

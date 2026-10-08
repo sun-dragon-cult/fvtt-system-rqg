@@ -49,7 +49,20 @@ export type SpellMacroScope = {
   targetActor: RqgActor;
   targetName: string;
   cast: SpellEffectCast;
+  /** What Apply gives the effect of a Temporal spell, undefined for other durations. */
+  duration: SpellEffectDuration | undefined;
 };
+
+export type SpellEffectDuration = { value: number; units: string };
+
+export function spellMacroScope(
+  spell: RqgItem,
+  targetActor: RqgActor,
+  targetName: string,
+  cast: SpellEffectCast,
+): SpellMacroScope {
+  return { spell, targetActor, targetName, cast, duration: temporalDuration(spell) };
+}
 
 function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] {
   return (links ?? []).map((link) => link.rqid ?? "").filter((rqid) => !!rqid);
@@ -100,7 +113,7 @@ function pickerLabel(item: RqgItem, stacking: SpellEffectStacking): string {
     : itemName;
 }
 
-function temporalDuration(spell: RqgItem): { value: number; units: string } | undefined {
+function temporalDuration(spell: RqgItem): SpellEffectDuration | undefined {
   if ((spell.system as { duration?: string }).duration !== SpellDurationEnum.Temporal) {
     return undefined;
   }
@@ -125,7 +138,7 @@ export async function applySpellEffect(
   const spellName = spell.name ?? "";
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;
-  const scope = { spell, targetActor, targetName, cast };
+  const scope = spellMacroScope(spell, targetActor, targetName, cast);
   if (template instanceof Macro) {
     return (await interceptIncomingSpell(scope)) ?? runSpellMacro(template, scope);
   }
@@ -208,7 +221,7 @@ export async function applySpellEffect(
   data.disabled = false;
   // core only stamps a start on effects parented to an actor, and without one it never expires
   data.start = { time: game.time?.worldTime ?? 0 };
-  data.duration = { ...data.duration, ...temporalDuration(spell) };
+  data.duration = { ...data.duration, ...scope.duration };
   data.system.spellTarget = null;
   data.system.matchSuspensionToEquippedStatus = true;
   data.system.spell = {

@@ -33,6 +33,9 @@
       {{selectOptions effectTierOptions selected=system.effectTier localize=true}}
     </select>
 
+    <label for="passes-spell-barriers-{{id}}">{{localize "RQG.Item.Spell.PassesSpellBarriers"}}</label>
+    <input type="checkbox" id="passes-spell-barriers-{{id}}" name="system.passesSpellBarriers" {{checked system.passesSpellBarriers}}>
+
     <label class="mp">{{localize "RQG.Item.Spell.SpellEffect"}}</label>
     {{> rqidLinkDropzone
       rqidLink=system.effectRqidLink

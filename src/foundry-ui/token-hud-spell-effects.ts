@@ -17,17 +17,15 @@ type EffectLike = {
   parent: unknown;
   active: boolean;
   isTemporary: boolean;
-  duration: { expired?: boolean; label?: string };
-  system: unknown;
+  duration: { label?: string };
 };
 
-/** The spell effects on an actor or its items, for the Token HUD - expired ones left out. */
+/** The Token HUD entries for an actor's spell effects (see listSpellEffects). */
 export function spellEffectHudEntries(
   effects: Iterable<EffectLike>,
   actor: unknown,
 ): SpellEffectHudEntry[] {
   return [...effects]
-    .filter((effect) => !!(effect.system as { spell?: unknown })?.spell && !effect.duration.expired)
     .map((effect) => ({
       uuid: effect.uuid,
       name: effect.name,

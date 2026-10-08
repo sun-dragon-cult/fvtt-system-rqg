@@ -11,8 +11,7 @@ const effect = (name: string, extra: Record<string, unknown> = {}) => ({
   parent: actor,
   active: true,
   isTemporary: true,
-  duration: { expired: false, label: "1m 20s" },
-  system: { spell: { spellRqid: `i.spirit-magic.${name}` } },
+  duration: { label: "1m 20s" },
   ...extra,
 });
 
@@ -33,17 +32,6 @@ describe("spellEffectHudEntries", () => {
   it("names no item for an effect on the actor, and no time for one that doesn't expire", () => {
     const [entry] = spellEffectHudEntries([effect("path-watch", { isTemporary: false })], actor);
     expect(entry).toMatchObject({ itemName: "", remaining: "" });
-  });
-
-  it("leaves out effects that aren't spells, and expired spell effects", () => {
-    const entries = spellEffectHudEntries(
-      [
-        effect("magic-weapon", { system: { spell: null } }),
-        effect("sleep", { duration: { expired: true, label: "" } }),
-      ],
-      actor,
-    );
-    expect(entries).toEqual([]);
   });
 
   it("keeps a suspended one, marked inactive, sorted by name", () => {
