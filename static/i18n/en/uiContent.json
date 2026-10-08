@@ -532,6 +532,13 @@
         "AlreadyApplied": "This spell effect has already been applied.",
         "NoSpellEffect": "{spellName} has no spell effect to apply.",
         "NeedsActiveGm": "{spellName} needs a GM to be logged in to take effect.",
+        "Summon": {
+          "Folder": "Summoned",
+          "NoCasterToken": "{spellName}: the caster has no token on a scene to summon next to.",
+          "NoActor": "{spellName}: there is no {rqid} to summon.",
+          "NoRoom": "{spellName}: there is no free space near {casterName}.",
+          "Summoned": "{spellName}: {summonedName} appears next to {casterName}."
+        },
         "NoSpellEffectTarget": "{targetName} has nothing {spellName} can be cast on.",
         "ChooseTargetTitle": "Apply {spellName} to",
         "State": {

@@ -64,6 +64,17 @@ export function spellMacroScope(
   return { spell, targetActor, targetName, cast, duration: temporalDuration(spell) };
 }
 
+/** What a spell effect records about the cast that made it, as `system.spell`. */
+export function spellProvenance(spell: RqgItem, cast: SpellEffectCast) {
+  return {
+    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
+    spellName: spell.name ?? "",
+    spellUuid: spell.uuid,
+    ...cast,
+    casterSuccessLevel: cast.casterSuccessLevel ?? null,
+  };
+}
+
 function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] {
   return (links ?? []).map((link) => link.rqid ?? "").filter((rqid) => !!rqid);
 }
@@ -224,13 +235,7 @@ export async function applySpellEffect(
   data.duration = { ...data.duration, ...scope.duration };
   data.system.spellTarget = null;
   data.system.matchSuspensionToEquippedStatus = true;
-  data.system.spell = {
-    spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
-    spellName: spellName,
-    spellUuid: spell.uuid,
-    ...cast,
-    casterSuccessLevel: cast.casterSuccessLevel ?? null,
-  };
+  data.system.spell = spellProvenance(spell, cast);
 
   if (stacking.displaced.length) {
     await (parent as RqgItem).deleteEmbeddedDocuments(
