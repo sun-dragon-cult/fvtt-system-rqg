@@ -4,7 +4,7 @@ import {
   spellProvenance,
   type SpellEffectApplied,
   type SpellEffectDuration,
-  type SpellMacroScope,
+  type SpellApplyScope,
 } from "./apply-spell-effect";
 
 type GridRect = { col: number; row: number; w: number; h: number };
@@ -41,7 +41,7 @@ export function nearestFreeCell(
 }
 
 /** The token to summon next to: the caster's, or without a caster (token HUD "+") the target's. */
-async function summonerToken(scope: SpellMacroScope): Promise<TokenDocument | undefined> {
+async function summonerToken(scope: SpellApplyScope): Promise<TokenDocument | undefined> {
   const summoner: any = scope.cast.casterUuid
     ? await fromUuid(scope.cast.casterUuid)
     : scope.targetActor;
@@ -85,11 +85,11 @@ export type SummonOptions = {
 /**
  * Place an unlinked token of the actor with this rqid on the nearest free cell next to the caster,
  * importing the actor into a Summoned folder the first time. The token gets an effect carrying the
- * spell's provenance, and goes when the effect ends (RBM p.90). Creates tokens, so the macro
- * calling it needs `flags.rqg.runAsGm`.
+ * spell's provenance. Creates tokens, so the behaviour calling it needs `runAsGm`, and its `onEnd`
+ * should be `removeSummonedToken`.
  */
 export async function summon(
-  scope: SpellMacroScope,
+  scope: SpellApplyScope,
   actorRqid: string,
   options: SummonOptions = {},
 ): Promise<SpellEffectApplied | undefined> {
@@ -142,7 +142,6 @@ export async function summon(
         img: options.img ?? scope.spell.img ?? undefined,
         duration: options.duration ?? scope.duration,
         start: { time: game.time?.worldTime ?? 0 },
-        flags: { rqg: { removeTokenWhenEnded: true } },
         system: { spell: spellProvenance(scope.spell, scope.cast) },
       } as any,
     ])) ?? [];

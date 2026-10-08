@@ -2,6 +2,7 @@ import { isValidRqidString } from "../api/rqid-validation";
 import { systemId } from "../config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
+import { registeredSpellBehaviour } from "./spell-behaviour";
 
 /** The parts of a compendium index entry needed to find the spells that have an effect. */
 export type SpellIndexEntry = {
@@ -12,13 +13,15 @@ export type SpellIndexEntry = {
 };
 
 /**
- * The spells with an effect template, one per rqid: in `lang` when there is a copy in it, else in
- * `fallbackLang`, and of those the highest priority. Sorted by name.
+ * The spells with an effect template or a behaviour that applies itself, one per rqid: in `lang`
+ * when there is a copy in it, else in `fallbackLang`, and of those the highest priority. Sorted by
+ * name.
  */
 export function pickSpellsWithEffects<T extends SpellIndexEntry>(
   entries: Iterable<T>,
   lang: string,
   fallbackLang: string,
+  appliesItself: (spellRqid: string) => boolean = () => false,
 ): T[] {
   const langRank = (entry: T) => {
     const entryLang = entry.flags?.rqg?.documentRqidFlags?.lang;
@@ -33,7 +36,7 @@ export function pickSpellsWithEffects<T extends SpellIndexEntry>(
       !rqid ||
       !isSpell ||
       !langRank(entry) ||
-      !isValidRqidString(entry.system?.effectRqidLink?.rqid)
+      !(isValidRqidString(entry.system?.effectRqidLink?.rqid) || appliesItself(rqid))
     ) {
       continue;
     }
@@ -51,7 +54,7 @@ export function pickSpellsWithEffects<T extends SpellIndexEntry>(
   return [...best.values()].sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
 }
 
-/** The compendium spells that have an effect template, in the world's language where possible. */
+/** The compendium spells Apply can do something with, in the world's language where possible. */
 export async function compendiumSpellsWithEffects(): Promise<RqgItem[]> {
   const lang = game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
   const candidates: (SpellIndexEntry & { _id: string; pack: CompendiumCollection.Any })[] = [];
@@ -64,7 +67,12 @@ export async function compendiumSpellsWithEffects(): Promise<RqgItem[]> {
       candidates.push({ ...(entry as SpellIndexEntry & { _id: string }), pack });
     }
   }
-  const picked = pickSpellsWithEffects(candidates, lang, CONFIG.RQG.fallbackLanguage);
+  const picked = pickSpellsWithEffects(
+    candidates,
+    lang,
+    CONFIG.RQG.fallbackLanguage,
+    (spellRqid) => !!registeredSpellBehaviour(spellRqid)?.apply,
+  );
   const spells = await Promise.all(picked.map((entry) => entry.pack.getDocument(entry._id)));
   return spells.filter((spell) => !!spell) as unknown as RqgItem[];
 }

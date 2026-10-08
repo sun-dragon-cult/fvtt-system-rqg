@@ -5,7 +5,7 @@ import {
   getSpellCastOutcome,
   type SpellTargetOutcome,
 } from "../data-model/shared/spell-cast-outcome";
-import { resolveSpellEffectRqid } from "../system/spell-effects/resolve-spell-effect-rqid";
+import { hasSpellEffect } from "../system/spell-effects/spell-behaviour";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
 import { updateChatMessage } from "../sockets/socketable-requests";
@@ -51,13 +51,14 @@ function appliedEffect(
 }
 
 /**
- * The spell a card can apply an effect from - one linked to an effect. A hidden cast's anonymous
+ * The spell a card can apply an effect from - one linked to an effect template or with a behaviour
+ * that applies itself. A hidden cast's anonymous
  * request names no spell.
  */
 function applicableSpell(message: ChatMessage): RqgItem | undefined {
   const spellUuid = (message.system as any).spellUuid as string | undefined;
   const spell = spellUuid ? (fromUuidSync(spellUuid) as RqgItem | null) : undefined;
-  return spell && resolveSpellEffectRqid(spell as any) ? spell : undefined;
+  return spell && hasSpellEffect(spell) ? spell : undefined;
 }
 
 /** Applied, or blocked by what was already on the target - Apply is used up either way. */

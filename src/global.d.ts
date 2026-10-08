@@ -16,7 +16,7 @@ import type { TokenRulerSettingsType } from "./applications/settings/token-ruler
 import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
 import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
-import type { RunSpellMacroQueryData } from "./system/spell-effects/run-spell-macro.ts";
+import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
@@ -68,8 +68,8 @@ declare global {
 
   namespace CONFIG {
     interface Queries {
-      "rqg.runSpellMacro": (
-        data: RunSpellMacroQueryData,
+      "rqg.applySpellBehaviour": (
+        data: ApplySpellBehaviourQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
     }
 

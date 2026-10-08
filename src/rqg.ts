@@ -36,8 +36,9 @@ import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
 import { initSpelledProjectiles } from "./items/weapon-item/spelled-projectile";
-import { initRunSpellMacroQuery } from "./system/spell-effects/run-spell-macro";
-import { initSummonedTokens } from "./system/spell-effects/summoned-token";
+import { initApplySpellBehaviourQuery } from "./system/spell-effects/run-spell-apply";
+import { initSpellEnd } from "./system/spell-effects/spell-end";
+import { initSpellBehaviours } from "./system/spell-effects/spell-behaviour";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
 // CONFIG.debug.time = true; // console log time
@@ -105,8 +106,9 @@ Hooks.once("init", () => {
   RqgActor.init();
   initCharacterPassiveRecovery();
   initSpelledProjectiles();
-  initRunSpellMacroQuery();
-  initSummonedTokens();
+  initSpellBehaviours();
+  initApplySpellBehaviourQuery();
+  initSpellEnd();
   RqgItem.init();
   RqgHotbar.init();
   RqgActorDirectory.init();
