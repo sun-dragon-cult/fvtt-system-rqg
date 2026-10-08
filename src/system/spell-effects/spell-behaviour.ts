@@ -101,7 +101,7 @@ async function macroSpellBehaviour(spell: RqgItem): Promise<SpellBehaviour | und
   if (!linkedRqid?.startsWith("m.")) {
     return undefined;
   }
-  const macro = await Rqid.fromRqid(linkedRqid);
+  const macro = await Rqid.fromRqid(linkedRqid, undefined, true);
   if (!(macro instanceof Macro)) {
     return undefined;
   }
