@@ -151,6 +151,33 @@
         "name"
       ]
     },
+    "behaviourRqidLink": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "rqid": {
+          "type": "string",
+          "default": ""
+        },
+        "name": {
+          "type": "string",
+          "default": ""
+        },
+        "bonus": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "rqid",
+        "name"
+      ]
+    },
     "isVariable": {
       "type": "boolean",
       "default": false

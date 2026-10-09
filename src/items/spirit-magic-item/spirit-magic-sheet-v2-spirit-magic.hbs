@@ -56,6 +56,16 @@
       showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceEffect"
     }}
 
+    <label class="mp">{{localize "RQG.Item.Spell.SpellBehaviour"}}</label>
+    {{> rqidLinkDropzone
+      rqidLink=system.behaviourRqidLink
+      dropzoneData="behaviourRqidLink"
+      dropDocumentNames="Macro"
+      showDeleteFromPropertyName="behaviourRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectBehaviour"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceBehaviour"
+    }}
+
     <label for="is-matrix-{{id}}">{{localize "RQG.Item.SpiritMagic.MatrixQ"}}</label>
     <input type="checkbox" id="is-matrix-{{id}}" name="system.isMatrix" {{checked system.isMatrix}}>
 

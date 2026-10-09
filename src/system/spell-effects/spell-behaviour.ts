@@ -1,6 +1,7 @@
 import { Rqid } from "../api/rqid-api";
 import { systemId } from "../config";
 import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
+import { isValidRqidString } from "../api/rqid-validation";
 import { callRqgHook } from "../fvtt-type-compat";
 import { ERR } from "../error-registry";
 import { RqgLogger } from "../logging/rqg-logger";
@@ -21,7 +22,7 @@ export type SpellEndScope = { effect: ActiveEffect };
 
 /**
  * What a spell does beyond attaching an effect template - registered by modules for a spell rqid,
- * or returned by a Macro the spell links as a per-world override. Part of the public API.
+ * or returned by the Macro the spell's `behaviourRqidLink` points to, a per-world override. Part of the public API.
  * An override Macro runs on the client that needs the behaviour, so players need LIMITED
  * permission on it, even when the behaviour is `runAsGm`.
  */
@@ -114,10 +115,16 @@ export async function guardSpellBehaviour<T>(
   }
 }
 
-/** A behaviour returned by a Macro the spell links, the GM's per-world override. */
+function behaviourRqid(spell: RqgItem): string | undefined {
+  const linked = (spell.system as { behaviourRqidLink?: { rqid?: string } | null })
+    .behaviourRqidLink?.rqid;
+  return isValidRqidString(linked) ? linked : undefined;
+}
+
+/** A behaviour returned by the Macro the spell links, the GM's per-world override. */
 async function macroSpellBehaviour(spell: RqgItem): Promise<SpellBehaviour | undefined> {
-  const linkedRqid = resolveSpellEffectRqid(spell as any);
-  if (!linkedRqid?.startsWith("m.")) {
+  const linkedRqid = behaviourRqid(spell);
+  if (!linkedRqid) {
     return undefined;
   }
   const macro = await Rqid.fromRqid(linkedRqid, undefined, true);
@@ -128,7 +135,7 @@ async function macroSpellBehaviour(spell: RqgItem): Promise<SpellBehaviour | und
   return result && typeof result === "object" ? (result as SpellBehaviour) : undefined;
 }
 
-/** A spell's behaviour: a Macro it links if there is one, else the one registered for its rqid. */
+/** A spell's behaviour: its override Macro's if it links one, else the one registered for its rqid. */
 export async function findSpellBehaviour(spell: RqgItem): Promise<SpellBehaviour | undefined> {
   return (await macroSpellBehaviour(spell)) ?? registeredSpellBehaviour(spellRqidOf(spell));
 }
@@ -179,9 +186,14 @@ export async function spellBehavioursForEffects<T extends ActiveEffect>(
   );
 }
 
-/** Whether Apply can do something with the spell: attach an effect template or run a behaviour. */
+/**
+ * Whether Apply can do something with the spell: attach an effect template, or run a behaviour -
+ * an override Macro is assumed to have `apply`, since knowing would mean running it.
+ */
 export function hasSpellEffect(spell: RqgItem): boolean {
   return (
-    !!resolveSpellEffectRqid(spell as any) || !!registeredSpellBehaviour(spellRqidOf(spell))?.apply
+    !!resolveSpellEffectRqid(spell as any) ||
+    !!behaviourRqid(spell) ||
+    !!registeredSpellBehaviour(spellRqidOf(spell))?.apply
   );
 }

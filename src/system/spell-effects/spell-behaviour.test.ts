@@ -42,7 +42,10 @@ describe("spellBehavioursForEffects", () => {
     const spellItem = {
       name: "Countermagic",
       flags: { rqg: { documentRqidFlags: { id: "i.spirit-magic.countermagic" } } },
-      system: { effectRqidLink: { rqid: "m..house-countermagic" } },
+      system: {
+        effectRqidLink: { rqid: "ae..countermagic" },
+        behaviourRqidLink: { rqid: "m..house-countermagic" },
+      },
     };
     vi.stubGlobal(
       "fromUuid",

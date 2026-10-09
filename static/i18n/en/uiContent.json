@@ -1112,6 +1112,8 @@
           "DropToReplaceJournal": "Drop a Journal Entry on this field to replace.",
           "DropToConnectEffect": "Drop a spell's Active Effect here to connect it.",
           "DropToReplaceEffect": "Drop a spell's Active Effect here to replace it.",
+          "DropToConnectBehaviour": "Drop a Macro here that returns this spell's behaviour, to override the one modules provide in this world.",
+          "DropToReplaceBehaviour": "Drop a Macro here that returns this spell's behaviour, to replace the override.",
           "DropToConnectCult": "Drop a Cult Item on this field to connect.",
           "DropToConnectPassion": "Drop a Passion Item on this field to connect.",
           "DropToConnectRune": "Drop a Rune Item on this field to connect.",
@@ -1235,6 +1237,7 @@
         "EffectTier": "Effect Tier",
         "PassesSpellBarriers": "Gets through Countermagic and Shield",
         "SpellEffect": "Spell Effect",
+        "SpellBehaviour": "Behaviour Override",
         "EffectTierEnum": {
           "none": "None - nothing to automate",
           "reminder": "Reminder (not yet automated)",

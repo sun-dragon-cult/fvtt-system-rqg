@@ -46,6 +46,16 @@
       showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceEffect"
     }}
 
+    <label class="mp">{{localize "RQG.Item.Spell.SpellBehaviour"}}</label>
+    {{> rqidLinkDropzone
+      rqidLink=system.behaviourRqidLink
+      dropzoneData="behaviourRqidLink"
+      dropDocumentNames="Macro"
+      showDeleteFromPropertyName="behaviourRqidLink"
+      showInfoCircleConnect="RQG.Item.RqgItem.ShowInfoCircle.DropToConnectBehaviour"
+      showInfoCircleReplace="RQG.Item.RqgItem.ShowInfoCircle.DropToReplaceBehaviour"
+    }}
+
     <label for="is-stackable-{{id}}">{{localize "RQG.Item.RuneMagic.Stackable"}}</label>
     <input type="checkbox" id="is-stackable-{{id}}" name="system.isStackable" {{checked system.isStackable}}>
 
