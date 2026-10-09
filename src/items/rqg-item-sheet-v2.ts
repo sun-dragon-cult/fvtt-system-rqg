@@ -413,7 +413,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
         return;
       // Only as a link, e.g. a spell's effectRqidLink - never embedded by dropping it on the sheet.
       case "ActiveEffect":
-      case "Macro":
         if (target instanceof Element && target.closest("[data-dropzone]")) {
           await this._onDropItemOrJournal(event, droppedDocumentData);
         }
@@ -424,7 +423,6 @@ export class RqgItemSheetV2 extends RqgItemSheetV2Base {
           "JournalEntry",
           "JournalEntryPage",
           "ActiveEffect",
-          "Macro",
         ]);
     }
   }

@@ -64,8 +64,6 @@ export function spellSchemaFields() {
     // The spell's Active Effect template. Copies on actors get it from their compendium spell by a
     // migration, never by guessing from the spell's name.
     effectRqidLink: rqidLinkSchemaField({ nullable: true }),
-    // A world Macro returning a SpellBehaviour, overriding the one modules register (#1170)
-    behaviourRqidLink: rqidLinkSchemaField({ nullable: true }),
   } as const;
 }
 
