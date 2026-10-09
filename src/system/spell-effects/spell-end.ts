@@ -1,12 +1,12 @@
 import { systemId } from "../config";
-import { spellBehaviourForEffect } from "./spell-behaviour";
+import { spellBehaviourForEffect, spellRqidOfEffect } from "./spell-behaviour";
 import { removeSummonedToken } from "./summon";
 
 /** Only the active GM's client ends effects, and only spell effects and summonings need it. */
 function needsEnding(effect: ActiveEffect): boolean {
   return (
     !!game.users?.activeGM?.isSelf &&
-    (!!(effect.system as any)?.spell?.spellRqid || !!effect.getFlag(systemId, "summoning"))
+    (!!spellRqidOfEffect(effect) || !!effect.getFlag(systemId, "summoning"))
   );
 }
 

@@ -152,7 +152,7 @@ export async function applySpellEffect(
   const behaviour = spellBehaviourOf(spell);
   const apply = behaviour?.apply;
   if (apply) {
-    return (await interceptIncomingSpell(scope)) ?? runSpellApply({ ...behaviour, apply }, scope);
+    return runSpellApply({ ...behaviour, apply }, scope);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;

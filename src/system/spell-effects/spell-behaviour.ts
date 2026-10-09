@@ -1,7 +1,7 @@
 import { systemId } from "../config";
 import { localize } from "../util";
 import { Rqid } from "../api/rqid-api";
-import { isValidRqidString } from "../api/rqid-validation";
+import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
 import { callRqgHook } from "../fvtt-type-compat";
 import { RqgLogger } from "../logging/rqg-logger";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -88,10 +88,17 @@ export async function guardSpellBehaviour<T>(
   }
 }
 
-// Shared per function, so spells registering the same hook (Countermagic and Shield) still share it
-const guardedHooks = new WeakMap<object, (scope: any) => Promise<any>>();
+type HookKind = "apply" | "onIncomingSpell" | "onEnd";
+
+// Per function, so spells registering the same hook (Countermagic and Shield) still share it
+const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any>>> = {
+  apply: new WeakMap(),
+  onIncomingSpell: new WeakMap(),
+  onEnd: new WeakMap(),
+};
 
 function guarded<F extends (scope: any) => Promise<any>>(
+  kind: HookKind,
   hook: F | undefined,
   nameOf: (scope: Parameters<F>[0]) => string,
   check: (result: Awaited<ReturnType<F>>) => boolean = () => true,
@@ -99,14 +106,14 @@ function guarded<F extends (scope: any) => Promise<any>>(
   if (!hook) {
     return undefined;
   }
-  let wrapped = guardedHooks.get(hook) as F | undefined;
+  let wrapped = guardedHooks[kind].get(hook) as F | undefined;
   if (!wrapped) {
     wrapped = (async (scope: Parameters<F>[0]) => {
       const result = await guardSpellBehaviour(nameOf(scope), () => hook(scope));
       // Modules are plain JavaScript, so their results aren't type-checked
       return result !== undefined && check(result) ? result : undefined;
     }) as F;
-    guardedHooks.set(hook, wrapped);
+    guardedHooks[kind].set(hook, wrapped);
   }
   return wrapped;
 }
@@ -114,12 +121,18 @@ function guarded<F extends (scope: any) => Promise<any>>(
 function guardBehaviour(behaviour: SpellBehaviour): SpellBehaviour {
   return {
     apply: guarded(
+      "apply",
       behaviour.apply,
       (scope) => scope.spell.name ?? "",
       (result) => spellEffectOutcomes.includes(result?.outcome ?? ""),
     ),
-    onIncomingSpell: guarded(behaviour.onIncomingSpell, (scope) => scope.spell.name ?? ""),
-    onEnd: guarded(behaviour.onEnd, (scope) => scope.effect.name ?? ""),
+    // Names the protective effect whose code it is, not the incoming spell
+    onIncomingSpell: guarded(
+      "onIncomingSpell",
+      behaviour.onIncomingSpell,
+      (scope) => scope.effects[0]?.name ?? "",
+    ),
+    onEnd: guarded("onEnd", behaviour.onEnd, (scope) => scope.effect.name ?? ""),
     runAsGm: behaviour.runAsGm,
   };
 }
@@ -142,21 +155,29 @@ export function initSpellBehaviours(): void {
 /** The behaviour registered for a spell rqid; its hooks never throw. */
 export function spellBehaviour(
   spellRqid: string | undefined,
-  lang: string = game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage,
+  lang?: string,
 ): SpellBehaviour | undefined {
   const candidates = spellRqid ? registrations.get(spellRqid) : undefined;
-  return candidates
-    ? pickRegistration(candidates, lang, CONFIG.RQG.fallbackLanguage)?.behaviour
-    : undefined;
+  if (!candidates) {
+    return undefined;
+  }
+  const worldLang =
+    lang ?? game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
+  return pickRegistration(candidates, worldLang, CONFIG.RQG.fallbackLanguage)?.behaviour;
 }
 
 export function spellBehaviourOf(spell: RqgItem): SpellBehaviour | undefined {
   return spellBehaviour(Rqid.getDocumentFlag(spell)?.id);
 }
 
+/** The rqid of the spell that made an effect, from its provenance. */
+export function spellRqidOfEffect(effect: ActiveEffect): string | undefined {
+  return (effect.system as { spell?: { spellRqid?: string } | null } | undefined)?.spell?.spellRqid;
+}
+
 /** The behaviour of the spell that made an effect. */
 export function spellBehaviourForEffect(effect: ActiveEffect): SpellBehaviour | undefined {
-  return spellBehaviour((effect.system as any)?.spell?.spellRqid);
+  return spellBehaviour(spellRqidOfEffect(effect));
 }
 
 /**
@@ -168,5 +189,8 @@ export function canApplySpell(
   effectRqidLink: { rqid?: string } | null | undefined,
   lang?: string,
 ): boolean {
-  return isValidRqidString(effectRqidLink?.rqid) || !!spellBehaviour(spellRqid, lang)?.apply;
+  return (
+    !!resolveSpellEffectRqid({ system: { effectRqidLink } }) ||
+    !!spellBehaviour(spellRqid, lang)?.apply
+  );
 }

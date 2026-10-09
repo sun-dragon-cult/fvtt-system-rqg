@@ -66,6 +66,18 @@ describe("spellBehaviour", () => {
     );
   });
 
+  it("guards a function per hook it is registered as", async () => {
+    const stops = async () => ({ outcome: "stopped" as const });
+    register((registry) => {
+      registry.register("i.spirit-magic.a", { apply: stops as any }, en);
+      registry.register("i.spirit-magic.b", { onIncomingSpell: stops }, en);
+    });
+    const scope = { spell: { name: "Spell" }, effects: [] } as any;
+    expect(await spellBehaviour("i.spirit-magic.b")?.onIncomingSpell?.(scope)).toEqual({
+      outcome: "stopped",
+    });
+  });
+
   it("contains a failing or malformed apply", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     register((registry) => {
