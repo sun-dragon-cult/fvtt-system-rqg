@@ -7,7 +7,7 @@ import {
   type SpellEffectCast,
   type SpellApplyScope,
 } from "./apply-spell-effect";
-import { findSpellBehaviour, type SpellBehaviour } from "./spell-behaviour";
+import { findSpellBehaviour, guardSpellBehaviour, type SpellBehaviour } from "./spell-behaviour";
 
 /** What a player's client sends the GM to run a spell behaviour's `apply` that is `runAsGm`. */
 export type ApplySpellBehaviourQueryData = {
@@ -23,7 +23,7 @@ async function runApply(
   behaviour: SpellBehaviour,
   scope: SpellApplyScope,
 ): Promise<SpellEffectApplied | undefined> {
-  const result = await behaviour.apply?.(scope);
+  const result = await guardSpellBehaviour(scope.spell.name ?? "", () => behaviour.apply?.(scope));
   // A world's Macro override is untyped
   return spellEffectOutcomes.includes((result as { outcome?: string } | undefined)?.outcome ?? "")
     ? result

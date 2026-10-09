@@ -2,7 +2,8 @@ import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import {
-  spellBehaviourForEffect,
+  guardSpellBehaviour,
+  spellBehavioursForEffects,
   type IncomingSpellScope,
   type SpellBehaviour,
 } from "./spell-behaviour";
@@ -44,19 +45,18 @@ export async function interceptIncomingSpell(
     return undefined;
   }
   const spellEffects = [
-    ...(scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect>),
+    ...(scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>),
   ].filter((effect: any) => effect.active && effect.system?.spell?.spellRqid);
-  const hooks = new Map<ActiveEffect, OnIncomingSpell | undefined>();
-  for (const effect of spellEffects) {
-    hooks.set(effect, (await spellBehaviourForEffect(effect))?.onIncomingSpell);
-  }
+  const behaviours = await spellBehavioursForEffects(spellEffects);
   const groups = groupByIncomingSpellHook(
-    spellEffects as (ActiveEffect & { active: boolean })[],
-    (effect) => hooks.get(effect),
+    spellEffects,
+    (effect) => behaviours.get(effect)?.onIncomingSpell,
   );
   for (const [onIncomingSpell, effects] of groups) {
     const incomingScope: IncomingSpellScope = { ...scope, effects };
-    const result = await onIncomingSpell(incomingScope);
+    const result = await guardSpellBehaviour(effects[0]?.name ?? "", () =>
+      onIncomingSpell(incomingScope),
+    );
     if (result?.outcome === "stopped") {
       return { outcome: "blocked", reason: "intercepted" };
     }

@@ -33,3 +33,14 @@ export function getSpeakerCompat(options: SpeakerOptionsCompat = {}): ChatMessag
 }
 
 import Actor = foundry.documents.Actor;
+
+/**
+ * Call one of the system's own hooks (RqgHooks in global.d.ts). fvtt-types only accepts core hook
+ * names and doesn't export its hook config for augmentation.
+ */
+export function callRqgHook<K extends keyof RqgHooks>(
+  hook: K,
+  ...args: Parameters<RqgHooks[K]>
+): void {
+  (Hooks.callAll as (hook: string, ...args: unknown[]) => boolean)(hook, ...args);
+}

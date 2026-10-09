@@ -18,6 +18,7 @@ import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
 import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
+import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
@@ -64,6 +65,12 @@ declare global {
 
   interface CONFIG {
     RQG: RqgConfig;
+  }
+
+  /** The system's own hooks, called through callRqgHook - part of the public API. */
+  interface RqgHooks {
+    /** Fired at `setup`: modules register their spell behaviours (#1170). */
+    "rqg.registerSpellBehaviours": (registry: SpellBehaviourRegistry) => void;
   }
 
   namespace CONFIG {

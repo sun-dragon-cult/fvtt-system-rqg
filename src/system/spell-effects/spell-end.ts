@@ -1,11 +1,15 @@
-import { spellBehaviourForEffect, type SpellEndScope } from "./spell-behaviour";
+import {
+  guardSpellBehaviour,
+  spellBehaviourForEffect,
+  type SpellEndScope,
+} from "./spell-behaviour";
 
 async function runOnEnd(effect: ActiveEffect): Promise<void> {
   if (!game.users?.activeGM?.isSelf) {
     return;
   }
   const behaviour = await spellBehaviourForEffect(effect);
-  await behaviour?.onEnd?.({ effect });
+  await guardSpellBehaviour(effect.name ?? "", () => behaviour?.onEnd?.({ effect }));
 }
 
 /**
