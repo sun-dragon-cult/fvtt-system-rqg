@@ -21,7 +21,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellApply } from "./run-spell-apply";
-import { findSpellBehaviour } from "./spell-behaviour";
+import { spellBehaviourOf } from "./spell-behaviour";
 import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
@@ -149,7 +149,7 @@ export async function applySpellEffect(
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
-  const behaviour = await findSpellBehaviour(spell);
+  const behaviour = spellBehaviourOf(spell);
   if (behaviour?.apply) {
     return (await interceptIncomingSpell(scope)) ?? runSpellApply(behaviour, scope);
   }
@@ -190,7 +190,7 @@ export async function applySpellEffect(
       return undefined;
     }
   }
-  // Only once Apply can no longer back out, since a protective macro may use up its effects
+  // Only once Apply can no longer back out, since a protective spell may use up its effects
   const intercepted = await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;

@@ -1618,7 +1618,7 @@
         "ResistanceMessageMissing": "The resistance request this refers to is no longer available — its chat message was removed.",
         "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
         "TokenHasNoActor": "This token has no actor associated with it.",
-        "SpellBehaviourFailed": "A spell's behaviour failed, so the spell went on without it. Check the console, and the spell's Macro or the module that registered it."
+        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it."
       },
       "Warn": {
         "TargetOneTokenOnly": "Please target one token only",

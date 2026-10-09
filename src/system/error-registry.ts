@@ -131,10 +131,6 @@ const REGISTRY = {
     code: "RQG-W0011",
     message: "RQG.Notification.Error.TokenHasNoActor",
   },
-  spellBehaviourFailed: {
-    code: "RQG-W0012",
-    message: "RQG.Notification.Error.SpellBehaviourFailed",
-  },
 } as const satisfies Record<string, RqgErrorEntry>;
 
 // Fail loud at module load on a malformed or duplicated registry.

@@ -8,7 +8,6 @@ import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
 import { castStrength, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
-import { removeSummonedToken } from "../spell-effects/spell-end";
 import * as query from "./api-query";
 import * as rolls from "./api-rolls";
 import { openDataModelRepairDialog } from "./data-model-repair";
@@ -67,7 +66,6 @@ export function createRqgApi() {
       castStrength,
       effectRemovalCost,
       summon,
-      removeSummonedToken,
     },
   };
 }

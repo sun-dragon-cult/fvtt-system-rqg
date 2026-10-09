@@ -2,7 +2,7 @@ import { isValidRqidString } from "../api/rqid-validation";
 import { systemId } from "../config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
-import { registeredSpellBehaviour } from "./spell-behaviour";
+import { spellBehaviour } from "./spell-behaviour";
 
 /** The parts of a compendium index entry needed to find the spells that have an effect. */
 export type SpellIndexEntry = {
@@ -71,7 +71,7 @@ export async function compendiumSpellsWithEffects(): Promise<RqgItem[]> {
     candidates,
     lang,
     CONFIG.RQG.fallbackLanguage,
-    (spellRqid) => !!registeredSpellBehaviour(spellRqid)?.apply,
+    (spellRqid) => !!spellBehaviour(spellRqid)?.apply,
   );
   const spells = await Promise.all(picked.map((entry) => entry.pack.getDocument(entry._id)));
   return spells.filter((spell) => !!spell) as unknown as RqgItem[];

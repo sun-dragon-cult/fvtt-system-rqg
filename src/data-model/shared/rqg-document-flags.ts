@@ -34,6 +34,8 @@ export interface MacroFlags {
 
 export interface RqgActiveEffectFlags {
   [documentRqidFlags]?: DocumentRqidFlags;
+  /** A summoning made by spellEffects.summon: its token goes when the effect ends. */
+  summoning?: boolean;
 }
 
 export interface RollTableFlags {

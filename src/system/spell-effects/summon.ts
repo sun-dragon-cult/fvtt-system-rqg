@@ -85,8 +85,8 @@ export type SummonOptions = {
 /**
  * Place an unlinked token of the actor with this rqid on the nearest free cell next to the caster,
  * importing the actor into a Summoned folder the first time. The token gets an effect carrying the
- * spell's provenance. Creates tokens, so the behaviour calling it needs `runAsGm`, and its `onEnd`
- * should be `removeSummonedToken`.
+ * spell's provenance, and goes when the effect ends (RBM p.90). Creates tokens, so the behaviour
+ * calling it needs `runAsGm`.
  */
 export async function summon(
   scope: SpellApplyScope,
@@ -142,6 +142,7 @@ export async function summon(
         img: options.img ?? scope.spell.img ?? undefined,
         duration: options.duration ?? scope.duration,
         start: { time: game.time?.worldTime ?? 0 },
+        flags: { rqg: { summoning: true } },
         system: { spell: spellProvenance(scope.spell, scope.cast) },
       } as any,
     ])) ?? [];

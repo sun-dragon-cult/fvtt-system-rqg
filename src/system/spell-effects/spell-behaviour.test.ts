@@ -1,9 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Rqid } from "../api/rqid-api";
 import {
   guardSpellBehaviour,
+  initSpellBehaviours,
   pickRegistration,
-  spellBehavioursForEffects,
+  spellBehaviour,
+  type SpellBehaviourRegistry,
 } from "./spell-behaviour";
 
 const reg = (name: string, lang: string, priority = 0) => ({ name, lang, priority });
@@ -26,39 +27,31 @@ describe("pickRegistration", () => {
   });
 });
 
-describe("spellBehavioursForEffects", () => {
+describe("spellBehaviour", () => {
   afterEach(() => {
     vi.unstubAllGlobals();
-    vi.restoreAllMocks();
   });
 
-  it("runs a Macro override once per spell, so its effects share one behaviour", async () => {
-    class MockMacro {
-      execute = vi.fn(async () => ({ onIncomingSpell: async () => ({ outcome: "pass" }) }));
-    }
-    const macro = new MockMacro();
-    vi.stubGlobal("Macro", MockMacro);
-    vi.spyOn(Rqid, "fromRqid").mockResolvedValue(macro as any);
-    const spellItem = {
-      name: "Countermagic",
-      flags: { rqg: { documentRqidFlags: { id: "i.spirit-magic.countermagic" } } },
-      system: { effectRqidLink: { rqid: "m..house-countermagic" } },
-    };
-    vi.stubGlobal(
-      "fromUuid",
-      vi.fn(async () => spellItem),
-    );
-    const effect = () =>
-      ({
-        system: { spell: { spellUuid: "Item.cm", spellRqid: "i.spirit-magic.countermagic" } },
-      }) as any;
-    const [first, second] = [effect(), effect()];
+  it("finds what modules registered from the hook, in the world's language", () => {
+    let fireSetup = () => {};
+    vi.stubGlobal("Hooks", {
+      once: vi.fn((hook: string, fn: () => void) => {
+        if (hook === "setup") {
+          fireSetup = fn;
+        }
+      }),
+      callAll: vi.fn((_hook: string, registry: SpellBehaviourRegistry) => {
+        registry.register("i.rune-magic.shield", en, { lang: "en", priority: 0 });
+        registry.register("i.rune-magic.shield", sv, { lang: "sv", priority: 0 });
+      }),
+    });
+    const en = { runAsGm: false };
+    const sv = { runAsGm: true };
+    initSpellBehaviours();
+    fireSetup();
 
-    const behaviours = await spellBehavioursForEffects([first, second]);
-
-    expect(macro.execute).toHaveBeenCalledTimes(1);
-    expect(behaviours.get(first)).toBeDefined();
-    expect(behaviours.get(first)).toBe(behaviours.get(second));
+    expect(spellBehaviour("i.rune-magic.shield")).toBe(en);
+    expect(spellBehaviour("i.rune-magic.unknown")).toBeUndefined();
   });
 });
 

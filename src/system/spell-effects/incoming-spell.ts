@@ -3,7 +3,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 import {
   guardSpellBehaviour,
-  spellBehavioursForEffects,
+  spellBehaviourForEffect,
   type IncomingSpellScope,
   type SpellBehaviour,
 } from "./spell-behaviour";
@@ -47,10 +47,9 @@ export async function interceptIncomingSpell(
   const spellEffects = [
     ...(scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>),
   ].filter((effect: any) => effect.active && effect.system?.spell?.spellRqid);
-  const behaviours = await spellBehavioursForEffects(spellEffects);
   const groups = groupByIncomingSpellHook(
     spellEffects,
-    (effect) => behaviours.get(effect)?.onIncomingSpell,
+    (effect) => spellBehaviourForEffect(effect)?.onIncomingSpell,
   );
   for (const [onIncomingSpell, effects] of groups) {
     const incomingScope: IncomingSpellScope = { ...scope, effects };

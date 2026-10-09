@@ -61,7 +61,6 @@ describe("game.system.api", () => {
           "effectRemovalCost": "function",
           "list": "function",
           "removeSpellEffects": "function",
-          "removeSummonedToken": "function",
           "summon": "function",
         },
       }
