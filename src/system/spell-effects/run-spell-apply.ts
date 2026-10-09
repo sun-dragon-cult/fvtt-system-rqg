@@ -7,7 +7,7 @@ import {
   type SpellEffectCast,
   type SpellApplyScope,
 } from "./apply-spell-effect";
-import { guardSpellBehaviour, spellBehaviourOf, type SpellBehaviour } from "./spell-behaviour";
+import { spellBehaviourOf, type SpellBehaviour } from "./spell-behaviour";
 
 /** What a player's client sends the GM to run a spell behaviour's `apply` that is `runAsGm`. */
 export type ApplySpellBehaviourQueryData = {
@@ -17,26 +17,13 @@ export type ApplySpellBehaviourQueryData = {
   cast: SpellEffectCast;
 };
 
-const spellEffectOutcomes: readonly string[] = ["applied", "blocked", "resolved"];
-
-async function runApply(
-  behaviour: SpellBehaviour,
-  scope: SpellApplyScope,
-): Promise<SpellEffectApplied | undefined> {
-  const result = await guardSpellBehaviour(scope.spell.name ?? "", () => behaviour.apply?.(scope));
-  // Module code is untyped
-  return spellEffectOutcomes.includes((result as { outcome?: string } | undefined)?.outcome ?? "")
-    ? result
-    : undefined;
-}
-
 /** Run a spell behaviour's `apply`, on the active GM's client when it is `runAsGm`. */
 export async function runSpellApply(
-  behaviour: SpellBehaviour,
+  behaviour: SpellBehaviour & Required<Pick<SpellBehaviour, "apply">>,
   scope: SpellApplyScope,
 ): Promise<SpellEffectApplied | undefined> {
   if (!behaviour.runAsGm || game.user?.isGM) {
-    return runApply(behaviour, scope);
+    return behaviour.apply(scope);
   }
   const gm = game.users?.activeGM;
   if (!gm) {
@@ -65,11 +52,10 @@ async function handleApplySpellBehaviourQuery(
     return undefined;
   }
   const behaviour = spellBehaviourOf(spell as RqgItem);
-  if (!behaviour?.runAsGm) {
+  if (!behaviour?.runAsGm || !behaviour.apply) {
     return undefined;
   }
-  return runApply(
-    behaviour,
+  return behaviour.apply(
     spellApplyScope(spell as RqgItem, targetActor as RqgActor, data.targetName, data.cast),
   );
 }

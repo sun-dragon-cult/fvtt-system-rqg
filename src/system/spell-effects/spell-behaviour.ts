@@ -1,6 +1,7 @@
 import { systemId } from "../config";
 import { localize } from "../util";
-import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
+import { Rqid } from "../api/rqid-api";
+import { isValidRqidString } from "../api/rqid-validation";
 import { callRqgHook } from "../fvtt-type-compat";
 import { RqgLogger } from "../logging/rqg-logger";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -65,38 +66,7 @@ export function pickRegistration<T extends SpellBehaviourSource>(
 
 const registrations = new Map<string, Registration[]>();
 
-const registry: SpellBehaviourRegistry = {
-  register(spellRqid, behaviour, source) {
-    const list = registrations.get(spellRqid) ?? [];
-    list.push({ ...source, behaviour });
-    registrations.set(spellRqid, list);
-  },
-};
-
-/** Lets modules register their spell behaviours once every module has had its init. */
-export function initSpellBehaviours(): void {
-  Hooks.once("setup", () => {
-    callRqgHook("rqg.registerSpellBehaviours", registry);
-  });
-}
-
-/** The behaviour registered for a spell rqid. */
-export function spellBehaviour(spellRqid: string | undefined): SpellBehaviour | undefined {
-  const lang = game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
-  return spellRqid
-    ? pickRegistration(registrations.get(spellRqid) ?? [], lang, CONFIG.RQG.fallbackLanguage)
-        ?.behaviour
-    : undefined;
-}
-
-export function spellBehaviourOf(spell: RqgItem): SpellBehaviour | undefined {
-  return spellBehaviour(spell.flags?.rqg?.documentRqidFlags?.id);
-}
-
-/** The behaviour of the spell that made an effect. */
-export function spellBehaviourForEffect(effect: ActiveEffect): SpellBehaviour | undefined {
-  return spellBehaviour((effect.system as any)?.spell?.spellRqid);
-}
+const spellEffectOutcomes: readonly string[] = ["applied", "blocked", "resolved"];
 
 /**
  * Run a call into a module's spell behaviour so that one failing doesn't stop the spell, or every
@@ -118,7 +88,85 @@ export async function guardSpellBehaviour<T>(
   }
 }
 
-/** Whether Apply can do something with the spell: attach an effect template or run a behaviour. */
-export function hasSpellEffect(spell: RqgItem): boolean {
-  return !!resolveSpellEffectRqid(spell as any) || !!spellBehaviourOf(spell)?.apply;
+// Shared per function, so spells registering the same hook (Countermagic and Shield) still share it
+const guardedHooks = new WeakMap<object, (scope: any) => Promise<any>>();
+
+function guarded<F extends (scope: any) => Promise<any>>(
+  hook: F | undefined,
+  nameOf: (scope: Parameters<F>[0]) => string,
+  check: (result: Awaited<ReturnType<F>>) => boolean = () => true,
+): F | undefined {
+  if (!hook) {
+    return undefined;
+  }
+  let wrapped = guardedHooks.get(hook) as F | undefined;
+  if (!wrapped) {
+    wrapped = (async (scope: Parameters<F>[0]) => {
+      const result = await guardSpellBehaviour(nameOf(scope), () => hook(scope));
+      // Modules are plain JavaScript, so their results aren't type-checked
+      return result !== undefined && check(result) ? result : undefined;
+    }) as F;
+    guardedHooks.set(hook, wrapped);
+  }
+  return wrapped;
+}
+
+function guardBehaviour(behaviour: SpellBehaviour): SpellBehaviour {
+  return {
+    apply: guarded(
+      behaviour.apply,
+      (scope) => scope.spell.name ?? "",
+      (result) => spellEffectOutcomes.includes(result?.outcome ?? ""),
+    ),
+    onIncomingSpell: guarded(behaviour.onIncomingSpell, (scope) => scope.spell.name ?? ""),
+    onEnd: guarded(behaviour.onEnd, (scope) => scope.effect.name ?? ""),
+    runAsGm: behaviour.runAsGm,
+  };
+}
+
+const registry: SpellBehaviourRegistry = {
+  register(spellRqid, behaviour, source) {
+    const list = registrations.get(spellRqid) ?? [];
+    list.push({ ...source, behaviour: guardBehaviour(behaviour) });
+    registrations.set(spellRqid, list);
+  },
+};
+
+/** Lets modules register their spell behaviours once every module has had its init. */
+export function initSpellBehaviours(): void {
+  Hooks.once("setup", () => {
+    callRqgHook("rqg.registerSpellBehaviours", registry);
+  });
+}
+
+/** The behaviour registered for a spell rqid; its hooks never throw. */
+export function spellBehaviour(
+  spellRqid: string | undefined,
+  lang: string = game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage,
+): SpellBehaviour | undefined {
+  const candidates = spellRqid ? registrations.get(spellRqid) : undefined;
+  return candidates
+    ? pickRegistration(candidates, lang, CONFIG.RQG.fallbackLanguage)?.behaviour
+    : undefined;
+}
+
+export function spellBehaviourOf(spell: RqgItem): SpellBehaviour | undefined {
+  return spellBehaviour(Rqid.getDocumentFlag(spell)?.id);
+}
+
+/** The behaviour of the spell that made an effect. */
+export function spellBehaviourForEffect(effect: ActiveEffect): SpellBehaviour | undefined {
+  return spellBehaviour((effect.system as any)?.spell?.spellRqid);
+}
+
+/**
+ * Whether Apply can do something with a spell: attach its effect template, or run its
+ * behaviour's `apply`, which wins when there are both.
+ */
+export function canApplySpell(
+  spellRqid: string | undefined,
+  effectRqidLink: { rqid?: string } | null | undefined,
+  lang?: string,
+): boolean {
+  return isValidRqidString(effectRqidLink?.rqid) || !!spellBehaviour(spellRqid, lang)?.apply;
 }

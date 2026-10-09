@@ -81,7 +81,7 @@ export const SpellEffectTierEnum = {
   None: "none", // nothing to automate (Truespeak, Divination, most rituals)
   Reminder: "reminder", // GM-adjudicated effect worth tracking - chat note + duration only
   Declarative: "declarative", // Active Effect from the effects pack (Bladesharp, Protection...)
-  Macro: "macro", // rqid-referenced Macro (Sever Spirit, Turn Undead, Heal Wound, summonings)
+  Macro: "macro", // code a module registers as the spell's behaviour (Sever Spirit, Heal Wound, summonings)
 } as const;
 export type SpellEffectTierEnum = (typeof SpellEffectTierEnum)[keyof typeof SpellEffectTierEnum];
 

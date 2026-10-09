@@ -32,7 +32,7 @@ describe("spellBehaviour", () => {
     vi.unstubAllGlobals();
   });
 
-  it("finds what modules registered from the hook, in the world's language", () => {
+  function register(registrations: (registry: SpellBehaviourRegistry) => void): void {
     let fireSetup = () => {};
     vi.stubGlobal("Hooks", {
       once: vi.fn((hook: string, fn: () => void) => {
@@ -40,20 +40,50 @@ describe("spellBehaviour", () => {
           fireSetup = fn;
         }
       }),
-      callAll: vi.fn((_hook: string, registry: SpellBehaviourRegistry) => {
-        registry.register("i.rune-magic.shield", en, { lang: "en", priority: 0 });
-        registry.register("i.rune-magic.shield", sv, { lang: "sv", priority: 0 });
-      }),
+      callAll: vi.fn((_hook: string, registry: SpellBehaviourRegistry) => registrations(registry)),
     });
-    const en = { runAsGm: false };
-    const sv = { runAsGm: true };
     initSpellBehaviours();
     fireSetup();
+  }
 
-    expect(spellBehaviour("i.rune-magic.shield")).toBe(en);
+  it("finds what modules registered from the hook, in the world's language", () => {
+    register((registry) => {
+      registry.register("i.rune-magic.heal-body", { runAsGm: false }, { lang: "en", priority: 0 });
+      registry.register("i.rune-magic.heal-body", { runAsGm: true }, { lang: "sv", priority: 0 });
+    });
+    expect(spellBehaviour("i.rune-magic.heal-body")?.runAsGm).toBe(false);
     expect(spellBehaviour("i.rune-magic.unknown")).toBeUndefined();
   });
+
+  it("keeps a hook registered for several spells one function, so their effects group", () => {
+    const spellBarrier = async () => ({ outcome: "pass" as const });
+    register((registry) => {
+      registry.register("i.spirit-magic.countermagic", { onIncomingSpell: spellBarrier }, en);
+      registry.register("i.rune-magic.shield", { onIncomingSpell: spellBarrier }, en);
+    });
+    expect(spellBehaviour("i.spirit-magic.countermagic")?.onIncomingSpell).toBe(
+      spellBehaviour("i.rune-magic.shield")?.onIncomingSpell,
+    );
+  });
+
+  it("contains a failing or malformed apply", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    register((registry) => {
+      registry.register(
+        "i.spirit-magic.throws",
+        { apply: () => Promise.reject(new Error("x")) },
+        en,
+      );
+      registry.register("i.spirit-magic.garbage", { apply: async () => ({ done: 1 }) as any }, en);
+    });
+    const scope = { spell: { name: "Spell" } } as any;
+    expect(await spellBehaviour("i.spirit-magic.throws")?.apply?.(scope)).toBeUndefined();
+    expect(await spellBehaviour("i.spirit-magic.garbage")?.apply?.(scope)).toBeUndefined();
+    vi.restoreAllMocks();
+  });
 });
+
+const en = { lang: "en", priority: 0 };
 
 describe("guardSpellBehaviour", () => {
   it("returns what the call returns", async () => {

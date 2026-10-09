@@ -136,8 +136,8 @@ function temporalDuration(spell: RqgItem): SpellEffectDuration | undefined {
 
 /**
  * Attach a copy of a spell's Active Effect template to the target - the only thing that creates a
- * spell effect, so every one carries its provenance. A spell whose behaviour has `apply` (the macro
- * tier) runs that instead and returns what it returns. Warns and returns undefined when the spell has
+ * spell effect, so every one carries its provenance. A spell whose behaviour has `apply` runs that
+ * instead and returns what it returns. Warns and returns undefined when the spell has
  * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
  * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a client that owns the target.
  */
@@ -150,8 +150,9 @@ export async function applySpellEffect(
   const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
   const behaviour = spellBehaviourOf(spell);
-  if (behaviour?.apply) {
-    return (await interceptIncomingSpell(scope)) ?? runSpellApply(behaviour, scope);
+  const apply = behaviour?.apply;
+  if (apply) {
+    return (await interceptIncomingSpell(scope)) ?? runSpellApply({ ...behaviour, apply }, scope);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;

@@ -1,4 +1,5 @@
 import { localize } from "../util";
+import { systemId } from "../config";
 import { Rqid } from "../api/rqid-api";
 import {
   spellProvenance,
@@ -157,4 +158,17 @@ export async function summon(
     }),
   );
   return { outcome: "applied", effectUuids: [effect.uuid] };
+}
+
+/** Remove the token of a summoning made by `summon` once its effect has ended. */
+export async function removeSummonedToken(effect: ActiveEffect): Promise<void> {
+  const actor = effect.parent;
+  if (!effect.getFlag(systemId, "summoning") || !(actor instanceof Actor) || !actor.isToken) {
+    return;
+  }
+  const token = actor.token;
+  // Deleting the token itself also takes its effects with it
+  if (token?.id && token.parent?.tokens.has(token.id)) {
+    await token.delete();
+  }
 }

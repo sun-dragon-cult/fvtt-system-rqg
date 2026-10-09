@@ -2,7 +2,7 @@ import { isValidRqidString } from "../api/rqid-validation";
 import { systemId } from "../config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
-import { spellBehaviour } from "./spell-behaviour";
+import { canApplySpell, pickRegistration } from "./spell-behaviour";
 
 /** The parts of a compendium index entry needed to find the spells that have an effect. */
 export type SpellIndexEntry = {
@@ -13,45 +13,38 @@ export type SpellIndexEntry = {
 };
 
 /**
- * The spells with an effect template or a behaviour that applies itself, one per rqid: in `lang`
- * when there is a copy in it, else in `fallbackLang`, and of those the highest priority. Sorted by
- * name.
+ * The spells Apply can do something with, one per rqid: in `lang` when there is a copy in it, else
+ * in `fallbackLang`, and of those the highest priority. Sorted by name.
  */
 export function pickSpellsWithEffects<T extends SpellIndexEntry>(
   entries: Iterable<T>,
   lang: string,
   fallbackLang: string,
-  appliesItself: (spellRqid: string) => boolean = () => false,
+  canApply: (spellRqid: string, effectRqidLink: { rqid?: string } | null | undefined) => boolean = (
+    _rqid,
+    link,
+  ) => isValidRqidString(link?.rqid),
 ): T[] {
-  const langRank = (entry: T) => {
-    const entryLang = entry.flags?.rqg?.documentRqidFlags?.lang;
-    return entryLang === lang ? 2 : entryLang === fallbackLang ? 1 : 0;
-  };
-  const best = new Map<string, T>();
+  const candidates = new Map<string, { lang: string; priority: number; entry: T }[]>();
   for (const entry of entries) {
-    const rqid = entry.flags?.rqg?.documentRqidFlags?.id;
+    const flags = entry.flags?.rqg?.documentRqidFlags;
     const isSpell =
       entry.type === ItemTypeEnum.SpiritMagic || entry.type === ItemTypeEnum.RuneMagic;
     if (
-      !rqid ||
+      !flags?.id ||
       !isSpell ||
-      !langRank(entry) ||
-      !(isValidRqidString(entry.system?.effectRqidLink?.rqid) || appliesItself(rqid))
+      (flags.lang !== lang && flags.lang !== fallbackLang) ||
+      !canApply(flags.id, entry.system?.effectRqidLink)
     ) {
       continue;
     }
-    const current = best.get(rqid);
-    const priority = entry.flags?.rqg?.documentRqidFlags?.priority ?? -Infinity;
-    const currentPriority = current?.flags?.rqg?.documentRqidFlags?.priority ?? -Infinity;
-    if (
-      !current ||
-      langRank(entry) > langRank(current) ||
-      (langRank(entry) === langRank(current) && priority > currentPriority)
-    ) {
-      best.set(rqid, entry);
-    }
+    const list = candidates.get(flags.id) ?? [];
+    list.push({ lang: flags.lang, priority: flags.priority ?? -Infinity, entry });
+    candidates.set(flags.id, list);
   }
-  return [...best.values()].sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+  return [...candidates.values()]
+    .map((list) => pickRegistration(list, lang, fallbackLang)!.entry)
+    .sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
 }
 
 /** The compendium spells Apply can do something with, in the world's language where possible. */
@@ -71,7 +64,7 @@ export async function compendiumSpellsWithEffects(): Promise<RqgItem[]> {
     candidates,
     lang,
     CONFIG.RQG.fallbackLanguage,
-    (spellRqid) => !!spellBehaviour(spellRqid)?.apply,
+    (spellRqid, effectRqidLink) => canApplySpell(spellRqid, effectRqidLink, lang),
   );
   const spells = await Promise.all(picked.map((entry) => entry.pack.getDocument(entry._id)));
   return spells.filter((spell) => !!spell) as unknown as RqgItem[];
