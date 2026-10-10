@@ -1,5 +1,7 @@
 import type { ActorHealthState } from "../../data-model/actor-data/attributes";
-import { assertDocumentSubType, isDocumentSubType, RqgError } from "../../system/util";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import {
   HitLocationTypesEnum,
@@ -12,6 +14,8 @@ import type { RqgItem } from "../rqg-item";
 import { systemId } from "../../system/config";
 
 import type { DeepPartial } from "fvtt-types/utils";
+
+const logger = new RqgLogger("HealingCalculations");
 
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */
@@ -26,37 +30,46 @@ export interface HealingEffects {
  * Calculate the effects to apply to hitLocations and actor from healing previous damage.
  */
 export class HealingCalculations {
+  /**
+   * Heal `healPoints` on one wound, or with no `healWoundIndex` on the location's wounds from the
+   * largest down. `restoreSevered` un-severs the location; by default a single heal of 6+ points
+   * does (Core p.148). Natural healing (healLocationNaturally) never does.
+   */
   static healWound(
     healPoints: number,
-    healWoundIndex: number,
+    healWoundIndex: number | undefined,
     hitLocation: RqgItem,
     actor: RqgActor,
+    restoreSevered: boolean = healPoints >= 6,
   ): HealingEffects {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
-    if (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex) {
-      const msg = `Trying to heal a wound that doesn't exist.`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, healWoundIndex, hitLocation);
+    if (
+      healWoundIndex != null &&
+      (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex)
+    ) {
+      logger.throw(ERR.healWoundIndexOutOfRange, healWoundIndex, hitLocation);
     }
 
     const wounds = hitLocation.system.wounds.slice();
     let hitLocationHealthState: HitLocationHealthState =
       hitLocation.system.hitLocationHealthState || "healthy";
 
-    // A single application of 6+ points of magical healing can restore a severed limb (Core
-    // p.148: "Only a 6-point Heal spell... can restore a severed limb"). Natural healing
-    // (healLocationNaturally) never does this - RAW ties it specifically to a burst of magical
-    // healing, not gradual weekly recovery.
-    if (healPoints >= 6 && hitLocationHealthState === "severed") {
+    if (restoreSevered && hitLocationHealthState === "severed") {
       hitLocationHealthState = "wounded"; // the actual state will be recalculated below
     }
 
+    const woundOrder =
+      healWoundIndex != null
+        ? [healWoundIndex]
+        : wounds.map((_, i) => i).sort((a, b) => (wounds[b] ?? 0) - (wounds[a] ?? 0));
+
     let healPointsApplied = 0;
-    if (wounds[healWoundIndex]) {
-      healPointsApplied = Math.min(wounds[healWoundIndex], healPoints); // Don't heal more than wound damage
-      wounds[healWoundIndex] -= healPointsApplied;
+    for (const i of woundOrder) {
+      const applied = Math.min(wounds[i] ?? 0, Math.max(0, healPoints - healPointsApplied));
+      wounds[i] = (wounds[i] ?? 0) - applied;
+      healPointsApplied += applied;
     }
 
     return HealingCalculations.applyHealedWounds(

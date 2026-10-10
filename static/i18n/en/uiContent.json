@@ -994,6 +994,8 @@
           "btnAddWound": "Add Wound"
         },
         "AddWoundChatContent": "{actorName} takes a wound to the {hitLocationName}. {notification}",
+        "StoppedByArmor": "The attack bounces off the armor.",
+        "StoppedByArmorAfterParry": "The attack strikes through the parrying weapon, but is stopped by the armor.",
         "IncapacitationRule": "Roll below (CON-{damage})*5 or pass out, unless already passed out from the damage. If the roll is failed the character is unconscious for [[/r 1d6]] hours or until woken.",
         "HealWound": {
           "Title": "Heal Wound to {hitLocationName}",
@@ -1618,6 +1620,7 @@
         "ResistanceMessageMissing": "The resistance request this refers to is no longer available — its chat message was removed.",
         "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
         "TokenHasNoActor": "This token has no actor associated with it.",
+        "NoHitLocationForRoll": "The actor has no hit location matching the hit location roll.",
         "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it."
       },
       "Warn": {
