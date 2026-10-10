@@ -376,7 +376,8 @@
       }
 
       & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-burst,
-      & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-burst {
+      & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-burst,
+      & .is-heal-all .wound-dialog-wound-burst {
         color: var(--checkbox-checked-color, var(--color-border-highlight-alt));
         opacity: 1;
         filter: drop-shadow(
@@ -402,7 +403,8 @@
       }
 
       & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-value,
-      & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-value {
+      & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-value,
+      & .is-heal-all .wound-dialog-wound-value {
         color: #191813 !important;
         text-shadow: 0 0 1px color-mix(in srgb, white 25%, transparent);
       }
