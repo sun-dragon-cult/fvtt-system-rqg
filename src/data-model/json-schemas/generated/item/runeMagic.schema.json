@@ -88,7 +88,7 @@
         "none",
         "reminder",
         "declarative",
-        "macro"
+        "behaviour"
       ],
       "minLength": 1,
       "default": "none"

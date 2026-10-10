@@ -1237,9 +1237,9 @@
         "SpellEffect": "Spell Effect",
         "EffectTierEnum": {
           "none": "None - nothing to automate",
-          "reminder": "Reminder (not yet automated)",
-          "declarative": "Declarative (not yet automated)",
-          "macro": "Macro (not yet automated)"
+          "reminder": "Reminder - an effect that shows the spell is active",
+          "declarative": "Declarative - an effect that changes values",
+          "behaviour": "Behaviour - code registered by a module"
         },
         "DurationEnum": {
           "undefined": "None",
