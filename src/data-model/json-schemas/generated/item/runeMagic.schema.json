@@ -87,7 +87,7 @@
       "enum": [
         "none",
         "reminder",
-        "declarative",
+        "effect",
         "behaviour"
       ],
       "minLength": 1,

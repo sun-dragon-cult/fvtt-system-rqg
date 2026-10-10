@@ -80,7 +80,7 @@ export type SpellTargetKindEnum = (typeof SpellTargetKindEnum)[keyof typeof Spel
 export const SpellEffectTierEnum = {
   None: "none", // nothing to automate (Truespeak, Divination, most rituals)
   Reminder: "reminder", // GM-adjudicated effect worth tracking - chat note + duration only
-  Declarative: "declarative", // Active Effect from the effects pack (Bladesharp, Protection...)
+  Effect: "effect", // Active Effect from the effects pack (Bladesharp, Protection...)
   Behaviour: "behaviour", // code a module registers as the spell's behaviour (Sever Spirit, Heal Wound, summonings)
 } as const;
 export type SpellEffectTierEnum = (typeof SpellEffectTierEnum)[keyof typeof SpellEffectTierEnum];
