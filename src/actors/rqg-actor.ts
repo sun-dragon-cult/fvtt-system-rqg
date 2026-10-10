@@ -698,12 +698,12 @@ export class RqgActor extends Actor {
    */
   public async damage(options: DamageOptions): Promise<DamageResult> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-    const location =
-      options.location === "random" ? await this.rollHitLocation() : options.location;
-    this.assertOwnHitLocation(location);
     if (!Number.isFinite(options.amount)) {
       logger.throw(ERR.amountNotANumber, this.uuid, options.amount);
     }
+    const location =
+      options.location === "random" ? await this.rollHitLocation() : options.location;
+    this.assertOwnHitLocation(location);
 
     const amount = Math.max(0, options.amount);
     const armorPoints = options.ignoreArmor ? 0 : (location.system.armorPoints ?? 0);
@@ -772,7 +772,7 @@ export class RqgActor extends Actor {
    * Heal `points` (or all damage) on one hit location and the total hit points. With `wound`
    * only that wound (an index into `system.wounds`) is healed, otherwise the largest wounds
    * first. A severed location is restored with `restoreSevered`, which defaults to a heal of 6+
-   * points (Core p.148).
+   * points (Core p.148); `points: "all"` never restores one unless asked.
    */
   public async heal(options: HealOptions): Promise<HealResult> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);

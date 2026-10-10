@@ -123,7 +123,11 @@ async function applyAddWoundFormData(form: HTMLFormElement, hitLocation: RqgItem
   const effectiveDamage = subtractArmorPoints ? Math.max(0, damage - selectedAp) : damage;
 
   const actor = hitLocation.parent as RqgActor | null;
-  await actor?.damage({
+  if (!actor) {
+    ui.notifications?.warn(localize("RQG.Item.HitLocation.Notification.AddWoundNeedsActor"));
+    return;
+  }
+  await actor.damage({
     amount: effectiveDamage,
     location: hitLocation,
     // Damage is pre-adjusted by selected AP from the dialog.

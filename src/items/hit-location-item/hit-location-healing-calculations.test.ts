@@ -325,6 +325,24 @@ describe("HealingCalculations", () => {
     });
   });
 
+  it("leaves a reattached limb useless while its damage is still at or above max HP", () => {
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+    expect(mockLeftLeg.system.wounds).toStrictEqual([10]);
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      0,
+      undefined,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      true,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({
+      wounds: [10],
+      hitLocationHealthState: "useless",
+    });
+  });
+
   it("keeps a limb severed on a 6+ point heal when restoreSevered is false", () => {
     applyTestDamage(33, true, mockLeftLeg, mockActor);
 
