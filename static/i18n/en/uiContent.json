@@ -1006,6 +1006,8 @@
           "PointsToHeal": "Hit points to heal: {points}",
           "PointsLeft": "{left} of {points} points left",
           "ClearWoundHealing": "Heal nothing on this wound",
+          "HealWoundFirst": "Heal this wound first",
+          "PointsWasted": "{wasted} of {points} points have nothing to heal",
           "LocationHitPoints": "{hitLocationName} ({value}/{max} HP)",
           "PointsOnWound": "{damage} point wound on {hitLocationName}",
           "Reattach": "Reattach",
