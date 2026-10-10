@@ -701,6 +701,9 @@ export class RqgActor extends Actor {
     const location =
       options.location === "random" ? await this.rollHitLocation() : options.location;
     this.assertOwnHitLocation(location);
+    if (!Number.isFinite(options.amount)) {
+      logger.throw(ERR.amountNotANumber, this.uuid, options.amount);
+    }
 
     const amount = Math.max(0, options.amount);
     const armorPoints = options.ignoreArmor ? 0 : (location.system.armorPoints ?? 0);
@@ -775,6 +778,9 @@ export class RqgActor extends Actor {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
     const location = options.location;
     this.assertOwnHitLocation(location);
+    if (options.points !== "all" && !Number.isFinite(options.points)) {
+      logger.throw(ERR.amountNotANumber, this.uuid, options.points);
+    }
     requireValue(
       location.system.hitPoints.value,
       localize("RQG.Item.HitLocation.Notification.NoValueOnHitLocation", {
