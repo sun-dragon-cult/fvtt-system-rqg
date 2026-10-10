@@ -291,6 +291,57 @@ describe("HealingCalculations", () => {
     ).toThrow();
   });
 
+  it("heals the largest wounds first when no wound is chosen", () => {
+    applyTestDamage(1, true, mockLeftLeg, mockActor);
+    applyTestDamage(3, true, mockLeftLeg, mockActor);
+    applyTestDamage(2, true, mockLeftLeg, mockActor);
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      4,
+      undefined,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({ wounds: [1, 1] });
+  });
+
+  it("restores a severed limb with no wounds left when restoreSevered is set", () => {
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+    applyTestHealing(10, 0, mockLeftLeg, mockActor);
+    mockLeftLeg.system.hitLocationHealthState = "severed";
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      0,
+      undefined,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      true,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({
+      wounds: [],
+      hitLocationHealthState: "healthy",
+    });
+  });
+
+  it("keeps a limb severed on a 6+ point heal when restoreSevered is false", () => {
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      10,
+      0,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      false,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({
+      wounds: [],
+      hitLocationHealthState: "severed",
+    });
+  });
+
   describe("healLocationNaturally (#436)", () => {
     it("splits weekly healing evenly across multiple wounds on the same location", () => {
       // Small hits well under the limb's 2x-HP single-blow cap, so each registers at full value.

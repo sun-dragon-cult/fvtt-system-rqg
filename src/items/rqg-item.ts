@@ -64,13 +64,6 @@ import type { CultItem } from "@item-model/cult-data-model.ts";
 import { physicalItemTypes } from "@item-model/i-physical-item.ts";
 
 import { handleItemUpdateDocumentsPreUpdate } from "./item-lifecycle-strategy";
-import {
-  applyWoundToHitLocation,
-  healWoundOnHitLocation,
-  type ApplyWoundToHitLocationOptions,
-} from "./hit-location-item";
-
-export type { ApplyWoundToHitLocationOptions } from "./hit-location-item";
 
 export class RqgItem extends Item {
   public static init() {
@@ -330,19 +323,6 @@ export class RqgItem extends Item {
   public async attack(): Promise<void> {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
     await this.system.attack();
-  }
-
-  /** Apply damage as a wound on this hit-location item. */
-  public async applyWound(
-    damage: number,
-    options: ApplyWoundToHitLocationOptions = {},
-  ): Promise<void> {
-    await applyWoundToHitLocation(this, damage, options);
-  }
-
-  /** Heal one wound entry on this hit-location item. */
-  public async healWound(healWoundIndex: number, healPoints: number): Promise<boolean> {
-    return healWoundOnHitLocation(this, healWoundIndex, healPoints);
   }
 
   /**

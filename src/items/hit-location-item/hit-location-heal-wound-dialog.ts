@@ -221,36 +221,7 @@ async function applyHealWoundFormData(
   const beforeWounds = [...(hitLocation.system.wounds ?? [])];
 
   if (healAllWounds) {
-    const totalWoundDamage = hitLocation.system.wounds.reduce((sum, wound) => sum + wound, 0);
-    if (totalWoundDamage <= 0 && hitLocation.system.wounds.length === 0) {
-      return {
-        hasRemainingWounds: false,
-        healAllWounds: true,
-        woundRemoved: false,
-        woundReduced: false,
-      };
-    }
-
-    const nextHitLocationHealthState =
-      hitLocation.system.hitLocationHealthState === "severed" ? "severed" : "healthy";
-
-    await hitLocation.update({
-      system: {
-        wounds: [],
-        actorHealthImpact: "healthy",
-        hitLocationHealthState: nextHitLocationHealthState,
-      },
-    } as Item.UpdateData);
-
-    const actorCurrentHp = actor.system.attributes.hitPoints.value ?? 0;
-    const actorMaxHp = actor.system.attributes.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
-    const healedActorHp = Math.min(actorCurrentHp + totalWoundDamage, actorMaxHp);
-    if (healedActorHp !== actorCurrentHp) {
-      await actor.update({
-        system: { attributes: { hitPoints: { value: healedActorHp } } },
-      } as Actor.UpdateData);
-    }
-
+    await actor.heal({ location: hitLocation, points: "all" });
     return {
       hasRemainingWounds: false,
       healAllWounds: true,
@@ -268,7 +239,12 @@ async function applyHealWoundFormData(
     };
   }
 
-  const hasRemainingWounds = await hitLocation.healWound(healWoundIndex, healPoints);
+  const { remainingWounds } = await actor.heal({
+    location: hitLocation,
+    points: healPoints,
+    wound: healWoundIndex,
+  });
+  const hasRemainingWounds = remainingWounds.length > 0;
   const afterWounds = hitLocation.system.wounds ?? [];
   const woundRemoved = afterWounds.length < beforeWounds.length;
   const beforeValue = beforeWounds[healWoundIndex] ?? 0;

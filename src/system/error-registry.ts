@@ -83,6 +83,14 @@ const REGISTRY = {
     code: "RQG-B0010",
     message: "Expected a sibling DOM element that was not present",
   },
+  healWoundIndexOutOfRange: {
+    code: "RQG-B0011",
+    message: "Tried to heal a wound that does not exist on the hit location",
+  },
+  hitLocationNotOnActor: {
+    code: "RQG-B0012",
+    message: "The hit location to damage or heal is not a hit location of this actor",
+  },
 
   // ============================================================================
   // world — RQG-W00NN — misconfiguration or a missing reference; GM/user can fix it
@@ -130,6 +138,10 @@ const REGISTRY = {
   tokenHasNoActor: {
     code: "RQG-W0011",
     message: "RQG.Notification.Error.TokenHasNoActor",
+  },
+  noHitLocationForRoll: {
+    code: "RQG-W0012",
+    message: "RQG.Notification.Error.NoHitLocationForRoll",
   },
 } as const satisfies Record<string, RqgErrorEntry>;
 

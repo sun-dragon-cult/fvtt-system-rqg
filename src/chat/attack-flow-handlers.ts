@@ -157,15 +157,14 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackChatMessage.system.attackRoll);
   requireValue(attackRoll, "Attack roll not found in chat message");
 
-  await damagedActor.applyDamage(
-    defenderHitLocationDamage,
-    hitLocationRoll.total,
-    ignoreDefenderAp,
-    true,
-    attackChatMessage.system.attackCombatManeuver.damageType as DamageType,
-    wasDamagedReducedByParry,
-    attackRoll.successLevel,
-  );
+  await damagedActor.damage({
+    amount: defenderHitLocationDamage,
+    location: damagedActor.getHitLocationByRoll(hitLocationRoll.total),
+    ignoreArmor: ignoreDefenderAp,
+    damageType: attackChatMessage.system.attackCombatManeuver.damageType as DamageType,
+    reducedByParry: wasDamagedReducedByParry,
+    attackSuccessLevel: attackRoll.successLevel,
+  });
 
   const messageData = attackChatMessage.toObject();
   const messageDataUpdate = {

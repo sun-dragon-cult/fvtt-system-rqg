@@ -58,8 +58,51 @@ import {
 import { ActorTemplatePicker } from "../applications/actor-template-picker/actor-template-picker";
 import { templatePaths } from "../system/load-handlebars-templates";
 import { cloneActorFromTemplate } from "../system/api/actor-template-api";
+import { RqgLogger } from "../system/logging/rqg-logger";
+import { ERR } from "../system/error-registry";
 
 import Actor = foundry.documents.Actor;
+
+const logger = new RqgLogger("RqgActor");
+
+export type DamageOptions = {
+  amount: number;
+  location: HitLocationItem | "random";
+  ignoreArmor?: boolean;
+  /** Default true. */
+  applyToTotalHp?: boolean;
+  damageType?: DamageType;
+  /** Attack flow: the damage got through a parrying weapon. */
+  reducedByParry?: boolean;
+  /** Attack flow: for the incapacitation rule on special/critical slashes. */
+  attackSuccessLevel?: AbilitySuccessLevelEnum;
+};
+
+export type DamageResult = {
+  location: HitLocationItem;
+  /** Damage after armor. */
+  damage: number;
+  /** Damage stopped by armor. */
+  absorbed: number;
+};
+
+export type HealOptions = {
+  location: HitLocationItem;
+  points: number | "all";
+  /** Index into the location's `system.wounds`. */
+  wound?: number;
+  restoreSevered?: boolean;
+};
+
+export type HealResult = {
+  location: HitLocationItem;
+  healed: number;
+  remainingWounds: number[];
+};
+
+function sumWounds(wounds: readonly number[]): number {
+  return wounds.reduce((acc, w) => acc + w, 0);
+}
 
 type HealthTransitionSnapshot = {
   health: ActorHealthState;
@@ -391,9 +434,8 @@ export class RqgActor extends Actor {
     });
   }
 
-  /** `serializeWrite` for `hitPoints.value` - used by `catchUpNaturalHealing` (#436) and should
-   *  also guard damage/heal application (`applyDamageToActorTotalHp`, `healWound`'s actor-hp
-   *  bump) against racing it, the same way magicPoints' draws already guard against catch-up. */
+  /** `serializeWrite` for `hitPoints.value` - used by `catchUpNaturalHealing` (#436), `damage`
+   *  and `heal`. */
   public async serializeHitPointsWrite<T>(operation: () => Promise<T>): Promise<T> {
     return this.serializeWrite("hitPoints", operation);
   }
@@ -650,71 +692,62 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Apply damage to a hitLocation and this actor.
-   * The HitLocation AP will be subtracted unless ignoreAP is true.
-   * damageAmount is the amount of damage to apply, if parrying weapon has absorbed anything this should be the reduced amount.
+   * Damage one hit location, and the total hit points unless `applyToTotalHp` is false.
+   * Armor points are subtracted unless `ignoreArmor`. A `"random"` location is rolled on this
+   * actor's own hit location table.
    */
-  public async applyDamage(
-    damageAmount: number,
-    hitLocationRollTotal: number,
-    ignoreAP: boolean = false,
-    applyToActorHP: boolean = true,
-    damageType: DamageType,
-    wasDamagedReducedByParry: boolean = false,
-    attackSuccessLevel?: AbilitySuccessLevelEnum | undefined,
-  ): Promise<void> {
+  public async damage(options: DamageOptions): Promise<DamageResult> {
     assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
-    const damagedHitLocation = this.items.find(
-      (i) =>
-        isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
-        hitLocationRollTotal >= i.system.dieFrom &&
-        hitLocationRollTotal <= i.system.dieTo,
-    ) as HitLocationItem | undefined;
-    assertDocumentSubType<HitLocationItem>(damagedHitLocation, ItemTypeEnum.HitLocation);
+    const location =
+      options.location === "random" ? await this.rollHitLocation() : options.location;
+    this.assertOwnHitLocation(location);
 
-    const hitLocationAP = damagedHitLocation?.system.armorPoints ?? 0;
-    const damageAfterAP = ignoreAP ? damageAmount : Math.max(0, damageAmount - hitLocationAP);
-    if (damageAfterAP === 0) {
-      if (wasDamagedReducedByParry) {
-        ui.notifications?.info(
-          "The attack strikes through the parrying weapon, but is stopped by the armor",
-        );
-      } else if (damageAmount > 0) {
-        ui.notifications?.info("The attack bounces off the armor");
+    const amount = Math.max(0, options.amount);
+    const armorPoints = options.ignoreArmor ? 0 : (location.system.armorPoints ?? 0);
+    const damage = Math.max(0, amount - armorPoints);
+    const result: DamageResult = { location, damage, absorbed: amount - damage };
+
+    if (damage === 0) {
+      if (options.reducedByParry) {
+        ui.notifications?.info(localize("RQG.Item.HitLocation.StoppedByArmorAfterParry"));
+      } else if (amount > 0) {
+        ui.notifications?.info(localize("RQG.Item.HitLocation.StoppedByArmor"));
       }
-
-      return;
+      return result;
     }
+
     const speaker = getSpeakerCompat({ actor: this, token: this.token ?? undefined });
-    const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
-      DamageCalculations.addWound(
-        damageAfterAP,
-        applyToActorHP,
-        damagedHitLocation,
-        this as CharacterActor,
-        speaker,
-      );
+    const notification = await this.serializeHitPointsWrite(async () => {
+      const { hitLocationUpdates, actorUpdates, notification, uselessLegs } =
+        DamageCalculations.addWound(
+          damage,
+          options.applyToTotalHp ?? true,
+          location,
+          this as CharacterActor,
+          speaker,
+        );
 
-    for (const update of uselessLegs) {
-      const leg = this.items.get(update._id) as HitLocationItem | undefined;
-      assertDocumentSubType<HitLocationItem>(leg, ItemTypeEnum.HitLocation);
-      await leg.update(update);
-    }
-
-    if (hitLocationUpdates) {
-      await damagedHitLocation.update(hitLocationUpdates);
-    }
-    if (actorUpdates) {
-      await this.update(actorUpdates);
-    }
+      for (const update of uselessLegs) {
+        const leg = this.items.get(update._id) as HitLocationItem | undefined;
+        assertDocumentSubType<HitLocationItem>(leg, ItemTypeEnum.HitLocation);
+        await leg.update(update);
+      }
+      if (hitLocationUpdates) {
+        await location.update(hitLocationUpdates);
+      }
+      if (actorUpdates) {
+        await this.update(actorUpdates);
+      }
+      return notification;
+    });
 
     // Incapacitating Rule
-    const incapacitatingText = // include crit / special check!
-      damageType === "slash" &&
-      (attackSuccessLevel ?? Infinity) <= AbilitySuccessLevelEnum.Special &&
-      damageAfterAP >= (damagedHitLocation.system.hitPoints.max ?? 0)
+    const incapacitatingText =
+      options.damageType === "slash" &&
+      (options.attackSuccessLevel ?? Infinity) <= AbilitySuccessLevelEnum.Special &&
+      damage >= (location.system.hitPoints.max ?? 0)
         ? `<p>${localize("RQG.Item.HitLocation.IncapacitationRule", {
-            damage: damageAfterAP.toString(),
+            damage: damage.toString(),
           })}</p>`
         : "";
 
@@ -724,11 +757,83 @@ export class RqgActor extends Actor {
       content:
         localize("RQG.Item.HitLocation.AddWoundChatContent", {
           actorName: this.name,
-          hitLocationName: damagedHitLocation.name,
+          hitLocationName: location.name,
           notification: notification,
         }) + incapacitatingText,
-      whisper: usersIdsThatOwnActor(damagedHitLocation!.parent),
+      whisper: usersIdsThatOwnActor(this),
     });
+    return result;
+  }
+
+  /**
+   * Heal `points` (or all damage) on one hit location and the total hit points. With `wound`
+   * only that wound (an index into `system.wounds`) is healed, otherwise the largest wounds
+   * first. A severed location is restored with `restoreSevered`, which defaults to a heal of 6+
+   * points (Core p.148).
+   */
+  public async heal(options: HealOptions): Promise<HealResult> {
+    assertDocumentSubType<CharacterActor>(this, ActorTypeEnum.Character);
+    const location = options.location;
+    this.assertOwnHitLocation(location);
+    requireValue(
+      location.system.hitPoints.value,
+      localize("RQG.Item.HitLocation.Notification.NoValueOnHitLocation", {
+        hitLocationName: location.name,
+      }),
+    );
+    requireValue(
+      location.system.hitPoints.max,
+      localize("RQG.Item.HitLocation.Notification.NoMaxOnHitLocation", {
+        hitLocationName: location.name,
+      }),
+    );
+
+    return this.serializeHitPointsWrite(async () => {
+      const woundsBefore = sumWounds(location.system.wounds);
+      const points =
+        options.points === "all" ? woundsBefore : Math.max(0, Math.floor(options.points));
+      const restoreSevered = options.restoreSevered ?? (options.points !== "all" && points >= 6);
+      const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
+        points,
+        options.wound,
+        location,
+        this,
+        restoreSevered,
+      );
+
+      await location.update(hitLocationUpdates);
+      await this.update(actorUpdates);
+      for (const update of usefulLegs) {
+        const usefulLeg = update._id ? this.items.get(update._id) : undefined;
+        await usefulLeg?.update(update as Item.UpdateData);
+      }
+
+      const remainingWounds = [...location.system.wounds];
+      return { location, healed: woundsBefore - sumWounds(remainingWounds), remainingWounds };
+    });
+  }
+
+  /** Roll `formula` on this actor's hit location table. */
+  public async rollHitLocation(formula: string = "1d20"): Promise<HitLocationItem> {
+    const roll = await new Roll(formula).evaluate();
+    return this.getHitLocationByRoll(roll.total ?? 0);
+  }
+
+  /** The hit location whose die range covers `rollTotal`. */
+  public getHitLocationByRoll(rollTotal: number): HitLocationItem {
+    const hitLocation = this.items.find(
+      (i) =>
+        isDocumentSubType<HitLocationItem>(i, ItemTypeEnum.HitLocation) &&
+        rollTotal >= i.system.dieFrom &&
+        rollTotal <= i.system.dieTo,
+    ) as HitLocationItem | undefined;
+    return hitLocation ?? logger.throw(ERR.noHitLocationForRoll, this.uuid, rollTotal);
+  }
+
+  private assertOwnHitLocation(location: HitLocationItem): void {
+    if (location?.parent !== this || location.type !== ItemTypeEnum.HitLocation) {
+      logger.throw(ERR.hitLocationNotOnActor, this.uuid, location?.uuid);
+    }
   }
 
   /**
