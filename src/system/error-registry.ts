@@ -91,6 +91,10 @@ const REGISTRY = {
     code: "RQG-B0012",
     message: "The hit location to damage or heal is not a hit location of this actor",
   },
+  amountNotANumber: {
+    code: "RQG-B0013",
+    message: "Damage or heal was given an amount that is not a finite number",
+  },
 
   // ============================================================================
   // world — RQG-W00NN — misconfiguration or a missing reference; GM/user can fix it

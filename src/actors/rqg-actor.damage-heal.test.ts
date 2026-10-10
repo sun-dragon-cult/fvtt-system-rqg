@@ -192,6 +192,17 @@ describe("RqgActor damage, heal and rollHitLocation (#1171)", () => {
     });
   });
 
+  describe("amounts", () => {
+    it("refuses a damage or heal amount that is not a number", async () => {
+      const chest = createHitLocationItem("chest", { wounds: [3] });
+      const actor = createCharacterActor([chest]);
+
+      await expect(actor.damage({ amount: NaN, location: chest })).rejects.toThrow();
+      await expect(actor.heal({ location: chest, points: Number("") || NaN })).rejects.toThrow();
+      expect(chest.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe("getHitLocationByRoll", () => {
     it("throws when no hit location covers the roll", () => {
       const actor = createCharacterActor([createHitLocationItem("leg", { dieFrom: 1, dieTo: 4 })]);
