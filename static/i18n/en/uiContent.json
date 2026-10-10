@@ -1007,6 +1007,7 @@
           "PointsLeft": "{left} of {points} points left",
           "ClearWoundHealing": "Heal nothing on this wound",
           "HealWoundFirst": "Heal this wound first",
+          "WoundsChanged": "The wounds changed while the dialog was open. Please choose again.",
           "PointsWasted": "{wasted} of {points} points have nothing to heal",
           "LocationHitPoints": "{hitLocationName} ({value}/{max} HP)",
           "PointsOnWound": "{damage} point wound on {hitLocationName}",

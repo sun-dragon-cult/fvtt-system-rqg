@@ -197,49 +197,9 @@
         flex-basis: 100%;
       }
 
-      & .heal-dots {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.3rem;
-      }
-
-      & .heal-dot {
-        position: relative;
-        inline-size: 1rem;
-        block-size: 1rem;
-        border: 2px solid var(--color-level-success, #1a7f37);
-        border-radius: 50%;
-        cursor: pointer;
-        transition:
-          background-color 120ms ease,
-          opacity 120ms ease;
-
-        & input {
-          position: absolute;
-          inset: 0;
-          margin: 0;
-          opacity: 0;
-          cursor: pointer;
-        }
-
-        &:has(input:checked),
-        &:has(~ .heal-dot input:checked) {
-          background-color: var(--color-level-success, #1a7f37);
-        }
-
-        &:has(input:disabled) {
-          opacity: 0.3;
-          cursor: not-allowed;
-
-          & input {
-            cursor: not-allowed;
-          }
-        }
-
-        &:has(input:focus-visible) {
-          outline: 2px solid var(--color-border-highlight);
-          outline-offset: 1px;
-        }
+      & .wound-dialog-split-wound [data-burst]:focus-visible {
+        outline: 2px solid var(--color-border-highlight);
+        outline-offset: 1px;
       }
 
       & .heal-reattach {

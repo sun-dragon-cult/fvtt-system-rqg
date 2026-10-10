@@ -1,5 +1,5 @@
 import { mockActor as mockActorOriginal } from "../../../test/mocks/mockActor.ts";
-import { HealingCalculations } from "./hit-location-healing-calculations";
+import { HealingCalculations, distributeHealing } from "./hit-location-healing-calculations";
 import {
   applyTestDamage,
   applyTestHealing,
@@ -414,5 +414,19 @@ describe("HealingCalculations", () => {
 
       expect(result).toStrictEqual({ hitLocationUpdates: {}, actorUpdates: {}, usefulLegs: [] });
     });
+  });
+});
+
+describe("distributeHealing", () => {
+  it("heals the worst wound first, then the next", () => {
+    expect(distributeHealing([2, 5, 3], 7)).toEqual([0, 5, 2]);
+  });
+
+  it("never heals more than a wound's damage", () => {
+    expect(distributeHealing([1, 2], 10)).toEqual([1, 2]);
+  });
+
+  it("heals nothing with no points", () => {
+    expect(distributeHealing([4], 0)).toEqual([0]);
   });
 });

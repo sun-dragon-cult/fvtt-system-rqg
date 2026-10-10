@@ -1,6 +1,7 @@
 import { registerRqgSystemSettings } from "./system/rqg-system-settings.js";
 import { loadHandlebarsTemplates } from "./system/load-handlebars-templates.js";
 import { RqgActor } from "./actors/rqg-actor.js";
+import { RqgDotPickerElement } from "./applications/dot-picker/dot-picker-element";
 import { RqgItem } from "./items/rqg-item";
 import { registerHandlebarsHelpers } from "./system/register-handlebars-helpers";
 import { RqgActiveEffect } from "./active-effect/rqg-active-effect";
@@ -104,6 +105,7 @@ Hooks.once("init", () => {
   RqgTokenRuler.init();
   RqgToken.init();
   RqgActor.init();
+  RqgDotPickerElement.register();
   initCharacterPassiveRecovery();
   initSpelledProjectiles();
   initSpellBehaviours();
