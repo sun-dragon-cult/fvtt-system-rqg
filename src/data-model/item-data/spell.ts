@@ -54,7 +54,7 @@ export type SpellResistedByEnum = (typeof SpellResistedByEnum)[keyof typeof Spel
 // whether one can be at all). Frozen from the #1080 survey against RBM + Core's sample sorcery
 // list, not derived from Bladesharp alone - see #1080 for the corpus sample that ruled out a
 // smaller enum. Three kinds break the "target is a token" assumption on purpose:
-// `spellOrEffect` (Dispel Magic, Countermagic - no item/actor binding, always macro tier),
+// `spellOrEffect` (Dispel Magic, Countermagic - no item/actor binding, always behaviour tier),
 // `creates` (summonings, Create Fissure - the spell makes a new document, nothing pre-existing is
 // bound), and `area` (no Region/MeasuredTemplate binding exists yet, so this is a marker for
 // future work, never a #1079 selector target). Only `weapon`, `object`, `hitLocation` (item-bound)
@@ -76,12 +76,12 @@ export const SpellTargetKindEnum = {
 export type SpellTargetKindEnum = (typeof SpellTargetKindEnum)[keyof typeof SpellTargetKindEnum];
 
 // How much of #1079's application machinery a spell's effect goes through. Data on the spell, not
-// a code branch - most spells are not `macro`. See #1079 for the mechanism behind each tier.
+// a code branch - most spells are not `behaviour`. See #1079 for the mechanism behind each tier.
 export const SpellEffectTierEnum = {
   None: "none", // nothing to automate (Truespeak, Divination, most rituals)
   Reminder: "reminder", // GM-adjudicated effect worth tracking - chat note + duration only
-  Declarative: "declarative", // Active Effect from the effects pack (Bladesharp, Protection...)
-  Macro: "macro", // rqid-referenced Macro (Sever Spirit, Turn Undead, Heal Wound, summonings)
+  Effect: "effect", // Active Effect from the effects pack (Bladesharp, Protection...)
+  Behaviour: "behaviour", // code a module registers as the spell's behaviour (Sever Spirit, Heal Wound, summonings)
 } as const;
 export type SpellEffectTierEnum = (typeof SpellEffectTierEnum)[keyof typeof SpellEffectTierEnum];
 

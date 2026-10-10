@@ -32,6 +32,19 @@ describe("pickSpellsWithEffects", () => {
     expect(picked.map((entry) => entry.name)).toEqual(["Bladesharp", "Sleep", "Soul Sight"]);
   });
 
+  it("keeps spells without an effect link whose behaviour applies itself", () => {
+    const picked = pickSpellsWithEffects(
+      [
+        spell("Summon Earth Elemental", "i.rune-magic.summon-earth-elemental", { effectRqid: "" }),
+        spell("Heal", "i.spirit-magic.heal", { effectRqid: "" }),
+      ],
+      "en",
+      "en",
+      (spellRqid) => spellRqid === "i.rune-magic.summon-earth-elemental",
+    );
+    expect(picked.map((s) => s.name)).toEqual(["Summon Earth Elemental"]);
+  });
+
   it("takes the highest priority copy of each spell", () => {
     const picked = pickSpellsWithEffects(
       [

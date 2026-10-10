@@ -1,30 +1,29 @@
-import { Rqid } from "../api/rqid-api";
-import { systemId } from "../config";
 import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { SpellEffectApplied, SpellMacroScope } from "./apply-spell-effect";
+import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
+import {
+  spellBehaviourForEffect,
+  type IncomingSpellScope,
+  type SpellBehaviour,
+} from "./spell-behaviour";
+
+type OnIncomingSpell = NonNullable<SpellBehaviour["onIncomingSpell"]>;
 
 /**
- * The scope a protective effect's macro (`flags.rqg.onIncomingSpell`) runs with when a spell is
- * applied to its actor - a contract with content modules, like SpellMacroScope. `effects` are all
- * the target's active effects linking that macro, so layered defences can be decided together. The
- * macro returns `{ outcome: "stopped" }` to stop the spell, and may change or delete those effects.
+ * Active effects grouped by the `onIncomingSpell` hook of the spell that made them. Spells that
+ * share a hook (Countermagic and Shield) form one group, so layered defences are decided together.
  */
-export type IncomingSpellScope = SpellMacroScope & { effects: ActiveEffect[] };
-
-type EffectLike = { active: boolean; flags?: Record<string, any> };
-
-/** The target's active effects that react to incoming spells, grouped by the macro they link. */
-export function groupByIncomingSpellMacro<T extends EffectLike>(
+export function groupByIncomingSpellHook<T extends { active: boolean }>(
   effects: Iterable<T>,
-): Map<string, T[]> {
-  const groups = new Map<string, T[]>();
+  hookOf: (effect: T) => OnIncomingSpell | undefined,
+): Map<OnIncomingSpell, T[]> {
+  const groups = new Map<OnIncomingSpell, T[]>();
   for (const effect of effects) {
-    const macroRqid = effect.flags?.[systemId]?.onIncomingSpell as string | undefined;
-    if (effect.active && macroRqid) {
-      const group = groups.get(macroRqid) ?? [];
+    const hook = effect.active ? hookOf(effect) : undefined;
+    if (hook) {
+      const group = groups.get(hook) ?? [];
       group.push(effect);
-      groups.set(macroRqid, group);
+      groups.set(hook, group);
     }
   }
   return groups;
@@ -39,23 +38,20 @@ function isFromOutside(casterUuid: string, targetActor: RqgActor): boolean {
   return !casterUuid || resolveActorFromUuid(casterUuid)?.uuid !== targetActor.uuid;
 }
 
-/** Run the target's protective macros; the blocked result when one of them stops the spell. */
+/** Run the target's protective spells' hooks; the blocked result when one of them stops the spell. */
 export async function interceptIncomingSpell(
-  scope: SpellMacroScope,
+  scope: SpellApplyScope,
 ): Promise<SpellEffectApplied | undefined> {
   if (!isFromOutside(scope.cast.casterUuid, scope.targetActor)) {
     return undefined;
   }
-  const groups = groupByIncomingSpellMacro(
-    scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & EffectLike>,
+  const groups = groupByIncomingSpellHook(
+    scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>,
+    (effect) => spellBehaviourForEffect(effect)?.onIncomingSpell,
   );
-  for (const [macroRqid, effects] of groups) {
-    const macro = await Rqid.fromRqid(macroRqid);
-    if (!(macro instanceof Macro)) {
-      continue;
-    }
+  for (const [onIncomingSpell, effects] of groups) {
     const incomingScope: IncomingSpellScope = { ...scope, effects };
-    const result = (await macro.execute(incomingScope as any)) as { outcome?: string } | undefined;
+    const result = await onIncomingSpell(incomingScope);
     if (result?.outcome === "stopped") {
       return { outcome: "blocked", reason: "intercepted" };
     }

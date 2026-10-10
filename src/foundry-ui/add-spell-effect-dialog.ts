@@ -147,7 +147,7 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
     runePointsSpent: isRuneMagic ? level : 0,
     casterSuccessLevel: undefined,
   });
-  // A cancellation, a spell macro (e.g. Dispel Magic) or a protective effect used up by the spell
+  // A cancellation, a spell behaviour (e.g. Dispel Magic) or a protective effect used up by the spell
   // (e.g. Countermagic) removes effects, so the palette changes then too.
   return (
     applied?.outcome === "applied" ||

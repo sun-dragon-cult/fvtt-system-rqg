@@ -56,7 +56,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
       compendium("i.spirit-magic.fill-all", {
         effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
         targetKind: "weapon",
-        effectTier: "declarative",
+        effectTier: "effect",
         resistedBy: "resistanceRoll",
       }),
     );
@@ -65,7 +65,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
       system: {
         effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
         targetKind: "weapon",
-        effectTier: "declarative",
+        effectTier: "effect",
         resistedBy: "resistanceRoll",
       },
     });
@@ -80,7 +80,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
       compendium("i.spirit-magic.keep", {
         effectRqidLink: { rqid: "ae..keep", name: "Keep" },
         targetKind: "weapon",
-        effectTier: "declarative",
+        effectTier: "effect",
         resistedBy: "resistanceRoll",
       }),
     );
@@ -91,7 +91,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
     });
 
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
-      system: { effectTier: "declarative" },
+      system: { effectTier: "effect" },
     });
   });
 
@@ -101,7 +101,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
       compendium("i.spirit-magic.swedish", {
         effectRqidLink: { rqid: "ae..swedish", name: "Swedish" },
         targetKind: "creature",
-        effectTier: "declarative",
+        effectTier: "effect",
       }),
     );
     const copy = spell("i.spirit-magic.swedish", {}, "Actor.a.Item.copy", "spiritMagic", "sv");
@@ -110,7 +110,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
       system: {
         effectRqidLink: { rqid: "ae..swedish", name: "Swedish" },
         targetKind: "weapon",
-        effectTier: "declarative",
+        effectTier: "effect",
       },
     });
   });
@@ -118,11 +118,11 @@ describe("resyncSpellFieldsFromCompendium", () => {
   it("marks a spell that gets through spell barriers when its compendium spell does", async () => {
     packsContain(
       compendium("i.spirit-magic.dispel-magic", {
-        effectTier: "macro",
+        effectTier: "behaviour",
         passesSpellBarriers: true,
       }),
     );
-    const copy = spell("i.spirit-magic.dispel-magic", { effectTier: "macro" });
+    const copy = spell("i.spirit-magic.dispel-magic", { effectTier: "behaviour" });
 
     expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({
       system: { passesSpellBarriers: true },

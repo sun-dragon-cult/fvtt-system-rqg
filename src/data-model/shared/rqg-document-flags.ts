@@ -30,16 +30,12 @@ export interface PlaylistFlags {
 
 export interface MacroFlags {
   [documentRqidFlags]: DocumentRqidFlags;
-  /** A spell macro that must run on the GM's client, e.g. because it creates tokens. */
-  runAsGm?: boolean;
 }
 
 export interface RqgActiveEffectFlags {
   [documentRqidFlags]?: DocumentRqidFlags;
-  /** The effect holds a summoned creature in the world, so its token goes when the effect ends. */
-  removeTokenWhenEnded?: boolean;
-  /** The rqid of a macro that decides whether a spell cast at the effect's actor gets through. */
-  onIncomingSpell?: string;
+  /** A summoning made by spellEffects.summon: its token goes when the effect ends. */
+  summoning?: boolean;
 }
 
 export interface RollTableFlags {

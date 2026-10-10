@@ -1237,9 +1237,9 @@
         "SpellEffect": "Spell Effect",
         "EffectTierEnum": {
           "none": "None - nothing to automate",
-          "reminder": "Reminder (not yet automated)",
-          "declarative": "Declarative (not yet automated)",
-          "macro": "Macro (not yet automated)"
+          "reminder": "Reminder - an effect with no changes, it shows the spell is active",
+          "effect": "Effect - an effect that changes values",
+          "behaviour": "Behaviour - code registered by a module"
         },
         "DurationEnum": {
           "undefined": "None",
@@ -1617,7 +1617,8 @@
         "AttackRollMissing": "This attack chat message has no roll data and cannot be defended against.",
         "ResistanceMessageMissing": "The resistance request this refers to is no longer available — its chat message was removed.",
         "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
-        "TokenHasNoActor": "This token has no actor associated with it."
+        "TokenHasNoActor": "This token has no actor associated with it.",
+        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it."
       },
       "Warn": {
         "TargetOneTokenOnly": "Please target one token only",
