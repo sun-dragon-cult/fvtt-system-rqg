@@ -33,6 +33,7 @@ export type ChooseWoundsOptions = {
 type HealDialogMode = "free" | ChooseWoundsOptions["mode"];
 
 type HealSubmitResult = {
+  healed: number;
   hasRemainingWounds: boolean;
   healAllWounds: boolean;
   woundRemoved: boolean;
@@ -102,6 +103,11 @@ function woundsSnapshot(locations: HitLocationItem[]): string {
   );
 }
 
+/** The wounds a rendered dialog was drawn from - stale if DialogV2 redrew its first content. */
+function shownWounds(form: ParentNode): string | undefined {
+  return form.querySelector<HTMLElement>("[data-wounds-snapshot]")?.dataset["woundsSnapshot"];
+}
+
 /** All points on the location with the worst wound, spread there worst first. */
 export function locationPresets(locations: HitLocationItem[], points: number): number[] {
   const allWounds = locations.flatMap((location) => location.system.wounds);
@@ -136,7 +142,7 @@ function largestWoundKey(
 function initialReattachIds(mode: HealDialogMode, locations: HitLocationItem[]): string[] {
   const severed = locations.filter(isSevered);
   // A spell suggests reattaching; split mode only when there's no choice of limb to make
-  if (mode === "location" || (mode === "split" && severed.length === 1)) {
+  if (mode === "location" || (mode !== "free" && severed.length === 1)) {
     return severed.map((location) => location.id!);
   }
   return [];
@@ -165,6 +171,7 @@ async function renderHealDialogContent(
   let presetIndex = 0;
   return foundry.applications.handlebars.renderTemplate(templatePaths.hitLocationHealWound, {
     dialogId,
+    woundsSnapshot: woundsSnapshot(locations),
     free: mode === "free",
     dots: mode === "split" || mode === "location",
     burstLabel:
@@ -197,20 +204,32 @@ async function renderHealDialogContent(
 
 /**
  * Let the user pick which of the actor's wounds to heal, on all its wounded locations - part of
- * the public API, used by healing spells. Resolves undefined when cancelled, when nothing is
- * wounded, or when the wounds changed while the dialog was open (the caller can ask again).
+ * the public API, used by healing spells. Resolves undefined when cancelled or when nothing is
+ * wounded. If the wounds change while it is open, it asks again with the current ones.
  */
 export async function chooseWounds(
   actor: RqgActor,
   options: ChooseWoundsOptions,
 ): Promise<ChosenHealing | undefined> {
   assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
+  for (;;) {
+    const result = await chooseWoundsOnce(actor, options);
+    if (result !== "woundsChanged") {
+      return result;
+    }
+    ui.notifications?.warn(localize("RQG.Item.HitLocation.HealWound.WoundsChanged"));
+  }
+}
+
+async function chooseWoundsOnce(
+  actor: RqgActor,
+  options: ChooseWoundsOptions,
+): Promise<ChosenHealing | "woundsChanged" | undefined> {
   const offerReattach = !!options.offerReattach;
   const locations = healableLocations(actor, offerReattach);
   if (!locations.length) {
     return undefined;
   }
-  const snapshot = woundsSnapshot(locations);
   const dialogId = `choose-wounds-${foundry.utils.randomID()}`;
   const content = await renderHealDialogContent(dialogId, options.mode, locations, {
     points: options.points,
@@ -227,7 +246,12 @@ export async function chooseWounds(
     classes: [systemId, "dialog", "heal-wound"],
     render: (_event, dialog) => {
       const root = dialog.form ?? dialog.element;
-      if (root && options.mode !== "single") {
+      if (!root) {
+        return;
+      }
+      if (options.mode === "single") {
+        keepOneReattachTicked(root);
+      } else {
         initializeDotBudget(root, options.points, options.mode);
       }
     },
@@ -237,13 +261,11 @@ export async function chooseWounds(
         label: "RQG.Item.HitLocation.HealWound.btnHeal",
         icon: "fas fa-heart-pulse",
         default: true,
-        callback: (_event, button) => {
-          if (woundsSnapshot(healableLocations(actor, offerReattach)) !== snapshot) {
-            ui.notifications?.warn(localize("RQG.Item.HitLocation.HealWound.WoundsChanged"));
-            return null;
-          }
-          return button.form ? readChosenHealing(actor, button.form, options) : null;
-        },
+        callback: (_event, button) =>
+          !button.form ||
+          shownWounds(button.form) !== woundsSnapshot(healableLocations(actor, offerReattach))
+            ? "woundsChanged"
+            : readChosenHealing(actor, button.form, options),
       },
       {
         action: "cancel",
@@ -253,7 +275,23 @@ export async function chooseWounds(
     ],
     rejectClose: false,
   });
-  return result && typeof result === "object" ? (result as ChosenHealing) : undefined;
+  return result === "woundsChanged"
+    ? result
+    : result && typeof result === "object"
+      ? (result as ChosenHealing)
+      : undefined;
+}
+
+/** One reattach per cast: ticking a Reattach box unticks the others. */
+function keepOneReattachTicked(root: HTMLElement): void {
+  const boxes = Array.from(root.querySelectorAll<HTMLInputElement>('input[name^="reattach-"]'));
+  for (const box of boxes) {
+    box.addEventListener("change", () => {
+      if (box.checked) {
+        boxes.filter((other) => other !== box).forEach((other) => (other.checked = false));
+      }
+    });
+  }
 }
 
 function readChosenHealing(
@@ -402,11 +440,11 @@ function initializeDotBudget(root: HTMLElement, points: number, mode: "split" | 
       update();
     });
   }
+  if (mode === "split") {
+    keepOneReattachTicked(root);
+  }
   for (const box of reattachBoxes) {
     box.addEventListener("change", () => {
-      if (box.checked && mode === "split") {
-        reattachBoxes.filter((other) => other !== box).forEach((other) => (other.checked = false));
-      }
       if (box.checked && mode === "location" && locationOf(box) !== active) {
         activate(locationOf(box));
         fill();
@@ -471,9 +509,14 @@ export async function showHitLocationHealWoundDialog(
     healFeedback: "",
   };
   const apps = actor.apps as Record<string, unknown>;
+  // The wounds the feedback line was written for
+  let feedbackSnapshot = "";
 
   const renderContent = () => {
     const locations = healableLocations(actor, true);
+    if (woundsSnapshot(locations) !== feedbackSnapshot) {
+      state.healFeedback = "";
+    }
     const selectedKey = parseWoundKey(actor, state.selectedKey)
       ? state.selectedKey
       : largestWoundKey(locations);
@@ -487,96 +530,105 @@ export async function showHitLocationHealWoundDialog(
     });
   };
 
-  try {
-    await foundry.applications.api.DialogV2.wait({
-      id: appId,
-      window: {
-        title: localize("RQG.Item.HitLocation.HealWound.Title", { actorName: actor.name }),
-      },
-      position: { width: 350 },
-      form: { closeOnSubmit: false },
-      content: dialogContent(await renderContent()),
-      classes: [systemId, "dialog", "heal-wound"],
-      render: async (_event, dialog) => {
-        // Rerender when the actor or its hit locations change elsewhere
-        apps[appId] = dialog;
-        const contentNode = dialog.element?.querySelector<HTMLElement>(".dialog-content");
-        const root = dialog.form ?? dialog.element;
-        if (!contentNode || !root) {
-          return;
-        }
-        contentNode.innerHTML = await renderContent();
-        initializeHealModeToggle(root);
-        // DialogV2 rebuilds its content before this callback, so keep the choices as they are made
-        contentNode.onchange = () => (state = readSheetDialogState(actor, contentNode, state));
-      },
-      buttons: [
-        {
-          action: "submit",
-          label: "RQG.Item.HitLocation.HealWound.btnHeal",
-          icon: "fas fa-heart-pulse",
-          default: true,
-          callback: async (_event, button, dialog): Promise<boolean> => {
-            const form = button.form;
-            if (!form) {
-              return false;
-            }
-            state = readSheetDialogState(actor, form, state);
-            const chosen = parseWoundKey(
-              actor,
-              form.querySelector<HTMLInputElement>('input[name="wound"]:checked')?.value,
-            );
-            const reattach = readReattach(actor, form);
-
-            // Avoid an automatic rerender while the animation runs; rerendered below
-            delete apps[appId];
-            let result: HealSubmitResult;
-            try {
-              result = await applyHealing(actor, state.healAll, chosen, state.healPoints, reattach);
-              await animateHealWoundTransition(form, result);
-            } finally {
-              apps[appId] = dialog;
-            }
-
-            if (state.healAll || !result.hasRemainingWounds) {
-              await dialog.close();
-              return true;
-            }
-            const remaining = healableLocations(actor, false);
-            const stillThere =
-              chosen && remaining.includes(chosen.location) ? chosen.location : undefined;
-            state = {
-              ...state,
-              healFeedback: localize("RQG.Item.HitLocation.HealWound.FeedbackHealedSingle", {
-                healPoints: String(state.healPoints),
-              }),
-              selectedKey: result.woundReduced
-                ? state.selectedKey
-                : largestWoundKey(remaining, stillThere),
-              reattachIds: [],
-            };
-            const contentNode = dialog.element?.querySelector<HTMLElement>(".dialog-content");
+  // wait() resolves at the first Heal while the dialog stays open, so unregister on close
+  await foundry.applications.api.DialogV2.wait({
+    id: appId,
+    close: () => {
+      delete apps[appId];
+    },
+    window: {
+      title: localize("RQG.Item.HitLocation.HealWound.Title", { actorName: actor.name }),
+    },
+    position: { width: 350 },
+    form: { closeOnSubmit: false },
+    content: dialogContent(await renderContent()),
+    classes: [systemId, "dialog", "heal-wound"],
+    render: async (_event, dialog) => {
+      // Rerender when the actor or its hit locations change elsewhere
+      apps[appId] = dialog;
+      const contentNode = dialog.element?.querySelector<HTMLElement>(".dialog-content");
+      const root = dialog.form ?? dialog.element;
+      if (!contentNode || !root) {
+        return;
+      }
+      contentNode.innerHTML = await renderContent();
+      initializeHealModeToggle(root);
+      // DialogV2 rebuilds its first content before this callback, so keep choices as they are made
+      contentNode.onchange = () => (state = readSheetDialogState(actor, contentNode, state));
+    },
+    buttons: [
+      {
+        action: "submit",
+        label: "RQG.Item.HitLocation.HealWound.btnHeal",
+        icon: "fas fa-heart-pulse",
+        default: true,
+        callback: async (_event, button, dialog): Promise<boolean> => {
+          const form = button.form;
+          if (!form) {
+            return false;
+          }
+          state = readSheetDialogState(actor, form, state);
+          const contentNode = dialog.element?.querySelector<HTMLElement>(".dialog-content");
+          const redraw = async () => {
             if (contentNode) {
               contentNode.innerHTML = await renderContent();
               initializeHealModeToggle(dialog.form ?? dialog.element);
             }
+          };
+          if (shownWounds(form) !== woundsSnapshot(healableLocations(actor, true))) {
+            ui.notifications?.warn(localize("RQG.Item.HitLocation.HealWound.WoundsChanged"));
+            await redraw();
             return false;
-          },
-        },
-        {
-          action: "cancel",
-          label: "RQG.Dialog.Common.btnCancel",
-          icon: "fas fa-times",
-          callback: async (_event, _button, dialog): Promise<boolean> => {
+          }
+          const chosen = parseWoundKey(
+            actor,
+            form.querySelector<HTMLInputElement>('input[name="wound"]:checked')?.value,
+          );
+          const reattach = readReattach(actor, form);
+
+          // Avoid an automatic rerender while the animation runs; rerendered below
+          delete apps[appId];
+          let result: HealSubmitResult;
+          try {
+            result = await applyHealing(actor, state.healAll, chosen, state.healPoints, reattach);
+            await animateHealWoundTransition(form, result);
+          } finally {
+            apps[appId] = dialog;
+          }
+
+          if (state.healAll || !result.hasRemainingWounds) {
             await dialog.close();
-            return false;
-          },
+            return true;
+          }
+          const remaining = healableLocations(actor, false);
+          const stillThere =
+            chosen && remaining.includes(chosen.location) ? chosen.location : undefined;
+          state = {
+            ...state,
+            healFeedback: localize("RQG.Item.HitLocation.HealWound.FeedbackHealedSingle", {
+              healPoints: String(result.healed),
+            }),
+            selectedKey: result.woundReduced
+              ? state.selectedKey
+              : largestWoundKey(remaining, stillThere),
+            reattachIds: [],
+          };
+          feedbackSnapshot = woundsSnapshot(healableLocations(actor, true));
+          await redraw();
+          return false;
         },
-      ],
-    });
-  } finally {
-    delete apps[appId];
-  }
+      },
+      {
+        action: "cancel",
+        label: "RQG.Dialog.Common.btnCancel",
+        icon: "fas fa-times",
+        callback: async (_event, _button, dialog): Promise<boolean> => {
+          await dialog.close();
+          return false;
+        },
+      },
+    ],
+  });
 }
 
 async function applyHealing(
@@ -595,11 +647,18 @@ async function applyHealing(
 
   if (healAll) {
     const wounded = healableLocations(actor, false);
+    let healed = 0;
     for (const location of wounded) {
-      await actor.heal({ location, points: "all", restoreSevered: restoreSevered(location) });
+      const result = await actor.heal({
+        location,
+        points: "all",
+        restoreSevered: restoreSevered(location),
+      });
+      healed += result.healed;
     }
     await reattachOthers(wounded);
     return {
+      healed,
       hasRemainingWounds: false,
       healAllWounds: true,
       woundRemoved: wounded.length > 0,
@@ -610,6 +669,7 @@ async function applyHealing(
   if (!chosen) {
     await reattachOthers([]);
     return {
+      healed: 0,
       hasRemainingWounds: healableLocations(actor, false).length > 0,
       healAllWounds: false,
       woundRemoved: false,
@@ -618,7 +678,7 @@ async function applyHealing(
   }
 
   const woundsBefore = [...chosen.location.system.wounds];
-  await actor.heal({
+  const { healed } = await actor.heal({
     location: chosen.location,
     points,
     wound: chosen.wound,
@@ -628,6 +688,7 @@ async function applyHealing(
   const woundsAfter = chosen.location.system.wounds;
   const woundRemoved = woundsAfter.length < woundsBefore.length;
   return {
+    healed,
     hasRemainingWounds: healableLocations(actor, false).length > 0,
     healAllWounds: false,
     woundRemoved,

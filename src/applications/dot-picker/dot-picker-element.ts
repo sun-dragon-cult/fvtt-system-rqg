@@ -71,7 +71,6 @@ export class RqgDotPickerElement extends foundry.applications.elements
   }
 
   protected override _activateListeners(): void {
-    this.tabIndex = this.disabled ? -1 : 0;
     this.addEventListener("keydown", this.#onKeyDown.bind(this), { signal: this.abortSignal });
   }
 

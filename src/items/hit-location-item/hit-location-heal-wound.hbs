@@ -1,4 +1,4 @@
-<div class="wound-dialog heal-wound-dialog">
+<div class="wound-dialog heal-wound-dialog" data-wounds-snapshot="{{woundsSnapshot}}">
   {{#if free}}
     <div class="heal-mode-segmented" role="radiogroup" aria-label="{{localize "RQG.Item.HitLocation.HealWound.HealModeLabel"}}">
       <input type="radio" id="heal-mode-single-{{dialogId}}" name="healMode" value="single" {{#unless healAll}}checked{{/unless}} />
