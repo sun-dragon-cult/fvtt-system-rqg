@@ -249,11 +249,12 @@
         margin: 0;
         font-size: var(--font-size-13);
         cursor: pointer;
-        line-height: 1;
 
         & input[type="checkbox"] {
+          flex: 0 0 var(--checkbox-size, var(--font-size-20));
           margin: 0;
-          vertical-align: middle;
+          width: var(--checkbox-size, var(--font-size-20));
+          height: var(--checkbox-size, var(--font-size-20));
         }
       }
 
