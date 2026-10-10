@@ -192,13 +192,53 @@
 
       & .wound-dialog-split-wound {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        gap: 0.2rem;
+        gap: 0.5rem;
+        flex-basis: 100%;
+      }
 
-        & input[type="number"] {
-          width: 3rem;
-          text-align: center;
+      & .heal-dots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      & .heal-dot {
+        position: relative;
+        inline-size: 1rem;
+        block-size: 1rem;
+        border: 2px solid var(--color-level-success, #1a7f37);
+        border-radius: 50%;
+        cursor: pointer;
+        transition:
+          background-color 120ms ease,
+          opacity 120ms ease;
+
+        & input {
+          position: absolute;
+          inset: 0;
+          margin: 0;
+          opacity: 0;
+          cursor: pointer;
+        }
+
+        &:has(input:checked),
+        &:has(~ .heal-dot input:checked) {
+          background-color: var(--color-level-success, #1a7f37);
+        }
+
+        &:has(input:disabled) {
+          opacity: 0.3;
+          cursor: not-allowed;
+
+          & input {
+            cursor: not-allowed;
+          }
+        }
+
+        &:has(input:focus-visible) {
+          outline: 2px solid var(--color-border-highlight);
+          outline-offset: 1px;
         }
       }
 
@@ -328,7 +368,7 @@
           outline-color 240ms ease;
       }
 
-      & .wound-dialog-wound-option:has(input[type="radio"]:checked) {
+      & .wound-dialog-wound-option:has(input[name="wound"]:checked) {
         transform: translateY(-1px);
       }
 
@@ -375,7 +415,7 @@
           transform 140ms ease;
       }
 
-      & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-burst,
+      & .wound-dialog-wound-option:has(input[name="wound"]:checked) .wound-dialog-wound-burst,
       & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-burst,
       & .is-heal-all .wound-dialog-wound-burst {
         color: var(--checkbox-checked-color, var(--color-border-highlight-alt));
@@ -402,7 +442,7 @@
         pointer-events: none;
       }
 
-      & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-value,
+      & .wound-dialog-wound-option:has(input[name="wound"]:checked) .wound-dialog-wound-value,
       & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-value,
       & .is-heal-all .wound-dialog-wound-value {
         color: #191813 !important;

@@ -130,6 +130,7 @@ async function renderHealDialogContent(
         key: woundKey(location, index),
         value,
         preset: presets[presetIndex++] ?? 0,
+        dots: Array.from({ length: value }, (_dot, dot) => dot + 1),
       })),
     })),
   });
@@ -200,37 +201,62 @@ function readChosenWounds(
     );
     return chosen ? [{ ...chosen, points: options.points }] : [];
   }
-  return Array.from(form.querySelectorAll<HTMLInputElement>('input[name^="points-"]')).flatMap(
-    (input) => {
-      const chosen = parseWoundKey(actor, input.name.slice("points-".length));
-      const points = Math.max(0, Math.floor(Number(input.value) || 0));
-      return chosen && points ? [{ ...chosen, points }] : [];
-    },
-  );
+  return Array.from(
+    form.querySelectorAll<HTMLInputElement>('input[name^="points-"]:checked'),
+  ).flatMap((input) => {
+    const chosen = parseWoundKey(actor, input.name.slice("points-".length));
+    const points = Math.max(0, Math.floor(Number(input.value) || 0));
+    return chosen && points ? [{ ...chosen, points }] : [];
+  });
 }
 
+/**
+ * Each wound's dots are a radio group, filled up to the checked one. Dots the points left can't
+ * reach are disabled, and clicking the top filled dot again empties it.
+ */
 function initializeSplitBudget(root: HTMLElement, points: number): void {
   const budget = root.querySelector<HTMLElement>("[data-heal-budget]");
-  const submit = root.querySelector<HTMLButtonElement>('button[data-action="submit"]');
-  const inputs = Array.from(root.querySelectorAll<HTMLInputElement>('input[name^="points-"]'));
+  const wounds = Array.from(root.querySelectorAll<HTMLElement>(".wound-dialog-split-wound"));
+  const assigned = (wound: HTMLElement) =>
+    Number(wound.querySelector<HTMLInputElement>('input[type="radio"]:checked')?.value) || 0;
+
   const update = () => {
-    const used = inputs.reduce((sum, input) => sum + (Number(input.value) || 0), 0);
-    inputs.forEach((input) =>
-      input
-        .closest(".wound-dialog-split-wound")
-        ?.classList.toggle("is-chosen", (Number(input.value) || 0) > 0),
-    );
+    const left = points - wounds.reduce((sum, wound) => sum + assigned(wound), 0);
+    for (const wound of wounds) {
+      const reach = assigned(wound) + left;
+      wound.querySelectorAll<HTMLInputElement>(".heal-dot input").forEach((dot) => {
+        dot.disabled = Number(dot.value) > reach;
+      });
+      wound.classList.toggle("is-chosen", assigned(wound) > 0);
+    }
     if (budget) {
-      budget.textContent = localize("RQG.Item.HitLocation.HealWound.PointsUsed", {
-        used: String(used),
+      budget.textContent = localize("RQG.Item.HitLocation.HealWound.PointsLeft", {
+        left: String(left),
         points: String(points),
       });
     }
-    if (submit) {
-      submit.disabled = used > points;
-    }
   };
-  inputs.forEach((input) => input.addEventListener("input", update));
+
+  for (const wound of wounds) {
+    let before = assigned(wound);
+    wound.addEventListener("pointerdown", () => (before = assigned(wound)));
+    wound.querySelectorAll<HTMLInputElement>(".heal-dot input").forEach((dot) =>
+      dot.addEventListener("click", () => {
+        const value = Number(dot.value);
+        if (value === before) {
+          const lower = wound.querySelector<HTMLInputElement>(
+            `input[type="radio"][value="${value - 1}"]`,
+          );
+          if (lower) {
+            lower.checked = true;
+          }
+        }
+        before = assigned(wound);
+        update();
+      }),
+    );
+    wound.addEventListener("change", update);
+  }
   update();
 }
 
