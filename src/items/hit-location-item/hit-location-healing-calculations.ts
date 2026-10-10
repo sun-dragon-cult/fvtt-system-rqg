@@ -72,7 +72,8 @@ export class HealingCalculations {
       hitLocation.system.hitLocationHealthState || "healthy";
 
     if (restoreSevered && hitLocationHealthState === "severed") {
-      hitLocationHealthState = "wounded"; // the actual state will be recalculated below
+      // Still useless while its damage is at or above max HP; recalculated below otherwise
+      hitLocationHealthState = "useless";
     }
 
     const healing =

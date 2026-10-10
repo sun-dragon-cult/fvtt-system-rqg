@@ -1036,6 +1036,7 @@
           "SeveredCannotBeHit": "{hitLocationName} is gone and cannot be hit anymore, reroll to get a new hit location!",
           "NoValueOnHitLocation": "No value on hit location ${hitLocationName}",
           "NoMaxOnHitLocation": "No max on hit location ${hitLocationName}",
+          "AddWoundNeedsActor": "Wounds can only be added to a hit location on an actor.",
           "RqidNeededWarn": "No Rqid assigned. A Rqid is needed to make the hit location work for armor protection etc."
         }
       },
