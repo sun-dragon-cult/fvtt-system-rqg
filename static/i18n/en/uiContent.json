@@ -1008,7 +1008,7 @@
           "ClearWoundHealing": "Heal nothing on this wound",
           "LocationHitPoints": "{hitLocationName} ({value}/{max} HP)",
           "PointsOnWound": "{damage} point wound on {hitLocationName}",
-          "RestoreSevered": "Restore the severed limb",
+          "Reattach": "Reattach",
           "btnHeal": "Heal",
           "btnHealAllWounds": "Heal All Wounds",
           "FeedbackHealedSingle": "Applied {healPoints} healing."

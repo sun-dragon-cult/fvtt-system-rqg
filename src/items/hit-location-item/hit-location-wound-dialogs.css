@@ -242,6 +242,19 @@
         }
       }
 
+      & .heal-reattach {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin: 0;
+        font-size: var(--font-size-13);
+        cursor: pointer;
+
+        & input[type="checkbox"] {
+          margin: 0;
+        }
+      }
+
       & .heal-budget {
         color: var(--color-text-secondary);
         font-size: var(--font-size-13);

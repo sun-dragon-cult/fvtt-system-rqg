@@ -52,12 +52,10 @@
               </label>
             {{/if}}
           {{/each}}
-          {{#if restoreKey}}
-            <label class="wound-dialog-wound-option wound-dialog-restore" data-wound-key="{{restoreKey}}"
-                   data-tooltip="{{localize "RQG.Item.HitLocation.HealWound.RestoreSevered"}}">
-              <input type="radio" name="wound" value="{{restoreKey}}" {{checked (eq restoreKey @root.selectedKey)}}
-                     aria-label="{{localize "RQG.Item.HitLocation.HealWound.RestoreSevered"}}" />
-              <i class="fas fa-hand-holding-medical wound-dialog-wound-burst" aria-hidden="true"></i>
+          {{#if reattachName}}
+            <label class="heal-reattach">
+              <input type="checkbox" name="{{reattachName}}" {{checked @root.reattachChecked}} />
+              {{localize "RQG.Item.HitLocation.HealWound.Reattach"}}
             </label>
           {{/if}}
         </div>

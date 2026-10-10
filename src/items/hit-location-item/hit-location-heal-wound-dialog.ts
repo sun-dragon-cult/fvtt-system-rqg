@@ -6,8 +6,11 @@ import { assertDocumentSubType, isDocumentSubType, localize } from "../../system
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 
-/** A wound picked to heal; `wound` is undefined for restoring a severed limb that has no wounds. */
-export type WoundChoice = { location: HitLocationItem; wound: number | undefined; points: number };
+/** A wound picked to heal. */
+export type WoundChoice = { location: HitLocationItem; wound: number; points: number };
+
+/** What `chooseWounds` resolves to: the wounds to heal and the severed locations to reattach. */
+export type ChosenHealing = { wounds: WoundChoice[]; reattach: HitLocationItem[] };
 
 /**
  * What `chooseWounds` asks for - part of the public API. `single`: one wound gets all `points`.
@@ -17,8 +20,8 @@ export type ChooseWoundsOptions = {
   title: string;
   points: number;
   mode: "single" | "split";
-  /** Offer severed locations that have no wounds left, to be restored. */
-  includeSevered?: boolean;
+  /** Offer a "Reattach" checkbox, checked, on each severed location. */
+  offerReattach?: boolean;
 };
 
 type HealDialogMode = "free" | ChooseWoundsOptions["mode"];
@@ -31,22 +34,21 @@ type HealSubmitResult = {
 };
 
 const HEAL_WOUND_ANIMATION_FALLBACK_MS = 1120;
-const RESTORE = "restore";
 
-function woundKey(location: HitLocationItem, wound: number | typeof RESTORE): string {
+function woundKey(location: HitLocationItem, wound: number): string {
   return `${location.id}:${wound}`;
 }
 
 function parseWoundKey(
   actor: RqgActor,
   key: string | undefined,
-): { location: HitLocationItem; wound: number | undefined } | undefined {
+): { location: HitLocationItem; wound: number } | undefined {
   const [locationId, wound] = (key ?? "").split(":");
   const location = actor.items.get(locationId ?? "");
   if (!isDocumentSubType<HitLocationItem>(location, ItemTypeEnum.HitLocation)) {
     return undefined;
   }
-  return { location, wound: wound === RESTORE ? undefined : Number(wound) };
+  return { location, wound: Number(wound) };
 }
 
 function healableLocations(actor: RqgActor, includeSevered: boolean): HitLocationItem[] {
@@ -89,7 +91,7 @@ function largestWoundKey(
       }
     });
   }
-  return best?.key ?? (locations[0] ? woundKey(locations[0], RESTORE) : undefined);
+  return best?.key;
 }
 
 async function renderHealDialogContent(
@@ -99,7 +101,7 @@ async function renderHealDialogContent(
   options: {
     points: number;
     selectedKey: string | undefined;
-    includeSevered: boolean;
+    offerReattach: boolean;
     healFeedback?: string;
   },
 ): Promise<string> {
@@ -114,17 +116,17 @@ async function renderHealDialogContent(
     maxHeal: Math.max(1, ...allWounds),
     points: options.points,
     selectedKey: options.selectedKey,
+    // The sheet leaves reattaching to the user, a spell that can reattach suggests it
+    reattachChecked: mode !== "free",
     healFeedback: options.healFeedback ?? "",
     locations: locations.map((location) => ({
       name: location.name,
       hpValue: location.system.hitPoints.value,
       hpMax: location.system.hitPoints.max,
       severed: location.system.hitLocationHealthState === "severed",
-      restoreKey:
-        options.includeSevered &&
-        !location.system.wounds.length &&
-        location.system.hitLocationHealthState === "severed"
-          ? woundKey(location, RESTORE)
+      reattachName:
+        options.offerReattach && location.system.hitLocationHealthState === "severed"
+          ? `reattach-${location.id}`
           : undefined,
       wounds: location.system.wounds.map((value, index) => ({
         key: woundKey(location, index),
@@ -143,10 +145,10 @@ async function renderHealDialogContent(
 export async function chooseWounds(
   actor: RqgActor,
   options: ChooseWoundsOptions,
-): Promise<WoundChoice[] | undefined> {
+): Promise<ChosenHealing | undefined> {
   assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
-  const includeSevered = !!options.includeSevered;
-  const locations = healableLocations(actor, includeSevered);
+  const offerReattach = !!options.offerReattach;
+  const locations = healableLocations(actor, offerReattach);
   if (!locations.length) {
     return undefined;
   }
@@ -154,7 +156,7 @@ export async function chooseWounds(
   const content = await renderHealDialogContent(dialogId, options.mode, locations, {
     points: options.points,
     selectedKey: largestWoundKey(locations),
-    includeSevered,
+    offerReattach,
   });
 
   const result = await foundry.applications.api.DialogV2.wait({
@@ -176,7 +178,7 @@ export async function chooseWounds(
         icon: "fas fa-heart-pulse",
         default: true,
         callback: (_event, button) =>
-          button.form ? readChosenWounds(actor, button.form, options) : undefined,
+          button.form ? readChosenHealing(actor, button.form, options) : undefined,
       },
       {
         action: "cancel",
@@ -186,7 +188,15 @@ export async function chooseWounds(
     ],
     rejectClose: false,
   });
-  return Array.isArray(result) ? (result as WoundChoice[]) : undefined;
+  return result && typeof result === "object" ? (result as ChosenHealing) : undefined;
+}
+
+function readChosenHealing(
+  actor: RqgActor,
+  form: HTMLFormElement,
+  options: ChooseWoundsOptions,
+): ChosenHealing {
+  return { wounds: readChosenWounds(actor, form, options), reattach: readReattach(actor, form) };
 }
 
 function readChosenWounds(
@@ -207,6 +217,15 @@ function readChosenWounds(
     const chosen = parseWoundKey(actor, input.name.slice("points-".length));
     const points = Math.max(0, Math.floor(Number(input.value) || 0));
     return chosen && points ? [{ ...chosen, points }] : [];
+  });
+}
+
+function readReattach(actor: RqgActor, form: HTMLFormElement): HitLocationItem[] {
+  return Array.from(
+    form.querySelectorAll<HTMLInputElement>('input[name^="reattach-"]:checked'),
+  ).flatMap((input) => {
+    const location = actor.items.get(input.name.slice("reattach-".length));
+    return isDocumentSubType<HitLocationItem>(location, ItemTypeEnum.HitLocation) ? [location] : [];
   });
 }
 
@@ -287,10 +306,10 @@ export async function showHitLocationHealWoundDialog(
   const apps = actor.apps as Record<string, unknown>;
 
   const renderContent = () =>
-    renderHealDialogContent(appId, "free", healableLocations(actor, false), {
+    renderHealDialogContent(appId, "free", healableLocations(actor, true), {
       points: healPoints,
       selectedKey,
-      includeSevered: false,
+      offerReattach: true,
       healFeedback,
     });
 
@@ -335,7 +354,8 @@ export async function showHitLocationHealWoundDialog(
 
             // Avoid an automatic rerender while the animation runs; rerendered below
             delete apps[appId];
-            const result = await applyHealing(actor, healAll, chosen, healPoints);
+            const reattach = readReattach(actor, form);
+            const result = await applyHealing(actor, healAll, chosen, healPoints, reattach);
             await animateHealWoundTransition(form, result);
 
             if (healAll || !result.hasRemainingWounds) {
@@ -378,14 +398,23 @@ export async function showHitLocationHealWoundDialog(
 async function applyHealing(
   actor: RqgActor,
   healAll: boolean,
-  chosen: { location: HitLocationItem; wound: number | undefined } | undefined,
+  chosen: { location: HitLocationItem; wound: number } | undefined,
   points: number,
+  reattach: HitLocationItem[],
 ): Promise<HealSubmitResult> {
+  const restoreSevered = (location: HitLocationItem) => reattach.includes(location);
+  const reattachOthers = async (healed: HitLocationItem[]) => {
+    for (const location of reattach.filter((location) => !healed.includes(location))) {
+      await actor.heal({ location, points: 0, restoreSevered: true });
+    }
+  };
+
   if (healAll) {
     const wounded = healableLocations(actor, false);
     for (const location of wounded) {
-      await actor.heal({ location, points: "all" });
+      await actor.heal({ location, points: "all", restoreSevered: restoreSevered(location) });
     }
+    await reattachOthers(wounded);
     return {
       hasRemainingWounds: false,
       healAllWounds: true,
@@ -394,7 +423,8 @@ async function applyHealing(
     };
   }
 
-  if (!chosen || chosen.wound === undefined) {
+  if (!chosen) {
+    await reattachOthers([]);
     return {
       hasRemainingWounds: healableLocations(actor, false).length > 0,
       healAllWounds: false,
@@ -404,7 +434,13 @@ async function applyHealing(
   }
 
   const before = chosen.location.system.wounds.length;
-  await actor.heal({ location: chosen.location, points, wound: chosen.wound });
+  await actor.heal({
+    location: chosen.location,
+    points,
+    wound: chosen.wound,
+    restoreSevered: restoreSevered(chosen.location),
+  });
+  await reattachOthers([chosen.location]);
   const woundRemoved = chosen.location.system.wounds.length < before;
   return {
     hasRemainingWounds: healableLocations(actor, false).length > 0,
