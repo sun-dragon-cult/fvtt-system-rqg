@@ -3,6 +3,7 @@ import {
   DEFAULT_RQID_BATCH_ITEM_TYPES,
   RqidBatchEditor,
 } from "../../applications/rqid-batch-editor/rqid-batch-editor";
+import { chooseWounds } from "../../items/hit-location-item/hit-location-heal-wound-dialog";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
@@ -59,6 +60,9 @@ export function createRqgApi() {
       setRqid: Rqid.setRqid.bind(Rqid),
       setDefaultRqid: Rqid.setDefaultRqid.bind(Rqid),
       renderRqidDocument: Rqid.renderRqidDocument.bind(Rqid),
+    },
+    dialogs: {
+      chooseWounds,
     },
     spellEffects: {
       list: listSpellEffects,

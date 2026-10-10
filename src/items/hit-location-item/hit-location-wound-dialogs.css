@@ -171,6 +171,97 @@
         width: 100%;
       }
 
+      & .heal-locations {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        max-height: 60vh;
+        overflow-y: auto;
+      }
+
+      & .heal-location {
+        margin: 0;
+        padding: 0.2rem 0.5rem 0.45rem;
+
+        & legend {
+          padding: 0 0.25rem;
+          font-size: var(--font-size-13);
+          font-weight: 600;
+        }
+      }
+
+      & .wound-dialog-split-wound {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-basis: 100%;
+      }
+
+      & .heal-dots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+      }
+
+      & .heal-dot {
+        position: relative;
+        inline-size: 1rem;
+        block-size: 1rem;
+        border: 2px solid var(--color-level-success, #1a7f37);
+        border-radius: 50%;
+        cursor: pointer;
+        transition:
+          background-color 120ms ease,
+          opacity 120ms ease;
+
+        & input {
+          position: absolute;
+          inset: 0;
+          margin: 0;
+          opacity: 0;
+          cursor: pointer;
+        }
+
+        &:has(input:checked),
+        &:has(~ .heal-dot input:checked) {
+          background-color: var(--color-level-success, #1a7f37);
+        }
+
+        &:has(input:disabled) {
+          opacity: 0.3;
+          cursor: not-allowed;
+
+          & input {
+            cursor: not-allowed;
+          }
+        }
+
+        &:has(input:focus-visible) {
+          outline: 2px solid var(--color-border-highlight);
+          outline-offset: 1px;
+        }
+      }
+
+      & .heal-reattach {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+        margin: 0;
+        font-size: var(--font-size-13);
+        cursor: pointer;
+        line-height: 1;
+
+        & input[type="checkbox"] {
+          margin: 0;
+          vertical-align: middle;
+        }
+      }
+
+      & .heal-budget {
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-13);
+      }
+
       & .heal-feedback {
         min-height: 1.1rem;
         margin-top: 0.15rem;
@@ -267,6 +358,7 @@
 
         display: flex;
         flex-wrap: wrap;
+        align-items: center;
         gap: var(--wound-gap);
         contain: layout paint;
       }
@@ -292,7 +384,7 @@
           outline-color 240ms ease;
       }
 
-      & .wound-dialog-wound-option:has(input[type="radio"]:checked) {
+      & .wound-dialog-wound-option:has(input[name="wound"]:checked) {
         transform: translateY(-1px);
       }
 
@@ -339,7 +431,9 @@
           transform 140ms ease;
       }
 
-      & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-burst {
+      & .wound-dialog-wound-option:has(input[name="wound"]:checked) .wound-dialog-wound-burst,
+      & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-burst,
+      & .is-heal-all .wound-dialog-wound-burst {
         color: var(--checkbox-checked-color, var(--color-border-highlight-alt));
         opacity: 1;
         filter: drop-shadow(
@@ -364,7 +458,9 @@
         pointer-events: none;
       }
 
-      & .wound-dialog-wound-option:has(input[type="radio"]:checked) .wound-dialog-wound-value {
+      & .wound-dialog-wound-option:has(input[name="wound"]:checked) .wound-dialog-wound-value,
+      & .wound-dialog-split-wound.is-chosen .wound-dialog-wound-value,
+      & .is-heal-all .wound-dialog-wound-value {
         color: #191813 !important;
         text-shadow: 0 0 1px color-mix(in srgb, white 25%, transparent);
       }

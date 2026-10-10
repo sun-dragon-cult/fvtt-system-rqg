@@ -28,6 +28,9 @@ describe("game.system.api", () => {
           "Special": 1,
           "Success": 2,
         },
+        "dialogs": {
+          "chooseWounds": "function",
+        },
         "migration": {
           "applyWorldMigrations": "function",
           "openDataModelRepairDialog": "function",

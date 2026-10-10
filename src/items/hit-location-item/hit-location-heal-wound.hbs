@@ -1,43 +1,70 @@
 <div class="wound-dialog heal-wound-dialog">
-  <div class="heal-mode-segmented" role="radiogroup" aria-label="{{localize "RQG.Item.HitLocation.HealWound.HealModeLabel"}}">
-    <input
-      type="radio"
-      id="heal-mode-single-{{hitLocation.id}}"
-      name="healMode"
-      value="single"
-      checked
-    />
-    <label for="heal-mode-single-{{hitLocation.id}}">{{localize "RQG.Item.HitLocation.HealWound.HealModeSingle"}}</label>
-    <input
-      type="radio"
-      id="heal-mode-all-{{hitLocation.id}}"
-      name="healMode"
-      value="all"
-    />
-    <label for="heal-mode-all-{{hitLocation.id}}">{{localize "RQG.Item.HitLocation.HealWound.HealModeAll"}}</label>
-  </div>
-
-  <div id="healPointsSection" class="heal-points-section">
-    <label class="wound-dialog-label">
-      {{localize "RQG.Item.HitLocation.HealWound.HitPointsToHeal"}}
-    </label>
-    <div class="form-fields">
-      <range-picker name="heal" value={{heal}} min="1" max="7" step="1"></range-picker>
+  {{#if free}}
+    <div class="heal-mode-segmented" role="radiogroup" aria-label="{{localize "RQG.Item.HitLocation.HealWound.HealModeLabel"}}">
+      <input type="radio" id="heal-mode-single-{{dialogId}}" name="healMode" value="single" checked />
+      <label for="heal-mode-single-{{dialogId}}">{{localize "RQG.Item.HitLocation.HealWound.HealModeSingle"}}</label>
+      <input type="radio" id="heal-mode-all-{{dialogId}}" name="healMode" value="all" />
+      <label for="heal-mode-all-{{dialogId}}">{{localize "RQG.Item.HitLocation.HealWound.HealModeAll"}}</label>
     </div>
-  </div>
 
-  <label class="wound-dialog-label" id="healWoundOptionsLabel">
-    {{localize "RQG.Item.HitLocation.HealWound.SelectWoundToHeal" hitLocationName=hitLocation.name}}
-  </label>
-  <div class="woundlist wound-dialog-wounds" id="healWoundOptions">
-    {{#each hitLocation.system.wounds}}
-      <label class="wound-dialog-wound-option">
-        <input type="radio" name="wound" value="{{@index}}" {{checked (eq @index ../selectedWoundIndex)}} />
-        <i class="fas fa-burst wound-dialog-wound-burst" aria-hidden="true"></i>
-        <span class="wound-dialog-wound-value">{{this}}</span>
+    <div id="healPointsSection" class="heal-points-section">
+      <label class="wound-dialog-label">
+        {{localize "RQG.Item.HitLocation.HealWound.HitPointsToHeal"}}
       </label>
+      <div class="form-fields">
+        <range-picker name="heal" value={{heal}} min="1" max="{{maxHeal}}" step="1"></range-picker>
+      </div>
+    </div>
+  {{else}}
+    <div class="wound-dialog-label">{{localize "RQG.Item.HitLocation.HealWound.PointsToHeal" points=points}}</div>
+  {{/if}}
+
+  <div class="heal-locations" id="healWoundOptions">
+    {{#each locations}}
+      <fieldset class="heal-location">
+        <legend>{{localize "RQG.Item.HitLocation.HealWound.LocationHitPoints" hitLocationName=name value=hpValue max=hpMax}}{{#if severed}} – {{localize "RQG.Item.HitLocation.HealthStatusEnum.severed"}}{{/if}}</legend>
+        <div class="woundlist wound-dialog-wounds">
+          {{#each wounds}}
+            {{#if @root.split}}
+              <div class="wound-dialog-split-wound" role="radiogroup" data-wound-key="{{key}}"
+                   aria-label="{{localize "RQG.Item.HitLocation.HealWound.PointsOnWound" damage=value hitLocationName=../name}}">
+                <label class="wound-dialog-wound-option" data-tooltip="{{localize "RQG.Item.HitLocation.HealWound.ClearWoundHealing"}}">
+                  <input type="radio" name="points-{{key}}" value="0" {{checked (eq preset 0)}}
+                         aria-label="{{localize "RQG.Item.HitLocation.HealWound.ClearWoundHealing"}}" />
+                  <i class="fas fa-burst wound-dialog-wound-burst" aria-hidden="true"></i>
+                  <span class="wound-dialog-wound-value">{{value}}</span>
+                </label>
+                <div class="heal-dots">
+                  {{#each dots}}
+                    <label class="heal-dot">
+                      <input type="radio" name="points-{{../key}}" value="{{this}}" {{checked (eq this ../preset)}}
+                             aria-label="{{this}}" />
+                    </label>
+                  {{/each}}
+                </div>
+              </div>
+            {{else}}
+              <label class="wound-dialog-wound-option" data-wound-key="{{key}}"
+                     data-tooltip="{{localize "RQG.Item.HitLocation.HealWound.PointsOnWound" damage=value hitLocationName=../name}}">
+                <input type="radio" name="wound" value="{{key}}" {{checked (eq key @root.selectedKey)}} />
+                <i class="fas fa-burst wound-dialog-wound-burst" aria-hidden="true"></i>
+                <span class="wound-dialog-wound-value">{{value}}</span>
+              </label>
+            {{/if}}
+          {{/each}}
+          {{#if reattachName}}
+            <label class="heal-reattach">
+              <input type="checkbox" name="{{reattachName}}" {{checked @root.reattachChecked}} />
+              {{localize "RQG.Item.HitLocation.HealWound.Reattach"}}
+            </label>
+          {{/if}}
+        </div>
+      </fieldset>
     {{/each}}
   </div>
 
+  {{#if split}}
+    <div class="heal-budget" data-heal-budget></div>
+  {{/if}}
   <div class="heal-feedback" aria-live="polite">{{healFeedback}}</div>
 </div>
