@@ -129,7 +129,10 @@ test("add and heal wound dialogs", async ({ page, baseURL }) => {
         const actor = (game as any).actors.get(actorId);
         const chest = actor.items.get(chestId);
         const hp = actor.system.attributes.hitPoints;
-        return { wounds: [...chest.system.wounds], hpLost: hp.max - hp.value };
+        const otherWounds = actor.items
+          .filter((i: any) => i.type === "hitLocation" && i.id !== chestId)
+          .flatMap((i: any) => i.system.wounds);
+        return { wounds: [...chest.system.wounds], otherWounds, hpLost: hp.max - hp.value };
       },
       { actorId, chestId },
     );
@@ -145,17 +148,32 @@ test("add and heal wound dialogs", async ({ page, baseURL }) => {
     await addDialog.locator("#inflictDamagePoints").fill("4");
     await addDialog.locator('input[name="subtractAP"]').uncheck();
     await addDialog.locator('button[data-action="submit"]').click();
-    await expect.poll(chestState).toEqual({ wounds: [4], hpLost: 4 });
+    await expect.poll(chestState).toEqual({ wounds: [4], otherWounds: [], hpLost: 4 });
+
+    // A wound elsewhere: the heal dialog lists every wounded location
+    await page.evaluate(async (actorId) => {
+      const actor = (game as any).actors.get(actorId);
+      const leg = actor.items
+        .filter((i: any) => i.type === "hitLocation" && i.system.hitLocationType === "limb")
+        .sort((a: any, b: any) => a.system.dieFrom - b.system.dieFrom)[0];
+      await actor.damage({ amount: 5, location: leg, ignoreArmor: true });
+    }, actorId);
+    await expect.poll(chestState).toEqual({ wounds: [4], otherWounds: [5], hpLost: 9 });
 
     await chestRow.locator('[data-action="healWound"]').first().click();
     const healDialog = page.locator(".application.heal-wound");
+    await expect(healDialog.locator("fieldset.heal-location")).toHaveCount(2);
+    // The clicked location's wound starts selected, not the larger one on the leg
+    await expect(healDialog.locator(`input[name="wound"][value="${chestId}:0"]`)).toBeChecked();
     await healDialog.locator('range-picker[name="heal"] input[type="number"]').fill("3");
     await healDialog.locator('button[data-action="submit"]').click();
-    await expect.poll(chestState).toEqual({ wounds: [1], hpLost: 1 });
+    await expect.poll(chestState).toEqual({ wounds: [1], otherWounds: [5], hpLost: 6 });
+    // The dialog redraws once the heal animation is done
+    await expect(healDialog.locator(".heal-feedback")).not.toBeEmpty();
 
     await healDialog.locator('label[for^="heal-mode-all-"]').click();
     await healDialog.locator('button[data-action="submit"]').click();
-    await expect.poll(chestState).toEqual({ wounds: [], hpLost: 0 });
+    await expect.poll(chestState).toEqual({ wounds: [], otherWounds: [], hpLost: 0 });
     await expect(healDialog).toHaveCount(0);
   } finally {
     await page.evaluate(async (actorId) => {
