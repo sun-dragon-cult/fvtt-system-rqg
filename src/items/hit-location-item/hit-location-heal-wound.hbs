@@ -38,7 +38,7 @@
             {{else}}
               <label class="wound-dialog-wound-option"
                      data-tooltip="{{localize "RQG.Item.HitLocation.HealWound.PointsOnWound" damage=value hitLocationName=../name}}">
-                <input type="radio" name="wound" value="{{key}}" {{checked (eq key @root.selectedKey)}} {{disabled @root.healAll}} />
+                <input type="radio" name="wound" value="{{key}}" data-damage="{{value}}" {{checked (eq key @root.selectedKey)}} {{disabled @root.healAll}} />
                 <i class="fas fa-burst wound-dialog-wound-burst" aria-hidden="true"></i>
                 <span class="wound-dialog-wound-value">{{value}}</span>
               </label>
@@ -55,8 +55,6 @@
     {{/each}}
   </div>
 
-  {{#if dots}}
-    <div class="heal-budget" data-heal-budget></div>
-  {{/if}}
+  <div class="heal-budget" data-heal-budget></div>
   <div class="heal-feedback" aria-live="polite">{{healFeedback}}</div>
 </div>

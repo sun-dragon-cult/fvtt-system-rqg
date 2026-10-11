@@ -256,6 +256,7 @@ async function chooseWoundsOnce(
       } else if (options.mode === "location") {
         initializeLocationBudget(root, options.points);
       } else {
+        initializeWastedPoints(root, () => options.points);
         keepOneReattachTicked(root);
       }
     },
@@ -336,6 +337,31 @@ function readChosenWounds(
     const points = Number(value);
     return chosen && points > 0 ? [{ ...chosen, points }] : [];
   });
+}
+
+/**
+ * One wound gets all the points (single mode, and the sheet's First Aid style heal): say how many
+ * of them it can't take.
+ */
+function initializeWastedPoints(root: HTMLElement, points: () => number): void {
+  const budget = root.querySelector<HTMLElement>("[data-heal-budget]");
+  if (!budget) {
+    return;
+  }
+  const update = () => {
+    const wound = root.querySelector<HTMLInputElement>('input[name="wound"]:checked:enabled');
+    const wasted = wound ? points() - Number(wound.dataset["damage"]) : 0;
+    budget.textContent =
+      wasted > 0
+        ? localize("RQG.Item.HitLocation.HealWound.PointsWasted", {
+            wasted: String(wasted),
+            points: String(points()),
+          })
+        : "";
+  };
+  root.addEventListener("change", update);
+  root.addEventListener("input", update);
+  update();
 }
 
 /** What the dot budgets work on: each wound's row and its dot picker. */
@@ -607,6 +633,21 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
   ): void {
     delete (this.actor.apps as Record<string, unknown>)[this.id];
     super._onClose(...args);
+  }
+
+  protected override async _onRender(
+    context: DeepPartial<HealDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
+    await super._onRender(context, options);
+    // The content part is replaced on every render, so its listeners don't pile up
+    const content = this.element.querySelector<HTMLElement>(".heal-wound-dialog");
+    const picker = content?.querySelector<HTMLElement & { value: unknown }>(
+      'range-picker[name="heal"]',
+    );
+    if (content && picker) {
+      initializeWastedPoints(content, () => Number(picker.value) || 0);
+    }
   }
 
   /** The heal animation runs on the old wounds; rendered when it is done. */
