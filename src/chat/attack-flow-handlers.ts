@@ -160,7 +160,7 @@ export async function handleApplyActorDamage(clickedButton: HTMLButtonElement): 
   await damagedActor.damage({
     amount: defenderHitLocationDamage,
     location: damagedActor.getHitLocationByRoll(hitLocationRoll.total),
-    ignoreArmor: ignoreDefenderAp,
+    ...(ignoreDefenderAp ? { armorPoints: 0 } : {}),
     damageType: attackChatMessage.system.attackCombatManeuver.damageType as DamageType,
     reducedByParry: wasDamagedReducedByParry,
     attackSuccessLevel: attackRoll.successLevel,

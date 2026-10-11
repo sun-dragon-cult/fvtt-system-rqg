@@ -287,6 +287,7 @@ describe("HealingCalculations", () => {
         99,
         mockLeftLeg as unknown as RqgItem,
         mockActor as unknown as RqgActor,
+        false,
       ),
     ).toThrow();
   });
@@ -301,6 +302,7 @@ describe("HealingCalculations", () => {
       undefined,
       mockLeftLeg as unknown as RqgItem,
       mockActor as unknown as RqgActor,
+      false,
     );
 
     expect(hitLocationUpdates.system).toMatchObject({ wounds: [1, 1] });

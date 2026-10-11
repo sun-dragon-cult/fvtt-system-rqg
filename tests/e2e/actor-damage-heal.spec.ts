@@ -28,7 +28,7 @@ test("actor damage and heal methods", async ({ page, baseURL }) => {
       const chest = location("chest");
       const hpStart = hp();
 
-      out.ignoreArmor = await actor.damage({ amount: 3, location: chest, ignoreArmor: true });
+      out.noArmor = await actor.damage({ amount: 3, location: chest, armorPoints: 0 });
       out.afterIgnoreArmor = { wounds: [...chest.system.wounds], hpLost: hpStart - hp() };
 
       const ap = chest.system.armorPoints;
@@ -43,20 +43,20 @@ test("actor damage and heal methods", async ({ page, baseURL }) => {
       out.hpRestored = hp() === hpStart;
 
       await Promise.all([
-        actor.damage({ amount: 1, location: chest, ignoreArmor: true }),
-        actor.damage({ amount: 1, location: chest, ignoreArmor: true }),
+        actor.damage({ amount: 1, location: chest, armorPoints: 0 }),
+        actor.damage({ amount: 1, location: chest, armorPoints: 0 }),
       ]);
       out.parallel = { wounds: [...chest.system.wounds], hpLost: hpStart - hp() };
       await actor.heal({ location: chest, points: "all" });
 
-      const random = await actor.damage({ amount: 1, location: "random", ignoreArmor: true });
+      const random = await actor.damage({ amount: 1, location: "random", armorPoints: 0 });
       out.randomOnActor = random.location.parent === actor;
       await actor.heal({ location: random.location, points: "all" });
 
       const leg = actor.items.find(
         (i: any) => i.type === "hitLocation" && i.system.hitLocationType === "limb",
       );
-      await actor.damage({ amount: 99, location: leg, ignoreArmor: true });
+      await actor.damage({ amount: 99, location: leg, armorPoints: 0 });
       out.legAfterDamage = leg.system.hitLocationHealthState;
       await actor.heal({ location: leg, points: "all" });
       out.legAfterHealAll = leg.system.hitLocationHealthState;
@@ -85,7 +85,7 @@ test("actor damage and heal methods", async ({ page, baseURL }) => {
   }, e2eConfig.rqgActorName);
 
   const ap = results.ap as number;
-  expect(results.ignoreArmor).toMatchObject({ damage: 3, absorbed: 0 });
+  expect(results.noArmor).toMatchObject({ damage: 3, absorbed: 0 });
   expect(results.afterIgnoreArmor).toEqual({ wounds: [3], hpLost: 3 });
   expect(results.withArmor).toMatchObject({ damage: 2, absorbed: ap });
   expect(results.afterWithArmor).toEqual({ wounds: [3, 2], hpLost: 5 });

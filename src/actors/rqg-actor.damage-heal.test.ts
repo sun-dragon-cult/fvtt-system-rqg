@@ -72,12 +72,12 @@ describe("RqgActor damage, heal and rollHitLocation (#1171)", () => {
       expect(ChatMessage.create).toHaveBeenCalledOnce();
     });
 
-    it("ignores armor with ignoreArmor", async () => {
+    it("subtracts the given armorPoints instead of the location's", async () => {
       const chest = createHitLocationItem("chest", { armorPoints: 4 });
       const actor = createCharacterActor([chest]);
       const addWound = vi.spyOn(DamageCalculations, "addWound").mockReturnValue(noDamageEffects);
 
-      const result = await actor.damage({ amount: 3, location: chest, ignoreArmor: true });
+      const result = await actor.damage({ amount: 3, location: chest, armorPoints: 0 });
 
       expect(result.damage).toBe(3);
       expect(addWound).toHaveBeenCalledWith(3, true, chest, actor, expect.anything());

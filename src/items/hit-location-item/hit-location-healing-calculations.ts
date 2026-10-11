@@ -26,21 +26,25 @@ export interface HealingEffects {
   usefulLegs: DeepPartial<Item.Source>[];
 }
 
+export function sumWounds(wounds: readonly number[]): number {
+  return wounds.reduce((total, wound) => total + wound, 0);
+}
+
 /**
  * Calculate the effects to apply to hitLocations and actor from healing previous damage.
  */
 export class HealingCalculations {
   /**
    * Heal `healPoints` on one wound, or with no `healWoundIndex` on the location's wounds from the
-   * largest down. `restoreSevered` un-severs the location; by default a single heal of 6+ points
-   * does (Core p.148). Natural healing (healLocationNaturally) never does.
+   * largest down. `restoreSevered` un-severs the location. Natural healing
+   * (healLocationNaturally) never does.
    */
   static healWound(
     healPoints: number,
     healWoundIndex: number | undefined,
     hitLocation: RqgItem,
     actor: RqgActor,
-    restoreSevered: boolean = healPoints >= 6,
+    restoreSevered: boolean,
   ): HealingEffects {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
@@ -160,7 +164,7 @@ export class HealingCalculations {
     // Remove healed-out wounds so arrays do not accumulate 0 entries.
     const prunedWounds = wounds.filter((w) => w > 0);
 
-    const woundsSumAfter = prunedWounds.reduce((acc: number, w: number) => acc + w, 0);
+    const woundsSumAfter = sumWounds(prunedWounds);
     if (woundsSumAfter === 0) {
       actorHealthImpact = "healthy";
       if (hitLocationHealthState !== "severed") {
@@ -191,7 +195,7 @@ export class HealingCalculations {
           continue;
         }
         const limbHpMax = limb.system.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
-        const limbDamage = limb.system.wounds.reduce((acc: number, w: number) => acc + w, 0);
+        const limbDamage = sumWounds(limb.system.wounds);
         if (limbDamage >= limbHpMax) {
           continue; // Limb is independently useless from its own damage
         }
