@@ -13,12 +13,12 @@ _2026-10-11, branch `feat/1171-heal-wounds-dialog`_
 
 The work is in four open PRs, to be merged in this order:
 
-| PR | Branch | Contents |
-| --- | --- | --- |
-| [#1180](https://github.com/sun-dragon-cult/fvtt-system-rqg/pull/1180) | `feat/1171-damage-heal` (base `main`) | `actor.damage` / `actor.heal`, `distributeHealing`, removing `applyDamage` / `applyWound` / `healWound` |
-| [#1181](https://github.com/sun-dragon-cult/fvtt-system-rqg/pull/1181) | `feat/1171-heal-wounds-dialog` (base #1180) | The heal dialog for every wounded location, the `chooseWounds` API dialog, the `rqg-dot-picker` element |
-| wiki [#38](https://github.com/sun-dragon-cult/fvtt-module-wiki-rqg-private/pull/38) | `feat/1171-heal-behaviours` | Heal, Heal Wound and Heal Body spell behaviours, in `module/scripts/spells/heal.mjs` |
-| docs [#21](https://github.com/sun-dragon-cult/sun-dragon-cult.github.io/pull/21) | `docs/rqg-6.2.0-release-notes` | 6.2.0 release notes: the "Healing" section and "Changes that can break macros" |
+| PR                                                                                  | Branch                                      | Contents                                                                                                |
+| ----------------------------------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| [#1180](https://github.com/sun-dragon-cult/fvtt-system-rqg/pull/1180)               | `feat/1171-damage-heal` (base `main`)       | `actor.damage` / `actor.heal`, `distributeHealing`, removing `applyDamage` / `applyWound` / `healWound` |
+| [#1181](https://github.com/sun-dragon-cult/fvtt-system-rqg/pull/1181)               | `feat/1171-heal-wounds-dialog` (base #1180) | The heal dialog for every wounded location, the `chooseWounds` API dialog, the `rqg-dot-picker` element |
+| wiki [#38](https://github.com/sun-dragon-cult/fvtt-module-wiki-rqg-private/pull/38) | `feat/1171-heal-behaviours`                 | Heal, Heal Wound and Heal Body spell behaviours, in `module/scripts/spells/heal.mjs`                    |
+| docs [#21](https://github.com/sun-dragon-cult/sun-dragon-cult.github.io/pull/21)    | `docs/rqg-6.2.0-release-notes`              | 6.2.0 release notes: the "Healing" section and "Changes that can break macros"                          |
 
 ## Decisions and why
 
@@ -33,14 +33,15 @@ The work is in four open PRs, to be merged in this order:
   - `heal()` skips the actor update when nothing was healed.
 - **Rules for each kind of healing:**
 
-  | Healing | Mode | Rule |
-  | --- | --- | --- |
-  | Heal (spirit magic, RBM p.115) | `location` | Points go to one location and spill over its wounds. |
-  | Heal Wound (rune magic, RBM p.56) | `split` | Points equal MP spent and can be split over wounds anywhere. |
-  | Heal Body | — | Heals everything and reattaches. |
-  | First Aid (Core p.177) and the sheet dialog | single wound | Never more than that one wound. |
+  | Healing                                     | Mode         | Rule                                                         |
+  | ------------------------------------------- | ------------ | ------------------------------------------------------------ |
+  | Heal (spirit magic, RBM p.115)              | `location`   | Points go to one location and spill over its wounds.         |
+  | Heal Wound (rune magic, RBM p.56)           | `split`      | Points equal MP spent and can be split over wounds anywhere. |
+  | Heal Body                                   | —            | Heals everything and reattaches.                             |
+  | First Aid (Core p.177) and the sheet dialog | single wound | Never more than that one wound.                              |
 
   "6 points reattaches a severed limb" is offered as a Reattach checkbox, one per cast.
+
 - **The sheet's heal dialog is an `ApplicationV2` class (`HealWoundsApp`), not `DialogV2`.**
   - It stays open over several heals, which `DialogV2.wait` (a one-shot prompt) fought.
   - It registers on `actor.apps` in `_onFirstRender` and unregisters in `_onClose`, exactly as `DocumentSheetV2` does.
@@ -107,7 +108,7 @@ The work is in four open PRs, to be merged in this order:
   - Use temporary actors and delete them, and their chat messages filtered by actor id, in `finally`. Never touch the user's own documents or cards.
 - **DialogV2 traps (Foundry v14):**
   - String `content` goes through `cleanHTML` and its fixed tag allowlist, which silently drops system custom elements like `rqg-dot-picker`. Pass an `HTMLDivElement` instead (`dialogContent()`).
-  - The `render` callback runs *after* DialogV2 rebuilds its first content.
+  - The `render` callback runs _after_ DialogV2 rebuilds its first content.
   - `DialogV2.wait` resolves at the first submit even with `closeOnSubmit: false`.
   - `dialog.options` is frozen.
 - **ApplicationV2:**
@@ -115,7 +116,7 @@ The work is in four open PRs, to be merged in this order:
   - `this.form` returns the form when `tag: "form"`.
   - `templates/generic/form-footer.hbs` renders `autofocus` from a button's `default`, which isn't in fvtt-types' `FormFooterButton`.
   - Removing `contentClasses: ["standard-form"]` breaks the footer layout.
-  - A system CSS rule `& form` doesn't match an app whose root element *is* the form; add `&:is(form) > .window-content`.
+  - A system CSS rule `& form` doesn't match an app whose root element _is_ the form; add `&:is(form) > .window-content`.
 - **Typecheck:**
   - `tsc` needs `NODE_OPTIONS=--max-old-space-size=8192`.
   - Running it alongside Foundry, Vite and e2e may be what crashed WSL once. Run heavy jobs one at a time.
