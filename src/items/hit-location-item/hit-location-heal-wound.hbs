@@ -7,26 +7,26 @@
       <label for="heal-mode-all-{{dialogId}}">{{localize "RQG.Item.HitLocation.HealWound.HealModeAll"}}</label>
     </div>
 
-    <div id="healPointsSection" class="heal-points-section">
+    <div id="healPointsSection" class="heal-points-section" {{#if healAll}}hidden{{/if}}>
       <label class="wound-dialog-label">
         {{localize "RQG.Item.HitLocation.HealWound.HitPointsToHeal"}}
       </label>
       <div class="form-fields">
-        <range-picker name="heal" value={{heal}} min="1" max="{{maxHeal}}" step="1"></range-picker>
+        <range-picker name="heal" value="{{points}}" min="1" max="{{maxHeal}}" step="1"></range-picker>
       </div>
     </div>
   {{else}}
     <div class="wound-dialog-label">{{localize "RQG.Item.HitLocation.HealWound.PointsToHeal" points=points}}</div>
   {{/if}}
 
-  <div class="heal-locations" id="healWoundOptions">
+  <div class="heal-locations{{#if healAll}} is-heal-all{{/if}}" id="healWoundOptions">
     {{#each locations}}
       <fieldset class="heal-location" data-location-id="{{id}}">
         <legend>{{localize "RQG.Item.HitLocation.HealWound.LocationHitPoints" hitLocationName=name value=hpValue max=hpMax}}{{#if severed}} – {{localize "RQG.Item.HitLocation.HealthStatusEnum.severed"}}{{/if}}</legend>
         <div class="woundlist wound-dialog-wounds">
           {{#each wounds}}
             {{#if @root.dots}}
-              <div class="wound-dialog-split-wound" data-wound-key="{{key}}">
+              <div class="wound-dialog-split-wound">
                 <div class="wound-dialog-wound-option" role="button" tabindex="0" data-burst
                      data-tooltip="{{@root.burstLabel}}" aria-label="{{@root.burstLabel}}">
                   <i class="fas fa-burst wound-dialog-wound-burst" aria-hidden="true"></i>
@@ -36,9 +36,9 @@
                                 aria-label="{{localize "RQG.Item.HitLocation.HealWound.PointsOnWound" damage=value hitLocationName=../name}}"></rqg-dot-picker>
               </div>
             {{else}}
-              <label class="wound-dialog-wound-option" data-wound-key="{{key}}"
+              <label class="wound-dialog-wound-option"
                      data-tooltip="{{localize "RQG.Item.HitLocation.HealWound.PointsOnWound" damage=value hitLocationName=../name}}">
-                <input type="radio" name="wound" value="{{key}}" {{checked (eq key @root.selectedKey)}} />
+                <input type="radio" name="wound" value="{{key}}" {{checked (eq key @root.selectedKey)}} {{disabled @root.healAll}} />
                 <i class="fas fa-burst wound-dialog-wound-burst" aria-hidden="true"></i>
                 <span class="wound-dialog-wound-value">{{value}}</span>
               </label>

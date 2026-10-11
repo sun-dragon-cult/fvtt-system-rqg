@@ -163,7 +163,7 @@
     }
 
     &.dialog.heal-wound {
-      & button[data-action="submit"] .fa-heart-pulse {
+      & button[type="submit"] .fa-heart-pulse {
         color: #20802e;
       }
 

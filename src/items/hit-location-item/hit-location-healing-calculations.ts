@@ -87,7 +87,7 @@ export class HealingCalculations {
           )
         : distributeHealing(wounds, healPoints);
     healing.forEach((healed, i) => (wounds[i] = (wounds[i] ?? 0) - healed));
-    const healPointsApplied = healing.reduce((sum, healed) => sum + healed, 0);
+    const healPointsApplied = sumWounds(healing);
 
     return HealingCalculations.applyHealedWounds(
       wounds,
