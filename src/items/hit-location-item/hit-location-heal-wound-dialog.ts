@@ -524,7 +524,6 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
     window: { contentClasses: ["standard-form"], resizable: false },
     position: { width: 350 },
     form: { handler: HealWoundsApp.onSubmit, closeOnSubmit: false },
-    actions: { cancel: HealWoundsApp.onCancel },
   };
 
   static override PARTS = {
@@ -583,7 +582,7 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
         },
         {
           type: "button",
-          action: "cancel",
+          action: "close",
           icon: "fas fa-times",
           label: "RQG.Dialog.Common.btnCancel",
         },
@@ -620,7 +619,9 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
   ): void {
     super._onChangeForm(formConfig, event);
     const wasHealAll = this.healAll;
-    this.readForm(new foundry.applications.ux.FormDataExtended(this.element as HTMLFormElement));
+    if (this.form) {
+      this.readForm(new foundry.applications.ux.FormDataExtended(this.form));
+    }
     if (this.healAll !== wasHealAll) {
       void this.render();
     }
@@ -634,10 +635,6 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
     this.healPoints = Number.isFinite(points) && points > 0 ? points : this.healPoints;
     this.selectedKey = parseWoundKey(this.actor, wound) ? wound : this.selectedKey;
     this.reattachIds = reattachIdsIn(data);
-  }
-
-  private static onCancel(this: HealWoundsApp): void {
-    void this.close();
   }
 
   private static async onSubmit(
