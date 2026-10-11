@@ -42,6 +42,7 @@ export function applyTestHealing(
     healWoundIndex,
     hitLocation,
     actor,
+    healPoints >= 6,
   );
   foundry.utils.mergeObject(hitLocation, healingEffects.hitLocationUpdates);
   foundry.utils.mergeObject(actor, healingEffects.actorUpdates);

@@ -3,7 +3,10 @@ import { ItemTypeEnum, type PhysicalItem } from "@item-model/item-types.ts";
 import { RqgActorSheet } from "./rqg-actor-sheet";
 import { RqgActorSheetV2 } from "./rqg-actor-sheet-v2";
 import { DamageCalculations } from "../items/hit-location-item/hit-location-damage-calculations";
-import { HealingCalculations } from "../items/hit-location-item/hit-location-healing-calculations";
+import {
+  HealingCalculations,
+  sumWounds,
+} from "../items/hit-location-item/hit-location-healing-calculations";
 import {
   assertDocumentSubType,
   getDocumentFromUuid,
@@ -68,7 +71,8 @@ const logger = new RqgLogger("RqgActor");
 export type DamageOptions = {
   amount: number;
   location: HitLocationItem | "random";
-  ignoreArmor?: boolean;
+  /** Armor points to subtract; default the location's own. */
+  armorPoints?: number;
   /** Default true. */
   applyToTotalHp?: boolean;
   damageType?: DamageType;
@@ -99,10 +103,6 @@ export type HealResult = {
   healed: number;
   remainingWounds: number[];
 };
-
-function sumWounds(wounds: readonly number[]): number {
-  return wounds.reduce((acc, w) => acc + w, 0);
-}
 
 type HealthTransitionSnapshot = {
   health: ActorHealthState;
@@ -693,7 +693,7 @@ export class RqgActor extends Actor {
 
   /**
    * Damage one hit location, and the total hit points unless `applyToTotalHp` is false.
-   * Armor points are subtracted unless `ignoreArmor`. A `"random"` location is rolled on this
+   * Armor points are subtracted, the location's own unless `armorPoints` is given. A `"random"` location is rolled on this
    * actor's own hit location table.
    */
   public async damage(options: DamageOptions): Promise<DamageResult> {
@@ -706,7 +706,7 @@ export class RqgActor extends Actor {
     this.assertOwnHitLocation(location);
 
     const amount = Math.max(0, options.amount);
-    const armorPoints = options.ignoreArmor ? 0 : (location.system.armorPoints ?? 0);
+    const armorPoints = Math.max(0, options.armorPoints ?? location.system.armorPoints ?? 0);
     const damage = Math.max(0, amount - armorPoints);
     const result: DamageResult = { location, damage, absorbed: amount - damage };
 
@@ -798,6 +798,7 @@ export class RqgActor extends Actor {
       const woundsBefore = sumWounds(location.system.wounds);
       const points =
         options.points === "all" ? woundsBefore : Math.max(0, Math.floor(options.points));
+      // Core p.148
       const restoreSevered = options.restoreSevered ?? (options.points !== "all" && points >= 6);
       const { hitLocationUpdates, actorUpdates, usefulLegs } = HealingCalculations.healWound(
         points,
@@ -808,7 +809,9 @@ export class RqgActor extends Actor {
       );
 
       await location.update(hitLocationUpdates);
-      await this.update(actorUpdates);
+      if (sumWounds(location.system.wounds) < woundsBefore) {
+        await this.update(actorUpdates);
+      }
       for (const update of usefulLegs) {
         const usefulLeg = update._id ? this.items.get(update._id) : undefined;
         await usefulLeg?.update(update as Item.UpdateData);
