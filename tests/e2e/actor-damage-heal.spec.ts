@@ -138,6 +138,8 @@ test("add and heal wound dialogs", async ({ page, baseURL }) => {
     );
 
   try {
+    // Foundry's main menu can be open after login and would swallow the clicks below
+    await page.evaluate(() => (ui as any).menu?.close?.());
     const sheet = page.locator(`#${sheetId}`);
     const chestRow = sheet.locator(`[data-item-id="${chestId}"]`).filter({
       has: page.locator('[data-action="addWound"]:visible'),

@@ -3,7 +3,9 @@
   .rqg {
     &.dialog.heal-wound,
     &.dialog.add-wound {
-      & form {
+      /* The heal app is itself the form */
+      & form,
+      &:is(form) > .window-content {
         display: flex;
         flex-direction: column;
         gap: 0.55rem;
