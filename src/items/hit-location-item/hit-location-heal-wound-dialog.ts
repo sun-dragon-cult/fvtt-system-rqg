@@ -454,7 +454,10 @@ function initializeLocationBudget(root: HTMLElement, points: number): void {
               wasted: String(wasted),
               points: String(points),
             })
-          : "";
+          : localize("RQG.Item.HitLocation.HealWound.PointsLeft", {
+              left: String(reach - sumWounds(rows.map((row) => pickerOf(row).value))),
+              points: String(points),
+            });
     }
     showChosen();
   };
