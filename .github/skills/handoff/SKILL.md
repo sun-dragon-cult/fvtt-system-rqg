@@ -1,11 +1,11 @@
 ---
 name: handoff
-description: Use when the user asks for a handoff, HANDOFF.md, session summary or "write down where we are" before stopping or switching context - writes HANDOFF.md covering the work, decisions and why, current state, what's broken or unfinished, next steps and codebase lessons, then commits and pushes it.
+description: Use when the user asks for a handoff, HANDOFF.md, session summary or "write down where we are" before stopping or switching context - writes HANDOFF.md covering the work, decisions and why, current state, what's broken or unfinished, next steps and codebase lessons, and publishes it as a secret gist (never committed to the repo).
 ---
 
 # Handoff
 
-Write `HANDOFF.md` at the repository root so a new session, or another person, can pick the work up without the conversation that produced it.
+Write a `HANDOFF.md` so a new session, or another computer, can pick the work up without the conversation that produced it. A handoff is a temporary working note, not part of the codebase: publish it as a secret gist and never commit it to a branch.
 
 ## Gather facts first
 
@@ -35,8 +35,19 @@ Use these sections, in this order. Keep each item to a line or two, and link PRs
 - Exact identifiers in backticks: methods, files, settings, ports, users.
 - Leave out secrets, passwords and private URLs, and the claude.ai session link.
 
-## Commit and push
+## Publish as a secret gist
 
-1. Commit on the current working branch unless the user names another, with a conventional message such as `docs: handoff for #<issue>`. Follow the repo's commit attribution rules (in this repo: no `Claude-Session:` trailer).
-2. Push. The pre-push hook runs typecheck, the i18n audit and the unit tests; don't skip it.
-3. Tell the user that if the branch is a PR, `HANDOFF.md` will land in `main` with the merge unless they delete it first, and offer to remove it then.
+1. Write the file in the session's scratchpad directory, not the repository, so it can't be committed by accident.
+2. Look for an earlier handoff gist for this repo:
+   `gh gist list --limit 50 | grep -i "handoff"`.
+   - If there is one, update it in place, so the link stays the same and gets a new revision: `gh gist edit <id> -f HANDOFF.md <scratchpad>/HANDOFF.md`.
+   - If not, create one: `gh gist create --desc "<repo> handoff: <topic>" <scratchpad>/HANDOFF.md`. `gh` creates secret gists by default; never pass `--public`.
+3. Give the user the gist URL and the command to fetch it on another computer:
+   `gh gist view <id> -f HANDOFF.md > HANDOFF.md` (or just open the URL).
+4. Secret means unlisted, not private: anyone with the link can read it. Leave out secrets, passwords and private URLs.
+
+Uploading may need the user's permission. If the call is refused, leave the file in the scratchpad, give its path, and suggest the user run the `gh gist` command themselves with the `!` prefix.
+
+## Picking up a handoff
+
+At the start of a session, if the user says to continue from a handoff: fetch the gist, read it, then check its "Current state" against `git log` and the PRs before acting on it, since things may have moved on (merges, new commits).
