@@ -1,5 +1,5 @@
 .rqid-editor {
-/* Mirror Foundry input text tokens; update these if Foundry changes its input color mappings. */
+  /* Mirror Foundry input text tokens; update these if Foundry changes its input color mappings. */
   --rqid-editor-input-text-color: var(--color-light-3);
   --rqid-editor-input-focus-text-color: var(--color-light-1);
 }

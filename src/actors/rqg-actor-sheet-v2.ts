@@ -764,9 +764,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         characteristicName as keyof CharacterActor["system"]["characteristics"];
 
       this._bindSingleDoubleClick(el, {
-        onSingle: () => this.actor.characteristicRoll(typedCharacteristicName, this.document.token),
+        onSingle: () =>
+          this.actor.rollCharacteristic(typedCharacteristicName, { token: this.document.token }),
         onDouble: () =>
-          this.actor.characteristicRollImmediate(typedCharacteristicName, this.document.token),
+          this.actor.rollCharacteristic(typedCharacteristicName, {
+            skipDialog: true,
+            token: this.document.token,
+          }),
       });
     });
 
@@ -855,8 +859,8 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     // Reputation roll — single click opens dialog, double click rolls immediately
     this.element.querySelectorAll<HTMLElement>("[data-reputation-roll]").forEach((el) => {
       this._bindSingleDoubleClick(el, {
-        onSingle: () => this.actor.reputationRoll(this.document.token),
-        onDouble: () => this.actor.reputationRollImmediate(this.document.token),
+        onSingle: () => this.actor.rollReputation({ token: this.document.token }),
+        onDouble: () => this.actor.rollReputation({ skipDialog: true, token: this.document.token }),
       });
     });
 
@@ -929,9 +933,13 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         "AbilityChance roll couldn't find skillItem",
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.abilityRoll(this.document.token, { modifiers: weaponEffectModifiers }),
+        onSingle: () => item.roll({ token: this.document.token, modifiers: weaponEffectModifiers }),
         onDouble: () =>
-          item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.document.token),
+          item.roll({
+            skipDialog: true,
+            token: this.document.token,
+            modifiers: weaponEffectModifiers,
+          }),
       });
     });
 

@@ -36,12 +36,12 @@ export async function ability(
   options: RollOptions = {},
 ): Promise<AbilityRoll | undefined> {
   const { item, token } = resolveItemAndActor(ref, options.actor, abilityItemTypes);
-  const rollOptions = { modifiers: options.modifiers, rollMode: options.rollMode };
-  if (options.skipDialog) {
-    return await item.abilityRollImmediate(rollOptions, token);
-  }
-  await item.abilityRoll(token, rollOptions);
-  return undefined;
+  return await item.roll({
+    skipDialog: options.skipDialog,
+    token,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  });
 }
 
 /** Roll a characteristic, by default ×5. Returns the roll when `skipDialog` is set. */
@@ -53,28 +53,24 @@ export async function characteristic(
   if (!(name in actor.system.characteristics)) {
     return logger.throw(`"${name}" is not a characteristic`);
   }
-  if (options.skipDialog) {
-    return await actor.characteristicRollImmediate(name, token, {
-      difficulty: options.difficulty,
-      modifiers: options.modifiers,
-      rollMode: options.rollMode,
-    });
-  }
-  await actor.characteristicRoll(name, token);
-  return undefined;
+  return await actor.rollCharacteristic(name, {
+    skipDialog: options.skipDialog,
+    token,
+    difficulty: options.difficulty,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  });
 }
 
 /** Roll the actor's Reputation. Returns the roll when `skipDialog` is set. */
 export async function reputation(options: RollOptions = {}): Promise<AbilityRoll | undefined> {
   const { actor, token } = resolveActor(options.actor);
-  if (options.skipDialog) {
-    return await actor.reputationRollImmediate(token, {
-      modifiers: options.modifiers,
-      rollMode: options.rollMode,
-    });
-  }
-  await actor.reputationRoll(token);
-  return undefined;
+  return await actor.rollReputation({
+    skipDialog: options.skipDialog,
+    token,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  });
 }
 
 /**

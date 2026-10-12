@@ -44,3 +44,11 @@ export function callRqgHook<K extends keyof RqgHooks>(
 ): void {
   (Hooks.callAll as (hook: string, ...args: unknown[]) => boolean)(hook, ...args);
 }
+
+/** Call one of the system's pre hooks (RqgHooks); false when a listener returned false to cancel. */
+export function callRqgPreHook<K extends keyof RqgHooks>(
+  hook: K,
+  ...args: Parameters<RqgHooks[K]>
+): boolean {
+  return (Hooks.call as (hook: string, ...args: unknown[]) => boolean)(hook, ...args);
+}

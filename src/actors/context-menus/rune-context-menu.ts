@@ -28,7 +28,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
-      await item.abilityRoll(token);
+      await item.roll({ token });
     },
   },
   {
@@ -39,7 +39,7 @@ export const runeMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as RuneItem | undefined;
       assertDocumentSubType<RuneItem>(item, ItemTypeEnum.Rune);
-      await item.abilityRollImmediate({}, token);
+      await item.roll({ skipDialog: true, token });
     },
   },
   {

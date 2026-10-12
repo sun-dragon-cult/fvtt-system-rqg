@@ -19,6 +19,11 @@ import type { RqgItem } from "./items/rqg-item.ts";
 import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
+import type { AbilityItem } from "@item-model/item-types.ts";
+import type { AbilityRoll } from "./rolls/ability-roll/ability-roll.ts";
+import type { AbilityRollOptions } from "./rolls/ability-roll/ability-roll.types.ts";
+import type { CharacteristicRoll } from "./rolls/characteristic-roll/characteristic-roll.ts";
+import type { CharacteristicRollOptions } from "./rolls/characteristic-roll/characteristic-roll.types.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
@@ -71,6 +76,28 @@ declare global {
   interface RqgHooks {
     /** Fired at `setup`: modules register their spell behaviours. */
     "rqg.registerSpellBehaviours": (registry: SpellBehaviourRegistry) => void;
+    /**
+     * Before a skill, rune or passion roll, on the rolling client. Change `options` (for example
+     * push to `options.modifiers`) or return false to cancel. Listeners run synchronously.
+     */
+    "rqg.preAbilityRoll": (item: AbilityItem, options: AbilityRollOptions) => boolean | void;
+    /** After a skill, rune or passion roll, on the rolling client, before experience is checked. */
+    "rqg.abilityRoll": (item: AbilityItem, roll: AbilityRoll, options: AbilityRollOptions) => void;
+    /** Before a characteristic roll, see `rqg.preAbilityRoll`. */
+    "rqg.preCharacteristicRoll": (
+      actor: RqgActor,
+      options: CharacteristicRollOptions,
+    ) => boolean | void;
+    /** After a characteristic roll, on the rolling client. */
+    "rqg.characteristicRoll": (
+      actor: RqgActor,
+      roll: CharacteristicRoll,
+      options: CharacteristicRollOptions,
+    ) => void;
+    /** Before a Reputation roll, see `rqg.preAbilityRoll`. */
+    "rqg.preReputationRoll": (actor: RqgActor, options: AbilityRollOptions) => boolean | void;
+    /** After a Reputation roll, on the rolling client. */
+    "rqg.reputationRoll": (actor: RqgActor, roll: AbilityRoll, options: AbilityRollOptions) => void;
   }
 
   namespace CONFIG {

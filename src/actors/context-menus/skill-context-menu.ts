@@ -39,7 +39,7 @@ export const skillMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as SkillItem | undefined;
       assertDocumentSubType<SkillItem>(item, ItemTypeEnum.Skill);
-      await item.abilityRoll(token);
+      await item.roll({ token });
     },
   },
   {
@@ -66,7 +66,7 @@ export const skillMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg, el);
       }
-      await item.abilityRollImmediate({}, token);
+      await item.roll({ skipDialog: true, token });
     },
   },
   {

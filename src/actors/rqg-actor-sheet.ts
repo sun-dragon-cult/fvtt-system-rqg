@@ -414,13 +414,16 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await this.actor.characteristicRollImmediate(characteristicName, this.token);
+          await this.actor.rollCharacteristic(characteristicName, {
+            skipDialog: true,
+            token: this.token,
+          });
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await this.actor.characteristicRoll(characteristicName, this.token);
+              await this.actor.rollCharacteristic(characteristicName, { token: this.token });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -435,12 +438,12 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
 
         if (clickCount >= 2) {
-          await this.actor.reputationRollImmediate(this.token);
+          await this.actor.rollReputation({ skipDialog: true, token: this.token });
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await this.actor.reputationRoll(this.token);
+              await this.actor.rollReputation({ token: this.token });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -479,12 +482,16 @@ export class RqgActorSheet<
       el.addEventListener("click", async (ev: MouseEvent) => {
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
-          await item.abilityRollImmediate({ modifiers: weaponEffectModifiers }, this.token);
+          await item.roll({
+            skipDialog: true,
+            token: this.token,
+            modifiers: weaponEffectModifiers,
+          });
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.abilityRoll(this.token, { modifiers: weaponEffectModifiers });
+              await item.roll({ token: this.token, modifiers: weaponEffectModifiers });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);

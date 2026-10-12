@@ -5,7 +5,6 @@ import type {
   AbilityRollDialogFormData,
   PartialAbilityItem,
 } from "./ability-roll-dialog-data.types";
-import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { AbilityRollOptions, Modifier } from "../../rolls/ability-roll/ability-roll.types";
 import {
   getSpeakerDisplayName,
@@ -321,13 +320,12 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     };
 
     if (abilityItem instanceof RqgItem) {
-      await abilityItem.abilityRollImmediate(options, token);
+      await abilityItem.system.rollWithOptions(options);
+    } else if (actor) {
+      // Reputation isn't an item
+      await actor.rollReputationWithOptions(options);
     } else {
-      // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
-      const roll = await AbilityRoll.rollAndShow(options);
-      if (roll.successLevel == null) {
-        logger.throw(ERR.rollHasNoSuccessLevel, { roll: "AbilityRoll" }, roll, options);
-      }
+      logger.throw(ERR.noAbilityItemToRoll);
     }
   }
 }
