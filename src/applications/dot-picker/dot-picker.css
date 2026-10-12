@@ -1,0 +1,41 @@
+@layer system.base {
+  rqg-dot-picker {
+    --dot-color: var(--color-level-success, #1a7f37);
+    --dot-size: 1rem;
+
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    border-radius: 0.25rem;
+
+    & .dot {
+      inline-size: var(--dot-size);
+      block-size: var(--dot-size);
+      border: 2px solid var(--dot-color);
+      border-radius: 50%;
+      cursor: pointer;
+      transition:
+        background-color 120ms ease,
+        opacity 120ms ease;
+
+      &.filled {
+        background-color: var(--dot-color);
+      }
+
+      &.unreachable {
+        opacity: 0.3;
+        cursor: not-allowed;
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-border-highlight);
+      outline-offset: 2px;
+    }
+
+    &:disabled .dot,
+    &[disabled] .dot {
+      cursor: default;
+    }
+  }
+}

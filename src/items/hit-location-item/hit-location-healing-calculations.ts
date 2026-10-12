@@ -31,6 +31,21 @@ export function sumWounds(wounds: readonly number[]): number {
 }
 
 /**
+ * How many of `points` each wound gets, worst first (Core p.314 example: "choosing his worst
+ * injury first"); ties go to the first listed.
+ */
+export function distributeHealing(damages: readonly number[], points: number): number[] {
+  const order = damages.map((_damage, index) => index).sort((a, b) => damages[b]! - damages[a]!);
+  const healing = damages.map(() => 0);
+  let left = Math.max(0, points);
+  for (const index of order) {
+    healing[index] = Math.min(damages[index]!, left);
+    left -= healing[index];
+  }
+  return healing;
+}
+
+/**
  * Calculate the effects to apply to hitLocations and actor from healing previous damage.
  */
 export class HealingCalculations {
@@ -65,17 +80,14 @@ export class HealingCalculations {
       hitLocationHealthState = "useless";
     }
 
-    const woundOrder =
+    const healing =
       healWoundIndex != null
-        ? [healWoundIndex]
-        : wounds.map((_, i) => i).sort((a, b) => (wounds[b] ?? 0) - (wounds[a] ?? 0));
-
-    let healPointsApplied = 0;
-    for (const i of woundOrder) {
-      const applied = Math.min(wounds[i] ?? 0, Math.max(0, healPoints - healPointsApplied));
-      wounds[i] = (wounds[i] ?? 0) - applied;
-      healPointsApplied += applied;
-    }
+        ? wounds.map((damage, i) =>
+            i === healWoundIndex ? Math.min(damage, Math.max(0, healPoints)) : 0,
+          )
+        : distributeHealing(wounds, healPoints);
+    healing.forEach((healed, i) => (wounds[i] = (wounds[i] ?? 0) - healed));
+    const healPointsApplied = sumWounds(healing);
 
     return HealingCalculations.applyHealedWounds(
       wounds,
