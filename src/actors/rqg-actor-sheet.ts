@@ -1,3 +1,4 @@
+import { warnDeprecated } from "../system/deprecation";
 import type { AnyMutableObject } from "fvtt-types/utils";
 import { HomeLandEnum, OccupationEnum } from "../data-model/actor-data/background-enums";
 import {
@@ -1287,6 +1288,10 @@ export class RqgActorSheet<
   }
 
   protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
+    warnDeprecated("The AppV1 character sheet (RqgActorSheet)", "the default character sheet", {
+      since: "6.2.0",
+      until: "6.3.0",
+    });
     const html = await super._renderOuter();
     await addRqidLinkToSheetJQuery(html, this as any);
 
