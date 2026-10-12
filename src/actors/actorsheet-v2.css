@@ -1,6 +1,6 @@
 /* stylelint-disable no-descending-specificity */
 @layer system.actor-v2 {
-  /* V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed. 
+/* V2 Actor Sheet styles — scoped under .actor-sheet-v2 to avoid V1 bleed. 
    Reuses --rqg-* CSS variables from variables.css and global utility classes from rqg.css.
    Matches ancestor theme-dark (e.g. body) or a same-element override; :where() makes the override win. */
   :where(.theme-dark) .rqg.character.actor-sheet-v2,
@@ -16,21 +16,21 @@
       mix-blend-mode: var(--rqg-v2-rune-blend-mode);
     }
 
-    /* Dimmed only in the gear tab rows, not the header's open-popout button. */
+/* Dimmed only in the gear tab rows, not the header's open-popout button. */
     & .tab.gear .stored-magic-points {
       margin-left: 0.25rem;
       opacity: 0.85;
       mix-blend-mode: normal;
     }
 
-    /* Bound-spirit and matrix-spell indicators match the MP storage icon's gear-tab dimming above. */
+/* Bound-spirit and matrix-spell indicators match the MP storage icon's gear-tab dimming above. */
     & .tab.gear .bound-spirit-indicator,
     & .tab.gear .matrix-spell-indicator {
       opacity: 0.85;
       mix-blend-mode: normal;
     }
 
-    /* Flags at a glance that a player wouldn't see everything this row shows - either the item isn't
+/* Flags at a glance that a player wouldn't see everything this row shows - either the item isn't
        identified yet (row only renders at all for a GM in that case, so this is GM-only there),
        or it's identified but not attuned, so the player sees the icon but not the actual value/max
        (shown as "?" instead - see mp-storage-icon.hbs). Saves opening the item sheet to check. */
@@ -43,7 +43,7 @@
       min-height: 1.8rem;
     }
 
-    /* Override Foundry's opaque dark-mode application background so wounded/edit-mode
+/* Override Foundry's opaque dark-mode application background so wounded/edit-mode
    transparency shows through */
     &.dead,
     &.unconscious,
@@ -54,20 +54,20 @@
 
       backdrop-filter: none;
 
-      /* Also disable the dark-mode backdrop-filter on .window-content so the content
+/* Also disable the dark-mode backdrop-filter on .window-content so the content
      edges match the header transparency */
       & > .window-content {
         backdrop-filter: none;
       }
 
-      /* Restore opaque background on the controls dropdown menu */
+/* Restore opaque background on the controls dropdown menu */
       & .controls-dropdown {
         background: var(--color-cool-5-90);
         backdrop-filter: blur(4px);
       }
     }
 
-    /* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark
+/* Override V1's light-colored context-highlight (#d9d8c8) for ALL V2 context menus — dark
        mode. Specificity: 0,7,0 beats V1's 0,6,0 */
     & .contextmenu.context.context-highlight {
       mix-blend-mode: normal;
@@ -76,14 +76,14 @@
     }
   }
 
-  /* Restore light-mode enc colors at same specificity */
+/* Restore light-mode enc colors at same specificity */
   :where(.theme-light) .rqg.character.actor-sheet-v2,
   .rqg.character.actor-sheet-v2.theme-light {
     & .item-drag-handle {
       color: rgb(0 0 0 / 45%); /* dark grey for light mode (default is white for dark mode) */
     }
 
-    /* Override V1's context-highlight for ALL V2 context menus — light mode. 
+/* Override V1's context-highlight for ALL V2 context menus — light mode. 
    Specificity: 0,7,0 beats V1's 0,6,0 */
     & .contextmenu.context.context-highlight {
       mix-blend-mode: normal;
@@ -114,11 +114,11 @@
   }
 
   .rqg.character.actor-sheet-v2 {
-    /* Width of the vertical nav sidebar — used to align header parchment with content */
+/* Width of the vertical nav sidebar — used to align header parchment with content */
     --rqg-window-header-height: 40px;
     --rqg-nav-width: 20px;
 
-    /* Reduce sort button and icon size to match header height. */
+/* Reduce sort button and icon size to match header height. */
     & button.sort {
       width: 1.4rem;
       font-size: 0.7rem;
@@ -145,7 +145,7 @@
       }
     }
 
-    /* Gear-row indicator for an item with at least one bound spirit (#999). */
+/* Gear-row indicator for an item with at least one bound spirit (#999). */
     & .bound-spirit-indicator {
       display: inline-flex;
       align-items: center;
@@ -163,7 +163,7 @@
       }
     }
 
-    /* Gear-row indicator for an item enchanted as a Spell Matrix (#959) - info-only, shows the
+/* Gear-row indicator for an item enchanted as a Spell Matrix (#959) - info-only, shows the
    stored spell(s) via tooltip. Cast from the Spirit Magic tab instead. */
     & .matrix-spell-indicator {
       display: inline-flex;
@@ -182,7 +182,7 @@
       }
     }
 
-    /* Header button that opens the Magic Point Sources popout - styled like .locomotion-picker
+/* Header button that opens the Magic Point Sources popout - styled like .locomotion-picker
    (the Walk/Swim/Fly icon + select next to it): plain text color, no extra dimming, so it reads
    as part of the same row of controls rather than a separate accent-colored element. */
     & .mp-storage-toggle {
@@ -206,19 +206,19 @@
         mask-position: center;
       }
 
-      /* Total available Magic Points across all storage sources. */
+/* Total available Magic Points across all storage sources. */
       & .mp-storage-total {
         font-weight: bold;
       }
 
-      /* fa-angle-down (thin stroke) rather than fa-caret-down (solid filled triangle) - closer in
+/* fa-angle-down (thin stroke) rather than fa-caret-down (solid filled triangle) - closer in
          weight to .locomotion-select's native browser dropdown arrow just to its right. */
       & .fa-angle-down {
         font-size: 0.7rem;
       }
     }
 
-    /* Icon next to "Magic Points" showing the recovery rate on hover (#512) - kept as a small icon
+/* Icon next to "Magic Points" showing the recovery rate on hover (#512) - kept as a small icon
    rather than inline text since the header row is already tight (characteristics, SR badges, MP,
    MP storage toggle, and movement/encumbrance all share this line). Custom two-tone SVG (white
    circle badge + dark counter-clockwise arrow baked in) rather than mask-image, since this needs
@@ -235,13 +235,13 @@
       background-position: center;
     }
 
-    /* Shared "magic capacity limit" status banner, used by the Spirit Magic, Sorcery and Rune Magic tabs. */
+/* Shared "magic capacity limit" status banner, used by the Spirit Magic, Sorcery and Rune Magic tabs. */
     & .magic-limit-banner {
       font-size: 0.875rem;
       padding: 0.125rem 0;
     }
 
-    /* External spell source rows (#1002, #999): spells known via the Allied Spirit bond or a bound
+/* External spell source rows (#1002, #999): spells known via the Allied Spirit bond or a bound
    spirit, not this actor. Rendered as extra rows in the *same* grid as the actor's own spells
    so columns line up - the divider spans the full row via grid-column. */
     & .external-spell-divider {
@@ -257,7 +257,7 @@
       margin: 0.25rem 0 0.125rem;
       font-weight: 600;
 
-      /* Portrait(s) inline between "From"/"in" and their names - smaller than .row-icon. */
+/* Portrait(s) inline between "From"/"in" and their names - smaller than .row-icon. */
       & .external-spell-divider-icon {
         width: 18px;
         height: 18px;
@@ -267,10 +267,10 @@
       }
     }
 
-    /* Dark fill visible behind both nav and parchment transparent areas */
+/* Dark fill visible behind both nav and parchment transparent areas */
     background: rgb(0 0 0 / 60%);
 
-    /* Suppress V1 neumorphic hover/active shadow in V2 */
+/* Suppress V1 neumorphic hover/active shadow in V2 */
     & [data-characteristic-roll],
     & [data-damage-roll],
     & [data-item-roll],
@@ -290,7 +290,7 @@
       }
     }
 
-    /* Unified visual feedback for generic drops anywhere on the actor sheet. Apply to both
+/* Unified visual feedback for generic drops anywhere on the actor sheet. Apply to both
      header and content so the indicator remains visible above and below the AppV2
      overlap where window-content extends under the header. */
     @keyframes rqg-sheet-drop-pulse {
@@ -321,7 +321,7 @@
       animation: rqg-sheet-drop-pulse 1.2s ease-in-out infinite;
     }
 
-    /* Generic drag handle behavior for all V2 item lists. Hidden by default, positioned
+/* Generic drag handle behavior for all V2 item lists. Hidden by default, positioned
      outside-left, and revealed on row/cell hover. */
     .item-drag-handle {
       position: absolute;
@@ -342,7 +342,7 @@
         cursor: grabbing;
       }
 
-      /* Glyph rendering (mask-image etc.) comes from the shared, unscoped .grip-icon rule in
+/* Glyph rendering (mask-image etc.) comes from the shared, unscoped .grip-icon rule in
            rqg.css - this just adds the spacing/click-through behavior specific to this context. */
       & .grip-icon {
         margin-right: 0.25rem;
@@ -409,14 +409,14 @@
     .tab.gear .grid.item-list .gear-row {
       display: contents;
 
-      /* V1's striping rule targets these elements, but display:contents makes it a no-op
+/* V1's striping rule targets these elements, but display:contents makes it a no-op
        (same fix as weapon-row/spirit-combat-row). Re-implement it explicitly. */
       &:nth-child(odd) > * {
         background: var(--rqg-table-alternate-background);
       }
     }
 
-    /* gear-row children aren't direct children of .grid, so the base > * flex rule misses
+/* gear-row children aren't direct children of .grid, so the base > * flex rule misses
      them — reapply it here. Padding is widened by half the column-gap and pulled back
      with a matching negative margin, so the striped background bleeds across the gap
      without shifting the content. */
@@ -437,14 +437,14 @@
       column-gap: 5px;
     }
 
-    /* Qty pinned to 7ch instead of max-content — the input has no intrinsic width, so
+/* Qty pinned to 7ch instead of max-content — the input has no intrinsic width, so
        max-content sized the column off Foundry's default input width, squeezing Name
        onto two lines. Inputs are width: 100%, so narrowing the column is enough. */
     .tab.gear .grid.gear.gear-no-price.item-list {
       grid-template-columns: [col-start] 30px auto 7ch repeat(3, max-content) [col-end];
     }
 
-    /* Currency reuses the plain .gear class (columns bled from V1's rqg.css); narrow just
+/* Currency reuses the plain .gear class (columns bled from V1's rqg.css); narrow just
        Qty here, leaving the rest at their V1-bled max-content sizing. */
     .tab.gear .grid.gear.item-list:not(.gear-no-price) {
       grid-template-columns: [col-start] 30px auto 7ch repeat(4, max-content) [col-end];
@@ -473,7 +473,7 @@
       opacity: 1;
     }
 
-    /* Drop position indicator — shown while dragging over a sortable item row. box-shadow
+/* Drop position indicator — shown while dragging over a sortable item row. box-shadow
      avoids layout shift; inset keeps the line inside the cell boundary. */
     .drop-before {
       box-shadow: inset 0 2px 0 0 var(--rqg-color-main-bg);
@@ -487,36 +487,36 @@
       box-shadow: inset 0 0 0 2px var(--rqg-color-main-bg);
     }
 
-    /* Journal entry links: help cursor on the element itself (V1 targets children only) */
+/* Journal entry links: help cursor on the element itself (V1 targets children only) */
     [data-rqid-link^="je"] {
       cursor: help;
     }
 
-    /* Item tooltip elements are informational (icon hover = show description) */
+/* Item tooltip elements are informational (icon hover = show description) */
     [data-item-tooltip] {
       cursor: help;
     }
 
-    /* Embedded item journal links use help cursor. */
+/* Embedded item journal links use help cursor. */
     [data-item-id][data-rqid-link] {
       cursor: help;
     }
 
-    /* Weapon and damage rolls are interactive */
+/* Weapon and damage rolls are interactive */
     [data-weapon-roll],
     [data-item-roll],
     [data-damage-roll] {
       cursor: pointer;
     }
 
-    /* V2 gear tree should keep V1's pronounced container edge in location view. */
+/* V2 gear tree should keep V1's pronounced container edge in location view. */
     .tab.gear .location ul.container {
       border-top: 4px solid var(--rqg-tree-border-strong);
       border-left: 4px solid var(--rqg-tree-border-strong);
       background-color: rgb(255 255 255 / 10%);
     }
 
-    /* Grid layout for gear location-view rows. */
+/* Grid layout for gear location-view rows. */
     .grid.location-row {
       display: grid;
       grid-template-columns: auto min-content max-content min-content;
@@ -536,7 +536,7 @@
       }
     }
 
-    /* Location view list styling — remove bullets and style nested containers. */
+/* Location view list styling — remove bullets and style nested containers. */
     ul.location {
       list-style: none;
       padding: 0;
@@ -569,7 +569,7 @@
       }
     }
 
-    /* Sticky encumbrance totals footer for gear tab. */
+/* Sticky encumbrance totals footer for gear tab. */
     .tab.gear .enc-totals {
       display: flex;
       position: sticky;
@@ -591,7 +591,7 @@
       }
     }
 
-    /* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). 
+/* Rune strength tiers: .rune-str-0 (weakest) through .rune-str-10 (strongest). 
     Opacity: 0.05 → 1.0, floored by theme minimum. 
     Scale: 0.55 → 1.1. */
     & img.rune.rune-str-0 {
@@ -639,12 +639,12 @@
       transform: scale(1.1);
     }
 
-    /* Resize handle sits over dark background — always invert to light */
+/* Resize handle sits over dark background — always invert to light */
     .window-resize-handle {
       filter: invert(1);
     }
 
-    /* Window header — shows app background to dim scrolled content behind it */
+/* Window header — shows app background to dim scrolled content behind it */
     .window-header {
       position: relative;
       border-bottom: none;
@@ -652,9 +652,9 @@
       background-color: var(--rqg-v2-window-header-overlay-bg);
     }
 
-    /* --- Layout: .window-content IS the form in AppV2, PARTS are its direct children --- */
+/* --- Layout: .window-content IS the form in AppV2, PARTS are its direct children --- */
 
-    /* Foundry sets display:flex on .window-content; override to grid for side-tab layout.
+/* Foundry sets display:flex on .window-content; override to grid for side-tab layout.
      Four class selectors (.rqg.character.actor-sheet-v2 > .window-content) beats
      Foundry's single-class .window-content rule without needing !important. */
     > .window-content {
@@ -665,7 +665,7 @@
       overflow: hidden;
       container-type: size;
 
-      /* Parchment as window-content background — offset past the nav so jagged edges show */
+/* Parchment as window-content background — offset past the nav so jagged edges show */
       background-image: var(--rqg-parchment-url);
       background-repeat: repeat-y;
       background-position: top left var(--rqg-nav-width);
@@ -676,7 +676,7 @@
       }
     }
 
-    /* --- Header --- */
+/* --- Header --- */
     .sheet-header {
       padding: 0.25rem 4%;
       align-items: start;
@@ -813,7 +813,7 @@
             text-align: center;
           }
 
-          /* Rank color bar only when characteristic ratings are shown */
+/* Rank color bar only when characteristic ratings are shown */
           & [class*="characteristic-rank"] .value {
             display: inline-block;
             border-bottom: 7px solid var(--rank-color, transparent);
@@ -916,7 +916,7 @@
             height: 1rem;
           }
 
-          /* Icon + move value pairs (equipped / carried) */
+/* Icon + move value pairs (equipped / carried) */
           & > span {
             display: inline-flex;
             align-items: center;
@@ -938,9 +938,10 @@
           }
         }
       }
+
     }
 
-    /* --- Vertical tab navigation (rotated left edge, matching V1) --- */
+/* --- Vertical tab navigation (rotated left edge, matching V1) --- */
     .nav-wrapper {
       grid-area: nav;
       position: relative;
@@ -948,7 +949,7 @@
       overflow: hidden auto;
       scrollbar-gutter: stable;
 
-      /* Keep a little breathing room between vertical labels and scrollbar track without
+/* Keep a little breathing room between vertical labels and scrollbar track without
        changing the effective nav column width. */
       padding-inline-end: 0.375rem;
       margin-inline-end: -0.375rem;
@@ -999,14 +1000,14 @@
       }
     }
 
-    /* --- Sheet body --- */
+/* --- Sheet body --- */
     .sheet-body {
       padding: 0.5rem 4%;
     }
 
-    /* --- Common element styles --- */
+/* --- Common element styles --- */
 
-    /* Foundry's heading & text styles (border, font-size, margins) are scoped to
+/* Foundry's heading & text styles (border, font-size, margins) are scoped to
      `body.game .app` (V1 apps). V2 apps use `.application` and don't inherit those
      rules, so we replicate the essentials inside .window-content only to avoid
      affecting the window title bar. */
@@ -1068,9 +1069,9 @@
       }
     }
 
-    /* --- Characteristic ranking indicators — set --rank-color, bar rendered on .value --- */
+/* --- Characteristic ranking indicators — set --rank-color, bar rendered on .value --- */
 
-    /* Reset the global border-bottom from V1 rank classes; V2 uses --rank-color on .value instead */
+/* Reset the global border-bottom from V1 rank classes; V2 uses --rank-color on .value instead */
     [class*="characteristic-rank"] {
       border-bottom: none !important;
     }
@@ -1127,9 +1128,9 @@
       --rank-color: #8a0101ff;
     }
 
-    /* --- Runes tab (V2 visual layout) --- */
+/* --- Runes tab (V2 visual layout) --- */
     .runes-tab-v2 {
-      /* Highlight entire rune card when any clickable child is hovered/active */
+/* Highlight entire rune card when any clickable child is hovered/active */
       & .rune-card:has([data-item-roll]:hover) {
         background: var(--rqg-row-hover);
         border-radius: var(--rqg-radius);
@@ -1156,7 +1157,7 @@
         }
       }
 
-      /* --- Rune card: icon + name + chance% --- */
+/* --- Rune card: icon + name + chance% --- */
       & .rune-card {
         display: flex;
         flex-direction: column;
@@ -1194,7 +1195,7 @@
         }
       }
 
-      /* --- Elemental wheel: pentagonal layout with arrows --- */
+/* --- Elemental wheel: pentagonal layout with arrows --- */
       & .elemental-wheel {
         position: relative;
         width: 20rem;
@@ -1210,7 +1211,7 @@
       & .wheel-slot {
         position: absolute;
 
-        /* Center the icon on the slot anchor via absolute positioning. Fixed width matches the
+/* Center the icon on the slot anchor via absolute positioning. Fixed width matches the
            42px icon so centering is exact regardless of rune-name text width. Text
            overflows symmetrically via align-items: center. Do NOT use transform — it
            creates a stacking context and breaks mix-blend-mode on descendant images. */
@@ -1222,7 +1223,7 @@
         }
       }
 
-      /* Regular pentagon inscribed in a circle of radius 35%, centered at (50%, 50%) in the
+/* Regular pentagon inscribed in a circle of radius 35%, centered at (50%, 50%) in the
      20rem × 20rem square container. Clockwise from top: Fire, Darkness, Water, Earth,
      Air. */
       & .wheel-fire {
@@ -1280,7 +1281,7 @@
         }
       }
 
-      /* --- Opposed pairs (power & form runes) --- */
+/* --- Opposed pairs (power & form runes) --- */
       & .opposed-pairs {
         display: flex;
         flex-direction: column;
@@ -1293,7 +1294,7 @@
         align-items: center;
         gap: 0.5rem;
 
-        /* Left rune aligns right, right rune aligns left */
+/* Left rune aligns right, right rune aligns left */
         & > .rune-slot:first-child {
           justify-self: end;
         }
@@ -1303,7 +1304,7 @@
         }
       }
 
-      /* --- Balance track with sliding marker --- */
+/* --- Balance track with sliding marker --- */
       & .balance-bar {
         height: 9px;
         position: relative;
@@ -1320,7 +1321,7 @@
           transform: translateY(-50%);
         }
 
-        /* No opposingRuneRqidLink between the two runes — nothing to connect. */
+/* No opposingRuneRqidLink between the two runes — nothing to connect. */
         &.unlinked::before {
           display: none;
         }
@@ -1338,7 +1339,7 @@
         transition: left 0.3s ease;
       }
 
-      /* Embrace Runic Opposites: the pair no longer needs to sum to 100%, so the chances are
+/* Embrace Runic Opposites: the pair no longer needs to sum to 100%, so the chances are
      independent of each other and a sliding position would be meaningless — show the
      Infinity rune fixed at center instead. */
       & .independent-marker {
@@ -1351,7 +1352,7 @@
         background: none;
       }
 
-      /* --- Standalone card row (condition runes) --- */
+/* --- Standalone card row (condition runes) --- */
       & .rune-card-row {
         display: flex;
         flex-wrap: wrap;
@@ -1360,7 +1361,7 @@
       }
     }
 
-    /* --- Passions tab --- */
+/* --- Passions tab --- */
     .passions-tab-v2 {
       & h2 {
         display: grid;
@@ -1444,7 +1445,7 @@
       }
     }
 
-    /* --- Combat tab --- */
+/* --- Combat tab --- */
     .combat-tab {
       & input[type="number"] {
         width: 4ch;
@@ -1534,7 +1535,7 @@
         }
       }
 
-      /* --- Humanoid hit location layout --- */
+/* --- Humanoid hit location layout --- */
       & .humanoid {
         position: relative;
         width: 18rem;
@@ -1657,7 +1658,7 @@
         }
       }
 
-      /* --- Quadruped hit location layout --- */
+/* --- Quadruped hit location layout --- */
       & .quadruped {
         position: relative;
         display: grid;
@@ -1772,7 +1773,7 @@
         }
       }
 
-      /* --- SR buttons --- */
+/* --- SR buttons --- */
       & .sr-buttons {
         display: flex;
         align-items: center;
@@ -1819,7 +1820,7 @@
         align-items: center;
       }
 
-      /* Weapon row hover: light warm tint across all 6 grid cells */
+/* Weapon row hover: light warm tint across all 6 grid cells */
       & .grid.combat.item-list .weapon-row,
       & .grid.spirit-combat .weapon-row {
         display: contents;
@@ -1863,20 +1864,20 @@
           cursor: grabbing;
         }
 
-        /* Restore padding lost because display:contents bypasses .grid > * selector */
+/* Restore padding lost because display:contents bypasses .grid > * selector */
         & > * {
           padding: 0.125rem;
           position: relative;
           display: flex;
           align-items: center;
 
-          /* Cells containing flex-column (chance, damage, SR) must stretch so usage subrows can
+/* Cells containing flex-column (chance, damage, SR) must stretch so usage subrows can
              fill the full row height (not just content height) */
           &:has(> .flex-column) {
             align-items: stretch;
           }
 
-          /* flex-column wrappers must fill the cell so usage subrows divide the full row height
+/* flex-column wrappers must fill the cell so usage subrows divide the full row height
              equally for proper hover coverage */
           & > .flex-column {
             width: 100%;
@@ -1889,20 +1890,20 @@
               align-items: center;
             }
 
-            /* SR column: right-align buttons inside each usage subrow */
+/* SR column: right-align buttons inside each usage subrow */
             &.text-right > .usage,
             &.text-right > div.usage {
               justify-content: flex-end;
             }
 
-            /* Melee SR wraps button in a bare <span>, not .usage — push right */
+/* Melee SR wraps button in a bare <span>, not .usage — push right */
             & > span > button.sr {
               margin-left: auto;
             }
           }
         }
 
-        /* Restore alternating row background (V1 nth-child rule targets weapon-row elements
+/* Restore alternating row background (V1 nth-child rule targets weapon-row elements
          themselves which have display:contents, so it has no visual effect) */
         &:nth-child(odd) > * {
           background: var(--rqg-table-alternate-background);
@@ -1916,7 +1917,7 @@
           background: var(--rqg-row-active);
         }
 
-        /* Dodge: single-action row — whole row gets the brighter tint */
+/* Dodge: single-action row — whole row gets the brighter tint */
         &.dodge-row:hover > * {
           background: var(--rqg-row-hover-emphasis) !important;
         }
@@ -1925,7 +1926,7 @@
           background: var(--rqg-row-active-emphasis) !important;
         }
 
-        /* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together only when
+/* Spirit combat: cols 2-4 (name, HP placeholder, chance) light up together only when
          one of those roll cells is hovered, not the damage cell */
         &.spirit-combat-row:has(> [data-item-roll]:hover) {
           & > :nth-child(2),
@@ -1943,7 +1944,7 @@
           }
         }
 
-        /* Brighter tint on the specific cell being clicked. Nested here so SCSS child
+/* Brighter tint on the specific cell being clicked. Nested here so SCSS child
          combinators escape the IE-hack misparse. Use descendant .usage selector (not
          :has) so multi-usage weapons only highlight the hovered subrow, not the whole
          column cell. */
@@ -1965,12 +1966,12 @@
         }
       }
 
-      /* V2 spirit-combat grid: match 6-column weapons grid (icon | name | HP | chance | damage | SR) */
+/* V2 spirit-combat grid: match 6-column weapons grid (icon | name | HP | chance | damage | SR) */
       & .grid.spirit-combat {
         grid-template-columns: [col-start] 30px repeat(5, auto) [col-end];
       }
 
-      /* Extra breathing room before the damage column */
+/* Extra breathing room before the damage column */
       & .grid.combat.item-list .head5,
       & .grid.combat.item-list .weapon-row > :nth-child(5),
       & .grid.spirit-combat .weapon-row > :nth-child(5) {
@@ -2007,11 +2008,11 @@
         text-align: center;
       }
 
-      /* Set-token-SR-in-combat button */
+/* Set-token-SR-in-combat button */
       & button.sr {
         height: 26px;
 
-        /* Foundry's min-height: var(--button-size) floors the rendered height regardless of
+/* Foundry's min-height: var(--button-size) floors the rendered height regardless of
            the explicit height above (min-height isn't overridden by height). */
         min-height: 0;
         line-height: unset;
@@ -2039,7 +2040,7 @@
         gap: 0.25rem;
         margin-top: 1rem;
 
-        /* Base chip styling (.bond-actor-link) is shared with the item sheet's Bound Spirit link -
+/* Base chip styling (.bond-actor-link) is shared with the item sheet's Bound Spirit link -
            see rqg.css. */
         & .allied-spirit-link {
           &.view-only {
@@ -2071,7 +2072,7 @@
       }
     }
 
-    /* --- Skills tab --- */
+/* --- Skills tab --- */
     .skills-tab-v2 {
       & .skill-filter-row {
         display: flex;
@@ -2177,7 +2178,7 @@
       }
     }
 
-    /* --- Sorcery tab (V2): match skills-row hover/active highlight --- */
+/* --- Sorcery tab (V2): match skills-row hover/active highlight --- */
     .sorcery-tab-v2 {
       & .power.flex-row {
         display: grid;
@@ -2216,7 +2217,7 @@
       }
     }
 
-    /* --- Spirit Magic tab --- */
+/* --- Spirit Magic tab --- */
     .spirit-magic-tab-v2 {
       & h2 {
         padding: 0 6px;
@@ -2285,16 +2286,16 @@
         }
       }
 
-      /* Margin matches the row icon-to-name gap. */
+/* Margin matches the row icon-to-name gap. */
       & .matrix-source-badge {
         margin-left: 0.35rem;
         flex: 0 0 auto;
       }
     }
 
-    /* --- Rune Magic tab --- */
+/* --- Rune Magic tab --- */
     .rune-magic-tab-v2 {
-      /* Strip inline colors from enriched journal content so light/dark themes work correctly */
+/* Strip inline colors from enriched journal content so light/dark themes work correctly */
       & *[style*="color"] {
         color: inherit !important;
       }
@@ -2366,7 +2367,7 @@
 
               & > span,
               & > div {
-                /* Holy Days / Gifts / Geases: get most of any extra space, since they usually hold the
+/* Holy Days / Gifts / Geases: get most of any extra space, since they usually hold the
                 longest text */
                 flex: 4 1 10em;
                 min-width: 0;
@@ -2376,12 +2377,12 @@
                 -webkit-line-clamp: 2;
                 line-clamp: 2;
 
-                /* Bold label on its own line, content follows below */
+/* Bold label on its own line, content follows below */
                 & > b:first-child {
                   display: block;
                 }
 
-                /* Flatten block elements inside enriched HTML content */
+/* Flatten block elements inside enriched HTML content */
                 & p,
                 & div,
                 & br {
@@ -2398,7 +2399,7 @@
               }
 
               & > div.joined-cults {
-                /* Cult/god name: size to its (usually short) content instead of stretching, but cap so
+/* Cult/god name: size to its (usually short) content instead of stretching, but cap so
                 a long name/tagline doesn't dominate */
                 flex: 1 1 auto;
                 min-width: 8em;
@@ -2498,7 +2499,7 @@
       padding-left: 0.25rem;
     }
 
-    /* --- Wounded / injured overall sheet background --- */
+/* --- Wounded / injured overall sheet background --- */
     &.dead {
       filter: grayscale(0.8);
     }
@@ -2547,7 +2548,7 @@
       }
     }
 
-    /* --- Background tab --- */
+/* --- Background tab --- */
     .background-tab-v2 {
       display: none;
 
@@ -2591,7 +2592,7 @@
             white-space: nowrap;
           }
 
-          /* Reputation row: subgrid so both cells span and hover covers the full row */
+/* Reputation row: subgrid so both cells span and hover covers the full row */
           & .reputation-row {
             grid-column: 1 / -1;
             display: grid;
@@ -2619,14 +2620,14 @@
             width: 5em;
           }
 
-          /* Input + "(L)" suffix on the same line */
+/* Input + "(L)" suffix on the same line */
           & div:has(> input[type="number"]) {
             display: flex;
             align-items: center;
             gap: 0.25em;
           }
 
-          /* Global .key-value-grid styles set .drop-target to inline-grid. In the V2 background
+/* Global .key-value-grid styles set .drop-target to inline-grid. In the V2 background
            tab we want rqid dropzones to fill the value column. */
           & .drop-target.item-sheet-rqid-link {
             display: grid;
@@ -2658,12 +2659,12 @@
       }
     }
 
-    /* --- Active Effects tab --- */
+/* --- Active Effects tab --- */
     .tab.activeeffectstesting {
       min-width: 0;
       overflow: auto;
 
-      /* .headings bleeds 0.4rem past the grid; match it here so the only scrolling tab
+/* .headings bleeds 0.4rem past the grid; match it here so the only scrolling tab
          doesn't clip that bleed. */
       padding-inline: 0.4rem;
 
@@ -2675,7 +2676,7 @@
       & .grid.activeeffects.item-list {
         font-size: 0.9em;
 
-        /* Centre the headers over the columns whose values are centred. */
+/* Centre the headers over the columns whose values are centred. */
         & .head3,
         & .head4,
         & .head5,
@@ -2686,14 +2687,14 @@
         }
       }
 
-      /* Cell is flex, which collapses the <br> between name and parent link — keep them
+/* Cell is flex, which collapses the <br> between name and parent link — keep them
          stacked via a block child. */
       & .effect-name {
         display: block;
         min-width: 0;
       }
 
-      /* Subgrid makes the row one real box spanning every column, so striping paints as a
+/* Subgrid makes the row one real box spanning every column, so striping paints as a
          continuous band instead of leaving seams per cell. Same technique as
          .reputation-row on the Background tab. */
       & .active-effect-row {
@@ -2719,7 +2720,7 @@
         }
       }
 
-      /* Changes sub-list: key takes the remaining width, type is fixed, value fits 3 chars. */
+/* Changes sub-list: key takes the remaining width, type is fixed, value fits 3 chars. */
       & .effect-changes {
         display: flex;
         flex-direction: column;
@@ -2746,7 +2747,7 @@
       }
     }
 
-    /* --- Edit mode badge in window header --- */
+/* --- Edit mode badge in window header --- */
     .edit-mode-badge {
       opacity: 0.7;
       padding: 1px 0.375rem;
@@ -2755,9 +2756,9 @@
       user-select: none;
     }
 
-    /* --- Edit mode --- */
+/* --- Edit mode --- */
 
-    /* When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`) */
+/* When edit mode is active, the class is on the app element itself (`.actor-sheet-v2.edit-mode`) */
     &.edit-mode {
       background: var(--rqg-color-edit-mode-bg);
 
@@ -2781,7 +2782,7 @@
     }
   }
 
-  /* Item description tooltip — applied via data-tooltip-class on the element, Foundry adds
+/* Item description tooltip — applied via data-tooltip-class on the element, Foundry adds
      this class to the #tooltip element. */
   #tooltip.item-description-tooltip,
   .locked-tooltip.item-description-tooltip {
