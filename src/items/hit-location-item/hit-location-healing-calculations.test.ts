@@ -287,8 +287,79 @@ describe("HealingCalculations", () => {
         99,
         mockLeftLeg as unknown as RqgItem,
         mockActor as unknown as RqgActor,
+        false,
       ),
     ).toThrow();
+  });
+
+  it("heals the largest wounds first when no wound is chosen", () => {
+    applyTestDamage(1, true, mockLeftLeg, mockActor);
+    applyTestDamage(3, true, mockLeftLeg, mockActor);
+    applyTestDamage(2, true, mockLeftLeg, mockActor);
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      4,
+      undefined,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      false,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({ wounds: [1, 1] });
+  });
+
+  it("restores a severed limb with no wounds left when restoreSevered is set", () => {
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+    applyTestHealing(10, 0, mockLeftLeg, mockActor);
+    mockLeftLeg.system.hitLocationHealthState = "severed";
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      0,
+      undefined,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      true,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({
+      wounds: [],
+      hitLocationHealthState: "healthy",
+    });
+  });
+
+  it("leaves a reattached limb useless while its damage is still at or above max HP", () => {
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+    expect(mockLeftLeg.system.wounds).toStrictEqual([10]);
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      0,
+      undefined,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      true,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({
+      wounds: [10],
+      hitLocationHealthState: "useless",
+    });
+  });
+
+  it("keeps a limb severed on a 6+ point heal when restoreSevered is false", () => {
+    applyTestDamage(33, true, mockLeftLeg, mockActor);
+
+    const { hitLocationUpdates } = HealingCalculations.healWound(
+      10,
+      0,
+      mockLeftLeg as unknown as RqgItem,
+      mockActor as unknown as RqgActor,
+      false,
+    );
+
+    expect(hitLocationUpdates.system).toMatchObject({
+      wounds: [],
+      hitLocationHealthState: "severed",
+    });
   });
 
   describe("healLocationNaturally (#436)", () => {

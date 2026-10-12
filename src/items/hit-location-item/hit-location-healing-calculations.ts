@@ -1,5 +1,7 @@
 import type { ActorHealthState } from "../../data-model/actor-data/attributes";
-import { assertDocumentSubType, isDocumentSubType, RqgError } from "../../system/util";
+import { assertDocumentSubType, isDocumentSubType } from "../../system/util";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
 import type { HitLocationItem } from "@item-model/hit-location-data-model.ts";
 import {
   HitLocationTypesEnum,
@@ -13,6 +15,8 @@ import { systemId } from "../../system/config";
 
 import type { DeepPartial } from "fvtt-types/utils";
 
+const logger = new RqgLogger("HealingCalculations");
+
 export interface HealingEffects {
   /** Updates to the hitlocation item's wounds, health and actor health impact */
   hitLocationUpdates: Item.UpdateData;
@@ -22,41 +26,55 @@ export interface HealingEffects {
   usefulLegs: DeepPartial<Item.Source>[];
 }
 
+export function sumWounds(wounds: readonly number[]): number {
+  return wounds.reduce((total, wound) => total + wound, 0);
+}
+
 /**
  * Calculate the effects to apply to hitLocations and actor from healing previous damage.
  */
 export class HealingCalculations {
+  /**
+   * Heal `healPoints` on one wound, or with no `healWoundIndex` on the location's wounds from the
+   * largest down. `restoreSevered` un-severs the location. Natural healing
+   * (healLocationNaturally) never does.
+   */
   static healWound(
     healPoints: number,
-    healWoundIndex: number,
+    healWoundIndex: number | undefined,
     hitLocation: RqgItem,
     actor: RqgActor,
+    restoreSevered: boolean,
   ): HealingEffects {
     assertDocumentSubType<CharacterActor>(actor, ActorTypeEnum.Character);
     assertDocumentSubType<HitLocationItem>(hitLocation, ItemTypeEnum.HitLocation);
 
-    if (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex) {
-      const msg = `Trying to heal a wound that doesn't exist.`;
-      ui.notifications?.error(msg);
-      throw new RqgError(msg, healWoundIndex, hitLocation);
+    if (
+      healWoundIndex != null &&
+      (!Number.isInteger(healWoundIndex) || hitLocation.system.wounds.length <= healWoundIndex)
+    ) {
+      logger.throw(ERR.healWoundIndexOutOfRange, healWoundIndex, hitLocation);
     }
 
     const wounds = hitLocation.system.wounds.slice();
     let hitLocationHealthState: HitLocationHealthState =
       hitLocation.system.hitLocationHealthState || "healthy";
 
-    // A single application of 6+ points of magical healing can restore a severed limb (Core
-    // p.148: "Only a 6-point Heal spell... can restore a severed limb"). Natural healing
-    // (healLocationNaturally) never does this - RAW ties it specifically to a burst of magical
-    // healing, not gradual weekly recovery.
-    if (healPoints >= 6 && hitLocationHealthState === "severed") {
-      hitLocationHealthState = "wounded"; // the actual state will be recalculated below
+    if (restoreSevered && hitLocationHealthState === "severed") {
+      // Still useless while its damage is at or above max HP; recalculated below otherwise
+      hitLocationHealthState = "useless";
     }
 
+    const woundOrder =
+      healWoundIndex != null
+        ? [healWoundIndex]
+        : wounds.map((_, i) => i).sort((a, b) => (wounds[b] ?? 0) - (wounds[a] ?? 0));
+
     let healPointsApplied = 0;
-    if (wounds[healWoundIndex]) {
-      healPointsApplied = Math.min(wounds[healWoundIndex], healPoints); // Don't heal more than wound damage
-      wounds[healWoundIndex] -= healPointsApplied;
+    for (const i of woundOrder) {
+      const applied = Math.min(wounds[i] ?? 0, Math.max(0, healPoints - healPointsApplied));
+      wounds[i] = (wounds[i] ?? 0) - applied;
+      healPointsApplied += applied;
     }
 
     return HealingCalculations.applyHealedWounds(
@@ -146,7 +164,7 @@ export class HealingCalculations {
     // Remove healed-out wounds so arrays do not accumulate 0 entries.
     const prunedWounds = wounds.filter((w) => w > 0);
 
-    const woundsSumAfter = prunedWounds.reduce((acc: number, w: number) => acc + w, 0);
+    const woundsSumAfter = sumWounds(prunedWounds);
     if (woundsSumAfter === 0) {
       actorHealthImpact = "healthy";
       if (hitLocationHealthState !== "severed") {
@@ -177,7 +195,7 @@ export class HealingCalculations {
           continue;
         }
         const limbHpMax = limb.system.hitPoints.max ?? CONFIG.RQG.minTotalHitPoints;
-        const limbDamage = limb.system.wounds.reduce((acc: number, w: number) => acc + w, 0);
+        const limbDamage = sumWounds(limb.system.wounds);
         if (limbDamage >= limbHpMax) {
           continue; // Limb is independently useless from its own damage
         }
