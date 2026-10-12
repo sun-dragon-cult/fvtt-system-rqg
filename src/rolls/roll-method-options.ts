@@ -1,4 +1,5 @@
 import type { Modifier } from "./ability-roll/ability-roll.types";
+import { warnDeprecated } from "../system/deprecation";
 
 /** Options shared by the public roll methods on actors and items - part of the public API. */
 export type RollMethodOptions = {
@@ -11,11 +12,6 @@ export type RollMethodOptions = {
   rollMode?: foundry.dice.Roll.Mode;
 };
 
-/** Warn once that an old roll method is used; they are removed in 6.4.0. */
 export function warnDeprecatedRollMethod(oldCall: string, newCall: string): void {
-  foundry.utils.logCompatibilityWarning(`RQG | ${oldCall} is deprecated, use ${newCall}.`, {
-    since: "RQG 6.2.0",
-    until: "RQG 6.4.0",
-    once: true,
-  });
+  warnDeprecated(oldCall, newCall, { since: "6.2.0", until: "6.4.0" });
 }
