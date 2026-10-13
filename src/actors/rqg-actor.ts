@@ -340,11 +340,9 @@ export class RqgActor extends Actor {
       "actor.rollCharacteristic(name, { skipDialog: true, ...options })",
     );
     return await this.rollCharacteristic(characteristicName, {
+      ...options,
       skipDialog: true,
       token,
-      difficulty: options.difficulty,
-      modifiers: options.modifiers,
-      rollMode: options.rollMode,
     });
   }
 
@@ -432,12 +430,7 @@ export class RqgActor extends Actor {
       "actor.reputationRollImmediate(token, options)",
       "actor.rollReputation({ skipDialog: true, ...options })",
     );
-    return await this.rollReputation({
-      skipDialog: true,
-      token,
-      modifiers: options.modifiers,
-      rollMode: options.rollMode,
-    });
+    return await this.rollReputation({ ...options, skipDialog: true, token });
   }
 
   private createReputationFakeItem(token?: TokenDocument | null): PartialAbilityItem {
