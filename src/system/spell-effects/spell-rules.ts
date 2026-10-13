@@ -1,14 +1,14 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 
-type CastPoints = { magicPointsSpent?: number; runePointsSpent?: number };
+type SpentPoints = { magicPointsSpent?: number; runePointsSpent?: number };
 type SpellProvenance = { level?: number; runePointsSpent?: number };
 
 /**
- * A cast's strength against defences: magic points as they are, Rune points double, so a 1-point
+ * A cast's points against defences: magic points as they are, Rune points double, so a 1-point
  * Rune spell boosted with 5 magic points is a 7-point spell (RBM Q&A on Heal Wound).
  */
-export function castStrength(cast: CastPoints): number {
+export function castPoints(cast: SpentPoints): number {
   return (cast.magicPointsSpent ?? 0) + 2 * (cast.runePointsSpent ?? 0);
 }
 
