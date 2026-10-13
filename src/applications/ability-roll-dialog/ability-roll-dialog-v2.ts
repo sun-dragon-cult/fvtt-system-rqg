@@ -294,7 +294,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
     }
 
     const options: AbilityRollOptions = {
-      naturalSkill: abilityItem?.system.chance ?? 0,
+      naturalSkill: Number(abilityItem?.system.chance) || 0, // Handle NaN
       modifiers: [
         ...initialModifiers,
         {
