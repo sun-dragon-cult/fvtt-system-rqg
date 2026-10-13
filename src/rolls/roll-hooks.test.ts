@@ -40,12 +40,23 @@ describe("roll hooks (#1132)", () => {
   describe("ability rolls", () => {
     const success = { successLevel: AbilitySuccessLevelEnum.Success } as AbilityRoll;
 
-    function abilityModel(): any {
-      return {
-        parent: { name: "Climb" },
+    function abilityModel(embedded = true): any {
+      const model: any = {
+        parent: { name: "Climb", isEmbedded: embedded },
         checkExperience: vi.fn().mockResolvedValue(undefined),
       };
+      model.assertEmbedded = (AbilityDataModel.prototype as any).assertEmbedded;
+      return model;
     }
+
+    it("refuses to roll a skill that isn't on an actor", async () => {
+      const rollAndShow = vi.spyOn(AbilityRoll, "rollAndShow");
+
+      await expect(
+        AbilityDataModel.prototype.rollWithOptions.call(abilityModel(false), { naturalSkill: 50 }),
+      ).rejects.toThrow();
+      expect(rollAndShow).not.toHaveBeenCalled();
+    });
 
     it("lets a pre hook add modifiers, then reports the roll and checks experience", async () => {
       const rollAndShow = vi.spyOn(AbilityRoll, "rollAndShow").mockResolvedValue(success);

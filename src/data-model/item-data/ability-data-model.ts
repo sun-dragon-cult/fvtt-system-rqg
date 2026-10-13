@@ -26,29 +26,41 @@ export abstract class AbilityDataModel<
 > extends RqgItemDataModel<Schema, DerivedData> {
   /** Open the roll dialog, or with `skipDialog` roll at once and return the roll. */
   async roll(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
-    const item = this.parent;
+    this.assertEmbedded();
     if (!options.skipDialog) {
       // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
       const { AbilityRollDialogV2 } =
         await import("../../applications/ability-roll-dialog/ability-roll-dialog-v2");
-      await new AbilityRollDialogV2(item as unknown as AbilityItem, options.token, {
+      await new AbilityRollDialogV2(this.parent as unknown as AbilityItem, options.token, {
         modifiers: options.modifiers,
       }).render({ force: true });
       return undefined;
     }
-    if (!item?.isEmbedded) {
-      logger.throw(ERR.abilityItemNotEmbedded, { itemUuid: item?.uuid });
-    }
+    return await this.rollWithOptions(this.rollOptions(options));
+  }
+
+  /** The options `roll` rolls with, before the hooks. */
+  rollOptions(
+    options: RollMethodOptions & Pick<AbilityRollOptions, "resultMessages">,
+  ): AbilityRollOptions {
+    const item = this.parent!;
     const actor = item.actor;
-    return await this.rollWithOptions({
+    return {
       naturalSkill: Number(this.chance) || 0, // Handle NaN
       modifiers: options.modifiers,
       abilityName: item.name ?? undefined,
       abilityType: item.type,
       abilityImg: item.img ?? undefined,
+      resultMessages: options.resultMessages,
       speaker: actor ? getSpeakerCompat({ actor, token: options.token }) : getSpeakerFromItem(item),
       rollMode: options.rollMode,
-    });
+    };
+  }
+
+  private assertEmbedded(): void {
+    if (!this.parent?.isEmbedded) {
+      logger.throw(ERR.abilityItemNotEmbedded, { itemUuid: this.parent?.uuid });
+    }
   }
 
   /**
@@ -56,6 +68,7 @@ export abstract class AbilityDataModel<
    * and `rqg.abilityRoll` hooks and checks experience. Undefined when a hook cancelled the roll.
    */
   async rollWithOptions(options: AbilityRollOptions): Promise<AbilityRoll | undefined> {
+    this.assertEmbedded();
     const item = this.parent as unknown as AbilityItem;
     options.modifiers ??= [];
     if (!callRqgPreHook("rqg.preAbilityRoll", item, options)) {

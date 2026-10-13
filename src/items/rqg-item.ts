@@ -274,7 +274,8 @@ export class RqgItem extends Item {
       "item.abilityRollImmediate(options, token)",
       "item.roll({ skipDialog: true, ...options })",
     );
-    return await this.roll({ ...options, skipDialog: true, token });
+    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
+    return await this.system.rollWithOptions(this.system.rollOptions({ ...options, token }));
   }
 
   /**

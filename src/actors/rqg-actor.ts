@@ -339,11 +339,9 @@ export class RqgActor extends Actor {
       "actor.characteristicRollImmediate(name, token, options)",
       "actor.rollCharacteristic(name, { skipDialog: true, ...options })",
     );
-    return await this.rollCharacteristic(characteristicName, {
-      ...options,
-      skipDialog: true,
-      token,
-    });
+    return await this.rollCharacteristicWithOptions(
+      this.getCharacteristicRollDefaults(characteristicName, token, { ...options }),
+    );
   }
 
   private getCharacteristicRollDefaults(
@@ -382,21 +380,37 @@ export class RqgActor extends Actor {
    * cancelled it).
    */
   public async rollReputation(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
-    const reputationItem = this.createReputationFakeItem(options.token);
     if (!options.skipDialog) {
-      await new AbilityRollDialogV2(reputationItem, options.token, {
+      await new AbilityRollDialogV2(this.createReputationFakeItem(options.token), options.token, {
         modifiers: options.modifiers,
       }).render({ force: true });
       return undefined;
     }
-    return await this.rollReputationWithOptions({
-      naturalSkill: reputationItem.system.chance,
-      modifiers: options.modifiers,
-      abilityName: reputationItem.name ?? undefined,
-      abilityImg: reputationItem.img ?? undefined,
-      speaker: getSpeakerCompat({ actor: this, token: options.token }),
-      rollMode: options.rollMode,
-    });
+    return await this.rollReputationWithOptions(
+      this.getReputationRollDefaults(options.token, {
+        modifiers: options.modifiers,
+        rollMode: options.rollMode,
+      }),
+    );
+  }
+
+  /** Reputation roll options; what `options` already sets is kept. */
+  private getReputationRollDefaults(
+    token: TokenDocument | null | undefined,
+    options: Partial<AbilityRollOptions>,
+  ): AbilityRollOptions {
+    const reputationItem = this.createReputationFakeItem(token);
+    return foundry.utils.mergeObject(
+      options,
+      {
+        naturalSkill: reputationItem.system.chance,
+        modifiers: [],
+        abilityName: reputationItem.name ?? undefined,
+        abilityImg: reputationItem.img ?? undefined,
+        speaker: getSpeakerCompat({ actor: this, token }),
+      },
+      { overwrite: false },
+    ) as AbilityRollOptions;
   }
 
   /**
@@ -411,6 +425,9 @@ export class RqgActor extends Actor {
       return undefined;
     }
     const reputationRoll = await AbilityRoll.rollAndShow(options);
+    if (reputationRoll.successLevel == null) {
+      logger.throw(ERR.rollHasNoSuccessLevel, { roll: "ReputationRoll", reputationRoll });
+    }
     callRqgHook("rqg.reputationRoll", this, reputationRoll, options);
     return reputationRoll;
   }
@@ -430,7 +447,9 @@ export class RqgActor extends Actor {
       "actor.reputationRollImmediate(token, options)",
       "actor.rollReputation({ skipDialog: true, ...options })",
     );
-    return await this.rollReputation({ ...options, skipDialog: true, token });
+    return await this.rollReputationWithOptions(
+      this.getReputationRollDefaults(token, { ...options }),
+    );
   }
 
   private createReputationFakeItem(token?: TokenDocument | null): PartialAbilityItem {
