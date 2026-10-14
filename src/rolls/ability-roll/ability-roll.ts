@@ -31,7 +31,13 @@ export class AbilityRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
   }
 
   constructor(formula: string = "1d100", data?: D, options?: AbilityRollOptions) {
-    super(formula, data, options);
+    // A Map wouldn't survive being saved with the chat message
+    const resultMessages = options?.resultMessages;
+    const rollOptions: AbilityRollOptions | undefined =
+      options && resultMessages instanceof Map
+        ? { ...options, resultMessages: Object.fromEntries(resultMessages) }
+        : options;
+    super(formula, data, rollOptions);
   }
 
   get isEvaluated(): boolean {
@@ -88,7 +94,11 @@ export class AbilityRoll<D extends AnyObject = EmptyObject> extends Roll<D> {
 
   // Html for what ability the roll is about
   get flavor(): string {
-    const resultMsgHtml = this.options.resultMessages?.get(this.successLevel) ?? "";
+    const messages = this.options.resultMessages;
+    const resultMsgHtml =
+      (messages instanceof Map
+        ? messages.get(this.successLevel)
+        : messages?.[String(this.successLevel)]) ?? "";
     const flavorImg = this.options.abilityImg ? `<img src="${this.options.abilityImg}">` : "";
     const itemType = this.options.abilityType ? localizeItemType(this.options.abilityType) : "";
     return `

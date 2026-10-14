@@ -26,6 +26,7 @@
     "format": "prettier -w .",
     "generate:schemas": "tsx buildScripts/generate-schema.ts",
     "check:schemas": "tsx buildScripts/generate-schema.ts --check",
+    "check:deprecations": "tsx buildScripts/check-deprecations.ts",
     "i18n:audit:en": "pnpm -s i18n:audit-unused --lang en --fail-on-unused",
     "i18n:audit-unused": "tsx buildScripts/audit-unused-translations.ts",
     "lint:scripts:fix": "eslint . --fix",

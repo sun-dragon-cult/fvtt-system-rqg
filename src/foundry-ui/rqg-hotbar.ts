@@ -69,7 +69,7 @@ export class RqgHotbar extends Hotbar {
    * Define the macros corresponding to each MacroAction type.
    */
   static macroActions = new Map<MacroAction, (doc: Document.Any) => string>([
-    ["abilityRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.abilityRoll();`],
+    ["abilityRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.roll();`],
     ["attack", (doc) => `const item = await fromUuid("${doc.uuid}"); item.attack();`],
     [
       "spiritMagicRoll",

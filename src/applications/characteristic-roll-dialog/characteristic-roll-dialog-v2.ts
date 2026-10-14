@@ -10,11 +10,9 @@ import {
   getSpeakerDisplayName,
   localize,
   normalizeOtherModifierDescriptionForRoll,
-  RqgError,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
-import { CharacteristicRoll } from "../../rolls/characteristic-roll/characteristic-roll";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqg-actor-data.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
@@ -208,11 +206,7 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       rollMode: rollMode,
     };
 
-    const roll = await CharacteristicRoll.rollAndShow(options);
-    if (roll.successLevel == null) {
-      throw new RqgError("Evaluated CharacteristicRoll didn't give successLevel");
-    }
-    await actor.checkExperience(formDataObject.characteristicName ?? "", roll.successLevel);
+    await actor.rollCharacteristicWithOptions(options);
   }
 
   private static getDifficulty(difficulty: number | string | undefined): number {

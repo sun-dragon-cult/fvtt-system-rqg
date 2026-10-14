@@ -27,14 +27,14 @@ export function createRqgApi() {
       attack: rolls.attack,
       spiritMagic: rolls.spiritMagic,
       runeMagic: rolls.runeMagic,
+      /** Compare with `roll.successLevel`, lower is better. */
+      SuccessLevel: AbilitySuccessLevelEnum,
     },
     query: {
       abilities: query.abilities,
       weaponUsages: query.weaponUsages,
       spells: query.spells,
     },
-    /** Compare with `roll.successLevel`, lower is better. */
-    SuccessLevel: AbilitySuccessLevelEnum,
     migration: {
       applyWorldMigrations: applyDefaultWorldMigrations,
       openDataModelRepairDialog,

@@ -39,6 +39,7 @@ import type { RuneMagicRollImmediateOptions } from "../rolls/rune-magic-roll/run
 import type { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
+import { type RollMethodOptions, warnDeprecatedRollMethod } from "../rolls/roll-method-options";
 import { GearDataModel } from "@item-model/gear-data-model";
 import { ArmorDataModel } from "@item-model/armor-data-model";
 import { WeaponDataModel } from "@item-model/weapon-data-model";
@@ -246,25 +247,35 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Open a dialog for an AbilityRoll
+   * Roll a skill, rune or passion - part of the public API. Opens the roll dialog, or with
+   * `skipDialog` rolls at once and returns the roll (undefined if a `rqg.preAbilityRoll` hook
+   * cancelled it).
    */
+  public async roll(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
+    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
+    return await this.system.roll(options);
+  }
+
+  /** @deprecated since 6.2.0, use `item.roll()`. */
   public async abilityRoll(
     token?: TokenDocument | null,
     options: Partial<Omit<AbilityRollOptions, "naturalSkill" | "abilityItem">> = {},
   ): Promise<void> {
-    assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    await this.system.abilityRoll(token, options);
+    warnDeprecatedRollMethod("item.abilityRoll(token, options)", "item.roll(options)");
+    await this.roll({ token, modifiers: options.modifiers, rollMode: options.rollMode });
   }
 
-  /**
-   * Do an abilityRoll and handle checking experience afterward.
-   */
+  /** @deprecated since 6.2.0, use `item.roll({ skipDialog: true })`. */
   public async abilityRollImmediate(
     options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
     token?: TokenDocument | null,
-  ): Promise<AbilityRoll> {
+  ): Promise<AbilityRoll | undefined> {
+    warnDeprecatedRollMethod(
+      "item.abilityRollImmediate(options, token)",
+      "item.roll({ skipDialog: true, ...options })",
+    );
     assertDocumentSubType<AbilityItem>(this, abilityItemTypes);
-    return await this.system.abilityRollImmediate(options, token);
+    return await this.system.rollWithOptions(this.system.rollOptions({ ...options, token }));
   }
 
   /**

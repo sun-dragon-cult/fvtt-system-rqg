@@ -34,6 +34,9 @@ jobs:
       - name: Verify Code Quality
         run: pnpm check:release
 
+      - name: Verify No Deprecations Are Due
+        run: pnpm check:deprecations "${GITHUB_REF_NAME#v}"
+
       - name: Build project
         run: pnpm build
 

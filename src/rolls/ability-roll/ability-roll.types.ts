@@ -10,7 +10,9 @@ export type AbilityRollOptions = Partial<Roll.Options> & {
   abilityName?: string; // Skill name
   abilityType?: Item.SubType;
   abilityImg?: string; // Usually skill item image
-  resultMessages?: Map<AbilitySuccessLevelEnum | undefined, string>; // Extra html to display in the roll
+  /** Extra html to display in the roll, by success level. A Map is stored as a plain object. */
+  resultMessages?:
+    Map<AbilitySuccessLevelEnum | undefined, string> | Partial<Record<string, string>>;
   speaker?: ChatMessage.SpeakerData;
   rollMode?: foundry.dice.Roll.Mode;
 };

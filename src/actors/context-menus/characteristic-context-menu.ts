@@ -22,7 +22,7 @@ export const characteristicMenuOptions = (
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement) => {
       const { name: characteristicName } = getCharacteristic(actor, el);
-      await actor.characteristicRoll(characteristicName, token);
+      await actor.rollCharacteristic(characteristicName, { token });
     },
   },
   {
@@ -31,7 +31,7 @@ export const characteristicMenuOptions = (
     visible: () => true,
     onClick: async (_event: Event, el: HTMLElement): Promise<void> => {
       const { name: characteristicName } = getCharacteristic(actor, el);
-      await actor.characteristicRollImmediate(characteristicName, token);
+      await actor.rollCharacteristic(characteristicName, { skipDialog: true, token });
     },
   },
   {
