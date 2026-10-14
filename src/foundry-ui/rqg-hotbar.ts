@@ -71,11 +71,8 @@ export class RqgHotbar extends Hotbar {
   static macroActions = new Map<MacroAction, (doc: Document.Any) => string>([
     ["abilityRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.roll();`],
     ["attack", (doc) => `const item = await fromUuid("${doc.uuid}"); item.attack();`],
-    [
-      "spiritMagicRoll",
-      (doc) => `const item = await fromUuid("${doc.uuid}"); item.spiritMagicRoll();`,
-    ],
-    ["runeMagicRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.runeMagicRoll();`],
+    ["spiritMagicRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.cast();`],
+    ["runeMagicRoll", (doc) => `const item = await fromUuid("${doc.uuid}"); item.cast();`],
     ["rollTable", (doc) => `(await fromUuid("${doc.uuid}")).draw()`],
     ["toggleSheet", (doc) => `Hotbar.toggleDocumentSheet("${doc.uuid}")`],
     [

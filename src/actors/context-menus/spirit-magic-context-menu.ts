@@ -25,7 +25,7 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
       if (!item) {
         return;
       }
-      await item.spiritMagicRoll(undefined, actor);
+      await actor.castSpell(item);
     },
   },
   {
@@ -41,9 +41,9 @@ export const spiritMagicMenuOptions = (actor: CharacterActor): RqgContextMenuEnt
         return;
       }
       if (item.system.isVariable && item.system.points > 1) {
-        await item.spiritMagicRoll(undefined, actor);
+        await actor.castSpell(item);
       } else {
-        await item.spiritMagicRollImmediate(undefined, undefined, actor);
+        await actor.castSpell(item, { skipDialog: true });
       }
     },
   },

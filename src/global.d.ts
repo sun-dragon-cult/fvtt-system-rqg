@@ -20,6 +20,11 @@ import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-sp
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import type { SpiritMagicRoll } from "./rolls/spirit-magic-roll/spirit-magic-roll.ts";
+import type { SpiritMagicRollOptions } from "./rolls/spirit-magic-roll/spirit-magic-roll.types.ts";
+import type { RuneMagicRoll } from "./rolls/rune-magic-roll/rune-magic-roll.ts";
+import type { RuneMagicRollOptions } from "./rolls/rune-magic-roll/rune-magic-roll.types.ts";
 import type { AbilityRoll } from "./rolls/ability-roll/ability-roll.ts";
 import type { AbilityRollOptions } from "./rolls/ability-roll/ability-roll.types.ts";
 import type { CharacteristicRoll } from "./rolls/characteristic-roll/characteristic-roll.ts";
@@ -98,6 +103,26 @@ declare global {
     "rqg.preReputationRoll": (actor: RqgActor, options: AbilityRollOptions) => boolean | void;
     /** After a Reputation roll, on the rolling client. */
     "rqg.reputationRoll": (actor: RqgActor, roll: AbilityRoll, options: AbilityRollOptions) => void;
+    /**
+     * Before a spirit or rune magic spell is cast, on the casting client, before the cast is
+     * checked. `caster` may differ from the spell's owner (Allied Spirit, bound spirit, matrix).
+     * Change `options` or return false to cancel; see `rqg.preAbilityRoll`. For rune magic the
+     * rune is already chosen: `usedRuneName` and `usedRuneChance` are only shown and rolled, while
+     * experience and rune points still go to that rune. To use another rune, cast with
+     * `usedRuneId` instead.
+     */
+    "rqg.preSpellCast": (
+      spell: SpellItem,
+      caster: RqgActor,
+      options: SpiritMagicRollOptions | RuneMagicRollOptions,
+    ) => boolean | void;
+    /** After a spell was cast and its costs paid, on the casting client. */
+    "rqg.spellCast": (
+      spell: SpellItem,
+      caster: RqgActor,
+      roll: SpiritMagicRoll | RuneMagicRoll,
+      options: SpiritMagicRollOptions | RuneMagicRollOptions,
+    ) => void;
   }
 
   namespace CONFIG {

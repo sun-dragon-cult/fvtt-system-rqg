@@ -44,7 +44,14 @@ import {
   getConfigStatusEffects,
   getSpeakerCompat,
 } from "../system/fvtt-type-compat";
-import { type RollMethodOptions, warnDeprecatedRollMethod } from "../rolls/roll-method-options";
+import {
+  type RollMethodOptions,
+  type SpellCastOptions,
+  warnDeprecatedRollMethod,
+} from "../rolls/roll-method-options";
+import { type SpellItem, spellItemTypes } from "@item-model/spell.ts";
+import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
+import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
 import {
   type MagicPointSourceSelection,
   SELF_MAGIC_POINT_SOURCE,
@@ -372,6 +379,20 @@ export class RqgActor extends Actor {
       },
       { overwrite: false },
     ) as CharacteristicRollOptions;
+  }
+
+  /**
+   * Cast a spirit or rune magic spell with this actor as the caster - part of the public API. The
+   * spell may belong to someone else: an Allied Spirit, a bound spirit or a matrix. Opens the cast
+   * dialog, or with `skipDialog` casts at once and returns the roll (undefined if the cast was
+   * stopped).
+   */
+  public async castSpell(
+    spell: SpellItem,
+    options: SpellCastOptions = {},
+  ): Promise<SpiritMagicRoll | RuneMagicRoll | undefined> {
+    assertDocumentSubType<SpellItem>(spell, spellItemTypes);
+    return await spell.system.cast(this, options);
   }
 
   /**

@@ -12,7 +12,7 @@ import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 import { RqgItem } from "@items/rqg-item.ts";
-import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
@@ -305,7 +305,8 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         cultId: spellItem.system.cultId,
       });
     }
-    const options: RuneMagicRollImmediateOptions = {
+    const options: SpellCastOptions = {
+      token,
       usedRuneId: usedRune.id ?? undefined,
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
@@ -344,6 +345,6 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    await spellItem.runeMagicRollImmediate(options, token, casterActor);
+    await spellItem.system.cast(casterActor, { ...options, skipDialog: true });
   }
 }

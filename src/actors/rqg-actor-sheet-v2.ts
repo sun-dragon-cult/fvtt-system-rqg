@@ -564,9 +564,9 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
    *  the caster's own (and #1002 external) items and for #959 Matrix Spells. */
   private _castSpiritMagicItem(item: SpiritMagicItem, immediate: boolean): Promise<unknown> {
     if (!immediate || (item.system.isVariable && item.system.points > 1)) {
-      return item.spiritMagicRoll(this.document.token, this.actor);
+      return this.actor.castSpell(item, { token: this.document.token });
     }
-    return item.spiritMagicRollImmediate(undefined, this.document.token, this.actor);
+    return this.actor.castSpell(item, { skipDialog: true, token: this.document.token });
   }
 
   private _bindSingleDoubleClick(
@@ -1002,12 +1002,12 @@ export class RqgActorSheetV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
         `Couldn't find item to roll Rune Magic`,
       );
       this._bindSingleDoubleClick(el, {
-        onSingle: () => item.runeMagicRoll(this.document.token, this.actor),
+        onSingle: () => this.actor.castSpell(item, { token: this.document.token }),
         onDouble: () => {
           if (item.system.points === 1) {
-            return item.runeMagicRollImmediate({}, this.document.token, this.actor);
+            return this.actor.castSpell(item, { skipDialog: true, token: this.document.token });
           } else {
-            return item.runeMagicRoll(this.document.token, this.actor);
+            return this.actor.castSpell(item, { token: this.document.token });
           }
         },
       });

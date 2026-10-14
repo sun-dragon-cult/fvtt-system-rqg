@@ -9,8 +9,9 @@ import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
 import { localize, assertDocumentSubType, isDocumentSubType, isTruthy } from "../../system/util";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
-import { getSpeakerCompat } from "../../system/fvtt-type-compat";
-import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import type { SpellCastOptions } from "../../rolls/roll-method-options";
+import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
@@ -240,36 +241,36 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
   }
 
   /**
-   * Open a dialog for a RuneMagicRoll. `casterActor` defaults to the spell's own owner - pass it
-   * explicitly when the spell is being cast via an external spell source (#1002, e.g. an Allied
-   * Spirit bond partner's known spells) so the roll uses the caster's own Rune chance, not the
-   * spell owner's.
+   * Open the cast dialog, or with `skipDialog` cast at once. `casterActor` is who casts: the
+   * spell's owner, or someone casting through an external spell source (#1002).
    */
-  async runeMagicRoll(token?: TokenDocument | null, casterActor?: RqgActor): Promise<void> {
-    // Dynamic import to avoid circular dependency through RuneMagicRollDialogV2 → rqgItem.ts
-    const { RuneMagicRollDialogV2 } =
-      await import("../../applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2");
-    await new RuneMagicRollDialogV2(
-      this.parent as unknown as RuneMagicItem,
-      token,
-      casterActor,
-    ).render({
-      force: true,
-    });
+  async cast(
+    casterActor: RqgActor,
+    options: SpellCastOptions = {},
+  ): Promise<RuneMagicRoll | undefined> {
+    if (!options.skipDialog) {
+      // Dynamic import to avoid circular dependency through RuneMagicRollDialogV2 → rqgItem.ts
+      const { RuneMagicRollDialogV2 } =
+        await import("../../applications/rune-magic-roll-dialog/rune-magic-roll-dialog-v2");
+      await new RuneMagicRollDialogV2(
+        this.parent as unknown as RuneMagicItem,
+        options.token,
+        casterActor,
+      ).render({ force: true });
+      return undefined;
+    }
+    return await this.castWithoutDialog(casterActor, options);
   }
 
   /**
-   * Do a runeMagicRoll and possibly draw rune and magic points afterward.
-   * Also adds experience to the used rune. `casterActor` defaults to this Item's own owner (same
-   * as before #1002); pass it explicitly to roll and pay for the cast as the actual caster, when
-   * casting a spell known via an external spell source rather than the actor that owns this Item.
+   * Runs the `rqg.preSpellCast` hook, checks the cast, rolls, posts the result, spends rune and
+   * magic points and runs `rqg.spellCast`. Undefined when the cast was stopped.
    */
-  async runeMagicRollImmediate(
-    options: RuneMagicRollImmediateOptions = {},
-    token?: TokenDocument | null,
-    casterActor: RqgActor = this.parent?.actor as RqgActor,
+  private async castWithoutDialog(
+    casterActor: RqgActor,
+    options: SpellCastOptions,
   ): Promise<RuneMagicRoll | undefined> {
-    const item = this.parent;
+    const item = this.parent as unknown as RuneMagicItem;
     assertDocumentSubType<CharacterActor>(
       casterActor,
       ActorTypeEnum.Character,
@@ -282,18 +283,47 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
     const cult = this.getCastingCult(casterActor);
     if (!cult) {
-      return logger.throw(ERR.runeMagicHasNoCult, { itemUuid: item?.uuid });
+      return logger.throw(ERR.runeMagicHasNoCult, { itemUuid: item.uuid });
     }
 
-    const levelUsedOrDefault = options.levelUsed ?? this.points;
-    // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
-    // instead of always using the caster's own pool - matches the cast dialogs' default.
-    const magicPointSource = options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
-    const runePointSource = options.runePointSource ?? SELF_RUNE_POINT_SOURCE;
+    const usedRune = options.usedRuneId
+      ? this.getEligibleRunes(casterActor).find((r) => r.id === options.usedRuneId)
+      : this.getStrongestEligibleRune(casterActor);
+    if (!usedRune) {
+      ui.notifications?.warn(
+        localize("RQG.Dialog.RuneMagicRoll.NoEligibleRune", {
+          actorName: casterActor.name ?? "",
+          spellName: item.name ?? "",
+        }),
+      );
+      return;
+    }
 
+    const rollOptions: RuneMagicRollOptions = {
+      usedRuneName: usedRune.name ?? "",
+      usedRuneChance: Number(usedRune.system.chance ?? 0),
+      spellName: item.name ?? "",
+      spellImg: item.img ?? undefined,
+      isOneUse: this.isOneUse,
+      levelUsed: options.levelUsed ?? this.points,
+      magicPointBoost: options.magicPointBoost ?? 0,
+      // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
+      // instead of always using the caster's own pool - matches the cast dialogs' default.
+      magicPointSource: options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE,
+      runePointSource: options.runePointSource ?? SELF_RUNE_POINT_SOURCE,
+      modifiers: [...(options.modifiers ?? [])],
+      speaker: getSpeakerCompat({ actor: casterActor, token: options.token }),
+      rollMode: options.rollMode,
+    };
+    if (!callRqgPreHook("rqg.preSpellCast", item, casterActor, rollOptions)) {
+      return undefined;
+    }
+
+    const magicPointSource = rollOptions.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE;
+    const runePointSource = rollOptions.runePointSource ?? SELF_RUNE_POINT_SOURCE;
     const validationError = this.getCastValidationError(
-      levelUsedOrDefault,
-      options.magicPointBoost,
+      rollOptions.levelUsed,
+      rollOptions.magicPointBoost,
       magicPointSource,
       runePointSource,
       casterActor,
@@ -306,7 +336,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
     const resistedSpellTarget = await resolveResistedSpellCastTarget(
       this.resistedBy,
       casterActor,
-      item?.name ?? undefined,
+      item.name ?? undefined,
     );
     if (!resistedSpellTarget.proceed) {
       return;
@@ -314,37 +344,14 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
 
     const boundSpiritDrainDecision = await confirmBoundSpiritDrain(
       casterActor,
-      options.magicPointBoost ?? 0,
+      rollOptions.magicPointBoost,
       magicPointSource,
     );
     if (!boundSpiritDrainDecision.proceed) {
       return;
     }
 
-    const runeMagicItemTyped = item as unknown as RuneMagicItem;
-    const usedRune = options.usedRuneId
-      ? this.getEligibleRunes(casterActor).find((r) => r.id === options.usedRuneId)
-      : this.getStrongestEligibleRune(casterActor);
-    if (!usedRune) {
-      const msg = "Could not find a rune to use for rune magic";
-      ui.notifications?.warn(msg);
-      return;
-    }
-
-    const speaker = getSpeakerCompat({ actor: casterActor, token });
-
-    const runeMagicRoll = await RuneMagicRoll.roll({
-      usedRuneName: usedRune.name ?? "",
-      usedRuneChance: Number(usedRune.system.chance ?? 0),
-      spellName: runeMagicItemTyped.name ?? "",
-      spellImg: runeMagicItemTyped.img ?? undefined,
-      isOneUse: this.isOneUse,
-      levelUsed: levelUsedOrDefault,
-      magicPointBoost: options.magicPointBoost ?? 0,
-      modifiers: options?.modifiers ?? [],
-      speaker: speaker,
-      rollMode: options?.rollMode,
-    });
+    const runeMagicRoll = await RuneMagicRoll.roll(rollOptions);
     if (runeMagicRoll.successLevel == null) {
       return logger.throw(ERR.rollHasNoSuccessLevel, { roll: "RuneMagicRoll" });
     }
@@ -354,23 +361,22 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       resistedBy: this.resistedBy,
       castRoll: runeMagicRoll,
       casterActor: casterActor,
-      casterToken: token,
-      spellUuid: item?.uuid ?? "",
+      casterToken: options.token,
+      spellUuid: item.uuid ?? "",
     });
 
-    const mpCost = options.magicPointBoost ?? 0;
-    const rpCost = options.levelUsed ?? this.points;
     await handleRollResult(
       runeMagicRoll.successLevel,
-      rpCost,
-      mpCost,
+      rollOptions.levelUsed,
+      rollOptions.magicPointBoost,
       usedRune,
-      runeMagicItemTyped,
+      item,
       magicPointSource,
       runePointSource,
       casterActor,
       boundSpiritDrainDecision.avoidRelease,
     );
+    callRqgHook("rqg.spellCast", item, casterActor, runeMagicRoll, rollOptions);
     return runeMagicRoll;
   }
 

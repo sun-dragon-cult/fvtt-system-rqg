@@ -12,6 +12,20 @@ export type RollMethodOptions = {
   rollMode?: foundry.dice.Roll.Mode;
 };
 
+/** Options for `item.cast` and `actor.castSpell` - part of the public API. */
+export type SpellCastOptions = RollMethodOptions & {
+  /** Points to cast with, defaults to the spell's points. */
+  levelUsed?: number;
+  /** Extra magic points spent to boost the spell. */
+  magicPointBoost?: number;
+  /** Where magic points are drawn from; defaults to drawing stored sources first. */
+  magicPointSource?: string;
+  /** Rune magic: where rune points are drawn from; defaults to the caster's own cult. */
+  runePointSource?: string;
+  /** Rune magic: the id of the rune item to roll; defaults to the strongest eligible rune. */
+  usedRuneId?: string;
+};
+
 export function warnDeprecatedRollMethod(oldCall: string, newCall: string): void {
   warnDeprecated(oldCall, newCall, { since: "6.2.0", until: "6.4.0" });
 }
