@@ -524,6 +524,11 @@
           "Accepted": "Accepted"
         }
       },
+      "SkillBehavior": {
+        "Apply": "Apply",
+        "Done": "Done",
+        "AlreadyApplied": "This has already been applied."
+      },
       "SpellCast": {
         "UnknownTarget": "Unknown target",
         "ApplyEffect": "Apply",
@@ -1631,7 +1636,8 @@
         "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
         "TokenHasNoActor": "This token has no actor associated with it.",
         "NoHitLocationForRoll": "The actor has no hit location matching the hit location roll.",
-        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it."
+        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it.",
+        "SkillBehaviorFailed": "The code for {skillName} failed. Check the console and the module that registered it."
       },
       "Warn": {
         "TargetOneTokenOnly": "Please target one token only",

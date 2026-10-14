@@ -101,6 +101,7 @@ export const templatePaths = {
   resistanceRequestChatMessage: "systems/rqg/chat/resistance-request-chat-template.hbs",
   spellCastChatMessage: "systems/rqg/chat/spell-cast-chat-template.hbs",
   spellCastTargets: "systems/rqg/chat/spell-cast-targets.hbs",
+  skillBehaviorTargets: "systems/rqg/chat/skill-behavior-targets.hbs",
 
   rqidTooltip: "systems/rqg/documents/rqid-tooltip.hbs",
 

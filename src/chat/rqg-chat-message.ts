@@ -14,6 +14,7 @@ import {
   handleSpellCastRuling,
   renderSpellCastTargets,
 } from "./spell-cast-handlers";
+import { handleApplySkillBehavior, renderSkillBehaviorTargets } from "./skill-behavior-handlers";
 import {
   getResistanceRequestTargetOutcome,
   getSpellCastOutcome,
@@ -143,6 +144,11 @@ export class RqgChatMessage extends ChatMessage {
       await handleApplySpellEffect(clickedButton);
     }
 
+    if (clickedButton?.dataset["applySkillBehavior"] != null) {
+      RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
+      await handleApplySkillBehavior(clickedButton);
+    }
+
     if (clickedButton?.dataset["spellCastRuling"] != null) {
       RqgChatMessage.commonClickHandling(clickEvent, clickedButton);
       await handleSpellCastRuling(clickedButton);
@@ -179,6 +185,7 @@ export class RqgChatMessage extends ChatMessage {
       ),
       this.#enrichHtmlWithRoll(html, "castRoll", "[data-cast-roll-html]", Roll),
       this.#enrichSpellCastCard(html),
+      this.#enrichSkillBehaviorTargets(html),
     ]);
 
     this.#hideHtmlElementsByOwnership(html);
@@ -267,6 +274,17 @@ export class RqgChatMessage extends ChatMessage {
     const targetsSlot = html.querySelector<HTMLElement>("[data-spell-cast-targets]");
     if (targetsSlot && targets.length) {
       targetsSlot.innerHTML = await renderSpellCastTargets(targets, this);
+    }
+  }
+
+  async #enrichSkillBehaviorTargets(html: HTMLElement): Promise<void> {
+    // A blind roll's result is hidden, so who it helps would give it away.
+    if (this.blind && !game.user?.isGM) {
+      return;
+    }
+    const rows = await renderSkillBehaviorTargets(this);
+    if (rows) {
+      html.querySelector(".message-content")?.insertAdjacentHTML("beforeend", rows);
     }
   }
 

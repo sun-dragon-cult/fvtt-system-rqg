@@ -19,6 +19,7 @@ import type { RqgItem } from "./items/rqg-item.ts";
 import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
+import type { SkillBehaviorRegistry } from "./system/skill-behaviors/skill-behavior.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
 import type { SpellItem } from "@item-model/spell.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
@@ -83,6 +84,8 @@ declare global {
   interface RqgHooks {
     /** Fired at `setup`: modules register their spell behaviours. */
     "rqg.registerSpellBehaviours": (registry: SpellBehaviourRegistry) => void;
+    /** Fired at `setup`: modules register their skill behaviors. */
+    "rqg.registerSkillBehaviors": (registry: SkillBehaviorRegistry) => void;
     /**
      * Before a skill, rune or passion roll, on the rolling client. Change `options` (for example
      * push to `options.modifiers`) or return false to cancel. Listeners run synchronously.
