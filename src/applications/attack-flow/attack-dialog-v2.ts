@@ -697,6 +697,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const attack: AttackHookData = {
       attacker: actor,
+      target: (game.user?.targets.first()?.actor as RqgActor | null | undefined) ?? undefined,
       usage: formDataObject.usageType,
       combatManeuver,
       projectile: projectileItem,
