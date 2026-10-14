@@ -1288,6 +1288,7 @@
       },
       "Weapon": {
         "Name": "Name",
+        "UsageNotAvailable": "{weaponName} has no {usage} usage.",
         "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
         "DropSkillMissingRqid": "The dropped skill has no RQID and cannot be linked to this weapon",
         "WrongDropzone": "This item cannot be dropped here",

@@ -95,6 +95,10 @@ const REGISTRY = {
     code: "RQG-B0013",
     message: "Damage or heal was given an amount that is not a finite number",
   },
+  projectileSpellsNotSpent: {
+    code: "RQG-B0014",
+    message: "The spells on a fired missile could not be spent",
+  },
 
   // ============================================================================
   // world — RQG-W00NN — misconfiguration or a missing reference; GM/user can fix it

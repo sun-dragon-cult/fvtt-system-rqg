@@ -21,6 +21,8 @@ import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effe
 import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
 import type { SpellItem } from "@item-model/spell.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { AttackHookData, DefenceHookData } from "./rolls/roll-method-options.ts";
 import type { SpiritMagicRoll } from "./rolls/spirit-magic-roll/spirit-magic-roll.ts";
 import type { SpiritMagicRollOptions } from "./rolls/spirit-magic-roll/spirit-magic-roll.types.ts";
 import type { RuneMagicRoll } from "./rolls/rune-magic-roll/rune-magic-roll.ts";
@@ -122,6 +124,34 @@ declare global {
       caster: RqgActor,
       roll: SpiritMagicRoll | RuneMagicRoll,
       options: SpiritMagicRollOptions | RuneMagicRollOptions,
+    ) => void;
+    /**
+     * When an attack is made, on the attacking client, before ammunition is used. Push to
+     * `attack.rollOptions.modifiers` or return false to cancel; see `rqg.preAbilityRoll`.
+     */
+    "rqg.preAttack": (weapon: WeaponItem, attack: AttackHookData) => boolean | void;
+    /**
+     * The attack is made: the attack card is posted and ammunition used, on the attacking client.
+     * Not called when the card wasn't created. The attack roll is rolled later, in the defence.
+     */
+    "rqg.attack": (
+      weapon: WeaponItem,
+      attack: AttackHookData & { chatMessage: ChatMessage },
+    ) => void;
+    /**
+     * Before the defence is rolled, on the client that submits the defence (the defender's or the
+     * GM's). To forbid a parry or dodge, set `defence.defence = "ignore"` and push a note saying
+     * why; returning false aborts the defence and leaves the attack card waiting for one.
+     */
+    "rqg.preDefence": (defender: RqgActor, defence: DefenceHookData) => boolean | void;
+    /** After the attack and defence are rolled and the attack card updated with the outcome. */
+    "rqg.defence": (
+      defender: RqgActor,
+      defence: DefenceHookData & {
+        attackRoll: AbilityRoll;
+        defenceRoll: AbilityRoll | undefined;
+        chatMessage: ChatMessage;
+      },
     ) => void;
   }
 

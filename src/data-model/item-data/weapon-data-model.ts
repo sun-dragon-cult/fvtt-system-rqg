@@ -1,5 +1,6 @@
 import type { RqgItem } from "@items/rqg-item.ts";
 import type { RqidString } from "../../system/api/rqid-api";
+import type { AttackOptions } from "../../rolls/roll-method-options";
 import { RqidLink } from "../shared/rqid-link";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { physicalItemSchemaFields } from "../shared/physical-item-schema-fields";
@@ -13,7 +14,8 @@ import {
   type WeaponUsageType,
 } from "../shared/weapon-usage-choices";
 import { encodeLegacyWeaponSkillReferenceInRqid } from "./weapon-skill-link";
-import { assertDocumentSubType, requireValue, RqgError } from "../../system/util";
+import { assertDocumentSubType, localize, requireValue, RqgError } from "../../system/util";
+import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import { DamageDegree } from "../../system/combat-calculations.defs";
 import {
@@ -23,6 +25,7 @@ import {
 import { damageType } from "./weapon-enums";
 import type { DamageType } from "./weapon-enums";
 
+const logger = new RqgLogger("WeaponDataModel");
 export type WeaponItem = RqgItem & { system: Item.SystemOfType<"weapon"> };
 
 export const damageTypeOptions: SelectOptionData<DamageType>[] = Object.values(damageType).map(
@@ -191,13 +194,25 @@ export class WeaponDataModel extends RqgItemDataModel<WeaponSchema> {
     return super.migrateData(source);
   }
 
-  /**
-   * Open an attackDialog to initiate an attack sequence.
-   */
-  async attack(): Promise<void> {
-    // Dynamic import to avoid circular dependency through AttackDialogV2 → itemTypes.ts → weapon.ts → rqgItem.ts
+  /** Open the attack dialog. `usage` preselects how the weapon is used and is remembered on it. */
+  async attack(options: AttackOptions = {}): Promise<void> {
+    const weapon = this.parent as unknown as WeaponItem;
+    if (options.usage && options.usage !== this.defaultUsage) {
+      // Dynamic imports to avoid circular dependency through weapon.ts → rqgItem.ts
+      const { hasLinkedSkillReference } =
+        await import("../../items/weapon-item/weapon-skill-links");
+      if (!hasLinkedSkillReference(weapon, options.usage)) {
+        logger.throw(
+          localize("RQG.Item.Weapon.UsageNotAvailable", {
+            weaponName: weapon.name ?? "",
+            usage: localize(`RQG.Game.WeaponUsage.${options.usage}-full`),
+          }),
+        );
+      }
+      await weapon.update({ system: { defaultUsage: options.usage } });
+    }
     const { AttackDialogV2 } = await import("../../applications/attack-flow/attack-dialog-v2");
-    await new AttackDialogV2(this.parent as unknown as WeaponItem).render({ force: true });
+    await new AttackDialogV2(weapon).render({ force: true });
   }
 
   /**

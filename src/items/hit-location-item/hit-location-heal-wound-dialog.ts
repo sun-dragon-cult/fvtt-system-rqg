@@ -6,6 +6,7 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import { assertDocumentSubType, isDocumentSubType, localize } from "../../system/util";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { DocumentAppsLink } from "../../applications/app-parts/document-apps-link";
 import type { RqgDotPickerElement } from "../../applications/dot-picker/dot-picker-element";
 import { distributeHealing, sumWounds } from "./hit-location-healing-calculations";
 
@@ -569,6 +570,8 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
   private feedbackSnapshot = "";
   /** A heal is being applied or animated; further submits and renders wait for it. */
   private healing = false;
+  // Rerender when the actor or its hit locations change elsewhere
+  private readonly actorLink = new DocumentAppsLink(this);
 
   constructor(
     private readonly actor: RqgActor,
@@ -619,19 +622,10 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
     };
   }
 
-  // Rerender when the actor or its hit locations change elsewhere
-  protected override async _onFirstRender(
-    context: DeepPartial<HealDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    await super._onFirstRender(context, options);
-    (this.actor.apps as Record<string, unknown>)[this.id] = this;
-  }
-
   protected override _onClose(
     ...args: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>
   ): void {
-    delete (this.actor.apps as Record<string, unknown>)[this.id];
+    this.actorLink.unlink();
     super._onClose(...args);
   }
 
@@ -640,6 +634,7 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
+    this.actorLink.link(this.actor);
     // The content part is replaced on every render, so its listeners don't pile up
     const content = this.element.querySelector<HTMLElement>(".heal-wound-dialog");
     const picker = content?.querySelector<HTMLElement & { value: unknown }>(

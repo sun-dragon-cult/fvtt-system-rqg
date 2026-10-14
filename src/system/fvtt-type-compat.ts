@@ -45,6 +45,11 @@ export function callRqgHook<K extends keyof RqgHooks>(
   (Hooks.callAll as (hook: string, ...args: unknown[]) => boolean)(hook, ...args);
 }
 
+/** Listen to one of the system's own hooks (RqgHooks); returns the id for `Hooks.off`. */
+export function onRqgHook<K extends keyof RqgHooks>(hook: K, fn: RqgHooks[K]): number {
+  return (Hooks.on as (hook: string, fn: (...args: any[]) => unknown) => number)(hook, fn);
+}
+
 /** Call one of the system's pre hooks (RqgHooks); false when a listener returned false to cancel. */
 export function callRqgPreHook<K extends keyof RqgHooks>(
   hook: K,

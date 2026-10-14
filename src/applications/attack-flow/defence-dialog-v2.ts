@@ -41,7 +41,9 @@ import { toRqidString } from "../../system/api/rqid-validation";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
-import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import type { DefenceHookData } from "../../rolls/roll-method-options";
+import { resolveActorFromUuid } from "../resistance-roll-dialog/resistance-roll-shared";
 import { getWeaponEffectModifier } from "@items/weapon-item/weapon-skill-links";
 
 const logger = new RqgLogger("DefenceDialogV2");
@@ -177,7 +179,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     form: {
       handler: DefenceDialogV2.onSubmit,
       submitOnChange: false,
-      closeOnSubmit: true,
+      closeOnSubmit: false, // Closed by onSubmit once the defence is settled
     },
     position: {
       width: "auto" as const,
@@ -493,21 +495,17 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       ui.notifications?.warn("Button not working - programming error");
       return;
     }
-    // @ts-expect-error close - close immediately instead of waiting for roll animation
-    this.close();
-
     const attackChatMessage = (await fromUuid(formDataObject.attackChatMessageUuid ?? "")) as
       RqgChatMessage | undefined;
 
     if (!attackChatMessage) {
-      // The dialog already closed above - nothing to retry against, so just notify and stop.
       logger.error(ERR.attackMessageMissing, formDataObject);
       return;
     }
 
     const messageData = attackChatMessage!.toObject();
 
-    const selectedParryingWeapon = (await fromUuid(
+    let selectedParryingWeapon = (await fromUuid(
       formDataObject.parryingWeaponUuid ?? "",
     )) as RqgItem | null;
     if (selectedParryingWeapon) {
@@ -654,6 +652,36 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       speaker: getSpeakerCompat({ token: defendingToken, actor: defendingActor }),
     };
 
+    const chosenDefence = formDataObject.defence ?? "ignore";
+    const defence: DefenceHookData = {
+      attacker: resolveActorFromUuid(attackChatMessage.system.attackingTokenOrActorUuid ?? ""),
+      attackChatMessage,
+      defence: chosenDefence,
+      parryingWeapon: isDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon)
+        ? selectedParryingWeapon
+        : undefined,
+      parryingWeaponUsage: formDataObject.parryingWeaponUsage,
+      rollOptions: defenceRollOptions,
+      notes: [],
+    };
+    if (defendingActor && !callRqgPreHook("rqg.preDefence", defendingActor, defence)) {
+      return;
+    }
+    if (defence.defence === "ignore" && chosenDefence !== "ignore") {
+      // Forbidden: from here on it's a plain undefended attack
+      formDataObject.defence = "ignore";
+      formDataObject.parryingWeaponUsage = undefined;
+      selectedParryingWeapon = null;
+      defendSkillItem = undefined;
+      defence.parryingWeapon = undefined;
+      defence.parryingWeaponUsage = undefined;
+    } else {
+      defence.defence = chosenDefence;
+    }
+    // Closed once the defence is settled, before waiting for the roll animation
+    // @ts-expect-error close - Foundry binds `this` to the dialog instance at runtime
+    this.close();
+
     const attackRollData = attackChatMessage!.system.attackRoll;
     const attackRoll = safeFromJSON<AbilityRoll>(AbilityRoll, attackRollData);
 
@@ -743,11 +771,12 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       parryingWeaponDamageType ?? "parry",
     );
 
-    const outcomeDescription = getBasicOutcomeDescription(
-      formDataObject.defence,
-      attackRoll.successLevel,
-      defenceRoll?.successLevel,
-    );
+    const outcomeDescription =
+      getBasicOutcomeDescription(
+        formDataObject.defence,
+        attackRoll.successLevel,
+        defenceRoll?.successLevel,
+      ) + defence.notes.map((note) => `<p>${foundry.utils.escapeHTML(note)}</p>`).join("");
 
     console.debug("no implementation for useParryHitLocation yet", useParryHitLocation);
 
@@ -819,6 +848,14 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     activateChatTab();
     await updateChatMessage(attackChatMessage!, messageData);
+    if (defendingActor) {
+      callRqgHook("rqg.defence", defendingActor, {
+        ...defence,
+        attackRoll,
+        defenceRoll,
+        chatMessage: attackChatMessage,
+      });
+    }
     const attackWeapon = (await fromUuid(attackChatMessage!.system.attackWeaponUuid)) as
       RqgItem | undefined;
     if (attackWeapon) {
