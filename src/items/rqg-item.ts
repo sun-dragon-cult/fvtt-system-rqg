@@ -40,6 +40,7 @@ import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-ro
 import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
 import {
   type RollMethodOptions,
+  type AttackOptions,
   type SpellCastOptions,
   warnDeprecatedRollMethod,
 } from "../rolls/roll-method-options";
@@ -345,11 +346,12 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Open an attackDialog to initiate an attack sequence
+   * Attack with this weapon - part of the public API. Opens the attack dialog, where the combat
+   * maneuver is chosen; `usage` preselects how the weapon is used and is remembered on it.
    */
-  public async attack(): Promise<void> {
+  public async attack(options: AttackOptions = {}): Promise<void> {
     assertDocumentSubType<WeaponItem>(this, ItemTypeEnum.Weapon);
-    await this.system.attack();
+    await this.system.attack(options);
   }
 
   /**

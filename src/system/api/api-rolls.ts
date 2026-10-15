@@ -11,7 +11,6 @@ import type { CharacteristicRoll } from "../../rolls/characteristic-roll/charact
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { SpellCastOptions } from "../../rolls/roll-method-options";
-import { hasLinkedSkillReference } from "../../items/weapon-item/weapon-skill-links";
 import { resolveMatrixSpellItem } from "../spell-matrix";
 import { RqgLogger } from "../logging/rqg-logger";
 import { type ActorRef, findItem, type ItemRef, resolveActor, resolveItem } from "./api-resolve";
@@ -83,13 +82,7 @@ export async function attack(
   options: { actor?: ActorRef; usage?: UsageType } = {},
 ): Promise<void> {
   const { item } = resolveItemAndActor<WeaponItem>(ref, options.actor, [ItemTypeEnum.Weapon]);
-  if (options.usage && options.usage !== item.system.defaultUsage) {
-    if (!hasLinkedSkillReference(item, options.usage)) {
-      return logger.throw(`"${item.name}" can't be used as ${options.usage}`);
-    }
-    await item.update({ system: { defaultUsage: options.usage } });
-  }
-  await item.attack();
+  await item.attack({ usage: options.usage });
 }
 
 export type SpellRollOptions = RollOptions & {

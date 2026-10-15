@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  firedMissilesSettled,
   initSpelledProjectiles,
   projectileLabel,
   spendProjectileSpells,
@@ -170,10 +171,20 @@ describe("spendProjectileSpells", () => {
 describe("initSpelledProjectiles", () => {
   class MockItem {}
   let onUpdateEffect: (effect: any, changed: any, options: object, userId: string) => void;
+  let onAttack: (weapon: any, attack: any) => void;
 
   beforeEach(() => {
     vi.stubGlobal("Item", MockItem);
-    vi.stubGlobal("Hooks", { on: vi.fn((_hook: string, fn: any) => (onUpdateEffect = fn)) });
+    vi.stubGlobal("Hooks", {
+      on: vi.fn((hook: string, fn: any) => {
+        if (hook === "updateActiveEffect") {
+          onUpdateEffect = fn;
+        }
+        if (hook === "rqg.attack") {
+          onAttack = fn;
+        }
+      }),
+    });
     vi.stubGlobal("game", { user: { id: "gm" } });
     initSpelledProjectiles();
   });
@@ -190,6 +201,33 @@ describe("initSpelledProjectiles", () => {
     const actor = makeActor([stack, arrow]);
     return { arrow, stack, actor };
   }
+
+  it("spends the spells on a missile fired from a launcher, not on a thrown weapon", async () => {
+    const speedart: any = { id: "speedart", active: true, system: { spell: {} } };
+    const { arrow, actor } = splitArrow([speedart]);
+    const bow = makeItem({ id: "bow" });
+    const javelin = makeItem({ id: "javelin", effects: [speedart] });
+
+    onAttack(bow, { projectile: arrow });
+    await vi.waitFor(() => expect(actor.deleteEmbeddedDocuments).toHaveBeenCalled());
+    onAttack(javelin, { projectile: javelin });
+    onAttack(bow, { projectile: undefined });
+    await Promise.resolve();
+
+    expect(arrow.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["speedart"]);
+    expect(javelin.deleteEmbeddedDocuments).not.toHaveBeenCalled();
+  });
+
+  it("lets the next attack wait until a fired missile's spells are spent", async () => {
+    const speedart: any = { id: "speedart", active: true, system: { spell: {} } };
+    const { arrow, actor } = splitArrow([speedart]);
+
+    onAttack(makeItem({ id: "bow" }), { projectile: arrow });
+    await firedMissilesSettled();
+
+    expect(arrow.deleteEmbeddedDocuments).toHaveBeenCalledWith("ActiveEffect", ["speedart"]);
+    expect(actor.deleteEmbeddedDocuments).toHaveBeenCalledWith("Item", ["split"]);
+  });
 
   it("returns a split missile to its stack when its last spell expires", async () => {
     const speedart: any = { id: "speedart", active: false, system: { spell: {} } };

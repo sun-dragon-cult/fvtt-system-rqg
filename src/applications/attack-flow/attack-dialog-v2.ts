@@ -42,13 +42,12 @@ import {
   resolveLinkedSkillChanceData,
 } from "@items/weapon-item/weapon-skill-links";
 import { getEquippedProjectileOptions } from "@actors/rqg-actor-sheet-data-prep.ts";
-import {
-  getLoadedProjectile,
-  projectileSpellNames,
-  spendProjectileSpells,
-} from "@items/weapon-item/spelled-projectile";
+import { firedMissilesSettled, projectileSpellNames } from "@items/weapon-item/spelled-projectile";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
-import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { DocumentAppsLink } from "../app-parts/document-apps-link";
+import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import type { AttackHookData } from "../../rolls/roll-method-options";
+import type { DeepPartial } from "fvtt-types/utils";
 import Token = foundry.canvas.placeables.Token;
 
 const logger = new RqgLogger("AttackDialogV2");
@@ -60,6 +59,21 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   ): boolean {
     const damageFormula = weaponItem.system.usage[usageType]?.damage ?? "";
     return /db(\/2)?/i.test(damageFormula.replaceAll(" ", ""));
+  }
+
+  protected override async _onRender(
+    context: DeepPartial<AttackDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
+    await super._onRender(context, options);
+    this.actorLink.link(this.weaponItem.parent as RqgActor | null);
+  }
+
+  protected override _onClose(
+    options: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>[0],
+  ): void {
+    this.actorLink.unlink();
+    super._onClose(options);
   }
 
   /** Aimed blow options come from the target's hit locations, so a select can't be patched in place. */
@@ -193,6 +207,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   ];
 
   private weaponItem: WeaponItem; // The chosen actor might not have any weapon
+  // Redraw when the attacker's items change, e.g. ammunition used or a missile back in its stack
+  private readonly actorLink = new DocumentAppsLink(this);
 
   constructor(
     weaponItem: WeaponItem,
@@ -598,15 +614,10 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       weaponItem,
     );
 
-    // Read before firing, since firing spends the projectile's spells
-    const firedProjectile =
-      formDataObject.usageType === "missile" ? getLoadedProjectile(weaponItem) : undefined;
-    const projectileModifier = Number(firedProjectile?.system.effect.add.missile.attack ?? 0);
-    const projectileSpells = firedProjectile ? projectileSpellNames(firedProjectile) : "";
-
-    let attackProjectileDamage = "";
+    let projectileItem: WeaponItem | undefined;
     if (formDataObject.usageType === "missile") {
-      const projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
+      await firedMissilesSettled();
+      projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
       if (!projectileItem || projectileItem?.system.quantity <= 0) {
         ui.notifications?.warn(
           localize("RQG.Dialog.Attack.OutOfAmmoWarn", {
@@ -616,25 +627,12 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         );
         return;
       }
-
-      if (formDataObject.reduceAmmoQuantity) {
-        const newQuantity = projectileItem?.system.quantity - 1;
-        if (newQuantity <= 0) {
-          ui.notifications?.warn(
-            localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
-              projectileName: projectileItem?.name,
-            }),
-          );
-        }
-        await projectileItem?.update({ system: { quantity: newQuantity } });
-      }
-      if (projectileItem !== weaponItem) {
-        attackProjectileDamage = projectileItem.system.getMagicDamageFormula("missile", "");
-        await spendProjectileSpells(projectileItem);
-      }
-      // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
-      await this.render(); // Make sure ammo count is updated in the dialog
     }
+    // A missile shot from a launcher, as opposed to a thrown weapon
+    const missile = projectileItem !== weaponItem ? projectileItem : undefined;
+    const projectileModifier = Number(missile?.system.effect.add.missile.attack ?? 0);
+    const projectileSpells = missile ? projectileSpellNames(missile) : "";
+    const attackProjectileDamage = missile?.system.getMagicDamageFormula("missile", "") ?? "";
 
     const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${formDataObject.usageType}`);
     const damageTypeTranslated = localize(
@@ -696,6 +694,29 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       abilityImg: weaponItem?.img ?? undefined,
       speaker: getSpeakerCompat({ token: tokenDocument, actor }), // Used to decide who can see the roll in chat
     };
+
+    const attack: AttackHookData = {
+      attacker: actor,
+      usage: formDataObject.usageType,
+      combatManeuver,
+      projectile: projectileItem,
+      rollOptions: attackRollOptions,
+    };
+    if (!callRqgPreHook("rqg.preAttack", weaponItem, attack)) {
+      return;
+    }
+
+    if (projectileItem && formDataObject.reduceAmmoQuantity) {
+      const newQuantity = projectileItem.system.quantity - 1;
+      if (newQuantity <= 0) {
+        ui.notifications?.warn(
+          localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
+            projectileName: projectileItem.name,
+          }),
+        );
+      }
+      await projectileItem.update({ system: { quantity: newQuantity } });
+    }
 
     const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
 
@@ -771,6 +792,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     const cm = await ChatMessage.create(attackChatMessageOptions as any);
     if (cm && !Array.isArray(cm)) {
       cm.render(true);
+      callRqgHook("rqg.attack", weaponItem, { ...attack, chatMessage: cm as ChatMessage });
     }
   }
 
