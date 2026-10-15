@@ -49,6 +49,7 @@ import {
   type SpellCastOptions,
   warnDeprecatedRollMethod,
 } from "../rolls/roll-method-options";
+import { isForbidden, type RollPreparation } from "../rolls/roll-preparation";
 import { type SpellItem, spellItemTypes } from "@item-model/spell.ts";
 import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
@@ -298,20 +299,46 @@ export class RqgActor extends Actor {
     return await this.rollCharacteristicWithOptions(
       this.getCharacteristicRollDefaults(characteristicName, options.token, {
         difficulty: options.difficulty,
-        modifiers: options.modifiers,
+        modifiers: [...(options.modifiers ?? [])],
         rollMode: options.rollMode,
       }),
     );
   }
 
   /**
-   * Runs the `rqg.preCharacteristicRoll` and `rqg.characteristicRoll` hooks, rolls and checks
-   * experience. Undefined when a hook cancelled the roll.
+   * The options `rollCharacteristic` would roll with and what the `rqg.prepareCharacteristicRoll`
+   * hook made of them.
+   */
+  public prepareCharacteristicRoll(
+    characteristicName: keyof Characteristics,
+    options: RollMethodOptions & { difficulty?: number },
+  ): { options: CharacteristicRollOptions; preparation: RollPreparation } {
+    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options.token, {
+      difficulty: options.difficulty,
+      modifiers: [...(options.modifiers ?? [])],
+      rollMode: options.rollMode,
+    });
+    return { options: rollOptions, preparation: this.runPrepareCharacteristicHook(rollOptions) };
+  }
+
+  private runPrepareCharacteristicHook(options: CharacteristicRollOptions): RollPreparation {
+    options.modifiers ??= [];
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareCharacteristicRoll", this, options, preparation);
+    return preparation;
+  }
+
+  /**
+   * Runs the `rqg.prepareCharacteristicRoll`, `rqg.preCharacteristicRoll` and
+   * `rqg.characteristicRoll` hooks, rolls and checks experience. Undefined when a hook forbade or
+   * cancelled the roll.
    */
   private async rollCharacteristicWithOptions(
     options: CharacteristicRollOptions,
   ): Promise<CharacteristicRoll | undefined> {
-    options.modifiers ??= [];
+    if (isForbidden(this.runPrepareCharacteristicHook(options))) {
+      return undefined;
+    }
     if (!callRqgPreHook("rqg.preCharacteristicRoll", this, options)) {
       return undefined;
     }
@@ -409,10 +436,32 @@ export class RqgActor extends Actor {
     }
     return await this.rollReputationWithOptions(
       this.getReputationRollDefaults(options.token, {
-        modifiers: options.modifiers,
+        modifiers: [...(options.modifiers ?? [])],
         rollMode: options.rollMode,
       }),
     );
+  }
+
+  /**
+   * The options `rollReputation` would roll with and what the `rqg.prepareReputationRoll` hook
+   * made of them.
+   */
+  public prepareReputationRoll(options: RollMethodOptions): {
+    options: AbilityRollOptions;
+    preparation: RollPreparation;
+  } {
+    const rollOptions = this.getReputationRollDefaults(options.token, {
+      modifiers: [...(options.modifiers ?? [])],
+      rollMode: options.rollMode,
+    });
+    return { options: rollOptions, preparation: this.runPrepareReputationHook(rollOptions) };
+  }
+
+  private runPrepareReputationHook(options: AbilityRollOptions): RollPreparation {
+    options.modifiers ??= [];
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareReputationRoll", this, options, preparation);
+    return preparation;
   }
 
   /** Reputation roll options; what `options` already sets is kept. */
@@ -435,13 +484,15 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Runs the `rqg.preReputationRoll` and `rqg.reputationRoll` hooks and rolls. Undefined when a
-   * hook cancelled the roll.
+   * Runs the `rqg.prepareReputationRoll`, `rqg.preReputationRoll` and `rqg.reputationRoll` hooks
+   * and rolls. Undefined when a hook forbade or cancelled the roll.
    */
   private async rollReputationWithOptions(
     options: AbilityRollOptions,
   ): Promise<AbilityRoll | undefined> {
-    options.modifiers ??= [];
+    if (isForbidden(this.runPrepareReputationHook(options))) {
+      return undefined;
+    }
     if (!callRqgPreHook("rqg.preReputationRoll", this, options)) {
       return undefined;
     }

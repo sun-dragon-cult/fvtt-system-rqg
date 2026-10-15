@@ -94,15 +94,13 @@ describe("spellBehaviour", () => {
     vi.restoreAllMocks();
   });
 
-  it("guards roll entries synchronously: only an explicit false cancels, a throw doesn't", () => {
+  it("guards roll entries synchronously: a throw is logged, not passed on", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     register((registry) => {
-      registry.register("i.rune-magic.entry-cancels", { onPreDefence: () => false }, en);
-      registry.register("i.spirit-magic.entry-truthy", { onPreAttack: () => "no" as any }, en);
       registry.register(
         "i.spirit-magic.entry-throws",
         {
-          onPreAttack: () => {
+          onPrepareAttack: () => {
             throw new Error("x");
           },
         },
@@ -110,9 +108,9 @@ describe("spellBehaviour", () => {
       );
     });
     const scope = { effects: [{ name: "Berserker" }] } as any;
-    expect(spellBehaviour("i.rune-magic.entry-cancels")?.onPreDefence?.(scope)).toBe(false);
-    expect(spellBehaviour("i.spirit-magic.entry-truthy")?.onPreAttack?.(scope)).toBeUndefined();
-    expect(spellBehaviour("i.spirit-magic.entry-throws")?.onPreAttack?.(scope)).toBeUndefined();
+    expect(() =>
+      spellBehaviour("i.spirit-magic.entry-throws")?.onPrepareAttack?.(scope),
+    ).not.toThrow();
     expect(console.error).toHaveBeenCalled();
     vi.restoreAllMocks();
   });
@@ -120,11 +118,11 @@ describe("spellBehaviour", () => {
   it("keeps a roll entry registered for several spells one function", () => {
     const noParry = () => {};
     register((registry) => {
-      registry.register("i.rune-magic.entry-shared-a", { onPreDefence: noParry }, en);
-      registry.register("i.spirit-magic.entry-shared-b", { onPreDefence: noParry }, en);
+      registry.register("i.rune-magic.entry-shared-a", { onPrepareDefence: noParry }, en);
+      registry.register("i.spirit-magic.entry-shared-b", { onPrepareDefence: noParry }, en);
     });
-    expect(spellBehaviour("i.rune-magic.entry-shared-a")?.onPreDefence).toBe(
-      spellBehaviour("i.spirit-magic.entry-shared-b")?.onPreDefence,
+    expect(spellBehaviour("i.rune-magic.entry-shared-a")?.onPrepareDefence).toBe(
+      spellBehaviour("i.spirit-magic.entry-shared-b")?.onPrepareDefence,
     );
   });
 });

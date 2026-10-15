@@ -53,6 +53,7 @@ describe("roll hooks (#1132)", () => {
         checkExperience: vi.fn().mockResolvedValue(undefined),
       };
       model.assertEmbedded = (AbilityDataModel.prototype as any).assertEmbedded;
+      model.runPrepareHook = (AbilityDataModel.prototype as any).runPrepareHook;
       return model;
     }
 
@@ -67,10 +68,10 @@ describe("roll hooks (#1132)", () => {
       expect(rollAndShow).not.toHaveBeenCalled();
     });
 
-    it("lets a pre hook add modifiers, then reports the roll and checks experience", async () => {
+    it("lets a prepare hook add modifiers, then reports the roll and checks experience", async () => {
       const rollAndShow = vi.spyOn(AbilityRoll, "rollAndShow").mockResolvedValue(success);
       const after = vi.fn();
-      on("rqg.preAbilityRoll", (_item, options) => {
+      on("rqg.prepareAbilityRoll", (_item, options) => {
         options.modifiers.push({ description: "Demoralized", value: -20 });
       });
       on("rqg.abilityRoll", after);
@@ -86,6 +87,26 @@ describe("roll hooks (#1132)", () => {
       expect(after).toHaveBeenCalledWith(model.parent, success, expect.anything());
       expect(model.checkExperience).toHaveBeenCalledWith(AbilitySuccessLevelEnum.Success);
       expect(roll).toBe(success);
+    });
+
+    it("refuses the roll with a warning when a prepare hook forbids it", async () => {
+      const rollAndShow = vi.spyOn(AbilityRoll, "rollAndShow");
+      const pre = vi.fn();
+      const warn = vi.fn();
+      vi.stubGlobal("ui", { notifications: { warn } });
+      on("rqg.prepareAbilityRoll", (_item, _options, preparation) => {
+        preparation.forbidden = "Too scared";
+      });
+      on("rqg.preAbilityRoll", pre);
+
+      const roll = await (AbilityDataModel.prototype as any).rollWithOptions.call(abilityModel(), {
+        naturalSkill: 50,
+      });
+
+      expect(roll).toBeUndefined();
+      expect(warn).toHaveBeenCalledWith("Too scared");
+      expect(pre).not.toHaveBeenCalled();
+      expect(rollAndShow).not.toHaveBeenCalled();
     });
 
     it("rolls nothing when a pre hook returns false", async () => {
@@ -107,6 +128,29 @@ describe("roll hooks (#1132)", () => {
   });
 
   describe("characteristic rolls", () => {
+    it("prepares the roll for a dialog without rolling", () => {
+      const rollAndShow = vi.spyOn(CharacteristicRoll, "rollAndShow");
+      on("rqg.prepareCharacteristicRoll", (_actor, options, preparation) => {
+        options.modifiers.push({ description: "Berserker", value: 5 });
+        preparation.forbidden = "No";
+      });
+      const actor = createCharacterActor();
+      actor.system = { characteristics: { constitution: { value: 18 } } };
+      const own = [{ description: "Augment", value: 0 }];
+
+      const { options, preparation } = actor.prepareCharacteristicRoll("constitution", {
+        modifiers: own,
+      });
+
+      expect(options.modifiers).toEqual([
+        { description: "Augment", value: 0 },
+        { description: "Berserker", value: 5 },
+      ]);
+      expect(own).toHaveLength(1);
+      expect(preparation).toEqual({ forbidden: "No" });
+      expect(rollAndShow).not.toHaveBeenCalled();
+    });
+
     it("runs both hooks around the roll and checks experience", async () => {
       const roll = { successLevel: AbilitySuccessLevelEnum.Special } as CharacteristicRoll;
       vi.spyOn(CharacteristicRoll, "rollAndShow").mockResolvedValue(roll);
@@ -181,6 +225,7 @@ describe("roll hooks (#1132)", () => {
         parent: { name: "Heal", img: "heal.svg" },
         points: 2,
         getCastValidationError: vi.fn(),
+        prepareCast: SpiritMagicDataModel.prototype.prepareCast,
         castWithoutDialog: (SpiritMagicDataModel.prototype as any).castWithoutDialog,
       };
 
@@ -204,6 +249,30 @@ describe("roll hooks (#1132)", () => {
       expect(model.getCastValidationError).not.toHaveBeenCalled();
     });
 
+    it("stops a cast a prepare hook forbids before the pre hook runs", async () => {
+      const pre = vi.fn();
+      const warn = vi.fn();
+      vi.stubGlobal("ui", { notifications: { warn } });
+      on("rqg.prepareSpellCast", (_spell, _caster, _options, preparation) => {
+        preparation.forbidden = "Berserk";
+      });
+      on("rqg.preSpellCast", pre);
+      const model: any = {
+        parent: { name: "Heal", img: "heal.svg" },
+        points: 2,
+        prepareCast: SpiritMagicDataModel.prototype.prepareCast,
+        castWithoutDialog: (SpiritMagicDataModel.prototype as any).castWithoutDialog,
+      };
+
+      const roll = await SpiritMagicDataModel.prototype.cast.call(model, caster as any, {
+        skipDialog: true,
+      });
+
+      expect(roll).toBeUndefined();
+      expect(warn).toHaveBeenCalledWith("Berserk");
+      expect(pre).not.toHaveBeenCalled();
+    });
+
     it("checks the rune magic cast with what the pre hook changed", async () => {
       on("rqg.preSpellCast", (_spell, _caster, options) => {
         options.levelUsed = 3;
@@ -215,6 +284,7 @@ describe("roll hooks (#1132)", () => {
         getCastingCult: () => ({ id: "cult" }),
         getStrongestEligibleRune: () => ({ name: "Truth", system: { chance: 80 } }),
         getCastValidationError: vi.fn().mockReturnValue("no rune points"),
+        prepareCast: RuneMagicDataModel.prototype.prepareCast,
         castWithoutDialog: (RuneMagicDataModel.prototype as any).castWithoutDialog,
       };
       vi.stubGlobal("ui", { notifications: { warn: vi.fn() } });

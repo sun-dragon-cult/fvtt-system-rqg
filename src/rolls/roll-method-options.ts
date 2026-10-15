@@ -48,22 +48,22 @@ export type AttackHookData = {
   rollOptions: AbilityRollOptions;
 };
 
-/** What the `rqg.preDefence` and `rqg.defence` hooks get with the defender - part of the public API. */
+/** What the `rqg.prepareAttack` hook gets: the maneuver isn't picked while the dialog is open. */
+export type PrepareAttackData = Omit<AttackHookData, "combatManeuver"> & {
+  combatManeuver: CombatManeuver | undefined;
+};
+
+/** What the defence hooks get with the defender - part of the public API. */
 export type DefenceHookData = {
   attacker: RqgActor | undefined;
   /** The attack card being defended against. */
   attackChatMessage: ChatMessage;
-  /**
-   * How the defender defends. A pre hook can only change it to "ignore", to forbid the defence
-   * (the attack then resolves as undefended); other changes are undone.
-   */
-  defence: DefenceType;
+  /** How the defender defends. Read only. */
+  readonly defence: DefenceType;
   parryingWeapon: WeaponItem | undefined;
   parryingWeaponUsage: UsageType | undefined;
   /** The defence roll's options; `naturalSkill` is the defence skill's chance. */
   rollOptions: AbilityRollOptions;
-  /** Shown on the attack card, e.g. why a parry wasn't allowed. */
-  notes: string[];
 };
 
 export function warnDeprecatedRollMethod(oldCall: string, newCall: string): void {

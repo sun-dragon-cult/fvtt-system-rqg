@@ -23,51 +23,36 @@ describe("runSpellRollEntry", () => {
     const noParry = vi.fn();
     const halveDodge = vi.fn();
     behaviours({
-      berserker: { onPreDefence: noParry },
-      fanaticism: { onPreDefence: noParry },
-      other: { onPreDefence: halveDodge },
+      berserker: { onPrepareDefence: noParry },
+      fanaticism: { onPrepareDefence: noParry },
+      other: { onPrepareDefence: halveDodge },
     });
     const berserk = effect("berserker");
     const fanatic = effect("fanaticism");
     const other = effect("other");
     const defence = { defence: "parry" } as any;
+    const preparation = {};
 
-    const result = runSpellRollEntry(actorWith(berserk, fanatic, other), "onPreDefence", {
+    runSpellRollEntry(actorWith(berserk, fanatic, other), "onPrepareDefence", {
       defender: {} as any,
       defence,
+      preparation,
     });
 
-    expect(result).toBe(true);
     expect(noParry).toHaveBeenCalledOnce();
     expect(noParry).toHaveBeenCalledWith(
-      expect.objectContaining({ defence, effects: [berserk, fanatic] }),
+      expect.objectContaining({ defence, preparation, effects: [berserk, fanatic] }),
     );
     expect(halveDodge).toHaveBeenCalledWith(expect.objectContaining({ effects: [other] }));
   });
 
-  it("cancels the roll when an entry returns false, without running the rest", () => {
-    const later = vi.fn();
-    behaviours({ berserker: { onPreSpellCast: () => false }, other: { onPreSpellCast: later } });
-
-    const result = runSpellRollEntry(
-      actorWith(effect("berserker"), effect("other")),
-      "onPreSpellCast",
-      { spell: {} as any, caster: {} as any, options: {} as any },
-    );
-
-    expect(result).toBe(false);
-    expect(later).not.toHaveBeenCalled();
-  });
-
-  it("skips inactive effects and other entries, and lets a roll without an actor through", () => {
+  it("skips inactive effects and other entries, and a roll without an actor", () => {
     const entry = vi.fn();
-    behaviours({ berserker: { onPreAttack: entry } });
+    behaviours({ berserker: { onPrepareAttack: entry } });
 
-    expect(runSpellRollEntry(actorWith(effect("berserker", false)), "onPreAttack", {} as any)).toBe(
-      true,
-    );
-    expect(runSpellRollEntry(actorWith(effect("berserker")), "onPreDefence", {} as any)).toBe(true);
-    expect(runSpellRollEntry(undefined, "onPreAttack", {} as any)).toBe(true);
+    runSpellRollEntry(actorWith(effect("berserker", false)), "onPrepareAttack", {} as any);
+    runSpellRollEntry(actorWith(effect("berserker")), "onPrepareDefence", {} as any);
+    runSpellRollEntry(undefined, "onPrepareAttack", {} as any);
     expect(entry).not.toHaveBeenCalled();
   });
 });

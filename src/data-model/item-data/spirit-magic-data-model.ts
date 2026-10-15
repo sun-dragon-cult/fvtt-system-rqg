@@ -7,6 +7,7 @@ import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { RqgError, localize, assertDocumentSubType } from "../../system/util";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { isForbidden, type RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
@@ -101,21 +102,17 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
     return await this.castWithoutDialog(casterActor, options);
   }
 
-  /**
-   * Runs the `rqg.preSpellCast` hook, checks the cast, rolls, posts the result, draws magic points
-   * and runs `rqg.spellCast`. Undefined when the cast was stopped.
-   */
-  private async castWithoutDialog(
+  /** The options a cast would roll with and what the `rqg.prepareSpellCast` hook made of them. */
+  prepareCast(
     casterActor: RqgActor,
     options: SpellCastOptions,
-  ): Promise<SpiritMagicRoll | undefined> {
+  ): { options: SpiritMagicRollOptions; preparation: RollPreparation } {
     const item = this.parent as unknown as SpiritMagicItem;
     assertDocumentSubType<CharacterActor>(
       casterActor,
       ActorTypeEnum.Character,
       "Item is not embedded",
     );
-
     const rollOptions: SpiritMagicRollOptions = {
       powX5: (Number(casterActor.system.characteristics.power.value) || 0) * 5, // Handle NaN
       levelUsed: Number(options.levelUsed ?? this.points),
@@ -129,6 +126,30 @@ export class SpiritMagicDataModel extends RqgItemDataModel<SpiritMagicSchema> {
       speaker: getSpeakerCompat({ actor: casterActor, token: options.token }),
       rollMode: options.rollMode,
     };
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareSpellCast", item, casterActor, rollOptions, preparation);
+    return { options: rollOptions, preparation };
+  }
+
+  /**
+   * Runs the `rqg.prepareSpellCast` and `rqg.preSpellCast` hooks, checks the cast, rolls, posts the
+   * result, draws magic points and runs `rqg.spellCast`. Undefined when the cast was stopped.
+   */
+  private async castWithoutDialog(
+    casterActor: RqgActor,
+    options: SpellCastOptions,
+  ): Promise<SpiritMagicRoll | undefined> {
+    const item = this.parent as unknown as SpiritMagicItem;
+    assertDocumentSubType<CharacterActor>(
+      casterActor,
+      ActorTypeEnum.Character,
+      "Item is not embedded",
+    );
+
+    const { options: rollOptions, preparation } = this.prepareCast(casterActor, options);
+    if (isForbidden(preparation)) {
+      return undefined;
+    }
     if (!callRqgPreHook("rqg.preSpellCast", item, casterActor, rollOptions)) {
       return undefined;
     }

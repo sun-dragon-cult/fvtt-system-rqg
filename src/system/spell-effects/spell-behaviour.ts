@@ -13,7 +13,8 @@ import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.t
 import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
 import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
 import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
-import type { AttackHookData, DefenceHookData } from "../../rolls/roll-method-options";
+import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method-options";
+import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 
 const logger = new RqgLogger("spell-behaviour");
@@ -29,35 +30,38 @@ export type IncomingSpellScope = SpellApplyScope & { effects: ActiveEffect[] };
 export type SpellEndScope = { effect: ActiveEffect };
 
 /**
- * What a roll entry runs with: the pre hook's arguments, plus `effects`, the rolling actor's active
- * effects whose spells share this entry.
+ * What a roll entry runs with: the prepare hook's arguments, plus `effects`, the rolling actor's
+ * active effects whose spells share this entry.
  */
-export type SpellRollScope<T> = T & { effects: ActiveEffect[] };
+export type SpellRollScope<T> = T & { preparation: RollPreparation; effects: ActiveEffect[] };
 
-/** A roll entry changes the hook's options in place; false cancels the roll. Runs synchronously. */
-type RollEntry<T> = (scope: SpellRollScope<T>) => boolean | void;
+/**
+ * A roll entry adds modifiers to the hook's options, or sets `preparation.forbidden`. Runs
+ * synchronously, whenever a roll dialog changes, so it must not have side effects.
+ */
+type RollEntry<T> = (scope: SpellRollScope<T>) => void;
 
-/** The entries the system calls from its own pre hooks, for the rolling actor's spell effects. */
+/** The entries the system calls from its own prepare hooks, for the rolling actor's spell effects. */
 export type SpellRollEntries = {
-  onPreAbilityRoll?: RollEntry<{ item: AbilityItem; options: AbilityRollOptions }>;
-  onPreCharacteristicRoll?: RollEntry<{ actor: RqgActor; options: CharacteristicRollOptions }>;
-  onPreSpellCast?: RollEntry<{
+  onPrepareAbilityRoll?: RollEntry<{ item: AbilityItem; options: AbilityRollOptions }>;
+  onPrepareCharacteristicRoll?: RollEntry<{ actor: RqgActor; options: CharacteristicRollOptions }>;
+  onPrepareSpellCast?: RollEntry<{
     spell: SpellItem;
     caster: RqgActor;
     options: SpiritMagicRollOptions | RuneMagicRollOptions;
   }>;
-  onPreAttack?: RollEntry<{ weapon: WeaponItem; attack: AttackHookData }>;
-  onPreDefence?: RollEntry<{ defender: RqgActor; defence: DefenceHookData }>;
+  onPrepareAttack?: RollEntry<{ weapon: WeaponItem; attack: PrepareAttackData }>;
+  onPrepareDefence?: RollEntry<{ defender: RqgActor; defence: DefenceHookData }>;
 };
 
 export type SpellRollEntryName = keyof SpellRollEntries;
 
 export const spellRollEntryNames = [
-  "onPreAbilityRoll",
-  "onPreCharacteristicRoll",
-  "onPreSpellCast",
-  "onPreAttack",
-  "onPreDefence",
+  "onPrepareAbilityRoll",
+  "onPrepareCharacteristicRoll",
+  "onPrepareSpellCast",
+  "onPrepareAttack",
+  "onPrepareDefence",
 ] as const satisfies readonly SpellRollEntryName[];
 
 /**
@@ -167,14 +171,14 @@ function guarded<F extends (scope: any) => Promise<any>>(
 }
 
 const guardedRollEntries: Record<SpellRollEntryName, WeakMap<object, RollEntry<any>>> = {
-  onPreAbilityRoll: new WeakMap(),
-  onPreCharacteristicRoll: new WeakMap(),
-  onPreSpellCast: new WeakMap(),
-  onPreAttack: new WeakMap(),
-  onPreDefence: new WeakMap(),
+  onPrepareAbilityRoll: new WeakMap(),
+  onPrepareCharacteristicRoll: new WeakMap(),
+  onPrepareSpellCast: new WeakMap(),
+  onPrepareAttack: new WeakMap(),
+  onPrepareDefence: new WeakMap(),
 };
 
-/** Like `guarded`, but synchronous, since pre hooks can't wait. Only an explicit false cancels. */
+/** Like `guarded`, but synchronous, since prepare hooks can't wait. */
 function guardedRollEntry(
   name: SpellRollEntryName,
   entry: RollEntry<any> | undefined,
@@ -186,7 +190,7 @@ function guardedRollEntry(
   if (!wrapped) {
     wrapped = (scope) => {
       try {
-        return entry(scope) === false ? false : undefined;
+        entry(scope);
       } catch (error) {
         const spellName = scope.effects[0]?.name ?? "";
         logger.error(
@@ -194,7 +198,6 @@ function guardedRollEntry(
           undefined,
           error,
         );
-        return undefined;
       }
     };
     guardedRollEntries[name].set(entry, wrapped);

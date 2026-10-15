@@ -26,6 +26,12 @@ import {
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import {
+  type PreparedRoll,
+  preparedModifierTotal,
+  preparedRoll,
+} from "../../rolls/roll-preparation";
+import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
+import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
 } from "../app-parts/spell-cast-target-note";
@@ -40,8 +46,46 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       Number(this.powX5) +
       Number(formData.augmentModifier ?? 0) +
       Number(formData.meditateModifier ?? 0) +
-      Number(formData.otherModifier ?? 0)
+      Number(formData.otherModifier ?? 0) +
+      preparedModifierTotal(this.prepared)
     );
+  }
+
+  /** The cast options the dialog's form describes. */
+  private static castOptions(
+    formData: SpiritMagicRollDialogFormData,
+    token: TokenDocument | null | undefined,
+  ): SpellCastOptions {
+    return {
+      token,
+      levelUsed: formData.levelUsed,
+      magicPointBoost: formData.boost,
+      magicPointSource: formData.magicPointSource,
+      modifiers: [
+        {
+          value: Number(formData.augmentModifier),
+          description: localize("RQG.Roll.Common.Augment"),
+        },
+        {
+          value: Number(formData.meditateModifier),
+          description: localize("RQG.Roll.Common.Meditate"),
+        },
+        {
+          value: Number(formData.otherModifier),
+          description: normalizeOtherModifierDescriptionForRoll(formData.otherModifierDescription),
+        },
+      ],
+    };
+  }
+
+  /** What the prepare hook makes of the cast as the form stands. */
+  private prepareCast(formData: SpiritMagicRollDialogFormData): PreparedRoll {
+    const castOptions = SpiritMagicRollDialogV2.castOptions(formData, this.token);
+    const { options, preparation } = this.spellItem.system.prepareCast(
+      this.casterActor,
+      castOptions,
+    );
+    return preparedRoll(options.modifiers, castOptions.modifiers?.length ?? 0, preparation);
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -157,6 +201,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
     const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+    this.prepared = this.prepareCast(formData);
 
     return {
       formData: formData,
@@ -180,6 +225,8 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
       // RollFooter - a player's cast always posts a shared card, so only a GM picks a mode.
       totalChance: this.computeTotalChance(formData),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       rollMode: this.rollMode,
       rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
     };
@@ -193,6 +240,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as SpiritMagicRollDialogFormData;
+    this.updatePreparedRoll(this.prepareCast(formData));
     totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
   }
 
@@ -240,26 +288,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     assertDocumentSubType<CharacterActor>(casterActor, ActorTypeEnum.Character);
 
     const options: SpellCastOptions = {
-      token,
-      levelUsed: formDataObject.levelUsed,
-      magicPointBoost: formDataObject.boost,
-      magicPointSource: formDataObject.magicPointSource,
-      modifiers: [
-        {
-          value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.Common.Augment"),
-        },
-        {
-          value: Number(formDataObject.meditateModifier),
-          description: localize("RQG.Roll.Common.Meditate"),
-        },
-        {
-          value: Number(formDataObject.otherModifier),
-          description: normalizeOtherModifierDescriptionForRoll(
-            formDataObject.otherModifierDescription,
-          ),
-        },
-      ],
+      ...SpiritMagicRollDialogV2.castOptions(formDataObject, token),
       rollMode: rollMode,
     };
     const validationError = spellItem.system.getCastValidationError(

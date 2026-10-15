@@ -3,6 +3,7 @@ import { abilitySchemaFields } from "../shared/ability-schema-fields";
 import { RQG_CONFIG, systemId } from "../../system/config";
 import { isDocumentSubType, localize, getSpeakerFromItem } from "../../system/util";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { isForbidden, type RollPreparation } from "../../rolls/roll-preparation";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
@@ -45,6 +46,27 @@ export abstract class AbilityDataModel<
     return await this.rollWithOptions(this.rollOptions(options));
   }
 
+  /** The options `roll` would roll with and what the `rqg.prepareAbilityRoll` hook made of them. */
+  prepareRoll(options: RollMethodOptions): {
+    options: AbilityRollOptions;
+    preparation: RollPreparation;
+  } {
+    const rollOptions = this.rollOptions(options);
+    return { options: rollOptions, preparation: this.runPrepareHook(rollOptions) };
+  }
+
+  private runPrepareHook(options: AbilityRollOptions): RollPreparation {
+    options.modifiers ??= [];
+    const preparation: RollPreparation = {};
+    callRqgHook(
+      "rqg.prepareAbilityRoll",
+      this.parent as unknown as AbilityItem,
+      options,
+      preparation,
+    );
+    return preparation;
+  }
+
   /** The options `roll` rolls with, before the hooks. */
   private rollOptions(
     options: RollMethodOptions & Pick<AbilityRollOptions, "resultMessages">,
@@ -53,7 +75,7 @@ export abstract class AbilityDataModel<
     const actor = item.actor;
     return {
       naturalSkill: Number(this.chance) || 0, // Handle NaN
-      modifiers: options.modifiers,
+      modifiers: [...(options.modifiers ?? [])],
       abilityName: item.name ?? undefined,
       abilityType: item.type,
       abilityImg: item.img ?? undefined,
@@ -70,13 +92,15 @@ export abstract class AbilityDataModel<
   }
 
   /**
-   * Runs the `rqg.preAbilityRoll` and `rqg.abilityRoll` hooks, rolls and checks experience.
-   * Undefined when a hook cancelled the roll.
+   * Runs the `rqg.prepareAbilityRoll`, `rqg.preAbilityRoll` and `rqg.abilityRoll` hooks, rolls and
+   * checks experience. Undefined when a hook forbade or cancelled the roll.
    */
   private async rollWithOptions(options: AbilityRollOptions): Promise<AbilityRoll | undefined> {
     this.assertEmbedded();
     const item = this.parent as unknown as AbilityItem;
-    options.modifiers ??= [];
+    if (isForbidden(this.runPrepareHook(options))) {
+      return undefined;
+    }
     if (!callRqgPreHook("rqg.preAbilityRoll", item, options)) {
       return undefined;
     }
