@@ -1,19 +1,19 @@
 import { describe, expect, it } from "vitest";
-import { castStrength, effectRemovalCost, listSpellEffects } from "./spell-rules";
+import { castPoints, effectRemovalCost, listSpellEffects } from "./spell-rules";
 
 const spellEffect = (spell: Record<string, unknown> | null, expired = false) => ({
   system: { spell },
   duration: { expired },
 });
 
-describe("castStrength", () => {
+describe("castPoints", () => {
   it("counts magic points once and Rune points twice", () => {
-    expect(castStrength({ magicPointsSpent: 5, runePointsSpent: 1 })).toBe(7);
-    expect(castStrength({ magicPointsSpent: 4, runePointsSpent: 0 })).toBe(4);
+    expect(castPoints({ magicPointsSpent: 5, runePointsSpent: 1 })).toBe(7);
+    expect(castPoints({ magicPointsSpent: 4, runePointsSpent: 0 })).toBe(4);
   });
 
   it("is 0 for a cast without points recorded", () => {
-    expect(castStrength({})).toBe(0);
+    expect(castPoints({})).toBe(0);
   });
 });
 
