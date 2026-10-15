@@ -53,7 +53,11 @@ import {
   preparedRoll,
   type RollPreparation,
 } from "../../rolls/roll-preparation";
-import { preparedBreakdown, preparedRollHtml } from "../app-parts/prepared-roll-view";
+import {
+  preparedBreakdown,
+  preparedForbiddenHtml,
+  preparedModifiersHtml,
+} from "../app-parts/prepared-roll-view";
 import type { AttackHookData, PrepareAttackData } from "../../rolls/roll-method-options";
 import type { DeepPartial } from "fvtt-types/utils";
 import Token = foundry.canvas.placeables.Token;
@@ -424,7 +428,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       // attack-footer
       totalChance,
       chanceBreakdownTooltip,
-      preparedRollHtml: preparedRollHtml(this.prepared),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
         .filter((cm: CombatManeuver) => cm.damageType !== "parry")
         .map((cm: CombatManeuver) => cm.name),

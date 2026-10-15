@@ -50,7 +50,11 @@ import {
   preparedRoll,
   type RollPreparation,
 } from "../../rolls/roll-preparation";
-import { preparedBreakdown, preparedRollHtml } from "../app-parts/prepared-roll-view";
+import {
+  preparedBreakdown,
+  preparedForbiddenHtml,
+  preparedModifiersHtml,
+} from "../app-parts/prepared-roll-view";
 import { resolveActorFromUuid } from "../resistance-roll-dialog/resistance-roll-shared";
 import { getWeaponEffectModifier } from "@items/weapon-item/weapon-skill-links";
 
@@ -391,7 +395,8 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       // defence-footer
       totalChance,
       chanceBreakdownTooltip,
-      preparedRollHtml: preparedRollHtml(this.prepared),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       defenceButtonText: defenceButtonText,
     };
   }

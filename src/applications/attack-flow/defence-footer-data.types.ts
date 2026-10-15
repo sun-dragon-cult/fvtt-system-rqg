@@ -1,6 +1,7 @@
 export type DefenceFooterData = {
   totalChance: number;
   chanceBreakdownTooltip: string;
-  preparedRollHtml?: string;
+  preparedModifiersHtml?: string;
+  preparedForbiddenHtml?: string;
   defenceButtonText: string;
 };

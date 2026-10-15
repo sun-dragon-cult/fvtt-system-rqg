@@ -29,7 +29,7 @@ import {
   preparedModifierTotal,
   preparedRoll,
 } from "../../rolls/roll-preparation";
-import { preparedRollHtml } from "../app-parts/prepared-roll-view";
+import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
 
 export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -172,7 +172,8 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
 
       // RollFooter
       totalChance: this.computeTotalChance(formData),
-      preparedRollHtml: preparedRollHtml(this.prepared),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };

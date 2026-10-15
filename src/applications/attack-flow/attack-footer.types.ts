@@ -1,6 +1,7 @@
 export type AttackFooterData = {
   totalChance: number;
   chanceBreakdownTooltip: string;
-  preparedRollHtml?: string;
+  preparedModifiersHtml?: string;
+  preparedForbiddenHtml?: string;
   combatManeuverNames: string[];
 };

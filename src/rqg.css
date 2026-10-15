@@ -2088,17 +2088,16 @@
     }
   }
 
+  .rqg.form.roll-dialog .prepared-modifiers {
+    display: contents;
+  }
+
   .rqg.form.roll-dialog .prepared-roll {
     width: 100%;
     text-align: center;
 
     &:empty {
       display: none;
-    }
-
-    & .prepared-modifier {
-      font-size: 0.85rem;
-      color: var(--color-text-secondary);
     }
 
     & .prepared-forbidden {

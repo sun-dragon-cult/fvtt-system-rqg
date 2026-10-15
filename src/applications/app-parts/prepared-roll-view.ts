@@ -1,19 +1,24 @@
 import type { PreparedRoll } from "../../rolls/roll-preparation";
-import { toSignedString } from "../../system/util";
 
-/** The footer lines for what the `rqg.prepare…` hooks added, and why the roll isn't allowed. */
-export function preparedRollHtml(prepared: PreparedRoll | undefined): string {
-  const escape = (text: unknown) => foundry.utils.escapeHTML(String(text ?? ""));
-  const modifiers = (prepared?.modifiers ?? [])
+const escape = (text: unknown) => foundry.utils.escapeHTML(String(text ?? ""));
+
+/** Modifier rows for a dialog's key-value grid, for what the `rqg.prepare…` hooks added. */
+export function preparedModifiersHtml(prepared: PreparedRoll | undefined): string {
+  return (prepared?.modifiers ?? [])
     .filter((modifier) => Number(modifier.value) !== 0)
     .map(
       (modifier) =>
-        `<div class="prepared-modifier">${escape(toSignedString(Number(modifier.value)))}% ${escape(modifier.description)}</div>`,
-    );
-  const forbidden = prepared?.forbidden
-    ? [`<div class="prepared-forbidden" role="alert">${escape(prepared.forbidden)}</div>`]
-    : [];
-  return [...modifiers, ...forbidden].join("");
+        `<label>${escape(modifier.description)}</label>` +
+        `<div><input type="number" value="${Number(modifier.value)}" readonly tabindex="-1"> %</div>`,
+    )
+    .join("");
+}
+
+/** The footer line saying why a `rqg.prepare…` hook forbade the roll. */
+export function preparedForbiddenHtml(prepared: PreparedRoll | undefined): string {
+  return prepared?.forbidden
+    ? `<div class="prepared-forbidden" role="alert">${escape(prepared.forbidden)}</div>`
+    : "";
 }
 
 /**
@@ -25,9 +30,13 @@ export function showPreparedRoll(
   prepared: PreparedRoll | undefined,
   rollButtonSelector: string,
 ): void {
-  const container = root.querySelector<HTMLElement>("[data-prepared-roll]");
-  if (container) {
-    container.innerHTML = preparedRollHtml(prepared);
+  const modifiers = root.querySelector<HTMLElement>("[data-prepared-modifiers]");
+  if (modifiers) {
+    modifiers.innerHTML = preparedModifiersHtml(prepared);
+  }
+  const forbidden = root.querySelector<HTMLElement>("[data-prepared-forbidden]");
+  if (forbidden) {
+    forbidden.innerHTML = preparedForbiddenHtml(prepared);
   }
   for (const button of root.querySelectorAll<HTMLButtonElement>(rollButtonSelector)) {
     if (prepared?.forbidden) {

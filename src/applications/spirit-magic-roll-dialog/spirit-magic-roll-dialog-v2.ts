@@ -30,7 +30,7 @@ import {
   preparedModifierTotal,
   preparedRoll,
 } from "../../rolls/roll-preparation";
-import { preparedRollHtml } from "../app-parts/prepared-roll-view";
+import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
 import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
@@ -225,7 +225,8 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
       // RollFooter - a player's cast always posts a shared card, so only a GM picks a mode.
       totalChance: this.computeTotalChance(formData),
-      preparedRollHtml: preparedRollHtml(this.prepared),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       rollMode: this.rollMode,
       rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
     };

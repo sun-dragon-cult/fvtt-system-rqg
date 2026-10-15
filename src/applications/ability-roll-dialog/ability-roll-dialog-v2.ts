@@ -31,7 +31,7 @@ import {
   preparedModifierTotal,
   preparedRoll,
 } from "../../rolls/roll-preparation";
-import { preparedRollHtml } from "../app-parts/prepared-roll-view";
+import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
 
 const logger = new RqgLogger("AbilityRollDialogV2");
 
@@ -257,7 +257,8 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
           ...(this.prepared?.modifiers ?? []),
         ],
       ),
-      preparedRollHtml: preparedRollHtml(this.prepared),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
