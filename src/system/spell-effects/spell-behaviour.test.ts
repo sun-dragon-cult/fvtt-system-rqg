@@ -93,6 +93,40 @@ describe("spellBehaviour", () => {
     expect(await spellBehaviour("i.spirit-magic.garbage")?.apply?.(scope)).toBeUndefined();
     vi.restoreAllMocks();
   });
+
+  it("guards roll entries synchronously: only an explicit false cancels, a throw doesn't", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    register((registry) => {
+      registry.register("i.rune-magic.entry-cancels", { onPreDefence: () => false }, en);
+      registry.register("i.spirit-magic.entry-truthy", { onPreAttack: () => "no" as any }, en);
+      registry.register(
+        "i.spirit-magic.entry-throws",
+        {
+          onPreAttack: () => {
+            throw new Error("x");
+          },
+        },
+        en,
+      );
+    });
+    const scope = { effects: [{ name: "Berserker" }] } as any;
+    expect(spellBehaviour("i.rune-magic.entry-cancels")?.onPreDefence?.(scope)).toBe(false);
+    expect(spellBehaviour("i.spirit-magic.entry-truthy")?.onPreAttack?.(scope)).toBeUndefined();
+    expect(spellBehaviour("i.spirit-magic.entry-throws")?.onPreAttack?.(scope)).toBeUndefined();
+    expect(console.error).toHaveBeenCalled();
+    vi.restoreAllMocks();
+  });
+
+  it("keeps a roll entry registered for several spells one function", () => {
+    const noParry = () => {};
+    register((registry) => {
+      registry.register("i.rune-magic.entry-shared-a", { onPreDefence: noParry }, en);
+      registry.register("i.spirit-magic.entry-shared-b", { onPreDefence: noParry }, en);
+    });
+    expect(spellBehaviour("i.rune-magic.entry-shared-a")?.onPreDefence).toBe(
+      spellBehaviour("i.spirit-magic.entry-shared-b")?.onPreDefence,
+    );
+  });
 });
 
 const en = { lang: "en", priority: 0 };

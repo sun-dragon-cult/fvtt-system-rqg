@@ -5,6 +5,15 @@ import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
 import { callRqgHook } from "../fvtt-type-compat";
 import { RqgLogger } from "../logging/rqg-logger";
 import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { AbilityItem } from "@item-model/item-types.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
+import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
+import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
+import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { AttackHookData, DefenceHookData } from "../../rolls/roll-method-options";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 
 const logger = new RqgLogger("spell-behaviour");
@@ -20,10 +29,42 @@ export type IncomingSpellScope = SpellApplyScope & { effects: ActiveEffect[] };
 export type SpellEndScope = { effect: ActiveEffect };
 
 /**
+ * What a roll entry runs with: the pre hook's arguments, plus `effects`, the rolling actor's active
+ * effects whose spells share this entry.
+ */
+export type SpellRollScope<T> = T & { effects: ActiveEffect[] };
+
+/** A roll entry changes the hook's options in place; false cancels the roll. Runs synchronously. */
+type RollEntry<T> = (scope: SpellRollScope<T>) => boolean | void;
+
+/** The entries the system calls from its own pre hooks, for the rolling actor's spell effects. */
+export type SpellRollEntries = {
+  onPreAbilityRoll?: RollEntry<{ item: AbilityItem; options: AbilityRollOptions }>;
+  onPreCharacteristicRoll?: RollEntry<{ actor: RqgActor; options: CharacteristicRollOptions }>;
+  onPreSpellCast?: RollEntry<{
+    spell: SpellItem;
+    caster: RqgActor;
+    options: SpiritMagicRollOptions | RuneMagicRollOptions;
+  }>;
+  onPreAttack?: RollEntry<{ weapon: WeaponItem; attack: AttackHookData }>;
+  onPreDefence?: RollEntry<{ defender: RqgActor; defence: DefenceHookData }>;
+};
+
+export type SpellRollEntryName = keyof SpellRollEntries;
+
+export const spellRollEntryNames = [
+  "onPreAbilityRoll",
+  "onPreCharacteristicRoll",
+  "onPreSpellCast",
+  "onPreAttack",
+  "onPreDefence",
+] as const satisfies readonly SpellRollEntryName[];
+
+/**
  * What a spell does beyond attaching an effect template, registered by modules for a spell rqid.
  * Part of the public API.
  */
-export type SpellBehaviour = {
+export type SpellBehaviour = SpellRollEntries & {
   /** Replaces attaching the effect template when Apply is clicked. */
   apply?(scope: SpellApplyScope): Promise<SpellEffectApplied | undefined>;
   /** Runs for a spell's effects when another spell is applied to their actor from outside. */
@@ -125,8 +166,48 @@ function guarded<F extends (scope: any) => Promise<any>>(
   return wrapped;
 }
 
+const guardedRollEntries: Record<SpellRollEntryName, WeakMap<object, RollEntry<any>>> = {
+  onPreAbilityRoll: new WeakMap(),
+  onPreCharacteristicRoll: new WeakMap(),
+  onPreSpellCast: new WeakMap(),
+  onPreAttack: new WeakMap(),
+  onPreDefence: new WeakMap(),
+};
+
+/** Like `guarded`, but synchronous, since pre hooks can't wait. Only an explicit false cancels. */
+function guardedRollEntry(
+  name: SpellRollEntryName,
+  entry: RollEntry<any> | undefined,
+): RollEntry<any> | undefined {
+  if (!entry) {
+    return undefined;
+  }
+  let wrapped = guardedRollEntries[name].get(entry);
+  if (!wrapped) {
+    wrapped = (scope) => {
+      try {
+        return entry(scope) === false ? false : undefined;
+      } catch (error) {
+        const spellName = scope.effects[0]?.name ?? "";
+        logger.error(
+          localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
+          undefined,
+          error,
+        );
+        return undefined;
+      }
+    };
+    guardedRollEntries[name].set(entry, wrapped);
+  }
+  return wrapped;
+}
+
 function guardBehaviour(behaviour: SpellBehaviour): SpellBehaviour {
+  const rollEntries = Object.fromEntries(
+    spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behaviour[name])]),
+  ) as SpellRollEntries;
   return {
+    ...rollEntries,
     apply: guarded(
       "apply",
       behaviour.apply,

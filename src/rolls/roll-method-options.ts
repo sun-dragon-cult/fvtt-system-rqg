@@ -38,6 +38,8 @@ export type AttackOptions = {
 /** What the `rqg.preAttack` and `rqg.attack` hooks get with the weapon - part of the public API. */
 export type AttackHookData = {
   attacker: RqgActor;
+  /** The actor of the user's targeted token when the attack was made, if any. */
+  target: RqgActor | undefined;
   usage: UsageType;
   combatManeuver: CombatManeuver;
   /** The missile fired, or the weapon itself when it is thrown. Read only. */

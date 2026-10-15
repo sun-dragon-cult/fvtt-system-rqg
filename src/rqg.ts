@@ -40,6 +40,7 @@ import { initSpelledProjectiles } from "./items/weapon-item/spelled-projectile";
 import { initApplySpellBehaviourQuery } from "./system/spell-effects/run-spell-apply";
 import { initSpellEnd } from "./system/spell-effects/spell-end";
 import { initSpellBehaviours } from "./system/spell-effects/spell-behaviour";
+import { initSpellRollEntries } from "./system/spell-effects/spell-roll-entries";
 import { initSkillBehaviors } from "./system/skill-behaviors/skill-behavior";
 
 // CONFIG.debug.hooks = true; // console log when hooks fire
@@ -110,6 +111,7 @@ Hooks.once("init", () => {
   initCharacterPassiveRecovery();
   initSpelledProjectiles();
   initSpellBehaviours();
+  initSpellRollEntries();
   initSkillBehaviors();
   initApplySpellBehaviourQuery();
   initSpellEnd();
