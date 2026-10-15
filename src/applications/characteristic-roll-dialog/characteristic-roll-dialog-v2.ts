@@ -12,7 +12,6 @@ import {
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
 import type { Characteristics } from "../../data-model/actor-data/characteristics";
 import { ActorTypeEnum } from "../../data-model/actor-data/rqg-actor-data.ts";
 import type { CharacterActor } from "../../data-model/actor-data/rqg-actor-data.ts";
@@ -182,9 +181,9 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       ? ((await fromUuid(formDataObject.tokenUuid)) as TokenDocument | undefined)
       : undefined;
 
-    const options: CharacteristicRollOptions = {
-      characteristicValue: formDataObject.characteristicValue,
-      characteristicName: formDataObject.characteristicName,
+    await actor.rollCharacteristic(formDataObject.characteristicName as keyof Characteristics, {
+      skipDialog: true,
+      token,
       difficulty: CharacteristicRollDialogV2.getDifficulty(formDataObject.difficulty),
       modifiers: [
         {
@@ -202,11 +201,8 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
           ),
         },
       ],
-      speaker: getSpeakerCompat({ actor, token }),
       rollMode: rollMode,
-    };
-
-    await actor.rollCharacteristicWithOptions(options);
+    });
   }
 
   private static getDifficulty(difficulty: number | string | undefined): number {

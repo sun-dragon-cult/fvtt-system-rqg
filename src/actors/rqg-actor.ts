@@ -305,10 +305,10 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Roll with complete options, as the roll dialog and `rollCharacteristic` do: runs the
-   * `rqg.preCharacteristicRoll` and `rqg.characteristicRoll` hooks and checks POW experience.
+   * Runs the `rqg.preCharacteristicRoll` and `rqg.characteristicRoll` hooks, rolls and checks
+   * experience. Undefined when a hook cancelled the roll.
    */
-  public async rollCharacteristicWithOptions(
+  private async rollCharacteristicWithOptions(
     options: CharacteristicRollOptions,
   ): Promise<CharacteristicRoll | undefined> {
     options.modifiers ??= [];
@@ -435,10 +435,10 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Roll with complete options, as the roll dialog and `rollReputation` do: runs the
-   * `rqg.preReputationRoll` and `rqg.reputationRoll` hooks.
+   * Runs the `rqg.preReputationRoll` and `rqg.reputationRoll` hooks and rolls. Undefined when a
+   * hook cancelled the roll.
    */
-  public async rollReputationWithOptions(
+  private async rollReputationWithOptions(
     options: AbilityRollOptions,
   ): Promise<AbilityRoll | undefined> {
     options.modifiers ??= [];

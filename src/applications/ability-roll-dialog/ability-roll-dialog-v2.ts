@@ -293,8 +293,9 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    const options: AbilityRollOptions = {
-      naturalSkill: Number(abilityItem?.system.chance) || 0, // Handle NaN
+    const options = {
+      skipDialog: true,
+      token,
       modifiers: [
         ...initialModifiers,
         {
@@ -312,18 +313,14 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
           ),
         },
       ],
-      abilityName: abilityItem?.name ?? undefined,
-      abilityType: (abilityItem as any)?.type ?? undefined,
-      abilityImg: abilityItem?.img ?? undefined,
-      speaker: actor ? getSpeakerCompat({ actor, token }) : getSpeakerFromItem(abilityItem),
       rollMode: rollMode,
     };
 
     if (abilityItem instanceof RqgItem) {
-      await abilityItem.system.rollWithOptions(options);
+      await abilityItem.roll(options);
     } else if (actor) {
       // Reputation isn't an item
-      await actor.rollReputationWithOptions(options);
+      await actor.rollReputation(options);
     } else {
       logger.throw(ERR.noAbilityItemToRoll);
     }

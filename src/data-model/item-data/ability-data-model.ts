@@ -25,8 +25,13 @@ export abstract class AbilityDataModel<
   Schema extends AbilitySchema,
   DerivedData extends Record<string, unknown> = Record<string, never>,
 > extends RqgItemDataModel<Schema, DerivedData> {
-  /** Open the roll dialog, or with `skipDialog` roll at once and return the roll. */
-  async roll(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
+  /**
+   * Open the roll dialog, or with `skipDialog` roll at once and return the roll. The dialog rolls
+   * through here too. `resultMessages` is only for the deprecated `abilityRollImmediate`.
+   */
+  async roll(
+    options: RollMethodOptions & Pick<AbilityRollOptions, "resultMessages"> = {},
+  ): Promise<AbilityRoll | undefined> {
     this.assertEmbedded();
     if (!options.skipDialog) {
       // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
@@ -41,7 +46,7 @@ export abstract class AbilityDataModel<
   }
 
   /** The options `roll` rolls with, before the hooks. */
-  rollOptions(
+  private rollOptions(
     options: RollMethodOptions & Pick<AbilityRollOptions, "resultMessages">,
   ): AbilityRollOptions {
     const item = this.parent!;
@@ -65,10 +70,10 @@ export abstract class AbilityDataModel<
   }
 
   /**
-   * Roll with complete options, as the roll dialog and `roll` do: runs the `rqg.preAbilityRoll`
-   * and `rqg.abilityRoll` hooks and checks experience. Undefined when a hook cancelled the roll.
+   * Runs the `rqg.preAbilityRoll` and `rqg.abilityRoll` hooks, rolls and checks experience.
+   * Undefined when a hook cancelled the roll.
    */
-  async rollWithOptions(options: AbilityRollOptions): Promise<AbilityRoll | undefined> {
+  private async rollWithOptions(options: AbilityRollOptions): Promise<AbilityRoll | undefined> {
     this.assertEmbedded();
     const item = this.parent as unknown as AbilityItem;
     options.modifiers ??= [];

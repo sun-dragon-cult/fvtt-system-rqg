@@ -60,7 +60,9 @@ describe("roll hooks (#1132)", () => {
       const rollAndShow = vi.spyOn(AbilityRoll, "rollAndShow");
 
       await expect(
-        AbilityDataModel.prototype.rollWithOptions.call(abilityModel(false), { naturalSkill: 50 }),
+        (AbilityDataModel.prototype as any).rollWithOptions.call(abilityModel(false), {
+          naturalSkill: 50,
+        }),
       ).rejects.toThrow();
       expect(rollAndShow).not.toHaveBeenCalled();
     });
@@ -74,7 +76,7 @@ describe("roll hooks (#1132)", () => {
       on("rqg.abilityRoll", after);
       const model = abilityModel();
 
-      const roll = await AbilityDataModel.prototype.rollWithOptions.call(model, {
+      const roll = await (AbilityDataModel.prototype as any).rollWithOptions.call(model, {
         naturalSkill: 50,
       });
 
@@ -93,7 +95,7 @@ describe("roll hooks (#1132)", () => {
       on("rqg.abilityRoll", after);
       const model = abilityModel();
 
-      const roll = await AbilityDataModel.prototype.rollWithOptions.call(model, {
+      const roll = await (AbilityDataModel.prototype as any).rollWithOptions.call(model, {
         naturalSkill: 50,
       });
 
@@ -115,7 +117,7 @@ describe("roll hooks (#1132)", () => {
       const actor = createCharacterActor();
       const options = { characteristicName: "power", characteristicValue: 12 };
 
-      await actor.rollCharacteristicWithOptions(options);
+      await actor["rollCharacteristicWithOptions"](options);
 
       expect(before).toHaveBeenCalledWith(actor, expect.objectContaining({ modifiers: [] }));
       expect(after).toHaveBeenCalledWith(actor, roll, options);
@@ -127,7 +129,7 @@ describe("roll hooks (#1132)", () => {
       on("rqg.preCharacteristicRoll", () => false);
       const actor = createCharacterActor();
 
-      const roll = await actor.rollCharacteristicWithOptions({
+      const roll = await actor["rollCharacteristicWithOptions"]({
         characteristicName: "power",
         characteristicValue: 12,
       });
@@ -149,7 +151,7 @@ describe("roll hooks (#1132)", () => {
       on("rqg.reputationRoll", after);
       const actor = createCharacterActor();
 
-      const result = await actor.rollReputationWithOptions({ naturalSkill: 15 });
+      const result = await actor["rollReputationWithOptions"]({ naturalSkill: 15 });
 
       expect(result).toBe(roll);
       expect(after).toHaveBeenCalledWith(
@@ -164,7 +166,7 @@ describe("roll hooks (#1132)", () => {
       on("rqg.preReputationRoll", () => false);
       const actor = createCharacterActor();
 
-      expect(await actor.rollReputationWithOptions({ naturalSkill: 15 })).toBeUndefined();
+      expect(await actor["rollReputationWithOptions"]({ naturalSkill: 15 })).toBeUndefined();
       expect(rollAndShow).not.toHaveBeenCalled();
     });
   });
