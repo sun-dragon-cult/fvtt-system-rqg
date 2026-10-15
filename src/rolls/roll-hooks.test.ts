@@ -5,6 +5,13 @@ import { AbilityDataModel } from "../data-model/item-data/ability-data-model";
 import { AbilityRoll } from "./ability-roll/ability-roll";
 import { AbilitySuccessLevelEnum } from "./ability-roll/ability-roll.defs";
 import { CharacteristicRoll } from "./characteristic-roll/characteristic-roll";
+import { SpiritMagicDataModel } from "../data-model/item-data/spirit-magic-data-model";
+import { RuneMagicDataModel } from "../data-model/item-data/rune-magic-data-model";
+
+vi.mock("../system/fvtt-type-compat", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
+  getSpeakerCompat: () => ({ alias: "Test Actor" }),
+}));
 
 const listeners = new Map<string, ((...args: any[]) => unknown)[]>();
 
@@ -159,6 +166,69 @@ describe("roll hooks (#1132)", () => {
 
       expect(await actor.rollReputationWithOptions({ naturalSkill: 15 })).toBeUndefined();
       expect(rollAndShow).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("spell casts", () => {
+    const caster = { type: "character", system: { characteristics: { power: { value: 12 } } } };
+
+    it("passes the spirit magic cast options to rqg.preSpellCast, and a false stops the cast", async () => {
+      const before = vi.fn().mockReturnValue(false);
+      on("rqg.preSpellCast", before);
+      const model: any = {
+        parent: { name: "Heal", img: "heal.svg" },
+        points: 2,
+        getCastValidationError: vi.fn(),
+        castWithoutDialog: (SpiritMagicDataModel.prototype as any).castWithoutDialog,
+      };
+
+      const roll = await SpiritMagicDataModel.prototype.cast.call(model, caster as any, {
+        skipDialog: true,
+        magicPointBoost: 1,
+        modifiers: [{ description: "Meditate", value: 10 }],
+      });
+
+      expect(roll).toBeUndefined();
+      expect(before).toHaveBeenCalledWith(
+        model.parent,
+        caster,
+        expect.objectContaining({
+          powX5: 60,
+          levelUsed: 2,
+          magicPointBoost: 1,
+          modifiers: [{ description: "Meditate", value: 10 }],
+        }),
+      );
+      expect(model.getCastValidationError).not.toHaveBeenCalled();
+    });
+
+    it("checks the rune magic cast with what the pre hook changed", async () => {
+      on("rqg.preSpellCast", (_spell, _caster, options) => {
+        options.levelUsed = 3;
+      });
+      const model: any = {
+        parent: { name: "Shield", img: "shield.svg" },
+        points: 1,
+        isOneUse: false,
+        getCastingCult: () => ({ id: "cult" }),
+        getStrongestEligibleRune: () => ({ name: "Truth", system: { chance: 80 } }),
+        getCastValidationError: vi.fn().mockReturnValue("no rune points"),
+        castWithoutDialog: (RuneMagicDataModel.prototype as any).castWithoutDialog,
+      };
+      vi.stubGlobal("ui", { notifications: { warn: vi.fn() } });
+
+      const roll = await RuneMagicDataModel.prototype.cast.call(model, caster as any, {
+        skipDialog: true,
+      });
+
+      expect(roll).toBeUndefined();
+      expect(model.getCastValidationError).toHaveBeenCalledWith(
+        3,
+        0,
+        expect.anything(),
+        expect.anything(),
+        caster,
+      );
     });
   });
 });

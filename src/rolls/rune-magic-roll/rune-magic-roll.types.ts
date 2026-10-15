@@ -14,17 +14,3 @@ export type RuneMagicRollOptions = Partial<foundry.dice.terms.DiceTerm.Evaluatio
   speaker: ChatMessage.SpeakerData;
   rollMode?: foundry.dice.Roll.Mode;
 };
-
-export type RuneMagicRollImmediateOptions = Partial<
-  Pick<
-    RuneMagicRollOptions,
-    | "levelUsed"
-    | "magicPointBoost"
-    | "magicPointSource"
-    | "runePointSource"
-    | "modifiers"
-    | "rollMode"
-  >
-> & {
-  usedRuneId?: string;
-};

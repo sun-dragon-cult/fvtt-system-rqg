@@ -703,6 +703,7 @@
       },
       "RuneMagicRoll": {
         "Title": "Cast Rune Magic",
+        "NoEligibleRune": "{actorName} has no rune to cast {spellName} with.",
         "LevelUsed": "Level",
         "RuneUsed": "Use Rune",
         "Boost": "Boost",

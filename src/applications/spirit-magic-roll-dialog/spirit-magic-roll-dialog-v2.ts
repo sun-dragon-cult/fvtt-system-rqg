@@ -11,7 +11,7 @@ import {
   normalizeOtherModifierDescriptionForRoll,
 } from "../../system/util";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
-import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
+import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { RqgItem } from "@items/rqg-item.ts";
 import type { PartialAbilityItem } from "../ability-roll-dialog/ability-roll-dialog-data.types.ts";
@@ -239,8 +239,8 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       : (spellItem.actor ?? undefined);
     assertDocumentSubType<CharacterActor>(casterActor, ActorTypeEnum.Character);
 
-    const options: SpiritMagicRollOptions = {
-      powX5: formDataObject.powX5,
+    const options: SpellCastOptions = {
+      token,
       levelUsed: formDataObject.levelUsed,
       magicPointBoost: formDataObject.boost,
       magicPointSource: formDataObject.magicPointSource,
@@ -260,10 +260,7 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
           ),
         },
       ],
-      spellName: spellItem?.name ?? undefined,
-      spellImg: spellItem?.img ?? undefined,
       rollMode: rollMode,
-      speaker: getSpeakerCompat({ actor: casterActor, token }),
     };
     const validationError = spellItem.system.getCastValidationError(
       formDataObject.levelUsed,
@@ -276,6 +273,6 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    await spellItem.spiritMagicRollImmediate(options, token, casterActor);
+    await spellItem.system.cast(casterActor, { ...options, skipDialog: true });
   }
 }

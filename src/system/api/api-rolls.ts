@@ -10,6 +10,7 @@ import type { Modifier } from "../../rolls/ability-roll/ability-roll.types";
 import type { CharacteristicRoll } from "../../rolls/characteristic-roll/characteristic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
+import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import { hasLinkedSkillReference } from "../../items/weapon-item/weapon-skill-links";
 import { resolveMatrixSpellItem } from "../spell-matrix";
 import { RqgLogger } from "../logging/rqg-logger";
@@ -108,20 +109,7 @@ export async function spiritMagic(
 ): Promise<SpiritMagicRoll | undefined> {
   const { actor, token } = resolveCaster(ref, options.actor);
   const item = await resolveSpell<SpiritMagicItem>(actor, ref, ItemTypeEnum.SpiritMagic);
-  if (options.skipDialog) {
-    return await item.spiritMagicRollImmediate(
-      {
-        levelUsed: options.levelUsed ?? item.system.points,
-        magicPointBoost: options.magicPointBoost,
-        modifiers: options.modifiers,
-        rollMode: options.rollMode,
-      },
-      token,
-      actor,
-    );
-  }
-  await item.spiritMagicRoll(token, actor);
-  return undefined;
+  return (await actor.castSpell(item, castOptions(options, token))) as SpiritMagicRoll | undefined;
 }
 
 /**
@@ -134,20 +122,18 @@ export async function runeMagic(
 ): Promise<RuneMagicRoll | undefined> {
   const { actor, token } = resolveCaster(ref, options.actor);
   const item = await resolveSpell<RuneMagicItem>(actor, ref, ItemTypeEnum.RuneMagic);
-  if (options.skipDialog) {
-    return await item.runeMagicRollImmediate(
-      {
-        levelUsed: options.levelUsed,
-        magicPointBoost: options.magicPointBoost,
-        modifiers: options.modifiers,
-        rollMode: options.rollMode,
-      },
-      token,
-      actor,
-    );
-  }
-  await item.runeMagicRoll(token, actor);
-  return undefined;
+  return (await actor.castSpell(item, castOptions(options, token))) as RuneMagicRoll | undefined;
+}
+
+function castOptions(options: SpellRollOptions, token: TokenDocument | null): SpellCastOptions {
+  return {
+    skipDialog: options.skipDialog,
+    token,
+    levelUsed: options.levelUsed,
+    magicPointBoost: options.magicPointBoost,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  };
 }
 
 function resolveItemAndActor<T extends RqgItem>(

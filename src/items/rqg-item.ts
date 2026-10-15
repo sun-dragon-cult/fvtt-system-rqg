@@ -35,11 +35,14 @@ import { getDefaultItemIconSettings } from "../system/settings/default-item-icon
 import { AbilitySuccessLevelEnum } from "../rolls/ability-roll/ability-roll.defs";
 import type { AbilityRollOptions } from "../rolls/ability-roll/ability-roll.types";
 import type { SpiritMagicRollOptions } from "../rolls/spirit-magic-roll/spirit-magic-roll.types";
-import type { RuneMagicRollImmediateOptions } from "../rolls/rune-magic-roll/rune-magic-roll.types";
 import type { AbilityRoll } from "../rolls/ability-roll/ability-roll";
 import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
-import { type RollMethodOptions, warnDeprecatedRollMethod } from "../rolls/roll-method-options";
+import {
+  type RollMethodOptions,
+  type SpellCastOptions,
+  warnDeprecatedRollMethod,
+} from "../rolls/roll-method-options";
 import { GearDataModel } from "@item-model/gear-data-model";
 import { ArmorDataModel } from "@item-model/armor-data-model";
 import { WeaponDataModel } from "@item-model/weapon-data-model";
@@ -279,53 +282,66 @@ export class RqgItem extends Item {
   }
 
   /**
-   * Open a dialog for a SpiritMagicRoll. `casterActor` defaults to this item's own owner - pass it
-   * explicitly when casting via an external spell source (#1002).
+   * Cast this spirit or rune magic spell as its owner - part of the public API. Opens the cast
+   * dialog, or with `skipDialog` casts at once and returns the roll (undefined if the cast was
+   * stopped). `actor.castSpell` casts a spell someone else owns.
    */
+  public async cast(
+    options: SpellCastOptions = {},
+  ): Promise<SpiritMagicRoll | RuneMagicRoll | undefined> {
+    return await this.castAs(undefined, options);
+  }
+
+  /** Cast as `caster`, or as the spell's owner when none is given. */
+  private async castAs(
+    caster: RqgActor | undefined,
+    options: SpellCastOptions,
+  ): Promise<SpiritMagicRoll | RuneMagicRoll | undefined> {
+    assertDocumentSubType<SpellItem>(this, spellItemTypes);
+    return await this.system.cast(caster ?? (this.actor as RqgActor), options);
+  }
+
+  /** @deprecated since 6.2.0, use `item.cast({ token })` or `actor.castSpell(spell, { token })`. */
   public async spiritMagicRoll(
     token?: TokenDocument | null,
     casterActor?: RqgActor,
   ): Promise<void> {
-    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    await this.system.spiritMagicRoll(token, casterActor);
+    warnDeprecatedRollMethod("item.spiritMagicRoll(token, caster)", "item.cast({ token })");
+    await this.castAs(casterActor, { token });
   }
 
-  /**
-   * Do a SpiritMagicRoll and possibly draw magic points afterward. `casterActor` defaults to this
-   * item's own owner - pass it explicitly when casting via an external spell source (#1002).
-   */
+  /** @deprecated since 6.2.0, use `item.cast({ skipDialog: true })`. */
   public async spiritMagicRollImmediate(
-    options: Omit<SpiritMagicRollOptions, "powX5"> = {
-      levelUsed: (this as SpiritMagicItem).system.points,
-    },
+    options: Partial<Omit<SpiritMagicRollOptions, "powX5">> = {},
     token?: TokenDocument | null,
     casterActor?: RqgActor,
   ): Promise<SpiritMagicRoll | undefined> {
-    assertDocumentSubType<SpiritMagicItem>(this, ItemTypeEnum.SpiritMagic);
-    return await this.system.spiritMagicRollImmediate(options, token, casterActor);
+    warnDeprecatedRollMethod(
+      "item.spiritMagicRollImmediate(options, token, caster)",
+      "item.cast({ skipDialog: true, ...options })",
+    );
+    return (await this.castAs(casterActor, { ...options, skipDialog: true, token })) as
+      SpiritMagicRoll | undefined;
   }
 
-  /**
-   * Open a dialog for a RuneMagicRoll. `casterActor` defaults to this item's own owner - pass it
-   * explicitly when casting via an external spell source (#1002).
-   */
+  /** @deprecated since 6.2.0, use `item.cast({ token })` or `actor.castSpell(spell, { token })`. */
   public async runeMagicRoll(token?: TokenDocument | null, casterActor?: RqgActor): Promise<void> {
-    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    await this.system.runeMagicRoll(token, casterActor);
+    warnDeprecatedRollMethod("item.runeMagicRoll(token, caster)", "item.cast({ token })");
+    await this.castAs(casterActor, { token });
   }
 
-  /**
-   * Do a runeMagicRoll and possibly draw rune and magic points afterward. Also add experience to
-   * used rune. `casterActor` defaults to this item's own owner - pass it explicitly when casting
-   * via an external spell source (#1002).
-   */
+  /** @deprecated since 6.2.0, use `item.cast({ skipDialog: true })`. */
   public async runeMagicRollImmediate(
-    options: RuneMagicRollImmediateOptions = {},
+    options: Omit<SpellCastOptions, "skipDialog" | "token"> = {},
     token?: TokenDocument | null,
     casterActor?: RqgActor,
   ): Promise<RuneMagicRoll | undefined> {
-    assertDocumentSubType<RuneMagicItem>(this, ItemTypeEnum.RuneMagic);
-    return await this.system.runeMagicRollImmediate(options, token, casterActor);
+    warnDeprecatedRollMethod(
+      "item.runeMagicRollImmediate(options, token, caster)",
+      "item.cast({ skipDialog: true, ...options })",
+    );
+    return (await this.castAs(casterActor, { ...options, skipDialog: true, token })) as
+      RuneMagicRoll | undefined;
   }
 
   /**

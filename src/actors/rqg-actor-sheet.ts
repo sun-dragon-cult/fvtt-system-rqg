@@ -512,16 +512,16 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (runeMagicItem.system.points > 1) {
-            await runeMagicItem?.runeMagicRoll(this.token);
+            await runeMagicItem?.cast({ token: this.token });
           } else {
-            await runeMagicItem?.runeMagicRollImmediate({}, this.token);
+            await runeMagicItem?.cast({ skipDialog: true, token: this.token });
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await runeMagicItem?.runeMagicRoll(this.token);
+              await runeMagicItem?.cast({ token: this.token });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
@@ -544,16 +544,16 @@ export class RqgActorSheet<
         clickCount = Math.max(clickCount, ev.detail);
         if (clickCount >= 2) {
           if (item.system.isVariable && item.system.points > 1) {
-            await item.spiritMagicRoll(this.token);
+            await item.cast({ token: this.token });
           } else {
-            await item.spiritMagicRollImmediate(undefined, this.token);
+            await item.cast({ skipDialog: true, token: this.token });
           }
 
           clickCount = 0;
         } else if (clickCount === 1) {
           setTimeout(async () => {
             if (clickCount === 1) {
-              await item.spiritMagicRoll(this.token);
+              await item.cast({ token: this.token });
             }
             clickCount = 0;
           }, CONFIG.RQG.dblClickTimeout);
