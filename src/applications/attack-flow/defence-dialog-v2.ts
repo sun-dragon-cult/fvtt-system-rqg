@@ -300,6 +300,18 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       formData.parryingWeaponUsage = parryingWeaponUsageOptionKeys[0]; // If nothing is selected, select the first option
     }
 
+    if (!this.element) {
+      // Open on the first defence the prepare hooks allow, e.g. "ignore" for a berserker
+      formData.defence =
+        defenceOptions
+          .map((option) => option.value)
+          .find(
+            (defence) =>
+              !DefenceDialogV2.prepareDefence({ ...formData, defence }, this.attackChatMessage)
+                ?.forbidden,
+          ) ?? formData.defence;
+    }
+
     const parrySkillRqid = formData.parryingWeaponUsage
       ? parryingWeapon?.system.usage[formData.parryingWeaponUsage]?.skillRqidLink?.rqid
       : undefined;
