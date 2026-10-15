@@ -10,6 +10,7 @@ import { localize, assertDocumentSubType, isDocumentSubType, isTruthy } from "..
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { isForbidden, type RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
@@ -266,6 +267,44 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
    * Runs the `rqg.preSpellCast` hook, checks the cast, rolls, posts the result, spends rune and
    * magic points and runs `rqg.spellCast`. Undefined when the cast was stopped.
    */
+  /**
+   * The options a cast would roll with and what the `rqg.prepareSpellCast` hook made of them.
+   * Undefined when the caster has no rune to cast it with.
+   */
+  prepareCast(
+    casterActor: RqgActor,
+    options: SpellCastOptions,
+  ):
+    | { options: RuneMagicRollOptions; preparation: RollPreparation; usedRune: RuneItem }
+    | undefined {
+    const item = this.parent as unknown as RuneMagicItem;
+    const usedRune = options.usedRuneId
+      ? this.getEligibleRunes(casterActor).find((r) => r.id === options.usedRuneId)
+      : this.getStrongestEligibleRune(casterActor);
+    if (!usedRune) {
+      return undefined;
+    }
+    const rollOptions: RuneMagicRollOptions = {
+      usedRuneName: usedRune.name ?? "",
+      usedRuneChance: Number(usedRune.system.chance ?? 0),
+      spellName: item.name ?? "",
+      spellImg: item.img ?? undefined,
+      isOneUse: this.isOneUse,
+      levelUsed: options.levelUsed ?? this.points,
+      magicPointBoost: options.magicPointBoost ?? 0,
+      // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
+      // instead of always using the caster's own pool - matches the cast dialogs' default.
+      magicPointSource: options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE,
+      runePointSource: options.runePointSource ?? SELF_RUNE_POINT_SOURCE,
+      modifiers: [...(options.modifiers ?? [])],
+      speaker: getSpeakerCompat({ actor: casterActor, token: options.token }),
+      rollMode: options.rollMode,
+    };
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareSpellCast", item, casterActor, rollOptions, preparation);
+    return { options: rollOptions, preparation, usedRune };
+  }
+
   private async castWithoutDialog(
     casterActor: RqgActor,
     options: SpellCastOptions,
@@ -286,10 +325,8 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       return logger.throw(ERR.runeMagicHasNoCult, { itemUuid: item.uuid });
     }
 
-    const usedRune = options.usedRuneId
-      ? this.getEligibleRunes(casterActor).find((r) => r.id === options.usedRuneId)
-      : this.getStrongestEligibleRune(casterActor);
-    if (!usedRune) {
+    const prepared = this.prepareCast(casterActor, options);
+    if (!prepared) {
       ui.notifications?.warn(
         localize("RQG.Dialog.RuneMagicRoll.NoEligibleRune", {
           actorName: casterActor.name ?? "",
@@ -298,23 +335,10 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       );
       return;
     }
-
-    const rollOptions: RuneMagicRollOptions = {
-      usedRuneName: usedRune.name ?? "",
-      usedRuneChance: Number(usedRune.system.chance ?? 0),
-      spellName: item.name ?? "",
-      spellImg: item.img ?? undefined,
-      isOneUse: this.isOneUse,
-      levelUsed: options.levelUsed ?? this.points,
-      magicPointBoost: options.magicPointBoost ?? 0,
-      // Quick Roll (no dialog) never sets this, so fall back to Auto (drain stored sources first)
-      // instead of always using the caster's own pool - matches the cast dialogs' default.
-      magicPointSource: options.magicPointSource ?? AUTO_MAGIC_POINT_SOURCE,
-      runePointSource: options.runePointSource ?? SELF_RUNE_POINT_SOURCE,
-      modifiers: [...(options.modifiers ?? [])],
-      speaker: getSpeakerCompat({ actor: casterActor, token: options.token }),
-      rollMode: options.rollMode,
-    };
+    const { options: rollOptions, preparation, usedRune } = prepared;
+    if (isForbidden(preparation)) {
+      return undefined;
+    }
     if (!callRqgPreHook("rqg.preSpellCast", item, casterActor, rollOptions)) {
       return undefined;
     }

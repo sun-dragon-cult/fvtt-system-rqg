@@ -43,6 +43,14 @@ import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
 import type { DefenceHookData } from "../../rolls/roll-method-options";
+import {
+  isForbidden,
+  type PreparedRoll,
+  preparedModifierTotal,
+  preparedRoll,
+  type RollPreparation,
+} from "../../rolls/roll-preparation";
+import { preparedBreakdown, preparedRollHtml } from "../app-parts/prepared-roll-view";
 import { resolveActorFromUuid } from "../resistance-roll-dialog/resistance-roll-shared";
 import { getWeaponEffectModifier } from "@items/weapon-item/weapon-skill-links";
 
@@ -314,11 +322,13 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.halvedModifier = -Math.floor(defenceChance / 2);
 
-    const totalChanceExclMasterOpponent = DefenceDialogV2.computeTotalChanceExclMasterOpponent(
-      defenceChance,
-      formData,
-      Number(formData.halvedModifier ?? 0),
-    );
+    this.prepared = DefenceDialogV2.prepareDefence(formData, this.attackChatMessage);
+    const totalChanceExclMasterOpponent =
+      DefenceDialogV2.computeTotalChanceExclMasterOpponent(
+        defenceChance,
+        formData,
+        Number(formData.halvedModifier ?? 0),
+      ) + preparedModifierTotal(this.prepared);
 
     const masterOpponentModifierDescription = localize(
       "RQG.Roll.AbilityRoll.MasterOpponentModifier",
@@ -352,11 +362,14 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const chanceBreakdownTooltip = DefenceDialogV2.getChanceBreakdownTooltip(
       baseChance,
       totalChance,
-      DefenceDialogV2.getChanceBreakdownModifiers(
-        formData,
-        weaponEffectModifier,
-        Number(formData.halvedModifier ?? 0),
-      ),
+      [
+        ...DefenceDialogV2.getChanceBreakdownModifiers(
+          formData,
+          weaponEffectModifier,
+          Number(formData.halvedModifier ?? 0),
+        ),
+        ...preparedBreakdown(this.prepared),
+      ],
     );
 
     return {
@@ -378,6 +391,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       // defence-footer
       totalChance,
       chanceBreakdownTooltip,
+      preparedRollHtml: preparedRollHtml(this.prepared),
       defenceButtonText: defenceButtonText,
     };
   }
@@ -409,11 +423,13 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as DefenceDialogFormData;
     const halvedModifier = -Math.floor(this.currentDefenceChance / 2);
-    const totalChanceExclMasterOpponent = DefenceDialogV2.computeTotalChanceExclMasterOpponent(
-      this.currentDefenceChance,
-      formData,
-      halvedModifier,
-    );
+    this.updatePreparedRoll(DefenceDialogV2.prepareDefence(formData, this.attackChatMessage));
+    const totalChanceExclMasterOpponent =
+      DefenceDialogV2.computeTotalChanceExclMasterOpponent(
+        this.currentDefenceChance,
+        formData,
+        halvedModifier,
+      ) + preparedModifierTotal(this.prepared);
 
     const totalChance = DefenceDialogV2.computeTotalChance(
       totalChanceExclMasterOpponent,
@@ -425,11 +441,14 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       const chanceBreakdownTooltip = DefenceDialogV2.getChanceBreakdownTooltip(
         this.currentDefenceBaseChance,
         totalChance,
-        DefenceDialogV2.getChanceBreakdownModifiers(
-          formData,
-          Number(this.currentParryWeaponEffectModifier ?? 0),
-          halvedModifier,
-        ),
+        [
+          ...DefenceDialogV2.getChanceBreakdownModifiers(
+            formData,
+            Number(this.currentParryWeaponEffectModifier ?? 0),
+            halvedModifier,
+          ),
+          ...preparedBreakdown(this.prepared),
+        ],
       );
       targetChanceBoxElement.dataset["tooltip"] = chanceBreakdownTooltip;
     }
@@ -505,50 +524,13 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const messageData = attackChatMessage!.toObject();
 
-    let selectedParryingWeapon = (await fromUuid(
-      formDataObject.parryingWeaponUuid ?? "",
-    )) as RqgItem | null;
-    if (selectedParryingWeapon) {
-      assertDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon);
-    }
-    const parrySkillRqid =
-      selectedParryingWeapon?.system.usage[formDataObject.parryingWeaponUsage ?? "oneHand"]
-        ?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
+    const built = DefenceDialogV2.buildDefence(formDataObject, attackChatMessage);
+    const { defendingActor, defendSkillItem, defence } = built;
+    const selectedParryingWeapon = defence.parryingWeapon;
+    const defenceRollOptions = defence.rollOptions;
 
-    const defendingTokenDocumentOrActor = (await fromUuid(
-      formDataObject.defendingTokenOrActorUuid ?? "",
-    )) as TokenDocument | RqgActor | null;
-
-    const defendingToken =
-      defendingTokenDocumentOrActor instanceof TokenDocument
-        ? defendingTokenDocumentOrActor
-        : undefined;
-
-    const defendingActor =
-      (defendingTokenDocumentOrActor instanceof TokenDocument
-        ? defendingTokenDocumentOrActor?.actor
-        : defendingTokenDocumentOrActor) ?? undefined;
-
-    if (defendingActor) {
-      assertDocumentSubType<CharacterActor>(defendingActor, ActorTypeEnum.Character);
-    }
     // Update the chat with how the defence was done
-
-    const currentFlavor = attackChatMessage!.flavor;
-
-    const defenderName = defendingTokenDocumentOrActor?.name;
-
-    const updatedFlavor = currentFlavor.replace("???", defenderName ?? "");
-
-    const { defenceName } = DefenceDialogV2.getDefenceNameAndChance(
-      formDataObject.defence,
-      defendingActor,
-      parrySkillRqid,
-      isDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon)
-        ? selectedParryingWeapon
-        : undefined,
-      formDataObject.parryingWeaponUsage,
-    );
+    const updatedFlavor = attackChatMessage!.flavor.replace("???", built.defenderName ?? "");
 
     if (formDataObject.defence === "parry") {
       requireValue(
@@ -556,40 +538,11 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
         "parry defence selected without a parrying weapon",
         formDataObject,
       );
-    }
-
-    let defendSkillItem: RqgItem | undefined;
-    switch (formDataObject.defence) {
-      case "parry": {
-        defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(
-          toRqidString(parrySkillRqid),
-        );
-
-        if (!isDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill)) {
-          ui.notifications?.warn(
-            localize("RQG.Dialog.Defence.NoValidParrySkillForWeaponUsageWarn"),
-          );
-          return;
-        }
-        break;
+      if (!isDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill)) {
+        ui.notifications?.warn(localize("RQG.Dialog.Defence.NoValidParrySkillForWeaponUsageWarn"));
+        return;
       }
-
-      case "dodge": {
-        defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge);
-        break;
-      }
-
-      case "ignore":
-      default:
-      // Leave defendSkillItem undefined
     }
-
-    const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.Defence.Defence")}</span>`;
-
-    const defendHeading =
-      formDataObject.defence === "parry"
-        ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${selectedParryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + formDataObject.parryingWeaponUsage)}</span>`
-        : `${defenceHtml} ${defenceName}`;
 
     if (defendSkillItem) {
       assertDocumentSubType<SkillItem>(defendSkillItem, ItemTypeEnum.Skill);
@@ -601,82 +554,15 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       }
     }
 
-    // Passed as a named modifier in defenceRollOptions; naturalSkill is the raw skill chance only.
-    const parryWeaponEffectModifier =
-      formDataObject.defence === "parry" &&
-      isDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon) &&
-      !!formDataObject.parryingWeaponUsage
-        ? getWeaponEffectModifier(
-            selectedParryingWeapon,
-            formDataObject.parryingWeaponUsage,
-            "parry",
-          )
-        : 0;
-
-    const defenceRollOptions: AbilityRollOptions = {
-      naturalSkill: Number(defendSkillItem?.system.chance ?? 0),
-      modifiers: [
-        {
-          value: Number(parryWeaponEffectModifier),
-          description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
-        },
-        {
-          value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.Common.Augment"),
-        },
-        {
-          value: Number(formDataObject.subsequentDefenceModifier),
-          description: DefenceDialogV2.getSubsequentDefenceModifierLabel(
-            Number(formDataObject.subsequentDefenceModifier),
-          ),
-        },
-        {
-          value: formDataObject.halved ? formDataObject.halvedModifier : 0,
-          description: localize("RQG.Roll.AbilityRoll.Halved"),
-        },
-        {
-          value: Number(formDataObject.otherModifier),
-          description: normalizeOtherModifierDescriptionForRoll(
-            formDataObject.otherModifierDescription,
-          ),
-        },
-        {
-          value: formDataObject.defenceMasterOpponentModifier,
-          description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
-        },
-      ],
-      heading: defendHeading,
-      abilityName: defendSkillItem?.name ?? undefined,
-      abilityType: defendSkillItem?.type ?? undefined,
-      abilityImg: defendSkillItem?.img ?? undefined,
-      speaker: getSpeakerCompat({ token: defendingToken, actor: defendingActor }),
-    };
-
-    const chosenDefence = formDataObject.defence ?? "ignore";
-    const defence: DefenceHookData = {
-      attacker: resolveActorFromUuid(attackChatMessage.system.attackingTokenOrActorUuid ?? ""),
-      attackChatMessage,
-      defence: chosenDefence,
-      parryingWeapon: isDocumentSubType<WeaponItem>(selectedParryingWeapon, ItemTypeEnum.Weapon)
-        ? selectedParryingWeapon
-        : undefined,
-      parryingWeaponUsage: formDataObject.parryingWeaponUsage,
-      rollOptions: defenceRollOptions,
-      notes: [],
-    };
+    if (defendingActor && defence.defence !== "ignore") {
+      const preparation: RollPreparation = {};
+      callRqgHook("rqg.prepareDefence", defendingActor, defence, preparation);
+      if (isForbidden(preparation)) {
+        return;
+      }
+    }
     if (defendingActor && !callRqgPreHook("rqg.preDefence", defendingActor, defence)) {
       return;
-    }
-    if (defence.defence === "ignore" && chosenDefence !== "ignore") {
-      // Forbidden: from here on it's a plain undefended attack
-      formDataObject.defence = "ignore";
-      formDataObject.parryingWeaponUsage = undefined;
-      selectedParryingWeapon = null;
-      defendSkillItem = undefined;
-      defence.parryingWeapon = undefined;
-      defence.parryingWeaponUsage = undefined;
-    } else {
-      defence.defence = chosenDefence;
     }
     // Closed once the defence is settled, before waiting for the roll animation
     // @ts-expect-error close - Foundry binds `this` to the dialog instance at runtime
@@ -771,12 +657,11 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       parryingWeaponDamageType ?? "parry",
     );
 
-    const outcomeDescription =
-      getBasicOutcomeDescription(
-        formDataObject.defence,
-        attackRoll.successLevel,
-        defenceRoll?.successLevel,
-      ) + defence.notes.map((note) => `<p>${foundry.utils.escapeHTML(note)}</p>`).join("");
+    const outcomeDescription = getBasicOutcomeDescription(
+      formDataObject.defence,
+      attackRoll.successLevel,
+      defenceRoll?.successLevel,
+    );
 
     console.debug("no implementation for useParryHitLocation yet", useParryHitLocation);
 
@@ -786,7 +671,7 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
     requireValue(hitLocationRollJson, "No Hit Location Roll found in chat message");
 
     (hitLocationRollJson as any).options.hitLocationNames = HitLocationRoll.tokenToHitLocationNames(
-      defendingTokenDocumentOrActor,
+      built.defendingTokenOrActor ?? null,
     );
 
     const damageDegree = getDamageDegree(
@@ -874,6 +759,145 @@ export class DefenceDialogV2 extends RqgInteractiveRollApplicationBase {
       await defendSkillItem?.checkExperience?.(defenceRoll?.successLevel);
       await attackSkill?.checkExperience?.(attackRoll.successLevel);
     }
+  }
+
+  /**
+   * The defence the form describes, as the defence hooks get it. Used for the dialog's preview and
+   * when the defence is made, so both see the same modifiers.
+   */
+  private static buildDefence(
+    formData: DefenceDialogFormData,
+    attackChatMessage: RqgChatMessage,
+  ): {
+    defendingTokenOrActor: TokenDocument | RqgActor | undefined;
+    defendingToken: TokenDocument | undefined;
+    defendingActor: CharacterActor | undefined;
+    defenderName: string | undefined;
+    defendSkillItem: RqgItem | undefined;
+    defence: DefenceHookData;
+  } {
+    const parryingWeaponItem = fromUuidSync(formData.parryingWeaponUuid ?? "") as
+      RqgItem | null | undefined;
+    const parryingWeapon = isDocumentSubType<WeaponItem>(parryingWeaponItem, ItemTypeEnum.Weapon)
+      ? parryingWeaponItem
+      : undefined;
+    const parrySkillRqid =
+      parryingWeapon?.system.usage[formData.parryingWeaponUsage ?? "oneHand"]?.skillRqidLink?.rqid; // TODO hardcoded oneHand fallback usage
+
+    const defendingTokenOrActor =
+      (fromUuidSync(formData.defendingTokenOrActorUuid ?? "") as
+        TokenDocument | RqgActor | null | undefined) ?? undefined;
+    const defendingToken =
+      defendingTokenOrActor instanceof TokenDocument ? defendingTokenOrActor : undefined;
+    const defendingActor =
+      (defendingTokenOrActor instanceof TokenDocument
+        ? defendingTokenOrActor.actor
+        : defendingTokenOrActor) ?? undefined;
+    if (defendingActor) {
+      assertDocumentSubType<CharacterActor>(defendingActor, ActorTypeEnum.Character);
+    }
+
+    const { defenceName } = DefenceDialogV2.getDefenceNameAndChance(
+      formData.defence,
+      defendingActor,
+      parrySkillRqid,
+      parryingWeapon,
+      formData.parryingWeaponUsage,
+    );
+
+    let defendSkillItem: RqgItem | undefined;
+    switch (formData.defence) {
+      case "parry":
+        defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(
+          toRqidString(parrySkillRqid),
+        );
+        break;
+      case "dodge":
+        defendSkillItem = defendingActor?.getBestEmbeddedDocumentByRqid(CONFIG.RQG.skillRqid.dodge);
+        break;
+      default:
+      // No skill for "ignore"
+    }
+
+    const defenceHtml = `<span class="roll-action">${localize("RQG.Dialog.Defence.Defence")}</span>`;
+    const defendHeading =
+      formData.defence === "parry"
+        ? `${defenceHtml} <span>${localize("RQG.Dialog.Defence.Parry")} – ${parryingWeapon?.name ?? ""} – ${localize("RQG.Game.WeaponUsage." + formData.parryingWeaponUsage)}</span>`
+        : `${defenceHtml} ${defenceName}`;
+
+    // Passed as a named modifier in the roll options; naturalSkill is the raw skill chance only.
+    const parryWeaponEffectModifier =
+      formData.defence === "parry" && parryingWeapon && !!formData.parryingWeaponUsage
+        ? getWeaponEffectModifier(parryingWeapon, formData.parryingWeaponUsage, "parry")
+        : 0;
+
+    const rollOptions: AbilityRollOptions = {
+      naturalSkill: Number((defendSkillItem as SkillItem | undefined)?.system.chance ?? 0),
+      modifiers: [
+        {
+          value: Number(parryWeaponEffectModifier),
+          description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
+        {
+          value: Number(formData.augmentModifier),
+          description: localize("RQG.Roll.Common.Augment"),
+        },
+        {
+          value: Number(formData.subsequentDefenceModifier),
+          description: DefenceDialogV2.getSubsequentDefenceModifierLabel(
+            Number(formData.subsequentDefenceModifier),
+          ),
+        },
+        {
+          value: formData.halved ? Number(formData.halvedModifier) : 0,
+          description: localize("RQG.Roll.AbilityRoll.Halved"),
+        },
+        {
+          value: Number(formData.otherModifier),
+          description: normalizeOtherModifierDescriptionForRoll(formData.otherModifierDescription),
+        },
+        {
+          value: Number(formData.defenceMasterOpponentModifier ?? 0),
+          description: localize("RQG.Roll.AbilityRoll.MasterOpponentModifier"),
+        },
+      ],
+      heading: defendHeading,
+      abilityName: defendSkillItem?.name ?? undefined,
+      abilityType: defendSkillItem?.type ?? undefined,
+      abilityImg: defendSkillItem?.img ?? undefined,
+      speaker: getSpeakerCompat({ token: defendingToken, actor: defendingActor }),
+    };
+
+    return {
+      defendingTokenOrActor,
+      defendingToken,
+      defendingActor,
+      defenderName: defendingTokenOrActor?.name ?? undefined,
+      defendSkillItem,
+      defence: {
+        attacker: resolveActorFromUuid(attackChatMessage.system.attackingTokenOrActorUuid ?? ""),
+        attackChatMessage,
+        defence: formData.defence ?? "ignore",
+        parryingWeapon,
+        parryingWeaponUsage: formData.parryingWeaponUsage,
+        rollOptions,
+      },
+    };
+  }
+
+  /** The modifiers and restriction the `rqg.prepareDefence` hook gives the form's defence. */
+  private static prepareDefence(
+    formData: DefenceDialogFormData,
+    attackChatMessage: RqgChatMessage,
+  ): PreparedRoll | undefined {
+    const { defendingActor, defence } = DefenceDialogV2.buildDefence(formData, attackChatMessage);
+    if (!defendingActor || defence.defence === "ignore") {
+      return undefined;
+    }
+    const ownCount = defence.rollOptions.modifiers?.length ?? 0;
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareDefence", defendingActor, defence, preparation);
+    return preparedRoll(defence.rollOptions.modifiers, ownCount, preparation);
   }
 
   private static getDefenceNameAndChance(

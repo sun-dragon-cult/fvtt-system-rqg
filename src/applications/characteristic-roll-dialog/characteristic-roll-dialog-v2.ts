@@ -23,6 +23,13 @@ import {
 import { augmentOptions, meditateOptions } from "../app-parts/augment-meditate-options";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
 import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import type { Modifier } from "../../rolls/ability-roll/ability-roll.types";
+import {
+  type PreparedRoll,
+  preparedModifierTotal,
+  preparedRoll,
+} from "../../rolls/roll-preparation";
+import { preparedRollHtml } from "../app-parts/prepared-roll-view";
 
 export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   protected override getLivePreviewFormBehaviorConfig() {
@@ -40,8 +47,38 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       ) +
       Number(formData.augmentModifier ?? 0) +
       Number(formData.meditateModifier ?? 0) +
-      Number(formData.otherModifier ?? 0)
+      Number(formData.otherModifier ?? 0) +
+      preparedModifierTotal(this.prepared)
     );
+  }
+
+  /** The modifiers the roll gets from the dialog. */
+  private static formModifiers(formData: CharacteristicRollDialogFormData): Modifier[] {
+    return [
+      {
+        value: Number(formData.augmentModifier),
+        description: localize("RQG.Roll.Common.Augment"),
+      },
+      {
+        value: Number(formData.meditateModifier),
+        description: localize("RQG.Roll.Common.Meditate"),
+      },
+      {
+        value: Number(formData.otherModifier),
+        description: normalizeOtherModifierDescriptionForRoll(formData.otherModifierDescription),
+      },
+    ];
+  }
+
+  /** What the prepare hook makes of the roll as the form stands. */
+  private prepareRoll(formData: CharacteristicRollDialogFormData): PreparedRoll {
+    const modifiers = CharacteristicRollDialogV2.formModifiers(formData);
+    const { options, preparation } = this.actor.prepareCharacteristicRoll(this.characteristicName, {
+      token: this.token,
+      difficulty: CharacteristicRollDialogV2.getDifficulty(formData.difficulty),
+      modifiers,
+    });
+    return preparedRoll(options.modifiers, modifiers.length, preparation);
   }
 
   private static difficultyOptions: SelectOptionData<number>[] = [
@@ -118,6 +155,7 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       this.actor.system.characteristics[this.characteristicName]?.value ?? 0;
 
     const speaker = getSpeakerCompat({ actor: this.actor, token: this.token });
+    this.prepared = this.prepareRoll(formData);
 
     return {
       formData: formData,
@@ -133,14 +171,8 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       baseChance: formData.characteristicValue.toString(),
 
       // RollFooter
-      totalChance:
-        Math.ceil(
-          Number(formData.characteristicValue) *
-            CharacteristicRollDialogV2.getDifficulty(formData.difficulty),
-        ) +
-        Number(formData.augmentModifier ?? 0) +
-        Number(formData.meditateModifier ?? 0) +
-        Number(formData.otherModifier ?? 0),
+      totalChance: this.computeTotalChance(formData),
+      preparedRollHtml: preparedRollHtml(this.prepared),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
@@ -154,6 +186,7 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
 
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as CharacteristicRollDialogFormData;
+    this.updatePreparedRoll(this.prepareRoll(formData));
     totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
   }
 
@@ -185,22 +218,7 @@ export class CharacteristicRollDialogV2 extends RqgInteractiveRollApplicationBas
       skipDialog: true,
       token,
       difficulty: CharacteristicRollDialogV2.getDifficulty(formDataObject.difficulty),
-      modifiers: [
-        {
-          value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.Common.Augment"),
-        },
-        {
-          value: Number(formDataObject.meditateModifier),
-          description: localize("RQG.Roll.Common.Meditate"),
-        },
-        {
-          value: Number(formDataObject.otherModifier),
-          description: normalizeOtherModifierDescriptionForRoll(
-            formDataObject.otherModifierDescription,
-          ),
-        },
-      ],
+      modifiers: CharacteristicRollDialogV2.formModifiers(formDataObject),
       rollMode: rollMode,
     });
   }
