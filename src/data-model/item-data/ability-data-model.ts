@@ -12,6 +12,7 @@ import type { SkillItem } from "./skill-data-model";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
+import { skillBehaviorOf, skillTargetUuids } from "../../system/skill-behaviors/skill-behavior";
 
 const logger = new RqgLogger("AbilityDataModel");
 type AbilitySchema = ReturnType<typeof abilitySchemaFields>;
@@ -73,6 +74,10 @@ export abstract class AbilityDataModel<
     options.modifiers ??= [];
     if (!callRqgPreHook("rqg.preAbilityRoll", item, options)) {
       return undefined;
+    }
+    if (skillBehaviorOf(item)) {
+      options.abilityUuid = item.uuid ?? undefined;
+      options.targetUuids = skillTargetUuids(item);
     }
     const abilityRoll = await AbilityRoll.rollAndShow(options);
     if (abilityRoll.successLevel == null) {

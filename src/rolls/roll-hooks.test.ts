@@ -49,7 +49,7 @@ describe("roll hooks (#1132)", () => {
 
     function abilityModel(embedded = true): any {
       const model: any = {
-        parent: { name: "Climb", isEmbedded: embedded },
+        parent: { name: "Climb", isEmbedded: embedded, getFlag: () => undefined },
         checkExperience: vi.fn().mockResolvedValue(undefined),
       };
       model.assertEmbedded = (AbilityDataModel.prototype as any).assertEmbedded;

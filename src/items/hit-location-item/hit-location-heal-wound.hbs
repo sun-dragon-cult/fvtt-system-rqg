@@ -16,7 +16,9 @@
       </div>
     </div>
   {{else}}
-    <div class="wound-dialog-label">{{localize "RQG.Item.HitLocation.HealWound.PointsToHeal" points=points}}</div>
+    {{#if hasPoints}}
+      <div class="wound-dialog-label">{{localize "RQG.Item.HitLocation.HealWound.PointsToHeal" points=points}}</div>
+    {{/if}}
   {{/if}}
 
   <div class="heal-locations{{#if healAll}} is-heal-all{{/if}}" id="healWoundOptions">

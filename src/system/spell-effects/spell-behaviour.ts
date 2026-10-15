@@ -68,6 +68,19 @@ const registrations = new Map<string, Registration[]>();
 
 const spellEffectOutcomes: readonly string[] = ["applied", "blocked", "resolved"];
 
+/** Run a call into a module's code, logging `failedMessage` instead of throwing. */
+export async function guardModuleCall<T>(
+  failedMessage: () => string,
+  call: () => Promise<T> | T,
+): Promise<T | undefined> {
+  try {
+    return await call();
+  } catch (error) {
+    logger.error(failedMessage(), undefined, error);
+    return undefined;
+  }
+}
+
 /**
  * Run a call into a module's spell behaviour so that one failing doesn't stop the spell, or every
  * spell cast at an actor carrying its effects. Undefined when it threw.
@@ -76,16 +89,10 @@ export async function guardSpellBehaviour<T>(
   spellName: string,
   call: () => Promise<T> | T,
 ): Promise<T | undefined> {
-  try {
-    return await call();
-  } catch (error) {
-    logger.error(
-      localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
-      undefined,
-      error,
-    );
-    return undefined;
-  }
+  return guardModuleCall(
+    () => localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
+    call,
+  );
 }
 
 type HookKind = "apply" | "onIncomingSpell" | "onEnd";

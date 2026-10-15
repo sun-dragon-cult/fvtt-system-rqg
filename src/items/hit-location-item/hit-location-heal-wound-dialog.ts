@@ -10,8 +10,8 @@ import { DocumentAppsLink } from "../../applications/app-parts/document-apps-lin
 import type { RqgDotPickerElement } from "../../applications/dot-picker/dot-picker-element";
 import { distributeHealing, sumWounds } from "./hit-location-healing-calculations";
 
-/** A wound picked to heal. */
-export type WoundChoice = { location: HitLocationItem; wound: number; points: number };
+/** A wound picked to heal; `points` is unset when `chooseWounds` was given none. */
+export type WoundChoice = { location: HitLocationItem; wound: number; points?: number };
 
 /** What `chooseWounds` resolves to: the wounds to heal and the severed locations to reattach. */
 export type ChosenHealing = { wounds: WoundChoice[]; reattach: HitLocationItem[] };
@@ -23,7 +23,11 @@ export type ChosenHealing = { wounds: WoundChoice[]; reattach: HitLocationItem[]
  */
 export type ChooseWoundsOptions = {
   title: string;
-  points: number;
+  /**
+   * Required for `split` and `location`. Leave it out in `single` mode to only pick the wound,
+   * when what it heals is rolled afterwards (First Aid).
+   */
+  points?: number;
   mode: "single" | "split" | "location";
   /**
    * Offer a "Reattach" checkbox on each severed location. One reattach per cast: in `split` mode
@@ -153,7 +157,7 @@ function healDialogContext(
   mode: HealDialogMode,
   locations: HitLocationItem[],
   options: {
-    points: number;
+    points: number | undefined;
     selectedKey: string | undefined;
     offerReattach: boolean;
     reattachIds: string[];
@@ -164,9 +168,9 @@ function healDialogContext(
   const allWounds = locations.flatMap((location) => location.system.wounds);
   const presets =
     mode === "split"
-      ? distributeHealing(allWounds, options.points)
+      ? distributeHealing(allWounds, options.points ?? 0)
       : mode === "location"
-        ? locationPresets(locations, options.points)
+        ? locationPresets(locations, options.points ?? 0)
         : [];
   let presetIndex = 0;
   return {
@@ -181,6 +185,7 @@ function healDialogContext(
     healAll: !!options.healAll,
     maxHeal: Math.max(1, ...allWounds),
     points: options.points,
+    hasPoints: options.points != null,
     selectedKey: options.selectedKey,
     healFeedback: options.healFeedback ?? "",
     locations: locations.map((location) => ({
@@ -252,12 +257,15 @@ async function chooseWoundsOnce(
         return;
       }
       if (options.mode === "split") {
-        initializeSplitBudget(root, options.points);
+        initializeSplitBudget(root, options.points ?? 0);
         keepOneReattachTicked(root);
       } else if (options.mode === "location") {
-        initializeLocationBudget(root, options.points);
+        initializeLocationBudget(root, options.points ?? 0);
       } else {
-        initializeWastedPoints(root, () => options.points);
+        const points = options.points;
+        if (points != null) {
+          initializeWastedPoints(root, () => points);
+        }
         keepOneReattachTicked(root);
       }
     },
@@ -774,7 +782,7 @@ async function applyHealing(
   const woundsBefore = [...chosen.location.system.wounds];
   const { healed } = await actor.heal({
     location: chosen.location,
-    points: chosen.points,
+    points: chosen.points ?? 0,
     wound: chosen.wound,
     restoreSevered: restoreSevered(chosen.location),
   });
