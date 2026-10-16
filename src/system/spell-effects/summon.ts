@@ -60,7 +60,8 @@ async function summonedFolder(): Promise<Folder | undefined> {
 
 /** The world copy of the actor, imported from its compendium the first time it's summoned. */
 async function worldActor(actorRqid: string): Promise<Actor | undefined> {
-  const actor = await Rqid.fromRqid(actorRqid);
+  // silent: the caller explains what to create instead
+  const actor = await Rqid.fromRqid(actorRqid, undefined, true);
   if (!(actor instanceof Actor)) {
     return undefined;
   }
