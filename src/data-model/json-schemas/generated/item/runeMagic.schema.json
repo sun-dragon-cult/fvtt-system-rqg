@@ -63,6 +63,15 @@
       "minLength": 1,
       "default": "none"
     },
+    "resistedWith": {
+      "type": "string",
+      "enum": [
+        "power",
+        "magicPoints"
+      ],
+      "minLength": 1,
+      "default": "power"
+    },
     "targetKind": {
       "type": "string",
       "enum": [
@@ -200,6 +209,7 @@
     "isRitual",
     "isEnchantment",
     "resistedBy",
+    "resistedWith",
     "targetKind",
     "effectTier",
     "passesSpellBarriers",

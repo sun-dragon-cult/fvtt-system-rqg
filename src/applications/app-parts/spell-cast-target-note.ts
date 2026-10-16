@@ -13,14 +13,15 @@ export type SpellCastTargetNote = {
 };
 
 /**
- * What the cast dialog says about the current targets. Only a spell resolved by a resistance roll
- * or gated on spirit combat constrains them - everything else is free to be cast at any number of
+ * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
+ * gated on spirit combat constrains them - everything else is free to be cast at any number of
  * tokens, or none.
  */
 export function buildSpellCastTargetNote(resistedBy: SpellResistedByEnum): SpellCastTargetNote {
   const targetNames = getTargetedTokenNames();
   const targetCount = game.user?.targets.size ?? 0;
   const spiritCombat = isSpiritCombatGate(resistedBy);
+  const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   const constrained = resistedBy === SpellResistedByEnum.ResistanceRoll || spiritCombat;
 
   const tooManyTargets = constrained && targetCount > 1;
@@ -32,7 +33,7 @@ export function buildSpellCastTargetNote(resistedBy: SpellResistedByEnum): Spell
   } else if (spiritCombat && targetCount === 0) {
     targetNote = localize("RQG.Dialog.SpellCast.SpiritCombatUntargeted");
     targetNoteClass = "hint";
-  } else if (constrained && targetCount === 0) {
+  } else if ((constrained || perTarget) && targetCount === 0) {
     targetNote = localize("RQG.Dialog.SpellCast.WillAskToCastOnSelf");
     targetNoteClass = "hint";
   }

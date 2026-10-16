@@ -2,6 +2,7 @@ import { ItemTypeEnum } from "@item-model/item-types.ts";
 import {
   SpellEffectTierEnum,
   SpellResistedByEnum,
+  SpellResistedWithEnum,
   SpellTargetKindEnum,
 } from "../../../data-model/item-data/spell";
 import { Rqid } from "../../api/rqid-api";
@@ -18,6 +19,7 @@ type SpellSurveyFields = {
   targetKind?: string;
   effectTier?: string;
   resistedBy?: string;
+  resistedWith?: string;
   passesSpellBarriers?: boolean;
 };
 
@@ -46,10 +48,10 @@ function isDefaultSpellIcon(
 }
 
 /**
- * Fill a spell's effect link, survey fields, resistedBy, passesSpellBarriers and icon from its
- * compendium spell, matched by rqid (#1086).
- * Only fills what is unset - an empty link, "none", false, or a default icon - so a GM's own choice
- * is never overwritten.
+ * Fill a spell's effect link, survey fields, resistedBy, resistedWith, passesSpellBarriers and icon
+ * from its compendium spell, matched by rqid (#1086).
+ * Only fills what is unset - an empty link, "none", POW, false, or a default icon - so a GM's own
+ * choice is never overwritten.
  */
 export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promise<Item.UpdateData> {
   if (itemData.type !== ItemTypeEnum.SpiritMagic && itemData.type !== ItemTypeEnum.RuneMagic) {
@@ -62,6 +64,7 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
   const needsTargetKind = system.targetKind === SpellTargetKindEnum.None;
   const needsEffectTier = system.effectTier === SpellEffectTierEnum.None;
   const needsResistedBy = system.resistedBy === SpellResistedByEnum.None;
+  const needsResistedWith = system.resistedWith === SpellResistedWithEnum.Power;
   const needsPassesSpellBarriers = !system.passesSpellBarriers;
   const needsImg = isDefaultSpellIcon(itemData.img, spellType);
   if (
@@ -71,6 +74,7 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
       needsTargetKind ||
       needsEffectTier ||
       needsResistedBy ||
+      needsResistedWith ||
       needsPassesSpellBarriers ||
       needsImg
     )
@@ -111,6 +115,11 @@ export async function resyncSpellFieldsFromCompendium(itemData: RqgItem): Promis
     needsResistedBy && firstSet((from) => from.resistedBy, SpellResistedByEnum.None);
   if (resistedBy) {
     patch["resistedBy"] = resistedBy;
+  }
+  const resistedWith =
+    needsResistedWith && firstSet((from) => from.resistedWith, SpellResistedWithEnum.Power);
+  if (resistedWith) {
+    patch["resistedWith"] = resistedWith;
   }
   if (needsPassesSpellBarriers && sources.some((from) => from.passesSpellBarriers === true)) {
     patch["passesSpellBarriers"] = true;
