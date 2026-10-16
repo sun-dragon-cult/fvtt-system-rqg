@@ -1,6 +1,7 @@
 import { getTargetedTokenNames, localize } from "../../system/util";
 import { spellBehaviorOf } from "../../system/spell-effects/spell-behavior";
 import { RqgLogger } from "../../system/logging/rqg-logger";
+import { metresToPixels } from "../../system/spell-effects/scene-distance";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { isSpiritCombatGate, SpellResistedByEnum } from "../../data-model/item-data/spell";
 
@@ -106,20 +107,17 @@ export function targetTokensWithin(casterToken: TokenDocument, radius: number): 
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return;
   }
-  const grid = canvas.grid!;
-  const units = canvas.scene?.grid.units ?? "";
-  const metresPerUnit = /^(ft|feet|foot)\.?$/i.test(units)
-    ? 0.3048
-    : /^(yd|yds|yards?)\.?$/i.test(units)
-      ? 0.9144
-      : 1;
-  const radiusInSceneUnits = radius / metresPerUnit;
-  // Straight-line distance between token centres, in scene distance units
-  const distance = (token: Token) =>
-    (Math.hypot(token.center.x - caster.center.x, token.center.y - caster.center.y) / grid.size) *
-    grid.distance;
+  const radiusInPixels = metresToPixels(radius, {
+    size: canvas.grid!.size,
+    distance: canvas.grid!.distance,
+    units: canvas.scene?.grid.units,
+  });
+  // Straight-line distance between token centres
   const inRange = (canvas.tokens?.placeables ?? []).filter(
-    (token) => token.visible && distance(token) <= radiusInSceneUnits,
+    (token) =>
+      token.visible &&
+      Math.hypot(token.center.x - caster.center.x, token.center.y - caster.center.y) <=
+        radiusInPixels,
   );
   canvas.tokens?.setTargets(
     inRange.flatMap((token) => (token.id ? [token.id] : [])),

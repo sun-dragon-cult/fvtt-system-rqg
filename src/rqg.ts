@@ -40,6 +40,8 @@ import { initSpelledProjectiles } from "./items/weapon-item/spelled-projectile";
 import { initApplySpellBehaviorQuery } from "./system/spell-effects/run-spell-apply";
 import { initReflectResistedSpellQuery } from "./system/spell-effects/reflect-spell";
 import { initSpellEnd } from "./system/spell-effects/spell-end";
+import { initCreateSpellAreaQuery, initSpellAreaCleanup } from "./system/spell-effects/spell-area";
+import { SpellAreaRegionBehavior } from "./scene/spell-area-region-behavior";
 import { initSpellBehaviors } from "./system/spell-effects/spell-behavior";
 import { initSpellRollEntries } from "./system/spell-effects/spell-roll-entries";
 import { initSkillBehaviors } from "./system/skill-behaviors/skill-behavior";
@@ -117,6 +119,8 @@ Hooks.once("init", () => {
   initApplySpellBehaviorQuery();
   initReflectResistedSpellQuery();
   initSpellEnd();
+  initSpellAreaCleanup();
+  initCreateSpellAreaQuery();
   RqgItem.init();
   RqgHotbar.init();
   RqgActorDirectory.init();
@@ -126,6 +130,7 @@ Hooks.once("init", () => {
   RqgSettings.init();
   RqgTokenLayer.init();
   ClickableScriptsRegionBehavior.init();
+  SpellAreaRegionBehavior.init();
   RqgCombatant.init();
   initSockets();
 
