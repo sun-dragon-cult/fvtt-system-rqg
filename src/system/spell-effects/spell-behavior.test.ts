@@ -4,6 +4,7 @@ import {
   initSpellBehaviors,
   pickRegistration,
   spellBehavior,
+  spellBehaviorForEffect,
   type SpellBehaviorRegistry,
 } from "./spell-behavior";
 
@@ -76,6 +77,20 @@ describe("spellBehavior", () => {
     expect(await spellBehavior("i.spirit-magic.b")?.onIncomingSpell?.(scope)).toEqual({
       outcome: "stopped",
     });
+  });
+
+  it("gives a spell area's effect on its caster no behavior, so its hooks act on the area's tokens", () => {
+    const entry = () => {};
+    register((registry) => {
+      registry.register("i.rune-magic.shake-earth", { onPrepareAbilityRoll: entry }, en);
+    });
+    const effect = (spellArea: string | undefined) =>
+      ({
+        system: { spell: { spellRqid: "i.rune-magic.shake-earth" } },
+        getFlag: () => spellArea,
+      }) as any;
+    expect(spellBehaviorForEffect(effect(undefined))?.onPrepareAbilityRoll).toBeDefined();
+    expect(spellBehaviorForEffect(effect("Scene.s.Region.r"))).toBeUndefined();
   });
 
   it("contains a failing onResisted, so the resisted spell just stays resisted", async () => {

@@ -101,7 +101,8 @@ function linkedRqids(links: readonly { rqid?: string }[] | undefined): string[] 
 function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[] {
   return parent.effects.contents.flatMap((effect: any) => {
     const spell = effect.system?.spell;
-    return spell
+    // A spell area's effect on its caster isn't the spell acting on them
+    return spell && !effect.getFlag?.(systemId, "spellArea")
       ? [
           {
             id: effect.id ?? "",
@@ -167,11 +168,19 @@ export async function applySpellEffect(
   targetActor: RqgActor,
   targetName: string,
   cast: SpellEffectCast,
+  options: {
+    /**
+     * A spell area putting its effect on a token inside it: always the template, since the
+     * behavior's `apply` makes the area, and protective spells don't stop it - the area isn't
+     * cast at the token.
+     */
+    areaEffect?: boolean;
+  } = {},
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
   const behavior = spellBehaviorOf(spell);
-  const apply = behavior?.apply;
+  const apply = options.areaEffect ? undefined : behavior?.apply;
   if (apply) {
     return runSpellApply({ ...behavior, apply }, scope);
   }
@@ -216,7 +225,7 @@ export async function applySpellEffect(
     }
   }
   // Only once Apply can no longer back out, since a protective spell may use up its effects
-  const intercepted = await interceptIncomingSpell(scope);
+  const intercepted = options.areaEffect ? undefined : await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;
   }
