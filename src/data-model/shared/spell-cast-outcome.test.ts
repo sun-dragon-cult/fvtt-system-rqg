@@ -42,13 +42,31 @@ describe("buildCastTargetOutcomes", () => {
     });
   });
 
-  it.each([
-    SpellResistedByEnum.ResistanceRollArea,
-    SpellResistedByEnum.ResistanceRollPerTarget,
-    SpellResistedByEnum.SpiritCombatRound,
-    SpellResistedByEnum.SpiritCombatDefeat,
-  ])("records no targets for an untargeted %s cast, rather than hitting the caster", (mode) => {
-    expect(build(Success, mode, [])).toEqual([]);
+  it.each([SpellResistedByEnum.ResistanceRollArea, SpellResistedByEnum.ResistanceRollPerTarget])(
+    "records no targets for an untargeted %s cast, rather than hitting the caster",
+    (mode) => {
+      expect(build(Success, mode, [])).toEqual([]);
+    },
+  );
+
+  it.each([SpellResistedByEnum.SpiritCombatRound, SpellResistedByEnum.SpiritCombatDefeat])(
+    "leaves an untargeted %s cast's opponent pending, for the GM to rule on",
+    (mode) => {
+      expect(build(Success, mode, [])).toEqual([
+        {
+          targetTokenOrActorUuid: "",
+          state: "pending",
+          resolvedBy: undefined,
+          casterSuccessLevel: undefined,
+        },
+      ]);
+    },
+  );
+
+  it("marks an untargeted spirit-combat gate unaffected when the cast failed", () => {
+    expect(build(Failure, SpellResistedByEnum.SpiritCombatRound, [])).toMatchObject([
+      { targetTokenOrActorUuid: "", state: "unaffected", resolvedBy: "castFailed" },
+    ]);
   });
 
   it("marks every target unaffected when the cast failed, whatever resists it", () => {

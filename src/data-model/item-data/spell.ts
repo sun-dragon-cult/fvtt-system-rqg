@@ -32,9 +32,8 @@ export const SpellConcentrationEnum = {
 export type SpellConcentrationEnum =
   (typeof SpellConcentrationEnum)[keyof typeof SpellConcentrationEnum];
 
-// How an unwilling target can stop a spell taking effect. Only `None` and `ResistanceRoll` are
-// implemented; the rest are declared so content is authored once, and are inert (treated as "no
-// automated step") until their own issues wire them up - see #1068.
+// How an unwilling target can stop a spell taking effect. The area and per-target modes leave their
+// targets for a GM ruling until #1076; the spirit-combat gates are GM-ruled until #958.
 export const SpellResistedByEnum = {
   None: "none",
   // one resistance roll, single target
@@ -49,6 +48,14 @@ export const SpellResistedByEnum = {
   SpiritCombatDefeat: "spiritCombatDefeat",
 } as const;
 export type SpellResistedByEnum = (typeof SpellResistedByEnum)[keyof typeof SpellResistedByEnum];
+
+/** Spirit combat is one on one, so these gates are against a single opponent. */
+export function isSpiritCombatGate(resistedBy: SpellResistedByEnum | undefined): boolean {
+  return (
+    resistedBy === SpellResistedByEnum.SpiritCombatRound ||
+    resistedBy === SpellResistedByEnum.SpiritCombatDefeat
+  );
+}
 
 // What a spell's effect attaches to - decides where #1079's Active Effect gets created (or
 // whether one can be at all). Frozen from the #1080 survey against RBM + Core's sample sorcery

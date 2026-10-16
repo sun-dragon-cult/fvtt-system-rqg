@@ -577,6 +577,15 @@
           "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}.",
           "cancelledActive": "{spellName} and {effectName} cancel each other on {parentName}, so neither remains."
         },
+        "SpiritCombat": {
+          "Opponent": "Spirit combat opponent",
+          "PendingRound": "Awaiting a round of spirit combat",
+          "PendingDefeat": "Awaiting the end of spirit combat",
+          "CasterWonRound": "GM ruling: the caster won the round of spirit combat",
+          "CasterLostRound": "GM ruling: the caster lost the round of spirit combat",
+          "CasterDefeatedOpponent": "GM ruling: the caster reduced the opponent to 0 magic points",
+          "CasterBrokeOff": "GM ruling: the caster broke off or was defeated"
+        },
         "TargetOption": {
           "replaces": "{itemName} (replaces {effectName})",
           "strongerActive": "{itemName} (no effect: {effectName} is active)",
@@ -695,7 +704,8 @@
       },
       "SpellCast": {
         "SingleTargetOnly": "only one target",
-        "WillAskToCastOnSelf": "will ask to cast on yourself"
+        "WillAskToCastOnSelf": "will ask to cast on yourself",
+        "SpiritCombatUntargeted": "no target: the GM rules on the spirit combat"
       },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
@@ -1230,8 +1240,8 @@
           "resistanceRoll": "Resistance roll (single target)",
           "resistanceRollArea": "Resistance roll, whole area (not yet automated)",
           "resistanceRollPerTarget": "Resistance roll, per target (not yet automated)",
-          "spiritCombatRound": "Spirit combat, one round (not yet automated)",
-          "spiritCombatDefeat": "Spirit combat, until defeated (not yet automated)"
+          "spiritCombatRound": "Spirit combat, one round (GM rules on the cast card)",
+          "spiritCombatDefeat": "Spirit combat, until defeated (GM rules on the cast card)"
         },
         "TargetKind": "Target Kind",
         "TargetKindEnum": {
