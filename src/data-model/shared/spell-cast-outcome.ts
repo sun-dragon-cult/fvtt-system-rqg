@@ -1,6 +1,6 @@
 import { safeFromJSON } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import { SpellResistedByEnum } from "../item-data/spell";
+import { isSpiritCombatGate, SpellResistedByEnum } from "../item-data/spell";
 
 import Roll = foundry.dice.Roll;
 
@@ -12,6 +12,7 @@ import type {
 
 /** Whether a spell took effect on one of its targets - the one thing a spell effect branches on. */
 export interface SpellTargetOutcome {
+  /** "" for the untargeted opponent of a spirit-combat gate, which the GM still rules on. */
   targetTokenOrActorUuid: string;
   state: SpellTargetOutcomeState;
   /** How the state was decided; undefined while pending. */
@@ -42,8 +43,8 @@ export type SpellCastTarget = { tokenUuid: string; isCaster: boolean };
 /**
  * The per-target outcomes known the moment the cast roll lands. Anything a later step decides - a
  * resistance roll, a GM ruling - starts as pending. Nothing targeted means a self cast only for
- * `none` and `resistanceRoll` (whose caster confirmed it); an area or spirit-combat spell without
- * targets has no target yet, not the caster.
+ * `none` and `resistanceRoll` (whose caster confirmed it); an area spell without targets has no
+ * target yet, not the caster, and a spirit-combat gate is against an untargeted opponent.
  */
 export function buildCastTargetOutcomes(params: {
   castSuccessLevel: AbilitySuccessLevelEnum;
@@ -54,10 +55,12 @@ export function buildCastTargetOutcomes(params: {
   const { castSuccessLevel, resistedBy, casterTokenOrActorUuid } = params;
   const defaultsToSelf =
     resistedBy === SpellResistedByEnum.None || resistedBy === SpellResistedByEnum.ResistanceRoll;
-  const targets =
-    params.targets.length || !defaultsToSelf
-      ? params.targets
-      : [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }];
+  const untargeted: SpellCastTarget[] = defaultsToSelf
+    ? [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }]
+    : isSpiritCombatGate(resistedBy)
+      ? [{ tokenUuid: "", isCaster: false }]
+      : [];
+  const targets = params.targets.length ? params.targets : untargeted;
   const castSucceeded = castSuccessLevel <= AbilitySuccessLevelEnum.Success;
 
   return targets.map((target) => {

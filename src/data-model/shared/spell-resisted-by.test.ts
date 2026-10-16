@@ -148,6 +148,29 @@ describe("resolveResistedSpellCastTarget", () => {
 
     expect(result.proceed).toBe(false);
   });
+
+  it.each([SpellResistedByEnum.SpiritCombatRound, SpellResistedByEnum.SpiritCombatDefeat])(
+    "refuses a %s spell aimed at more than one target, since spirit combat is one on one",
+    async (mode) => {
+      setTargets(fakeTarget("Actor.a"), fakeTarget("Actor.b"));
+
+      const result = await resolveResistedSpellCastTarget(mode, casterActor, "Bind Ghost");
+
+      expect(result.proceed).toBe(false);
+      expect(ui.notifications?.warn).toHaveBeenCalled();
+    },
+  );
+
+  it("casts a spirit-combat gate with nothing targeted without offering a self cast", async () => {
+    const result = await resolveResistedSpellCastTarget(
+      SpellResistedByEnum.SpiritCombatRound,
+      casterActor,
+      "Resurrect",
+    );
+
+    expect(result).toEqual({ proceed: true, selfCast: false, targets: [] });
+    expect((globalThis as any).foundry.applications.api.DialogV2.confirm).not.toHaveBeenCalled();
+  });
 });
 
 describe("postSpellCastResult", () => {
@@ -206,6 +229,7 @@ describe("postSpellCastResult", () => {
         spellUuid: "Actor.caster.Item.spell",
         casterTokenOrActorUuid: "Scene.s.Token.caster",
         castSuccessLevel: 4,
+        resistedBy: SpellResistedByEnum.ResistanceRoll,
         targets: [
           {
             targetTokenOrActorUuid: "Scene.s.Token.victim",
@@ -270,6 +294,17 @@ describe("postSpellCastResult", () => {
       state: "pending",
       resolvedBy: undefined,
     });
+  });
+
+  it("records the resistedBy mode on the cast message, so the card can word the GM ruling", async () => {
+    const castRoll = await post({
+      resistedBy: SpellResistedByEnum.SpiritCombatRound,
+      target: { proceed: true, selfCast: false, targets: [] },
+    });
+
+    const system = postedCastMessage(castRoll).system;
+    expect(system.resistedBy).toBe(SpellResistedByEnum.SpiritCombatRound);
+    expect(system.targets).toMatchObject([{ targetTokenOrActorUuid: "", state: "pending" }]);
   });
 
   it("builds one public combined card carrying the cast roll, without posting it separately", async () => {

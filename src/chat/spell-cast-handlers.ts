@@ -1,4 +1,4 @@
-import { getRequiredDomDataset, localize, safeFromJSON } from "../system/util";
+import { getDomDataset, getRequiredDomDataset, localize, safeFromJSON } from "../system/util";
 import { templatePaths } from "../system/load-handlebars-templates";
 import {
   getResistanceRequestTargetOutcome,
@@ -14,8 +14,10 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
   spellTargetRulingState,
+  type SpellTargetOutcomeResolvedBy,
   type SpellTargetRulingState,
 } from "../data-model/shared/spell-cast-outcome.defs";
+import { SpellResistedByEnum } from "@item-model/spell.ts";
 import type { ResistanceRequestChatMessage } from "./data-model/resistance-request-chat-message.types.ts";
 import { answerResistanceRequest } from "./resistance-request-handlers";
 
@@ -25,6 +27,29 @@ const rulingIcons: Record<SpellTargetRulingState, string> = {
   affected: "fa-solid fa-check",
   unaffected: "fa-solid fa-xmark",
   dismissed: "fa-solid fa-ban",
+};
+
+/** What the GM rules on for a spirit-combat gate, in place of the generic ruling wording. */
+const spiritCombatLabels: Partial<
+  Record<
+    SpellResistedByEnum,
+    { pending: string; ruling: Partial<Record<SpellTargetRulingState, string>> }
+  >
+> = {
+  [SpellResistedByEnum.SpiritCombatRound]: {
+    pending: "RQG.ChatMessage.SpellCast.SpiritCombat.PendingRound",
+    ruling: {
+      affected: "RQG.ChatMessage.SpellCast.SpiritCombat.CasterWonRound",
+      unaffected: "RQG.ChatMessage.SpellCast.SpiritCombat.CasterLostRound",
+    },
+  },
+  [SpellResistedByEnum.SpiritCombatDefeat]: {
+    pending: "RQG.ChatMessage.SpellCast.SpiritCombat.PendingDefeat",
+    ruling: {
+      affected: "RQG.ChatMessage.SpellCast.SpiritCombat.CasterDefeatedOpponent",
+      unaffected: "RQG.ChatMessage.SpellCast.SpiritCombat.CasterBrokeOff",
+    },
+  },
 };
 
 function reasonKey(target: SpellTargetOutcome): string | undefined {
@@ -68,7 +93,17 @@ function isEffectSettled(message: ChatMessage, targetUuid: string): boolean {
 }
 
 function isOwnedByUser(uuid: string): boolean {
-  return !!(fromUuidSync(uuid) as { isOwner?: boolean } | null)?.isOwner;
+  return !!uuid && !!(fromUuidSync(uuid) as { isOwner?: boolean } | null)?.isOwner;
+}
+
+function targetName(uuid: string): string {
+  if (!uuid) {
+    return localize("RQG.ChatMessage.SpellCast.SpiritCombat.Opponent");
+  }
+  return (
+    (fromUuidSync(uuid) as { name?: string } | null)?.name ??
+    localize("RQG.ChatMessage.SpellCast.UnknownTarget")
+  );
 }
 
 /** Target outcome rows, the same on every card that decides a spell. */
@@ -77,6 +112,10 @@ export async function renderSpellCastTargets(
   message: ChatMessage,
 ): Promise<string> {
   const spell = applicableSpell(message);
+  const gateLabels =
+    message.type === "spellCast"
+      ? spiritCombatLabels[(message.system as any).resistedBy as SpellResistedByEnum]
+      : undefined;
   const rows = targets.map((target) => {
     const reason = reasonKey(target);
     const { effectUuids, blockedReason } = appliedEffect(message, target.targetTokenOrActorUuid);
@@ -96,11 +135,12 @@ export async function renderSpellCastTargets(
       canApply:
         !!spell && target.state === "affected" && !effectUuids.length && !blockedReason && isOwner,
       uuid: target.targetTokenOrActorUuid,
-      name:
-        (fromUuidSync(target.targetTokenOrActorUuid) as { name?: string } | null)?.name ??
-        localize("RQG.ChatMessage.SpellCast.UnknownTarget"),
+      name: targetName(target.targetTokenOrActorUuid),
       state: target.state,
-      stateLabel: localize(`RQG.ChatMessage.SpellCast.State.${target.state}`),
+      stateLabel:
+        target.state === "pending" && gateLabels
+          ? localize(gateLabels.pending)
+          : localize(`RQG.ChatMessage.SpellCast.State.${target.state}`),
       reasonLabel: reason ? localize(`RQG.ChatMessage.SpellCast.Reason.${reason}`) : "",
     };
   });
@@ -108,7 +148,7 @@ export async function renderSpellCastTargets(
     rulings: spellTargetRulingState.map((state) => ({
       state: state,
       icon: rulingIcons[state],
-      label: localize(`RQG.ChatMessage.SpellCast.Ruling.${state}`),
+      label: localize(gateLabels?.ruling[state] ?? `RQG.ChatMessage.SpellCast.Ruling.${state}`),
     })),
     decided: rows.filter((row) => row.state !== "pending"),
     pending: rows.filter((row) => row.state === "pending"),
@@ -121,7 +161,8 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
   const state = getRequiredDomDataset(clickedButton, "spell-cast-ruling") as SpellTargetRulingState;
-  const targetUuid = getRequiredDomDataset(clickedButton, "target-uuid");
+  // "" is a spirit-combat gate's untargeted opponent.
+  const targetUuid = getDomDataset(clickedButton, "target-uuid") ?? "";
   const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
   if (!message || !spellTargetRulingState.includes(state) || isEffectSettled(message, targetUuid)) {
     return;
@@ -150,9 +191,22 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
 
+  await settleSpellCastTarget(message, targetUuid, state, "gmRuling");
+}
+
+/**
+ * Settle one target of a `spellCast` card that a later step decides - a GM ruling today, a
+ * resolved spirit combat (#958) later. The caller must be able to update the message.
+ */
+export async function settleSpellCastTarget(
+  message: ChatMessage,
+  targetUuid: string,
+  state: SpellTargetRulingState,
+  resolvedBy: SpellTargetOutcomeResolvedBy,
+): Promise<void> {
   const targets = (message.toObject().system as any).targets.map((target: any) =>
     target.targetTokenOrActorUuid === targetUuid
-      ? { ...target, state: state, resolvedBy: "gmRuling", casterSuccessLevel: null }
+      ? { ...target, state: state, resolvedBy: resolvedBy, casterSuccessLevel: null }
       : target,
   );
   await message.update({ system: { targets: targets } } as any);

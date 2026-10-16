@@ -1,7 +1,7 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { localize } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import { SpellResistedByEnum } from "../item-data/spell";
+import { isSpiritCombatGate, SpellResistedByEnum } from "../item-data/spell";
 import {
   canChooseSpellCastRollMode,
   getDefaultRollMode,
@@ -24,8 +24,8 @@ export type ResistedSpellTarget = {
 
 /**
  * Pre-cast target check for a resisted spell, run before any points are spent. Unresisted spells
- * pass straight through - targeting is only constrained where a resistance roll depends on it -
- * but their targets are still recorded for the cast outcome.
+ * pass straight through - targeting is only constrained where a resistance roll or spirit combat
+ * depends on it - but their targets are still recorded for the cast outcome.
  */
 export async function resolveResistedSpellCastTarget(
   resistedBy: SpellResistedByEnum,
@@ -44,7 +44,8 @@ export async function resolveResistedSpellCastTarget(
       : [],
   );
 
-  if (resistedBy !== SpellResistedByEnum.ResistanceRoll) {
+  const spiritCombat = isSpiritCombatGate(resistedBy);
+  if (resistedBy !== SpellResistedByEnum.ResistanceRoll && !spiritCombat) {
     return { proceed: true, selfCast: false, targets: castTargets };
   }
 
@@ -55,6 +56,10 @@ export async function resolveResistedSpellCastTarget(
       }),
     );
     return { proceed: false, selfCast: false, targets: castTargets };
+  }
+
+  if (spiritCombat) {
+    return { proceed: true, selfCast: false, targets: castTargets };
   }
 
   if (targets.length === 0) {
@@ -91,7 +96,8 @@ export async function resolveResistedSpellCastTarget(
  *   nothing more. The request links back to the cast message, which it settles.
  *
  * Only `ResistanceRoll` has a resolution step; the area / per-target / spirit-combat modes leave
- * their targets pending for a GM ruling on the cast card.
+ * their targets pending for a GM ruling on the cast card, which `settleSpellCastTarget`
+ * records.
  */
 export async function postSpellCastResult(params: {
   target: ResistedSpellTarget;
@@ -127,6 +133,7 @@ export async function postSpellCastResult(params: {
         spellUuid: spellUuid,
         casterTokenOrActorUuid: casterUuid,
         castSuccessLevel: castRoll.successLevel ?? null,
+        resistedBy: resistedBy,
         targets: buildCastTargetOutcomes({
           castSuccessLevel: castRoll.successLevel ?? AbilitySuccessLevelEnum.Fumble,
           resistedBy: resistedBy,

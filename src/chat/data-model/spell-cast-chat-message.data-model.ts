@@ -1,4 +1,5 @@
 import { spellEffectSettledReasons } from "../../active-effect/data-model/spell-effect.defs";
+import { SpellResistedByEnum } from "../../data-model/item-data/spell";
 import {
   spellTargetOutcomeResolvedBy,
   spellTargetOutcomeState,
@@ -15,9 +16,15 @@ const spellCastChatMessageSchema = {
     initial: "",
   }),
   castSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
+  resistedBy: new StringField({
+    blank: false,
+    nullable: false,
+    initial: SpellResistedByEnum.None,
+    choices: Object.values(SpellResistedByEnum),
+  }),
   targets: new ArrayField(
     new SchemaField({
-      targetTokenOrActorUuid: new StringField({ blank: false, nullable: false, required: true }),
+      targetTokenOrActorUuid: new StringField({ blank: true, nullable: false, required: true }),
       state: new StringField({
         blank: false,
         nullable: false,
