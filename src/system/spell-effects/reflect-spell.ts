@@ -44,6 +44,11 @@ export async function reflectResistedSpell(request: ResistanceRequestChatMessage
   if (!system.isSpellCast || system.reflectedFromMessageId) {
     return;
   }
+  // A hidden cast's request names no spell, and its cast message is whispered to the GMs
+  if (system.spellCastMessageId && !game.messages?.has(system.spellCastMessageId)) {
+    await game.users?.activeGM?.query("rqg.reflectResistedSpell", { requestId: request.id ?? "" });
+    return;
+  }
   const { spellUuid, casterUuid, castRoll } = resistedCast(request);
   const [spell, targetDoc] = await Promise.all([
     spellUuid ? (fromUuid(spellUuid) as Promise<RqgItem | null>) : null,
@@ -116,4 +121,13 @@ async function reflectAtCaster(
     },
     reflectedFrom: { messageId: request.id ?? "", reflectorName: reflectorName },
   });
+}
+
+export function initReflectResistedSpellQuery(): void {
+  CONFIG.queries["rqg.reflectResistedSpell"] = async ({ requestId }: { requestId: string }) => {
+    const request = game.messages?.get(requestId) as ResistanceRequestChatMessage | undefined;
+    if (request) {
+      await reflectResistedSpell(request);
+    }
+  };
 }
