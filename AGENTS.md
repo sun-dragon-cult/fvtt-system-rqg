@@ -34,6 +34,7 @@ VS Code Copilot also auto-loads this file via [`.github/copilot-instructions.md`
 12. For i18n keys/messages, prefer translator-friendly strings: use one key with explicit placeholders where feasible, and avoid source phrasing that depends on dynamic-name grammar (article/gender/plural/case) so translations can reorder placeholders naturally.
 13. Prefer Foundry core implementation patterns and APIs over custom abstraction layers; introduce extra layers only when there is a clear, documented reason (for example compatibility gaps, safety, or substantial duplication reduction).
 14. Keep comments minimal: only for a hidden constraint, workaround, or non-obvious invariant — never restating what the code or its name already says. Design rationale and issue/task context belong in the commit message, not the code.
+15. Use US English spelling (armor, defense, behavior, color) in new code, public names and English UI text, matching the Chaosium books and Foundry. Leave existing British-spelled identifiers, stored values and i18n keys (e.g. `defence*`) unless a task explicitly renames them.
 
 ## Foundry + fvtt-types Guidance
 
