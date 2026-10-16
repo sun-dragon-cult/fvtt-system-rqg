@@ -29,6 +29,7 @@ export const spellStackingBlockedReasons = [
   "strongerActive",
   "incompatibleActive",
   "cancelledActive",
+  "counteractedActive",
 ] as const;
 export type SpellStackingBlockedReason = (typeof spellStackingBlockedReasons)[number];
 

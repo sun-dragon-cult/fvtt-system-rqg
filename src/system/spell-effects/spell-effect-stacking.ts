@@ -9,9 +9,12 @@ export type ExistingSpellEffect = {
   name: string;
   spellRqid: string;
   level: number;
+  /** Its strength against other spells: castPoints of the cast that made it. */
+  points: number;
   incompatibleSpellRqids: readonly string[];
   cancelsSpellRqids: readonly string[];
   supersedesSpellRqids: readonly string[];
+  counteractsSpellRqids: readonly string[];
   expired: boolean;
 };
 
@@ -25,9 +28,11 @@ export function decideSpellEffectStacking(
   cast: {
     spellRqid: string;
     level: number;
+    points: number;
     incompatibleSpellRqids: readonly string[];
     cancelsSpellRqids: readonly string[];
     supersedesSpellRqids: readonly string[];
+    counteractsSpellRqids: readonly string[];
   },
   existing: readonly ExistingSpellEffect[],
   rule: SpellStackingRule,
@@ -71,6 +76,24 @@ export function decideSpellEffectStacking(
     !!effect.spellRqid &&
     cast.supersedesSpellRqids.includes(effect.spellRqid);
 
+  // Counteracting, whatever the stacking rule, only of weaker spells: equal isn't weaker (RBM p.62)
+  const counteractedBy = existing.find(
+    (effect) =>
+      !effect.expired &&
+      !sameSpell(effect) &&
+      !!cast.spellRqid &&
+      effect.counteractsSpellRqids.includes(cast.spellRqid) &&
+      cast.points < effect.points,
+  );
+  if (counteractedBy) {
+    return { outcome: "blocked", reason: "counteractedActive", by: counteractedBy };
+  }
+  const counteracted = (effect: ExistingSpellEffect) =>
+    !sameSpell(effect) &&
+    !!effect.spellRqid &&
+    cast.counteractsSpellRqids.includes(effect.spellRqid) &&
+    effect.points < cast.points;
+
   const conflicts = existing.filter((effect) => sameSpell(effect) || incompatible(effect));
   if (rule === "strongestTakesEffect") {
     const active = conflicts.filter((effect) => !effect.expired);
@@ -83,5 +106,8 @@ export function decideSpellEffectStacking(
       return { outcome: "blocked", reason: "incompatibleActive", by: incompatibleActive };
     }
   }
-  return { outcome: "apply", displaced: [...conflicts, ...existing.filter(superseded)] };
+  return {
+    outcome: "apply",
+    displaced: [...conflicts, ...existing.filter((e) => superseded(e) || counteracted(e))],
+  };
 }

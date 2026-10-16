@@ -21,6 +21,8 @@ export type RuneMagicRollDialogContext = RollHeaderData &
     targetName: string;
     targetNote: string;
     targetNoteClass: string;
+    /** The spell reaches an area, so the dialog offers to target everyone in it. */
+    canTargetArea: boolean;
     isStackable: boolean;
     isOneUse: boolean;
 

@@ -132,19 +132,22 @@ export function initSpelledProjectiles(): void {
       pendingSpends = Promise.all([pendingSpends, spent]);
     }
   });
-  Hooks.on("updateActiveEffect", (effect: ActiveEffect, changed: any, _options, userId: string) => {
-    if (userId !== game.user?.id || changed.duration?.expired !== true) {
-      return;
-    }
-    const item = effect.parent as WeaponItem | null;
-    if (
-      !(item instanceof Item) ||
-      !item.getFlag(systemId, splitFromProjectileIdFlag) ||
-      !(effect.system as { spell?: unknown })?.spell ||
-      spellEffects(item).some((spell) => spell.active)
-    ) {
-      return;
-    }
-    void spendProjectileSpells(item);
-  });
+  Hooks.on(
+    "updateActiveEffect",
+    (effect: ActiveEffect, changed: any, _options: unknown, userId: string) => {
+      if (userId !== game.user?.id || changed.duration?.expired !== true) {
+        return;
+      }
+      const item = effect.parent as WeaponItem | null;
+      if (
+        !(item instanceof Item) ||
+        !item.getFlag(systemId, splitFromProjectileIdFlag) ||
+        !(effect.system as { spell?: unknown })?.spell ||
+        spellEffects(item).some((spell) => spell.active)
+      ) {
+        return;
+      }
+      void spendProjectileSpells(item);
+    },
+  );
 }
