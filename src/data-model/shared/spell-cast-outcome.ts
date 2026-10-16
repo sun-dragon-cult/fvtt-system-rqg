@@ -1,5 +1,7 @@
 import { safeFromJSON } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
+import { calculateAbilitySuccessLevel } from "../../rolls/ability-roll/calculate-ability-success-level";
+import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula";
 import { isSpiritCombatGate, SpellResistedByEnum } from "../item-data/spell";
 
 import Roll = foundry.dice.Roll;
@@ -41,6 +43,35 @@ export interface SpellCastOutcome {
 export type SpellCastTarget = { tokenUuid: string; isCaster: boolean };
 
 /**
+ * The one resistance roll of a `resistanceRollArea` spell (Harmony, Inviolable): the caster's d100
+ * read against each target's value, the caster's own token included.
+ */
+export type AreaResistance = {
+  roll: number;
+  casterValue: number;
+  /** What each target resists with, by token uuid; a target without one stays pending. */
+  targetValues: Record<string, number>;
+};
+
+/**
+ * The highest value an area resistance roll overcomes: "all" on 5 or less, "none" on 96 or more,
+ * otherwise by the resistance table. RBM's Inviolable reads the table the other way round; this
+ * follows Harmony and every other resistance roll.
+ */
+export function areaResistanceThreshold(
+  casterValue: number,
+  roll: number,
+): number | "all" | "none" {
+  if (roll <= 5) {
+    return "all";
+  }
+  if (roll >= 96) {
+    return "none";
+  }
+  return casterValue + Math.floor((50 - roll) / 5);
+}
+
+/**
  * The per-target outcomes known the moment the cast roll lands. Anything a later step decides - a
  * resistance roll, a GM ruling - starts as pending. Nothing targeted means a self cast only for
  * `none` and the single and per-target resistance rolls (whose caster confirmed it); an area spell
@@ -52,6 +83,7 @@ export function buildCastTargetOutcomes(params: {
   resistedBy: SpellResistedByEnum;
   targets: SpellCastTarget[];
   casterTokenOrActorUuid: string;
+  areaResistance?: AreaResistance | undefined;
 }): SpellTargetOutcome[] {
   const { castSuccessLevel, resistedBy, casterTokenOrActorUuid } = params;
   const defaultsToSelf =
@@ -79,6 +111,21 @@ export function buildCastTargetOutcomes(params: {
 
     if (!castSucceeded) {
       return settled("unaffected", "castFailed");
+    }
+    const area = params.areaResistance;
+    const targetValue = area?.targetValues[target.tokenUuid];
+    // The area roll decides the caster's own token too (Inviolable Q&A)
+    if (resistedBy === SpellResistedByEnum.ResistanceRollArea && area && targetValue != null) {
+      const successLevel = calculateAbilitySuccessLevel(
+        computeResistanceTargetChance(area.casterValue, targetValue),
+        area.roll,
+      );
+      return {
+        targetTokenOrActorUuid: target.tokenUuid,
+        state: successLevel <= AbilitySuccessLevelEnum.Success ? "affected" : "unaffected",
+        resolvedBy: "resistanceRoll",
+        casterSuccessLevel: successLevel,
+      };
     }
     // casting on yourself is accepting the spell (RAW p.242)
     if (target.isCaster) {

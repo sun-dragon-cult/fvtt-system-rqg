@@ -1,5 +1,6 @@
 import { beforeAll, describe, expect, it } from "vitest";
 import {
+  areaResistanceThreshold,
   buildCastTargetOutcomes,
   deriveResistanceRequestTargetOutcome,
   getSpellCastOutcome,
@@ -258,5 +259,19 @@ describe("getSpellCastOutcome", () => {
 
     expect(getSpellCastOutcome(anonymousRequest, [])).toBeUndefined();
     expect(getSpellCastOutcome({ id: "x", type: "base", system: {} }, [])).toBeUndefined();
+  });
+});
+
+describe("areaResistanceThreshold", () => {
+  it("reads the roll on the resistance table, like Harmony's example (RBM p.62)", () => {
+    // POW 14 rolling 42: everyone with POW 15 or less
+    expect(areaResistanceThreshold(14, 42)).toBe(15);
+    expect(areaResistanceThreshold(15, 50)).toBe(15);
+    expect(areaResistanceThreshold(15, 51)).toBe(14);
+  });
+
+  it("affects everyone on 5 or less, and no one on 96 or more", () => {
+    expect(areaResistanceThreshold(10, 5)).toBe("all");
+    expect(areaResistanceThreshold(10, 96)).toBe("none");
   });
 });

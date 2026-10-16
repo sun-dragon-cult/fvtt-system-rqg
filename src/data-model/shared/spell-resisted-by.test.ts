@@ -15,6 +15,11 @@ vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () =
     actorName: "Vasana",
   })),
   resolveCharacteristicLabel: vi.fn((name: string) => (name === "power" ? "POW" : "MP")),
+  // Area spells: the caster has POW 14, every target POW 15 except "Scene.s.Token.strong" (POW 18)
+  resolveActorFromUuid: vi.fn((uuid: string) => ({ uuid })),
+  resolveCharacteristicValue: vi.fn((actor: { uuid: string }) =>
+    actor.uuid === "Scene.s.Token.caster" ? 14 : actor.uuid === "Scene.s.Token.strong" ? 18 : 15,
+  ),
 }));
 
 // DialogV2 has no shared mock in test/setup/foundryMockFunctions.js - the zero-target branch is the
@@ -371,20 +376,40 @@ describe("postSpellCastResult", () => {
     expect(createResistanceRequest).not.toHaveBeenCalled();
   });
 
-  it("leaves targets pending for a mode with no resolution step yet", async () => {
+  it("settles an area spell's targets, the caster's own included, by one resistance roll", async () => {
+    (globalThis as any).foundry.dice ??= {};
+    (globalThis as any).foundry.dice.Roll = class {
+      total = 42;
+      async evaluate() {
+        return this;
+      }
+    };
     const castRoll = await post({
       resistedBy: SpellResistedByEnum.ResistanceRollArea,
       target: {
         proceed: true,
         selfCast: false,
-        targets: [{ tokenUuid: "Scene.s.Token.a", isCaster: false }],
+        targets: [
+          { tokenUuid: "Scene.s.Token.a", isCaster: false },
+          { tokenUuid: "Scene.s.Token.strong", isCaster: false },
+          { tokenUuid: "Scene.s.Token.caster", isCaster: true },
+        ],
       },
     });
 
-    expect(postedCastMessage(castRoll).system.targets[0]).toMatchObject({
-      state: "pending",
-      resolvedBy: undefined,
-    });
+    // POW 14 rolling 42 overcomes POW 15 or lower (RBM Harmony example)
+    expect(
+      postedCastMessage(castRoll).system.targets.map((t: any) => [
+        t.targetTokenOrActorUuid,
+        t.state,
+        t.resolvedBy,
+      ]),
+    ).toEqual([
+      ["Scene.s.Token.a", "affected", "resistanceRoll"],
+      ["Scene.s.Token.strong", "unaffected", "resistanceRoll"],
+      ["Scene.s.Token.caster", "affected", "resistanceRoll"],
+    ]);
+    expect(createResistanceRequest).not.toHaveBeenCalled();
   });
 
   it("records the resistedBy mode on the cast message, so the card can word the GM ruling", async () => {

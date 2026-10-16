@@ -32,8 +32,8 @@ export const SpellConcentrationEnum = {
 export type SpellConcentrationEnum =
   (typeof SpellConcentrationEnum)[keyof typeof SpellConcentrationEnum];
 
-// How an unwilling target can stop a spell taking effect. The area and per-target modes leave their
-// targets for a GM ruling until #1076; the spirit-combat gates are GM-ruled until #958.
+// How an unwilling target can stop a spell taking effect. The spirit-combat gates are GM-ruled until
+// #958.
 export const SpellResistedByEnum = {
   None: "none",
   // one resistance roll, single target
