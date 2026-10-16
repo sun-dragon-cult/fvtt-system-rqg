@@ -219,6 +219,7 @@ declare global {
       "rqg.applySpellBehavior": (
         data: ApplySpellBehaviorQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
+      "rqg.reflectResistedSpell": (data: { requestId: string }) => Promise<void>;
     }
 
     // Declare the RQG custom "Norse" font so it can be assigned to

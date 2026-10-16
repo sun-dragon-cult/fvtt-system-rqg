@@ -97,6 +97,25 @@ describe("reflectResistedSpell", () => {
     expect(createResistanceRequest).not.toHaveBeenCalled();
   });
 
+  it("asks the GM to reflect a hidden cast, whose cast message the player can't see", async () => {
+    const query = vi.fn(async () => undefined);
+    (globalThis as any).game.users = { activeGM: { query } };
+    (globalThis as any).game.messages = { has: () => false, get: () => undefined };
+    const hook = onResisted("reflected");
+
+    await reflectResistedSpell(
+      request({
+        spellUuid: "",
+        spellCasterUuid: "",
+        castRoll: undefined,
+        spellCastMessageId: "cast",
+      }),
+    );
+
+    expect(query).toHaveBeenCalledWith("rqg.reflectResistedSpell", { requestId: "request" });
+    expect(hook).not.toHaveBeenCalled();
+  });
+
   it("never reflects a reflected spell again, or a request that isn't a spell", async () => {
     const hook = onResisted("reflected");
 
