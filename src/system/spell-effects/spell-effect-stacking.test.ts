@@ -6,6 +6,7 @@ const fireblade = "i.spirit-magic.fireblade";
 const dullblade = "i.spirit-magic.dullblade";
 const fanaticism = "i.spirit-magic.fanaticism";
 const demoralize = "i.spirit-magic.demoralize";
+const berserker = "i.rune-magic.berserker";
 
 const existing = (
   spellRqid: string,
@@ -18,6 +19,7 @@ const existing = (
   level,
   incompatibleSpellRqids: [],
   cancelsSpellRqids: [],
+  supersedesSpellRqids: [],
   expired: false,
   ...extra,
 });
@@ -27,11 +29,13 @@ const cast = (
   level: number,
   incompatibleSpellRqids: string[] = [],
   cancelsSpellRqids: string[] = [],
+  supersedesSpellRqids: string[] = [],
 ) => ({
   spellRqid,
   level,
   incompatibleSpellRqids,
   cancelsSpellRqids,
+  supersedesSpellRqids,
 });
 
 describe("decideSpellEffectStacking - strongest takes effect", () => {
@@ -188,5 +192,32 @@ describe("decideSpellEffectStacking - cancellation", () => {
         "strongestTakesEffect",
       ),
     ).toMatchObject({ outcome: "blocked", reason: "strongerActive" });
+  });
+});
+
+describe("decideSpellEffectStacking - precedence", () => {
+  it("removes the spells a cast takes precedence over, whatever the stacking rule", () => {
+    const fanatic = existing(fanaticism, 1);
+    for (const rule of ["strongestTakesEffect", "latestDisplaces"] as const) {
+      expect(
+        decideSpellEffectStacking(cast(berserker, 2, [], [], [fanaticism]), [fanatic], rule),
+      ).toEqual({ outcome: "apply", displaced: [fanatic] });
+    }
+  });
+
+  it("blocks a spell while one that takes precedence over it is active", () => {
+    const berserk = existing(berserker, 2, { supersedesSpellRqids: [fanaticism] });
+    expect(decideSpellEffectStacking(cast(fanaticism, 1), [berserk], "latestDisplaces")).toEqual({
+      outcome: "blocked",
+      reason: "incompatibleActive",
+      by: berserk,
+    });
+  });
+
+  it("lets the spell in once the one taking precedence has expired", () => {
+    const berserk = existing(berserker, 2, { supersedesSpellRqids: [fanaticism], expired: true });
+    expect(
+      decideSpellEffectStacking(cast(fanaticism, 1), [berserk], "strongestTakesEffect"),
+    ).toEqual({ outcome: "apply", displaced: [] });
   });
 });

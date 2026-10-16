@@ -10,7 +10,7 @@ import type { Modifier } from "../../rolls/ability-roll/ability-roll.types";
 import type { CharacteristicRoll } from "../../rolls/characteristic-roll/characteristic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
-import { hasLinkedSkillReference } from "../../items/weapon-item/weapon-skill-links";
+import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import { resolveMatrixSpellItem } from "../spell-matrix";
 import { RqgLogger } from "../logging/rqg-logger";
 import { type ActorRef, findItem, type ItemRef, resolveActor, resolveItem } from "./api-resolve";
@@ -36,12 +36,12 @@ export async function ability(
   options: RollOptions = {},
 ): Promise<AbilityRoll | undefined> {
   const { item, token } = resolveItemAndActor(ref, options.actor, abilityItemTypes);
-  const rollOptions = { modifiers: options.modifiers, rollMode: options.rollMode };
-  if (options.skipDialog) {
-    return await item.abilityRollImmediate(rollOptions, token);
-  }
-  await item.abilityRoll(token, rollOptions);
-  return undefined;
+  return await item.roll({
+    skipDialog: options.skipDialog,
+    token,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  });
 }
 
 /** Roll a characteristic, by default ×5. Returns the roll when `skipDialog` is set. */
@@ -53,28 +53,24 @@ export async function characteristic(
   if (!(name in actor.system.characteristics)) {
     return logger.throw(`"${name}" is not a characteristic`);
   }
-  if (options.skipDialog) {
-    return await actor.characteristicRollImmediate(name, token, {
-      difficulty: options.difficulty,
-      modifiers: options.modifiers,
-      rollMode: options.rollMode,
-    });
-  }
-  await actor.characteristicRoll(name, token);
-  return undefined;
+  return await actor.rollCharacteristic(name, {
+    skipDialog: options.skipDialog,
+    token,
+    difficulty: options.difficulty,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  });
 }
 
 /** Roll the actor's Reputation. Returns the roll when `skipDialog` is set. */
 export async function reputation(options: RollOptions = {}): Promise<AbilityRoll | undefined> {
   const { actor, token } = resolveActor(options.actor);
-  if (options.skipDialog) {
-    return await actor.reputationRollImmediate(token, {
-      modifiers: options.modifiers,
-      rollMode: options.rollMode,
-    });
-  }
-  await actor.reputationRoll(token);
-  return undefined;
+  return await actor.rollReputation({
+    skipDialog: options.skipDialog,
+    token,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  });
 }
 
 /**
@@ -86,13 +82,7 @@ export async function attack(
   options: { actor?: ActorRef; usage?: UsageType } = {},
 ): Promise<void> {
   const { item } = resolveItemAndActor<WeaponItem>(ref, options.actor, [ItemTypeEnum.Weapon]);
-  if (options.usage && options.usage !== item.system.defaultUsage) {
-    if (!hasLinkedSkillReference(item, options.usage)) {
-      return logger.throw(`"${item.name}" can't be used as ${options.usage}`);
-    }
-    await item.update({ system: { defaultUsage: options.usage } });
-  }
-  await item.attack();
+  await item.attack({ usage: options.usage });
 }
 
 export type SpellRollOptions = RollOptions & {
@@ -112,20 +102,7 @@ export async function spiritMagic(
 ): Promise<SpiritMagicRoll | undefined> {
   const { actor, token } = resolveCaster(ref, options.actor);
   const item = await resolveSpell<SpiritMagicItem>(actor, ref, ItemTypeEnum.SpiritMagic);
-  if (options.skipDialog) {
-    return await item.spiritMagicRollImmediate(
-      {
-        levelUsed: options.levelUsed ?? item.system.points,
-        magicPointBoost: options.magicPointBoost,
-        modifiers: options.modifiers,
-        rollMode: options.rollMode,
-      },
-      token,
-      actor,
-    );
-  }
-  await item.spiritMagicRoll(token, actor);
-  return undefined;
+  return (await actor.castSpell(item, castOptions(options, token))) as SpiritMagicRoll | undefined;
 }
 
 /**
@@ -138,20 +115,18 @@ export async function runeMagic(
 ): Promise<RuneMagicRoll | undefined> {
   const { actor, token } = resolveCaster(ref, options.actor);
   const item = await resolveSpell<RuneMagicItem>(actor, ref, ItemTypeEnum.RuneMagic);
-  if (options.skipDialog) {
-    return await item.runeMagicRollImmediate(
-      {
-        levelUsed: options.levelUsed,
-        magicPointBoost: options.magicPointBoost,
-        modifiers: options.modifiers,
-        rollMode: options.rollMode,
-      },
-      token,
-      actor,
-    );
-  }
-  await item.runeMagicRoll(token, actor);
-  return undefined;
+  return (await actor.castSpell(item, castOptions(options, token))) as RuneMagicRoll | undefined;
+}
+
+function castOptions(options: SpellRollOptions, token: TokenDocument | null): SpellCastOptions {
+  return {
+    skipDialog: options.skipDialog,
+    token,
+    levelUsed: options.levelUsed,
+    magicPointBoost: options.magicPointBoost,
+    modifiers: options.modifiers,
+    rollMode: options.rollMode,
+  };
 }
 
 function resolveItemAndActor<T extends RqgItem>(

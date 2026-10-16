@@ -1,23 +1,17 @@
 import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
-import {
-  spellBehaviourForEffect,
-  type IncomingSpellScope,
-  type SpellBehaviour,
-} from "./spell-behaviour";
-
-type OnIncomingSpell = NonNullable<SpellBehaviour["onIncomingSpell"]>;
+import { spellBehaviourForEffect, type IncomingSpellScope } from "./spell-behaviour";
 
 /**
- * Active effects grouped by the `onIncomingSpell` hook of the spell that made them. Spells that
- * share a hook (Countermagic and Shield) form one group, so layered defences are decided together.
+ * Active effects grouped by a hook of the spell that made them. Spells that share a hook
+ * (Countermagic and Shield) form one group, so layered defences are decided together.
  */
-export function groupByIncomingSpellHook<T extends { active: boolean }>(
+export function groupEffectsByHook<T extends { active: boolean }, F>(
   effects: Iterable<T>,
-  hookOf: (effect: T) => OnIncomingSpell | undefined,
-): Map<OnIncomingSpell, T[]> {
-  const groups = new Map<OnIncomingSpell, T[]>();
+  hookOf: (effect: T) => F | undefined,
+): Map<F, T[]> {
+  const groups = new Map<F, T[]>();
   for (const effect of effects) {
     const hook = effect.active ? hookOf(effect) : undefined;
     if (hook) {
@@ -45,7 +39,7 @@ export async function interceptIncomingSpell(
   if (!isFromOutside(scope.cast.casterUuid, scope.targetActor)) {
     return undefined;
   }
-  const groups = groupByIncomingSpellHook(
+  const groups = groupEffectsByHook(
     scope.targetActor.allApplicableEffects() as Iterable<ActiveEffect & { active: boolean }>,
     (effect) => spellBehaviourForEffect(effect)?.onIncomingSpell,
   );

@@ -55,6 +55,9 @@ function rqgActiveEffectSchemaFields() {
     // Spells this effect cancels, e.g. Fanaticism and Demoralize: a cast removes the other and
     // doesn't take effect itself (RBM p.112, 114). Either side listing the other is enough.
     cancelsSpellRqidLinks: rqidLinkArraySchemaField(),
+    // Spells this effect takes precedence over, e.g. Berserker over Fanaticism (RBM p.47): a cast
+    // removes them, and they have no effect while this one is active. Only this side lists them.
+    supersedesSpellRqidLinks: rqidLinkArraySchemaField(),
     // Set on a copy applied by a cast: what was cast, by whom and how strongly.
     spell: new SchemaField(
       {
@@ -88,5 +91,6 @@ export class RqgActiveEffectDataModel extends ActiveEffectTypeDataModelBase {
   declare spellTarget: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["spellTarget"];
   declare incompatibleSpellRqidLinks: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["incompatibleSpellRqidLinks"];
   declare cancelsSpellRqidLinks: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["cancelsSpellRqidLinks"];
+  declare supersedesSpellRqidLinks: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["supersedesSpellRqidLinks"];
   declare spell: foundry.data.fields.SchemaField.InitializedData<RqgActiveEffectSchemaFields>["spell"];
 }

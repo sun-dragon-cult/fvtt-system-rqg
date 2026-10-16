@@ -12,7 +12,7 @@ import { getSpeakerCompat } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 import { RqgItem } from "@items/rqg-item.ts";
-import type { RuneMagicRollImmediateOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { SpellCastOptions } from "../../rolls/roll-method-options";
 import type {
   RuneMagicRollDialogContext,
   RuneMagicRollDialogFormData,
@@ -27,6 +27,12 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  type PreparedRoll,
+  preparedModifierTotal,
+  preparedRoll,
+} from "../../rolls/roll-preparation";
+import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
 import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
@@ -62,7 +68,53 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       { value: formData.augmentModifier },
       { value: formData.meditateModifier },
       { value: formData.otherModifier },
+      { value: preparedModifierTotal(this.prepared) },
     ]);
+  }
+
+  /** The cast options the dialog's form describes. */
+  private static castOptions(
+    formData: RuneMagicRollDialogFormData,
+    token: TokenDocument | null | undefined,
+  ): SpellCastOptions {
+    return {
+      token,
+      usedRuneId: formData.usedRuneId || undefined,
+      levelUsed: formData.levelUsed,
+      magicPointBoost: formData.boost,
+      magicPointSource: formData.magicPointSource,
+      runePointSource: formData.runePointSource,
+      modifiers: [
+        {
+          value: Number(formData.augmentModifier),
+          description: localize("RQG.Roll.Common.Augment"),
+        },
+        {
+          value: Number(formData.meditateModifier),
+          description:
+            Number(formData.meditateModifier) >= 30
+              ? localize("RQG.Roll.RuneMagicRoll.Ritual")
+              : localize("RQG.Roll.Common.Meditate"),
+        },
+        {
+          value: Number(formData.otherModifier),
+          description: normalizeOtherModifierDescriptionForRoll(formData.otherModifierDescription),
+        },
+      ],
+    };
+  }
+
+  /** What the prepare hook makes of the cast as the form stands. */
+  private prepareCast(formData: RuneMagicRollDialogFormData): PreparedRoll | undefined {
+    const castOptions = RuneMagicRollDialogV2.castOptions(formData, this.token);
+    const prepared = this.spellItem.system.prepareCast(this.casterActor, castOptions);
+    return prepared
+      ? preparedRoll(
+          prepared.options.modifiers,
+          castOptions.modifiers?.length ?? 0,
+          prepared.preparation,
+        )
+      : undefined;
   }
 
   private static augmentOptions: SelectOptionData<number>[] = [
@@ -206,6 +258,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       runePointSourceOptions.length === 0 && !!alliedBondActor;
 
     const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+    this.prepared = this.prepareCast(formData);
 
     return {
       formData: formData,
@@ -236,11 +289,9 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       baseChance: this.spellItem.system.getBaseChance(usedRune) + "%",
 
       // RollFooter
-      totalChance: this.spellItem.system.getCastChance(usedRune, [
-        { value: formData.augmentModifier },
-        { value: formData.meditateModifier },
-        { value: formData.otherModifier },
-      ]),
+      totalChance: this.computeTotalChance(formData),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       // A player's cast always posts a shared card, so only a GM picks a mode.
       rollMode: this.rollMode,
       rollModes: canChooseSpellCastRollMode() ? getConfiguredRollModeOptions() : [],
@@ -255,6 +306,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as RuneMagicRollDialogFormData;
+    this.updatePreparedRoll(this.prepareCast(formData));
     totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
   }
 
@@ -305,31 +357,9 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
         cultId: spellItem.system.cultId,
       });
     }
-    const options: RuneMagicRollImmediateOptions = {
+    const options: SpellCastOptions = {
+      ...RuneMagicRollDialogV2.castOptions(formDataObject, token),
       usedRuneId: usedRune.id ?? undefined,
-      levelUsed: formDataObject.levelUsed,
-      magicPointBoost: formDataObject.boost,
-      magicPointSource: formDataObject.magicPointSource,
-      runePointSource: formDataObject.runePointSource,
-      modifiers: [
-        {
-          value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.Common.Augment"),
-        },
-        {
-          value: Number(formDataObject.meditateModifier),
-          description:
-            Number(formDataObject.meditateModifier) >= 30
-              ? localize("RQG.Roll.RuneMagicRoll.Ritual")
-              : localize("RQG.Roll.Common.Meditate"),
-        },
-        {
-          value: Number(formDataObject.otherModifier),
-          description: normalizeOtherModifierDescriptionForRoll(
-            formDataObject.otherModifierDescription,
-          ),
-        },
-      ],
       rollMode: rollMode,
     };
     const validationError = spellItem.system.getCastValidationError(
@@ -344,6 +374,6 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    await spellItem.runeMagicRollImmediate(options, token, casterActor);
+    await spellItem.system.cast(casterActor, { ...options, skipDialog: true });
   }
 }

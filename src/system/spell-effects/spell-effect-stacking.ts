@@ -11,6 +11,7 @@ export type ExistingSpellEffect = {
   level: number;
   incompatibleSpellRqids: readonly string[];
   cancelsSpellRqids: readonly string[];
+  supersedesSpellRqids: readonly string[];
   expired: boolean;
 };
 
@@ -26,6 +27,7 @@ export function decideSpellEffectStacking(
     level: number;
     incompatibleSpellRqids: readonly string[];
     cancelsSpellRqids: readonly string[];
+    supersedesSpellRqids: readonly string[];
   },
   existing: readonly ExistingSpellEffect[],
   rule: SpellStackingRule,
@@ -53,6 +55,22 @@ export function decideSpellEffectStacking(
     return { outcome: "cancel", cancelled: cancelled };
   }
 
+  // Precedence, whatever the stacking rule (RBM p.47)
+  const supersededBy = existing.find(
+    (effect) =>
+      !effect.expired &&
+      !sameSpell(effect) &&
+      !!cast.spellRqid &&
+      effect.supersedesSpellRqids.includes(cast.spellRqid),
+  );
+  if (supersededBy) {
+    return { outcome: "blocked", reason: "incompatibleActive", by: supersededBy };
+  }
+  const superseded = (effect: ExistingSpellEffect) =>
+    !sameSpell(effect) &&
+    !!effect.spellRqid &&
+    cast.supersedesSpellRqids.includes(effect.spellRqid);
+
   const conflicts = existing.filter((effect) => sameSpell(effect) || incompatible(effect));
   if (rule === "strongestTakesEffect") {
     const active = conflicts.filter((effect) => !effect.expired);
@@ -65,5 +83,5 @@ export function decideSpellEffectStacking(
       return { outcome: "blocked", reason: "incompatibleActive", by: incompatibleActive };
     }
   }
-  return { outcome: "apply", displaced: conflicts };
+  return { outcome: "apply", displaced: [...conflicts, ...existing.filter(superseded)] };
 }

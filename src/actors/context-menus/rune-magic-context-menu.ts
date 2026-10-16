@@ -26,7 +26,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => 
       if (!item) {
         return;
       }
-      await item.runeMagicRoll(undefined, actor);
+      await actor.castSpell(item);
     },
   },
   {
@@ -41,7 +41,7 @@ export const runeMagicMenuOptions = (actor: RqgActor): RqgContextMenuEntry[] => 
       if (!item) {
         return;
       }
-      await item.runeMagicRollImmediate(undefined, undefined, actor);
+      await actor.castSpell(item, { skipDialog: true });
     },
   },
   {

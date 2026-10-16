@@ -93,6 +93,38 @@ describe("spellBehaviour", () => {
     expect(await spellBehaviour("i.spirit-magic.garbage")?.apply?.(scope)).toBeUndefined();
     vi.restoreAllMocks();
   });
+
+  it("guards roll entries synchronously: a throw is logged, not passed on", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    register((registry) => {
+      registry.register(
+        "i.spirit-magic.entry-throws",
+        {
+          onPrepareAttack: () => {
+            throw new Error("x");
+          },
+        },
+        en,
+      );
+    });
+    const scope = { effects: [{ name: "Berserker" }] } as any;
+    expect(() =>
+      spellBehaviour("i.spirit-magic.entry-throws")?.onPrepareAttack?.(scope),
+    ).not.toThrow();
+    expect(console.error).toHaveBeenCalled();
+    vi.restoreAllMocks();
+  });
+
+  it("keeps a roll entry registered for several spells one function", () => {
+    const noParry = () => {};
+    register((registry) => {
+      registry.register("i.rune-magic.entry-shared-a", { onPrepareDefence: noParry }, en);
+      registry.register("i.spirit-magic.entry-shared-b", { onPrepareDefence: noParry }, en);
+    });
+    expect(spellBehaviour("i.rune-magic.entry-shared-a")?.onPrepareDefence).toBe(
+      spellBehaviour("i.spirit-magic.entry-shared-b")?.onPrepareDefence,
+    );
+  });
 });
 
 const en = { lang: "en", priority: 0 };

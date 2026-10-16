@@ -5,6 +5,16 @@ import { resolveSpellEffectRqid } from "./resolve-spell-effect-rqid";
 import { callRqgHook } from "../fvtt-type-compat";
 import { RqgLogger } from "../logging/rqg-logger";
 import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { AbilityItem } from "@item-model/item-types.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
+import type { CharacteristicRollOptions } from "../../rolls/characteristic-roll/characteristic-roll.types";
+import type { SpiritMagicRollOptions } from "../../rolls/spirit-magic-roll/spirit-magic-roll.types";
+import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magic-roll.types";
+import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method-options";
+import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 
 const logger = new RqgLogger("spell-behaviour");
@@ -20,10 +30,45 @@ export type IncomingSpellScope = SpellApplyScope & { effects: ActiveEffect[] };
 export type SpellEndScope = { effect: ActiveEffect };
 
 /**
+ * What a roll entry runs with: the prepare hook's arguments, plus `effects`, the rolling actor's
+ * active effects whose spells share this entry.
+ */
+export type SpellRollScope<T> = T & { preparation: RollPreparation; effects: ActiveEffect[] };
+
+/**
+ * A roll entry adds modifiers to the hook's options, or sets `preparation.forbidden`. Runs
+ * synchronously, whenever a roll dialog changes, so it must not have side effects.
+ */
+type RollEntry<T> = (scope: SpellRollScope<T>) => void;
+
+/** The entries the system calls from its own prepare hooks, for the rolling actor's spell effects. */
+export type SpellRollEntries = {
+  onPrepareAbilityRoll?: RollEntry<{ item: AbilityItem; options: AbilityRollOptions }>;
+  onPrepareCharacteristicRoll?: RollEntry<{ actor: RqgActor; options: CharacteristicRollOptions }>;
+  onPrepareSpellCast?: RollEntry<{
+    spell: SpellItem;
+    caster: RqgActor;
+    options: SpiritMagicRollOptions | RuneMagicRollOptions;
+  }>;
+  onPrepareAttack?: RollEntry<{ weapon: WeaponItem; attack: PrepareAttackData }>;
+  onPrepareDefence?: RollEntry<{ defender: RqgActor; defence: DefenceHookData }>;
+};
+
+export type SpellRollEntryName = keyof SpellRollEntries;
+
+export const spellRollEntryNames = [
+  "onPrepareAbilityRoll",
+  "onPrepareCharacteristicRoll",
+  "onPrepareSpellCast",
+  "onPrepareAttack",
+  "onPrepareDefence",
+] as const satisfies readonly SpellRollEntryName[];
+
+/**
  * What a spell does beyond attaching an effect template, registered by modules for a spell rqid.
  * Part of the public API.
  */
-export type SpellBehaviour = {
+export type SpellBehaviour = SpellRollEntries & {
   /** Replaces attaching the effect template when Apply is clicked. */
   apply?(scope: SpellApplyScope): Promise<SpellEffectApplied | undefined>;
   /** Runs for a spell's effects when another spell is applied to their actor from outside. */
@@ -68,6 +113,19 @@ const registrations = new Map<string, Registration[]>();
 
 const spellEffectOutcomes: readonly string[] = ["applied", "blocked", "resolved"];
 
+/** Run a call into a module's code, logging `failedMessage` instead of throwing. */
+export async function guardModuleCall<T>(
+  failedMessage: () => string,
+  call: () => Promise<T> | T,
+): Promise<T | undefined> {
+  try {
+    return await call();
+  } catch (error) {
+    logger.error(failedMessage(), undefined, error);
+    return undefined;
+  }
+}
+
 /**
  * Run a call into a module's spell behaviour so that one failing doesn't stop the spell, or every
  * spell cast at an actor carrying its effects. Undefined when it threw.
@@ -76,16 +134,10 @@ export async function guardSpellBehaviour<T>(
   spellName: string,
   call: () => Promise<T> | T,
 ): Promise<T | undefined> {
-  try {
-    return await call();
-  } catch (error) {
-    logger.error(
-      localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
-      undefined,
-      error,
-    );
-    return undefined;
-  }
+  return guardModuleCall(
+    () => localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
+    call,
+  );
 }
 
 type HookKind = "apply" | "onIncomingSpell" | "onEnd";
@@ -118,8 +170,47 @@ function guarded<F extends (scope: any) => Promise<any>>(
   return wrapped;
 }
 
+const guardedRollEntries: Record<SpellRollEntryName, WeakMap<object, RollEntry<any>>> = {
+  onPrepareAbilityRoll: new WeakMap(),
+  onPrepareCharacteristicRoll: new WeakMap(),
+  onPrepareSpellCast: new WeakMap(),
+  onPrepareAttack: new WeakMap(),
+  onPrepareDefence: new WeakMap(),
+};
+
+/** Like `guarded`, but synchronous, since prepare hooks can't wait. */
+function guardedRollEntry(
+  name: SpellRollEntryName,
+  entry: RollEntry<any> | undefined,
+): RollEntry<any> | undefined {
+  if (!entry) {
+    return undefined;
+  }
+  let wrapped = guardedRollEntries[name].get(entry);
+  if (!wrapped) {
+    wrapped = (scope) => {
+      try {
+        entry(scope);
+      } catch (error) {
+        const spellName = scope.effects[0]?.name ?? "";
+        logger.error(
+          localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
+          undefined,
+          error,
+        );
+      }
+    };
+    guardedRollEntries[name].set(entry, wrapped);
+  }
+  return wrapped;
+}
+
 function guardBehaviour(behaviour: SpellBehaviour): SpellBehaviour {
+  const rollEntries = Object.fromEntries(
+    spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behaviour[name])]),
+  ) as SpellRollEntries;
   return {
+    ...rollEntries,
     apply: guarded(
       "apply",
       behaviour.apply,

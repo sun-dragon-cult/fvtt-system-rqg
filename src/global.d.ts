@@ -19,6 +19,24 @@ import type { RqgItem } from "./items/rqg-item.ts";
 import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
+import type { SkillBehaviorRegistry } from "./system/skill-behaviors/skill-behavior.ts";
+import type { AbilityItem } from "@item-model/item-types.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import type { WeaponItem } from "@item-model/weapon-data-model.ts";
+import type {
+  AttackHookData,
+  DefenceHookData,
+  PrepareAttackData,
+} from "./rolls/roll-method-options.ts";
+import type { RollPreparation } from "./rolls/roll-preparation.ts";
+import type { SpiritMagicRoll } from "./rolls/spirit-magic-roll/spirit-magic-roll.ts";
+import type { SpiritMagicRollOptions } from "./rolls/spirit-magic-roll/spirit-magic-roll.types.ts";
+import type { RuneMagicRoll } from "./rolls/rune-magic-roll/rune-magic-roll.ts";
+import type { RuneMagicRollOptions } from "./rolls/rune-magic-roll/rune-magic-roll.types.ts";
+import type { AbilityRoll } from "./rolls/ability-roll/ability-roll.ts";
+import type { AbilityRollOptions } from "./rolls/ability-roll/ability-roll.types.ts";
+import type { CharacteristicRoll } from "./rolls/characteristic-roll/characteristic-roll.ts";
+import type { CharacteristicRollOptions } from "./rolls/characteristic-roll/characteristic-roll.types.ts";
 import type { RqgChatMessage } from "./chat/rqg-chat-message.ts";
 import type { RqgCombatant } from "./combat/rqg-combatant.ts";
 import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
@@ -71,6 +89,129 @@ declare global {
   interface RqgHooks {
     /** Fired at `setup`: modules register their spell behaviours. */
     "rqg.registerSpellBehaviours": (registry: SpellBehaviourRegistry) => void;
+    /** Fired at `setup`: modules register their skill behaviors. */
+    "rqg.registerSkillBehaviors": (registry: SkillBehaviorRegistry) => void;
+    /**
+     * Prepares a skill, rune or passion roll: push to `options.modifiers`, or set
+     * `preparation.forbidden` to why the roll isn't allowed. Called whenever the roll dialog
+     * changes and once more when the roll is made, so listeners must not have side effects.
+     */
+    "rqg.prepareAbilityRoll": (
+      item: AbilityItem,
+      options: AbilityRollOptions,
+      preparation: RollPreparation,
+    ) => void;
+    /**
+     * Once, before a skill, rune or passion roll is rolled, on the rolling client. Return false to
+     * cancel. For modifiers use `rqg.prepareAbilityRoll`. Listeners run synchronously.
+     */
+    "rqg.preAbilityRoll": (item: AbilityItem, options: AbilityRollOptions) => boolean | void;
+    /** After a skill, rune or passion roll, on the rolling client, before experience is checked. */
+    "rqg.abilityRoll": (item: AbilityItem, roll: AbilityRoll, options: AbilityRollOptions) => void;
+    /** Prepares a characteristic roll, see `rqg.prepareAbilityRoll`. */
+    "rqg.prepareCharacteristicRoll": (
+      actor: RqgActor,
+      options: CharacteristicRollOptions,
+      preparation: RollPreparation,
+    ) => void;
+    /** Before a characteristic roll, see `rqg.preAbilityRoll`. */
+    "rqg.preCharacteristicRoll": (
+      actor: RqgActor,
+      options: CharacteristicRollOptions,
+    ) => boolean | void;
+    /** After a characteristic roll, on the rolling client. */
+    "rqg.characteristicRoll": (
+      actor: RqgActor,
+      roll: CharacteristicRoll,
+      options: CharacteristicRollOptions,
+    ) => void;
+    /** Prepares a Reputation roll, see `rqg.prepareAbilityRoll`. */
+    "rqg.prepareReputationRoll": (
+      actor: RqgActor,
+      options: AbilityRollOptions,
+      preparation: RollPreparation,
+    ) => void;
+    /** Before a Reputation roll, see `rqg.preAbilityRoll`. */
+    "rqg.preReputationRoll": (actor: RqgActor, options: AbilityRollOptions) => boolean | void;
+    /** After a Reputation roll, on the rolling client. */
+    "rqg.reputationRoll": (actor: RqgActor, roll: AbilityRoll, options: AbilityRollOptions) => void;
+    /**
+     * Prepares a spirit or rune magic cast, see `rqg.prepareAbilityRoll`. `caster` may differ from
+     * the spell's owner (Allied Spirit, bound spirit, matrix).
+     */
+    "rqg.prepareSpellCast": (
+      spell: SpellItem,
+      caster: RqgActor,
+      options: SpiritMagicRollOptions | RuneMagicRollOptions,
+      preparation: RollPreparation,
+    ) => void;
+    /**
+     * Before a spirit or rune magic spell is cast, on the casting client, before the cast is
+     * checked. `caster` may differ from the spell's owner (Allied Spirit, bound spirit, matrix).
+     * Return false to cancel; see `rqg.preAbilityRoll`. For rune magic the
+     * rune is already chosen: `usedRuneName` and `usedRuneChance` are only shown and rolled, while
+     * experience and rune points still go to that rune. To use another rune, cast with
+     * `usedRuneId` instead.
+     */
+    "rqg.preSpellCast": (
+      spell: SpellItem,
+      caster: RqgActor,
+      options: SpiritMagicRollOptions | RuneMagicRollOptions,
+    ) => boolean | void;
+    /** After a spell was cast and its costs paid, on the casting client. */
+    "rqg.spellCast": (
+      spell: SpellItem,
+      caster: RqgActor,
+      roll: SpiritMagicRoll | RuneMagicRoll,
+      options: SpiritMagicRollOptions | RuneMagicRollOptions,
+    ) => void;
+    /**
+     * Prepares an attack: push to `attack.rollOptions.modifiers` or set `preparation.forbidden`;
+     * see `rqg.prepareAbilityRoll`. `attack.combatManeuver` is undefined while the attack dialog
+     * is open, before a maneuver is picked.
+     */
+    "rqg.prepareAttack": (
+      weapon: WeaponItem,
+      attack: PrepareAttackData,
+      preparation: RollPreparation,
+    ) => void;
+    /**
+     * When an attack is made, on the attacking client, before ammunition is used. Return false to
+     * cancel; see `rqg.preAbilityRoll`.
+     */
+    "rqg.preAttack": (weapon: WeaponItem, attack: AttackHookData) => boolean | void;
+    /**
+     * The attack is made: the attack card is posted and ammunition used, on the attacking client.
+     * Not called when the card wasn't created. The attack roll is rolled later, in the defence.
+     */
+    "rqg.attack": (
+      weapon: WeaponItem,
+      attack: AttackHookData & { chatMessage: ChatMessage },
+    ) => void;
+    /**
+     * Prepares the defence chosen in the defence dialog: push to `defence.rollOptions.modifiers`,
+     * or set `preparation.forbidden` to forbid that defence, for example a parry. Not called for
+     * "ignore". See `rqg.prepareAbilityRoll`.
+     */
+    "rqg.prepareDefence": (
+      defender: RqgActor,
+      defence: DefenceHookData,
+      preparation: RollPreparation,
+    ) => void;
+    /**
+     * Before the defence is rolled, on the client that submits the defence (the defender's or the
+     * GM's). Returning false aborts the defence and leaves the attack card waiting for one.
+     */
+    "rqg.preDefence": (defender: RqgActor, defence: DefenceHookData) => boolean | void;
+    /** After the attack and defence are rolled and the attack card updated with the outcome. */
+    "rqg.defence": (
+      defender: RqgActor,
+      defence: DefenceHookData & {
+        attackRoll: AbilityRoll;
+        defenceRoll: AbilityRoll | undefined;
+        chatMessage: ChatMessage;
+      },
+    ) => void;
   }
 
   namespace CONFIG {

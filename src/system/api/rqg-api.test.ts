@@ -21,13 +21,6 @@ describe("game.system.api", () => {
   it("has the expected surface", () => {
     expect(surface(createRqgApi())).toMatchInlineSnapshot(`
       {
-        "SuccessLevel": {
-          "Critical": 0,
-          "Failure": 3,
-          "Fumble": 4,
-          "Special": 1,
-          "Success": 2,
-        },
         "dialogs": {
           "chooseWounds": "function",
         },
@@ -42,6 +35,13 @@ describe("game.system.api", () => {
           "weaponUsages": "function",
         },
         "rolls": {
+          "SuccessLevel": {
+            "Critical": 0,
+            "Failure": 3,
+            "Fumble": 4,
+            "Special": 1,
+            "Success": 2,
+          },
           "ability": "function",
           "attack": "function",
           "characteristic": "function",
@@ -60,7 +60,7 @@ describe("game.system.api", () => {
           "setRqid": "function",
         },
         "spellEffects": {
-          "castStrength": "function",
+          "castPoints": "function",
           "effectRemovalCost": "function",
           "list": "function",
           "removeSpellEffects": "function",

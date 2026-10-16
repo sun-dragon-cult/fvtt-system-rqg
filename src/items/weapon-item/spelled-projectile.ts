@@ -2,6 +2,11 @@ import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { systemId } from "../../system/config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-flags";
+import { onRqgHook } from "../../system/fvtt-type-compat";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import { ERR } from "../../system/error-registry";
+
+const logger = new RqgLogger("SpelledProjectile");
 
 // Speedart, Multimissile, Firearrow and the like are cast on one missile and used up when it is
 // fired (RBM p.114, p.117, p.119), so the enchanted missile is split off its stack.
@@ -102,10 +107,31 @@ async function returnToStack(projectile: WeaponItem): Promise<void> {
 }
 
 /**
- * A split-off missile whose spells have all run out goes back to its stack. Foundry marks an
- * expired effect on the active GM's client, so this runs there only.
+ * A fired missile's spells are spent on the attacking client. A split-off missile whose spells
+ * have all run out goes back to its stack; Foundry marks an expired effect on the active GM's
+ * client, so that runs there only.
  */
+let pendingSpends: Promise<unknown> = Promise.resolve();
+
+/**
+ * Resolves once the spells on the missiles fired so far are spent. Hook listeners can't be
+ * awaited, so the next attack waits here before reading a missile's spells.
+ */
+export function firedMissilesSettled(): Promise<unknown> {
+  return pendingSpends;
+}
+
 export function initSpelledProjectiles(): void {
+  // A fired missile's spells are spent (#1110)
+  onRqgHook("rqg.attack", (weapon, attack) => {
+    const projectile = attack.projectile;
+    if (projectile && projectile !== weapon) {
+      const spent = spendProjectileSpells(projectile).catch((error: unknown) =>
+        logger.error(ERR.projectileSpellsNotSpent, { projectile: projectile.uuid }, error),
+      );
+      pendingSpends = Promise.all([pendingSpends, spent]);
+    }
+  });
   Hooks.on("updateActiveEffect", (effect: ActiveEffect, changed: any, _options, userId: string) => {
     if (userId !== game.user?.id || changed.duration?.expired !== true) {
       return;

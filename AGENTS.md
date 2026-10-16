@@ -70,6 +70,7 @@ Foundry themes use `body.theme-dark` / `body.theme-light`. Prefer theme-adaptive
 - If you add or rename `.hbs` templates, verify `src/system/load-handlebars-templates.ts` is updated.
 - If you change sheets/dialogs, keep TypeScript context data, templates, and styles synchronized.
 - If you change migrations, keep them idempotent, GM-safe, localized in player-facing reports, and covered by targeted migration tests.
+- To deprecate a public method or API, keep it working and call `warnDeprecated(oldCall, newCall, { since, until })` from `src/system/deprecation.ts` with literal version strings. The release workflow (`pnpm check:deprecations <version>`) fails while any deprecation with `until` at or before the version being released is still in `src/`.
 - If a commit fixes a tracked GitHub issue, use a GitHub closing keyword on its own line in the commit body (`Fixes #N`, `Closes #N`, or `Resolves #N`) — a bare `(#N)` reference does not auto-close the issue.
 
 ## AI-Facing Codebase Map

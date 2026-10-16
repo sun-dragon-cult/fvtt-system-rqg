@@ -6,11 +6,12 @@ import { ActorTypeEnum, type CharacterActor } from "../../data-model/actor-data/
 import { assertDocumentSubType, isDocumentSubType, localize } from "../../system/util";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
+import { DocumentAppsLink } from "../../applications/app-parts/document-apps-link";
 import type { RqgDotPickerElement } from "../../applications/dot-picker/dot-picker-element";
 import { distributeHealing, sumWounds } from "./hit-location-healing-calculations";
 
-/** A wound picked to heal. */
-export type WoundChoice = { location: HitLocationItem; wound: number; points: number };
+/** A wound picked to heal; `points` is unset when `chooseWounds` was given none. */
+export type WoundChoice = { location: HitLocationItem; wound: number; points?: number };
 
 /** What `chooseWounds` resolves to: the wounds to heal and the severed locations to reattach. */
 export type ChosenHealing = { wounds: WoundChoice[]; reattach: HitLocationItem[] };
@@ -22,7 +23,11 @@ export type ChosenHealing = { wounds: WoundChoice[]; reattach: HitLocationItem[]
  */
 export type ChooseWoundsOptions = {
   title: string;
-  points: number;
+  /**
+   * Required for `split` and `location`. Leave it out in `single` mode to only pick the wound,
+   * when what it heals is rolled afterwards (First Aid).
+   */
+  points?: number;
   mode: "single" | "split" | "location";
   /**
    * Offer a "Reattach" checkbox on each severed location. One reattach per cast: in `split` mode
@@ -152,7 +157,7 @@ function healDialogContext(
   mode: HealDialogMode,
   locations: HitLocationItem[],
   options: {
-    points: number;
+    points: number | undefined;
     selectedKey: string | undefined;
     offerReattach: boolean;
     reattachIds: string[];
@@ -163,9 +168,9 @@ function healDialogContext(
   const allWounds = locations.flatMap((location) => location.system.wounds);
   const presets =
     mode === "split"
-      ? distributeHealing(allWounds, options.points)
+      ? distributeHealing(allWounds, options.points ?? 0)
       : mode === "location"
-        ? locationPresets(locations, options.points)
+        ? locationPresets(locations, options.points ?? 0)
         : [];
   let presetIndex = 0;
   return {
@@ -180,6 +185,7 @@ function healDialogContext(
     healAll: !!options.healAll,
     maxHeal: Math.max(1, ...allWounds),
     points: options.points,
+    hasPoints: options.points != null,
     selectedKey: options.selectedKey,
     healFeedback: options.healFeedback ?? "",
     locations: locations.map((location) => ({
@@ -251,12 +257,15 @@ async function chooseWoundsOnce(
         return;
       }
       if (options.mode === "split") {
-        initializeSplitBudget(root, options.points);
+        initializeSplitBudget(root, options.points ?? 0);
         keepOneReattachTicked(root);
       } else if (options.mode === "location") {
-        initializeLocationBudget(root, options.points);
+        initializeLocationBudget(root, options.points ?? 0);
       } else {
-        initializeWastedPoints(root, () => options.points);
+        const points = options.points;
+        if (points != null) {
+          initializeWastedPoints(root, () => points);
+        }
         keepOneReattachTicked(root);
       }
     },
@@ -569,6 +578,8 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
   private feedbackSnapshot = "";
   /** A heal is being applied or animated; further submits and renders wait for it. */
   private healing = false;
+  // Rerender when the actor or its hit locations change elsewhere
+  private readonly actorLink = new DocumentAppsLink(this);
 
   constructor(
     private readonly actor: RqgActor,
@@ -619,19 +630,10 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
     };
   }
 
-  // Rerender when the actor or its hit locations change elsewhere
-  protected override async _onFirstRender(
-    context: DeepPartial<HealDialogContext>,
-    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
-  ): Promise<void> {
-    await super._onFirstRender(context, options);
-    (this.actor.apps as Record<string, unknown>)[this.id] = this;
-  }
-
   protected override _onClose(
     ...args: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>
   ): void {
-    delete (this.actor.apps as Record<string, unknown>)[this.id];
+    this.actorLink.unlink();
     super._onClose(...args);
   }
 
@@ -640,6 +642,7 @@ class HealWoundsApp extends HandlebarsApplicationMixin(ApplicationV2<HealDialogC
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
+    this.actorLink.link(this.actor);
     // The content part is replaced on every render, so its listeners don't pile up
     const content = this.element.querySelector<HTMLElement>(".heal-wound-dialog");
     const picker = content?.querySelector<HTMLElement & { value: unknown }>(
@@ -779,7 +782,7 @@ async function applyHealing(
   const woundsBefore = [...chosen.location.system.wounds];
   const { healed } = await actor.heal({
     location: chosen.location,
-    points: chosen.points,
+    points: chosen.points ?? 0,
     wound: chosen.wound,
     restoreSevered: restoreSevered(chosen.location),
   });

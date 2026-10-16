@@ -1,5 +1,7 @@
 import type { DeepPartial } from "fvtt-types/utils";
 import { getDefaultRollMode, getSelectedRollModeFromClickEvent } from "./roll-mode";
+import type { PreparedRoll } from "../../rolls/roll-preparation";
+import { showPreparedRoll } from "./prepared-roll-view";
 
 type LivePreviewFormBehaviorConfig = {
   submitButtonSelectorForBlurGuard?: string;
@@ -17,6 +19,8 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
   private _livePreviewHandlersBoundTo?: HTMLFormElement;
   private _targetHookId: number | undefined;
   protected rollMode: foundry.dice.Roll.Mode = getDefaultRollMode();
+  /** What the `rqg.prepare…` hooks make of the roll as the form stands. */
+  protected prepared: PreparedRoll | undefined;
 
   /**
    * The user's targets changed while this dialog is open. Override to keep target-dependent UI in
@@ -88,6 +92,19 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
     this.getLivePreviewFormBehaviorConfig().updateLivePreview();
   }
 
+  /** Show a new prepared roll in place, without a re-render. */
+  protected updatePreparedRoll(prepared: PreparedRoll | undefined): void {
+    this.prepared = prepared;
+    this.showPrepared();
+  }
+
+  private showPrepared(): void {
+    const selector = this.getLivePreviewFormBehaviorConfig().submitButtonSelectorForBlurGuard;
+    if (this.element && selector) {
+      showPreparedRoll(this.element, this.prepared, selector);
+    }
+  }
+
   /** Update the footer target% in place, without a re-render. */
   protected updateTotalChanceDisplay(totalChance: number): void {
     const totalChanceElement = this.element.querySelector<HTMLElement>("[data-total-chance]");
@@ -107,6 +124,7 @@ export abstract class RqgInteractiveRollApplicationBase extends HandlebarsApplic
     await super._onRender(context, options);
     this.bindLivePreviewHandlers(this.element);
     this.bindUserTargetHook();
+    this.showPrepared();
   }
 
   private bindUserTargetHook(): void {

@@ -524,6 +524,11 @@
           "Accepted": "Accepted"
         }
       },
+      "SkillBehavior": {
+        "Apply": "Apply",
+        "Done": "Done",
+        "AlreadyApplied": "This has already been applied."
+      },
       "SpellCast": {
         "UnknownTarget": "Unknown target",
         "ApplyEffect": "Apply",
@@ -703,6 +708,7 @@
       },
       "RuneMagicRoll": {
         "Title": "Cast Rune Magic",
+        "NoEligibleRune": "{actorName} has no rune to cast {spellName} with.",
         "LevelUsed": "Level",
         "RuneUsed": "Use Rune",
         "Boost": "Boost",
@@ -1287,6 +1293,7 @@
       },
       "Weapon": {
         "Name": "Name",
+        "UsageNotAvailable": "{weaponName} has no {usage} usage.",
         "WrongTypeDropped": "The item must be a weapon skill (category melee, shield or natural weapon)",
         "DropSkillMissingRqid": "The dropped skill has no RQID and cannot be linked to this weapon",
         "WrongDropzone": "This item cannot be dropped here",
@@ -1629,7 +1636,8 @@
         "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
         "TokenHasNoActor": "This token has no actor associated with it.",
         "NoHitLocationForRoll": "The actor has no hit location matching the hit location roll.",
-        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it."
+        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it.",
+        "SkillBehaviorFailed": "The code for {skillName} failed. Check the console and the module that registered it."
       },
       "Warn": {
         "TargetOneTokenOnly": "Please target one token only",

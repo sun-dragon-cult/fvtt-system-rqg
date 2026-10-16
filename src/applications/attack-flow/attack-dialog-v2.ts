@@ -42,13 +42,24 @@ import {
   resolveLinkedSkillChanceData,
 } from "@items/weapon-item/weapon-skill-links";
 import { getEquippedProjectileOptions } from "@actors/rqg-actor-sheet-data-prep.ts";
-import {
-  getLoadedProjectile,
-  projectileSpellNames,
-  spendProjectileSpells,
-} from "@items/weapon-item/spelled-projectile";
+import { firedMissilesSettled, projectileSpellNames } from "@items/weapon-item/spelled-projectile";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
-import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { DocumentAppsLink } from "../app-parts/document-apps-link";
+import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import {
+  isForbidden,
+  type PreparedRoll,
+  preparedModifierTotal,
+  preparedRoll,
+  type RollPreparation,
+} from "../../rolls/roll-preparation";
+import {
+  preparedBreakdown,
+  preparedForbiddenHtml,
+  preparedModifiersHtml,
+} from "../app-parts/prepared-roll-view";
+import type { AttackHookData, PrepareAttackData } from "../../rolls/roll-method-options";
+import type { DeepPartial } from "fvtt-types/utils";
 import Token = foundry.canvas.placeables.Token;
 
 const logger = new RqgLogger("AttackDialogV2");
@@ -60,6 +71,21 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   ): boolean {
     const damageFormula = weaponItem.system.usage[usageType]?.damage ?? "";
     return /db(\/2)?/i.test(damageFormula.replaceAll(" ", ""));
+  }
+
+  protected override async _onRender(
+    context: DeepPartial<AttackDialogContext>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
+    await super._onRender(context, options);
+    this.actorLink.link(this.weaponItem.parent as RqgActor | null);
+  }
+
+  protected override _onClose(
+    options: Parameters<foundry.applications.api.ApplicationV2["_onClose"]>[0],
+  ): void {
+    this.actorLink.unlink();
+    super._onClose(options);
   }
 
   /** Aimed blow options come from the target's hit locations, so a select can't be patched in place. */
@@ -167,17 +193,28 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     baseSkillChance: number,
     weaponEffectModifier: number,
     halvedModifier: number,
+    prepared: PreparedRoll | undefined,
   ): { totalChance: number; chanceBreakdownTooltip: string } {
-    const totalChance = AttackDialogV2.computeTotalChance(
-      formData,
-      baseSkillChance,
-      weaponEffectModifier,
-      halvedModifier,
+    const totalChance = Math.max(
+      0,
+      AttackDialogV2.computeTotalChance(
+        formData,
+        baseSkillChance,
+        weaponEffectModifier,
+        halvedModifier,
+      ) + preparedModifierTotal(prepared),
     );
     const chanceBreakdownTooltip = AttackDialogV2.getChanceBreakdownTooltip(
       baseSkillChance,
       totalChance,
-      AttackDialogV2.getChanceBreakdownModifiers(formData, weaponEffectModifier, halvedModifier),
+      [
+        ...AttackDialogV2.getChanceBreakdownModifiers(
+          formData,
+          weaponEffectModifier,
+          halvedModifier,
+        ),
+        ...preparedBreakdown(prepared),
+      ],
     );
 
     return { totalChance, chanceBreakdownTooltip };
@@ -193,6 +230,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
   ];
 
   private weaponItem: WeaponItem; // The chosen actor might not have any weapon
+  // Redraw when the attacker's items change, e.g. ammunition used or a missile back in its stack
+  private readonly actorLink = new DocumentAppsLink(this);
 
   constructor(
     weaponItem: WeaponItem,
@@ -350,11 +389,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
 
     formData.proneAttackerPrev = proneAttacker;
 
+    this.prepared = this.prepareAttack(formData);
     const { totalChance, chanceBreakdownTooltip } = AttackDialogV2.buildChancePresentation(
       formData,
       baseSkillChance,
       weaponEffectModifier,
       Number(formData.halvedModifier ?? 0),
+      this.prepared,
     );
 
     return {
@@ -387,6 +428,8 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       // attack-footer
       totalChance,
       chanceBreakdownTooltip,
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       combatManeuverNames: this.weaponItem.system.usage[formData.usageType].combatManeuvers
         .filter((cm: CombatManeuver) => cm.damageType !== "parry")
         .map((cm: CombatManeuver) => cm.name),
@@ -435,11 +478,13 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     const naturalAttackChance = baseSkillChance + weaponEffectModifier;
     const halvedModifier = usedSkill ? -Math.floor(naturalAttackChance / 2) : 0;
 
+    this.updatePreparedRoll(this.prepareAttack(formData));
     const { totalChance, chanceBreakdownTooltip } = AttackDialogV2.buildChancePresentation(
       formData,
       baseSkillChance,
       weaponEffectModifier,
       halvedModifier,
+      this.prepared,
     );
 
     totalChanceElement.textContent = `${totalChance}%`;
@@ -447,6 +492,34 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     if (targetChanceBoxElement) {
       targetChanceBoxElement.dataset["tooltip"] = chanceBreakdownTooltip;
     }
+  }
+
+  /** What the `rqg.prepareAttack` hook makes of the form's attack, before a maneuver is picked. */
+  private prepareAttack(formData: AttackDialogFormData): PreparedRoll | undefined {
+    const tokenOrActor = fromUuidSync(formData.attackingTokenOrActorUuid ?? "") as
+      TokenDocument | RqgActor | null | undefined;
+    const tokenDocument = tokenOrActor instanceof TokenDocument ? tokenOrActor : undefined;
+    const actor = (tokenOrActor instanceof TokenDocument ? tokenOrActor.actor : tokenOrActor) as
+      RqgActor | null | undefined;
+    if (!actor || !formData.usageType) {
+      return undefined;
+    }
+    const projectile =
+      formData.usageType === "missile"
+        ? AttackDialogV2.getWeaponProjectile(this.weaponItem)
+        : undefined;
+    const attack = AttackDialogV2.buildAttack(
+      this.weaponItem,
+      actor,
+      tokenDocument,
+      formData,
+      undefined,
+      projectile,
+    );
+    const ownCount = attack.rollOptions.modifiers?.length ?? 0;
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareAttack", this.weaponItem, attack, preparation);
+    return preparedRoll(attack.rollOptions.modifiers, ownCount, preparation);
   }
 
   private async onTokenChange(event: Event): Promise<void> {
@@ -598,15 +671,10 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
       weaponItem,
     );
 
-    // Read before firing, since firing spends the projectile's spells
-    const firedProjectile =
-      formDataObject.usageType === "missile" ? getLoadedProjectile(weaponItem) : undefined;
-    const projectileModifier = Number(firedProjectile?.system.effect.add.missile.attack ?? 0);
-    const projectileSpells = firedProjectile ? projectileSpellNames(firedProjectile) : "";
-
-    let attackProjectileDamage = "";
+    let projectileItem: WeaponItem | undefined;
     if (formDataObject.usageType === "missile") {
-      const projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
+      await firedMissilesSettled();
+      projectileItem = AttackDialogV2.getWeaponProjectile(weaponItem);
       if (!projectileItem || projectileItem?.system.quantity <= 0) {
         ui.notifications?.warn(
           localize("RQG.Dialog.Attack.OutOfAmmoWarn", {
@@ -616,88 +684,44 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
         );
         return;
       }
+    }
+    // A missile shot from a launcher, as opposed to a thrown weapon
+    const missile = projectileItem !== weaponItem ? projectileItem : undefined;
+    const attackProjectileDamage = missile?.system.getMagicDamageFormula("missile", "") ?? "";
 
-      if (formDataObject.reduceAmmoQuantity) {
-        const newQuantity = projectileItem?.system.quantity - 1;
-        if (newQuantity <= 0) {
-          ui.notifications?.warn(
-            localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
-              projectileName: projectileItem?.name,
-            }),
-          );
-        }
-        await projectileItem?.update({ system: { quantity: newQuantity } });
-      }
-      if (projectileItem !== weaponItem) {
-        attackProjectileDamage = projectileItem.system.getMagicDamageFormula("missile", "");
-        await spendProjectileSpells(projectileItem);
-      }
-      // @ts-expect-error render - Foundry binds `this` to the dialog instance at runtime
-      await this.render(); // Make sure ammo count is updated in the dialog
+    const attack: AttackHookData = {
+      ...AttackDialogV2.buildAttack(
+        weaponItem,
+        actor,
+        tokenDocument,
+        formDataObject,
+        combatManeuver,
+        projectileItem,
+      ),
+      combatManeuver,
+    };
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareAttack", weaponItem, attack, preparation);
+    if (isForbidden(preparation)) {
+      return;
+    }
+    if (!callRqgPreHook("rqg.preAttack", weaponItem, attack)) {
+      return;
     }
 
-    const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${formDataObject.usageType}`);
-    const damageTypeTranslated = localize(
-      `RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`,
-    );
+    if (projectileItem && formDataObject.reduceAmmoQuantity) {
+      const newQuantity = projectileItem.system.quantity - 1;
+      if (newQuantity <= 0) {
+        ui.notifications?.warn(
+          localize("RQG.Dialog.Attack.UsedLastOfAmmoWarn", {
+            projectileName: projectileItem.name,
+          }),
+        );
+      }
+      await projectileItem.update({ system: { quantity: newQuantity } });
+    }
 
-    const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.Attack.Title")}</span>
-    <span>${damageTypeTranslated} – ${weaponItem?.name} – ${usageTypeTranslated}</span>`;
-
-    const attackRollOptions: AbilityRollOptions = {
-      naturalSkill: Number(skillChanceData.skillChance ?? 0),
-      modifiers: [
-        {
-          value: Number(skillChanceData.weaponEffectModifier ?? 0) - projectileModifier,
-          description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
-        },
-        {
-          value: projectileModifier,
-          description: projectileSpells || localize("RQG.Roll.AbilityRoll.WeaponEffect"),
-        },
-        {
-          value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.Common.Augment"),
-        },
-        {
-          value: formDataObject.proneTarget ? proneTargetModifier : 0,
-          description: localize("RQG.Roll.AbilityRoll.ProneTarget"),
-        },
-        {
-          value: formDataObject.unawareTarget ? unawareTargetModifier : 0,
-          description: localize("RQG.Roll.AbilityRoll.UnawareTarget"),
-        },
-        {
-          value: formDataObject.darkness ? darknessModifier : 0,
-          description: localize("RQG.Roll.AbilityRoll.Darkness"),
-        },
-        {
-          value: formDataObject.halved ? Number(formDataObject.halvedModifier) : 0,
-          description: localize("RQG.Roll.AbilityRoll.Halved"),
-        },
-        {
-          value: formDataObject.aimedBlow > 0 ? Number(formDataObject.halvedModifier) : 0,
-          description: localize("RQG.Roll.AbilityRoll.AimedBlow"),
-        },
-        {
-          value: formDataObject.proneAttacker ? Number(formDataObject.halvedModifier) : 0,
-          description: localize("RQG.Roll.AbilityRoll.ProneAttacker"),
-        },
-        {
-          value: Number(formDataObject.otherModifier),
-          description: normalizeOtherModifierDescriptionForRoll(
-            formDataObject.otherModifierDescription,
-          ),
-        },
-      ],
-      heading: attackRollHeading,
-      abilityName: weaponItem?.name ?? undefined,
-      abilityType: weaponItem?.type ?? undefined,
-      abilityImg: weaponItem?.img ?? undefined,
-      speaker: getSpeakerCompat({ token: tokenDocument, actor }), // Used to decide who can see the roll in chat
-    };
-
-    const attackRoll = new AbilityRoll(undefined, {}, attackRollOptions);
+    const attackRoll = new AbilityRoll(undefined, {}, attack.rollOptions);
 
     const target = game.user?.targets.first();
 
@@ -771,6 +795,7 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
     const cm = await ChatMessage.create(attackChatMessageOptions as any);
     if (cm && !Array.isArray(cm)) {
       cm.render(true);
+      callRqgHook("rqg.attack", weaponItem, { ...attack, chatMessage: cm as ChatMessage });
     }
   }
 
@@ -778,6 +803,93 @@ export class AttackDialogV2 extends RqgInteractiveRollApplicationBase {
    * Return a list of tokenUuids on the current scene the user has access to that also has at least one weapon to attack with.
    * Also returns the actors that the user owns and do not have a token in the current scene and has at least one weapon to attack with.
    */
+  /**
+   * The attack the form describes, as the attack hooks get it. Used for the dialog's preview, where
+   * no maneuver is picked yet, and when the attack is made, so both see the same modifiers.
+   */
+  private static buildAttack(
+    weaponItem: WeaponItem,
+    actor: RqgActor,
+    tokenDocument: TokenDocument | undefined,
+    formData: AttackDialogFormData,
+    combatManeuver: CombatManeuver | undefined,
+    projectileItem: WeaponItem | undefined,
+  ): PrepareAttackData {
+    const skillChanceData = resolveLinkedSkillChanceData(weaponItem, formData.usageType, "attack");
+    // A missile shot from a launcher, as opposed to a thrown weapon
+    const missile = projectileItem !== weaponItem ? projectileItem : undefined;
+    const projectileModifier = Number(missile?.system.effect.add.missile.attack ?? 0);
+    const projectileSpells = missile ? projectileSpellNames(missile) : "";
+
+    const usageTypeTranslated = localize(`RQG.Game.WeaponUsage.${formData.usageType}`);
+    const damageTypeTranslated = combatManeuver
+      ? localize(`RQG.Item.Weapon.DamageTypeEnum.${combatManeuver.damageType}`)
+      : "";
+
+    const attackRollHeading = `<span class="roll-action">${localize("RQG.Dialog.Attack.Title")}</span>
+    <span>${damageTypeTranslated} – ${weaponItem?.name} – ${usageTypeTranslated}</span>`;
+
+    const attackRollOptions: AbilityRollOptions = {
+      naturalSkill: Number(skillChanceData.skillChance ?? 0),
+      modifiers: [
+        {
+          value: Number(skillChanceData.weaponEffectModifier ?? 0) - projectileModifier,
+          description: localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
+        {
+          value: projectileModifier,
+          description: projectileSpells || localize("RQG.Roll.AbilityRoll.WeaponEffect"),
+        },
+        {
+          value: Number(formData.augmentModifier),
+          description: localize("RQG.Roll.Common.Augment"),
+        },
+        {
+          value: formData.proneTarget ? proneTargetModifier : 0,
+          description: localize("RQG.Roll.AbilityRoll.ProneTarget"),
+        },
+        {
+          value: formData.unawareTarget ? unawareTargetModifier : 0,
+          description: localize("RQG.Roll.AbilityRoll.UnawareTarget"),
+        },
+        {
+          value: formData.darkness ? darknessModifier : 0,
+          description: localize("RQG.Roll.AbilityRoll.Darkness"),
+        },
+        {
+          value: formData.halved ? Number(formData.halvedModifier) : 0,
+          description: localize("RQG.Roll.AbilityRoll.Halved"),
+        },
+        {
+          value: formData.aimedBlow > 0 ? Number(formData.halvedModifier) : 0,
+          description: localize("RQG.Roll.AbilityRoll.AimedBlow"),
+        },
+        {
+          value: formData.proneAttacker ? Number(formData.halvedModifier) : 0,
+          description: localize("RQG.Roll.AbilityRoll.ProneAttacker"),
+        },
+        {
+          value: Number(formData.otherModifier),
+          description: normalizeOtherModifierDescriptionForRoll(formData.otherModifierDescription),
+        },
+      ],
+      heading: attackRollHeading,
+      abilityName: weaponItem?.name ?? undefined,
+      abilityType: weaponItem?.type ?? undefined,
+      abilityImg: weaponItem?.img ?? undefined,
+      speaker: getSpeakerCompat({ token: tokenDocument, actor }), // Used to decide who can see the roll in chat
+    };
+
+    return {
+      attacker: actor,
+      target: (game.user?.targets.first()?.actor as RqgActor | null | undefined) ?? undefined,
+      usage: formData.usageType,
+      combatManeuver,
+      projectile: projectileItem,
+      rollOptions: attackRollOptions,
+    };
+  }
+
   private static getAttackerOptions(): SelectOptionData<string>[] {
     const ownedTokensWithWeapons =
       game.scenes?.current?.tokens

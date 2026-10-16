@@ -2,15 +2,18 @@ import { RqgItemDataModel } from "./rqg-item-data-model";
 import { abilitySchemaFields } from "../shared/ability-schema-fields";
 import { RQG_CONFIG, systemId } from "../../system/config";
 import { isDocumentSubType, localize, getSpeakerFromItem } from "../../system/util";
-import { getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { callRqgHook, callRqgPreHook, getSpeakerCompat } from "../../system/fvtt-type-compat";
+import { isForbidden, type RollPreparation } from "../../rolls/roll-preparation";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { AbilityRollOptions } from "../../rolls/ability-roll/ability-roll.types";
+import type { RollMethodOptions } from "../../rolls/roll-method-options";
 import type { AbilityItem } from "./item-types";
 import type { SkillItem } from "./skill-data-model";
 import { ActorTypeEnum, type CharacterActor } from "../actor-data/rqg-actor-data";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
+import { skillBehaviorOf, skillTargetUuids } from "../../system/skill-behaviors/skill-behavior";
 
 const logger = new RqgLogger("AbilityDataModel");
 type AbilitySchema = ReturnType<typeof abilitySchemaFields>;
@@ -24,54 +27,92 @@ export abstract class AbilityDataModel<
   DerivedData extends Record<string, unknown> = Record<string, never>,
 > extends RqgItemDataModel<Schema, DerivedData> {
   /**
-   * Open a dialog for an AbilityRoll.
+   * Open the roll dialog, or with `skipDialog` roll at once and return the roll. The dialog rolls
+   * through here too. `resultMessages` is only for the deprecated `abilityRollImmediate`.
    */
-  async abilityRoll(
-    token?: TokenDocument | null,
-    options: Partial<Omit<AbilityRollOptions, "naturalSkill" | "abilityItem">> = {},
-  ): Promise<void> {
-    // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
-    const { AbilityRollDialogV2 } =
-      await import("../../applications/ability-roll-dialog/ability-roll-dialog-v2");
-    await new AbilityRollDialogV2(
-      this.parent as unknown as AbilityItem,
-      token,
-      options as Partial<AbilityRollOptions>,
-    ).render({
-      force: true,
-    });
+  async roll(
+    options: RollMethodOptions & Pick<AbilityRollOptions, "resultMessages"> = {},
+  ): Promise<AbilityRoll | undefined> {
+    this.assertEmbedded();
+    if (!options.skipDialog) {
+      // Dynamic import to avoid circular dependency through AbilityRollDialogV2 → rqgItem.ts
+      const { AbilityRollDialogV2 } =
+        await import("../../applications/ability-roll-dialog/ability-roll-dialog-v2");
+      await new AbilityRollDialogV2(this.parent as unknown as AbilityItem, options.token, {
+        modifiers: options.modifiers,
+      }).render({ force: true });
+      return undefined;
+    }
+    return await this.rollWithOptions(this.rollOptions(options));
   }
 
-  /**
-   * Do an abilityRoll and handle checking experience afterward.
-   */
-  async abilityRollImmediate(
-    options: Omit<AbilityRollOptions, "naturalSkill" | "abilityItem"> = {},
-    token?: TokenDocument | null,
-  ): Promise<AbilityRoll> {
-    const item = this.parent;
-    if (!item?.isEmbedded) {
-      logger.throw(ERR.abilityItemNotEmbedded, { itemUuid: item?.uuid });
-    }
+  /** The options `roll` would roll with and what the `rqg.prepareAbilityRoll` hook made of them. */
+  prepareRoll(options: RollMethodOptions): {
+    options: AbilityRollOptions;
+    preparation: RollPreparation;
+  } {
+    const rollOptions = this.rollOptions(options);
+    return { options: rollOptions, preparation: this.runPrepareHook(rollOptions) };
+  }
 
-    const chance: number = Number(this.chance) || 0; // Handle NaN
+  private runPrepareHook(options: AbilityRollOptions): RollPreparation {
+    options.modifiers ??= [];
+    const preparation: RollPreparation = {};
+    callRqgHook(
+      "rqg.prepareAbilityRoll",
+      this.parent as unknown as AbilityItem,
+      options,
+      preparation,
+    );
+    return preparation;
+  }
 
+  /** The options `roll` rolls with, before the hooks. */
+  private rollOptions(
+    options: RollMethodOptions & Pick<AbilityRollOptions, "resultMessages">,
+  ): AbilityRollOptions {
+    const item = this.parent!;
     const actor = item.actor;
-    const speaker = actor ? getSpeakerCompat({ actor, token }) : getSpeakerFromItem(item);
-
-    const abilityRoll = await AbilityRoll.rollAndShow({
-      naturalSkill: chance,
-      modifiers: options?.modifiers,
+    return {
+      naturalSkill: Number(this.chance) || 0, // Handle NaN
+      modifiers: [...(options.modifiers ?? [])],
       abilityName: item.name ?? undefined,
       abilityType: item.type,
       abilityImg: item.img ?? undefined,
-      resultMessages: options?.resultMessages,
-      speaker: speaker,
-      rollMode: options?.rollMode,
-    });
+      resultMessages: options.resultMessages,
+      speaker: actor ? getSpeakerCompat({ actor, token: options.token }) : getSpeakerFromItem(item),
+      rollMode: options.rollMode,
+    };
+  }
+
+  private assertEmbedded(): void {
+    if (!this.parent?.isEmbedded) {
+      logger.throw(ERR.abilityItemNotEmbedded, { itemUuid: this.parent?.uuid });
+    }
+  }
+
+  /**
+   * Runs the `rqg.prepareAbilityRoll`, `rqg.preAbilityRoll` and `rqg.abilityRoll` hooks, rolls and
+   * checks experience. Undefined when a hook forbade or cancelled the roll.
+   */
+  private async rollWithOptions(options: AbilityRollOptions): Promise<AbilityRoll | undefined> {
+    this.assertEmbedded();
+    const item = this.parent as unknown as AbilityItem;
+    if (isForbidden(this.runPrepareHook(options))) {
+      return undefined;
+    }
+    if (!callRqgPreHook("rqg.preAbilityRoll", item, options)) {
+      return undefined;
+    }
+    if (skillBehaviorOf(item)) {
+      options.abilityUuid = item.uuid ?? undefined;
+      options.targetUuids = skillTargetUuids(item);
+    }
+    const abilityRoll = await AbilityRoll.rollAndShow(options);
     if (abilityRoll.successLevel == null) {
       logger.throw(ERR.rollHasNoSuccessLevel, { roll: "AbilityRoll", abilityRoll });
     }
+    callRqgHook("rqg.abilityRoll", item, abilityRoll, options);
     await this.checkExperience(abilityRoll.successLevel);
     return abilityRoll;
   }

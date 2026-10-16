@@ -38,7 +38,21 @@ import type { DamageType } from "@item-model/weapon-enums.ts";
 import { dodgeBaseChance, jumpBaseChance } from "../items/skill-item/skill-formulas";
 import { RqgItem } from "@items/rqg-item.ts";
 import { RqgCalculations } from "../system/rqg-calculations";
-import { getConfigStatusEffects, getSpeakerCompat } from "../system/fvtt-type-compat";
+import {
+  callRqgHook,
+  callRqgPreHook,
+  getConfigStatusEffects,
+  getSpeakerCompat,
+} from "../system/fvtt-type-compat";
+import {
+  type RollMethodOptions,
+  type SpellCastOptions,
+  warnDeprecatedRollMethod,
+} from "../rolls/roll-method-options";
+import { isForbidden, type RollPreparation } from "../rolls/roll-preparation";
+import { type SpellItem, spellItemTypes } from "@item-model/spell.ts";
+import type { SpiritMagicRoll } from "../rolls/spirit-magic-roll/spirit-magic-roll";
+import type { RuneMagicRoll } from "../rolls/rune-magic-roll/rune-magic-roll";
 import {
   type MagicPointSourceSelection,
   SELF_MAGIC_POINT_SOURCE,
@@ -267,25 +281,101 @@ export class RqgActor extends Actor {
     ) as RqgItem[];
   }
 
+  /**
+   * Roll a characteristic, ×5 unless `difficulty` says otherwise - part of the public API. Opens
+   * the roll dialog, or with `skipDialog` rolls at once and returns the roll (undefined if a
+   * `rqg.preCharacteristicRoll` hook cancelled it).
+   */
+  public async rollCharacteristic(
+    characteristicName: keyof Characteristics,
+    options: RollMethodOptions & { difficulty?: number } = {},
+  ): Promise<CharacteristicRoll | undefined> {
+    if (!options.skipDialog) {
+      await new CharacteristicRollDialogV2(this, characteristicName, options.token).render({
+        force: true,
+      });
+      return undefined;
+    }
+    return await this.rollCharacteristicWithOptions(
+      this.getCharacteristicRollDefaults(characteristicName, options.token, {
+        difficulty: options.difficulty,
+        modifiers: [...(options.modifiers ?? [])],
+        rollMode: options.rollMode,
+      }),
+    );
+  }
+
+  /**
+   * The options `rollCharacteristic` would roll with and what the `rqg.prepareCharacteristicRoll`
+   * hook made of them.
+   */
+  public prepareCharacteristicRoll(
+    characteristicName: keyof Characteristics,
+    options: RollMethodOptions & { difficulty?: number },
+  ): { options: CharacteristicRollOptions; preparation: RollPreparation } {
+    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, options.token, {
+      difficulty: options.difficulty,
+      modifiers: [...(options.modifiers ?? [])],
+      rollMode: options.rollMode,
+    });
+    return { options: rollOptions, preparation: this.runPrepareCharacteristicHook(rollOptions) };
+  }
+
+  private runPrepareCharacteristicHook(options: CharacteristicRollOptions): RollPreparation {
+    options.modifiers ??= [];
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareCharacteristicRoll", this, options, preparation);
+    return preparation;
+  }
+
+  /**
+   * Runs the `rqg.prepareCharacteristicRoll`, `rqg.preCharacteristicRoll` and
+   * `rqg.characteristicRoll` hooks, rolls and checks experience. Undefined when a hook forbade or
+   * cancelled the roll.
+   */
+  private async rollCharacteristicWithOptions(
+    options: CharacteristicRollOptions,
+  ): Promise<CharacteristicRoll | undefined> {
+    if (isForbidden(this.runPrepareCharacteristicHook(options))) {
+      return undefined;
+    }
+    if (!callRqgPreHook("rqg.preCharacteristicRoll", this, options)) {
+      return undefined;
+    }
+    const characteristicRoll = await CharacteristicRoll.rollAndShow(options);
+    if (characteristicRoll.successLevel == null) {
+      logger.throw(ERR.rollHasNoSuccessLevel, { roll: "CharacteristicRoll", characteristicRoll });
+    }
+    callRqgHook("rqg.characteristicRoll", this, characteristicRoll, options);
+    await this.checkExperience(options.characteristicName, characteristicRoll.successLevel);
+    return characteristicRoll;
+  }
+
+  /** @deprecated since 6.2.0, use `actor.rollCharacteristic(name, options)`. */
   public async characteristicRoll(
     characteristicName: keyof Characteristics,
     token?: TokenDocument | null,
   ): Promise<void> {
-    await new CharacteristicRollDialogV2(this, characteristicName, token).render({ force: true });
+    warnDeprecatedRollMethod(
+      "actor.characteristicRoll(name, token)",
+      "actor.rollCharacteristic(name, { token })",
+    );
+    await this.rollCharacteristic(characteristicName, { token });
   }
 
-  /**
-   * Do a characteristic roll and notify the user if POW experience rules apply.
-   */
+  /** @deprecated since 6.2.0, use `actor.rollCharacteristic(name, { skipDialog: true })`. */
   public async characteristicRollImmediate(
     characteristicName: keyof Characteristics,
     token?: TokenDocument | null,
     options: Omit<CharacteristicRollOptions, "characteristicValue" | "characteristicName"> = {},
-  ): Promise<CharacteristicRoll> {
-    const rollOptions = this.getCharacteristicRollDefaults(characteristicName, token, options);
-    const characteristicRoll = await CharacteristicRoll.rollAndShow(rollOptions);
-    await this.checkExperience(rollOptions.characteristicName, characteristicRoll.successLevel);
-    return characteristicRoll;
+  ): Promise<CharacteristicRoll | undefined> {
+    warnDeprecatedRollMethod(
+      "actor.characteristicRollImmediate(name, token, options)",
+      "actor.rollCharacteristic(name, { skipDialog: true, ...options })",
+    );
+    return await this.rollCharacteristicWithOptions(
+      this.getCharacteristicRollDefaults(characteristicName, token, { ...options }),
+    );
   }
 
   private getCharacteristicRollDefaults(
@@ -319,36 +409,119 @@ export class RqgActor extends Actor {
   }
 
   /**
-   * Open an ability roll dialog for reputation   */
-  public async reputationRoll(token?: TokenDocument | null): Promise<void> {
-    await new AbilityRollDialogV2(this.createReputationFakeItem(token), token).render({
-      force: true,
-    });
+   * Cast a spirit or rune magic spell with this actor as the caster - part of the public API. The
+   * spell may belong to someone else: an Allied Spirit, a bound spirit or a matrix. Opens the cast
+   * dialog, or with `skipDialog` casts at once and returns the roll (undefined if the cast was
+   * stopped).
+   */
+  public async castSpell(
+    spell: SpellItem,
+    options: SpellCastOptions = {},
+  ): Promise<SpiritMagicRoll | RuneMagicRoll | undefined> {
+    assertDocumentSubType<SpellItem>(spell, spellItemTypes);
+    return await spell.system.cast(this, options);
   }
 
   /**
-   * Do a reputation (ability) Roll
+   * Roll the actor's Reputation - part of the public API. Opens the roll dialog, or with
+   * `skipDialog` rolls at once and returns the roll (undefined if a `rqg.preReputationRoll` hook
+   * cancelled it).
    */
-  public async reputationRollImmediate(
-    token?: TokenDocument | null,
-    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
-  ): Promise<AbilityRoll> {
-    const reputationItem = this.createReputationFakeItem(token);
-    const speaker = getSpeakerCompat({ actor: this, token });
+  public async rollReputation(options: RollMethodOptions = {}): Promise<AbilityRoll | undefined> {
+    if (!options.skipDialog) {
+      await new AbilityRollDialogV2(this.createReputationFakeItem(options.token), options.token, {
+        modifiers: options.modifiers,
+      }).render({ force: true });
+      return undefined;
+    }
+    return await this.rollReputationWithOptions(
+      this.getReputationRollDefaults(options.token, {
+        modifiers: [...(options.modifiers ?? [])],
+        rollMode: options.rollMode,
+      }),
+    );
+  }
 
-    const combinedOptions = foundry.utils.mergeObject(
+  /**
+   * The options `rollReputation` would roll with and what the `rqg.prepareReputationRoll` hook
+   * made of them.
+   */
+  public prepareReputationRoll(options: RollMethodOptions): {
+    options: AbilityRollOptions;
+    preparation: RollPreparation;
+  } {
+    const rollOptions = this.getReputationRollDefaults(options.token, {
+      modifiers: [...(options.modifiers ?? [])],
+      rollMode: options.rollMode,
+    });
+    return { options: rollOptions, preparation: this.runPrepareReputationHook(rollOptions) };
+  }
+
+  private runPrepareReputationHook(options: AbilityRollOptions): RollPreparation {
+    options.modifiers ??= [];
+    const preparation: RollPreparation = {};
+    callRqgHook("rqg.prepareReputationRoll", this, options, preparation);
+    return preparation;
+  }
+
+  /** Reputation roll options; what `options` already sets is kept. */
+  private getReputationRollDefaults(
+    token: TokenDocument | null | undefined,
+    options: Partial<AbilityRollOptions>,
+  ): AbilityRollOptions {
+    const reputationItem = this.createReputationFakeItem(token);
+    return foundry.utils.mergeObject(
       options,
       {
         naturalSkill: reputationItem.system.chance,
         modifiers: [],
         abilityName: reputationItem.name ?? undefined,
         abilityImg: reputationItem.img ?? undefined,
-        speaker: speaker,
+        speaker: getSpeakerCompat({ actor: this, token }),
       },
       { overwrite: false },
-    );
+    ) as AbilityRollOptions;
+  }
 
-    return await AbilityRoll.rollAndShow(combinedOptions);
+  /**
+   * Runs the `rqg.prepareReputationRoll`, `rqg.preReputationRoll` and `rqg.reputationRoll` hooks
+   * and rolls. Undefined when a hook forbade or cancelled the roll.
+   */
+  private async rollReputationWithOptions(
+    options: AbilityRollOptions,
+  ): Promise<AbilityRoll | undefined> {
+    if (isForbidden(this.runPrepareReputationHook(options))) {
+      return undefined;
+    }
+    if (!callRqgPreHook("rqg.preReputationRoll", this, options)) {
+      return undefined;
+    }
+    const reputationRoll = await AbilityRoll.rollAndShow(options);
+    if (reputationRoll.successLevel == null) {
+      logger.throw(ERR.rollHasNoSuccessLevel, { roll: "ReputationRoll", reputationRoll });
+    }
+    callRqgHook("rqg.reputationRoll", this, reputationRoll, options);
+    return reputationRoll;
+  }
+
+  /** @deprecated since 6.2.0, use `actor.rollReputation({ token })`. */
+  public async reputationRoll(token?: TokenDocument | null): Promise<void> {
+    warnDeprecatedRollMethod("actor.reputationRoll(token)", "actor.rollReputation({ token })");
+    await this.rollReputation({ token });
+  }
+
+  /** @deprecated since 6.2.0, use `actor.rollReputation({ skipDialog: true })`. */
+  public async reputationRollImmediate(
+    token?: TokenDocument | null,
+    options: Omit<AbilityRollOptions, "naturalSkill"> = {},
+  ): Promise<AbilityRoll | undefined> {
+    warnDeprecatedRollMethod(
+      "actor.reputationRollImmediate(token, options)",
+      "actor.rollReputation({ skipDialog: true, ...options })",
+    );
+    return await this.rollReputationWithOptions(
+      this.getReputationRollDefaults(token, { ...options }),
+    );
   }
 
   private createReputationFakeItem(token?: TokenDocument | null): PartialAbilityItem {

@@ -26,7 +26,7 @@ export const passionMenuOptions = (
       const itemId = getRequiredDomDataset(el, "item-id");
       const item = actor.items.get(itemId) as PassionItem | undefined;
       assertDocumentSubType<PassionItem>(item, ItemTypeEnum.Passion);
-      await item.abilityRoll(token);
+      await item.roll({ token });
     },
   },
   {
@@ -45,7 +45,7 @@ export const passionMenuOptions = (
         ui.notifications?.error(msg);
         throw new RqgError(msg);
       }
-      await item.abilityRollImmediate({}, token);
+      await item.roll({ skipDialog: true, token });
     },
   },
   {

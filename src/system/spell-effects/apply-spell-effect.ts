@@ -92,6 +92,7 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
             level: spell.level ?? 0,
             incompatibleSpellRqids: linkedRqids(effect.system.incompatibleSpellRqidLinks),
             cancelsSpellRqids: linkedRqids(effect.system.cancelsSpellRqidLinks),
+            supersedesSpellRqids: linkedRqids(effect.system.supersedesSpellRqidLinks),
             expired: !!effect.duration?.expired,
           },
         ]
@@ -167,6 +168,7 @@ export async function applySpellEffect(
     level: cast.level,
     incompatibleSpellRqids: linkedRqids((template.system as any).incompatibleSpellRqidLinks),
     cancelsSpellRqids: linkedRqids((template.system as any).cancelsSpellRqidLinks),
+    supersedesSpellRqids: linkedRqids((template.system as any).supersedesSpellRqidLinks),
   };
   const stackingRule = game.settings?.get(systemId, "spellStackingRule") ?? "strongestTakesEffect";
   const stackingOn = (doc: RqgActor | RqgItem) =>

@@ -1,3 +1,4 @@
+import { warnDeprecated } from "../system/deprecation";
 import { RqidLink } from "../data-model/shared/rqid-link";
 import {
   getDomDataset,
@@ -336,6 +337,10 @@ export class RqgItemSheet<
   }
 
   protected override async _renderOuter(): Promise<JQuery<HTMLElement>> {
+    warnDeprecated("The AppV1 item sheet", "the default item sheet", {
+      since: "6.2.0",
+      until: "6.3.0",
+    });
     const html = await super._renderOuter();
     // Cast to compatible document sheet type for rqid link functionality
     await addRqidLinkToSheetJQuery(html, this as unknown as DocumentSheet);

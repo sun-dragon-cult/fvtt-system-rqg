@@ -7,7 +7,7 @@ import { chooseWounds } from "../../items/hit-location-item/hit-location-heal-wo
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
-import { castStrength, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
+import { castPoints, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
 import * as query from "./api-query";
 import * as rolls from "./api-rolls";
@@ -27,14 +27,14 @@ export function createRqgApi() {
       attack: rolls.attack,
       spiritMagic: rolls.spiritMagic,
       runeMagic: rolls.runeMagic,
+      /** Compare with `roll.successLevel`, lower is better. */
+      SuccessLevel: AbilitySuccessLevelEnum,
     },
     query: {
       abilities: query.abilities,
       weaponUsages: query.weaponUsages,
       spells: query.spells,
     },
-    /** Compare with `roll.successLevel`, lower is better. */
-    SuccessLevel: AbilitySuccessLevelEnum,
     migration: {
       applyWorldMigrations: applyDefaultWorldMigrations,
       openDataModelRepairDialog,
@@ -67,7 +67,7 @@ export function createRqgApi() {
     spellEffects: {
       list: listSpellEffects,
       removeSpellEffects,
-      castStrength,
+      castPoints,
       effectRemovalCost,
       summon,
     },

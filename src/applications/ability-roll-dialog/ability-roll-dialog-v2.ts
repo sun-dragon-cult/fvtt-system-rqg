@@ -5,7 +5,6 @@ import type {
   AbilityRollDialogFormData,
   PartialAbilityItem,
 } from "./ability-roll-dialog-data.types";
-import { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
 import type { AbilityRollOptions, Modifier } from "../../rolls/ability-roll/ability-roll.types";
 import {
   getSpeakerDisplayName,
@@ -27,6 +26,12 @@ import {
   getSelectedRollMode,
 } from "../app-parts/roll-mode";
 import { RqgInteractiveRollApplicationBase } from "../app-parts/rqg-interactive-roll-application-base";
+import {
+  type PreparedRoll,
+  preparedModifierTotal,
+  preparedRoll,
+} from "../../rolls/roll-preparation";
+import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepared-roll-view";
 
 const logger = new RqgLogger("AbilityRollDialogV2");
 
@@ -45,8 +50,44 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
         this.initialModifiers.reduce((acc: number, mod) => acc + Number(mod?.value ?? 0), 0) +
         Number(formData.augmentModifier ?? 0) +
         Number(formData.meditateModifier ?? 0) +
-        Number(formData.otherModifier ?? 0),
+        Number(formData.otherModifier ?? 0) +
+        preparedModifierTotal(this.prepared),
     );
+  }
+
+  /** The modifiers the roll gets from the dialog. */
+  private static formModifiers(
+    formData: AbilityRollDialogFormData,
+    initialModifiers: Modifier[],
+  ): Modifier[] {
+    return [
+      ...initialModifiers,
+      {
+        value: Number(formData.augmentModifier),
+        description: localize("RQG.Roll.Common.Augment"),
+      },
+      {
+        value: Number(formData.meditateModifier),
+        description: localize("RQG.Roll.Common.Meditate"),
+      },
+      {
+        value: Number(formData.otherModifier),
+        description: normalizeOtherModifierDescriptionForRoll(formData.otherModifierDescription),
+      },
+    ];
+  }
+
+  /** What the prepare hook makes of the roll as the form stands. */
+  private prepareRoll(formData: AbilityRollDialogFormData): PreparedRoll | undefined {
+    const modifiers = AbilityRollDialogV2.formModifiers(formData, this.initialModifiers);
+    const methodOptions = { token: this.token, modifiers };
+    const prepared =
+      this.abilityItem instanceof RqgItem
+        ? (this.abilityItem as AbilityItem).system.prepareRoll(methodOptions)
+        : this.abilityItem.parent?.prepareReputationRoll(methodOptions);
+    return prepared
+      ? preparedRoll(prepared.options.modifiers, modifiers.length, prepared.preparation)
+      : undefined;
   }
 
   private static getChanceBreakdownTooltip(
@@ -179,6 +220,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
         : this.abilityItem.parent
           ? getSpeakerCompat({ actor: this.abilityItem.parent, token: this.token })
           : getSpeakerFromItem(this.abilityItem);
+    this.prepared = this.prepareRoll(formData);
     return {
       formData: formData,
       speakerName: getSpeakerDisplayName(speaker),
@@ -212,8 +254,11 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
             value: Number(formData.otherModifier ?? 0),
             description: formData.otherModifierDescription,
           },
+          ...(this.prepared?.modifiers ?? []),
         ],
       ),
+      preparedModifiersHtml: preparedModifiersHtml(this.prepared),
+      preparedForbiddenHtml: preparedForbiddenHtml(this.prepared),
       rollMode: this.rollMode,
       rollModes: getConfiguredRollModeOptions(),
     };
@@ -230,6 +275,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const formData = new foundry.applications.ux.FormDataExtended(this.element, {})
       .object as AbilityRollDialogFormData;
+    this.updatePreparedRoll(this.prepareRoll(formData));
     const totalChance = this.computeTotalChance(formData);
     totalChanceElement.textContent = `${totalChance}%`;
 
@@ -254,6 +300,7 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
             value: Number(formData.otherModifier ?? 0),
             description: formData.otherModifierDescription,
           },
+          ...(this.prepared?.modifiers ?? []),
         ],
       );
     }
@@ -294,40 +341,20 @@ export class AbilityRollDialogV2 extends RqgInteractiveRollApplicationBase {
       return;
     }
 
-    const options: AbilityRollOptions = {
-      naturalSkill: abilityItem?.system.chance ?? 0,
-      modifiers: [
-        ...initialModifiers,
-        {
-          value: Number(formDataObject.augmentModifier),
-          description: localize("RQG.Roll.Common.Augment"),
-        },
-        {
-          value: Number(formDataObject.meditateModifier),
-          description: localize("RQG.Roll.Common.Meditate"),
-        },
-        {
-          value: Number(formDataObject.otherModifier),
-          description: normalizeOtherModifierDescriptionForRoll(
-            formDataObject.otherModifierDescription,
-          ),
-        },
-      ],
-      abilityName: abilityItem?.name ?? undefined,
-      abilityType: (abilityItem as any)?.type ?? undefined,
-      abilityImg: abilityItem?.img ?? undefined,
-      speaker: actor ? getSpeakerCompat({ actor, token }) : getSpeakerFromItem(abilityItem),
+    const options = {
+      skipDialog: true,
+      token,
+      modifiers: AbilityRollDialogV2.formModifiers(formDataObject, initialModifiers),
       rollMode: rollMode,
     };
 
     if (abilityItem instanceof RqgItem) {
-      await abilityItem.abilityRollImmediate(options, token);
+      await abilityItem.roll(options);
+    } else if (actor) {
+      // Reputation isn't an item
+      await actor.rollReputation(options);
     } else {
-      // Bypasses item.abilityRollImmediate to make reputation rolls work (they are not an item)
-      const roll = await AbilityRoll.rollAndShow(options);
-      if (roll.successLevel == null) {
-        logger.throw(ERR.rollHasNoSuccessLevel, { roll: "AbilityRoll" }, roll, options);
-      }
+      logger.throw(ERR.noAbilityItemToRoll);
     }
   }
 }

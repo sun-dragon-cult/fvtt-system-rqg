@@ -1,0 +1,18 @@
+{{!-- Below the roll of a skill with a behavior; reuses the spell cast target row styles. --}}
+<div class="rqg chat-card">
+  <ul class="spell-cast-targets">
+    {{#each targets}}
+      <li class="spell-cast-target" data-target-uuid="{{uuid}}">
+        <div class="spell-cast-target-summary">
+          <span class="spell-cast-target-name">{{name}}</span>
+          {{#if applied}}
+            <span class="spell-cast-applied">{{localize "RQG.ChatMessage.SkillBehavior.Done"}}</span>
+          {{else if canApply}}
+            <button type="button" class="spell-cast-apply"
+                    data-apply-skill-behavior>{{localize "RQG.ChatMessage.SkillBehavior.Apply"}}</button>
+          {{/if}}
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+</div>
