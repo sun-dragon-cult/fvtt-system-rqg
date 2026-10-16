@@ -47,6 +47,10 @@ export interface ResistanceRequestDataSourceData {
   spellUuid: string;
   /** A hidden cast's whispered spellCast message, whose outcome this card settles; "" otherwise. */
   spellCastMessageId: string;
+  /** The request whose target reflected this spell back at its caster; "" when not reflected. */
+  reflectedFromMessageId: string;
+  /** Who reflected it; "" when not reflected. */
+  reflectedByName: string;
   /** The caster, exempt from that concealment even if they also own the target. */
   spellCasterUuid: string;
   /** Whether the outcome should be phrased as the spell taking effect. */
