@@ -1,11 +1,7 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { localize } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import {
-  isSpiritCombatGate,
-  SpellResistedByEnum,
-  type SpellResistedWithEnum,
-} from "../item-data/spell";
+import { isSpiritCombatGate, SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
 import {
   canChooseSpellCastRollMode,
   getDefaultRollMode,
@@ -14,7 +10,12 @@ import {
 import type { SpiritMagicRoll } from "../../rolls/spirit-magic-roll/spirit-magic-roll";
 import type { RuneMagicRoll } from "../../rolls/rune-magic-roll/rune-magic-roll";
 import { templatePaths } from "../../system/load-handlebars-templates";
-import { buildCastTargetOutcomes, type SpellCastTarget } from "./spell-cast-outcome";
+import {
+  areaResistanceThreshold,
+  buildCastTargetOutcomes,
+  type AreaResistance,
+  type SpellCastTarget,
+} from "./spell-cast-outcome";
 
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
 export type ResistedSpellTarget = {
@@ -93,7 +94,7 @@ export async function resolveResistedSpellCastTarget(
 }
 
 /**
- * Posts the cast roll to chat, in one of four shapes:
+ * Posts the cast roll to chat, in one of five shapes:
  *
  * - unresisted, failed or self-cast: a `spellCast` message carrying the roll and its outcome;
  * - resisted and open: one combined card carrying the cast roll, the target's Resist/Accept and
@@ -106,8 +107,11 @@ export async function resolveResistedSpellCastTarget(
  * - resisted per target: the `spellCast` message, plus one request card per target linked back to
  *   it, as for a hidden cast. An open cast's requests name the caster, whose card names the spell.
  *
- * The area and spirit-combat modes leave their targets pending for a GM ruling on the cast card,
- * which `settleSpellCastTarget` records.
+ * - resisted by area: the `spellCast` message, its targets settled at once by one resistance roll
+ *   the caster makes, which the card reads as the highest value it overcomes.
+ *
+ * The spirit-combat modes leave their targets pending for a GM ruling on the cast card, which
+ * `settleSpellCastTarget` records.
  */
 export async function postSpellCastResult(params: {
   target: ResistedSpellTarget;
@@ -139,12 +143,20 @@ export async function postSpellCastResult(params: {
         : [];
 
   const casterUuid = casterToken?.uuid ?? casterActor.uuid ?? "";
+  const areaResistance =
+    resistedBy === SpellResistedByEnum.ResistanceRollArea && castSucceeded && target.targets.length
+      ? await rollAreaResistance(casterUuid, resistedWith, target.targets, castRollMode)
+      : undefined;
   const postCastMessage = async () =>
     castRoll.postToChat({
       type: "spellCast",
       content: await foundry.applications.handlebars.renderTemplate(
         templatePaths.spellCastChatMessage,
-        {},
+        {
+          areaResistanceText: areaResistance
+            ? areaResistanceText(areaResistance, resistedWith)
+            : "",
+        },
       ),
       system: {
         spellUuid: spellUuid,
@@ -156,6 +168,7 @@ export async function postSpellCastResult(params: {
           resistedBy: resistedBy,
           targets: target.targets,
           casterTokenOrActorUuid: casterUuid,
+          areaResistance: areaResistance,
         }),
       },
     });
@@ -209,4 +222,52 @@ export async function postSpellCastResult(params: {
       spellCastMessageId: castMessage?.id ?? undefined,
     });
   }
+}
+
+/** The single resistance roll of an area spell, and what the caster and each target put up. */
+async function rollAreaResistance(
+  casterUuid: string,
+  resistedWith: SpellResistedWithEnum,
+  targets: SpellCastTarget[],
+  rollMode: foundry.dice.Roll.Mode,
+): Promise<AreaResistance> {
+  // Dynamic import to avoid a circular dependency through rqgItem.ts.
+  const { resolveActorFromUuid, resolveCharacteristicValue } =
+    await import("../../applications/resistance-roll-dialog/resistance-roll-shared");
+  const roll = await new foundry.dice.Roll("1d100").evaluate();
+  if (!isHiddenRollMode(rollMode)) {
+    await game.dice3d?.showForRoll(roll, game.user, true, null, false);
+  }
+  const casterActor = resolveActorFromUuid(casterUuid);
+  const targetValues: Record<string, number> = {};
+  for (const target of targets) {
+    const actor = resolveActorFromUuid(target.tokenUuid);
+    if (actor) {
+      targetValues[target.tokenUuid] = resolveCharacteristicValue(actor, resistedWith);
+    }
+  }
+  return {
+    roll: roll.total ?? 100,
+    casterValue: casterActor ? resolveCharacteristicValue(casterActor, "power") : 0,
+    targetValues: targetValues,
+  };
+}
+
+function areaResistanceText(area: AreaResistance, resistedWith: SpellResistedWithEnum): string {
+  const threshold = areaResistanceThreshold(area.casterValue, area.roll);
+  const key =
+    threshold === "all"
+      ? "RQG.ChatMessage.SpellCast.AreaResistance.AffectsAll"
+      : threshold === "none"
+        ? "RQG.ChatMessage.SpellCast.AreaResistance.AffectsNone"
+        : "RQG.ChatMessage.SpellCast.AreaResistance.AffectsUpTo";
+  return localize(key, {
+    roll: String(area.roll),
+    value: typeof threshold === "number" ? String(threshold) : "",
+    stat: localize(
+      resistedWith === SpellResistedWithEnum.MagicPoints
+        ? "RQG.Actor.Attributes.MagicPoints"
+        : "RQG.Actor.Characteristics.power",
+    ),
+  });
 }
