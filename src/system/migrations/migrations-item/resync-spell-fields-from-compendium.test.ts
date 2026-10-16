@@ -18,6 +18,7 @@ const spell = (
       targetKind: "none",
       effectTier: "none",
       resistedBy: "none",
+      resistedWith: "power",
       ...system,
     },
     flags: rqid ? { rqg: { documentRqidFlags: { id: rqid, lang } } } : {},
@@ -51,13 +52,14 @@ describe("resyncSpellFieldsFromCompendium", () => {
   });
   afterEach(() => vi.restoreAllMocks());
 
-  it("fills an unset link, target kind, effect tier and resistedBy from the compendium spell", async () => {
+  it("fills an unset link, target kind, effect tier, resistedBy and resistedWith from the compendium spell", async () => {
     const lookup = packsContain(
       compendium("i.spirit-magic.fill-all", {
         effectRqidLink: { rqid: "ae..fill-all", name: "Fill All" },
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
+        resistedWith: "magicPoints",
       }),
     );
 
@@ -67,6 +69,7 @@ describe("resyncSpellFieldsFromCompendium", () => {
         targetKind: "weapon",
         effectTier: "effect",
         resistedBy: "resistanceRoll",
+        resistedWith: "magicPoints",
       },
     });
     expect(lookup).toHaveBeenCalledWith(expect.any(RegExp), "i", "en", {

@@ -5,6 +5,7 @@ import {
   SpellEffectTierEnum,
   SpellRangeEnum,
   SpellResistedByEnum,
+  SpellResistedWithEnum,
   SpellTargetKindEnum,
 } from "@item-model/spell.ts";
 import { systemId } from "../../system/config";
@@ -16,6 +17,7 @@ interface SpiritMagicSheetContext extends RqgItemSheetContext {
   durationOptions: SelectOptionData<SpellDurationEnum>[];
   concentrationOptions: SelectOptionData<SpellConcentrationEnum>[];
   resistedByOptions: SelectOptionData<SpellResistedByEnum>[];
+  resistedWithOptions: SelectOptionData<SpellResistedWithEnum>[];
   targetKindOptions: SelectOptionData<SpellTargetKindEnum>[];
   effectTierOptions: SelectOptionData<SpellEffectTierEnum>[];
 }
@@ -70,6 +72,10 @@ export class SpiritMagicSheetV2 extends RqgItemSheetV2 {
       resistedByOptions: Object.values(SpellResistedByEnum).map((value) => ({
         value: value,
         label: "RQG.Item.Spell.ResistedByEnum." + value,
+      })),
+      resistedWithOptions: Object.values(SpellResistedWithEnum).map((value) => ({
+        value: value,
+        label: "RQG.Item.Spell.ResistedWithEnum." + value,
       })),
       targetKindOptions: Object.values(SpellTargetKindEnum).map((value) => ({
         value: value,

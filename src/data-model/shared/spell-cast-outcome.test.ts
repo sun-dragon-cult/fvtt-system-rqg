@@ -42,12 +42,16 @@ describe("buildCastTargetOutcomes", () => {
     });
   });
 
-  it.each([SpellResistedByEnum.ResistanceRollArea, SpellResistedByEnum.ResistanceRollPerTarget])(
-    "records no targets for an untargeted %s cast, rather than hitting the caster",
-    (mode) => {
-      expect(build(Success, mode, [])).toEqual([]);
-    },
-  );
+  it("records no targets for an untargeted resistanceRollArea cast, rather than hitting the caster", () => {
+    expect(build(Success, SpellResistedByEnum.ResistanceRollArea, [])).toEqual([]);
+  });
+
+  it("defaults to the caster for a resistanceRollPerTarget spell, whose caster confirmed the self cast", () => {
+    expect(build(Success, SpellResistedByEnum.ResistanceRollPerTarget, [])[0]).toMatchObject({
+      targetTokenOrActorUuid: caster,
+      resolvedBy: "selfCast",
+    });
+  });
 
   it.each([SpellResistedByEnum.SpiritCombatRound, SpellResistedByEnum.SpiritCombatDefeat])(
     "leaves an untargeted %s cast's opponent pending, for the GM to rule on",

@@ -1235,11 +1235,16 @@
         "Ritual": "Ritual",
         "Enchantment": "Enchantment",
         "ResistedBy": "Resisted By",
+        "ResistedWith": "Resisted With",
+        "ResistedWithEnum": {
+          "power": "POW",
+          "magicPoints": "Current magic points"
+        },
         "ResistedByEnum": {
           "none": "None",
           "resistanceRoll": "Resistance roll (single target)",
           "resistanceRollArea": "Resistance roll, whole area (not yet automated)",
-          "resistanceRollPerTarget": "Resistance roll, per target (not yet automated)",
+          "resistanceRollPerTarget": "Resistance roll, per target",
           "spiritCombatRound": "Spirit combat, one round (GM rules on the cast card)",
           "spiritCombatDefeat": "Spirit combat, until defeated (GM rules on the cast card)"
         },
