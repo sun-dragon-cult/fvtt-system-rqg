@@ -21,7 +21,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellApply } from "./run-spell-apply";
-import { spellBehaviourOf } from "./spell-behaviour";
+import { spellBehaviorOf } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
@@ -40,8 +40,8 @@ export type SpellEffectApplied =
   | { outcome: "resolved" };
 
 /**
- * The scope a spell behaviour's `apply` runs with - part of the public API. It runs on the client
- * of whoever clicked Apply (the target's owner), or the active GM's when the behaviour is
+ * The scope a spell behavior's `apply` runs with - part of the public API. It runs on the client
+ * of whoever clicked Apply (the target's owner), or the active GM's when the behavior is
  * `runAsGm`, and returns a SpellEffectApplied; "resolved" means it did its work without leaving an
  * effect.
  */
@@ -137,7 +137,7 @@ function temporalDuration(spell: RqgItem): SpellEffectDuration | undefined {
 
 /**
  * Attach a copy of a spell's Active Effect template to the target - the only thing that creates a
- * spell effect, so every one carries its provenance. A spell whose behaviour has `apply` runs that
+ * spell effect, so every one carries its provenance. A spell whose behavior has `apply` runs that
  * instead and returns what it returns. Warns and returns undefined when the spell has
  * no template or the target has nothing it can attach to, and returns "blocked" when the same or an
  * incompatible spell already there keeps it from taking effect, or when it cancels one. Run on a client that owns the target.
@@ -150,10 +150,10 @@ export async function applySpellEffect(
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
-  const behaviour = spellBehaviourOf(spell);
-  const apply = behaviour?.apply;
+  const behavior = spellBehaviorOf(spell);
+  const apply = behavior?.apply;
   if (apply) {
-    return runSpellApply({ ...behaviour, apply }, scope);
+    return runSpellApply({ ...behavior, apply }, scope);
   }
   const effectRqid = resolveSpellEffectRqid(spell as any);
   const template = effectRqid ? await Rqid.fromRqid(effectRqid) : undefined;

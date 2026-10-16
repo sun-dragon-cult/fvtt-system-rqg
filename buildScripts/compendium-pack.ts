@@ -182,7 +182,7 @@ export class CompendiumPack {
    * Create a translated clone of this template CompendiumPack by replacing `${{key}}$` with the translations for that key & lang
    */
   translate(lang: string): CompendiumPack {
-    // Include the filename in path to match the behaviour in starter set
+    // Include the filename in path to match the behavior in starter set
     const localisedData = doTranslation(lang, this.data);
 
     // clone this CompendiumPack

@@ -7,14 +7,14 @@ import {
   type SpellEffectCast,
   type SpellApplyScope,
 } from "./apply-spell-effect";
-import { spellBehaviourOf, type SpellBehaviour } from "./spell-behaviour";
+import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 import { RqgLogger } from "../logging/rqg-logger";
 
 const logger = new RqgLogger("run-spell-apply");
 
-/** What a player's client sends the GM to run a spell behaviour's `apply` that is `runAsGm`. */
-export type ApplySpellBehaviourQueryData = {
+/** What a player's client sends the GM to run a spell behavior's `apply` that is `runAsGm`. */
+export type ApplySpellBehaviorQueryData = {
   spellUuid: string;
   targetActorUuid: string;
   targetName: string;
@@ -22,17 +22,17 @@ export type ApplySpellBehaviourQueryData = {
 };
 
 /**
- * Run a spell behaviour's `apply` once the target's protective spells let the spell through, on
+ * Run a spell behavior's `apply` once the target's protective spells let the spell through, on
  * the active GM's client when it is `runAsGm`. Checks for that GM first, so protective spells
  * aren't used up by an Apply that can't run.
  */
 export async function runSpellApply(
-  behaviour: SpellBehaviour & Required<Pick<SpellBehaviour, "apply">>,
+  behavior: SpellBehavior & Required<Pick<SpellBehavior, "apply">>,
   scope: SpellApplyScope,
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = scope.spell.name ?? "";
-  const gm = behaviour.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
-  if (behaviour.runAsGm && !game.user?.isGM && !gm) {
+  const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
+  if (behavior.runAsGm && !game.user?.isGM && !gm) {
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }));
     return undefined;
   }
@@ -41,16 +41,16 @@ export async function runSpellApply(
     return intercepted;
   }
   if (!gm) {
-    return behaviour.apply(scope);
+    return behavior.apply(scope);
   }
-  const queryData: ApplySpellBehaviourQueryData = {
+  const queryData: ApplySpellBehaviorQueryData = {
     spellUuid: scope.spell.uuid ?? "",
     targetActorUuid: scope.targetActor.uuid ?? "",
     targetName: scope.targetName,
     cast: scope.cast,
   };
   try {
-    return (await gm.query("rqg.applySpellBehaviour", queryData)) as SpellEffectApplied | undefined;
+    return (await gm.query("rqg.applySpellBehavior", queryData)) as SpellEffectApplied | undefined;
   } catch (error) {
     logger.warn(
       localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }),
@@ -61,8 +61,8 @@ export async function runSpellApply(
   }
 }
 
-async function handleApplySpellBehaviourQuery(
-  data: ApplySpellBehaviourQueryData,
+async function handleApplySpellBehaviorQuery(
+  data: ApplySpellBehaviorQueryData,
 ): Promise<SpellEffectApplied | undefined> {
   const [spell, targetActor] = await Promise.all([
     fromUuid(data.spellUuid),
@@ -71,15 +71,15 @@ async function handleApplySpellBehaviourQuery(
   if (!spell || !targetActor) {
     return undefined;
   }
-  const behaviour = spellBehaviourOf(spell as RqgItem);
-  if (!behaviour?.runAsGm || !behaviour.apply) {
+  const behavior = spellBehaviorOf(spell as RqgItem);
+  if (!behavior?.runAsGm || !behavior.apply) {
     return undefined;
   }
-  return behaviour.apply(
+  return behavior.apply(
     spellApplyScope(spell as RqgItem, targetActor as RqgActor, data.targetName, data.cast),
   );
 }
 
-export function initApplySpellBehaviourQuery(): void {
-  CONFIG.queries["rqg.applySpellBehaviour"] = handleApplySpellBehaviourQuery;
+export function initApplySpellBehaviorQuery(): void {
+  CONFIG.queries["rqg.applySpellBehavior"] = handleApplySpellBehaviorQuery;
 }

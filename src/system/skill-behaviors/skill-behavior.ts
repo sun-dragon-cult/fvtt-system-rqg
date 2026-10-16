@@ -5,8 +5,8 @@ import { callRqgHook } from "../fvtt-type-compat";
 import {
   guardModuleCall,
   pickRegistration,
-  type SpellBehaviourSource,
-} from "../spell-effects/spell-behaviour";
+  type SpellBehaviorSource,
+} from "../spell-effects/spell-behavior";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
 import type { AbilityRoll } from "../../rolls/ability-roll/ability-roll";
@@ -38,7 +38,7 @@ export type SkillBehavior = {
   successLevels?: readonly AbilitySuccessLevelEnum[];
 };
 
-export type SkillBehaviorSource = SpellBehaviourSource;
+export type SkillBehaviorSource = SpellBehaviorSource;
 
 /** What modules get from the `rqg.registerSkillBehaviors` hook. */
 export type SkillBehaviorRegistry = {

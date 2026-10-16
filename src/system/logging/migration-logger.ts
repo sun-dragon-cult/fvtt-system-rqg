@@ -77,7 +77,7 @@ export class MigrationLogger extends RqgLogger {
 
   // Widens `error`'s string overload to accept MigrationLogOptions (documents/changes/etc.) —
   // pure passthrough, kept in sync with the base's overload set only for typing. The actual
-  // behaviour (notify-suppression, report capture) lives solely in reportStringError below;
+  // behavior (notify-suppression, report capture) lives solely in reportStringError below;
   // coded registry errors (logger.error(ERR.x, ...)) aren't part of migration reporting and
   // fall straight through to the base logger.
   override error(entry: RqgErrorEntry, ...debugData: unknown[]): void;

@@ -1270,7 +1270,7 @@
           "none": "None - nothing to automate",
           "reminder": "Reminder - an effect with no changes, it shows the spell is active",
           "effect": "Effect - an effect that changes values",
-          "behaviour": "Behaviour - code registered by a module"
+          "behavior": "Behavior - code registered by a module"
         },
         "DurationEnum": {
           "undefined": "None",
@@ -1651,7 +1651,7 @@
         "ReferencedActorMissing": "This action refers to an actor or token that no longer exists.",
         "TokenHasNoActor": "This token has no actor associated with it.",
         "NoHitLocationForRoll": "The actor has no hit location matching the hit location roll.",
-        "SpellBehaviourFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it.",
+        "SpellBehaviorFailed": "The code for {spellName} failed, so the spell went on without it. Check the console and the module that registered it.",
         "SkillBehaviorFailed": "The code for {skillName} failed. Check the console and the module that registered it."
       },
       "Warn": {
