@@ -37,9 +37,9 @@ import { RqgCombatant } from "./combat/rqg-combatant";
 import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
 import { initSpelledProjectiles } from "./items/weapon-item/spelled-projectile";
-import { initApplySpellBehaviourQuery } from "./system/spell-effects/run-spell-apply";
+import { initApplySpellBehaviorQuery } from "./system/spell-effects/run-spell-apply";
 import { initSpellEnd } from "./system/spell-effects/spell-end";
-import { initSpellBehaviours } from "./system/spell-effects/spell-behaviour";
+import { initSpellBehaviors } from "./system/spell-effects/spell-behavior";
 import { initSpellRollEntries } from "./system/spell-effects/spell-roll-entries";
 import { initSkillBehaviors } from "./system/skill-behaviors/skill-behavior";
 
@@ -110,10 +110,10 @@ Hooks.once("init", () => {
   RqgDotPickerElement.register();
   initCharacterPassiveRecovery();
   initSpelledProjectiles();
-  initSpellBehaviours();
+  initSpellBehaviors();
   initSpellRollEntries();
   initSkillBehaviors();
-  initApplySpellBehaviourQuery();
+  initApplySpellBehaviorQuery();
   initSpellEnd();
   RqgItem.init();
   RqgHotbar.init();

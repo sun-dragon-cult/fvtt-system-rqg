@@ -16,9 +16,9 @@ import type { TokenRulerSettingsType } from "./applications/settings/token-ruler
 import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
 import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
-import type { ApplySpellBehaviourQueryData } from "./system/spell-effects/run-spell-apply.ts";
+import type { ApplySpellBehaviorQueryData } from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
-import type { SpellBehaviourRegistry } from "./system/spell-effects/spell-behaviour.ts";
+import type { SpellBehaviorRegistry } from "./system/spell-effects/spell-behavior.ts";
 import type { SkillBehaviorRegistry } from "./system/skill-behaviors/skill-behavior.ts";
 import type { AbilityItem } from "@item-model/item-types.ts";
 import type { SpellItem } from "@item-model/spell.ts";
@@ -87,8 +87,8 @@ declare global {
 
   /** The system's own hooks, called through callRqgHook - part of the public API. */
   interface RqgHooks {
-    /** Fired at `setup`: modules register their spell behaviours. */
-    "rqg.registerSpellBehaviours": (registry: SpellBehaviourRegistry) => void;
+    /** Fired at `setup`: modules register their spell behaviors. */
+    "rqg.registerSpellBehaviors": (registry: SpellBehaviorRegistry) => void;
     /** Fired at `setup`: modules register their skill behaviors. */
     "rqg.registerSkillBehaviors": (registry: SkillBehaviorRegistry) => void;
     /**
@@ -216,8 +216,8 @@ declare global {
 
   namespace CONFIG {
     interface Queries {
-      "rqg.applySpellBehaviour": (
-        data: ApplySpellBehaviourQueryData,
+      "rqg.applySpellBehavior": (
+        data: ApplySpellBehaviorQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
     }
 

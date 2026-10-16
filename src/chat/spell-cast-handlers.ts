@@ -5,7 +5,7 @@ import {
   getSpellCastOutcome,
   type SpellTargetOutcome,
 } from "../data-model/shared/spell-cast-outcome";
-import { canApplySpell } from "../system/spell-effects/spell-behaviour";
+import { canApplySpell } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
