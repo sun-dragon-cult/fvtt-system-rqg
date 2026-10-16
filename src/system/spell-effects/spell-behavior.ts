@@ -82,6 +82,11 @@ export type SpellBehavior = SpellRollEntries & {
   onEnd?(scope: SpellEndScope): Promise<void>;
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
   runAsGm?: boolean;
+  /**
+   * The radius around the caster, in metres, that an area spell cast at this level reaches. The
+   * cast dialog then offers to target every token in it.
+   */
+  areaRadius?(level: number): number;
 };
 
 export type SpellBehaviorSource = { lang: string; priority: number };
@@ -232,6 +237,7 @@ function guardBehavior(behavior: SpellBehavior): SpellBehavior {
     onResisted: guarded("onResisted", behavior.onResisted, (scope) => scope.effects[0]?.name ?? ""),
     onEnd: guarded("onEnd", behavior.onEnd, (scope) => scope.effect.name ?? ""),
     runAsGm: behavior.runAsGm,
+    areaRadius: behavior.areaRadius,
   };
 }
 
