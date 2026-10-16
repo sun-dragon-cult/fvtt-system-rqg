@@ -102,6 +102,15 @@ const resistanceRequestChatMessageSchema = {
     required: false,
     initial: "",
   }),
+  // The request whose target reflected this spell back at its caster; "" when not reflected.
+  reflectedFromMessageId: new StringField({
+    blank: true,
+    nullable: false,
+    required: false,
+    initial: "",
+  }),
+  // Who reflected it, for the card; "" when not reflected.
+  reflectedByName: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   // The caster, who is never concealed from - see spellHiddenFromUuid.
   spellCasterUuid: new StringField({ blank: true, nullable: false, required: false, initial: "" }),
   // Set to the target's uuid to conceal the spell's name and cast roll from them alone. Cleared

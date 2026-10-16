@@ -56,6 +56,23 @@ export type SpellApplyScope = {
 
 export type SpellEffectDuration = { value: number; units: string };
 
+/** The cast record of a spell cast with these roll options: level, and the points it spent. */
+export function spellEffectCast(
+  spell: RqgItem,
+  rollOptions: Record<string, unknown>,
+  cast: Pick<SpellEffectCast, "casterUuid" | "castMessageId" | "casterSuccessLevel">,
+): SpellEffectCast {
+  const level = Number(rollOptions["levelUsed"] ?? 0);
+  const boost = Number(rollOptions["magicPointBoost"] ?? 0);
+  const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
+  return {
+    ...cast,
+    level: level,
+    magicPointsSpent: isRuneMagic ? boost : level + boost,
+    runePointsSpent: isRuneMagic ? level : 0,
+  };
+}
+
 export function spellApplyScope(
   spell: RqgItem,
   targetActor: RqgActor,
