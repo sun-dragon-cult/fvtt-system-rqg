@@ -1,7 +1,7 @@
 import { spellBehavior } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
 import { spellProvenanceFields } from "../active-effect/data-model/rqg-active-effect-data-model";
-import type { SpellAreaScope } from "../system/spell-effects/spell-area";
+import { removeAreaEffects, type SpellAreaScope } from "../system/spell-effects/spell-area";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 
@@ -71,6 +71,10 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
     // A deleted unlinked token took its effects with it
     if (actor.isToken && !region.parent?.tokens.has(token.id ?? "")) {
       return;
+    }
+    // Leaving an area always takes its effects off, whatever the spell does besides
+    if (hook === "onAreaExit") {
+      await removeAreaEffects(actor, region.uuid ?? "");
     }
     const provenance = this.spell;
     const run = spellBehavior(provenance.spellRqid)?.[hook];

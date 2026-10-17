@@ -65,7 +65,6 @@ describe("game.system.api", () => {
           "createArea": "function",
           "effectRemovalCost": "function",
           "list": "function",
-          "removeAreaEffect": "function",
           "removeSpellEffects": "function",
           "summon": "function",
         },

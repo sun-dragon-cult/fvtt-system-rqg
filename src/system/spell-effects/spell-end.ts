@@ -7,9 +7,7 @@ import { removeSpellArea } from "./spell-area";
 function needsEnding(effect: ActiveEffect): boolean {
   return (
     !!game.users?.activeGM?.isSelf &&
-    (!!spellRqidOfEffect(effect) ||
-      !!effect.getFlag(systemId, "summoning") ||
-      !!effect.getFlag(systemId, "spellArea"))
+    (!!spellRqidOfEffect(effect) || !!effect.getFlag(systemId, "summoning"))
   );
 }
 

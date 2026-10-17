@@ -107,6 +107,27 @@ describe("spellBehavior", () => {
     vi.restoreAllMocks();
   });
 
+  it("contains a failing or malformed areaRadius: no area, rather than a broken dialog", () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    register((registry) => {
+      registry.register(
+        "i.rune-magic.throws",
+        {
+          areaRadius: () => {
+            throw new Error("x");
+          },
+        },
+        en,
+      );
+      registry.register("i.rune-magic.nonsense", { areaRadius: () => "far" as any }, en);
+      registry.register("i.rune-magic.harmony", { areaRadius: (level) => 3 * level }, en);
+    });
+    expect(spellBehavior("i.rune-magic.throws")?.areaRadius?.(1)).toBe(0);
+    expect(spellBehavior("i.rune-magic.nonsense")?.areaRadius?.(1)).toBe(0);
+    expect(spellBehavior("i.rune-magic.harmony")?.areaRadius?.(2)).toBe(6);
+    vi.restoreAllMocks();
+  });
+
   it("contains a failing or malformed apply", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     register((registry) => {

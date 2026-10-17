@@ -1,11 +1,9 @@
-import { getTargetedTokenNames, localize } from "../../system/util";
+import { getTargetedTokenNames, getTokenFromActor, localize } from "../../system/util";
 import { spellBehaviorOf } from "../../system/spell-effects/spell-behavior";
-import { RqgLogger } from "../../system/logging/rqg-logger";
 import { metersToPixels } from "../../system/spell-effects/scene-distance";
 import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 import { isSpiritCombatGate, SpellResistedByEnum } from "../../data-model/item-data/spell";
-
-const logger = new RqgLogger("spell-cast-target-note");
 
 export type SpellCastTargetNote = {
   /** Comma-joined target names, or the "nothing targeted" label. */
@@ -75,49 +73,34 @@ export function applySpellCastTargetNote(element: HTMLElement, note: SpellCastTa
   }
 }
 
-/**
- * How far around the caster an area spell cast at `level` reaches, from its behavior's
- * `areaRadius`; 0 when it has none or the module's code fails.
- */
+/** How far around the caster an area spell cast at `level` reaches, from its behavior; 0 if none. */
 export function spellAreaRadius(spell: RqgItem, level: number): number {
-  const areaRadius = spellBehaviorOf(spell)?.areaRadius;
-  if (!areaRadius) {
-    return 0;
-  }
-  try {
-    const radius = Number(areaRadius(level));
-    return Number.isFinite(radius) && radius > 0 ? radius : 0;
-  } catch (error) {
-    logger.error(
-      localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: spell.name ?? "" }),
-      undefined,
-      error,
-    );
-    return 0;
-  }
+  return spellBehaviorOf(spell)?.areaRadius?.(level) ?? 0;
 }
 
 /**
- * Target every token on the caster's scene within `radius` meters of the caster, the caster
- * included, by the scene's own grid scale.
+ * The cast dialogs' "Target everyone in range": target every token on the caster's scene within
+ * the area spell's radius at the level the dialog is set to, the caster included.
  */
-export function targetTokensWithin(casterToken: TokenDocument, radius: number): void {
-  const caster = casterToken.object;
-  if (!caster || !canvas?.ready || casterToken.parent !== canvas.scene) {
+export function targetSpellArea(
+  dialog: HTMLElement,
+  spell: RqgItem,
+  token: TokenDocument | null | undefined,
+  casterActor: RqgActor,
+): void {
+  const level = Number(dialog.querySelector<HTMLInputElement>('input[name="levelUsed"]')?.value);
+  const casterToken = token ?? (getTokenFromActor(casterActor) as TokenDocument | undefined);
+  const caster = casterToken?.object;
+  if (!caster || !canvas?.ready || !canvas.scene || casterToken.parent !== canvas.scene) {
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return;
   }
-  const radiusInPixels = metersToPixels(radius, {
-    size: canvas.grid!.size,
-    distance: canvas.grid!.distance,
-    units: canvas.scene?.grid.units,
-  });
+  const radius = metersToPixels(spellAreaRadius(spell, level || 0), canvas.scene.grid);
   // Straight-line distance between token centers
   const inRange = (canvas.tokens?.placeables ?? []).filter(
     (token) =>
       token.visible &&
-      Math.hypot(token.center.x - caster.center.x, token.center.y - caster.center.y) <=
-        radiusInPixels,
+      Math.hypot(token.center.x - caster.center.x, token.center.y - caster.center.y) <= radius,
   );
   canvas.tokens?.setTargets(
     inRange.flatMap((token) => (token.id ? [token.id] : [])),
