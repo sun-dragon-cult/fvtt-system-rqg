@@ -17,9 +17,11 @@ const existing = (
   name: `${spellRqid} (${level})`,
   spellRqid,
   level,
+  points: level,
   incompatibleSpellRqids: [],
   cancelsSpellRqids: [],
   supersedesSpellRqids: [],
+  counteractsSpellRqids: [],
   expired: false,
   ...extra,
 });
@@ -30,12 +32,15 @@ const cast = (
   incompatibleSpellRqids: string[] = [],
   cancelsSpellRqids: string[] = [],
   supersedesSpellRqids: string[] = [],
+  extra: { points?: number; counteractsSpellRqids?: string[] } = {},
 ) => ({
   spellRqid,
   level,
+  points: extra.points ?? level,
   incompatibleSpellRqids,
   cancelsSpellRqids,
   supersedesSpellRqids,
+  counteractsSpellRqids: extra.counteractsSpellRqids ?? [],
 });
 
 describe("decideSpellEffectStacking - strongest takes effect", () => {
@@ -219,5 +224,31 @@ describe("decideSpellEffectStacking - precedence", () => {
     expect(
       decideSpellEffectStacking(cast(fanaticism, 1), [berserk], "strongestTakesEffect"),
     ).toEqual({ outcome: "apply", displaced: [] });
+  });
+});
+
+describe("decideSpellEffectStacking - counteracting (Harmony, RBM p.62)", () => {
+  const harmony = "i.rune-magic.harmony";
+  const rule = "strongestTakesEffect" as const;
+  const harmonyCast = (points: number) =>
+    cast(harmony, 1, [], [], [], { points, counteractsSpellRqids: [fanaticism, demoralize] });
+
+  it("removes weaker emotion spells on the target, and leaves equal or stronger ones", () => {
+    const fanatic = existing(fanaticism, 1);
+    const demoralized = existing(demoralize, 2);
+    expect(decideSpellEffectStacking(harmonyCast(2), [fanatic, demoralized], rule)).toEqual({
+      outcome: "apply",
+      displaced: [fanatic],
+    });
+  });
+
+  it("stops a weaker emotion spell cast while it is active, but not an equal one", () => {
+    const calm = existing(harmony, 1, { points: 3, counteractsSpellRqids: [demoralize] });
+    expect(decideSpellEffectStacking(cast(demoralize, 2), [calm], rule)).toEqual({
+      outcome: "blocked",
+      reason: "counteractedActive",
+      by: calm,
+    });
+    expect(decideSpellEffectStacking(cast(demoralize, 3), [calm], rule).outcome).toBe("apply");
   });
 });

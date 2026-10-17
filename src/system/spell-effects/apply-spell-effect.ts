@@ -21,6 +21,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellApply } from "./run-spell-apply";
+import { castPoints } from "./spell-rules";
 import { spellBehaviorOf } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 
@@ -107,9 +108,11 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
             name: effect.name ?? "",
             spellRqid: spell.spellRqid ?? "",
             level: spell.level ?? 0,
+            points: castPoints(spell),
             incompatibleSpellRqids: linkedRqids(effect.system.incompatibleSpellRqidLinks),
             cancelsSpellRqids: linkedRqids(effect.system.cancelsSpellRqidLinks),
             supersedesSpellRqids: linkedRqids(effect.system.supersedesSpellRqidLinks),
+            counteractsSpellRqids: linkedRqids(effect.system.counteractsSpellRqidLinks),
             expired: !!effect.duration?.expired,
           },
         ]
@@ -183,9 +186,11 @@ export async function applySpellEffect(
   const castStacking = {
     spellRqid: spell.flags?.rqg?.documentRqidFlags?.id ?? "",
     level: cast.level,
+    points: castPoints(cast),
     incompatibleSpellRqids: linkedRqids((template.system as any).incompatibleSpellRqidLinks),
     cancelsSpellRqids: linkedRqids((template.system as any).cancelsSpellRqidLinks),
     supersedesSpellRqids: linkedRqids((template.system as any).supersedesSpellRqidLinks),
+    counteractsSpellRqids: linkedRqids((template.system as any).counteractsSpellRqidLinks),
   };
   const stackingRule = game.settings?.get(systemId, "spellStackingRule") ?? "strongestTakesEffect";
   const stackingOn = (doc: RqgActor | RqgItem) =>

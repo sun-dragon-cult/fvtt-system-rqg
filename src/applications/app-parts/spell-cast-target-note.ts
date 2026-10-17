@@ -1,5 +1,10 @@
 import { getTargetedTokenNames, localize } from "../../system/util";
+import { spellBehaviorOf } from "../../system/spell-effects/spell-behavior";
+import { RqgLogger } from "../../system/logging/rqg-logger";
+import type { RqgItem } from "@items/rqg-item.ts";
 import { isSpiritCombatGate, SpellResistedByEnum } from "../../data-model/item-data/spell";
+
+const logger = new RqgLogger("spell-cast-target-note");
 
 export type SpellCastTargetNote = {
   /** Comma-joined target names, or the "nothing targeted" label. */
@@ -67,4 +72,57 @@ export function applySpellCastTargetNote(element: HTMLElement, note: SpellCastTa
   if (rollButton) {
     rollButton.disabled = note.tooManyTargets;
   }
+}
+
+/**
+ * How far around the caster an area spell cast at `level` reaches, from its behavior's
+ * `areaRadius`; 0 when it has none or the module's code fails.
+ */
+export function spellAreaRadius(spell: RqgItem, level: number): number {
+  const areaRadius = spellBehaviorOf(spell)?.areaRadius;
+  if (!areaRadius) {
+    return 0;
+  }
+  try {
+    const radius = Number(areaRadius(level));
+    return Number.isFinite(radius) && radius > 0 ? radius : 0;
+  } catch (error) {
+    logger.error(
+      localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: spell.name ?? "" }),
+      undefined,
+      error,
+    );
+    return 0;
+  }
+}
+
+/**
+ * Target every token on the caster's scene within `radius` metres of the caster, the caster
+ * included, by the scene's own grid scale.
+ */
+export function targetTokensWithin(casterToken: TokenDocument, radius: number): void {
+  const caster = casterToken.object;
+  if (!caster || !canvas?.ready || casterToken.parent !== canvas.scene) {
+    ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
+    return;
+  }
+  const grid = canvas.grid!;
+  const units = canvas.scene?.grid.units ?? "";
+  const metresPerUnit = /^(ft|feet|foot)\.?$/i.test(units)
+    ? 0.3048
+    : /^(yd|yds|yards?)\.?$/i.test(units)
+      ? 0.9144
+      : 1;
+  const radiusInSceneUnits = radius / metresPerUnit;
+  // Straight-line distance between token centres, in scene distance units
+  const distance = (token: Token) =>
+    (Math.hypot(token.center.x - caster.center.x, token.center.y - caster.center.y) / grid.size) *
+    grid.distance;
+  const inRange = (canvas.tokens?.placeables ?? []).filter(
+    (token) => token.visible && distance(token) <= radiusInSceneUnits,
+  );
+  canvas.tokens?.setTargets(
+    inRange.flatMap((token) => (token.id ? [token.id] : [])),
+    { mode: "replace" },
+  );
 }
