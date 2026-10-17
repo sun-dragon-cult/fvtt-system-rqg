@@ -43,8 +43,9 @@ export type SpellCastTarget = { tokenUuid: string; isCaster: boolean };
 /**
  * The per-target outcomes known the moment the cast roll lands. Anything a later step decides - a
  * resistance roll, a GM ruling - starts as pending. Nothing targeted means a self cast only for
- * `none` and `resistanceRoll` (whose caster confirmed it); an area spell without targets has no
- * target yet, not the caster, and a spirit-combat gate is against an untargeted opponent.
+ * `none` and the single and per-target resistance rolls (whose caster confirmed it); an area spell
+ * without targets has no target yet, not the caster, and a spirit-combat gate is against an
+ * untargeted opponent.
  */
 export function buildCastTargetOutcomes(params: {
   castSuccessLevel: AbilitySuccessLevelEnum;
@@ -54,7 +55,9 @@ export function buildCastTargetOutcomes(params: {
 }): SpellTargetOutcome[] {
   const { castSuccessLevel, resistedBy, casterTokenOrActorUuid } = params;
   const defaultsToSelf =
-    resistedBy === SpellResistedByEnum.None || resistedBy === SpellResistedByEnum.ResistanceRoll;
+    resistedBy === SpellResistedByEnum.None ||
+    resistedBy === SpellResistedByEnum.ResistanceRoll ||
+    resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   const untargeted: SpellCastTarget[] = defaultsToSelf
     ? [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }]
     : isSpiritCombatGate(resistedBy)

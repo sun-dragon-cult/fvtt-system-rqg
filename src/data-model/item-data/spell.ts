@@ -49,6 +49,15 @@ export const SpellResistedByEnum = {
 } as const;
 export type SpellResistedByEnum = (typeof SpellResistedByEnum)[keyof typeof SpellResistedByEnum];
 
+// What the target puts up against the caster's POW on a resistance roll. Undead have no POW, so
+// Turn Undead is resisted by their current magic points (RBM p.101).
+export const SpellResistedWithEnum = {
+  Power: "power",
+  MagicPoints: "magicPoints",
+} as const;
+export type SpellResistedWithEnum =
+  (typeof SpellResistedWithEnum)[keyof typeof SpellResistedWithEnum];
+
 /** Spirit combat is one on one, so these gates are against a single opponent. */
 export function isSpiritCombatGate(resistedBy: SpellResistedByEnum | undefined): boolean {
   return (
@@ -104,6 +113,8 @@ export interface Spell {
   isEnchantment: boolean;
   /** How an unwilling target can resist the spell after a successful cast (p.145-147, 254) */
   resistedBy: SpellResistedByEnum;
+  /** What the target resists with on a resistance roll */
+  resistedWith: SpellResistedWithEnum;
   /** What the spell's effect attaches to (#1080) */
   targetKind: SpellTargetKindEnum;
   /** How much of #1079's application machinery this spell's effect goes through */
