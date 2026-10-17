@@ -1,7 +1,7 @@
 import { getTargetedTokenNames, localize } from "../../system/util";
 import { spellBehaviorOf } from "../../system/spell-effects/spell-behavior";
 import { RqgLogger } from "../../system/logging/rqg-logger";
-import { metresToPixels } from "../../system/spell-effects/scene-distance";
+import { metersToPixels } from "../../system/spell-effects/scene-distance";
 import type { RqgItem } from "@items/rqg-item.ts";
 import { isSpiritCombatGate, SpellResistedByEnum } from "../../data-model/item-data/spell";
 
@@ -98,7 +98,7 @@ export function spellAreaRadius(spell: RqgItem, level: number): number {
 }
 
 /**
- * Target every token on the caster's scene within `radius` metres of the caster, the caster
+ * Target every token on the caster's scene within `radius` meters of the caster, the caster
  * included, by the scene's own grid scale.
  */
 export function targetTokensWithin(casterToken: TokenDocument, radius: number): void {
@@ -107,12 +107,12 @@ export function targetTokensWithin(casterToken: TokenDocument, radius: number): 
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return;
   }
-  const radiusInPixels = metresToPixels(radius, {
+  const radiusInPixels = metersToPixels(radius, {
     size: canvas.grid!.size,
     distance: canvas.grid!.distance,
     units: canvas.scene?.grid.units,
   });
-  // Straight-line distance between token centres
+  // Straight-line distance between token centers
   const inRange = (canvas.tokens?.placeables ?? []).filter(
     (token) =>
       token.visible &&

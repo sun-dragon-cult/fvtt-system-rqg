@@ -1,5 +1,5 @@
 import { localize } from "../system/util";
-import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
+import { applySpellEffect, spellEffectCast } from "../system/spell-effects/apply-spell-effect";
 import { compendiumSpellsWithEffects } from "../system/spell-effects/spells-with-effects";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import type { RqgActor } from "@actors/rqg-actor.ts";
@@ -135,18 +135,22 @@ export async function addSpellEffectFromHud(actor: RqgActor, targetName: string)
   if (!picked || !spell) {
     return false;
   }
-  const level = Math.max(0, Math.trunc(Number(picked.level) || 0));
-  const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
-  // The points an unboosted cast spends, so the spell's strength counts against Countermagic. A
+  // An unboosted cast at the picked level, so the spell's strength counts against Countermagic. A
   // spell the target cast on itself isn't stopped by its own protective spells.
-  const applied = await applySpellEffect(spell, actor, targetName, {
-    casterUuid: picked.selfCast ? (actor.uuid ?? "") : "",
-    castMessageId: "",
-    level: level,
-    magicPointsSpent: isRuneMagic ? 0 : level,
-    runePointsSpent: isRuneMagic ? level : 0,
-    casterSuccessLevel: undefined,
-  });
+  const applied = await applySpellEffect(
+    spell,
+    actor,
+    targetName,
+    spellEffectCast(
+      spell,
+      { levelUsed: Math.max(0, Math.trunc(Number(picked.level) || 0)) },
+      {
+        casterUuid: picked.selfCast ? (actor.uuid ?? "") : "",
+        castMessageId: "",
+        casterSuccessLevel: undefined,
+      },
+    ),
+  );
   // A cancellation, a spell behavior (e.g. Dispel Magic) or a protective effect used up by the spell
   // (e.g. Countermagic) removes effects, so the palette changes then too.
   return (

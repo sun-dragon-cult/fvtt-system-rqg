@@ -13,20 +13,20 @@ import {
   type SpellEffectDuration,
 } from "./apply-spell-effect";
 import { summonerToken } from "./summon";
-import { metresToPixels } from "./scene-distance";
-import { pickAreaCentre } from "./pick-area-centre";
+import { metersToPixels } from "./scene-distance";
+import { pickAreaCenter } from "./pick-area-center";
 import { RqgLogger } from "../logging/rqg-logger";
 
 const logger = new RqgLogger("spell-area");
 
-/** The shape of a spell's area, in metres - part of the public API. */
+/** The shape of a spell's area, in meters - part of the public API. */
 export type SpellAreaShape = { kind: "circle"; radius: number } | { kind: "square"; side: number };
 
 /** How `createArea` makes a spell's area - part of the public API. */
 export type SpellAreaOptions = {
   shape: SpellAreaShape;
   /**
-   * "pick": the caster clicks the centre, within the spell's range (RBM p.4); "caster": around the
+   * "pick": the caster clicks the center, within the spell's range (RBM p.4); "caster": around the
    * caster's token. Defaults to "pick" for Ranged spells and "caster" for the rest (Self, rituals).
    */
   placement?: "pick" | "caster";
@@ -55,41 +55,47 @@ export type CreateSpellAreaQueryData = {
   spellUuid: string;
   casterTokenUuid: string;
   cast: SpellEffectCast;
-  centre: { x: number; y: number };
+  center: { x: number; y: number };
   shape: SpellAreaShape;
   duration: SpellEffectDuration | null;
   visible: boolean;
 };
 
+/** A token's center from its document, so it works on a scene nobody is viewing. */
+function tokenCenter(token: TokenDocument): { x: number; y: number } {
+  const size = token.parent?.grid.size ?? 0;
+  return { x: token.x + (token.width * size) / 2, y: token.y + (token.height * size) / 2 };
+}
+
 /** The default casting range (RBM p.4): 160 m for Rune spells, 50 m for spirit magic. */
-export function spellRangeInMetres(spell: RqgItem): number {
+export function spellRangeInMeters(spell: RqgItem): number {
   return spell.type === ItemTypeEnum.RuneMagic ? 160 : 50;
 }
 
-/** How far the area reaches from its centre, in metres - for keeping it inside the range. */
+/** How far the area reaches from its center, in meters - for keeping it inside the range. */
 export function areaExtent(shape: SpellAreaShape): number {
   return shape.kind === "circle" ? shape.radius : (shape.side / 2) * Math.SQRT2;
 }
 
 function regionShape(
   shape: SpellAreaShape,
-  centre: { x: number; y: number },
+  center: { x: number; y: number },
   scene: Scene,
 ): Record<string, unknown> {
   const grid = { size: scene.grid.size, distance: scene.grid.distance, units: scene.grid.units };
   if (shape.kind === "circle") {
     return {
       type: "circle",
-      x: centre.x,
-      y: centre.y,
-      radius: metresToPixels(shape.radius, grid),
+      x: center.x,
+      y: center.y,
+      radius: metersToPixels(shape.radius, grid),
     };
   }
-  const side = metresToPixels(shape.side, grid);
+  const side = metersToPixels(shape.side, grid);
   return {
     type: "rectangle",
-    x: centre.x - side / 2,
-    y: centre.y - side / 2,
+    x: center.x - side / 2,
+    y: center.y - side / 2,
     width: side,
     height: side,
   };
@@ -99,7 +105,7 @@ function regionShape(
  * Make a spell's area as a scene Region with a `spellArea` behavior, and an effect on the caster
  * that it lasts as long as: when that effect ends (it expires, or Dispel Magic removes it), the
  * Region goes, and deleting the Region ends the effect. Players may not create Regions, so the
- * active GM's client makes it; the caster picks the centre on their own client first.
+ * active GM's client makes it; the caster picks the center on their own client first.
  */
 export async function createArea(
   scope: SpellApplyScope,
@@ -115,18 +121,18 @@ export async function createArea(
   }
   const ranged = (scope.spell.system as any).castingRange === SpellRangeEnum.Ranged;
   const placement = options.placement ?? (ranged ? "pick" : "caster");
-  const centre =
+  const center =
     placement === "pick"
-      ? await pickAreaCentre(caster, spellRangeInMetres(scope.spell), options.shape, spellName)
-      : caster.object?.center;
-  if (!centre) {
+      ? await pickAreaCenter(caster, spellRangeInMeters(scope.spell), options.shape, spellName)
+      : tokenCenter(caster);
+  if (!center) {
     return undefined;
   }
   const data: CreateSpellAreaQueryData = {
     spellUuid: scope.spell.uuid ?? "",
     casterTokenUuid: caster.uuid ?? "",
     cast: scope.cast,
-    centre: { x: centre.x, y: centre.y },
+    center: { x: center.x, y: center.y },
     shape: options.shape,
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
@@ -168,7 +174,7 @@ async function createAreaAsGm(
     {
       name: spell.name ?? "",
       color: data.visible ? "#bbbbbb" : "#7fb3d5",
-      shapes: [regionShape(data.shape, data.centre, scene)],
+      shapes: [regionShape(data.shape, data.center, scene)],
       visibility: data.visible
         ? CONST.REGION_VISIBILITY.ALWAYS
         : CONST.REGION_VISIBILITY.LAYER_UNLOCKED,
@@ -197,20 +203,13 @@ async function createAreaAsGm(
  * off again. For `onAreaEnter`.
  */
 export async function applyAreaEffect(scope: SpellAreaScope): Promise<void> {
-  const applied = await applySpellEffect(
+  await applySpellEffect(
     scope.spell,
     scope.actor,
     scope.token.name ?? scope.actor.name ?? "",
     scope.cast,
-    { areaEffect: true },
+    { areaRegion: scope.region.uuid ?? "" },
   );
-  if (applied?.outcome !== "applied") {
-    return;
-  }
-  for (const uuid of applied.effectUuids) {
-    const effect = (await fromUuid(uuid)) as ActiveEffect | null;
-    await effect?.setFlag(systemId, "areaRegion", scope.region.uuid ?? "");
-  }
 }
 
 /** Take off what `applyAreaEffect` put on a token. For `onAreaExit`. */
@@ -238,30 +237,47 @@ export async function removeSpellArea(effect: ActiveEffect): Promise<void> {
   }
 }
 
+/** End the caster's effect of a spell area and take the area's effects off these actors. */
+function cleanUpArea(regionUuid: string, actors: Iterable<RqgActor>): void {
+  for (const actor of actors) {
+    const anchors = actor.effects
+      .filter((effect) => effect.getFlag(systemId, "spellArea") === regionUuid)
+      .map((effect) => effect.id ?? "");
+    if (anchors.length) {
+      void actor.deleteEmbeddedDocuments("ActiveEffect", anchors);
+    }
+    void deleteAreaEffects(actor, regionUuid);
+  }
+}
+
+const isSpellArea = (region: RegionDocument) =>
+  region.behaviors.some((behavior) => behavior.type === "spellArea");
+
 /**
- * When a spell area's Region is deleted, by the spell ending or by the GM, end the caster's effect
- * and take the area's effects off the tokens it had them on. Runs on the active GM's client.
+ * When a spell area's Region is deleted, by the spell ending or by the GM, or its whole scene is,
+ * end the caster's effect and take the area's effects off the tokens it had them on. A deleted
+ * scene takes its unlinked tokens with it, so only world actors are left. Runs on the active GM's
+ * client.
  */
 export function initSpellAreaCleanup(): void {
   Hooks.on("deleteRegion", (region: RegionDocument) => {
+    if (!game.users?.activeGM?.isSelf || !isSpellArea(region)) {
+      return;
+    }
+    const tokenActors = (region.parent?.tokens.contents ?? [])
+      .map((token) => token.actor)
+      .filter((actor) => !!actor) as RqgActor[];
+    cleanUpArea(
+      region.uuid ?? "",
+      new Set([...((game.actors?.contents ?? []) as RqgActor[]), ...tokenActors]),
+    );
+  });
+  Hooks.on("deleteScene", (scene: Scene) => {
     if (!game.users?.activeGM?.isSelf) {
       return;
     }
-    const uuid = region.uuid ?? "";
-    const actors = new Set<RqgActor>([
-      ...((game.actors?.contents ?? []) as RqgActor[]),
-      ...((region.parent?.tokens.contents ?? [])
-        .map((token) => token.actor)
-        .filter((actor) => !!actor) as RqgActor[]),
-    ]);
-    for (const actor of actors) {
-      const anchors = actor.effects
-        .filter((effect) => effect.getFlag(systemId, "spellArea") === uuid)
-        .map((effect) => effect.id ?? "");
-      if (anchors.length) {
-        void actor.deleteEmbeddedDocuments("ActiveEffect", anchors);
-      }
-      void deleteAreaEffects(actor, uuid);
+    for (const region of scene.regions.contents.filter(isSpellArea)) {
+      cleanUpArea(region.uuid ?? "", (game.actors?.contents ?? []) as RqgActor[]);
     }
   });
 }

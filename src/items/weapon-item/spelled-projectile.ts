@@ -134,7 +134,9 @@ export function initSpelledProjectiles(): void {
   });
   Hooks.on(
     "updateActiveEffect",
-    (effect: ActiveEffect, changed: any, _options: unknown, userId: string) => {
+    // The rest parameter keeps tsc from matching the hook's full signature, too deep for it
+    (effect: ActiveEffect, changed: any, ...rest: unknown[]) => {
+      const userId = rest[1];
       if (userId !== game.user?.id || changed.duration?.expired !== true) {
         return;
       }

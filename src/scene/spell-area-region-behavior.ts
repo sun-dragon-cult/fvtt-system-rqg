@@ -1,25 +1,16 @@
 import { spellBehavior } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
+import { spellProvenanceFields } from "../active-effect/data-model/rqg-active-effect-data-model";
 import type { SpellAreaScope } from "../system/spell-effects/spell-area";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 
 const { RegionBehaviorType } = foundry.data.regionBehaviors;
-const { NumberField, SchemaField, StringField } = foundry.data.fields;
+const { SchemaField } = foundry.data.fields;
 
 const defineSpellAreaRegionBehaviorSchema = () => ({
   // The spell's provenance, as on the effects it makes
-  spell: new SchemaField({
-    spellRqid: new StringField({ blank: true, nullable: false, initial: "" }),
-    spellName: new StringField({ blank: true, nullable: false, initial: "" }),
-    spellUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-    casterUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-    castMessageId: new StringField({ blank: true, nullable: false, initial: "" }),
-    level: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-    magicPointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-    runePointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-    casterSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
-  }),
+  spell: new SchemaField(spellProvenanceFields()),
 });
 
 type SpellAreaRegionBehaviorSchema = ReturnType<typeof defineSpellAreaRegionBehaviorSchema>;
@@ -43,16 +34,30 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
     (regionBehaviorConfig.typeLabels as any)["spellArea"] = "TYPES.RegionBehavior.spellArea";
   }
 
+  // A token moving across the boundary, even straight through, is a crossing (TOKEN_MOVE_IN/OUT).
+  // TOKEN_ENTER/EXIT without a movement are tokens there when the area appeared, or placed or
+  // removed; with one they repeat the move events.
   static override events = {
-    [CONST.REGION_EVENTS.TOKEN_ENTER]: async function (this: SpellAreaRegionBehavior, event: any) {
+    [CONST.REGION_EVENTS.TOKEN_MOVE_IN]: async function (
+      this: SpellAreaRegionBehavior,
+      event: any,
+    ) {
       await this.dispatch("onAreaEnter", event.data.token, true);
     },
-    [CONST.REGION_EVENTS.TOKEN_EXIT]: async function (this: SpellAreaRegionBehavior, event: any) {
+    [CONST.REGION_EVENTS.TOKEN_MOVE_OUT]: async function (
+      this: SpellAreaRegionBehavior,
+      event: any,
+    ) {
       await this.dispatch("onAreaExit", event.data.token, true);
     },
-    [CONST.REGION_EVENTS.BEHAVIOR_ACTIVATED]: async function (this: SpellAreaRegionBehavior) {
-      for (const token of this.region?.tokens ?? []) {
-        await this.dispatch("onAreaEnter", token, false);
+    [CONST.REGION_EVENTS.TOKEN_ENTER]: async function (this: SpellAreaRegionBehavior, event: any) {
+      if (!event.data.movement) {
+        await this.dispatch("onAreaEnter", event.data.token, false);
+      }
+    },
+    [CONST.REGION_EVENTS.TOKEN_EXIT]: async function (this: SpellAreaRegionBehavior, event: any) {
+      if (!event.data.movement) {
+        await this.dispatch("onAreaExit", event.data.token, false);
       }
     },
   } as any;
@@ -61,6 +66,10 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
     const region = this.region;
     const actor = token?.actor as RqgActor | null | undefined;
     if (!game.users?.activeGM?.isSelf || !region || !actor) {
+      return;
+    }
+    // A deleted unlinked token took its effects with it
+    if (actor.isToken && !region.parent?.tokens.has(token.id ?? "")) {
       return;
     }
     const provenance = this.spell;
@@ -76,14 +85,7 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
     }
     const scope: SpellAreaScope = {
       spell: spell,
-      cast: {
-        casterUuid: provenance.casterUuid,
-        castMessageId: provenance.castMessageId,
-        level: provenance.level,
-        magicPointsSpent: provenance.magicPointsSpent,
-        runePointsSpent: provenance.runePointsSpent,
-        casterSuccessLevel: provenance.casterSuccessLevel ?? undefined,
-      },
+      cast: { ...provenance, casterSuccessLevel: provenance.casterSuccessLevel ?? undefined },
       region: region as RegionDocument,
       token: token,
       actor: actor,
