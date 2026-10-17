@@ -37,7 +37,7 @@ import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
   spellAreaRadius,
-  targetTokensWithin,
+  targetSpellArea,
 } from "../app-parts/spell-cast-target-note";
 import {
   AUTO_MAGIC_POINT_SOURCE,
@@ -204,17 +204,8 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     },
   };
 
-  /** Target every token within the area spell's radius at the level the form is set to. */
   private static onTargetArea(this: RuneMagicRollDialogV2): void {
-    const level = Number(
-      this.element.querySelector<HTMLInputElement>('input[name="levelUsed"]')?.value ?? 0,
-    );
-    const casterToken = this.token ?? this.casterActor.getActiveTokens(false, true)[0];
-    if (!casterToken) {
-      ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
-      return;
-    }
-    targetTokensWithin(casterToken, spellAreaRadius(this.spellItem, level));
+    targetSpellArea(this.element, this.spellItem, this.token, this.casterActor);
   }
 
   static override PARTS = {

@@ -20,11 +20,7 @@ export function pickAreaCenter(
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return Promise.resolve(undefined);
   }
-  const grid = {
-    size: canvas.grid!.size,
-    distance: canvas.grid!.distance,
-    units: canvas.scene?.grid.units,
-  };
+  const grid = canvas.scene!.grid;
   const origin = casterObject.center;
   const extent = metersToPixels(areaExtent(shape), grid);
   const reach = Math.max(0, metersToPixels(rangeMeters, grid) - extent);
@@ -40,17 +36,23 @@ export function pickAreaCenter(
   preview.hitArea = canvas.dimensions!.rect;
   canvas.controls!.addChild(preview);
 
+  // The range ring stays put, so it is drawn once; only the area follows the pointer
+  const ring = new PIXI.Graphics()
+    .lineStyle(2, 0xffffff, 0.5)
+    .drawCircle(origin.x, origin.y, reach);
+  preview.addChild(ring);
+  const area = new PIXI.Graphics();
+  preview.addChild(area);
   const draw = (point: Point) => {
     const color = inRange(point) ? 0x7fb3d5 : 0xcc3333;
-    preview.clear();
-    preview.lineStyle(2, 0xffffff, 0.5).drawCircle(origin.x, origin.y, reach);
-    preview.beginFill(color, 0.25).lineStyle(2, color, 0.9);
+    area.clear();
+    area.beginFill(color, 0.25).lineStyle(2, color, 0.9);
     if (shape.kind === "circle") {
-      preview.drawCircle(point.x, point.y, size);
+      area.drawCircle(point.x, point.y, size);
     } else {
-      preview.drawRect(point.x - size / 2, point.y - size / 2, size, size);
+      area.drawRect(point.x - size / 2, point.y - size / 2, size, size);
     }
-    preview.endFill();
+    area.endFill();
   };
 
   return new Promise((resolve) => {
@@ -61,7 +63,7 @@ export function pickAreaCenter(
     let rightDownAt: Point | undefined;
     const finish = (point: Point | undefined) => {
       document.removeEventListener("keydown", onKey, true);
-      preview.destroy();
+      preview.destroy({ children: true });
       resolve(point);
     };
     const onKey = (event: KeyboardEvent) => {

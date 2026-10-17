@@ -84,7 +84,10 @@ export type SpellBehavior = SpellRollEntries & {
    * or is inside it when it appears (`crossed` false).
    */
   onAreaEnter?(scope: SpellAreaScope): Promise<void>;
-  /** Runs on the active GM's client when a token leaves the spell's area. */
+  /**
+   * Runs on the active GM's client when a token leaves the spell's area, after the system took the
+   * area's effects off it.
+   */
   onAreaExit?(scope: SpellAreaScope): Promise<void>;
   /** Runs when one of the spell's effects expires or is deleted. */
   onEnd?(scope: SpellEndScope): Promise<void>;
@@ -226,7 +229,30 @@ function guardedRollEntry(
   return wrapped;
 }
 
-function guardBehavior(behavior: SpellBehavior): SpellBehavior {
+/** A broken `areaRadius` just means no area button, so a throw or a non-number gives 0. */
+function guardedAreaRadius(
+  areaRadius: SpellBehavior["areaRadius"],
+  spellRqid: string,
+): SpellBehavior["areaRadius"] {
+  if (!areaRadius) {
+    return undefined;
+  }
+  return (level: number) => {
+    try {
+      const radius = Number(areaRadius(level));
+      return Number.isFinite(radius) && radius > 0 ? radius : 0;
+    } catch (error) {
+      logger.error(
+        localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: spellRqid }),
+        undefined,
+        error,
+      );
+      return 0;
+    }
+  };
+}
+
+function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavior {
   const rollEntries = Object.fromEntries(
     spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behavior[name])]),
   ) as SpellRollEntries;
@@ -249,14 +275,14 @@ function guardBehavior(behavior: SpellBehavior): SpellBehavior {
     onAreaEnter: guarded("onAreaEnter", behavior.onAreaEnter, (scope) => scope.spell.name ?? ""),
     onAreaExit: guarded("onAreaExit", behavior.onAreaExit, (scope) => scope.spell.name ?? ""),
     runAsGm: behavior.runAsGm,
-    areaRadius: behavior.areaRadius,
+    areaRadius: guardedAreaRadius(behavior.areaRadius, spellRqid),
   };
 }
 
 const registry: SpellBehaviorRegistry = {
   register(spellRqid, behavior, source) {
     const list = registrations.get(spellRqid) ?? [];
-    list.push({ ...source, behavior: guardBehavior(behavior) });
+    list.push({ ...source, behavior: guardBehavior(behavior, spellRqid) });
     registrations.set(spellRqid, list);
   },
 };
@@ -296,10 +322,12 @@ export function spellRqidOfEffect(effect: ActiveEffect): string | undefined {
  * area alive, so it has none: the spell acts on the tokens in the area.
  */
 export function spellBehaviorForEffect(effect: ActiveEffect): SpellBehavior | undefined {
-  if (effect.getFlag?.(systemId, "spellArea")) {
-    return undefined;
-  }
-  return spellBehavior(spellRqidOfEffect(effect));
+  return isAreaAnchor(effect) ? undefined : spellBehavior(spellRqidOfEffect(effect));
+}
+
+/** A spell area's effect on its caster, which only keeps the area alive (`createArea`). */
+export function isAreaAnchor(effect: ActiveEffect): boolean {
+  return !!effect.getFlag?.(systemId, "spellArea");
 }
 
 /**

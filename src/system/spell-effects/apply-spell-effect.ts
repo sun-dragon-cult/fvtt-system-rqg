@@ -22,7 +22,7 @@ import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { projectileLabel, splitOffProjectile } from "@items/weapon-item/spelled-projectile";
 import { runSpellApply } from "./run-spell-apply";
 import { castPoints } from "./spell-rules";
-import { spellBehaviorOf } from "./spell-behavior";
+import { isAreaAnchor, spellBehaviorOf } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
 
 export type SpellEffectCast = {
@@ -102,7 +102,7 @@ function existingSpellEffects(parent: RqgActor | RqgItem): ExistingSpellEffect[]
   return parent.effects.contents.flatMap((effect: any) => {
     const spell = effect.system?.spell;
     // A spell area's effect on its caster isn't the spell acting on them
-    return spell && !effect.getFlag?.(systemId, "spellArea")
+    return spell && !isAreaAnchor(effect)
       ? [
           {
             id: effect.id ?? "",

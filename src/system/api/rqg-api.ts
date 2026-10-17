@@ -1,5 +1,5 @@
 import type { ItemTypeEnum } from "@item-model/item-types.ts";
-import { applyAreaEffect, createArea, removeAreaEffect } from "../spell-effects/spell-area";
+import { applyAreaEffect, createArea } from "../spell-effects/spell-area";
 import {
   DEFAULT_RQID_BATCH_ITEM_TYPES,
   RqidBatchEditor,
@@ -73,7 +73,6 @@ export function createRqgApi() {
       summon,
       createArea,
       applyAreaEffect,
-      removeAreaEffect,
     },
   };
 }
