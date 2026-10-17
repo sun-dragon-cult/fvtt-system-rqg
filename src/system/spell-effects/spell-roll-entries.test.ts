@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { runSpellRollEntry } from "./spell-roll-entries";
-import * as spellBehaviourModule from "./spell-behaviour";
+import * as spellBehaviorModule from "./spell-behavior";
 
 const effect = (spellRqid: string, active = true) => ({ active, system: { spell: { spellRqid } } });
 
@@ -13,8 +13,8 @@ describe("runSpellRollEntry", () => {
     vi.restoreAllMocks();
   });
 
-  function behaviours(byRqid: Record<string, spellBehaviourModule.SpellBehaviour>): void {
-    vi.spyOn(spellBehaviourModule, "spellBehaviourForEffect").mockImplementation(
+  function behaviors(byRqid: Record<string, spellBehaviorModule.SpellBehavior>): void {
+    vi.spyOn(spellBehaviorModule, "spellBehaviorForEffect").mockImplementation(
       (e: any) => byRqid[e.system.spell.spellRqid],
     );
   }
@@ -22,7 +22,7 @@ describe("runSpellRollEntry", () => {
   it("calls each entry once with the hook's arguments and the effects sharing it", () => {
     const noParry = vi.fn();
     const halveDodge = vi.fn();
-    behaviours({
+    behaviors({
       berserker: { onPrepareDefence: noParry },
       fanaticism: { onPrepareDefence: noParry },
       other: { onPrepareDefence: halveDodge },
@@ -48,7 +48,7 @@ describe("runSpellRollEntry", () => {
 
   it("skips inactive effects and other entries, and a roll without an actor", () => {
     const entry = vi.fn();
-    behaviours({ berserker: { onPrepareAttack: entry } });
+    behaviors({ berserker: { onPrepareAttack: entry } });
 
     runSpellRollEntry(actorWith(effect("berserker", false)), "onPrepareAttack", {} as any);
     runSpellRollEntry(actorWith(effect("berserker")), "onPrepareDefence", {} as any);

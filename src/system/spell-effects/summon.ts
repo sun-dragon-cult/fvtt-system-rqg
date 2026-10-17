@@ -86,7 +86,7 @@ export type SummonOptions = {
 /**
  * Place an unlinked token of the actor with this rqid on the nearest free cell next to the caster,
  * importing the actor into a Summoned folder the first time. The token gets an effect carrying the
- * spell's provenance, and goes when the effect ends (RBM p.90). Creates tokens, so the behaviour
+ * spell's provenance, and goes when the effect ends (RBM p.90). Creates tokens, so the behavior
  * calling it needs `runAsGm`.
  */
 export async function summon(

@@ -174,7 +174,7 @@ export class RqgLogger {
   }
 
   /**
-   * Log an error and continue. Pass a bare string for an ad-hoc error (unchanged behaviour:
+   * Log an error and continue. Pass a bare string for an ad-hoc error (unchanged behavior:
    * console + a UI error notification unless `{ notify: false }`), or a registry entry
    * (`ERR.someError`) for a coded, recoverable failure — the caller must have a fallback.
    * A coded `bug` stays silent to the user (the code recovered); a coded `world` shows a

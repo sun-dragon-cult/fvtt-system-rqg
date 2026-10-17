@@ -17,7 +17,7 @@ import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method
 import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
 
-const logger = new RqgLogger("spell-behaviour");
+const logger = new RqgLogger("spell-behavior");
 
 /**
  * The scope a protective spell's `onIncomingSpell` runs with when another spell is applied to its
@@ -68,7 +68,7 @@ export const spellRollEntryNames = [
  * What a spell does beyond attaching an effect template, registered by modules for a spell rqid.
  * Part of the public API.
  */
-export type SpellBehaviour = SpellRollEntries & {
+export type SpellBehavior = SpellRollEntries & {
   /** Replaces attaching the effect template when Apply is clicked. */
   apply?(scope: SpellApplyScope): Promise<SpellEffectApplied | undefined>;
   /** Runs for a spell's effects when another spell is applied to their actor from outside. */
@@ -79,20 +79,20 @@ export type SpellBehaviour = SpellRollEntries & {
   runAsGm?: boolean;
 };
 
-export type SpellBehaviourSource = { lang: string; priority: number };
+export type SpellBehaviorSource = { lang: string; priority: number };
 
-/** What modules get from the `rqg.registerSpellBehaviours` hook. */
-export type SpellBehaviourRegistry = {
-  register(spellRqid: string, behaviour: SpellBehaviour, source: SpellBehaviourSource): void;
+/** What modules get from the `rqg.registerSpellBehaviors` hook. */
+export type SpellBehaviorRegistry = {
+  register(spellRqid: string, behavior: SpellBehavior, source: SpellBehaviorSource): void;
 };
 
-type Registration = SpellBehaviourSource & { behaviour: SpellBehaviour };
+type Registration = SpellBehaviorSource & { behavior: SpellBehavior };
 
 /**
  * The registration to use, chosen the way Rqid chooses documents: the world's language, then the
  * fallback language, then any; of those the highest priority, the first registered on a tie.
  */
-export function pickRegistration<T extends SpellBehaviourSource>(
+export function pickRegistration<T extends SpellBehaviorSource>(
   registrations: readonly T[],
   lang: string,
   fallbackLang: string,
@@ -127,15 +127,15 @@ export async function guardModuleCall<T>(
 }
 
 /**
- * Run a call into a module's spell behaviour so that one failing doesn't stop the spell, or every
+ * Run a call into a module's spell behavior so that one failing doesn't stop the spell, or every
  * spell cast at an actor carrying its effects. Undefined when it threw.
  */
-export async function guardSpellBehaviour<T>(
+export async function guardSpellBehavior<T>(
   spellName: string,
   call: () => Promise<T> | T,
 ): Promise<T | undefined> {
   return guardModuleCall(
-    () => localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
+    () => localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName }),
     call,
   );
 }
@@ -161,7 +161,7 @@ function guarded<F extends (scope: any) => Promise<any>>(
   let wrapped = guardedHooks[kind].get(hook) as F | undefined;
   if (!wrapped) {
     wrapped = (async (scope: Parameters<F>[0]) => {
-      const result = await guardSpellBehaviour(nameOf(scope), () => hook(scope));
+      const result = await guardSpellBehavior(nameOf(scope), () => hook(scope));
       // Modules are plain JavaScript, so their results aren't type-checked
       return result !== undefined && check(result) ? result : undefined;
     }) as F;
@@ -194,7 +194,7 @@ function guardedRollEntry(
       } catch (error) {
         const spellName = scope.effects[0]?.name ?? "";
         logger.error(
-          localize("RQG.Notification.Error.SpellBehaviourFailed", { spellName }),
+          localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName }),
           undefined,
           error,
         );
@@ -205,60 +205,60 @@ function guardedRollEntry(
   return wrapped;
 }
 
-function guardBehaviour(behaviour: SpellBehaviour): SpellBehaviour {
+function guardBehavior(behavior: SpellBehavior): SpellBehavior {
   const rollEntries = Object.fromEntries(
-    spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behaviour[name])]),
+    spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behavior[name])]),
   ) as SpellRollEntries;
   return {
     ...rollEntries,
     apply: guarded(
       "apply",
-      behaviour.apply,
+      behavior.apply,
       (scope) => scope.spell.name ?? "",
       (result) => spellEffectOutcomes.includes(result?.outcome ?? ""),
     ),
     // Names the protective effect whose code it is, not the incoming spell
     onIncomingSpell: guarded(
       "onIncomingSpell",
-      behaviour.onIncomingSpell,
+      behavior.onIncomingSpell,
       (scope) => scope.effects[0]?.name ?? "",
     ),
-    onEnd: guarded("onEnd", behaviour.onEnd, (scope) => scope.effect.name ?? ""),
-    runAsGm: behaviour.runAsGm,
+    onEnd: guarded("onEnd", behavior.onEnd, (scope) => scope.effect.name ?? ""),
+    runAsGm: behavior.runAsGm,
   };
 }
 
-const registry: SpellBehaviourRegistry = {
-  register(spellRqid, behaviour, source) {
+const registry: SpellBehaviorRegistry = {
+  register(spellRqid, behavior, source) {
     const list = registrations.get(spellRqid) ?? [];
-    list.push({ ...source, behaviour: guardBehaviour(behaviour) });
+    list.push({ ...source, behavior: guardBehavior(behavior) });
     registrations.set(spellRqid, list);
   },
 };
 
-/** Lets modules register their spell behaviours once every module has had its init. */
-export function initSpellBehaviours(): void {
+/** Lets modules register their spell behaviors once every module has had its init. */
+export function initSpellBehaviors(): void {
   Hooks.once("setup", () => {
-    callRqgHook("rqg.registerSpellBehaviours", registry);
+    callRqgHook("rqg.registerSpellBehaviors", registry);
   });
 }
 
-/** The behaviour registered for a spell rqid; its hooks never throw. */
-export function spellBehaviour(
+/** The behavior registered for a spell rqid; its hooks never throw. */
+export function spellBehavior(
   spellRqid: string | undefined,
   lang?: string,
-): SpellBehaviour | undefined {
+): SpellBehavior | undefined {
   const candidates = spellRqid ? registrations.get(spellRqid) : undefined;
   if (!candidates) {
     return undefined;
   }
   const worldLang =
     lang ?? game.settings?.get(systemId, "worldLanguage") ?? CONFIG.RQG.fallbackLanguage;
-  return pickRegistration(candidates, worldLang, CONFIG.RQG.fallbackLanguage)?.behaviour;
+  return pickRegistration(candidates, worldLang, CONFIG.RQG.fallbackLanguage)?.behavior;
 }
 
-export function spellBehaviourOf(spell: RqgItem): SpellBehaviour | undefined {
-  return spellBehaviour(Rqid.getDocumentFlag(spell)?.id);
+export function spellBehaviorOf(spell: RqgItem): SpellBehavior | undefined {
+  return spellBehavior(Rqid.getDocumentFlag(spell)?.id);
 }
 
 /** The rqid of the spell that made an effect, from its provenance. */
@@ -266,14 +266,14 @@ export function spellRqidOfEffect(effect: ActiveEffect): string | undefined {
   return (effect.system as { spell?: { spellRqid?: string } | null } | undefined)?.spell?.spellRqid;
 }
 
-/** The behaviour of the spell that made an effect. */
-export function spellBehaviourForEffect(effect: ActiveEffect): SpellBehaviour | undefined {
-  return spellBehaviour(spellRqidOfEffect(effect));
+/** The behavior of the spell that made an effect. */
+export function spellBehaviorForEffect(effect: ActiveEffect): SpellBehavior | undefined {
+  return spellBehavior(spellRqidOfEffect(effect));
 }
 
 /**
  * Whether Apply can do something with a spell: attach its effect template, or run its
- * behaviour's `apply`, which wins when there are both.
+ * behavior's `apply`, which wins when there are both.
  */
 export function canApplySpell(
   spellRqid: string | undefined,
@@ -282,6 +282,6 @@ export function canApplySpell(
 ): boolean {
   return (
     !!resolveSpellEffectRqid({ system: { effectRqidLink } }) ||
-    !!spellBehaviour(spellRqid, lang)?.apply
+    !!spellBehavior(spellRqid, lang)?.apply
   );
 }
