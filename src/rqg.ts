@@ -38,6 +38,7 @@ import { setConfigStatusEffects } from "./system/fvtt-type-compat";
 import { initCharacterPassiveRecovery } from "./actors/passive-recovery";
 import { initSpelledProjectiles } from "./items/weapon-item/spelled-projectile";
 import { initApplySpellBehaviorQuery } from "./system/spell-effects/run-spell-apply";
+import { initReflectResistedSpellQuery } from "./system/spell-effects/reflect-spell";
 import { initSpellEnd } from "./system/spell-effects/spell-end";
 import { initSpellBehaviors } from "./system/spell-effects/spell-behavior";
 import { initSpellRollEntries } from "./system/spell-effects/spell-roll-entries";
@@ -114,6 +115,7 @@ Hooks.once("init", () => {
   initSpellRollEntries();
   initSkillBehaviors();
   initApplySpellBehaviorQuery();
+  initReflectResistedSpellQuery();
   initSpellEnd();
   RqgItem.init();
   RqgHotbar.init();

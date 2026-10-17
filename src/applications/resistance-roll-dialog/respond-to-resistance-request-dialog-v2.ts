@@ -404,6 +404,12 @@ export class RespondToResistanceRequestDialogV2 extends RqgInteractiveRollApplic
       { revealSpell: activeOvercame, whisper: whisper, blind: blind },
     );
 
+    if (!activeOvercame && requestChatMessage!.system.isSpellCast) {
+      // Dynamic import to avoid a circular dependency through rqgItem.ts.
+      const { reflectResistedSpell } = await import("../../system/spell-effects/reflect-spell");
+      await reflectResistedSpell(requestChatMessage!);
+    }
+
     await creditResistanceRollPowExperience(
       actor,
       requestChatMessage!.system.activeCharacteristics,

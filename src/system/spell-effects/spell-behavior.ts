@@ -73,6 +73,11 @@ export type SpellBehavior = SpellRollEntries & {
   apply?(scope: SpellApplyScope): Promise<SpellEffectApplied | undefined>;
   /** Runs for a spell's effects when another spell is applied to their actor from outside. */
   onIncomingSpell?(scope: IncomingSpellScope): Promise<{ outcome: "stopped" | "pass" }>;
+  /**
+   * Runs for a spell's effects when their actor's resistance roll held against a spell, on the
+   * client that rolled. "reflected" sends the spell back at its caster (Reflection).
+   */
+  onResisted?(scope: IncomingSpellScope): Promise<{ outcome: "reflected" | "pass" }>;
   /** Runs when one of the spell's effects expires or is deleted. */
   onEnd?(scope: SpellEndScope): Promise<void>;
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
@@ -140,12 +145,13 @@ export async function guardSpellBehavior<T>(
   );
 }
 
-type HookKind = "apply" | "onIncomingSpell" | "onEnd";
+type HookKind = "apply" | "onIncomingSpell" | "onResisted" | "onEnd";
 
 // Per function, so spells registering the same hook (Countermagic and Shield) still share it
 const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any>>> = {
   apply: new WeakMap(),
   onIncomingSpell: new WeakMap(),
+  onResisted: new WeakMap(),
   onEnd: new WeakMap(),
 };
 
@@ -223,6 +229,7 @@ function guardBehavior(behavior: SpellBehavior): SpellBehavior {
       behavior.onIncomingSpell,
       (scope) => scope.effects[0]?.name ?? "",
     ),
+    onResisted: guarded("onResisted", behavior.onResisted, (scope) => scope.effects[0]?.name ?? ""),
     onEnd: guarded("onEnd", behavior.onEnd, (scope) => scope.effect.name ?? ""),
     runAsGm: behavior.runAsGm,
   };

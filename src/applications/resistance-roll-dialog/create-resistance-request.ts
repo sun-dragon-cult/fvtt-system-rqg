@@ -53,6 +53,8 @@ export type CreateResistanceRequestParams = {
     | undefined;
   /** A hidden cast's whispered spellCast message, whose outcome this card settles. */
   spellCastMessageId?: string | undefined;
+  /** The spell is reflected back at its caster by the target of this request. */
+  reflectedFrom?: { messageId: string; reflectorName: string } | undefined;
 };
 
 /** Post a resistance-table check as a chat card the recipient answers. Never rolls anything. */
@@ -127,6 +129,8 @@ export async function createResistanceRequest(
     castFlavor: spellCast ? spellCast.castRoll.flavor : "",
     spellUuid: spellCast ? spellCast.spellUuid : "",
     spellCastMessageId: params.spellCastMessageId ?? "",
+    reflectedFromMessageId: params.reflectedFrom?.messageId ?? "",
+    reflectedByName: params.reflectedFrom?.reflectorName ?? "",
     spellCasterUuid: spellCast ? spellCast.casterTokenOrActorUuid : "",
     spellHiddenFromUuid: spellCast ? params.targetTokenOrActorUuid : "",
     isSpellCast: !!params.isSpellCast,
@@ -141,10 +145,13 @@ export async function createResistanceRequest(
   );
 
   // A combined card is only ever built for an open cast, so it stays public like an attack card -
-  // the buttons are what's owner-gated, not the whole card.
-  const { whisper, blind } = spellCast
-    ? { whisper: [] as string[], blind: false }
-    : resolveResistanceRequestVisibility(params.rollMode, targetActor, true);
+  // the buttons are what's owner-gated, not the whole card. A reflected one stays hidden when the
+  // cast it came from was.
+  const hiddenReflection = !!params.reflectedFrom && params.rollMode !== "public";
+  const { whisper, blind } =
+    spellCast && !hiddenReflection
+      ? { whisper: [] as string[], blind: false }
+      : resolveResistanceRequestVisibility(params.rollMode, targetActor, true);
 
   // The flavor sits outside the card body but still inside the message element, so the same
   // ownership gate reaches it - a concealed spell's name is hidden there too.
@@ -168,7 +175,7 @@ export async function createResistanceRequest(
   } as any);
 
   if (cm && !Array.isArray(cm)) {
-    if (spellCast) {
+    if (spellCast && !params.reflectedFrom) {
       await game.dice3d?.showForRoll(spellCast.castRoll, game.user, true, null, false);
     }
     cm.render(true);
