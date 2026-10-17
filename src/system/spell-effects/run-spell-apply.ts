@@ -49,14 +49,30 @@ export async function runSpellApply(
     targetName: scope.targetName,
     cast: scope.cast,
   };
+  return queryActiveGm("rqg.applySpellBehavior", queryData, spellName);
+}
+
+/**
+ * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
+ * naming the spell, when no GM is logged in or the query fails.
+ */
+type RqgQuery = "rqg.applySpellBehavior" | "rqg.reflectResistedSpell" | "rqg.createSpellArea";
+
+export async function queryActiveGm<Q extends RqgQuery>(
+  name: Q,
+  data: Parameters<CONFIG.Queries[Q]>[0],
+  spellName: string,
+): Promise<Awaited<ReturnType<CONFIG.Queries[Q]>> | undefined> {
+  const gm = game.users?.activeGM;
+  const needsGm = localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName });
+  if (!gm) {
+    ui.notifications?.warn(needsGm);
+    return undefined;
+  }
   try {
-    return (await gm.query("rqg.applySpellBehavior", queryData)) as SpellEffectApplied | undefined;
+    return (await gm.query(name, data as any)) as Awaited<ReturnType<CONFIG.Queries[Q]>>;
   } catch (error) {
-    logger.warn(
-      localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }),
-      undefined,
-      error,
-    );
+    logger.warn(needsGm, undefined, error);
     return undefined;
   }
 }

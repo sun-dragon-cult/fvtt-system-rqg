@@ -9,6 +9,7 @@ vi.mock("../../applications/resistance-roll-dialog/create-resistance-request", (
 }));
 vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () => ({
   resolveCharacteristicSide: vi.fn(() => ({ value: 16, label: "POW", actorName: "Jar-eel" })),
+  resolveCharacteristicLabel: vi.fn(() => "POW"),
 }));
 vi.mock("../util", async (importOriginal) => ({
   ...(await importOriginal<object>()),
@@ -58,6 +59,7 @@ describe("reflectResistedSpell", () => {
       "Actor.harrek": target,
     };
     vi.mocked(fromUuid).mockImplementation((async (uuid: string) => documents[uuid]) as any);
+    vi.mocked(fromUuidSync).mockImplementation(((uuid: string) => documents[uuid]) as any);
   });
 
   it("sends a reflected spell back at its caster, with the caster's POW when they cast it", async () => {
@@ -87,6 +89,15 @@ describe("reflectResistedSpell", () => {
         reflectedFrom: { messageId: "request", reflectorName: "Harrek" },
       }),
     );
+  });
+
+  it("looks nothing up for a target with nothing that reflects", async () => {
+    vi.mocked(spellBehaviorForEffect).mockReturnValue(undefined);
+
+    await reflectResistedSpell(request());
+
+    expect(fromUuid).not.toHaveBeenCalled();
+    expect(createResistanceRequest).not.toHaveBeenCalled();
   });
 
   it("leaves the spell where it is when no effect reflects it", async () => {

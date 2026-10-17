@@ -1,8 +1,9 @@
 import { systemId } from "../config";
 import { spellBehaviorForEffect, spellRqidOfEffect } from "./spell-behavior";
 import { removeSummonedToken } from "./summon";
+import { removeSpellArea } from "./spell-area";
 
-/** Only the active GM's client ends effects, and only spell effects and summonings need it. */
+/** Only the active GM's client ends effects, and only spell effects, summonings and areas need it. */
 function needsEnding(effect: ActiveEffect): boolean {
   return (
     !!game.users?.activeGM?.isSelf &&
@@ -13,6 +14,7 @@ function needsEnding(effect: ActiveEffect): boolean {
 async function endSpellEffect(effect: ActiveEffect): Promise<void> {
   await spellBehaviorForEffect(effect)?.onEnd?.({ effect });
   await removeSummonedToken(effect);
+  await removeSpellArea(effect);
 }
 
 /**

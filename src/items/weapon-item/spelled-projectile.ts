@@ -2,7 +2,7 @@ import type { WeaponItem } from "@item-model/weapon-data-model.ts";
 import { systemId } from "../../system/config";
 import { ItemTypeEnum } from "@item-model/item-types.ts";
 import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-flags";
-import { onRqgHook } from "../../system/fvtt-type-compat";
+import { onRqgHook, onUntypedHook } from "../../system/fvtt-type-compat";
 import { RqgLogger } from "../../system/logging/rqg-logger";
 import { ERR } from "../../system/error-registry";
 
@@ -132,7 +132,7 @@ export function initSpelledProjectiles(): void {
       pendingSpends = Promise.all([pendingSpends, spent]);
     }
   });
-  Hooks.on(
+  onUntypedHook(
     "updateActiveEffect",
     (effect: ActiveEffect, changed: any, _options: unknown, userId: string) => {
       if (userId !== game.user?.id || changed.duration?.expired !== true) {

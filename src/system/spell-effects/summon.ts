@@ -42,7 +42,7 @@ export function nearestFreeCell(
 }
 
 /** The token to summon next to: the caster's, or without a caster (token HUD "+") the target's. */
-async function summonerToken(scope: SpellApplyScope): Promise<TokenDocument | undefined> {
+export async function summonerToken(scope: SpellApplyScope): Promise<TokenDocument | undefined> {
   const summoner: any = scope.cast.casterUuid
     ? await fromUuid(scope.cast.casterUuid)
     : scope.targetActor;
