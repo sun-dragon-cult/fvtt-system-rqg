@@ -58,6 +58,15 @@ export const SpellResistedWithEnum = {
 export type SpellResistedWithEnum =
   (typeof SpellResistedWithEnum)[keyof typeof SpellResistedWithEnum];
 
+/** Whether a spell is resisted by a roll on the resistance table, where `resistedWith` counts. */
+export function isResistanceRoll(resistedBy: SpellResistedByEnum | undefined): boolean {
+  return (
+    resistedBy === SpellResistedByEnum.ResistanceRoll ||
+    resistedBy === SpellResistedByEnum.ResistanceRollArea ||
+    resistedBy === SpellResistedByEnum.ResistanceRollPerTarget
+  );
+}
+
 /** Spirit combat is one on one, so these gates are against a single opponent. */
 export function isSpiritCombatGate(resistedBy: SpellResistedByEnum | undefined): boolean {
   return (

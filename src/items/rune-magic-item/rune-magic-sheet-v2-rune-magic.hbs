@@ -23,10 +23,12 @@
       {{selectOptions resistedByOptions selected=system.resistedBy localize=true}}
     </select>
 
-    <label for="resisted-with-{{id}}" class="mp">{{localize "RQG.Item.Spell.ResistedWith"}}</label>
-    <select id="resisted-with-{{id}}" name="system.resistedWith">
-      {{selectOptions resistedWithOptions selected=system.resistedWith localize=true}}
-    </select>
+    {{#if showResistedWith}}
+      <label for="resisted-with-{{id}}" class="mp">{{localize "RQG.Item.Spell.ResistedWith"}}</label>
+      <select id="resisted-with-{{id}}" name="system.resistedWith">
+        {{selectOptions resistedWithOptions selected=system.resistedWith localize=true}}
+      </select>
+    {{/if}}
 
     <label for="target-kind-{{id}}" class="mp">{{localize "RQG.Item.Spell.TargetKind"}}</label>
     <select id="target-kind-{{id}}" name="system.targetKind">
