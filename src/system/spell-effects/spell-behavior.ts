@@ -91,7 +91,7 @@ export type SpellBehavior = SpellRollEntries & {
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
   runAsGm?: boolean;
   /**
-   * The radius around the caster, in metres, that an area spell cast at this level reaches. The
+   * The radius around the caster, in meters, that an area spell cast at this level reaches. The
    * cast dialog then offers to target every token in it.
    */
   areaRadius?(level: number): number;

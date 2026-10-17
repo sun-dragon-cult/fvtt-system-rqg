@@ -1,17 +1,17 @@
 import { localize } from "../util";
-import { metresToPixels } from "./scene-distance";
-import type { SpellAreaShape } from "./spell-area";
+import { metersToPixels } from "./scene-distance";
+import { areaExtent, type SpellAreaShape } from "./spell-area";
 
 type Point = { x: number; y: number };
 
 /**
  * Let the caster click where a Ranged spell's area goes. The whole area must lie within the
- * spell's range of the caster (RBM p.4), so the preview shows where its centre may go. Right
- * click or Escape cancels. Resolves to the centre, or undefined when cancelled.
+ * spell's range of the caster (RBM p.4), so the preview shows where its center may go. Right
+ * click or Escape cancels. Resolves to the center, or undefined when cancelled.
  */
-export function pickAreaCentre(
+export function pickAreaCenter(
   caster: TokenDocument,
-  rangeMetres: number,
+  rangeMeters: number,
   shape: SpellAreaShape,
   spellName: string,
 ): Promise<Point | undefined> {
@@ -26,24 +26,25 @@ export function pickAreaCentre(
     units: canvas.scene?.grid.units,
   };
   const origin = casterObject.center;
-  const extent = metresToPixels(
-    shape.kind === "circle" ? shape.radius : (shape.side / 2) * Math.SQRT2,
-    grid,
-  );
-  const reach = Math.max(0, metresToPixels(rangeMetres, grid) - extent);
+  const extent = metersToPixels(areaExtent(shape), grid);
+  const reach = Math.max(0, metersToPixels(rangeMeters, grid) - extent);
   const size =
-    shape.kind === "circle" ? metresToPixels(shape.radius, grid) : metresToPixels(shape.side, grid);
+    shape.kind === "circle" ? metersToPixels(shape.radius, grid) : metersToPixels(shape.side, grid);
   const inRange = (point: Point) => Math.hypot(point.x - origin.x, point.y - origin.y) <= reach;
 
-  ui.notifications?.info(localize("RQG.SpellArea.PickCentre", { spellName }));
+  ui.notifications?.info(localize("RQG.SpellArea.PickCenter", { spellName }));
+  // Covers the canvas and takes the clicks itself, so they don't select or drag tokens below
   const preview = new PIXI.Graphics();
+  preview.eventMode = "static";
+  preview.cursor = "crosshair";
+  preview.hitArea = canvas.dimensions!.rect;
   canvas.controls!.addChild(preview);
 
   const draw = (point: Point) => {
-    const colour = inRange(point) ? 0x7fb3d5 : 0xcc3333;
+    const color = inRange(point) ? 0x7fb3d5 : 0xcc3333;
     preview.clear();
     preview.lineStyle(2, 0xffffff, 0.5).drawCircle(origin.x, origin.y, reach);
-    preview.beginFill(colour, 0.25).lineStyle(2, colour, 0.9);
+    preview.beginFill(color, 0.25).lineStyle(2, color, 0.9);
     if (shape.kind === "circle") {
       preview.drawCircle(point.x, point.y, size);
     } else {
@@ -53,23 +54,30 @@ export function pickAreaCentre(
   };
 
   return new Promise((resolve) => {
-    const stage = canvas!.stage!;
     const pointerPosition = (): Point => {
       const position = canvas!.mousePosition;
       return { x: position.x, y: position.y };
     };
+    let rightDownAt: Point | undefined;
     const finish = (point: Point | undefined) => {
-      stage.off("pointermove", onMove);
-      stage.off("pointerdown", onDown);
       document.removeEventListener("keydown", onKey, true);
       preview.destroy();
       resolve(point);
     };
-    const onMove = () => draw(pointerPosition());
-    const onDown = (event: PIXI.FederatedPointerEvent) => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.stopPropagation();
+        finish(undefined);
+      }
+    };
+    preview.on("pointermove", () => draw(pointerPosition()));
+    preview.on("pointerdown", (event: PIXI.FederatedPointerEvent) => {
       event.stopPropagation();
       if (event.button === 2) {
-        finish(undefined);
+        rightDownAt = { x: event.global.x, y: event.global.y };
+        return;
+      }
+      if (event.button !== 0) {
         return;
       }
       const point = pointerPosition();
@@ -78,15 +86,17 @@ export function pickAreaCentre(
         return;
       }
       finish(point);
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        event.stopPropagation();
+    });
+    // A right click cancels; a right drag pans the canvas as usual
+    preview.on("rightup", (event: PIXI.FederatedPointerEvent) => {
+      const moved = rightDownAt
+        ? Math.hypot(event.global.x - rightDownAt.x, event.global.y - rightDownAt.y)
+        : Infinity;
+      rightDownAt = undefined;
+      if (moved < 5) {
         finish(undefined);
       }
-    };
-    stage.on("pointermove", onMove);
-    stage.on("pointerdown", onDown);
+    });
     document.addEventListener("keydown", onKey, true);
     draw(origin);
   });

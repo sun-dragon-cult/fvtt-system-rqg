@@ -3,6 +3,21 @@ import { spellTargetConditionOps, spellTargetOnNoMatch } from "./spell-effect.de
 
 const { ArrayField, BooleanField, NumberField, SchemaField, StringField } = foundry.data.fields;
 
+/** What was cast, by whom and how strongly - on spell effects and on spell areas. */
+export function spellProvenanceFields() {
+  return {
+    spellRqid: new StringField({ blank: true, nullable: false, initial: "" }),
+    spellName: new StringField({ blank: true, nullable: false, initial: "" }),
+    spellUuid: new StringField({ blank: true, nullable: false, initial: "" }),
+    casterUuid: new StringField({ blank: true, nullable: false, initial: "" }),
+    castMessageId: new StringField({ blank: true, nullable: false, initial: "" }),
+    level: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    magicPointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    runePointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
+    casterSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
+  };
+}
+
 type ActiveEffectTypeDataModelConstructor = {
   new (
     ...args: unknown[]
@@ -63,20 +78,7 @@ function rqgActiveEffectSchemaFields() {
     // lists them.
     counteractsSpellRqidLinks: rqidLinkArraySchemaField(),
     // Set on a copy applied by a cast: what was cast, by whom and how strongly.
-    spell: new SchemaField(
-      {
-        spellRqid: new StringField({ blank: true, nullable: false, initial: "" }),
-        spellName: new StringField({ blank: true, nullable: false, initial: "" }),
-        spellUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-        casterUuid: new StringField({ blank: true, nullable: false, initial: "" }),
-        castMessageId: new StringField({ blank: true, nullable: false, initial: "" }),
-        level: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-        magicPointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-        runePointsSpent: new NumberField({ integer: true, min: 0, nullable: false, initial: 0 }),
-        casterSuccessLevel: new NumberField({ integer: true, nullable: true, initial: null }),
-      },
-      { nullable: true, initial: null },
-    ),
+    spell: new SchemaField(spellProvenanceFields(), { nullable: true, initial: null }),
   } as const;
 }
 

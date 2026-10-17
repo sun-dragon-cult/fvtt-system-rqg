@@ -170,17 +170,17 @@ export async function applySpellEffect(
   cast: SpellEffectCast,
   options: {
     /**
-     * A spell area putting its effect on a token inside it: always the template, since the
-     * behavior's `apply` makes the area, and protective spells don't stop it - the area isn't
-     * cast at the token.
+     * The Region of a spell area putting its effect on a token inside it: always the template,
+     * since the behavior's `apply` makes the area, protective spells don't stop it - the area isn't
+     * cast at the token - and the effect is marked with the area so leaving it takes it off.
      */
-    areaEffect?: boolean;
+    areaRegion?: string;
   } = {},
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = spell.name ?? "";
   const scope = spellApplyScope(spell, targetActor, targetName, cast);
   const behavior = spellBehaviorOf(spell);
-  const apply = options.areaEffect ? undefined : behavior?.apply;
+  const apply = options.areaRegion ? undefined : behavior?.apply;
   if (apply) {
     return runSpellApply({ ...behavior, apply }, scope);
   }
@@ -225,7 +225,7 @@ export async function applySpellEffect(
     }
   }
   // Only once Apply can no longer back out, since a protective spell may use up its effects
-  const intercepted = options.areaEffect ? undefined : await interceptIncomingSpell(scope);
+  const intercepted = options.areaRegion ? undefined : await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;
   }
@@ -272,6 +272,11 @@ export async function applySpellEffect(
   data.system.spellTarget = null;
   data.system.matchSuspensionToEquippedStatus = true;
   data.system.spell = spellProvenance(spell, cast);
+  if (options.areaRegion) {
+    data.flags = foundry.utils.mergeObject(data.flags ?? {}, {
+      [systemId]: { areaRegion: options.areaRegion },
+    });
+  }
 
   if (stacking.displaced.length) {
     await (parent as RqgItem).deleteEmbeddedDocuments(

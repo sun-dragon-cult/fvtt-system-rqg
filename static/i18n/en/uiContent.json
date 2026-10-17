@@ -1636,7 +1636,7 @@
       }
     },
     "SpellArea": {
-      "PickCentre": "{spellName}: click where its area goes, within range. Right-click or Escape cancels.",
+      "PickCenter": "{spellName}: click where its area goes, within range. Right-click or Escape cancels.",
       "OutOfRange": "{spellName}: the whole area must be within range of the caster."
     },
     "Region": {
