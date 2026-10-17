@@ -14,21 +14,32 @@ import {
 } from "./apply-spell-effect";
 import { summonerToken } from "./summon";
 import { metersToPixels } from "./scene-distance";
-import { pickAreaCenter } from "./pick-area-center";
+import { placeSpellArea, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./run-spell-apply";
 
-/** The shape of a spell's area, in meters - part of the public API. */
-export type SpellAreaShape = { kind: "circle"; radius: number } | { kind: "square"; side: number };
+/**
+ * The shape of a spell's area, in meters - part of the public API. A polygon is clicked corner by
+ * corner, like a ward's wands, and may not exceed `maxArea` square meters.
+ */
+export type SpellAreaShape =
+  | { kind: "circle"; radius: number }
+  | { kind: "square"; side: number }
+  | { kind: "polygon"; corners: number; maxArea: number };
 
 /** How `createArea` makes a spell's area - part of the public API. */
 export type SpellAreaOptions = {
   shape: SpellAreaShape;
   /**
-   * "pick": the caster clicks the center, within the spell's range (RBM p.4); "caster": around the
-   * caster's token. Defaults to "pick" for Ranged spells and "caster" for the rest (Self, rituals).
+   * "pick": the caster places the area, within range for a Ranged spell (RBM p.4) and anywhere for
+   * the rest, as a ritual is held where its area is; "caster": a circle or square around the
+   * caster's token. Defaults to "pick".
    */
   placement?: "pick" | "caster";
-  /** How long the area lasts; the spell's own duration when left out, none for null. */
+  /**
+   * How long the area lasts; the spell's own duration when left out. With a duration the caster
+   * gets an effect that ends the area when it expires; null makes an area that lasts until its
+   * Region is deleted, like a ward until its wands are removed.
+   */
   duration?: SpellEffectDuration | null;
   /** Whether players see the area on the canvas, like a mist; otherwise only on the Regions layer. */
   visible?: boolean;
@@ -53,8 +64,7 @@ export type CreateSpellAreaQueryData = {
   spellUuid: string;
   casterTokenUuid: string;
   cast: SpellEffectCast;
-  center: { x: number; y: number };
-  shape: SpellAreaShape;
+  shape: PlacedAreaShape;
   duration: SpellEffectDuration | null;
   visible: boolean;
 };
@@ -66,37 +76,49 @@ export function spellRangeInMeters(spell: RqgItem): number {
 
 /** How far the area reaches from its center, in meters - for keeping it inside the range. */
 export function areaExtent(shape: SpellAreaShape): number {
-  return shape.kind === "circle" ? shape.radius : (shape.side / 2) * Math.SQRT2;
+  switch (shape.kind) {
+    case "circle":
+      return shape.radius;
+    case "square":
+      return (shape.side / 2) * Math.SQRT2;
+    case "polygon":
+      // each corner is checked against the range itself
+      return 0;
+  }
 }
 
-function regionShape(
-  shape: SpellAreaShape,
-  center: { x: number; y: number },
-  scene: Scene,
-): Record<string, unknown> {
+function shapeAroundCaster(shape: SpellAreaShape, caster: TokenDocument): PlacedAreaShape {
+  const center = caster.getCenterPoint();
+  const grid = caster.parent!.grid;
   if (shape.kind === "circle") {
     return {
       type: "circle",
-      x: center.x,
-      y: center.y,
-      radius: metersToPixels(shape.radius, scene.grid),
+      ...center,
+      radius: metersToPixels(shape.radius, grid),
+      gridBased: true,
     };
   }
-  const side = metersToPixels(shape.side, scene.grid);
+  const side = metersToPixels(
+    shape.kind === "square" ? shape.side : Math.sqrt(shape.maxArea),
+    grid,
+  );
   return {
     type: "rectangle",
-    x: center.x - side / 2,
-    y: center.y - side / 2,
+    ...center,
     width: side,
     height: side,
+    anchorX: 0.5,
+    anchorY: 0.5,
+    gridBased: true,
   };
 }
 
 /**
- * Make a spell's area as a scene Region with a `spellArea` behavior, and an effect on the caster
- * that it lasts as long as: when that effect ends (it expires, or Dispel Magic removes it), the
- * Region goes, and deleting the Region ends the effect. Players may not create Regions, so the
- * active GM's client makes it; the caster picks the center on their own client first.
+ * Make a spell's area as a scene Region with a `spellArea` behavior. An area with a duration also
+ * gets an effect on the caster that it lasts as long as: when that effect ends (it expires, or
+ * Dispel Magic removes it), the Region goes, and deleting the Region ends the effect. Players may
+ * not create Regions, so the active GM's client makes it; the caster places it on their own
+ * client first.
  */
 export async function createArea(
   scope: SpellApplyScope,
@@ -111,20 +133,23 @@ export async function createArea(
     return undefined;
   }
   const ranged = (scope.spell.system as any).castingRange === SpellRangeEnum.Ranged;
-  const placement = options.placement ?? (ranged ? "pick" : "caster");
-  const center =
-    placement === "pick"
-      ? await pickAreaCenter(caster, spellRangeInMeters(scope.spell), options.shape, spellName)
-      : caster.getCenterPoint();
-  if (!center) {
+  const shape =
+    options.placement === "caster"
+      ? shapeAroundCaster(options.shape, caster)
+      : await placeSpellArea(
+          caster,
+          options.shape,
+          ranged ? spellRangeInMeters(scope.spell) : undefined,
+          spellName,
+        );
+  if (!shape) {
     return undefined;
   }
   const data: CreateSpellAreaQueryData = {
     spellUuid: scope.spell.uuid ?? "",
     casterTokenUuid: caster.uuid ?? "",
     cast: scope.cast,
-    center: { x: center.x, y: center.y },
-    shape: options.shape,
+    shape: shape,
     duration: options.duration === undefined ? (scope.duration ?? null) : options.duration,
     visible: !!options.visible,
   };
@@ -150,7 +175,8 @@ async function createAreaAsGm(
     {
       name: spell.name ?? "",
       color: data.visible ? "#bbbbbb" : "#7fb3d5",
-      shapes: [regionShape(data.shape, data.center, scene)],
+      shapes: [data.shape],
+      highlightMode: "coverage",
       visibility: data.visible
         ? CONST.REGION_VISIBILITY.ALWAYS
         : CONST.REGION_VISIBILITY.LAYER_UNLOCKED,
@@ -160,11 +186,14 @@ async function createAreaAsGm(
   if (!region) {
     return undefined;
   }
+  if (!data.duration) {
+    return { outcome: "resolved" };
+  }
   const [effect] = (await casterActor.createEmbeddedDocuments("ActiveEffect", [
     {
       name: spell.name ?? "",
       img: spell.img ?? undefined,
-      duration: data.duration ?? undefined,
+      duration: data.duration,
       start: { time: game.time?.worldTime ?? 0 },
       flags: { [systemId]: { spellArea: region.uuid } },
       system: { spell: provenance },
