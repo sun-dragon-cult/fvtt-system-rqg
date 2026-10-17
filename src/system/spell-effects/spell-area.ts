@@ -243,7 +243,11 @@ export function initSpellAreaCleanup(): void {
       caster instanceof TokenDocument ? caster.actor : caster
     ) as RqgActor | null;
     if (casterActor) {
-      void deleteEffects(casterActor, areaEffectIds(casterActor, new Set([region.uuid ?? ""])));
+      // Only the anchor: deleting an effect the exit event already took fails the whole batch
+      const anchorIds = casterActor.effects
+        .filter((effect) => effect.getFlag(systemId, "spellArea") === region.uuid)
+        .map((effect) => effect.id ?? "");
+      void deleteEffects(casterActor, anchorIds);
     }
   });
   Hooks.on("deleteScene", (scene: Scene) => {
