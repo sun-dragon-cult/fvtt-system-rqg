@@ -578,6 +578,11 @@
           "incompatibleActive": "{spellName} has no effect on {parentName}, which already has the incompatible {effectName}.",
           "cancelledActive": "{spellName} and {effectName} cancel each other on {parentName}, so neither remains."
         },
+        "AreaResistance": {
+          "AffectsUpTo": "Resistance roll {roll}: affects {stat} {value} or lower",
+          "AffectsAll": "Resistance roll {roll}: affects everyone",
+          "AffectsNone": "Resistance roll {roll}: affects no one"
+        },
         "SpiritCombat": {
           "Opponent": "Spirit combat opponent",
           "PendingRound": "Awaiting a round of spirit combat",
@@ -706,7 +711,8 @@
       "SpellCast": {
         "SingleTargetOnly": "only one target",
         "WillAskToCastOnSelf": "will ask to cast on yourself",
-        "SpiritCombatUntargeted": "no target: the GM rules on the spirit combat"
+        "SpiritCombatUntargeted": "no target: the GM rules on the spirit combat",
+        "AreaUntargeted": "no target: target everyone in range"
       },
       "SpiritMagicRoll": {
         "Title": "Cast Spirit Magic",
@@ -1244,7 +1250,7 @@
         "ResistedByEnum": {
           "none": "None",
           "resistanceRoll": "Resistance roll (single target)",
-          "resistanceRollArea": "Resistance roll, whole area (not yet automated)",
+          "resistanceRollArea": "Resistance roll, whole area",
           "resistanceRollPerTarget": "Resistance roll, per target",
           "spiritCombatRound": "Spirit combat, one round (GM rules on the cast card)",
           "spiritCombatDefeat": "Spirit combat, until defeated (GM rules on the cast card)"

@@ -1,4 +1,7 @@
 <div class="rqg chat-card">
   {{> spellCastRollRow}}
+  {{#if areaResistanceText}}
+    <div class="spell-cast-area-resistance">{{areaResistanceText}}</div>
+  {{/if}}
   <div data-spell-cast-targets></div>
 </div>
