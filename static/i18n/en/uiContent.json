@@ -541,7 +541,7 @@
         "Summon": {
           "Folder": "Summoned",
           "NoCasterToken": "{spellName}: the caster has no token on a scene to summon next to.",
-          "NoActor": "{spellName}: there is no {rqid} to summon.",
+          "NoActor": "{spellName}: there is no actor with the rqid {rqid} to summon. Create one, for example from the Glorantha Bestiary, and give it that rqid.",
           "NoRoom": "{spellName}: there is no free space near {casterName}.",
           "Summoned": "{spellName}: {summonedName} appears next to {casterName}."
         },
