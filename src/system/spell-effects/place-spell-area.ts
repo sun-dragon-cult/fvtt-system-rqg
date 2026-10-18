@@ -9,8 +9,9 @@ export type PlacedAreaShape = Record<string, unknown>;
 
 /**
  * Let the caster place a spell's area on the canvas, snapped to the scene's grid. With a range,
- * the whole area must lie within it of the caster (RBM p.4); without one it goes anywhere, as a
- * ritual is held where its area is. Resolves to the Region shape, or undefined when cancelled.
+ * the whole area must lie within it of the caster (RBM p.4), around a point the caster can see
+ * (RBM p.6); a GM moves the Region afterwards for anywhere else. Without one it goes anywhere, as
+ * a ritual is held where its area is. Resolves to the Region shape, or undefined when cancelled.
  */
 export async function placeSpellArea(
   caster: TokenDocument,
@@ -30,15 +31,25 @@ export async function placeSpellArea(
       ? Infinity
       : Math.max(0, metersToPixels(rangeMeters, grid) - metersToPixels(areaExtent(shape), grid));
   const inRange = (point: Point) => Math.hypot(point.x - origin.x, point.y - origin.y) <= reach;
+  const ranged = Number.isFinite(reach);
+  const sight =
+    ranged && reach > 0
+      ? CONFIG.Canvas.polygonBackends.sight.create(origin, {
+          type: "sight",
+          radius: reach,
+          source: casterObject.vision ?? undefined,
+        } as any)
+      : undefined;
+  const inSight = (point: Point) => !sight || sight.contains(point.x, point.y);
   // Core placement would otherwise switch to the Regions layer, where the corner clicks don't land
   if (!canvas.tokens!.active) {
     canvas.tokens!.activate();
   }
-  const ring = Number.isFinite(reach) ? drawRangeRing(origin, reach) : undefined;
+  const ring = ranged ? drawReach(origin, reach, sight) : undefined;
   try {
     return shape.kind === "polygon"
       ? await pickPolygon(shape.corners, shape.maxArea, inRange, spellName)
-      : await placeShape(shape, origin, inRange, spellName, Number.isFinite(reach));
+      : await placeShape(shape, origin, inRange, inSight, spellName, ranged);
   } finally {
     if (ring && !ring.destroyed) {
       ring.destroy();
@@ -46,12 +57,20 @@ export async function placeSpellArea(
   }
 }
 
-function drawRangeRing(origin: Point, reach: number): PIXI.Graphics {
-  const ring = new PIXI.Graphics()
-    .lineStyle(2, 0xffffff, 0.5)
-    .drawCircle(origin.x, origin.y, reach);
-  canvas!.controls!.addChild(ring);
-  return ring;
+/** The range ring, with the scene dimmed outside where the area may go: in sight when given. */
+function drawReach(origin: Point, reach: number, sight: PIXI.Polygon | undefined): PIXI.Graphics {
+  const graphics = new PIXI.Graphics()
+    .beginFill(0x000000, 0.4)
+    .drawShape(canvas!.dimensions!.rect)
+    .beginHole();
+  if (sight) {
+    graphics.drawShape(sight);
+  } else {
+    graphics.drawCircle(origin.x, origin.y, reach);
+  }
+  graphics.endHole().endFill().lineStyle(2, 0xffffff, 0.5).drawCircle(origin.x, origin.y, reach);
+  canvas!.controls!.addChild(graphics);
+  return graphics;
 }
 
 /** A circle or square by Foundry's own Region placement: grid-snapped, the square rotatable. */
@@ -59,6 +78,7 @@ async function placeShape(
   shape: Extract<SpellAreaShape, { kind: "circle" | "square" }>,
   origin: Point,
   inRange: (point: Point) => boolean,
+  inSight: (point: Point) => boolean,
   spellName: string,
   ranged: boolean,
 ): Promise<PlacedAreaShape | undefined> {
@@ -75,6 +95,12 @@ async function placeShape(
           anchorY: 0.5,
           gridBased: true,
         };
+  // Snapped to a grid vertex, an area smaller than a grid space would cover no space at all
+  const span =
+    shape.kind === "circle"
+      ? 2 * metersToPixels(shape.radius, grid)
+      : metersToPixels(shape.side, grid);
+  const snapToSpaceCenter = span < grid.size;
   ui.notifications?.info(
     localize(ranged ? "RQG.SpellArea.PlaceInRange" : "RQG.SpellArea.Place", { spellName }),
   );
@@ -89,12 +115,31 @@ async function placeShape(
     {
       create: false,
       allowRotation: shape.kind === "square",
-      preConfirm: ({ shape: placedShape }: { shape: { center: Point } }) => {
-        if (inRange(placedShape.center)) {
-          return true;
+      onMove: ({
+        shape: moved,
+        position,
+        snap,
+      }: {
+        shape: any;
+        position: Point;
+        snap: boolean;
+      }) => {
+        if (!snapToSpaceCenter || !snap) {
+          return;
         }
-        ui.notifications?.warn(localize("RQG.SpellArea.OutOfRange", { spellName }));
+        moved.move(canvas!.grid!.getCenterPoint(position), { snap: false });
         return false;
+      },
+      preConfirm: ({ shape: placedShape }: { shape: { center: Point } }) => {
+        if (!inRange(placedShape.center)) {
+          ui.notifications?.warn(localize("RQG.SpellArea.OutOfRange", { spellName }));
+          return false;
+        }
+        if (!inSight(placedShape.center)) {
+          ui.notifications?.warn(localize("RQG.SpellArea.OutOfSight", { spellName }));
+          return false;
+        }
+        return true;
       },
     } as any,
   );
