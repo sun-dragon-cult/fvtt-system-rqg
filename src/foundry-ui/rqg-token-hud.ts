@@ -3,6 +3,7 @@ import { localize } from "../system/util";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import { spellEffectHudEntries, type SpellEffectHudEntry } from "./token-hud-spell-effects";
 import { listSpellEffects } from "../system/spell-effects/spell-rules";
+import { actsWhileActive, spellBehaviorForEffect } from "../system/spell-effects/spell-behavior";
 
 /**
  * Token HUD additions: the applied spell effects at the top of the status effect palette, and a
@@ -21,7 +22,11 @@ export class RqgTokenHud {
     if (!actor || !palette) {
       return;
     }
-    const entries = spellEffectHudEntries(listSpellEffects(actor as RqgActor) as any, actor);
+    const entries = spellEffectHudEntries(
+      listSpellEffects(actor as RqgActor) as any[],
+      actor,
+      (effect) => actsWhileActive(spellBehaviorForEffect(effect)),
+    );
     // Players see what's on their token; only the GM adds, opens or removes a spell effect.
     const isGM = !!game.user?.isGM;
     if (!entries.length && !isGM) {
@@ -120,6 +125,12 @@ export class RqgTokenHud {
       entry.remaining
         ? escape(localize("RQG.TokenHud.SpellEffectRemaining", { remaining: entry.remaining }))
         : "",
+      escape(
+        localize(
+          entry.automatic ? "RQG.TokenHud.SpellEffectAutomatic" : "RQG.TokenHud.SpellEffectMarker",
+        ),
+      ),
+      entry.description ? escape(entry.description) : "",
       isGM ? escape(localize("RQG.TokenHud.SpellEffectControls")) : "",
     ]
       .filter((line) => !!line)

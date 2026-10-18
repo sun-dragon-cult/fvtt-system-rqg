@@ -1893,6 +1893,8 @@
     "TokenHud": {
       "SpellEffectOn": "On {itemName}",
       "SpellEffectRemaining": "{remaining} left",
+      "SpellEffectAutomatic": "Has automated effects",
+      "SpellEffectMarker": "Only marks the spell while it lasts",
       "SpellEffectControls": "Click to open, right-click to remove",
       "RemoveSpellEffectTitle": "Remove {effectName}",
       "RemoveSpellEffectContent": "Are you sure you want to remove {effectName}?",

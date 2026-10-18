@@ -8,6 +8,10 @@ export type SpellEffectHudEntry = {
   /** Time left, "" when it doesn't expire. */
   remaining: string;
   active: boolean;
+  /** Whether it takes effect by itself, through its changes or its spell's behavior. */
+  automatic: boolean;
+  /** What the effect leaves to the GM, as plain text. */
+  description: string;
 };
 
 type EffectLike = {
@@ -18,12 +22,18 @@ type EffectLike = {
   active: boolean;
   isTemporary: boolean;
   duration: { label?: string };
+  description?: string | null;
+  system?: { changes?: readonly unknown[] };
 };
 
-/** The Token HUD entries for an actor's spell effects (see listSpellEffects). */
-export function spellEffectHudEntries(
-  effects: Iterable<EffectLike>,
+/**
+ * The Token HUD entries for an actor's spell effects (see listSpellEffects). `actsWhileActive`
+ * tells whether the spell's behavior acts on an effect while it's on.
+ */
+export function spellEffectHudEntries<E extends EffectLike>(
+  effects: Iterable<E>,
   actor: unknown,
+  actsWhileActive: (effect: E) => boolean = () => false,
 ): SpellEffectHudEntry[] {
   return [...effects]
     .map((effect) => ({
@@ -33,6 +43,15 @@ export function spellEffectHudEntries(
       itemName: effect.parent !== actor ? ((effect.parent as { name?: string })?.name ?? "") : "",
       remaining: effect.isTemporary ? (effect.duration.label ?? "") : "",
       active: effect.active,
+      automatic: !!effect.system?.changes?.length || actsWhileActive(effect),
+      description: plainText(effect.description ?? ""),
     }))
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function plainText(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }

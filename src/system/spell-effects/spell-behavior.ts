@@ -100,6 +100,20 @@ export type SpellBehavior = SpellRollEntries & {
   areaRadius?(level: number): number;
 };
 
+const actingHookNames = [
+  ...spellRollEntryNames,
+  "onIncomingSpell",
+  "onResisted",
+  "onAreaEnter",
+  "onAreaExit",
+  "onEnd",
+] as const satisfies readonly (keyof SpellBehavior)[];
+
+/** Whether a behavior keeps acting while its spell's effects are on, not only when it's cast. */
+export function actsWhileActive(behavior: SpellBehavior | undefined): boolean {
+  return !!behavior && actingHookNames.some((name) => !!behavior[name]);
+}
+
 export type SpellBehaviorSource = { lang: string; priority: number };
 
 /** What modules get from the `rqg.registerSpellBehaviors` hook. */
