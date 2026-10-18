@@ -41,7 +41,7 @@ export type SpellAreaOptions = {
    * Region is deleted, like a ward until its wands are removed.
    */
   duration?: SpellEffectDuration | null;
-  /** Whether players see the area on the canvas, like a mist; otherwise only on the Regions layer. */
+  /** Whether every player sees the area, like a mist; otherwise only the GM and the caster's players. */
   visible?: boolean;
 };
 
@@ -171,15 +171,22 @@ async function createAreaAsGm(
     return undefined;
   }
   const provenance = spellProvenance(spell, data.cast);
+  const observers = (game.users?.contents ?? []).filter(
+    (user) => !user.isGM && casterActor.testUserPermission(user, "OWNER"),
+  );
   const [region] = (await scene.createEmbeddedDocuments("Region", [
     {
       name: spell.name ?? "",
       color: data.visible ? "#bbbbbb" : "#7fb3d5",
       shapes: [data.shape],
       highlightMode: "coverage",
-      visibility: data.visible
-        ? CONST.REGION_VISIBILITY.ALWAYS
-        : CONST.REGION_VISIBILITY.LAYER_UNLOCKED,
+      visibility: data.visible ? CONST.REGION_VISIBILITY.ALWAYS : CONST.REGION_VISIBILITY.OBSERVER,
+      ownership: {
+        default: CONST.DOCUMENT_OWNERSHIP_LEVELS.NONE,
+        ...Object.fromEntries(
+          observers.map((user) => [user.id, CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER]),
+        ),
+      },
       behaviors: [{ name: spell.name ?? "", type: "spellArea", system: { spell: provenance } }],
     } as any,
   ])) as RegionDocument[];
