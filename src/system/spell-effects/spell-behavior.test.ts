@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
+  actsWhileActive,
   guardSpellBehavior,
   initSpellBehaviors,
   pickRegistration,
@@ -192,5 +193,19 @@ describe("guardSpellBehavior", () => {
     expect(result).toBeUndefined();
     expect(consoleError).toHaveBeenCalled();
     consoleError.mockRestore();
+  });
+});
+
+describe("actsWhileActive", () => {
+  it("is true for hooks that act while the effect is on", () => {
+    expect(actsWhileActive({ onIncomingSpell: async () => ({ outcome: "pass" }) })).toBe(true);
+    expect(actsWhileActive({ onPrepareAbilityRoll: () => {} })).toBe(true);
+    expect(actsWhileActive({ onAreaEnter: async () => {} })).toBe(true);
+  });
+
+  it("is false without a behavior, or one that only acts when cast", () => {
+    expect(actsWhileActive(undefined)).toBe(false);
+    expect(actsWhileActive({ apply: async () => undefined, runAsGm: true })).toBe(false);
+    expect(actsWhileActive({ areaRadius: () => 3 })).toBe(false);
   });
 });
