@@ -8,6 +8,7 @@ import { chooseWounds } from "../../items/hit-location-item/hit-location-heal-wo
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { applyDefaultWorldMigrations } from "../migrations/migrate-world";
 import { removeSpellEffects } from "../spell-effects/remove-spell-effects";
+import { metersToPixels } from "../spell-effects/scene-distance";
 import { castPoints, effectRemovalCost, listSpellEffects } from "../spell-effects/spell-rules";
 import { summon } from "../spell-effects/summon";
 import * as query from "./api-query";
@@ -73,6 +74,7 @@ export function createRqgApi() {
       summon,
       createArea,
       applyAreaEffect,
+      metersToPixels,
     },
   };
 }
