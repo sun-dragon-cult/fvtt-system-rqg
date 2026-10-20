@@ -1054,6 +1054,18 @@
         margin: 0.3rem 0 0;
         padding: 0;
 
+        /* Not yet settled: an open box until the GM rules */
+        &.pending-targets {
+          margin: 0.3rem -0.2rem;
+          padding: 0.4rem;
+          border: 1px dashed var(--color-text-secondary);
+          border-radius: 10px;
+
+          & .spell-cast-target-state {
+            font-style: italic;
+          }
+        }
+
         &.outcome-description {
           margin: 0.3rem -0.2rem;
           padding: 0.4rem;
@@ -1077,8 +1089,14 @@
       & .spell-cast-target {
         padding: 0.15rem 0;
 
+        /* Core's break-word in chat lets a flex item shrink to one letter, as a name did */
+        word-break: normal;
+        overflow-wrap: break-word;
+
+        /* A long state wraps below the name, with the ruling buttons, rather than squeezing it */
         & .spell-cast-target-summary {
           display: flex;
+          flex-wrap: wrap;
           align-items: center;
           gap: 0.4rem;
         }
@@ -1099,7 +1117,7 @@
         }
 
         & .spell-cast-target-name {
-          flex: 1;
+          flex: 1 0 auto;
           font-weight: bold;
         }
 
@@ -1141,6 +1159,7 @@
         & .spell-cast-ruling {
           display: flex;
           gap: 0.15rem;
+          margin-left: auto;
 
           /* Core's button min-height would stretch these past square. */
           & button {
