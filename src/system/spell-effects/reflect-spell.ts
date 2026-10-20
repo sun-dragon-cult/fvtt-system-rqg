@@ -29,11 +29,25 @@ function resistedCast(request: ResistanceRequestChatMessage): {
     { spellUuid?: string; casterTokenOrActorUuid?: string } | undefined;
   return {
     spellUuid: system.spellUuid || castSystem?.spellUuid || "",
-    casterUuid: system.spellCasterUuid || castSystem?.casterTokenOrActorUuid || "",
+    casterUuid: casterTokenUuid(
+      request,
+      system.spellCasterUuid || castSystem?.casterTokenOrActorUuid || "",
+    ),
     castRoll: (system.castRoll
       ? safeFromJSON<Roll>(Roll, system.castRoll)
       : castMessage?.rolls[0]) as CastRoll | undefined,
   };
+}
+
+/**
+ * A linked caster is stored as its actor, and the actor's first token would speak the reflected
+ * card; the request spoke as the token that cast it.
+ */
+function casterTokenUuid(request: ResistanceRequestChatMessage, casterUuid: string): string {
+  const { scene, token, actor } = request.speaker ?? {};
+  return scene && token && casterUuid === `Actor.${actor}`
+    ? `Scene.${scene}.Token.${token}`
+    : casterUuid;
 }
 
 /**

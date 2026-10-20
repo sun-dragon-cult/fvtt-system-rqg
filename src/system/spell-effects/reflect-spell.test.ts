@@ -26,9 +26,10 @@ const spell = {
 };
 const target = { name: "Harrek", allApplicableEffects: () => [reflection] };
 
-function request(system: Record<string, unknown> = {}) {
+function request(system: Record<string, unknown> = {}, speaker: Record<string, unknown> = {}) {
   return {
     id: "request",
+    speaker: speaker,
     system: {
       isSpellCast: true,
       reflectedFromMessageId: "",
@@ -88,6 +89,21 @@ describe("reflectResistedSpell", () => {
         },
         reflectedFrom: { messageId: "request", reflectorName: "Harrek" },
       }),
+    );
+  });
+
+  it("sends it back at the token a linked caster cast from, not the actor's first token", async () => {
+    onResisted("reflected");
+
+    await reflectResistedSpell(
+      request(
+        { spellCasterUuid: "Actor.tafey" },
+        { scene: "s", token: "tafeyToken", actor: "tafey" },
+      ),
+    );
+
+    expect(createResistanceRequest).toHaveBeenCalledWith(
+      expect.objectContaining({ targetTokenOrActorUuid: "Scene.s.Token.tafeyToken" }),
     );
   });
 
