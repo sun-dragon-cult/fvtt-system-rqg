@@ -1056,9 +1056,9 @@
 
         /* Not yet settled: an open box until the GM rules */
         &.pending-targets {
-          margin: 0.3rem -0.2rem;
+          margin: 0.3rem 0;
           padding: 0.4rem;
-          border: 1px dashed var(--color-text-secondary);
+          border: 3px dashed var(--rqg-color-main-bg);
           border-radius: 10px;
 
           & .spell-cast-target-state {
