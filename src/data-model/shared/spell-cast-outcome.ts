@@ -84,6 +84,8 @@ export function buildCastTargetOutcomes(params: {
   targets: SpellCastTarget[];
   casterTokenOrActorUuid: string;
   areaResistance?: AreaResistance | undefined;
+  /** Targets whose protective spells stopped the spell as it was cast. */
+  stoppedTargetUuids?: readonly string[] | undefined;
 }): SpellTargetOutcome[] {
   const { castSuccessLevel, resistedBy, casterTokenOrActorUuid } = params;
   const defaultsToSelf =
@@ -111,6 +113,9 @@ export function buildCastTargetOutcomes(params: {
 
     if (!castSucceeded) {
       return settled("unaffected", "castFailed");
+    }
+    if (params.stoppedTargetUuids?.includes(target.tokenUuid)) {
+      return settled("unaffected", "intercepted");
     }
     const area = params.areaResistance;
     const targetValue = area?.targetValues[target.tokenUuid];

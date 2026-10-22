@@ -16,6 +16,7 @@ import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magi
 import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method-options";
 import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
+import type { SpellAreaScope } from "./spell-area";
 
 const logger = new RqgLogger("spell-behavior");
 
@@ -78,16 +79,40 @@ export type SpellBehavior = SpellRollEntries & {
    * client that rolled. "reflected" sends the spell back at its caster (Reflection).
    */
   onResisted?(scope: IncomingSpellScope): Promise<{ outcome: "reflected" | "pass" }>;
+  /**
+   * Runs on the active GM's client when a token enters the spell's area (`spellEffects.createArea`),
+   * or is inside it when it appears (`crossed` false).
+   */
+  onAreaEnter?(scope: SpellAreaScope): Promise<void>;
+  /**
+   * Runs on the active GM's client when a token leaves the spell's area, after the system took the
+   * area's effects off it.
+   */
+  onAreaExit?(scope: SpellAreaScope): Promise<void>;
   /** Runs when one of the spell's effects expires or is deleted. */
   onEnd?(scope: SpellEndScope): Promise<void>;
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
   runAsGm?: boolean;
   /**
-   * The radius around the caster, in metres, that an area spell cast at this level reaches. The
+   * The radius around the caster, in meters, that an area spell cast at this level reaches. The
    * cast dialog then offers to target every token in it.
    */
   areaRadius?(level: number): number;
 };
+
+const actingHookNames = [
+  ...spellRollEntryNames,
+  "onIncomingSpell",
+  "onResisted",
+  "onAreaEnter",
+  "onAreaExit",
+  "onEnd",
+] as const satisfies readonly (keyof SpellBehavior)[];
+
+/** Whether a behavior keeps acting while its spell's effects are on, not only when it's cast. */
+export function actsWhileActive(behavior: SpellBehavior | undefined): boolean {
+  return !!behavior && actingHookNames.some((name) => !!behavior[name]);
+}
 
 export type SpellBehaviorSource = { lang: string; priority: number };
 
@@ -150,7 +175,7 @@ export async function guardSpellBehavior<T>(
   );
 }
 
-type HookKind = "apply" | "onIncomingSpell" | "onResisted" | "onEnd";
+type HookKind = "apply" | "onIncomingSpell" | "onResisted" | "onEnd" | "onAreaEnter" | "onAreaExit";
 
 // Per function, so spells registering the same hook (Countermagic and Shield) still share it
 const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any>>> = {
@@ -158,6 +183,8 @@ const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any
   onIncomingSpell: new WeakMap(),
   onResisted: new WeakMap(),
   onEnd: new WeakMap(),
+  onAreaEnter: new WeakMap(),
+  onAreaExit: new WeakMap(),
 };
 
 function guarded<F extends (scope: any) => Promise<any>>(
@@ -216,7 +243,30 @@ function guardedRollEntry(
   return wrapped;
 }
 
-function guardBehavior(behavior: SpellBehavior): SpellBehavior {
+/** A broken `areaRadius` just means no area button, so a throw or a non-number gives 0. */
+function guardedAreaRadius(
+  areaRadius: SpellBehavior["areaRadius"],
+  spellRqid: string,
+): SpellBehavior["areaRadius"] {
+  if (!areaRadius) {
+    return undefined;
+  }
+  return (level: number) => {
+    try {
+      const radius = Number(areaRadius(level));
+      return Number.isFinite(radius) && radius > 0 ? radius : 0;
+    } catch (error) {
+      logger.error(
+        localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: spellRqid }),
+        undefined,
+        error,
+      );
+      return 0;
+    }
+  };
+}
+
+function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavior {
   const rollEntries = Object.fromEntries(
     spellRollEntryNames.map((name) => [name, guardedRollEntry(name, behavior[name])]),
   ) as SpellRollEntries;
@@ -236,15 +286,17 @@ function guardBehavior(behavior: SpellBehavior): SpellBehavior {
     ),
     onResisted: guarded("onResisted", behavior.onResisted, (scope) => scope.effects[0]?.name ?? ""),
     onEnd: guarded("onEnd", behavior.onEnd, (scope) => scope.effect.name ?? ""),
+    onAreaEnter: guarded("onAreaEnter", behavior.onAreaEnter, (scope) => scope.spell.name ?? ""),
+    onAreaExit: guarded("onAreaExit", behavior.onAreaExit, (scope) => scope.spell.name ?? ""),
     runAsGm: behavior.runAsGm,
-    areaRadius: behavior.areaRadius,
+    areaRadius: guardedAreaRadius(behavior.areaRadius, spellRqid),
   };
 }
 
 const registry: SpellBehaviorRegistry = {
   register(spellRqid, behavior, source) {
     const list = registrations.get(spellRqid) ?? [];
-    list.push({ ...source, behavior: guardBehavior(behavior) });
+    list.push({ ...source, behavior: guardBehavior(behavior, spellRqid) });
     registrations.set(spellRqid, list);
   },
 };
@@ -279,9 +331,17 @@ export function spellRqidOfEffect(effect: ActiveEffect): string | undefined {
   return (effect.system as { spell?: { spellRqid?: string } | null } | undefined)?.spell?.spellRqid;
 }
 
-/** The behavior of the spell that made an effect. */
+/**
+ * The behavior of the spell that made an effect. A spell area's effect on its caster only keeps the
+ * area alive, so it has none: the spell acts on the tokens in the area.
+ */
 export function spellBehaviorForEffect(effect: ActiveEffect): SpellBehavior | undefined {
-  return spellBehavior(spellRqidOfEffect(effect));
+  return isAreaAnchor(effect) ? undefined : spellBehavior(spellRqidOfEffect(effect));
+}
+
+/** A spell area's effect on its caster, which only keeps the area alive (`createArea`). */
+export function isAreaAnchor(effect: ActiveEffect): boolean {
+  return !!effect.getFlag?.(systemId, "spellArea");
 }
 
 /**

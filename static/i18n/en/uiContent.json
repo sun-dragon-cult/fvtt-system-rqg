@@ -26,7 +26,8 @@
       "spellCast": "Spell Cast"
     },
     "RegionBehavior": {
-      "clickableScripts": "Click to Execute Script"
+      "clickableScripts": "Click to Execute Script",
+      "spellArea": "Spell Area"
     }
   },
   "COMBAT": {
@@ -556,6 +557,7 @@
         "Reason": {
           "castOnly": "cast roll",
           "castFailed": "cast failed",
+          "intercepted": "stopped by a protective spell",
           "selfCast": "cast on self",
           "accepted": "accepted",
           "resistanceOvercame": "resistance roll overcame",
@@ -1634,6 +1636,14 @@
         "FumbleTableMissing": "The fumble table \"{fumbleTableName}\" is missing."
       }
     },
+    "SpellArea": {
+      "Place": "{spellName}: click where its area goes. Right-click or Escape cancels.",
+      "PlaceInRange": "{spellName}: click where its area goes, within range. Right-click or Escape cancels.",
+      "PlaceCorners": "{spellName}: click the {corners} corners of its area, at most {maxArea} m². Right-click takes back a corner, Escape cancels.",
+      "OutOfRange": "{spellName}: the whole area must be within range of the caster.",
+      "OutOfSight": "{spellName}: the caster must be able to see the center of the area.",
+      "TooLarge": "{spellName}: that area is {area} m², more than the {maxArea} m² the spell covers."
+    },
     "Region": {
       "ClickableScripts": {
         "ShowPointerOnHover": {
@@ -1885,6 +1895,8 @@
     "TokenHud": {
       "SpellEffectOn": "On {itemName}",
       "SpellEffectRemaining": "{remaining} left",
+      "SpellEffectAutomatic": "Has automated effects",
+      "SpellEffectMarker": "Only marks the spell while it lasts",
       "SpellEffectControls": "Click to open, right-click to remove",
       "RemoveSpellEffectTitle": "Remove {effectName}",
       "RemoveSpellEffectContent": "Are you sure you want to remove {effectName}?",

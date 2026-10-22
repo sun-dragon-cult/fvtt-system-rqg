@@ -16,7 +16,10 @@ import type { TokenRulerSettingsType } from "./applications/settings/token-ruler
 import type { RqgChatMessageDataSource } from "./chat/data-model/combat-chat-message.types.ts";
 import type { RqgActor } from "./actors/rqg-actor.ts";
 import type { RqgItem } from "./items/rqg-item.ts";
-import type { ApplySpellBehaviorQueryData } from "./system/spell-effects/run-spell-apply.ts";
+import type {
+  ApplySpellBehaviorQueryData,
+  InterceptSpellCastData,
+} from "./system/spell-effects/run-spell-apply.ts";
 import type { SpellEffectApplied } from "./system/spell-effects/apply-spell-effect.ts";
 import type { SpellBehaviorRegistry } from "./system/spell-effects/spell-behavior.ts";
 import type { SkillBehaviorRegistry } from "./system/skill-behaviors/skill-behavior.ts";
@@ -43,6 +46,8 @@ import type { RqgActiveEffect } from "./active-effect/rqg-active-effect.ts";
 import type { RqgToken } from "./combat/rqg-token.ts";
 import type { SpellStackingRule } from "./active-effect/data-model/spell-effect.defs";
 import type { ClickableScriptsRegionBehavior } from "./scene/clickable-scripts-region-behavior.ts";
+import type { SpellAreaRegionBehavior } from "./scene/spell-area-region-behavior.ts";
+import type { CreateSpellAreaQueryData } from "./system/spell-effects/spell-area.ts";
 import type { ArmorDataModel } from "./data-model/item-data/armor-data-model";
 import type { CultDataModel } from "./data-model/item-data/cult-data-model";
 import type { GearDataModel } from "./data-model/item-data/gear-data-model";
@@ -220,6 +225,10 @@ declare global {
         data: ApplySpellBehaviorQueryData,
       ) => Promise<SpellEffectApplied | undefined>;
       "rqg.reflectResistedSpell": (data: { requestId: string }) => Promise<void>;
+      "rqg.createSpellArea": (
+        data: CreateSpellAreaQueryData,
+      ) => Promise<SpellEffectApplied | undefined>;
+      "rqg.interceptSpellCast": (data: InterceptSpellCastData) => Promise<string[]>;
     }
 
     // Declare the RQG custom "Norse" font so it can be assigned to
@@ -272,6 +281,7 @@ declare global {
     };
     RegionBehavior: {
       clickableScripts: typeof ClickableScriptsRegionBehavior;
+      spellArea: typeof SpellAreaRegionBehavior;
     };
   }
 

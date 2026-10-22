@@ -36,6 +36,10 @@ export interface RqgActiveEffectFlags {
   [documentRqidFlags]?: DocumentRqidFlags;
   /** A summoning made by spellEffects.summon: its token goes when the effect ends. */
   summoning?: boolean;
+  /** The caster's effect of a spell area made by spellEffects.createArea: its Region's uuid. */
+  spellArea?: string;
+  /** An effect a spell area put on a token inside it: the area's Region uuid. */
+  areaRegion?: string;
 }
 
 export interface RollTableFlags {
