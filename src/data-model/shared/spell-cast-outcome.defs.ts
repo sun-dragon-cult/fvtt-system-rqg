@@ -4,6 +4,7 @@ export type SpellTargetOutcomeState = (typeof spellTargetOutcomeState)[number];
 export const spellTargetOutcomeResolvedBy = [
   "castOnly",
   "castFailed",
+  "intercepted",
   "selfCast",
   "accepted",
   "resistanceRoll",
