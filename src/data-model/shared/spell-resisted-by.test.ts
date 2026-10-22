@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { postSpellCastResult, resolveResistedSpellCastTarget } from "./spell-resisted-by";
 import { SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
 import { createResistanceRequest } from "../../applications/resistance-roll-dialog/create-resistance-request";
+import { interceptSpellCast } from "../../system/spell-effects/run-spell-apply";
 
 // postSpellCastResult reaches these through dynamic imports; stubbing them keeps the routing
 // assertions on the card that would be built rather than on ChatMessage.create.
@@ -20,6 +21,10 @@ vi.mock("../../applications/resistance-roll-dialog/resistance-roll-shared", () =
   resolveCharacteristicValue: vi.fn((actor: { uuid: string }) =>
     actor.uuid === "Scene.s.Token.caster" ? 14 : actor.uuid === "Scene.s.Token.strong" ? 18 : 15,
   ),
+}));
+
+vi.mock("../../system/spell-effects/run-spell-apply", () => ({
+  interceptSpellCast: vi.fn(async () => []),
 }));
 
 // DialogV2 has no shared mock in test/setup/foundryMockFunctions.js - the zero-target branch is the
@@ -360,6 +365,74 @@ describe("postSpellCastResult", () => {
         rollMode: "public",
       });
     }
+  });
+
+  it("meets the targets' protective spells once, with the cast's points, the caster excluded", async () => {
+    await post({
+      castRoll: {
+        ...fakeCastRoll("public", 2),
+        options: { rollMode: "public", levelUsed: 2, magicPointBoost: 1 },
+      },
+      resistedBy: SpellResistedByEnum.None,
+      target: {
+        proceed: true,
+        selfCast: false,
+        targets: [
+          { tokenUuid: "Scene.s.Token.a", isCaster: false },
+          { tokenUuid: "Scene.s.Token.caster", isCaster: true },
+        ],
+      },
+    });
+
+    expect(interceptSpellCast).toHaveBeenCalledExactlyOnceWith({
+      spellUuid: "Actor.caster.Item.spell",
+      targetUuids: ["Scene.s.Token.a"],
+      rollOptions: { levelUsed: 2, magicPointBoost: 1 },
+      casterUuid: "Scene.s.Token.caster",
+      casterSuccessLevel: 2,
+    });
+  });
+
+  it("asks a target its protective spells stopped for no resistance roll", async () => {
+    vi.mocked(interceptSpellCast).mockResolvedValueOnce(["Scene.s.Token.victim"]);
+
+    const castRoll = await post();
+
+    expect(createResistanceRequest).not.toHaveBeenCalled();
+    expect(postedCastMessage(castRoll).system.targets).toEqual([
+      {
+        targetTokenOrActorUuid: "Scene.s.Token.victim",
+        state: "unaffected",
+        resolvedBy: "intercepted",
+        casterSuccessLevel: 2,
+      },
+    ]);
+  });
+
+  it("asks only the targets that weren't stopped for a per-target resistance roll", async () => {
+    vi.mocked(interceptSpellCast).mockResolvedValueOnce(["Scene.s.Token.a"]);
+
+    await post({
+      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
+      target: {
+        proceed: true,
+        selfCast: false,
+        targets: [
+          { tokenUuid: "Scene.s.Token.a", isCaster: false },
+          { tokenUuid: "Scene.s.Token.b", isCaster: false },
+        ],
+      },
+    });
+
+    expect(
+      vi.mocked(createResistanceRequest).mock.calls.map((call) => call[0].targetTokenOrActorUuid),
+    ).toEqual(["Scene.s.Token.b"]);
+  });
+
+  it("meets no protective spells when the cast failed", async () => {
+    await post({ castRoll: fakeCastRoll("public", 4) });
+
+    expect(interceptSpellCast).not.toHaveBeenCalled();
   });
 
   it("asks for no resistance roll when a per-target cast fails", async () => {

@@ -112,6 +112,8 @@ export async function resolveResistedSpellCastTarget(
  * - resisted by area: the `spellCast` message, its targets settled at once by one resistance roll
  *   the caster makes, which the card reads as the highest value it overcomes.
  *
+ * Targets whose protective spells stop the spell are settled as it is cast, before any of this.
+ *
  * The spirit-combat modes leave their targets pending for a GM ruling on the cast card, which
  * `settleSpellCastTarget` records.
  */
@@ -134,12 +136,29 @@ export async function postSpellCastResult(params: {
 
   const castSucceeded =
     castRoll.successLevel != null && castRoll.successLevel <= AbilitySuccessLevelEnum.Success;
-  const resistedTargetUuids = castSucceeded ? resistingTargets(resistedBy, target) : [];
-
   const casterUuid = casterToken?.uuid ?? casterActor.uuid ?? "";
+  // Dynamic import to avoid a circular dependency through rqgItem.ts.
+  const { interceptSpellCast } = await import("../../system/spell-effects/run-spell-apply");
+  const stoppedTargetUuids = castSucceeded
+    ? await interceptSpellCast({
+        spellUuid: spellUuid,
+        targetUuids: target.targets.filter((t) => !t.isCaster).map((t) => t.tokenUuid),
+        rollOptions: {
+          levelUsed: castRoll.options.levelUsed,
+          magicPointBoost: castRoll.options.magicPointBoost,
+        },
+        casterUuid: casterUuid,
+        casterSuccessLevel: castRoll.successLevel,
+      })
+    : [];
+  const reachedTargets = target.targets.filter((t) => !stoppedTargetUuids.includes(t.tokenUuid));
+  const resistedTargetUuids = castSucceeded
+    ? resistingTargets(resistedBy, target).filter((uuid) => !stoppedTargetUuids.includes(uuid))
+    : [];
+
   const area =
-    resistedBy === SpellResistedByEnum.ResistanceRollArea && castSucceeded && target.targets.length
-      ? await rollAreaResistance(casterUuid, resistedWith, target.targets, castRollMode)
+    resistedBy === SpellResistedByEnum.ResistanceRollArea && castSucceeded && reachedTargets.length
+      ? await rollAreaResistance(casterUuid, resistedWith, reachedTargets, castRollMode)
       : undefined;
   const postCastMessage = async () =>
     castRoll.postToChat({
@@ -159,6 +178,7 @@ export async function postSpellCastResult(params: {
           targets: target.targets,
           casterTokenOrActorUuid: casterUuid,
           areaResistance: area?.resistance,
+          stoppedTargetUuids: stoppedTargetUuids,
         }),
       },
     });

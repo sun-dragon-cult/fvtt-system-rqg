@@ -3,6 +3,7 @@ import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 import {
   spellApplyScope,
+  spellEffectCast,
   type SpellEffectApplied,
   type SpellEffectCast,
   type SpellApplyScope,
@@ -24,11 +25,12 @@ export type ApplySpellBehaviorQueryData = {
 /**
  * Run a spell behavior's `apply` once the target's protective spells let the spell through, on
  * the active GM's client when it is `runAsGm`. Checks for that GM first, so protective spells
- * aren't used up by an Apply that can't run.
+ * aren't used up by an Apply that can't run. A spell from a cast card met them when it was cast.
  */
 export async function runSpellApply(
   behavior: SpellBehavior & Required<Pick<SpellBehavior, "apply">>,
   scope: SpellApplyScope,
+  barriersChecked = false,
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = scope.spell.name ?? "";
   const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
@@ -36,7 +38,7 @@ export async function runSpellApply(
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }));
     return undefined;
   }
-  const intercepted = await interceptIncomingSpell(scope);
+  const intercepted = barriersChecked ? undefined : await interceptIncomingSpell(scope);
   if (intercepted) {
     return intercepted;
   }
@@ -56,7 +58,11 @@ export async function runSpellApply(
  * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
  * naming the spell, when no GM is logged in or the query fails.
  */
-type RqgQuery = "rqg.applySpellBehavior" | "rqg.reflectResistedSpell" | "rqg.createSpellArea";
+type RqgQuery =
+  | "rqg.applySpellBehavior"
+  | "rqg.reflectResistedSpell"
+  | "rqg.createSpellArea"
+  | "rqg.interceptSpellCast";
 
 export async function queryActiveGm<Q extends RqgQuery>(
   name: Q,
@@ -98,4 +104,60 @@ async function handleApplySpellBehaviorQuery(
 
 export function initApplySpellBehaviorQuery(): void {
   CONFIG.queries["rqg.applySpellBehavior"] = handleApplySpellBehaviorQuery;
+}
+
+/** What the caster's client sends the GM to meet a spell's targets' protective spells. */
+export type InterceptSpellCastData = {
+  spellUuid: string;
+  targetUuids: string[];
+  rollOptions: { levelUsed?: number; magicPointBoost?: number };
+  casterUuid: string;
+  casterSuccessLevel: number | undefined;
+};
+
+async function stoppedTargets(data: InterceptSpellCastData): Promise<string[]> {
+  const spell = (await fromUuid(data.spellUuid)) as RqgItem | null;
+  if (!spell) {
+    return [];
+  }
+  const cast = spellEffectCast(spell, data.rollOptions, {
+    casterUuid: data.casterUuid,
+    castMessageId: "",
+    casterSuccessLevel: data.casterSuccessLevel,
+  });
+  const stopped: string[] = [];
+  for (const targetUuid of data.targetUuids) {
+    const target = await fromUuid(targetUuid);
+    const targetActor = (
+      target instanceof TokenDocument ? target.actor : target
+    ) as RqgActor | null;
+    if (!(targetActor instanceof Actor)) {
+      continue;
+    }
+    const targetName = (target as { name?: string }).name ?? targetActor.name ?? "";
+    if (await interceptIncomingSpell(spellApplyScope(spell, targetActor, targetName, cast))) {
+      stopped.push(targetUuid);
+    }
+  }
+  return stopped;
+}
+
+/**
+ * The targets whose protective spells stop a spell as it is cast, before anyone resists it
+ * (RBM p.111). Run once per cast, on a GM's client, since stopping it can use up Countermagic and
+ * sound a ward's alarm. Without an active GM a player's cast meets none.
+ */
+export async function interceptSpellCast(data: InterceptSpellCastData): Promise<string[]> {
+  if (!data.targetUuids.length) {
+    return [];
+  }
+  if (game.user?.isGM) {
+    return stoppedTargets(data);
+  }
+  const spellName = (fromUuidSync(data.spellUuid) as { name?: string } | null)?.name ?? "";
+  return (await queryActiveGm("rqg.interceptSpellCast", data, spellName)) ?? [];
+}
+
+export function initInterceptSpellCastQuery(): void {
+  CONFIG.queries["rqg.interceptSpellCast"] = stoppedTargets;
 }

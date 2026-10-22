@@ -123,8 +123,12 @@ export async function renderSpellCastTargets(
     return {
       applied: effectUuids.length > 0,
       resolved: resolved,
-      // A ruling can't undo an effect that's already on the target, so it stops being offered.
-      canRule: !!game.user?.isGM && !effectUuids.length && !blockedReason,
+      // A ruling can't undo an effect that's already on the target, or overrule a protective spell.
+      canRule:
+        !!game.user?.isGM &&
+        !effectUuids.length &&
+        !blockedReason &&
+        target.resolvedBy !== "intercepted",
       // Why it was blocked tells what's already on the target, so only its owners see it.
       blockedLabel:
         blockedReason && !resolved && isOwner
@@ -190,6 +194,12 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
 
+  const outcome = getSpellCastOutcome(message as any)?.targets.find(
+    (t) => t.targetTokenOrActorUuid === targetUuid,
+  );
+  if (outcome?.resolvedBy === "intercepted") {
+    return;
+  }
   await settleSpellCastTarget(message, targetUuid, state, "gmRuling");
 }
 
@@ -277,6 +287,8 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
       castMessageId: message.id ?? "",
       casterSuccessLevel: outcome.casterSuccessLevel,
     }),
+    // A reflected spell was never cast at its new target, so it meets their protective spells now
+    { barriersChecked: !(message.system as any).reflectedFromMessageId },
   );
   if (!applied) {
     return;

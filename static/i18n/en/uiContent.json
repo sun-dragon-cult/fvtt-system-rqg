@@ -557,6 +557,7 @@
         "Reason": {
           "castOnly": "cast roll",
           "castFailed": "cast failed",
+          "intercepted": "stopped by a protective spell",
           "selfCast": "cast on self",
           "accepted": "accepted",
           "resistanceOvercame": "resistance roll overcame",

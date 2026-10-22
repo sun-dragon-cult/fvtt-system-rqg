@@ -86,6 +86,24 @@ describe("buildCastTargetOutcomes", () => {
     ]);
   });
 
+  it("settles a target its protective spells stopped as unaffected, before any resistance", () => {
+    const outcomes = buildCastTargetOutcomes({
+      castSuccessLevel: Success,
+      resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
+      targets: [
+        { tokenUuid: "Token.a", isCaster: false },
+        { tokenUuid: "Token.b", isCaster: false },
+      ],
+      casterTokenOrActorUuid: caster,
+      stoppedTargetUuids: ["Token.a"],
+    });
+
+    expect(outcomes.map((o) => [o.state, o.resolvedBy, o.casterSuccessLevel])).toEqual([
+      ["unaffected", "intercepted", Success],
+      ["pending", undefined, undefined],
+    ]);
+  });
+
   it("marks an unresisted spell's targets affected, the caster's own token as a self cast", () => {
     const outcomes = build(Critical, SpellResistedByEnum.None, [
       { tokenUuid: "Token.a", isCaster: false },
