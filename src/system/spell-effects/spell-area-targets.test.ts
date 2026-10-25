@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { spellAreaRadius } from "./spell-cast-target-note";
-import { spellBehaviorOf } from "../../system/spell-effects/spell-behavior";
+import { spellAreaRadius } from "./spell-area-targets";
+import { spellBehaviorOf } from "./spell-behavior";
 
-vi.mock("../../system/spell-effects/spell-behavior", () => ({ spellBehaviorOf: vi.fn() }));
+vi.mock("./spell-behavior", () => ({ spellBehaviorOf: vi.fn() }));
 
 const spell = { name: "Harmony" } as any;
 

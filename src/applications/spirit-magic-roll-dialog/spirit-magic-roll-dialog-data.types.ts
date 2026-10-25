@@ -10,8 +10,11 @@ export type SpiritMagicRollDialogContext = RollHeaderData &
     targetName: string;
     targetNote: string;
     targetNoteClass: string;
-    /** The spell reaches an area, so the dialog offers to target everyone in it. */
-    canTargetArea: boolean;
+    /** A single-target spell's target picker; empty for spells that take any number. */
+    targetOptions: SelectOptionData<string>[];
+    selectedTarget: string;
+    /** Who a spell centered on its caster reaches, which it targets instead; "" otherwise. */
+    areaTargets: string;
     isVariable: boolean;
 
     augmentOptions: SelectOptionData<number>[];

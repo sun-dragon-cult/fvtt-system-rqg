@@ -715,10 +715,11 @@
       },
       "SpellCast": {
         "SingleTargetOnly": "only one target",
-        "WillAskToCastOnSelf": "will ask to cast on yourself",
+        "Untargeted": "no target: the GM rules the effect, after you confirm",
         "SpiritCombatUntargeted": "no target: the GM rules on the spirit combat",
-        "AreaUntargeted": "no target: target everyone in range",
-        "TargetInRange": "Target everyone in range",
+        "AreaUntargeted": "no target: target everyone in the area",
+        "EveryoneInRange": "everyone within {meters} m, the caster included",
+        "EveryoneInRangeNoToken": "everyone within {meters} m: the caster has no token, so the GM rules who it reaches",
         "NoCasterTokenOnScene": "The caster has no token on the viewed scene to measure the range from."
       },
       "SpiritMagicRoll": {
@@ -780,6 +781,8 @@
         "Caster": "Caster",
         "Target": "Target",
         "NoTarget": "No target selected",
+        "TargetSelf": "{name} (yourself)",
+        "TargetAtDistance": "{name} ({meters} m)",
         "AttackingActor": "Attacker",
         "DefendingActor": "Defender",
         "TargetedToken": "targeted token",

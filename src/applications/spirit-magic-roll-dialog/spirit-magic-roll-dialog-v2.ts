@@ -1,3 +1,4 @@
+import type { DeepPartial } from "fvtt-types/utils";
 import { systemId } from "../../system/config";
 import { templatePaths } from "../../system/load-handlebars-templates";
 import type {
@@ -34,9 +35,11 @@ import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepa
 import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
-  spellAreaRadius,
-  targetSpellArea,
+  spellAreaTargetsLabel,
 } from "../app-parts/spell-cast-target-note";
+import { previewSpellArea, type SpellAreaPreview } from "../app-parts/spell-area-preview";
+import { onTargetTokenSelectChange } from "../app-parts/target-token-select";
+import { casterTokenOnScene } from "../../system/spell-effects/spell-area-targets";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getMagicPointSourceOptions,
@@ -112,18 +115,45 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private casterActor: CharacterActor;
   private powX5: number;
   private token: TokenDocument | null | undefined;
+  private areaPreview: SpellAreaPreview | undefined;
+
+  protected override async _onRender(
+    context: DeepPartial<any>,
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): Promise<void> {
+    await super._onRender(context, options);
+    this.areaPreview ??= previewSpellArea(
+      this.spellItem,
+      this.token,
+      this.casterActor,
+      Number(context["formData"]?.levelUsed),
+    );
+  }
+
+  protected override _onClose(
+    options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
+  ): void {
+    this.areaPreview?.destroy();
+    this.areaPreview = undefined;
+    super._onClose(options);
+  }
 
   protected override onUserTargetsChanged(): void {
     applySpellCastTargetNote(
       this.element,
-      buildSpellCastTargetNote(this.spellItem.system.resistedBy),
+      buildSpellCastTargetNote(this.spellItem.system.resistedBy, this.casterToken()),
     );
+  }
+
+  private casterToken(): foundry.canvas.placeables.Token | undefined {
+    return casterTokenOnScene(this.token, this.casterActor);
   }
 
   protected override getLivePreviewFormBehaviorConfig() {
     return {
       submitButtonSelectorForBlurGuard: "button[data-ability-roll]",
       updateLivePreview: () => this.updateLivePreview(),
+      onCommittedFormChange: (event: Event) => onTargetTokenSelectChange(event),
     };
   }
 
@@ -153,9 +183,6 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     id: "spirit-magic-{id}",
     tag: "form",
     classes: [systemId, "form", "roll-dialog", "spirit-magic-roll-dialog"],
-    actions: {
-      targetArea: SpiritMagicRollDialogV2.onTargetArea,
-    },
     form: {
       handler: SpiritMagicRollDialogV2.onSubmit,
       submitOnChange: false,
@@ -173,10 +200,6 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       resizable: false,
     },
   };
-
-  private static onTargetArea(this: SpiritMagicRollDialogV2): void {
-    targetSpellArea(this.element, this.spellItem, this.token, this.casterActor);
-  }
 
   static override PARTS = {
     header: { template: templatePaths.rollHeader },
@@ -209,7 +232,10 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     formData.tokenUuid ??= this.token?.uuid ?? undefined;
     formData.casterActorUuid ??= this.casterActor.uuid ?? undefined;
 
-    const targetNote = buildSpellCastTargetNote(this.spellItem.system.resistedBy);
+    const targetNote = buildSpellCastTargetNote(
+      this.spellItem.system.resistedBy,
+      this.casterToken(),
+    );
     this.prepared = this.prepareCast(formData);
 
     return {
@@ -219,8 +245,14 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       targetName: targetNote.targetName,
       targetNote: targetNote.targetNote,
       targetNoteClass: targetNote.targetNoteClass,
+      targetOptions: targetNote.targetOptions,
+      selectedTarget: targetNote.selectedTarget,
       disableRoll: targetNote.tooManyTargets,
-      canTargetArea: spellAreaRadius(this.spellItem, Number(formData.levelUsed)) > 0,
+      areaTargets: spellAreaTargetsLabel(
+        this.spellItem,
+        Number(formData.levelUsed),
+        this.casterToken(),
+      ),
       isVariable: this.spellItem.system.isVariable && this.spellItem.system.points > 1,
       augmentOptions: SpiritMagicRollDialogV2.augmentOptions,
       meditateOptions: SpiritMagicRollDialogV2.meditateOptions,
@@ -252,6 +284,15 @@ export class SpiritMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       .object as SpiritMagicRollDialogFormData;
     this.updatePreparedRoll(this.prepareCast(formData));
     totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
+    this.areaPreview?.update(Number(formData.levelUsed));
+    const areaTargetsElement = this.element.querySelector<HTMLElement>("[data-area-targets]");
+    if (areaTargetsElement) {
+      areaTargetsElement.textContent = spellAreaTargetsLabel(
+        this.spellItem,
+        Number(formData.levelUsed),
+        this.casterToken(),
+      );
+    }
   }
 
   private static async onSubmit(

@@ -31,14 +31,16 @@ export type ResistedSpellTarget = {
 /**
  * Pre-cast target check for a resisted spell, run before any points are spent. Unresisted spells
  * pass straight through - targeting is only constrained where a resistance roll or spirit combat
- * depends on it - but their targets are still recorded for the cast outcome.
+ * depends on it - but their targets are still recorded for the cast outcome. A spell centered on
+ * its caster passes the tokens in its area, which take the place of the user's targets.
  */
 export async function resolveResistedSpellCastTarget(
   resistedBy: SpellResistedByEnum,
   casterActor: RqgActor,
   spellName: string | undefined,
+  areaTokens?: readonly foundry.canvas.placeables.Token[],
 ): Promise<ResistedSpellTarget> {
-  const targets = [...(game.user?.targets ?? [])];
+  const targets = [...(areaTokens ?? game.user?.targets ?? [])];
   const castTargets: SpellCastTarget[] = targets.flatMap((token) =>
     token.document?.uuid
       ? [

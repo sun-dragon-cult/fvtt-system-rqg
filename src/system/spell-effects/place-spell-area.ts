@@ -85,7 +85,8 @@ async function placeShape(
   const grid = canvas!.scene!.grid;
   const regionShape =
     shape.kind === "circle"
-      ? { type: "circle", ...origin, radius: metersToPixels(shape.radius, grid), gridBased: true }
+      ? // A true circle: grid-based, it would follow the grid's metric, a hexagon on hex grids
+        { type: "circle", ...origin, radius: metersToPixels(shape.radius, grid), gridBased: false }
       : {
           type: "rectangle",
           ...origin,
@@ -161,45 +162,58 @@ export function polygonAreaInMeters(
   return (Math.abs(twiceArea) / 2) * metersPerPixel ** 2;
 }
 
-/** A Region preview that highlights the grid spaces a polygon covers, as the placed area will. */
-function coveragePreview(spellName: string): {
+/** A Region preview that highlights the grid spaces a shape covers, as the placed area will. */
+export function coveragePreview(spellName: string): {
   show: (points: Point[]) => void;
+  showShapes: (shapes: PlacedAreaShape[]) => void;
   destroy: () => void;
 } {
-  const RegionDocument = CONFIG.Region.documentClass as any;
-  const document = new RegionDocument(
-    {
-      name: spellName,
-      color: game.user?.color?.css ?? "#7fb3d5",
-      highlightMode: "coverage",
-      shapes: [],
-    },
-    { parent: canvas!.scene },
-  );
-  const preview = new (CONFIG.Region.objectClass as any)(document);
-  preview._previewType = "creation";
-  document._object = preview;
-  canvas!.regions!.preview!.addChild(preview);
-  void preview.draw();
+  let preview: any;
+  const destroy = () => {
+    if (preview && !preview.destroyed) {
+      preview.destroy({ children: true });
+    }
+    preview = undefined;
+  };
+  // A Region keeps a control per shape it was drawn with: another shape count needs a new Region
+  const showShapes = (shapes: PlacedAreaShape[]) => {
+    if (preview && shapes.length && preview.document.shapes.length === shapes.length) {
+      preview.document.updateSource({ shapes: shapes });
+      preview.document.updateShapeConstraints?.();
+      preview.renderFlags.set({ refreshShapes: true });
+      return;
+    }
+    destroy();
+    if (!shapes.length) {
+      return;
+    }
+    const RegionDocument = CONFIG.Region.documentClass as any;
+    const document = new RegionDocument(
+      {
+        name: spellName,
+        color: game.user?.color?.css ?? "#7fb3d5",
+        highlightMode: "coverage",
+        shapes: shapes,
+      },
+      { parent: canvas!.scene },
+    );
+    preview = new (CONFIG.Region.objectClass as any)(document);
+    preview._previewType = "creation";
+    document._object = preview;
+    canvas!.regions!.preview!.addChild(preview);
+    void preview.draw();
+  };
   return {
     show: (points) => {
       const unique = points.filter(
         (p, i) => !points.slice(0, i).some((q) => q.x === p.x && q.y === p.y),
       );
-      document.updateSource({
-        shapes:
-          unique.length >= 3
-            ? [{ type: "polygon", points: unique.flatMap((p) => [p.x, p.y]) }]
-            : [],
-      });
-      document.updateShapeConstraints?.();
-      preview.renderFlags.set({ refreshShapes: true });
+      showShapes(
+        unique.length >= 3 ? [{ type: "polygon", points: unique.flatMap((p) => [p.x, p.y]) }] : [],
+      );
     },
-    destroy: () => {
-      if (!preview.destroyed) {
-        preview.destroy({ children: true });
-      }
-    },
+    showShapes: showShapes,
+    destroy: destroy,
   };
 }
 
