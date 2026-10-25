@@ -533,6 +533,7 @@
       },
       "SpellCast": {
         "UnknownTarget": "Unknown target",
+        "NoTarget": "No target",
         "ApplyEffect": "Apply",
         "Applied": "Applied",
         "Resolved": "Done",
@@ -709,9 +710,11 @@
           "active": "Active side",
           "passive": "Resisting side"
         },
-        "CastOnSelfTitle": "No Target Selected",
-        "CastOnSelfContent": "No target selected. Cast <b>{spellName}</b> on yourself? Casting on yourself counts as accepting the spell, so there is no resistance roll.",
-        "CastOnSelf": "Cast on self"
+        "NoTargetTitle": "No Target Selected",
+        "NoTargetContent": "No target selected. Cast <b>{spellName}</b> without a target? There is no resistance roll, and the GM rules what the spell does. To cast it on yourself, pick yourself as the target.",
+        "NoTargetNoTokenContent": "No target selected. Cast <b>{spellName}</b> without a target, so the GM rules what the spell does, or on yourself, which counts as accepting it?",
+        "CastWithoutTarget": "Cast without target",
+        "CastOnSelf": "Cast on yourself"
       },
       "SpellCast": {
         "SingleTargetOnly": "only one target",

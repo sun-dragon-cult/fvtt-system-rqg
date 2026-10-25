@@ -35,38 +35,22 @@ describe("buildCastTargetOutcomes", () => {
     ]);
   });
 
-  it("defaults to the caster for a resistanceRoll spell, whose caster confirmed the self cast", () => {
-    expect(build(Success, SpellResistedByEnum.ResistanceRoll, [])[0]).toMatchObject({
-      targetTokenOrActorUuid: caster,
-      state: "affected",
-      resolvedBy: "selfCast",
-    });
+  it.each([
+    SpellResistedByEnum.ResistanceRoll,
+    SpellResistedByEnum.ResistanceRollArea,
+    SpellResistedByEnum.ResistanceRollPerTarget,
+    SpellResistedByEnum.SpiritCombatRound,
+    SpellResistedByEnum.SpiritCombatDefeat,
+  ])("leaves an untargeted %s cast's opponent pending, for the GM to rule on", (mode) => {
+    expect(build(Success, mode, [])).toEqual([
+      {
+        targetTokenOrActorUuid: "",
+        state: "pending",
+        resolvedBy: undefined,
+        casterSuccessLevel: undefined,
+      },
+    ]);
   });
-
-  it("records no targets for an untargeted resistanceRollArea cast, rather than hitting the caster", () => {
-    expect(build(Success, SpellResistedByEnum.ResistanceRollArea, [])).toEqual([]);
-  });
-
-  it("defaults to the caster for a resistanceRollPerTarget spell, whose caster confirmed the self cast", () => {
-    expect(build(Success, SpellResistedByEnum.ResistanceRollPerTarget, [])[0]).toMatchObject({
-      targetTokenOrActorUuid: caster,
-      resolvedBy: "selfCast",
-    });
-  });
-
-  it.each([SpellResistedByEnum.SpiritCombatRound, SpellResistedByEnum.SpiritCombatDefeat])(
-    "leaves an untargeted %s cast's opponent pending, for the GM to rule on",
-    (mode) => {
-      expect(build(Success, mode, [])).toEqual([
-        {
-          targetTokenOrActorUuid: "",
-          state: "pending",
-          resolvedBy: undefined,
-          casterSuccessLevel: undefined,
-        },
-      ]);
-    },
-  );
 
   it("marks an untargeted spirit-combat gate unaffected when the cast failed", () => {
     expect(build(Failure, SpellResistedByEnum.SpiritCombatRound, [])).toMatchObject([

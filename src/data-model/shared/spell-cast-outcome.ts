@@ -2,7 +2,7 @@ import { safeFromJSON } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { calculateAbilitySuccessLevel } from "../../rolls/ability-roll/calculate-ability-success-level";
 import { computeResistanceTargetChance } from "../../rolls/resistance-roll/resistance-roll-formula";
-import { isSpiritCombatGate, SpellResistedByEnum } from "../item-data/spell";
+import { SpellResistedByEnum } from "../item-data/spell";
 
 import Roll = foundry.dice.Roll;
 
@@ -74,9 +74,8 @@ export function areaResistanceThreshold(
 /**
  * The per-target outcomes known the moment the cast roll lands. Anything a later step decides - a
  * resistance roll, a GM ruling - starts as pending. Nothing targeted means a self cast only for
- * `none` and the single and per-target resistance rolls (whose caster confirmed it); an area spell
- * without targets has no target yet, not the caster, and a spirit-combat gate is against an
- * untargeted opponent.
+ * `none`; a resisted spell is against an untargeted opponent the GM rules on - for an area spell,
+ * whoever the GM says it reaches, as the caster had no token to measure from.
  */
 export function buildCastTargetOutcomes(params: {
   castSuccessLevel: AbilitySuccessLevelEnum;
@@ -88,15 +87,10 @@ export function buildCastTargetOutcomes(params: {
   stoppedTargetUuids?: readonly string[] | undefined;
 }): SpellTargetOutcome[] {
   const { castSuccessLevel, resistedBy, casterTokenOrActorUuid } = params;
-  const defaultsToSelf =
-    resistedBy === SpellResistedByEnum.None ||
-    resistedBy === SpellResistedByEnum.ResistanceRoll ||
-    resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
-  const untargeted: SpellCastTarget[] = defaultsToSelf
-    ? [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }]
-    : isSpiritCombatGate(resistedBy)
-      ? [{ tokenUuid: "", isCaster: false }]
-      : [];
+  const untargeted: SpellCastTarget[] =
+    resistedBy === SpellResistedByEnum.None
+      ? [{ tokenUuid: casterTokenOrActorUuid, isCaster: true }]
+      : [{ tokenUuid: "", isCaster: false }];
   const targets = params.targets.length ? params.targets : untargeted;
   const castSucceeded = castSuccessLevel <= AbilitySuccessLevelEnum.Success;
 

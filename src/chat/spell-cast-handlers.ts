@@ -95,9 +95,13 @@ function isOwnedByUser(uuid: string): boolean {
   return !!uuid && !!(fromUuidSync(uuid) as { isOwner?: boolean } | null)?.isOwner;
 }
 
-function targetName(uuid: string): string {
+function targetName(uuid: string, spiritCombat: boolean): string {
   if (!uuid) {
-    return localize("RQG.ChatMessage.SpellCast.SpiritCombat.Opponent");
+    return localize(
+      spiritCombat
+        ? "RQG.ChatMessage.SpellCast.SpiritCombat.Opponent"
+        : "RQG.ChatMessage.SpellCast.NoTarget",
+    );
   }
   return (
     (fromUuidSync(uuid) as { name?: string } | null)?.name ??
@@ -138,7 +142,7 @@ export async function renderSpellCastTargets(
       canApply:
         !!spell && target.state === "affected" && !effectUuids.length && !blockedReason && isOwner,
       uuid: target.targetTokenOrActorUuid,
-      name: targetName(target.targetTokenOrActorUuid),
+      name: targetName(target.targetTokenOrActorUuid, !!gateLabels),
       state: target.state,
       stateLabel:
         target.state === "pending" && gateLabels
@@ -164,7 +168,7 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
   const state = getRequiredDomDataset(clickedButton, "spell-cast-ruling") as SpellTargetRulingState;
-  // "" is a spirit-combat gate's untargeted opponent.
+  // "" is an untargeted opponent.
   const targetUuid = getDomDataset(clickedButton, "target-uuid") ?? "";
   const message = game.messages?.get(getRequiredDomDataset(clickedButton, "message-id"));
   if (!message || !spellTargetRulingState.includes(state) || isEffectSettled(message, targetUuid)) {

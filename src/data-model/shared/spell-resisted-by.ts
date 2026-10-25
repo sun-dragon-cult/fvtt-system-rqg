@@ -1,5 +1,5 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import { localize } from "../../system/util";
+import { getTokenFromActor, localize } from "../../system/util";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
 import { isSpiritCombatGate, SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
 import {
@@ -73,15 +73,45 @@ export async function resolveResistedSpellCastTarget(
   }
 
   if (targets.length === 0) {
-    const castOnSelf = await foundry.applications.api.DialogV2.confirm({
-      window: { title: localize("RQG.Dialog.ResistanceRequest.CastOnSelfTitle") },
-      content: localize("RQG.Dialog.ResistanceRequest.CastOnSelfContent", {
-        spellName: spellName ?? "",
-      }),
-      yes: { label: "RQG.Dialog.ResistanceRequest.CastOnSelf", icon: "fa-solid fa-user" },
-      no: { label: "COMMON.Cancel", icon: "fa-solid fa-xmark", default: true },
+    // With a token on the scene the caster targets themselves; without one, only this offers it.
+    const casterToken = getTokenFromActor(casterActor) as TokenDocument | undefined;
+    const offerSelf =
+      !canvas?.ready || casterToken?.parent !== canvas.scene || !casterToken?.object;
+    const choice = await foundry.applications.api.DialogV2.wait({
+      window: { title: localize("RQG.Dialog.ResistanceRequest.NoTargetTitle") },
+      content: localize(
+        offerSelf
+          ? "RQG.Dialog.ResistanceRequest.NoTargetNoTokenContent"
+          : "RQG.Dialog.ResistanceRequest.NoTargetContent",
+        { spellName: spellName ?? "" },
+      ),
+      buttons: [
+        {
+          action: "withoutTarget",
+          label: "RQG.Dialog.ResistanceRequest.CastWithoutTarget",
+          icon: "fa-solid fa-wand-sparkles",
+        },
+        ...(offerSelf
+          ? [
+              {
+                action: "self",
+                label: "RQG.Dialog.ResistanceRequest.CastOnSelf",
+                icon: "fa-solid fa-user",
+              },
+            ]
+          : []),
+        { action: "cancel", label: "COMMON.Cancel", icon: "fa-solid fa-xmark", default: true },
+      ],
+      rejectClose: false,
     });
-    return { proceed: !!castOnSelf, selfCast: !!castOnSelf, targets: castTargets };
+    if (choice === "self") {
+      return {
+        proceed: true,
+        selfCast: true,
+        targets: [{ tokenUuid: casterActor.uuid ?? "", isCaster: true }],
+      };
+    }
+    return { proceed: choice === "withoutTarget", selfCast: false, targets: castTargets };
   }
 
   if (perTarget) {
