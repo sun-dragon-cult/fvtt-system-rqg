@@ -1,7 +1,12 @@
 import { spellBehavior } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
 import { spellProvenanceFields } from "../active-effect/data-model/rqg-active-effect-data-model";
-import { removeAreaEffects, type SpellAreaScope } from "../system/spell-effects/spell-area";
+import {
+  removeAreaEffects,
+  type SpellAcrossScope,
+  type SpellAreaScope,
+} from "../system/spell-effects/spell-area";
+import type { SpellEffectCast } from "../system/spell-effects/apply-spell-effect";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
 
@@ -19,8 +24,9 @@ type AreaHook = "onAreaEnter" | "onAreaExit";
 
 /**
  * A spell's area (#1168), made by `spellEffects.createArea`: runs the spell behavior's
- * `onAreaEnter` and `onAreaExit` when tokens cross it, and `onAreaEnter` for those already inside
- * when it appears. Runs on the active GM's client, since the spells change other people's actors.
+ * `onAreaEnter` and `onAreaExit` when tokens cross it, `onAreaEnter` for those already inside
+ * when it appears, and `onSpellAcross` when a spell is cast across it. Runs on the active GM's
+ * client, since the spells change other people's actors.
  */
 export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionBehaviorSchema> {
   static override defineSchema() {
@@ -76,25 +82,54 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
     if (hook === "onAreaExit") {
       await removeAreaEffects(actor, region.uuid ?? "");
     }
-    const provenance = this.spell;
-    const run = spellBehavior(provenance.spellRqid)?.[hook];
-    if (!run) {
-      return;
-    }
-    // The cast spell may be gone from the caster since; its compendium copy has the same rules
-    const spell = ((await fromUuid(provenance.spellUuid)) ??
-      (await Rqid.fromRqid(provenance.spellRqid, undefined, true))) as RqgItem | null;
-    if (!spell) {
+    const run = spellBehavior(this.spell.spellRqid)?.[hook];
+    const spell = run ? await this.areaSpell() : null;
+    if (!run || !spell) {
       return;
     }
     const scope: SpellAreaScope = {
       spell: spell,
-      cast: { ...provenance, casterSuccessLevel: provenance.casterSuccessLevel ?? undefined },
+      cast: this.areaCast(),
       region: region as RegionDocument,
       token: token,
       actor: actor,
       crossed: crossed,
     };
     await run(scope);
+  }
+
+  /** `incomingSpell` cast from outside the area at `targets` inside it. */
+  async spellAcross(
+    incomingSpell: RqgItem,
+    incomingCast: SpellEffectCast,
+    targets: TokenDocument[],
+  ): Promise<void> {
+    const region = this.region;
+    const run = spellBehavior(this.spell.spellRqid)?.onSpellAcross;
+    const spell = run && region ? await this.areaSpell() : null;
+    if (!run || !spell) {
+      return;
+    }
+    const scope: SpellAcrossScope = {
+      spell: spell,
+      cast: this.areaCast(),
+      region: region as RegionDocument,
+      incomingSpell: incomingSpell,
+      incomingCast: incomingCast,
+      targets: targets,
+    };
+    await run(scope);
+  }
+
+  private async areaSpell(): Promise<RqgItem | null> {
+    const provenance = this.spell;
+    // The cast spell may be gone from the caster since; its compendium copy has the same rules
+    return ((await fromUuid(provenance.spellUuid)) ??
+      (await Rqid.fromRqid(provenance.spellRqid, undefined, true))) as RqgItem | null;
+  }
+
+  private areaCast(): SpellEffectCast {
+    const provenance = this.spell;
+    return { ...provenance, casterSuccessLevel: provenance.casterSuccessLevel ?? undefined };
   }
 }

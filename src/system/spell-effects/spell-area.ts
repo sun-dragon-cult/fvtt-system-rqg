@@ -59,6 +59,20 @@ export type SpellAreaScope = {
   crossed: boolean;
 };
 
+/**
+ * What a spell's `onSpellAcross` runs with - part of the public API. It runs on the active GM's
+ * client when `incomingSpell` is cast from outside the area at `targets`, the tokens inside it that
+ * it was cast at, once per cast, before their protective spells meet it.
+ */
+export type SpellAcrossScope = {
+  spell: RqgItem;
+  cast: SpellEffectCast;
+  region: RegionDocument;
+  incomingSpell: RqgItem;
+  incomingCast: SpellEffectCast;
+  targets: TokenDocument[];
+};
+
 /** What a player's client sends the GM to make a spell area, since players may not create Regions. */
 export type CreateSpellAreaQueryData = {
   spellUuid: string;

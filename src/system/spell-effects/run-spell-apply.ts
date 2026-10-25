@@ -10,6 +10,7 @@ import {
 } from "./apply-spell-effect";
 import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
+import { castAcrossSpellAreas } from "./spell-across";
 import { RqgLogger } from "../logging/rqg-logger";
 
 const logger = new RqgLogger("run-spell-apply");
@@ -125,6 +126,7 @@ async function stoppedTargets(data: InterceptSpellCastData): Promise<string[]> {
     castMessageId: "",
     casterSuccessLevel: data.casterSuccessLevel,
   });
+  await castAcrossSpellAreas(spell, cast, data.targetUuids);
   const stopped: string[] = [];
   for (const targetUuid of data.targetUuids) {
     const target = await fromUuid(targetUuid);
@@ -144,8 +146,9 @@ async function stoppedTargets(data: InterceptSpellCastData): Promise<string[]> {
 
 /**
  * The targets whose protective spells stop a spell as it is cast, before anyone resists it
- * (RBM p.111). Run once per cast, on a GM's client, since stopping it can use up Countermagic and
- * sound a ward's alarm. Without an active GM a player's cast meets none.
+ * (RBM p.111), after the spell areas it crosses on the way had their say. Run once per cast, on a
+ * GM's client, since stopping it can use up Countermagic and sound a ward's alarm. Without an
+ * active GM a player's cast meets none.
  */
 export async function interceptSpellCast(data: InterceptSpellCastData): Promise<string[]> {
   if (!data.targetUuids.length) {

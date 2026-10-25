@@ -16,7 +16,7 @@ import type { RuneMagicRollOptions } from "../../rolls/rune-magic-roll/rune-magi
 import type { DefenceHookData, PrepareAttackData } from "../../rolls/roll-method-options";
 import type { RollPreparation } from "../../rolls/roll-preparation";
 import type { SpellEffectApplied, SpellApplyScope } from "./apply-spell-effect";
-import type { SpellAreaScope } from "./spell-area";
+import type { SpellAcrossScope, SpellAreaScope } from "./spell-area";
 
 const logger = new RqgLogger("spell-behavior");
 
@@ -89,6 +89,8 @@ export type SpellBehavior = SpellRollEntries & {
    * area's effects off it.
    */
   onAreaExit?(scope: SpellAreaScope): Promise<void>;
+  /** Runs on the active GM's client when a spell is cast across the spell's area from outside. */
+  onSpellAcross?(scope: SpellAcrossScope): Promise<void>;
   /** Runs when one of the spell's effects expires or is deleted. */
   onEnd?(scope: SpellEndScope): Promise<void>;
   /** Run `apply` on the active GM's client, e.g. because it creates tokens, which players may not. */
@@ -106,6 +108,7 @@ const actingHookNames = [
   "onResisted",
   "onAreaEnter",
   "onAreaExit",
+  "onSpellAcross",
   "onEnd",
 ] as const satisfies readonly (keyof SpellBehavior)[];
 
@@ -175,7 +178,14 @@ export async function guardSpellBehavior<T>(
   );
 }
 
-type HookKind = "apply" | "onIncomingSpell" | "onResisted" | "onEnd" | "onAreaEnter" | "onAreaExit";
+type HookKind =
+  | "apply"
+  | "onIncomingSpell"
+  | "onResisted"
+  | "onEnd"
+  | "onAreaEnter"
+  | "onAreaExit"
+  | "onSpellAcross";
 
 // Per function, so spells registering the same hook (Countermagic and Shield) still share it
 const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any>>> = {
@@ -185,6 +195,7 @@ const guardedHooks: Record<HookKind, WeakMap<object, (scope: any) => Promise<any
   onEnd: new WeakMap(),
   onAreaEnter: new WeakMap(),
   onAreaExit: new WeakMap(),
+  onSpellAcross: new WeakMap(),
 };
 
 function guarded<F extends (scope: any) => Promise<any>>(
@@ -288,6 +299,11 @@ function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavio
     onEnd: guarded("onEnd", behavior.onEnd, (scope) => scope.effect.name ?? ""),
     onAreaEnter: guarded("onAreaEnter", behavior.onAreaEnter, (scope) => scope.spell.name ?? ""),
     onAreaExit: guarded("onAreaExit", behavior.onAreaExit, (scope) => scope.spell.name ?? ""),
+    onSpellAcross: guarded(
+      "onSpellAcross",
+      behavior.onSpellAcross,
+      (scope) => scope.spell.name ?? "",
+    ),
     runAsGm: behavior.runAsGm,
     areaRadius: guardedAreaRadius(behavior.areaRadius, spellRqid),
   };
