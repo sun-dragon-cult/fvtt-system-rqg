@@ -233,6 +233,7 @@ export async function postSpellCastResult(params: {
       rollMode: castRollMode,
       spellCast: combined ? { castRoll, casterTokenOrActorUuid: casterUuid, spellUuid } : undefined,
       spellCastMessageId: castMessage?.id ?? undefined,
+      castFlavor: hidden ? castRoll.flavor : undefined,
     });
   }
 }
@@ -265,6 +266,7 @@ export async function requestSpellResistance(params: {
   frozenValue?: number;
   spellCast?: CreateResistanceRequestParams["spellCast"];
   spellCastMessageId?: string | undefined;
+  castFlavor?: string | undefined;
   reflectedFrom?: CreateResistanceRequestParams["reflectedFrom"];
 }): Promise<void> {
   // Dynamic imports to avoid a circular dependency through rqgItem.ts.
@@ -296,6 +298,7 @@ export async function requestSpellResistance(params: {
     description: undefined,
     spellCast: params.spellCast,
     spellCastMessageId: params.spellCastMessageId,
+    castFlavor: params.castFlavor,
     reflectedFrom: params.reflectedFrom,
   });
 }

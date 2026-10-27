@@ -601,6 +601,8 @@ describe("postSpellCastResult", () => {
     expect(request.frozenTokenOrActorUuid).toBeUndefined();
     // "self" would hide the request from the very person who has to answer it.
     expect(request.rollMode).toBe("gm");
+    // kept for when the spell takes effect, which reveals what it was
+    expect(request.castFlavor).toBe("Demoralize");
   });
 
   it("keeps a blind cast's request blind", async () => {
