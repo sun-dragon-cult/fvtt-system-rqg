@@ -260,6 +260,7 @@ export const loadHandlebarsTemplates = async function () {
       "systems/rqg/applications/improve-dialogs/improve-dialog-source-chooser.hbs",
     improveDialogSourceOption:
       "systems/rqg/applications/improve-dialogs/improve-dialog-source-option.hbs",
+    spellCastTarget: "systems/rqg/applications/app-parts/spell-cast-target.hbs",
 
     // RqidLink partials
     rqidLink: "systems/rqg/sheet-partials/rqid-link.hbs",

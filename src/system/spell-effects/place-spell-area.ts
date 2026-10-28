@@ -1,8 +1,13 @@
 import { localize } from "../util";
-import { metersPerSceneUnit, metersToPixels } from "./scene-distance";
+import { metersPerPixel, metersToPixels } from "./scene-distance";
 import { areaExtent, type SpellAreaShape } from "./spell-area";
+import { casterTokenOnScene } from "./spell-area-targets";
+import type { RqgActor } from "@actors/rqg-actor.ts";
 
 type Point = { x: number; y: number };
+
+/** A spell area's Region color, unless it is visible to everyone. */
+export const spellAreaColor = "#7fb3d5";
 
 /** The Region shape data a placed area becomes. */
 export type PlacedAreaShape = Record<string, unknown>;
@@ -19,12 +24,12 @@ export async function placeSpellArea(
   rangeMeters: number | undefined,
   spellName: string,
 ): Promise<PlacedAreaShape | undefined> {
-  const casterObject = caster.object;
-  if (!canvas?.ready || !casterObject || caster.parent !== canvas.scene) {
+  const casterObject = casterTokenOnScene(caster, caster.actor as RqgActor);
+  if (!casterObject || !canvas?.scene) {
     ui.notifications?.warn(localize("RQG.Dialog.SpellCast.NoCasterTokenOnScene"));
     return undefined;
   }
-  const grid = canvas.scene!.grid;
+  const grid = canvas.scene.grid;
   const origin = casterObject.center;
   const reach =
     rangeMeters === undefined
@@ -109,7 +114,7 @@ async function placeShape(
     {
       name: spellName,
       shapes: [regionShape],
-      color: game.user?.color?.css ?? "#7fb3d5",
+      color: game.user?.color?.css ?? spellAreaColor,
       highlightMode: "coverage",
       displayMeasurements: true,
     } as any,
@@ -158,8 +163,7 @@ export function polygonAreaInMeters(
     const b = points[(i + 1) % points.length]!;
     twiceArea += a.x * b.y - b.x * a.y;
   }
-  const metersPerPixel = (grid.distance * metersPerSceneUnit(grid.units)) / grid.size;
-  return (Math.abs(twiceArea) / 2) * metersPerPixel ** 2;
+  return (Math.abs(twiceArea) / 2) * metersPerPixel(grid) ** 2;
 }
 
 /** A Region preview that highlights the grid spaces a shape covers, as the placed area will. */
@@ -191,7 +195,7 @@ export function coveragePreview(spellName: string): {
     const document = new RegionDocument(
       {
         name: spellName,
-        color: game.user?.color?.css ?? "#7fb3d5",
+        color: game.user?.color?.css ?? spellAreaColor,
         highlightMode: "coverage",
         shapes: shapes,
       },
@@ -258,7 +262,9 @@ function pickPolygon(
     const position = canvas!.mousePosition;
     return canvas!.regions!.getSnappedPoint({ x: position.x, y: position.y });
   };
+  let drawnAt: Point | undefined;
   const draw = (pointer: Point) => {
+    drawnAt = pointer;
     const shown = [...points, pointer];
     const area = polygonAreaInMeters(shown, grid);
     const fits = area <= maxArea && shown.every(inRange);
@@ -292,7 +298,12 @@ function pickPolygon(
         finish(undefined);
       }
     };
-    overlay.on("pointermove", () => draw(snapped()));
+    overlay.on("pointermove", () => {
+      const pointer = snapped();
+      if (pointer.x !== drawnAt?.x || pointer.y !== drawnAt?.y) {
+        draw(pointer);
+      }
+    });
     overlay.on("pointerdown", (event: PIXI.FederatedPointerEvent) => {
       event.stopPropagation();
       if (event.button === 2) {

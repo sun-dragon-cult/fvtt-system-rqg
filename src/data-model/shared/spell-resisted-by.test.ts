@@ -79,7 +79,6 @@ describe("resolveResistedSpellCastTarget", () => {
     // still recorded, for the cast outcome
     expect(result).toEqual({
       proceed: true,
-      selfCast: false,
       targets: [
         { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
         { tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
@@ -101,7 +100,6 @@ describe("resolveResistedSpellCastTarget", () => {
 
     expect(result).toEqual({
       proceed: true,
-      selfCast: false,
       targets: [
         { tokenUuid: "Scene.s.Token.Actor.caster", isCaster: true },
         { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
@@ -133,8 +131,6 @@ describe("resolveResistedSpellCastTarget", () => {
 
     expect(result).toEqual({
       proceed: true,
-      targetTokenUuid: "Scene.s.Token.victim",
-      selfCast: false,
       targets: [{ tokenUuid: "Scene.s.Token.victim", isCaster: false }],
     });
   });
@@ -149,7 +145,7 @@ describe("resolveResistedSpellCastTarget", () => {
     );
 
     expect(result.proceed).toBe(true);
-    expect(result.selfCast).toBe(true);
+    expect(result.targets).toEqual([{ tokenUuid: "Scene.s.Token.caster", isCaster: true }]);
   });
 
   it("asks to confirm a cast with nothing targeted, which then has no target to resist", async () => {
@@ -161,7 +157,7 @@ describe("resolveResistedSpellCastTarget", () => {
       "Heal",
     );
 
-    expect(result).toEqual({ proceed: true, selfCast: false, targets: [] });
+    expect(result).toEqual({ proceed: true, targets: [] });
   });
 
   it("offers to cast on yourself when the caster has no token to pick, which makes them the target", async () => {
@@ -176,7 +172,6 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(offeredActions()).toEqual(["withoutTarget", "self", "cancel"]);
     expect(result).toEqual({
       proceed: true,
-      selfCast: true,
       targets: [{ tokenUuid: "Actor.caster", isCaster: true }],
     });
   });
@@ -206,7 +201,7 @@ describe("resolveResistedSpellCastTarget", () => {
       "Heal",
     );
 
-    expect(result).toEqual({ proceed: false, selfCast: false, targets: [] });
+    expect(result).toEqual({ proceed: false, targets: [] });
   });
 
   it("aborts when the confirmation is dismissed rather than answered", async () => {
@@ -232,7 +227,6 @@ describe("resolveResistedSpellCastTarget", () => {
 
     expect(result).toEqual({
       proceed: true,
-      selfCast: false,
       targets: [
         { tokenUuid: "Scene.s.Token.Actor.a", isCaster: false },
         { tokenUuid: "Scene.s.Token.Actor.b", isCaster: false },
@@ -250,7 +244,7 @@ describe("resolveResistedSpellCastTarget", () => {
       "Teleportation",
     );
 
-    expect(result).toEqual({ proceed: true, selfCast: false, targets: [] });
+    expect(result).toEqual({ proceed: true, targets: [] });
   });
 
   it.each([SpellResistedByEnum.SpiritCombatRound, SpellResistedByEnum.SpiritCombatDefeat])(
@@ -272,7 +266,7 @@ describe("resolveResistedSpellCastTarget", () => {
       "Resurrect",
     );
 
-    expect(result).toEqual({ proceed: true, selfCast: false, targets: [] });
+    expect(result).toEqual({ proceed: true, targets: [] });
     expect((globalThis as any).foundry.applications.api.DialogV2.wait).not.toHaveBeenCalled();
   });
 });
@@ -293,8 +287,6 @@ describe("postSpellCastResult", () => {
 
   const resisted = {
     proceed: true,
-    targetTokenUuid: "Scene.s.Token.victim",
-    selfCast: false,
     targets: [{ tokenUuid: "Scene.s.Token.victim", isCaster: false }],
   };
 
@@ -351,7 +343,6 @@ describe("postSpellCastResult", () => {
     const castRoll = await post({
       target: {
         proceed: true,
-        selfCast: true,
         targets: [{ tokenUuid: "Scene.s.Token.caster", isCaster: true }],
       },
     });
@@ -372,7 +363,6 @@ describe("postSpellCastResult", () => {
       resistedBy: SpellResistedByEnum.None,
       target: {
         proceed: true,
-        selfCast: false,
         targets: [
           { tokenUuid: "Scene.s.Token.a", isCaster: false },
           { tokenUuid: "Scene.s.Token.b", isCaster: false },
@@ -395,7 +385,6 @@ describe("postSpellCastResult", () => {
       resistedWith: SpellResistedWithEnum.MagicPoints,
       target: {
         proceed: true,
-        selfCast: false,
         targets: [
           { tokenUuid: "Scene.s.Token.a", isCaster: false },
           { tokenUuid: "Scene.s.Token.caster", isCaster: true },
@@ -441,7 +430,6 @@ describe("postSpellCastResult", () => {
       resistedBy: SpellResistedByEnum.None,
       target: {
         proceed: true,
-        selfCast: false,
         targets: [
           { tokenUuid: "Scene.s.Token.a", isCaster: false },
           { tokenUuid: "Scene.s.Token.caster", isCaster: true },
@@ -481,7 +469,6 @@ describe("postSpellCastResult", () => {
       resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
       target: {
         proceed: true,
-        selfCast: false,
         targets: [
           { tokenUuid: "Scene.s.Token.a", isCaster: false },
           { tokenUuid: "Scene.s.Token.b", isCaster: false },
@@ -506,7 +493,6 @@ describe("postSpellCastResult", () => {
       resistedBy: SpellResistedByEnum.ResistanceRollPerTarget,
       target: {
         proceed: true,
-        selfCast: false,
         targets: [{ tokenUuid: "Scene.s.Token.a", isCaster: false }],
       },
     });
@@ -526,7 +512,6 @@ describe("postSpellCastResult", () => {
       resistedBy: SpellResistedByEnum.ResistanceRollArea,
       target: {
         proceed: true,
-        selfCast: false,
         targets: [
           { tokenUuid: "Scene.s.Token.a", isCaster: false },
           { tokenUuid: "Scene.s.Token.strong", isCaster: false },
@@ -553,7 +538,7 @@ describe("postSpellCastResult", () => {
   it("records the resistedBy mode on the cast message, so the card can word the GM ruling", async () => {
     const castRoll = await post({
       resistedBy: SpellResistedByEnum.SpiritCombatRound,
-      target: { proceed: true, selfCast: false, targets: [] },
+      target: { proceed: true, targets: [] },
     });
 
     const system = postedCastMessage(castRoll).system;

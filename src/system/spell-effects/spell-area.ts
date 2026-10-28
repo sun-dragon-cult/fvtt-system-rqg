@@ -14,8 +14,10 @@ import {
 } from "./apply-spell-effect";
 import { summonerToken } from "./summon";
 import { metersToPixels } from "./scene-distance";
-import { placeSpellArea, type PlacedAreaShape } from "./place-spell-area";
+import { placeSpellArea, spellAreaColor, type PlacedAreaShape } from "./place-spell-area";
 import { queryActiveGm } from "./run-spell-apply";
+import { spellAreaBehavior } from "./spell-across";
+import { resolveActorFromUuid } from "../../applications/resistance-roll-dialog/resistance-roll-shared";
 
 /**
  * The shape of a spell's area, in meters - part of the public API. A polygon is clicked corner by
@@ -191,7 +193,7 @@ async function createAreaAsGm(
   const [region] = (await scene.createEmbeddedDocuments("Region", [
     {
       name: spell.name ?? "",
-      color: data.visible ? "#bbbbbb" : "#7fb3d5",
+      color: data.visible ? "#bbbbbb" : spellAreaColor,
       shapes: [data.shape],
       highlightMode: "coverage",
       visibility: data.visible ? CONST.REGION_VISIBILITY.ALWAYS : CONST.REGION_VISIBILITY.OBSERVER,
@@ -238,13 +240,18 @@ export async function applyAreaEffect(scope: SpellAreaScope): Promise<void> {
   );
 }
 
-/** Effects of spell areas: the caster's (`spellArea`) and those put on tokens (`areaRegion`). */
-function areaEffectIds(actor: RqgActor, regionUuids: ReadonlySet<string>): string[] {
+/** Effects of these spell areas: the caster's (`spellArea`), those put on tokens (`areaRegion`). */
+function areaEffectIds(
+  actor: RqgActor,
+  flags: readonly ("spellArea" | "areaRegion")[],
+  regionUuids: ReadonlySet<string>,
+): string[] {
   return actor.effects
     .filter((effect) =>
-      [effect.getFlag(systemId, "spellArea"), effect.getFlag(systemId, "areaRegion")].some(
-        (uuid) => typeof uuid === "string" && regionUuids.has(uuid),
-      ),
+      flags.some((flag) => {
+        const uuid = effect.getFlag(systemId, flag);
+        return typeof uuid === "string" && regionUuids.has(uuid);
+      }),
     )
     .map((effect) => effect.id ?? "");
 }
@@ -257,10 +264,7 @@ async function deleteEffects(actor: RqgActor, ids: string[]): Promise<void> {
 
 /** Take the effects an area put on a token off it, when it leaves or the area goes. */
 export async function removeAreaEffects(actor: RqgActor, regionUuid: string): Promise<void> {
-  const ids = actor.effects
-    .filter((effect) => effect.getFlag(systemId, "areaRegion") === regionUuid)
-    .map((effect) => effect.id ?? "");
-  await deleteEffects(actor, ids);
+  await deleteEffects(actor, areaEffectIds(actor, ["areaRegion"], new Set([regionUuid])));
 }
 
 /** Remove the Region of a spell area once its effect on the caster has ended. */
@@ -272,9 +276,6 @@ export async function removeSpellArea(effect: ActiveEffect): Promise<void> {
   }
 }
 
-const isSpellArea = (region: RegionDocument) =>
-  region.behaviors.some((behavior) => behavior.type === "spellArea");
-
 /**
  * When a spell area's Region is deleted, by the spell ending or by the GM, end the caster's effect;
  * the tokens inside get an exit event, which takes theirs off. A deleted scene takes its unlinked
@@ -283,20 +284,15 @@ const isSpellArea = (region: RegionDocument) =>
  */
 export function initSpellAreaCleanup(): void {
   Hooks.on("deleteRegion", (region: RegionDocument) => {
-    if (!game.users?.activeGM?.isSelf || !isSpellArea(region)) {
+    const area = spellAreaBehavior(region);
+    if (!game.users?.activeGM?.isSelf || !area) {
       return;
     }
-    const casterUuid = (region.behaviors.find((b) => b.type === "spellArea")?.system as any)?.spell
-      ?.casterUuid;
-    const caster = casterUuid ? fromUuidSync(casterUuid) : null;
-    const casterActor = (
-      caster instanceof TokenDocument ? caster.actor : caster
-    ) as RqgActor | null;
+    const casterUuid = area.spell.casterUuid;
+    const casterActor = casterUuid ? resolveActorFromUuid(casterUuid) : undefined;
     if (casterActor) {
       // Only the anchor: deleting an effect the exit event already took fails the whole batch
-      const anchorIds = casterActor.effects
-        .filter((effect) => effect.getFlag(systemId, "spellArea") === region.uuid)
-        .map((effect) => effect.id ?? "");
+      const anchorIds = areaEffectIds(casterActor, ["spellArea"], new Set([region.uuid ?? ""]));
       void deleteEffects(casterActor, anchorIds);
     }
   });
@@ -304,12 +300,14 @@ export function initSpellAreaCleanup(): void {
     if (!game.users?.activeGM?.isSelf) {
       return;
     }
-    const uuids = new Set(scene.regions.contents.filter(isSpellArea).map((r) => r.uuid ?? ""));
+    const uuids = new Set(
+      scene.regions.contents.filter((r) => spellAreaBehavior(r)).map((r) => r.uuid ?? ""),
+    );
     if (!uuids.size) {
       return;
     }
     for (const actor of (game.actors?.contents ?? []) as RqgActor[]) {
-      void deleteEffects(actor, areaEffectIds(actor, uuids));
+      void deleteEffects(actor, areaEffectIds(actor, ["spellArea", "areaRegion"], uuids));
     }
   });
 }

@@ -16,3 +16,8 @@ export function metersToPixels(
 ): number {
   return (meters / metersPerSceneUnit(grid.units) / grid.distance) * grid.size;
 }
+
+/** Meters for one canvas pixel on a scene, by its grid scale. */
+export function metersPerPixel(grid: { size: number; distance: number; units?: string }): number {
+  return (grid.distance * metersPerSceneUnit(grid.units)) / grid.size;
+}

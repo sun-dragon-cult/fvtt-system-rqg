@@ -1,7 +1,13 @@
 import type { RqgActor } from "@actors/rqg-actor.ts";
-import { getTokenFromActor, localize } from "../../system/util";
+import { localize } from "../../system/util";
+import { casterTokenOnScene } from "../../system/spell-effects/spell-area-targets";
 import { AbilitySuccessLevelEnum } from "../../rolls/ability-roll/ability-roll.defs";
-import { isSpiritCombatGate, SpellResistedByEnum, SpellResistedWithEnum } from "../item-data/spell";
+import {
+  isSingleTargetGate,
+  isSpiritCombatGate,
+  SpellResistedByEnum,
+  SpellResistedWithEnum,
+} from "../item-data/spell";
 import {
   canChooseSpellCastRollMode,
   getDefaultRollMode,
@@ -21,9 +27,6 @@ import {
 /** Outcome of the pre-cast target check, threaded to {@link postSpellCastResult}. */
 export type ResistedSpellTarget = {
   proceed: boolean;
-  targetTokenUuid?: string | undefined;
-  /** The caster is the target, which counts as accepting - no resistance roll. */
-  selfCast: boolean;
   /** Every token targeted when the spell was cast, whatever the resistedBy mode. */
   targets: SpellCastTarget[];
 };
@@ -52,20 +55,20 @@ export async function resolveResistedSpellCastTarget(
       : [],
   );
 
-  const proceed: ResistedSpellTarget = { proceed: true, selfCast: false, targets: castTargets };
+  const proceed: ResistedSpellTarget = { proceed: true, targets: castTargets };
   const spiritCombat = isSpiritCombatGate(resistedBy);
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   if (resistedBy !== SpellResistedByEnum.ResistanceRoll && !spiritCombat && !perTarget) {
     return proceed;
   }
 
-  if (targets.length > 1 && !perTarget) {
+  if (targets.length > 1 && isSingleTargetGate(resistedBy)) {
     ui.notifications?.warn(
       localize("RQG.Notification.Warn.ResistedSpellSingleTargetOnly", {
         spellName: spellName ?? "",
       }),
     );
-    return { proceed: false, selfCast: false, targets: castTargets };
+    return { proceed: false, targets: castTargets };
   }
 
   if (spiritCombat) {
@@ -74,9 +77,7 @@ export async function resolveResistedSpellCastTarget(
 
   if (targets.length === 0) {
     // With a token on the scene the caster targets themselves; without one, only this offers it.
-    const casterToken = getTokenFromActor(casterActor) as TokenDocument | undefined;
-    const offerSelf =
-      !canvas?.ready || casterToken?.parent !== canvas.scene || !casterToken?.object;
+    const offerSelf = !casterTokenOnScene(undefined, casterActor);
     const choice = await foundry.applications.api.DialogV2.wait({
       window: { title: localize("RQG.Dialog.ResistanceRequest.NoTargetTitle") },
       content: localize(
@@ -105,30 +106,16 @@ export async function resolveResistedSpellCastTarget(
       rejectClose: false,
     });
     if (choice === "self") {
-      return {
-        proceed: true,
-        selfCast: true,
-        targets: [{ tokenUuid: casterActor.uuid ?? "", isCaster: true }],
-      };
+      return { proceed: true, targets: [{ tokenUuid: casterActor.uuid ?? "", isCaster: true }] };
     }
-    return { proceed: choice === "withoutTarget", selfCast: false, targets: castTargets };
+    return { proceed: choice === "withoutTarget", targets: castTargets };
   }
 
-  if (perTarget) {
-    return proceed;
-  }
-
-  const targetToken = targets[0]?.document;
-  return {
-    proceed: true,
-    targetTokenUuid: targetToken?.uuid ?? undefined,
-    selfCast: targetToken?.actor?.uuid === casterActor.uuid,
-    targets: castTargets,
-  };
+  return proceed;
 }
 
 /**
- * Posts the cast roll to chat, in one of five shapes:
+ * Posts the cast roll to chat, in one of six shapes:
  *
  * - unresisted, failed or self-cast: a `spellCast` message carrying the roll and its outcome;
  * - resisted and open: one combined card carrying the cast roll, the target's Resist/Accept and
@@ -140,7 +127,6 @@ export async function resolveResistedSpellCastTarget(
  *   nothing more. The request links back to the cast message, which it settles;
  * - resisted per target: the `spellCast` message, plus one request card per target linked back to
  *   it, as for a hidden cast. An open cast's requests name the caster, whose card names the spell.
- *
  * - resisted by area: the `spellCast` message, its targets settled at once by one resistance roll
  *   the caster makes, which the card reads as the highest value it overcomes.
  *
@@ -184,9 +170,13 @@ export async function postSpellCastResult(params: {
       })
     : [];
   const reachedTargets = target.targets.filter((t) => !stoppedTargetUuids.includes(t.tokenUuid));
-  const resistedTargetUuids = castSucceeded
-    ? resistingTargets(resistedBy, target).filter((uuid) => !stoppedTargetUuids.includes(uuid))
-    : [];
+  // The caster accepts their own spell, and a single-target spell has at most one other target.
+  const resistedTargetUuids =
+    castSucceeded &&
+    (resistedBy === SpellResistedByEnum.ResistanceRoll ||
+      resistedBy === SpellResistedByEnum.ResistanceRollPerTarget)
+      ? reachedTargets.filter((t) => !t.isCaster).map((t) => t.tokenUuid)
+      : [];
 
   const area =
     resistedBy === SpellResistedByEnum.ResistanceRollArea && castSucceeded && reachedTargets.length
@@ -236,21 +226,6 @@ export async function postSpellCastResult(params: {
       castFlavor: hidden ? castRoll.flavor : undefined,
     });
   }
-}
-
-/** Who a successful cast asks for a resistance roll: each target, or the single one. */
-function resistingTargets(resistedBy: SpellResistedByEnum, target: ResistedSpellTarget): string[] {
-  if (resistedBy === SpellResistedByEnum.ResistanceRollPerTarget) {
-    return target.targets.filter((t) => !t.isCaster).map((t) => t.tokenUuid);
-  }
-  if (
-    resistedBy === SpellResistedByEnum.ResistanceRoll &&
-    !target.selfCast &&
-    target.targetTokenUuid
-  ) {
-    return [target.targetTokenUuid];
-  }
-  return [];
 }
 
 /**

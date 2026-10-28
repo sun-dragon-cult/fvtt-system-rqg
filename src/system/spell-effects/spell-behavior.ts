@@ -97,7 +97,7 @@ export type SpellBehavior = SpellRollEntries & {
   runAsGm?: boolean;
   /**
    * The radius around the caster, in meters, that an area spell cast at this level reaches. The
-   * cast dialog then offers to target every token in it.
+   * cast dialog previews it, and the spell is cast at every token in it.
    */
   areaRadius?(level: number): number;
 };
@@ -254,7 +254,7 @@ function guardedRollEntry(
   return wrapped;
 }
 
-/** A broken `areaRadius` just means no area button, so a throw or a non-number gives 0. */
+/** A broken `areaRadius` just means no area, so a throw or a non-number gives 0. */
 function guardedAreaRadius(
   areaRadius: SpellBehavior["areaRadius"],
   spellRqid: string,

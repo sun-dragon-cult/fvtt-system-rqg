@@ -37,11 +37,9 @@ import { preparedForbiddenHtml, preparedModifiersHtml } from "../app-parts/prepa
 import {
   applySpellCastTargetNote,
   buildSpellCastTargetNote,
-  spellAreaTargetsLabel,
 } from "../app-parts/spell-cast-target-note";
-import { previewSpellArea, type SpellAreaPreview } from "../app-parts/spell-area-preview";
+import { SpellCastArea } from "../app-parts/spell-area-preview";
 import { onTargetTokenSelectChange } from "../app-parts/target-token-select";
-import { casterTokenOnScene } from "../../system/spell-effects/spell-area-targets";
 import {
   AUTO_MAGIC_POINT_SOURCE,
   getAlliedBondActor,
@@ -57,31 +55,21 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): Promise<void> {
     await super._onRender(context, options);
-    this.areaPreview ??= previewSpellArea(
-      this.spellItem,
-      this.token,
-      this.casterActor,
-      Number(context["formData"]?.levelUsed),
-    );
+    this.area.open(Number(context["formData"]?.levelUsed));
   }
 
   protected override _onClose(
     options: DeepPartial<foundry.applications.api.ApplicationV2.RenderOptions>,
   ): void {
-    this.areaPreview?.destroy();
-    this.areaPreview = undefined;
+    this.area.close();
     super._onClose(options);
   }
 
   protected override onUserTargetsChanged(): void {
     applySpellCastTargetNote(
       this.element,
-      buildSpellCastTargetNote(this.spellItem.system.resistedBy, this.casterToken()),
+      buildSpellCastTargetNote(this.spellItem.system.resistedBy, this.area.casterToken()),
     );
-  }
-
-  private casterToken(): foundry.canvas.placeables.Token | undefined {
-    return casterTokenOnScene(this.token, this.casterActor);
   }
 
   protected override getLivePreviewFormBehaviorConfig() {
@@ -187,7 +175,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
   private spellItem: RuneMagicItem;
   private casterActor: CharacterActor;
   private token: TokenDocument | null | undefined;
-  private areaPreview: SpellAreaPreview | undefined;
+  private area: SpellCastArea;
 
   /**
    * `casterActor` defaults to the spell's own owner - pass it explicitly when the spell is being
@@ -206,6 +194,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
     this.spellItem = spellItem;
     this.casterActor = caster;
     this.token = token;
+    this.area = new SpellCastArea(spellItem, token, caster);
   }
 
   static override DEFAULT_OPTIONS = {
@@ -291,7 +280,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
 
     const targetNote = buildSpellCastTargetNote(
       this.spellItem.system.resistedBy,
-      this.casterToken(),
+      this.area.casterToken(),
     );
     this.prepared = this.prepareCast(formData);
 
@@ -305,11 +294,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       targetOptions: targetNote.targetOptions,
       selectedTarget: targetNote.selectedTarget,
       disableRoll: targetNote.tooManyTargets,
-      areaTargets: spellAreaTargetsLabel(
-        this.spellItem,
-        Number(formData.levelUsed),
-        this.casterToken(),
-      ),
+      areaTargets: this.area.label(Number(formData.levelUsed)),
       isStackable: this.spellItem.system.isStackable,
       isOneUse: this.spellItem.system.isOneUse,
       usedRune: usedRune,
@@ -350,15 +335,7 @@ export class RuneMagicRollDialogV2 extends RqgInteractiveRollApplicationBase {
       .object as RuneMagicRollDialogFormData;
     this.updatePreparedRoll(this.prepareCast(formData));
     totalChanceElement.textContent = `${this.computeTotalChance(formData)}%`;
-    this.areaPreview?.update(Number(formData.levelUsed));
-    const areaTargetsElement = this.element.querySelector<HTMLElement>("[data-area-targets]");
-    if (areaTargetsElement) {
-      areaTargetsElement.textContent = spellAreaTargetsLabel(
-        this.spellItem,
-        Number(formData.levelUsed),
-        this.casterToken(),
-      );
-    }
+    this.area.update(this.element, Number(formData.levelUsed));
   }
 
   private static async onSubmit(

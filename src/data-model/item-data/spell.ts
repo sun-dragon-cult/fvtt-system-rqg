@@ -75,6 +75,11 @@ export function isSpiritCombatGate(resistedBy: SpellResistedByEnum | undefined):
   );
 }
 
+/** Whether a spell is resolved against one target only, so it can't be cast at several. */
+export function isSingleTargetGate(resistedBy: SpellResistedByEnum | undefined): boolean {
+  return resistedBy === SpellResistedByEnum.ResistanceRoll || isSpiritCombatGate(resistedBy);
+}
+
 // What a spell's effect attaches to - decides where #1079's Active Effect gets created (or
 // whether one can be at all). Frozen from the #1080 survey against RBM + Core's sample sorcery
 // list, not derived from Bladesharp alone - see #1080 for the corpus sample that ruled out a

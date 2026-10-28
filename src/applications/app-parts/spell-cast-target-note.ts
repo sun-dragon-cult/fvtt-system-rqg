@@ -1,7 +1,11 @@
 import { getTargetedTokenNames, localize } from "../../system/util";
 import { spellAreaRadius } from "../../system/spell-effects/spell-area-targets";
 import type { RqgItem } from "@items/rqg-item.ts";
-import { isSpiritCombatGate, SpellResistedByEnum } from "../../data-model/item-data/spell";
+import {
+  isSingleTargetGate,
+  isSpiritCombatGate,
+  SpellResistedByEnum,
+} from "../../data-model/item-data/spell";
 import { applyTargetTokenSelect, buildTargetTokenSelect } from "./target-token-select";
 
 export type SpellCastTargetNote = {
@@ -31,7 +35,7 @@ export function buildSpellCastTargetNote(
   const targetCount = game.user?.targets.size ?? 0;
   const spiritCombat = isSpiritCombatGate(resistedBy);
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
-  const constrained = resistedBy === SpellResistedByEnum.ResistanceRoll || spiritCombat;
+  const constrained = isSingleTargetGate(resistedBy);
 
   const tooManyTargets = constrained && targetCount > 1;
   let targetNote = "";

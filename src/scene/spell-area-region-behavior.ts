@@ -22,6 +22,17 @@ type SpellAreaRegionBehaviorSchema = ReturnType<typeof defineSpellAreaRegionBeha
 
 type AreaHook = "onAreaEnter" | "onAreaExit";
 
+/** An event handler running `hook` for the event's token; see `events` for `crossed`. */
+const onToken = (hook: AreaHook, crossed: boolean) =>
+  async function (this: SpellAreaRegionBehavior, event: any) {
+    if (crossed || !event.data.movement) {
+      await this.dispatch(hook, event.data.token, crossed);
+    }
+  };
+
+/** The spells of spell areas, looked up once per area rather than on every crossing. */
+const areaSpells = new WeakMap<SpellAreaRegionBehavior, RqgItem>();
+
 /**
  * A spell's area (#1168), made by `spellEffects.createArea`: runs the spell behavior's
  * `onAreaEnter` and `onAreaExit` when tokens cross it, `onAreaEnter` for those already inside
@@ -44,31 +55,13 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
   // TOKEN_ENTER/EXIT without a movement are tokens there when the area appeared, or placed or
   // removed; with one they repeat the move events.
   static override events = {
-    [CONST.REGION_EVENTS.TOKEN_MOVE_IN]: async function (
-      this: SpellAreaRegionBehavior,
-      event: any,
-    ) {
-      await this.dispatch("onAreaEnter", event.data.token, true);
-    },
-    [CONST.REGION_EVENTS.TOKEN_MOVE_OUT]: async function (
-      this: SpellAreaRegionBehavior,
-      event: any,
-    ) {
-      await this.dispatch("onAreaExit", event.data.token, true);
-    },
-    [CONST.REGION_EVENTS.TOKEN_ENTER]: async function (this: SpellAreaRegionBehavior, event: any) {
-      if (!event.data.movement) {
-        await this.dispatch("onAreaEnter", event.data.token, false);
-      }
-    },
-    [CONST.REGION_EVENTS.TOKEN_EXIT]: async function (this: SpellAreaRegionBehavior, event: any) {
-      if (!event.data.movement) {
-        await this.dispatch("onAreaExit", event.data.token, false);
-      }
-    },
+    [CONST.REGION_EVENTS.TOKEN_MOVE_IN]: onToken("onAreaEnter", true),
+    [CONST.REGION_EVENTS.TOKEN_MOVE_OUT]: onToken("onAreaExit", true),
+    [CONST.REGION_EVENTS.TOKEN_ENTER]: onToken("onAreaEnter", false),
+    [CONST.REGION_EVENTS.TOKEN_EXIT]: onToken("onAreaExit", false),
   } as any;
 
-  private async dispatch(hook: AreaHook, token: TokenDocument, crossed: boolean): Promise<void> {
+  async dispatch(hook: AreaHook, token: TokenDocument, crossed: boolean): Promise<void> {
     const region = this.region;
     const actor = token?.actor as RqgActor | null | undefined;
     if (!game.users?.activeGM?.isSelf || !region || !actor) {
@@ -122,10 +115,18 @@ export class SpellAreaRegionBehavior extends RegionBehaviorType<SpellAreaRegionB
   }
 
   private async areaSpell(): Promise<RqgItem | null> {
+    const cached = areaSpells.get(this);
+    if (cached) {
+      return cached;
+    }
     const provenance = this.spell;
     // The cast spell may be gone from the caster since; its compendium copy has the same rules
-    return ((await fromUuid(provenance.spellUuid)) ??
+    const spell = ((await fromUuid(provenance.spellUuid)) ??
       (await Rqid.fromRqid(provenance.spellRqid, undefined, true))) as RqgItem | null;
+    if (spell) {
+      areaSpells.set(this, spell);
+    }
+    return spell;
   }
 
   private areaCast(): SpellEffectCast {

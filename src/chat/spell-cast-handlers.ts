@@ -198,18 +198,13 @@ export async function handleSpellCastRuling(clickedButton: HTMLButtonElement): P
     return;
   }
 
-  const outcome = getSpellCastOutcome(message as any)?.targets.find(
-    (t) => t.targetTokenOrActorUuid === targetUuid,
-  );
-  if (outcome?.resolvedBy === "intercepted") {
-    return;
-  }
   await settleSpellCastTarget(message, targetUuid, state, "gmRuling");
 }
 
 /**
  * Settle one target of a `spellCast` card that a later step decides - a GM ruling today, a
- * resolved spirit combat (#958) later. The caller must be able to update the message.
+ * resolved spirit combat (#958) later. A target a protective spell stopped stays stopped. The
+ * caller must be able to update the message.
  */
 export async function settleSpellCastTarget(
   message: ChatMessage,
@@ -218,7 +213,7 @@ export async function settleSpellCastTarget(
   resolvedBy: SpellTargetOutcomeResolvedBy,
 ): Promise<void> {
   const targets = (message.toObject().system as any).targets.map((target: any) =>
-    target.targetTokenOrActorUuid === targetUuid
+    target.targetTokenOrActorUuid === targetUuid && target.resolvedBy !== "intercepted"
       ? { ...target, state: state, resolvedBy: resolvedBy, casterSuccessLevel: null }
       : target,
   );

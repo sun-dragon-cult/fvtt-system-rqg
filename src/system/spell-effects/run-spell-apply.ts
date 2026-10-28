@@ -55,16 +55,16 @@ export async function runSpellApply(
   return queryActiveGm("rqg.applySpellBehavior", queryData, spellName);
 }
 
-/**
- * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
- * naming the spell, when no GM is logged in or the query fails.
- */
 type RqgQuery =
   | "rqg.applySpellBehavior"
   | "rqg.reflectResistedSpell"
   | "rqg.createSpellArea"
   | "rqg.interceptSpellCast";
 
+/**
+ * Run one of the system's queries on the active GM's client, for what players may not do. Warns,
+ * naming the spell, when no GM is logged in or the query fails.
+ */
 export async function queryActiveGm<Q extends RqgQuery>(
   name: Q,
   data: Parameters<CONFIG.Queries[Q]>[0],

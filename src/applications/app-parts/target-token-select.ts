@@ -1,5 +1,5 @@
 import { getTargetedTokenNames, isFoundryElementInstanceOf, localize } from "../../system/util";
-import { metersPerSceneUnit } from "../../system/spell-effects/scene-distance";
+import { metersPerPixel } from "../../system/spell-effects/scene-distance";
 
 /** The option standing for several targets at once, which can't be picked again once left. */
 export const SEVERAL_TARGETS = "several";
@@ -69,8 +69,11 @@ export function buildTargetTokenSelect(from: foundry.canvas.placeables.Token | u
     y: token.center.y,
   });
   const candidates = (canvas?.tokens?.placeables ?? []).filter((t) => t.visible).map(toCandidate);
-  const metersPerPixel = grid ? (grid.distance * metersPerSceneUnit(grid.units)) / grid.size : 0;
-  const options = targetTokenOptions(candidates, from && toCandidate(from), metersPerPixel);
+  const options = targetTokenOptions(
+    candidates,
+    from && toCandidate(from),
+    grid ? metersPerPixel(grid) : 0,
+  );
 
   const targetIds = [...(game.user?.targets ?? [])].map((t) => t.id ?? "");
   const selected = selectedTargetValue(targetIds);
