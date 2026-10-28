@@ -98,6 +98,23 @@ describe("resyncSpellFieldsFromCompendium", () => {
     });
   });
 
+  it("keeps a resisted spell's POW, since a GM may have chosen it over magic points", async () => {
+    packsContain(
+      compendium("i.rune-magic.turn-undead", {
+        resistedBy: "resistanceRollPerTarget",
+        resistedWith: "magicPoints",
+      }),
+    );
+    const copy = spell("i.rune-magic.turn-undead", {
+      targetKind: "creature",
+      effectTier: "effect",
+      resistedBy: "resistanceRollPerTarget",
+      resistedWith: "power",
+    });
+
+    expect(await resyncSpellFieldsFromCompendium(copy)).toEqual({});
+  });
+
   it("falls back to the English pack for fields its own language's pack lacks", async () => {
     packsContain(
       compendium("i.spirit-magic.swedish", { targetKind: "weapon" }, "sv"),
