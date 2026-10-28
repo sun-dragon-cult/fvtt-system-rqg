@@ -1,6 +1,13 @@
 import { getTargetedTokenNames, localize } from "../../system/util";
-import { spellAreaRadius } from "../../system/spell-effects/spell-area-targets";
+import {
+  casterTokenOnScene,
+  spellAreaRadius,
+  spellMaxTargets,
+} from "../../system/spell-effects/spell-area-targets";
 import type { RqgItem } from "@items/rqg-item.ts";
+import type { RqgActor } from "@actors/rqg-actor.ts";
+import type { SpellItem } from "@item-model/spell.ts";
+import { previewSpellArea, type SpellAreaPreview } from "./spell-area-preview";
 import {
   isSingleTargetGate,
   isSpiritCombatGate,
@@ -24,12 +31,13 @@ export type SpellCastTargetNote = {
 
 /**
  * What the cast dialog says about the current targets. Only a spell resolved by resistance rolls or
- * gated on spirit combat constrains them - everything else is free to be cast at any number of
- * tokens, or none.
+ * gated on spirit combat, or one that reaches only `maxTargets` at its level, constrains them -
+ * everything else is free to be cast at any number of tokens, or none.
  */
 export function buildSpellCastTargetNote(
   resistedBy: SpellResistedByEnum,
   casterToken: foundry.canvas.placeables.Token | undefined,
+  maxTargets: number = Infinity,
 ): SpellCastTargetNote {
   const targetNames = getTargetedTokenNames();
   const targetCount = game.user?.targets.size ?? 0;
@@ -37,11 +45,15 @@ export function buildSpellCastTargetNote(
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   const constrained = isSingleTargetGate(resistedBy);
 
-  const tooManyTargets = constrained && targetCount > 1;
+  const singleTargetOnly = constrained && targetCount > 1;
+  const tooManyTargets = singleTargetOnly || targetCount > maxTargets;
   let targetNote = "";
   let targetNoteClass = "";
-  if (tooManyTargets) {
+  if (singleTargetOnly) {
     targetNote = localize("RQG.Dialog.SpellCast.SingleTargetOnly");
+    targetNoteClass = "warning";
+  } else if (tooManyTargets) {
+    targetNote = localize("RQG.Dialog.SpellCast.TooManyTargets", { count: String(maxTargets) });
     targetNoteClass = "warning";
   } else if (resistedBy === SpellResistedByEnum.ResistanceRollArea && targetCount === 0) {
     targetNote = localize("RQG.Dialog.SpellCast.AreaUntargeted");
@@ -104,4 +116,61 @@ export function spellAreaTargetsLabel(
       : "RQG.Dialog.SpellCast.EveryoneInRangeNoToken",
     { meters: String(meters) },
   );
+}
+
+/**
+ * A cast dialog's targets at the level it is set to: the Target row's note, and for a spell centered
+ * on its caster the area's preview on the canvas and its label.
+ */
+export class SpellCastTargets {
+  private preview: SpellAreaPreview | undefined;
+  private level = 0;
+
+  constructor(
+    private readonly spell: SpellItem,
+    private readonly token: TokenDocument | null | undefined,
+    private readonly casterActor: RqgActor,
+  ) {}
+
+  casterToken(): foundry.canvas.placeables.Token | undefined {
+    return casterTokenOnScene(this.token, this.casterActor);
+  }
+
+  note(level: number): SpellCastTargetNote {
+    this.level = level;
+    return buildSpellCastTargetNote(
+      this.spell.system.resistedBy,
+      this.casterToken(),
+      spellMaxTargets(this.spell, level),
+    );
+  }
+
+  areaLabel(level: number): string {
+    return spellAreaTargetsLabel(this.spell, level, this.casterToken());
+  }
+
+  /** Call from the dialog's _onRender; the preview is made once and kept across re-renders. */
+  open(level: number): void {
+    this.preview ??= previewSpellArea(this.spell, this.token, this.casterActor, level);
+  }
+
+  /** The dialog's level changed. */
+  update(element: HTMLElement, level: number): void {
+    this.preview?.update(level);
+    const labelElement = element.querySelector<HTMLElement>("[data-area-targets]");
+    if (labelElement) {
+      labelElement.textContent = this.areaLabel(level);
+    }
+    applySpellCastTargetNote(element, this.note(level));
+  }
+
+  /** The user's targets changed. */
+  targetsChanged(element: HTMLElement): void {
+    applySpellCastTargetNote(element, this.note(this.level));
+  }
+
+  close(): void {
+    this.preview?.destroy();
+    this.preview = undefined;
+  }
 }

@@ -120,6 +120,30 @@ describe("resolveResistedSpellCastTarget", () => {
     expect(ui.notifications?.warn).toHaveBeenCalled();
   });
 
+  it("refuses more targets than the spell reaches at its level, one undead per point", async () => {
+    setTargets(fakeTarget("Actor.a"), fakeTarget("Actor.b"), fakeTarget("Actor.c"));
+
+    const atTwo = await resolveResistedSpellCastTarget(
+      SpellResistedByEnum.ResistanceRollPerTarget,
+      casterActor,
+      "Turn Undead",
+      undefined,
+      2,
+    );
+    const atThree = await resolveResistedSpellCastTarget(
+      SpellResistedByEnum.ResistanceRollPerTarget,
+      casterActor,
+      "Turn Undead",
+      undefined,
+      3,
+    );
+
+    expect(atTwo.proceed).toBe(false);
+    expect(ui.notifications?.warn).toHaveBeenCalledTimes(1);
+    expect(atThree.proceed).toBe(true);
+    expect(atThree.targets).toHaveLength(3);
+  });
+
   it("proceeds with the targeted token when exactly one is targeted", async () => {
     setTargets(fakeTarget("Actor.victim", "Scene.s.Token.victim"));
 

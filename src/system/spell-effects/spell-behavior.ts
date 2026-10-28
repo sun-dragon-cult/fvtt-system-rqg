@@ -100,6 +100,8 @@ export type SpellBehavior = SpellRollEntries & {
    * cast dialog previews it, and the spell is cast at every token in it.
    */
   areaRadius?(level: number): number;
+  /** How many tokens the spell cast at this level can be cast at; any number when left out. */
+  maxTargets?(level: number): number;
 };
 
 const actingHookNames = [
@@ -254,27 +256,45 @@ function guardedRollEntry(
   return wrapped;
 }
 
-/** A broken `areaRadius` just means no area, so a throw or a non-number gives 0. */
-function guardedAreaRadius(
-  areaRadius: SpellBehavior["areaRadius"],
+/**
+ * A number a spell behavior works out from the cast's level. A broken one is ignored: a throw or a
+ * non-number gives `fallback` - no area, or no target limit.
+ */
+function guardedLevelNumber(
+  ofLevel: ((level: number) => number) | undefined,
   spellRqid: string,
-): SpellBehavior["areaRadius"] {
-  if (!areaRadius) {
+  fallback: number,
+): ((level: number) => number) | undefined {
+  if (!ofLevel) {
     return undefined;
   }
   return (level: number) => {
     try {
-      const radius = Number(areaRadius(level));
-      return Number.isFinite(radius) && radius > 0 ? radius : 0;
+      const value = Number(ofLevel(level));
+      return Number.isNaN(value) ? fallback : value;
     } catch (error) {
       logger.error(
         localize("RQG.Notification.Error.SpellBehaviorFailed", { spellName: spellRqid }),
         undefined,
         error,
       );
-      return 0;
+      return fallback;
     }
   };
+}
+
+function guardedAreaRadius(
+  areaRadius: SpellBehavior["areaRadius"],
+  spellRqid: string,
+): SpellBehavior["areaRadius"] {
+  const radius = guardedLevelNumber(areaRadius, spellRqid, 0);
+  return (
+    radius &&
+    ((level) => {
+      const meters = radius(level);
+      return Number.isFinite(meters) && meters > 0 ? meters : 0;
+    })
+  );
 }
 
 function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavior {
@@ -306,6 +326,7 @@ function guardBehavior(behavior: SpellBehavior, spellRqid: string): SpellBehavio
     ),
     runAsGm: behavior.runAsGm,
     areaRadius: guardedAreaRadius(behavior.areaRadius, spellRqid),
+    maxTargets: guardedLevelNumber(behavior.maxTargets, spellRqid, Infinity),
   };
 }
 

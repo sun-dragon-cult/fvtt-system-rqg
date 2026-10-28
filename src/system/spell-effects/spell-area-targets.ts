@@ -9,6 +9,11 @@ export function spellAreaRadius(spell: RqgItem, level: number): number {
   return spellBehaviorOf(spell)?.areaRadius?.(level) ?? 0;
 }
 
+/** How many tokens a spell cast at `level` can be cast at, from its behavior; Infinity if any. */
+export function spellMaxTargets(spell: RqgItem, level: number): number {
+  return spellBehaviorOf(spell)?.maxTargets?.(level) ?? Infinity;
+}
+
 /** The caster's token on the viewed scene, which a spell centered on its caster is measured from. */
 export function casterTokenOnScene(
   token: TokenDocument | null | undefined,

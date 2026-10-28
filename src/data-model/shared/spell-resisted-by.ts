@@ -35,13 +35,15 @@ export type ResistedSpellTarget = {
  * Pre-cast target check for a resisted spell, run before any points are spent. Unresisted spells
  * pass straight through - targeting is only constrained where a resistance roll or spirit combat
  * depends on it - but their targets are still recorded for the cast outcome. A spell centered on
- * its caster passes the tokens in its area, which take the place of the user's targets.
+ * its caster passes the tokens in its area, which take the place of the user's targets, and a spell
+ * that reaches only so many targets at its level (Turn Undead) refuses more.
  */
 export async function resolveResistedSpellCastTarget(
   resistedBy: SpellResistedByEnum,
   casterActor: RqgActor,
   spellName: string | undefined,
   areaTokens?: readonly foundry.canvas.placeables.Token[],
+  maxTargets: number = Infinity,
 ): Promise<ResistedSpellTarget> {
   const targets = [...(areaTokens ?? game.user?.targets ?? [])];
   const castTargets: SpellCastTarget[] = targets.flatMap((token) =>
@@ -56,6 +58,15 @@ export async function resolveResistedSpellCastTarget(
   );
 
   const proceed: ResistedSpellTarget = { proceed: true, targets: castTargets };
+  if (targets.length > maxTargets) {
+    ui.notifications?.warn(
+      localize("RQG.Notification.Warn.SpellTooManyTargets", {
+        spellName: spellName ?? "",
+        count: String(maxTargets),
+      }),
+    );
+    return { proceed: false, targets: castTargets };
+  }
   const spiritCombat = isSpiritCombatGate(resistedBy);
   const perTarget = resistedBy === SpellResistedByEnum.ResistanceRollPerTarget;
   if (resistedBy !== SpellResistedByEnum.ResistanceRoll && !spiritCombat && !perTarget) {

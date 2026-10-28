@@ -3,7 +3,7 @@ import type { RqgItem } from "@items/rqg-item.ts";
 import { RqgItemDataModel } from "./rqg-item-data-model";
 import { migrateSpellBooleanFields, spellSchemaFields } from "../shared/spell-schema-fields";
 import { postSpellCastResult, resolveResistedSpellCastTarget } from "../shared/spell-resisted-by";
-import { tokensInSpellArea } from "../../system/spell-effects/spell-area-targets";
+import { spellMaxTargets, tokensInSpellArea } from "../../system/spell-effects/spell-area-targets";
 import type { RqidLink } from "../shared/rqid-link";
 import type { RqidString } from "../../system/api/rqid-api";
 import { rqidLinkArraySchemaField } from "../shared/rqid-link-field";
@@ -364,6 +364,7 @@ export class RuneMagicDataModel extends RqgItemDataModel<RuneMagicSchema, { chan
       casterActor,
       item.name ?? undefined,
       areaTokens,
+      spellMaxTargets(item, rollOptions.levelUsed),
     );
     if (!resistedSpellTarget.proceed) {
       return;
