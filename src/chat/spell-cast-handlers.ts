@@ -287,7 +287,7 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
       casterSuccessLevel: outcome.casterSuccessLevel,
     }),
     // A reflected spell was never cast at its new target, so it meets their protective spells now
-    { barriersChecked: !(message.system as any).reflectedFromMessageId },
+    { barriers: (message.system as any).reflectedFromMessageId ? "reflected" : "met" },
   );
   if (!applied) {
     return;

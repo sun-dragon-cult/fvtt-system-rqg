@@ -7,6 +7,7 @@ import {
   type SpellEffectApplied,
   type SpellEffectCast,
   type SpellApplyScope,
+  type SpellBarriers,
 } from "./apply-spell-effect";
 import { spellBehaviorOf, type SpellBehavior } from "./spell-behavior";
 import { interceptIncomingSpell } from "./incoming-spell";
@@ -31,7 +32,7 @@ export type ApplySpellBehaviorQueryData = {
 export async function runSpellApply(
   behavior: SpellBehavior & Required<Pick<SpellBehavior, "apply">>,
   scope: SpellApplyScope,
-  barriersChecked = false,
+  barriers?: SpellBarriers,
 ): Promise<SpellEffectApplied | undefined> {
   const spellName = scope.spell.name ?? "";
   const gm = behavior.runAsGm && !game.user?.isGM ? game.users?.activeGM : undefined;
@@ -39,7 +40,8 @@ export async function runSpellApply(
     ui.notifications?.warn(localize("RQG.ChatMessage.SpellCast.NeedsActiveGm", { spellName }));
     return undefined;
   }
-  const intercepted = barriersChecked ? undefined : await interceptIncomingSpell(scope);
+  const intercepted =
+    barriers === "met" ? undefined : await interceptIncomingSpell(scope, barriers === "reflected");
   if (intercepted) {
     return intercepted;
   }
