@@ -267,13 +267,21 @@ describe("getSpellCastOutcome", () => {
 describe("areaResistanceThreshold", () => {
   it("reads the roll on the resistance table, like Harmony's example (RBM p.62)", () => {
     // POW 14 rolling 42: everyone with POW 15 or less
-    expect(areaResistanceThreshold(14, 42)).toBe(15);
-    expect(areaResistanceThreshold(15, 50)).toBe(15);
-    expect(areaResistanceThreshold(15, 51)).toBe(14);
+    expect(areaResistanceThreshold(14, 42, 1)).toBe(15);
+    expect(areaResistanceThreshold(15, 50, 1)).toBe(15);
+    expect(areaResistanceThreshold(15, 51, 1)).toBe(14);
   });
 
   it("affects everyone on 5 or less, and no one on 96 or more", () => {
-    expect(areaResistanceThreshold(10, 5)).toBe("all");
-    expect(areaResistanceThreshold(10, 96)).toBe("none");
+    expect(areaResistanceThreshold(10, 5, 1)).toBe("all");
+    expect(areaResistanceThreshold(10, 96, 1)).toBe("none");
+  });
+
+  it("affects no one when the threshold is below the lowest value a target can have", () => {
+    // POW 8 rolling 95: "POW -1 or lower"
+    expect(areaResistanceThreshold(8, 95, 1)).toBe("none");
+    // POW 8 rolling 90 reaches 0: no one has POW 0, but a target can have 0 magic points
+    expect(areaResistanceThreshold(8, 90, 1)).toBe("none");
+    expect(areaResistanceThreshold(8, 90, 0)).toBe(0);
   });
 });

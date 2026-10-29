@@ -198,7 +198,11 @@ export async function postSpellCastResult(params: {
       type: "spellCast",
       content: await foundry.applications.handlebars.renderTemplate(
         templatePaths.spellCastChatMessage,
-        { areaResistanceText: area ? areaResistanceText(area.resistance, area.statLabel) : "" },
+        {
+          areaResistanceText: area
+            ? areaResistanceText(area.resistance, area.statLabel, resistedWith)
+            : "",
+        },
       ),
       system: {
         spellUuid: spellUuid,
@@ -321,8 +325,14 @@ async function rollAreaResistance(
   };
 }
 
-function areaResistanceText(area: AreaResistance, statLabel: string): string {
-  const threshold = areaResistanceThreshold(area.casterValue, area.roll);
+function areaResistanceText(
+  area: AreaResistance,
+  statLabel: string,
+  resistedWith: SpellResistedWithEnum,
+): string {
+  // Anyone has some POW, while magic points can run out
+  const lowestValue = resistedWith === SpellResistedWithEnum.MagicPoints ? 0 : 1;
+  const threshold = areaResistanceThreshold(area.casterValue, area.roll, lowestValue);
   const key =
     threshold === "all"
       ? "RQG.ChatMessage.SpellCast.AreaResistance.AffectsAll"

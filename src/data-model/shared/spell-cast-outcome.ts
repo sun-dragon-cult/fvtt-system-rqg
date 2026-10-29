@@ -54,21 +54,20 @@ export type AreaResistance = {
 };
 
 /**
- * The highest value an area resistance roll overcomes: "all" on 5 or less, "none" on 96 or more,
- * otherwise by the resistance table. RBM's Inviolable reads the table the other way round; this
- * follows Harmony and every other resistance roll.
+ * The highest value an area resistance roll overcomes: "all" on 5 or less, "none" on 96 or more or
+ * below the lowest value a target can have, otherwise by the resistance table. RBM's Inviolable
+ * reads the table the other way round; this follows Harmony and every other resistance roll.
  */
 export function areaResistanceThreshold(
   casterValue: number,
   roll: number,
+  lowestValue: number,
 ): number | "all" | "none" {
   if (roll <= 5) {
     return "all";
   }
-  if (roll >= 96) {
-    return "none";
-  }
-  return casterValue + Math.floor((50 - roll) / 5);
+  const threshold = casterValue + Math.floor((50 - roll) / 5);
+  return roll >= 96 || threshold < lowestValue ? "none" : threshold;
 }
 
 /**
