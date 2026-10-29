@@ -220,16 +220,22 @@ export async function settleSpellCastTarget(
   await message.update({ system: { targets: targets } } as any);
 }
 
-function ruleOnResistanceRequest(
+async function ruleOnResistanceRequest(
   request: ResistanceRequestChatMessage,
   state: SpellTargetRulingState,
 ): Promise<void> {
   // A spell that takes effect is felt, so the target learns what it was.
-  return answerResistanceRequest(
+  await answerResistanceRequest(
     request,
     { gmRuling: state },
     { revealSpell: state === "affected" },
   );
+  // Resisted by ruling is resisted all the same, so Reflection can still send it back
+  if (state === "unaffected" && request.system.isSpellCast) {
+    // Dynamic import to avoid a circular dependency through rqgItem.ts.
+    const { reflectResistedSpell } = await import("../system/spell-effects/reflect-spell");
+    await reflectResistedSpell(request);
+  }
 }
 
 /** The cast roll's options: level and points spent. */
