@@ -1,4 +1,7 @@
 <div class="rqg chat-card">
+  {{#if reflectedByName}}
+    <div class="resistance-request-reflected">{{localize "RQG.ChatMessage.ResistanceRequest.Reflected" name=reflectedByName}}</div>
+  {{/if}}
   {{#if castRoll}}
     {{> spellCastRollRow hiddenFromUuid=spellHiddenFromUuid casterUuid=spellCasterUuid}}
     {{#if resistanceFlavor}}

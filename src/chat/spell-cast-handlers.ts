@@ -7,8 +7,7 @@ import {
 } from "../data-model/shared/spell-cast-outcome";
 import { canApplySpell } from "../system/spell-effects/spell-behavior";
 import { Rqid } from "../system/api/rqid-api";
-import { ItemTypeEnum } from "@item-model/item-types.ts";
-import { applySpellEffect } from "../system/spell-effects/apply-spell-effect";
+import { applySpellEffect, spellEffectCast } from "../system/spell-effects/apply-spell-effect";
 import { updateChatMessage } from "../sockets/socketable-requests";
 import type { RqgActor } from "@actors/rqg-actor.ts";
 import type { RqgItem } from "@items/rqg-item.ts";
@@ -264,23 +263,21 @@ export async function handleApplySpellEffect(clickedButton: HTMLButtonElement): 
     return;
   }
 
-  const options = castRollOptions(message);
-  const level = Number(options["levelUsed"] ?? 0);
-  const boost = Number(options["magicPointBoost"] ?? 0);
-  const isRuneMagic = spell.type === ItemTypeEnum.RuneMagic;
   // The token's own name, as the rest of the chat text uses.
   const targetName = (targetDoc as { name?: string } | null)?.name ?? targetActor.name ?? "";
-  const applied = await applySpellEffect(spell, targetActor, targetName, {
-    casterUuid:
-      (message.system as any).casterTokenOrActorUuid ??
-      (message.system as any).spellCasterUuid ??
-      "",
-    castMessageId: message.id ?? "",
-    level: level,
-    magicPointsSpent: isRuneMagic ? boost : level + boost,
-    runePointsSpent: isRuneMagic ? level : 0,
-    casterSuccessLevel: outcome.casterSuccessLevel,
-  });
+  const applied = await applySpellEffect(
+    spell,
+    targetActor,
+    targetName,
+    spellEffectCast(spell, castRollOptions(message), {
+      casterUuid:
+        (message.system as any).casterTokenOrActorUuid ??
+        (message.system as any).spellCasterUuid ??
+        "",
+      castMessageId: message.id ?? "",
+      casterSuccessLevel: outcome.casterSuccessLevel,
+    }),
+  );
   if (!applied) {
     return;
   }

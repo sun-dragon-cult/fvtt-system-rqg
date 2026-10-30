@@ -515,6 +515,7 @@
         "ApplyNaturalWeaponDamageNotImplemented": "Automatically applying damage to natural weapons is not supported yet.<br>Please manually add {weaponDamage} damage to the appropriate hit location, AP is not subtracted from {weaponDamage}.<br>Then close this notification."
       },
       "ResistanceRequest": {
+        "Reflected": "{name} reflects the spell back at its caster",
         "Roll": "Roll",
         "Resist": "Resist",
         "Accept": "Accept",

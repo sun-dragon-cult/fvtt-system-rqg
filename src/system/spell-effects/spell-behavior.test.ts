@@ -78,6 +78,20 @@ describe("spellBehavior", () => {
     });
   });
 
+  it("contains a failing onResisted, so the resisted spell just stays resisted", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    register((registry) => {
+      registry.register(
+        "i.rune-magic.reflection",
+        { onResisted: () => Promise.reject(new Error("x")) },
+        en,
+      );
+    });
+    const scope = { spell: { name: "Spell" }, effects: [{ name: "Reflection" }] } as any;
+    expect(await spellBehavior("i.rune-magic.reflection")?.onResisted?.(scope)).toBeUndefined();
+    vi.restoreAllMocks();
+  });
+
   it("contains a failing or malformed apply", async () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     register((registry) => {
