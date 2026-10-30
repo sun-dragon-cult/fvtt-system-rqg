@@ -45,7 +45,7 @@
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:ui": "playwright test --ui",
     "tsgo": "tsgo",
-    "typecheck": "tsc -noEmit"
+    "typecheck": "node --max-old-space-size=8192 node_modules/typescript/bin/tsc -noEmit"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE",
