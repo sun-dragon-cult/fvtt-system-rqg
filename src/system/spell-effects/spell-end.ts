@@ -1,7 +1,8 @@
 import { systemId } from "../config";
-import { isAreaAnchor, spellBehaviorForEffect, spellRqidOfEffect } from "./spell-behavior";
+import { spellBehaviorForEffect, spellRqidOfEffect } from "./spell-behavior";
 import { removeSummonedToken } from "./summon";
 import { removeSpellArea } from "./spell-area";
+import { splitFromProjectileIdFlag } from "../../data-model/shared/rqg-document-flags";
 
 /** Only the active GM's client ends effects, and only spell effects, summonings and areas need it. */
 function needsEnding(effect: ActiveEffect): boolean {
@@ -11,10 +12,17 @@ function needsEnding(effect: ActiveEffect): boolean {
   );
 }
 
-async function endSpellEffect(effect: ActiveEffect): Promise<void> {
+/** True when it deleted the effect's area, which then takes the effect with it. */
+async function endSpellEffect(effect: ActiveEffect): Promise<boolean> {
   await spellBehaviorForEffect(effect)?.onEnd?.({ effect });
   await removeSummonedToken(effect);
-  await removeSpellArea(effect);
+  return removeSpellArea(effect);
+}
+
+/** A missile split off its stack, whose spent spells go back to the stack with it. */
+function isOnSplitOffMissile(effect: ActiveEffect): boolean {
+  const parent = effect.parent;
+  return parent instanceof Item && !!parent.getFlag(systemId, splitFromProjectileIdFlag);
 }
 
 /**
@@ -25,9 +33,9 @@ async function endSpellEffect(effect: ActiveEffect): Promise<void> {
 export function initSpellEnd(): void {
   Hooks.on("updateActiveEffect", async (effect: ActiveEffect, changed: any) => {
     if (changed.duration?.expired === true && needsEnding(effect)) {
-      await endSpellEffect(effect);
-      // An area's caster effect goes with its Region, which removeSpellArea deleted
-      if (spellRqidOfEffect(effect) && !isAreaAnchor(effect)) {
+      const areaDeleted = await endSpellEffect(effect);
+      // spelled-projectile deletes a split-off missile's spells along with the missile
+      if (spellRqidOfEffect(effect) && !areaDeleted && !isOnSplitOffMissile(effect)) {
         await effect.delete();
       }
     }

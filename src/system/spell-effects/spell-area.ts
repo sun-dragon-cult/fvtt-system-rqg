@@ -204,6 +204,8 @@ async function createAreaAsGm(
         ),
       },
       behaviors: [{ name: spell.name ?? "", type: "spellArea", system: { spell: provenance } }],
+      // Without a caster (token HUD "+") the anchor is on the target's actor
+      flags: { [systemId]: { anchorActorUuid: casterActor.uuid } },
     } as any,
   ])) as RegionDocument[];
   if (!region) {
@@ -267,17 +269,22 @@ export async function removeAreaEffects(actor: RqgActor, regionUuid: string): Pr
   await deleteEffects(actor, areaEffectIds(actor, ["areaRegion"], new Set([regionUuid])));
 }
 
-/** Remove the Region of a spell area once its effect on the caster has ended. */
-export async function removeSpellArea(effect: ActiveEffect): Promise<void> {
+/**
+ * Remove the Region of a spell area once its effect on the caster has ended. True when it deleted
+ * one, whose cleanup then deletes the effect.
+ */
+export async function removeSpellArea(effect: ActiveEffect): Promise<boolean> {
   const regionUuid = effect.getFlag(systemId, "spellArea") as string | undefined;
   const region = regionUuid ? ((await fromUuid(regionUuid)) as RegionDocument | null) : null;
-  if (region?.parent?.regions.has(region.id ?? "")) {
-    await region.delete();
+  if (!region?.parent?.regions.has(region.id ?? "")) {
+    return false;
   }
+  await region.delete();
+  return true;
 }
 
 /**
- * When a spell area's Region is deleted, by the spell ending or by the GM, end the caster's effect;
+ * When a spell area's Region is deleted, by the spell ending or by the GM, end its anchor effect;
  * the tokens inside get an exit event, which takes theirs off. A deleted scene takes its unlinked
  * tokens with it and sends no events, so world actors are cleared of its areas' effects. Runs on the
  * active GM's client.
@@ -288,12 +295,15 @@ export function initSpellAreaCleanup(): void {
     if (!game.users?.activeGM?.isSelf || !area) {
       return;
     }
-    const casterUuid = area.spell.casterUuid;
-    const casterActor = casterUuid ? resolveActorFromUuid(casterUuid) : undefined;
-    if (casterActor) {
+    const anchorActorUuid = foundry.utils.getProperty(
+      region,
+      `flags.${systemId}.anchorActorUuid`,
+    ) as string | undefined;
+    const anchorActor = anchorActorUuid ? resolveActorFromUuid(anchorActorUuid) : undefined;
+    if (anchorActor) {
       // Only the anchor: deleting an effect the exit event already took fails the whole batch
-      const anchorIds = areaEffectIds(casterActor, ["spellArea"], new Set([region.uuid ?? ""]));
-      void deleteEffects(casterActor, anchorIds);
+      const anchorIds = areaEffectIds(anchorActor, ["spellArea"], new Set([region.uuid ?? ""]));
+      void deleteEffects(anchorActor, anchorIds);
     }
   });
   Hooks.on("deleteScene", (scene: Scene) => {
